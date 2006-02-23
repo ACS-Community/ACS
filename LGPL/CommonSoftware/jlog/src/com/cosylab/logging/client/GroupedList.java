@@ -173,12 +173,15 @@ public final class GroupedList {
 						}
 					}
 				}
+				// Heiko and me investigated the reason while this thread nevers
+				// wakes up form the wait in ste-gns (even if the notifyAll was executed
+				// several times)
+				// We didn't find a real error in the code but executing the test
+				// in this way seems to fix
 				synchronized (this) {
 					if (!queue.isEmpty() && !uiQueue.isEmpty()) {
 						try {
-							synchronized (this) {
 								wait();
-							}
 						} catch (InterruptedException e) {
 						}
 					}
