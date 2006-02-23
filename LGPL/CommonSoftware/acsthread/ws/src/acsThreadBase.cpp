@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.20 2006/02/09 02:12:46 gchiozzi Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.21 2006/02/23 13:26:03 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -288,7 +288,9 @@ bool ThreadBase::cancel() {
 bool ThreadBase::restart() {
     ACS_TRACE("ACS::ThreadBase::restart");
 
-    terminate();
+    if( terminate() == false )
+      return false;
+
 //  ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex); 
     //GUARD;
     /*
