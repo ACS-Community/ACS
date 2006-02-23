@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.8 2005/01/31 21:45:25 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.9 2006/02/23 23:49:23 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -119,9 +119,11 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
+JARFILES= nctest 
 jjj_DIRS=
 jjj_EXTRAS= 
+
+nctest_DIRS= alma
 #
 # java sources in Jarfile on/off
 DEBUG= 

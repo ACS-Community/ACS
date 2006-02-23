@@ -40,4 +40,4 @@ Local file logger
 offshoot
 alma.acs.component.client.ComponentClient
 StaticMethodLogger
-alma.demo.EventConsumerImpl.FridgeConsumer
+alma.nctest.FridgeConsumer
