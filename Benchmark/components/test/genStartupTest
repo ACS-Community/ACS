@@ -1,0 +1,130 @@
+#! /bin/bash
+. acsstartupAcsPorts
+#--------------------------------------
+CL_RHOST=
+
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+LONGOPTS=help,rhost:
+SHORTOPTS=h
+
+# Usage info. Be nice and keep this up-to-date!
+function printUsage {
+   echo "Runs component performance tests"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS] "
+	echo "Options: "
+	echo "   -rhost remote_host        remote host"
+   echo "   -h | -help                     prints this help and exits"
+}
+
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit 43;
+}
+ 
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+# Iterate over getopt's output and set CL_XXX variables accordingly
+while : 
+do
+	case "$1" in
+	--rhost)            CL_RHOST=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# must be unset! otherwise our custom export() function
+# that is defined below doesn't get used by the shell
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit 0
+fi
+#--------------------------------------
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+if [ ! $CL_RHOST ]
+then
+    export DATABASE=../doc/startup.dbm
+    export OUT_HTML=../doc/StartupPerf.html
+else
+    export DATABASE=../doc/remoteStartup.dbm
+    export OUT_HTML=../doc/RemoteStartupPerf.html
+fi
+##now real tests---------------------------------------------------------
+acsutilProfiler -r 10 -f "sleepRunner acsStopORBSRVC" -d $DATABASE acsStartORBSRVC
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+acsStartORBSRVC
+sleep 5
+acsutilProfiler -r 10 -f "sleepRunner acsStopManager" -d $DATABASE acsStartManager
+acsStopORBSRVC
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+acsutilProfiler -r 10 -f "sleepRunner acsStop" -d $DATABASE acsStart
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+acsStart
+acsutilProfiler -r 10 -f "sleepRunner acsStopContainer CppContainer" -b "Startup statistics" -d $DATABASE acsStartContainer -cpp CppContainer
+acsStop > /dev/null
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+acsStart
+acsutilProfiler -r 10 -f "sleepRunner acsStopContainer JavaContainer" -b "Startup statistics" -d $DATABASE acsStartContainer -java JavaContainer
+acsStop > /dev/null
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+acsStart
+acsutilProfiler -r 10 -f "sleepRunner acsStopContainer PythonContainer" -b "Startup statistics" -d $DATABASE acsStartContainer -py PythonContainer
+acsStop > /dev/null
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+#acsutilProfiler -t 1000 -r 10 -m "killACS without an instance running" -d $DATABASE killACS
+#rm -rf $ACS_TMP
+#mkdir $ACS_TMP
+
+#acsStart
+#acsStartContainer -cpp CppContainer&
+#sleep 10
+#acsStartContainer -py PythonContainer&
+#sleep 10
+#acsStartContainer -java JavaContainer&
+#sleep 10
+#acsutilProfiler -t 1000 -r 10 -m "killACS with one instance running" -d $DATABASE killACS
+#rm -rf $ACS_TMP
+#mkdir $ACS_TMP
+
+#acsutilProfiler -t 1000 -r 10 -m "Quick killACS without an instance running" -d $DATABASE killACS -Q
+#rm -rf $ACS_TMP
+#mkdir $ACS_TMP
+
+#acsStart
+#acsStartContainer -cpp CppContainer&
+#sleep 10
+#acsStartContainer -py PythonContainer&
+#sleep 10
+#acsStartContainer -java JavaContainer&
+#sleep 10
+#acsutilProfiler -t 1000 -r 10 -m "Quick killACS with one instance running" -d $DATABASE killACS
+#rm -rf $ACS_TMP
+#mkdir $ACS_TMP
+
+ACSPerfReportGen $DATABASE > $OUT_HTML

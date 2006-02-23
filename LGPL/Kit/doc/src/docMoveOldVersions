@@ -1,0 +1,148 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docMoveOldVersions,v 1.31 2002/06/08 17:20:46 vltsccm Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# pforstma  29/08/95  created
+#
+
+#************************************************************************
+#   NAME
+#	
+#   docMoveOldVersions - move old documents versions
+# 
+#   SYNOPSIS
+#
+#   docMoveOldVersions [-m]
+# 
+#   DESCRIPTION
+#
+#   If -m option is not specified, document versions (with size)
+#   that would be moved are displayed.  Size information is based on
+#   'du' command.
+
+#   If -m option is specified, version directories are moved according
+#   to the following scheme: each old document version is moved to 
+#   /home/te13f/vltsccm/doc_old. A old document version is any document 
+#   subdirectory named issue_X.Y older that the most recent one 
+#   (unique  document versions are not moved). A link to the moved document
+#   version replaces the original issue_X.Y directory.
+#   
+#   Only "vltsccm" user can use -m option.
+#
+#   ENVIRONMENT
+#
+#   Documents are directory under $VLT_DOCARCHIVE_ROOT with at last
+#   one "issue" subdirectory.
+#
+#   CAUTIONS
+#
+#   Needs a write access in each document.
+#
+#   It's up to the user to backup /home/te13f/vltsccm everytime this script
+#   ir run.
+#
+#   BUGS     
+#
+#   If all versions have the same creation date, the most recent version
+#   is not necessarily the one having the most recent creation date
+#   and the script may choose the wrong one.
+#
+#------------------------------------------------------------------------
+#
+
+user=`whoami`
+
+move=0
+if [ $# -eq 0 ]
+then
+	move=0
+elif [ $# -eq 1 ]
+then
+	if [ $1 = "-m" ]
+     	then
+		move=1
+		if [ $user != "vltsccm" ]
+		then
+			echo "Must be vltsccm to move directories"
+			exit 1
+		fi
+	else 
+	echo "usage: docMoveOldVersions [-m]"
+	  	exit 1
+     	fi
+else
+	echo "usage: docMoveOldVersions [-m]"
+	exit 1
+fi
+
+patternFile=/tmp/pf
+rm -rf $patternFile
+echo '->' > $patternFile
+
+os=0
+target=/home/te13f/vltsccm/old_doc
+cd $VLT_DOCARCHIVE_ROOT
+for doc in *
+do
+	# if directory 
+	if [ -d $doc ]
+	then
+		# count issues (but not the links)
+		in=`ls -l $doc | grep -v -f $patternFile | grep -c issue`
+		if [ $in -gt 1 ]
+		then
+			# list issues (but not the links)
+			il=`ls -t $doc |  grep -v -f $patternFile |grep issue `
+			ii=1
+			for issue in $il
+			do
+				# don't move the last version 
+				if [ $ii != 1 ]
+				then
+					set `du $doc/$issue`
+					size=$1
+					echo $doc/$issue "\t" $size 
+					os=`expr $os + $size`		
+					if [ $move -eq 1 ]
+					then
+						if [ ! -d $target/$doc ]
+						then
+							mkdir $target/$doc
+						fi
+						cp -r $doc/$issue \
+							$target/$doc/$issue
+						rm -rf $doc/$issue
+						ln -s $target/$doc/$issue \
+							$doc/$issue
+					fi
+				fi	
+				ii=`expr $ii + 1`
+			done
+		fi
+	fi
+done
+
+echo "\n"
+echo "Old versions total size : \t $os"
+echo "\n"
+
+if [ $move -eq 0 ]
+then
+	if [ $os -ne 0 ]
+	then
+	  echo "\n"
+	  echo "DO NOT FORGET TO ALLOW vltsccm TO WRITE IN THE DOC. DIRS. !"
+	  echo "\n"
+	fi
+else
+	echo "\n"
+	echo "DO NOT FORGET TO BACKUP /home/te13f/vltsccm !"
+	echo "\n"
+fi
+
+#
+# ___oOo___

@@ -1,0 +1,276 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: TestDriver,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+#
+# TestDriver
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  27/10/94  created as vltMakeTest
+# gfilippi  16/11/94  --no-print-directory added
+# gfilippi  03/02/95  display make version
+# gfilippi  09/02/95  create a test report for each machine (.<host>)
+# gfilippi  09/02/95  clean test areas 
+#------
+# gfilippi  16/02/95  name changed into TestDriver
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeTest - test driver
+# 
+#   SYNOPSIS
+#   vltMakeTest <testNr>
+# 
+#   DESCRIPTION
+#   Select the test scenario, execute Makefile, execute the outputs,
+#   check installed files.
+# 
+#   <testNr> test number
+#
+#   ENVIRONMENT
+#   INTROOT   Raed   integration area
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#------------------------------------------------------------------------
+#
+#
+#
+# which software am I testing?
+PWD=`pwd`
+VLTMAKE_DIR=`dirname $PWD`
+MODULE_REPORT=$VLTMAKE_DIR/test/ModuleTestReport.`hostname`
+rm -f $MODULE_REPORT
+touch $MODULE_REPORT
+
+if [ "$1" != "" ]
+then
+    case $1 in
+     01): 
+        testList=01
+        ;;
+     02): 
+        testList=02
+        ;;
+     03): 
+        testList=03
+        ;;
+     04): 
+        testList=04
+        ;;
+     05): 
+        testList=05
+        ;;
+    ALL): 
+        testList="01 02 03 04 05"
+        ;;
+      *): 
+        testList=""
+        ;;
+    esac
+fi
+
+if [ "${testList}" = "" ]
+then
+    if [ ! "${1}" = "" ]
+    then 
+        echo "\n >>> $1 <<<  invalid option"
+    fi
+    echo "\n Usage: vltMakeTest <testNr>\n " 
+    echo "                       01  UNIX application development" 
+    echo "                       02  UNIX application test" 
+    echo "                       03  VxWorks application development" 
+    echo "                       04  VxWorks application test  " 
+    echo "                       05  installed files  " 
+    echo "                       ALL " 
+    echo "\n" 
+    exit 1
+fi      
+
+#
+# which software am I testing?
+PWD=`pwd`
+VLTMAKE_DIR=`dirname $PWD`
+BIN_DIR=`which vltMakeCopySources`
+BIN_DIR=`dirname $BIN_DIR`
+
+SEPARATOR="------------------------------------------------------------------------"
+
+echo $SEPARATOR                                                    | tee -a $MODULE_REPORT
+echo "---------- vltMake Module Test ----------- started at: `date '+%d.%m.%y %T'`" | tee -a $MODULE_REPORT
+echo $SEPARATOR                                                    | tee -a $MODULE_REPORT
+echo "`what $VLTMAKE_DIR/src/vltMakefile`                        " | tee -a $MODULE_REPORT
+echo " using executables from: $BIN_DIR"                           | tee -a $MODULE_REPORT
+echo "                     on: `uname -a`"                         | tee -a $MODULE_REPORT
+
+#
+# preliminary checks
+#
+echo $SEPARATOR | tee -a $MODULE_REPORT
+
+echo "Checking environment" | tee -a $MODULE_REPORT
+
+echo "\n - looking for INTROOT....\c" | tee -a $MODULE_REPORT
+if [ "${INTROOT}" = "" ]
+then 
+    echo "\n        ERROR vltMakeTest: INTROOT not defined"  | tee -a $MODULE_REPORT
+    exit 1
+else
+    if [ ! -d $INTROOT ]
+    then 
+        echo "\n       ERROR vltMakeTest: INTROOT>>>$INTROOT<<< is not a directory"  | tee -a $MODULE_REPORT
+        exit 1 
+    fi
+fi
+echo "...ok" | tee -a $MODULE_REPORT
+
+
+echo "\n - looking for GNU Make ...." | tee -a $MODULE_REPORT
+if make -version -f /dev/null | grep version | tee -a $MODULE_REPORT
+then
+    echo "" | tee -a $MODULE_REPORT
+else
+    echo "\n       ERROR vltMakeTest: problem in finding GNU-make "  | tee -a $MODULE_REPORT
+    exit 1
+fi
+
+if [ "${1}" = "ALL" ]
+then 
+    echo "\n - removing old test result from INTROOT ....\c"  | tee -a $MODULE_REPORT
+    A=`find $INTROOT -name "*vltMakeTest*" -print`
+    if [ "${A}" != "" ]
+    then
+        rm -rf $A
+    fi
+    echo "...done" | tee -a $MODULE_REPORT
+fi 
+
+
+#
+# Execute required test(s)
+for test in ${testList}
+do
+    echo ""         | tee -a $MODULE_REPORT
+    echo $SEPARATOR | tee -a $MODULE_REPORT
+    case $test in
+
+    01):
+        TITLE="TEST01: UNIX application development  "
+        TEST_DIR=$VLTMAKE_DIR/test/mod/ws/src
+        ;;
+
+    02):
+        TITLE="TEST02: UNIX application test"
+        TEST_DIR=$VLTMAKE_DIR/test/mod/ws/test
+        ;;
+
+    03):
+        TITLE="TEST03: VxWorks application development"
+        TEST_DIR=$VLTMAKE_DIR/test/mod/lcu/src
+        ;;
+
+    04):
+        TITLE="TEST04: VxWorks application test"
+        TEST_DIR=$VLTMAKE_DIR/test/mod/lcu/test
+        ;;
+
+    05):
+        TITLE="TEST05: installed files"
+        TEST_DIR=$VLTMAKE_DIR/test/mod/lcu/test
+        ;;
+
+    *):
+        echo "PANIC: >>>>$test<<< not defined!"
+        exit 1
+        ;;
+    esac
+    LOGFILE=$VLTMAKE_DIR/test/TEST$test.rep
+    REFFILE=$VLTMAKE_DIR/test/TEST$test.ref
+    rm -f $LOGFILE
+    touch $LOGFILE
+    echo $TITLE | tee -a $LOGFILE | tee -a $MODULE_REPORT
+
+    #
+    # run the test
+    #
+    if [ $test = "05" ]
+    then
+        #
+        # find which files have been installed (this test
+        # is meaningful only if 01-04 have been executed)
+        find $INTROOT -name "*vltMakeTest*" -print    > $LOGFILE
+    else
+        #
+        # execute the appropriate Makefile
+        cd $TEST_DIR
+        echo `pwd` | tee -a $LOGFILE
+        echo ""    | tee -a $LOGFILE
+        make --no-print-directory MAKEDIR=$VLTMAKE_DIR/src clean all man install execute 1>>$LOGFILE 2>&1   
+        make --no-print-directory MAKEDIR=$VLTMAKE_DIR/src clean  
+        cd $VLTMAKE_DIR/test
+    fi
+
+    #
+    # clean up log file from current value of INTROOT and MODROOT 
+    # (they may change according to the the machine where the test is run)
+    #
+    mv $LOGFILE $LOGFILE.BAK
+    sed \
+    -e "1,$ s|${INTROOT}|INTROOT|g" \
+    -e "1,$ s|${VLTMAKE_DIR}|VLTMAKE|g" \
+            $LOGFILE.BAK  > $LOGFILE
+    rm $LOGFILE.BAK
+
+    #
+    # Compare test result with expected reference
+    #
+    if diff $LOGFILE $REFFILE >/dev/null
+    then
+        echo "\n See TEST$test.rep for detailed output \n" | tee -a $MODULE_REPORT
+        echo " Test PASS"                                     | tee -a $MODULE_REPORT
+    else
+        diff $LOGFILE $REFFILE                                | tee -a $MODULE_REPORT
+        echo "\n See TEST$test.rep for detailed output \n" | tee -a $MODULE_REPORT
+        echo " Test FAIL"                                     | tee -a $MODULE_REPORT
+        REJECTED=YES
+    fi
+    echo $SEPARATOR                               | tee -a $MODULE_REPORT
+
+done
+
+#
+# give global result
+#
+echo $SEPARATOR | tee -a $MODULE_REPORT
+if [ "${REJECTED}" = "YES" ]
+then
+    echo " NOT ACCEPTED" | tee -a $MODULE_REPORT
+else
+    echo " ACCEPTED"     | tee -a $MODULE_REPORT
+fi
+
+#
+# bye bye
+#
+echo $SEPARATOR | tee -a $MODULE_REPORT
+echo "---------- vltMake Module Test -----------   ended at: `date '+%d.%m.%y %T'`" | tee -a $MODULE_REPORT
+echo $SEPARATOR | tee -a $MODULE_REPORT
+
+if [ "${REJECTED}" = "YES" ]
+then
+    exit 1
+else
+    exit 0
+fi
+#
+#___oOo___

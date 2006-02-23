@@ -1,0 +1,144 @@
+Thu May  6 13:16:32 2004  inaf alma  <alma@esotc.oat.ts.astro.it>
+
+	* acssamp/include
+	* acssamp/src
+	* acssamp/test
+	  
+	replaced internal <vector> buffer with ACE_Message_Queue
+
+Thu Feb 26 12:00:47 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp/test: added acssampPerfClient/acssampPerfServer
+	* acssamp/ws: added Mutex handling
+	* acssamp/test: replaced unsigned long int with CORBA::ULong
+
+
+Thu Nov 20 12:00:47 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp/test: added java examples
+
+Fri Nov 13 12:00:47 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp/test: use of get_object template function
+
+Fri Oct 10 12:00:47 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp/test: added cmd line parameters handling
+	                in acssampOnlyNCServer and 
+			acssampOnlyNCClient
+
+Thu Oct  9 14:53:54 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp/test: renamed acssampTestClient to 
+	                acssampOnlyNCServer
+
+	* acssamp/lcu: Makefile modified
+
+Tue Oct  7 12:19:28 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: modified Component.xml for LCU test
+
+Fri Oct  3 10:42:06 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: added error handling
+
+Wed Oct  1 11:53:50 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: userScript modified
+
+Wed Oct  1 11:53:50 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: added error handling
+
+Mon Sep 29 14:57:28 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: added lcu userScript	
+	* acssamp: added lcu rebootScript	
+	* acssamp: ported to native exception
+
+
+Mon Sep 29 14:57:28 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: added native exception handling
+	* acssamp/lcu/test/ws: added Makefiles for LCU
+
+Wed Sep 24 11:27:09 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: added new reference file for the tat test
+	           modified TestDriver
+
+Mon Sep 22 11:40:04 2003  OAT  <oat@localhost.localdomain>
+
+	* acssamp: refactoring tat test
+
+	* acssamp: added man pages to all the tests
+
+	* acssamp: added man pages to all files
+
+Fri Sep 19 13:52:37 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: added man pages to acssamp.idl
+		- removed get_interface(); now
+                  the property type is retrieved from IR
+
+Tue Aug 26 13:52:37 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: ported to gcc 3.2.1
+		- added NAMESPACE_USE(std)
+		- added typename in flushSamp
+	
+Mon Aug 18 13:52:37 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: TestDriver.grep updated
+	
+Mon Aug 18 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: tat test completed
+	
+Mon Aug 13 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: added tat structure (all files like TestList ...)
+	
+Mon Aug 04 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: fixed problem in ACSSampObj destruction
+	
+Tue Jul 22 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: SHORT_LOGS modified
+
+Mon Jul 21 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp/test/alma: added simple java NC consumer
+
+Tue Jul 18 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: added managing of the created SampObj 
+                   object in the Samp factory
+	
+Tue Jul 15 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: added template for sampled value
+	
+Tue Jul 09 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: added any in the idl file
+                   test directory filled
+
+Tue Jul 08 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: removed callback from start/stop methods
+
+Tue Jun 24 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: Consumer implemented
+
+Fri May 30 13:52:36 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: DII first version
+
+Fri May 16 14:30:22 2003    <oat@esotc.oat.ts.astro.it>
+
+	* acssamp: created
+
+"@(#) $Id: ChangeLog,v 1.32 2004/05/06 11:18:04 pdimarca Exp $"

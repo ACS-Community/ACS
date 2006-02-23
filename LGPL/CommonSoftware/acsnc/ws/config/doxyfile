@@ -1,0 +1,2 @@
+FILE_PATTERNS          = *.h *.idl *.i
+INCLUDE_FILE_PATTERNS  = *.h *.i

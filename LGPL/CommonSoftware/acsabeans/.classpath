@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/abeansACSPlug.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/abeansBaciModel.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
+	<classpathentry sourcepath="WORKSPACE/CosyBeans/src/java" kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyicons.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsexmplPowerSupply.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsexmplPowerSupplyAbeans.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jnlp.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

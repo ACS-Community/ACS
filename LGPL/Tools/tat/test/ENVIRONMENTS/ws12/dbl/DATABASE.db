@@ -1,0 +1,42 @@
+//*****************************************************************************
+//* E.S.O. - VLT project
+//*
+//* "@(#) $Id: DATABASE.db,v 1.76 2003/01/09 17:50:49 vltsccm Exp $"
+//*
+//************************************************************************
+//*
+//*----------------------------------------------------------------------
+//
+
+//****************************************************************
+//    CCS DEFINITIONS
+//****************************************************************
+
+// Loads classes definition from standard file
+#include "CCS.db"
+
+//
+// Loads points for CCS, 
+//
+//     REMEMBER: to edit the provided template to match the
+//               actual configuration
+//
+#include "USER.db"
+
+
+//****************************************************************
+//    APPLICATION DEFINITIONS
+//****************************************************************
+
+//
+// Add hereafter branches defined by your applications 
+// and that you want to load
+#include "TAT12.db"
+
+
+//
+// ___oOo___
+
+
+
+

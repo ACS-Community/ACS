@@ -1,0 +1,254 @@
+1 - FITS file has 3 headers
+1 - Header 0: Name = NONE; Type = 1; Data size = 0; Num of keys = 88
+1 - Header 1: Name = WIN1.CHIP1.OUT2; Type = 1; Data size = 17596416; Num of keys = 55
+1 - Header 2: Name = FLAMES FIBRE Table; Type = 2; Data size = 130208; Num of keys = 43
+1 - DATA for hdr 0: num. of axes:0 type: 1
+1 - DATA for hdr 1: num. of axes:2 [2148x4096] type: 1
+1 - DATA for hdr 2: num. of axes:2 [104x1252] type: 2
+1 - > FITS file has 3 HDUnits
+1 - HEADER 0
+1 - 	header name NONE
+1 - 	header type Image
+1 - 	number of keywords in the header: 88
+1 - 	syze of the header: 0 bytes
+1 -    Keywords:
+1 -      SIMPLE(B)= true / Standard FITS format (NOST-100.0)
+1 -      BITPIX(I)= 16 / # of bits storing pix values
+1 -      NAXIS(I)= 0 / # of axes in frame
+1 -      ORIGIN(S)= 'ESO' / European Southern Observatory
+1 -      DATE(D)= 2002-12-22T16:37:58 / UT date when this file was written
+1 -      TELESCOP(S)= 'ESO-VLT-U2' / ESO Telescope Name
+1 -      INSTRUME(S)= 'GIRAFFE' / Name of the Instrument.
+1 -      EXPTIME(R)= 0.0605 / Total integration time
+1 -      MJD-OBS(R)= 52630.69304087 / MJD start (2002-12-22T16:37:58.731)
+1 -      DATE-OBS(D)= 2002-12-22T16:37:58 / Date of observation
+1 -      EXTEND(B)= true / Auto Added Keyword
+1 -      ORIGFILE(S)= 'FLAMES_GIRAF_BIAS356_0009.fits' / Original File Name
+1 -      ARCFILE(S)= 'GIRAF.2002-12-22T16:37:58.731.fits' / Archive File Name
+1 -      CHECKSUM(S)= 'YdncaanZSanbYanZ' / ASCII 1's complement checksum
+1 -      IMAGETYP(S)= 'BIAS' / Observation type
+1 -      ESO.OBS.DID(S)= 'ESO-VLT-DIC.OBS-1.7' / OBS Dictionary
+1 -      ESO.OBS.GRP(S)= '0' / linked blocks
+1 -      ESO.OBS.ID(I)= 200117229 / Observation block ID
+1 -      ESO.OBS.NAME(S)= 'Calibration' / OB name
+1 -      ESO.OBS.PI-COI.ID(I)= 52022 / ESO internal PI-COI ID
+1 -      ESO.OBS.PI-COI.NAME(S)= 'FLAMES Operation Team' / PI-COI name
+1 -      ESO.OBS.PROG.ID(S)= '60.A-9022(B)' / ESO program identification
+1 -      ESO.OBS.START(S)= '2002-12-22T16:35:26' / OB start time
+1 -      ESO.OBS.TPLNO(I)= 1 / Template number within OB
+1 -      ESO.TPL.DID(S)= 'ESO-VLT-DIC.TPL-1.4' / Data dictionary for TPL
+1 -      ESO.TPL.EXPNO(I)= 4 / Exposure number within template
+1 -      ESO.TPL.ID(S)= 'FLAMES_giraf_cal_bias' / Template signature ID
+1 -      ESO.TPL.NAME(S)= 'GIRAFFE Bias Calibration' / Template name
+1 -      ESO.TPL.NEXP(I)= 5 / Number of exposures within templat
+1 -      ESO.TPL.PRESEQ(S)= 'FLAMES_giraf_cal_dark.seq' / Sequencer script
+1 -      ESO.TPL.START(S)= '2002-12-22T16:35:27' / TPL start time
+1 -      ESO.TPL.VERSION(S)= 'CVS Revision: x.x $' / Version of the templat
+1 -      ESO.DPR.CATG(S)= 'CALIB' / Observation category
+1 -      ESO.DPR.TECH(S)= 'IMAGE' / Observation technique
+1 -      ESO.DPR.TYPE(S)= 'BIAS' / Observation type
+1 -      ESO.DET.BITS(I)= 16 / Bits per pixel readout
+1 -      ESO.DET.CHIPS(I)= 1 / # of chips in detector array
+1 -      ESO.DET.DATE(D)= 0002-09-02T00:00:00 / Installation date
+1 -      ESO.DET.DEC(R)= 0.0 / Apparent 00:00:00.0 DEC at start
+1 -      ESO.DET.DID(S)= 'ESO-VLT-DIC.CCDDCS,ESO-VLT-DIC.FCDDCS' / Diction
+1 -      ESO.DET.EXP.NO(I)= 1321 / Unique exposure ID number
+1 -      ESO.DET.EXP.RDTTIME(R)= 42.759 / image readout time
+1 -      ESO.DET.EXP.TYPE(S)= 'Dark' / Exposure type
+1 -      ESO.DET.EXP.XFERTIM(R)= 42.55 / image transfer time
+1 -      ESO.DET.FRAM.ID(I)= 1 / Image sequencial number
+1 -      ESO.DET.FRAM.TYPE(S)= 'Dark' / Type of frame
+1 -      ESO.DET.ID(S)= '' / Detector system Id
+1 -      ESO.DET.NAME(S)= 'ccdFg - ccdeev44' / Name of detector system
+1 -      ESO.DET.OUTPUTS(I)= 1 / # of outputs
+1 -      ESO.DET.OUTREF(I)= 0 / reference output
+1 -      ESO.DET.RA(R)= 0.0 / Apparent 00:00:00.0 RA at start
+1 -      ESO.DET.READ.CLOCK(S)= '225kpx_1x1_LG' / Readout clock pattern used
+1 -      ESO.DET.READ.MODE(S)= 'normal' / Readout method
+1 -      ESO.DET.READ.NFRAM(I)= 1 / Number of readouts buffered in sin
+1 -      ESO.DET.READ.SPEED(S)= 'Normal' / Readout speed
+1 -      ESO.DET.SHUT.ID(S)= 'ccd shutter' / Shutter unique identifier
+1 -      ESO.DET.SHUT.TMCLOS(R)= 0.0 / Time taken to close shutter
+1 -      ESO.DET.SHUT.TMOPEN(R)= 0.0 / Time taken to open shutter
+1 -      ESO.DET.SHUT.TYPE(S)= 'Iris' / type of shutter
+1 -      ESO.DET.SOFW.MODE(S)= 'Normal' / CCD sw operational mode
+1 -      ESO.DET.TELE.INT(R)= 60.0 / Interval between two successive te
+1 -      ESO.DET.TELE.NO(I)= 3 / # of sources active
+1 -      ESO.DET.TLM1.END(R)= 145.9 / Telemetry value at read completion
+1 -      ESO.DET.TLM1.ID(S)= 'CCD T1' / ID of telemetry sensor
+1 -      ESO.DET.TLM1.NAME(S)= 'CCD T1' / Description of telemetry param.
+1 -      ESO.DET.TLM1.START(R)= 145.9 / Telemetry value at read start
+1 -      ESO.DET.TLM2.END(R)= 148.0 / Telemetry value at read completion
+1 -      ESO.DET.TLM2.ID(S)= 'CCD T2' / ID of telemetry sensor
+1 -      ESO.DET.TLM2.NAME(S)= 'CCD T2' / Description of telemetry param.
+1 -      ESO.DET.TLM2.START(R)= 148.0 / Telemetry value at read start
+1 -      ESO.DET.TLM3.END(R)= 286.0 / Telemetry value at read completion
+1 -      ESO.DET.TLM3.ID(S)= 'Box' / ID of telemetry sensor
+1 -      ESO.DET.TLM3.NAME(S)= 'Box' / Description of telemetry param.
+1 -      ESO.DET.TLM3.START(R)= 286.0 / Telemetry value at read start
+1 -      ESO.DET.WIN1.BINX(I)= 1 / Binning factor along X
+1 -      ESO.DET.WIN1.BINY(I)= 1 / Binning factor along Y
+1 -      ESO.DET.WIN1.DIT1(R)= 0.060463 / actual subintegration time
+1 -      ESO.DET.WIN1.DKTM(R)= 0.0605 / Dark current time
+1 -      ESO.DET.WIN1.NDIT(I)= 1 / # of subintegrations
+1 -      ESO.DET.WIN1.NX(I)= 2148 / # of pixels along X
+1 -      ESO.DET.WIN1.NY(I)= 4096 / # of pixels along Y
+1 -      ESO.DET.WIN1.ST(B)= true / If T, window enabled
+1 -      ESO.DET.WIN1.STRX(I)= 1 / Lower left pixel in X
+1 -      ESO.DET.WIN1.STRY(I)= 1 / Lower left pixel in Y
+1 -      ESO.DET.WIN1.UIT1(R)= 0.0 / user defined subintegration time
+1 -      ESO.DET.WINDOWS(I)= 1 / # of windows readout
+1 -      ESO.OCS.DET.IMGNAME(S)= 'FLAMES_GIRAF_BIAS356.fits' / Data File Name.
+1 -      COMMENT(C) FTU-1.39/2003-01-31T10:38:26/Default.htt
+1 - 
+1 -   Check data matrix - compute mean and rms
+1 -   Dimension of matrix: 0
+1 - 
+1 - 
+1 - HEADER 1
+1 - 	header name WIN1.CHIP1.OUT2
+1 - 	header type Image
+1 - 	number of keywords in the header: 55
+1 - 	syze of the header: 17596416 bytes
+1 -    Keywords:
+1 -      XTENSION(S)= 'IMAGE' / Extension first keyword (see SIMPLE)
+1 -      BITPIX(I)= 16 / # of bits storing pix values
+1 -      NAXIS(I)= 2 / # of axes in frame
+1 -      NAXIS1(I)= 2148 / # pixels/axis
+1 -      NAXIS2(I)= 4096 / # pixels/axis
+1 -      PCOUNT(I)= 0 / Number of parameters per group
+1 -      GCOUNT(I)= 1 / Number of groups
+1 -      EXTNAME(S)= 'WIN1.CHIP1.OUT2' / Extension name
+1 -      BZERO(R)= 32768.0 / pixel=FITS*BSCALE+BZERO
+1 -      BSCALE(R)= 1.0 / pixel=FITS*BSCALE+BZERO
+1 -      ORIGIN(S)= 'ESO' / European Southern Observatory
+1 -      DATE(D)= 2002-12-22T16:37:58 / UT date when this file was written
+1 -      EXPTIME(R)= 0.0605 / Total integration time
+1 -      MJD-OBS(R)= 52630.69304087 / MJD start (2002-12-22T16:37:58.731)
+1 -      DATE-OBS(D)= 2002-12-22T16:37:58 / Date of observation
+1 -      CTYPE1(S)= 'PIXEL' / Pixel coordinate system
+1 -      CTYPE2(S)= 'PIXEL' / Pixel coordinate system
+1 -      CRVAL1(R)= 1.0 / value of ref pixel
+1 -      CRVAL2(R)= 1.0 / value of ref pixel
+1 -      CRPIX1(R)= -49.0 / Ref. pixel of center of rotation
+1 -      CRPIX2(R)= 1.0 / Ref. pixel of center of rotation
+1 -      CDELT1(R)= 1.0 / Binning factor
+1 -      CDELT2(R)= 1.0 / Binning factor
+1 -      DATAMIN(R)= 143.0 / Minimum pixel value
+1 -      DATAMAX(R)= 29272.0 / Maximum pixel value
+1 -      DATAMEAN(R)= 155.987969 / Mean Pixel Value
+1 -      DATARMS(R)= 14.291663 / RMS of Pixel Values
+1 -      DATAMED(R)= 156.0 / Median Pixel Value
+1 -      ESO.DET.CHIP.DATE(D)= 0010-01-01T00:00:00 / Date of installation [YYYY-MM-DD]
+1 -      ESO.DET.CHIP.ID(S)= 'ccd44' / Detector chip identification
+1 -      ESO.DET.CHIP.INDEX(I)= 1 / Chip index
+1 -      ESO.DET.CHIP.NAME(S)= 'EEV' / Detector chip name
+1 -      ESO.DET.CHIP.NX(I)= 2148 / # of pixels along X
+1 -      ESO.DET.CHIP.NY(I)= 4096 / # of pixels along Y
+1 -      ESO.DET.CHIP.PSZX(R)= 15.0 / Size of pixel in X
+1 -      ESO.DET.CHIP.PSZY(R)= 15.0 / Size of pixel in Y
+1 -      ESO.DET.CHIP.X(I)= 1 / X location in array
+1 -      ESO.DET.CHIP.XGAP(R)= 0.0 / Gap between chips along x
+1 -      ESO.DET.CHIP.Y(I)= 1 / Y location in array
+1 -      ESO.DET.CHIP.YGAP(R)= 0.0 / Gap between chips along y
+1 -      ESO.DET.OUT.CHIP(I)= 1 / Chip to which the output belongs
+1 -      ESO.DET.OUT.CONAD(R)= 2.25 / Conversion from ADUs to electrons
+1 -      ESO.DET.OUT.GAIN(R)= 0.44 / Conversion from electrons to ADU
+1 -      ESO.DET.OUT.ID(S)= '' / Output ID as from manufacturer
+1 -      ESO.DET.OUT.INDEX(I)= 2 / Output index
+1 -      ESO.DET.OUT.NAME(S)= 'R' / Description of output
+1 -      ESO.DET.OUT.NX(I)= 2048 / valid pixels along X
+1 -      ESO.DET.OUT.NY(I)= 4096 / valid pixels along Y
+1 -      ESO.DET.OUT.OVSCX(I)= 50 / Overscan region in X
+1 -      ESO.DET.OUT.OVSCY(I)= 0 / Overscan region in Y
+1 -      ESO.DET.OUT.PRSCX(I)= 50 / Prescan region in X
+1 -      ESO.DET.OUT.PRSCY(I)= 0 / Prescan region in Y
+1 -      ESO.DET.OUT.RON(R)= 4.21 / Readout noise per output (e-)
+1 -      ESO.DET.OUT.X(I)= 2148 / X location of output
+1 -      ESO.DET.OUT.Y(I)= 1 / Y location of output
+1 - 
+1 -   Check data matrix - compute mean and rms
+1 -   Dimension of matrix: 2
+1 -    Axis 0: 2148,  -49.0,  1.0,  1.0
+1 -    Axis 1: 4096,  1.0,  1.0,  1.0
+1 - 
+1 - 
+1 -  Npixel,row,col: 8798208, 4096, 2148
+1 - HEADER 2
+1 - 	header name FLAMES FIBRE Table
+1 - 	header type BinTable
+1 - 	number of keywords in the header: 43
+1 - 	syze of the header: 130208 bytes
+1 -    Keywords:
+1 -      XTENSION(S)= 'BINTABLE' / Extension first keyword (see SIMPLE)
+1 -      BITPIX(I)= 8 / # of bits storing pix values
+1 -      NAXIS(I)= 2 / # of axes in frame
+1 -      NAXIS1(I)= 104 / # pixels/axis
+1 -      NAXIS2(I)= 1252 / # pixels/axis
+1 -      PCOUNT(I)= 0 / Number of parameters per group
+1 -      GCOUNT(I)= 1 / Number of groups
+1 -      TFIELDS(I)= 17 / number of fields in each row
+1 -      EXTNAME(S)= 'FLAMES FIBRE Table' / Extension name
+1 -      TFORM1(S)= '16A' / data format of field: ASCII Character
+1 -      TFORM10(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM11(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM12(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM13(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM14(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM15(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM16(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM17(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM2(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM3(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM4(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM5(S)= '16A' / data format of field: ASCII Character
+1 -      TFORM6(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM7(S)= '16A' / data format of field: ASCII Character
+1 -      TFORM8(S)= '4A' / data format of field: ASCII Character
+1 -      TFORM9(S)= '4A' / data format of field: ASCII Character
+1 -      TTYPE1(S)= 'Slit' / label for field   1
+1 -      TTYPE10(S)= '400' / label for field  10
+1 -      TTYPE11(S)= '420' / label for field  11
+1 -      TTYPE12(S)= '450' / label for field  12
+1 -      TTYPE13(S)= '500' / label for field  13
+1 -      TTYPE14(S)= '600' / label for field  14
+1 -      TTYPE15(S)= '650' / label for field  15
+1 -      TTYPE16(S)= '700' / label for field  16
+1 -      TTYPE17(S)= '870' / label for field  17
+1 -      TTYPE2(S)= 'FPS' / label for field   2
+1 -      TTYPE3(S)= 'SSN' / label for field   3
+1 -      TTYPE4(S)= 'PSSN' / label for field   4
+1 -      TTYPE5(S)= 'Retractor' / label for field   5
+1 -      TTYPE6(S)= 'BN' / label for field   6
+1 -      TTYPE7(S)= 'FBN' / label for field   7
+1 -      TTYPE8(S)= 'RP' / label for field   8
+1 -      TTYPE9(S)= '370' / label for field   9
+1 - 
+1 -   Check table data - list columns
+1 -   Columns: 17, Rows: 1252
+1 -   0 >Slit<, 16 A, >null<, >null<
+1 -   1 >FPS<, 4 A, >null<, >null<
+1 -   2 >SSN<, 4 A, >null<, >null<
+1 -   3 >PSSN<, 4 A, >null<, >null<
+1 -   4 >Retractor<, 16 A, >null<, >null<
+1 -   5 >BN<, 4 A, >null<, >null<
+1 -   6 >FBN<, 16 A, >null<, >null<
+1 -   7 >RP<, 4 A, >null<, >null<
+1 -   8 >370<, 4 A, >null<, >null<
+1 -   9 >400<, 4 A, >null<, >null<
+1 -   10 >420<, 4 A, >null<, >null<
+1 -   11 >450<, 4 A, >null<, >null<
+1 -   12 >500<, 4 A, >null<, >null<
+1 -   13 >600<, 4 A, >null<, >null<
+1 -   14 >650<, 4 A, >null<, >null<
+1 -   15 >700<, 4 A, >null<, >null<
+1 -   16 >870<, 4 A, >null<, >null<
+1 - > Key NAXIS found on hdr 0
+1 - NAXIS = 0 / # OF AXES IN FRAME
+1 - > > Key TESTKEY found on hdr 0
+1 - TESTKEY = TESTVALUE / TESTCOMMENT
+1 - > > Key TESTKEY found on hdr 0
+1 - TESTKEY = TESTVALUE2 / TESTCOMMENT2
+1 - > TESTKEY deleted
+1 - > Keyword TESTKEY NOT found
+1 - > 

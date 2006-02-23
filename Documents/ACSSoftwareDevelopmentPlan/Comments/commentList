@@ -1,0 +1,121 @@
+************************************************
+* ACS CDR-3 - comments on ACS Development Plan
+*
+* Official file name: Reply.COMP-70.25.00.00-001-B-PLA.txt
+*
+* Mon May 30 16:02:02 CEST 2005
+*
+* Updated 2005-07-29
+*
+************************************************
+
+---------------------------------------------------------------------------
+(BrianGlendenning)
+I generally only looked at the sections with changebars.
+
+Reply: OK
+---------------------------------------------------------------------------
+(GianniRaffi)
+(Missing) The Compliance Matrix has been updated in PLA. Please check consistency with the spreadshe
+et provided in EDM (via CDR3 instructions)? This table is importnat to check possible backlogs.
+I guess this must be the work you have done now, in a separate Compliance Matrix spreadsheet. 
+While this is good, it is pretty impossible to use this list as a substitute of 
+the R3 planning, because some key columns are missing (see above).
+I would have understood that further refinement had to come later, 
+provided a first R3 planning would be made available.
+
+Reply:
+I will prepare the spreadsheet in the next days.
+I did not want to prepare it before the ACS 5.0 planning was agreed, because
+this will require changes and I consider it a waste of time.
+
+Action: Fill in Excel table for CDR3/R3
+
+Status: Done
+
+---------------------------------------------------------------------------
+(GianniRaffi)
+In PLA you should consider fully Japanese contribution (0.3 or 0.5 by
+Abe in Japan) and the corresponding work to be done. Check also the
+Trilateral Agreement (via CDR3 instructions) for this please.
+
+Reply: 
+Accepted, I will add Abe contribution.
+
+Action: Add Abe contribution
+
+Status: Added Abe contribution as "pure on-site support". No
+        development responsibilities.
+        We will have to see how this actually goes, since Abe is in
+        practice completely outside my control.
+        For example he is not going to participate to the weekly
+        meeting.
+
+---------------------------------------------------------------------------
+(BrianGlendenning)
+p.8 and later (e.g., p.22): You make a point of calling out that not all the
+anticipated Socorro machines are available. Is this an actual problem
+- I've been purchasing lots of computers lately?
+
+Reply: 
+Steve has sometimes problems in running tests having available just 
+his own Laptop. 
+If I understand it right, it is also difficult for him to get access 
+to other machines.
+With the increase involvement of ACS in RTAI and if we want to be able
+to support TICS we need to have at least 1 additional workstation where Steve
+can install RTAI and VxWorks and run tests when he wants.
+
+I think we could leave without the other things initially planned.
+If you agree on buying the additional machine for Steve I would 
+change the plan accordingly.
+
+Action:
+We have agreed that Brian will buy a development machine for Steve.
+
+Status: 
+To be done. Brian: let me know when done.
+---------------------------------------------------------------------------
+(BrianGlendenning)
+p.25 It seems to me that we can just allocate time for code
+reviews. Pair programming might be harder to implement widely.
+
+Reply: 
+Unfortunately this is in my opinion mainly due to the attitude of people
+and not to time allocation.
+For example the missions of Jorge and Alessandro in Socorro/TICS should have been 
+a very good opportunity for pair programming, by they have been
+left essentially alone doing the porting and testing instead of trying to work 
+together with them.
+
+Status: Removed pair programming. Left just a comment saying that we
+        (ACS) think it would be good, but it is impractical for ALMA.
+
+---------------------------------------------------------------------------
+(BrianGlendenning)
+p.28 Figure: it would be useful to draw a line delineating the
+past/future. Does the figure show planned or actual allocations for
+the past (I assume planned). Does the figure include in-kind contributions?
+
+Reply:
+I will update the picture as you suggest for the final release after CDR.
+Yes, the figure includes in-kind contribution.
+
+Action: Update picture
+
+Status: Added line with Past/Future.
+        I have no time now, but I would like to rethink a bit this
+        drawing to take properly into account Japanese contribution
+        and the effects of Japan.
+        For the time being it is good enought, but could be better.
+
+---------------------------------------------------------------------------
+(BrianGlendenning)
+Additional point discussed at the CDR3 meeting:
+
+After R3 we should organize a code revied of Control with ACS and HLA.
+
+Action: G.Chiozzi to organize a code review after R3 contiguous to Leads Meeting
+in November in Charlotsville.
+
+                              _____oOo_____

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsd:schema targetNamespace="Alma/CommonEntity" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:ent="Alma/CommonEntity" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified" version="1">
+	
+	<!-- globally unique id for entity objects (formatted hex string "uid://X0000000000000000/X00000000") -->
+	<xsd:simpleType name="EntityIdT">
+		<xsd:restriction base="xsd:string">
+		<!-- todo: use regular expression -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<!-- locally unique id for subnodes of entity objects (integer numbers);
+	     application schemas of entities in which parts (=subnodes) should be addressable by ID
+	     must define an attribute of type "EntityPartIdT" for the respective node, 
+	     by convention using the attribute name "entityPartId". 
+	     The format of the ID can be chosen freely as long as it complies with the 
+	     requirements for xsd:ID (see http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/datatypes#ID).
+	     As a recommendation, chose either the "X00000000" hex format known from the uid, 
+	     or a semantic name like "topLevelObsUnitSet".
+	     -->
+	<xsd:simpleType name="EntityPartIdT">
+		<xsd:restriction base="xsd:ID">
+			<xsd:whiteSpace value="collapse"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<!-- reference to an element with an attribute of type "EntityPartIdT".
+	     Can't be of type ID because we may want to reference the same node more than once per document,
+	     and also can't be of type IDREF because the referenced node is usually in a different document -->
+	<xsd:simpleType name="EntityPartIdRefT">
+		<xsd:restriction base="xsd:NCName">
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	
+	<!-- unique name for entity objects, like "SchedBlock" -->
+	<xsd:simpleType name="EntityTypeNameT">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="15"/>
+			<xsd:minLength value="3"/>
+			<xsd:whiteSpace value="collapse"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	
+	<!-- EntityRefT describes a reference to
+	     (1) another entity (only entityId required), or 
+	     (2) a subnode of another entity (both entityId and partId required) -->
+	<xsd:complexType name="EntityRefT">
+		<xsd:attribute name="entityId" type="ent:EntityIdT" use="required"/>
+		<xsd:attribute name="partId" type="ent:EntityPartIdRefT" use="optional" />
+		<!-- name of the root element of the entity, usually same as schema name -->
+		<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required"/>
+		<!-- version -->
+		<xsd:attribute name="documentVersion" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	
+	
+	<!-- common to all entities -->
+	<xsd:complexType name="EntityT">
+		<xsd:attribute name="entityId" type="ent:EntityIdT" use="required"/>
+		<!-- used by container and archive to make messing with IDs harder -->
+		<xsd:attribute name="entityIdEncrypted" type="xsd:string" use="required"/>
+		<!-- name of the root element of the entity, usually same as schema name -->
+		<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required"/>
+		<!-- version of the schema that the entity object complies with -->
+		<xsd:attribute name="schemaVersion" type="xsd:string" use="required"/>
+		<!-- version, managed by the archive on "store/update" -->
+		<xsd:attribute name="documentVersion" type="xsd:string"/>
+		<!-- timestamp for optimistic locking. The archive uses the timestamp
+		     in the XmlEntityStruct that contains the XML entity, rather than 
+		     this timestamp attribute. This attribute is therefore optional, and can
+		     be used (e.g. by the ACS framework) to temporarily convert an 
+		     XmlEntityStruct to a tree of binding classes w/o losing information. -->
+		<xsd:attribute name="timestamp" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	
+</xsd:schema>

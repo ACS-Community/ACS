@@ -1,0 +1,112 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: getTemplateMainMenu,v 1.22 2004/04/08 00:47:17 srankin Exp $" 
+#
+# who        when      what
+# --------  ----------  ----------------------------------------------
+# psivera   2000-10-07  created
+# psivera   2003-02-12  added check on ACS-VLTROOT/templates/forCoding
+# srankin   2004-04--7  added check for INTROOT/templates/forCoding
+
+#************************************************************************
+#   NAME
+#   getTemplateMainMenu - display available ACS template families
+# 
+#   SYNOPSIS
+#         getTemplateMainMenu
+# 
+#   DESCRIPTION
+#   See getTemplate
+# 
+#   ENVIRONMENT
+#    ACSTEMPLATES  where to look for template files
+#------------------------------------------------------------------------
+
+while clear
+do
+    cat <<xyz
+
+-------------------------------------------------------------------------------
+ACS templates are available for:
+
+
+             ______________ directoryStructure
+
+
+             ______________ code 
+
+
+xyz
+
+    echo "type    the type of template you need or press <Enter> to exit: \c"
+    read OPTION
+ 
+    echo " - - - - - - - - - - - - - - - - - - - - - - - -"
+
+# if the user answer is not empty process it else go to previous level
+
+    if test -n "$OPTION"
+    then
+
+        #
+        # do not check environment when dirStruct has been selected
+        # this allows me to use this procedure also during installation
+        # when the dirStruct does not yet exist.
+
+        if [ ! "$OPTION" = "directoryStructure" ]
+        then
+            #
+            # check environment
+            if [ "$INTROOT" != "" ] && [ -d "$INTROOT/templates/forCoding" ]
+            #
+            # This case will only occur AFTER a "make all install" in this dir.
+            then
+                ACSTEMPLATES=$INTROOT/templates 
+	    elif [ "$VLTROOT" != "" ] && [ -d "$VLTROOT/templates/forCoding" ]
+	    then
+                ACSTEMPLATES=$VLTROOT/templates      
+	    elif [ -d "$ACSROOT/templates/forCoding" ]
+	    then 
+		ACSTEMPLATES=$ACSROOT/templates
+	    else
+                echo "ERROR - getTemplate: directory templates/forCoding under ACS/VLTROOT not available. "
+                echo "                     Please check your environment "
+                echo "\n  Press <Enter> to continue . . .\c"
+                read a
+                exit 1
+	    fi
+            export ACSTEMPLATES
+
+        fi
+
+        case $OPTION in
+   
+        code)
+            getTemplateForCoding
+            ;;
+
+        directoryStructure)
+            getACSdirectoryStructure
+            ;;
+
+        *)  
+            echo ">>$OPTION<< is an invalid choice. Press <Enter> to continue . . .\c"
+            read a
+            ;;
+        esac
+
+    else
+        # <Enter> was pressed --> exit (up to previous level)
+        clear
+        exit
+    fi
+#
+done
+#
+#end-of-procedure
+
+
+
+# ___oOo___

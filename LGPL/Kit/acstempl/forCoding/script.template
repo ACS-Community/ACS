@@ -1,0 +1,62 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: script.template,v 1.21 2004/10/05 03:24:16 srankin Exp $" 
+#%# 
+#%# Template for script files          
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gfilippi   24/05/93  created
+#%# gfilippi   20/02/95  added header and manpage
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN script(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+#! /bin/sh
+#*******************************************************************************
+# PPPPPPPP
+#
+# "@(#) $I>-<d$"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# NNNNNNNN  dd/mm/yy  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# signal trap (if any)
+
+
+#
+# ___oOo___

@@ -1,0 +1,49 @@
+#! /bin/bash
+. acsstartupAcsPorts 
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: nsbrowser,v 1.1 2004/07/26 21:38:45 dfugate Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dfugate  2004-07-26  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+#     Runs JacORB's IFR explorer.
+#  
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# signal trap (if any)
+export HOST=`getIP`
+#Find the port number of the IR
+export ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
+
+export NScorbaloc="corbaloc::$HOST:$ACS_NAMING_SERVICE_PORT/NameService"
+
+
+acsStartJava -DORBInitRef.NameService=$NScorbaloc  org.jacorb.naming.namemanager.NameManager &
+
+#
+# ___oOo___

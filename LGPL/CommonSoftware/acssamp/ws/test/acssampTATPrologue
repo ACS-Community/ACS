@@ -1,0 +1,21 @@
+#! /bin/bash
+OLD_CDB=$ACS_CDB
+export ACS_CDB=../test
+
+# Installs the proper Container.xml file, creating the directory if needed
+mkdir -p CDB/MACI/Containers/Container
+mkdir -p tmp
+if [ "$WIND_BASE" != "" ]
+then
+  cp ENVIRONMENTS/lcuTat/Container.xml CDB/MACI/Containers/Container/Container.xml
+else
+  cp ENVIRONMENTS/wsTat/Container.xml CDB/MACI/Containers/Container/Container.xml
+fi
+
+#Start the ORB services and manager.
+acsutilTATPrologue
+
+ACS_CDB=$OLD_CDB
+
+#
+# ___oOo___

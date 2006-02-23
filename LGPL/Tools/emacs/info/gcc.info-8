@@ -1,0 +1,1220 @@
+This is Info file gcc.info, produced by Makeinfo-1.54 from the input
+file gcc.texi.
+
+   This file documents the use and the internals of the GNU compiler.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1988, 1989, 1992, 1993 Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "GNU General Public License" and "Protect
+Your Freedom--Fight `Look And Feel'" are included exactly as in the
+original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this
+one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "GNU General Public
+License" and "Protect Your Freedom--Fight `Look And Feel'", and this
+permission notice, may be included in translations approved by the Free
+Software Foundation instead of in the original English.
+
+
+File: gcc.info,  Node: Case Ranges,  Next: Function Attributes,  Prev: Cast to Union,  Up: C Extensions
+
+Case Ranges
+===========
+
+   You can specify a range of consecutive values in a single `case'
+label, like this:
+
+     case LOW ... HIGH:
+
+This has the same effect as the proper number of individual `case'
+labels, one for each integer value from LOW to HIGH, inclusive.
+
+   This feature is especially useful for ranges of ASCII character
+codes:
+
+     case 'A' ... 'Z':
+
+   *Be careful:* Write spaces around the `...', for otherwise it may be
+parsed wrong when you use it with integer values.  For example, write
+this:
+
+     case 1 ... 5:
+
+rather than this:
+
+     case 1...5:
+
+
+File: gcc.info,  Node: Cast to Union,  Next: Case Ranges,  Prev: Labeled Elements,  Up: C Extensions
+
+Cast to a Union Type
+====================
+
+   A cast to union type is similar to other casts, except that the type
+specified is a union type.  You can specify the type either with `union
+TAG' or with a typedef name.  A cast to union is actually a constructor
+though, not a cast, and hence does not yield an lvalue like normal
+casts.  (*Note Constructors::.)
+
+   The types that may be cast to the union type are those of the members
+of the union.  Thus, given the following union and variables:
+
+     union foo { int i; double d; };
+     int x;
+     double y;
+
+both `x' and `y' can be cast to type `union' foo.
+
+   Using the cast as the right-hand side of an assignment to a variable
+of union type is equivalent to storing in a member of the union:
+
+     union foo u;
+     ...
+     u = (union foo) x  ==  u.i = x
+     u = (union foo) y  ==  u.d = y
+
+   You can also use the union cast as a function argument:
+
+     void hack (union foo);
+     ...
+     hack ((union foo) x);
+
+
+File: gcc.info,  Node: Function Attributes,  Next: Function Prototypes,  Prev: Case Ranges,  Up: C Extensions
+
+Declaring Attributes of Functions
+=================================
+
+   In GNU C, you declare certain things about functions called in your
+program which help the compiler optimize function calls and check your
+code more carefully.
+
+   The keyword `__attribute__' allows you to specify special attributes
+when making a declaration.  This keyword is followed by an attribute
+specification inside double parentheses.  Four attributes, `noreturn',
+`const', `format', and `section' are currently defined for functions.
+Other attributes, including `section' are supported for variables
+declarations (*note Variable Attributes::.).
+
+`noreturn'
+     A few standard library functions, such as `abort' and `exit',
+     cannot return.  GNU CC knows this automatically.  Some programs
+     define their own functions that never return.  You can declare them
+     `noreturn' to tell the compiler this fact.  For example,
+
+          void fatal () __attribute__ ((noreturn));
+          
+          void
+          fatal (...)
+          {
+            ... /* Print error message. */ ...
+            exit (1);
+          }
+
+     The `noreturn' keyword tells the compiler to assume that `fatal'
+     cannot return.  It can then optimize without regard to what would
+     happen if `fatal' ever did return.  This makes slightly better
+     code.  More importantly, it helps avoid spurious warnings of
+     uninitialized variables.
+
+     Do not assume that registers saved by the calling function are
+     restored before calling the `noreturn' function.
+
+     It does not make sense for a `noreturn' function to have a return
+     type other than `void'.
+
+     The attribute `noreturn' is not implemented in GNU C versions
+     earlier than 2.5.  An alternative way to declare that a function
+     does not return, which works in the current version and in some
+     older versions, is as follows:
+
+          typedef void voidfn ();
+          
+          volatile voidfn fatal;
+
+`const'
+     Many functions do not examine any values except their arguments,
+     and have no effects except the return value.  Such a function can
+     be subject to common subexpression elimination and loop
+     optimization just as an arithmetic operator would be.  These
+     functions should be declared with the attribute `const'.  For
+     example,
+
+          int square (int) __attribute__ ((const));
+
+     says that the hypothetical function `square' is safe to call fewer
+     times than the program says.
+
+     The attribute `const' is not implemented in GNU C versions earlier
+     than 2.5.  An alternative way to declare that a function has no
+     side effects, which works in the current version and in some older
+     versions, is as follows:
+
+          typedef int intfn ();
+          
+          extern const intfn square;
+
+     Note that a function that has pointer arguments and examines the
+     data pointed to must *not* be declared `const'.  Likewise, a
+     function that calls a non-`const' function usually must not be
+     `const'.  It does not make sense for a `const' function to return
+     `void'.
+
+`format (ARCHETYPE, STRING-INDEX, FIRST-TO-CHECK)'
+     The `format' attribute specifies that a function takes `printf' or
+     `scanf' style arguments which should be type-checked against a
+     format string.  For example, the declaration:
+
+          extern int
+          my_printf (void *my_object, const char *my_format, ...)
+                __attribute__ ((format (printf, 2, 3)));
+
+     causes the compiler to check the arguments in calls to `my_printf'
+     for consistency with the `printf' style format string argument
+     `my_format'.
+
+     The parameter ARCHETYPE determines how the format string is
+     interpreted, and should be either `printf' or `scanf'.  The
+     parameter STRING-INDEX specifies which argument is the format
+     string argument (starting from 1), while FIRST-TO-CHECK is the
+     number of the first argument to check against the format string.
+     For functions where the arguments are not available to be checked
+     (such as `vprintf'), specify the third parameter as zero.  In this
+     case the compiler only checks the format string for consistency.
+
+     In the example above, the format string (`my_format') is the second
+     argument of the function `my_print', and the arguments to check
+     start with the third argument, so the correct parameters for the
+     format attribute are 2 and 3.
+
+     The `format' attribute allows you to identify your own functions
+     which take format strings as arguments, so that GNU CC can check
+     the calls to these functions for errors.  The compiler always
+     checks formats for the ANSI library functions `printf', `fprintf',
+     `sprintf', `scanf', `fscanf', `sscanf', `vprintf', `vfprintf' and
+     `vsprintf' whenever such warnings are requested (using
+     `-Wformat'), so there is no need to modify the header file
+     `stdio.h'.
+
+`section ("section-name")'
+     Normally, the compiler places the code it generates in the `text'
+     section.  Sometimes, however, you need additional sections, or you
+     need certain particular functions to appear in special sections.
+     The `section' attribute specifies that a function lives in a
+     particular section.  For example, the declaration:
+
+          extern void foobar (void) __attribute__ ((section (".init")));
+
+     puts the function `foobar' in the `.init' section.
+
+     Some file formats do not support arbitrary sections so the
+     `section' attribute is not available on all platforms.  If you
+     need to map the entire contents of a module to a particular
+     section, consider using the facilities of the linker instead.
+
+   You can specify multiple attributes in a declaration by separating
+them by commas within the double parentheses or by immediately
+following an attribute declaration with another attribute declaration.
+
+   Some people object to the `__attribute__' feature, suggesting that
+ANSI C's `#pragma' should be used instead.  There are two reasons for
+not doing this.
+
+  1. It is impossible to generate `#pragma' commands from a macro.
+
+  2. There is no telling what the same `#pragma' might mean in another
+     compiler.
+
+   These two reasons apply to almost any application that might be
+proposed for `#pragma'.  It is basically a mistake to use `#pragma' for
+*anything*.
+
+
+File: gcc.info,  Node: Function Prototypes,  Next: Dollar Signs,  Prev: Function Attributes,  Up: C Extensions
+
+Prototypes and Old-Style Function Definitions
+=============================================
+
+   GNU C extends ANSI C to allow a function prototype to override a
+later old-style non-prototype definition.  Consider the following
+example:
+
+     /* Use prototypes unless the compiler is old-fashioned.  */
+     #if __STDC__
+     #define P(x) x
+     #else
+     #define P(x) ()
+     #endif
+     
+     /* Prototype function declaration.  */
+     int isroot P((uid_t));
+     
+     /* Old-style function definition.  */
+     int
+     isroot (x)   /* ??? lossage here ??? */
+          uid_t x;
+     {
+       return x == 0;
+     }
+
+   Suppose the type `uid_t' happens to be `short'.  ANSI C does not
+allow this example, because subword arguments in old-style
+non-prototype definitions are promoted.  Therefore in this example the
+function definition's argument is really an `int', which does not match
+the prototype argument type of `short'.
+
+   This restriction of ANSI C makes it hard to write code that is
+portable to traditional C compilers, because the programmer does not
+know whether the `uid_t' type is `short', `int', or `long'.  Therefore,
+in cases like these GNU C allows a prototype to override a later
+old-style definition.  More precisely, in GNU C, a function prototype
+argument type overrides the argument type specified by a later
+old-style definition if the former type is the same as the latter type
+before promotion.  Thus in GNU C the above example is equivalent to the
+following:
+
+     int isroot (uid_t);
+     
+     int
+     isroot (uid_t x)
+     {
+       return x == 0;
+     }
+
+
+File: gcc.info,  Node: Dollar Signs,  Next: Character Escapes,  Prev: Function Prototypes,  Up: C Extensions
+
+Dollar Signs in Identifier Names
+================================
+
+   In GNU C, you may use dollar signs in identifier names.  This is
+because many traditional C implementations allow such identifiers.
+
+   On some machines, dollar signs are allowed in identifiers if you
+specify `-traditional'.  On a few systems they are allowed by default,
+even if you do not use `-traditional'.  But they are never allowed if
+you specify `-ansi'.
+
+   There are certain ANSI C programs (obscure, to be sure) that would
+compile incorrectly if dollar signs were permitted in identifiers.  For
+example:
+
+     #define foo(a) #a
+     #define lose(b) foo (b)
+     #define test$
+     lose (test)
+
+
+File: gcc.info,  Node: Character Escapes,  Next: Variable Attributes,  Prev: Dollar Signs,  Up: C Extensions
+
+The Character ESC in Constants
+==============================
+
+   You can use the sequence `\e' in a string or character constant to
+stand for the ASCII character ESC.
+
+
+File: gcc.info,  Node: Alignment,  Next: Inline,  Prev: Variable Attributes,  Up: C Extensions
+
+Inquiring on Alignment of Types or Variables
+============================================
+
+   The keyword `__alignof__' allows you to inquire about how an object
+is aligned, or the minimum alignment usually required by a type.  Its
+syntax is just like `sizeof'.
+
+   For example, if the target machine requires a `double' value to be
+aligned on an 8-byte boundary, then `__alignof__ (double)' is 8.  This
+is true on many RISC machines.  On more traditional machine designs,
+`__alignof__ (double)' is 4 or even 2.
+
+   Some machines never actually require alignment; they allow reference
+to any data type even at an odd addresses.  For these machines,
+`__alignof__' reports the *recommended* alignment of a type.
+
+   When the operand of `__alignof__' is an lvalue rather than a type,
+the value is the largest alignment that the lvalue is known to have.
+It may have this alignment as a result of its data type, or because it
+is part of a structure and inherits alignment from that structure.  For
+example, after this declaration:
+
+     struct foo { int x; char y; } foo1;
+
+the value of `__alignof__ (foo1.y)' is probably 2 or 4, the same as
+`__alignof__ (int)', even though the data type of `foo1.y' does not
+itself demand any alignment.
+
+   A related feature which lets you specify the alignment of an object
+is `__attribute__ ((aligned (ALIGNMENT)))'; see the following section.
+
+
+File: gcc.info,  Node: Variable Attributes,  Next: Alignment,  Prev: Character Escapes,  Up: C Extensions
+
+Specifying Attributes of Variables
+==================================
+
+   The keyword `__attribute__' allows you to specify special attributes
+of variables or structure fields.  This keyword is followed by an
+attribute specification inside double parentheses.  Four attributes are
+currently defined for variables: `aligned', `mode', `packed', and
+`section'.  Other attributes are defined for functions, and thus not
+documented here; see *Note Function Attributes::.
+
+`aligned (ALIGNMENT)'
+     This attribute specifies a minimum alignment for the variable or
+     structure field, measured in bytes.  For example, the declaration:
+
+          int x __attribute__ ((aligned (16))) = 0;
+
+     causes the compiler to allocate the global variable `x' on a
+     16-byte boundary.  On a 68040, this could be used in conjunction
+     with an `asm' expression to access the `move16' instruction which
+     requires 16-byte aligned operands.
+
+     You can also specify the alignment of structure fields.  For
+     example, to create a double-word aligned `int' pair, you could
+     write:
+
+          struct foo { int x[2] __attribute__ ((aligned (8))); };
+
+     This is an alternative to creating a union with a `double' member
+     that forces the union to be double-word aligned.
+
+     It is not possible to specify the alignment of functions; the
+     alignment of functions is determined by the machine's requirements
+     and cannot be changed.  You cannot specify alignment for a typedef
+     name because such a name is just an alias, not a distinct type.
+
+     The `aligned' attribute can only increase the alignment; but you
+     can decrease it by specifying `packed' as well.  See below.
+
+     The linker of your operating system imposes a maximum alignment.
+     If the linker aligns each object file on a four byte boundary,
+     then it is beyond the compiler's power to cause anything to be
+     aligned to a larger boundary than that.  For example, if  the
+     linker happens to put this object file at address 136 (eight more
+     than a multiple of 64), then the compiler cannot guarantee an
+     alignment of more than 8 just by aligning variables in the object
+     file.
+
+`mode (MODE)'
+     This attribute specifies the data type for the
+     declaration--whichever type corresponds to the mode MODE.  This in
+     effect lets you request an integer or floating point type
+     according to its width.
+
+`packed'
+     The `packed' attribute specifies that a variable or structure field
+     should have the smallest possible alignment--one byte for a
+     variable, and one bit for a field, unless you specify a larger
+     value with the `aligned' attribute.
+
+     Here is a structure in which the field `x' is packed, so that it
+     immediately follows `a':
+
+          struct foo
+          {
+            char a;
+            int x[2] __attribute__ ((packed));
+          };
+
+`section ("section-name")'
+     Normally, the compiler places the objects it generates in sections
+     like `data' and `bss'.  Sometimes, however, you need additional
+     sections, or you need certain particular variables to appear in
+     special sections, for example to map to special hardware.  The
+     `section' attribute specifies that a variable (or function) lives
+     in a particular section.  For example, this small program uses
+     several specific section names:
+
+          struct duart a __attribute__ ((section ("DUART_A"))) = { 0 };
+          struct duart b __attribute__ ((section ("DUART_B"))) = { 0 };
+          char stack[10000] __attribute__ ((section ("STACK"))) = { 0 };
+          int init_data_copy __attribute__ ((section ("INITDATACOPY"))) = 0;
+          
+          main()
+          {
+            /* Initialize stack pointer */
+            init_sp (stack + sizeof (stack));
+          
+            /* Initialize initialized data */
+            memcpy (&init_data_copy, &data, &edata - &data);
+          
+            /* Turn on the serial ports */
+            init_duart (&a);
+            init_duart (&b);
+          }
+
+     Use the `section' attribute with an *initialized* definition of a
+     *global* variable, as shown in the example.  GNU CC issues a
+     warning and otherwise ignores the `section' attribute in
+     uninitialized variable declarations.
+
+     You may only use the `section' attribute with a fully initialized
+     global definition because of the way linkers work.  The linker
+     requires each object be defined once, with the exception that
+     uninitialized variables tentatively go in the `common' (or `bss')
+     section and can be multiply "defined".
+
+     Some file formats do not support arbitrary sections so the
+     `section' attribute is not available on all platforms.  If you
+     need to map the entire contents of a module to a particular
+     section, consider using the facilities of the linker instead.
+
+   To specify multiple attributes, separate them by commas within the
+double parentheses: for example, `__attribute__ ((aligned (16),
+packed))'.
+
+
+File: gcc.info,  Node: Inline,  Next: Extended Asm,  Prev: Alignment,  Up: C Extensions
+
+An Inline Function is As Fast As a Macro
+========================================
+
+   By declaring a function `inline', you can direct GNU CC to integrate
+that function's code into the code for its callers.  This makes
+execution faster by eliminating the function-call overhead; in
+addition, if any of the actual argument values are constant, their known
+values may permit simplifications at compile time so that not all of the
+inline function's code needs to be included.  The effect on code size is
+less predictable; object code may be larger or smaller with function
+inlining, depending on the particular case.  Inlining of functions is an
+optimization and it really "works" only in optimizing compilation.  If
+you don't use `-O', no function is really inline.
+
+   To declare a function inline, use the `inline' keyword in its
+declaration, like this:
+
+     inline int
+     inc (int *a)
+     {
+       (*a)++;
+     }
+
+   (If you are writing a header file to be included in ANSI C programs,
+write `__inline__' instead of `inline'.  *Note Alternate Keywords::.)
+
+   You can also make all "simple enough" functions inline with the
+option `-finline-functions'.  Note that certain usages in a function
+definition can make it unsuitable for inline substitution.
+
+   For C++ programs, GNU CC automatically inlines member functions even
+if they are not explicitly declared `inline'.  (You can override this
+with `-fno-default-inline'; *note Options Controlling C++ Dialect: C++
+Dialect Options..)
+
+   When a function is both inline and `static', if all calls to the
+function are integrated into the caller, and the function's address is
+never used, then the function's own assembler code is never referenced.
+In this case, GNU CC does not actually output assembler code for the
+function, unless you specify the option `-fkeep-inline-functions'.
+Some calls cannot be integrated for various reasons (in particular,
+calls that precede the function's definition cannot be integrated, and
+neither can recursive calls within the definition).  If there is a
+nonintegrated call, then the function is compiled to assembler code as
+usual.  The function must also be compiled as usual if the program
+refers to its address, because that can't be inlined.
+
+   When an inline function is not `static', then the compiler must
+assume that there may be calls from other source files; since a global
+symbol can be defined only once in any program, the function must not
+be defined in the other source files, so the calls therein cannot be
+integrated.  Therefore, a non-`static' inline function is always
+compiled on its own in the usual fashion.
+
+   If you specify both `inline' and `extern' in the function
+definition, then the definition is used only for inlining.  In no case
+is the function compiled on its own, not even if you refer to its
+address explicitly.  Such an address becomes an external reference, as
+if you had only declared the function, and had not defined it.
+
+   This combination of `inline' and `extern' has almost the effect of a
+macro.  The way to use it is to put a function definition in a header
+file with these keywords, and put another copy of the definition
+(lacking `inline' and `extern') in a library file.  The definition in
+the header file will cause most calls to the function to be inlined.
+If any uses of the function remain, they will refer to the single copy
+in the library.
+
+   GNU C does not inline any functions when not optimizing.  It is not
+clear whether it is better to inline or not, in this case, but we found
+that a correct implementation when not optimizing was difficult.  So we
+did the easy thing, and turned it off.
+
+
+File: gcc.info,  Node: Extended Asm,  Next: Asm Labels,  Prev: Inline,  Up: C Extensions
+
+Assembler Instructions with C Expression Operands
+=================================================
+
+   In an assembler instruction using `asm', you can now specify the
+operands of the instruction using C expressions.  This means no more
+guessing which registers or memory locations will contain the data you
+want to use.
+
+   You must specify an assembler instruction template much like what
+appears in a machine description, plus an operand constraint string for
+each operand.
+
+   For example, here is how to use the 68881's `fsinx' instruction:
+
+     asm ("fsinx %1,%0" : "=f" (result) : "f" (angle));
+
+Here `angle' is the C expression for the input operand while `result'
+is that of the output operand.  Each has `"f"' as its operand
+constraint, saying that a floating point register is required.  The `='
+in `=f' indicates that the operand is an output; all output operands'
+constraints must use `='.  The constraints use the same language used
+in the machine description (*note Constraints::.).
+
+   Each operand is described by an operand-constraint string followed
+by the C expression in parentheses.  A colon separates the assembler
+template from the first output operand, and another separates the last
+output operand from the first input, if any.  Commas separate output
+operands and separate inputs.  The total number of operands is limited
+to ten or to the maximum number of operands in any instruction pattern
+in the machine description, whichever is greater.
+
+   If there are no output operands, and there are input operands, then
+there must be two consecutive colons surrounding the place where the
+output operands would go.
+
+   Output operand expressions must be lvalues; the compiler can check
+this.  The input operands need not be lvalues.  The compiler cannot
+check whether the operands have data types that are reasonable for the
+instruction being executed.  It does not parse the assembler
+instruction template and does not know what it means, or whether it is
+valid assembler input.  The extended `asm' feature is most often used
+for machine instructions that the compiler itself does not know exist.
+
+   The output operands must be write-only; GNU CC will assume that the
+values in these operands before the instruction are dead and need not be
+generated.  Extended asm does not support input-output or read-write
+operands.  For this reason, the constraint character `+', which
+indicates such an operand, may not be used.
+
+   When the assembler instruction has a read-write operand, or an
+operand in which only some of the bits are to be changed, you must
+logically split its function into two separate operands, one input
+operand and one write-only output operand.  The connection between them
+is expressed by constraints which say they need to be in the same
+location when the instruction executes.  You can use the same C
+expression for both operands, or different expressions.  For example,
+here we write the (fictitious) `combine' instruction with `bar' as its
+read-only source operand and `foo' as its read-write destination:
+
+     asm ("combine %2,%0" : "=r" (foo) : "0" (foo), "g" (bar));
+
+The constraint `"0"' for operand 1 says that it must occupy the same
+location as operand 0.  A digit in constraint is allowed only in an
+input operand, and it must refer to an output operand.
+
+   Only a digit in the constraint can guarantee that one operand will
+be in the same place as another.  The mere fact that `foo' is the value
+of both operands is not enough to guarantee that they will be in the
+same place in the generated assembler code.  The following would not
+work:
+
+     asm ("combine %2,%0" : "=r" (foo) : "r" (foo), "g" (bar));
+
+   Various optimizations or reloading could cause operands 0 and 1 to
+be in different registers; GNU CC knows no reason not to do so.  For
+example, the compiler might find a copy of the value of `foo' in one
+register and use it for operand 1, but generate the output operand 0 in
+a different register (copying it afterward to `foo''s own address).  Of
+course, since the register for operand 1 is not even mentioned in the
+assembler code, the result will not work, but GNU CC can't tell that.
+
+   Some instructions clobber specific hard registers.  To describe
+this, write a third colon after the input operands, followed by the
+names of the clobbered hard registers (given as strings).  Here is a
+realistic example for the Vax:
+
+     asm volatile ("movc3 %0,%1,%2"
+                   : /* no outputs */
+                   : "g" (from), "g" (to), "g" (count)
+                   : "r0", "r1", "r2", "r3", "r4", "r5");
+
+   If you refer to a particular hardware register from the assembler
+code, then you will probably have to list the register after the third
+colon to tell the compiler that the register's value is modified.  In
+many assemblers, the register names begin with `%'; to produce one `%'
+in the assembler code, you must write `%%' in the input.
+
+   If your assembler instruction can alter the condition code register,
+add `cc' to the list of clobbered registers.  GNU CC on some machines
+represents the condition codes as a specific hardware register; `cc'
+serves to name this register.  On other machines, the condition code is
+handled differently, and specifying `cc' has no effect.  But it is
+valid no matter what the machine.
+
+   If your assembler instruction modifies memory in an unpredictable
+fashion, add `memory' to the list of clobbered registers.  This will
+cause GNU CC to not keep memory values cached in registers across the
+assembler instruction.
+
+   You can put multiple assembler instructions together in a single
+`asm' template, separated either with newlines (written as `\n') or with
+semicolons if the assembler allows such semicolons.  The GNU assembler
+allows semicolons and all Unix assemblers seem to do so.  The input
+operands are guaranteed not to use any of the clobbered registers, and
+neither will the output operands' addresses, so you can read and write
+the clobbered registers as many times as you like.  Here is an example
+of multiple instructions in a template; it assumes that the subroutine
+`_foo' accepts arguments in registers 9 and 10:
+
+     asm ("movl %0,r9;movl %1,r10;call _foo"
+          : /* no outputs */
+          : "g" (from), "g" (to)
+          : "r9", "r10");
+
+   Unless an output operand has the `&' constraint modifier, GNU CC may
+allocate it in the same register as an unrelated input operand, on the
+assumption that the inputs are consumed before the outputs are produced.
+This assumption may be false if the assembler code actually consists of
+more than one instruction.  In such a case, use `&' for each output
+operand that may not overlap an input.  *Note Modifiers::.
+
+   If you want to test the condition code produced by an assembler
+instruction, you must include a branch and a label in the `asm'
+construct, as follows:
+
+     asm ("clr %0;frob %1;beq 0f;mov #1,%0;0:"
+          : "g" (result)
+          : "g" (input));
+
+This assumes your assembler supports local labels, as the GNU assembler
+and most Unix assemblers do.
+
+   Speaking of labels, jumps from one `asm' to another are not
+supported.  The compiler's optimizers do not know about these jumps,
+and therefore they cannot take account of them when deciding how to
+optimize.
+
+   Usually the most convenient way to use these `asm' instructions is to
+encapsulate them in macros that look like functions.  For example,
+
+     #define sin(x)       \
+     ({ double __value, __arg = (x);   \
+        asm ("fsinx %1,%0": "=f" (__value): "f" (__arg));  \
+        __value; })
+
+Here the variable `__arg' is used to make sure that the instruction
+operates on a proper `double' value, and to accept only those arguments
+`x' which can convert automatically to a `double'.
+
+   Another way to make sure the instruction operates on the correct
+data type is to use a cast in the `asm'.  This is different from using a
+variable `__arg' in that it converts more different types.  For
+example, if the desired type were `int', casting the argument to `int'
+would accept a pointer with no complaint, while assigning the argument
+to an `int' variable named `__arg' would warn about using a pointer
+unless the caller explicitly casts it.
+
+   If an `asm' has output operands, GNU CC assumes for optimization
+purposes that the instruction has no side effects except to change the
+output operands.  This does not mean that instructions with a side
+effect cannot be used, but you must be careful, because the compiler
+may eliminate them if the output operands aren't used, or move them out
+of loops, or replace two with one if they constitute a common
+subexpression.  Also, if your instruction does have a side effect on a
+variable that otherwise appears not to change, the old value of the
+variable may be reused later if it happens to be found in a register.
+
+   You can prevent an `asm' instruction from being deleted, moved
+significantly, or combined, by writing the keyword `volatile' after the
+`asm'.  For example:
+
+     #define set_priority(x)  \
+     asm volatile ("set_priority %0": /* no outputs */ : "g" (x))
+
+An instruction without output operands will not be deleted or moved
+significantly, regardless, unless it is unreachable.
+
+   Note that even a volatile `asm' instruction can be moved in ways
+that appear insignificant to the compiler, such as across jump
+instructions.  You can't expect a sequence of volatile `asm'
+instructions to remain perfectly consecutive.  If you want consecutive
+output, use a single `asm'.
+
+   It is a natural idea to look for a way to give access to the
+condition code left by the assembler instruction.  However, when we
+attempted to implement this, we found no way to make it work reliably.
+The problem is that output operands might need reloading, which would
+result in additional following "store" instructions.  On most machines,
+these instructions would alter the condition code before there was time
+to test it.  This problem doesn't arise for ordinary "test" and
+"compare" instructions because they don't have any output operands.
+
+   If you are writing a header file that should be includable in ANSI C
+programs, write `__asm__' instead of `asm'.  *Note Alternate Keywords::.
+
+
+File: gcc.info,  Node: Asm Labels,  Next: Explicit Reg Vars,  Prev: Extended Asm,  Up: C Extensions
+
+Controlling Names Used in Assembler Code
+========================================
+
+   You can specify the name to be used in the assembler code for a C
+function or variable by writing the `asm' (or `__asm__') keyword after
+the declarator as follows:
+
+     int foo asm ("myfoo") = 2;
+
+This specifies that the name to be used for the variable `foo' in the
+assembler code should be `myfoo' rather than the usual `_foo'.
+
+   On systems where an underscore is normally prepended to the name of
+a C function or variable, this feature allows you to define names for
+the linker that do not start with an underscore.
+
+   You cannot use `asm' in this way in a function *definition*; but you
+can get the same effect by writing a declaration for the function
+before its definition and putting `asm' there, like this:
+
+     extern func () asm ("FUNC");
+     
+     func (x, y)
+          int x, y;
+     ...
+
+   It is up to you to make sure that the assembler names you choose do
+not conflict with any other assembler symbols.  Also, you must not use a
+register name; that would produce completely invalid assembler code.
+GNU CC does not as yet have the ability to store static variables in
+registers.  Perhaps that will be added.
+
+
+File: gcc.info,  Node: Explicit Reg Vars,  Next: Alternate Keywords,  Prev: Asm Labels,  Up: C Extensions
+
+Variables in Specified Registers
+================================
+
+   GNU C allows you to put a few global variables into specified
+hardware registers.  You can also specify the register in which an
+ordinary register variable should be allocated.
+
+   * Global register variables reserve registers throughout the program.
+     This may be useful in programs such as programming language
+     interpreters which have a couple of global variables that are
+     accessed very often.
+
+   * Local register variables in specific registers do not reserve the
+     registers.  The compiler's data flow analysis is capable of
+     determining where the specified registers contain live values, and
+     where they are available for other uses.
+
+     These local variables are sometimes convenient for use with the
+     extended `asm' feature (*note Extended Asm::.), if you want to
+     write one output of the assembler instruction directly into a
+     particular register.  (This will work provided the register you
+     specify fits the constraints specified for that operand in the
+     `asm'.)
+
+* Menu:
+
+* Global Reg Vars::
+* Local Reg Vars::
+
+
+File: gcc.info,  Node: Global Reg Vars,  Next: Local Reg Vars,  Up: Explicit Reg Vars
+
+Defining Global Register Variables
+----------------------------------
+
+   You can define a global register variable in GNU C like this:
+
+     register int *foo asm ("a5");
+
+Here `a5' is the name of the register which should be used.  Choose a
+register which is normally saved and restored by function calls on your
+machine, so that library routines will not clobber it.
+
+   Naturally the register name is cpu-dependent, so you would need to
+conditionalize your program according to cpu type.  The register `a5'
+would be a good choice on a 68000 for a variable of pointer type.  On
+machines with register windows, be sure to choose a "global" register
+that is not affected magically by the function call mechanism.
+
+   In addition, operating systems on one type of cpu may differ in how
+they name the registers; then you would need additional conditionals.
+For example, some 68000 operating systems call this register `%a5'.
+
+   Eventually there may be a way of asking the compiler to choose a
+register automatically, but first we need to figure out how it should
+choose and how to enable you to guide the choice.  No solution is
+evident.
+
+   Defining a global register variable in a certain register reserves
+that register entirely for this use, at least within the current
+compilation.  The register will not be allocated for any other purpose
+in the functions in the current compilation.  The register will not be
+saved and restored by these functions.  Stores into this register are
+never deleted even if they would appear to be dead, but references may
+be deleted or moved or simplified.
+
+   It is not safe to access the global register variables from signal
+handlers, or from more than one thread of control, because the system
+library routines may temporarily use the register for other things
+(unless you recompile them specially for the task at hand).
+
+   It is not safe for one function that uses a global register variable
+to call another such function `foo' by way of a third function `lose'
+that was compiled without knowledge of this variable (i.e. in a
+different source file in which the variable wasn't declared).  This is
+because `lose' might save the register and put some other value there.
+For example, you can't expect a global register variable to be
+available in the comparison-function that you pass to `qsort', since
+`qsort' might have put something else in that register.  (If you are
+prepared to recompile `qsort' with the same global register variable,
+you can solve this problem.)
+
+   If you want to recompile `qsort' or other source files which do not
+actually use your global register variable, so that they will not use
+that register for any other purpose, then it suffices to specify the
+compiler option `-ffixed-REG'.  You need not actually add a global
+register declaration to their source code.
+
+   A function which can alter the value of a global register variable
+cannot safely be called from a function compiled without this variable,
+because it could clobber the value the caller expects to find there on
+return.  Therefore, the function which is the entry point into the part
+of the program that uses the global register variable must explicitly
+save and restore the value which belongs to its caller.
+
+   On most machines, `longjmp' will restore to each global register
+variable the value it had at the time of the `setjmp'.  On some
+machines, however, `longjmp' will not change the value of global
+register variables.  To be portable, the function that called `setjmp'
+should make other arrangements to save the values of the global register
+variables, and to restore them in a `longjmp'.  This way, the same
+thing will happen regardless of what `longjmp' does.
+
+   All global register variable declarations must precede all function
+definitions.  If such a declaration could appear after function
+definitions, the declaration would be too late to prevent the register
+from being used for other purposes in the preceding functions.
+
+   Global register variables may not have initial values, because an
+executable file has no means to supply initial contents for a register.
+
+   On the Sparc, there are reports that g3 ... g7 are suitable
+registers, but certain library functions, such as `getwd', as well as
+the subroutines for division and remainder, modify g3 and g4.  g1 and
+g2 are local temporaries.
+
+   On the 68000, a2 ... a5 should be suitable, as should d2 ... d7.  Of
+course, it will not do to use more than a few of those.
+
+
+File: gcc.info,  Node: Local Reg Vars,  Prev: Global Reg Vars,  Up: Explicit Reg Vars
+
+Specifying Registers for Local Variables
+----------------------------------------
+
+   You can define a local register variable with a specified register
+like this:
+
+     register int *foo asm ("a5");
+
+Here `a5' is the name of the register which should be used.  Note that
+this is the same syntax used for defining global register variables,
+but for a local variable it would appear within a function.
+
+   Naturally the register name is cpu-dependent, but this is not a
+problem, since specific registers are most often useful with explicit
+assembler instructions (*note Extended Asm::.).  Both of these things
+generally require that you conditionalize your program according to cpu
+type.
+
+   In addition, operating systems on one type of cpu may differ in how
+they name the registers; then you would need additional conditionals.
+For example, some 68000 operating systems call this register `%a5'.
+
+   Eventually there may be a way of asking the compiler to choose a
+register automatically, but first we need to figure out how it should
+choose and how to enable you to guide the choice.  No solution is
+evident.
+
+   Defining such a register variable does not reserve the register; it
+remains available for other uses in places where flow control determines
+the variable's value is not live.  However, these registers are made
+unavailable for use in the reload pass.  I would not be surprised if
+excessive use of this feature leaves the compiler too few available
+registers to compile certain functions.
+
+
+File: gcc.info,  Node: Alternate Keywords,  Next: Incomplete Enums,  Prev: Explicit Reg Vars,  Up: C Extensions
+
+Alternate Keywords
+==================
+
+   The option `-traditional' disables certain keywords; `-ansi'
+disables certain others.  This causes trouble when you want to use GNU C
+extensions, or ANSI C features, in a general-purpose header file that
+should be usable by all programs, including ANSI C programs and
+traditional ones.  The keywords `asm', `typeof' and `inline' cannot be
+used since they won't work in a program compiled with `-ansi', while
+the keywords `const', `volatile', `signed', `typeof' and `inline' won't
+work in a program compiled with `-traditional'.
+
+   The way to solve these problems is to put `__' at the beginning and
+end of each problematical keyword.  For example, use `__asm__' instead
+of `asm', `__const__' instead of `const', and `__inline__' instead of
+`inline'.
+
+   Other C compilers won't accept these alternative keywords; if you
+want to compile with another compiler, you can define the alternate
+keywords as macros to replace them with the customary keywords.  It
+looks like this:
+
+     #ifndef __GNUC__
+     #define __asm__ asm
+     #endif
+
+   `-pedantic' causes warnings for many GNU C extensions.  You can
+prevent such warnings within one expression by writing `__extension__'
+before the expression.  `__extension__' has no effect aside from this.
+
+
+File: gcc.info,  Node: Incomplete Enums,  Next: Function Names,  Prev: Alternate Keywords,  Up: C Extensions
+
+Incomplete `enum' Types
+=======================
+
+   You can define an `enum' tag without specifying its possible values.
+This results in an incomplete type, much like what you get if you write
+`struct foo' without describing the elements.  A later declaration
+which does specify the possible values completes the type.
+
+   You can't allocate variables or storage using the type while it is
+incomplete.  However, you can work with pointers to that type.
+
+   This extension may not be very useful, but it makes the handling of
+`enum' more consistent with the way `struct' and `union' are handled.
+
+
+File: gcc.info,  Node: Function Names,  Prev: Incomplete Enums,  Up: C Extensions
+
+Function Names as Strings
+=========================
+
+   GNU CC predefines two string variables to be the name of the current
+function.  The variable `__FUNCTION__' is the name of the function as
+it appears in the source.  The variable `__PRETTY_FUNCTION__' is the
+name of the function pretty printed in a language specific fashion.
+
+   These names are always the same in a C function, but in a C++
+function they may be different.  For example, this program:
+
+     extern "C" {
+     extern int printf (char *, ...);
+     }
+     
+     class a {
+      public:
+       sub (int i)
+         {
+           printf ("__FUNCTION__ = %s\n", __FUNCTION__);
+           printf ("__PRETTY_FUNCTION__ = %s\n", __PRETTY_FUNCTION__);
+         }
+     };
+     
+     int
+     main (void)
+     {
+       a ax;
+       ax.sub (0);
+       return 0;
+     }
+
+gives this output:
+
+     __FUNCTION__ = sub
+     __PRETTY_FUNCTION__ = int  a::sub (int)
+
+
+File: gcc.info,  Node: C++ Extensions,  Next: Trouble,  Prev: C Extensions,  Up: Top
+
+Extensions to the C++ Language
+******************************
+
+   The GNU compiler provides these extensions to the C++ language (and
+you can also use most of the C language extensions in your C++
+programs).  If you want to write code that checks whether these
+features are available, you can test for the GNU compiler the same way
+as for C programs: check for a predefined macro `__GNUC__'.  You can
+also use `__GNUG__' to test specifically for GNU C++ (*note Standard
+Predefined Macros: (cpp.info)Standard Predefined.).
+
+* Menu:
+
+* Naming Results::      Giving a name to C++ function return values.
+* Min and Max::		C++ Minimum and maximum operators.
+* Destructors and Goto:: Goto is safe to use in C++ even when destructors
+                           are needed.
+* C++ Interface::       You can use a single C++ header file for both
+                         declarations and definitions.
+* C++ Signatures::	You can specify abstract types to get subtype
+			 polymorphism independent from inheritance.
+
+
+File: gcc.info,  Node: Naming Results,  Next: Min and Max,  Up: C++ Extensions
+
+Named Return Values in C++
+==========================
+
+   GNU C++ extends the function-definition syntax to allow you to
+specify a name for the result of a function outside the body of the
+definition, in C++ programs:
+
+     TYPE
+     FUNCTIONNAME (ARGS) return RESULTNAME;
+     {
+       ...
+       BODY
+       ...
+     }
+
+   You can use this feature to avoid an extra constructor call when a
+function result has a class type.  For example, consider a function
+`m', declared as `X v = m ();', whose result is of class `X':
+
+     X
+     m ()
+     {
+       X b;
+       b.a = 23;
+       return b;
+     }
+
+   Although `m' appears to have no arguments, in fact it has one
+implicit argument: the address of the return value.  At invocation, the
+address of enough space to hold `v' is sent in as the implicit argument.
+Then `b' is constructed and its `a' field is set to the value 23.
+Finally, a copy constructor (a constructor of the form `X(X&)') is
+applied to `b', with the (implicit) return value location as the
+target, so that `v' is now bound to the return value.
+
+   But this is wasteful.  The local `b' is declared just to hold
+something that will be copied right out.  While a compiler that
+combined an "elision" algorithm with interprocedural data flow analysis
+could conceivably eliminate all of this, it is much more practical to
+allow you to assist the compiler in generating efficient code by
+manipulating the return value explicitly, thus avoiding the local
+variable and copy constructor altogether.
+
+   Using the extended GNU C++ function-definition syntax, you can avoid
+the temporary allocation and copying by naming `r' as your return value
+as the outset, and assigning to its `a' field directly:
+
+     X
+     m () return r;
+     {
+       r.a = 23;
+     }
+
+The declaration of `r' is a standard, proper declaration, whose effects
+are executed *before* any of the body of `m'.
+
+   Functions of this type impose no additional restrictions; in
+particular, you can execute `return' statements, or return implicitly by
+reaching the end of the function body ("falling off the edge").  Cases
+like
+
+     X
+     m () return r (23);
+     {
+       return;
+     }
+
+(or even `X m () return r (23); { }') are unambiguous, since the return
+value `r' has been initialized in either case.  The following code may
+be hard to read, but also works predictably:
+
+     X
+     m () return r;
+     {
+       X b;
+       return b;
+     }
+
+   The return value slot denoted by `r' is initialized at the outset,
+but the statement `return b;' overrides this value.  The compiler deals
+with this by destroying `r' (calling the destructor if there is one, or
+doing nothing if there is not), and then reinitializing `r' with `b'.
+
+   This extension is provided primarily to help people who use
+overloaded operators, where there is a great need to control not just
+the arguments, but the return values of functions.  For classes where
+the copy constructor incurs a heavy performance penalty (especially in
+the common case where there is a quick default constructor), this is a
+major savings.  The disadvantage of this extension is that you do not
+control when the default constructor for the return value is called: it
+is always called at the beginning.
+
+
+File: gcc.info,  Node: Min and Max,  Next: Destructors and Goto,  Prev: Naming Results,  Up: C++ Extensions
+
+Minimum and Maximum Operators in C++
+====================================
+
+   It is very convenient to have operators which return the "minimum"
+or the "maximum" of two arguments.  In GNU C++ (but not in GNU C),
+
+`A <? B'
+     is the "minimum", returning the smaller of the numeric values A
+     and B;
+
+`A >? B'
+     is the "maximum", returning the larger of the numeric values A and
+     B.
+
+   These operations are not primitive in ordinary C++, since you can
+use a macro to return the minimum of two things in C++, as in the
+following example.
+
+     #define MIN(X,Y) ((X) < (Y) ? : (X) : (Y))
+
+You might then use `int min = MIN (i, j);' to set MIN to the minimum
+value of variables I and J.
+
+   However, side effects in `X' or `Y' may cause unintended behavior.
+For example, `MIN (i++, j++)' will fail, incrementing the smaller
+counter twice.  A GNU C extension allows you to write safe macros that
+avoid this kind of problem (*note Naming an Expression's Type: Naming
+Types.).  However, writing `MIN' and `MAX' as macros also forces you to
+use function-call notation notation for a fundamental arithmetic
+operation.  Using GNU C++ extensions, you can write `int min = i <? j;'
+instead.
+
+   Since `<?' and `>?' are built into the compiler, they properly
+handle expressions with side-effects;  `int min = i++ <? j++;' works
+correctly.
+
+
+File: gcc.info,  Node: Destructors and Goto,  Next: C++ Interface,  Prev: Min and Max,  Up: C++ Extensions
+
+`goto' and Destructors in GNU C++
+=================================
+
+   In C++ programs, you can safely use the `goto' statement.  When you
+use it to exit a block which contains aggregates requiring destructors,
+the destructors will run before the `goto' transfers control.  (In ANSI
+C++, `goto' is restricted to targets within the current block.)
+
+   The compiler still forbids using `goto' to *enter* a scope that
+requires constructors.
+

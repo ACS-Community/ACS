@@ -1,0 +1,1154 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Archiving System"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"3940EA3203A2"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "archiveManager"
+	    quid       	"3AC4829402B9")
+	(object Class "producer of monitor data"
+	    quid       	"3AC482EF0350")
+	(object Class "monitorDisplay"
+	    quid       	"3AC4849C0284")
+	(object Association "through data channel"
+	    quid       	"3AC483A5006C"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$0"
+		    quid       	"3AC483A702FA"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$1"
+		    quid       	"3AC483A70304"
+		    supplier   	"Logical View::Archiving System::producer of monitor data"
+		    quidu      	"3AC482EF0350")))
+	(object Association "through data channel"
+	    quid       	"3AC483AD030D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$2"
+		    quid       	"3AC483B0028F"
+		    supplier   	"Logical View::Archiving System::archiveManager"
+		    quidu      	"3AC4829402B9"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$3"
+		    quid       	"3AC483B00299"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023")))
+	(object Association "store/retreive data"
+	    quid       	"3AC483C400DF"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$4"
+		    quid       	"3AC483C7004D"
+		    supplier   	"Logical View::Archiving System::archiveManager"
+		    quidu      	"3AC4829402B9"
+		    is_navigable 	TRUE)
+		(object Role "monitorArchive"
+		    quid       	"3AC483C70057"
+		    label      	"monitorArchive"
+		    supplier   	"Logical View::Logging System::Archive"
+		    quidu      	"393F836902AE")))
+	(object Association "browse logs"
+	    quid       	"3B98E648026D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$5"
+		    quid       	"3B98E64F006F"
+		    supplier   	"Logical View::Logging System::log monitor"
+		    quidu      	"393F820C0202"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$6"
+		    quid       	"3B98E64F0079"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023")))
+	(object Association "browse monitor data"
+	    quid       	"3B98E66602B7"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$7"
+		    quid       	"3B98E6680075"
+		    supplier   	"Logical View::Archiving System::monitorDisplay"
+		    quidu      	"3AC4849C0284"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$8"
+		    quid       	"3B98E6680080"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023")))
+	(object Association "$UNNAMED$9"
+	    quid       	"3DD3AB1A0090"
+	    roles      	(list role_list
+		(object Role "ArchivingChannel"
+		    quid       	"3DD3AB1A02E1"
+		    label      	"ArchivingChannel"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"
+		    Containment 	"By Value"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$10"
+		    quid       	"3DD3AB1A0310"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Mechanism @1
+	    logical_models 	(list unit_reference_list
+		(object Object "$UNNAMED$11"
+		    quid       	"3DD3AD2F0313"
+		    collaborators 	(list link_list
+			(object Link
+			    quid       	"3DD3AD5B011E"
+			    supplier   	"$UNNAMED$12"
+			    quidu      	"3DD3AD430267"
+			    messages   	(list Messages
+				(object Message "create"
+				    quid       	"3DD3AD5B011F"
+				    frequency  	"Aperiodic"
+				    synchronization 	"Simple"
+				    dir        	"FromClientToSupplier"
+				    sequence   	"1"
+				    ordinal    	0
+				    quidu      	"000000000000"
+				    creation   	TRUE))))
+		    class      	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    persistence 	"Transient"
+		    creationObj 	FALSE
+		    multi      	FALSE)
+		(object Object "$UNNAMED$12"
+		    quid       	"3DD3AD430267"
+		    collaborators 	(list link_list
+			(object Link
+			    quid       	"3DD3AD6C0341"
+			    supplier   	"$UNNAMED$13"
+			    quidu      	"3DD3AD66014D"
+			    messages   	(list Messages
+				(object Message "read archive configuration"
+				    quid       	"3DD3AD6C0342"
+				    frequency  	"Aperiodic"
+				    synchronization 	"Simple"
+				    dir        	"FromClientToSupplier"
+				    sequence   	"2"
+				    ordinal    	1
+				    quidu      	"000000000000"
+				    creation   	FALSE)))
+			(object Link
+			    quid       	"3DD3AE54030E"
+			    supplier   	"ArchiveMonitor"
+			    quidu      	"3DD3AE3B02A1"
+			    messages   	(list Messages
+				(object Message "[archive==TRUE] create"
+				    quid       	"3DD3AE54030F"
+				    frequency  	"Aperiodic"
+				    synchronization 	"Simple"
+				    dir        	"FromClientToSupplier"
+				    sequence   	"3"
+				    ordinal    	2
+				    quidu      	"000000000000"
+				    creation   	FALSE))))
+		    quidu      	"38DB4BE203D5"
+		    persistence 	"Transient"
+		    creationObj 	TRUE
+		    multi      	FALSE)
+		(object Object "$UNNAMED$13"
+		    quid       	"3DD3AD66014D"
+		    class      	"Logical View::Configuration Database::Configuration Database"
+		    quidu      	"393F40E9002F"
+		    persistence 	"Transient"
+		    creationObj 	FALSE
+		    multi      	FALSE)
+		(object Object "ArchiveMonitor"
+		    quid       	"3DD3AE3B02A1"
+		    collaborators 	(list link_list
+			(object Link
+			    quid       	"3DD3AFAC030A"
+			    supplier   	"$UNNAMED$14"
+			    quidu      	"3DD3AF9B0387"
+			    messages   	(list Messages
+				(object Message "*[until alive] log"
+				    quid       	"3DD3AFAC030B"
+				    frequency  	"Aperiodic"
+				    synchronization 	"Simple"
+				    dir        	"FromClientToSupplier"
+				    sequence   	"4"
+				    ordinal    	3
+				    quidu      	"000000000000"
+				    creation   	FALSE))))
+		    class      	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    persistence 	"Transient"
+		    creationObj 	TRUE
+		    multi      	FALSE)
+		(object Object "$UNNAMED$14"
+		    quid       	"3DD3AF9B0387"
+		    class      	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    persistence 	"Transient"
+		    creationObj 	FALSE
+		    multi      	FALSE))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Archiving Architecture"
+	    quid       	"3AC47F930399"
+	    title      	"Archiving Architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Archiving System::producer of monitor data" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(465, 120)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(191, 69)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	548
+			justify    	0
+			label      	"producer of monitor data")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3AC482EF0350"
+		    width      	566
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::CORBA Middleware::CORBA Telecom Logging Service" @3
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(465, 960)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@3
+			location   	(91, 886)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	748
+			justify    	0
+			label      	"CORBA Telecom Logging Service")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD39920012E"
+		    width      	766
+		    height     	172
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "through data channel" @4
+		    location   	(465, 528)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3AC483A5006C"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$0" @5
+			    Parent_View 	@4
+			    location   	(-345, -807)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AC483A702FA"
+			    client     	@4
+			    supplier   	@3
+			    vertices   	(list Points
+				(465, 528)
+				(465, 873))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$1" @6
+			    Parent_View 	@4
+			    location   	(-345, -807)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AC483A70304"
+			    client     	@4
+			    supplier   	@2
+			    vertices   	(list Points
+				(465, 528)
+				(465, 183))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Archiving System::monitorDisplay" @7
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1830, 1365)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@7
+			location   	(1652, 1319)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	356
+			justify    	0
+			label      	"monitorDisplay")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3AC4849C0284"
+		    width      	374
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Logging System::log monitor" @8
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2340, 960)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@8
+			location   	(2130, 910)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	420
+			justify    	0
+			label      	"log monitor")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"393F820C0202"
+		    width      	438
+		    height     	124
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Event and Notification System::Notification Channel" @9
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1560, 960)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@9
+			location   	(1240, 873)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	640
+			justify    	0
+			label      	"Notification Channel")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB58D80023"
+		    width      	658
+		    height     	198
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$9" @10
+		    location   	(1039, 960)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD3AB1A0090"
+		    roleview_list 	(list RoleViews
+			(object RoleView "ArchivingChannel" @11
+			    Parent_View 	@10
+			    location   	(-176, -840)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @12
+				Parent_View 	@11
+				location   	(1086, 919)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	346
+				justify    	0
+				label      	"+ArchivingChannel"
+				pctDist    	0.249060
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD3AB1A02E1"
+			    client     	@10
+			    supplier   	@9
+			    vertices   	(list Points
+				(1039, 960)
+				(1230, 960))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$10" @13
+			    Parent_View 	@10
+			    location   	(-176, -840)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD3AB1A0310"
+			    client     	@10
+			    supplier   	@3
+			    vertices   	(list Points
+				(1039, 960)
+				(848, 960))
+			    line_style 	0)))
+		(object AssociationViewNew "browse monitor data" @14
+		    location   	(1707, 1182)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @15
+			Parent_View 	@14
+			location   	(1707, 1123)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"browse monitor data"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98E66602B7"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$7" @16
+			    Parent_View 	@14
+			    location   	(987, 267)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E6680075"
+			    client     	@14
+			    supplier   	@7
+			    vertices   	(list Points
+				(1707, 1182)
+				(1790, 1306))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$8" @17
+			    Parent_View 	@14
+			    location   	(987, 267)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E6680080"
+			    client     	@14
+			    supplier   	@9
+			    vertices   	(list Points
+				(1707, 1182)
+				(1624, 1059))
+			    line_style 	0)))
+		(object AssociationViewNew "browse logs" @18
+		    location   	(2004, 960)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @19
+			Parent_View 	@18
+			location   	(2004, 901)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"browse logs"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98E648026D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$5" @20
+			    Parent_View 	@18
+			    location   	(1284, 45)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E64F006F"
+			    client     	@18
+			    supplier   	@8
+			    vertices   	(list Points
+				(2004, 960)
+				(2120, 960))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$6" @21
+			    Parent_View 	@18
+			    location   	(1284, 45)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E64F0079"
+			    client     	@18
+			    supplier   	@9
+			    vertices   	(list Points
+				(2004, 960)
+				(1889, 960))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Archiving System::archiveManager" @22
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1560, 300)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@22
+			location   	(1378, 254)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	364
+			justify    	0
+			label      	"archiveManager")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3AC4829402B9"
+		    width      	382
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "through data channel" @23
+		    location   	(1560, 609)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3AC483AD030D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$2" @24
+			    Parent_View 	@23
+			    location   	(105, -726)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AC483B0028F"
+			    client     	@23
+			    supplier   	@22
+			    vertices   	(list Points
+				(1560, 609)
+				(1560, 358))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$3" @25
+			    Parent_View 	@23
+			    location   	(105, -726)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AC483B00299"
+			    client     	@23
+			    supplier   	@9
+			    vertices   	(list Points
+				(1560, 609)
+				(1560, 860))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Logging System::Archive" @26
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2325, 645)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@26
+			location   	(2129, 571)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	392
+			justify    	0
+			label      	"Archive")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"393F836902AE"
+		    width      	410
+		    height     	172
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "store/retreive data" @27
+		    location   	(1913, 458)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @28
+			Parent_View 	@27
+			location   	(1959, 429)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	600
+			justify    	0
+			label      	"store/retreive data"
+			pctDist    	1.266667
+			height     	29
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3AC483C400DF"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$4" @29
+			    Parent_View 	@27
+			    location   	(773, 53)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AC483C7004D"
+			    client     	@27
+			    supplier   	@22
+			    vertices   	(list Points
+				(1913, 458)
+				(1690, 358))
+			    line_style 	0)
+			(object RoleView "monitorArchive" @30
+			    Parent_View 	@27
+			    location   	(773, 53)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @31
+				Parent_View 	@30
+				location   	(2197, 517)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	294
+				justify    	0
+				label      	"+monitorArchive"
+				pctDist    	1.163012
+				height     	63
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AC483C70057"
+			    client     	@27
+			    supplier   	@26
+			    vertices   	(list Points
+				(1913, 458)
+				(2136, 558))
+			    line_style 	0)))))
+	(object InteractionDiagram "Property Monitoring and Archiving"
+	    mechanism_ref 	@1
+	    quid       	"3DD3ACE0022A"
+	    title      	"Property Monitoring and Archiving"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object InterObjView "$UNNAMED$11" @32
+		    location   	(240, 225)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	TRUE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@32
+			location   	(240, 251)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	573
+			justify    	0
+			label      	"")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD3AD2F0313"
+		    width      	57
+		    height     	795
+		    icon_height 	57
+		    icon_width 	57
+		    icon_y_offset 	0
+		    annotation 	1
+		    Focus_Of_Control 	(object Focus_Of_Control "" @33
+			location   	(240, 390)
+			line_color 	3342489
+			InterObjView 	@32
+			height     	120
+			y_coord    	30
+			Nested     	FALSE))
+		(object InterObjView "$UNNAMED$13" @34
+		    location   	(615, 225)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	TRUE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@34
+			location   	(615, 225)
+			fill_color 	13434879
+			anchor_loc 	1
+			nlines     	2
+			max_width  	322
+			justify    	0
+			label      	"")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD3AD66014D"
+		    width      	340
+		    height     	795
+		    icon_height 	0
+		    icon_width 	0
+		    icon_y_offset 	0
+		    annotation 	1
+		    Focus_Of_Control 	(object Focus_Of_Control "" @35
+			location   	(615, 510)
+			line_color 	3342489
+			InterObjView 	@34
+			height     	60
+			y_coord    	-30
+			Nested     	FALSE))
+		(object InterObjView "$UNNAMED$12" @36
+		    location   	(1155, 390)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	TRUE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@36
+			location   	(1155, 390)
+			fill_color 	13434879
+			anchor_loc 	1
+			nlines     	2
+			max_width  	282
+			justify    	0
+			label      	"")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD3AD430267"
+		    width      	300
+		    height     	630
+		    icon_height 	0
+		    icon_width 	0
+		    icon_y_offset 	0
+		    annotation 	1
+		    Focus_Of_Control 	(object Focus_Of_Control "" @37
+			location   	(1155, 390)
+			line_color 	3342489
+			InterObjView 	@36
+			height     	60
+			y_coord    	-30
+			Nested     	FALSE)
+		    Focus_Of_Control 	(object Focus_Of_Control "" @38
+			location   	(1155, 465)
+			InterObjView 	@36
+			height     	90
+			y_coord    	0
+			Nested     	FALSE)
+		    Focus_Of_Control 	(object Focus_Of_Control "" @39
+			location   	(1155, 510)
+			line_color 	3342489
+			InterObjView 	@36
+			height     	345
+			y_coord    	255
+			Nested     	TRUE))
+		(object InterObjView "ArchiveMonitor" @40
+		    location   	(1620, 570)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	TRUE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@40
+			location   	(1620, 570)
+			fill_color 	13434879
+			anchor_loc 	1
+			nlines     	2
+			max_width  	282
+			justify    	0
+			label      	"ArchiveMonitor")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD3AE3B02A1"
+		    width      	300
+		    height     	450
+		    icon_height 	0
+		    icon_width 	0
+		    icon_y_offset 	0
+		    annotation 	1
+		    Focus_Of_Control 	(object Focus_Of_Control "" @41
+			location   	(1620, 645)
+			InterObjView 	@40
+			height     	90
+			y_coord    	0
+			Nested     	FALSE)
+		    Focus_Of_Control 	(object Focus_Of_Control "" @42
+			location   	(1620, 735)
+			line_color 	3342489
+			InterObjView 	@40
+			height     	60
+			y_coord    	-30
+			Nested     	FALSE)
+		    Focus_Of_Control 	(object Focus_Of_Control "" @43
+			location   	(1620, 810)
+			line_color 	3342489
+			InterObjView 	@40
+			height     	120
+			y_coord    	30
+			Nested     	FALSE))
+		(object InterObjView "$UNNAMED$14" @44
+		    location   	(2130, 225)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	TRUE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@44
+			location   	(2130, 225)
+			fill_color 	13434879
+			anchor_loc 	1
+			nlines     	2
+			max_width  	412
+			justify    	0
+			label      	"")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD3AF9B0387"
+		    width      	430
+		    height     	795
+		    icon_height 	0
+		    icon_width 	0
+		    icon_y_offset 	0
+		    annotation 	1
+		    Focus_Of_Control 	(object Focus_Of_Control "" @45
+			location   	(2130, 810)
+			line_color 	3342489
+			InterObjView 	@44
+			height     	60
+			y_coord    	-30
+			Nested     	FALSE))
+		(object InterMessView "create" @46
+		    location   	(15, 390)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @47
+			Parent_View 	@46
+			location   	(628, 361)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			quidu      	"3DD3AD5B011F"
+			anchor_loc 	1
+			nlines     	1
+			max_width  	113
+			justify    	0
+			label      	"create"
+			pctDist    	0.497436
+			height     	30
+			orientation 	0)
+		    line_color 	3342489
+		    client     	@32
+		    supplier   	@36
+		    Focus_Src  	@33
+		    Focus_Entry 	@37
+		    origin     	(255, 390)
+		    terminus   	(1005, 390)
+		    ordinal    	0)
+		(object InterMessView "read archive configuration" @48
+		    location   	(15, 510)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @49
+			Parent_View 	@48
+			location   	(886, 480)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			quidu      	"3DD3AD6C0342"
+			anchor_loc 	1
+			nlines     	1
+			max_width  	540
+			justify    	0
+			label      	"read archive configuration"
+			pctDist    	0.498288
+			height     	31
+			orientation 	1)
+		    line_color 	3342489
+		    client     	@36
+		    supplier   	@34
+		    Focus_Src  	@39
+		    Focus_Entry 	@35
+		    origin     	(1139, 510)
+		    terminus   	(631, 510)
+		    ordinal    	1)
+		(object InterMessView "[archive==TRUE] create" @50
+		    location   	(1335, 735)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @51
+			Parent_View 	@50
+			location   	(1387, 691)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			quidu      	"3DD3AE54030F"
+			anchor_loc 	1
+			nlines     	1
+			max_width  	477
+			justify    	0
+			label      	"[archive==TRUE] create"
+			pctDist    	0.500000
+			height     	45
+			orientation 	0)
+		    line_color 	3342489
+		    client     	@36
+		    supplier   	@40
+		    Focus_Src  	@39
+		    Focus_Entry 	@42
+		    origin     	(1170, 735)
+		    terminus   	(1604, 735)
+		    ordinal    	2)
+		(object InterMessView "*[until alive] log" @52
+		    location   	(15, 810)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @53
+			Parent_View 	@52
+			location   	(1874, 766)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			quidu      	"3DD3AFAC030B"
+			anchor_loc 	1
+			nlines     	1
+			max_width  	272
+			justify    	0
+			label      	"*[until alive] log"
+			pctDist    	0.500000
+			height     	45
+			orientation 	0)
+		    line_color 	3342489
+		    client     	@40
+		    supplier   	@44
+		    Focus_Src  	@43
+		    Focus_Entry 	@45
+		    origin     	(1635, 810)
+		    terminus   	(2114, 810)
+		    ordinal    	3)))))

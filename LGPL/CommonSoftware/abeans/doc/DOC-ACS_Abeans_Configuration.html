@@ -1,0 +1,397 @@
+<html xmlns:msxsl="urn:schemas-microsoft-com:xslt" xmlns:d="urn:schemas-cosylab-com:Document">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ACS Abeans Configuration</title>
+<link href="Normal.css" type="text/css" rel="stylesheet">
+</head>
+<script language="JavaScript"><!--
+				function mailTo(part2, part1) {
+					window.location.href = "mailto:" + part1 + part2;
+				}
+				
+				function getBody(body) {
+					var body2 = "";
+
+					for(i = 0; i < body.length; ++i)
+					{
+						if(body.charAt(i) == '\n')
+						{
+							body2 += "%0d%0a";
+						}
+						else
+						{
+							body2 += body.charAt(i);
+						}
+					}
+					return body2;
+				}
+
+				function fullMailTo(part2, part1, subject, body) {
+					var i;
+					
+					window.location.href = "mailto:" + part1 + part2 + "?subject=" + subject + "&body=" + getBody(body);
+				}
+				
+				function createRequestTicket(queue, owner, subject, body, start, due, priority,estimatedtime) {
+					var mail = "";;
+		var engDay = 480;
+					if(owner != null && owner != "")					
+						mail += "RT-Owner: " + owner + "\n";
+					if(start != null && owner != "")					
+						mail += "RT-Starts: " + start + "\n";
+					if(due != null && due != "")					
+						mail += "RT-Due: " + due + "\n";
+					if(priority != null && priority != "")					
+						mail += "RT-Priority: " + priority + "\n";
+					if(priority != null && priority != "")					
+						mail += "RT-EstimatedTime: " + estimatedtime*engDay + "\n";
+					if(body != null && body != "") {					
+						mail += "\n";
+						mail += body;
+					}
+					
+					window.location.href = "mailto:rt-" + queue + "@cosylab.com?subject=" + subject + "&body=" + getBody(mail);
+				}
+			--></script>
+<body>
+<p class="table">
+<table>
+<tr>
+<th class="title" colspan="2">ACS Abeans Configuration</th>
+</tr>
+<tr>
+<th class="projectInfo">Project:</th><td>abeans&nbsp;</td>
+</tr>
+<tr>
+<th class="projectInfo">Classification:</th><td>User's Documentation</td>
+</tr>
+<tr>
+<th class="projectInfo">Identification:</th><td><tt>CSL-DOC--</tt></td>
+</tr>
+<tr>
+<th colspan="2">Copyright &copy;  by Cosylab Ltd. All Rights Reserved.</th>
+</tr>
+</table>
+</p>
+<h2>Document History</h2>
+<p class="table">
+<table>
+<tr>
+<th>Revision</th><th>Date</th><th>Author</th><th>Section</th><th>Modification</th>
+</tr>
+<tr>
+<td rowspan="2">1.0</td><td rowspan="2">2003-11-14</td><td rowspan="2"><a href="javascript:mailTo(%22j.sekoranja@cosylab.com%22,%22mate%22);">Documentation Generator</a></td>
+</tr>
+<tr>
+<td>all</td><td>Generated.</td>
+</tr>
+<tr>
+<td rowspan="2">1.1</td><td rowspan="2">2003-11-14</td><td rowspan="2"><a href="javascript:mailTo(%22j.sekoranja@cosylab.com%22,%22mate%22);">Matej Sekoranja</a></td>
+</tr>
+<tr>
+<td>all</td><td>Added JVM system properties.</td>
+</tr>
+</table>
+</p>
+<h2>Confidentiality</h2>
+<p>
+					This document is classified as a <b>public document</b>.
+					Redistribution and use, with or without modification, are permitted provided that:
+					<ol>
+<li>the copyright notice is retained</li>
+<li>a reference to the original document is made in case of modifications</li>
+<li>this document may not be distributed for profit except as explicitly permitted by valid licenses.</li>
+</ol>
+</p>
+<h2>
+<a name="toc">Table of Contents</a>
+</h2>
+<a href="#DefaultCORBAService">
+<h1 class="toc">1. DefaultCORBAService</h1>
+</a><a href="#NamingServiceRemoteDirectory">
+<h1 class="toc">2. NamingServiceRemoteDirectory</h1>
+</a><a href="#RemoteLoggingService">
+<h1 class="toc">3. RemoteLoggingService</h1>
+</a><a href="#ACS Plug">
+<h1 class="toc">4. ACS Plug</h1>
+</a><a href="#CDBDAL">
+<h1 class="toc">5. CDBDAL</h1>
+</a>
+<h2>How to Read this Document</h2>
+<p>
+				 This document's meta-information (authors, revision history, table of contents, ...) can be found above.
+				 What follows below is the body of the document.
+				 The body is composed of several sections, which may be further composed of subsections.
+			 </p>
+<p>
+				 Typographical styles are used to denote entities of different kinds.
+				 For a full list of entities and their respective typographic conventions, please refer to the <a href="../../Common/Documentation/DOC-CosyDoc.xml#xmlContentStyles">Styles section of the XML Documentation</a> document.
+			 </p>
+<p>
+				 When viewing the document in a non-printed form, it is possible to submit comments regarding a given section to the document's owner.
+				 This is achieved by clicking the mail icon next to the section title.
+				 For this to work, your mail must be configured to properly handle the <tt>mailto</tt> URLs.
+			 </p>
+<body xmlns="urn:schemas-cosylab-com:Document">
+    
+<h1 xmlns="">
+<a href="#toc" name="DefaultCORBAService">1.&nbsp;DefaultCORBAService</a> 
+</h1>
+      
+<p xmlns="" class="table">
+<table>
+        
+<tr>
+          
+<th>DefaultCORBAService.txt</th>
+        
+</tr>
+        
+<tr>
+          
+<th>Key</th>
+          <th>Description</th>
+        
+</tr>
+        
+<tr>
+          
+<td>*</td>
+          <td>All properties all passed to the ORB (overriding system properties).</td>
+        
+</tr>
+        
+<tr>
+          
+<td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        
+</tr>
+      
+</table>
+</p>
+    
+    
+<h1 xmlns="">
+<a href="#toc" name="NamingServiceRemoteDirectory">2.&nbsp;NamingServiceRemoteDirectory</a> 
+</h1>
+      
+<p xmlns="" class="table">
+<table>
+        
+<tr>
+          
+<th>NamingServiceRemoteDirectory.txt</th>
+        
+</tr>
+        
+<tr>
+          
+<th>Key</th>
+          <th>Description</th>
+        
+</tr>
+        
+<tr>
+          
+<td>reference</td>
+          <td>Reference to CORBA Naming Service, use IIOP type reference - 'iiop://&lt;host&gt;[:&lt;port&gt;]'.
+          	<br xmlns="urn:schemas-cosylab-com:Document"/><span class="emphasis">NOTE: can be set/overriden by <span class="bold">NamingServiceRemoteDirectory.reference</span> JVM system property.</span></td>
+        
+</tr>
+        
+<tr>
+          
+<td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        
+</tr>
+      
+</table>
+</p>
+
+    
+    
+<h1 xmlns="">
+<a href="#toc" name="RemoteLoggingService">3.&nbsp;RemoteLoggingService</a> 
+</h1>
+      
+<p xmlns="" class="table">
+<table>
+        
+<tr>
+          
+<th>RemoteLoggingService.txt</th>
+        
+</tr>
+        
+<tr>
+          
+<th>Key</th>
+          <th>Description</th>
+        
+</tr>
+        
+<tr>
+          
+<td>CentralizedLogger</td>
+          <td>Context name of the Centralized Logger, defaults to 'Log'.</td>
+        
+</tr>
+        
+<tr>
+          
+<td>CacheSize</td>
+          <td>The number of log entries that can be kept in the local cache. When this number is reached, all log entries are transferred to the centralized logging, defaults to '10'.</td>
+        
+</tr>
+        
+<tr>
+          
+<td>MaxCacheSize</td>
+          <td>The maximum number of log entries (also for internal purposes) that can be kept in the local cache. When this number is reached, all log entries are lost, defaults to '500'.</td>
+        
+</tr>
+        
+<tr>
+          
+<td>MinCachePriority</td>
+          <td>Log entries whose priority is below (smaller than) the one specified with this property will be ignored (neither cached nor submitted to the centralized logging), defaults to '0'.</td>
+        
+</tr>
+        
+<tr>
+          
+<td>MaxCachePriority</td>
+          <td>Log entries whose priority exceeds (is greater than) the one specified with this property will be directly transmitted to the centralized logging, bypassing the local cache. If this is less than MinCachePriority, the local cache feature is disabled, defaults to '31'.</td>
+        
+</tr>
+        
+<tr>
+          
+<td>MaxThreads</td>
+          <td>The maximum number of threads taken from thread pool by this service, defaults to '10' (minimal 2).</td>
+        
+</tr>
+        
+<tr>
+          
+<td>DisableRemoteDirectoryLookup</td>
+          <td>Switch to disable remote directory lookup, defaults to 'false'.</td>
+        
+</tr>
+        
+<tr>
+          
+<td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        
+</tr>
+      
+</table>
+</p>
+    
+    
+<h1 xmlns="">
+<a href="#toc" name="ACS Plug">4.&nbsp;ACS Plug</a> 
+</h1>
+
+      
+<p xmlns="" class="table">
+<table>
+        
+<tr>
+          
+<th>ACSPlug.txt</th>
+        
+</tr>
+        
+<tr>
+          
+<th>Key</th>
+          <th>Description</th>
+        
+</tr>
+        
+<tr>
+          
+<td>Manager.defaultReference</td>
+          <td>Manager CORBA reference (corbaloc). 
+          	<br xmlns="urn:schemas-cosylab-com:Document"/><span class="emphasis">NOTE: can be set/overriden by <span class="bold">Manager.defaultReference</span> JVM system property.</span>
+          	<br xmlns="urn:schemas-cosylab-com:Document"/><span class="emphasis"><span class="bold">ACS.Manager</span> JVM property overrides <span class="bold">Manager.defaultReference</span>.</span>
+          </td>
+        
+</tr>
+        
+<tr>
+          
+<td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        
+</tr>
+      
+</table>
+</p>
+      
+    
+    
+<h1 xmlns="">
+<a href="#toc" name="CDBDAL">5.&nbsp;CDBDAL</a> 
+</h1>
+    	
+      
+<p xmlns="" class="table">
+<table>
+        
+<tr>
+          
+<th>CDBDALPlug.txt</th>
+        
+</tr>
+        
+<tr>
+          
+<th>Key</th>
+          <th>Description</th>
+        
+</tr>
+        
+<tr>
+          
+<td>DAL.defaultReference</td>
+          <td>Default CORBA reference to the DAL remote object...
+          		<br xmlns="urn:schemas-cosylab-com:Document"/><span class="emphasis">NOTE: can be set/overriden by <span class="bold">DAL.defaultReference</span> JVM system property.</span>
+          	</td>
+        
+</tr>
+        
+<tr>
+          
+<td>DAO.remote</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will use remote DAO object, othervise local DAO implementation will be used.</td>
+        
+</tr>
+        
+<tr>
+          
+<td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        
+</tr>
+      
+</table>
+</p>
+
+    
+  </body>
+<br>
+<br>
+<p align="center">
+<table background="../../Common/Documentation/images/Cosyline.png" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr height="25px">
+<td style="padding:0;spacing:0;border:solid white 0px;" align="right" valign="top"><img border="0" src="../../Common/Documentation/images/Cosylab.png"></td>
+</tr>
+</table>
+</p>
+</body>
+</html>

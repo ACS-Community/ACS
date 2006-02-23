@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat6,v 1.76 2003/01/09 17:51:28 vltsccm Exp $"
+#
+# tat - test5
+#
+# Make file args
+# 
+
+
+rm -f .testSession
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+cp Makefile.tat6 Makefile
+rm -f TestList
+cp TestList.tat6 TestList
+
+chmod u-x tat61
+TAT_MAKE_ARGS="tat6=DOIT"
+export TAT_MAKE_ARGS
+
+#
+# makeEnv + cleanEnv
+#
+tat makeEnv
+
+tat -g tat61
+cat ./ref/tat61.ref
+
+tat -g tat62.vw
+cat ./ref/tat62.vw.ref
+
+tat cleanEnv
+
+
+
+

@@ -1,0 +1,891 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Task"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"428D9FFD016C"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "ACS::Task"
+	    quid       	"428DA1DB00A7"
+	    stereotype 	"Interface"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"4291F2E10098"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:ACSComponent"
+		    quidu      	"402AB36100E3"))
+	    operations 	(list Operations
+		(object Operation "run"
+		    quid       	"428DA35B0157"
+		    parameters 	(list Parameters
+			(object Parameter "XMLparamSet"
+			    quid       	"428DA378007D"
+			    type       	"string"))
+		    result     	"void"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)))
+	(object Class "ACS::CharacteristicTask"
+	    quid       	"428DA27603E5"
+	    stereotype 	"Interface"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"428DA28103A6"
+		    supplier   	"Logical View::Task::ACS\\:\\:Task"
+		    quidu      	"428DA1DB00A7")
+		(object Inheritance_Relationship
+		    quid       	"428DA28402EB"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B")))
+	(object Class "ParameterTask"
+	    quid       	"428DA3EB005F"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"4292D3CE0215"
+		    stereotype 	"realize"
+		    supplier   	"Logical View::Task::ACS\\:\\:Task"
+		    quidu      	"428DA1DB00A7"))
+	    operations 	(list Operations
+		(object Operation "go"
+		    quid       	"428DA40B00CD"
+		    parameters 	(list Parameters
+			(object Parameter "paramSet"
+			    quid       	"428DA42D0283"
+			    type       	"ParameterSet"
+			    quidu      	"41BD6CB1031C"))
+		    result     	"void"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    abstract   	TRUE)
+	(object Class "ParameterTaskClient"
+	    quid       	"428DA5FB026A")
+	(object Class "taskImpl"
+	    quid       	"4292D28D0039"
+	    stereotype 	"implementationClass"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"4292D4700044"
+		    stereotype 	"realize"
+		    supplier   	"Logical View::Task::ACS\\:\\:Task"
+		    quidu      	"428DA1DB00A7"))
+	    operations 	(list Operations
+		(object Operation "run"
+		    quid       	"4292D68A00C4"
+		    parameters 	(list Parameters
+			(object Parameter "XMLparamSet"
+			    quid       	"4292D6E4036F"
+			    type       	"string"))
+		    result     	"void"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Implementation"
+		    uid        	0)))
+	(object Class "characteristicTaskImpl"
+	    quid       	"4292D7B700AA"
+	    stereotype 	"implementationClass"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"4292D7FA0016"
+		    stereotype 	"realize"
+		    supplier   	"Logical View::Task::ACS\\:\\:CharacteristicTask"
+		    quidu      	"428DA27603E5"))
+	    operations 	(list Operations
+		(object Operation "run"
+		    quid       	"4292D8160366"
+		    parameters 	(list Parameters
+			(object Parameter "XMLparamSet"
+			    quid       	"4292D826030A"
+			    type       	"string"))
+		    result     	"void"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Implementation"
+		    uid        	0)))
+	(object Class "imager"
+	    quid       	"428DA50502B5"
+	    stereotype 	"implementationClass"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"428DA54A012F"
+		    supplier   	"Logical View::Task::ParameterTask"
+		    quidu      	"428DA3EB005F"))
+	    operations 	(list Operations
+		(object Operation "go"
+		    quid       	"4292D45000EC"
+		    parameters 	(list Parameters
+			(object Parameter "paramSet"
+			    quid       	"4292D7350147"
+			    type       	"ParameterSet"
+			    quidu      	"41BD6CB1031C"))
+		    result     	"void"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Implementation"
+		    uid        	0))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "TaskArchitecture"
+	    quid       	"428DA0100005"
+	    title      	"TaskArchitecture"
+	    zoom       	85
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Task::ACS\\:\\:Task" @1
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1326, 975)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@1
+			location   	(1173, 955)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	306
+			justify    	0
+			label      	"ACS::Task")
+		    icon       	"Interface"
+		    icon_style 	"Decoration"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"428DA1DB00A7"
+		    compartment 	(object Compartment
+			Parent_View 	@1
+			location   	(1173, 1021)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			icon_style 	"Icon"
+			fill_color 	13434879
+			anchor     	2
+			nlines     	1
+			max_width  	155)
+		    width      	324
+		    height     	242
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Task::ParameterTask" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2008, 1890)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	TRUE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(1846, 1829)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	324
+			justify    	0
+			label      	"ParameterTask")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"428DA3EB005F"
+		    compartment 	(object Compartment
+			Parent_View 	@2
+			location   	(1846, 1895)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			icon_style 	"Icon"
+			fill_color 	13434879
+			anchor     	2
+			nlines     	1
+			max_width  	140)
+		    width      	342
+		    height     	148
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Task::imager" @3
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2008, 2473)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@3
+			location   	(1736, 2403)
+			fill_color 	16777215
+			nlines     	1
+			max_width  	544
+			justify    	0
+			label      	"imager")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@3
+			location   	(1736, 2353)
+			fill_color 	16777215
+			anchor     	10
+			nlines     	1
+			max_width  	541
+			justify    	0
+			label      	"<<implementationClass>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	8454016
+		    quidu      	"428DA50502B5"
+		    compartment 	(object Compartment
+			Parent_View 	@3
+			location   	(1736, 2469)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			icon_style 	"Icon"
+			fill_color 	16777215
+			anchor     	2
+			nlines     	2
+			max_width  	140)
+		    width      	562
+		    height     	264
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @4
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"428DA54A012F"
+		    client     	@3
+		    supplier   	@2
+		    vertices   	(list Points
+			(2008, 2340)
+			(2008, 1964))
+		    line_style 	0)
+		(object NoteView @5
+		    location   	(2008, 2878)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@5
+			location   	(1737, 2696)
+			nlines     	6
+			max_width  	507
+			label      	"User's implementation of the parameter task. It overrides (i.e.implements) the go method.")
+		    line_color 	3342489
+		    fill_color 	16777215
+		    width      	567
+		    height     	376)
+		(object AttachView "" @6
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@5
+		    supplier   	@3
+		    vertices   	(list Points
+			(2008, 2689)
+			(2008, 2605))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::Task::ParameterTaskClient" @7
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2265, 255)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@7
+			location   	(2061, 201)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	408
+			justify    	0
+			label      	"ParameterTaskClient")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"428DA5FB026A"
+		    width      	426
+		    height     	132
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object NoteView @8
+		    location   	(2265, 1020)
+		    font       	(object Font
+			size       	9
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@8
+			location   	(1935, 663)
+			nlines     	14
+			max_width  	624
+			label      	"It will provide a way to communicate with a remote Task Component or a local one. In the local case, the Task implementation will be loaded art run time or linked at link time. In the remote case, the Task Component will be obtained from the Manager using the task name.")
+		    line_color 	3342489
+		    fill_color 	16777215
+		    width      	684
+		    height     	727)
+		(object AttachView "" @9
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@8
+		    supplier   	@7
+		    vertices   	(list Points
+			(2265, 656)
+			(2265, 321))
+		    line_style 	0)
+		(object NoteView @10
+		    location   	(195, 2160)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@10
+			location   	(53, 2026)
+			fill_color 	13434879
+			nlines     	4
+			max_width  	249
+			label      	"User defined classes")
+		    line_color 	3342489
+		    fill_color 	8454016
+		    width      	309
+		    height     	280)
+		(object NoteView @11
+		    location   	(2520, 2160)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@11
+			location   	(2374, 2041)
+			fill_color 	13434879
+			nlines     	4
+			max_width  	256
+			label      	"User defined classes")
+		    line_color 	3342489
+		    fill_color 	8454016
+		    width      	316
+		    height     	250)
+		(object AttachView "" @12
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@10
+		    supplier   	@11
+		    vertices   	(list Points
+			(349, 2160)
+			(2361, 2160))
+		    line_style 	0)
+		(object NoteView @13
+		    location   	(1326, 2878)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@13
+			location   	(1066, 2704)
+			nlines     	6
+			max_width  	484
+			label      	
+|User's implementation of the generic (simple) task.
+|It overrides (i.e.implements) the run method.
+			)
+		    line_color 	3342489
+		    fill_color 	16777215
+		    width      	544
+		    height     	361)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:ACSComponent" @14
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1080, 195)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@14
+			location   	(825, 154)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	510
+			justify    	0
+			label      	"ACS::ACSComponent")
+		    icon       	"Interface"
+		    icon_style 	"Decoration"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"402AB36100E3"
+		    width      	528
+		    height     	284
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Task::ACS\\:\\:CharacteristicTask" @15
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(658, 1410)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@15
+			location   	(377, 1400)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	562
+			justify    	0
+			label      	"ACS::CharacteristicTask")
+		    icon       	"Interface"
+		    icon_style 	"Decoration"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"428DA27603E5"
+		    width      	580
+		    height     	222
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @16
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"428DA28103A6"
+		    client     	@15
+		    supplier   	@1
+		    vertices   	(list Points
+			(828, 1298)
+			(1163, 1079))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent" @17
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(660, 645)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@17
+			location   	(322, 604)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	676
+			justify    	0
+			label      	"ACS::CharacteristicComponent")
+		    icon       	"Interface"
+		    icon_style 	"Decoration"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF597A029B"
+		    width      	694
+		    height     	284
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @18
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"428DA28402EB"
+		    client     	@15
+		    supplier   	@17
+		    vertices   	(list Points
+			(658, 1298)
+			(659, 787))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::Task::taskImpl" @19
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1320, 2473)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@19
+			location   	(1048, 2403)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	544
+			justify    	0
+			label      	"taskImpl")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@19
+			location   	(1048, 2353)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	541
+			justify    	0
+			label      	"<<implementationClass>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	8454016
+		    quidu      	"4292D28D0039"
+		    compartment 	(object Compartment
+			Parent_View 	@19
+			location   	(1048, 2469)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			icon_style 	"Icon"
+			fill_color 	13434879
+			anchor     	2
+			nlines     	2
+			max_width  	155)
+		    width      	562
+		    height     	264
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object RealizeView "" @20
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	(object SegLabel @21
+			Parent_View 	@20
+			location   	(1586, 1495)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<realize>>"
+			pctDist    	0.530454
+			height     	103
+			orientation 	0)
+		    line_color 	3342489
+		    quidu      	"4292D3CE0215"
+		    client     	@2
+		    supplier   	@1
+		    vertices   	(list Points
+			(1952, 1815)
+			(1416, 1096))
+		    line_style 	0)
+		(object InheritTreeView "" @22
+		    location   	(1080, 427)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@14
+		    vertices   	(list Points
+			(1080, 427)
+			(1080, 337)))
+		(object InheritView "" @23
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"4291F2E10098"
+		    client     	@1
+		    supplier   	@14
+		    vertices   	(list Points
+			(1292, 854)
+			(1292, 427))
+		    line_style 	3
+		    origin_attachment 	(1292, 854)
+		    terminal_attachment 	(1292, 427)
+		    drawSupplier 	@22)
+		(object InheritView "" @24
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"402AB39300C9"
+		    client     	@17
+		    supplier   	@14
+		    vertices   	(list Points
+			(665, 503)
+			(665, 427))
+		    line_style 	3
+		    origin_attachment 	(665, 503)
+		    terminal_attachment 	(665, 427)
+		    drawSupplier 	@22)
+		(object RealizeView "" @25
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@25
+			location   	(1322, 1718)
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"")
+		    stereotype 	(object SegLabel @26
+			Parent_View 	@25
+			location   	(1216, 1637)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<realize>>"
+			pctDist    	0.500000
+			height     	120
+			orientation 	0)
+		    line_color 	3342489
+		    quidu      	"4292D4700044"
+		    client     	@19
+		    supplier   	@1
+		    vertices   	(list Points
+			(1320, 2340)
+			(1325, 1096))
+		    line_style 	0)
+		(object AttachView "" @27
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@19
+		    supplier   	@13
+		    vertices   	(list Points
+			(1321, 2605)
+			(1323, 2697))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::Task::characteristicTaskImpl" @28
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(658, 2473)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@28
+			location   	(386, 2403)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	544
+			justify    	0
+			label      	"characteristicTaskImpl")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@28
+			location   	(386, 2353)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	541
+			justify    	0
+			label      	"<<implementationClass>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	8454016
+		    quidu      	"4292D7B700AA"
+		    compartment 	(object Compartment
+			Parent_View 	@28
+			location   	(386, 2469)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			icon_style 	"Icon"
+			fill_color 	13434879
+			anchor     	2
+			nlines     	2
+			max_width  	155)
+		    width      	562
+		    height     	264
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object RealizeView "" @29
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	(object SegLabel @30
+			Parent_View 	@29
+			location   	(539, 1930)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<realize>>"
+			pctDist    	0.500000
+			height     	120
+			orientation 	0)
+		    line_color 	3342489
+		    quidu      	"4292D7FA0016"
+		    client     	@28
+		    supplier   	@15
+		    vertices   	(list Points
+			(658, 2340)
+			(658, 1521))
+		    line_style 	0)
+		(object NoteView @31
+		    location   	(658, 2878)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@31
+			location   	(398, 2704)
+			nlines     	6
+			max_width  	484
+			label      	
+|User's implementation of the characteristic  task.
+|It overrides (i.e.implements) the run method.
+			)
+		    line_color 	3342489
+		    fill_color 	16777215
+		    width      	544
+		    height     	361)
+		(object AttachView "" @32
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@31
+		    supplier   	@28
+		    vertices   	(list Points
+			(658, 2697)
+			(658, 2605))
+		    line_style 	0)))))

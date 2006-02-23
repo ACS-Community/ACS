@@ -1,0 +1,1167 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: The Mark,  Next: The Region,  Prev: Changing Markers,  Up: Markers
+
+The Mark
+========
+
+   One special marker in each buffer is designated "the mark".  It
+records a position for the user for the sake of commands such as `C-w'
+and `C-x TAB'.  Lisp programs should set the mark only to values that
+have a potential use to the user, and never for their own internal
+purposes.  For example, the `replace-regexp' command sets the mark to
+the value of point before doing any replacements, because this enables
+the user to move back there conveniently after the replace is finished.
+
+   Many commands are designed so that when called interactively they
+operate on the text between point and the mark.  If you are writing such
+a command, don't examine the mark directly; instead, use `interactive'
+with the `r' specification.  This provides the values of point and the
+mark as arguments to the command in an interactive call, but permits
+other Lisp programs to specify arguments explicitly.  *Note Interactive
+Codes::.
+
+   Each buffer has its own value of the mark that is independent of the
+value of the mark in other buffers.  When a buffer is created, the mark
+exists but does not point anywhere.  We consider this state as "the
+absence of a mark in that buffer".
+
+   Once the mark "exists" in a buffer, it normally never ceases to
+exist.  However, it may become "inactive", if Transient Mark mode is
+enabled.  The variable `mark-active', which is always local in all
+buffers, indicates whether the mark is active: non-`nil' means yes.  A
+command can request deactivation of the mark upon return to the editor
+command loop by setting `deactivate-mark' to a non-`nil' value (but
+this deactivation only follows if Transient Mark mode is enabled).
+
+   The main motivation for using Transient Mark mode is that this mode
+also enables highlighting of the region when the mark is active.  *Note
+Display::.
+
+   In addition to the mark, each buffer has a "mark ring" which is a
+list of markers containing previous values of the mark.  When editing
+commands change the mark, they should normally save the old value of the
+mark on the mark ring.  The variable `mark-ring-max' specifies the
+maximum number of entries in the mark ring; once the list becomes this
+long, adding a new element deletes the last element.
+
+ - Function: mark &optional FORCE
+     This function returns the current buffer's mark position as an
+     integer.
+
+     If the mark is inactive, `mark' normally signals an error.
+     However, if FORCE is non-`nil', then `mark' returns the mark
+     position anyway--or `nil', if the mark is not yet set for this
+     buffer.
+
+ - Function: mark-marker
+     This function returns the current buffer's mark.  This is the very
+     marker which records the mark location inside Emacs, not a copy.
+     Therefore, changing this marker's position will directly affect
+     the position of the mark.  Don't do it unless that is the effect
+     you want.
+
+          (setq m (mark-marker))
+               => #<marker at 3420 in markers.texi>
+          (set-marker m 100)
+               => #<marker at 100 in markers.texi>
+          (mark-marker)
+               => #<marker at 100 in markers.texi>
+
+     Like any marker, this marker can be set to point at any buffer you
+     like.  We don't recommend that you make it point at any buffer
+     other than the one of which it is the mark.  If you do, it will
+     yield perfectly consistent, but rather odd, results.
+
+ - Function: set-mark POSITION
+     This function sets the mark to POSITION, and activates the mark.
+     The old value of the mark is *not* pushed onto the mark ring.
+
+     *Please note:* use this function only if you want the user to see
+     that the mark has moved, and you want the previous mark position to
+     be lost.  Normally, when a new mark is set, the old one should go
+     on the `mark-ring'.  For this reason, most applications should use
+     `push-mark' and `pop-mark', not `set-mark'.
+
+     Novice Emacs Lisp programmers often try to use the mark for the
+     wrong purposes.  The mark saves a location for the user's
+     convenience.  An editing command should not alter the mark unless
+     altering the mark is part of the user-level functionality of the
+     command.  (And, in that case, this effect should be documented.)
+     To remember a location for internal use in the Lisp program, store
+     it in a Lisp variable.  For example:
+
+          (let ((beg (point)))
+            (forward-line 1)
+            (delete-region beg (point))).
+
+ - Function: push-mark &optional POSITION NOMSG ACTIVATE
+     This function sets the current buffer's mark to POSITION, and
+     pushes a copy of the previous mark onto `mark-ring'.  If POSITION
+     is `nil', then the value of point is used.  `push-mark' returns
+     `nil'.
+
+     The function `push-mark' normally *does not* activate the mark.
+     To do that, specify `t' for the argument ACTIVATE.
+
+     A `Mark set' message is displayed unless NOMSG is non-`nil'.
+
+ - Function: pop-mark
+     This function pops off the top element of `mark-ring' and makes
+     that mark become the buffer's actual mark.  This does not move
+     point in the buffer, and it does nothing if `mark-ring' is empty.
+     It deactivates the mark.
+
+     The return value is not meaningful.
+
+ - User Option: transient-mark-mode
+     This variable enables Transient Mark mode, in which every
+     buffer-modifying primitive sets `deactivate-mark'.  The consequence
+     of this is that commands that modify the buffer normally make the
+     mark inactive.
+
+ - Variable: deactivate-mark
+     If an editor command sets this variable non-`nil', then the editor
+     command loop deactivates the mark after the command returns.
+
+ - Variable: mark-active
+     The mark is active when this variable is non-`nil'.  This variable
+     is always local in each buffer.
+
+ - Variable: activate-mark-hook
+ - Variable: deactivate-mark-hook
+     These normal hooks are run, respectively, when the mark becomes
+     active and when it becomes inactive.  The hook
+     `activate-mark-hook' is also run at the end of a command if the
+     mark is active and the region may have changed.
+
+ - Variable: mark-ring
+     The value of this buffer-local variable is the list of saved former
+     marks of the current buffer, most recent first.
+
+          mark-ring
+          => (#<marker at 11050 in markers.texi>
+              #<marker at 10832 in markers.texi>
+              ...)
+
+ - User Option: mark-ring-max
+     The value of this variable is the maximum size of `mark-ring'.  If
+     more marks than this are pushed onto the `mark-ring', `push-mark'
+     discards an old mark when it adds a new one.
+
+
+File: elisp,  Node: The Region,  Prev: The Mark,  Up: Markers
+
+The Region
+==========
+
+   The text between point and the mark is known as "the region".
+Various functions operate on text delimited by point and the mark, but
+only those functions specifically related to the region itself are
+described here.
+
+ - Function: region-beginning
+     This function returns the position of the beginning of the region
+     (as an integer).  This is the position of either point or the mark,
+     whichever is smaller.
+
+     If the mark does not point anywhere, an error is signaled.
+
+ - Function: region-end
+     This function returns the position of the end of the region (as an
+     integer).  This is the position of either point or the mark,
+     whichever is larger.
+
+     If the mark does not point anywhere, an error is signaled.
+
+   Few programs need to use the `region-beginning' and `region-end'
+functions.  A command designed to operate on a region should normally
+use `interactive' with the `r' specification to find the beginning and
+end of the region.  This lets other Lisp programs specify the bounds
+explicitly as arguments.  (*Note Interactive Codes::.)
+
+
+File: elisp,  Node: Text,  Next: Searching and Matching,  Prev: Markers,  Up: Top
+
+Text
+****
+
+   This chapter describes the functions that deal with the text in a
+buffer.  Most examine, insert or delete text in the current buffer,
+often in the vicinity of point.  Many are interactive.  All the
+functions that change the text provide for undoing the changes (*note
+Undo::.).
+
+   Many text-related functions operate on a region of text defined by
+two buffer positions passed in arguments named START and END.  These
+arguments should be either markers (*note Markers::.) or numeric
+character positions (*note Positions::.).  The order of these arguments
+does not matter; it is all right for START to be the end of the region
+and END the beginning.  For example, `(delete-region 1 10)' and
+`(delete-region 10 1)' are equivalent.  An `args-out-of-range' error is
+signaled if either START or END is outside the accessible portion of
+the buffer.  In an interactive call, point and the mark are used for
+these arguments.
+
+   Throughout this chapter, "text" refers to the characters in the
+buffer.
+
+* Menu:
+
+* Near Point::       Examining text in the vicinity of point.
+* Buffer Contents::  Examining text in a general fashion.
+* Comparing Text::   Comparing substrings of buffers.
+* Insertion::        Adding new text to a buffer.
+* Commands for Insertion::  User-level commands to insert text.
+* Deletion::         Removing text from a buffer.
+* User-Level Deletion::     User-level commands to delete text.
+* The Kill Ring::    Where removed text sometimes is saved for later use.
+* Undo::             Undoing changes to the text of a buffer.
+* Maintaining Undo:: How to enable and disable undo information.
+			How to control how much information is kept.
+* Filling::          Functions for explicit filling.
+* Auto Filling::     How auto-fill mode is implemented to break lines.
+* Sorting::          Functions for sorting parts of the buffer.
+* Columns::          Computing horizontal positions, and using them.
+* Indentation::      Functions to insert or adjust indentation.
+* Case Changes::     Case conversion of parts of the buffer.
+* Text Properties::  Assigning Lisp property lists to text characters.
+* Substitution::     Replacing a given character wherever it appears.
+* Transposition::    Swapping two portions of a buffer.
+* Registers::        How registers are implemented.  Accessing the text or
+                       position stored in a register.
+* Change Hooks::     Supplying functions to be run when text is changed.
+
+
+File: elisp,  Node: Near Point,  Next: Buffer Contents,  Up: Text
+
+Examining Text Near Point
+=========================
+
+   Many functions are provided to look at the characters around point.
+Several simple functions are described here.  See also `looking-at' in
+*Note Regexp Search::.
+
+ - Function: char-after POSITION
+     This function returns the character in the current buffer at (i.e.,
+     immediately after) position POSITION.  If POSITION is out of range
+     for this purpose, either before the beginning of the buffer, or at
+     or beyond the end, then the value is `nil'.
+
+     In the following example, assume that the first character in the
+     buffer is `@':
+
+          (char-to-string (char-after 1))
+               => "@"
+
+ - Function: following-char
+     This function returns the character following point in the current
+     buffer.  This is similar to `(char-after (point))'.  However, if
+     point is at the end of the buffer, then `following-char' returns 0.
+
+     Remember that point is always between characters, and the terminal
+     cursor normally appears over the character following point.
+     Therefore, the character returned by `following-char' is the
+     character the cursor is over.
+
+     In this example, point is between the `a' and the `c'.
+
+          ---------- Buffer: foo ----------
+          Gentlemen may cry ``Pea-!-ce! Peace!,''
+          but there is no peace.
+          ---------- Buffer: foo ----------
+          
+          (char-to-string (preceding-char))
+               => "a"
+          (char-to-string (following-char))
+               => "c"
+
+ - Function: preceding-char
+     This function returns the character preceding point in the current
+     buffer.  See above, under `following-char', for an example.  If
+     point is at the beginning of the buffer, `preceding-char' returns
+     0.
+
+ - Function: bobp
+     This function returns `t' if point is at the beginning of the
+     buffer.  If narrowing is in effect, this means the beginning of the
+     accessible portion of the text.  See also `point-min' in *Note
+     Point::.
+
+ - Function: eobp
+     This function returns `t' if point is at the end of the buffer.
+     If narrowing is in effect, this means the end of accessible
+     portion of the text.  See also `point-max' in *Note Point::.
+
+ - Function: bolp
+     This function returns `t' if point is at the beginning of a line.
+     *Note Text Lines::.  The beginning of the buffer (or its accessible
+     portion always counts as the beginning of a line.
+
+ - Function: eolp
+     This function returns `t' if point is at the end of a line.  The
+     end of the buffer (or of its accessible portion) is always
+     considered the end of a line.
+
+
+File: elisp,  Node: Buffer Contents,  Next: Comparing Text,  Prev: Near Point,  Up: Text
+
+Examining Buffer Contents
+=========================
+
+   This section describes two functions that allow a Lisp program to
+convert any portion of the text in the buffer into a string.
+
+ - Function: buffer-substring START END
+     This function returns a string containing a copy of the text of the
+     region defined by positions START and END in the current buffer.
+     If the arguments are not positions in the accessible portion of
+     the buffer, `buffer-substring' signals an `args-out-of-range'
+     error.
+
+     It is not necessary for START to be less than END; the arguments
+     can be given in either order.  But most often the smaller argument
+     is written first.
+
+          ---------- Buffer: foo ----------
+          This is the contents of buffer foo
+          
+          ---------- Buffer: foo ----------
+          
+          (buffer-substring 1 10)
+          => "This is t"
+          (buffer-substring (point-max) 10)
+          => "he contents of buffer foo
+          "
+
+ - Function: buffer-string
+     This function returns the contents of the accessible portion of the
+     current buffer as a string.  This is the portion between
+     `(point-min)' and `(point-max)' (*note Narrowing::.).
+
+          ---------- Buffer: foo ----------
+          This is the contents of buffer foo
+          
+          ---------- Buffer: foo ----------
+          
+          (buffer-string)
+               => "This is the contents of buffer foo
+          "
+
+
+File: elisp,  Node: Comparing Text,  Next: Insertion,  Prev: Buffer Contents,  Up: Text
+
+Comparing Text
+==============
+
+   This function lets you compare portions of the text in a buffer,
+without copying them into strings first.
+
+ - Function: compare-buffer-substrings BUFFER1 START1 END1 BUFFER2
+          START2 END2
+     This function lets you compare two substrings of the same buffer
+     or two different buffers.  The first three arguments specify one
+     substring, giving a buffer and two positions within the buffer.
+     The last three arguments specify the other substring in the same
+     way.  You can use `nil' for BUFFER1, BUFFER2 or both to stand for
+     the current buffer.
+
+     The value is negative if the first substring is less, positive if
+     the first is greater, and zero if they are equal.  The absolute
+     value of the result is one plus the index of the first differing
+     characters within the substrings.
+
+     This function ignores case when comparing characters if
+     `case-fold-search' is non-`nil'.
+
+     Suppose the current buffer contains the text `foobarbar
+     haha!rara!'; then in this example the two substrings are `rbar '
+     and `rara!'.  The value is 2 because the first substring is greater
+     at the second character.
+
+          (compare-buffer-substring nil 6 11 nil 16 21)
+               => 2
+
+     This function does not exist in Emacs version 18 and earlier.
+
+
+File: elisp,  Node: Insertion,  Next: Commands for Insertion,  Prev: Comparing Text,  Up: Text
+
+Insertion
+=========
+
+   "Insertion" means adding new text to a buffer.  The inserted text
+goes at point--between the character before point and the character
+after point.
+
+   Insertion relocates markers that point at positions after the
+insertion point, so that they stay with the surrounding text (*note
+Markers::.).  When a marker points at the place of insertion, insertion
+normally doesn't relocate the marker, so that it points to the
+beginning of the inserted text; however, certain special functions such
+as `insert-before-markers' relocate such markers to point after the
+inserted text.
+
+   Some insertion functions leave point before the inserted text, while
+other functions leave it after.  We call the latter insertion "before
+point".
+
+   Insertion functions signal an error if the current buffer is
+read-only.
+
+ - Function: insert &rest ARGS
+     This function inserts the strings and/or characters ARGS into the
+     current buffer, at point, moving point forward.  An error is
+     signaled unless all ARGS are either strings or characters.  The
+     value is `nil'.
+
+ - Function: insert-before-markers &rest ARGS
+     This function inserts the strings and/or characters ARGS into the
+     current buffer, at point, moving point forward.  An error is
+     signaled unless all ARGS are either strings or characters.  The
+     value is `nil'.
+
+     This function is unlike the other insertion functions in that it
+     relocates markers initially pointing at the insertion point, to
+     point after the inserted text.
+
+ - Function: insert-char CHARACTER COUNT
+     This function inserts COUNT instances of CHARACTER into the
+     current buffer before point.  The argument COUNT must be a number,
+     and CHARACTER must be a character.  The value is `nil'.
+
+ - Function: insert-buffer-substring FROM-BUFFER-OR-NAME &optional
+          START END
+     This function inserts a portion of buffer FROM-BUFFER-OR-NAME
+     (which must already exist) into the current buffer before point.
+     The text inserted is the region from START and END.  (These
+     arguments default to the beginning and end of the accessible
+     portion of that buffer.)  This function returns `nil'.
+
+     In this example, the form is executed with buffer `bar' as the
+     current buffer.  We assume that buffer `bar' is initially empty.
+
+          ---------- Buffer: foo ----------
+          We hold these truths to be self-evident, that all
+          ---------- Buffer: foo ----------
+          
+          (insert-buffer-substring "foo" 1 20)
+               => nil
+          
+          ---------- Buffer: bar ----------
+          We hold these truth
+          ---------- Buffer: bar ----------
+
+   *Note Sticky Properties::, for other insertion functions that inherit
+text properties from the nearby text.
+
+
+File: elisp,  Node: Commands for Insertion,  Next: Deletion,  Prev: Insertion,  Up: Text
+
+User-Level Insertion Commands
+=============================
+
+   This section describes higher-level commands for inserting text,
+commands intended primarily for the user but useful also in Lisp
+programs.
+
+ - Command: insert-buffer FROM-BUFFER-OR-NAME
+     This command inserts the entire contents of FROM-BUFFER-OR-NAME
+     (which must exist) into the current buffer after point.  It leaves
+     the mark after the inserted text.  The value is `nil'.
+
+ - Command: self-insert-command COUNT
+     This command inserts the last character typed COUNT times and
+     returns `nil'.  Most printing characters are bound to this command.
+     In routine use, `self-insert-command' is the most frequently called
+     function in Emacs, but programs rarely use it except to install it
+     on a keymap.
+
+     In an interactive call, COUNT is the numeric prefix argument.
+
+     This function calls `auto-fill-function' if the current column
+     number is greater than the value of `fill-column' and the character
+     inserted is a space (*note Auto Filling::.).
+
+     This function performs abbrev expansion if Abbrev mode is enabled
+     and the inserted character does not have word-constituent syntax.
+     (*Note Abbrevs::, and *Note Syntax Class Table::.)
+
+     This function is also responsible for calling
+     `blink-paren-function' when the inserted character has close
+     parenthesis syntax (*note Blinking::.).
+
+ - Command: newline &optional NUMBER-OF-NEWLINES
+     This command inserts newlines into the current buffer before point.
+     If NUMBER-OF-NEWLINES is supplied, that many newline characters
+     are inserted.
+
+     In Auto Fill mode, `newline' can break the preceding line if
+     NUMBER-OF-NEWLINES is not supplied.  When this happens, it
+     actually inserts two newlines at different places: one at point,
+     and another earlier in the line.  `newline' does not auto-fill if
+     NUMBER-OF-NEWLINES is non-`nil'.
+
+     The value returned is `nil'.  In an interactive call, COUNT is the
+     numeric prefix argument.
+
+ - Command: split-line
+     This command splits the current line, moving the portion of the
+     line after point down vertically, so that it is on the next line
+     directly below where it was before.  Whitespace is inserted as
+     needed at the beginning of the lower line, using the `indent-to'
+     function.  `split-line' returns the position of point.
+
+     Programs hardly ever use this function.
+
+ - Variable: overwrite-mode
+     This variable controls whether overwrite mode is in effect: a
+     non-`nil' value enables the mode.  It is automatically made
+     buffer-local when set in any fashion.
+
+
+File: elisp,  Node: Deletion,  Next: User-Level Deletion,  Prev: Commands for Insertion,  Up: Text
+
+Deletion of Text
+================
+
+   Deletion means removing part of the text in a buffer, without saving
+it in the kill ring (*note The Kill Ring::.).  Deleted text can't be
+yanked, but can be reinserted using the undo mechanism (*note Undo::.).
+Some deletion functions save text in the kill ring in some cases but
+not in the usual case.
+
+   All of the deletion functions operate on the current buffer, and all
+return a value of `nil'.
+
+ - Function: erase-buffer
+     This function deletes the entire text of the current buffer,
+     leaving it empty.  If the buffer is read-only, it signals a
+     `buffer-read-only' error.  Otherwise, it deletes the text without
+     asking for any confirmation.  It returns `nil'.
+
+     Normally, deleting a large amount of text from a buffer inhibits
+     further auto-saving of that buffer "because it has shrunk".
+     However, `erase-buffer' does not do this, the idea being that the
+     future text is not really related to the former text, and its size
+     should not be compared with that of the former text.
+
+ - Command: delete-region START END
+     This command deletes the text in the current buffer in the region
+     defined by START and END.  The value is `nil'.
+
+ - Command: delete-char COUNT &optional KILLP
+     This command deletes COUNT characters directly after point, or
+     before point if COUNT is negative.  If KILLP is non-`nil', then it
+     saves the deleted characters in the kill ring.
+
+     In an interactive call, COUNT is the numeric prefix argument, and
+     KILLP is the unprocessed prefix argument.  Therefore, if a prefix
+     argument is supplied, the text is saved in the kill ring.  If no
+     prefix argument is supplied, then one character is deleted, but
+     not saved in the kill ring.
+
+     The value returned is always `nil'.
+
+ - Command: delete-backward-char COUNT &optional KILLP
+     This command deletes COUNT characters directly before point, or
+     after point if COUNT is negative.  If KILLP is non-`nil', then it
+     saves the deleted characters in the kill ring.
+
+     In an interactive call, COUNT is the numeric prefix argument, and
+     KILLP is the unprocessed prefix argument.  Therefore, if a prefix
+     argument is supplied, the text is saved in the kill ring.  If no
+     prefix argument is supplied, then one character is deleted, but
+     not saved in the kill ring.
+
+     The value returned is always `nil'.
+
+ - Command: backward-delete-char-untabify COUNT &optional KILLP
+     This command deletes COUNT characters backward, changing tabs into
+     spaces.  When the next character to be deleted is a tab, it is
+     first replaced with the proper number of spaces to preserve
+     alignment and then one of those spaces is deleted instead of the
+     tab.  If KILLP is non-`nil', then the command saves the deleted
+     characters in the kill ring.
+
+     Conversion of tabs to spaces happens only if COUNT is positive.
+     If it is negative, exactly -COUNT characters after point are
+     deleted.
+
+     In an interactive call, COUNT is the numeric prefix argument, and
+     KILLP is the unprocessed prefix argument.  Therefore, if a prefix
+     argument is supplied, the text is saved in the kill ring.  If no
+     prefix argument is supplied, then one character is deleted, but
+     not saved in the kill ring.
+
+     The value returned is always `nil'.
+
+
+File: elisp,  Node: User-Level Deletion,  Next: The Kill Ring,  Prev: Deletion,  Up: Text
+
+User-Level Deletion Commands
+============================
+
+   This section describes higher-level commands for deleting text,
+commands intended primarily for the user but useful also in Lisp
+programs.
+
+ - Command: delete-horizontal-space
+     This function deletes all spaces and tabs around point.  It returns
+     `nil'.
+
+     In the following examples, we call `delete-horizontal-space' four
+     times, once on each line, with point between the second and third
+     characters on the successive line.
+
+          ---------- Buffer: foo ----------
+          I -!-thought
+          I -!-     thought
+          We-!- thought
+          Yo-!-u thought
+          ---------- Buffer: foo ----------
+          
+          (delete-horizontal-space)   ; Four times.
+               => nil
+          
+          ---------- Buffer: foo ----------
+          Ithought
+          Ithought
+          Wethought
+          You thought
+          ---------- Buffer: foo ----------
+
+ - Command: delete-indentation &optional JOIN-FOLLOWING-P
+     This function joins the line point is on to the previous line,
+     deleting any whitespace at the join and in some cases replacing it
+     with one space.  If JOIN-FOLLOWING-P is non-`nil',
+     `delete-indentation' joins this line to the following line
+     instead.  The value is `nil'.
+
+     If there is a fill prefix, and the second of the lines being joined
+     starts with the prefix, then `delete-indentation' deletes the fill
+     prefix before joining the lines.
+
+     In the example below, point is located on the line starting
+     `events', and it makes no difference if there are trailing spaces
+     in the preceding line.
+
+          ---------- Buffer: foo ----------
+          When in the course of human
+          -!-    events, it becomes necessary
+          ---------- Buffer: foo ----------
+          
+          (delete-indentation)
+               => nil
+          
+          ---------- Buffer: foo ----------
+          When in the course of human-!- events, it becomes necessary
+          ---------- Buffer: foo ----------
+
+     After the lines are joined, the function `fixup-whitespace' is
+     responsible for deciding whether to leave a space at the junction.
+
+ - Function: fixup-whitespace
+     This function replaces all the white space surrounding point with
+     either one space or no space, according to the context.  It
+     returns `nil'.
+
+     At the beginning or end of a line, the appropriate amount of space
+     is none.  Before a character with close parenthesis syntax, or
+     after a character with open parenthesis or expression-prefix
+     syntax, no space is also appropriate.  Otherwise, one space is
+     appropriate.  *Note Syntax Class Table::.
+
+     In the example below, `fixup-whitespace' is called the first time
+     with point before the word `spaces' in the first line.  for the
+     second invocation, Point is directly after the `('.
+
+          ---------- Buffer: foo ----------
+          This has too many     -!-spaces
+          This has too many spaces at the start of (-!-   this list)
+          ---------- Buffer: foo ----------
+
+          (fixup-whitespace)
+               => nil
+          (fixup-whitespace)
+               => nil
+
+          ---------- Buffer: foo ----------
+          This has too many spaces
+          This has too many spaces at the start of (this list)
+          ---------- Buffer: foo ----------
+
+ - Command: just-one-space
+     This command replaces any spaces and tabs around point with a
+     single space.  It returns `nil'.
+
+ - Command: delete-blank-lines
+     This function deletes blank lines surrounding point.  If point is
+     on a blank line with one or more blank lines before or after it,
+     then all but one of them are deleted.  If point is on an isolated
+     blank line, then it is deleted.  If point is on a nonblank line,
+     the command deletes all blank lines following it.
+
+     A blank line is defined as a line containing only tabs and spaces.
+
+     `delete-blank-lines' returns `nil'.
+
+
+File: elisp,  Node: The Kill Ring,  Next: Undo,  Prev: User-Level Deletion,  Up: Text
+
+The Kill Ring
+=============
+
+   "Kill" functions delete text like the deletion functions, but save
+it so that the user can reinsert it by "yanking".  Most of these
+functions have `kill-' in their name.  By contrast, the functions whose
+names start with `delete-' normally do not save text for yanking
+(though they can still be undone); these are "deletion" functions.
+
+   Most of the kill commands are primarily for interactive use, and are
+not described here.  What we do describe are the functions provided for
+use in writing such commands.  You can use these functions to write
+commands for killing text.  When you need to deleting text for internal
+purposes within a Lisp function, you should normally use deletion
+functions, so as not to disturb the kill ring contents.  *Note
+Deletion::.
+
+   Killed text is saved for later yanking in the "kill ring".  This is
+a list which holds, not just the last text kill, but a number of recent
+kills.  We call this a "ring" because yanking treats it as a cyclic
+order.  The list is kept in the variable `kill-ring', and can be
+operated on with the usual functions for lists; there are also
+specialized functions, described in this section, which treat it as a
+ring.
+
+   Some people think this use of the word "kill" is unfortunate, since
+it refers to operations which specifically *do not* destroy the
+entities "killed".  This is in sharp contrast to ordinary life, in
+which death is permanent and "killed" entities do not come back to
+life.  Therefore, other metaphors have been proposed.  For example, the
+term "cut ring" makes sense to people who, in pre-computer days, used
+scissors and paste to cut up and rearrange manuscripts.  However, it
+would be difficult to change the terminology now.
+
+* Menu:
+
+* Kill Ring Concepts::     What text looks like in the kill ring.
+* Kill Functions::         Functions that kill text.
+* Yank Commands::          Commands that access the kill ring.
+* Low Level Kill Ring::	   Functions and variables for kill ring access.
+* Internals of Kill Ring:: Variables that hold kill-ring data.
+
+
+File: elisp,  Node: Kill Ring Concepts,  Next: Kill Functions,  Up: The Kill Ring
+
+Kill Ring Concepts
+------------------
+
+   The kill ring records killed text as strings in a list, most recent
+first.  A short kill ring, for example, might look like this:
+
+     ("some text" "a different piece of text" "even older text")
+
+When the list reaches `kill-ring-max' entries in length, adding a new
+entry automatically deletes the last entry.
+
+   When kill commands are interwoven with other commands, each kill
+command makes a new entry in the kill ring.  Multiple kill commands in
+succession build up a single entry in the kill ring, which would be
+yanked as a unit.  The second and subsequent consecutive kill commands
+add text to the entry made by the first one.
+
+   For yanking, one entry in the kill ring is designated the "front" of
+the ring.  Some yank commands "rotate" the ring by designating a
+different element as the "front."  But this virtual rotation doesn't
+change the list itself--the most recent entry always comes first in the
+list.
+
+
+File: elisp,  Node: Kill Functions,  Next: Yank Commands,  Prev: Kill Ring Concepts,  Up: The Kill Ring
+
+Functions for Killing
+---------------------
+
+   `kill-region' is the usual subroutine for killing text.  Any command
+that calls this function is a "kill command" (and should probably have
+`kill' in its name).  `kill-region' puts the newly killed text in a new
+element at the beginning of the kill ring or adds it to the most recent
+element.  It uses the `last-command' variable to determine whether the
+previous was a kill command, and if so appends the killed text to the
+most recent entry.
+
+ - Command: kill-region START END
+     This function kills the text in the region defined by START and
+     END.  The text is deleted but saved in the kill ring.  The value
+     is always `nil'.
+
+     In an interactive call, START and END are point and the mark.
+
+     If the buffer is read-only, `kill-region' modifies the kill ring
+     just the same, then signals an error without modifying the buffer.
+     This is convenient because it lets the user use all the kill
+     commands to copy text into the kill ring from a read-only buffer.
+
+ - Command: copy-region-as-kill START END
+     This command saves the region defined by START and END on the kill
+     ring, but does not delete the text from the buffer.  It returns
+     `nil'.  It also indicates the extent of the text copied by moving
+     the cursor momentarily, or by displaying a message in the echo
+     area.
+
+     Don't call `copy-region-as-kill' in Lisp programs unless you aim to
+     support Emacs 18.  For Emacs 19, it is better to use `kill-new' or
+     `kill-append' instead.  *Note Low Level Kill Ring::.
+
+
+File: elisp,  Node: Yank Commands,  Next: Low Level Kill Ring,  Prev: Kill Functions,  Up: The Kill Ring
+
+Functions for Yanking
+---------------------
+
+   "Yanking" means reinserting an entry of previously killed text from
+the kill ring.
+
+ - Command: yank &optional ARG
+     This command inserts before point the text in the first entry in
+     the kill ring.  It positions the mark at the beginning of that
+     text, and point at the end.
+
+     If ARG is a list (which occurs interactively when the user types
+     `C-u' with no digits), then `yank' inserts the text as described
+     above, but puts point before the yanked text and puts the mark
+     after it.
+
+     If ARG is a number, then `yank' inserts the ARGth most recently
+     killed text--the ARGth element of the kill ring list.
+
+     `yank' does not alter the contents of the kill ring or rotate it.
+     It returns `nil'.
+
+ - Command: yank-pop ARG
+     This command replaces the just-yanked entry from the kill ring
+     with a different entry from the kill ring.
+
+     This is allowed only immediately after a `yank' or another
+     `yank-pop'.  At such a time, the region contains text that was just
+     inserted by yanking.  `yank-pop' deletes that text and inserts in
+     its place a different piece of killed text.  It does not add the
+     deleted text to the kill ring, since it is already in the kill
+     ring somewhere.
+
+     If ARG is `nil', then the replacement text is the previous element
+     of the kill ring.  If ARG is numeric, the replacement is the ARGth
+     previous kill.  If ARG is negative, a more recent kill is the
+     replacement.
+
+     The sequence of kills in the kill ring wraps around, so that after
+     the oldest one comes the newest one, and before the newest one
+     goes the oldest.
+
+     The value is always `nil'.
+
+
+File: elisp,  Node: Low Level Kill Ring,  Next: Internals of Kill Ring,  Prev: Yank Commands,  Up: The Kill Ring
+
+Low Level Kill Ring
+-------------------
+
+   These functions and variables provide access to the kill ring at a
+lower level, but still convenient for use in Lisp programs.  They take
+care of interaction with X Window selections.  They do not exist in
+Emacs version 18.
+
+ - Function: current-kill N &optional DO-NOT-MOVE
+     The function `current-kill' rotates the yanking pointer in the
+     kill ring by N places, and returns the text at that place in the
+     ring.
+
+     If the optional second argument DO-NOT-MOVE is non-`nil', then
+     `current-kill' doesn't alter the yanking pointer; it just returns
+     the Nth kill forward from the current yanking pointer.
+
+     If N is zero, indicating a request for the latest kill,
+     `current-kill' calls the value of `interprogram-paste-function'
+     (documented below) before consulting the kill ring.
+
+ - Function: kill-new STRING
+     This function puts the text STRING into the kill ring as a new
+     entry at the front of the ring.  It discards the oldest entry if
+     appropriate.  It also invokes the value of
+     `interprogram-cut-function' (see below).
+
+ - Function: kill-append STRING BEFORE-P
+     This function appends the text STRING to the first entry in the
+     kill ring.  Normally STRING goes at the end of the entry, but if
+     BEFORE-P is non-`nil', it goes at the beginning.  This function
+     also invokes the value of `interprogram-cut-function' (see below).
+
+ - Variable: interprogram-paste-function
+     This variable provides a way of transferring killed text from other
+     programs, when you are using a window system.  Its value should be
+     `nil' or a function of no arguments.
+
+     If the value is a function, `current-kill' calls it to get the
+     "most recent kill".  If the function returns a non-`nil' value,
+     then that value is used as the "most recent kill".  If it returns
+     `nil', then the first element of `kill-ring' is used.
+
+     The normal use of this hook is to get the X server's primary
+     selection as the most recent kill, even if the selection belongs
+     to another X client.  *Note X Selections::.
+
+ - Variable: interprogram-cut-function
+     This variable provides a way of communicating killed text to and
+     from other programs, when you are using a window system.  Its
+     value should be `nil' or a function of one argument.
+
+     If the value is a function, `kill-new' and `kill-append' call it
+     with the new first element of the kill ring as an argument.
+
+     The normal use of this hook is to set the X server's primary
+     selection to the newly killed text.
+
+
+File: elisp,  Node: Internals of Kill Ring,  Prev: Low Level Kill Ring,  Up: The Kill Ring
+
+Internals of the Kill Ring
+--------------------------
+
+   The variable `kill-ring' holds the kill ring contents, in the form
+of a list of strings.  The most recent kill is always at the front of
+the list.
+
+   The `kill-ring-yank-pointer' variable points to a link in the kill
+ring list, whose CAR is the text to yank next.  Moving
+`kill-ring-yank-pointer' to a different link is called "rotating the
+kill ring"; we say it identifies the "front" of the ring.  We call the
+kill ring a "ring" because the functions that move the yank pointer
+wrap around from the end of the list to the beginning, or vice-versa.
+Rotation of the kill ring is virtual; it does not change the value of
+`kill-ring'.
+
+   Both `kill-ring' and `kill-ring-yank-pointer' are Lisp variables
+whose values are normally lists.  The word "pointer" in the name of the
+`kill-ring-yank-pointer' indicates that the variable's purpose is to
+identify one element of the list for use by the next yank command.
+
+   The value of `kill-ring-yank-pointer' is always `eq' to one of the
+links in the kill ring list.  The element it identifies is the CAR of
+that link.  Kill commands, which change the kill ring, also set this
+variable from `kill-ring'.  The effect is to rotate the ring so that
+the newly killed text is at front.
+
+   Here is a diagram that shows the variable `kill-ring-yank-pointer'
+pointing to the second entry in the kill ring `("some text" "a
+different piece of text" "yet older text")'.
+
+     kill-ring       kill-ring-yank-pointer
+       |               |
+       |     ___ ___    --->  ___ ___      ___ ___
+        --> |___|___|------> |___|___|--> |___|___|--> nil
+              |                |            |
+              |                |            |
+              |                |             -->"yet older text"
+              |                |
+              |                 --> "a different piece of text"
+              |
+               --> "some text"
+
+This state of affairs might occur after `C-y' (`yank') immediately
+followed by `M-y' (`yank-pop').
+
+ - Variable: kill-ring
+     This variable holds list of killed text sequences, most recently
+     killed first.
+
+ - Variable: kill-ring-yank-pointer
+     This variable's value indicates which element of the kill ring is
+     at the "front" of the ring for yanking.  More precisely, the value
+     is a tail of the value of `kill-ring', and its CAR is the kill
+     string that `C-y' should yank.
+
+ - User Option: kill-ring-max
+     The value of this variable is the maximum length to which the kill
+     ring can grow, before elements are thrown away at the end.  The
+     default value for `kill-ring-max' is 30.
+
+
+File: elisp,  Node: Undo,  Next: Maintaining Undo,  Prev: The Kill Ring,  Up: Text
+
+Undo
+====
+
+   Most buffers have an "undo list" which records all changes made to
+the buffer's text so that they can be undone.  (The buffers which don't
+have one are usually special-purpose buffers for which Emacs assumes
+that undoing is not useful.)  All the primitives which modify the text
+in the buffer automatically add elements to the front of the undo list,
+which is in the variable `buffer-undo-list'.
+
+ - Variable: buffer-undo-list
+     This variable's value is the undo list of the current buffer.  A
+     value of `t' disables the recording of undo information.
+
+   Here are the kinds of elements an undo list can have:
+
+`INTEGER'
+     This kind of element records a previous value of point.  Ordinary
+     cursor motion does not get any sort of undo record, but deletion
+     commands use these entries to record where point was before the
+     command.
+
+`(BEG . END)'
+     This kind of element indicates how to delete text that was
+     inserted.  Upon insertion, the text occupied the range BEG-END in
+     the buffer.
+
+`(POS . DELETED)'
+     This kind of element indicates how to reinsert text that was
+     deleted.  The deleted text itself is the string DELETED.  The
+     place to reinsert it is POS.
+
+`(t HIGH . LOW)'
+     This kind of element indicates that an unmodified buffer became
+     modified.  The elements HIGH and LOW are two integers, each
+     recording 16 bits of the visited file's modification time as of
+     when it was previously visited or saved.  `primitive-undo' uses
+     those values to determine whether to mark the buffer as unmodified
+     once again; it does so only if the file's modification time
+     matches those numbers.
+
+`(nil PROPERTY VALUE BEG . END)'
+     This kind of element records a change in a text property.  Here's
+     how you might undo the change:
+
+          (put-text-property BEG END PROPERTY VALUE)
+
+`nil'
+     This element is a boundary.  The elements between two boundaries
+     are called a "change group"; normally, each change group
+     corresponds to one keyboard command, and undo commands normally
+     undo an entire group as a unit.
+
+ - Function: undo-boundary
+     This function places a boundary element in the undo list.  The undo
+     command stops at such a boundary, and successive undo commands undo
+     to earlier and earlier boundaries.  This function returns `nil'.
+
+     The editor command loop automatically creates an undo boundary
+     between keystroke commands.  Thus, each undo normally undoes the
+     effects of one command.  Calling this function explicitly is
+     useful for splitting the effects of a command into more than one
+     unit.  For example, `query-replace' calls this function after each
+     replacement so that the user can undo individual replacements one
+     by one.
+
+ - Function: primitive-undo COUNT LIST
+     This is the basic function for undoing elements of an undo list.
+     It undoes the first COUNT elements of LIST, returning the rest of
+     LIST.  You could write this function in Lisp, but it is convenient
+     to have it in C.
+
+     `primitive-undo' adds elements to the buffer's undo list when it
+     changes the buffer.  Undo commands avoid confusion by saving the
+     undo list value at the beginning of a sequence of undo operations.
+     Then the undo operations use and update the saved value.  The new
+     elements added by undoing are not part of the saved value, so they
+     don't interfere with continuing to undo.
+
+
+File: elisp,  Node: Maintaining Undo,  Next: Filling,  Prev: Undo,  Up: Text
+
+Maintaining Undo Lists
+======================
+
+   This section describes how to enable and disable undo information for
+a given buffer.  It also explains how the undo list is truncated
+automatically so it doesn't get too big.
+
+   Recording of undo information in a newly created buffer is normally
+enabled to start with; but if the buffer name starts with a space, the
+undo recording is initially disabled.  You can explicitly enable or
+disable undo recording with the following two functions, or by setting
+`buffer-undo-list' yourself.
+
+ - Command: buffer-enable-undo &optional BUFFER-OR-NAME
+     This command enables recording undo information for buffer
+     BUFFER-OR-NAME, so that subsequent changes can be undone.  If no
+     argument is supplied, then the current buffer is used.  This
+     function does nothing if undo recording is already enabled in the
+     buffer.  It returns `nil'.
+
+     In an interactive call, BUFFER-OR-NAME is the current buffer.  You
+     cannot specify any other buffer.
+
+ - Function: buffer-disable-undo &optional BUFFER
+ - Function: buffer-flush-undo &optional BUFFER
+     This function discards the undo list of BUFFER, and disables
+     further recording of undo information.  As a result, it is no
+     longer possible to undo either previous changes or any subsequent
+     changes.  If the undo list of BUFFER is already disabled, this
+     function has no effect.
+
+     This function returns `nil'.  It cannot be called interactively.
+
+     The name `buffer-flush-undo' is not considered obsolete, but the
+     preferred name `buffer-disable-undo' is new as of Emacs versions
+     19.
+
+   As editing continues, undo lists get longer and longer.  To prevent
+them from using up all available memory space, garbage collection trims
+them back to size limits you can set.  (For this purpose, the "size" of
+an undo list measures the cons cells that make up the list, plus the
+strings of deleted text.)  Two variables control the range of acceptable
+sizes: `undo-limit' and `undo-strong-limit'.
+
+ - Variable: undo-limit
+     This is the soft limit for the acceptable size of an undo list.
+     The change group at which this size is exceeded is the last one
+     kept.
+
+ - Variable: undo-strong-limit
+     The upper limit for the acceptable size of an undo list.  The
+     change group at which this size is exceeded is discarded itself
+     (along with all subsequent changes).  There is one exception:
+     garbage collection always keeps the very latest change group no
+     matter how big it is.
+

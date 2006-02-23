@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EntitybuilderSettings>
+
+    <EntitySchema schemaName="TestObsProject.xsd" xmlNamespace="AlmaTest/ObsProject"/>
+    <EntitySchema schemaName="TestObsProposal.xsd" xmlNamespace="AlmaTest/ObsProposal"/>
+    <EntitySchema schemaName="TestSchedBlock.xsd" xmlNamespace="AlmaTest/SchedBlock"/>
+    <EntitySchema schemaName="TestValueTypes.xsd" xmlNamespace="AlmaTest/ValueTypes"/>
+    
+    <XmlNamespace2JPackage xmlNamespace="AlmaTest/ObsProject" jPackage="alma.xmljbind.test.obsproject"/>
+    <XmlNamespace2JPackage xmlNamespace="AlmaTest/ObsProposal" jPackage="alma.xmljbind.test.obsproposal"/>
+    <XmlNamespace2JPackage xmlNamespace="AlmaTest/SchedBlock" jPackage="alma.xmljbind.test.schedblock"/>
+    <XmlNamespace2JPackage xmlNamespace="AlmaTest/ValueTypes" jPackage="alma.xmljbind.test.valuetypes"/>
+    
+</EntitybuilderSettings>

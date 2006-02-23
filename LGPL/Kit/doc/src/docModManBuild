@@ -1,0 +1,138 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docModManBuild,v 1.31 2002/06/08 17:20:47 vltsccm Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# mverola   09/01/98  created
+# mverola   21/07/98  changed awk into gawk
+
+#************************************************************************
+#   NAME
+#     docModManBuild - build the module manpage from source files
+#
+#   SYNOPSIS
+#     docModManBuild file1 file2 ... 
+#
+#   DESCRIPTION
+#     This script builds the module man page file from source files, 
+#     which may contain one or more manpage sections.
+#     It requires the file 'modManPage' in the current directory
+#     (usually <mod>/src or <mod>/test). The 'modManPage' file
+#     consists of the standard VLT c-function header, which must 
+#     include at least NAME, SYNOPSIS and DESCRIPTION sections.
+#     The SYNOPSIS section has to be left empty, because it will
+#     be filled up by this script, which collects the text in the NAME 
+#     and SYNOPSIS sections of the input source files.
+#     The updated 'modManPage' file can then be used to generate a VLT 
+#     standard man page for the module (using 'docDoManPages').
+#
+#   FILES
+#     The file 'modManPage' must exist in the current directory.
+#     The 'modManPage' file looks like as follows:
+#
+#     /*
+#      *   NAME                                             
+#      *     <modName> - short description of module purpose
+#      *
+#      *   SYNOPSIS
+#      *
+#      *   DESCRIPTION
+#      *     This module provides ...
+#      *
+#      *   INCLUDE FILES
+#      *     Include file list
+#      *
+#      *   SEE ALSO
+#      *     Other references
+#      *
+#      *
+#      */
+#
+#     The SYNOPSIS section will be filled automatically by
+#     this script with the list of all the functions
+#     belonging to the module.
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#     docModManBuild *.c
+#
+#   SEE ALSO
+#     docDoManPages(7)
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# Print the command syntax, if no arguments are given
+if [ $# = 0 ]
+then
+	echo "usage: docModManBuild file1 file2 ..."
+	exit
+fi
+
+# Set variables
+MODMANFILE=modManPage
+TMPMODMANFILE=${MODMANFILE}.tmp
+NEWMODMANFILE=${MODMANFILE}.new
+
+# Check if 'modManPage' file exists
+if [ ! -f $MODMANFILE ]
+then
+  echo "$MODMANFILE must exist in this directory"
+  exit
+fi
+
+# Remove temporary files, if needed
+if [ -f $TMPMODMANFILE ]
+then
+  rm $TMPMODMANFILE
+fi
+if [ -f $NEWMODMANFILE ]
+then
+   rm $NEWMODMANFILE
+fi
+
+# Extract NAME section from every file and put them into a temp. file
+for file in $*
+do
+  gawk '/^\* *\<NAME\>/,/^\* *\<SYNOPSIS\>/' $file | \
+  grep -v '^\*.*NAME' | \
+  grep -v '^\*.*SYNOPSIS' | \
+  grep -v '^\* *$' >> $TMPMODMANFILE
+done
+
+# Add a '*' line
+echo "*" >> $TMPMODMANFILE
+
+# Extract SYNOPSIS section from every file and add them into a temp. file
+for file in $*
+do
+  gawk '/^\* *\<SYNOPSIS\>/,/^\* *\<DESCRIPTION\>/' $file | \
+  grep -v '^\*.*SYNOPSIS' | \
+  grep -v '^\*.*DESCRIPTION' | \
+  grep -v '^\*.*#include' >> $TMPMODMANFILE
+done
+
+# Insert the temp. file into the SYNOPSIS section of the provided 'modManPage' file
+gawk '/^\/\*.*/,/^\* *\<SYNOPSIS\>/' $MODMANFILE >> $NEWMODMANFILE
+cat $TMPMODMANFILE >> $NEWMODMANFILE
+gawk '/^\*.*\<DESCRIPTION\>/,/^\*\//' $MODMANFILE >> $NEWMODMANFILE
+
+# Clean up the directory
+if [ -s $NEWMODMANFILE ]
+then
+  rm $MODMANFILE
+  rm $TMPMODMANFILE
+  mv $NEWMODMANFILE $MODMANFILE
+fi
+
+#___oOo___

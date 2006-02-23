@@ -1,0 +1,208 @@
+/*
+ * $Id: AlarmSelectionHandlerImpl.java,v 1.3 2005/09/28 09:48:45 acaproni Exp $
+ *
+ * $Date: 2005/09/28 09:48:45 $ 
+ * $Revision: 1.3 $ 
+ * $Author: acaproni $
+ *
+ * Copyright CERN, All Rights Reserved.
+ */
+package cern.laser.client.impl.services.selection;
+
+import java.util.Collections;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import cern.laser.client.LaserConnectionException;
+import cern.laser.client.LaserException;
+import cern.laser.client.LaserTimeOutException;
+import cern.laser.client.services.selection.AlarmSearchListener;
+import cern.laser.client.services.selection.AlarmSelectionHandler;
+import cern.laser.client.services.selection.AlarmSelectionListener;
+import cern.laser.client.services.selection.Selection;
+import cern.laser.util.LogTimeStamp;
+
+/**
+ * DOCUMENT ME!
+ * 
+ * @author $author$
+ * @version $Revision: 1.3 $
+ */
+public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
+  private static final Logger LOGGER = Logger.getLogger(AlarmSelectionHandlerImpl.class.getName());
+
+  private HeartbeatHelper heartbeatHelper;
+  private AlarmSelectionHelper alarmSelectionHelper;
+  private AlarmSearchHelper alarmSearchHelper;
+
+  //
+  // -- CONSTRUCTORS ------------------------------------------------
+  //
+
+//  /**
+//   * Creates a new AlarmSelectionHandlerImpl object.
+//   * 
+//   * @throws LaserException
+//   * 
+//   * @throws LaserException DOCUMENT ME!
+//   */
+//  public AlarmSelectionHandlerImpl() throws LaserConnectionException {
+//  }
+
+  //
+  // -- PUBLIC METHODS ----------------------------------------------
+  //
+
+  //
+  // -- extends AlarmSelectionHandler -------------------------------
+  //
+
+  /**
+   * DOCUMENT ME!
+   * 
+   * @throws LaserException DOCUMENT ME!
+   */
+  public void close() throws LaserException {
+    resetSelection();
+  }
+
+  /**
+   * returns a new selection
+   * 
+   * @return the selection instance
+   */
+  public Selection createSelection() {
+    return new SelectionImpl();
+  }
+
+  /**
+   * DOCUMENT ME!
+   * 
+   * @throws LaserException DOCUMENT ME!
+   */
+  public void resetSelection() throws LaserException {
+    try {
+      if (heartbeatHelper != null) {
+    	  System.out.println("### Stopping heartbeatHelper...");
+        heartbeatHelper.stopHeartbeatCheck();
+        System.out.println("### heartbeatHelper stopped");
+        heartbeatHelper = null;
+      } else {
+    	  System.out.println("### null heartbeatHelper: stop skipped");
+      }
+      if (alarmSelectionHelper != null) {
+    	  System.out.println("### Resetting alarmSelectionHelper...");
+        alarmSelectionHelper.resetSelection();
+        System.out.println("### alarmSelectionHelper reset done");
+      }
+      else {
+    	  System.out.println("### null alarmSelectionHelper: reset skipped");
+      }
+    } catch (Exception e) {
+    	System.err.println("### Exception: "+e.getMessage());
+    	e.printStackTrace();
+      throw new LaserException("unable to reset the selection", e);
+    }
+  }
+
+  /**
+   * DOCUMENT ME!
+   * 
+   * @param selection DOCUMENT ME!
+   * @param listener DOCUMENT ME!
+   * 
+   * @return DOCUMENT ME!
+   * @throws LaserConnectionException
+   * @throws LaserException DOCUMENT ME!
+   * @throws LaserException
+   * @throws LaserTimeOutException
+   * @throws LaserConnectionException
+   * @throws IllegalArgumentException DOCUMENT ME!
+   */
+  public Map select(Selection selection, AlarmSelectionListener selectionListener) throws LaserException,
+      LaserTimeOutException {
+    if (selection == null) {
+    	System.err.println("### Selection parameter is null");
+    	throw new IllegalArgumentException("selection parameter is null"); 
+    }
+    if (selection.getCategorySelection() == null) { 
+    	System.err.println("### No categories selected");
+    	throw new IllegalArgumentException("no categories selected"); 
+    }
+    try {
+      resetSelection();
+
+      // setup the heartbeat reception and start checking
+      System.out.println("### Subscribing to Heartbeat");
+      startHeartbeatSubscription(selectionListener);
+
+      // perform the subscriptions
+      System.out.println("### Found "+selection.getCategorySelection().list().length+" to subscribe");
+      if (selection.getCategorySelection().list().length != 0) {
+        return subscribe(selection, selectionListener);
+      } else {
+        return Collections.EMPTY_MAP;
+      }
+    } catch (LaserConnectionException e) {
+      resetSelection();
+      throw new LaserException("unable to connect to perform the selection", e);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see cern.laser.client.services.selection.AlarmSelectionHandler#search(cern.laser.client.services.selection.Selection,
+   *      cern.laser.client.services.selection.AlarmSearchListener)
+   */
+  public void search(Selection selection, int nbOfRows, AlarmSearchListener searchListener) throws LaserException,
+      LaserTimeOutException {
+    if (alarmSearchHelper == null) {
+      alarmSearchHelper = new AlarmSearchHelper(searchListener);
+    }
+    alarmSearchHelper.search(selection, nbOfRows);
+  }
+
+  //
+  // -- PROTECTED METHODS -------------------------------------------
+  //
+
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
+  }
+
+  //
+  // -- PRIVATE METHODS ---------------------------------------------
+  //
+
+  private Map subscribe(Selection selection, AlarmSelectionListener selectionListener) throws LaserException {
+    if (LOGGER.isDebugEnabled())
+        LogTimeStamp.logMsg("subscribing to " + selection.getCategorySelection().list().length + " categories", true);
+
+    if (alarmSelectionHelper == null) {
+      alarmSelectionHelper = new AlarmSelectionHelper(selectionListener);
+    }
+    Map active_alarms = alarmSelectionHelper.subscribe(selection);
+    if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg(active_alarms.size() + " active alarms returned");
+    return active_alarms;
+  }
+
+  //
+  // AlarmImpl Heartbeat subscription
+  //
+  
+  /**
+   * @param heartbeatListener
+   * @throws LaserException
+   * @throws LaserConnectionException
+   */
+  private void startHeartbeatSubscription(AlarmSelectionListener heartbeatListener) throws LaserException,
+      LaserConnectionException {
+    if (heartbeatHelper == null) {
+      heartbeatHelper = new HeartbeatHelper(heartbeatListener);
+    }
+    heartbeatHelper.startHeartbeatCheck();
+  }
+}

@@ -1,0 +1,26 @@
+TEST_RUNNER_REPORT
+FINER
+FINEST
+GlobalLogger - maci::MACIHelper::resolveManager
+endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.jconttest.ComponentTestclient
+--endorsed
+Starting Java/abeans application
+Using endorsed jar files in
+DEBUG - ACS 
+DEBUG - exported 
+Running the following command
+Running the container with these arguments
+java  -classpath 
+POA RootPOA
+POA ContainerPOA
+POA ComponentPOA
+www.jacorb.org
+Gerald Brose
+Connected to
+elapsed time in ms to start the container
+Manager login done
+logged out from manager
+Done!
+about to exit the JVM...
+Local file logger: Cache saved to
+Waiting for the container to really shutdown

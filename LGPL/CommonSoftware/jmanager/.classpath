@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry sourcepath="INTROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/prevayler-1.02.001.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/concurrent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
+	<classpathentry kind="src" path="/jacscommon"/>
+	<classpathentry kind="var" path="ACSROOT/lib/activation.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jnlp.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyicons.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
+	<classpathentry kind="src" path="/jacsutil"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="output" path="object"/>
+</classpath>

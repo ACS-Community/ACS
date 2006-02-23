@@ -1,0 +1,3 @@
+#! /bin/bash
+
+acsstartupGenericProcess.sh -e HANG "Mock python container"

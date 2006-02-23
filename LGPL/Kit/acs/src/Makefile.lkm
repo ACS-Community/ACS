@@ -1,0 +1,37 @@
+# Makefile for experimenting with kernel modules.
+#
+
+CC = /alma/ACS-3.1/gnu/bin/gcc
+
+
+RTAI_HOME=/alma/ACS-3.1/rtai
+LINUX_HOME=/alma/ACS-3.1/linux
+
+INCLUDES = -I$(LINUX_HOME)/include -I$(RTAI_HOME)/include 
+
+VER = `uname -r`
+INSTALL_DIR = ../rtai
+
+
+CFLAGS = -D__KERNEL__ $(INCLUDES) -Wall -Wstrict-prototypes -O2 \
+         -fomit-frame-pointer -pipe -fno-strength-reduce -DMODULE
+
+OBJS = trivialModule.o
+
+all:	$(OBJS)
+
+
+trivialModule,.o: trivialModule.c
+	$(CC) $(CFLAGS) -c $< -D RTAI
+
+install: $(OBJS)
+	install -d $(INSTALL_DIR)
+	install -c $(OBJS) $(INSTALL_DIR)
+#	/sbin/depmod
+
+uninstall:
+	rm -f $(INSTALL_DIR)/trivialModule.o
+
+clean:
+	rm -f *~
+	rm -f $(OBJS)

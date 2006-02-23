@@ -1,0 +1,324 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeTclScript,v 1.7 2004/09/22 11:05:51 mpasquat Exp $" 
+#
+# who       when       what
+# --------  ---------- ----------------------------------------------
+# gfilippi  19/05/94   created
+# gfilippi  09/06/94   error messages for libraries not available
+# gfilippi  22/06/94   use ../lib in the autopath
+# gfilippi  22/06/94   create VLTROOT, INTROOT even when no libraries 
+# gfilippi  07/09/94   makeXxxx utility renamed into vltMakeXxxx
+# gfilippi  17/02/95   use "#!/bin/sh, #\, exec ...." instead of #!.....
+# gfilippi  21/02/95   run the tcl checker on each tcl-file
+# gfilippi  04/03/95   make tcl checker customizable
+# gfilippi  12/07/95   check whether TK has been included or not
+# gfilippi  09/08/95   correct definition of auto_path (SPR950274)
+# mcomin    25/09/96   take away tk_strictMotif and option clean
+# mcomin    19/05/97   removed commented lines left by MCO for the above changes
+# eallaert  2002-10-25 take MODROOT into account (SPR 20020574)
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeTclScript - create an executable Tcl/Tk procedure
+# 
+#   SYNOPSIS
+#
+#   vltMakeTclScript <tclChecker> <defTclShell> <tclShell>  
+#                             <exeName> <objectList> <tclLibList>
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to create an executable Tcl/Tk procedure.
+#   It is not intended to be used as a standalone command.
+#
+#   An Tcl/Tk procedure is obtained starting from one or more tcl/tk 
+#   script files in the src/ directory.
+#
+#   (1) see also Tcl/Tk manual, 13.7 Autoloading, pag.138.
+#
+#
+#   <tclChecker>  the program to be used as syntax checek for tcl files
+#
+#   <defTclShell> The full name of the default tcl shell
+#
+#   <tclShell>    The full name of the tcl shell for this one
+#
+#   <exeName>     The name of the  executable. The output is named 
+#                 ../bin/<exeName>
+#
+#   <objectList>  The list of the script files in the src/ directory.
+#                 (Without neither directory nor .tcl suffix)
+#
+#   <tclLibList>  the list of tcl libraries needed to link.
+#                 the library directory name is created as
+#                 lib<listMember>.tcl
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile, Makefile, (GNU) make
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+if [ $# -ne 6 ]
+then
+    echo "" >&2
+    echo "vltMakeTclScript <tclChecker> <defTclShell> <tclShell>  <exeName> <objectList> <tclLibList>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# set up more readable variables:
+tclChecker=$1
+defTclShell=$2
+tclShell=$3
+exeName=$4
+objectList=$5
+libList=$6
+
+OUTPUT=../bin/${exeName}
+
+#
+#  The first line of a script can be used to specify the shell to be used 
+#  to execute the script. Such a line shall have the following format:
+#          #! <shellFilename> [<parameter> ... ]
+#  The <shellFilename> MUST be completed with the path and the total 
+#  lenght cannot exceed 32 chars.
+#
+#  This impose a serious limitation to the flexibility of finding a shell
+#  executable according to the precedence established by the current PATH 
+#  
+#  Since the introduction of tcl/Tk and Sequencer, many commands are build 
+#  as scripts. To allow the usual flexibility given by the mod/int/vlt-root
+#  architecture, there is the need to use the following trick:
+#  
+#      - all scripts are executed by /bin/sh (first line)
+#      - the second line ends with "\"
+#      - the third line is an "exec" of the actual shell we want to use
+#        (such a command is searched according to the current PATH)
+#
+#  Thanks to a different way in handling the "\" at the end of a comment line
+#  (such line is considered a comment line for Tcl, i.e. when you "source"
+#  the file, but not for /bin/sh ) this allows to be able both to source 
+#  the script and to execute. In both cases the same shell (the one given
+#  by "which shell") is used.
+#  
+#  Therefore the header of the output file shall be:
+#  
+#     #!/bin/sh
+#     #\
+#     exec <tclShell> "$0" ${1+"$@"}
+#  
+
+if [ "${tclShell}" = "" ]
+then
+    tclShell=$defTclShell
+fi
+
+echo "#!/bin/sh" >$OUTPUT
+echo "#\\" >>$OUTPUT
+echo "exec ${tclShell} \"\$0\" \${1+\"\$@\"}" >>$OUTPUT
+
+
+#
+# create header
+#
+echo "#*******************************************************************************" >>$OUTPUT
+echo "# E.S.O. - VLT project"                                         >>$OUTPUT
+echo "# "                                                             >>$OUTPUT
+echo "# ${exeName}"                                                   >>$OUTPUT
+echo "# "                                                             >>$OUTPUT
+echo "# Created by vltMakeTclScript: `whoami` `date '+%d.%m.%y %T'` " >>$OUTPUT
+echo "# "                                                             >>$OUTPUT
+echo "# "                                                             >>$OUTPUT
+echo "#        !!!!!!!!!!!!!!  DO NOT MANUALLY EDIT THIS FILE  !!!!!!!!!!!!!!" >>$OUTPUT
+echo "# "                                                             >>$OUTPUT
+echo "#-------------------------------------------------------------------------------">>$OUTPUT
+echo ""                                                               >>$OUTPUT
+
+    
+# 
+# define standard variables: VLTROOT, INTROOT, MODROOT, HOME
+
+echo "#" >>$OUTPUT
+echo "#  Get directory root of VLT, integration, current module."        >>$OUTPUT
+echo "if {[catch {set VLTROOT \$env(VLTROOT)}]} {set VLTROOT undefined}" >>$OUTPUT
+echo "if {[catch {set INTLIST \$env(INTLIST)}]} {set INTLIST undefined}" >>$OUTPUT
+echo "if {[catch {set INTROOT \$env(INTROOT)}]} {set INTROOT undefined}" >>$OUTPUT
+echo "if {[catch {set MODROOT \$env(MODROOT)}]} {set MODROOT undefined}" >>$OUTPUT
+echo "if {[catch {set HOME    \$env(HOME)}]}    {set HOME    undefined}" >>$OUTPUT
+echo "" >>$OUTPUT
+
+#
+# if the list of libraries is not empty, insert each lib into the autopath
+
+if [ "${libList}" != "" ]
+then
+    echo "#"                                           >>$OUTPUT
+    echo "#  Adjust auto_path for each library"        >>$OUTPUT
+    echo "#  (this permits to find the resp. tclIndex files)" >>$OUTPUT
+    for member in ${libList}
+    do
+	echo " "                                        >>$OUTPUT
+	echo "# "                                      >>$OUTPUT
+	echo "# >>>${member}<<<"                       >>$OUTPUT
+
+        echo "set found \"NO\" " >>$OUTPUT
+        echo "if {\$INTLIST != \"undefined\"} { "  >>$OUTPUT
+        echo "   set myIntlist \"\$env(INTLIST)\" "  >>$OUTPUT
+        echo "   set intlist_list [split \$myIntlist :] "  >>$OUTPUT
+        echo "   set first_dir [ lindex \$intlist_list 0 ] "  >>$OUTPUT
+        echo "   foreach tmpdir \$intlist_list {" >>$OUTPUT
+        echo "      if {[file exist \$tmpdir/lib/lib${member}.tcl] && [file isdirectory \$tmpdir/lib/lib${member}.tcl]} {" >>$OUTPUT
+        echo "            set found \"YES\" " >>$OUTPUT
+        echo "            set mydir  \$tmpdir/lib/lib${member}.tcl " >>$OUTPUT
+        echo "            break " >>$OUTPUT
+        echo "      } " >>$OUTPUT
+        echo "   } " >>$OUTPUT
+        echo "} " >>$OUTPUT
+
+        #
+        # GCH: here was a test on seqSh and seqWish.
+        #      Removed it.
+        # 
+
+	echo "if {[file exists ../lib/lib${member}.tcl] && [file isdirectory ../lib/lib${member}.tcl]} {" >>$OUTPUT
+	echo "    # the current relative path can be affected by any change of working"   >>$OUTPUT
+	echo "    # directory within the application. "                >>$OUTPUT
+	echo "    # To prevent possible mess, the RELATIVE path is changed into absolute" >>$OUTPUT
+	echo "    set keepWd [pwd]"                                    >>$OUTPUT
+	echo "    cd ../lib/lib${member}.tcl"                          >>$OUTPUT
+	echo "    set dir [pwd]"                                       >>$OUTPUT
+	echo "    cd \$keepWd"                                         >>$OUTPUT
+	echo "    unset keepWd"                                        >>$OUTPUT
+	echo "} elseif {[file exists \$MODROOT/lib/lib${member}.tcl] && [file isdirectory \$MODROOT/lib/lib${member}.tcl]} {"  >>$OUTPUT
+	echo "    set dir \$MODROOT/lib/lib${member}.tcl"              >>$OUTPUT
+	echo "} elseif {[file exist \$INTROOT/lib/lib${member}.tcl] && [file isdirectory \$INTROOT/lib/lib${member}.tcl]} {"                  >>$OUTPUT
+	echo "    set dir \$INTROOT/lib/lib${member}.tcl"              >>$OUTPUT
+        echo "} elseif  {\$found == \"YES\"} {" >>$OUTPUT
+        echo "    set dir \$mydir" >>$OUTPUT    
+	echo "} elseif {[file exists \$VLTROOT/lib/lib${member}.tcl] && [file isdirectory \$VLTROOT/lib/lib${member}.tcl]} {"                  >>$OUTPUT
+	echo "    set dir \$VLTROOT/lib/lib${member}.tcl"              >>$OUTPUT
+	echo "} else {"                                                >>$OUTPUT
+	echo "    puts stderr  \"${exeName} - ERROR:\"; "              >>$OUTPUT
+	echo "    puts stderr  \"   Tcl library lib${member}.tcl not found. Unable to continue.\"; " >>$OUTPUT
+	echo "    puts stderr  \"\"; "                                 >>$OUTPUT
+	echo "    exit 1;"                                             >>$OUTPUT
+	echo "}"                                                       >>$OUTPUT
+        #
+        # GCH: here ended the test on seqSh and seqWish.
+        # 
+
+	echo "if {[lsearch -exact \$auto_path \$dir] == -1} {"             >>$OUTPUT
+	echo "    set auto_path [linsert \$auto_path 0 \$dir]"             >>$OUTPUT
+	echo "}"                                                           >>$OUTPUT
+    done
+    echo "catch {unset dir}"                                               >>$OUTPUT
+else
+    echo "#"                                                               >>$OUTPUT
+    echo "# No libraries defined for this script."                         >>$OUTPUT
+    echo "# " >>$OUTPUT
+fi
+
+echo "###########################################################" >>$OUTPUT
+echo "#                                                         #" >>$OUTPUT
+echo "# if the current shell is including TK, i.e. option       #" >>$OUTPUT
+echo "# command is known, then set-up X resources               #" >>$OUTPUT
+echo "#                                                         #" >>$OUTPUT
+echo "###########################################################" >>$OUTPUT
+
+echo ""                                          >>$OUTPUT
+echo "if {[info command option] != \"\"} {"      >>$OUTPUT
+
+echo "    "                                      >>$OUTPUT
+echo "    #"                                     >>$OUTPUT
+echo "    # Load resources:"                     >>$OUTPUT
+echo "    # merge possible Xresource files in the following order:"  >>$OUTPUT
+echo "    #           - $VLTROOT/app-defaults  "                     >>$OUTPUT
+echo "    #           - $INTROOT/app-defaults  "                     >>$OUTPUT
+echo "    #           - $MODROOT/app-defaults  "                     >>$OUTPUT
+echo "    #           - $HOME/                 "                     >>$OUTPUT
+echo "    #           - ../app-defaults        "                     >>$OUTPUT
+echo "    #"                                                         >>$OUTPUT
+echo "    if {[file exists \$VLTROOT/app-defaults/X${exeName}]} {"   >>$OUTPUT
+echo "        option readfile \$VLTROOT/app-defaults/X${exeName} "   >>$OUTPUT
+echo "    }"                                                         >>$OUTPUT
+
+echo "if {\$INTLIST != \"undefined\"} { "  >>$OUTPUT
+echo "    foreach tmpdir \$intlist_list {" >>$OUTPUT
+echo "       if {[file exists \$tmpdir/app-defaults/X${exeName}]} {" >>$OUTPUT
+echo "          option readfile \$tmpdir/app-defaults/X${exeName}  " >>$OUTPUT
+echo "       }" >>$OUTPUT
+echo "    }" >>$OUTPUT
+echo "}" >>$OUTPUT
+
+echo "    if {[file exists \$INTROOT/app-defaults/X${exeName}]} {"   >>$OUTPUT
+echo "        option readfile \$INTROOT/app-defaults/X${exeName} "   >>$OUTPUT
+echo "    }"                                                         >>$OUTPUT
+
+echo "    if {[file exists \$MODROOT/app-defaults/X${exeName}]} {"   >>$OUTPUT
+echo "        option readfile \$MODROOT/app-defaults/X${exeName} "   >>$OUTPUT
+echo "    }"                                                         >>$OUTPUT
+
+echo "    if {[file exists \$HOME/X${exeName}]} {"                   >>$OUTPUT
+echo "        option readfile \$HOME/X${exeName} "                   >>$OUTPUT
+echo "    }"                                                         >>$OUTPUT
+
+echo "    if {[file exists ../app-defaults/X${exeName}]} {"          >>$OUTPUT
+echo "        option readfile ../app-defaults/X${exeName} "          >>$OUTPUT
+echo "    }"                                                         >>$OUTPUT
+
+echo "}"                                                             >>$OUTPUT
+   
+echo "#-------------------------------------------------------------------" >>$OUTPUT
+echo "#                    END OF STANDARD PROLOGUE "                       >>$OUTPUT
+echo "#-------------------------------------------------------------------" >>$OUTPUT
+
+#
+# append each source file to the output file
+if [ "${objectList}" = "" ]
+then
+    echo "WARNING: vltMakeTclScript: ${exeName}_OBJECTS is not defined." >&2
+    exit 1
+fi
+
+for member in ${objectList}
+do
+    #
+    # run the tcl checker on each tcl-file
+    $tclChecker ${member}.tcl 1>&2
+    
+    echo "" >>$OUTPUT
+    echo "#vvvvvvvvvvvvvvvvv  src/${member}.tcl  vvvvvvvvvvvvvvvvvvvvvv" >>$OUTPUT
+    cat ${member}.tcl                                                    >>$OUTPUT
+    echo "#^^^^^^^^^^^^^^^^^  src/${member}.tcl  ^^^^^^^^^^^^^^^^^^^^^^" >>$OUTPUT
+done
+
+#
+# terminate output file
+echo ""                                                                >>$OUTPUT
+echo "#--------------------------------------------------------------" >>$OUTPUT
+echo "#                       End of ${exeName}"                       >>$OUTPUT
+echo "#--------------------------------------------------------------" >>$OUTPUT
+echo "# ___oOo___ " >>$OUTPUT
+
+#
+# make output file executable
+chmod +x $OUTPUT
+
+#
+# notify user that all has been done
+echo "                      $OUTPUT  created"
+#
+# ___oOo___

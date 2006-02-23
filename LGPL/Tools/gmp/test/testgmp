@@ -1,0 +1,5 @@
+#!/bin/sh
+cd ../src
+for i in 1; do make all; make check; done > makeGmpAll.tmp 2>&1
+rm -rf makeGmpAll.tmp 
+make check

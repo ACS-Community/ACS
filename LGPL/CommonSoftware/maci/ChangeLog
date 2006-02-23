@@ -1,0 +1,722 @@
+Thu Jan 15 15:10:45 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* ws/src: added activateOffShoot method to Container Services
+
+Thu Nov 06 15:10:45 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* ws/include: added maciContainerServices.h
+	* ws/src: added maciContainerServices.cpp
+
+Tue Oct 21 21:10:45 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* ws/include/maciACSComponentDefines.h: changed component state
+	request to activate component from OPERATIONAL to NEW
+
+Thu Aug 28 15:22:45 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* ws/include/: added maciACSComponentDefines.h and
+	maciPropertyDefines.h
+
+Tue Jul  8 15:53:47 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/maciRecovery.h,v 1.78: 
+	* ws/include/maciManagerImpl.h,v 1.79 (RefCountServantBase
+): 
+
+Mon May 26 14:30:01 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/test/startManager.sh,v 1.79: Now putting ../bin. Shall work
+	also if src not build.
+
+Fri May 23 11:20:23 2003    <matej.sekoranja@csl01.cosylab.com>
+
+	* ws/src/maciHelper.cpp:
+	Replaced exponential backoff with 3s retries.
+
+	* ws/src:
+	Make maciManager and maciActivate multi-threaded.
+
+	* ws/src/maciManagerImpl.cpp:
+	Fixed hierachical COBs reactivation deadlock.
+
+Mon May 19 16:24:05 2003    <matej@csl01.cosylab.com>
+
+	* ws/idl/maci.idl:
+	Moved AccessRights module out of maci module.
+
+	* ws/src/maciManagerImpl.cpp:
+	Changed maci::AccessRights to AccessRights.
+
+Sat May  3 16:11:26 2003    <dvitas@csl02.cosylab.com>
+
+	*  ws/src/maciActivatorImpl.cpp (get_COB_info):
+	If the list of handles is empty, information about all COBs
+	hosted by the activator is returned.
+
+Wed Apr  2 10:08:51 2003  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/src/maciHelper.cpp,v 1.78 (resolveManager): 
+	Changed DEBUG message when CDB ManagerReference is empty or not
+	set. This is not a failure in reading.
+
+	* ws/config/CDB/schemas/Manager.xsd,v 1.78: 
+	* ws/config/CDB/schemas/Activator.xsd,v 1.78: 
+	Added default for CommandLine, ManagerReference and DAL type
+        Empty strings
+	
+	* ws/test/maciTestClient.cpp,v 1.78: 
+	Strange error in GetCURL: in case of error it was returning and
+	int (1) instead of a an ACE_CString. How is it that it was not
+	catched before? 
+
+	* ws/src/Makefile,v 1.78: Removed nslist and nsadd. Use standard
+	TAO ones
+
+	* ws/src/maciServantManager.cpp,v 1.78 (incarnate): 
+	TAO_ENV_ARG_DEFN does not exists any more. Looking at the
+	examples, it seems OK just to remove it
+
+Thu Jan 16 13:11:01 2003  Matej Sekoranja  <matej@csl01>
+
+	* ws/src/maciActivatorImpl.cpp:
+	Changed Activator <-> Manager mechanism in case of handle collision.
+
+Wed Jan 15 10:25:19 2003 <msekoran@te13.hq.eso.org>  maci version: 1.78 
+Tue Dec 17 15:21:44 2002  UVES team at Trieste Observatory (c/o Antonio Longinotti)  <oat@te4.hq.eso.org>
+
+	* ws/include/maciSimpleClient.h: added get_object template function
+	* ws/include/maciActivatorImpl.h: added get_object template function
+
+Mon Dec 16 13:57:09 2002 <oat@te13.hq.eso.org>  maci version: 1.77 
+Tue Dec  3 13:29:36 2002  Bogdan Jeram  <bjeram@te37>
+        * removed compile time CCSLite depedency (CCS, ccs.h)
+	* ws/test/TESTLIST.td: changed 1st test: just one activator is
+	started using startMaciTest
+
+Mon Dec  2 16:24:53 2002  Bogdan Jeram  <bjeram@te37>
+
+	* removed ENVIRONMENTS/lcuTat/dbl
+
+Mon Dec 02 10:35:16 2002 <bjeram@te13.hq.eso.org>  maci version: 1.76 
+Thu Nov 28 09:54:47 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/test/maciTestClassImpl.cpp (ConstructCOB): added:
+	IDL:ALMA/MACI_TEST/ ... 1.0 for COB types
+
+Wed Nov 27 16:46:29 2002 <bjeram@te13.hq.eso.org>  maci version: 1.75 
+Tue Nov 26 16:34:03 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/test/TestList_WS.lite: addded epilogue/prologue
+
+Tue Nov 26 15:34:01 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/src/maciActivatorImpl.cpp (initThread): removed ccsInit
+	(doneThread): removed ccsExit
+
+Tue Nov 26 15:29:55 2002 <bjeram@te13.hq.eso.org>  maci version: 1.74 
+Tue Nov  5 14:59:02 2002  Dragan Vitas  <dvitas@dina.ijs.si>
+
+	* ws/src/maciManagerImpl.cpp: changed code for accessing COBs data
+
+Tue Nov 05 10:03:43 2002 <dvitas@te13.hq.eso.org>  maci version: 1.73 
+Tue Oct 29 09:43:03 2002  David Fugate  <david@dhcp22.hq.eso.org.>
+
+	* added command-line parameter doxygen comments to all executables
+
+Mon Oct 28 17:22:30 2002 <dfugate@te13.hq.eso.org>  maci version: 1.72 
+Mon Oct 28 16:19:51 2002  David Fugate  <david@dhcp22.hq.eso.org.>
+
+	* ws/include/maciActivate.h: added new type of doxygen comments.
+
+Mon Oct 28 15:45:54 2002 <dfugate@te13.hq.eso.org>  maci version: 1.71 
+Thu Oct 17 14:34:18 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/test/TestList_BOTH.lite: 
+	* ws/test/TestList_WS.lite: 
+	Commented out ENVIRONMENT
+
+Wed Oct 16 10:22:53 2002 <gchiozzi@te13.hq.eso.org>  maci version: 1.70 
+Thu Sep 26 16:28:16 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	* ws/include/maciActivatorImpl.h:
+	* ws/src/maciActivatorImpl.cpp:
+	Fixed command line argument handling.
+	Improved multi-threading capabilities.
+	Some memory management issues.
+	On shutdown all autostart libraries are unloaded.
+
+	* ws/src/maciManager.cpp:
+	* ws/src/maciManagerImpl.cpp:
+	Fixed command line argument handling.
+	Some memory management issues.
+
+Sat Sep 21 19:07:29 2002 <msekoran@te13.hq.eso.org>  maci version: 1.69 
+Tue Sep 17 18:16:14 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	Ported to new CDB.
+
+Tue Sep 17 12:30:06 2002 <msekoran@te13.hq.eso.org>  maci version: 1.68 
+Sun Sep 15 12:45:17 2002  Matej Sekoranja  <matej@csl01.ijs.si>
+
+	* ws/incude/maciManagerImpl.h:
+	* ws/src/maciManagerImpl.cpp:
+	Added no-recovery option, impoved cmd-ln usage help, added service
+	COB CDB lookup.
+
+	* ws/dbl/maci.class:
+	Added Managers:Manager.ServiceCOBs array.
+
+Sun Sep 15 11:17:33 2002 <msekoran@te13.hq.eso.org>  maci version: 1.67 
+Fri Sep  6 21:06:51 2002  Matej Sekoranja  <matej@csl01.ijs.si>
+
+	* ws/src/maciManagerImpl.cpp:
+	NS COB lookup added.
+
+	* ws/src/SimpleClient.cpp:
+	LoggingProxy initialization move to init() method.
+
+	* ws/src/maciActivatorImpl.cpp:
+	Command line usage help improved.
+
+Tue Sep 03 10:52:31 2002 <msekoran@te13.hq.eso.org>  maci version: 1.66 
+Fri Aug 30 14:09:49 2002  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/src/maciActivatorImpl.cpp (init): copy comand line options
+	be4 DB initalization (for new CDB)
+
+Fri Aug 30 08:43:45 2002 <bjeram@te13.hq.eso.org>  maci version: 1.65 
+Thu Aug 15 09:43:48 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/src/maciActivate.cpp: changed argUnpack.h to acsutilArgUnpack.h
+	* lcu/include/argUnpack.h: removed
+	
+Thu Aug 15 17:40:26 2002 <dfugate@te13.hq.eso.org>  maci version: 1.64 
+Mon Jul  8 17:27:36 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/maciManagerImpl.cpp:
+	Removed snprintf.
+
+	* ws/src/maciHelper.cpp:
+	Exceptions when resolving NameService are now shown as LM_DEBUG logs.
+
+Mon Jul 08 17:00:37 2002 <msekoran@te13.hq.eso.org>  maci version: 1.63 
+Mon Jul  8 10:52:56 2002  Matej Sekoranja  <matej@csl01.ijs.si>
+
+	* ws/include/maciRegistrar.*:
+	Preallocation added.
+
+	* ws/src/maciManagerImpl.cpp:
+	get_COB() does not block anymore.
+
+	* ws/test/maciTestRegistrar.cpp:
+	Added.
+
+	* ws/include/maciTestClassImpl.h:
+	* ws/test/maciTestClassImpl.cpp:
+	* ws/dbl/maciTestClass.dbl:
+	* ws/test/maciTest.mts:
+	Hierarcihal COB test added.
+	
+
+Fri Jul 05 17:54:43 2002 <msekoran@te13.hq.eso.org>  maci version: 1.62 
+Mon Jul 01 13:49:01 2002 <gchiozzi@te13.hq.eso.org>  maci version: 1.61 
+Thu Jun 27 15:53:19 2002  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/src/maciActivatorImpl.cpp (get_object): Waiting for m_handle in get_object
+
+Thu Jun 27 14:00:56 2002 <bjeram@te13.hq.eso.org>  maci version: 1.60 
+Mon Jun 24 15:18:47 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/maciManagerImpl.cpp:
+	* ws/include/maciManagerImpl.h:
+	Startup COBs in separate thread.
+
+Mon Jun 24 13:54:00 2002 <msekoran@te13.hq.eso.org>  maci version: 1.59 
+Sat May 18 22:05:06 2002  Matej Sekoranja  <matej@localhost.localdomain>
+
+	* ws/test/*:
+	Added new tests.
+
+	* ws/src/maciManagerImpl.cpp: better maci::Constructable interface detection
+	
+
+Sat May 18 14:32:44 2002 <msekoran@te13.hq.eso.org>  maci version: 1.58 
+Mon Apr 15 13:12:00 2002  Birger Gustafsson  <bgustafs@te37>
+
+	* updated LCU test reference files
+
+	* ws/test/maciTestClient.cpp: corrected activator shutdown action
+
+	* ws/src/maciActivatorShutdown.cpp: 
+	* ws/src/maciActivatorImpl.cpp: corrected shutdown action
+
+	* ws/src/maciActivate.cpp: corrected activator shutdown on VxWorks 
+
+Mon Apr 15 13:08:23 2002 <bgustafs@te13.hq.eso.org>  maci version: 1.57 
+Sun Apr 14 14:07:01 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	        * ws/src/maciActivate.cpp:
+	        Fixed VxWord code for Activator shutdown.
+
+Sun Apr 14 13:38:02 2002 <msekoran@te13.hq.eso.org>  maci version: 1.56 
+Fri Apr 12 14:30:28 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/test/TestDriver.grep/sed: fixed
+
+Fri Apr 12 09:16:43 2002 <bjeram@te13.hq.eso.org>  maci version: 1.55 
+Wed Apr 10 10:26:36 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/test/TestDriver: added ENV variables to write log and
+	recovery files locally and in the end of test delete them
+
+	* ws/src/maciManagerImpl.cpp (get_COB): added    (ACE_OS::strcmp(cob_url, "ACSLogSvc")==0)
+
+	* ws/src/maciSimpleClient.cpp (SimpleClient::init): added acs error initalization
+	(SimpleClient::init): added that simeple client connects to the centralized logger
+	(SimpleClient::destroy): added ACSErro::done and LoggingProxy::done
+
+Wed Apr 10 10:19:58 2002 <bjeram@te13.hq.eso.org>  maci version: 1.54 
+Mon Apr  8 16:22:51 2002  Birger Gustafsson  <bgustafs@te4.hq.eso.org>
+
+	* ws/dbl/maci.class: Changed invocation timeout to 50 sand
+	cachesize to 10
+
+Mon Apr 08 16:21:24 2002 <bgustafs@te13.hq.eso.org>  maci version: 1.53 
+Sun Apr  7 13:07:18 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/maciManagerImpl.h:
+	Manager timeout policy setting moved to internalManagerInitializer().
+
+Sun Apr 07 11:45:31 2002 <msekoran@te13.hq.eso.org>  maci version: 1.52 
+Thu Apr  4 13:33:11 2002  Jorge Ibsen  <jibsen@te22.hq.eso.org>
+
+        * ws/include/maciActivatorImpl.h:
+        * ws/src/maciActivatorImpl.cpp (get_object): Method added to allow
+        DOs to talk to others DOs.
+
+Thu Apr 04 13:19:25 2002 <jibsen@te13.hq.eso.org>  maci version: 1.51 
+Thu Mar 28 09:17:01 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/include/maciRecovery.h:
+	* ws/src/maciRecovery.cpp:
+	Using getTempFileName().
+
+Wed Mar 27 18:39:29 2002 <msekoran@te13.hq.eso.org>  maci version: 1.50 
+Thu Mar 14 16:31:04 2002  Jorge Ibsen  <jibsen@te22.hq.eso.org>
+
+	* ws/src/Makefile: maciActivatorImpl.h made public.
+
+Thu Mar 14 14:06:43 2002 <jibsen@te13.hq.eso.org>  maci version: 1.49 
+Fri Mar  8 14:41:20 2002  Birger Gustafsson  <bgustafs@te37>
+
+	* Ported tat test to LCU. Most files in ws/test are modified.
+	Added Makefile to lcu/test. Need to copy TestList_xxx.lite
+	to TestList.lite. Should be fixed in tat.
+
+Fri Mar 08 11:09:01 2002 <bgustafs@te13.hq.eso.org>  maci version: 1.48 
+Mon Mar  4 09:28:54 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/maciManager.cpp: ACSError::init() added.
+	* ws/src/maciActivatorImpl.cpp: ACSError::init() added.
+
+Mon Mar 04 08:39:48 2002 <msekoran@te13.hq.eso.org>  maci version: 1.47 
+Fri Mar  1 15:19:22 2002  ALMA Project c/o Robert Karban  <almamgr@te37>
+
+	* lcu/src/Makefile (Activate_GENERATED): Removed S_T generated file.
+
+Fri Mar 01 15:18:22 2002 <gchiozzi@te13.hq.eso.org>  maci version: 1.46 
+Mon Feb 25 15:15:03 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* Sbility improved.
+
+Thu Feb 21 15:12:36 2002 <msekoran@te13.hq.eso.org>  maci version: 1.45 
+Sat Feb  9 16:25:06 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/maciManagerImpl.cpp:
+	* ws/src/maciHeartbeatController.cpp:
+	* ws/dbl/maci.class:
+	HeartbeatTimeout added.
+
+Sat Feb 09 14:49:22 2002 <msekoran@te13.hq.eso.org>  maci version: 1.44 
+Fri Feb  8 15:27:48 2002  Birger Gustafsson  <bgustafs@te37>
+
+	* ws/src/maciActivatorImpl.cpp: changed task name of VxWorks task
+
+Fri Feb 08 15:23:26 2002 <bgustafs@te13.hq.eso.org>  maci version: 1.43 
+Thu Feb  7 17:32:46 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* maciActivate and maciManager destruction improved.
+	* ws/src/maciManager.cpp: MANAGER_REFERENCE handling fixed.
+
+Thu Feb 07 15:39:47 2002 <msekoran@te13.hq.eso.org>  maci version: 1.42 
+Wed Feb  6 23:26:43 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/test/*.ref
+	Updated the reference files, but there is still a problem
+	when the activator is shutdown.
+	We can get one of two different exceptions:
+
+< 2 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
+< 2 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+---
+> 2 - system exception, ID 'IDL:omg.org/CORBA/COMM_FAILURE:1.0'
+> 2 - TAO exception, minor code = 6 (failed to recv request response; ENOENT), completed = MAYBE
+
+        This makes the test not deterministic and should be solved.
+	If this is really the "correct" behavior, we should filter the
+	lines out.
+	
+	* ws/test/TestDriver.grep (maci): 
+	Filtered out all lines with 
+	     maci::HeartbeatHandler::handle_timeout
+	since it is very difficult to get them deterministic.
+
+Wed Feb 06 22:51:35 2002 <gchiozzi@te13.hq.eso.org>  maci version: 1.41 
+Sun Feb  3 20:33:10 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/test/maciTestClassImpl.cpp:
+	Instead of requesting Activator to do it, ask the Manager to do it
+	all.
+
+	* ws/src/maciActivator.cpp:
+	Shutdown improoved.
+	
+Sat Feb 02 11:24:19 2002 <msekoran@te13.hq.eso.org>  maci version: 1.40 
+Wed Jan 30 15:54:57 2002  Gianluca Chiozzi  <gchiozzi@te37>
+
+	* ws/test/maciTestClassImpl.cpp (MaciTestClass::shutdown): 
+	Instead of requesting ORB shutdown, ask the Activator to do it.	
+	
+	* ws/test/ENVIRONMENTS/wsTat/dbl/USER.db: 
+	Added MACI_FAKE to test configuration database access errors.
+
+	* ws/dbl/maci.class: 
+	* ws/src/maciActivatorImpl.cpp (loadDLL): 
+	Matej had commented out handling of DLL:CommandLine in
+	configuraiton database.
+	I have now removed the DLL point from the configuration database
+	all together.
+	(initThread):
+	(doneThread):
+        Added ccsInit to initThread and ccsExit to doneThread for VxWorks.
+	This must be better documented.
+
+	* ws/dbl/maci.class: Added missing Manager::Execute attribute
+
+Wed Jan 30 14:15:58 2002 <gchiozzi@te13.hq.eso.org>  maci version: 1.39 
+Fri Jan 18 22:04:36 2002  Gianluca Chiozzi  <gchiozzi@te22.hq.eso.org>
+
+	* ws/test/ENVIRONMENTS:
+	Removed environment Makefile. Use the template.
+
+Thu Jan 17 15:28:08 2002  Gianluca Chiozzi  <gchiozzi@te22.hq.eso.org>
+
+	* lcu/src/Makefile: 
+	* lcu/test/Makefile: 
+	Removed all -I include options for standard ACE/TAO
+	directories. This is handled by the acsMakefile.
+	
+	* ws/src/maciHelper.cpp (resolveInterfaceRepository): 
+	Replaced wrong ACE_TRY_CHECK with ACE_TRY_CHECK_EX
+	
+
+Thu Jan 17 15:14:52 2002 <gchiozzi@te13.hq.eso.org>  maci version: 1.38 
+Wed Jan 16 11:22:21 2002 <bgustafs@te13.hq.eso.org>  maci version: 1.37 
+	
+        * lcu/src/VxWorksDLL.cpp: added function vxworks_modulefind
+
+        * ws/src/maciLibraryManager.cpp: do not load a VxWorks library if
+        already loaded, SPR ALMASW2001081
+
+Mon Jan 14 21:40:34 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/maciManagerImpl.cpp:
+	Heartbead enabled.
+
+	Recovery, minor fixes, etc.
+
+
+Fri Dec 28 14:02:57 2001 <msekoran@te13.hq.eso.org>  maci version: 1.36 
+Thu Dec 27 20:08:53 2001  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/idl/maci.idl:
+	IDL changed (Client::ping() added, Manager::domain_name now readonly).
+
+	* ws/src/maciHeartbeatController.cpp:
+	* ws/include/maciHeartbeatController.h:
+	Added.
+
+	* ws/src/maciManagerImpl.cpp:
+	Recovery (Heartbeat checking currenty not enabled - not all
+	clients support it - new IDL), thread sync. improoved, minor fixes.
+
+	* ws/src/maciActivatorImpl.cpp:
+	IFR resolving, Logger Naming Context for reconnection added.
+
+
+Mon Dec 24 17:22:50 2001 <msekoran@te13.hq.eso.org>  maci version: 1.35 
+Mon Dec 24 16:58:56 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/maciActivatorShutdown.cpp:
+	Added.
+
+	* ws/src/maciManagerShutdown.cpp:
+	Cleaned.
+
+	* ws/src/maciActivatorImpl.cpp:
+	Initializators added.
+
+	* ws/src/maciSimpleClient.cpp:
+	Logging initialization.	
+
+Mon Dec 24 14:23:23 2001 <msekoran@te13.hq.eso.org>  maci version: 1.34 
+Tue Nov 20 14:49:05 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/test
+	Added new tests for error conditions
+
+	* ws/test/maciTestClient.cpp: 
+	Cleaned up and double checked
+
+	* ws/test
+	Improved modular test
+
+	* ws/include/maciTestUtils.h: 
+	CORBA object handled directly inside the CD implementation class.
+
+	* ws/src/maciSimpleClient.cpp: 
+	Improved initialization and initialysed checks.
+
+	* ws/include/maciSimpleClient.h
+	(PortableServer::RefCountServantBase):
+	Added new template method for get_object():
+	template<class T>
+          T* get_object(const char *name, const char *domain, bool activate,
+		CORBA_Environment &ACE_TRY_ENV = TAO_default_environment ());
+
+
+Tue Nov 20 11:07:52 2001 <bjeram@te13.hq.eso.org>  maci version: 1.33 
+Fri Nov 16 16:22:21 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/dbl/maci.class: 
+	Removed wrong default value for Manager.Startup
+
+Thu Nov 15 15:26:30 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/test/ENVIRONMENTS/wsTat/dbl/USER.db: 
+	* ws/test/maciTestClient.cpp: 
+	* ws/include/maciTestUtils.h: 
+	* ws/test/Makefile: 
+	* ws/dbl/maciTestClass.class: 
+	* ws/test/maciTestClassImpl.cpp: 
+	* ws/idl/maciTest.idl: 
+	* ws/include/maciTestClassImpl.h: 
+	Added core modular test
+
+Thu Nov 15 10:08:58 2001 <gchiozzi@te13.hq.eso.org>  maci version: 1.32 
+Thu Nov  8 10:56:46 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/src/maciManager.cpp: -ORBEndpoint created out of MANAGER_REFERENCE env. varibale if exsits
+
+Thu Nov 08 10:45:48 2001 <bjeram@te13.hq.eso.org>  maci version: 1.31 
+Sat Sep 22 15:36:34 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/maciManagerImpl.cpp:
+	Improved error handling of special references accessed via
+	get_COB()
+
+	* ws/src/maciRecovery.cpp:
+	Fixed client names with spaces.
+
+Sat Sep 22 15:02:54 2001 <msekoran@te13.hq.eso.org>  maci version: 1.30 
+Fri Sep 21 16:59:38 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/maciHelper.cpp:
+	* ws/include/maciHelper.h: 
+	Added getManagerHostname() method.
+	
+	* ws/src/maciActivatorImpl.cpp:	Activator 
+	uses Manager hostname to generate IFR address.
+
+Fri Sep 21 16:40:53 2001 <msekoran@te13.hq.eso.org>  maci version: 1.29 
+Fri Sep 21 14:24:01 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/maciActivatorImpl.cpp: Added implementation for
+	autogenerated IFR's ORBInitRef and Activator's ORBEndpoint
+
+Fri Sep 21 13:49:07 2001 <msekoran@te13.hq.eso.org>  maci version: 1.28 
+Fri Sep 21 13:32:04 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/maciActivatorImpl.cpp: Fixed IFR handling
+
+Fri Sep 21 12:43:52 2001 <msekoran@te13.hq.eso.org>  maci version: 1.27 
+Thu Sep 20 22:00:32 2001  ALMA Project c/o Robert Karban  <almamgr@te33.hq.eso.org>
+
+	* lcu/src/Makefile: Fixed list of object files.
+	New added files were not updated for the LCU part.
+
+Thu Sep 20 21:07:43 2001 <almamgr@te13.hq.eso.org>  maci version: 1.26 
+Thu Sep 20 12:14:43 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/Makefile (nsadd_OBJECTS): 
+	Temporarily added nsadd and nslist.
+	They come from $ACE_ROOT/TAO/utils/nslist,
+	but this component is not built with ACS 1.0.
+	Next release we will add them and remove from here.
+
+Thu Sep 20 14:11:41 2001 <gchiozzi@te13.hq.eso.org>  maci version: 1.25 
+Thu Sep 20 13:49:44 2001  ALMA Project c/o Robert Karban  <almamgr@te33.hq.eso.org>
+
+	* lcu/src/Makefile (clean_dist): Added target clean_dist
+
+	* lcu/src/maciManagerImpl.cpp (loadRecoveryData): 
+	Added some missing maci:: needed on VxWorks
+
+Thu Sep 20 11:37:52 2001 <almamgr@te13.hq.eso.org>  maci version: 1.24 
+Wed Sep 19 13:35:27 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/dbl/maci.class: 
+	Removed references to corbalocs and IP ports
+
+Wed Sep 19 15:33:38 2001 <gchiozzi@te13.hq.eso.org>  maci version: 1.23 
+Wed Sep 14 17:20:15 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	Autostart of COBs improved, MACIHelper resolve termination, 
+	maciSimpleClient get_object() documentation, recovery.
+
+Wed Sep 12 10:53:32 2001 <msekoran@te13.hq.eso.org>  maci version: 1.22 
+Mon Sep 10 18:02:02 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	Using new ports, resolving references using MACIHelper and
+	Manager's get_COB() method.
+
+	* ws/src/maciManagerImpl.cpp:
+	* ws/src/maciActivatorImpl.cpp:
+	Added additional ORB endpoint initialization checking.
+
+Mon Sep 10 17:38:50 2001 <msekoran@te13.hq.eso.org>  maci version: 1.21 
+Wed Aug 29 21:00:57 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/include/maciHelper.h:
+	* ws/src/maciHelper.cpp:
+	Added maci::MACIHelper class.
+
+	* ws/src/maciManagerShudown.cpp:
+	Example how to use maci::MACIHelper::resolveManager() method.
+
+Wed Aug 29 20:56:17 2001 <msekoran@te13.hq.eso.org>  maci version: 1.20 
+Mon Jul 23 10:50:21 2001  ALMA manager  <almamgr@blacktail.aoc.nrao.edu>
+
+	* ws/src/maciActivatorImpl.cpp: 
+	Added getManager() method and init of m_manager in constructor
+
+Mon Jul 23 17:24:17 2001 <almamgr@te13.hq.eso.org>  maci version: 1.19 
+Thu Jul 19 19:02:33 2001    <gchiozzi@lap003469vm.aoc.nrao.edu>
+
+	* ws/include/maciActivatorImpl.h: 
+	* ws/src/maciActivatorImpl.cpp: 
+	maciActivatorImpl.h is a public include file, but it 
+	was including the private include files 
+	maciLibraryManager.h and maciServantManager.h
+	To remove this dependency I have added forward class 
+	definitions for MACIServantManager and LibraryManager 
+	and I have moved the inclusion of maciLibraryManager.h and
+	maciServantManager.h into maciActivatorImpl.cpp
+
+Fri Jul 20 02:03:10 2001 <almamgr@te13.hq.eso.org>  maci version: 1.18 
+Tue Jul 17 19:00:06 2001    <gchiozzi@mercury.aoc.nrao.edu>
+
+	* ws/src/Makefile: Removed IDL generated files from
+	INCLUDE. Redundant 
+
+Tue Jul 17 19:56:45 2001 <gchiozzi@te13.hq.eso.org>  maci version: 1.17 
+Thu Jul 12 11:02:37 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* lcu/src/Makefile: updated for maci 1.15, no debug
+	* src/maciActivatorImpl.cpp: 
+	* src/maciManagerImpl.cpp: 
+	* include/maciManagerImpl.h: renmoved warnings for unused
+	parameters 
+
+	* src/maciManagerImpl.cpp: 
+	* src/maciActivate.cpp: added namespace declarations
+
+Thu Jul  5 17:31:43 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* completely new implementation of maci according specification
+
+Thu Jul 05 13:58:31 2001 <msekoran@te13.hq.eso.org>  maci version: 1.15 
+Wed Jun 27 09:25:50 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* src/maciActivate.cpp: 
+	* include/maciActivate.h: fixed compile time-stamp for VxWorks
+
+Tue Jun 26 13:07:56 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* src/maciManagerImpl.cpp: 
+	* src/maciServantManager.cpp: removed warnings for unused
+	arguments for VxWorks
+
+	* src/maciManagerImpl.cpp: 
+	* src/maciLibraryManager.cpp: 
+	* src/maciGuard.cpp: 
+	* src/maciActivatorImpl.cpp:
+	* include/maciGuard.h: changed ThreadGuard to maciThreadGuard
+	because of name clash with recovery module for VxWorks
+
+
+	* lcu/src/VxWorksDLL.cpp: added header, removed warnings for
+	unused arguments
+
+	* lcu/src/Makefile: updated for new maci version
+
+Fri Jun 22 09:53:58 2001 <almamgr@te13.hq.eso.org>  maci version: 1.12 
+
+	* src/maciManagerImpl.cpp: add #include <tao/debug.h> to compile
+	with ACE/TAO 1.1.17
+
+Wed Jun 13 18:01:04 2001  msekoran <matej.sekoranja@ijs.si>
+
+	* clean merge
+
+Wed May  2 14:43:08 2001    <gchiozzi@lap003469vm.hq.eso.org>
+
+	* src/Activator.cpp (activationHelper): 
+	Fixed confusing error message Activator_impl::activationHelper
+
+	* src/DLL_Manager.cpp (Open): 
+	Improved error handling in Open() for dlopen()
+
+
+	* solving connectiuon problem
+Thu Dec 07 14:04:55 2000 <almamgr@te13.hq.eso.org>  maci version: 1.7 
+Tue Dec 05 16:17:45 2000 <almamgr@te13.hq.eso.org>  maci version: 1.6 
+Mon Dec  4 14:33:27 2000  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* merging branch 1.3.1.2 and new CoCoS pacet from LJ (20001128)
+
+Sun Nov 26 21:30:11 2000  ALMA manager  <almamgr@blacktail.aoc.nrao.edu>
+
+	* include/Activate.h: move variable shutting_down to Activate.cpp.
+	It was declared in the .h file and therefore was created in each
+	file that included Activate.h
+Mon Nov 27 05:28:23 2000 <almamgr@te13.hq.eso.org>  maci version: 1.3.1.2 
+Sat Nov 25 21:51:44 2000  gchiozzi/rkarban  <almamgr@jemez>
+
+	* lcu/include/argUnpack.h: added to maci. it didn't belong to any
+	module before. It was taken from an TAO example file.
+
+	* lcu/idl: create idl directory
+
+Sat Nov 25 21:49:11 2000  gchiozzi/rkarban  <almamgr@jemez>
+
+	* lcu/src/Makefile: 
+	link also idl files from ws part and generate stubs from idl files
+	otherwise it is not possible to do make of lcu part indepedently
+	of making the ws part.
+	don't link generated files from ws part, because otherwise we
+	depend on generation in ws part
+ 
+	* ACS version 0.0/Prep.5
+
+Mon Oct 16 10:09:29 2000 <almamgr@te13.hq.eso.org>  maci version: 1.3 

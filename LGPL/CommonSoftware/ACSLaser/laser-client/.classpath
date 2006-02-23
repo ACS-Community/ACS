@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/laser-core"/>
+	<classpathentry kind="src" path="/cmw-mom"/>
+	<classpathentry kind="src" path="/laser-util"/>
+	<classpathentry kind="src" path="/laser-source"/>
+	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/jms.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

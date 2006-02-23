@@ -1,0 +1,21 @@
+1 - Running acsexmplClient MOUNT1
+1 - Welcome to acsexmplClient!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Listing all components of type *Mount*
+1 - ----------T--:--:--.--- [GlobalLogger - ] CONTROL/ANTENNAS/ANTENNA_2/MOUNT (IDL:alma/MOUNT_ACS/Mount:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] MOUNT1 (IDL:alma/MOUNT_ACS/Mount:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] CONTROL/ANTENNAS/ANTENNA_1/MOUNT (IDL:alma/MOUNT_ACS/Mount:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] MOUNT2 (IDL:alma/MOUNT_ACS/Mount:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] CONTROL/ANTENNAS/ANTENNA_3/MOUNT (IDL:alma/MOUNT_ACS/Mount:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] CONTROL/ANTENNAS/ANTENNA_H/MOUNT/LAMP (IDL:alma/MOUNT_ACS/Mount:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: MOUNT1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Descriptor:
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	name: MOUNT1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting component property: MOUNT1:actAz
+1 - ----------T--:--:--.--- [GlobalLogger - ] Value: -38.226896
+1 - ----------T--:--:--.--- [GlobalLogger - ] Trying to narrow CB for actAz... 
+1 - ----------T--:--:--.--- [GlobalLogger - ] OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] Call get_async for actAz...
+1 - ----------T--:--:--.--- [GlobalLogger - ] (actAz::CBdouble::done) Value: -38.226896
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - All done!

@@ -1,0 +1,663 @@
+/*******************************************************************************
+* E.S.O. - VLT project
+*
+* "@(#) $Id: enumpropRWImpl.i,v 1.49 2005/11/03 21:30:31 dfugate Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* bjeram 2003-05-30 added intalization to default value for external DevIO
+* bjeram 2003-03-14 added BACIValue::NullValue as a parameter to constructor of Monitorpattern
+* bjeram 2002-11-18 chnged to onchange monitor
+* bjeram 2002-07-08 fixed set_async and set_nonblocking
+* bjeram 2001-11-05 created 
+*/
+
+#define GET_ACTION 0
+#define SET_ACTION 1
+
+/*
+TODO
+CBpattern -> CBT
+Monitorpattern -> Monitor(T)
+*/
+
+template <ACS_ENUM_C>
+RWEnumImpl<ACS_ENUM_T(T), SK>::RWEnumImpl(const ACE_CString& name, BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
+    CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
+    initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
+    monitorEventDispatcher_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
+{
+
+    ACS_TRACE("RWEnumImpl::RWEnumImpl");
+  
+    // initialize
+    m_condition.length(0);
+    m_statesDescription.length(0);
+    // read static data
+    if (!readCharacteristics())
+	{
+	std::string procName="RWEnumImpl::RWEnumImpl(";
+        procName+=name.c_str();
+        procName+=",...)";
+	ACS_LOG(LM_RUNTIME_CONTEXT, "RWEnumImpl::RWEnumImpl",
+		(LM_ERROR, "Failed to read static data for '%s'", name.c_str()));
+	baciErrTypeProperty::PropertyStaticDataExImpl ex(__FILE__,__LINE__,procName.c_str());
+	ex.addData("Property",name.c_str());
+	throw ex;
+	}
+  
+    // create BACI property instance
+    CORBA::Any tAny;
+    tAny <<= default_value();
+    property_mp = new BACIProperty(name.c_str(), this, this,
+				  BACIValue(default_value(), tAny), cob);
+    if (!property_mp){
+	std::string procName="RWEnumImpl::RWEnumImpl(";
+        procName+=name.c_str();
+        procName+=",...)";
+	baciErrTypeProperty::PropertyCreationExImpl ex(__FILE__,__LINE__,procName.c_str());
+	ex.addData("Property",name.c_str());
+	throw ex;
+    }
+
+    reference_mp = BACI_CORBA::ActivateCORBAObject(this, name.c_str());
+    if (CORBA::is_nil(reference_mp))
+	{
+	std::string procName="RWEnumImpl::RWEnumImpl(";
+        procName+=name.c_str();
+        procName+=",...)";
+	ACS_LOG(LM_RUNTIME_CONTEXT, "RWEnumImpl::RWEnumImpl",
+		(LM_ERROR, "Failed to activate CORBA object '%s'", name.c_str()));
+
+	delete property_mp;
+	baciErrTypeProperty::PropertyActivationExImpl ex(__FILE__,__LINE__,procName.c_str());
+	ex.addData("Property",name.c_str());
+	throw ex;
+	}
+
+    ACE_CString_Vector recoveryMonitorsNames = 
+	BACIRecoveryManager::getInstance()->getObjectsStartingWith(name.c_str());
+    if (recoveryMonitorsNames.size()>0)
+	{
+	for (ACE_CString_Vector::iterator i = recoveryMonitorsNames.begin();
+	     i != recoveryMonitorsNames.end(); i++) {
+	new Monitorpattern(i->c_str(), min_timer_trigger(), BACIValue::NullValue, property_mp);
+	}
+	}
+    state = (T)defaultValue_m;
+
+    if (devIO!=0)
+	{
+	devIO_mp = devIO;
+	deldevIO_m = flagdeldevIO;
+	if (devIO_mp->initializeValue()) 
+	    {
+	    ACS::Time timeStamp = getTimeStamp();
+
+	    try
+		{
+		devIO_mp->write((T)defaultValue_m, timeStamp);
+		}
+	    catch (ACSErr::ACSbaseExImpl& ex) 
+		{
+		std::string procName="RWEnumImpl::RWEnumImpl(";
+		procName+=name.c_str();
+		procName+=",...)";
+		baciErrTypeProperty::PropertySetInitValueExImpl newEx(ex.getErrorTrace(),__FILE__,__LINE__,procName.c_str());
+		newEx.addData("Property",name.c_str());
+		throw newEx;
+		} 
+	    catch (...) 
+		{
+		std::string procName="RWcommonImpl::RWcommonImpl(";
+		procName+=name.c_str();
+		procName+=",...)";
+		baciErrTypeProperty::PropertySetInitValueExImpl newEx(__FILE__,__LINE__,procName.c_str());
+		newEx.addData("Property",name.c_str());
+		throw newEx;
+		}
+
+	    ACS_DEBUG("baci::RWEnumImpl<>::RWEnumImpl", "DevIO initial value set to the default value.");
+	    }
+	}
+    else
+	{
+	deldevIO_m = true;
+	m_value = (T)defaultValue_m; 
+	devIO_mp = new DevIOMem<T> (m_value);
+	ACS_DEBUG("ROEnumImpl::ROEnumImpl", "No DevIO provided - created DevIOMem.");
+	}
+ 
+    ACS_DEBUG_PARAM("RWEnumImpl::RWEnumImpl", "Successfully created %s.", name.c_str() );
+	
+    // property successfuly initialized
+    initialization_m = 0;
+}
+
+template <ACS_ENUM_C>
+RWEnumImpl<ACS_ENUM_T(T), SK>::~RWEnumImpl()
+{
+  ACS_TRACE("RWEnumImpl::~RWEnumImpl");
+
+   if (deldevIO_m)
+      delete devIO_mp;
+
+   // destroy event dispatcher (including event subscribers)
+  if (monitorEventDispatcher_mp) 
+  {
+    delete monitorEventDispatcher_mp;
+    monitorEventDispatcher_mp = 0;
+  }
+
+  // destroy BACI property
+  if (property_mp) {
+    delete property_mp;
+    property_mp = 0;
+  }
+}
+
+template <ACS_ENUM_C>
+void RWEnumImpl<ACS_ENUM_T(T), SK>::destroy()
+{
+  ACS_TRACE("RWEnumImpl::destroy");
+  if (destroyed_m)
+    return;
+  destroyed_m = true;
+
+  if (!CORBA::is_nil(reference_mp))
+    {
+	  // this calls delete on this object, so DO NOT use any of its variables anymore
+	  if (!BACI_CORBA::DestroyCORBAObject(reference_mp))
+	  {
+		ACS_LOG(LM_RUNTIME_CONTEXT, "RWEnumImpl::~RWEnumImpl",
+			(LM_ERROR, "Failed to destroy CORBA object '%s'", property_mp->getName()));
+	  }
+	 else
+		this->_remove_ref();
+
+    }
+  
+}
+
+/* --------------- [ Action implementator interface ] -------------- */
+
+template <ACS_ENUM_C>
+ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
+		       BACIComponent* cob, const int& callbackID, 
+		       const CBDescIn& descIn, BACIValue* value, 
+		       Completion& completion, CBDescOut& descOut)
+{
+  // only one action
+  // better implementation with array is possible
+  switch (function) 
+    {
+    case GET_ACTION:
+      return getValueAction(cob, callbackID, descIn, value, completion, descOut);
+    case SET_ACTION:
+      return setValueAction(cob, callbackID, descIn, value, completion, descOut);
+/*   
+ case INC_ACTION:
+      return incrementAction(cob, callbackID, descIn, value, completion, descOut);
+    case DEC_ACTION:
+      return decrementAction(cob, callbackID, descIn, value, completion, descOut);
+*/
+      default:
+      return reqDestroy;
+    }
+}
+
+/* -------------- [ Property implementator interface ] -------------- */
+
+template <ACS_ENUM_C>
+void RWEnumImpl<ACS_ENUM_T(T), SK>::getValue(BACIProperty* property,
+		   BACIValue* value, 
+		   Completion &completion,
+		   CBDescOut& descOut)
+{
+  ACE_UNUSED_ARG(property);
+  ACE_UNUSED_ARG(descOut);
+  ACS::pattern nval;
+  T realVal;
+
+  completion.timeStamp = getTimeStamp();
+  try 
+      {
+      realVal = devIO_mp->read(completion.timeStamp); 
+      nval = (ACS::pattern)realVal;
+      }
+  catch (ACSErr::ACSbaseExImpl& ex) 
+      {
+      completion = baciErrTypeDevIO::ReadErrorCompletion (ex, __FILE__, __LINE__,"RWEnumImpl<>::getValue");
+      return;
+      } 
+
+  CORBA::Any tAny;
+  tAny <<= realVal;
+  value->enumValue( nval, tAny );
+
+
+  // if there is no error add value to history
+  // !!! to be done in a loop
+  addValueToHistory(completion.timeStamp, nval);
+	
+  completion.type = ACSErr::ACSErrTypeOK;		// no error
+  completion.code = ACSErr::ACSErrOK;
+}
+ 
+/* --------------- [ History support ] --------------- */
+
+template <ACS_ENUM_C>
+void RWEnumImpl<ACS_ENUM_T(T), SK>::addValueToHistory(ACS::Time time, ACS::pattern value)
+{
+  if (!historyTurnaround_m && (historyStart_m==(HISTORY_SIZE-1))) 
+	  historyTurnaround_m = true;
+  historyStart_m = ++historyStart_m % HISTORY_SIZE;
+  historyTime_m[historyStart_m] = time;
+  historyValue_m[historyStart_m] = (T)value;
+}
+
+/* -------------- [ Other interfaces ] -------------- */
+
+/// async. get value action implementation
+template <ACS_ENUM_C>
+ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, const int& callbackID,
+				       const CBDescIn& descIn, BACIValue* value,
+				       Completion& completion, CBDescOut& descOut)
+{
+  ACE_UNUSED_ARG(cob);
+  ACE_UNUSED_ARG(callbackID);
+  ACE_UNUSED_ARG(descIn);
+
+  getValue(property_mp, value, completion, descOut);
+  
+  // complete action requesting done invokation, 
+  // otherwise return reqInvokeWorking and set descOut.estimated_timeout
+  return reqInvokeDone;
+}
+
+/// async. set value action implementation
+template <ACS_ENUM_C>
+ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::setValueAction(BACIComponent* cob, const int& callbackID,
+			 const CBDescIn& descIn, BACIValue* value,
+			 Completion& completion, CBDescOut& descOut)
+{
+  ACE_UNUSED_ARG(cob);
+  ACE_UNUSED_ARG(callbackID);
+  ACE_UNUSED_ARG(descIn);
+
+  setValue(property_mp, value, completion, descOut);
+  
+  // complete action requesting done invokation, 
+  // otherwise return reqInvokeWorking and set descOut.estimated_timeout
+  return reqInvokeDone;
+}
+
+/// async. set value action implementation
+template <ACS_ENUM_C>
+void RWEnumImpl<ACS_ENUM_T(T), SK>::setValue(BACIProperty* property,
+		   BACIValue* value, 
+		   Completion &completion,
+		   CBDescOut& descOut)
+{
+  ACE_UNUSED_ARG(property);
+  ACE_UNUSED_ARG(descOut);
+
+  completion.timeStamp = getTimeStamp();
+  state = (T)(value->patternValue());
+  try
+      {
+      devIO_mp->write( state, completion.timeStamp );
+      }
+  catch (ACSErr::ACSbaseExImpl& ex) 
+      {
+      completion = baciErrTypeDevIO::WriteErrorCompletion (ex, __FILE__, __LINE__,"RWcommonImpl<>::setValue");
+      return;
+      } 
+
+  ACS_DEBUG_PARAM("RWEnumImpl::setValue", "Set state to: %u\n", state);
+  completion.type = ACSErr::ACSErrTypeOK;		// no error
+  completion.code = ACSErr::ACSErrOK;
+}
+
+/* ---------------------- [ CORBA interface ] ---------------------- */
+
+template <ACS_ENUM_C>
+bool RWEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
+{
+
+  DAONode* dao = this->getDAONode();
+  if (!dao)
+      return false;
+  
+  try
+      {
+      CORBA::String_var str;
+      
+      str = dao->get_string("description");
+      m_description = str.in();
+      
+      str = dao->get_string("format");
+      format_m = str.in();
+      
+      str = dao->get_string("units");
+      units_m = str.in();
+
+      m_resolution = dao->get_long("resolution");
+
+      CORBA::Double dbl;
+
+      dbl = dao->get_double("default_timer_trig");
+      dbl = dbl * static_cast<CORBA::Double>(10000000.0);
+      defaultTimerTrig_m = static_cast<CORBA::ULong>(dbl);
+
+      dbl = dao->get_double("min_timer_trig");
+      dbl = dbl * static_cast<CORBA::Double>(10000000.0);
+      minTimerTrig_m = static_cast<CORBA::ULong>(dbl);
+
+      defaultValue_m = static_cast<T>(dao->get_long("default_value"));
+
+
+      CDB::stringSeq_var descs = dao->get_string_seq("statesDescription");
+      CORBA::ULong len = descs->length();
+      m_statesDescription.length(len);
+      for (CORBA::ULong i = 0; i < len; i++)
+          m_statesDescription[i] = CORBA::string_dup(descs[i].in());
+
+      m_enumLength = len;   //! entry in the CDB should be the right length otherwise ....
+
+      CDB::longSeq_var lc = dao->get_long_seq("condition");
+      len = lc->length();
+      m_condition.length(len);
+      for (CORBA::ULong i = 0; i < len; i++)
+          m_condition[i] = static_cast<ACS::Condition>(lc[i]);
+
+#if 0
+      dbl = dao->get_double("archive_min_int");
+      dbl = dbl * static_cast<CORBA::Double>(10000000.0);
+      m_archive_min_int = static_cast<CORBA::ULong>(dbl);
+
+      dbl = dao->get_double("archive_max_int");
+      dbl = dbl * static_cast<CORBA::Double>(10000000.0);
+      m_archive_max_int = static_cast<CORBA::ULong>(dbl);
+
+      m_archive_delta = dao->get_long("archive_delta");
+#endif
+
+      return true;
+      }
+  catch (ACSErr::ACSbaseExImpl& ex)
+      {
+      ex.log();
+      return false;
+      }
+  catch (...)
+      {
+      return false;
+      }
+}
+
+/* ---------------------- [ CORBA interface ] ---------------------- */
+template <ACS_ENUM_C>
+char *RWEnumImpl<ACS_ENUM_T(T), SK>::name ()
+  throw (CORBA::SystemException)
+{
+  return CORBA::string_dup(property_mp->getName());           
+}
+
+template <ACS_ENUM_C>
+char *RWEnumImpl<ACS_ENUM_T(T), SK>::characteristic_component_name ()
+  throw (CORBA::SystemException)
+{
+  return CORBA::string_dup (property_mp->getComponent()->getName());
+}
+
+template <ACS_ENUM_C>
+char *RWEnumImpl<ACS_ENUM_T(T), SK>::description ()
+  throw (CORBA::SystemException)
+{
+  return CORBA::string_dup (m_description.c_str());
+}
+
+template <ACS_ENUM_C>
+char *RWEnumImpl<ACS_ENUM_T(T), SK>::format ()
+  throw (CORBA::SystemException)
+{
+  return CORBA::string_dup (format_m.c_str());
+}
+
+template <ACS_ENUM_C>
+char *RWEnumImpl<ACS_ENUM_T(T), SK>::units ()
+  throw (CORBA::SystemException)
+{
+  return CORBA::string_dup (units_m.c_str());
+}
+
+template <ACS_ENUM_C>
+ACS::pattern RWEnumImpl<ACS_ENUM_T(T), SK>::resolution ()
+  throw (CORBA::SystemException)
+{
+  return m_resolution;
+}
+
+template <ACS_ENUM_C>
+T RWEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
+		    )
+  throw (CORBA::SystemException)
+{
+  c = new ACSErr::Completion();
+
+  ACS::CBDescOut descOut;
+  BACIValue value(0.0);
+
+  getValue(property_mp, &value, *c, descOut);
+  return (T)(value.patternValue());
+}
+
+template <ACS_ENUM_C>
+void RWEnumImpl<ACS_ENUM_T(T), SK>::get_async (CBpattern* cb,
+		     const ACS::CBDescIn & desc
+		     )
+  throw (CORBA::SystemException) 
+{
+  property_mp->getComponent()->registerAction(BACIValue::type_pattern, cb, 
+				       desc, this, 0);
+}
+
+template <ACS_ENUM_C>
+CORBA::Long RWEnumImpl<ACS_ENUM_T(T), SK>::get_history (CORBA::Long n_last_values,
+		       TSeq_out vs,
+		       ACS::TimeSeq_out ts
+		       )
+  throw (CORBA::SystemException)
+{
+
+  // thread lock needed
+    
+  if (n_last_values < 0)
+	  ACE_THROW_RETURN(CORBA::BAD_PARAM(), 0);
+ 
+  CORBA::Long length, first;
+  if (historyTurnaround_m)
+    {
+      length = HISTORY_SIZE;
+      first = historyStart_m+1;
+    }
+  else
+    {
+      length = historyStart_m+1;
+      first = 0;
+    }
+
+  if (n_last_values < length)
+	  length = n_last_values;
+
+  vs = new TSeq(length); vs->length(length);
+  ts = new ACS::TimeSeq(length); ts->length(length);
+  for (int i = 0; i < length; i++)
+    {
+      (*vs)[i] = historyValue_m[(first+i)%HISTORY_SIZE];
+      (*ts)[i] = historyTime_m[(first+i)%HISTORY_SIZE];
+    } 
+  return length;
+}
+
+template <ACS_ENUM_C>
+ACS::Monitorpattern_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_monitor (CBpattern* cb,
+			  const ACS::CBDescIn & desc
+			  )
+  throw (CORBA::SystemException)
+{
+
+  Monitorpattern* monitor = new Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
+					     cb, desc, 
+					     default_timer_trigger(),
+					     BACIValue::NullValue,
+					     min_timer_trigger(),
+					     BACIValue::NullValue,
+					     property_mp);
+
+  if (!monitor)
+	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitorpattern::_nil());
+  else if (monitor->initialization())
+  {
+	  monitor->destroy();
+	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitorpattern::_nil());
+  }
+  
+  ACS::Monitorpattern_var mon = 
+	  ACS::Monitorpattern::_narrow(monitor->getCORBAReference());
+  ACE_CHECK_RETURN(ACS::Monitorpattern::_nil());
+
+  return mon._retn();
+}
+
+template <ACS_ENUM_C>
+ACS::Monitor_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_postponed_monitor (ACS::Time start_time,
+			  CBpattern* cb,
+			  const ACS::CBDescIn & desc
+			  )
+  throw (CORBA::SystemException)
+{
+
+  Monitorpattern* monitor = new Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
+					     cb, desc, 
+					     default_timer_trigger(),
+					       BACIValue::NullValue, 
+					     min_timer_trigger(), 
+					       BACIValue::NullValue, 
+					     property_mp,
+					     start_time);
+  
+  if (!monitor)
+	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitor::_nil());
+  else if (monitor->initialization())
+  {
+	  monitor->destroy();
+	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitor::_nil());
+  }
+  
+  ACS::Monitor_var mon = 
+	  ACS::Monitor::_narrow(monitor->getCORBAReference());
+  ACE_CHECK_RETURN(ACS::Monitor::_nil());
+
+  return mon._retn();
+}
+
+template <ACS_ENUM_C>
+ACS::TimeInterval RWEnumImpl<ACS_ENUM_T(T), SK>::default_timer_trigger ()
+  throw (CORBA::SystemException)
+{
+  return defaultTimerTrig_m;
+}
+
+template <ACS_ENUM_C>
+ACS::TimeInterval RWEnumImpl<ACS_ENUM_T(T), SK>::min_timer_trigger ()
+  throw (CORBA::SystemException)
+{
+  return minTimerTrig_m;
+}
+
+template <ACS_ENUM_C>
+T RWEnumImpl<ACS_ENUM_T(T), SK>::default_value ()
+  throw (CORBA::SystemException)
+{
+  return (T)defaultValue_m;
+}
+
+template <ACS_ENUM_C>
+ACS::stringSeq *RWEnumImpl<ACS_ENUM_T(T), SK>::statesDescription ()
+  throw (CORBA::SystemException)
+{
+
+  // create and initialize the return parameter
+  ACS::stringSeq_var result = new ACS::stringSeq(m_statesDescription);
+  // to return, take the sequence away from the _var
+  return result._retn();
+}
+
+template <ACS_ENUM_C>
+ACS::ConditionSeq *RWEnumImpl<ACS_ENUM_T(T), SK>::condition ()
+  throw (CORBA::SystemException)
+{
+
+  // create and initialize the return parameter
+  ACS::ConditionSeq_var result = new ACS::ConditionSeq(m_condition);
+  // to return, take the sequence away from the _var
+  return result._retn();
+}
+
+template <ACS_ENUM_C>
+TSeq * RWEnumImpl<ACS_ENUM_T(T), SK>::allStates ( )
+      throw (CORBA::SystemException)
+{
+    TSeq *result = new TSeq();
+    result->length(m_enumLength);
+    // m_enumLength is read out of the length of the seq of states deescription which should be OK otherwise this method will not work correctly.
+
+    for (int i=0; i<m_enumLength; i++)
+	(*result)[i] = T(i);
+
+    return result;  
+}
+
+ /* -------------------- [ RW interface ] -------------------- */
+template <ACS_ENUM_C>
+ACSErr::Completion *  RWEnumImpl<ACS_ENUM_T(T), SK>::set_sync ( T val )  throw (CORBA::SystemException )
+{
+
+  ACSErr::Completion_var c = new ACSErr::Completion();
+
+  CORBA::Any tAny;
+  tAny <<= val;
+
+  BACIValue value((ACS::pattern)val, tAny);
+  ACS::CBDescOut descOut;
+
+  setValue(property_mp, &value, c.inout(), descOut);
+
+  return c._retn();
+}
+	
+template <ACS_ENUM_C>
+void RWEnumImpl<ACS_ENUM_T(T), SK>::set_async ( T val, ACS::CBvoid_ptr cb, const ACS::CBDescIn & desc
+		  ) throw (CORBA::SystemException )
+{
+    CORBA::Any tAny;
+    tAny <<= val;
+  BACIValue value((ACS::pattern)val, tAny);
+  property_mp->getComponent()->registerAction(BACIValue::type_null, cb, 
+				       desc, this, SET_ACTION, value);
+}
+	
+template <ACS_ENUM_C>
+void RWEnumImpl<ACS_ENUM_T(T), SK>::set_nonblocking ( T val)  throw (CORBA::SystemException )
+{
+
+  ACSErr::Completion completion;
+  CORBA::Any tAny;
+  tAny <<= val;
+  BACIValue value((ACS::pattern)val, tAny);
+  ACS::CBDescOut descOut;
+
+  setValue(property_mp, &value, completion, descOut);
+}

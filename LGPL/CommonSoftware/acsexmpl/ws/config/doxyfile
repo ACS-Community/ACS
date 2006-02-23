@@ -1,0 +1,6 @@
+FILE_PATTERNS          = *.h *.java *.cpp *.idl *.db *.midl
+INCLUDE_PATH           = .
+INCLUDE_FILE_PATTERNS  = *.h
+OUTPUT_API             = ../doc
+INPUT_API              = "../"
+SKIP_IDL               = YES

@@ -1,0 +1,3 @@
+# list of class names implementing si.ijs.acs.objectexplorer.engine.Converter interface
+si.ijs.acs.objectexplorer.engine.BACI.converters.BACIDouble1000Multiplier
+si.ijs.acs.objectexplorer.engine.BACI.converters.BACIDegreesToDDMMSSConverter

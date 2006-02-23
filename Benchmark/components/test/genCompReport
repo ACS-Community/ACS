@@ -1,0 +1,34 @@
+#! /bin/bash
+#--------------------------------------
+export ACS_CDB=$PWD
+export ACS_TMP=$PWD/tmp
+
+rm -rf $PWD/tmp
+mkdir $PWD/tmp
+#--------------------------------------
+echo "------------------------------------"
+echo "==> Generating logging system report"
+genCompLoggingReport $@
+cp -R $ACS_TMP $ACS_TMP.log
+
+echo "------------------------------------"
+echo "==> Generating event system report"
+genCompEventReport $@
+cp -R $ACS_TMP $ACS_TMP.event
+
+echo "------------------------------------"
+echo "==> Generating error system report"
+genCompErrorReport $@
+cp -R $ACS_TMP $ACS_TMP.error
+
+echo "------------------------------------"
+echo "==> Generating method invocations report"
+genCompMethodReport $@
+cp -R $ACS_TMP $ACS_TMP.method
+
+echo "------------------------------------"
+echo "==> Generating bulk data report"
+genCompBulkDataReport $@
+cp -R $ACS_TMP $ACS_TMP.bulkdata
+echo "------------------------------------"
+#--------------------------------------

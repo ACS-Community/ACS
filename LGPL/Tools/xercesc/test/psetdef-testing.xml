@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psetdefTypes:parametersetdef xmlns:psetdefTypes="http://www.aoc.nrao.edu/~sharring/psetdefTypes.html" 	
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://www.aoc.nrao.edu/~sharring/psetdefTypes.html psetdef.xsd">
+	<!-- This is a sample parameter set for vla filler -->
+	<name>vlafillertest</name>
+	<comment>using vla filler as an example</comment>	
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>msname</name>
+		<required>true</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>inputfile</name>
+		<required>true</required>
+		<prompt>e.g. c477_040502.xpl</prompt>
+		<help>name of vla archive</help>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>project</name>
+		<required>false</required>
+		<prompt>e.g. ad577</prompt>
+		<help>name of project to extract, defaults to all projects in input</help>
+		<default>all</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>start</name>
+		<required>false</required>
+		<prompt>e.g. 2004/05/02/18:30:00</prompt>
+		<help>start time to extract</help>
+		<default>beginning of input file</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>stop</name>
+		<required>false</required>
+		<prompt>e.g. 2004/05/02/19:00:00</prompt>
+		<help>end time of extracted data</help>
+		<default>end of input file</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:DoubleParameterType">
+		<name>centerfreq</name>
+		<required>false</required>
+		<prompt>e.g. 1.489 GHz</prompt>
+		<help>frequency of data to extract (used along with bandwidth parameter)</help>
+		<stringdefault>all</stringdefault>
+	</parameter>			
+	<parameter xsi:type="psetdefTypes:DoubleParameterType">
+		<name>bandwidth</name>
+		<required>false</required>
+		<prompt>e.g. 10.01 Mhz</prompt>
+		<help>data around centerfreq to get out</help>
+		<stringdefault>all</stringdefault>
+	</parameter>			
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>bandname</name>
+		<required>false</required>
+		<prompt>e.g. P</prompt>
+		<help>name of band to extract</help>
+		<default>all</default>
+		<length>10</length>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>source</name>
+		<required>false</required>
+		<prompt>e.g. 3C49 or 1338+4995</prompt>
+		<help>name of source</help>
+		<default>all</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:BoolParameterType">
+		<name>overwrite</name>
+		<required>false</required>
+		<prompt>e.g. true or false</prompt>
+		<help>overwrite or append</help>
+		<default>false</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:BoolParameterType">
+		<name>testMissing</name>
+		<required>false</required>
+		<prompt>e.g. true or false</prompt>
+		<help>overwrite or append</help>
+		<default>false</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:IntegerParameterType">
+		<name>testInt</name>
+		<required>false</required>
+		<prompt>testing 123</prompt>
+		<help>help testing 123</help>
+		<default>10</default>
+		<max>12</max>
+		<validValues>
+			<value>10</value>
+			<value>11</value>
+			<value>12</value>
+		</validValues>
+	</parameter>	
+	<parameter xsi:type="psetdefTypes:StringParameterType">
+		<name>testString</name>
+		<required>true</required>
+		<prompt>e.g. 3C49 or 1338+4995</prompt>
+		<help>name of source</help>
+		<validValues>
+			<value>testingBoy</value>
+			<value>testingGirl</value>
+			<value>testingWoman</value>
+		</validValues>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:StringArrayParameterType">
+		<name>testStringArray</name>
+		<required>false</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+		<maxlen>10</maxlen>
+		<default>default str1</default>
+		<default>default str2</default>
+		<default>default str3</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:IntegerArrayParameterType">
+		<name>testIntArray</name>
+		<required>false</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+		<maxlen>10</maxlen>
+		<default>1</default>
+		<default>2</default>
+		<default>3</default>
+	</parameter>
+	<parameter xsi:type="psetdefTypes:DoubleArrayParameterType">
+		<name>testDoubleArray</name>
+		<required>false</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+		<maxlen>10</maxlen>
+		<default>1.4</default>
+		<default>1.5</default>
+		<default>1.6</default>
+	</parameter>
+</psetdefTypes:parametersetdef>

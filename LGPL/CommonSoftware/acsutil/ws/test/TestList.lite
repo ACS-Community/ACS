@@ -1,0 +1,54 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.20 2005/10/04 09:33:55 gchiozzi Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# bjeram 2001-08-22 created
+
+SOURCE   acsutilTATEnvironment
+
+##################################################################
+# GCH 2005-10-04
+# No need to have Prologue and Epilogue
+# for the tests listed until now hereafter
+# Therefore they are commented out.
+# If we would like to test acsutilTATPrologue and
+# acsutilTATEpilogue themselves, we would introduce a forward
+# dependency, because these scripts will inwoque acsStart/Stop.
+# Therefore we do not thest them here and we will leave the test
+# to be done indirectly and implicitly by later modules using them.
+##################################################################
+
+# PROLOGUE acsutilTATPrologue
+
+1 testLLU testLLU
+2 testTmp testTmp
+3 testFindFile "testFindFile include/acsutil.h"
+4 testFindFileErr "testFindFile idl/DoesNotExist.idl"
+5 testAnyAide     "testAnyAide"
+
+# EPILOGUE acsutilTATEpilogue
+
+#___o0o___

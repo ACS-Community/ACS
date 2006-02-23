@@ -1,0 +1,2 @@
+debug=true
+#reference=iiop://localhost:3001/

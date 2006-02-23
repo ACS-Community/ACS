@@ -1,0 +1,18 @@
+2 - Making sure there is a fridge available...
+2 - Creating FridgeConsumer
+1 - Waiting for events...
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+2 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
+2 - Waiting for events . . .
+2 - The Python temperature difference is ---
+2 - The Python temperature difference is ---
+2 - The Python temperature difference is ---
+2 - The Python temperature difference is ---
+2 - The Python temperature difference is ---
+2 - Events all done . . . exiting
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - Done...

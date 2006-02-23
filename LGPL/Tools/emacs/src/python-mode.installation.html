@@ -1,0 +1,221 @@
+<HTML>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Sun Jan 27 11:54:35 2002 -->
+<!-- USING HT2HTML 1.2 -->
+<!-- SEE http://barry.wooz.org/software/ht2html -->
+<!-- User-specified headers:
+Title: Installation Notes
+
+-->
+
+<HEAD>
+<TITLE>Installation Notes</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff" TEXT="#000000"
+      TOPMARGIN="0" LEFTMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0"
+      LINK="#0000bb"  VLINK="#551a8b"
+      ALINK="#ff0000">
+<!-- start of page table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=0>
+<!-- start of banner row -->
+<TR>
+<!-- start of corner cells -->
+<TD WIDTH=150 VALIGN=CENTER BGCOLOR="#0066cc">
+
+<center>
+    <a href="../../">
+    <img alt="" border=0 src="../../pics/PyBanner006.gif"></a></center> </TD>
+<TD WIDTH=15 BGCOLOR="#99ccff">&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<TD WIDTH="90%" BGCOLOR="#99ccff">
+<!-- start of site links table -->
+<TABLE WIDTH="100%" BORDER=0
+CELLSPACING=0 CELLPADDING=0
+       COLS=4 ROWS=2 BGCOLOR="#ffffff">
+<TR>
+    <TD BGCOLOR="#99ccff">
+<a href="../../">Home</a>
+    </TD>
+    <TD BGCOLOR="#99ccff">
+<a href="../../search/">Search</a>
+    </TD>
+    <TD BGCOLOR="#99ccff">
+<a href="../../download/">Download</a>
+    </TD>
+    <TD BGCOLOR="#99ccff">
+<a href="../../doc/">Documentation</a>
+    </TD>
+</TR><TR>
+    <TD BGCOLOR="#99ccff">
+<a href="../../Help.html">Help</a>
+    </TD>
+    <TD BGCOLOR="#99ccff">
+<a href="../../News.html">News</a>
+    </TD>
+    <TD BGCOLOR="#99ccff">
+<a href="../../psa/">Community</a>
+    </TD>
+    <TD BGCOLOR="#99ccff">
+<a href="../../sigs/">SIGs</a>
+    </TD>
+</TR>
+</TABLE><!-- end of site links table -->
+
+</TD><!-- end of banner -->
+</TR><!-- end of banner row -->
+<TR><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<TD WIDTH=150 VALIGN=TOP BGCOLOR="#99ccff">
+<!-- start of sidebar table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=3
+       BGCOLOR="#ffffff">
+<TR><TD BGCOLOR="#003366"><B><FONT COLOR="#ffffff">
+Python Mode
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<A HREF="./">Introduction</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<A HREF="python-mode.el">python-mode.el (~123KB)</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<b>Installation Notes</b>
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<A HREF="changes-406.html">What's Changed</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<A HREF="faq.html">FAQ</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<A HREF="../">Other Emacs Goodies on Python.org</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">&nbsp;
+<TR><TD BGCOLOR="#003366"><B><FONT COLOR="#ffffff">
+Email Us
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<A HREF="mailto:python-mode@python.org">python-mode@python.org</A>
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+&nbsp;
+</TD></TR>
+<TR><TD BGCOLOR="#99ccff">
+<A HREF="../..">
+<center>
+    <img alt="" border=0
+         src="../../pics/PythonPoweredSmall.gif"></center>
+</A>
+</TD></TR>
+</TABLE><!-- end of sidebar table -->
+
+</TD>
+<TD WIDTH=15>&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<TD VALIGN=TOP WIDTH="90%"><BR>
+<h2>Installation Notes</h2>
+
+If you are using XEmacs 21.4.4, you already get
+<tt>python-mode.el</tt> 4.1 for free, if you've installed the
+<em>prog-modes</em> package.  Follow the instructions below if you
+want to install the latest <tt>python-mode.el</tt> version on XEmacs,
+or if you want to install it in any version of Emacs.  Note that
+<tt>python-mode.el</tt> version 4.6 is <b>not compatible</b> with any
+XEmacsen earlier than 21.1 or Emacsen earlier than 20.7.
+
+<h3>Byte Compiling</h3>
+
+    You will want to byte-compile <code>python-mode.el</code>,
+    primarily for better performance.  Do this by running the
+    following commands inside X/Emacs:
+
+<pre>
+C-x C-f /path/to/python-mode.el RET
+M-x byte-compile-file RET
+</pre>
+
+    You can safely ignore any byte compiler warnings; they are due to
+    the cross X/Emacsen support.
+
+    <p>Be sure to see the list of <a href="compat.html">compatibility
+    issues</a>, for special notes about X/Emacs versions and package
+    interactions.
+
+
+</TD><!-- end of body cell -->
+</TR><!-- end of sidebar/body row -->
+</TABLE><!-- end of page table -->
+<!-- start of continued wide-body text -->
+
+
+<h3>Setting <code>load-path</code></h3>
+
+    You need to make sure that this new version of
+    <code>python-mode.el</code> is on your <code>load-path</code>,
+    <em>before</em> any version that is distributed with your X/Emacs.
+    You can use this test:
+
+<pre>
+M-x locate-library RET python-mode RET
+</pre>
+
+    Make sure this finds the one you expect it to find.   If not, you
+    can add this to your <code>.emacs</code> file:
+
+<pre>
+(setq load-path (cons "/dir/of/python-mode/" load-path))
+</pre>
+
+<h3>File Associations</h3>
+
+    If you are using Emacs, you will want to associate
+    <code>.py</code> files
+    with <code>python-mode</code> so  that Emacs sets the
+    major mode properly when you visit such files.  This is controlled
+    by two variables, <code>auto-mode-alist</code> and
+    <code>interpreter-mode-alist</code>.  Add the following to your
+    <code>.emacs</code> file:
+
+<pre>
+(setq auto-mode-alist
+      (cons '("\\.py$" . python-mode) auto-mode-alist))
+(setq interpreter-mode-alist
+      (cons '("python" . python-mode)
+            interpreter-mode-alist))
+</pre>
+
+    You don't need to do this for XEmacs, since as of at least XEmacs
+    19.15, these file associations are set by default.
+
+<h3>Autoloading</h3>
+
+    The final piece of the puzzle is to associate
+    <code>python-mode</code> with the file
+    <code>python-mode.elc</code>.  You do this by setting up an
+    <code>autoload</code> by adding this to your <code>.emacs</code>
+    file:
+
+<pre>
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+</pre>
+
+    Again, you only need to do this with Emacs, since as of at least
+    XEmacs 19.15, this autoload is set up by default.
+
+<h3>Syntax Highlighting</h3>
+
+If you are using XEmacs, you should get syntax highlighting
+(a.k.a. <em>font-locking</em> turned on automatically.  In Emacs, you
+might need to enable it directly.  These lines should help:
+
+<pre>
+;;; add these lines if you like color-based syntax highlighting
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+</pre>
+
+<!-- end of continued wide-body text -->
+</BODY></HTML>

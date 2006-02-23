@@ -1,0 +1,5 @@
+#application.SimulatorApplication=ChannelPowerSupply.xml
+
+application.default=ChannelPowerSupply.xml
+
+debug=true

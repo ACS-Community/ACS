@@ -1,0 +1,58 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: tclScript.template,v 1.21 2004/10/05 03:24:16 srankin Exp $" 
+#%# 
+#%# Template for Tcl/Tk script files          
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gfilippi   21/02/95  created
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN tclScript(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+#*******************************************************************************
+# PPPPPPPP
+#
+# "@(#) $I>-<d$"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# NNNNNNNN  dd/mm/yy  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+
+#
+# ___oOo___

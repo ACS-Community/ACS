@@ -1,0 +1,11 @@
+#! /bin/bash
+OLD_PWD=$PWD
+
+cd ../src || die "Could not cd to 'src' directory"
+acsutilProfiler -r 5 -f "make -f IdlMakefile -k clean"  -m "acsMakefile IDL Compilation" -d ../doc/make.dbm make -f IdlMakefile -k all install
+acsutilProfiler -r 5 -f "make -f CppMakefile -k clean"  -m "acsMakefile Cpp Compilation" -d ../doc/make.dbm make -f CppMakefile -k all install
+acsutilProfiler -r 5 -f "make -f JavaMakefile -k clean" -m "acsMakefile Java Compilation" -d ../doc/make.dbm make -f JavaMakefile -k all install
+acsutilProfiler -r 5 -f "make -f PyMakefile -k clean" -m "acsMakefile Python Compilation" -d ../doc/make.dbm make -f PyMakefile -k all install
+cd $OLD_PWD
+
+ACSPerfReportGen ../doc/make.dbm > ../doc/MakefilePerf.html

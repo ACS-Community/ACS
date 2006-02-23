@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1'  ?>
+<!DOCTYPE index
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/index_1_0.dtd">
+<index version="1.0">
+	<indexitem text="CommandCenter Help Index">
+		<indexitem text="Launching Command Center" target="launching_acc"/>
+		<indexitem text="Starting Acs" target="starting_acs"/>
+		<indexitem text="Running Clients" target="running_clients"/>
+		<indexitem text="Stopping Acs" target="stopping_acs"/>
+		<indexitem text="Deployment Scenario A" target="scenario_a"/>
+		<indexitem text="Deployment Scenario B" target="scenario_b"/>
+		<indexitem text="Managing Projects" target="managing_projects"/>
+		<indexitem text="Tools Menu" target="tools_menu"/>
+		<indexitem text="Tool Definitions" target="tool_definitions"/>
+		<indexitem text="Progress Panel" target="progress_panel"/>
+		<indexitem text="Deployment Info View" target="deployment_info"/>
+		<indexitem text="Log Area" target="log_area"/>
+		<indexitem text="Acs Instance" target="acs_instance"/>
+		<indexitem text="Cdb, Cdb-Root" target="cdb_root"/>
+		<indexitem text="What's New?" target="whats_new"/>
+	</indexitem>
+</index>
+

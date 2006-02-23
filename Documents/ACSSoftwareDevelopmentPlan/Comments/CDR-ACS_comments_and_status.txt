@@ -1,0 +1,429 @@
+**************************************
+* ACS CDR-3 General Comments
+*
+* Official file name: Reply.GeneralComments.txt
+*
+* Mon May 30 16:02:02 CEST 2005
+*
+* Updated 2005-07-29
+*
+**************************************
+
+(GianniRaffi)
+I have tried in the past hours to check through your CDR3 doc's again.
+Unfortunately in spite of the impressive amount of work you have done
+for R5.0 preparations on the Twiki, I do not find many of 
+the simple references and replies we would have needed for CDR3.
+In particular the dispositions on CDR2/Merano actions are still missing.
+
+The R3 planning (with references to R3 goals, eVLA requirements, weights) 
+is in your case superseeded by your own R5 planning.
+While I understand that your delivery is one month later, CDR3 must 
+be the occasion to discuss the yearly planning in the same format as for all other subsystems.
+
+I find only one doc. (PLA) under the ACS Twiki design review page.
+I found also the updated Compliance Matrix on 27/05
+
+Reply:
+Accepted.
+See point-to-point replies hereafter.
+---------------------------------------------------------------------------
+(BrianGlendenning)
+ACS Release Goal #7: Recommendation for next version of Linux. Not provided?
+
+Reply:
+In the ACS 5.0 planning (http://almasw.hq.eso.org/almasw/bin/view/ACS/ACS50DevelopmentPlanningAndStatusReport) we have the proposal for next version of Linux and RTAI:
+
+Support:
+- Red Hat Enterprise 4.0
+- Scientific Linux 4.0
+- VxWorks from Linux (Solaris only for tools)
+- Linux Kernel 2.6.10
+- RTAI 3.2
+- GCC 3.4.3
+
+Phase out:
+- Red Hat 9
+- Solaris
+
+I have now added a link to ACS 5.0 planning to the DesignDocuSummary 
+page, because this might be useful also for other issues.
+
+Status: This recomendation has been discussed and approved at the ACS 5.0 
+        planning meeting.
+        I have updated this document and the R3 deliverables according
+        to that decisions.
+---------------------------------------------------------------------------
+(BrianGlendenning)
+
+Planning spreadsheets absent.
+
+(GianniRaffi)
+(Missing) R3, R3.1 spreadsheet to be then used in DOORS is missing.
+It is difficult to review ACS short-term planning without this one.
+In your case it means probably R5, R5.1. 
+The Compliance Matrix does not have columns for HLA R3Deliverables(R5) 
+goals or for weights. 
+Did you not get an Excel list from Andy for R3 to fill out?
+Please look into other CDR3 subsystem design R3Planning spreadsheets 
+if you have none and you wills ee what they are like.
+
+Reply:
+I was thinking to do it after the ACS 5.0 planning definition, since it will have
+to be re-done in any case.
+But I understand that you want to have it for uniformity with the other subsystems.
+I will do it in the next couple of days and let you know as soon as available.
+
+Action: Fill in Excel table for CDR3/R3
+
+Status: Done
+
+---------------------------------------------------------------------------
+(BrianGlendenning)
+
+CDR2/Merano actions absent.
+
+(GianniRaffi)
+
+(Missing) Status on CDR2 actions, decisions and Merano actions.
+A simple text file explaining what/how you took these into account is totally missing. 
+But CDR3 is when we want to track these actions.
+One A4 page of replies would have been enough.
+
+Reply: 
+I have now posted it in the DesignDocuSummary.
+See link:
+http://almasw.hq.eso.org/almasw/pub/ACS/DesignReviews/CDR2-Merano-Status.txt
+
+---------------------------------------------------------------------------
+(GianniRaffi)
+In particular I was not able to understand if you plan to do 
+the work associated with the ReleaseR3Deliverables (Goals) for ACS:1 to 9.
+The same applies to the EVLA ops and engineering requirements, 
+which had been indicated as relevant for R3, R3.1.
+
+Reply:
+I did not thought it was necessary to comment on R3 deliverables.
+I have now added a page of comments:
+http://almasw.hq.eso.org/almasw/pub/ACS/DesignReviews/ReleaseR3Deliverables.txt
+
+For what concerns the EVLA, I have put in the ACS Architecture 
+references to this document and comments describing what is already done, 
+foreseen or not foreseen at all.
+
+If you consider it necessary I can prepare a detailed requirement's 
+traceability matrix, although I am not sure we should consider 
+that as new reuqirements.
+
+There are nice and interesting things, but in particular user interfaces tools
+plotting, analysis and so on can add really significant resource needs.
+
+I think it would be very interesting trying to develop these things in 
+collaboration with  EVLA, sharing the costs and avoiding duplication of effort.
+But you can find various comments about these aspects also in the 
+ACS Architecture.
+
+Action: EVLA requirement traceability matrix?
+
+Status: No EVLA traceability matrix written yet.
+        If I remember right from the meeting, first Gianni is supposed
+        to extract from the EVLA documents the requirements that would
+        be applicable fo us.
+
+                              _____oOo_____
+==================================== 
+= CDR-2 Report and response 
+====================================
+
+ACS-S1 We suggest that the ACS group develop and document a set of
+performance requirements, especially for core services that are
+crucial for overall system performance. 
+
+CIPT Response: Accepted and in progress. A complication is that the
+relation between these technical requirements and the overall system
+requirements (e.g., data rate) are not always obvious. 
+
+Status:
+The ACS Performance Test Suite is in place and tests are performed and reported
+at each release (4.0, 4.1)
+Actually David is preparing in these weeks the 4.1 reports and we will also 
+prepare a web page with the latest and historical performance 
+test results.
+
+There are a few Test Suite extensions agreed upon in Merano that got cut out of ACS 4.1.
+There are a well some new tests agreed upon in Merano that got cut out of ACS 4.1.
+We have put them in the discussion agenda for ACS 5.0.
+
+We have anyway no pending performance issue.
+
+----------------------------------
+
+ACS-S2 We suggest that, as part of the ACS documentation, a clear,
+concise overview document is needed that outlines all of the various
+ACS components and what their roles in ACS are.  
+
+CIPT Response: Accepted. It should be noted though that ALMA
+developers at this stage have generally passed over this point, by
+having extensive training and actual experience. 
+
+Status:
+We have started writing the ACS Cookbook:
+      http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACSCookbook/index.html
+to play this role.
+The templates and skeletons, as well as the table of contents are ready.
+But we had no resourses until now to fill it in.
+
+Since most of the training now will be neede by the new Japanese colleagues, we plan
+to use Japan resources and the ACS course in Japan to work on this.
+We plan to close this issue with ACS 5.0.
+
+----------------------------------
+ACS-R1 The committee believes that this is primarily a packaging
+issue and recommends that the ACS team follow up on its plan to
+reorganize the distribution to better accommodate the needs of
+individual groups. 
+
+Accepted. This is planned for the next releases of ACS (R4.0 and
+R4.1). 
+
+Status:
+A lot of work has been done and the RPM technical aspects have been sorted out with 
+the collaboration of the UTFSM ACS team in Chile.
+A first set of test RPMs have been prepared but not distributed.
+We need to work on the actual packaging in terms of what packages should be grouped together.
+
+We plan to have the first real RPM distribution with ACS 5.0 and close this issue.
+
+----------------------------------
+ ACS-R2 The panel recommends that support for additional platforms be
+added incrementally, starting with the platforms used internally to
+ALMA and adding additional platforms as resources permit. 
+
+CIPT Response: Accepted. In particular, we do not intend to add
+additional platforms before 2005.   
+
+Status:
+For ACS 4.1 we support RH-9, Solaris and VxWorks.
+We  have tested with RH Enterprise 3.0.3 and Scientific Linux 3.0.3
+We have phased out RH-7
+
+For ACS 5.0 we have proposed to 
+- support RH Enterprise 4.0 and Scientific Linus 4.0
+- phase out RH-9 and Solaris.
+- continue support fo VxWorks until used in TICS
+
+Other ACS users outside ALMA are currently providing support for Debian and
+porting to each new ACS release comes generally 1 month after release.
+
+For coming releases we wait for requirements/requests from Offline,
+but should not be a problem to add one or two platforms in 2006.
+
+===================================
+= Merano All Hands Meeting
+===================================
+
+=== Decisions:
+Future integration still supervised by HLA and supported by ACS. 
+The system is not yet at a stage where it can be integrated without deep 
+knowledge, many more test paths have to be explored. 
+HLA should give guidance here. The overall goal being that the overall
+system runs, everything related to this has TOP priority
+
+Status:
+ACS has provided all required support for R2.1 with the highest
+priority.
+We have also delayed ACS 4.1 release in part to be able to use the
+feedback from R2.1.
+In general the ACS intevention has been much less essential than with
+R2 and we did not have to make big code anaysis campaigns.
+
+----------------------------------
+=== Actions:
+
+Policy enforcement (Computing Management).
+HLA, ITS, SE and ACS should report to Management on the findings 
+of their integration work. 
+Management will make clear and enforce policies decided 
+by the project as a whole, to avoid
+subsystems diverging and/or using their own policies.
+
+
+Status:
+During R2.1 there has been no major need to involve ACS in this process.
+
+----------------------------------
+Design/code guidelines (HLA, SE, ACS):
+Define ALMA guidelines for correct coding, including exception/error handling 
+(e.g., intercepting all exceptions, listing all to be checked at code review time). 
+These guidelines should be in the short checklists gathered into one place on the Wiki, 
+and will be used during code reviews. 
+We should define and use a common agreed nomenclature defined through models and 
+diagrams of the system: "Archive", for example, has been used to mean 1) technology; 
+2) the ALMA subsystem; and 3) its generic functionality, while "Exec" has been used 
+to indicate 1) the operator GUI; 2) the daemon that monitor subsystems; 
+and 3) the Executive subsystem. 
+Such overloading of names leads to confusion and misunderstanding.
+
+Status:
+As ACS we have been and we are still working on improving the
+documentation to provide more precise guidelines.
+We think that code review and pair programming are very important and
+useful.
+Steve Harrington is providing extensive support in Socorro solving
+problems together with the users.
+Alessandro Caproni is no in Socorro and with the collaboration of
+Jorge Ibsen is working on the porting of TICS to the latest ACS.
+A very important component of this work is TICS code review and
+suggestions to better implement the code avvording to ACS principles
+and patterns.
+The same work we do with Archive.
+I believe we should do more of this also for other subsystems, but I
+do not know where we could find the resources.
+----------------------------------
+RTAI (Correlator, Control, SE, ACS) will be part of the next
+integration, however installations must be made reliably repeatable.
+
+Status:
+A lot of work has been done here by the groups involved.
+In ACS side, ACS 4.1 delivers the requested Kernel and tools and the
+procedure needed to build and install it.
+
+----------------------------------
+Time representation/Units: ACS will make a proposal/specification by R2.1.
+
+Status:
+Nothing done.
+I do not find it written anywhere, but I recall that it was decided
+that first of all HLA/Allen should have provided requirements and 
+specifications.
+
+----------------------------------
+
+######################################################################
+# Comments on ACS R3 deliverables
+# http://almasw.hq.eso.org/almasw/bin/view/HLA/ReleaseR3Deliverables
+######################################################################
+
+ACS
+It is essential that the version of ACS that we take to the ATF be
+rock-solid, so that we are not spending all our time restarting ACS
+and/or our computers. We will naturally be doing a great deal of
+debugging; this means that components will be failing, will need to be
+shut down, debugged, and restarted as a matter of routine. Time will
+be at a premium, since we can never expect to have sole possession of
+the ATF for long periods. Moreover, our activities will be continually
+seen by other members of the ALMA project. It will damage our
+reputation irreparably if we are always pressing the reset button and
+waiting for systems to restart. Since ACS 5.0 is likely to be the
+version that we will use when we finally get access to the ATF, I have
+tried to identify those items that seem to me most likely to
+contribute to making the system robust, basing many of these choices
+on our experience in integrating the system. 
+
+Comment: 
+  I fully agree with this approach.
+  The ACS 5.0 planning proposal explicitly states this objective
+  and we try to keep low the things to be implemented to have more
+  time available to make ACS rock-solid.
+
+  For the ACS 5.0 planning see:
+       http://almasw.hq.eso.org/almasw/bin/view/ACS/ACS50DevelopmentPlanningAndStatusReport
+----
+
+I also suggest making
+"definitive" choices for OS, RTOS and Java versions now; when we are
+already in the middle of ATF use, we will not want to change
+these. (Before moving to the OSF, we will be in a position to make our
+next upgrades, if necessary.) 
+
+Comment: I agree. The item is in the ACS 5.0 planning proposal.
+
+----
+   1. Patch release
+         1. Refactor/cleanup Java logging
+
+Comment: Done with ACS 4.1.0
+
+         2. Test and document procedures for loading/unloading C++ and
+            Java components (ITS should then exercise these
+            procedures, see below) 
+
+
+Comment: Partially done. Will be integrated in ACS 4.1.1 or .2
+
+   2. Move to Java 1.5 (which is already at Update 2)
+
+Comment: I agree. The item is in the ACS 5.0 planning proposal.
+
+   3. Include NotificationChannel information in CDB
+
+Comment: Done with ACS 4.1.0
+
+   4. Implement Java component shortcutting (native method invocation
+      when calling and called components are in the same container) 
+
+Comment: Do be discussed in the ACS 5.0 planning.
+         I doubt it will fit in and I do not see this as essential,
+
+   5. Update all documentation, including the cookbook. Users at the
+      ATF will depend on it. 
+
+Comment: I agree. The item is in the ACS 5.0 planning proposal.
+
+   6. Implement loading/unloading of Python components (maybe--depends
+   on how often more than one Python component is run inside a
+   container and on how difficult it is for clients to
+   disconnect/reconnect when the container is brought down and
+   restarted with a new version of the component) 
+
+Comment: Done with ACS 4.1.0
+
+   7. Recommend/decide on next version of Linux (by CDR3) and target
+   it for ACS 5.0. This will probably be the version of Linux that we
+   use for the entire lifetime of the ATF so we should get it right
+   the first time (i.e., now). 
+
+Comment: I agree. The item is in the ACS 5.0 planning proposal.
+
+   8. In collaboration with Control and Correlator, make sure that we
+   have one version of the RTOS and that procedures for loading and
+   unloading kernel modules are well-defined, well-documented and
+   well-tested. Failing components should not necessitate a system
+   reboot! 
+
+Comment: I agree. The item is in the ACS 5.0 planning proposal.
+         We have already done some work on RTOS configuration
+         and procedures. More is needed.
+         If a component with Real Time Capabilities crashes, 
+         there is normally no other way out than rebooting the 
+         machine, since Kernel corruption is not recoverable.
+         But this shall not require a restart of the complete ALMA
+         software. 
+         It must be possible to reboot just the offended machine and
+         continue. 
+         ACS deployment capabilities should be used to isolate bad
+         Components as much as possible in order to limit side effects
+         of crashes on other Components.
+
+   9. Device Browser Tool, which Control should test at ATF as soon as
+   a pre-release is available. -- GianniRaffi - 20 Apr 2005 
+
+Comment: As commented in the ACS Architecture, the Object Explorer
+         is mostly equivalent to the Device Browser Tools described
+         in the EVLA document.
+         The Device Browser has more capabilities that what
+         implemented in Object Explorer + other tools.
+         We would have to decide what additional capabilities we need
+         to implement and evaluate the resources.
+         One possibility would be to use a development started by
+         Cosylab for another of their projects for "Next Generation
+         Object Explorer". As far as I know for example this new tool
+         allows to prepare and save panels with display of widgets for
+         miltiple components. This would cover a wide set of features
+         in the Device Browser not covered by the current Object
+         Explorer.
+         But I have not put anything about this in ACS 5.0 plan.
+         As any GUI, this would require a sizable amount of resources.
+
+Status: We have agreed at CDR3 that specific technical requirements need 
+        to be written before we decide what to do.

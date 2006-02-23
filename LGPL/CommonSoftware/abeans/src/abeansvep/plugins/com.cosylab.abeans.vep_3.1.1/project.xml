@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<!-- the version of maven's project object model -->
+	<pomVersion>3</pomVersion>
+
+	<!-- a unique name for this project -->
+	<id>abeans</id>
+
+	<!-- a short but descriptive name for the project -->
+	<name>Abeans-VEP</name>
+
+	<!-- 
+	 | The version of the project under development, e.g. 1.1, 1.2, 2.0a1
+	 |-->
+	<currentVersion>1.0-a2</currentVersion>
+
+	<!-- details about the organization that 'owns' the project -->
+	<organization>
+		<name>Cosylab</name>
+		<url>http://www.cosylab.com/</url>
+		<logo>http://www.cosylab.com/images/cosylablogo-right.gif</logo>
+	</organization>
+
+	<!-- the year the project started -->
+	<inceptionYear>2001</inceptionYear>
+
+	<package>com.cosylab</package>
+
+	<!--logo>http://...</logo-->
+
+	<description>
+		Abeans Visual Editor Plugin for Eclipse Platform.	
+	</description>
+
+	<!-- a short description of what the project does -->
+	<!--shortDescription></shortDescription-->
+	<!-- the project home page -->
+
+
+	<!--
+	 | List of developers and other contributors to the project.
+	 |-->
+	<developers>
+		<developer>
+			<name>Matej Šekoranja</name>
+			<id>msekoranja</id>
+			<email>matej.sekoranja@cosylab.com</email>
+			<organization>Cosylab</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Jernej Kamenik</name>
+			<id>jkamenik</id>
+			<email>jernej.kamenik@cosylab.com</email>
+			<organization>Cosylab</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+  
+	<!-- jar files the project is dependent on -->
+	<dependencies>
+	</dependencies>
+
+	<!-- build information for the project -->
+	<build>
+		<nagEmailAddress>jernej.kamenik@cosylab.com</nagEmailAddress>
+		<sourceDirectory>${basedir}/target/src</sourceDirectory>
+		
+	</build>
+</project>
+

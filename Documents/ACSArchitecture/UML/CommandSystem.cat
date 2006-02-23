@@ -1,0 +1,444 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Command System"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"381599DD025C"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "Command Checking Library"
+	    quid       	"3940F34F028E")
+	(object Class "Client"
+	    quid       	"3940F394021F")
+	(object Class "Generic Command GUI"
+	    quid       	"3940F3CF026A")
+	(object Association "Check command"
+	    quid       	"3940F4330391"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$0"
+		    quid       	"3940F43500F4"
+		    supplier   	"Logical View::Command System::Command Checking Library"
+		    quidu      	"3940F34F028E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$1"
+		    quid       	"3940F43500FE"
+		    supplier   	"Logical View::Command System::Generic Command GUI"
+		    quidu      	"3940F3CF026A")))
+	(object Association "Send command"
+	    quid       	"3940F4460031"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$2"
+		    quid       	"3940F447028B"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$3"
+		    quid       	"3940F4470295"
+		    supplier   	"Logical View::Command System::Generic Command GUI"
+		    quidu      	"3940F3CF026A")))
+	(object Association "$UNNAMED$4"
+	    quid       	"3940F4520219"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$5"
+		    quid       	"3940F4530292"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$6"
+		    quid       	"3940F45302A6"
+		    supplier   	"Logical View::Command System::Client"
+		    quidu      	"3940F394021F")))
+	(object Association "Check command"
+	    quid       	"3940F48A00E3"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$7"
+		    quid       	"3940F48B0261"
+		    supplier   	"Logical View::Command System::Command Checking Library"
+		    quidu      	"3940F34F028E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$8"
+		    quid       	"3940F48B026B"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Command System Architecture"
+	    quid       	"3940F2FC0040"
+	    title      	"Command System Architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Command System::Generic Command GUI" @1
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(900, 315)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@1
+			location   	(633, 269)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	534
+			justify    	0
+			label      	"Generic Command GUI")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940F3CF026A"
+		    width      	552
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Command System::Client" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1545, 360)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(1449, 314)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	192
+			justify    	0
+			label      	"Client")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940F394021F"
+		    width      	210
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Command System::Command Checking Library" @3
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(390, 825)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@3
+			location   	(62, 779)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	656
+			justify    	0
+			label      	"Command Checking Library")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940F34F028E"
+		    width      	674
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Check command" @4
+		    location   	(644, 569)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @5
+			Parent_View 	@4
+			location   	(644, 510)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	310
+			justify    	0
+			label      	"Check command"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940F4330391"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$0" @6
+			    Parent_View 	@4
+			    location   	(-256, 254)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F43500F4"
+			    client     	@4
+			    supplier   	@3
+			    vertices   	(list Points
+				(644, 569)
+				(448, 766))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$1" @7
+			    Parent_View 	@4
+			    location   	(-256, 254)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F43500FE"
+			    client     	@4
+			    supplier   	@1
+			    vertices   	(list Points
+				(644, 569)
+				(841, 373))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent" @8
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1485, 1245)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@8
+			location   	(1484, 1353)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	476
+			justify    	0
+			label      	"ACS::CharacteristicComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF597A029B"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Send command" @9
+		    location   	(1201, 795)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @10
+			Parent_View 	@9
+			location   	(1201, 736)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	332
+			justify    	0
+			label      	"Send command"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940F4460031"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$2" @11
+			    Parent_View 	@9
+			    location   	(301, 480)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F447028B"
+			    client     	@9
+			    supplier   	@8
+			    vertices   	(list Points
+				(1201, 795)
+				(1467, 1217))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$3" @12
+			    Parent_View 	@9
+			    location   	(301, 480)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F4470295"
+			    client     	@9
+			    supplier   	@1
+			    vertices   	(list Points
+				(1201, 795)
+				(936, 373))
+			    line_style 	0)))
+		(object AssociationViewNew "$UNNAMED$4" @13
+		    location   	(1512, 817)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @14
+			Parent_View 	@13
+			location   	(1512, 758)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			hidden     	TRUE
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	332
+			justify    	0
+			label      	""
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940F4520219"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$5" @15
+			    Parent_View 	@13
+			    location   	(-33, 457)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F4530292"
+			    client     	@13
+			    supplier   	@8
+			    vertices   	(list Points
+				(1512, 817)
+				(1484, 1217))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$6" @16
+			    Parent_View 	@13
+			    location   	(-33, 457)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F45302A6"
+			    client     	@13
+			    supplier   	@2
+			    vertices   	(list Points
+				(1512, 817)
+				(1540, 418))
+			    line_style 	0)))
+		(object AssociationViewNew "Check command" @17
+		    location   	(999, 1056)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @18
+			Parent_View 	@17
+			location   	(999, 997)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	310
+			justify    	0
+			label      	"Check command"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940F48A00E3"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$7" @19
+			    Parent_View 	@17
+			    location   	(-486, -189)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F48B0261"
+			    client     	@17
+			    supplier   	@3
+			    vertices   	(list Points
+				(999, 1056)
+				(543, 883))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$8" @20
+			    Parent_View 	@17
+			    location   	(-486, -189)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940F48B026B"
+			    client     	@17
+			    supplier   	@8
+			    vertices   	(list Points
+				(999, 1056)
+				(1456, 1230))
+			    line_style 	0)))))))

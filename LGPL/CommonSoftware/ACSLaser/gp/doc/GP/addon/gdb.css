@@ -1,0 +1,57 @@
+/* Eric ROUX web pages style sheet */
+/* Define colors, fonts and other style attributes here to override the defaults  */
+
+/* Page background color */
+BODY
+{
+   color: #000000; 
+   background-color: #FFFFFF; 
+   font-size: 11pt;
+   font-family:Verdana, Helvetica, Arial, sans-serif;
+   Margin-left=1;
+   Margin-top=1;
+   Margin-right=1;
+   Margin-bottom=1;
+}
+
+/* Link behaviour */
+A:link    { color: #0000FF; text-decoration: none; }         
+A:visited { color: #0000FF; text-decoration: none; }        
+A:active  { color: #0000FF; text-decoration: none; }      
+A:hover   { color: #007FFF; text-decoration: none; }
+
+/* normal text 
+ EM  {font-size: 12pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ P   {font-size: 12pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ LI  {font-size: 12pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ UL  {font-size: 12pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ DIV {font-size: 12pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+
+ H1 {font-size: 18pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H2 {font-size: 16pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H3 {font-size: 14pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H4 {font-size: 12pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H5 {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ADDRESS {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ */
+ 
+ 
+/* FOOTER fonts and colors */
+#FooterCERN      
+{ 
+   font-size:        12pt;
+   font-family:      Verdana, Helvetica, Arial, sans-serif; 
+   color:            #FFFFFF;
+   text-align:       right; 
+   vertical-align:   center;  
+}
+#FooterTimeStamp 
+{ 
+   font-size:        12pt;
+   font-family:      Verdana, Helvetica, Arial, sans-serif; 
+   color:            #FFFFFF;
+   text-align:       left;  
+   vertical-align:   center;   
+}
+
+

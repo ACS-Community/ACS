@@ -1,0 +1,47 @@
+
+==========================================================================
+
+Point: chip                Residence: RAM
+
+# chip ----------------------------------------------------------
+
+description         Bytes16  S      # Description of the chip used 
+                                    # desc1 
+                                    # desc2 
+                                    # desc3 
+                                    # desc4 
+type                UInt16   S      # desc5 
+                                    # Type of chip (0=norm.,1=frame tra 
+                                    # desc6 
+skipper             Logical  S      # Skipper CCD  
+                                    # (repeated pixel readout possible) 
+mpp                 Logical  S      # MPP mode 
+xPixels             UInt16   S      # Number of pixels hor. in one chip 
+yPixels             UInt16   S      # Number of pixels vert. in one chi 
+yPixelSize          Float    S      # Pixel size (microns) horizontally 
+xPixelSize          Float    S      # Pixel size (microns) vertically 
+nOutputs            Float    S      # number of on-chip outputs 
+output                       T 16   # Description of each output in the 
+xLocation           UInt16          # x place of output (1=first pix fr 
+                                    # x1 
+                                    # x2 
+                                    # x3 
+                                    # t1 
+yLocation           UInt16          # y1 
+                                    # y place of output (1=first pix fr 
+                                    # y2 
+                                    # y3 
+                                    # y4 
+                                    # t2 
+                                    # t3 
+direction           Logical         # readout direction 
+id                  Bytes8          # Id of the output in the chip  
+                                    # (as defined by the producer) 
+xPrescan            UInt16          # Number of horizontal prescan pixe 
+yPrescan            UInt16          # Number of vertical prescan pixels 
+                                    # y4 
+xPix                UInt16          # Number of horizontal active pixel 
+yPix                UInt16          # Number of vertical active pixels 
+xOverscan           UInt16          # Number of horizontal overscan pix 
+yOverscan           UInt16          # Number of vertical overscan pixel 
+fieldNoCommant      UInt16   b      # 

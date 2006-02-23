@@ -1,0 +1,39 @@
+
+
+
+
+
+The ws/test directory contains 2 type of testes:
+- only WS (test clients and test server(s) run on WS
+- both WS/LCU (test clients run on WS and server(s) on LCU)
+
+If the environment variable WIND_BASE is defined both WS/LCU tests
+will take place otherwise only WS testes.
+
+Reference files:
+The reference files are in ref_BOTH and ref_WS, respectively and the
+subdirectory ref (e.g. ref_BOTH/ref and ref_WS/ref).
+The Make file copies apropriate reference files into test/ and test/ref
+depending on finding or not WIND_BASE environment variable. 
+
+NOTE: If you generate new reference files you have to copy them into
+appropriate directory (ref_BOTH or ref_WS and ref subdirectory).
+
+
+TestList files:
+There are two TestList.lite files:
+ - TestList_BOTH.lite (Specifies two VLT environments: wsTat and lcuTat)
+ - TestList_WS.lite (Specifies only one VLT enviroment: wsTat)
+Depending on definition of enviroment varibale the make file copies
+one of them to TestList.lite
+
+
+TestDriver file:
+The TestDriver file defines the RTAPENV environment variable in
+"WS only" (WIND_BASE is not defined) case it takes value of "wsTat" in
+"BOTH" case (WIND_BASE is defined) it takes value of
+"lcuTat" from the .testSession file.
+
+
+The Makefile:
+It is changed so that it copies appropirate reference files and TestList.lite file. 

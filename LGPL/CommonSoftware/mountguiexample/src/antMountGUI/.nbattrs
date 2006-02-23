@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="eqPatternDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="eqPatternDlg"/>
+    </fileobject>
+    <fileobject name="hrPatternDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="hrPatternDlg"/>
+    </fileobject>
+    <fileobject name="eqSourceDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="eqSourceDlg"/>
+    </fileobject>
+    <fileobject name="hrSourceDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="hrSourceDlg"/>
+    </fileobject>
+    <fileobject name="StrokeVector.java">
+        <attr name="class_dependency_java.util.Vector" stringvalue="StrokeVector"/>
+    </fileobject>
+    <fileobject name="PointingAzElDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="PointingAzElDlg"/>
+    </fileobject>
+</attributes>

@@ -1,0 +1,117 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeScript,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# rschmutz  1999-04-03  created
+# psivera   1999-09-21  check the definition of MAKE_VXWORKS before adding
+#                       the "uname" command to the script
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeScript - create a script
+# 
+#   SYNOPSIS
+#
+#   vltMakeScript <exeName>
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to copy a script to ../bin.
+#   If the script is a /bin/sh script, then an instruction
+#   to disable the build-in echo command under Linux is added 
+#   to the script.
+#
+#   <exeName>     The name of the  executable. The output is named 
+#                 ../bin/<exeName>
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile, Makefile, (GNU) make
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+if [ $# -ne 1 ]
+then
+    echo "" >&2
+    echo "vltMakeScript <exeName>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# set up more readable variables:
+exeName=$1
+
+OUTPUT=../bin/${exeName}
+
+#
+#  The first line of a script can be used to specify the shell to be used 
+#  to execute the script. Such a line shall have the following format:
+#          #! <shellFilename> [<parameter> ... ]
+#  The <shellFilename> MUST be completed with the path and the total 
+#  lenght cannot exceed 32 chars.
+#
+#  This impose a serious limitation to the flexibility of finding a shell
+#  executable according to the precedence established by the current PATH 
+#  
+#  Since the introduction of tcl/Tk and Sequencer, many commands are build 
+#  as scripts. To allow the usual flexibility given by the mod/int/vlt-root
+#  architecture, there is the need to use the following trick:
+#  
+#      - all scripts are executed by /bin/sh (first line)
+#      - the second line ends with "\"
+#      - the third line is an "exec" of the actual shell we want to use
+#        (such a command is searched according to the current PATH)
+#
+#  Therefore the header of a Tcl/Tk script is:
+#  
+#     #!/bin/sh
+#     #\
+#     exec <tclShell> "$0" ${1+"$@"}
+#  
+#  As a consequence, if the script starts with:
+#     #!/bin/sh
+#     #\
+#  then the script is _not_ assumed to be executed by /bin/sh
+#  and the patch is not added.
+#
+
+if [ -f ${exeName}.py ]
+then 
+
+# to be added the header!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    cp ${exeName}.py $OUTPUT
+else
+    if [ "`head -n 1 ${exeName} | grep '^#! */bin/sh'`" != "" -a \
+         "`head -n 2 ${exeName} | grep '\\\\$'`" = "" ]
+    then
+        head -n 1 ${exeName} >$OUTPUT
+        if [ "$MAKE_VXWORKS" = "" ]
+        then
+          echo 'if [ "`uname`" = "Linux" ]; then enable -n echo; fi' >>$OUTPUT
+        fi
+        sed 1d ${exeName} >>$OUTPUT
+    else
+        # not a /bin/sh script: just copy the script
+        cp ${exeName} $OUTPUT
+    fi
+fi
+#
+# make output file executable
+chmod +wx $OUTPUT
+
+#
+# ___oOo___

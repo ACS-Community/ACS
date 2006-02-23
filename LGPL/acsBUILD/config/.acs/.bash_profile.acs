@@ -1,0 +1,930 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+#
+# "@(#) $Id: .bash_profile.acs,v 1.59 2006/02/08 16:23:16 dfugate Exp $"
+#
+#
+#
+# User specific environment and startup programs
+#
+# The following settings must be done before beginning the build 
+# of the ACS software. 
+#
+# The following variables give the location
+# where the ACS software and tools are installed:
+# The installation procedure understands whether you 
+# chose the default location or not and will (un)comment
+# the following lines accodingly.
+
+# The following variables can be overwritten
+# in the calling script to point to home defined versions of the tools
+# if the option:
+#      -r
+# is given as a parameter when calling the script 
+# or if the environment variable 
+#      ACS_RETAIN 
+# is set.
+#
+# Otherwise standard ACS values are used.
+#
+# See later in the script for the standard definitions
+#
+######
+# ACS specific configuration
+#
+# ACSROOT     # ACS installation directory
+# INTROOT     # Developer integration area
+# INTLIST     # A list of intermediate installation directories
+#             # between ACSROOT and INTROOT 
+#             # (external value always overwrite script default)
+# ACSDATA     # ACS run time files
+# ACS_CDB     # ACS configuration database file tree
+# VLTROOT     # VLT Common software installation (if any)
+# VLTSW_RELEASE  # As above             
+#
+# MODPATH     # Defines if ../lib, ../bin...
+#             # have to be added to the PTHs or not
+#             # (external value always overwrite script default)
+# ACS_STARTUP_TIMEOUT_MULTIPLIER
+#             # Time factor to be applied when waiting
+#             # for a timeout during the execution of a script
+#             # (external value always overwrite script default)
+#
+#####
+# GCC and GNU tools installation directory
+#
+# GNU_ROOT
+# TCLTK_ROOT
+#####
+# ACE/TAO installation directory
+#
+# ACE_ROOT_DIR   # This is used to build indirectly ACE_ROOT 
+######
+# Python and OmniORB installation
+#
+# PYTHON_ROOT
+# OMNI_ROOT
+######
+# MICO_HOME      # MICO installation 
+######
+#
+# Java JDK installation, ORB and tools:
+# JAVA_HOME
+# ANT_HOME
+# JACORB_HOME
+######
+# 
+# VxWorks:
+# If the scripts finds a VxWroks installation
+# available, all corresponding environment variables
+# will be set.
+# This implies that later on TAT and ACS Makefile
+# will try to build and test VxWorks code.
+# If you want to avoid using VxWorks on a machine where it is
+# installed,
+#     unset WIND_BASE
+# after have executed this script.
+#
+######
+# MATPLOTLIBDATA # matplotlib Python package location
+#######################################################
+
+
+# Default location for the ACS software and tools:
+ALMASW_ROOTDIR=/alma
+ALMASW_RELEASE=ACS-5.0
+ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+
+#
+# Checks RETAIN mode
+#
+if [ "$1" = "-r" ]
+then
+   ACS_RETAIN=1
+fi
+
+#########################################################
+# Here is the OS detection Subroutines
+# Please skip this section if you want to modify other variables
+# 
+os_discovery ()
+{
+	#   Solaris: uname command is enough
+	#
+	#   Linux
+	# RedHat     : /etc/redhat-release
+	# Fedora     : /etc/redhat-release
+	# Debian     : /etc/debian-version
+	# Slackware  : /etc/slackware-version
+	#
+	# RHEL
+	# Red Hat Enterprise Linux WS release 4 (Nahant Update 1)
+	######################################################
+	# SL
+	# Scientific Linux SL release 4.1 (Beryllium)
+	######################################################
+	# RH
+	# Red Hat Linux release 9 (Shrike)
+	######################################################
+	# Fedora
+	# Fedora Core release 4 (Stentz)
+	######################################################
+	# Mandrake
+	# Mandrakelinux release 10.1 (Cooker) for i586
+	######################################################
+	# Gentoo
+	# Gentoo Base System version 1.6.12
+
+	# By Default the OS/Release are unknown
+	DISTRO='UNKNOWN'
+	REL='UNKNOWN'
+
+	# Here start the research
+	OS=`uname -s`
+
+
+	# First RedHat and connected distributions (Scientific Linux, Fedora)
+	case $OS in
+		'Linux'   )     # Need to know what distribution and get release number
+				check_linux;;
+		'SunOS' )	# Much easier, uname command is enough
+				check_solaris;;
+	esac
+}
+
+check_solaris ()
+{
+	OS='SOLARIS'
+	DISTRO='SOLARIS'
+	REL=`uname -r`
+}
+
+check_linux ()
+{
+	
+	OS='LINUX'
+	# Standard release files for different distributions
+	RH=/etc/redhat-release
+	DB=/etc/debian-version
+	SL=/etc/slackware-version
+	SU=/etc/SuSE-release
+	GT=/etc/gentoo-release
+	MD=/etc/mandrake-release
+
+	if [ -f $RH ] 
+   	then
+		INFO=`cat $RH`
+		# It can be Redhat, Scientific Linux or Fedora
+		# Check with first word
+		DUMMY=`cat $RH | cut -d' ' -f1`
+
+		case $DUMMY 
+		in
+			'Red') 		# It can be Redhat standard or RedHat Enterprise
+					case `cat $RH | cut -d' ' -f3` 
+					in
+						'Linux') # Old RedHat Free distribution (7.3, 8.0 or 9)
+					 		DISTRO='RHLX'
+					 		REL=`cat $RH | cut -d' ' -f5` ;;
+						'Enterprise') # RedHat Enterprise
+					 		DISTRO='RHEL'
+					 		REL=`cat $RH | cut -d' ' -f7` ;;
+					esac;;
+			'Scientific') 	# Scientific Linux
+					DISTRO='SL'
+					REL=`cat $RH | cut -d' ' -f5` ;;
+			'Fedora') 	# Fedora Core 
+					DISTRO='FEDORA'
+					REL=`cat $RH | cut -d' ' -f4` ;;
+		esac
+	fi
+
+	# then let's check other distributions, first SuSe
+	if [ -f $SU ]
+	then
+		# SuSe 
+		DISTRO=SUSE
+		REL=`grep -i SuSe $SU |  cut -d' ' -f3` 
+	fi
+
+	# Then Mandrake
+	if [ -f $MD ] 
+	then
+		DISTRO='MDRK'
+		REL=`cat $MD | cut -d' ' -f3` 
+	fi
+
+	# Debian
+	if [ -f $DB ] 
+	then
+		DISTRO='DEBIAN'
+		REL=""
+	fi
+	
+	if [ -f $GT ] 
+	then
+		DISTRO='GENTOO'
+		REL=`cat $GT` 
+	fi
+}
+##############################################################################
+# End of OS detection subroutines
+##############################################################################
+
+# Now call OS detection subroutin
+os_discovery
+
+#
+# This is necessary on RH 9 kernels from the original distribution
+# (kernel version < 2.4.20-28.9).
+# Comment it if you have a newer kernel.
+#
+#export LD_ASSUME_KERNEL=2.4.18 
+
+#
+# Uncomment this to use at the same time 
+# ACS and VLT common software on Linux 
+# (used by VLT/ACS evaluation projects)
+# 
+# VLTROOT=$ALMASW_INSTDIR/CCSLite
+#
+# Alternatively, let the script to find by itself
+# if CCS is installed in the standard ACS tree.
+# Comment this out if you want to be sure no VLTROOT is set
+#
+# WARNING: almamgr, doing the installation of ACS
+#          SHALL NOT DEFINE VLTROOT here.
+#          This would get in conflict with build procedures.
+#if [ -d  $ALMASW_INSTDIR/CCSLite ]
+#then
+#    VLTROOT=$ALMASW_INSTDIR/CCSLite
+#fi
+#
+
+#
+# Custom location for the ACS software and tools:
+# Normally you do not need to change these.
+# unless you are testing with special distributions.
+#
+# ALMASW_INSTDIR=_where_you_install_the_software_
+# ALMASW_RELEASE=""
+# ALMASW_ROOTDIR=$ALMASW_INSTDIR
+
+# set the following variable to the instance of ACS
+# you would like to use. Values are limited from 0-9.
+# be mindful of other users on your system who might
+# inadvertantly try to use your instance.
+if [ X"$ACS_INSTANCE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACS_INSTANCE=0
+fi
+
+# set the following variable to the path where you want to install 
+# the ACS sources. The sources are downloaded under $HOME/ACSSW. 
+# Be careful that the ACSROOT must be different from $HOME/ACSSW!
+# Default value:
+if [ X"$ACSROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACSROOT=$ALMASW_INSTDIR/ACSSW
+fi
+
+# set the following variable for defining more working areas
+# INTLIST=dir1:dir2:dir3:...:dirn
+
+# Integration area
+# Uncomment the following line when you want to use an INTROOT
+# if [ X"$INTROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+# then
+#    INTROOT=$HOME/introot
+# fi
+
+# Different parts of INTLIST are separated
+if  [ X"$INTLIST" != X ]
+then
+  # item_list is only a temporary variable
+  item_list=`echo $INTLIST | sed s/:/\ /g`
+
+  INTLIST_DIRS=`echo $item_list`
+  intlist_first_dir=`echo $INTLIST | awk -F: '{print $1}'`
+fi
+
+
+# Set MODULE in all paths.
+# The value can be already set in the inherited environment.
+# Otherwise it can be set here. If set to 1,
+# ../bin will be added to PATH (if you are not concerned by potential security threats)
+# ../lib will be added to LD_LIBRARY_PATH
+# ../idl will be added to IDL_PATH
+# ../lib/python/site-packages will be added to PYTHONPATH
+if [ X"$MODPATH" = X ]
+then
+    MODPATH=0
+fi
+
+# WARNING: the following two variables GNU_ROOT and TCLTK_ROOT
+# cannot be empty.
+
+# set the following variable to the path where you installed your gnu stuff.
+# If you are running RedHat 7.2, 7.3 or 9 then you need to get GNU and TCL&TK from ACS
+if [ X"$GNU_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	if [ "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" ] 
+	then 
+   		GNU_ROOT=$ALMASW_INSTDIR/gnu
+	else
+   		GNU_ROOT=/usr
+	fi	
+fi
+# set the following variable to the path where you installed your tcltk stuff.
+# If you are running RedHat 7.2, 7.3 or 9 then you need to get GNU and TCL&TK from ACS
+if [ X"$TCLTK_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/tcltk -o "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" ] 
+	then 
+   		TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
+	else
+   		TCLTK_ROOT=/usr
+	fi	
+fi
+
+# ------ End variables to be edited by hand ------------------
+# ------------------------------------------------------------
+
+
+# ------ The following variables are built based on  ----------
+# ------ the previous ones. You normally do not need ----------
+# ------ to change them by hand, but, please, have a ----------
+# ------ look at their value and meaning.            ----------
+# ------ (in particular if you did not install all   ----------
+# ------ the tools from the ACS cd.                  ----------
+
+# set the following variable to the path where you installed your TAO 
+# stuff:
+if [ X"$ACE_ROOT_DIR" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACE_ROOT_DIR=$ALMASW_INSTDIR/TAO/ACE_wrappers/build
+fi
+
+# set the following variable to the path where you installed your TAO 
+# stuff:
+OSYSTEM=`uname -s`
+if [ "$OSYSTEM" = "SunOS" ]
+then
+    ACE_ROOT=$ACE_ROOT_DIR/sun
+    if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+    then
+       ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+    fi
+elif [ "$OSYSTEM" = "Linux" ]
+then
+    ACE_ROOT=$ACE_ROOT_DIR/linux
+    if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+    then
+       ACS_STARTUP_TIMEOUT_MULTIPLIER=2
+    fi
+else
+    ACE_ROOT=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+#
+# If ACE/TAO have been built for VxWorks, set the proper path
+#
+if [ -d $ACE_ROOT_DIR/vxworks ]
+then
+    ACE_ROOT_VW=$ACE_ROOT_DIR/vxworks
+fi
+
+# set the following variable to the path where you installed matplotlib Python
+# package.
+if [ X"$MATPLOTLIBDATA" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   MATPLOTLIBDATA=$ACSROOT
+fi
+
+# set the following variable to the path where you installed your java stuff.
+# If you are running RedHat 7.2, 7.3 or 9 then you need to get GNU and TCL&TK from ACS
+# OTherwise RPM standard installation is assumed.
+# Change as appropriate the jdk version if you did not install 
+# java from our distribution.
+if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	if [ "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" ] 
+	then 
+   		JAVA_HOME=$ALMASW_INSTDIR/java/jdk1.5.0_04
+	else
+   		JAVA_HOME=/usr/java/jdk1.5.0_04
+	fi	
+fi
+
+# If not explicitly set by hand,
+# set the following variable to the path where you installed the vlt stuff.
+# only if the CCSLite directory exist!
+
+if [ X"$VLTROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   if [ -d $ALMASW_INSTDIR/CCSLite ]
+   then
+       VLTROOT=$ALMASW_INSTDIR/CCSLite
+   else
+       VLTROOT=$ACSROOT
+   fi
+fi
+
+# We have to define the following variable
+# to make one of the VLT tools (pkgin) work without problems.
+if [ X"$VLTSW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   VLTSW_RELEASE=$ALMASW_RELEASE
+fi
+
+# set the following variable to the acsdata stuff.
+if [ X"$ACSDATA" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACSDATA=$ALMASW_INSTDIR/acsdata
+fi
+
+# for compatilibility issue, VLTDATA is also defined
+VLTDATA=$ACSDATA
+
+if [ X"$ACS_CDB" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACS_CDB=$ACSDATA/config/defaultCDB
+fi
+
+# set the following variable to your default environment
+RTAPENV=walma
+
+# you do not need to change the following two settings. 
+# They allow you to use the cmm archive
+CMM_PORT=3000
+CMM_HOST=te13.hq.eso.org
+
+# HOST should be the name of the machine
+HOST=`hostname`
+
+if [ "$OSYSTEM" = "SunOS" ]
+then
+    USER=`/usr/ucb/whoami`
+elif [ "$OSYSTEM" = "Linux" ]
+then
+    USER=`/usr/bin/whoami`
+else
+    USER=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+##################
+# Python stuff
+##################
+if [ X"$PYTHON_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   PYTHON_ROOT=$ALMASW_INSTDIR/Python
+fi
+
+if [ X"$OMNI_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   OMNI_ROOT=$PYTHON_ROOT/omni
+fi
+OMNIORB_CONFIG=$OMNI_ROOT/config
+
+# Path where IDL files are searched at run time, for
+# example by the Interface Repository.
+
+IDL_PATH="-I$ACE_ROOT/TAO/orbsvcs/orbsvcs -I$ACE_ROOT/TAO -I$ACE_ROOT/TAO/tao"
+
+if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+then
+   IDL_PATH="-I$VLTROOT/idl "$IDL_PATH	
+fi
+
+if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+then
+   IDL_PATH="-I$ACSROOT/idl "$IDL_PATH
+fi
+
+if  [ X"$INTLIST" != X ]
+then
+
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list"-I$item_list/idl "
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      IDL_PATH="-I$INTROOT/idl $tmp_list "$IDL_PATH
+   else
+      IDL_PATH="$tmp_list "$IDL_PATH
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+      IDL_PATH="-I$INTROOT/idl "$IDL_PATH
+   fi
+fi
+
+# MICO stuff
+if [ X"$MICO_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   MICO_HOME=$ALMASW_INSTDIR/mico
+fi
+
+# Ant and JacORB stuff
+if [ X"$ANT_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ANT_HOME=$ALMASW_INSTDIR/ant
+fi
+
+if [ X"$JACORB_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   JACORB_HOME=$ALMASW_INSTDIR/JacORB
+fi
+
+# RTOS
+# Check for the directory structure AND for the existence of
+# the files inside it. (disappeared by mistake in 1.47.
+if [ -h $ALMASW_INSTDIR/rtai ] || [ -d $ALMASW_INSTDIR/rtai ]
+then
+   if [ -f $ALMASW_INSTDIR/rtai/bin/rtai-config ] 
+   then
+   export RTAI_HOME=$ALMASW_INSTDIR/rtai
+   export LINUX_HOME=$ALMASW_INSTDIR/rtlinux
+  fi
+fi
+
+
+if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/vw5.5 ]
+then
+    WIND_BASE=$ALMASW_ROOTDIR/$ALMASW_RELEASE/vw5.5
+    ACC_HOST=$HOSTNAME
+    CPU=${CPU:-PPC604}
+    WIND_REGISTRY=$HOSTNAME
+    WIND_VERSION=`basename $WIND_BASE | cut -c3-5`
+    case $CPU in
+            MC68040) VX_CPU_FAMILY=68k ;;
+            PPC604)  VX_CPU_FAMILY=ppc ;;
+            *)       VX_CPU_FAMILY="unknown_CPU_type_$CPU" ;;
+    esac
+    if [ "$OSYSTEM" = "SunOS" ]
+    then
+        WIND_HOST_TYPE=sun4-solaris2
+        VX_HOST_TYPE=solaris
+    elif [ "$OSYSTEM" = "Linux" ]
+    then
+        WIND_HOST_TYPE=x86-linux
+        VX_HOST_TYPE=x86-linux
+    else
+        WIND_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+        VX_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+    fi
+    VXROOT=$WIND_BASE/target
+    VX_VW_BASE=$WIND_BASE/target
+    VX_HSP_BASE=$VXROOT
+    VX_BSP_BASE=$VXROOT
+    export ACC_HOST WIND_BASE CPU VX_CPU_FAMILY WIND_HOST_TYPE 
+    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE WIND_REGISTRY 
+fi
+ 
+# set the PATH, LD_LIBRARY_PATH and MANPATH and CLASSPATH accordingly to what 
+# you set above
+
+# In order to prevent a recursive definition of PATH an intermediate variable
+# has been defined.
+if [[ -z $ORIG_PATH ]]
+then
+   ORIG_PATH=$PATH
+fi
+
+# In order to prevent a ricorsive definition of LD_LIBRARY_PATH an intermediate variable
+# has been defined.
+if [[ -z $ORIG_LD_LIBRARY_PATH ]]
+then
+   ORIG_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+fi
+
+# In order to prevent a recursive definition of MANPATH an intermediate variable
+# has been defined.
+if [[ -z $ORIG_MANPATH ]]
+then
+   ORIG_MANPATH=$MANPATH
+fi
+
+if [ "$OSYSTEM" = "SunOS" ]
+then
+   PATH=$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$JAVA_HOME/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:$ORIG_PATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+      PATH=$VLTROOT/bin:$PATH
+   fi
+
+   if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      PATH=$ACSROOT/bin:$PATH
+   fi
+
+elif [ "$OSYSTEM" = "Linux" ]
+then
+   # So it is linux
+   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$ORIG_PATH
+   
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+      PATH=$VLTROOT/bin:$PATH
+   fi
+
+   if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      PATH=$ACSROOT/bin:$PATH
+   fi
+else
+    PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+if [ X"$WIND_BASE" != X ]
+then
+      PATH=$PATH:$WIND_BASE/host/$WIND_HOST_TYPE/bin
+fi
+
+# the PATH which comes with the operating system is preserved.
+# Very often it contains /usr/local/bin:/usr/bin
+# If you have problem with this order and you want to have /usr/bin
+# before /usr/local/bin just uncomment one of the following lines:
+# on SUN:
+#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$VLTROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:/usr/bin:$PATH
+# on Linux:
+#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/bin:$PATH
+
+if  [ X"$INTLIST" != X ]
+then
+
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list$item_list/bin:
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      PATH=$INTROOT/bin:$tmp_list$PATH
+   else
+      PATH=$tmp_list$PATH
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+      PATH=$INTROOT/bin:$PATH
+   fi
+fi
+
+if [ "$OSYSTEM" = "SunOS" ]
+then
+
+    LD_LIBRARY_PATH=$ACE_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$ORIG_LD_LIBRARY_PATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+elif [ "$OSYSTEM" = "Linux" ]
+then
+
+   LD_LIBRARY_PATH=$ACE_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$ORIG_LD_LIBRARY_PATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+else
+    LD_LIBRARY_PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+if [ X"$WIND_BASE" != X ]
+then
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_BASE/host/$WIND_HOST_TYPE/lib
+fi
+
+if  [ X"$INTLIST" != X ]
+then
+
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list$item_list/lib:
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      LD_LIBRARY_PATH=$INTROOT/lib:$tmp_list$LD_LIBRARY_PATH
+   else
+      LD_LIBRARY_PATH=$tmp_list$LD_LIBRARY_PATH
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+       LD_LIBRARY_PATH=$INTROOT/lib:$LD_LIBRARY_PATH
+   fi
+fi
+
+if [ "$OSYSTEM" = "SunOS" ]
+then
+
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:/usr/dt/man:/usr/openwin/man:/usr/man:$ORIG_MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+
+elif [ "$OSYSTEM" = "Linux" ]
+then
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$ORIG_MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+else
+    MANPATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+
+# Only for Linux or SunOS
+if [[ "$OSYSTEM" = "Linux"  || "$OSYSTEM" = "SunOS" ]]
+then
+   if  [ X"$INTLIST" != X ]
+   then
+
+      tmp_list=""
+      tmp_list_sub=""
+      for item_list in $INTLIST_DIRS
+      do
+         tmp_list=$tmp_list$item_list/man:
+         tmp_list_sun=$tmp_list_sun$item_list/vw/man:
+      done
+
+      if [ X"$INTROOT" != X ]
+      then
+         if [ "$OSYSTEM" = "Linux" ]
+         then
+            MANPATH=$INTROOT/man:$tmp_list$MANPATH
+         else
+            MANPATH=$INTROOT/man:$INTROOT/vw/man:$tmp_list$tmp_list_sun$MANPATH
+         fi
+      else
+         if [ "$OSYSTEM" = "Linux" ]
+         then
+            MANPATH=$tmp_list$MANPATH
+         else
+            MANPATH=$tmp_list$tmp_list_sun$MANPATH
+         fi
+      fi
+   else
+      if [ X"$INTROOT" != X ]
+      then
+         if [ "$OSYSTEM" = "Linux" ]
+         then
+            MANPATH=$INTROOT/man:$MANPATH
+         else
+            MANPATH=$INTROOT/man:$INTROOT/vw/man:$MANPATH
+         fi
+      fi
+   fi
+fi
+
+# In order to make the command "man" working the MANPATH variable must end with ":"
+MANPATH=$MANPATH:
+
+CLASSPATH=$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar:
+
+#
+# Now that PATH and LD_LIBRARY_PATH are properly set, I first need
+# to export them and then I can call the Python interpreter in order to
+# extract the Python version and create a variable that contains only
+# X.Y discarding eventual minor numbers.
+# This is used to "find" the right directory for Python code and there
+# the minor version number seem not used.
+# If I do it before, I get the system python and not the one we want to use.
+#
+export PATH LD_LIBRARY_PATH
+PYTHONVER=`$PYTHON_ROOT/bin/python -V 2>&1 | awk '{print $2}' | awk -F. '{print $1 "." $2}'`
+
+if [ X"$INTLIST" != X ]
+then
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list$item_list/lib/python/site-packages:
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      if [ X"$ACSROOT" = X ]
+      then
+         PYTHONPATH=$INTROOT/lib/python/site-packages:$tmp_list$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
+      else
+         PYTHONPATH=$INTROOT/lib/python/site-packages:$tmp_list$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
+      fi
+   else
+      if [ X"$ACSROOT" = X ]
+      then
+         PYTHONPATH=$tmp_list$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages  
+      else
+         PYTHONPATH=$tmp_list$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages    
+      fi
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+      # ACSROOT must exist here since INTLIST is nott defined
+      PYTHONPATH=$INTROOT/lib/python/site-packages:$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
+   else
+      PYTHONPATH=$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
+   fi
+fi
+
+########################################
+# Set MODULE in all paths.
+# If this variable is defined,
+# ../bin will be added to PATH (if you are not concerned by potential security threats)
+# ../lib will be added to LD_LIBRARY_PATH
+# ../idl will be added to IDL_PATH
+# ../lib/python/site-packages will be added to PYTHONPATH
+if [ "$MODPATH" = "1" ]
+then
+        IDL_PATH="-I../idl "$IDL_PATH
+	PYTHONPATH=../lib/python/site-packages:$PYTHONPATH
+	LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
+        # this could introduce security problems!
+	PATH=../bin:$PATH
+fi
+
+########################################
+# Export variables.
+#
+export ORIG_PATH PATH LD_LIBRARY_PATH INTLIST
+export ORIG_MANPATH MANPATH IDL_PATH CLASSPATH HOST ALMASW_RELEASE ALMASW_ROOTDIR ORIG_LD_LIBRARY_PATH
+export ALMASW_INSTDIR ACSROOT ACE_ROOT_DIR ACE_ROOT_VW ACE_ROOT INTROOT USER
+export GNU_ROOT TCLTK_ROOT JAVA_HOME VLTROOT ACSDATA VLTDATA ACS_CDB RTAPENV CMM_PORT CMM_HOST
+export ANT_HOME JACORB_HOME PYTHON_ROOT OMNI_ROOT OMNIORB_CONFIG PYTHONPATH MICO_HOME
+export ACS_STARTUP_TIMEOUT_MULTIPLIER
+export ACS_INSTANCE
+
+unset MODPATH
+
+#
+# Some useful definitions of general usage.
+#
+psg()
+{
+    ps -ef | grep $1 | grep -v grep
+}
+
+PS1='\h \u:\w \! > '
+export PS1
+
+alias lr="ls -ltra"
+
+
+

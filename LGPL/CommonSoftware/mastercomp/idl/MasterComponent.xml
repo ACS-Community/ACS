@@ -1,0 +1,642 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1'?>
+<!-- <!DOCTYPE XMI SYSTEM 'UMLX13-11.dtd' > -->
+<XMI xmi.version = '1.1' xmlns:UML='href://org.omg/UML/1.3' timestamp = 'Wed Mar 03 12:16:30 2004' >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>Unisys.JCR.2</XMI.exporter>
+   <XMI.exporterVersion>1.3.6</XMI.exporterVersion>
+  </XMI.documentation>
+  <XMI.metamodel xmi.name = 'UML' xmi.version = '1.3'/>
+ </XMI.header>
+<XMI.content>
+<!-- ==================== MasterComponent    [Model] ==================== -->
+<UML:Model xmi.id = 'G.0' 
+  name = 'MasterComponent' visibility = 'public' isSpecification = 'false' 
+  isRoot = 'false' isLeaf = 'false' isAbstract = 'false' >
+  <UML:Namespace.ownedElement>
+    <!-- ==================== MasterComponent::MasterComponent    [Class] ==================== -->
+    <UML:Class xmi.id = 'S.062.1216.25.1' 
+      name = 'MasterComponent' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'true' isLeaf = 'true' isAbstract = 'false' 
+      isActive = 'false' 
+      namespace = 'G.0' >
+      <UML:Classifier.feature>
+        <!-- ==================== MasterComponent::MasterComponent::init    [Operation] ==================== -->
+        <UML:Operation xmi.id = 'S.062.1216.25.3' 
+          name = 'init' visibility = 'public' isSpecification = 'false' 
+          ownerScope = 'instance' 
+          isQuery = 'false' 
+          concurrency = 'sequential' isRoot = 'false' isLeaf = 'false' isAbstract = 'false' specification = '' />
+      </UML:Classifier.feature>
+    </UML:Class>
+    <!-- ==================== MasterComponent::AlmaSubsystem    [StateMachine] ==================== -->
+    <UML:StateMachine xmi.id = 'S.062.1216.25.2' 
+      name = 'AlmaSubsystem' visibility = 'public' isSpecification = 'false' 
+      context = 'S.062.1216.25.1' >
+      <UML:StateMachine.top>
+        <!-- ==================== MasterComponent::AlmaSubsystem::{top}    [CompositeState] ==================== -->
+        <UML:CompositeState xmi.id = 'XX.3.1216.25.3' 
+          name = '{top}' visibility = 'public' isSpecification = 'false' 
+          isConcurrent = 'false' >
+          <UML:CompositeState.subvertex>
+            <!-- ==================== MasterComponent::AlmaSubsystem::{top}::New    [Pseudostate] ==================== -->
+            <UML:Pseudostate xmi.id = 'G.1' 
+              name = 'New' visibility = 'public' isSpecification = 'false' 
+              kind = 'initial' 
+              outgoing = 'G.2' />
+            <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Unavailable    [FinalState] ==================== -->
+            <UML:FinalState xmi.id = 'G.3' 
+              name = 'Unavailable' visibility = 'public' isSpecification = 'false' 
+              incoming = 'G.5' />
+            <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available    [CompositeState] ==================== -->
+            <UML:CompositeState xmi.id = 'G.4' 
+              name = 'Available' visibility = 'public' isSpecification = 'false' 
+              isConcurrent = 'false' 
+              outgoing = 'G.5 G.7 G.9 G.11' >
+              <UML:CompositeState.subvertex>
+                <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Operational    [SimpleState] ==================== -->
+                <UML:SimpleState xmi.id = 'G.13' 
+                  name = 'Operational' visibility = 'public' isSpecification = 'false' 
+                  outgoing = 'G.14 G.16' incoming = 'G.14 G.23' />
+                <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline    [CompositeState] ==================== -->
+                <UML:CompositeState xmi.id = 'G.18' 
+                  name = 'Offline' visibility = 'public' isSpecification = 'false' 
+                  isConcurrent = 'false' >
+                  <UML:CompositeState.subvertex>
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::Shutdown    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.25' 
+                      name = 'Shutdown' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.26' incoming = 'G.2 G.43' />
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::ShuttingdownPass1    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.28' 
+                      name = 'ShuttingdownPass1' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.29' incoming = 'G.11' >
+                      <UML:State.doActivity>
+                        <UML:ActionSequence xmi.id = 'id.0631116.1' 
+                          name = '' visibility = 'public' isSpecification = 'false' 
+                          isAsynchronous = 'false' >
+                          <UML:Action.recurrence>
+                            <UML:IterationExpression 
+                              language = '' body = '' />
+                          </UML:Action.recurrence>
+                          <UML:Action.target>
+                            <UML:ObjectSetExpression 
+                              language = '' body = '' />
+                          </UML:Action.target>
+                          <UML:Action.script>
+                            <UML:ActionExpression 
+                              language = '' body = '' />
+                          </UML:Action.script>
+                          <UML:ActionSequence.action>
+                            <UML:UninterpretedAction xmi.id = 'XX.3.1216.25.4' 
+                              name = 'shutDownSubsysPass1' visibility = 'public' isSpecification = 'false' 
+                              isAsynchronous = 'false' >
+                              <UML:Action.recurrence>
+                                <UML:IterationExpression 
+                                  language = '' body = '1' />
+                              </UML:Action.recurrence>
+                              <UML:Action.target>
+                                <UML:ObjectSetExpression 
+                                  language = '' body = '' />
+                              </UML:Action.target>
+                              <UML:Action.script>
+                                <UML:ActionExpression 
+                                  language = '' body = '' />
+                              </UML:Action.script>
+                            </UML:UninterpretedAction>
+                          </UML:ActionSequence.action>
+                        </UML:ActionSequence>
+                      </UML:State.doActivity>
+                    </UML:SimpleState>
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::InitializingPass2    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.30' 
+                      name = 'InitializingPass2' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.31' incoming = 'G.37' >
+                      <UML:State.doActivity>
+                        <UML:ActionSequence xmi.id = 'id.0631116.2' 
+                          name = '' visibility = 'public' isSpecification = 'false' 
+                          isAsynchronous = 'false' >
+                          <UML:Action.recurrence>
+                            <UML:IterationExpression 
+                              language = '' body = '' />
+                          </UML:Action.recurrence>
+                          <UML:Action.target>
+                            <UML:ObjectSetExpression 
+                              language = '' body = '' />
+                          </UML:Action.target>
+                          <UML:Action.script>
+                            <UML:ActionExpression 
+                              language = '' body = '' />
+                          </UML:Action.script>
+                          <UML:ActionSequence.action>
+                            <UML:UninterpretedAction xmi.id = 'XX.3.1216.25.5' 
+                              name = 'initSubsysPass2' visibility = 'public' isSpecification = 'false' 
+                              isAsynchronous = 'false' >
+                              <UML:Action.recurrence>
+                                <UML:IterationExpression 
+                                  language = '' body = '1' />
+                              </UML:Action.recurrence>
+                              <UML:Action.target>
+                                <UML:ObjectSetExpression 
+                                  language = '' body = '' />
+                              </UML:Action.target>
+                              <UML:Action.script>
+                                <UML:ActionExpression 
+                                  language = '' body = '' />
+                              </UML:Action.script>
+                            </UML:UninterpretedAction>
+                          </UML:ActionSequence.action>
+                        </UML:ActionSequence>
+                      </UML:State.doActivity>
+                    </UML:SimpleState>
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::InitializingPass1    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.32' 
+                      name = 'InitializingPass1' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.33' incoming = 'G.26' >
+                      <UML:State.doActivity>
+                        <UML:ActionSequence xmi.id = 'id.0631116.3' 
+                          name = '' visibility = 'public' isSpecification = 'false' 
+                          isAsynchronous = 'false' >
+                          <UML:Action.recurrence>
+                            <UML:IterationExpression 
+                              language = '' body = '' />
+                          </UML:Action.recurrence>
+                          <UML:Action.target>
+                            <UML:ObjectSetExpression 
+                              language = '' body = '' />
+                          </UML:Action.target>
+                          <UML:Action.script>
+                            <UML:ActionExpression 
+                              language = '' body = '' />
+                          </UML:Action.script>
+                          <UML:ActionSequence.action>
+                            <UML:UninterpretedAction xmi.id = 'XX.3.1216.25.6' 
+                              name = 'initSubsysPass1' visibility = 'public' isSpecification = 'false' 
+                              isAsynchronous = 'false' >
+                              <UML:Action.recurrence>
+                                <UML:IterationExpression 
+                                  language = '' body = '1' />
+                              </UML:Action.recurrence>
+                              <UML:Action.target>
+                                <UML:ObjectSetExpression 
+                                  language = '' body = '' />
+                              </UML:Action.target>
+                              <UML:Action.script>
+                                <UML:ActionExpression 
+                                  language = '' body = '' />
+                              </UML:Action.script>
+                            </UML:UninterpretedAction>
+                          </UML:ActionSequence.action>
+                        </UML:ActionSequence>
+                      </UML:State.doActivity>
+                    </UML:SimpleState>
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::Reinitializing    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.34' 
+                      name = 'Reinitializing' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.35' incoming = 'G.7' >
+                      <UML:State.doActivity>
+                        <UML:ActionSequence xmi.id = 'id.0631116.4' 
+                          name = '' visibility = 'public' isSpecification = 'false' 
+                          isAsynchronous = 'false' >
+                          <UML:Action.recurrence>
+                            <UML:IterationExpression 
+                              language = '' body = '' />
+                          </UML:Action.recurrence>
+                          <UML:Action.target>
+                            <UML:ObjectSetExpression 
+                              language = '' body = '' />
+                          </UML:Action.target>
+                          <UML:Action.script>
+                            <UML:ActionExpression 
+                              language = '' body = '' />
+                          </UML:Action.script>
+                          <UML:ActionSequence.action>
+                            <UML:UninterpretedAction xmi.id = 'XX.3.1216.25.7' 
+                              name = 'reinitSubsystem' visibility = 'public' isSpecification = 'false' 
+                              isAsynchronous = 'false' >
+                              <UML:Action.recurrence>
+                                <UML:IterationExpression 
+                                  language = '' body = '1' />
+                              </UML:Action.recurrence>
+                              <UML:Action.target>
+                                <UML:ObjectSetExpression 
+                                  language = '' body = '' />
+                              </UML:Action.target>
+                              <UML:Action.script>
+                                <UML:ActionExpression 
+                                  language = '' body = '' />
+                              </UML:Action.script>
+                            </UML:UninterpretedAction>
+                          </UML:ActionSequence.action>
+                        </UML:ActionSequence>
+                      </UML:State.doActivity>
+                    </UML:SimpleState>
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::PreInitialized    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.36' 
+                      name = 'PreInitialized' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.37' incoming = 'G.33' />
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::PreShutdown    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.39' 
+                      name = 'PreShutdown' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.40' incoming = 'G.29' />
+                    <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Offline::ShuttingdownPass2    [SimpleState] ==================== -->
+                    <UML:SimpleState xmi.id = 'G.42' 
+                      name = 'ShuttingdownPass2' visibility = 'public' isSpecification = 'false' 
+                      outgoing = 'G.43' incoming = 'G.40' >
+                      <UML:State.doActivity>
+                        <UML:ActionSequence xmi.id = 'id.0631116.5' 
+                          name = '' visibility = 'public' isSpecification = 'false' 
+                          isAsynchronous = 'false' >
+                          <UML:Action.recurrence>
+                            <UML:IterationExpression 
+                              language = '' body = '' />
+                          </UML:Action.recurrence>
+                          <UML:Action.target>
+                            <UML:ObjectSetExpression 
+                              language = '' body = '' />
+                          </UML:Action.target>
+                          <UML:Action.script>
+                            <UML:ActionExpression 
+                              language = '' body = '' />
+                          </UML:Action.script>
+                          <UML:ActionSequence.action>
+                            <UML:UninterpretedAction xmi.id = 'XX.3.1216.25.10' 
+                              name = 'shutDownSubsysPass2' visibility = 'public' isSpecification = 'false' 
+                              isAsynchronous = 'false' >
+                              <UML:Action.recurrence>
+                                <UML:IterationExpression 
+                                  language = '' body = '1' />
+                              </UML:Action.recurrence>
+                              <UML:Action.target>
+                                <UML:ObjectSetExpression 
+                                  language = '' body = '' />
+                              </UML:Action.target>
+                              <UML:Action.script>
+                                <UML:ActionExpression 
+                                  language = '' body = '' />
+                              </UML:Action.script>
+                            </UML:UninterpretedAction>
+                          </UML:ActionSequence.action>
+                        </UML:ActionSequence>
+                      </UML:State.doActivity>
+                    </UML:SimpleState>
+                  </UML:CompositeState.subvertex>
+                </UML:CompositeState>
+                <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Error    [SimpleState] ==================== -->
+                <UML:SimpleState xmi.id = 'G.19' 
+                  name = 'Error' visibility = 'public' isSpecification = 'false' 
+                  incoming = 'G.9' />
+                <!-- ==================== MasterComponent::AlmaSubsystem::{top}::Available::Online    [SimpleState] ==================== -->
+                <UML:SimpleState xmi.id = 'G.20' 
+                  name = 'Online' visibility = 'public' isSpecification = 'false' 
+                  outgoing = 'G.21 G.23' incoming = 'G.16 G.31 G.35 G.21' />
+              </UML:CompositeState.subvertex>
+            </UML:CompositeState>
+          </UML:CompositeState.subvertex>
+        </UML:CompositeState>
+      </UML:StateMachine.top>
+      <UML:StateMachine.transitions>
+        <UML:Transition xmi.id = 'G.2' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          source = 'G.1' target = 'G.25' />
+        <UML:Transition xmi.id = 'G.14' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.6' source = 'G.13' target = 'G.13' />
+        <UML:Transition xmi.id = 'G.16' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.8' source = 'G.13' target = 'G.20' />
+        <UML:Transition xmi.id = 'G.26' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.10' source = 'G.25' target = 'G.32' />
+        <UML:Transition xmi.id = 'G.29' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          source = 'G.28' target = 'G.39' />
+        <UML:Transition xmi.id = 'G.31' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          source = 'G.30' target = 'G.20' />
+        <UML:Transition xmi.id = 'G.33' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          source = 'G.32' target = 'G.36' />
+        <UML:Transition xmi.id = 'G.35' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          source = 'G.34' target = 'G.20' >
+          <UML:Transition.effect>
+            <UML:ActionSequence xmi.id = 'XX.3.1216.25.9' 
+              name = '' visibility = 'public' isSpecification = 'false' 
+              isAsynchronous = 'false' >
+              <UML:Action.recurrence>
+                <UML:IterationExpression 
+                  language = '' body = '' />
+              </UML:Action.recurrence>
+              <UML:Action.target>
+                <UML:ObjectSetExpression 
+                  language = '' body = '' />
+              </UML:Action.target>
+              <UML:Action.script>
+                <UML:ActionExpression 
+                  language = '' body = '' />
+              </UML:Action.script>
+              <UML:ActionSequence.action>
+                <UML:UninterpretedAction xmi.id = 'XX.3.1216.25.8' 
+                  name = 'helloGoingOnline' visibility = 'public' isSpecification = 'false' 
+                  isAsynchronous = 'false' >
+                  <UML:Action.recurrence>
+                    <UML:IterationExpression 
+                      language = '' body = '1' />
+                  </UML:Action.recurrence>
+                  <UML:Action.target>
+                    <UML:ObjectSetExpression 
+                      language = '' body = '' />
+                  </UML:Action.target>
+                  <UML:Action.script>
+                    <UML:ActionExpression 
+                      language = '' body = '' />
+                  </UML:Action.script>
+                </UML:UninterpretedAction>
+              </UML:ActionSequence.action>
+            </UML:ActionSequence>
+          </UML:Transition.effect>
+        </UML:Transition>
+        <UML:Transition xmi.id = 'G.37' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.12' source = 'G.36' target = 'G.30' />
+        <UML:Transition xmi.id = 'G.40' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.14' source = 'G.39' target = 'G.42' />
+        <UML:Transition xmi.id = 'G.43' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          source = 'G.42' target = 'G.25' />
+        <UML:Transition xmi.id = 'G.21' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.16' source = 'G.20' target = 'G.20' />
+        <UML:Transition xmi.id = 'G.23' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.17' source = 'G.20' target = 'G.13' />
+        <UML:Transition xmi.id = 'G.5' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.18' source = 'G.4' target = 'G.3' />
+        <UML:Transition xmi.id = 'G.7' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.20' source = 'G.4' target = 'G.34' />
+        <UML:Transition xmi.id = 'G.9' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.22' source = 'G.4' target = 'G.19' >
+          <UML:Transition.guard>
+            <UML:Guard xmi.id = 'XX.3.1216.25.11' 
+              name = '' visibility = 'public' isSpecification = 'false' >
+              <UML:Guard.expression>
+                <UML:BooleanExpression 
+                  language = '' body = 'unrecoverable' />
+              </UML:Guard.expression>
+            </UML:Guard>
+          </UML:Transition.guard>
+        </UML:Transition>
+        <UML:Transition xmi.id = 'G.11' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.062.1216.25.24' source = 'G.4' target = 'G.28' />
+      </UML:StateMachine.transitions>
+    </UML:StateMachine>
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.6' 
+      name = 'start' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.7' />
+    <UML:Signal xmi.id = 'S.062.1216.25.7' 
+      name = 'start' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.8' 
+      name = 'stop' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.9' />
+    <UML:Signal xmi.id = 'S.062.1216.25.9' 
+      name = 'stop' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.10' 
+      name = 'initPass1' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.11' />
+    <UML:Signal xmi.id = 'S.062.1216.25.11' 
+      name = 'initPass1' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.12' 
+      name = 'initPass2' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.13' />
+    <UML:Signal xmi.id = 'S.062.1216.25.13' 
+      name = 'initPass2' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.14' 
+      name = 'shutdownPass2' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.15' />
+    <UML:Signal xmi.id = 'S.062.1216.25.15' 
+      name = 'shutdownPass2' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.16' 
+      name = 'stop' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.9' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.17' 
+      name = 'start' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.7' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.18' 
+      name = 'disaster' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.19' />
+    <UML:Signal xmi.id = 'S.062.1216.25.19' 
+      name = 'disaster' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.20' 
+      name = 'reinit' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.21' />
+    <UML:Signal xmi.id = 'S.062.1216.25.21' 
+      name = 'reinit' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.22' 
+      name = 'error' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.23' />
+    <UML:Signal xmi.id = 'S.062.1216.25.23' 
+      name = 'error' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.062.1216.25.24' 
+      name = 'shutdownPass1' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.062.1216.25.25' />
+    <UML:Signal xmi.id = 'S.062.1216.25.25' 
+      name = 'shutdownPass1' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:Comment xmi.id = 'XX.3.1216.25.65' 
+      visibility = 'public' isSpecification = 'false' >
+      <UML:ModelElement.name>Subsystem State Model &#x000d;&#x000a;(implemented by Master Component)</UML:ModelElement.name>
+    </UML:Comment>
+    <UML:Comment xmi.id = 'XX.3.1216.25.67' 
+      name = 'Master component activated in ACS container' visibility = 'public' isSpecification = 'false' />
+  </UML:Namespace.ownedElement>
+</UML:Model>
+<UML:TaggedValue xmi.id = 'XX.3.1216.25.2' 
+  tag = 'persistence' value = 'transient' 
+  modelElement = 'S.062.1216.25.1' />
+<UML:Diagram xmi.id = 'S.062.1216.25.26' 
+  name = 'Main' toolName = 'Rational Rose 98' diagramType = 'ClassDiagram' style = '' 
+  owner = 'G.0' />
+<UML:Diagram xmi.id = 'S.062.1216.25.27' 
+  name = 'MasterComponentStateModel' toolName = 'Rational Rose 98' diagramType = 'StateDiagram' style = '' 
+  owner = 'S.062.1216.25.2' >
+  <UML:Diagram.element>
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.12' 
+      geometry = ' 336, 32, 60, 60,' style = 'FillColor.Blue= 255,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=0,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.1' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.13' 
+      geometry = ' 1808, 2416, 84, 84,' style = 'FillColor.Blue= 255,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=0,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.3' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.14' 
+      geometry = ' 1808, 1232, 3630, 2024,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.4' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.15' 
+      geometry = ' 2784, 1360, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.13' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.16' 
+      geometry = ' 976, 1200, 1948, 1324,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.18' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.17' 
+      geometry = ' 336, 736, 406, 144,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.25' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.18' 
+      geometry = ' 624, 1600, 622, 210,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.28' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.19' 
+      geometry = ' 1184, 1120, 498, 178,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.30' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.20' 
+      geometry = ' 1184, 864, 498, 196,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.32' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.21' 
+      geometry = ' 1152, 1360, 532, 182,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.34' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.22' 
+      geometry = ' 1696, 848, 338, 132,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.36' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.23' 
+      geometry = ' 336, 1280, 386, 140,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.39' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.24' 
+      geometry = ' 400, 1008, 622, 216,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.42' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.25' 
+      geometry = ' 2336, 752, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.19' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.26' 
+      geometry = ' 2192, 1344, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.20' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.27' 
+      geometry = ' 2784, 1360, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.13' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.28' 
+      geometry = ' 976, 1200, 1948, 1324,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.18' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.29' 
+      geometry = ' 336, 736, 406, 144,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.25' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.30' 
+      geometry = ' 624, 1600, 622, 210,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.28' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.31' 
+      geometry = ' 1184, 1120, 498, 178,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.30' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.32' 
+      geometry = ' 1184, 864, 498, 196,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.32' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.33' 
+      geometry = ' 1152, 1360, 532, 182,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.34' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.34' 
+      geometry = ' 1696, 848, 338, 132,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.36' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.35' 
+      geometry = ' 336, 1280, 386, 140,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.39' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.36' 
+      geometry = ' 400, 1008, 622, 216,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.42' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.37' 
+      geometry = ' 2336, 752, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.19' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.38' 
+      geometry = ' 2192, 1344, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.20' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.39' 
+      geometry = ' 336, 736, 406, 144,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.25' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.40' 
+      geometry = ' 624, 1600, 622, 210,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.28' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.41' 
+      geometry = ' 1184, 1120, 498, 178,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.30' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.42' 
+      geometry = ' 336, 363, 54, 656,' style = 'Transition' 
+      subject = 'G.2' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.43' 
+      geometry = ' 2784, 1218, 162, 150,' style = 'Transition' 
+      subject = 'G.14' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.44' 
+      geometry = ' 2192, 1202, 162, 150,' style = 'Transition' 
+      subject = 'G.21' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.45' 
+      geometry = ' 1184, 864, 498, 196,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.32' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.46' 
+      geometry = ' 737, 791, 450, 54,' style = 'Transition' 
+      subject = 'G.26' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.47' 
+      geometry = ' 1152, 1360, 532, 182,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.34' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.48' 
+      geometry = ' 1696, 848, 338, 132,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.36' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.49' 
+      geometry = ' 1480, 854, 148, 57,' style = 'Transition' 
+      subject = 'G.33' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.50' 
+      geometry = ' 1461, 972, 274, 170,' style = 'Transition' 
+      subject = 'G.37' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.51' 
+      geometry = ' 1730, 1350, 678, 63,' style = 'Transition' 
+      subject = 'G.35' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.52' 
+      geometry = ' 336, 1280, 386, 140,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.39' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.53' 
+      geometry = ' 464, 1422, 184, 198,' style = 'Transition' 
+      subject = 'G.29' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.54' 
+      geometry = ' 400, 1008, 622, 216,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.42' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.55' 
+      geometry = ' 363, 1163, 76, 148,' style = 'Transition' 
+      subject = 'G.40' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.56' 
+      geometry = ' 363, 853, 76, 146,' style = 'Transition' 
+      subject = 'G.43' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.57' 
+      geometry = ' 2470, 1456, 380, 145,' style = 'Transition' 
+      subject = 'G.16' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.58' 
+      geometry = ' 2493, 1252, 356, 133,' style = 'Transition' 
+      subject = 'G.23' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.59' 
+      geometry = ' 1737, 1242, 663, 189,' style = 'Transition' 
+      subject = 'G.31' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.60' 
+      geometry = ' 1808, 2309, 54, 184,' style = 'Transition' 
+      subject = 'G.5' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.61' 
+      geometry = ' 1152, 1847, 54, 847,' style = 'Transition' 
+      subject = 'G.7' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.62' 
+      geometry = ' 2336, 452, 54, 519,' style = 'Transition' 
+      subject = 'G.9' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.63' 
+      geometry = ' 153, 1600, 374, 54,' style = 'Transition' 
+      subject = 'G.11' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.64' 
+      geometry = ' 1472, 128, 744, 146,' style = 'Note:Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,' 
+      subject = 'XX.3.1216.25.65' />
+    <UML:DiagramElement xmi.id = 'XX.3.1216.25.66' 
+      geometry = ' 368, 176, 562, 144,' style = 'Note:Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 10,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,' 
+      subject = 'XX.3.1216.25.67' />
+  </UML:Diagram.element>
+</UML:Diagram>
+</XMI.content>
+</XMI>

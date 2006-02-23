@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+Contains base classes that you can inherit from in order to create new actions classes.
+<ul>
+	<li>inherit from <code><a href="CallableSystemAction.html">CallableSystemAction</a></code> to create context insensitive actions</li>
+	<li>inherit from <code><a href="NodeAction.html">NodeAction</a></code> to create context sensitive actions that do not delegate their execution to the beans</li>
+	<li>inherit from <code><a href="BeanAction.html">BeanAction</a></code> to create context sensitive actions that delegate their execution to the nodes</li>
+	<li>inherit from <code><a href="BeanActionSupport.html">BeanActionSupport</a></code> to create context sensitive actions that delegate their execution to the nodes. The difference with <code>BeanAction</code> is that the <code>performCapability</code> method is already implemented. When inheriting from <code>BeanActionSupport</code>, you just have to pass a capability to the parent constructor. You do not have to implement any method. The method to execute is automatically looked-up from the capability.</li>
+</ul>
+
+<!-- Put @see and @since tags down here. -->
+  @author  GP Project Team
+  @since   GP 0.1
+</body>
+</html>
+

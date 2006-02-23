@@ -1,0 +1,221 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+#ifndef _ACS_COMMON_IDL
+#define _ACS_COMMON_IDL
+
+#pragma prefix "alma"
+
+/**
+ * The following used to be defined in baciidl. Because access to these typedefs
+ * is needed in modules built earilier than acserr (baciidl is dependent upon this
+ * module), they have been moved here.
+ */
+module ACS {
+    /** Time - absolute time in 100 ns since 1582-10-15 00:00:00 see OMG Time Service Specification,	
+     * ftp://ftp.omg.org/pub/docs/formal/97-12-21.pdf. Currently, Time is handled as longlong.
+     */
+    typedef unsigned long long Time;
+    
+    /** TimeInterval - difference between two absolute time points. */	
+    typedef long long TimeInterval;
+
+        /** A 32-bit long used as a pattern of 32 bits. */
+    typedef unsigned long pattern;
+    
+    /** A 64-bit signed integer */
+    typedef long long longLong;
+    
+    /** A 64-bit unsigned integer */
+    typedef  unsigned long long uLongLong;
+    
+    /** @enum Condition 
+     * Possible state conditions of a physical device. The names correspond to colours 
+     * of typical LEDs.
+     */
+    enum Condition {
+	/// RED implies the physical device is in an error state.
+	RED,
+	/// YELLOW implies the physical device is in a caution state.
+	YELLOW,
+	/// RED implies the physical device is in an OK state.
+	GREEN,
+	/// RED implies the physical device is turned off.
+	GREY
+    };
+    
+    /** Sequences are used extensively with components that deal with multiple devices (groups) 
+     * or properties, which manage a value of sequence type. Sequences defined by BACI are also 
+     * used to optimize the number of network calls needed to query a remote object.
+     * The naming pattern is always <type>Seq. 
+     */
+    typedef sequence <string> stringSeq;
+    
+    /** A sequence of \ref Time. See \ref stringSeq for more on sequences. */	
+    typedef sequence <Time> TimeSeq;
+    
+    /** A sequence of \ref TimeInterval. See \ref stringSeq for more on sequences. */
+    typedef sequence <TimeInterval> TimeIntervalSeq;
+    
+    /** A sequence of \ref Condition. See \ref stringSeq for more on sequences. */
+    typedef sequence <Condition> ConditionSeq;
+    
+    /** A sequence of \ref pattern. See \ref stringSeq for more on sequences. */
+    typedef sequence <pattern> patternSeq;
+    
+    /** A sequence of <B>double</B>. See \ref stringSeq for more on sequences. */
+    typedef sequence <double> doubleSeq;
+    
+    /** A sequence of <B>float</B>. See \ref stringSeq for more on sequences. */
+    typedef sequence <float> floatSeq;
+    
+    /** A sequence of <B>long</B>. See \ref stringSeq for more on sequences. */
+    typedef sequence <long> longSeq;
+    
+    /** Sequences of \ref doubleSeq, following the same naming pattern as simple sequences. */
+    typedef sequence <doubleSeq> doubleSeqSeq;
+    
+    /** Sequences of \ref floatSeq, following the same naming pattern as simple sequences. */
+    typedef sequence <floatSeq> floatSeqSeq;
+    
+    /** Sequences of \ref longSeq, following the same naming pattern as simple sequences. */
+    typedef sequence <longSeq> longSeqSeq;
+    
+    /** Sequences of \ref stringSeq, following the same naming pattern as simple sequences. */
+    typedef sequence <stringSeq> stringSeqSeq;
+    
+    /** A sequence of \ref longLong. See \ref stringSeq for more on sequences. */
+    typedef sequence <longLong> longLongSeq;
+    
+    /** A sequence of \ref uLongLong. See \ref stringSeq for more on sequences. */
+    typedef sequence <uLongLong> uLongLongSeq;
+};
+
+
+/**
+ * This module is intended to be a common place to group ALMA/ACS data type 
+ * definitions and constant strings that are shared among different CVS modules.
+ * In short, it is in place to eliminate dependency problems.
+ */
+module acscommon 
+{
+
+    //Time-related definitions///////////////////////////////////////////////////////
+    typedef unsigned long long TimeStamp; 
+
+
+
+
+    //Names of CORBA/ACS services////////////////////////////////////////////////////
+    /**
+     * The name of the ACS logging service as registered with the CORBA Naming Service.
+     */
+    const string LOG_FACTORY_NAME = "LogFactory";
+
+    /**
+     *  NOTIFICATION_FACTORY_NAME is the CORBA service used to create new
+     *  event channels.
+     */
+    const string NOTIFICATION_FACTORY_NAME = "NotifyEventChannelFactory";
+
+    /**
+     *  LOGGING_NOTIFICATION_FACTORY_NAME is the CORBA service used to create new
+     *  event channels for log events.
+     */
+    const string LOGGING_NOTIFICATION_FACTORY_NAME = "LoggingNotifyEventChannelFactory";
+
+    /**
+     *  ARCHIVE_NOTIFICATION_FACTORY_NAME is the CORBA service used to create new
+     *  event channels for events sent directly to the ALMA Archive.
+     */
+    const string ARCHIVE_NOTIFICATION_FACTORY_NAME = "ArchiveNotifyEventChannelFactory";
+
+    /**
+     *  NAMING_SERVICE_NAME is the name of the CORBA service which binds names to
+     *  CORBA objects.
+     */
+    const string NAMING_SERVICE_NAME = "NameService";
+
+    //Event Channel stuff////////////////////////////////////////////////////////////
+    /**
+     * Domain for notification channels.
+     * This domain is used for ICD-style events shared between ALMA subsystems. 
+     * @todo Should this be renamed ALMA_DOMAIN?
+     */
+    const string ALMADOMAIN = "ALMA";
+
+    /**
+     * Domain for notification channels.
+     * This domain is used for events sent to the ALMA Archive.
+     */
+    const string ARCHIVING_DOMAIN = "Archiving";
+
+    /**
+     * Domain for notification channels.
+     * This domain is used for logging events sent.
+     */
+    const string LOGGING_DOMAIN = "Logging";
+
+    /**
+     * Name of the notification channel (as registered with the Naming Service) 
+     * that contains events from BACI properties to be stored in the ALMA Archive.
+     */
+    const string ARCHIVING_CHANNEL_NAME = "ArchivingChannel";
+
+    /**
+     * Kind of the notification channel (as registered with the Naming Service) 
+     * that contains events from BACI properties to be stored in the ALMA Archive.
+     */
+    const string ARCHIVING_CHANNEL_KIND = "";
+
+    /**
+     * Name of the notification channel (as registered with the Naming Service) 
+     * that contains logs.
+     */
+    const string LOGGING_CHANNEL_NAME = "LoggingChannel";
+
+    /**
+     * Kind of the notification channel (as registered with the Naming Service) 
+     * that contains events from BACI properties to be stored in the ALMA Archive.
+     */
+    const string LOGGING_CHANNEL_KIND = "";
+
+    /**
+     *  DEFAULTDATANAME is just something that needs to be packed into Structured
+     *  Events.  This defines the name of the data structure being used where 
+     *  filtering is applicable.
+     */
+    const string DEFAULTDATANAME = "almaData";
+
+    /**
+     *  NC_KIND stands for naming context kind.  Whenever we attach a channel to 
+     *  the Naming Service, we use the "kind" type to hopefully ensure nothing
+     *  overwrites the NC_ID orphaned context.
+     */
+    const string NC_KIND = "channels";
+
+    /**
+     *  Type field of logging events.
+     */
+    const string LOGGING_TYPE = "";
+};
+
+#endif

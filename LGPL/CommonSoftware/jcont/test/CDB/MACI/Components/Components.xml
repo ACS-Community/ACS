@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<_ Name="CONT_SERVICES_TESTER" 
+		Code="alma.jconttest.ContainerServicesTesterImpl.ContainerServicesTesterHelper" 
+		Type="IDL:alma/jconttest/ContainerServicesTester:1.0" 
+		Container="frodoContainer"
+		/>
+	
+	<!-- to be used for retrieving as a dynamic component. Name will be assigned to instances automatically -->	
+	<_ Name="*" 
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="frodoContainer"
+		/>
+	
+</Components>

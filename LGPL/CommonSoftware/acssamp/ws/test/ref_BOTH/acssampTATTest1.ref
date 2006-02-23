@@ -1,0 +1,658 @@
+1 - rlogin LCU
+2 - Running acssampFullNCTest
+1 - 
+1 - LCU->putenv "MANAGER_REFERENCE=corbaloc::---:----/Manager"
+1 - value = xx
+1 - LCU->putenv "DAL_REFERENCE=corbaloc::---:----/CDB"
+1 - value = xx
+1 - LCU->sp ContainerStart," Container -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository"
+1 - task spawned
+1 - value = xx
+1 - LCU->Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Bootstrap ORB parms: Container Container -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
+1 - 
+1 - ManagerReference obtained via environment: 'corbaloc::---:----/Manager'
+1 - 
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+1 - Manager reference narrowed.
+1 - 
+1 - 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Generated CommandLine: Container Container -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository  -ORBDottedDecimalAddresses 1 -ORBEndpoint iiop://LCU:----
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Destroy bootstrap ORB
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::initializeCORBA] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Using DLL path: .....
+1 - ----------T--:--:--.--- [Container - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' activated.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Autoloading 'baci'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/bin/PPC604/baci'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/bin/PPC604/baci'.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '/tmp/baci_recovery_Container.'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/bin/PPC604/baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/----/bin/PPC604/baci'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::CDBPropertySet] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Executing DLLSetupCORBA
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/----/bin/PPC604/baci'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] DLLSetupCORBA executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] DLLInitThreads executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Executing DLLInitThreads
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Autoloading 'acsnc'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsnc'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/bin/PPC604/acsnc'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/bin/PPC604/acsnc'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsnc'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/----/bin/PPC604/acsnc'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/----/bin/PPC604/acsnc'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' initialized successfuly
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::resolveManager] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Field ':Appl_data:MACI/Containers/Container.ManagerReference' empty or not set.
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference obtained via environment: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Centralized Logger...
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl:::authenticate] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [Container - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Logged into the Manager.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::run] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplMountImpl'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/bin/PPC604/acsexmplMountImpl'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/bin/PPC604/acsexmplMountImpl'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsexmplMountImpl'.
+1 - ----------T--:--:--.--- [MOUNT1 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MOUNT1 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] Creating Component 'MOUNT1'
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setMTResponseTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTResponseTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTSleepTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:cmdAz'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:cmdEl'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:actAz'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:actEl'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [MOUNT1 - ::Mount::Mount] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [MOUNT1 - baci::CharacteristicComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MOUNT1::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] MOUNT1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [MOUNT1::actionThread - maci::ContainerImpl::initThread] Thread name: 'MOUNT1::actionThread'
+1 - ----------T--:--:--.--- [MOUNT1::monitorThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [MOUNT1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'MOUNT1::monitorThread'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] MOUNT1
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'MOUNT1' activated.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 1 components queued to be activated.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 1 of 1 components activated.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acssamp'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/bin/PPC604/acssamp'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/bin/PPC604/acssamp'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/bin/PPC604/acssamp'.
+1 - ----------T--:--:--.--- [SAMP1 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [SAMP1 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] Creating Component 'SAMP1'
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setMTResponseTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTResponseTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTSleepTime] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::ACSSampImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [SAMP1 - baci::CharacteristicComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [SAMP1::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [SAMP1::monitorThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] SAMP1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] SAMP1
+1 - ----------T--:--:--.--- [SAMP1::actionThread - maci::ContainerImpl::initThread] Thread name: 'SAMP1::actionThread'
+1 - ----------T--:--:--.--- [SAMP1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'SAMP1::monitorThread'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'SAMP1' activated.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::set_component_shutdown_order] 
+1 - ----------T--:--:--.--- [Container - ] Getting device: 'curl:///LAMP1'. Creating it...
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::initSampObj] 
+1 - ----------T--:--:--.--- [SAMP1 - ] Starting SampObj creation ... 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplLampImpl'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/bin/PPC604/acsexmplLampImpl'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/bin/PPC604/acsexmplLampImpl'.
+1 - ----------T--:--:--.--- [LAMP1 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [LAMP1 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsexmplLampImpl'.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] Creating Component 'LAMP1'
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTResponseTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTSleepTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setMTResponseTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'LAMP1:brightness'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
+1 - ----------T--:--:--.--- [LAMP1 - ::Lamp::Lamp] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [LAMP1 - baci::CharacteristicComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
+1 - ----------T--:--:--.--- [LAMP1::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [LAMP1::actionThread - maci::ContainerImpl::initThread] Thread name: 'LAMP1::actionThread'
+1 - ----------T--:--:--.--- [LAMP1::monitorThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [LAMP1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'LAMP1::monitorThread'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] LAMP1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] LAMP1
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'LAMP1' activated.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::set_component_shutdown_order] 
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::initSampObj] DII invocation
+1 - ----------T--:--:--.--- [LAMP1 - ::CharacteristicComponentImpl::descriptor] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::ACSSampObjImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::initialize] 
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::initSampObj] DII invocation ended
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::initSampObj] discovered RWdouble property type
+1 - ----------T--:--:--.--- [GlobalLogger - Helper::Helper] 
+1 - ----------T--:--:--.--- [GlobalLogger - Helper::resolveNamingService] 
+1 - ----------T--:--:--.--- [GlobalLogger - Supplier::Supplier] 
+1 - ----------T--:--:--.--- [Container - ] Getting service: 'curl:///NameService'.
+1 - ----------T--:--:--.--- [GlobalLogger - Helper::resolveNotificationFactory] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Helper::resolveNotifyChannel - this is expected when a channel is being created.
+1 - ----------T--:--:--.--- [Container - ] Getting service: 'curl:///CDB'.
+1 - ----------T--:--:--.--- [GlobalLogger - Helper::getQoSProps] 
+1 - ----------T--:--:--.--- [GlobalLogger - Helper::resolveNotificationChannel] 
+1 - ----------T--:--:--.--- [Container - ] Getting service: 'curl:///CDB'.
+1 - ----------T--:--:--.--- [GlobalLogger - Helper::getAdminProps] 
+1 - ----------T--:--:--.--- [StaticMethodLogger - ] CDBProperties::getCDBAdminProps
+1 - ----------T--:--:--.--- [GlobalLogger - Supplier::createSupplier] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::initialize] activating CORBA object  LAMP1_brightness_1000000_10000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] CORBA object  LAMP1_brightness_1000000_10000000 activated
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::addComponenttoList] current number of SampObj: 1
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::initSampObj] SampObj correctly created
+1 - ----------T--:--:--.--- [SAMP1 - ]  ... SampObj correctly created!
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::start] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::start] flush thread created
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::start] thread created
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::sampThreadWorker] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::sampThreadWorker] Starting thread LAMP1_brightness_1000000_10000000_thread
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_thread'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container - ] Getting service: 'curl:///CDB'.
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::sampThreadFlush] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::sampThreadFlush] Starting thread LAMP1_brightness_1000000_10000000_f_thread
+1 - ----------T--:--:--.--- [GlobalLogger - ] ACSSamp Starting thread LAMP1_brightness_1000000_10000000_thread
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_f_thread'
+1 - ----------T--:--:--.--- [GlobalLogger - Supplier::subscription_change] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::suspend] thread suspended
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::suspend] flush thread suspended
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::resume] flush thread resumed
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::resume] thread resumed
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::stop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::stop] 
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::start] thread stopped
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::stop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::stop] flush thread stopped
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::destroy] thread LAMP1_brightness_1000000_10000000_f_thread destroyed
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::destroy] thread LAMP1_brightness_1000000_10000000_thread destroyed
+1 - ----------T--:--:--.--- [GlobalLogger - Supplier::disconnect] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSSamp::ACSSampObjImpl::~ACSSampObjImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] ACSSamp deleting object LAMP1_brightness_1000000_10000000
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::removeComponentfromList] remaining number of SampObj: 0
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Deactivating component with handle xxxxxxxxx (SAMP1 of type IDL:alma/ACSSamp/Samp:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [SAMP1 - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::stop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
+1 - ----------T--:--:--.--- [SAMP1::actionThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [SAMP1::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' reference set to nil.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Etherealizing 'SAMP1'
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::~ACSSampImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] Component 'SAMP1' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [SAMP1 - ACSSamp::ACSSampImpl::~ACSSampImpl] Destroying SAMP1
+1 - ----------T--:--:--.--- [SAMP1 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [SAMP1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [SAMP1 - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [SAMP1 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'SAMP1' etherealized.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/bin/PPC604/acssamp'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acssamp'.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::set_component_shutdown_order] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'LAMP1': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Deactivating component with handle xxxxxxxxx (LAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::stop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [LAMP1 - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [LAMP1::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [LAMP1::actionThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'LAMP1' reference set to nil.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Etherealizing 'LAMP1'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [LAMP1 - ::Lamp::~Lamp] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::~RWcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: LAMP1:brightness
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::~RWcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'LAMP1:brightness'.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Property 'LAMP1:brightness' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::~DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] Component 'LAMP1' destroyed.
+1 - ----------T--:--:--.--- [LAMP1 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [LAMP1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [LAMP1 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'LAMP1' etherealized.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [LAMP1 - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/bin/PPC604/acsexmplLampImpl'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'LAMP1' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acsexmplLampImpl'.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'MOUNT1': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Deactivating component with handle xxxxxxxxx (MOUNT1 of type IDL:alma/MOUNT_ACS/Mount:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::stop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [MOUNT1 - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [MOUNT1::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [MOUNT1::actionThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'MOUNT1' reference set to nil.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MOUNT1'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:actEl
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:actEl'.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Property 'MOUNT1:actEl' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::~DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:actAz
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:actAz'.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Property 'MOUNT1:actAz' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::~DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:cmdEl
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:cmdEl'.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Property 'MOUNT1:cmdEl' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::~DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty done] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:cmdAz
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:cmdAz'.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Property 'MOUNT1:cmdAz' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::~DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] Component 'MOUNT1' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [MOUNT1 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [MOUNT1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'MOUNT1' etherealized.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/bin/PPC604/acsexmplMountImpl'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+1 - ----------T--:--:--.--- [MOUNT1 - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [MOUNT1 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acsexmplMountImpl'.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'MOUNT1' deactivated.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::shutdown] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::logout] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::logout] Logging out from the Manager.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::logout] Logged out from the Manager.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::shutdown] 0 components left unactivated (using reverse activation order).
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::shutdown] Shutting down ORB
+1 - ----------T--:--:--.--- [Container - ContainerImpl::run] Container stopping...
+1 - ----------T--:--:--.--- [Container - ContainerImpl::run] Leaving ContainerImpl::run() method.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::shutdown] Done
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping container... 
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::doneCORBA] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Container stopped.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Cannot find the library 'libbaci.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
+1 - 
+1 - /----/bin/PPC604/baci
+1 - /----/bin/PPC604/acsnc
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference obtained via environment: 'corbaloc::---:----/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting Component
+2 - ----------T--:--:--.--- [GlobalLogger - ] *** Start to sample ***
+2 - ----------T--:--:--.--- [GlobalLogger - ] Not Channel: NC_LAMP1_brightness_1000000_10000000
+2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClientThreadHook::initThread] ::ThreadHandler::runConsumer(*param_p)
+2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'runConsumer'
+2 - ----------T--:--:--.--- [GlobalLogger - ] ::SamplerConsumer::SamplerConsumer(names, orb)
+2 - ----------T--:--:--.--- multicast_query: unable to accept: Connection timed out
+2 - 
+2 - ----------T--:--:--.--- 
+2 - multicast discovery of NameService failed.
+2 - 
+2 - ----------T--:--:--.--- Specify -m 1 when starting Naming_Service,
+2 - or see http://www.theaceorb.com/faq/#115
+2 - for using NameService without multicast.
+2 - 
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
+2 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to 'SampDataBlockSeq' events for the 'NC_LAMP1_brightness_1000000_10000000' channel!
+2 - ----------T--:--:--.--- [GlobalLogger - ] SAMP1 released
+2 - Shutting down Container
+2 - All done!

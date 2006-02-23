@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy, see www.w3.org">
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>ACS Cookbook</title>
+  <link rel="StyleSheet" href="ACSCookbook.css" type="text/css"
+ media="screen">
+<!--============================================================================-->
+</head>
+<body style="color: white; background-color: darkblue;">
+<!--ALMA Logo Section-->
+<div class="almalogo"> <a href="http://www.eso.org/projects/alma/develop/acs">
+<img alt="ALMA Logo"
+ src="http://www.eso.org/projects/alma/develop/software/alma-it/images/almapic.jpg"
+ align="middle"></a> <a href="index.html">ACS Cookbook</a>: Default
+Components
+</div>
+<!--Subsections-->
+<!--============================================================================-->
+<div class="overview">
+<h2>Overview</h2>
+<p>
+At deployment time, a component instance can be marked in the CDB as
+the default component for it's IDL type. This is particularly useful
+for
+clients of components that know ahead of time there will only be a
+single
+instance of a component they utilize throughout ALMA software (e.g.,
+the
+Scheduling subsystem's Master Scheduler component is a perfect
+example). In short, the main benefit of using Default components is
+the client developer need not know the name of the singleton component
+he or she may be working with. Additionally, the component developer
+need not be aware of the fact they are developing a Default component
+(i.e., there is nothing special they must do).<br>
+<br>
+As an example, we'll take a look at the identifier archive component
+in the standard CDB
+($ACSDATA/config/defaultCDB/CDB/MACI/Components/Components.xml):<br>
+<br>
+&lt;_ Name="IDENTIFIER_ARCHIVE"<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Code="alma.archive.helpers.IdentifierHelper"<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Type="IDL:alma/xmlstore/Identifier:1.0"<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Container="frodoContainer"<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Default="true"/&gt;<br>
+<br>
+As you can see, IDENTIFIER_ARCHIVE becomes the default component of
+type "IDL:alma/xmlstore/Identifier:1.0" by changing the Default
+attribute from "false" to "true".<br>
+<br>
+In the running system, a client can obtain this instance of the
+identifier archive without having to know the instance name
+IDENTIFIER_ARCHIVE. It only has to provide the Type attribute
+(IDL:alma/xmlstore/Identifier:1.0) that is independent of any
+particular deployment configuration.
+<br>
+</p>
+<p>If the client is a Java component, it would use the method public
+org.omg.CORBA.Object getDefaultComponent(String componentIDLType) from
+the ContainerServices interface.
+For a C++ component, !!!TODO!!! <br>
+</p>
+</div>
+<!--============================================================================-->
+<div class="briefexample">
+<h2>Java Example</h2>
+<p>
+This section should contain a very high-level algorithm to perform
+some operation related to the topic (or link to a document which does
+this) and/or a small, yet complete line-by-line example of the topic
+(or link to a document which does this).<br>
+</p>
+<h2>C++ Example</h2>
+This section should contain a very high-level algorithm to perform
+some operation related to the topic (or link to a document which does
+this) and/or a small, yet complete line-by-line example of the topic
+(or link to a document which does this).<br>
+<br>
+<h2>Python Example</h2>
+This section should contain a very high-level algorithm to perform
+some operation related to the topic (or link to a document which does
+this) and/or a small, yet complete line-by-line example of the topic
+(or link to a document which does this).<br>
+<p></p>
+</div>
+<!--============================================================================-->
+<div class="specialnotes">
+<h2>Special Notes</h2>
+<ul>
+  <li>No direct support for Default componets exists yet in the C++
+implementation of the Container Services </li>
+</ul>
+</div>
+<!--============================================================================-->
+<div class="examples">
+<h2>Examples in the ALMA CVS Repository</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td class="examples" style="vertical-align: top;">
+ACS/LGPL/CommonSoftware/* </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<!--============================================================================-->
+<div class="relateddocuments">
+<h2>Related Documents</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td class="relateddocuments" style="vertical-align: top;"> Some
+stuff </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<!--============================================================================-->
+<!--Keywords section-->
+<div class="keywords"><br>
+<br>
+Keywords: Your, keywords, here
+</div>
+<!--============================================================================-->
+</body>
+</html>
+

@@ -1,0 +1,100 @@
+#ifndef _POWERSUPPLY_IDL_
+#define _POWERSUPPLY_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acsexmplPowerSupply.idl,v 1.82 2004/01/27 21:13:23 dfugate Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+*/
+
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+/** @file acsexmplPowerSupply.idl
+ *  PowerSupply's IDL File
+ */
+
+module PS 
+{
+    /** @interface PowerSupply
+     *  Interface PowerSupply is a simple interface
+     */
+    interface PowerSupply : ACS::CharacteristicComponent
+	{
+	/** 
+	 *  Turns the powersupply on asynchronously. That is, we are notified 
+	 *  by the callback when the method really completes.
+	 *  @param cb callback when the powersupply has been turned on.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  See the BACI specifications for more details.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void on(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	/** 
+	 *  Turns the powersupply off asynchronously. That is, we are notified 
+	 *  by the callback when the method really completes.
+	 *  @param cb callback when the powersupply has been turned off.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  See the BACI specifications for more details.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void off(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	/** 
+	 *  Resets the powersupply asynchronously. That is, we are notified 
+	 *  by the callback when the method really completes.
+	 *  @param cb callback when the powersupply has been reset.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  See the BACI specifications for more details.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void reset(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	/** This property is the commanded current of the powersupply.
+	 */
+	readonly attribute ACS::RWdouble current;
+
+	/** This property is the actual current of the powersupply.
+	 */
+	readonly attribute ACS::ROdouble readback;
+
+	/** This property is the actual current of the powersupply.
+	 */
+	readonly attribute ACS::ROpattern status;
+	};
+};
+
+#endif

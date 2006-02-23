@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  
+   - History:
+   -   Tue Aug 17 21:38:37 UTC 2004 modified by jDAL
+-->
+<PyBaciTest xmlns="urn:schemas-cosylab-com:PyBaciTest:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-cosylab-com:PyBaciTest:1.0 PyBaciTest.xsd">
+	<strSeqProp description="no description" default_value="'far', 'but', 'not', 'away'"></strSeqProp>
+</PyBaciTest>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="com.cosylab.abeans.vep"
+   name="Abeans VE Plug-in"
+   version="3.1.1"
+   provider-name="Cosylab"
+   class="com.cosylab.abeans.vep.AbeansPlugin">
+
+   <runtime>
+      <library name="abeansplugin.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+    <import plugin="org.eclipse.ui"/>
+    <import plugin="org.eclipse.core.runtime"/>
+    <import plugin="org.eclipse.core.resources"/>
+    <import plugin="org.eclipse.ve.java.core"/>
+    <import plugin="org.eclipse.ui.workbench"/>
+    <import plugin="org.eclipse.osgi"/>
+    <import plugin="org.eclipse.jdt.core"/>
+    <import plugin="org.eclipse.ve.cde"/>
+    <import plugin="org.eclipse.emf.ecore"/>
+   </requires>
+
+   <extension
+         point="org.eclipse.ve.java.core.contributors">
+      <palette
+            container="org.eclipse.jdt.launching.JRE_CONTAINER"
+            categories="palette/palette.xmi">
+      </palette>
+   </extension>
+   
+   <extension
+		point="org.eclipse.ve.java.core.newStyleComponent">
+		<category
+			name="Abeans Applications"
+			id="com.cosylab.abeans.vep.cat"
+			priority="200"
+			defaultExpand="true">
+		</category>
+		<visualElement
+        	type="com.cosylab.abeans.vep.VisualChannelAbeansApplication"
+        	icon="icons/Abeans16.gif"
+        	category="com.cosylab.abeans.vep.cat"
+        	contributor="com.cosylab.abeans.vep.AbeansLaunchableSourceContributor"
+        	name="Channel Abeans Application">
+		</visualElement>
+		<visualElement
+        	type="com.cosylab.abeans.vep.VisualACSAbeansApplication"
+        	icon="icons/Abeans16.gif"
+        	category="com.cosylab.abeans.vep.cat"
+        	contributor="com.cosylab.abeans.vep.AbeansLaunchableSourceContributor"
+        	name="ACS Abeans Application">
+		</visualElement>
+	</extension>
+   	
+   <extension
+         point="org.eclipse.jdt.core.classpathVariableInitializer">
+      <classpathVariableInitializer
+            variable="Abeans VE Plug-in"
+            class="com.cosylab.abeans.vep.AbeansJavaClasspathVariablesInitializer">
+      </classpathVariableInitializer>
+   </extension>
+   
+</plugin>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for a Building
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:Tower:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:Tower:1.0"
+
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" 
+  xmlns:building="urn:schemas-cosylab-com:Building:1.0" >
+  
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:Building:1.0" schemaLocation="Building.xsd"/>
+  
+
+  <xs:complexType name="Tower">
+      <xs:complexContent>
+         <xs:extension base="building:Building" />
+      </xs:complexContent>
+   </xs:complexType>
+
+<!--
+  <xs:complexType name="Tower_">
+      <xs:complexContent>
+         <xs:restriction base="building:Building" />
+      </xs:complexContent>
+   </xs:complexType>
+
+  <xs:complexType name="Tower">
+    <xs:complexContent>
+      <xs:extension base="Tower_" >
+        <xs:sequence>
+          <xs:element name="TOWER1:FRONTDOOR" type="door:Door" use="required" />
+          <xs:element name="version" type="baci:ROstring"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+-->
+<!--
+   <xs:complexType name="Tower">
+      <xs:complexContent>
+         <xs:restriction base="building:Building" >
+          <xs:sequence>
+           <xs:element name="version" type="baci:ROstring"/>
+	  </xs:sequence>
+         </xs:restriction> 
+      </xs:complexContent>
+   </xs:complexType>
+-->
+ <!--
+  <xs:complexType name="Tower_">
+      <xs:complexContent>
+         <xs:restriction base="building:Building" />
+      </xs:complexContent>
+   </xs:complexType>
+
+  <xs:complexType name="Tower">
+    <xs:complexContent>
+      <xs:extension base="Tower_" >
+        <xs:sequence>
+          <xs:element name="TOWER1:FRONTDOOR" type="door:Door" use="required" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+-->
+  <xs:element name="Tower" type="Tower"/>
+</xs:schema>

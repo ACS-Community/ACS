@@ -1,0 +1,78 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: dbl-file.template.doc,v 1.19+ 2002/11/12 10:34:16 vltsccm Exp $"
+#%# 
+#%# Template for dbl files         
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gchiozzi   26/04/95  created
+#%# rabuter    5/09/97   modified
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN dblFile(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+#ifndef _DBL
+#define _DBL
+//**********************************************************************
+//* E.S.O. - ACS project
+//*
+//* "@(#) $I>-<d$"
+//*
+//* who       when      what
+//* --------  --------  ----------------------------------------------
+//* NNNNNNNN  dd/mm/yy  created 
+//*
+
+//************************************************************************
+//*   NAME
+//*   dblFile -   database specification file written in dbl language.
+//* 
+//*   SYNOPSIS
+//*       <mod>/dbl/<name>.db
+//*       <mod>/dbl/<name>.class
+//*
+//*       <mod>
+//*           |/ws/dbl/<name>.db
+//*           |/ws/dbl/<name>.class
+//*           |/lcu/dbl/<name>.db
+//*           |/lcu/dbl/<name>.class
+//*
+//*   
+//*   PARENT CLASS
+//*   The name of the parent class in case this file is a .class file
+//*   containing a dbl CLASS definition.
+//*
+//* 
+//*   DESCRIPTION
+//*   A database specification file written in dbl syntax according to 
+//*   VLT-MAN-ESO-17210-0707.
+//*
+//*   CAUTIONS 
+//*   ( Optional )
+//*
+//*   EXAMPLES
+//*    An example on the uage of the class or classes defined on the file
+//*    can be included here.
+//*
+//*   SEE ALSO
+//*   ( Optional )
+//*
+//*   BUGS   
+//*   ( Optional )
+//*
+//*------------------------------------------------------------------------*/
+
+
+
+#endif /*!_DBL*/
+
+// *___oOo___*

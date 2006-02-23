@@ -1,0 +1,13 @@
+#! /bin/sh
+#
+# The CLASSPATH should include all jar files in ../lib, 
+# $INTROOT/lib, $ACSROOT/lib, $VLTROOT/lib 
+# and not have $INTROOT hardcoded.
+# We pass down also any other command line parameter, assumed to be given as 
+# Java VM configuration parameters.
+# Most important is
+# The most important is 
+#    -Dobjexp.pool_timeout=<time in ms>
+# to set DSI pool timeout.
+
+acsStartJava $* si.ijs.acs.objectexplorer.ObjectExplorer BACI

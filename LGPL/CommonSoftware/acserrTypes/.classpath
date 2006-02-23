@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="ws/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="ws/lib/ACSErrTypeAlarm.jar"/>
+	<classpathentry sourcepath="ws/lib/ACSErrTypeCommon.jar" kind="lib" path="ws/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry sourcepath="ws/lib/ACSErrTypeCORBA.jar" kind="lib" path="ws/lib/ACSErrTypeCORBA.jar"/>
+	<classpathentry kind="lib" path="ws/lib/ACSErrTypeCppNative.jar"/>
+	<classpathentry kind="lib" path="ws/lib/ACSErrTypeJavaNative.jar"/>
+	<classpathentry kind="lib" path="ws/lib/ACSErrTypeMonitor.jar"/>
+	<classpathentry sourcepath="ws/lib/ACSErrTypeOK.jar" kind="lib" path="ws/lib/ACSErrTypeOK.jar"/>
+	<classpathentry sourcepath="ws/lib/ACSErrTypePythonNative.jar" kind="lib" path="ws/lib/ACSErrTypePythonNative.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>FeaturesTimeSystem</title>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="time"/> 
+<style><!--
+.Normal
+	{font-size:12.0pt;
+	font-family:"Times New Roman";}
+-->
+</style>
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+</head>
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+<h2><a name=TimeSystem>Time System</a></h2>
+<h3>ALMA will have a distributed HW pulse, interval is 48 ms, that the hardware 
+  will synchronize to<a
+href="ReferenceDocuments.html#RD01">[RD01 - 8.1.3. Distributed timing]</a> <a
+href="ReferenceDocuments.html#RD30">[RD30]</a>. Also devices on the CAN bus will 
+  be connected to the time bus to allow synchronization.</h3>
+<h3>All time data in ACS (APIs, timestamps….) will be based on the array time 
+  <a
+href="ReferenceDocuments.html#RD01">[RD01 - 8.1.1. Standard]</a>. We assume that 
+  not Real Time boxes will be simply synchronized to the array time using standard 
+  protocols, like NTP.</h3>
+<h3>The Time System provides basic service for time handling. It includes:</h3>
+<h4>Abstract API to access time information in ISO format <a
+href="ReferenceDocuments.html#RD01">[RD01 - 8.1.2. API]</a> and to perform time 
+  conversion, arithmetic and formatting <a
+href="ReferenceDocuments.html#RD01">[RD01 - 5.3.1.</a> Time conversion] <b>to/from 
+  various time systems (UTC, TAI…).</b> </h4>
+<h4>An abstract API for synchronization between applications based on array time 
+  and on the 48 ms HW pulse.</h4>
+<h4>Timer classes to trigger events based on time <a href="ReferenceDocuments.html#RD01">[RD01 
+  - 8.1.4 Services]</a>:</h4>
+<h5>Applications can create instances of the timer class and register callbacks 
+  to be executed when the timer event is triggered</h5>
+<h5>Timers can be <i>periodic</i> (retriggerable) or <i>oneshot</i> events</h5>
+<h5>Timers can be configured to trigger events:</h5>
+<ul>
+  <li>at a specific array time. For <i>periodic</i> timers the time of the first 
+    event is specified together with the frequency for the following events). 
+  </li>
+  <li>after a given number of 48ms pulses (plus an optional offset to allow phasing). 
+    For <i>periodic</i> timers the number of pulses between to events defines 
+    the event repetition rate.</li>
+</ul>
+<h3>Absolute Time is internally represented in 100 ns since 1582-10-15 <st1:time Minute="0" Hour="0">00:00:00</st1:time>, 
+  based on the OMG Time Service Specification. An IDL typedef is used to define 
+  the Time type:</h3>
+<ul type=disc>
+  <li>typedef unsigned long long Time;</li>
+</ul>
+<h3>A TimeInterval is defined as the difference between two absolute time points:</h3>
+<ul type=disc>
+  <li>typedef long long TimeInterval;</li>
+</ul>
+<h3>ISO format will be used &quot;internally&quot; whenever a string representation 
+  of time is needed. At User Interface level, more formats might be required. 
+  We will start providing only ISO format and allow users to request more formats 
+  via the Change Request SPR mechanism.</h3>
+<h3>The API is the same for all platforms, but provides higher time resolution 
+  and performances on the platforms that have specific HW support (48 ms event 
+  distributed by hardware..) <u><a href="ReferenceDocuments.html#RD01">[RD01 - 
+  8.1.5 Resolution]</a></u> </h3>
+</body>
+</html>

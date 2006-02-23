@@ -1,0 +1,95 @@
+BUGS (4.0):
+- trim down w3-sysdp.el to be just the stuff it really needs
+- border-color can have multiple color specifications, but we
+  currently choke with 'args out of range' when we see this.
+- widget appears to be stealing button3 to mean 'activate' - this is
+  bogus!  We lose all context-sensitive menus because of this.
+- We still seem to be growing the line size under Emacs 19.x/20.x
+- document how to translate Netscape foo.pac files to emacs lisp
+
+BUGS (4.1):
+- background colors are not heeded on table rows (<tr>).  Same
+  properties on individual cells or the table as a whole work fine.
+- <br> in <dd> hosed - margins in general tend to be too big sometimes.
+- client side imagemaps have to be in the same buffer (actually in the
+  smae buffer, _BEFORE_ the usemap directive on an image) - fix to be
+  able to use imagemaps in different files, any position, etc, etc.
+
+FEATURES (4.1)
+- More tweaks to the hotindex stuff from Laurent Martelli <martelli@iie.cnam.fr>
+    + Ask  to delete unresolved  entries.  Right now, keywords are
+    associated to hotlist entries on the basis of entry names.  It
+    means  that if you  rename  an  entry with a  hotindex-unaware
+    W3/Emacs, hotindex will refuse  work. Same thing if you delete
+    an entry. Of course, it would really be better to use the href
+    instead of the entry name.
+
+    +  Keywords weighting :  it  would be  nice to give  different
+    weight to keywords  in  order to  precise the  relevance  of a
+    keyword for a document. Query results woudl  then be sorted by
+    relevance.
+
+    +  Hotindex file  sharing  :  wouldn't it  be   nice  to share
+    keywords files with your friends? Ideally,  one should be able
+    to specify a list of keywords file to search in. Entries found
+    in the first files would match  better than those found at the
+    end. 
+
+    + Automatically add  keywords found in  meta  tags and procide
+    additional methods to automatically index documents.
+
+    * Multi keyword search
+- w3-(un)?plugged, w3-toggle-plugged to control url-standalone-mode in
+  a convenient, user-friendly way.
+- Nice custom-y way to create an HTTP request.  This would allow
+  people to use HTTP PUT to upload documents to HTTP servers, etc.
+- cache a formatted version of documents, with enough info to recreate
+  the widgets in them.
+- keystrokes and supporting infrastructure to prefetch URLs from
+  within a document that you are likely to read next.  Don't even parse
+  or render them David Kastrup <dak@neuroinformatik.ruhr-uni-bochum.de>
+- Emacspeak Interaction
+  - some way of specifying in a stylesheet whether certain text is
+    inaudible.  use the 'inaudible text property for this.
+  - Full Aural-CSS support
+- more sophisticated filling algorithm. I'm not sure exactly what
+  would be sufficient but breaking lines after punctuation  seems like
+  it would solve most of the problem.
+- When fetching images for viewing (not inlining), W3 should at least
+  have an option of displaying it inline, ala Netscape.
+- Widget library merging
+  - Write a font selection widget
+  - Write a voice selection widget
+  - Write a mailcap entry widget
+- Custom library merging
+  - Add custom support for MM
+- Hotlist handling
+  - Abstract out current support
+  - Do something similar to GNUS 'backends' to provide easy way to add new
+    bookmark formats, etc.
+- Write a new major mode for handling CSS style sheets
+
+FEATURES (5.0)
+- Emacspeak Integration
+  - Need option to turn off table rendering and print it out as a
+    table that is viewable with emacspeak-table-ui.el
+- Write a text/xml parser
+- Completely rewrite display code again
+  - Abstract everything out to follow parse->flow objects->render model
+  - Base all stylesheet stuff off of DSSSL
+  - CSS2
+  - New rendering backends
+    - Native postscript output
+    - LaTeX upgrade
+    - TeXinfo
+- Display code
+  - implement <spacer> from netscape 3.0b5
+  - reimplement w3-show-headers
+  - Handle math environment using the calc library
+  - Better integration with the parser
+
+MAINTENANCE CRAP (4.0)
+- Get in touch with "Rob" == Rob Partington <rjp@netlink.co.uk> about
+  registering w3.browser.org
+- Legal Papers (status - emailed necessary paperwork)
+  - Stephen Peters <speters@cygnus.com> - LaTeX code (???)

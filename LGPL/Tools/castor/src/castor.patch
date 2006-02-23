@@ -1,0 +1,328 @@
+diff -Naur src_original/org/exolab/castor/builder/DescriptorSourceFactory.java src_patched/org/exolab/castor/builder/DescriptorSourceFactory.java
+--- src_original/org/exolab/castor/builder/DescriptorSourceFactory.java	2005-02-09 21:11:54.000000000 +0000
++++ src_patched/org/exolab/castor/builder/DescriptorSourceFactory.java	2005-05-17 12:26:38.000000000 +0000
+@@ -243,6 +243,9 @@
+ 		jsc.add("desc = (org.exolab.castor.xml.util.XMLFieldDescriptorImpl) getFieldDescriptor(\"");
+ 		jsc.append(member.getNodeName());
+ 		jsc.append("\"");
++//<AlmaFix>        
++        jsc.append(", " + member.getNamespaceURI());
++//</AlmaFix>        
+ 		if (member.getNodeType() == FieldInfo.ELEMENT_TYPE)
+ 			jsc.append(", org.exolab.castor.xml.NodeType.Element);");
+ 		else if (member.getNodeType() == FieldInfo.ATTRIBUTE_TYPE)
+diff -Naur src_original/org/exolab/castor/builder/MemberFactory.java src_patched/org/exolab/castor/builder/MemberFactory.java
+--- src_original/org/exolab/castor/builder/MemberFactory.java	2005-02-09 21:11:54.000000000 +0000
++++ src_patched/org/exolab/castor/builder/MemberFactory.java	2005-05-17 12:36:35.000000000 +0000
+@@ -425,11 +425,13 @@
+                 else { 
+                     jType = xsType.getJType(); 
+                 } 
+-                    
+-                String tmp = jType.getName() + ".valueOf(\"" + value;
+-                tmp += "\")";
+-                value = tmp;
+-                 
++//<Alma-Fix>                
++                if (!jType.isPrimitive()) {
++                    String tmp = jType.getName() + ".valueOf(\"" + value;
++                    tmp += "\")";
++                    value = tmp;
++                }
++//</Alma-Fix>                                                     
+                 
+             }
+             //don't generate code for date/time type since the constructor that parses
+diff -Naur src_original/org/exolab/castor/builder/SourceFactory.java src_patched/org/exolab/castor/builder/SourceFactory.java
+--- src_original/org/exolab/castor/builder/SourceFactory.java	2005-02-09 21:11:50.000000000 +0000
++++ src_patched/org/exolab/castor/builder/SourceFactory.java	2005-05-17 12:26:38.000000000 +0000
+@@ -968,7 +968,11 @@
+ 			methodName+= parent.getName(true);
+ 
+ 		//-- create main marshal method
+-        JMethod jMethod = new JMethod(SGTypes.Object ,methodName);
++//<ALMA-patch>
++        // see http://bugzilla.exolab.org/show_bug.cgi?id=1600
++        JMethod jMethod = new JMethod(parent, methodName);
++//        JMethod jMethod = new JMethod(SGTypes.Object ,methodName);
++//</ALMA-patch>        
+         jMethod.getModifiers().setStatic(true);
+         jMethod.addException(SGTypes.MarshalException);
+         jMethod.addException(SGTypes.ValidationException);
+@@ -1362,7 +1366,16 @@
+ 	    			//--no classInfo yet so no source code available
+                     //--for the base type: we need to generate it
+                     if (cInfo == null) {
++//<AlmaFix>
++//recursion for the base type in method 'createSourceCode', lines 313/316, messes up the SGState: sgState.setCurrentFactoryState(state);
++//we therefore have to save and re-set it.    
++//this problem was reported by email to Castor committer Arnaud Blandin by hsommer in Feb. 2005                         
++                     FactoryState oldFactoryState = state.getSGStateInfo().getCurrentFactoryState();
++//                     System.out.println("BEFORE: SGState#currentFactoryState=" + oldFactoryState.jClass.getName());                        
+                         JClass[] classes = createSourceCode(component, state.getSGStateInfo());
++//                      System.out.println("AFTER: SGState#currentFactoryState=" + state.getSGStateInfo().getCurrentFactoryState().jClass.getName());
++                        state.getSGStateInfo().setCurrentFactoryState(oldFactoryState);
++//</AlmaFix>
+ 					    cInfo = state.resolve(base);
+ 					    baseClassName = classes[0].getName();
+ 				    } else {
+@@ -1374,13 +1387,36 @@
+ 				    //-- Create qualified class name for a base type class
+                     //-- from another package
+ 				    baseClassName = component.getQualifiedName();
++//<AlmaFix>
++                    // If classInfo.setBaseClass is not called here (for base classes from other schemas), 
++                    // then we get a duplication-of-attributes-bug during marshalling:
++                    // The code which is supposed to prevent this bug is in DescriptorSourceFactory#createSource(ClassInfo classInfo),
++                    // where either createDescriptor() or createRestrictedDescriptor() is called, depending on the base class.
++                    // Thus as a minimum hack, we must set a rudimentary base class's ClassInfo object which will be able to answer
++                    // a call to method getAttributeField(..)
++                    // Of course it would be much less of a hack if the base class would be registered in the state object somewhere else,
++                    // so that it could be retrieved using "state.resolve(base)" as in the above case of base complex types from the same schema.
++                    SGStateInfo sgStateTmp = state.getSGStateInfo();
++                    FactoryState otherSchemaBaseState = new FactoryState(baseClassName, sgStateTmp, component.getJavaPackage());
++                    initialize(otherSchemaBaseState.jClass);
++                    // add base-attribute info to otherSchemaBaseState#classInfo
++                    processAttributes((ComplexType) base, otherSchemaBaseState);
++                    
++                    classInfo.setBaseClass(otherSchemaBaseState.classInfo);
++//</AlmaFix>
+ 			     }
+ 			    //-- Set super class
+                 //-- and reset the view on the current ComplexType
+ 				component.setView(complexType);
+                 //--only set a super class name if the current complexType
+                 //--is not a restriction of a simpleContent (--> no object hierarchy, only content hierarchy)
+-                if (! ( complexType.isRestricted() && ((ComplexType)base).isSimpleContent() ) )
++//<AlmaFix>
++// cf castor bug#960 -- we disagree with Arnaud's interpretation 
++// and wish to have inheritance for restriction of complextype/simplecontent;
++// this works for us because our derived types don't remove optional attributes from the base type.                 
++// Therefore the following line is commented out                
++//                if (! ( complexType.isRestricted() && ((ComplexType)base).isSimpleContent() ) )
++//</AlmaFix>                
+                     state.jClass.setSuperClass(baseClassName);
+             } //--complexType
+ 
+diff -Naur src_original/org/exolab/castor/builder/castorbuilder.properties src_patched/org/exolab/castor/builder/castorbuilder.properties
+--- src_original/org/exolab/castor/builder/castorbuilder.properties	2005-02-09 21:11:50.000000000 +0000
++++ src_patched/org/exolab/castor/builder/castorbuilder.properties	2005-05-17 12:26:38.000000000 +0000
+@@ -13,6 +13,7 @@
+ # Java class mapping of <xsd:element>'s and <xsd:complexType>'s 
+ #
+ #org.exolab.castor.builder.javaclassmapping=element
++org.exolab.castor.builder.javaclassmapping=type
+ 
+ # This property allows one to specify the super class of *all* 
+ # generated classes
+@@ -22,8 +23,14 @@
+ # XML namespace mapping to Java packages
+ #
+ #org.exolab.castor.builder.nspackages=\
+-  http://www.xyz.com/schemas/project=com.xyz.schemas.project,\
+-  http://www.xyz.com/schemas/person=com.xyz.schemas.person
++#  Alma/CommonEntity=alma.entities.commonentity,\
++#  Alma/ObsPrep/ObsProject=alma.entity.xmlbinding.obsproject,\
++#  Alma/ObsPrep/ObsProposal=alma.entity.xmlbinding.obsproposal,\
++#  Alma/ObsPrep/SchedBlock=alma.entity.xmlbinding.schedblock,\
++#  Alma/ObsPrep/ObsReview=alma.entity.xmlbinding.obsreview,\
++#  Alma/ValueTypes=alma.entity.xmlbinding.valuetypes,\
++#  Alma/ObsPrep/ObsToolUserPrefs=alma.entity.xmlbinding.obstooluserprefs,\
++#  Alma/Scheduling/ProjectStatus=alma.entity.xmlbinding.projectstatus
+ 
+ # Set to true if you want to generate the equals method
+ # for each generated class
+diff -Naur src_original/org/exolab/castor/castor.properties src_patched/org/exolab/castor/castor.properties
+--- src_original/org/exolab/castor/castor.properties	2005-02-09 21:11:48.000000000 +0000
++++ src_patched/org/exolab/castor/castor.properties	2005-05-17 12:26:38.000000000 +0000
+@@ -79,7 +79,7 @@
+ 
+ # True if all documents should be indented on output by default
+ #
+-#org.exolab.castor.indent=true
++org.exolab.castor.indent=true
+ 
+ 
+ # True if xml documents should be validated by the SAX Parser
+@@ -89,7 +89,7 @@
+ 
+ # True if all documents should be validated by the marshalling framework
+ #
+-org.exolab.castor.marshalling.validation=true
++org.exolab.castor.marshalling.validation=false
+ 
+ 
+ 
+diff -Naur src_original/org/exolab/castor/util/XercesRegExpEvaluator.java src_patched/org/exolab/castor/util/XercesRegExpEvaluator.java
+--- src_original/org/exolab/castor/util/XercesRegExpEvaluator.java	2005-02-09 21:11:52.000000000 +0000
++++ src_patched/org/exolab/castor/util/XercesRegExpEvaluator.java	1970-01-01 00:00:00.000000000 +0000
+@@ -1,126 +0,0 @@
+-/**
+- * Redistribution and use of this software and associated documentation
+- * ("Software"), with or without modification, are permitted provided
+- * that the following conditions are met:
+- *
+- * 1. Redistributions of source code must retain copyright
+- *    statements and notices.  Redistributions must also contain a
+- *    copy of this document.
+- *
+- * 2. Redistributions in binary form must reproduce the
+- *    above copyright notice, this list of conditions and the
+- *    following disclaimer in the documentation and/or other
+- *    materials provided with the distribution.
+- *
+- * 3. The name "Exolab" must not be used to endorse or promote
+- *    products derived from this Software without prior written
+- *    permission of Intalio, Inc.  For written permission,
+- *    please contact info@exolab.org.
+- *
+- * 4. Products derived from this Software may not be called "Exolab"
+- *    nor may "Exolab" appear in their names without prior written
+- *    permission of Intalio, Inc. Exolab is a registered
+- *    trademark of Intalio, Inc.
+- *
+- * 5. Due credit should be given to the Exolab Project
+- *    (http://www.exolab.org/).
+- *
+- * THIS SOFTWARE IS PROVIDED BY INTALIO, INC. AND CONTRIBUTORS
+- * ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT
+- * NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+- * INTALIO, INC. OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+- * OF THE POSSIBILITY OF SUCH DAMAGE.
+- *
+- * Copyright 2002 (C) Intalio, Inc. All Rights Reserved.
+- *
+- * $Id: XercesRegExpEvaluator.java,v 1.1.1.1 2003/03/03 07:09:07 kvisco Exp $
+- */
+-
+- package org.exolab.castor.util;
+-
+- import org.apache.xerces.utils.regex.RegularExpression;
+- import org.apache.xerces.utils.regex.ParseException;
+- 
+- /**
+-  * An implementation of the XercesRegExpEvaluator that uses the
+-  * Regular Expression library in Xerces. For more information
+-  * about the Xerces Regular Expression library please visit:
+-  * <a href="
+-http://xml.apache.org/xerces-j/apiDocs/org/apache/xerces/utils/regex/RegularExpression.html
+-">
+-  * 
+-http://xml.apache.org/xerces-j/apiDocs/org/apache/xerces/utils/regex/RegularExpression.html
+-</a>
+-  *
+-  * @author <a href="mailto:kvisco@intalio.com">Keith Visco</a>
+-  * @author <a href="mailto:tora@debian.org">Takashi Okamoto</a>
+-  * @version $Revision: 1.1.1.1 $ $Date: 2003/03/03 07:09:07 $
+- **/
+- public class XercesRegExpEvaluator 
+-    implements RegExpEvaluator
+-{
+-    
+-    private static final String BOL = "^";
+-    private static final String EOL = "$";
+-    
+-    /**
+-     * The Regular expression
+-    **/
+-    RegularExpression _regexp = null;
+-    
+-    /**
+-     * Creates a new XercesRegExpEvaluator
+-    **/
+-    public XercesRegExpEvaluator() {
+-        super();
+-    } //-- XercesRegExpEvaluator
+-    
+-    /**
+-     * Sets the regular expression to match against during
+-     * a call to #matches
+-     *
+-     * @param rexpr the regular expression
+-    **/
+-    public void setExpression(String rexpr) {
+-        
+-        if (rexpr != null) {
+-            try {
+-                //-- patch and compile expression
+-                _regexp = new RegularExpression(BOL + rexpr + EOL);
+-            }
+-            catch(ParseException ex) {
+-                String err = "XercesRegExpp Syntax error: ";
+-                err += ex.getMessage();
+-                err += " ; error occured with the following "+
+-                    "regular expression: " + rexpr;
+-                
+-                throw new IllegalArgumentException(err);
+-            }
+-        }
+-        else
+-            _regexp = null;
+-    } //-- setExpression
+-    
+-    /**
+-     * Returns true if the given String is matched by the 
+-     * regular expression of this RegExpEvaluator
+-     *
+-     * @param value the String to check the production of
+-     * @return true if the given string matches the regular
+-     * expression of this RegExpEvaluator
+-     * @see #setExpression
+-    **/
+-    public boolean matches(String value)
+-    {
+-        if (_regexp != null) return _regexp.matches(value);
+-        return true;
+-    } //-- matches
+-    
+- } //-- XercesRegExpEvaluator
+\ No newline at end of file
+diff -Naur src_original/org/exolab/castor/xml/schema/reader/SchemaUnmarshaller.java src_patched/org/exolab/castor/xml/schema/reader/SchemaUnmarshaller.java
+--- src_original/org/exolab/castor/xml/schema/reader/SchemaUnmarshaller.java	2005-02-09 21:11:50.000000000 +0000
++++ src_patched/org/exolab/castor/xml/schema/reader/SchemaUnmarshaller.java	2005-05-17 12:26:38.000000000 +0000
+@@ -84,6 +84,22 @@
+     private static final String XMLNS_PREFIX = "xmlns:";
+     private static final String XML_PREFIX   = "xml";
+     
++    
++//  <Alma-Modification> 
++    private static URIResolver s_defaultURIResolver;
++    
++    /**
++     * Sets the default URIResolver to be used if no URIResolver gets passed to the constructor.
++     * <p>
++     * Using a static field is admittedly rather dirty. A better fix would be to allow 
++     * for a URIResolver to be passed on the callstack all the way from SourceGenerator to SchemaUnmarshaller.
++     * @param defaultURIResolver
++     */
++    public static void setDefaultURIResolver(URIResolver defaultURIResolver) {
++        s_defaultURIResolver = defaultURIResolver;
++    }
++// </Alma-Modification>            
++
+     /**
+      * is this an included schema?
+      */
+@@ -170,7 +186,15 @@
+         _schema.removeNamespace("");
+         setResolver(resolver);
+         if (uriResolver == null)
++//<Alma-Modification> 
++//            uriResolver = new URIResolverImpl();
++            if (s_defaultURIResolver != null) {
++                uriResolver = s_defaultURIResolver;
++            }
++            else {
+             uriResolver = new URIResolverImpl();
++            }
++//</Alma-Modification>            
+         setURIResolver(uriResolver);
+         foundSchemaDef = true;
+         _state = new SchemaUnmarshallerState();

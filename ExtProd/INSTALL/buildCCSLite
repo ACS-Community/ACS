@@ -1,0 +1,79 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# build
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# psivera   2003-10-31  created
+#
+# "@(#) $Id: buildCCSLite,v 1.7 2005/12/30 11:54:07 gchiozzi Exp $"
+
+#************************************************************************
+#   NAME
+#   buildCCSLite - unpack the CCSLite tar file for ACS SUN installations
+#                  and builds a VLTROOT from sources.
+#   SYNOPSIS
+#   buildCCSLite 
+#
+#   DESCRIPTION
+#
+#
+#   FILES
+#
+#------------------------------------------------------------------------
+
+#
+# which platform?
+#
+build_OS=`uname -s`
+
+TITLE="     ALMA Common Software CCSLite build  "
+BUILD_NAME=""
+
+LOG=buildCCSLite.log
+CWD=`pwd`
+#
+exec > $LOG 2>&1
+
+date
+. ./standardPrologue
+
+if [ ! -e ../PROPRIETARY/CCSLite.tar.gz ]
+then
+  echo Error: CCSLite tar file is missing
+  exit 2
+fi
+
+cd $CWD/../PROPRIETARY
+if [ -d CCSLite ]
+then
+  echo CCSLite directory exists already. I clean it up.
+  rm -rf CCSLite
+fi
+
+echo "Untarring the CCSLite.tar.gz file"
+tar zxf $CWD/../PROPRIETARY/CCSLite.tar.gz
+
+echo "Building CCSLite"
+cd $CWD/../PROPRIETARY/CCSLite/INSTALL
+make all
+
+# If CCSLite did not exist before,
+# then VLTROOT would be undefined or point to ACSROOT.
+# Therefore here we rename is to the correct place.
+if [ "$VLTROOT" = "$ACSROOT" ]
+then
+   echo "Move CCSLite installation form $VLTROOT to $ALMASW_INSTDIR/CCSLite"
+   mv $VLTROOT $ALMASW_INSTDIR/CCSLite
+fi
+
+cd $CWD
+echo "CCSLite installation done!"
+
+
+date
+
+
+

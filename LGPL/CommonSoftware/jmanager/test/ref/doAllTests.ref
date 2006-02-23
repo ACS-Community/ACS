@@ -1,0 +1,138 @@
+1 -  Starting ORB Services
+1 - This is OK: Invalid handle.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Manager in shutdown state.
+1 - This is OK: Manager in shutdown state.
+1 - This is OK: Manager in shutdown state.
+1 - This is OK: Non-null 'containerName' expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Non-null 'containerName' expected.
+1 - This is OK: Container 'invalid' not logged in.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Non-null 'reference' expected.
+1 - This is OK: Invalid response to 'Client::name()' method - non-null string expected.
+1 - This is OK: Invalid response to 'Client::authenticate()' method - non-null string expected.
+1 - This is OK: Invalid response to 'Client::authenticate()' method. [A,C,S] are expected as first characters.
+1 - This is OK: Given reply to 'Client::authenticate()' method indicated container login, but given reference does not implement 'maci::Container' interface.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null 'handles' sequence expected.
+1 - This is OK: Non-null 'handles' sequence expected.
+1 - This is OK: Non-null 'handles' sequence expected.
+1 - This is OK: Non-null 'names_wc' sequence expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Non-null 'handles' sequence expected.
+1 - This is OK: Non-null 'handles' sequence expected.
+1 - This is OK: Non-null 'handles' sequence expected.
+1 - This is OK: Non-null 'names_wc' sequence expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Non-null parameters expected.
+1 - This is OK: Non-null parameters expected.
+1 - This is OK: Non-null parameters expected.
+1 - This is OK: Non-null parameters expected.
+1 - This is OK: Invalid CURL ''.
+1 - This is OK: CURL does not belong to this domain ('other' not one of '[]').
+1 - This is OK: CURL does not belong to this domain ('other' not one of '[]').
+1 - This is OK: CURL does not belong to this domain ('other' not one of '[]').
+1 - This is OK: CURL does not belong to this domain ('other' not one of '[]').
+1 - This is OK: Component with name 'GIZMO4' but different type already registered.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid component handle.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Non-null 'status' expected.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Non-null CURLs expected.
+1 - This is OK: Non-null CURLs expected.
+1 - This is OK: Non-null 'statuses' expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null 'statuses' expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null CURLs expected.
+1 - This is OK: Non-null 'type' expected.
+1 - This is OK: Non-null 'type' expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null 'type' expected.
+1 - This is OK: No default default component for type 'invalid' found.
+1 - This is OK: Non-null 'componentSpec' expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null 'componentSpec' expected.
+1 - This is OK: Non-null 'componentSpec' fields expected.
+1 - This is OK: 'name' and 'type' cannot be both '*'.
+1 - This is OK: 'name' and 'type' cannot be both '*'.
+1 - This is OK: Requested and already activated component data with the same name are not compatible.
+1 - This is OK: Requested and already activated component data with the same name are not compatible.
+1 - This is OK: Requested ComponentSpec does not match any entry in the CDB.
+1 - This is OK: Requested ComponentSpec does not match any entry in the CDB.
+1 - This is OK: Requested ComponentSpec does not match any entry in the CDB.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Insufficient rights.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null CURL expected.
+1 - This is OK: Restarting component that client does not own.
+1 - 
+1 - 
+1 - OK (34 tests)
+1 - 
+1 -  Stopping the services
+1 - ..
+1 - 
+1 - OK (2 tests)
+1 - 
+1 - ...{0, 2, 4, 6, 8, 10, 12}
+1 - ..
+1 - 
+1 - OK (5 tests)
+1 - 
+1 - .ComponentStatus = { name = 'COMPONENT_ACTIVATED', description = 'Component is activated.' }
+1 - ComponentStatus = { name = 'COMPONENT_NOT_ACTIVATED', description = 'Component is not activated.' }
+1 - ComponentStatus = { name = 'COMPONENT_NONEXISTANT', description = 'Component does not exists.' }
+1 - .MessageType = { name = 'MSG_INFORMATION', description = 'Informational message.' }
+1 - MessageType = { name = 'MSG_ERROR', description = 'Error message.' }
+1 - 
+1 - 
+1 - OK (2 tests)
+1 - 
+1 - .
+1 - 
+1 - OK (1 test)
+1 - 
+1 - .curl://nrao
+1 - curl:///MOUNT1
+1 - curl:///MOUNT1
+1 - curl://user@cosylab.com:1208/MOUNT1/SUBDO
+1 - curl:///BUILDING1/FRONTDOOR
+1 - curl:///BUILDING1:FRONTDOOR
+1 - curl:///BUILDING1/FRONTDOOR/HANDLE
+1 - curl:///BUILDING1:FRONTDOOR:HANDLE
+1 - curl:///BUILDING1/FRONTDOOR/HANDLE
+1 - curl:///BUILDING1:FRONTDOOR:HANDLE
+1 - curl://nrao/BUILDING1/FRONTDOOR/HANDLE
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

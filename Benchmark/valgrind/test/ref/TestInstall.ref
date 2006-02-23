@@ -1,0 +1,52 @@
+1 - usage: valgrind --tool=<toolname> [options] prog-and-args
+1 - 
+1 -   common user options for all Valgrind tools, with defaults in [ ]:
+1 -     --tool=<name>             use the Valgrind tool named <name> [memcheck]
+1 -     -h --help                 show this message
+1 -     --help-debug              show this message, plus debugging options
+1 -     --version                 show version
+1 -     -q --quiet                run silently; only print error msgs
+1 -     -v --verbose              be more verbose, incl counts of errors
+1 -     --trace-children=no|yes   Valgrind-ise child processes? [no]
+1 -     --track-fds=no|yes        track open file descriptors? [no]
+1 -     --time-stamp=no|yes       add timestamps to log messages? [no]
+1 - 
+1 -   uncommon user options for all Valgrind tools:
+1 -     --run-libc-freeres=no|yes free up glibc memory at exit? [yes]
+1 -     --weird-hacks=hack1,hack2,...  recognised hacks: lax-ioctls,ioctl-mmap [none]
+1 -     --pointercheck=no|yes     enforce client address space limits [yes]
+1 - 
+1 -   user options for Valgrind tools that report errors:
+1 -     --log-fd=<number>         log messages to file descriptor [2=stderr]
+1 -     --log-file=<file>         log messages to <file>.pid<pid>
+1 -     --log-socket=ipaddr:port  log messages to socket ipaddr:port
+1 -     --demangle=no|yes         automatically demangle C++ names? [yes]
+1 -     --num-callers=<number>    show <num> callers in stack traces [12]
+1 -     --error-limit=no|yes      stop showing new errors if too many? [yes]
+1 -     --show-below-main=no|yes  continue stack traces below main() [no]
+1 -     --suppressions=<filename> suppress errors described in <filename>
+1 -     --gen-suppressions=no|yes print suppressions for errors detected [no]
+1 -     --db-attach=no|yes        start debugger when errors detected? [no]
+1 -     --db-command=<command>    command to start debugger [gdb -nw %f %p]
+1 -     --input-fd=<number>       file descriptor for input [0=stdin]
+1 - 
+1 -   user options for Memcheck:
+1 -     --partial-loads-ok=no|yes        too hard to explain here; see manual [yes]
+1 -     --freelist-vol=<number>          volume of freed blocks queue [1000000]
+1 -     --leak-check=no|summary|full     search for memory leaks at exit? [summary]
+1 -     --leak-resolution=low|med|high   how much bt merging in leak check [low]
+1 -     --show-reachable=no|yes          show reachable blocks in leak check? [no]
+1 -     --workaround-gcc296-bugs=no|yes  self explanatory [no]
+1 -     --sloppy-malloc=no|yes    round malloc sizes to multiple of 4? [no]
+1 -     --alignment=<number>      set minimum alignment of allocations [8]
+1 -     --avoid-strlen-errors=no|yes  suppress errs from inlined strlen [yes]
+1 - 
+1 -   Extra options read from ~/.valgrindrc, $VALGRIND_OPTS, ./.valgrindrc
+1 - 
+1 -   Valgrind is Copyright (C) 2000-2005 Julian Seward et al.
+1 -   and licensed under the GNU General Public License, version 2.
+1 -   Bug reports, feedback, admiration, abuse, etc, to: valgrind.kde.org.
+1 - 
+1 -   Tools are copyright and licensed by their authors.  See each
+1 -   tool's start-up message for more information.
+1 - 

@@ -1,0 +1,18 @@
+#!/bin/bash
+MAX_TIMEOUT=45
+i="0"
+while [ "$i" ]
+do
+  if [ "$i" = "$MAX_TIMEOUT" ];
+  then
+      echo "Max timeout exceeded! Server didn't complete in alloted time of $MAX_TIMEOUT seconds" 
+      exit 1
+  #check to see if the file has been written
+  elif [ -f s1.ior ];
+  then
+    break 
+  else
+      i=$(( $i + 1 ))
+      sleep 1
+  fi
+done

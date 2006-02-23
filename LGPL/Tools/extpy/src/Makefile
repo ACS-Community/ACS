@@ -1,0 +1,142 @@
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: Makefile,v 1.22 2006/01/06 18:16:14 dfugate Exp $"
+#
+# Makefile of ........
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr 2003-08-27 Removed test and dbl targets
+# almamgr 2003-08-27 Replaced tar with gtar for sun
+# dave 2003-08-25 GENERATEDS is no longer part of the "all" target
+# dave 2003-08-14 added PyXML and generateDS for Python XML entity classes
+# david  07/07/03  created
+#
+
+#
+# Python stuff (public and local)
+# ----------------------------
+PY_SCRIPTS         = pythfilter
+PY_SCRIPTS_L       =
+
+PY_MODULES         = acs_python
+PY_MODULES_L       =
+
+PY_PACKAGES        = Pmw
+PY_PACKAGES_L      =
+pppppp_MODULES	   =
+
+PY_EXT_DOC_L	   = pexpect-doc
+PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw numarray-1.3.3 matplotlib-0.73.1
+
+
+PEXPECT: pexpect-0.999.tgz
+	@echo "== Building PEXPECT"
+	@gtar -zxvf pexpect-0.999.tgz;
+	@cd pexpect-0.999; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages --install-data=$(INSTALL_ROOT)/lib/python/site-packages ;
+
+PYXML: PyXML-0.8.4.tar.gz
+	@echo "== Building PYXML"
+	@gtar -zxvf PyXML-0.8.4.tar.gz; 
+	@cd PyXML-0.8.4; python setup.py build; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
+
+PMW: Pmw.1.2.tar.gz
+	@echo "== Building Python Mega Widgets"
+	@gtar -zxvf Pmw.1.2.tar.gz;
+
+MATPLOTLIB: matplotlib-0.73.1.tar.gz
+	@echo "== Building matplotlib"
+	@gtar -zxvf matplotlib-0.73.1.tar.gz;
+	@cd matplotlib-0.73.1; cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'ACSROOT\'\\],/g >> setupext.py.tmp
+	@mv matplotlib-0.73.1/setupext.py.tmp matplotlib-0.73.1/setupext.py
+	@cd matplotlib-0.73.1; cat setup.py | sed s/BUILD_GTKAGG\ \ \ \ \ \ \ =\ \'auto\'/BUILD_GTKAGG=0/g >> setup.py.tmp
+	@mv matplotlib-0.73.1/setup.py.tmp matplotlib-0.73.1/setup.py
+	@cd matplotlib-0.73.1; cat setup.py | sed s/BUILD_GTK\ \ \ \ \ \ \ \ \ \ =\ \'auto\'/BUILD_GTK=0/g >> setup.py.tmp
+	@mv matplotlib-0.73.1/setup.py.tmp matplotlib-0.73.1/setup.py
+	@cd matplotlib-0.73.1; cat setup.py | sed s/BUILD_TKAGG\ \ \ \ \ \ \ \ =\ \'auto\'/BUILD_TKAGG=1/g >> setup.py.tmp
+	@mv matplotlib-0.73.1/setup.py.tmp matplotlib-0.73.1/setup.py
+	@cd matplotlib-0.73.1; \
+	export BUILD_AGG=1; \
+	python setup.py build; \
+	python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
+
+
+MATPLOTLIB_CONFIG: 
+	@cd $(INSTALL_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/numerix\ \ \ \ \ \ :\ Numeric/numerix\ \ \ \ \ \ :\ numarray/g >> .matplotlibrc.tmp
+	@cd $(INSTALL_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
+	@cd $(INSTALL_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/backend\ \ \ \ \ \ :\ GTKAgg/backend\ \ \ \ \ \ :\ TkAgg/g >> .matplotlibrc.tmp
+	@cd $(INSTALL_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
+	@cd $(INSTALL_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/interactive\ \ :\ False/interactive\ \ :\ True/g >> .matplotlibrc.tmp
+	@cd $(INSTALL_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
+
+
+#
+# We need a patch for pychecker since the setup.py script
+# is script in such a way that it does not allow to properly install the
+# package anywhere else than in the Python standard installation tree.
+#
+PYCHECKER: pychecker-0.8.14.tar.gz
+	@echo "== Patching and building PyChecker"
+	@gtar -zxvf pychecker-0.8.14.tar.gz;
+	@patch pychecker-0.8.14/setup.py pychecker-0.8.14.setup.py.patch
+	@cd pychecker-0.8.14; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
+
+NUMARRAY: numarray-1.3.3.tar.gz
+	@echo "== Building numarray"
+	@gtar -zxvf numarray-1.3.3.tar.gz;
+	@cd numarray-1.3.3; python setup.py install --home=$(INSTALL_ROOT) --gencode --install-lib=$(INSTALL_ROOT)/lib/python/site-packages --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages --install-headers=$(INSTALL_ROOT)/include/numarray
+
+#
+# list all python tarballs
+# ------------------------------
+PY_DOC :
+	$(foreach file, $(PY_EXT_DOC_L), - $(AT) cd ../doc; if [ -e $(file).tgz ]; then echo "== Extracting external documentation: $(file).tgz"; gtar -zxvf $(file).tgz; fi )
+
+
+PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMARRAY MATPLOTLIB
+	echo "== Building/Installing external Python modules now..."
+
+#
+# list of all possible C-sources (used to create automatic dependencies)
+# ------------------------------
+CSOURCENAMES = \
+	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
+	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+#
+#>>>>> END OF standard rules
+
+#
+# INCLUDE STANDARDS
+# -----------------
+MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+ifneq ($(MAKEDIRTMP),\#error\#)
+   MAKEDIR := $(MAKEDIRTMP)/include
+   include $(MAKEDIR)/acsMakefile
+endif
+
+
+#
+# TARGETS
+# -------
+all:	PMW do_all PY_DISUTIL_BUILD
+	@echo " . . . 'all' done" 
+
+clean : clean_all 
+	$(RM) *~ ../*~
+	$(RM) ../doc/doc ../doc/api ../doc/idl
+	$(foreach file, $(PY_DISUTIL), $(RM) $(file))
+	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1
+	@echo " . . . clean done"
+
+clean_dist : clean clean_dist_all 
+	@echo " . . . clean_dist done"
+
+man   : do_man PY_DOC
+	@echo " . . . man page(s) done"
+
+install : install_all MATPLOTLIB_CONFIG
+	@echo " . . . installation done"
+
+#___oOo___

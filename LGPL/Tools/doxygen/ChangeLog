@@ -1,0 +1,55 @@
+Fri Jun  7 10:04:52 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* doxy-1.2.13.1.linux.bin.tar.gz
+        * doxy-1.2.13.1.src.tar.gz
+	Patched lex scanner to handle ACS_THROW_SPEC macros.
+	The file dox-1.2.13.1/src/scanner.l has been modified in the
+	following way (diff output):
+
+	2204,2209d2203
+< <FuncQual>{BN}*"ACE_THROW_SPEC"{BN}*"("		{ 
+<   					  current->exception = " throw (" ;
+< 					  roundCount=0;
+< 					  lineCount() ;
+< 					  BEGIN( ExcpRound ) ;
+< 					}
+3845,3848d3838
+<   					  current->exception = "throw(";
+< 					  BEGIN(ClassDocFuncExc);
+<   					}
+< <ClassDocFuncQual>"ACE_THROW_SPEC"{B}*"("	{
+
+
+	i.e. tokens for the macro have been added, just identical to the
+	normal throw tokens.
+
+	The linux binaries have been rebuilt and the linux binaries and
+	src tar files regenerated and renamed *-patch.* to ensure the
+	patch is clearly documented.
+	Makefile and install_script have been changed just to handle the
+	new "patch version number"
+
+	This same simple change will have to be done if new versions are
+	taken from the original doxygen distribution.
+	Emails have been sent to Doxygen and ACE/TAO.
+	
+Fri Jun 07 09:33:04 2002 <gchiozzi@te13.hq.eso.org>  doxygen version: 1.9 
+Thu Feb 14 09:02:20 2002 <psivera@te13.hq.eso.org>  doxygen version: 1.8 
+	GraphViz is done on HP11 also, using the binaries for HP10.20
+Fri Feb 08 14:33:00 2002 <psivera@te13.hq.eso.org>  doxygen version: 1.7 
+	added option --install install to avoid problem on RH 7.2
+Tue Jan 29 13:53:29 2002 <psivera@te13.hq.eso.org>  doxygen version: 1.6 
+	removed file alma_doxy
+	ported to doxygen 1.2.13.1
+Fri Nov 09 13:33:47 2001 <mzampare@te13.hq.eso.org>  doxygen version: 1.5 
+	* src/alma-doxy modified, it had been chopped somehow
+Fri Sep 14 12:15:29 2001 <psivera@te13.hq.eso.org>  doxygen version: 1.4 
+	* src/install_script: doxywizard-1.2.10.linux.bin.tar.gz renamed 
+                           to dwiz-1.2.10.linux.bin.tar.gz
+Wed Sep 05 18:42:35 2001 <psivera@te13.hq.eso.org>  doxygen version: 1.3 
+	* strange problem with linux tar files: perhaps they got corrupted. 
+	  I substituted them with new ones. 
+Fri Aug 31 15:47:23 2001 <psivera@te13.hq.eso.org>  doxygen version: 1.2 
+	* src/install_script and Makefile: added graphviz and ported to doxgen 1.2.10
+Tue Aug 21 15:28:10 2001 <mzampare@te13.hq.eso.org>  doxygen version: 1.1 
+"@(#) $Id: ChangeLog,v 1.9 2002/06/07 08:26:51 vltsccm Exp $"

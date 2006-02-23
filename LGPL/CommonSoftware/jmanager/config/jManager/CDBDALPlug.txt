@@ -1,0 +1,3 @@
+#DAL.defaultReference=corbaloc::localhost:3012/CDB
+DAO.remote=false
+debug=true

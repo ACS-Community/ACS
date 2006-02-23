@@ -1,0 +1,1308 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Trace Buffer,  Next: Coverage Testing,  Prev: Printing in Edebug,  Up: Edebug
+
+Trace Buffer
+------------
+
+   Edebug can record an execution trace, storing it in a buffer named
+`*edebug-trace*'.  This is a log of function calls and returns, showing
+the function names and their arguments and values.  To enable trace
+recording, set `edebug-trace' to a non-`nil' value.
+
+   Making a trace buffer is not the same thing as using trace execution
+mode (*note Edebug Execution Modes::.).
+
+   When trace recording is enabled, each function entry and exit adds
+lines to the trace buffer.  A function entry record looks like `::::{'
+followed by the function name and argument values.  A function exit
+record looks like `::::}' followed by the function name and result of
+the function.
+
+   The number of `:'s in an entry shows its recursion depth.  You can
+use the braces in the trace buffer to find the matching beginning or
+end of function calls.
+
+   You can customize trace recording for function entry and exit by
+redefining the functions `edebug-print-trace-before' and
+`edebug-print-trace-after'.
+
+ - Macro: edebug-tracing STRING BODY...
+     This macro requests additional trace information around the
+     execution of the BODY forms.  The argument STRING specifies text
+     to put in the trace buffer.  All the arguments are evaluated.
+     `edebug-tracing' returns the value of the last form in BODY.
+
+ - Function: edebug-trace FORMAT-STRING &rest FORMAT-ARGS
+     This function inserts text in the trace buffer.  It computes the
+     text with `(apply 'format FORMAT-STRING FORMAT-ARGS)'.  It also
+     appends a newline to separate entries.
+
+   `edebug-tracing' and `edebug-trace' insert lines in the trace buffer
+even if Edebug is not active.
+
+   Adding text to the trace buffer also scrolls its window to show the
+last lines inserted.
+
+
+File: elisp,  Node: Coverage Testing,  Next: The Outside Context,  Prev: Trace Buffer,  Up: Edebug
+
+Coverage Testing
+----------------
+
+   Edebug provides rudimentary coverage testing and display of execution
+frequency.  All execution of an instrumented function accumulates
+frequency counts, both before and after evaluation of each instrumented
+expression, even if the execution mode is Go-nonstop.  Coverage testing
+is more expensive, so it is only done if `edebug-test-coverage' is
+non-`nil'.  The command `M-x edebug-display-freq-count' displays both
+the frequency data and the coverage data (if recorded).
+
+ - Command: edebug-display-freq-count
+     This command displays the frequency count data for each line of the
+     current definition.
+
+     The frequency counts appear as comment lines after each line of
+     code, and you can undo all insertions with one `undo' command.
+     The counts appear under the `(' before an expression or the `)'
+     after an expression, or on the last character of a symbol.  Values
+     do not appear if they are equal to the previous count on the same
+     line.
+
+     The character `=' following the count for an expression says that
+     the expression has returned the same value each time it was
+     evaluated This is the only coverage information that Edebug
+     records.
+
+     To clear the frequency count and coverage data for a definition,
+     reinstrument it.
+
+   For example, after evaluating `(fac 5)' with a source breakpoint,
+and setting `edebug-test-coverage' to `t', when the breakpoint is
+reached, the frequency data looks like this:
+
+     (defun fac (n)
+       (if (= n 0) (edebug))
+     ;#6           1      0 =5
+       (if (< 0 n)
+     ;#5         =
+           (* n (fac (1- n)))
+     ;#    5               0
+         1))
+     ;#   0
+
+   The comment lines show that `fac' was called 6 times.  The first
+`if' statement returned 5 times with the same result each time; the
+same is true of the condition on the second `if'.  The recursive call
+of `fac' did not return at all.
+
+
+File: elisp,  Node: The Outside Context,  Next: Instrumenting Macro Calls,  Prev: Coverage Testing,  Up: Edebug
+
+The Outside Context
+-------------------
+
+   Edebug tries to be transparent to the program you are debugging, but
+it does not succeed completely.  Edebug also tries to be transparent
+when you evaluate expressions with `e' or with the evaluation list
+buffer, by temporarily restoring the outside context.  This section
+explains precisely what context Edebug restores, and how Edebug fails to
+be completely transparent.
+
+* Menu:
+
+* Checking Whether to Stop::	When Edebug decides what to do.
+* Edebug Display Update::	When Edebug updates the display.
+* Edebug Recursive Edit::	When Edebug stops execution.
+
+
+File: elisp,  Node: Checking Whether to Stop,  Next: Edebug Display Update,  Up: The Outside Context
+
+Checking Whether to Stop
+........................
+
+   Whenever Edebug is entered, it needs to save and restore certain data
+before even deciding whether to make trace information or stop the
+program.
+
+   * `max-lisp-eval-depth' and `max-specpdl-size' are both incremented
+     one time to reduce Edebug's impact on the stack.  You could,
+     however, still run out of stack space when using Edebug.
+
+   * The state of keyboard macro execution is saved and restored.  While
+     Edebug is active, `executing-macro' is bound to
+     `edebug-continue-kbd-macro'.
+
+
+File: elisp,  Node: Edebug Display Update,  Next: Edebug Recursive Edit,  Prev: Checking Whether to Stop,  Up: The Outside Context
+
+Edebug Display Update
+.....................
+
+   When Edebug needs to display something (e.g., in trace mode), it
+saves the current window configuration from "outside" Edebug (*note
+Window Configurations::.).  When you exit Edebug (by continuing the
+program), it restores the previous window configuration.
+
+   Emacs redisplays only when it pauses.  Usually, when you continue
+execution, the program comes back into Edebug at a breakpoint or after
+stepping without pausing or reading input in between.  In such cases,
+Emacs never gets a chance to redisplay the "outside" configuration.
+What you see is the same window configuration as the last time Edebug
+was active, with no interruption.
+
+   Entry to Edebug for displaying something also saves and restores the
+following data, but some of these are deliberately not restored if an
+error or quit signal occurs.
+
+   * Which buffer is current, and the positions of point and the mark
+     in the current buffer, are saved and restored.
+
+   * The outside window configuration is saved and restored if
+     `edebug-save-windows' is non-`nil' (*note Edebug Display
+     Update::.).
+
+     The window configuration is not restored on error or quit, but the
+     outside selected window *is* reselected even on error or quit in
+     case a `save-excursion' is active.  If the value of
+     `edebug-save-windows' is a list, only the listed windows are saved
+     and restored.
+
+     The window start and horizontal scrolling of the source code
+     buffer are not restored, however, so that the display remains
+     coherent within Edebug.
+
+   * The value of point in each displayed buffer is saved and restored
+     if `edebug-save-displayed-buffer-points' is non-`nil'.
+
+   * The variables `overlay-arrow-position' and `overlay-arrow-string'
+     are saved and restored.  So you can safely invoke Edebug from the
+     recursive edit elsewhere in the same buffer.
+
+   * `cursor-in-echo-area' is locally bound to `nil' so that the cursor
+     shows up in the window.
+
+
+File: elisp,  Node: Edebug Recursive Edit,  Prev: Edebug Display Update,  Up: The Outside Context
+
+Edebug Recursive Edit
+.....................
+
+   When Edebug is entered and actually reads commands from the user, it
+saves (and later restores) these additional data:
+
+   * The current match data.  *Note Match Data::.
+
+   * `last-command', `this-command', `last-command-char',
+     `last-input-char', `last-input-event', `last-command-event',
+     `last-event-frame', `last-nonmenu-event', and `track-mouse'.
+     Commands used within Edebug do not affect these variables outside
+     of Edebug.
+
+     The key sequence returned by `this-command-keys' is changed by
+     executing commands within Edebug and there is no way to reset the
+     key sequence from Lisp.
+
+     Edebug cannot save and restore the value of
+     `unread-command-events'.  Entering Edebug while this variable has a
+     nontrivial value can interfere with execution of the program you
+     are debugging.
+
+   * Complex commands executed while in Edebug are added to the variable
+     `command-history'.  In rare cases this can alter execution.
+
+   * Within Edebug, the recursion depth appears one deeper than the
+     recursion depth outside Edebug.  This is not true of the
+     automatically updated evaluation list window.
+
+   * `standard-output' and `standard-input' are bound to `nil' by the
+     `recursive-edit', but Edebug temporarily restores them during
+     evaluations.
+
+   * The state of keyboard macro definition is saved and restored.
+     While Edebug is active, `defining-kbd-macro' is bound to
+     `edebug-continue-kbd-macro'.
+
+
+File: elisp,  Node: Instrumenting Macro Calls,  Next: Edebug Options,  Prev: The Outside Context,  Up: Edebug
+
+Instrumenting Macro Calls
+-------------------------
+
+   When Edebug instruments an expression that calls a Lisp macro, it
+needs additional advice to do the job properly.  This is because there
+is no way to tell which subexpressions of the macro call are forms to be
+evaluated.  (Evaluation may occur explicitly in the macro body, or when
+the resulting expansion is evaluated, or any time later.)  You must
+explain the format of calls to each macro to enable Edebug to handle it.
+To do this, use `def-edebug-spec' to define the format of calls to a
+given macro.
+
+ - Macro: def-edebug-spec MACRO SPECIFICATION
+     Specify which expressions of a call to macro MACRO are forms to be
+     evaluated.  For simple macros, the SPECIFICATION often looks very
+     similar to the formal argument list of the macro definition, but
+     specifications are much more general than macro arguments.
+
+     The MACRO argument may actually be any symbol, not just a macro
+     name.
+
+   Here is a simple example that defines the specification for the
+`for' macro described in the Emacs Lisp Reference Manual, followed by
+an alternative, equivalent specification.
+
+     (def-edebug-spec for
+       (symbolp "from" form "to" form "do" &rest form))
+     
+     (def-edebug-spec for
+       (symbolp ['from form] ['to form] ['do body]))
+
+   Here is a table of the possibilities for SPECIFICATION and how each
+directs processing of arguments.
+
+*`t'
+     All arguments are instrumented for evaluation.
+
+*`0'
+     None of the arguments is instrumented.
+
+*a symbol
+     The symbol must have an Edebug specification which is used instead.
+     This indirection is repeated until another kind of specification is
+     found.  This allows you to inherit the specification for another
+     macro.
+
+*a list
+     The elements of the list describe the types of the arguments of a
+     calling form.  The possible elements of a specification list are
+     described in the following sections.
+
+* Menu:
+
+* Specification List::		How to specify complex patterns of evaluation.
+* Backtracking::		What Edebug does when matching fails.
+* Specification Examples::	To help understand specifications.
+
+
+File: elisp,  Node: Specification List,  Next: Backtracking,  Up: Instrumenting Macro Calls
+
+Specification List
+..................
+
+   A "specification list" is required for an Edebug specification if
+some arguments of a macro call are evaluated while others are not.  Some
+elements in a specification list match one or more arguments, but others
+modify the processing of all following elements.  The latter, called
+"specification keywords", are symbols beginning with `&' (such as
+`&optional').
+
+   A specification list may contain sublists which match arguments that
+are themselves lists, or it may contain vectors used for grouping.
+Sublists and groups thus subdivide the specification list into a
+hierarchy of levels.  Specification keywords only apply to the
+remainder of the sublist or group they are contained in.
+
+   When a specification list involves alternatives or repetition,
+matching it against an actual macro call may require backtracking.
+*Note Backtracking::, for more details.
+
+   Edebug specifications provide the power of regular expression
+matching, plus some context-free grammar constructs: the matching of
+sublists with balanced parentheses, recursive processing of forms, and
+recursion via indirect specifications.
+
+   Here's a table of the possible elements of a specification list, with
+their meanings:
+
+`sexp'
+     A single Lisp object, not unevaluated.
+
+`form'
+     A single evaluated expression, which is instrumented.
+
+`place'
+     A place to store a value, as in the Common Lisp `setf' construct.
+
+`body'
+     Short for `&rest form'.  See `&rest' below.
+
+`function-form'
+     A function form: either a quoted function symbol, a quoted lambda
+     expression, or a form (that should evaluate to a function symbol or
+     lambda expression).  This is useful when an argument that's a
+     lambda expression might be quoted with `quote' rather than
+     `function', since it instruments the body of the lambda expression
+     either way.
+
+`lambda-expr'
+     A lambda expression with no quoting.
+
+`&optional'
+     All following elements in the specification list are optional; as
+     soon as one does not match, Edebug stops matching at this level.
+
+     To make just a few elements optional followed by non-optional
+     elements, use `[&optional SPECS...]'.  To specify that several
+     elements must all match or none, use `&optional [SPECS...]'.  See
+     the `defun' example below.
+
+`&rest'
+     All following elements in the specification list are repeated zero
+     or more times.  All the elements need not match in the last
+     repetition, however.
+
+     To repeat only a few elements, use `[&rest SPECS...]'.  To specify
+     several elements that must all match on every repetition, use
+     `&rest [SPECS...]'.
+
+`&or'
+     Each of the following elements in the specification list is an
+     alternative.  One of the alternatives must match, or the `&or'
+     specification fails.
+
+     Each list element following `&or' is a single alternative.  To
+     group two or more list elements as a single alternative, enclose
+     them in `[...]'.
+
+`&not'
+     Each of the following elements is matched as alternatives as if by
+     using `&or', but if any of them match, the specification fails.
+     If none of them match, nothing is matched, but the `&not'
+     specification succeeds.
+
+`&define'
+     Indicates that the specification is for a defining form.  The
+     defining form itself is not instrumented (i.e. Edebug does not
+     stop before and after the defining form), but forms inside it
+     typically will be instrumented.  The `&define' keyword should be
+     the first element in a list specification.
+
+`nil'
+     This is successful when there are no more arguments to match at the
+     current argument list level; otherwise it fails.  See sublist
+     specifications and the backquote example below.
+
+`gate'
+     No argument is matched but backtracking through the gate is
+     disabled while matching the remainder of the specifications at
+     this level.  This is primarily used to generate more specific
+     syntax error messages.  See *Note Backtracking::, for more
+     details.  Also see the `let' example below.
+
+`OTHER-SYMBOL'
+     Any other symbol in a specification list may be a predicate or an
+     indirect specification.
+
+     If the symbol has an Edebug specification, this "indirect
+     specification" should be either a list specification that is used
+     in place of the symbol, or a function that is called to process the
+     arguments.  The specification may be defined with `def-edebug-spec'
+     just as for macros. See the `defun' example below.
+
+     Otherwise, the symbol should be a predicate.  The predicate is
+     called with the argument and the specification fails if the
+     predicate returns `nil'.  In either case, that argument is not
+     instrumented.
+
+     Some suitable predicates include `symbolp', `integerp', `stringp',
+     `vectorp', and `atom'.
+
+`[ELEMENTS...]'
+     A vector of elements groups the elements into a single "group
+     specification".  Its meaning has nothing to do with vectors.
+
+`"STRING"'
+     The argument should be a symbol named STRING.  This specification
+     is equivalent to the quoted symbol, `'SYMBOL', where the name of
+     SYMBOL is the STRING, but the string form is preferred.
+
+`(vector ELEMENTS...)'
+     The argument should be a vector whose elements must match the
+     ELEMENTS in the specification.  See the backquote example below.
+
+`(ELEMENTS...)'
+     Any other list is a "sublist specification" and the argument must
+     be a list whose elements match the specification ELEMENTS.
+
+     A sublist specification may be a dotted list and the corresponding
+     list argument may then be a dotted list.  Alternatively, the last
+     CDR of a dotted list specification may be another sublist
+     specification (via a grouping or an indirect specification, e.g.
+     `(spec .  [(more specs...)])') whose elements match the non-dotted
+     list arguments.  This is useful in recursive specifications such
+     as in the backquote example below.  Also see the description of a
+     `nil' specification above for terminating such recursion.
+
+     Note that a sublist specification written as `(specs .  nil)' is
+     equivalent to `(specs)', and `(specs .  (sublist-elements...))' is
+     equivalent to `(specs sublist-elements...)'.
+
+   Here is a list of additional specifications that may only appear
+after `&define'.  See the `defun' example below.
+
+`name'
+     The argument, a symbol, is the name of the defining form.
+
+     A defining form is not required to have a name field; and it may
+     have multiple name fields.
+
+`:name'
+     This construct does not actually match an argument.  The element
+     following `:name' should be a symbol; it is used as an additional
+     name component for the definition.  You can use this to add a
+     unique, static component to the name of the definition.  It may be
+     used more than once.
+
+`arg'
+     The argument, a symbol, is the name of an argument of the defining
+     form.  However, lambda list keywords (symbols starting with ``&'')
+     are not allowed.
+
+`lambda-list'
+     This matches a lambda list--the argument list of a lambda
+     expression.
+
+`def-body'
+     The argument is the body of code in a definition.  This is like
+     `body', described above, but a definition body must be instrumented
+     with a different Edebug call that looks up information associated
+     with the definition.  Use `def-body' for the highest level list of
+     forms within the definition.
+
+`def-form'
+     The argument is a single, highest-level form in a definition.
+     This is like `def-body', except use this to match a single form
+     rather than a list of forms.  As a special case, `def-form' also
+     means that tracing information is not output when the form is
+     executed.  See the `interactive' example below.
+
+
+File: elisp,  Node: Backtracking,  Next: Specification Examples,  Prev: Specification List,  Up: Instrumenting Macro Calls
+
+Backtracking
+............
+
+   If a specification fails to match at some point, this does not
+necessarily mean a syntax error will be signaled; instead,
+"backtracking" will take place until all alternatives have been
+exhausted.  Eventually every element of the argument list must be
+matched by some element in the specification, and every required element
+in the specification must match some argument.
+
+   Backtracking is disabled for the remainder of a sublist or group when
+certain conditions occur, described below.  Backtracking is reenabled
+when a new alternative is established by `&optional', `&rest', or
+`&or'.  It is also reenabled initially when processing a sublist or
+group specification or an indirect specification.
+
+   You might want to disable backtracking to commit to some alternative
+so that Edebug can provide a more specific syntax error message.
+Normally, if no alternative matches, Edebug reports that none matched,
+but if one alternative is committed to, Edebug can report how it failed
+to match.
+
+   First, backtracking is disabled while matching any of the form
+specifications (i.e. `form', `body', `def-form', and `def-body').
+These specifications will match any form so any error must be in the
+form itself rather than at a higher level.
+
+   Second, backtracking is disabled after successfully matching a quoted
+symbol or string specification, since this usually indicates a
+recognized construct.  If you have a set of alternative constructs that
+all begin with the same symbol, you can usually work around this
+constraint by factoring the symbol out of the alternatives, e.g.,
+`["foo" &or [first case] [second case] ...]'.
+
+   Third, backtracking may be explicitly disabled by using the `gate'
+specification.  This is useful when you know that no higher
+alternatives may apply.
+
+
+File: elisp,  Node: Specification Examples,  Prev: Backtracking,  Up: Instrumenting Macro Calls
+
+Specification Examples
+......................
+
+   It may be easier to understand Edebug specifications by studying the
+examples provided here.
+
+   A `let' special form has a sequence of bindings and a body.  Each of
+the bindings is either a symbol or a sublist with a symbol and optional
+value.  In the specification below, notice the `gate' inside of the
+sublist to prevent backtracking once a sublist is found.
+
+     (def-edebug-spec let
+       ((&rest
+         &or symbolp (gate symbolp &optional form))
+        body))
+
+   Edebug uses the following specifications for `defun' and `defmacro'
+and the associated argument list and `interactive' specifications.  It
+is necessary to handle interactive forms specially since an expression
+argument it is actually evaluated outside of the function body.
+
+     (def-edebug-spec defmacro defun) ; Indirect ref to `defun' spec.
+     (def-edebug-spec defun
+       (&define name lambda-list
+                [&optional stringp]   ; Match the doc string, if present.
+                [&optional ("interactive" interactive)]
+                def-body))
+     
+     (def-edebug-spec lambda-list
+       (([&rest arg]
+         [&optional ["&optional" arg &rest arg]]
+         &optional ["&rest" arg]
+         )))
+     
+     (def-edebug-spec interactive
+       (&optional &or stringp def-form))    ; Notice: `def-form'
+
+   The specification for backquote below illustrates how to match
+dotted lists and use `nil' to terminate recursion.  It also illustrates
+how components of a vector may be matched.  (The actual specification
+defined by Edebug does not support dotted lists because doing so causes
+very deep recursion that could fail.)
+
+     (def-edebug-spec ` (backquote-form))   ; Alias just for clarity.
+     
+     (def-edebug-spec backquote-form
+       (&or ([&or "," ",@"] &or ("quote" backquote-form) form)
+            (backquote-form . [&or nil backquote-form])
+            (vector &rest backquote-form)
+            sexp))
+
+
+File: elisp,  Node: Edebug Options,  Prev: Instrumenting Macro Calls,  Up: Edebug
+
+Edebug Options
+--------------
+
+   These options affect the behavior of Edebug:
+
+ - User Option: edebug-setup-hook
+     Functions to call before Edebug is used.  Each time it is set to a
+     new value, Edebug will call those functions once and then
+     `edebug-setup-hook' is reset to `nil'.  You could use this to load
+     up Edebug specifications associated with a package you are using
+     but only when you also use Edebug.  *Note Instrumenting::.
+
+ - User Option: edebug-all-defs
+     If this is non-`nil', normal evaluation of defining forms such as
+     `defun' and `defmacro' instruments them for Edebug.  This applies
+     to `eval-defun', `eval-region', `eval-buffer', and
+     `eval-current-buffer'.
+
+     Use the command `M-x edebug-all-defs' to toggle the value of this
+     option.  *Note Instrumenting::.
+
+ - User Option: edebug-all-forms
+     If this is non-`nil', the commands `eval-defun', `eval-region',
+     `eval-buffer', and `eval-current-buffer' instrument all forms,
+     even those that don't define anything.  This doesn't apply to
+     loading or evaluations in the minibuffer.
+
+     Use the command `M-x edebug-all-forms' to toggle the value of this
+     option.  *Note Instrumenting::.
+
+ - User Option: edebug-save-windows
+     If this is non-`nil', Edebug saves and restores the window
+     configuration.  That takes some time, so if your program does not
+     care what happens to the window configurations, it is better to
+     set this variable to `nil'.
+
+     If the value is a list, only the listed windows are saved and
+     restored.
+
+     You can use the `W' command in Edebug to change this variable
+     interactively.  *Note Edebug Display Update::.
+
+ - User Option: edebug-save-displayed-buffer-points
+     If this is non-`nil', Edebug saves and restores point in all
+     displayed buffers.
+
+     Saving and restoring point in other buffers is necessary if you are
+     debugging code that changes the point of a buffer which is
+     displayed in a non-selected window.  If Edebug or the user then
+     selects the window, point in that buffer will move to the window's
+     value of point.
+
+     Saving and restoring point in all buffers is expensive, since it
+     requires selecting each window twice, so enable this only if you
+     need it.  *Note Edebug Display Update::.
+
+ - User Option: edebug-initial-mode
+     If this variable is non-`nil', it specifies the initial execution
+     mode for Edebug when it is first activated.  Possible values are
+     `step', `next', `go', `Go-nonstop', `trace', `Trace-fast',
+     `continue', and `Continue-fast'.
+
+     The default value is `step'.  *Note Edebug Execution Modes::.
+
+ - User Option: edebug-trace
+     Non-`nil' means display a trace of function entry and exit.
+     Tracing output is displayed in a buffer named `*edebug-trace*', one
+     function entry or exit per line, indented by the recursion level.
+
+     The default value is `nil'.
+
+     Also see `edebug-tracing', in *Note Trace Buffer::.
+
+ - User Option: edebug-test-coverage
+     If non-`nil', Edebug tests coverage of all expressions debugged.
+     This is done by comparing the result of each expression with the
+     previous result. Coverage is considered OK if two different
+     results are found.  So to sufficiently test the coverage of your
+     code, try to execute it under conditions that evaluate all
+     expressions more than once, and produce different results for each
+     expression.
+
+     Use `M-x edebug-display-freq-count' to display the frequency count
+     and coverage information for a definition.  *Note Coverage
+     Testing::.
+
+ - User Option: edebug-continue-kbd-macro
+     If non-`nil', continue defining or executing any keyboard macro
+     that is executing outside of Edebug.   Use this with caution since
+     it is not debugged.  *Note Edebug Execution Modes::.
+
+ - User Option: edebug-print-length
+     If non-`nil', bind `print-length' to this while printing results
+     in Edebug.  The default value is `50'.  *Note Printing in Edebug::.
+
+ - User Option: edebug-print-level
+     If non-`nil', bind `print-level' to this while printing results in
+     Edebug.  The default value is `50'.
+
+ - User Option: edebug-print-circle
+     If non-`nil', bind `print-circle' to this while printing results
+     in Edebug.  The default value is `nil'.
+
+ - User Option: edebug-on-error
+     Edebug binds `debug-on-error' to this value, if `debug-on-error'
+     was previously `nil'.  *Note Trapping Errors::.
+
+ - User Option: edebug-on-quit
+     Edebug binds `debug-on-quit' to this value, if `debug-on-quit' was
+     previously `nil'.  *Note Trapping Errors::.
+
+   If you change the values of `edebug-on-error' or `edebug-on-quit'
+while Edebug is active, their values won't be used until the *next*
+time Edebug is invoked via a new command.
+
+ - User Option: edebug-global-break-condition
+     If non-`nil', an expression to test for at every stop point.  If
+     the result is non-nil, then break.  Errors are ignored.  *Note
+     Global Break Condition::.
+
+
+File: elisp,  Node: Read and Print,  Next: Minibuffers,  Prev: Debugging,  Up: Top
+
+Reading and Printing Lisp Objects
+*********************************
+
+   "Printing" and "reading" are the operations of converting Lisp
+objects to textual form and vice versa.  They use the printed
+representations and read syntax described in *Note Lisp Data Types::.
+
+   This chapter describes the Lisp functions for reading and printing.
+It also describes "streams", which specify where to get the text (if
+reading) or where to put it (if printing).
+
+* Menu:
+
+* Streams Intro::     Overview of streams, reading and printing.
+* Input Streams::     Various data types that can be used as input streams.
+* Input Functions::   Functions to read Lisp objects from text.
+* Output Streams::    Various data types that can be used as output streams.
+* Output Functions::  Functions to print Lisp objects as text.
+* Output Variables::  Variables that control what the printing functions do.
+
+
+File: elisp,  Node: Streams Intro,  Next: Input Streams,  Up: Read and Print
+
+Introduction to Reading and Printing
+====================================
+
+   "Reading" a Lisp object means parsing a Lisp expression in textual
+form and producing a corresponding Lisp object.  This is how Lisp
+programs get into Lisp from files of Lisp code.  We call the text the
+"read syntax" of the object.  For example, the text `(a . 5)' is the
+read syntax for a cons cell whose CAR is `a' and whose CDR is the
+number 5.
+
+   "Printing" a Lisp object means producing text that represents that
+object--converting the object to its printed representation.  Printing
+the cons cell described above produces the text `(a . 5)'.
+
+   Reading and printing are more or less inverse operations: printing
+the object that results from reading a given piece of text often
+produces the same text, and reading the text that results from printing
+an object usually produces a similar-looking object.  For example,
+printing the symbol `foo' produces the text `foo', and reading that text
+returns the symbol `foo'.  Printing a list whose elements are `a' and
+`b' produces the text `(a b)', and reading that text produces a list
+(but not the same list) with elements `a' and `b'.
+
+   However, these two operations are not precisely inverses.  There are
+two kinds of exceptions:
+
+   * Printing can produce text that cannot be read.  For example,
+     buffers, windows, frames, subprocesses and markers print into text
+     that starts with `#'; if you try to read this text, you get an
+     error.  There is no way to read those data types.
+
+   * One object can have multiple textual representations.  For example,
+     `1' and `01' represent the same integer, and `(a b)' and `(a .
+     (b))' represent the same list.  Reading will accept any of the
+     alternatives, but printing must choose one of them.
+
+
+File: elisp,  Node: Input Streams,  Next: Input Functions,  Prev: Streams Intro,  Up: Read and Print
+
+Input Streams
+=============
+
+   Most of the Lisp functions for reading text take an "input stream"
+as an argument.  The input stream specifies where or how to get the
+characters of the text to be read.  Here are the possible types of input
+stream:
+
+BUFFER
+     The input characters are read from BUFFER, starting with the
+     character directly after point.  Point advances as characters are
+     read.
+
+MARKER
+     The input characters are read from the buffer that MARKER is in,
+     starting with the character directly after the marker.  The marker
+     position advances as characters are read.  The value of point in
+     the buffer has no effect when the stream is a marker.
+
+STRING
+     The input characters are taken from STRING, starting at the first
+     character in the string and using as many characters as required.
+
+FUNCTION
+     The input characters are generated by FUNCTION, one character per
+     call.  Normally FUNCTION is called with no arguments, and should
+     return a character.
+
+     Occasionally FUNCTION is called with one argument (always a
+     character).  When that happens, FUNCTION should save the argument
+     and arrange to return it on the next call.  This is called
+     "unreading" the character; it happens when the Lisp reader reads
+     one character too many and wants to "put it back where it came
+     from".
+
+`t'
+     `t' used as a stream means that the input is read from the
+     minibuffer.  In fact, the minibuffer is invoked once and the text
+     given by the user is made into a string that is then used as the
+     input stream.
+
+`nil'
+     `nil' supplied as an input stream means to use the value of
+     `standard-input' instead; that value is the "default input
+     stream", and must be a non-`nil' input stream.
+
+SYMBOL
+     A symbol as input stream is equivalent to the symbol's function
+     definition (if any).
+
+   Here is an example of reading from a stream that is a buffer, showing
+where point is located before and after:
+
+     ---------- Buffer: foo ----------
+     This-!- is the contents of foo.
+     ---------- Buffer: foo ----------
+     
+     (read (get-buffer "foo"))
+          => is
+     (read (get-buffer "foo"))
+          => the
+     
+     ---------- Buffer: foo ----------
+     This is the-!- contents of foo.
+     ---------- Buffer: foo ----------
+
+Note that the first read skips a space.  Reading skips any amount of
+whitespace preceding the significant text.
+
+   In Emacs 18, reading a symbol discarded the delimiter terminating the
+symbol.  Thus, point would end up at the beginning of `contents' rather
+than after `the'.  The Emacs 19 behavior is superior because it
+correctly handles input such as `bar(foo)', where the delimiter that
+ends one object is needed as the beginning of another object.
+
+   Here is an example of reading from a stream that is a marker,
+initially positioned at the beginning of the buffer shown.  The value
+read is the symbol `This'.
+
+
+     ---------- Buffer: foo ----------
+     This is the contents of foo.
+     ---------- Buffer: foo ----------
+     
+     (setq m (set-marker (make-marker) 1 (get-buffer "foo")))
+          => #<marker at 1 in foo>
+     (read m)
+          => This
+     m
+          => #<marker at 5 in foo>   ;; Before the first space.
+
+   Here we read from the contents of a string:
+
+     (read "(When in) the course")
+          => (When in)
+
+   The following example reads from the minibuffer.  The prompt is:
+`Lisp expression: '.  (That is always the prompt used when you read
+from the stream `t'.)  The user's input is shown following the prompt.
+
+     (read t)
+          => 23
+     ---------- Buffer: Minibuffer ----------
+     Lisp expression: `23 RET'
+     ---------- Buffer: Minibuffer ----------
+
+   Finally, here is an example of a stream that is a function, named
+`useless-stream'.  Before we use the stream, we initialize the variable
+`useless-list' to a list of characters.  Then each call to the function
+`useless-stream' obtains the next character in the list or unreads a
+character by adding it to the front of the list.
+
+     (setq useless-list (append "XY()" nil))
+          => (88 89 40 41)
+     
+     (defun useless-stream (&optional unread)
+       (if unread
+           (setq useless-list (cons unread useless-list))
+         (prog1 (car useless-list)
+                (setq useless-list (cdr useless-list)))))
+          => useless-stream
+
+Now we read using the stream thus constructed:
+
+     (read 'useless-stream)
+          => XY
+     
+     useless-list
+          => (40 41)
+
+Note that the open and close parentheses remains in the list.  The Lisp
+reader encountered the open parenthesis, decided that it ended the
+input, and unread it.  Another attempt to read from the stream at this
+point would read `()' and return `nil'.
+
+ - Function: get-file-char
+     This function is used internally as an input stream to read from
+     the input file opened by the function `load'.  Don't use this
+     function yourself.
+
+
+File: elisp,  Node: Input Functions,  Next: Output Streams,  Prev: Input Streams,  Up: Read and Print
+
+Input Functions
+===============
+
+   This section describes the Lisp functions and variables that pertain
+to reading.
+
+   In the functions below, STREAM stands for an input stream (see the
+previous section).  If STREAM is `nil' or omitted, it defaults to the
+value of `standard-input'.
+
+   An `end-of-file' error is signaled if reading encounters an
+unterminated list, vector, or string.
+
+ - Function: read &optional STREAM
+     This function reads one textual Lisp expression from STREAM,
+     returning it as a Lisp object.  This is the basic Lisp input
+     function.
+
+ - Function: read-from-string STRING &optional START END
+     This function reads the first textual Lisp expression from the
+     text in STRING.  It returns a cons cell whose CAR is that
+     expression, and whose CDR is an integer giving the position of the
+     next remaining character in the string (i.e., the first one not
+     read).
+
+     If START is supplied, then reading begins at index START in the
+     string (where the first character is at index 0).  If END is also
+     supplied, then reading stops just before that index, as if the rest
+     of the string were not there.
+
+     For example:
+
+          (read-from-string "(setq x 55) (setq y 5)")
+               => ((setq x 55) . 11)
+          (read-from-string "\"A short string\"")
+               => ("A short string" . 16)
+          
+          ;; Read starting at the first character.
+          (read-from-string "(list 112)" 0)
+               => ((list 112) . 10)
+          ;; Read starting at the second character.
+          (read-from-string "(list 112)" 1)
+               => (list . 5)
+          ;; Read starting at the seventh character,
+          ;;   and stopping at the ninth.
+          (read-from-string "(list 112)" 6 8)
+               => (11 . 8)
+
+ - Variable: standard-input
+     This variable holds the default input stream--the stream that
+     `read' uses when the STREAM argument is `nil'.
+
+
+File: elisp,  Node: Output Streams,  Next: Output Functions,  Prev: Input Functions,  Up: Read and Print
+
+Output Streams
+==============
+
+   An output stream specifies what to do with the characters produced
+by printing.  Most print functions accept an output stream as an
+optional argument.  Here are the possible types of output stream:
+
+BUFFER
+     The output characters are inserted into BUFFER at point.  Point
+     advances as characters are inserted.
+
+MARKER
+     The output characters are inserted into the buffer that MARKER
+     points into, at the marker position.  The marker position advances
+     as characters are inserted.  The value of point in the buffer has
+     no effect on printing when the stream is a marker.
+
+FUNCTION
+     The output characters are passed to FUNCTION, which is responsible
+     for storing them away.  It is called with a single character as
+     argument, as many times as there are characters to be output, and
+     is free to do anything at all with the characters it receives.
+
+`t'
+     The output characters are displayed in the echo area.
+
+`nil'
+     `nil' specified as an output stream means to the value of
+     `standard-output' instead; that value is the "default output
+     stream", and must be a non-`nil' output stream.
+
+SYMBOL
+     A symbol as output stream is equivalent to the symbol's function
+     definition (if any).
+
+   Many of the valid output streams are also valid as input streams.
+The difference between input and output streams is therefore mostly one
+of how you use a Lisp object, not a distinction of types of object.
+
+   Here is an example of a buffer used as an output stream.  Point is
+initially located as shown immediately before the `h' in `the'.  At the
+end, point is located directly before that same `h'.
+
+     ---------- Buffer: foo ----------
+     This is t-!-he contents of foo.
+     ---------- Buffer: foo ----------
+     
+     (print "This is the output" (get-buffer "foo"))
+          => "This is the output"
+     
+     ---------- Buffer: foo ----------
+     This is t
+     "This is the output"
+     -!-he contents of foo.
+     ---------- Buffer: foo ----------
+
+   Now we show a use of a marker as an output stream.  Initially, the
+marker is in buffer `foo', between the `t' and the `h' in the word
+`the'.  At the end, the marker has advanced over the inserted text so
+that it remains positioned before the same `h'.  Note that the location
+of point, shown in the usual fashion, has no effect.
+
+     ---------- Buffer: foo ----------
+     "This is the -!-output"
+     ---------- Buffer: foo ----------
+     
+     m
+          => #<marker at 11 in foo>
+     
+     (print "More output for foo." m)
+          => "More output for foo."
+     
+     ---------- Buffer: foo ----------
+     "This is t
+     "More output for foo."
+     he -!-output"
+     ---------- Buffer: foo ----------
+     
+     m
+          => #<marker at 35 in foo>
+
+   The following example shows output to the echo area:
+
+     (print "Echo Area output" t)
+          => "Echo Area output"
+     ---------- Echo Area ----------
+     "Echo Area output"
+     ---------- Echo Area ----------
+
+   Finally, we show the use of a function as an output stream.  The
+function `eat-output' takes each character that it is given and conses
+it onto the front of the list `last-output' (*note Building Lists::.).
+At the end, the list contains all the characters output, but in reverse
+order.
+
+     (setq last-output nil)
+          => nil
+     
+     (defun eat-output (c)
+       (setq last-output (cons c last-output)))
+          => eat-output
+     
+     (print "This is the output" 'eat-output)
+          => "This is the output"
+     
+     last-output
+          => (10 34 116 117 112 116 117 111 32 101 104
+         116 32 115 105 32 115 105 104 84 34 10)
+
+Now we can put the output in the proper order by reversing the list:
+
+     (concat (nreverse last-output))
+          => "
+     \"This is the output\"
+     "
+
+Calling `concat' converts the list to a string so you can see its
+contents more clearly.
+
+
+File: elisp,  Node: Output Functions,  Next: Output Variables,  Prev: Output Streams,  Up: Read and Print
+
+Output Functions
+================
+
+   This section describes the Lisp functions for printing Lisp objects.
+
+   Some of the Emacs printing functions add quoting characters to the
+output when necessary so that it can be read properly.  The quoting
+characters used are `"' and `\'; they distinguish strings from symbols,
+and prevent punctuation characters in strings and symbols from being
+taken as delimiters when reading.  *Note Printed Representation::, for
+full details.  You specify quoting or no quoting by the choice of
+printing function.
+
+   If the text is to be read back into Lisp, then it is best to print
+with quoting characters to avoid ambiguity.  Likewise, if the purpose is
+to describe a Lisp object clearly for a Lisp programmer.  However, if
+the purpose of the output is to look nice for humans, then it is better
+to print without quoting.
+
+   Printing a self-referent Lisp object requires an infinite amount of
+text.  In certain cases, trying to produce this text leads to a stack
+overflow.  Emacs detects such recursion and prints `#LEVEL' instead of
+recursively printing an object already being printed.  For example,
+here `#0' indicates a recursive reference to the object at level 0 of
+the current print operation:
+
+     (setq foo (list nil))
+          => (nil)
+     (setcar foo foo)
+          => (#0)
+
+   In the functions below, STREAM stands for an output stream.  (See
+the previous section for a description of output streams.)  If STREAM
+is `nil' or omitted, it defaults to the value of `standard-output'.
+
+ - Function: print OBJECT &optional STREAM
+     The `print' function is a convenient way of printing.  It outputs
+     the printed representation of OBJECT to STREAM, printing in
+     addition one newline before OBJECT and another after it.  Quoting
+     characters are used.  `print' returns OBJECT.  For example:
+
+          (progn (print 'The\ cat\ in)
+                 (print "the hat")
+                 (print " came back"))
+               -|
+               -| The\ cat\ in
+               -|
+               -| "the hat"
+               -|
+               -| " came back"
+               -|
+               => " came back"
+
+ - Function: prin1 OBJECT &optional STREAM
+     This function outputs the printed representation of OBJECT to
+     STREAM.  It does not print newlines to separate output as `print'
+     does, but it does use quoting characters just like `print'.  It
+     returns OBJECT.
+
+          (progn (prin1 'The\ cat\ in)
+                 (prin1 "the hat")
+                 (prin1 " came back"))
+               -| The\ cat\ in"the hat"" came back"
+               => " came back"
+
+ - Function: princ OBJECT &optional STREAM
+     This function outputs the printed representation of OBJECT to
+     STREAM.  It returns OBJECT.
+
+     This function is intended to produce output that is readable by
+     people, not by `read', so it doesn't insert quoting characters and
+     doesn't put double-quotes around the contents of strings.  It does
+     not add any spacing between calls.
+
+          (progn
+            (princ 'The\ cat)
+            (princ " in the \"hat\""))
+               -| The cat in the "hat"
+               => " in the \"hat\""
+
+ - Function: terpri &optional STREAM
+     This function outputs a newline to STREAM.  The name stands for
+     "terminate print".
+
+ - Function: write-char CHARACTER &optional STREAM
+     This function outputs CHARACTER to STREAM.  It returns CHARACTER.
+
+ - Function: prin1-to-string OBJECT &optional NOESCAPE
+     This function returns a string containing the text that `prin1'
+     would have printed for the same argument.
+
+          (prin1-to-string 'foo)
+               => "foo"
+          (prin1-to-string (mark-marker))
+               => "#<marker at 2773 in strings.texi>"
+
+     If NOESCAPE is non-`nil', that inhibits use of quoting characters
+     in the output.  (This argument is supported in Emacs versions 19
+     and later.)
+
+          (prin1-to-string "foo")
+               => "\"foo\""
+          (prin1-to-string "foo" t)
+               => "foo"
+
+     See `format', in *Note String Conversion::, for other ways to
+     obtain the printed representation of a Lisp object as a string.
+
+
+File: elisp,  Node: Output Variables,  Prev: Output Functions,  Up: Read and Print
+
+Variables Affecting Output
+==========================
+
+ - Variable: standard-output
+     The value of this variable is the default output stream--the stream
+     that print functions use when the STREAM argument is `nil'.
+
+ - Variable: print-escape-newlines
+     If this variable is non-`nil', then newline characters in strings
+     are printed as `\n' and formfeeds are printed as `\f'.  Normally
+     these characters are printed as actual newlines and formfeeds.
+
+     This variable affects the print functions `prin1' and `print', as
+     well as everything that uses them.  It does not affect `princ'.
+     Here is an example using `prin1':
+
+          (prin1 "a\nb")
+               -| "a
+               -| b"
+               => "a
+          b"
+          
+          (let ((print-escape-newlines t))
+            (prin1 "a\nb"))
+               -| "a\nb"
+               => "a
+          b"
+
+     In the second expression, the local binding of
+     `print-escape-newlines' is in effect during the call to `prin1',
+     but not during the printing of the result.
+
+ - Variable: print-length
+     The value of this variable is the maximum number of elements of a
+     list that will be printed.  If a list being printed has more than
+     this many elements, it is abbreviated with an ellipsis.
+
+     If the value is `nil' (the default), then there is no limit.
+
+          (setq print-length 2)
+               => 2
+          (print '(1 2 3 4 5))
+               -| (1 2 ...)
+               => (1 2 ...)
+
+ - Variable: print-level
+     The value of this variable is the maximum depth of nesting of
+     parentheses and brackets when printed.  Any list or vector at a
+     depth exceeding this limit is abbreviated with an ellipsis.  A
+     value of `nil' (which is the default) means no limit.
+
+     This variable exists in version 19 and later versions.
+
+
+File: elisp,  Node: Minibuffers,  Next: Command Loop,  Prev: Read and Print,  Up: Top
+
+Minibuffers
+***********
+
+   A "minibuffer" is a special buffer that Emacs commands use to read
+arguments more complicated than the single numeric prefix argument.
+These arguments include file names, buffer names, and command names (as
+in `M-x').  The minibuffer is displayed on the bottom line of the
+screen, in the same place as the echo area, but only while it is in use
+for reading an argument.
+
+* Menu:
+
+* Intro to Minibuffers::      Basic information about minibuffers.
+* Text from Minibuffer::      How to read a straight text string.
+* Object from Minibuffer::    How to read a Lisp object or expression.
+* Minibuffer History::	      Recording previous minibuffer inputs
+				so the user can reuse them.
+* Completion::                How to invoke and customize completion.
+* Yes-or-No Queries::         Asking a question with a simple answer.
+* Multiple Queries::	      Asking a series of similar questions.
+* Minibuffer Misc::           Various customization hooks and variables.
+

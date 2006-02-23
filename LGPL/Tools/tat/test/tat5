@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat5,v 1.76 2003/01/09 17:51:28 vltsccm Exp $"
+#
+# tat - test5
+#
+# remove env. configuration
+# 
+# WARNING: be sure that the remote env. allocated is lised
+# in $RTAPROOT/etc/RtapEnvList ...
+
+rm -f .testSession
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+cp Makefile.tat5 Makefile
+rm -f TestList
+cp TestList.tat5 TestList
+
+
+if [ ! -d ./ENVIRONMENTS/rws ]
+then
+    mkdir ./ENVIRONMENTS/ws 
+fi
+
+#
+# makeEnv + cleanEnv
+#
+tat makeEnv
+
+tat -g tat51
+cat ./ref/tat51.ref
+
+tat cleanEnv
+
+#chmod -R u+w ./ENVIRONMENTS
+#rm -r ./ENVIRONMENTS/ws
+
+
+
+

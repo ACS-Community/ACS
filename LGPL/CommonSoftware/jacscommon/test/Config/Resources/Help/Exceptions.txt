@@ -1,0 +1,42 @@
+exception_internal					This exception is probably caused by a bug in Abeans framework.
+exception_no_loader_for_location	The loader may have been deinstalled from Abeans and some object must have retained an invalid resource location.
+exception_no_resource_location		The bootstrap file does not declare any resource location with the given name.
+exception_policy_not_declared_by_provider	The implementation of QoSProvider does not return the policy in getSupportedPolicies()
+exception_cannot_load_default_policies		The loading of default policies from the Java properties file failed because there was a property the value of which could not be reconstructed from its string representation
+exception_root_rejects_policy		The policy that was specified as default policy in the PolicyManager configuration could not be installed into Root. Probably the policy does not support hierarchical range.
+exception_invalid_sequencer			Sequencer does not declare a public, no-arg constructor, or is not public, or is abstract or interface type.
+exception_invalid_component			Component does not fully conform to the design patterns: it has to declare a public no-arg constructor, it must not be an interface or abstract type, it must return a consistent descriptor, and must implement Component interface
+exception_internal_suspect_threads	This exception is probably caused by a threading bug in the Abeans framework.
+exception_bootstrap_malformedURL	Provide an well-formed url of the form http://<host>:port/location
+exception_bootstrap_getSystemResources_failed	Could not load from system classloader resources
+exception_bootstrap_not_found		Bootstrap file AbeansSystem.txt is not present anywhere on the system or cannot be found by Abeans.
+exception_bootstrap_too_many		More than one configuration has been found in the classpath. Inconsistence.
+exception_cannot_instantiate_loader	Maybe the loader class is not on the classpath, there is a mistake in the spelling of the loader class
+exception_cannot_create_resource_location The loader refuses to create resource location, probably because the supplied properties argument is invalid: missing properties or misspelled names in bootstrap file
+exception_perhaps_invalid_SAX_factory Maybe the setting of Java System property specifies a SAX parser factory that does not exist or is not properly set up; maybe some other entity set the factory to other value
+exception_bootstrap_syntax			The bootstrap resource is not a valid XML file OR there is another nested exception 
+exception_bootstrap_io				The bootstrap resource could not be opened because of an IO error. Maybe Abeans do not have permission to access the resource.
+exception_default_exhandler_no_target	Neither message log service nor error resource location exist at the time default exception handler service is being installed. Check your initialization sequence.
+exception_configuration_visitor		The configuration processing method of the configurable threw an exception. Perhaps there is a syntax error in the configuration resource, or not all fields are configured or there are fields that cannot be interpreted by the configurable.
+exception_configuration_visitor_bug	The configuration processing method threw an unchecked exception. This is probably a bug in the component being initialized.
+exception_configuration_resourceloc_not_found	The configuration resource location is not defined in the bootstrap resource or there was an error initializing the resource location during bootstrap resource parsing.
+exception_illegal_identifier		The data returned by Identifier methods does not conform to the design patterns, usually some name will be null, which it must not be.
+exception_no_configuration_index	The default configuration service cannot find its index file. The index file contains "fully_qualified_classname=default_config" pairs in Java properties format.
+exception_fileloader_without_root	The bootstrap resource must, if it creates a resource location with FileLoader, specify LoaderConstants.ROOT_PATH property that points to the valid, accessible (RW permissions) directory on the local filesystem.
+exception_fileloader_invalid_uri	The bootstrap resource contains a resource location specifying a FileLoader with a ROOT_PATH in the URI format. The URI is invalid. 
+exception_homeloader_inaccessible	The home directory is inaccessible, probably because the Abeans framework is running as an applet in Java sandbox.
+exception_unknown_component_state	The new component that is replacing an old component does not recognize the old component internal state and cannot perform state transfer.
+exception_class_not_found			The class named by a string could not be loaded. This means that the class is not present in the classpath. Maybe the string name of the class is misspelled or not fully qualified.
+exception_urlloader_without_root	The bootstrap resource must, if it creates a resource location with URLLoader, specify LoaderConstants.ROOT_PATH property that points to the valid, accessible (RW permissions) directory on the local filesystem.
+exception_urlloader_malformed_url	Either the absolute ROOT_PATH of the URL resource location is not a valid URL, or the cannonical path argument does not conform to the design patterns. This error relates only to the syntax of the URL, not to the accessibility or contents.
+exception_no_engine_for_plug		A request was created with a URI target that names a plug which is not declared for the application submitting the request. Maybe the target specification is invalid or the application should declare, in its configuration, that it is going to use the specified plug.
+exception_remote_does_not_exist		The remote (or simulated) entity with the name specified in remote info does not exist or is not available at the time the connection is being established. Maybe the remote name is misspelled.
+exception_probably_not_family_policy	The family rejects a given policy. Maybe it should not be installed as a family policy. Check all policies installed into application context that contains the family.
+exception_dataresource_cannot_store_relative	The supplied argument that is to be stored in the list of recently used files is a relative pathname
+exception_dataresource_cannot_store_dir		The supplied argument that is to be stored in the list of recently used files is a directory
+exception_needed_component_not_available	A component that needs another component as an installation precondition will not install because the precondition component is not available. Is the order of component installation correct?
+exception_dataresource_no_target	The default data resource service does not have a resource location to load data from.
+exception_invocation_after_destroy	A method was called after the component on which it was called was destroyed. Normally the invocation would be skipped, but this method was one of the structural Abeans methods (like registering new application into already destroyed Abeans).
+exception_duplicate_app_registration	An application may only be registered once and may only receive one instance of application context.
+exception_TINE_factory				TINE communication driver must be initialized (first use of TLink or other TINE class) with Abeans: Property "TINE.TInitializerFactory" must be set to Abeans value before TINE can be used.
+exception_TINE_resources			Set up resource location TINE in AbeansSystem.txt; the location must contain TINE hosts, eqp and addr files.

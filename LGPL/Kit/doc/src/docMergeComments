@@ -1,0 +1,183 @@
+#! /bin/sh
+#******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docMergeComments,v 1.31 2002/06/08 17:20:44 vltsccm Exp $" 
+#
+# who        when      what
+# ---------  --------  -------------------------------------------------------
+# gif        18/06/93  original (mergeComments)
+# pfo        09/09/94  Merged into 'doc' module (renamed docMergeComments)
+
+#*****************************************************************************
+#   NAME
+#   docMergeComments - merge reviewer's comment lists into a by-page ordered
+#                      list
+# 
+#   SYNOPSIS
+#       docMergeComments
+# 
+#   DESCRIPTION
+#   
+#   This program is part of software review documentation procedure.
+#   
+#   It first looks for "*.comments" (reviewer's comment file) in the current 
+#   directory. Each founded file is then divided into several temporary files,
+#   each one containing the comment(s) that are referenced to the same page.
+#   The name of the ".comments" files is used as the reviewer's name in 
+#   marking each comment.
+#   Then, single comments are ordered by page number and merged into a
+#   single file (commentList).
+#
+#   The beginning of a comment is recognized as a line where the first 
+#   non-blank char is a "p" or "P" followed by alphabetic char(s) and by a
+#   number, optionally separated by "." or blanks (e.g, p23, Pag. 3, Pg.3).
+#
+#   Each comment in the output file is formatted as follows:
+#     - a line of 80 "-"
+#     - all the lines of the input file up to the next comment or the EOF,
+#       with the following editing exceptions:
+#         * input line beginning with "---" are not copied.
+#         * sequential blank lines are copied only once. 
+#     - a blank line (if not already present in the input file)
+#
+#   Text lines coming before the first comment of each list are placed 
+#   at the beginnning of the output file.
+#
+#   FILES
+#
+#   *.comments     input files to be merged. Each file name shall
+#                  be in the format:   <author>.comments
+#
+#   <ppp>-<author>.tmp_single_comments   
+#                  temporary files (automatically deleted). The file name is:
+#                     <ppp>   : the page number on 3 characters, filled by 0
+#                     <author>: the author name, from the input file
+#
+#   commentList    ordered list of merged comments (output file) 
+#                  An existing file, if any, is saved into commentList.BAK
+#              
+#   /VLT/bin/docSplitIntoSingleComments   
+#                  program to split a single file into comments.
+#
+#
+#   RETURN VALUES
+#   It returns 0 on success, 1 on failure. 
+#   Warning messages, if any, are directed to stdout.
+#
+#   CAUTIONS
+#   This simple program works on the assumption that people is starting
+#   each comment with the page number preceded by page, Page, p, Pg, etc.
+#   and that all reviewers are using a common style in writing their
+#   comments.
+#   Sometime this seem to be an unacceptable limitation of the
+#   "personal freedom" and the comment file is in some other format.
+#   
+#   In such cases, a manual preprocessing of the input files is suggested:
+#   add page numbers or put them first, make the comments looking similar,
+#   etc. and then apply the merger.
+#
+#   EXAMPLES
+#
+#   Preparation of the comment list as agenda of the review meeting
+#      - merge existing comments:
+#                    mergeCommands
+#
+#      - edit commentList to: 
+#         - delete the introductions and other additional information
+#           at the beginning of the list 
+#         - add the standard header (the easiest way is to insert 
+#           at the top a copy of the "review call" file and modify it)
+#         - check the order of the comments inside a page 
+#           (mergeCommands can only order by page number,
+#            inside each page is up to you).
+#         - add to each comment your proposed answer
+#         - set the comment number (using setCommentNumber) 
+#
+#   SEE ALSO
+#   docSetCommentNumber
+#
+#   BUGS 
+#   Possible improvements:
+#   - instead of simply copy from the input file, a text justification 
+#     filter can be added.
+#   - a more sophysticated parsing of the comment, including the section
+#     numbers (e.g., page 23 2.4.5 ....)
+#
+#*******************************************************************************
+# 
+# 
+if [ $# -ne 0 ]
+then 
+    echo " Usage:  docMergeComments "
+    exit 1
+fi
+
+echo "*********************************************************"
+echo "Merging reviewer's comments (ordered by page number)"
+echo "Today is: is `date`"
+ 
+# An existing file, if any, is saved into commentList.BAK
+#
+if [ -f commentList ]
+then 
+    echo "<commentList> exists. . . "
+    if mv commentList commentList.BAK
+    then 
+        echo "             . . . . saved into:  <commentList.BAK>"
+        echo""
+        # continue
+    else
+        echo""
+        echo "ERROR: <commentList> exists and is not possible to"
+        echo "                 saved it into:  <commentList.BAK>"
+        echo "       docMergeComments Aborted"
+        echo""
+        exit 1
+    fi
+fi
+
+# terminate if no input files are available
+#
+if ls *.comments 1>/dev/null 2>&1
+then
+    echo " comment files to be processed:"
+    for file in *.comments
+    do
+        echo "\t\t $file"
+    done
+    echo""
+else
+    echo "ERROR: There are no comment files to be processed."
+    echo "       (a comment file shall be named as: <author>.comments)"
+    echo""
+    exit 1
+fi
+#
+# Start process
+#
+
+# remove existing output files, if any
+rm -f *.tmp_single_comment
+
+# mark the comment list with the current date
+date > commentList
+
+# divide each ".comments" file into single command files
+# 
+for file in *.comments
+do
+    docSplitIntoSingleComments  $file
+done
+
+# merge comments and close comment list with a terminator
+echo "------> merging comments. Please wait . . ."
+cat *.tmp_single_comment >> commentList
+echo "                              _____oOo_____" >> commentList
+
+# clean_up and bye-bye
+rm -f *.tmp_single_comment
+echo "       . . . completed. Comments are in <commentList>"
+echo ""
+
+#___oOo___

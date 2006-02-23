@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat9,v 1.76 2003/01/09 17:51:30 vltsccm Exp $"
+#
+# tat9: 
+# SPR 950576: test tatMakeRTAPEnv failure in internal proc tatWaitForRtap
+# 'make clean all' error
+# 
+
+rm -f .testSession
+rm -f .TestList.sed
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat9 TestList
+# to have test independant from current HOST, user, home directory
+# _everything_ is filtered ...
+cp TestList.grep.tat9 TestList.grep
+cp TestList.sed.tat9 TestList.sed
+
+
+if [ ! -d ./ENVIRONMENTS/ws9 ]
+then
+	mkdir ./ENVIRONMENTS/ws9
+fi
+
+
+#
+# to make tatMakeRtapEnv fail, let's use a faked RtapScheduler
+# 
+
+touch  RtapScheduler
+echo "#!/bin/sh" >>  RtapScheduler
+echo "exit 3" >>  RtapScheduler
+chmod u+x  RtapScheduler
+# to be sure that my RtapScheduler will be executed
+PATH=.:${PATH}
+
+#
+# wrong Makefile
+#
+touch Makefile
+# I want the error message ot tat makeEnv NOT being process by TestList.grep
+tat makeEnv > /tmp/tat9.out_$$ 2>&1
+sed -f TestList.sed /tmp/tat9.out_$$
+rm -f Makefile
+
+#
+# now with no Makefile
+#
+
+RTAP_WAIT=15
+export RTAP_WAIT
+tat makeEnv
+echo "tat makeEnv RC: $?"
+
+# cleanEnv should not be executed because makeEnv does it in case of error
+rm RtapScheduler
+rm -rf ./ENVIRONMENTS/ws9
+
+
+
+
+
+
+

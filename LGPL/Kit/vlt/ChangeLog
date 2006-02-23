@@ -1,0 +1,266 @@
+Thu Sep 11 13:29:51 2003  David Fugate  <dave@midnight.aoc.nrao.edu>
+	* src/vltMakePythonPackage,v 1.1.1.1 (OUTPUT): added "-r" to a cp 
+	command to support heirarchial packages.
+Thu Feb 20 11:28:29 2003 <mzampare@te13.hq.eso.org>  vlt version: 2.170.1.9 
+	* src/vltMakeJavaClasspath: sh changed to ksh
+Thu Feb 20 09:52:02 2003  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+	* src/vltMakeJavaClasspath: completely re-written: was a mess!
+Thu Feb 20 10:46:03 2003 <gchiozzi@te13.hq.eso.org>  vlt version: 2.170.1.8 
+Wed Jan 22 14:17:46 2003 <mzampare@te13.hq.eso.org>  vlt version: 2.170.1.7 
+        * src/vltMakePythonPackDependencies and
+	* src/vltMakeInstallAlarmFiles  modified to cope with CVS directories
+Thu Jan 02 14:43:30 2003 <psivera@te13.hq.eso.org>  vlt version: 2.170.1.6 
+	* include/vltMakefile and src/Makefile.doc: man pages editing
+Mon Nov 25 10:15:56 2002 <psivera@te13.hq.eso.org>  vlt version: 2.170.1.5 
+	* include/vltPort.h.Linux: _GNU_SOURCE used only for C code, not C++
+Thu Oct 31 11:54:53 2002 <psivera@te13.hq.eso.org>  vlt version: 2.170.1.4 
+	* src/Makefile.doc  corrected information about debug and optimization
+Fri Oct 25 13:42:43 2002 <eallaert@te13.hq.eso.org>  vlt version: 2.170.1.3
+	* src/vltMakeTclScript: take MODROOT into account (SPR 20020574)
+	(if using seqSh/seqWish: use seq_findFile to locate libs)
+Wed Oct 16 15:00:12 2002 <psivera@te13.hq.eso.org>  vlt version: 2.170.1.2 
+	* include/vltMakefile: removed ansi flag for compilation on SUN
+Thu Aug 22 10:41:08 2002 <psivera@te13.hq.eso.org>  vlt version: 2.170 
+	* include/vltMakefile:
+	changed target install_all from:
+		install_all : $(INSTALL_TARGET)
+				   to:
+		$(INSTALL_TARGET) install_all :
+	to make the install_includes target work.
+
+Tue Aug 20 15:11:28 2002 <psivera@te13.hq.eso.org>  vlt version: 2.169 
+	fixed typo in Makefile templates
+Tue Aug 20 15:07:34 2002 <psivera@te13.hq.eso.org>  vlt version: 2.168 
+	changed date format in Makefile templates
+Tue Aug 20 13:27:36 2002 <psivera@te13.hq.eso.org>  vlt version: 2.167 
+	* include/vltMakefile: fixed bug in installing java files
+Tue Aug 20 10:32:51 2002 <psivera@te13.hq.eso.org>  vlt version: 2.166 
+	* Makefile: added man pages in "man" target for java Makefile
+Tue Jul 30 17:34:44 2002 <psivera@te13.hq.eso.org>  vlt version: 2.165 
+	* include/vltMakefile, src/vltMakeExecutableDependencies and 
+	src/vltMakeLibraryDependencies:
+	introduced GEN_LIBLIST variable: list of lib that have always
+	to be linked for Solaris platform only (at the moment)
+Mon Jul 22 13:52:59 2002 <psivera@te13.hq.eso.org>  vlt version: 2.164 
+	* include/vltMakefile: CCDEP uses ansi for all platforms
+Fri Jul 19 11:33:56 2002 <psivera@te13.hq.eso.org>  vlt version: 2.163 
+	* include/vltMakefile: On Solaris: gnu99 is used for C only, ansi for C++
+Thu Jul 18 12:38:24 2002 <psivera@te13.hq.eso.org>  vlt version: 2.162 
+	* include/vltMakefile: 
+	changed the standard from ansi to gnu99 for Solaris/ws only
+Mon Jul 08 17:51:52 2002 <psivera@te13.hq.eso.org>  vlt version: 2.161 
+	* include/vltMakefile:
+	Porting to GCC 3.1: removed the default include: /usr/local/include
+Tue Jun 18 10:26:34 2002 <psivera@te13.hq.eso.org>  vlt version: 2.160 
+	* src/vltMakeJavaClasspath: added support for $VLTROOT
+	* include/vltMakefile: added -lnsl for CCSLite also in CCS_LIBLIST
+				for Solaris
+Sun Jun 09 23:56:53 2002 <psivera@te13.hq.eso.org>  vlt version: 2.159 
+	* include/vltMakefile: restored install_all target 
+Sat Jun 08 19:10:37 2002 <psivera@te13.hq.eso.org>  vlt version: 2.158 
+	* src/Makefile: removed vltMakefile.idl from INSTALL_FILES
+Fri Jun 07 17:14:39 2002 <psivera@te13.hq.eso.org>  vlt version: 2.157 
+	*src/vltMakeExecutableDependencies and vltMakeLibraryDependencies: 
+	removed -liberty
+Fri Jun 07 16:51:39 2002 <psivera@te13.hq.eso.org>  vlt version: 2.156 
+	* merged with branch 2.151.1: 
+	reorganisation of vltMakefile to support different programming
+        languages: creation of idlMakefile, tcltkMakefile, javaMakefile
+        pythonMakefile;
+        * include/vltMakefile.idl suppressed.
+	* suppressed modifications as in vlt 2.154 and 2.155
+Mon May 06 09:49:26 2002 <psivera@te13.hq.eso.org>  vlt version: 2.155 
+	* src/vltMakeExecutableDependencies: SPR 20020166: added 
+	variable MAKE_CONSTR
+Mon Mar 04 18:40:50 2002 <psivera@te13.hq.eso.org>  vlt version: 2.154 
+	* src/vltMakeExecutableDependencies: added generation of static 
+				constructors and destructors for VxWorks 
+	* include/vltMakefile.all: removed generation of static 
+				constructors and destructors for VxWorks 
+	(SPR VLTSW20020166)
+Fri Mar 01 18:08:40 2002 <psivera@te13.hq.eso.org>  vlt version: 2.153 
+	* src/vltMakeLogInstallation:   changed the sort command (added
+          a blank after -k option) to make it work on Solaris
+Wed Feb 27 11:14:23 2002 <psivera@te13.hq.eso.org>  vlt version: 2.152 
+	* src/vltMakeLogInstallation: refined SPR 20010466
+Mon Jan 28 19:08:57 2002 <psivera@te13.hq.eso.org>  vlt version: 2.151 
+	* include/vltMakefile: 
+	tplMakefile included only if one of the INS variables is defined
+Wed Jan 23 12:07:42 2002 <psivera@te13.hq.eso.org>  vlt version: 2.150 
+	* src/vltMakeLogInstallation: SPR VLTSW20010466: in the vltMakeInstall.config
+				      *all* the modules installations are recorded.
+Sat Jan 19 13:13:08 2002 <psivera@te13.hq.eso.org>  vlt version: 2.149 
+	* include/vltMakefile: SPR 20010715: tplMakefile included
+			       ported to Solaris 8
+Tue Dec 18 11:49:57 2001 <mzampare@te13.hq.eso.org>  vlt version: 2.148 
+	* src/vltMakeLibraryDependencies: SPR ALMASW2001037
+	* include/vltMakefile.all  added command line argument
+	llll_LIB now possible in Makefiles
+Sat Sep 15 16:30:22 2001 <psivera@te13.hq.eso.org>  vlt version: 2.147 
+	* src/vltMakeExecutableDependencies: SPR 20010390: 
+	"if" statement is made safer when checking environment variables
+	* include/vltMakefile: removed obsolete purify option: ignore-unknown-subspaces
+Thu Jul 05 10:32:15 2001 <psivera@te13.hq.eso.org>  vlt version: 2.146 
+	include/vltMakefile(.all): changed do_links and clean_links to 
+		                   make_links and rm_links
+Fri Jun 22 20:06:35 2001 <psivera@te13.hq.eso.org>  vlt version: 2.145 
+	introduced two different Makefile templates for lcu and ws code
+	include/vltMakefile(.all): added do_links and clean_links
+Fri Jun 22 15:16:08 2001 <psivera@te13.hq.eso.org>  vlt version: 2.144 
+	* include/vltMakefile: for Linux, -ansi option restored if ACSROOT is NOT defined
+Tue May 22 14:54:13 2001 <psivera@te13.hq.eso.org>  vlt version: 2.143 
+	* include/vltMakefile: for Linux: CC, CXX and CCDEP are all used without -ansi option
+	* include/vltMakefile.all: removed MAKE_VXWORKS_NOT_USED and introduced ACE_ROOT in
+                                   handling c++ code for vxworks
+Fri May 04 09:01:25 2001 <eallaert@te13.hq.eso.org>  vlt version: 2.142 
+	* src/vltMakeTclLib : made compatible with Tcl > 8.0
+Fri Mar 09 10:56:36 2001 <psivera@te13.hq.eso.org>  vlt version: 2.141 
+	* include/vltMakefile, -.all, -.idl: removed ../src to make 
+          idl files under test dir also.
+Thu Mar 01 10:13:40 2001 <psivera@te13.hq.eso.org>  vlt version: 2.140 
+	*include/vltMakefile : added MAN2TXT to the man page
+Fri Feb 16 18:39:37 2001 <psivera@te13.hq.eso.org>  vlt version: 2.139 
+	*include/vltMakefile : removed longcall option for ppc on Linux
+Thu Feb 08 10:42:52 2001 <psivera@te13.hq.eso.org>  vlt version: 2.138 
+	*include/vltMakefile : added cleaning of *~ files
+Tue Feb 06 13:16:47 2001 <psivera@te13.hq.eso.org>  vlt version: 2.137 
+	*include/vltMakefile : added env var MAN2TXT
+Sat Feb 03 21:56:37 2001 <psivera@te13.hq.eso.org>  vlt version: 2.136 
+	*include/vltMakefile : added clean_dist target (SPR 20000291)
+Fri Feb 02 20:26:07 2001 <psivera@te13.hq.eso.org>  vlt version: 2.135 
+	*include/vltMakefile : improved clean target when removing txt files
+Wed Jan 31 20:57:18 2001 <psivera@te13.hq.eso.org>  vlt version: 2.134 
+	*include/vltMakefile : implemented conversion manpages/txt; updated clean target
+Thu Jan 11 15:46:14 2001 <psivera@te13.hq.eso.org>  vlt version: 2.133 
+	*include/vltMakefile : changed egcs into gcc for linux (SPR 20010030)
+Thu Sep 28 11:58:34 2000 <psivera@te13.hq.eso.org>  vlt version: 2.132 
+	*include/vltMakefile : added include/rtd and include/cat to the TOOLS_INC variable
+Tue Jul 25 14:29:49 2000 <psivera@te13.hq.eso.org>  vlt version: 2.131 
+Mon Jul 03 17:07:44 2000 <psivera@te13.hq.eso.org>  vlt version: 2.130 
+	*include/vltMakefile : removed DFLOW_ROOT check
+Sun May 28 16:50:22 2000 <psivera@te13.hq.eso.org>  vlt version: 2.129 
+	*include/vltMakefile : PURIFY can be run with OPTIMIZATION 
+                               (SPR 00990338) removed NOOPTIMIZE flag
+Wed May 17 09:42:51 2000 <psivera@te13.hq.eso.org>  vlt version: 2.128 
+	*include/vltMakefile : added CC_FLAGS: -D_XOPEN_SOURCE_EXTENDED -fno-builtin (HP11)
+Tue May 16 15:55:48 2000 <psivera@te13.hq.eso.org>  vlt version: 2.127 
+        *include/vltMakefile : removed -lcma for HP11 .AND. CCSlite
+Thu Apr 13 21:43:37 2000 <psivera@te13.hq.eso.org>  vlt version: 2.126 
+        *include/vltMakefile : added automatic removal of core, #*, .so, .d, 
+	                       .dx, .dxt, .ds, .sl, .da, .gdb_history files
+	                       SPR 00990048
+Thu Apr 13 17:33:02 2000 <psivera@te13.hq.eso.org>  vlt version: 2.125 
+	*vltMakeExecutableDependencies : added pthread library for HPUX-11
+Mon Apr 10 09:39:29 2000 <psivera@te13.hq.eso.org>  vlt version: 2.124 
+	*include/vltMakefile : ported to HPUX-11
+	*include/vltPort.h.HPUX-11 : added
+	*src/Makefile : ported to HPUX-11
+Fri Mar 17 17:14:50 2000 <psivera@te13.hq.eso.org>  vlt version: 2.123 
+	* src/vltMakefile.doc: changed comments regarding INS_ROOT_FILES (SPR 20000085)
+Thu Feb 03 14:17:03 2000 <psivera@te13.hq.eso.org>  vlt version: 2.122 
+Tue Jan 18 09:22:29 2000 <psivera@te13.hq.eso.org>  vlt version: 2.121 
+        * include/vltMakefile:removed all warnings by default; restored 
+                              the environment variable MAKE_ALL_WARNINGS
+Wed Jan 12 12:58:09 2000 <eallaert@te13.hq.eso.org>  vlt version: 2.120 
+        * include/vltMakefile: 
+	removed -Wconversion (according to Robert Karban, this flag should
+	not be used for ANSI compilation)
+	added -Wno-unused (-Wused is part of -W and -Wall)
+	removed -Wsign-compare
+Wed Jan 12 09:03:54 2000 <eallaert@te13.hq.eso.org>  vlt version: 2.119 
+        * include/vltMakefile: removed bug in default compiler flag
+	definition: unwanted flags need to be removed instead of commented
+	out. 
+Tue Jan 11 10:55:21 2000 <eallaert@te13.hq.eso.org>  vlt version: 2.118 
+        * include/vltMakefile: tuned default warning flags; added
+	MAKE_ALL_WARNINGS; updated manpage
+Wed Dec 22 20:39:21 1999 <psivera@te13.hq.eso.org>  vlt version: 2.117 
+        * include/vltMakefile: removed MAKE_NO_WARNINGS flag
+Tue Nov 30 20:26:08 1999 <psivera@te13.hq.eso.org>  vlt version: 2.116 
+        * include/vltMakefile: turned all warning flags on for the internal distribution
+Tue Nov 30 20:01:51 1999 <psivera@te13.hq.eso.org>  vlt version: 2.115 
+        * include/vltMakefile: removed all warning flags for the external distribution
+Mon Nov 29 10:47:29 1999 <psivera@te13.hq.eso.org>  vlt version: 2.114 
+        * include/vltMakefile: removed warning flag Wstrict-prototypes from LCU code compilation
+Tue Oct 19 18:28:07 1999 <psivera@te13.hq.eso.org>  vlt version: 2.113 
+	* include/vltMakefile: removed two warning flags: Wconversion and Wsign-compare, added documentation about the variable MAKE_NO _WARNINGS
+	* Makefile.doc: added documentation about the variable MAKE_NO _WARNINGS
+Tue Oct 12 16:33:05 1999 <psivera@te13.hq.eso.org>  vlt version: 2.112 
+	* include/vltMakefile: changed the name of MAKE_NO_WARNS variable into MAKE_NO_WARNINGS
+Thu Oct 07 11:35:40 1999 <psivera@te13.hq.eso.org>  vlt version: 2.111 
+        * include/vltMakefile: added some other warning flags, if MAKE_NO_WARNS is not defined
+Wed Oct 06 15:47:45 1999 <bgilli@te13.hq.eso.org>  vlt version: 2.110 
+Wed Oct 06 14:42:07 1999 <bgilli@te13.hq.eso.org>  vlt version: 2.109 
+Wed Oct 06 11:01:52 1999 <bgilli@te13.hq.eso.org>  vlt version: 2.108 
+Tue Oct 05 17:54:50 1999 <psivera@te13.hq.eso.org>  vlt version: 2.107 
+	* include/vltMakefile: added link to mathematic libraries for linux platform
+Fri Oct 01 11:46:09 1999 <bgilli@te13.hq.eso.org>  vlt version: 2.106 
+Thu Sep 30 02:47:26 1999 <rschmutz@te13.hq.eso.org>  vlt version: 2.105 
+
+	- rules INS_ROOT_FILES, INS_ROOT_DIR added (SPR 90346):
+	* src/Makefile: vltMakeInstallInsRootDir, vltMakeInstallInsRootFiles added.
+	* src/Makefile.doc: INS_ROOT_FILES, INS_ROOT_DIR added.
+	* src/vltMakeInstallInsRootDir: created.
+	* src/vltMakeInstallInsRootFiles: created.
+	* include/Makefile.template: INS_ROOT_FILES, INS_ROOT_DIR added.
+	* include/vltMakefile: INS_ROOT_FILES, INS_ROOT_DIR rules added.
+
+Wed Sep 29 14:32:18 1999 <ahuxley@te13.hq.eso.org>  vlt version: 2.104 
+Tue Sep 21 14:55:21 1999 <psivera@te13.hq.eso.org>  vlt version: 2.103 
+        * include/vltMakefile.all: fix a bug in statements to support C++ on LCU
+        * src/vltMakeScript: check the definition of MAKE_VXWORKS before adding the "uname" command to the script
+Thu Sep 09 13:55:22 1999 <psivera@te13.hq.eso.org>  vlt version: 2.102 
+	* include/vltMakefile: /usr/include/X11R5 and /usr/lib/X11R5 eliminated 
+        *                      from definition of XINC_DEFAULT and XLIB_DEFAULT for HP-UX
+Mon Aug 30 18:50:10 1999 <psivera@te13.hq.eso.org>  vlt version: 2.101 
+        * include/vltMakefile.all: add statements to support C++ on LCU
+Thu Aug 26 16:21:11 1999 <psivera@te13.hq.eso.org>  vlt version: 2.100 
+        * include/vltMakefile: add statements to support C++ on LCU
+        * include/vltMakefile.all: add statements to support C++ on LCU
+Wed Aug 25 18:32:42 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.99 
+Sat Aug 21 17:43:02 1999 <psivera@te13.hq.eso.org>  vlt version: 2.98 
+        * include/vltMakefile: $(DFLOW_ROOT)/include/rtd and $(DFLOW_ROOT)/include/cat added
+Sat Aug 14 16:00:15 1999 <psivera@te13.hq.eso.org>  vlt version: 2.97 
+        * include/vltMakefile: add the option "-fpermissive" to C_PLUS_PLUS_FLAGS
+Fri Aug 13 11:11:12 1999 <psivera@te13.hq.eso.org>  vlt version: 2.96 
+	* include/vltMakefile.all: vpath definition for lib. changed back to %.<ext>
+Mon Aug 09 20:51:30 1999 <psivera@te13.hq.eso.org>  vlt version: 2.95 
+Mon Aug 09 20:09:12 1999 <psivera@te13.hq.eso.org>  vlt version: 2.94 
+Mon Aug 02 17:30:59 1999 <psivera@te13.hq.eso.org>  vlt version: 2.93 
+Thu Jul 22 14:12:36 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.92 
+Wed Jul 14 13:34:59 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.91 
+Thu Jul 08 22:48:53 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.90 
+Tue Jun 22 15:38:00 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.89 
+Wed May 26 18:01:20 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.88 
+Fri Apr 23 15:50:05 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.87 
+Sat Apr 03 19:27:39 1999 <rschmutz@te13.hq.eso.org>  vlt version: 2.86 
+
+	- adapted to RedHat 5.2:
+	* include/vltMakefile: added RedHat 5.2 support, some $ECHO back to echo.
+	* include/vltMakefile.all: use $CXX to compile C++ sources, $ECHO back to echo.
+	* src/vltMakeExecutableDependencies: if Linux (RedHat 5.2): do not use g++ library.
+	* src/vltMakeLibraryDependencies: use $CC instead of gcc.
+
+	- disable bash builtin command 'echo' in all /bin/sh scripts:
+	* src/vltMakeScriptDependencies: use vltMakeScript to copy the script to ../bin.
+	* src/vltMakeScript: created.
+	* src/vltMakeIndexFilesDependencies: if Linux: disable bash builtin command 'echo'.
+	* src/vltMakeInstallErrorFiles: if Linux: disable bash builtin command 'echo'.
+	* src/vltMakeInstallFiles: if Linux: disable bash builtin command 'echo'.
+	* src/vltMakeInstallLogFiles: if Linux: disable bash builtin command 'echo'.
+	* src/vltMakeInstallTableFiles: if Linux: disable bash builtin command 'echo'.
+	* src/vltMakeLogInstallation: if Linux: disable bash builtin command 'echo'.
+	* src/vltMan: if Linux: disable bash builtin command 'echo'.
+
+Thu Apr 01 16:25:24 1999 <wpirani@te13.hq.eso.org>  vlt version: 2.85 
+Tue Mar 16 16:17:39 1999 <eallaert@te13.hq.eso.org>  vlt version: 2.84 
+	* included considerations for Linux
+	* updated the headers for Tcl scripts
+	* tclIndex file generation does not use temporary files anymore
+Thu Mar 04 22:19:41 1999 <vltmgr@te13.hq.eso.org>  vlt version: 2.83 
+Sat Feb 27 19:27:35 1999 <vltmgr@te13.hq.eso.org>  vlt version: 2.82 
+Sun Feb 21 20:51:41 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.81 
+Sun Jan 24 12:02:25 1999 <gfilippi@te13.hq.eso.org>  vlt version: 2.80 
+Fri Nov 27 16:37:59 1998 <vltmgr@te13.hq.eso.org>  vlt version: 2.79 
+Thu Sep 17 11:37:20 1998 <fcarbogn@te13.hq.eso.org>  vlt version: 2.78
+	* include/vltMakefile clean tat generated files (SPR960627)

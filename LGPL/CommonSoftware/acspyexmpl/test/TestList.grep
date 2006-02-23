@@ -1,0 +1,11 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+name service error resolving
+class CosNaming.NotFound
+Running the container with these arguments
+Cache saved to
+Waiting for the container to really shutdown
+Done!
+shutdown_container

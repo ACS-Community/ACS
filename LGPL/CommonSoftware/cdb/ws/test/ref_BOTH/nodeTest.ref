@@ -1,0 +1,70 @@
+1 - ----------T--:--:--.--- [GlobalLogger - ] nodeTest starts
+1 - ----------T--:--:--.--- [GlobalLogger - ] Init CORBA
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting RootPOA
+1 - ----------T--:--:--.--- [GlobalLogger - ] CORBA and POA initialized
+1 - ----------T--:--:--.--- [GlobalLogger - ] DALReference obtained via environment: 'corbaloc::xxxxxxx:yyyy/CDB'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting the DAL
+1 - ----------T--:--:--.--- [GlobalLogger - ] The DAL is here
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] current/graph_max = 1000
+1 - ----------T--:--:--.--- [GlobalLogger - ] readback/alarm_low_off = 20.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] status/description = status
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] 0> Log
+1 - ----------T--:--:--.--- [GlobalLogger - ] Found 9 strings: 
+1 - ----------T--:--:--.--- [GlobalLogger - ] 1> LogFactory
+1 - ----------T--:--:--.--- [GlobalLogger - ] 2> NotifyEventChannelFactory
+1 - ----------T--:--:--.--- [GlobalLogger - ] 3> ArchivingChannel
+1 - ----------T--:--:--.--- [GlobalLogger - ] 4> LoggingChannel
+1 - ----------T--:--:--.--- [GlobalLogger - ] 5> InterfaceRepository
+1 - ----------T--:--:--.--- [GlobalLogger - ] 6> CDB
+1 - ----------T--:--:--.--- [GlobalLogger - ] 7> ACSLogSvc
+1 - ----------T--:--:--.--- [GlobalLogger - ] 8> PDB
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Found 5 long: 
+1 - ----------T--:--:--.--- [GlobalLogger - ] 0> 8123
+1 - ----------T--:--:--.--- [GlobalLogger - ] 1> 15432
+1 - ----------T--:--:--.--- [GlobalLogger - ] 2> 23698
+1 - ----------T--:--:--.--- [GlobalLogger - ] 3> 53140
+1 - ----------T--:--:--.--- [GlobalLogger - ] 4> 44325
+1 - ----------T--:--:--.--- [GlobalLogger - ] 0> 0.133000
+1 - ----------T--:--:--.--- [GlobalLogger - ] Found 3 double: 
+1 - ----------T--:--:--.--- [GlobalLogger - ] 1> 10.039000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 2> 1320.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] Attributes of position: alarm_high_off,alarm_high_on,alarm_low_off,alarm_low_on,alarm_timer_trig,archive_delta,archive_max_int,archive_min_int,archive_priority,default_timer_trig,default_value,description,format,graph_max,graph_min,min_delta_trig,min_step,min_timer_trig,resolution,units
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Ok, exception received while building a non existent node
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 

@@ -1,0 +1,118 @@
+#------------------------------------------------------------------------
+# E.S.O. - ACS project
+# 
+# "@(#) $Id: RELEASE_NOTES.template.doc,v 1.20 2002/12/05 19:09:17 vltsccm Exp $" 
+# 
+# who        when      what
+# --------  ----------  ----------------------------------------------
+# psivera   2000-10-16  created
+# 
+#------------------------------------------------------------------------
+/************************************************************************
+*   NAME
+*   RELEASE_NOTES - change summary for a new version of a software module
+*
+*   SYNOPSIS
+*       <mod>/RELEASE_NOTES 
+*
+*   DESCRIPTION
+*   The file RELEASE_NOTES is located in the module root directory and
+*   provides a summury of the major changes done in a new version.
+*
+*   It is responsibility of the developer to update such a file everytime
+*   a module is modified and before archiving.
+*
+*   An empty template is provided by getTemplate(7) in the "code" menu.
+*
+*   The file shall contain the following information:
+*
+*      Module: 
+*         <modName> - <short description of the module>
+*      
+*      From: 
+*         The author of the modification (in the template, the current username)
+*      
+*      Version: 
+*         The rcsId string (provided by the template)
+*      
+*      Documents:
+*         A list of document related with this software in the following format:
+*         [1] VLT-XXX-YYY-ppppp-nnnn, <issue> <date> --- <document title>
+*      
+*      Configuration Requirements:
+*         If any, a list of software modules or products required to use 
+*         the actual version of this software module
+*         <software name> <version>
+*
+*      Tested:
+*         How the modification was tested and on wich platforms:
+*           - using automatic test according to [..] by author/....
+*           - manually tested by the author/....
+*         tested on:
+*              Linux te1 2.4.20-28
+*              SunOS te19 5.3 Generic sun4m sparc
+*         
+*      Cost:
+*         The cost in terms of working hours/days for the new version.
+*
+*
+*      Changes:
+*      
+*         New Features:
+*         
+*           <list of new features added by the current new version>
+*           or NONE
+*
+*         Fixed Problems:
+*      
+*           <list of problems solved by the current new version> or NONE
+*
+*      In both cases, if the modification is the result of an SPR, remember
+*      to reference to the SPR number.
+*
+*
+*      Known bugs/problems:
+*           
+*         known shortcomings and defects which could not be solved by
+*         this release.
+*
+*   EXAMPLES
+*
+*      Module: 
+*         dummy - dummy module used for test
+*      
+*      From: 
+*         G.Filippi
+*      
+*      Version: 
+*            "@(#) ...."
+*      
+*      Documents:
+*         [1] VLT-MAN-ESO-99999-0234, 1.0 10/02/94 --- Dummy Used Manual
+*         [2] VLT-VER-ESO-99999-0456, 1.0 10/06/94 --- Dummy Acceptance
+*                   Test Procedure
+*      
+*      Configuration Requirements:
+*         GNU-make 3.70
+*
+*      Tested:
+*         tested using automatic test according to [1] by author on:
+*              HP-UX te16 A.09.05 E 9000/735 2011263524 8-user license
+*              SunOS te19 5.3 Generic sun4m sparc
+*         
+*      Cost:
+*         8 h
+*
+*      Changes:
+*      
+*         New Features:
+*         
+*           - NONE
+*
+*         Fixed Problems:
+*      
+*           - corrected typing errors in the output (SPR950356)
+*
+*                            ___oOo___
+*------------------------------------------------------------------------
+                          ___oOo___

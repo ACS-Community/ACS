@@ -1,0 +1,266 @@
+<xsd:schema targetNamespace="urn:schemas-cosylab-com:psetdef:1.0" 
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns:psetdef="urn:schemas-cosylab-com:psetdef:1.0">
+
+   <xsd:annotation>
+         <xsd:documentation xml:lang="en">
+   Schema for the definition of parameter sets for OFFLINE Tasks.
+   Copyright 2004 NRAO, all rights reserved.
+        </xsd:documentation>
+   </xsd:annotation>
+	<!--
+	***************************************************************************
+		There is one required "root" element required that instances 
+		of this schema must define: 
+			pset - which is of type psetdef (defined below) 
+	**************************************************************************
+	-->
+	<xsd:element name="pset" type="psetdef:psetdef"/>
+	<!--
+	**************************************************************************
+	psetdef contains:
+		comment: string containing an optional comment about the parameter set
+		param: (1 or more) something which descends from the abstract parameter
+	**************************************************************************
+	-->
+	<xsd:complexType name="psetdef">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="comment" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="param" type="psetdef:parameter" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	The abstract type for parameters which all parameters extend. 
+	mandatory parameters for all param descendents:
+		name: string name of the parameter
+		required: boolean indicating if the parameter is required (true) or optional/hidden (false)
+		prompt: string containing the short help text for the parameter
+		help: string containing the longer, more verbose help text for the parameter
+	**************************************************************************
+	 -->
+	<xsd:complexType name="parameter" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="required" type="xsd:boolean"/>
+			<xsd:element name="prompt" type="xsd:string"/>
+			<xsd:element name="help" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+<!--
+	**************************************************************************
+	The abstract type for mumeric quantity parameters:
+		units: (optional) string containing the unit of measure of the quantity
+	**************************************************************************
+	 -->
+	<xsd:complexType name="quantity" abstract="true">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:parameter">
+				<xsd:sequence>
+					<xsd:element name="units" type="xsd:string" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>	
+
+<!--
+	**************************************************************************
+	Used to define bool parameters. Inherits all the elements 
+	of param and adds the following:
+		default: the value for the parameter to be used if unspecified 
+	**************************************************************************
+	-->
+	<xsd:complexType name="bool">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:parameter">
+				<xsd:sequence>
+					<xsd:element name="default" type="xsd:boolean" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!--
+	**************************************************************************
+	Used to define int parameters. Inherits all the elements 
+	of param and adds the following:
+		default: the value for the parameter to be used if unspecified 
+		stringdefault: a non-numeric string indicating a "special" default (e.g. "all")
+		min:(optional) minimum value for the parameter
+		max:(optional) maximum value for the parameter
+		validValues: (optional) enumeration of valid values for the parameter
+	**************************************************************************
+	-->
+	<xsd:complexType name="int">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:quantity">
+				<xsd:sequence>
+					<xsd:element name="default" type="xsd:integer" minOccurs="0"/>
+					<xsd:element name="stringdefault" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="min" type="xsd:integer" minOccurs="0"/>
+					<xsd:element name="max" type="xsd:integer" minOccurs="0"/>
+					<xsd:element name="validValues" type="psetdef:intEnum" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to specify enumerations of int type.
+	**************************************************************************
+	-->
+	<xsd:complexType name="intEnum">
+		<xsd:sequence>
+			<xsd:element name="value" type="xsd:integer" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to define double parameters. Inherits all the elements 
+	of param and adds the following:
+		default: the value for the parameter to be used if unspecified 
+		stringdefault: a non-numeric string indicating a "special" default (e.g. "all")
+		min:(optional) minimum value for the parameter
+		max:(optional) maximum value for the parameter
+		validValues: (optional) enumeration of valid values for the parameter
+	**************************************************************************
+	-->
+	<xsd:complexType name="double">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:quantity">
+				<xsd:sequence>
+					<xsd:element name="default" type="xsd:double" minOccurs="0"/>
+					<xsd:element name="stringdefault" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="min" type="xsd:double" minOccurs="0"/>
+					<xsd:element name="max" type="xsd:double" minOccurs="0"/>
+					<xsd:element name="validValues" type="psetdef:doubleEnum" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to specify enumerations of double type.
+	**************************************************************************
+	-->
+	<xsd:complexType name="doubleEnum">
+		<xsd:sequence>
+			<xsd:element name="value" type="xsd:double" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to define string parameters. Inherits all the elements 
+	of param and adds the following:
+		default: the value for the parameter to be used if unspecified 
+		min:(optional) minimum value for the parameter
+		max:(optional) maximum value for the parameter
+		validValues: (optional) enumeration of valid values for the parameter
+	**************************************************************************
+	-->
+	<xsd:complexType name="string">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:parameter">
+				<xsd:sequence>
+					<xsd:element name="default" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="min" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="max" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="length" type="xsd:integer" minOccurs="0"/>
+					<xsd:element name="validValues" type="psetdef:stringEnum" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to specify enumerations of string type.
+	**************************************************************************
+	-->
+	<xsd:complexType name="stringEnum">
+		<xsd:sequence>
+			<xsd:element name="value" type="xsd:string" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Abstract base type used to define array parameters. 
+	Inherits all the elements of param and adds the following:
+		maxlen: (required) the maximum length of the array
+	**************************************************************************
+	-->
+	<xsd:complexType name="array" abstract="true">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:parameter">
+				<xsd:sequence>
+					<xsd:element name="maxlen" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Abstract base type used to define array quantity parameters. 
+	Inherits all the elements of array and adds the following:
+		units: (optional) the unit of measure for each item of the array
+	**************************************************************************
+	-->
+	<xsd:complexType name="quantityArray" abstract="true">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:array">
+				<xsd:sequence>
+					<xsd:element name="units" type="xsd:string" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to define int array parameters. 
+	Inherits all the elements of array and adds the following:
+		default: (optional) 1 to N int values for defaulting the array if it is not specified
+	**************************************************************************
+	-->
+	<xsd:complexType name="intArray">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:quantityArray">
+				<xsd:sequence>
+					<xsd:element name="default" type="xsd:integer" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to define double array parameters. 
+	Inherits all the elements of array and adds the following:
+		default: (optional) 1 to N double values for defaulting the array if it not specified
+	**************************************************************************
+	-->
+	<xsd:complexType name="doubleArray">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:quantityArray">
+				<xsd:sequence>
+					<xsd:element name="default" type="xsd:double" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	**************************************************************************
+	Used to define string array parameters. 
+	Inherits all the elements of array and adds the following:
+		default: (optional) 1 to N string values for defaulting the array if unspecified
+	**************************************************************************
+	-->
+	<xsd:complexType name="stringArray">
+		<xsd:complexContent>
+			<xsd:extension base="psetdef:array">
+				<xsd:sequence>
+					<xsd:element name="default" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,31 @@
+Running test:
+
+start server(s):
+acserrTestServer <name_of_server> [dest_server]
+
+ex.
+acserrTestServer s1 &
+acserrTestServer s2 s1
+
+
+start client:
+
+acsTestClient <error_server_name> <depth> <isError> [number_of_iteration]
+[-ORBInitRef NameService=corbaloc::$HOST:10000/NameService]
+
+ex.
+
+1) logging into file: /tmp/local_log.dat (you can set to other file
+by setting env. var. ACS_LOG_FILE)
+testClient s2 3 1
+
+2) logging into the Centralized Logger 
+(Naming Service and Logging Service must be run (startORBSVCS) and
+LogClient (startLogClient) )
+testClient s2 3 1 2 -ORBInitRef NameService=corbaloc::te1:10000/NameService
+
+
+If you want brief output of logging also on the screen you will have
+to set env. var. ACS_LOG_STDOUT=0 !
+
+

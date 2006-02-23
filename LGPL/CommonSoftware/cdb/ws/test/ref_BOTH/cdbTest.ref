@@ -1,0 +1,26 @@
+1 - ----------T--:--:--.--- [GlobalLogger - ] cdbTestClient starts
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALaccess::resolveDALserverIOR] DALReference obtained via environment: 'corbaloc::xxxxxxx:yyyy/CDB'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl MACI/Managers/Manager field CentralizedLogger OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] FromString output : 1
+1 - ----------T--:--:--.--- [GlobalLogger - ] ToString: <String>Log
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOImpl] DAO:'MACI/Managers/Manager' Unable to return field: 'StrangeFieldName'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl MACI/Managers/Manager field MaxCachePriority OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl MACI/Managers/Manager does not have StrangeFieldName field
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl MACI/Containers/Container field UseIFR OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] The test will create database with remote DAOs
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALaccess::resolveDALserverIOR] DALReference obtained via environment: 'corbaloc::xxxxxxx:yyyy/CDB'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1 field current/graph_max OK
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOImpl] DAO:'' Unable to return field: 'StrangeFieldName'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1 does not have StrangeFieldName field
+1 - ----------T--:--:--.--- [GlobalLogger - ] Test arrays
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: On
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: Remote
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: Sum Failure
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: DC Overcurrent
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: External Interlock
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: Phase Failure
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: Not Ready
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: Ramping
+1 - ----------T--:--:--.--- [GlobalLogger - ] Curl alma/TEST_PS_1/status in bitDescription field values: State Inconsistent
+1 - ----------T--:--:--.--- [GlobalLogger - ] Test arrays OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] cdbTestClient ends

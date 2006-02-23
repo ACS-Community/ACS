@@ -1,0 +1,84 @@
+#ifndef _AMSSEQ_IDL_
+#define _AMSSEQ_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acsexmplAmsSeq.idl,v 1.85 2004/01/27 21:13:23 dfugate Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* jib/blo   02/04/02  Created
+*/
+
+#include "baci.idl"
+
+#pragma prefix "alma"
+
+/** @file acsexmplAmsSeq.idl
+ *  AmsSeq's IDL File
+ */
+
+/**
+ * An IDL interface to the Antenna Mount System (AMS).
+ * This CORBA IDL interface exists between two sections of the AMS.  The 
+ * high-level section executes at the array central control area in the Array 
+ * Control Computer (ACC), while the low-level section executes at each 
+ * antenna in the Antenna Bus Master (ABM) computer.
+ *
+ * @authors R. Heald, Modifed by A. Perrigouard
+ * @version %I%, %G%
+ */
+module AMSSEQ 
+{
+    /** @interface AmsTestSeq
+     * Defines the interface for controlling and monitoring the antenna 
+     * pointing model.  Application of the pointing model removes errors 
+     * inherent to the antenna mechanical structure, i.e. geometrical 
+     * misalignments, flexures, etc.
+     */
+    interface AmsTestSeq : ACS::CharacteristicComponent
+	{
+	/**
+	 *  Sets the coefficient of an individual pointing model term.
+	 *  As soon as this method is invoked by a client, control is 
+	 *  returned because it's a "oneway" method.  "oneway" methods are
+	 *  pure CORBA asynchronous methods that cannot raise exceptions.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	*/
+	oneway void setCoeff ();
+	
+	/**
+	 * This ROdoubleSeq contains all coefficients currently set.
+	 */
+	readonly attribute ACS::ROdoubleSeq ROdoubleSeqPM;
+	
+	/**
+	 * This RWdoubleSeq contains all coefficients that client can set.
+	 */
+	readonly attribute ACS::RWdoubleSeq RWdoubleSeqPM;
+	};
+};
+
+#endif /* _AMS_IDL_ */

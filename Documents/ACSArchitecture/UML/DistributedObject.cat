@@ -1,0 +1,4602 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Distributed Object"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"38CF7EB00111"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "ACS::CharacteristicComponent"
+	    quid       	"38CF597A029B"
+	    stereotype 	"Interface"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"38DB845103B0"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel"
+		    quidu      	"38DB840500CB")
+		(object Inheritance_Relationship
+		    quid       	"402AB39300C9"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:ACSComponent"
+		    quidu      	"402AB36100E3")))
+	(object Class "Characteristic"
+	    quid       	"38CF59860126")
+	(object Class "RODouble"
+	    quid       	"38DB3E4C007A")
+	(object Class "RWDouble"
+	    quid       	"38DB3E560223")
+	(object Class "ROString"
+	    quid       	"38DB3F2C032F")
+	(object Class "ROLong"
+	    quid       	"38DB3F3E02C7")
+	(object Class "ROPattern"
+	    quid       	"38DB3F4E0310")
+	(object Class "RWLong"
+	    quid       	"38DB3F680000")
+	(object Parameterized_Class "ROSequence"
+	    quid       	"38DB403D02F5"
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"392CE5490190")))
+	(object Parameterized_Class "RWSequence"
+	    quid       	"38DB40890309"
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"392CE5490195")))
+	(object Class "ROCanDouble"
+	    quid       	"38DB40DB0202"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"38DB40EC00F8"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::RODouble"
+		    quidu      	"38DB3E4C007A")))
+	(object Parameterized_Class "Enum"
+	    quid       	"38DB76EC0048"
+	    operations 	(list Operations
+		(object Operation "Enum"
+		    quid       	"38DB775F0151"
+		    parameters 	(list Parameters
+			(object Parameter "table"
+			    quid       	"392CE54901BA"))
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "Lookup"
+		    quid       	"38DB777400CF"
+		    parameters 	(list Parameters
+			(object Parameter "String"
+			    quid       	"392CE54901BC"))
+		    result     	"<Object>"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "String"
+		    quid       	"38DB779B03D9"
+		    parameters 	(list Parameters
+			(object Parameter "<Object>"
+			    quid       	"392CE54901BE"))
+		    result     	"String"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    class_attributes 	(list class_attribute_list
+		(object ClassAttribute "Dictionary"
+		    quid       	"38DB774B015D"))
+	    parameters 	(list Parameters
+		(object Parameter "Object"
+		    quid       	"392CE54901C0")))
+	(object Parameterized_Class "Range"
+	    quid       	"38DB788F02DF"
+	    operations 	(list Operations
+		(object Operation "getRange"
+		    quid       	"38DB78FD00FD"
+		    result     	"List<type>"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "isInRange"
+		    quid       	"38DB7CA30308"
+		    parameters 	(list Parameters
+			(object Parameter "<type>"
+			    quid       	"392CE54901C4"))
+		    result     	"Boolean"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"392CE54901C5")))
+	(object Class "Dictionary"
+	    quid       	"38DB82CC028E")
+	(object Class "ACS::CharacteristicModel"
+	    quid       	"38DB840500CB"
+	    stereotype 	"Interface"
+	    operations 	(list Operations
+		(object Operation "name"
+		    quid       	"38DB72E70034"
+		    result     	"String"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "description"
+		    quid       	"38DB740300A1"
+		    documentation 	
+|This is just a short description.
+|The Configuration Record will also contain a URL with extended description.
+		    
+		    result     	"String"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "version"
+		    quid       	"38E0BC36003C"
+		    result     	"String"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "URI"
+		    quid       	"38EC825500D7"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "get_interface"
+		    quid       	"3ACDC38702AA"
+		    result     	"String"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "get_characteristic_by_name"
+		    quid       	"3ACDC3A90118"
+		    result     	"any"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "find_characteristic"
+		    quid       	"3ACDC3C40008"
+		    parameters 	(list Parameters
+			(object Parameter "reg_exp"
+			    quid       	"3ACDC3D6036C"
+			    type       	"String"))
+		    result     	"stringSeq"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)))
+	(object Class "TypelessProperty"
+	    quid       	"3ACDC53100FE"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3DD4C50500F0"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:Property"
+		    quidu      	"3DD4C4EF0219"))
+	    operations 	(list Operations
+		(object Operation "format"
+		    quid       	"3ACDC5F901C3"
+		    result     	"String"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "units"
+		    quid       	"3ACDC6020086"
+		    result     	"String"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "resolution"
+		    quid       	"3ACDC60E02D2"
+		    result     	"pattern"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)))
+	(object Parameterized_Class "P<type>"
+	    quid       	"3ACDC653014B"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3ACDC69703DD"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::TypelessProperty"
+		    quidu      	"3ACDC53100FE"))
+	    operations 	(list Operations
+		(object Operation "get_sync"
+		    quid       	"3ACDC6FB0337"
+		    result     	"<type>"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "get_async"
+		    quid       	"3ACDC7150262"
+		    result     	"void"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "create_monitor"
+		    quid       	"3ACDC735039F"
+		    result     	"Monitor<type>"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "create_postponed_monitor"
+		    quid       	"3ACDC7610370"
+		    result     	"Monitor<type>"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"3ACDC688022D")))
+	(object Parameterized_Class "ACS::RO<type>"
+	    quid       	"3B9894130346"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3B9894BA0346"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property"
+		    quidu      	"3DD4C27D0030")
+		(object Inheritance_Relationship
+		    quid       	"3DD4C79A0220"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::P<type>"
+		    quidu      	"3ACDC653014B"))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"3B9894460097")))
+	(object Parameterized_Class "ACS::RW<type>"
+	    quid       	"3B9894550369"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3B9894BE01E4"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property"
+		    quidu      	"3DD4C27D0030")
+		(object Inheritance_Relationship
+		    quid       	"3DD4C79E02BC"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::P<type>"
+		    quidu      	"3ACDC653014B"))
+	    operations 	(list Operations
+		(object Operation "set_sync"
+		    quid       	"3B98967D01DC"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "set_async"
+		    quid       	"3B989689019E"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "increment"
+		    quid       	"3B98968E0367"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "decrement"
+		    quid       	"3B98969200F6"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"3B9894660241")))
+	(object Class "BACIMonitor"
+	    quid       	"3DD3ADB10246")
+	(object Parameterized_Class "RO<type>Impl"
+	    quid       	"3DD4BBAF02FC"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"3DD4BD580334"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RO<type>"
+		    quidu      	"3B9894130346"))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"3DD4BBD100F9")
+		(object Parameter "DevIO"
+		    quid       	"3DD4BBD60242")))
+	(object Parameterized_Class "RW<type>Impl"
+	    quid       	"3DD4BBE90252"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"3DD4BD600055"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RW<type>"
+		    quidu      	"3B9894550369"))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"3DD4BBF500CB")
+		(object Parameter "DevIO"
+		    quid       	"3DD4BBF900DB")))
+	(object Parameterized_Class "DevIO"
+	    quid       	"3DD4BF510220"
+	    operations 	(list Operations
+		(object Operation "read"
+		    quid       	"3DD4BFAB00D7"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "write"
+		    quid       	"3DD4BFAF028C"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"3DD4BF980220")))
+	(object Class "DevIOMem"
+	    quid       	"3DD4C037018B"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"3DD4C0560293"
+		    stereotype 	"bind"
+		    label      	"pointer"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIO"
+		    quidu      	"3DD4BF510220")))
+	(object Class "DevIOCan"
+	    quid       	"3DD4C0460033"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"3DD4C06600DD"
+		    stereotype 	"bind"
+		    label      	"CAN"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIO"
+		    quidu      	"3DD4BF510220")))
+	(object Class "DevIOSocket"
+	    quid       	"3DD4C04D0284"
+	    realized_interfaces 	(list realize_rel_list
+		(object Realize_Relationship
+		    quid       	"3DD4C0730205"
+		    stereotype 	"bind"
+		    label      	"Socket"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIO"
+		    quidu      	"3DD4BF510220")))
+	(object Parameterized_Class "Property"
+	    quid       	"3DD4C27D0030"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3DD4C2C502EE"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel"
+		    quidu      	"38DB840500CB"))
+	    operations 	(list Operations
+		(object Operation "characteristic_component__name"
+		    quid       	"3DD4C2F30231"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "get_sync"
+		    quid       	"3DD4C30D009B"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "get_async"
+		    quid       	"3DD4C3130127"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "create_monitor"
+		    quid       	"3DD4C317008B"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "name"
+		    quid       	"4289BBC00280"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"3DD4C28D00DC")))
+	(object Class "ACS::Property"
+	    quid       	"3DD4C4EF0219"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3DD4C4FA0371"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel"
+		    quidu      	"38DB840500CB")))
+	(object Class "ACS::ACSComponent"
+	    quid       	"402AB36100E3"
+	    stereotype 	"Interface")
+	(object Class "CppComponent"
+	    quid       	"428B47240041"
+	    used_nodes 	(list uses_relationship_list
+		(object Uses_Relationship
+		    quid       	"3DD4A7C30164"
+		    label      	"uses"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::ContainerServices"
+		    quidu      	"3DD4A59E00B0")))
+	(object Association "$UNNAMED$0"
+	    quid       	"3932292402AE"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$1"
+		    quid       	"393229280119"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    client_cardinality 	(value cardinality "0..n")
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$2"
+		    quid       	"393229280123"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "bind(component)"
+	    quid       	"393F3FF601C0"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$3"
+		    quid       	"393F3FF70077"
+		    supplier   	"Logical View::CORBA Middleware::CORBA NamingService"
+		    quidu      	"393F3FA402C7"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$4"
+		    quid       	"393F3FF70081"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::maci\\:\\:Manager"
+		    quidu      	"3ACDCDAB03A7")))
+	(object Association "use services"
+	    quid       	"393F4044010E"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$5"
+		    quid       	"393F404403DF"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$6"
+		    quid       	"393F4045000B"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115")))
+	(object Association "access properties"
+	    quid       	"393F40620053"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$7"
+		    quid       	"393F406202E8"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$8"
+		    quid       	"393F406202F2"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115")))
+	(object Association "loadConfiguration()"
+	    quid       	"393F414500F0"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$9"
+		    quid       	"393F41460015"
+		    supplier   	"Logical View::Configuration Database::Configuration Database"
+		    quidu      	"393F40E9002F"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$10"
+		    quid       	"393F41460016"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel"
+		    quidu      	"38DB840500CB")))
+	(object Association "temporary changes"
+	    quid       	"393F41FC0107"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$11"
+		    quid       	"393F41FC02B5"
+		    supplier   	"Logical View::Configuration Database::Configuration Database"
+		    quidu      	"393F40E9002F"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$12"
+		    quid       	"393F41FC02B6"
+		    supplier   	"Use Case View::Engineer"
+		    quidu      	"393F41E50027")))
+	(object Association "force reload"
+	    quid       	"393F421B00A7"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$13"
+		    quid       	"393F421B024C"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel"
+		    quidu      	"38DB840500CB"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$14"
+		    quid       	"393F421B0260"
+		    supplier   	"Use Case View::Engineer"
+		    quidu      	"393F41E50027")))
+	(object Association "final changes"
+	    quid       	"393F422901D4"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$15"
+		    quid       	"393F422B0118"
+		    supplier   	"Logical View::Configuration Database::Configuration Database"
+		    quidu      	"393F40E9002F"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$16"
+		    quid       	"393F422B0122"
+		    supplier   	"Use Case View::Engineer"
+		    quidu      	"393F41E50027")))
+	(object Association "explore naming tree"
+	    quid       	"393F43EA02AC"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$17"
+		    quid       	"393F43EB0221"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::maci\\:\\:Manager"
+		    quidu      	"3ACDCDAB03A7"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$18"
+		    quid       	"393F43EB022B"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::Object Explorer"
+		    quidu      	"393F43BF017D")))
+	(object Association "resolve()"
+	    quid       	"3ACDD0BC0358"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$19"
+		    quid       	"3ACDD0BD016E"
+		    supplier   	"Logical View::CORBA Middleware::CORBA NamingService"
+		    quidu      	"393F3FA402C7"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$20"
+		    quid       	"3ACDD0BD0196"
+		    supplier   	"Logical View::Applications::NON-ACS Client"
+		    quidu      	"3ACDD0A90364")))
+	(object Association "get_component"
+	    quid       	"3ACDD0E00359"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$21"
+		    quid       	"3ACDD0E1026A"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::maci\\:\\:Manager"
+		    quidu      	"3ACDCDAB03A7"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$22"
+		    quid       	"3ACDD0E10274"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115")))
+	(object Association "release_component"
+	    quid       	"3ACDD0E70219"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$23"
+		    quid       	"3ACDD0E800C6"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::maci\\:\\:Manager"
+		    quidu      	"3ACDCDAB03A7"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$24"
+		    quid       	"3ACDD0E800EE"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115")))
+	(object Association "construct"
+	    quid       	"3ACDD1B802D8"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$25"
+		    quid       	"3ACDD1B90257"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::COB"
+		    quidu      	"3B9E2FFA0176"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$26"
+		    quid       	"3ACDD1B9027F"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::C++ Container::C++ Container"
+		    quidu      	"3ACDCDBB001B")))
+	(object Association "disable"
+	    quid       	"3ACDD1D40133"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$27"
+		    quid       	"3ACDD1D50063"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::COB"
+		    quidu      	"3B9E2FFA0176"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$28"
+		    quid       	"3ACDD1D500A9"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::C++ Container::C++ Container"
+		    quidu      	"3ACDCDBB001B")))
+	(object Association "$UNNAMED$29"
+	    quid       	"3ACDD62A00DF"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$30"
+		    quid       	"3ACDD62A034C"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::C++ Container::C++ Container"
+		    quidu      	"3ACDCDBB001B"
+		    client_cardinality 	(value cardinality "1..n")
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$31"
+		    quid       	"3ACDD62A0356"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::Management and Access Control::maci\\:\\:Manager"
+		    quidu      	"3ACDCDAB03A7"
+		    client_cardinality 	(value cardinality "1"))))
+	(object Association "$UNNAMED$32"
+	    quid       	"3B98DFEB02E9"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$33"
+		    quid       	"3B98DFEC01C8"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel"
+		    quidu      	"38DB840500CB"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$34"
+		    quid       	"3B98DFEC01FA"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::C++ Container::C++ Container"
+		    quidu      	"3ACDCDBB001B")))
+	(object Association "[override] reference to configuration database"
+	    quid       	"3B98E03901F1"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$35"
+		    quid       	"3B98E03A0347"
+		    supplier   	"Logical View::Configuration Database::Configuration Database"
+		    quidu      	"393F40E9002F"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$36"
+		    quid       	"3B98E03A0351"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Container::C++ Container::C++ Container"
+		    quidu      	"3ACDCDBB001B")))
+	(object Association "$UNNAMED$37"
+	    quid       	"3DD4BFBF0376"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$38"
+		    quid       	"3DD4BFC0025C"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIO"
+		    quidu      	"3DD4BF510220"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$39"
+		    quid       	"3DD4BFC0026C"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::RW<type>Impl"
+		    quidu      	"3DD4BBE90252"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$40"
+	    quid       	"3DD4BFC30039"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$41"
+		    quid       	"3DD4BFC30366"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIO"
+		    quidu      	"3DD4BF510220"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$42"
+		    quid       	"3DD4BFC30368"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::RO<type>Impl"
+		    quidu      	"3DD4BBAF02FC"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$43"
+	    quid       	"3DD4C2E800E9"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$44"
+		    quid       	"3DD4C2E800EA"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property"
+		    quidu      	"3DD4C27D0030"
+		    client_cardinality 	(value cardinality "0..n")
+		    Containment 	"By Value"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$45"
+		    quid       	"3DD4C2E800EB"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$46"
+	    quid       	"3DD4C50D017D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$47"
+		    quid       	"3DD4C50D0380"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:Property"
+		    quidu      	"3DD4C4EF0219"
+		    client_cardinality 	(value cardinality "0..n")
+		    Containment 	"By Value"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$48"
+		    quid       	"3DD4C50D0382"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Class_Category "Event System"
+	    is_unit    	TRUE
+	    is_loaded  	FALSE
+	    file_name  	"$ALMA_ACS_ROOT\\EventSystem.cat"
+	    quid       	"381599F000AB")
+	(object Class_Category "Examples"
+	    quid       	"3B9DBE2102E9"
+	    exportControl 	"Public"
+	    logical_models 	(list unit_reference_list
+		(object Class "Thermostat"
+		    quid       	"38CF59A10387"
+		    superclasses 	(list inheritance_relationship_list
+			(object Inheritance_Relationship
+			    quid       	"38CF59A70386"
+			    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::Device"
+			    quidu      	"38CF599903A4")))
+		(object Parameterized_Class "MonitorPoint"
+		    quid       	"39322A4802FE"
+		    superclasses 	(list inheritance_relationship_list
+			(object Inheritance_Relationship
+			    quid       	"3B98964B009A"
+			    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RO<type>"
+			    quidu      	"3B9894130346"))
+		    parameters 	(list Parameters
+			(object Parameter "type"
+			    quid       	"39322A750082")))
+		(object Class "Device"
+		    quid       	"38CF599903A4"
+		    superclasses 	(list inheritance_relationship_list
+			(object Inheritance_Relationship
+			    quid       	"38CF599F024E"
+			    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+			    quidu      	"38CF597A029B")))
+		(object Parameterized_Class "ControlPoint"
+		    quid       	"39322A84006F"
+		    superclasses 	(list inheritance_relationship_list
+			(object Inheritance_Relationship
+			    quid       	"3B98964D03C8"
+			    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RW<type>"
+			    quidu      	"3B9894550369"))
+		    parameters 	(list Parameters
+			(object Parameter "type"
+			    quid       	"39322A8C012F"))))
+	    logical_presentations 	(list unit_reference_list)))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Distributed Object architecture"
+	    quid       	"38CF597402CE"
+	    title      	"Distributed Object architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::Device" @1
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(765, 1110)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@1
+			location   	(623, 1060)
+			nlines     	1
+			max_width  	284
+			justify    	0
+			label      	"Device")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"38CF599903A4"
+		    width      	302
+		    height     	124
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::Thermostat" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(765, 1365)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(623, 1315)
+			nlines     	1
+			max_width  	284
+			justify    	0
+			label      	"Thermostat")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"38CF59A10387"
+		    width      	302
+		    height     	124
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @3
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38CF59A70386"
+		    client     	@2
+		    supplier   	@1
+		    vertices   	(list Points
+			(765, 1302)
+			(765, 1172))
+		    line_style 	0)
+		(object NoteView @4
+		    location   	(345, 1005)
+		    font       	(object Font
+			size       	8
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@4
+			location   	(177, 944)
+			fill_color 	13434879
+			nlines     	3
+			max_width  	300
+			label      	"Control System devices are Distributed Objects")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	360
+		    height     	135)
+		(object AttachView "" @5
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@4
+		    supplier   	@1
+		    vertices   	(list Points
+			(525, 1049)
+			(613, 1071))
+		    line_style 	0)
+		(object NoteView @6
+		    location   	(345, 1305)
+		    font       	(object Font
+			size       	8
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@6
+			location   	(207, 1246)
+			fill_color 	13434879
+			nlines     	3
+			max_width  	240
+			label      	"An example of device")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	300
+		    height     	130)
+		(object AttachView "" @7
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@6
+		    supplier   	@2
+		    vertices   	(list Points
+			(495, 1326)
+			(613, 1343))
+		    line_style 	0)
+		(object NoteView @8
+		    location   	(645, 1650)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@8
+			location   	(85, 1459)
+			fill_color 	13434879
+			nlines     	8
+			max_width  	1085
+			label      	
+|CharacteristicComponents and Properties have a ConfigurationRecord to access Characteristics.
+|The predefined ones are directly accessible to users via methods and are probably cached internally to the objects for efficiency.  Other Characteristics can be extracted from the ConfigurationRecord object by name lookup.
+			)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	1145
+		    height     	395)
+		(object NoteView @9
+		    location   	(1575, 2025)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@9
+			location   	(1105, 1926)
+			fill_color 	13434879
+			nlines     	4
+			max_width  	905
+			label      	"We need to document somewhere during design the list of minimal Characteristics for every class. We could put it in the class description.")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	965
+		    height     	210)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Characteristic" @10
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1995, 270)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@10
+			location   	(1827, 229)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	336
+			justify    	0
+			label      	"Characteristic")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF59860126"
+		    width      	354
+		    height     	107
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel" @11
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1200, 270)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@11
+			location   	(1199, 378)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	602
+			justify    	0
+			label      	"ACS::CharacteristicModel")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38DB840500CB"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "pippi" @12
+		    location   	(1521, 270)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9891C303D1"
+		    roleview_list 	(list RoleViews
+			(object RoleView "" @13
+			    Parent_View 	@12
+			    location   	(321, 0)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @14
+				Parent_View 	@13
+				location   	(1758, 312)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DC"
+			    client     	@12
+			    supplier   	@10
+			    vertices   	(list Points
+				(1521, 270)
+				(1817, 270))
+			    line_style 	0
+			    label      	(object SegLabel @15
+				Parent_View 	@13
+				location   	(1671, 233)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.506329
+				height     	38
+				orientation 	0))
+			(object RoleView "" @16
+			    Parent_View 	@12
+			    location   	(321, 0)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @17
+				Parent_View 	@16
+				location   	(1285, 312)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DB"
+			    client     	@12
+			    supplier   	@11
+			    vertices   	(list Points
+				(1521, 270)
+				(1226, 270))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent" @18
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(765, 810)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@18
+			location   	(764, 918)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	388
+			justify    	0
+			label      	"ACS::CharacteristicComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF597A029B"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @19
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38CF599F024E"
+		    client     	@1
+		    supplier   	@18
+		    vertices   	(list Points
+			(765, 1047)
+			(765, 968))
+		    line_style 	0)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property" @20
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    location   	(1485, 810)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@20
+			location   	(1376, 780)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	218
+			justify    	0
+			label      	"Property")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4C27D0030"
+		    width      	236
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$43" @21
+		    location   	(1078, 810)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C2E800E9"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$45" @22
+			    Parent_View 	@21
+			    location   	(-482, -165)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @23
+				Parent_View 	@22
+				location   	(848, 769)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C2E800EB"
+			    client     	@21
+			    supplier   	@18
+			    vertices   	(list Points
+				(1078, 810)
+				(791, 810))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$44" @24
+			    Parent_View 	@21
+			    location   	(-482, -165)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @25
+				Parent_View 	@24
+				location   	(1307, 769)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C2E800EA"
+			    client     	@21
+			    supplier   	@20
+			    vertices   	(list Points
+				(1078, 810)
+				(1366, 810))
+			    line_style 	0
+			    label      	(object SegLabel @26
+				Parent_View 	@24
+				location   	(1266, 864)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.653226
+				height     	54
+				orientation 	1))))
+		(object InheritTreeView "" @27
+		    location   	(1200, 656)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@11
+		    vertices   	(list Points
+			(1200, 656)
+			(1200, 403)))
+		(object InheritView "" @28
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38DB845103B0"
+		    client     	@18
+		    supplier   	@11
+		    vertices   	(list Points
+			(790, 781)
+			(790, 656))
+		    line_style 	3
+		    origin_attachment 	(790, 781)
+		    terminal_attachment 	(790, 656)
+		    drawSupplier 	@27)
+		(object InheritView "" @29
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C2C502EE"
+		    client     	@20
+		    supplier   	@11
+		    vertices   	(list Points
+			(1485, 730)
+			(1485, 656))
+		    line_style 	3
+		    origin_attachment 	(1485, 730)
+		    terminal_attachment 	(1485, 656)
+		    drawSupplier 	@27)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:ACSComponent" @30
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(375, 270)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@30
+			location   	(374, 378)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	579
+			justify    	0
+			label      	"ACS::ACSComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"402AB36100E3"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @31
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"402AB39300C9"
+		    client     	@18
+		    supplier   	@30
+		    vertices   	(list Points
+			(744, 782)
+			(460, 389))
+		    line_style 	0)))
+	(object ClassDiagram "ACS Object Hierarchy"
+	    quid       	"393223E70151"
+	    title      	"ACS Object Hierarchy"
+	    zoom       	63
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	903
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::Device" @32
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2040, 3270)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@32
+			location   	(1912, 3226)
+			nlines     	1
+			max_width  	256
+			justify    	0
+			label      	"Device")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"38CF599903A4"
+		    width      	274
+		    height     	112
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::MonitorPoint" @33
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(690, 3390)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@33
+			location   	(537, 3367)
+			nlines     	1
+			max_width  	306
+			justify    	0
+			label      	"MonitorPoint")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"39322A4802FE"
+		    width      	324
+		    height     	146
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::ControlPoint" @34
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1410, 3390)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@34
+			location   	(1262, 3367)
+			nlines     	1
+			max_width  	296
+			justify    	0
+			label      	"ControlPoint")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"39322A84006F"
+		    width      	314
+		    height     	146
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object NoteView @35
+		    location   	(2670, 3270)
+		    font       	(object Font
+			size       	8
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@35
+			location   	(2472, 3209)
+			fill_color 	13434879
+			nlines     	3
+			max_width  	360
+			label      	"Control system Devices are Distributed Objects")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	420
+		    height     	135)
+		(object AttachView "" @36
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@32
+		    supplier   	@35
+		    vertices   	(list Points
+			(2177, 3270)
+			(2459, 3270))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::Thermostat" @37
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2040, 3615)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@37
+			location   	(1900, 3571)
+			nlines     	1
+			max_width  	280
+			justify    	0
+			label      	"Thermostat")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"38CF59A10387"
+		    width      	298
+		    height     	112
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @38
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38CF59A70386"
+		    client     	@37
+		    supplier   	@32
+		    vertices   	(list Points
+			(2040, 3558)
+			(2040, 3326))
+		    line_style 	0)
+		(object NoteView @39
+		    location   	(2640, 3615)
+		    font       	(object Font
+			size       	8
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@39
+			location   	(2502, 3556)
+			fill_color 	13434879
+			nlines     	3
+			max_width  	240
+			label      	"An example of Device")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	300
+		    height     	130)
+		(object AttachView "" @40
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@39
+		    supplier   	@37
+		    vertices   	(list Points
+			(2489, 3615)
+			(2189, 3615))
+		    line_style 	0)
+		(object NoteView @41
+		    location   	(705, 255)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@41
+			location   	(514, 183)
+			nlines     	2
+			max_width  	346
+			label      	"access methods to Characteristics")
+		    line_color 	3342489
+		    width      	406
+		    height     	156)
+		(object NoteView @42
+		    location   	(1665, 3045)
+		    font       	(object Font
+			size       	9
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@42
+			location   	(366, 2981)
+			fill_color 	13434879
+			nlines     	3
+			max_width  	2562
+			label      	"Examples of user defined classes:")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	2622
+		    height     	141)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::TypelessProperty" @43
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(990, 1155)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@43
+			location   	(780, 1049)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	420
+			justify    	0
+			label      	"TypelessProperty")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3ACDC53100FE"
+		    width      	438
+		    height     	236
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::P<type>" @44
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(990, 1650)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@44
+			location   	(668, 1540)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	644
+			justify    	0
+			label      	"P<type>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3ACDC653014B"
+		    width      	662
+		    height     	320
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @45
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3ACDC69703DD"
+		    client     	@44
+		    supplier   	@43
+		    vertices   	(list Points
+			(990, 1489)
+			(990, 1273))
+		    line_style 	0)
+		(object NoteView @46
+		    location   	(1665, 1635)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@46
+			location   	(1389, 1499)
+			fill_color 	13434879
+			nlines     	5
+			max_width  	517
+			label      	"type can be: Long, Double, String, Boolean, Complex, Enum, Sequence<scalar>, Array<scalar>, Structure")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	577
+		    height     	285)
+		(object AttachView "" @47
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@46
+		    supplier   	@44
+		    vertices   	(list Points
+			(1665, 1635)
+			(990, 1650))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Characteristic" @48
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2220, 210)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@48
+			location   	(2051, 174)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	338
+			justify    	0
+			label      	"Characteristic")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF59860126"
+		    width      	356
+		    height     	97
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel" @49
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 225)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@49
+			location   	(1424, 333)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	607
+			justify    	0
+			label      	"ACS::CharacteristicModel")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38DB840500CB"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AttachView "" @50
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@41
+		    supplier   	@49
+		    vertices   	(list Points
+			(908, 245)
+			(1397, 224))
+		    line_style 	0)
+		(object AssociationViewNew "pippi" @51
+		    location   	(1746, 216)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @52
+			Parent_View 	@51
+			location   	(1746, 157)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"pippi"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9891C303D1"
+		    roleview_list 	(list RoleViews
+			(object RoleView "" @53
+			    Parent_View 	@51
+			    location   	(636, -9)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @54
+				Parent_View 	@53
+				location   	(1983, 255)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DC"
+			    client     	@51
+			    supplier   	@48
+			    vertices   	(list Points
+				(1746, 216)
+				(2041, 212))
+			    line_style 	0
+			    label      	(object SegLabel @55
+				Parent_View 	@53
+				location   	(2010, 159)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.900000
+				height     	54
+				orientation 	0))
+			(object RoleView "" @56
+			    Parent_View 	@51
+			    location   	(636, -9)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @57
+				Parent_View 	@56
+				location   	(1511, 261)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DB"
+			    client     	@51
+			    supplier   	@49
+			    vertices   	(list Points
+				(1746, 216)
+				(1451, 220))
+			    line_style 	0)))
+		(object InheritTreeView "" @58
+		    location   	(1425, 540)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@49
+		    vertices   	(list Points
+			(1425, 540)
+			(1425, 358)))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:Property" @59
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(990, 765)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@59
+			location   	(818, 714)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	344
+			justify    	0
+			label      	"ACS::Property")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4C4EF0219"
+		    width      	362
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @60
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C4FA0371"
+		    client     	@59
+		    supplier   	@49
+		    vertices   	(list Points
+			(988, 702)
+			(988, 540))
+		    line_style 	3
+		    origin_attachment 	(988, 702)
+		    terminal_attachment 	(988, 540)
+		    drawSupplier 	@58)
+		(object InheritView "" @61
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C50500F0"
+		    client     	@43
+		    supplier   	@59
+		    vertices   	(list Points
+			(990, 1036)
+			(990, 828))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent" @62
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2055, 810)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@62
+			location   	(2054, 918)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	395
+			justify    	0
+			label      	"ACS::CharacteristicComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF597A029B"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$0" @63
+		    location   	(2552, 908)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3932292402AE"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$1" @64
+			    Parent_View 	@63
+			    location   	(1082, 188)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393229280119"
+			    client     	@63
+			    supplier   	@62
+			    vertices   	(list Points
+				(2552, 908)
+				(2552, 809)
+				(2081, 808))
+			    line_style 	0
+			    label      	(object SegLabel @65
+				Parent_View 	@64
+				location   	(2165, 847)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.853868
+				height     	39
+				orientation 	0))
+			(object RoleView "$UNNAMED$2" @66
+			    Parent_View 	@63
+			    location   	(1082, 188)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393229280123"
+			    client     	@63
+			    supplier   	@62
+			    vertices   	(list Points
+				(2552, 908)
+				(2552, 1017)
+				(2309, 1017)
+				(2140, 878))
+			    line_style 	0)))
+		(object InheritView "" @67
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38CF599F024E"
+		    client     	@32
+		    supplier   	@62
+		    vertices   	(list Points
+			(2040, 3213)
+			(2050, 968))
+		    line_style 	0)
+		(object InheritView "" @68
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38DB845103B0"
+		    client     	@62
+		    supplier   	@49
+		    vertices   	(list Points
+			(2050, 781)
+			(2050, 540))
+		    line_style 	3
+		    origin_attachment 	(2050, 781)
+		    terminal_attachment 	(2050, 540)
+		    drawSupplier 	@58)
+		(object AssociationViewNew "$UNNAMED$46" @69
+		    location   	(1598, 788)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C50D017D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$47" @70
+			    Parent_View 	@69
+			    location   	(-127, 38)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C50D0380"
+			    client     	@69
+			    supplier   	@59
+			    vertices   	(list Points
+				(1598, 788)
+				(1171, 771))
+			    line_style 	0
+			    label      	(object SegLabel @71
+				Parent_View 	@70
+				location   	(1214, 827)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.900000
+				height     	54
+				orientation 	0))
+			(object RoleView "$UNNAMED$48" @72
+			    Parent_View 	@69
+			    location   	(-127, 38)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C50D0382"
+			    client     	@69
+			    supplier   	@62
+			    vertices   	(list Points
+				(1598, 788)
+				(2026, 805))
+			    line_style 	0)))
+		(object NoteView @73
+		    location   	(300, 1155)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@73
+			location   	(43, 1031)
+			fill_color 	13434879
+			nlines     	5
+			max_width  	478
+			label      	
+|These classes are logically "packed" in the Property class in other diagrams
+			)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	538
+		    height     	260)
+		(object AttachView "" @74
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@73
+		    supplier   	@59
+		    vertices   	(list Points
+			(527, 1024)
+			(875, 828))
+		    line_style 	0)
+		(object AttachView "" @75
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@73
+		    supplier   	@43
+		    vertices   	(list Points
+			(569, 1155)
+			(770, 1155))
+		    line_style 	0)
+		(object AttachView "" @76
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@73
+		    supplier   	@44
+		    vertices   	(list Points
+			(482, 1285)
+			(765, 1489))
+		    line_style 	0)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RO<type>" @77
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(690, 2310)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@77
+			location   	(494, 2280)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	392
+			justify    	0
+			label      	"ACS::RO<type>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B9894130346"
+		    width      	410
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @78
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98964B009A"
+		    client     	@33
+		    supplier   	@77
+		    vertices   	(list Points
+			(690, 3316)
+			(690, 2390))
+		    line_style 	0)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RW<type>" @79
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1410, 2340)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@79
+			location   	(1208, 2205)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	404
+			justify    	0
+			label      	"ACS::RW<type>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B9894550369"
+		    width      	422
+		    height     	370
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @80
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98964D03C8"
+		    client     	@34
+		    supplier   	@79
+		    vertices   	(list Points
+			(1410, 3316)
+			(1410, 2525))
+		    line_style 	0)
+		(object InheritTreeView "" @81
+		    location   	(990, 1904)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@44
+		    vertices   	(list Points
+			(990, 1904)
+			(990, 1810)))
+		(object InheritView "" @82
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C79A0220"
+		    client     	@77
+		    supplier   	@44
+		    vertices   	(list Points
+			(725, 2230)
+			(725, 1904))
+		    line_style 	3
+		    origin_attachment 	(725, 2230)
+		    terminal_attachment 	(725, 1904)
+		    drawSupplier 	@81)
+		(object InheritView "" @83
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C79E02BC"
+		    client     	@79
+		    supplier   	@44
+		    vertices   	(list Points
+			(1400, 2155)
+			(1400, 1904))
+		    line_style 	3
+		    origin_attachment 	(1400, 2155)
+		    terminal_attachment 	(1400, 1904)
+		    drawSupplier 	@81)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:ACSComponent" @84
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2595, 435)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@84
+			location   	(2594, 543)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	584
+			justify    	0
+			label      	"ACS::ACSComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"402AB36100E3"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @85
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"402AB39300C9"
+		    client     	@62
+		    supplier   	@84
+		    vertices   	(list Points
+			(2081, 788)
+			(2507, 495))
+		    line_style 	0)))
+	(object ClassDiagram "ACS Simple CharacteristicComponent-Property-Characteristic model"
+	    quid       	"3B98877900A9"
+	    title      	"ACS Simple CharacteristicComponent-Property-Characteristic model"
+	    zoom       	67
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel" @86
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1830, 390)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@86
+			location   	(1829, 498)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	613
+			justify    	0
+			label      	"ACS::CharacteristicModel")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38DB840500CB"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Characteristic" @87
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(3315, 390)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@87
+			location   	(3068, 320)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	494
+			justify    	0
+			label      	"Characteristic")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF59860126"
+		    width      	512
+		    height     	172
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "pippi" @88
+		    location   	(2457, 390)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9891C303D1"
+		    roleview_list 	(list RoleViews
+			(object RoleView "" @89
+			    Parent_View 	@88
+			    location   	(477, -300)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @90
+				Parent_View 	@89
+				location   	(1976, 432)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DB"
+			    client     	@88
+			    supplier   	@86
+			    vertices   	(list Points
+				(2457, 390)
+				(1856, 390))
+			    line_style 	0)
+			(object RoleView "" @91
+			    Parent_View 	@88
+			    location   	(477, -300)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @92
+				Parent_View 	@91
+				location   	(2938, 432)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DC"
+			    client     	@88
+			    supplier   	@87
+			    vertices   	(list Points
+				(2457, 390)
+				(3058, 390))
+			    line_style 	0
+			    label      	(object SegLabel @93
+				Parent_View 	@91
+				location   	(2912, 340)
+				font       	(object Font
+				    size       	14
+				    face       	"Arial"
+				    bold       	TRUE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.756341
+				height     	51
+				orientation 	0))))
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RW<type>" @94
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(3090, 2115)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@94
+			location   	(2803, 1930)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	574
+			justify    	0
+			label      	"ACS::RW<type>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B9894550369"
+		    width      	592
+		    height     	502
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RO<type>" @95
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2205, 2115)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@95
+			location   	(1976, 2041)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	458
+			justify    	0
+			label      	"ACS::RO<type>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B9894130346"
+		    width      	476
+		    height     	289
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::Device" @96
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1290, 2910)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@96
+			location   	(1069, 2844)
+			nlines     	1
+			max_width  	442
+			justify    	0
+			label      	"Device")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"38CF599903A4"
+		    width      	460
+		    height     	164
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::MonitorPoint" @97
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2205, 2895)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@97
+			location   	(1979, 2858)
+			nlines     	1
+			max_width  	452
+			justify    	0
+			label      	"MonitorPoint")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"39322A4802FE"
+		    width      	470
+		    height     	206
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::ControlPoint" @98
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(3090, 2880)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@98
+			location   	(2869, 2843)
+			nlines     	1
+			max_width  	442
+			justify    	0
+			label      	"ControlPoint")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"39322A84006F"
+		    width      	460
+		    height     	206
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object NoteView @99
+		    location   	(480, 2910)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@99
+			location   	(35, 2804)
+			fill_color 	13434879
+			nlines     	3
+			max_width  	855
+			label      	"Control system Devices are (Characteristic) omponents")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	915
+		    height     	224)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Examples::Thermostat" @100
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1290, 3285)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@100
+			location   	(1069, 3219)
+			nlines     	1
+			max_width  	442
+			justify    	0
+			label      	"Thermostat")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"38CF59A10387"
+		    width      	460
+		    height     	164
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object NoteView @101
+		    location   	(450, 3285)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@101
+			location   	(192, 3202)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	481
+			label      	"An example of Device")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	541
+		    height     	178)
+		(object NoteView @102
+		    location   	(2040, 2580)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@102
+			location   	(741, 2516)
+			fill_color 	13434879
+			nlines     	3
+			max_width  	2562
+			label      	"Examples of user defined classes:")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	2622
+		    height     	141)
+		(object AttachView "" @103
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@96
+		    supplier   	@99
+		    vertices   	(list Points
+			(1059, 2910)
+			(937, 2910))
+		    line_style 	0)
+		(object InheritView "" @104
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38CF59A70386"
+		    client     	@100
+		    supplier   	@96
+		    vertices   	(list Points
+			(1290, 3202)
+			(1290, 2992))
+		    line_style 	0)
+		(object AttachView "" @105
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@101
+		    supplier   	@100
+		    vertices   	(list Points
+			(720, 3285)
+			(1059, 3285))
+		    line_style 	0)
+		(object InheritView "" @106
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98964B009A"
+		    client     	@97
+		    supplier   	@95
+		    vertices   	(list Points
+			(2205, 2791)
+			(2205, 2259))
+		    line_style 	0)
+		(object InheritView "" @107
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98964D03C8"
+		    client     	@98
+		    supplier   	@94
+		    vertices   	(list Points
+			(3090, 2776)
+			(3090, 2366))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent" @108
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1290, 1335)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@108
+			location   	(1289, 1443)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	465
+			justify    	0
+			label      	"ACS::CharacteristicComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF597A029B"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$0" @109
+		    location   	(607, 1392)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3932292402AE"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$1" @110
+			    Parent_View 	@109
+			    location   	(-1163, 267)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @111
+				Parent_View 	@110
+				location   	(924, 1393)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393229280119"
+			    client     	@109
+			    supplier   	@108
+			    vertices   	(list Points
+				(607, 1392)
+				(607, 1528)
+				(1051, 1398))
+			    line_style 	0
+			    label      	(object SegLabel @112
+				Parent_View 	@110
+				location   	(875, 1506)
+				font       	(object Font
+				    size       	14
+				    face       	"Arial"
+				    bold       	TRUE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.669118
+				height     	54
+				orientation 	1))
+			(object RoleView "$UNNAMED$2" @113
+			    Parent_View 	@109
+			    location   	(-1163, 267)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @114
+				Parent_View 	@113
+				location   	(1119, 1289)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393229280123"
+			    client     	@109
+			    supplier   	@108
+			    vertices   	(list Points
+				(607, 1392)
+				(607, 1332)
+				(1262, 1330))
+			    line_style 	0)))
+		(object InheritView "" @115
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38CF599F024E"
+		    client     	@96
+		    supplier   	@108
+		    vertices   	(list Points
+			(1290, 2827)
+			(1290, 1509))
+		    line_style 	0)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property" @116
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2610, 1335)
+		    font       	(object Font
+			size       	14
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@116
+			location   	(2064, 1115)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	1092
+			justify    	0
+			label      	"Property")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4C27D0030"
+		    width      	1110
+		    height     	566
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritTreeView "" @117
+		    location   	(2610, 1708)
+		    font       	(object Font
+			size       	14
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@116
+		    vertices   	(list Points
+			(2610, 1708)
+			(2610, 1618)))
+		(object InheritView "" @118
+		    font       	(object Font
+			size       	14
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9894BE01E4"
+		    client     	@94
+		    supplier   	@116
+		    vertices   	(list Points
+			(3034, 1864)
+			(3034, 1708))
+		    line_style 	3
+		    origin_attachment 	(3034, 1864)
+		    terminal_attachment 	(3034, 1708)
+		    drawSupplier 	@117)
+		(object InheritView "" @119
+		    font       	(object Font
+			size       	14
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9894BA0346"
+		    client     	@95
+		    supplier   	@116
+		    vertices   	(list Points
+			(2129, 1971)
+			(2129, 1708))
+		    line_style 	3
+		    origin_attachment 	(2129, 1971)
+		    terminal_attachment 	(2129, 1708)
+		    drawSupplier 	@117)
+		(object AssociationViewNew "$UNNAMED$43" @120
+		    location   	(1685, 1335)
+		    font       	(object Font
+			size       	14
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C2E800E9"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$45" @121
+			    Parent_View 	@120
+			    location   	(755, 375)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @122
+				Parent_View 	@121
+				location   	(1391, 1377)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C2E800EB"
+			    client     	@120
+			    supplier   	@108
+			    vertices   	(list Points
+				(1685, 1335)
+				(1316, 1335))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$44" @123
+			    Parent_View 	@120
+			    location   	(755, 375)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @124
+				Parent_View 	@123
+				location   	(1979, 1377)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C2E800EA"
+			    client     	@120
+			    supplier   	@116
+			    vertices   	(list Points
+				(1685, 1335)
+				(2054, 1335))
+			    line_style 	0
+			    label      	(object SegLabel @125
+				Parent_View 	@123
+				location   	(1955, 1291)
+				font       	(object Font
+				    size       	14
+				    face       	"Times New Roman"
+				    bold       	TRUE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.732087
+				height     	45
+				orientation 	0))))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:ACSComponent" @126
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(705, 420)
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@126
+			location   	(704, 528)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	590
+			justify    	0
+			label      	"ACS::ACSComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"402AB36100E3"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritTreeView "" @127
+		    location   	(1830, 921)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@86
+		    vertices   	(list Points
+			(1830, 921)
+			(1830, 564)))
+		(object InheritView "" @128
+		    font       	(object Font
+			size       	14
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C2C502EE"
+		    client     	@116
+		    supplier   	@86
+		    vertices   	(list Points
+			(2450, 1051)
+			(2450, 921))
+		    line_style 	3
+		    origin_attachment 	(2450, 1051)
+		    terminal_attachment 	(2450, 921)
+		    drawSupplier 	@127)
+		(object InheritView "" @129
+		    font       	(object Font
+			size       	14
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38DB845103B0"
+		    client     	@108
+		    supplier   	@86
+		    vertices   	(list Points
+			(1288, 1306)
+			(1288, 921))
+		    line_style 	3
+		    origin_attachment 	(1288, 1306)
+		    terminal_attachment 	(1288, 921)
+		    drawSupplier 	@127)
+		(object InheritView "" @130
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"402AB39300C9"
+		    client     	@108
+		    supplier   	@126
+		    vertices   	(list Points
+			(1272, 1307)
+			(790, 554))
+		    line_style 	0)))
+	(object ClassDiagram "ACS Simple CharacteristicComponent-PropertyCharacteristic model (very simple)"
+	    quid       	"3BD6AC9C03AE"
+	    title      	"ACS Simple CharacteristicComponent-PropertyCharacteristic model (very simple)"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	669
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel" @131
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1320, 540)
+		    font       	(object Font
+			size       	12
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@131
+			location   	(1319, 648)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	619
+			justify    	0
+			label      	"ACS::CharacteristicModel")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38DB840500CB"
+		    width      	58
+		    height     	58
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Characteristic" @132
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1950, 540)
+		    font       	(object Font
+			size       	12
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@132
+			location   	(1751, 492)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	398
+			justify    	0
+			label      	"Characteristic")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF59860126"
+		    width      	416
+		    height     	124
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "pippi" @133
+		    location   	(1543, 540)
+		    font       	(object Font
+			size       	12
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9891C303D1"
+		    roleview_list 	(list RoleViews
+			(object RoleView "" @134
+			    Parent_View 	@133
+			    location   	(-438, -150)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @135
+				Parent_View 	@134
+				location   	(1386, 582)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DB"
+			    client     	@133
+			    supplier   	@131
+			    vertices   	(list Points
+				(1543, 540)
+				(1346, 540))
+			    line_style 	0)
+			(object RoleView "" @136
+			    Parent_View 	@133
+			    location   	(-438, -150)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @137
+				Parent_View 	@136
+				location   	(1700, 582)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B9891C303DC"
+			    client     	@133
+			    supplier   	@132
+			    vertices   	(list Points
+				(1543, 540)
+				(1741, 540))
+			    line_style 	0
+			    label      	(object SegLabel @138
+				Parent_View 	@136
+				location   	(1644, 504)
+				font       	(object Font
+				    size       	12
+				    face       	"Times New Roman"
+				    bold       	TRUE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	80
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.516854
+				height     	37
+				orientation 	0))))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent" @139
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(900, 1005)
+		    font       	(object Font
+			size       	12
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@139
+			location   	(899, 1113)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	470
+			justify    	0
+			label      	"ACS::CharacteristicComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38CF597A029B"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$0" @140
+		    location   	(1125, 1160)
+		    font       	(object Font
+			size       	12
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3932292402AE"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$1" @141
+			    Parent_View 	@140
+			    location   	(-647, 32)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @142
+				Parent_View 	@141
+				location   	(913, 1272)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393229280119"
+			    client     	@140
+			    supplier   	@139
+			    vertices   	(list Points
+				(1125, 1160)
+				(1125, 1230)
+				(900, 1230)
+				(900, 1172))
+			    line_style 	0
+			    label      	(object SegLabel @143
+				Parent_View 	@141
+				location   	(1032, 1283)
+				font       	(object Font
+				    size       	12
+				    face       	"Times New Roman"
+				    bold       	TRUE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	80
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.464758
+				height     	53
+				orientation 	0))
+			(object RoleView "$UNNAMED$2" @144
+			    Parent_View 	@140
+			    location   	(-647, 32)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @145
+				Parent_View 	@144
+				location   	(998, 1047)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393229280123"
+			    client     	@140
+			    supplier   	@139
+			    vertices   	(list Points
+				(1125, 1160)
+				(1125, 1005)
+				(926, 1005))
+			    line_style 	0)))
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property" @146
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    location   	(1710, 1005)
+		    font       	(object Font
+			size       	11
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@146
+			location   	(1590, 980)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	240
+			justify    	0
+			label      	"Property")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4C27D0030"
+		    width      	258
+		    height     	157
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$43" @147
+		    location   	(1253, 1005)
+		    font       	(object Font
+			size       	11
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C2E800E9"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$45" @148
+			    Parent_View 	@147
+			    location   	(-463, -270)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @149
+				Parent_View 	@148
+				location   	(992, 964)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C2E800EB"
+			    client     	@147
+			    supplier   	@139
+			    vertices   	(list Points
+				(1253, 1005)
+				(926, 1005))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$44" @150
+			    Parent_View 	@147
+			    location   	(-463, -270)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @151
+				Parent_View 	@150
+				location   	(1514, 964)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4C2E800EA"
+			    client     	@147
+			    supplier   	@146
+			    vertices   	(list Points
+				(1253, 1005)
+				(1580, 1005))
+			    line_style 	0
+			    label      	(object SegLabel @152
+				Parent_View 	@150
+				location   	(1484, 1044)
+				font       	(object Font
+				    size       	11
+				    face       	"Times New Roman"
+				    bold       	TRUE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	90
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.705882
+				height     	39
+				orientation 	1))))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:ACSComponent" @153
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(600, 540)
+		    font       	(object Font
+			size       	12
+			face       	"Arial"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@153
+			location   	(599, 648)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	596
+			justify    	0
+			label      	"ACS::ACSComponent")
+		    icon       	"Interface"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"402AB36100E3"
+		    width      	58
+		    height     	58
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @154
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"402AB39300C9"
+		    client     	@139
+		    supplier   	@153
+		    vertices   	(list Points
+			(878, 975)
+			(685, 673))
+		    line_style 	0)
+		(object InheritTreeView "" @155
+		    location   	(1320, 767)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@131
+		    vertices   	(list Points
+			(1320, 767)
+			(1320, 677)))
+		(object InheritView "" @156
+		    font       	(object Font
+			size       	12
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38DB845103B0"
+		    client     	@139
+		    supplier   	@131
+		    vertices   	(list Points
+			(931, 976)
+			(931, 767))
+		    line_style 	3
+		    origin_attachment 	(931, 976)
+		    terminal_attachment 	(931, 767)
+		    drawSupplier 	@155)
+		(object InheritView "" @157
+		    font       	(object Font
+			size       	11
+			face       	"Times New Roman"
+			bold       	TRUE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4C2C502EE"
+		    client     	@146
+		    supplier   	@131
+		    vertices   	(list Points
+			(1710, 927)
+			(1710, 767))
+		    line_style 	3
+		    origin_attachment 	(1710, 927)
+		    terminal_attachment 	(1710, 767)
+		    drawSupplier 	@155)))
+	(object ClassDiagram "Property Servant Implementation"
+	    quid       	"3DD4BEB10144"
+	    title      	"Property Servant Implementation"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::RW<type>Impl" @158
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1845, 1245)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@158
+			location   	(1667, 1215)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	356
+			justify    	0
+			label      	"RW<type>Impl")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4BBE90252"
+		    width      	374
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIO" @159
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1185, 1590)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@159
+			location   	(1089, 1505)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	192
+			justify    	0
+			label      	"DevIO")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4BF510220"
+		    width      	210
+		    height     	270
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$37" @160
+		    location   	(1490, 1428)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @161
+			Parent_View 	@160
+			location   	(1490, 1369)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			hidden     	TRUE
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	120
+			justify    	0
+			label      	""
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4BFBF0376"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$38" @162
+			    Parent_View 	@160
+			    location   	(-235, -612)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4BFC0025C"
+			    client     	@160
+			    supplier   	@159
+			    vertices   	(list Points
+				(1490, 1428)
+				(1290, 1533))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$39" @163
+			    Parent_View 	@160
+			    location   	(-235, -612)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4BFC0026C"
+			    client     	@160
+			    supplier   	@158
+			    vertices   	(list Points
+				(1490, 1428)
+				(1686, 1325))
+			    line_style 	0)))
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::RO<type>Impl" @164
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(375, 1260)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@164
+			location   	(199, 1230)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	352
+			justify    	0
+			label      	"RO<type>Impl")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4BBAF02FC"
+		    width      	370
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$40" @165
+		    location   	(819, 1440)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4BFC30039"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$41" @166
+			    Parent_View 	@165
+			    location   	(-2436, -615)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4BFC30366"
+			    client     	@165
+			    supplier   	@159
+			    vertices   	(list Points
+				(819, 1440)
+				(1079, 1546))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$42" @167
+			    Parent_View 	@165
+			    location   	(-2436, -615)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4BFC30368"
+			    client     	@165
+			    supplier   	@164
+			    vertices   	(list Points
+				(819, 1440)
+				(560, 1334))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIOMem" @168
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(975, 2145)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@168
+			location   	(834, 2094)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	282
+			justify    	0
+			label      	"DevIOMem")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	8454016
+		    quidu      	"3DD4C037018B"
+		    width      	300
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIOCan" @169
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 2145)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@169
+			location   	(1294, 2094)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	262
+			justify    	0
+			label      	"DevIOCan")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	8454016
+		    quidu      	"3DD4C0460033"
+		    width      	280
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::DevIOSocket" @170
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1980, 2145)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@170
+			location   	(1823, 2094)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	314
+			justify    	0
+			label      	"DevIOSocket")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	8454016
+		    quidu      	"3DD4C04D0284"
+		    width      	332
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object RealizeView "CAN" @171
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@171
+			location   	(1320, 1903)
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"CAN")
+		    stereotype 	(object SegLabel @172
+			Parent_View 	@171
+			location   	(1214, 1828)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<bind>>"
+			pctDist    	0.647268
+			height     	24
+			orientation 	0)
+		    line_color 	3342489
+		    quidu      	"3DD4C06600DD"
+		    client     	@169
+		    supplier   	@159
+		    vertices   	(list Points
+			(1397, 2081)
+			(1244, 1725))
+		    line_style 	0)
+		(object RealizeView "Socket" @173
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@173
+			location   	(1590, 1872)
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"Socket")
+		    stereotype 	(object SegLabel @174
+			Parent_View 	@173
+			location   	(1484, 1797)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<bind>>"
+			pctDist    	0.599500
+			height     	22
+			orientation 	1)
+		    line_color 	3342489
+		    quidu      	"3DD4C0730205"
+		    client     	@170
+		    supplier   	@159
+		    vertices   	(list Points
+			(1889, 2081)
+			(1290, 1663))
+		    line_style 	0)
+		(object RealizeView "pointer" @175
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@175
+			location   	(1065, 1903)
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"pointer")
+		    stereotype 	(object SegLabel @176
+			Parent_View 	@175
+			location   	(959, 1828)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<bind>>"
+			pctDist    	0.609454
+			height     	16
+			orientation 	0)
+		    line_color 	3342489
+		    quidu      	"3DD4C0560293"
+		    client     	@168
+		    supplier   	@159
+		    vertices   	(list Points
+			(998, 2081)
+			(1132, 1725))
+		    line_style 	0)
+		(object NoteView @177
+		    location   	(1065, 180)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@177
+			location   	(21, 118)
+			nlines     	2
+			max_width  	2053
+			label      	"IDL interfaces")
+		    line_color 	3342489
+		    fill_color 	16777215
+		    width      	2113
+		    height     	137)
+		(object NoteView @178
+		    location   	(1050, 1020)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@178
+			location   	(15, 957)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	2034
+			label      	"Servant concrete implementation")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	2094
+		    height     	138)
+		(object NoteView @179
+		    location   	(405, 2145)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@179
+			location   	(148, 2082)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	478
+			label      	"Physical IO eccess")
+		    line_color 	3342489
+		    fill_color 	8454016
+		    width      	538
+		    height     	138)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property" @180
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1095, 465)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@180
+			location   	(691, 305)
+			nlines     	1
+			max_width  	808
+			justify    	0
+			label      	"Property")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"3DD4C27D0030"
+		    width      	826
+		    height     	420
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RO<type>" @181
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(375, 765)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@181
+			location   	(179, 735)
+			nlines     	1
+			max_width  	392
+			justify    	0
+			label      	"ACS::RO<type>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"3B9894130346"
+		    width      	410
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @182
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9894BA0346"
+		    client     	@181
+		    supplier   	@180
+		    vertices   	(list Points
+			(567, 684)
+			(681, 636))
+		    line_style 	0)
+		(object RealizeView "" @183
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4BD580334"
+		    client     	@164
+		    supplier   	@181
+		    vertices   	(list Points
+			(375, 1179)
+			(375, 845))
+		    line_style 	0)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:RW<type>" @184
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1845, 660)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@184
+			location   	(1642, 525)
+			nlines     	1
+			max_width  	406
+			justify    	0
+			label      	"ACS::RW<type>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	16777215
+		    quidu      	"3B9894550369"
+		    width      	424
+		    height     	370
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @185
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B9894BE01E4"
+		    client     	@184
+		    supplier   	@180
+		    vertices   	(list Points
+			(1632, 603)
+			(1508, 571))
+		    line_style 	0)
+		(object RealizeView "" @186
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4BD600055"
+		    client     	@158
+		    supplier   	@184
+		    vertices   	(list Points
+			(1845, 1164)
+			(1845, 845))
+		    line_style 	0)))))

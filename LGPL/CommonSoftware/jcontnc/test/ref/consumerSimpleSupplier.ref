@@ -1,0 +1,20 @@
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] initialize() called...
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Attempting to create the blar channel.
+1 - ----------T--:--:--.--- WARNING [CONSUMERCOMP1] The 'blar' channel: the receiver object is incapable of handling 'org.omg.CosNotification.StructuredEvent' type of events! It must have a method 'public void receive(org.omg.CosNotification.StructuredEvent)'.
+1 - java.lang.NoSuchMethodException: alma.demo.test.EventConsumerImpl.EventConsumerImpl.receive(org.omg.CosNotification.StructuredEvent)
+1 - ----------T--:--:--.--- WARNING [CONSUMERCOMP1] The 'blar' channel: the receiver object is incapable of handling 'java.lang.Thread' type of events! It must have a method 'public void receive(java.lang.Thread)'.
+1 - java.lang.NoSuchMethodException: alma.demo.test.EventConsumerImpl.EventConsumerImpl.receive(java.lang.Thread)
+1 - Good...cannot subscribe to events where the receive method has not been implemented
+1 - Good...cannot subscribe to events where the type is a native Java class
+1 - Good...cannot add a bad filter: 'hope to god this filter doesn't work' filter is invalid for the 'blar' channel: IDL:omg.org/CosNotifyFilter/InvalidConstraint:1.0
+1 - Waiting for events...consumer
+1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] initialize() called...
+1 - Now sending simplesupplier events...
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
+1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] cleanUp() called...
+1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] A Consumer has disconnected from the 'blar' channel
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] cleanUp() called...

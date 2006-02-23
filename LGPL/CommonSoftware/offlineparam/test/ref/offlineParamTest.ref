@@ -1,0 +1,48 @@
+1 - 
+1 - 
+1 - 
+1 - initialized XML platform
+1 - parsed file: pset-testing.xml
+1 - parsed file: psetdef-testing.xml
+1 - 
+1 - bandname was: P
+1 - bandname now: newstring
+1 - 
+1 - centerfreq was: 1.489
+1 - centerfreq now: 5.5
+1 - 
+1 - testInt was: 12
+1 - testInt now: 11
+1 - 
+1 - overwrite was: 1
+1 - overwrite now: 0
+1 - 
+1 - testStringArray was: 
+1 - string[0]: str1
+1 - string[1]: str2
+1 - string[2]: str3
+1 - 
+1 - testStringArray now: 
+1 - string[0]: newstr1
+1 - string[1]: newstr2
+1 - 
+1 - 
+1 - 
+1 - testDoubleArray was: 
+1 - double[0]: 1.1
+1 - double[1]: 2.2
+1 - double[2]: 3.3
+1 - 
+1 - testDoubleArray now: 
+1 - double[0]: 5.5
+1 - double[1]: 6.6
+1 - 
+1 - testIntArray was: 
+1 - int[0]: 1
+1 - int[1]: 2
+1 - int[2]: 3
+1 - 
+1 - testIntArray now: 
+1 - int[0]: 5
+1 - int[1]: 6
+1 - 

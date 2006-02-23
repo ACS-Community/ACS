@@ -1,0 +1,80 @@
+/*************************************************************************
+* E.S.O. - VLT project
+*
+* "@(#) $Id: vltPort.h.Solaris.2.lite,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+*
+* vltPort.h for Sun Solaris 2
+*
+* who        when      what
+* --------  --------  ----------------------------------------------
+* gfilippi  22/05/96  created form vltPort.h
+* gfilippi  23/05/96  define SUN_COMP added
+*
+*/
+
+/************************************************************************
+*  vltPort.h - Include file to mask differences between platforms.
+*              This file should be included in all source files.
+*              It relies on macro definitions preceeding the
+*              inclusion of this file.
+*                
+*  REMARK: This file belongs to the "vltMake" module.
+*------------------------------------------------------------------------
+*/
+
+#ifndef VLTPORT_H
+#define VLTPORT_H
+
+/*
+* When it is used, vltPort.h MUST be the very first file included
+* in ANSI ".c" files.
+* Cause a syntax error if we detect that any other include file has been
+* included before vltPort.h in an ANSI ".c" file.
+*/
+#if defined(__STDC__) && \
+                         (defined(_H_STANDARDS) || \
+                          defined(_SYS_STDSYMS_INCLUDED) || \
+                          defined(_STANDARDS_H_))
+#    error "vltPort.h MUST BE THE VERY FIRST FILE INCLUDED IN ANSI '.c' FILES"
+#endif
+
+/*
+ * This file is used also by some VxWorks code.
+ * To be compatible with existing code, SUN_COMP is defined for both
+ * gcc and cc68k, but the following definitiond do not influence cc68k
+ */
+ 
+#define SUN_COMP
+
+/* 
+ * at present, SELECT is defined in the code using it. It should be done here
+ * for all. May be in the next release.
+ */
+
+/*
+ * Adjust name-space information.
+ */
+#if defined(_ALL_SOURCE)
+#    undef _POSIX_C_SOURCE
+#endif
+
+#if defined(_XOPEN_SOURCE)
+#    undef _POSIX_C_SOURCE
+#endif
+
+#ifndef MAKE_VXWORKS
+#include <stddef.h>
+#include <sys/types.h>
+#include <sys/time.h>
+
+#if !defined(timercmp)
+    struct timeval
+        {
+        long      tv_sec;         /* seconds */
+        long      tv_usec;        /* and microseconds */
+        };
+#define crTIMEVAL_TIMEZONE_DEFINED
+#endif
+#endif /* MAKE_VXWORKS */
+
+#endif /*!VLTPORT_H*/

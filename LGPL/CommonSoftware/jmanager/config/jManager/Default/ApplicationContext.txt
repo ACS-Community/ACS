@@ -1,0 +1,4 @@
+plugs=
+#plugs=CDBDAL
+#abeans.framework.DefaultPlugPolicy=CDBDAL
+abeans.core.defaults.ConsoleLoggingPolicy=ALL

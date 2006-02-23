@@ -1,0 +1,102 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docManExtract.tcl,v 1.31 2002/06/08 17:20:47 vltsccm Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# mschoell  21/07/98  created
+# mverola   21/07/98  modified name of variables and inserted std header
+
+#************************************************************************
+#   NAME
+#     docManExtract - extract many manpages from one source file
+#
+#   SYNOPSIS
+#     docManExtract file1 file2 ... 
+#
+#   DESCRIPTION
+#     docManExtract extracts from source files, that contain more
+#     than one manpage section, each section into a separate file.
+#     As section start is considered the keyword NAME in a line starting with '*'.
+#     These files can than be used to generate VLT standard man pages.
+#     The files created are named fileMan.nn where nn is a counter from
+#     01 to the number of sections found.
+#
+#   FILES
+#     It needs the tcl shell executable tclsh.
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#     docManExtract *.c
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+# Print the command syntax, if no argument are given
+if {$argc==0} {
+	puts "\nusage: docManExtract file1 file2 ...\n"
+	exit
+}
+
+# Loop on each input file
+foreach inFile $argv {
+
+    # Initialize variables 
+    set headerSect 0;
+    regsub  {\..*} $inFile "" outFileBasename;
+    set fileNumber 1;
+    set lastLine "";
+
+    # Open the current input file
+    set inHandle [open $inFile r];
+
+    # Look inside the current file for the NAME keywork
+    while {[gets $inHandle line] != -1} {
+	
+	if {[regexp {^\* *NAME *$} $line]} {
+
+            # The keywork has been found, we have entered into a header section
+	    set headerSect 1;
+
+            # Set the name of the output file and open it
+	    set out [format "%sMan.%02d" $outFileBasename $fileNumber];
+	    set outHandle [open $out w];
+
+	    puts $outHandle $lastLine;
+	    incr fileNumber;
+	}
+
+        # We are still in the header section	
+	if {$headerSect == 1} {
+	    puts $outHandle $line;
+
+            # Check if we are leaving the header section,
+            # that is look for the keywork '*/'
+	    if {[regexp {^\*\/ *$} $line]} {
+
+                # We are leaving the header section
+		set headerSect 0;
+
+                # Close the output file
+		close $outHandle;
+	    }
+	}
+	
+	set lastLine $line;
+    }
+
+    # Close current input file
+    close $inHandle;
+
+}
+
+# ___oOo___

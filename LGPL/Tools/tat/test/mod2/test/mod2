@@ -1,0 +1,7 @@
+#
+# "@(#) $Id: mod2,v 1.76 2003/01/09 17:50:56 vltsccm Exp $"
+#
+echo $wmod
+echo $lmod
+msgSend $lmod lccServer LCCGST ""
+

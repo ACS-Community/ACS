@@ -1,0 +1,38 @@
+RELEASE_NOTES
+
+Module: compat - VLT SW compatibility test
+
+Date: $Date: 2001/06/20 11:14:44 $
+ 
+From: 
+   Eric Allaert <eallaert@eso.org>
+
+Version: 
+   "@(#) $Id: RELEASE_NOTES,v 1.23 2001/06/20 11:14:44 vltsccm Exp $" 
+
+Documents:
+
+
+Configuration Requirements:
+   - VLT SW Jul95
+
+
+Tested:
+   on HP-UX 9.05 and Sun Solaris 2.3
+   
+
+Cost:
+   -
+
+Changes:
+
+   New Features:
+     - 
+   
+   Fixed Problems:
+     - flush to stdout needed after "puts -nonewline"
+
+
+                                ___oOo___
+
+

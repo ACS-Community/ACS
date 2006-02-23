@@ -1,0 +1,151 @@
+#! /usr/bin/ksh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# build
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# psivera   2003-10-31  created
+#
+# "@(#) $Id: buildVxWorks,v 1.11 2005/12/30 11:54:07 gchiozzi Exp $"
+
+#************************************************************************
+#   NAME
+#   buildVxWorks - unpack the VxWorks tar file for ACS SUN installations
+#
+#   SYNOPSIS
+#   buildVxWorks 
+#
+#   DESCRIPTION
+#
+#
+#   FILES
+#
+#------------------------------------------------------------------------
+
+#
+# which platform?
+#
+build_OS=`uname -s`
+
+
+LOG=buildVxWorks.log
+CWD=`pwd`
+#
+exec > $LOG 2>&1
+
+date
+
+#
+# print header
+#
+TITLE="     ALMA Common Software buildVxWorks build  "
+BUILD_NAME="VxWorks"
+. ./standardPrologue
+
+if [ ! -e ../PROPRIETARY/vw5.5.tar.gz ]
+then
+  echo Error: vw5.5 tar file is missing
+  exit 2
+fi
+
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE
+
+if [ -d vw5.5 ]
+then
+    echo "vw5.5 already existing; first remove it"
+    rm -rf vw5.5
+fi
+
+echo "Untarring the vw5.5.tar.gz file"
+BASE=$CWD/../PROPRIETARY
+tar zxf $BASE/vw5.5.tar.gz
+
+if [ ${build_OS} = "Linux" ]
+then
+   echo $SEPARATOR
+   SRC="${INSTALL_ROOT}/PROPRIETARY/vw"
+   VX_BUILD_DIR=${SRC}
+   echo "set temporary build directory: $SRC . . ."
+   if [ -d $SRC ]
+       then
+       echo "\n\tthere is an old $SRC: start to remove it . . . "
+       for name in `ls $SRC`
+	 do
+	 echo "\t   remove $SRC/$name . . . "
+	 rm -rf $SRC/$name
+       done
+       rmdir $SRC
+       echo "\tdone"
+   fi
+   mkdir $SRC
+   echo "      . . . done"
+
+   cd $SRC
+   tar zxf $BASE/LinuxVxWorks-gcc-2.9.6.tar.gz
+   if [ "X$WIND_BASE" = X ]
+       then
+       export WIND_BASE=$ALMASW_ROOTDIR/$ALMASW_RELEASE/vw5.5
+       echo "==== Setting WIND_BASE to $WIND_BASE and derived env. vars"
+       export VX_BSP_BASE=$WIND_BASE/target
+       export VX_CPU_FAMILY=ppc
+       export VX_HSP_BASE=$WIND_BASE/target
+       export VXROOT=$WIND_BASE/target
+       export VX_VW_BASE=$WIND_BASE/target
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_BASE/host/x86-linux/lib
+       export PATH=$PATH:$WIND_BASE/host/x86-linux/bin
+   fi
+   if [ "X$WIND_HOST_TYPE" = X ]
+       then
+       export WIND_HOST_TYPE=x86-linux
+       echo "==== Setting WIND_HOST_TYPE to $WIND_HOST_TYPE"
+   fi
+
+   if [ ! "$WIND_HOST_TYPE" = "x86-linux" ]
+       then
+       echo "==== WIND_HOST_TYPE has to be set to x86-linux"
+       exit 1
+   fi
+
+   echo "building cross-compiler ..."
+   make -f mkCrossGCC CPU=ppc
+   make -f mkCrossGCC CPU=ppc build
+   echo "building cross-compiler done !"
+
+   echo "link wtxtcl to tcl"
+   rm -f $WIND_BASE/host/$WIND_HOST_TYPE/bin/wtxtcl
+   ln -s $ALMASW_ROOTDIR/$ALMASW_RELEASE/tcltk/bin/tcl $WIND_BASE/host/$WIND_HOST_TYPE/bin/wtxtcl
+  
+   echo "setting make rules for Linux"
+   cd $WIND_BASE
+   tar xf $SRC/linux-make-rules.tar
+fi
+
+#
+# Patching and building the mv2700 kernel
+# The patch file has been generated from the following command:
+# LC_ALL=C TZ=UTC0 diff -Naur mv2700 mv2700.new >vw5.5-target-config-mv2700.patch
+#
+echo $SEPARATOR
+echo "patching kernel for all configuration ..."
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/vw5.5
+echo PWD= $PWD
+patch -p1 < $BASE/vw5.5-target-config-all.patch
+
+echo "patching kernel for mv2700 ..."
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/vw5.5/target/config/mv2700
+echo PWD= $PWD
+patch -p1 < $BASE/vw5.5-target-config-mv2700.patch
+echo "building kernel for mv2700 ..."
+make clean
+make 
+echo "building kernel for mv2700 done"
+
+#
+# The end
+#
+cd $CWD
+echo vw5.5 installation done!
+date
+

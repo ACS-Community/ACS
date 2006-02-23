@@ -1,0 +1,5 @@
+application.ManagerImplTestEngine=ManagerSimulation.xml
+
+#application.default=ChannelPowerSupply.xml
+
+debug=true

@@ -1,0 +1,201 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# build
+#
+# "@(#) $Id: buildTools,v 1.25 2005/11/14 15:18:36 gchiozzi Exp $"
+
+#************************************************************************
+#   NAME
+#   build - build ACS software TOOLS
+#
+#   SYNOPSIS
+#   build 
+#
+#   DESCRIPTION
+#   Wrapper script to control the overall building of ACS Software TOOLS.
+#
+#   According to the current environment, the procedure builds all
+#   what can be built by calling the build<XXXX> specific procedure.
+#   
+#   Use the -vw command line option to force building VxWorks on Linux.
+#   VxWorks is built automatically only on Sun.
+#
+#   FILES
+#   ./buildOutput.<host>  WRITE  file containing the stout
+#   ./buildError.<host>   WRITE  file containing the stout
+#
+#------------------------------------------------------------------------
+
+#********************************************
+# Read and execute instructions in:         *
+#  README                                   *
+#********************************************
+
+#
+# which platform?
+#
+. standardUtilities
+os_discovery
+
+#
+# No INTROOT please!
+#
+if [ "$INTROOT" != "" ]
+then 
+    echo ""
+    echo " ERROR: INTROOT shall not be defined (current \$INTROOT >$INTROOT<)"
+    echo "     This installation procedure cannot handle this."
+    echo ""
+    exit 1
+fi
+
+TITLE="     ALMA Common Software TOOLS  "
+
+#
+# Some builds might failed if the tty is closed
+#
+echo "WARNING: Do not close this terminal: some build might fail!"
+
+if [ "X$DISPLAY" = "X" ]
+then
+   echo "WARNING: DISPLAY not set. Some build/tests might fail!"
+fi 
+
+
+# Read and execute instructions in:
+# README
+if [ ! -d $ALMASW_ROOTDIR/$ALMASW_RELEASE ]
+then
+     echo "Create $ALMASW_RELEASE"
+     mkdir -p $ALMASW_ROOTDIR/$ALMASW_RELEASE
+     RET=$?
+     if [ $RET -ne 0 ]
+     then
+	echo "Failed to create $ALMASW_RELEASE, cannot continue..."
+	exit 1
+     fi
+else
+     echo "Target directory $ALMASW_RELEASE already exist."
+fi
+
+
+# This is the order that must be followed when compiling the different tools
+# To be noted: if OS is not Solaris, RH9, RH 7.3 or RH 7.2 GNU tools must
+# not be compiled, but we use what is installed with the system 
+# see later on for tcl/tk
+if [ "$OS" != "LINUX" -o "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
+then
+	echo "Build GNU tools and Tcl&Tk only on RedHat 7.2, 7.3 and 9 and Solaris machines"
+	echo "buildGNU"
+	./buildGNU
+fi
+
+#
+# Allow to explicitly ask to build VxWorks
+# using the -vx command line option
+# This is important the first time tool are built,
+# Otherwive WIND_BASE is not defined
+# On SUN we always build VxWorks
+#
+if [ "X$1" = "X-vw" ]
+then
+   echo "VxWorks build explicitly requested"
+   BUILD_VX_WORKS=1
+fi
+
+# if we build VxWorks, OS is Solaris, RH9, RH 7.3 or RH 7.2 GNU Tcl&Tk must
+# be compiled.
+# For VxWorks this is due to dependencies in the CCSLite code (quite old).
+# TODO: We should be able to cleanup this problem in case of need,
+#       bug given the limited resources for VxWorks support we do not do it now.
+if [ "$BUILD_VX_WORKS" = "1" -o "$OS" = "SOLARIS" -o "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
+then
+    # for VxWorks (better CCSLite) we still need to install TCLTK
+    echo "buildTcltk"
+    export TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
+    ./buildTcltk
+fi
+
+
+# If explicitly requested or always on Solaris
+# we build VxWorks.
+if [ "$BUILD_VX_WORKS" = "1" -o "$OS" = "SOLARIS" ]
+then
+    # for SUN only: put VxWorks 5.5 and CCSLite ; prepare the msql and launch the deamon
+    # NB: CCSLite/vw/bin/PPC604 contains binaries prepared by B. Gustafsson 
+    # which work with Tornado 2.
+    echo "buildVxWorks"
+    ./buildVxWorks
+
+    #
+    # We need to re-evaluate the environment
+    # to make sure that the presence of VxWorks is detected.
+    # I have to use the --login option, because on sun -l does not work.
+    echo "buildCCSLite (ignore the following login messages and wait for buildCCSLite to complete)"
+    bash --login ./buildCCSLite
+else
+    # If we have no VxWorks, we do not use msql; although it is compiled and installed 
+    # in $TCLTK_ROOT we remove the useless directory under $ACSDATA.
+    # to clean ACSDATA cleaner
+    rm -rf $ACSDATA/msql
+fi
+
+
+# JDK is installed ONLY on RH-7 and 9.
+# It is assumed it is already installed on any other platform.
+if [ "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
+then
+        echo "buildJava"
+        ./buildJava
+fi
+
+#
+# We need to re-evaluate the environment
+# to make sure that the presence of VxWorks is detected.
+# I have to use the --login option, because on sun -l does not work.
+#
+echo "buildTAO (ignore the following login messages and wait for buildTAO to complete)"
+bash --login ./buildTAO
+
+echo "buildAnt"
+./buildAnt
+echo "buildJacORB"
+./buildJacORB
+echo "buildPython"
+./buildPython
+echo "buildOmniORB"
+./buildOmniORB
+echo "buildMico"
+./buildMico
+
+if [ ${OS} = "LINUX" ]
+then
+    # for Linux  only: install Tomcat
+    echo "buildTomcat"
+    ./buildTomcat
+
+    if [ "$DISTRO" != "RHLX" -o "$REL" != "9" ]
+    then
+       echo "For Linux RH9 only, it is possible to install AIPS++ rpms."
+       echo "The installation requires root privileges"
+       echo "You have to run the script"
+       echo "     ./buildAIPS++"
+       echo "if you want to install AIPS++"
+       echo "In this case you will have to type the root password"
+    fi
+
+fi
+
+# if the user wants RTOS he/she has to build it by hand using buildRTOS
+# from the directory ../RTOS.
+# Root access will be required to complete installation.
+# cd ../RTOS
+# ./buildRTOS
+
+echo "WARNING: Now log out and login again to make sure that"
+echo "         the environment is re-evaluated!"
+echo " "
+echo "__oOo__"
+

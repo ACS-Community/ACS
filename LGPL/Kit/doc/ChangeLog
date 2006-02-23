@@ -1,0 +1,23 @@
+Sat Jun 08 19:17:50 2002 <psivera@te13.hq.eso.org>  doc version: 1.31 
+	src/docExDb.c: removed warnings (for APR2003)
+Thu May 02 18:25:37 2002 <psivera@te13.hq.eso.org>  doc version: 1.30 
+	src/docCopyMif : ported to Solaris
+Sat Feb 09 16:03:23 2002 <psivera@te13.hq.eso.org>  doc version: 1.29 
+	src/docDoManPages.c: SPR 20010512: handled "'" character at 
+                             the beginning of a line
+Thu Mar 01 10:07:19 2001 <psivera@te13.hq.eso.org>  doc version: 1.28 
+	src/docDeroff: added man page
+Sat Feb 10 17:42:21 2001 <psivera@te13.hq.eso.org>  doc version: 1.27 
+	src/docDeroff: improved txt output file
+Sat Feb 03 20:40:33 2001 <psivera@te13.hq.eso.org>  doc version: 1.26 
+	src/docDeroff: added handling of included man pages
+Fri Feb 02 14:30:55 2001 <psivera@te13.hq.eso.org>  doc version: 1.25 
+	src : added docDeroff script for MANPAGES to TXT conversion
+Wed Jul 21 14:40:01 1999 <psivera@te13.hq.eso.org>  doc version: 1.24 
+Mon Aug 24 11:36:13 1998 <gfilippi@te13.hq.eso.org>  doc version: 1.23 
+Tue Jul 21 16:42:29 1998  Massimo Verola  <mverola@te16.hq.eso.org>
+
+	* added docManExtract and docModManBuild
+	see man pages for their functionality
+	
+

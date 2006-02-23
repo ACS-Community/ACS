@@ -1,0 +1,23 @@
+#Enable debug output
+abeans.core.defaults.DebugPolicy=true
+
+#Default timeout for all calls to the remote system
+abeans.models.DefaultTimeoutPolicy=1000
+
+# Specifies the severity of the events that get reported to the console
+# Value of this parameter is defined by java.util.logging.Level class
+# Accepted values are:
+# ALL, FINEST, FINER, FINE, CONFIG, WARNING, SEVERE, OFF
+# First value shows all logs, last value none, with other values defining
+# different ammount of output in increasing order of importance
+abeans.core.defaults.ConsoleLoggingPolicy=SEVERE
+#abeans.core.defaults.ConsoleLoggingPolicy=ALL
+#abeans.core.defaults.LoggingHandlerPolicy=SEVERE
+#abeans.framework.LogReportsPolicy=true
+
+#abeans.engine.IndexingPolicy=abeans.engine.LatestIndexingComparator
+
+#abeans.engine.RequestThreadingPolicy=SINGLE_THREAD
+
+abeans.pluggable.acs.logging.LoggingLevelPolicy=WARNING
+#abeans.pluggable.acs.logging.LoggingLevelPolicy=ALL

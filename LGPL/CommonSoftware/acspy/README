@@ -1,0 +1,10 @@
+# @(#) $Id: README,v 1.6 2002/12/05 18:57:03 vltsccm Exp $
+
+- Python can take the filename of a script to execute on the command line.
+
+- For example to run the ACS Python Console from the command line type:
+
+         > python  acspy/Console.py
+
+- acspyConsole.py is an executable
+

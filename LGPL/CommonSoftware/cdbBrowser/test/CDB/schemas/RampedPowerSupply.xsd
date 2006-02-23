@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for a Ramped Power Supply
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:RampedPowerSupply:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:RampedPowerSupply:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="RampedPowerSupply">
+    <xs:sequence>
+
+      <xs:element name="current" type="baci:RWdouble"/>
+      <xs:element name="readback" type="baci:ROdouble"/>
+      <xs:element name="status" >
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:ROpattern">
+              <xs:attribute name="resolution" type="xs:int" use="optional" default="511"/>
+              <xs:attribute name="bitDescription" type="xs:string" use="optional" default=
+				"On,Remote,Sum Failure,External Interlock,DC Overcurrent,Phase Failure,Not Ready,State Inconsistent,Ramping"/>
+              <xs:attribute name="whenSet" type="xs:string" use="optional" default=
+				"3, 2, 0, 0, 0, 0, 1, 1, 1"/>
+              <xs:attribute name="whenCleared" type="xs:string" use="optional" default=
+				"2, 3, 3, 3, 3, 3, 3, 3, 3"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="rampingStep" type="baci:ROlong"/>
+      <xs:element name="rampingStatus" type="baci:RWstring"/>
+
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="RampedPowerSupply" type="RampedPowerSupply"/>
+</xs:schema>

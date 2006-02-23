@@ -1,0 +1,18 @@
+NOTE: 
+Because of the problem with the file name length, 
+whenever the distribution of doxywizard is updated, 
+please remember to rename the file: 
+
+doxywizard-<VERSION>.linux.bin.tar.gz 
+
+to 
+
+dwiz-<VERSION>.linux.bin.tar.gz
+
+and 
+
+doxygen-<VERSION>.linux.bin.tar.gz
+
+to
+
+doxy-<VERSION>.linux.bin.tar.gz

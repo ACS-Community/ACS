@@ -1,0 +1,420 @@
+#!/usr/bin/perl
+###################################
+########                   ########
+########  Version: 1.0.6   ########
+########                   ########
+###################################
+use Net::FTP;
+
+$version = "1.0.6";
+$ftpsite = "ftp.cv.nrao.edu";
+$path = "casa/end-user/application";
+
+%path = ( 'rh9' => "$path/rh9",
+	   'suse' => "$path/suse",
+           'fedora' => "$path/fedora",
+           'enterprise' => "$path/rhe",
+           'enterprise4' => "$path/rhe4",
+           'mandrake' => "$path/mandrake"
+	 );
+
+###
+###   No arguments? Print usage...
+###
+usage() unless scalar(@ARGV);
+
+###
+###   Which flavor of linux?
+###
+$rhver = '';
+
+###
+###   Process arguments
+###
+$install_as_root = 0;
+$save_disk_space = 0;
+$verbose = 0;
+
+while ($_ = @ARGV[0], (/^--/)) {
+    shift(@ARGV);
+    last if /^--$/;
+
+    /^--root/ && ($install_as_root = 1, next);
+    /^--savedisk/ && ($save_disk_space = 1, next);
+    /^--verbose/ && ($verbose = 1, next);
+    /^--linux/ && ($rhver = shift(@ARGV), next);
+
+    if ( m/^--version/ ) {
+	print "$version\n";
+	exit 0;
+    }
+
+    die "unknown option: $_\n";
+}
+
+###
+### if the linux version has not been set,
+### try to discover it...
+###
+if ( ! $rhver ) {
+
+    if ( -f "/etc/SuSE-release" ) {
+
+	$rhver = "suse";
+
+    } elsif ( -f "/etc/redhat-release" ) {
+
+	open( IN, "</etc/redhat-release" );
+	$rhver = <IN>;
+	close( IN );
+	if ( $rhver =~ m/^Fedora/ ) {
+	    $rhver = "fedora";
+	} elsif ( $rhver =~ m/^Red Hat Enterprise.*release 4/ ) {
+	    $rhver = "enterprise4";
+	} elsif ( $rhver =~ m/^Red Hat Enterprise/ ) {
+	    $rhver = "enterprise";
+	} elsif ( $rhver =~ m/^Red Hat Linux release ([0-9.]+)/ ) {
+	    $rhver = "rh$1";
+	} elsif ( $rhver =~ m/^Mandrake Linux/  ) {
+	    $rhver = "mandrake";
+	} else {
+	    die "cannot understand version string";
+	}
+
+    } else {
+
+	die "we're not in linux land";
+
+    }
+}
+
+die "Due to defects in the version of RPM distributed with RedHat\n" .
+    "Enterprise Linux 4, we cannot support non-root installs at\n" .
+    "this time. Please use --root..." if $rhver eq "enterprise4" && $install_as_root != 1;
+
+###
+### do we know about this flavor of linux?
+###
+die "unknown linux version, $rhver" unless defined $path{$rhver};
+
+###
+###   Initialization
+###
+if ( $install_as_root ) {
+    die "must be superuser to install into root" unless $> == 0;
+    $download_path = "/tmp/load-casa-$$";
+    system( "/bin/rm -rf $download_path" ) if -d $download_path;
+    die "couldn't create download directory" unless mkdir( $download_path, 0700 );
+    $save_disk_space = 1;
+    $dbpath = "";
+    $install_arguments = "";
+} else {
+    die "the install path argument expected" unless scalar(@ARGV) > 0;
+    $install_path = shift(@ARGV);
+    die "too many arguments" unless scalar(@ARGV) == 0;
+    die "the install path must exist" unless -d "$install_path";
+    die "couldn't change to the install directory" unless chdir $install_path;
+    my $install_path_full = `pwd`;
+    $install_path_full =~ s/\n+$//;
+    $install_path = $install_path_full;
+    $download_path = "$install_path/download";
+    die "couldn't create download directory" unless -d $download_path || mkdir( $download_path, 0700 );
+
+    $dbpath = "--dbpath $install_path/rpm";
+    $install_arguments="$dbpath --prefix $install_path";
+}
+
+###
+###   Download rpms
+###
+die "couldn't change to the download directory" unless chdir $download_path;
+
+if ( $verbose ) {
+    print "\t>> linux version: $rhver\n";
+    print "\t>> initial set of rpms:\n";
+    print "\t+  --------------------------------------------------\n";
+    open( RPMS, "rpm -qa 2>&1 |" );
+    while ( <RPMS> ) {
+	print "\t+  $_";
+    }
+    close( RPMS );
+    print "\t+  --------------------------------------------------\n";
+}
+
+###   Unbuffer stdout...
+$| = 1;
+
+$ftp = Net::FTP->new( $ftpsite, Debug => 0, Passive => 1 );
+$ftp->login( "anonymous", '-anonymous@' );
+$ftp->cwd( $path{$rhver} );
+$ftp->binary( );
+@rpms = $ftp->ls( );
+%rpms = ();
+
+foreach ( @rpms ) {
+    $rpms{$_} = 1;
+    if ( ! -f $_ ) {
+	print "starting download of $_...";
+	unless ( $ftp->get( $_ ) ) {
+	    unlink( $_ );
+	    die "download of $_ failed";
+	}
+	print "   complete\n";
+    }
+}
+
+$ftp->close( );
+
+###
+###   Cleanup download directory
+###
+opendir( DOWN, "." );
+@filenames = readdir(DOWN);
+closedir( DOWN );
+
+foreach ( @filenames ) {
+    unlink $_ if -f $_ && ! defined $rpms{$_};
+}
+
+
+###
+###   Install in /usr or relocate?
+###
+if ( ! $install_as_root ) {
+
+    ##################### Relocate RPMs #####################
+
+    ###
+    ###   Copy over the rpm database...
+    ###
+    die "couldn't change to install path" unless chdir( $install_path );
+
+    system( "/bin/rm -rf rpm" ) if -d "rpm";
+    system( "tar -C /var/lib -cf - rpm | tar -xf -" );
+
+    ###
+    ###   Create a list of rpm names (i.e. without versions)
+    ###
+    @prefixes = ();
+    %prefixes = ();
+    foreach ( @rpms ) {
+
+	my $prefix = $_;
+	$prefix =~ s/^(.*?)-\d.*/$1/;
+	push( @prefixes, $prefix );
+	$prefixes{$prefix} = 1;
+    }
+
+    ###
+    ###   Make a list of rpms (which are install in /usr) which
+    ###   we need to delete from our copy of the database...
+    ###
+    @already_installed = ();
+    foreach ( @prefixes ) {
+
+	my $installed = `rpm $dbpath -qi $_ | head -1`;
+	$installed =~ s/\n+//;
+	push( @already_installed, $_ ) if $installed !~ m/not installed$/;
+    }
+
+    ###
+    ###   Remove these, plus any they depend upon (from our list)
+    ###
+    my $do_cleanup = 0;
+    if ( scalar( @already_installed ) > 0 ) {
+
+	print "beginning book keeping cleanup...";
+	$do_cleanup = 1;
+
+	if ( $verbose ) {
+	    print "\n\t>> must remove these from our copy of the rpm db:\n";
+	    print "\t+  --------------------------------------------------\n";
+	    foreach ( @already_installed ) {
+		print "\t+  $_\n";
+	    }
+	    print "\t+  --------------------------------------------------\n";
+	    print "\t>> rpm output of removal:\n";
+	    print "\t+  --------------------------------------------------\n";
+	}
+    }
+
+    for ( $i=0; scalar( @already_installed ) > 0 && $i < 4; ++$i ) {
+
+	my $remove = join( " ", @already_installed );
+
+	if ( $verbose ) {
+	    print "\t+  ----------------- $i --------------------------\n";
+	    print "\t+  rpm $dbpath -e $remove\n";
+	    print "\t+  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
+	}
+
+	@already_installed = ();
+	open( REMOVE, "rpm $dbpath -e $remove 2>&1 |" );
+	while ( <REMOVE> ) {
+	    print "\t+  $_" if $verbose;
+	    push( @already_installed, $1 ) if m/needed by \(installed\) (.*?)-\d+.*/;
+	}
+	close( REMOVE );
+
+	foreach ( @prefixes ) {
+	    my $installed = `rpm $dbpath -qi $_ | head -1`;
+	    $installed =~ s/\n+//;
+	    push( @already_installed, $_ ) if $installed !~ m/not installed$/;
+	}
+    }
+
+    print "\t+  --------------------------------------------------\n" if $verbose && $do_cleanup;
+
+    ###
+    ###   If there are still some rpms which we weren't able to delete, we're stuck...
+    ###
+    @already_installed = ();
+    foreach ( @prefixes ) {
+
+	my $installed = `rpm $dbpath -qi $_ | head -1`;
+	$installed =~ s/\n+//;
+	push( @already_installed, $_ ) if $installed !~ m/not installed$/;
+    }
+
+    die "\nfailed to remove: " . join( " ", @already_installed ) if scalar( @already_installed ) > 0;
+
+    print "   complete\n" if $do_cleanup;
+
+}
+
+###
+###   Install the rpms one at a time (in case we need to conserve space)...
+###
+if ( ! $install_as_root ) {
+
+    ###
+    ###   Clear out any old (relocated) installation...
+    ###
+    die "couldn't change to install path" unless chdir( $install_path );
+
+    my $do_cleanup = 0;
+    if ( -d "gcc" || -d "bin" || -d "include" || -d "lib" || -d "share" ) {
+	$do_cleanup = 1;
+	print "beginning install directory cleanup...";
+    }
+    system( "/bin/rm -rf gcc" ) if -d "gcc";
+    system( "/bin/rm -rf bin" ) if -d "bin";
+    system( "/bin/rm -rf include" ) if -d "include";
+    system( "/bin/rm -rf lib" ) if -d "lib";
+    system( "/bin/rm -rf share" ) if -d "share";
+
+    print "   complete\n" if $do_cleanup;
+
+}
+
+die "couldn't change to download directory" unless chdir($download_path);
+
+if ( $install_as_root ) {
+    my $rpms = join( ' ', @rpms );
+    open( FRESH, "rpm -Fv $rpms 2> /dev/null |" );
+    while ( <FRESH> ) {
+	next if m/^Preparing packages/;
+	s/\s*\n?$//;
+	if ( $_ ) {
+	    foreach $rpm ( @rpms ) {
+		if ( $rpm =~ m/^\Q$_\E/ ) {
+		    print "installed $rpm\n";
+		    last;
+		}
+	    }
+	}
+    }
+    close( FRESH );
+}
+if ( $verbose ) {
+    print "\t>> rpms to install:\n";
+    print "\t+  --------------------------------------------------\n";
+    foreach ( @rpms ) {
+	print "\t+  $_\n";
+    }
+    print "\t+  --------------------------------------------------\n";
+    print "\t>> beginning install:\n";
+    print "\t+  --------------------------------------------------\n";
+}
+
+@to_install = ( @rpms );
+for ( $i=0; $i < 10 && scalar(@to_install) > 0; ++$i ) {
+
+    print "\t+  ----------------- $i --------------------------\n" if $verbose;
+
+    my @next_time = ();
+    foreach $rpm ( @to_install ) {
+
+	print "\t+  -- -- -- $rpm -- -- --\n" if $verbose;
+	open( INSTALL, "rpm $install_arguments -i $rpm 2>&1 |" );
+
+	my $skipped = 0;
+	my $already_there = 0;
+	while ( <INSTALL> ) {
+	    print "\t+  $_" if $verbose;
+	    if ( m/installing package\s+(\S+\s+needs\s+\S+\s+on\s+the\s+.+\s+filesystem)/ ) {
+		my $msg = $1;
+		$msg =~ s/\s\s+/ /g;
+		die "not enough diskspace, $msg";
+	    }
+	    if ( m/is already installed$/ ) {
+		$already_there = 1;
+		last;
+	    }
+	    if ( m/Failed dependencies/ ) {
+		push( @next_time, $rpm );
+		$skipped = 1;
+		last;
+	    }
+	}
+	close( INSTALL );
+	print "\t+  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n" if $verbose;
+
+	if ( ! $skipped ) {
+	    print "installed $rpm\n" if ! $already_there;
+	    unlink $rpm if $save_disk_space;
+	} elsif ($verbose) {
+	    print "\t+  skipped $rpm\n";
+	}
+    }
+
+    @to_install = ( @next_time );
+}
+print "\t+  --------------------------------------------------\n" if $verbose;
+
+if ( scalar(@to_install) > 0 ) {
+
+    foreach $rpm ( @to_install ) {
+	print "Failed to install: $rpm\n";
+	print "------------------------------------------------------------\n";
+	open( INSTALL, "rpm $install_arguments -i $rpm 2>&1 |" );
+	while ( <INSTALL> ) {
+	    print "\t$_";
+	}
+	close( INSTALL );
+    }
+} elsif ( $save_disk_space ) {
+    rmdir( $download_path );
+}
+
+
+### -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+### -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+sub usage {
+    print "
+--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+load-casa downloads and installs casa (http://aips2.nrao.edu).
+
+Usage:
+
+(1) install casa as a regular user
+
+        load_casa INSTALL_DIRECTORY
+
+(2) install the casa rpms into /usr as a superuser (i.e. root):
+
+        load_casa --root
+--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+";
+    exit 0;
+}

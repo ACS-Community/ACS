@@ -1,0 +1,52 @@
+RELEASE_NOTES
+
+Module: 
+   tat
+ 
+From: 
+   pforstma
+
+Version: 
+   "@(#) $Id: RELEASE_NOTES,v 1.76 2003/01/09 17:51:33 vltsccm Exp $"
+
+Documents:
+  
+   (none)
+
+Configuration Requirements:
+
+    HP-UX 9.X - 10.X / Solaris 2.X - tcl 7.X - expect 5.X
+    seq 1.X - vcc 1.X - envs 1.X - lcuboot 1.X
+
+Tested: tat
+
+   
+To be done:
+
+	- by vcc : tatMakeLCUEnv/vccEnvCreate: MODROOT user directory
+	not mounted if -h :::<right_host> (tested on te19 -> te49)
+
+To be checked: 
+
+	- vccEnvStart should use vccEnvCheck instead of WaitForRtap 
+	but beware of error messages if the env. is not yet ready...
+
+	- with new vccEnvInit: tat9 always fail because RtapScheduler
+	failure no more detected.
+
+Cost:
+    - 1 h
+
+Change Summary:
+
+   NEW FEATURES:
+       -
+       
+   BUG FIXING:
+       -  VLTSW980249: support NOCCS installation
+
+FILES:
+tat/src/Makefile MODIFIED
+tat/src/tat.tcl MODIFIED
+
+                              ___oOo___

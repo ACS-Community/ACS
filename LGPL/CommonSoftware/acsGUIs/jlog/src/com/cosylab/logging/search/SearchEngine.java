@@ -1,0 +1,228 @@
+/*
+ * Created on Jul 8, 2005
+ *
+ * TODO To change the template for this generated file go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.cosylab.logging.search;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+import com.cosylab.logging.LogTableDataModel;
+import com.cosylab.logging.LogEntryTable;
+import com.cosylab.logging.LogTypeHelper;
+
+/**
+ * @author acaproni
+ *
+ * Objects of this class search the logs for a string
+ * The method that activates the search is find (overloaded)
+ */
+public class SearchEngine {
+    /**
+     * The reference to the table data model 
+     */
+    private LogTableDataModel logTableDataModel;
+    
+    /**
+     * The JTable of the logs
+     */
+    private LogEntryTable logEntryTable;
+    
+    /**
+     * The constructor
+     * 
+     * @param ltdm The LogTableDataModel of the main window
+     */
+    public SearchEngine(LogEntryTable let) {
+        this.logEntryTable=let;
+        this.logTableDataModel=let.getLCModel();
+    }
+
+    /**
+     * Search the logs for a string
+     * 
+     * @param searchString The string to look for in the logs
+     * @param caseSensitive If true performs a CaseSensitive search
+     * @param wholeWord If true look for the whole word int the column
+     * @param forwardSearch If true search forward otherwise backward
+     * @param cols The columns of each log tool for the string
+     * @return -1 if no log is found otherwise the row containing the log 
+     */
+    public int find(
+            String searchString, 
+            boolean caseSensitive, 
+            boolean wholeWord, 
+            boolean forwardSearch,
+            boolean[] cols) {
+        
+        return find(null,searchString,caseSensitive,wholeWord,forwardSearch,cols);
+    }
+ 
+    /**
+     * Search the log for a regular expression
+     * 
+     * @param regExp The regular expression to look for in the logs
+     * @param forwardSearch If true search forward otherwise backward
+     * @param cols The columns of each log tool for the string
+     * @return -1 if no log is found otherwise the row containing the log
+     */
+    public int find (
+            Pattern regExp,
+            boolean forwardSearch,
+            boolean[] cols) {
+        return find(regExp,null,true,true,forwardSearch,cols);
+    }
+    
+    /**
+     * The method executes the search for both the public overloaded 
+     * find methods.
+     * 
+     * @param regExp The regular expression to look for in the logs
+     *               null if the method search for a string 
+     * @param searchString The string to look for in the logs
+     *                     null if the method search for a reg exp
+     * @param caseSensitive If true performs a CaseSensitive search
+     *                      Ignored for reg exp searchs (it is coded
+     *                      in the Pattern)
+     * @param wholeWord If true look for the whole word int the column
+     *                  Ignored for reg exp searchs
+     * @param forwardSearch If true search forward otherwise backward
+     * @param cols The columns of each log tool for the string
+     * @return -1 if no log is found otherwise the row containing the string/reg exp
+     */
+    private int find(
+            Pattern regExp,
+            String searchString, 
+            boolean caseSensitive, 
+            boolean wholeWord,
+            boolean forwardSearch,
+            boolean[] cols) {
+        // I want only one loop for both forward and backward searches
+        // For that I calculate the interval of valid rows to scan
+        // [a,b] where a<=b i.e. this interval is independedent from the
+        // direction of the search
+        // Then I use a cursor to navigate the rows, decreasing or 
+        // increasing its value depending of the direction of the search
+        
+        // Get the starting and the ending row for the search
+        int startingRow=getStartingRow(forwardSearch);
+        int endRow = (forwardSearch)?logEntryTable.getRowCount()-1:0;
+        // The variable used to browse the rows
+        int cursor = startingRow;
+        // Order end and start rown in growing order 
+        if (endRow<startingRow) {
+            int temp=startingRow;
+            startingRow=endRow;
+            endRow=temp;
+        }
+        
+        int foundRow=-1;
+        
+        while (cursor>=startingRow && cursor<=endRow && foundRow==-1) {
+            for (int t=0; t<cols.length; t++) {
+                if (cols[t]) {
+                    Object obj = logTableDataModel.getValueAt(cursor,t+2);
+                    if (obj==null) {
+                    	continue;
+                    }
+                    String string = obj.toString();
+                    if (t==1) { // Entry type
+                    	string = LogTypeHelper.getLogTypeDescription((Integer)obj);
+                    }
+                    if (matches(string,regExp,searchString,caseSensitive,wholeWord) ) {
+                        if ((forwardSearch && cursor!=startingRow) || (!forwardSearch && cursor!=endRow)) { 
+                            foundRow=cursor;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (forwardSearch) {
+                cursor++;
+            } else {
+                cursor--;
+            }
+        }
+        return foundRow;
+    }
+    
+    /**
+     * Check if the given object matches the search criteria
+     * 
+     * @param obj The object to check (it should be a string or a way to convert
+     *            the obj to a string must be known)
+     * @param regExp The regular expression to look for in the logs
+     *               null if the method search for a string 
+     * @param searchString The string to look for in the logs
+     *                     null if the method search for a reg exp
+     * @param caseSensitive If true performs a CaseSensitive search
+     *                      Ignored for reg exp searchs (it is coded
+     *                      in the Pattern)
+     * @param wholeWord If true look for the whole word int the column
+     *                  Ignored for reg exp searchs
+     * @return true if the object matches the serach criteria
+     */
+    private boolean matches(Object obj,
+            Pattern regExp,
+            String searchString, 
+            boolean caseSensitive, 
+            boolean wholeWord) {
+        if (obj==null) {
+            return false;
+        }
+        
+        // Convert the object to a String
+        String str;
+        try {
+            str = obj.toString();
+        } catch (Exception e) {
+            // This should never happen but...
+            System.err.println("Impossible to convert this object to a String: "+obj);
+            return false;
+        }
+        
+        if (regExp==null) {
+            // Check the strings
+            if (wholeWord) {
+                if (caseSensitive) {
+                    return str.compareTo(searchString)==0;
+                } else {
+                    return str.compareToIgnoreCase(searchString)==0;
+                }
+            } else {
+                if (caseSensitive) {
+                    return str.indexOf(searchString)!=-1;
+                } else {
+                    String upperStr=str.toUpperCase();
+                    String searchStrUpper=searchString.toUpperCase();
+                    return upperStr.indexOf(searchStrUpper)!=-1;
+                }
+            }
+        } else {
+            // Check the regular expression
+            Matcher matcher = regExp.matcher(str);
+            return matcher.matches();
+        }
+    }
+    
+    /**
+     * Get the starting row number for a search.
+     * 
+     * @return The selected row in the table of the main window or 
+     *         the first/last row if no row is selected by the user 
+     *         (depending if the search is backward or forward)
+     */
+    private int getStartingRow(boolean forward) {
+        int ret = logEntryTable.getSelectedRow();
+        if (ret==-1) {
+            if (forward) {
+                ret=0;
+            } else {
+                ret=logEntryTable.getRowCount()-1;
+            }
+        }
+        return ret;
+    }
+}

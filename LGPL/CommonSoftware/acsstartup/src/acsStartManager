@@ -1,0 +1,198 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: acsStartManager,v 1.27 2006/01/17 23:21:11 dfugate Exp $"
+#
+# who       when      what
+# -------- ---------- ----------------------------------------------
+# mschilli 2004-04-16 added proper command line parsing
+# msekoran 2003-05-09 Created.
+#
+
+#************************************************************************
+#   NAME	maciManagerJ
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+#
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,baseport:,timeout:
+SHORTOPTS=hb:t:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Starts the Acs manager; note that acsStart is an alternative for this"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS]  "
+	echo "Options: "
+	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
+	echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
+	echo "   -h | -help                     prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)         CL_BASEPORT=$2 ; shift ;;
+	-b)                 CL_BASEPORT=$2 ; shift ;;
+	--timeout)          export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	-t)                 export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+    export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+#If it's undefined, the developer must have meant the default
+if [ "X$ACS_INSTANCE" == "X" ]
+then 
+    export ACS_INSTANCE="0"
+fi
+
+#save manager output
+MANAGER_OUT=`getInstanceDirName $ACS_INSTANCE`/manager.out
+
+#a sanity check to ensure user does not run acsStartManager twice in a row
+#using the same baseport
+if [ -e $MANAGER_OUT ]
+then
+    ACS_LOG_ERROR "It appears as if you're trying to run the `basename $0` command twice"
+    ACS_LOG_ERROR "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    exit $EC_CANNOTCREATE
+fi
+
+#Makes shure there is an initial value
+if [ "$ACS_STARTUP_TIMEOUT_MULTIPLIER" = "" ]
+ then
+   ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#give manager this amount of time to initialize
+MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+export STD_SLEEP=3
+
+#the real "brains" of this script is in maciManagerJ.  Only reason this script
+#exists is to make every day use of ACS a little more consistent  as well as saving 
+#manager's process ID
+maciManagerJ $@ -n 2>&1 | tee $MANAGER_OUT &
+#See tee's PID
+echo $! >> `getInstanceDirName $ACS_INSTANCE`/ACS_PIDS
+
+#Give manager MAX_TIMEOUT to initialize. If this does not occur, 
+#then forcibly kill it
+i="0"
+while [ "$i" ]
+do
+  sleep $STD_SLEEP
+  joe=`grep "Manager Application initialized" $MANAGER_OUT 2> /dev/null`
+
+  #not operational => check if we've waited too long.
+  if [ "$i" = "$MAX_TIMEOUT" ]
+  then
+      ACS_LOG_ERROR "Unable to start Manager in a timely fashion! Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+      acsKillProc `getInstanceDirName $ACS_INSTANCE`/ACS_MANAGER_PID 2> /dev/null || ACS_LOG_ERROR "Cannot kill the manager"
+      exit $EC_TIMEOUT
+  #got the output we need
+  elif [ "X$joe" != "X" ] 
+  then
+      break
+  else
+      i=$(( $i + 1 ))
+  fi
+done
+ACS_LOG_FORCED "INFO - Manager is up and running"

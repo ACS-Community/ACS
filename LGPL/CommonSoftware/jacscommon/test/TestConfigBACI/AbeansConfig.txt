@@ -1,0 +1,5 @@
+model.Channel=abeans.models.channel.ChannelLibrary
+model.BACI=abeans.models.acs.baci.BACILibrary
+plug.Simulator=abeans.pluggable.simulator.SimulatorPlug
+plug.CDBDAL=abeans.pluggable.acs.cdb.dal.CDBDALPlug
+plug.ACS=abeans.pluggable.acs.maci.ACSPlug

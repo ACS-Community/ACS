@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE MetaMap PUBLIC "-//b+m Informatik AG//DTD b+m Generator FrameWork MetaMappings 2.1//EN" "http://www.bmiag.com/dtds/metamappings_2_1.dtd">
+
+
+<MetaMap>
+
+<!-- nothing yet, but can't be omitted...
+
+    <Mapping>
+        <Map>dummy</Map>
+        <To>de.bmiag.genfw.meta.core.Dependency</To>
+    </Mapping>
+-->    
+
+</MetaMap>

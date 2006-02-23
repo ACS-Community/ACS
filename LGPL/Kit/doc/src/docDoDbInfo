@@ -1,0 +1,144 @@
+#!/bin/sh
+#************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docDoDbInfo,v 1.31 2002/06/08 17:20:42 vltsccm Exp $" 
+#
+# docDoDbInfo
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# pforstma  17/08/94  created
+#
+
+#************************************************************************
+#   NAME
+#   docDoDbInfo - generate printable documentation from a DB directory
+# 
+#   SYNOPSIS
+#   docDoDbInfo <dbroot_path> 
+# 
+#   DESCRIPTION
+#   Generates a RTAP point configuration documentation file made up of:
+#
+#    - a NAME section: the database structure as a tree
+#
+#    - a DESCRIPTION section: for every point a detailed description
+#      is created as follows:
+#        - the Point Name and the Residence. If existing and not being the
+#          only one at the file beginning, the comment line preceding the 
+#          Name directive (point comment). 
+#        - for each attribute, one line containing:
+#          - the attribute (or field) Name
+#          - its De Type
+#          - the first letter of its Type (followed by the Record Count if 
+#            Table)
+#          - and comment lines within a 'BEGIN ATTRIBUTE' or 'BEGIN FIELD'
+#            sequence. Each comment line must start with '#A' or '#S'.
+#
+#        The point comment is truncated to 74 characters.
+#        Comments on attributes and fields are truncated to 35 characters; 
+#   
+#   The output consists of an ASCII file then submitted to docDoManPages
+#   and docA2MIF to produce man pages and word processor formatted files.
+#
+#   <dbroot_path>: name of the highest point of the DB branch
+#   
+#   FILES
+#   <mod>/doc/<dbroot>.db     WRITE  DB info in ASCII format
+#   <mod>/man/man5/<dbroot>.5 WRITE  DB info in man page format
+#   <mod>/doc/<dbroot>.mif    WRITE  DB info in FrameMaker format
+#   <mod>/doc/<dbroot>.text   WRITE  DB info in LaTeX format
+#   <mod>/doc/<dbroot>.inc    WRITE  DB info in LaTeX format
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#   No check is made whether <dbroot_path> is a DB directory.
+#   If <dbroot_path> is not consistent with respect to RTAP conventions
+#   (one eponymous file in each directory), unpredictable results
+#   may occur.
+#   The program has a simple parsing mechanism and requires that the
+#   comment formatting rules are strictly followed.
+#   The FrameMaker file format generated is given by docA2MIF.
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS   
+
+#------------------------------------------------------------------------
+#
+
+if [ $# -ne 1 ]
+then
+    echo ""
+    echo "docDoDbInfo <dbroot_path> "
+    echo ""
+    exit 1
+else
+    db_dir=$1
+    base=`basename $db_dir`
+    OUTPUT=../doc/${base}.db
+fi
+
+if [ ! -d ../doc/ ]
+then
+   echo "Must be in <mod>/src directory"
+   exit 1
+fi
+
+#
+# create header
+#
+rm -f $OUTPUT
+touch $OUTPUT
+
+echo "NAME" >>$OUTPUT
+echo $base - database branch structure >>$OUTPUT
+docDoDbTree $db_dir >>$OUTPUT
+echo "" >>$OUTPUT
+echo "DESCRIPTION" >>$OUTPUT
+
+docDoDbTree $db_dir -n >/tmp/docDoDbInfo.$$
+
+data=`cat /tmp/docDoDbInfo.$$`
+i=1
+
+for dir in $data
+do
+#
+#   don't process the root directory
+#
+    if [ $i -eq 1 ]
+    then
+         i=2
+    else
+         db_file=`basename $dir`
+         docExDb $dir/$db_file
+         cat $dir/${db_file}_db >>$OUTPUT
+         rm $dir/${db_file}_db
+         echo "" >>$OUTPUT
+    fi
+done
+
+rm /tmp/docDoDbInfo.$$
+
+echo "--------------------------------------------------------" >>$OUTPUT
+
+#
+# translate ASCII file into man pages (section 5) and WP formatted files.
+#
+docDoManPages $OUTPUT 5
+
+# we don't want a mif file with a paragraph format
+docA2MIF $OUTPUT
+mv ../doc/$base.db.mif ../doc/$base.mif
+
+exit 0
+
+
+

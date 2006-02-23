@@ -1,0 +1,109 @@
+We confirm that ESO may use the software including the source codes
+that will be developed within the contract for its own projects
+related to astronomy at no additional royalty or cost and that the
+same software and source codes may be given by ESO to  Astronomical
+Research Organizations and other institutes free of charge, subject to
+the following license agreement. 
+
+License agreement for the Abeans Release 2 libraries 
+
+Abeans (stands for Accelerator Beans) are a collection of Java
+packages (listed in the appendix) from which a control system client
+can be built and in particular clients for ACS-based control
+systems. Abeans are distributed as a collection of JAR
+files. Currently Abeans contain the following components 
+1. Generic Java control and management clients
+2. Java Beans GUI and invisible components for control
+3. Java Beans CORBA wrapper according to the ACS BACI model
+
+Abeans binaries and source code can be used royalty-free for all
+research projects in astronomy under the following conditions: 
+1. Abeans remain the intellectual property of Cosylab, which retains
+   the full copyright. 
+2. Abeans are used only in applications related to research in astronomy.
+3. Neither Abeans nor any of its parts are used in commercial products.
+4. Cosylab retains the right to re-obtain, free of charge, any
+   modified version of Abeans or their parts. Cosylab therefore asks all
+   labs that have performed modifications to inform Cosylab about the
+   changes. 
+5. Each copy of Abeans is accompanied with this license.
+6. Each product using Abeans or any of its parts must be clearly
+   marked so, including whose property it is. 
+7. Cosylab is not liable for any damage occurring with the use of Abeans.
+
+Abeans, its source code or executables may be freely distributed only
+under the following conditions: 
+1. Unmodified and complete (not in parts);
+2. Accompanied with the present license agreement.
+
+
+Appendix
+--------
+
+Java packages covered by Abeans licence agreement distributed with ACS
+
+Project: Abeans Generator
+Packages:
+si.ijs.kgb.generators
+
+Project: Accelerator Applications
+Packages:
+si.ijs.anka
+si.ijs.anka.alarmtable
+si.ijs.anka.cycling
+si.ijs.anka.digipotpanel
+si.ijs.anka.ramping
+si.ijs.anka.rf
+si.ijs.anka.snapshot
+si.ijs.anka.sql
+si.ijs.anka.srramping
+si.ijs.anka.tiboosterramp
+si.ijs.anka.tidelaypanel
+si.ijs.anka.tirampingpanel
+
+Project: Accelerator Auxilliary
+Packages:
+si.ijs.anka.digipot
+
+Project: Accelerator Beans
+Packages:
+si.ijs.anka.abeans
+si.ijs.anka.abeans.datatypes
+si.ijs.anka.abeans.devices
+si.ijs.anka.abeans.pluggable
+si.ijs.anka.abeans.pluggable.Simulator
+
+Project: Accelerator Graphical User Interface
+Packages:
+si.ijs.anka gui
+si.ijs.anka gui.core
+si.ijs.anka gui.core.chart
+si.ijs.anka gui.core.gauger
+si.ijs.anka gui.core.ledder
+si.ijs.anka gui.core.selector
+si.ijs.anka gui.core.slider
+
+Project: Accelerator Utilities
+Packages:
+si.ijs.anka.utilities
+
+Project: KGB Chart
+Packages: 
+com.cosylab.gui.chart
+com.cosylab.gui.chart.accessories
+com.cosylab.gui.chart.customizer
+com.cosylab.gui.chart.demo
+com.cosylab.gui.chart.test
+
+Project: Massage Client
+Packages:
+si.ijs.kgb.abeans.massage
+
+Project: Object Table
+Packages:
+si.ijs.kgb.table.abeansr2
+si.ijs.kgb.table.accessoriesr2
+si.ijs.kgb.table.common
+
+
+

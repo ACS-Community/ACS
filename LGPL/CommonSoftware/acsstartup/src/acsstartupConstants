@@ -1,0 +1,29 @@
+### 
+### Defines constants that can be imported from other scripts
+###
+
+
+### Exit Codes 
+### See http://almasw.hq.eso.org/almasw/bin/view/ACS/ScriptInteractionAndCodes
+###
+EC_OK=0               # all fine
+EC_CANNOTCREATE=40    # can't create requested acs instance: already exists
+EC_CANNOTUSE=41       # can't use requested acs instance: doesn't exist or is owned by somebody else
+EC_FAILURE=42         # general failure, no details known
+EC_BADARGS=43         # command line arguments wrong or missing
+EC_NOPORT=44          # can't run requested servant: no port available
+EC_TIMEOUT=45         # can't run requested servant: launch attempt timed out
+
+### Logging priorities
+ACS_DEBUG_PRIORITY=4
+ACS_INFO_PRIORITY=16
+ACS_ERROR_PRIORITY=258
+
+### Instance directories
+ACS_INSTANCES_DIR=$ACSDATA/tmp
+
+### Instance files
+ACS_NOTIFY_OUT=notify.out
+ACS_LOG_NOTIFY_OUT=logNotify.out
+ACS_ARCHIVE_NOTIFY_OUT=archiveNotify.out
+ACS_LOG_SERVICE_OUT=acsLogService.out

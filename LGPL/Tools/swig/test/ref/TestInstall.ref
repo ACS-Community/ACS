@@ -1,0 +1,75 @@
+1 - Target Language Options:
+1 -      -allegrocl      - Generate ALLEGROCL wrappers
+1 -      -chicken        - Generate CHICKEN wrappers
+1 -      -csharp         - Generate C# wrappers
+1 -      -guile          - Generate Guile wrappers
+1 -      -java           - Generate Java wrappers
+1 -      -modula3        - Generate Modula 3 wrappers
+1 -      -mzscheme       - Generate Mzscheme wrappers
+1 -      -ocaml          - Generate Ocaml wrappers
+1 -      -perl           - Generate Perl wrappers
+1 -      -php            - Generate PHP wrappers
+1 -      -pike           - Generate Pike wrappers
+1 -      -python         - Generate Python wrappers
+1 -      -ruby           - Generate Ruby wrappers
+1 -      -sexp           - Generate Lisp S-Expressions wrappers
+1 -      -tcl            - Generate Tcl wrappers
+1 -      -xml            - Generate XML wrappers
+1 - 
+1 - General Options
+1 -      -c++            - Enable C++ processing
+1 -      -co <file>      - Check <file> out of the SWIG library
+1 -      -directors      - Turn on director mode for all the classes, mainly for testing 
+1 -      -dirprot        - Turn on wrapping of protected members for director classes
+1 -      -D<symbol>      - Define a symbol <symbol> (for conditional compilation)
+1 -      -E              - Preprocess only, does not generate wrapper code
+1 -      -fcompact       - Compile in compact mode
+1 -      -features list  - Set a list of global features, where the syntax list is 
+1 -                        -features directors,autodoc=1      
+1 -                        if not explicit value is given to the feature, a '1' is used 
+1 -      -fvirtual       - Compile in virtual elimination mode
+1 -      -Fstandard      - Display error/warning messages in commonly used format
+1 -      -Fmicrosoft     - Display error/warning messages in Microsoft format
+1 -      -help           - This output
+1 -      -I<dir>         - Look for SWIG files in <dir>
+1 -      -I-             - Don't search the current directory
+1 -      -ignoremissing  - Ignore missing include files
+1 -      -importall      - Follow all #include statements as imports
+1 -      -includeall     - Follow all #include statements
+1 -      -l<ifile>       - Include SWIG library file <ifile>
+1 -      -M              - List all dependencies 
+1 -      -MD             - Is equivalent to `-M -MF <file>', except `-E' is not implied
+1 -      -MF <file>      - Generate dependencies into <file> and continue generating wrappers 
+1 -      -MM             - List dependencies, but omit files in SWIG library
+1 -      -MMD            - Like `-MD', but omit files in SWIG library
+1 -      -makedefault    - Create default constructors/destructors (the default)
+1 -      -module <name>  - Set module name to <name>
+1 -      -nocontract     - Turn off contract checking 
+1 -      -nodefault      - Do not generate constructors/destructors
+1 -      -nodirprot      - Do not wrap director protected members
+1 -      -noexcept       - Do not wrap exception specifiers
+1 -      -noextern       - Do not generate extern declarations
+1 -      -o <outfile>    - Set name of the output file to <outfile>
+1 -      -oh <headfile>  - Set name of the output header file to <headfile>
+1 -      -outdir <dir>   - Set language specific files output directory
+1 -      -small          - Compile in virtual elimination & compact mode
+1 -      -swiglib        - Report location of SWIG library and exit
+1 -      -templatereduce - Swig reduce all the typedefs in templates 
+1 -      -v              - Run in verbose mode
+1 -      -version        - Print SWIG version number
+1 -      -Wall           - Enable all warning messages
+1 -      -Wallkw         - Enable keyword warnings for all the supported languages
+1 -      -Werror         - Treat warnings as errors
+1 -      -w<list>        - Suppress/add warning messages eg -w401,+321 - see Warnings.html
+1 -      -xmlout <file>  - Write XML version of the parse tree to <file> after normal processing
+1 - 
+1 - Tcl 8 Options (available with -tcl)
+1 -      -itcl           - Enable ITcl support
+1 -      -nosafe         - Leave out SafeInit module function.
+1 -      -prefix <name>  - Set a prefix <name> to be prepended to all names
+1 -      -namespace      - Build module into a Tcl 8 namespace
+1 -      -pkgversion     - Set package version
+1 - 
+1 - 
+1 - Note: 'swig -<lang> -help' displays options for a specific target language.
+1 - 

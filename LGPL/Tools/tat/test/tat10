@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat10,v 1.76 2003/01/09 17:51:21 vltsccm Exp $"
+#
+# tat10: bug tat 1.19 - no "chmod u+x" if the test script
+# is actually a binary under ../bin
+#
+# 
+
+rm -f .testSession
+rm -f .TestList.sed
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat10 TestList
+cp Makefile.tat10 Makefile
+
+tat -nc makeEnv
+
+tat -g tat101
+cat ./ref/tat101.ref
+
+# to be sure that ../bin has been cleaned
+tat cleanEnv
+
+
+

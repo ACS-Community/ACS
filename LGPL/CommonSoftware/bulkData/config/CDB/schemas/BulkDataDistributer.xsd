@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for a BulkDataDistributer
+   -
+   - Author: oat
+   -
+   - History:
+   -   2004-11-23  aot  Created
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:BulkDataDistributer:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:BulkDataDistributer:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+  <xs:complexType name="BulkDataDistributer">
+    <xs:sequence>
+    </xs:sequence>
+    <xs:attribute name="sender_protocols" type="xs:string" use="optional"/>
+    <xs:attribute name="recv_protocols" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:element name="BulkDataDistributer" type="BulkDataDistributer"/>
+</xs:schema>

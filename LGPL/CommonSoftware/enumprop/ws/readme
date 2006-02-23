@@ -1,0 +1,35 @@
+How to make new enum property (in ACS 1.0)
+
+1) First you have to define new (enum) property in IDL:
+ - include in your idl file enumpropMACRO.idl
+- and then use macro ENUM(new_property_name); which will define all IDL
+interfaces for new property (RO and RW)
+
+Example of doing this is in file: enumpropTestDevice.idl.
+
+2) Implementation of new property is already done using C++ templates and it is
+in file enumpropROImpl.h and enumpropROImpl.i
+
+If you want to use new property you will have to do smth. like:
+
+m_currentState = new ROEnumImpl<ACS_ENUM_T(new_property_name), 
+POA_new_property_module::ROnew_property_name>("name_of_property",  m_cob);
+
+where:
+new_property_name is name using in IDL
+new_property_module is the name of module where new property is defined
+name_of_property is the name of property (using for accessing data from
+config. DB)
+
+For details see example:
+include/enumpropTestDeviceImpl.h
+  and
+test/enumpropTestDeviceImpl.cpp
+
+
+3) CDB:
+There is defined new class for enum properties: enumProperty.class
+You have to include this file in your class file for device.
+
+Example how to do this is in file: enumpropTestDevice.class
+

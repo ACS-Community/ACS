@@ -1,0 +1,7 @@
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'execComponentTestImpl'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: INITIALIZED -> OPERATIONAL
+1 - Hello World
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: DESTROYING -> DEFUNCT

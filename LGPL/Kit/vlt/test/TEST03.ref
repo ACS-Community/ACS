@@ -1,0 +1,72 @@
+TEST03: VxWorks application development
+VLTMAKE/test/mod/lcu/src
+
+Cleaning up . . . . . . . .
+ . . . clean done
+/usr/local/bin/make MAKEDIR=VLTMAKE/src -f VLTMAKE/src/vltMakefile.all --no-print-directory do_all
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestClibrary.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestProcedure1.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestProcedure2.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:224: ../object/vltMakeTestClibrary.dx: No such file or directory
+VLTMAKE/src/vltMakefile.all:224: ../object/vltMakeTestClibraryLocal.dx: No such file or directory
+VLTMAKE/src/vltMakefile.all:233: ../object/vltMakeTest.da: No such file or directory
+VLTMAKE/src/vltMakefile.all:233: ../object/vltMakeTestLocal.da: No such file or directory
+VLTMAKE/src/vltMakefile.all:242: ../object/vltMakeTestScript.ds: No such file or directory
+VLTMAKE/src/vltMakefile.all:242: ../object/vltMakeTestScriptLocal.ds: No such file or directory
+== Dependencies: ../object/vltMakeTestScriptLocal.ds
+== Dependencies: ../object/vltMakeTestScript.ds
+== Dependencies: ../object/vltMakeTestLocal.da
+== Dependencies: ../object/vltMakeTest.da
+== Dependencies: ../object/vltMakeTestClibraryLocal.dx
+== Dependencies: ../object/vltMakeTestClibrary.dx
+== Dependencies: ../object/vltMakeTestProcedure2.d
+== Dependencies: ../object/vltMakeTestProcedure1.d
+== Dependencies: ../object/vltMakeTestClibrary.d
+== C Compiling: vltMakeTestProcedure1.c
+== C Compiling: vltMakeTestProcedure2.c
+== Making library:  ../lib/libvltMakeTest.a
+
+== Making library:  ../lib/libvltMakeTestLocal.a
+
+== C Compiling: vltMakeTestClibrary.c
+== Building executable: ../bin/vltMakeTestClibrary
+
+== Building executable: ../bin/vltMakeTestClibraryLocal
+
+== Making script: ../bin/vltMakeTestScript
+== Making script: ../bin/vltMakeTestScriptLocal
+ . . . 'all' done
+
+man-pages...
+  local pages:
+ ASCII to MIF:
+ . . . man page(s) done
+
+Installing into target: INTROOT/vw
+
+.....binaries:  vltMakeTestClibrary
+              
+......scripts:  vltMakeTestScript
+              
+.....includes:  ERROR files
+                CDT files
+                CIT files
+              
+....libraries:  vltMakeTest
+              
+...TCLscripts:
+.TCLlibraries:
+....man-pages:
+
+        ---> installation recorded in INTROOT/vw/vltMakeInstall.log
+
+
+ Copying source files 
+        from: VLTMAKE/test/mod/lcu/src
+        to: INTROOT/vw/src/mod-lcu
+                                               . . . done 
+
+ . . . installation done
+vltMakeTestScript - PASS
+vltMakeTestScriptLocal - PASS
+ . . . execute done

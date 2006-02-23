@@ -1,0 +1,31 @@
+TEST_RUNNER_REPORT
+Running the following command:
+Starting Java/abeans application
+Using endorsed jar files in: -Djava.endorsed.dirs=
+ACS abeans configuration directory:
+ACS Manager: corbaloc::
+ACS Name Service: corbaloc::
+ACS Interface Repository: corbaloc::
+java -classpath
+Logging to ACS log server.
+RTContext:
+SourceInfo:
+local manager from
+export
+Running the container with these arguments
+JacORB
+Gerald Brose
+Using naming reference
+Retrying to connect to
+Abnormal connection termination
+POA RootPOA
+POA ManagerPOA
+Connected to
+POA ComponentPOA
+POA offshootPoa
+POA Container
+ping received,
+Waiting for the container
+Local file logger
+GlobalLogger
+alma.acs.testsupport.tat.TATJUnitRunner

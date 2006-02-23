@@ -1,0 +1,146 @@
+1 - /*
+1 -  * Copyright (c) 1998,1999,2000,2001,2002 Tal Davidson. All rights reserved.
+1 -  *
+1 -  * astyle_main.cpp
+1 -  * Copyright (c) 1998,1999,2000 Tal Davidson (davidsont@bigfoot.com). All rights reserved.
+1 -  *
+1 -  * This file is a part of "Artistic Style" - an indentater and reformatter
+1 -  * of C, C++, C# and Java source files.
+1 -  *
+1 -  * The "Artistic Style" project, including all files needed to compile it,
+1 -  * is free software; you can redistribute it and/or use it and/or modify it
+1 -  * under the terms of the GNU General Public License as published 
+1 -  * by the Free Software Foundation; either version 2 of the License, 
+1 -  * or (at your option) any later version.
+1 -  *
+1 -  * This program is distributed in the hope that it will be useful,
+1 -  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+1 -  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+1 -  *
+1 -  * You should have received a copy of the GNU General Public
+1 -  * License along with this program.
+1 -  *
+1 -  */
+1 - 
+1 - #include "compiler_defines.h"
+1 - #include "astyle.h"
+1 - 
+1 - #include <iostream>
+1 - #include <fstream>
+1 - #include <string>
+1 - #include <stdio.h>
+1 - 
+1 - 
+1 - #define IS_OPTION(arg,op)          ((arg).compare(op)==0)
+1 - #define IS_OPTIONS(arg,a,b)        (IS_OPTION((arg),(a)) || IS_OPTION((arg),(b)))
+1 - 
+1 - #define IS_PARAM_OPTION(arg,op)    ((arg).COMPARE(0, strlen(op) , string(op))==0)
+1 - #define IS_PARAM_OPTIONS(arg,a,b)  (IS_PARAM_OPTION((arg),(a)) || IS_PARAM_OPTION((arg),(b)))
+1 - 
+1 - #define GET_PARAM(arg,op)          ((arg).substr(strlen(op)))
+1 - #define GET_PARAMS(arg,a,b)        (IS_PARAM_OPTION((arg),(a)) ? GET_PARAM((arg),(a)) : GET_PARAM((arg),(b)))
+1 - 
+1 - 
+1 - #ifdef USES_NAMESPACE
+1 - using namespace std;
+1 - using namespace astyle;
+1 - #endif
+1 - 
+1 - // default options:
+1 - ostream *_err = &cerr;
+1 - string _suffix = ".orig";
+1 - bool _modeManuallySet;
+1 - 
+1 - const string _version = "1.15.3";
+1 - 
+1 - 
+1 - class ASStreamIterator :
+1 -             public ASSourceIterator
+1 - {
+1 - public:
+1 -     ASStreamIterator(istream *in);
+1 -     virtual ~ASStreamIterator();
+1 -     bool hasMoreLines() const;
+1 -     string nextLine();
+1 - 
+1 - private:
+1 -     istream * inStream;
+1 -     char buffer[2048]; };
+1 - 
+1 - ASStreamIterator::ASStreamIterator(istream *in)
+1 - {inStream = in;}
+1 - 
+1 - ASStreamIterator::~ASStreamIterator()
+1 - {
+1 -     delete             inStream;
+1 - }
+1 - 
+1 - 
+1 - bool ASStreamIterator::hasMoreLines() const
+1 - {
+1 -     if (*inStream)
+1 -         return true;
+1 -     else
+1 -         return false;}
+1 - string ASStreamIterator::nextLine()
+1 - {
+1 -     char *srcPtr; char *filterPtr;
+1 - 
+1 -     inStream->getline(buffer, 2047);
+1 -     srcPtr = filterPtr = buffer;
+1 - 
+1 -     while (*srcPtr != 0)
+1 -     {
+1 -         if (*srcPtr != '\r')
+1 -             *filterPtr++ = *srcPtr;
+1 -         srcPtr++;
+1 -     }
+1 -     *filterPtr = 0;
+1 - 
+1 -     return string(buffer);
+1 - }
+1 - 
+1 - 
+1 - 
+1 - void error(const char *why, const char* what)
+1 - {
+1 -     (*_err) << why << ' ' << what <<'\n';
+1 -     exit  ( 1           )  ;}
+1 - 
+1 - 
+1 - 
+1 - template<class ITER>
+1 - bool parseOptions(ASFormatter &formatter,
+1 -                   const ITER &optionsBegin,
+1 -                   const ITER &optionsEnd,
+1 -                   const string &errorInfo
+1 -                  ){
+1 -     ITER option;
+1 -     bool ok = true;
+1 -     string arg, subArg;
+1 - 
+1 -     for (option = optionsBegin; option != optionsEnd; ++option)
+1 -     {
+1 -         arg = *option; //string(*option);
+1 - 
+1 -         if (arg.COMPARE(0, 2, string("--")) == 0)
+1 -             ok &= parseOption(formatter, arg.substr(2), errorInfo);
+1 -         else if (arg[0] == '-')
+1 -         {
+1 -             int i;  for (i=1; i < arg.length(); ++i)            {                 if (isalpha(arg[i]) && i > 1)                 {
+1 -                     ok &= parseOption(formatter, subArg, errorInfo);
+1 -                     subArg = "";
+1 -                 }  subArg.append(1,
+1 -                                  arg[i]);
+1 -             }
+1 -             ok &= parseOption(formatter, subArg, errorInfo);
+1 -             subArg = "";
+1 -         }
+1 -         else
+1 -         {
+1 -             ok &= parseOption(formatter, arg, errorInfo);
+1 -             subArg = "";
+1 -         }
+1 -     }   return ok;
+1 - }
+1 - 

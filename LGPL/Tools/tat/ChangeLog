@@ -1,0 +1,92 @@
+Thu Jan 09 17:33:30 2003 <psivera@te13.hq.eso.org>  tat version: 1.76 
+	* src/tatMakeQsemuEnv.tcl and tatMakeRTAPEnv.tcl
+	SPR 20020703: for the host where the templates are, 
+	the local host is used
+Tue Dec 10 11:25:31 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/Makefile (TCL_SCRIPTS): 
+	Added eccsTestDriver and eccsTestSpawner sripts.
+	They come from the accs module and have not been renamed
+	for backward compatibility and since we expect to have 
+	them merged inside tat main script.
+
+Tue Dec 10 11:20:06 2002 <gchiozzi@te13.hq.eso.org>  tat version: 1.75 
+Thu Dec 05 22:19:17 2002 <psivera@te13.hq.eso.org>  tat version: 1.74 
+	* src/tat.tcl: fixed bug when cleaning LCU env without WS env
+Thu Nov 07 17:46:02 2002 <psivera@te13.hq.eso.org>  tat version: 1.73 
+	* src/tat.tcl: changed BEGIN and END to PROLOGUE and resp. EPILOGUE
+Wed Nov 06 15:45:07 2002 <psivera@te13.hq.eso.org>  tat version: 1.72 
+	* src/tat.tcl: added SOURCE directive
+Fri Sep 13 23:14:51 2002 <psivera@te13.hq.eso.org>  tat version: 1.71 
+	* src/tat.tcl: added BEGIN and END directives
+Tue Jul 09 17:44:25 2002 <psivera@te13.hq.eso.org>  tat version: 1.70 
+	* tat.tcl: added prepareTestList proc to cleanEnv proc
+Tue Jul 09 11:02:08 2002 <psivera@te13.hq.eso.org>  tat version: 1.69 
+	* tat.tcl:
+	VLTSW20020160: make all is executed before preparing the TestList
+Thu May 24 15:57:44 2001 <psivera@te13.hq.eso.org>  tat version: 1.68 
+	* implemented SPR 20000203: tat supports now RQS and RWS creation, 
+	                            from WS and/or QS
+Tue Oct 05 17:30:23 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.67 
+Mon Aug 23 15:13:42 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.66 
+	* tatCleanQsemuEnv.tcl, tatCleanRTAPEnv.tcl
+	  make use of -f option of vccEnvStop to wait for complete 
+	  environment shutdown
+
+Tue Aug 10 14:30:46 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.65 
+	* tatMakeRTAPEnv.tcl, tat.tcl
+	  bug fixing for make possible RWS from CCSLite Workstation
+
+Fri Jul 23 11:08:02 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.64 
+	* tatMakeLCUEnv.tcl Eliminated testDirHost search, currently done by vcc
+	  (SPRs 960308 and 960055)
+
+Tue Jun 01 11:53:59 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.63 
+	* tat.tcl, tatMakeLCUEnv.tcl 
+	  Eliminated vcc timeout settings (SPR 990194)
+
+Wed Oct 21 19:03:14 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.62 
+	* tat.tcl Sobstituded exec echo "..." with open, puts, close
+	  when tatMakeEnv failing
+
+Thu Sep 17 11:37:20 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.61 
+	* tat.tcl Set ./tatlog for .out, .diff and TatCreateEnv (SPR960627)
+
+Thu Aug 27 14:49:36 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.60 
+	* tat.tcl $LCUROOT check only if LCU Env. is specified on Testlist
+	(SPR980249)
+
+Mon Aug 10 10:22:01 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.59 
+	* tatMakeLcuEnv.tat modification to nfs host search  to consider 
+        "localhost"
+
+Thu Aug 06 09:31:59 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.58 
+	* tatMakeLcuEnv.tat use of pwd, ypcat -k auto.home and /etc/auti_home
+	to search for the nfs server in case of automounted directory
+
+Fri Jul 31 14:50:46 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.57 
+	* tatCleanRTAPEnv.tcl Eliminated puts "Stopping $envName..."
+	* tatCleanQsemuEnv.tcl Trapped error from vccEnvStop and vccEnvDelete
+	* tatMakeQsemuEnv.tcl Added the merging with user-defined template
+
+Wed Jul 22 18:00:03 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.56 
+	* tatMakeLCUEnv.tcl -m template option only if <src>/bootScript exist
+	* tat.tcl, tatCleanLCUEnv.tcl Added  WSEnv to tatCleanLCUEnv parameters
+	to solve not removed LCU environment during tat cleanup
+
+Tue Apr 15 17:15:27 1997  Pierre Forstmann  <pforstma@te67.hq.eso.org>
+
+	* tat.tcl (proc allocEnv): fixed CCS lite environment naming bug.
+
+Wed Mar  5 14:05:47 1997  Pierre Forstmann  <pforstma@te67.hq.eso.org>
+
+	* tat.tcl 1.50: fixed compatibility with make 3.75
+	 make '' fails with 
+	 make: *** empty string invalid as file name.  Stop.
+
+Tue Feb 25 08:23:41 1997  Pierre Forstmann  <pforstma@te67.hq.eso.org>
+
+	* tatGetLCUEnv.tcl 1.49 :  use vccInfo to get LCU host name
+	from lcu environment name ('l' prefix is a convention not
+	always applied).
+

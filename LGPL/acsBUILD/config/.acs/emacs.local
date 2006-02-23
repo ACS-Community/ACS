@@ -1,0 +1,142 @@
+;;-*-emacs-lisp-*-
+;; 
+;; .emacs.local - Emacs local configuration file
+;;
+;; R.Karban     11/12/1998      add settings for JDE, SNIFF, HTML but leave them commented
+;; G.Filippi    24/08/1998      Moved to stdEnv from emacs
+;; G.Chiozzi    28/07/1994
+;; G.Chiozzi    28/10/2000      Removed font setting for help window
+;; G.Chiozzi    01/10/2001      Fixed html helper.
+;;
+
+;; To have Alt key work properly on HP servers (from EMACS FAQ):
+;; 
+;; 144: Why doesn't my ExtendChar key work as a Meta key under HP-UX 8.0?
+;;   
+;;   This is a result of an internationalization extension in X11R4 and the
+;;   fact that HP is now using this extension.  Emacs assumes that
+;;   XLookupString returns the same result regardless of the Meta key state
+;;   which is no longer necessarily true.  Until Emacs is fixed, the temporary
+;;   kludge is to run this commands after each time the X server is started but
+;;   preferably before any xterm clients are (place it in .vueprofile):
+;;   
+;;     xmodmap -e 'remove mod1  = Mode_switch'
+;;     xmodmap -e 'add    mod1  = Alt_R'
+;;     xmodmap -e 'add    mod1  = Alt_L'
+;;     xmodmap -e 'keysym Alt_R = Alt_R Meta_R'
+;;   
+;;   NOTE:  This works fine, but do not ask me why
+;;
+;; 
+
+;;
+;; Highlight package
+;;
+(cond (window-system
+      (setq hilit-mode-enable-list	'(not text-mode)
+	     hilit-background-mode	'dark
+	     hilit-inhibit-mode		nil
+	     hilit-inhibit-rebinding	nil
+	     hilit-auto-highlight-maxout 100000)
+      (require 'hilit19)
+      ))
+
+;;
+;; My configuration for help window
+;;
+(setq special-display-frame-alist 
+      '((width . 80) (height . 14) 
+        (unsplittable . t) 
+        (menu-bar-lines . 0) (minibuffer . nil)
+       ))
+
+
+;;
+;; My personal load-path:
+;;
+;;(setq vlt-temp-var (substitute-in-file-name "$HOME/tools/Emacs/lisp"))
+;;(if (file-exists-p vlt-temp-var)
+;;    (setq load-path (cons vlt-temp-var load-path))
+;;)
+
+;;(setq vlt-temp-var (substitute-in-file-name "$HOME/tools/Emacs/info"))
+;;(if (file-exists-p vlt-temp-var)
+;;    (setq Info-default-directory-list (cons vlt-temp-var Info-default-directory-list))
+;;)
+
+;;
+;; Function Keys:
+;;
+
+;;
+;; Misc:
+;;
+
+;; uncomment this, to turn off autoloading of last context:
+;;(setq auto-save-and-recover-context nil)
+
+;; uncomment this if you don't want backups for version-controlled files:
+;;(setq vc-make-backup-files nil)
+
+;;
+;; SNIFF+ configuration
+;;
+;;(if (getenv "SNIFF_DIR")
+;;    (progn
+;;      (load "$SNIFF_DIR/config/sniff-mode")
+;;      (setq sniff-want-fonts nil)
+;;     )
+;;)
+
+
+;; uncomment if you want to use the JDE (java development environment)
+(if (<  emacs-major-version 20)
+    (progn
+     (require 'custom)
+))
+(load "jde")
+:: (setq jde-web-browser "netscape")
+;; (setq jde-doc-dir "$HOME/java/jdk/doc")
+;; end of JDE
+
+;;
+;; Configure html-helper-mode and related tools
+;;
+(setq html-helper-address-string
+  "User User &lt;user@eso.org&gt;</a>")
+(setq html-helper-timestamp-start "<!-- hhmts start -->")
+(setq html-helper-timestamp-end "<!-- hhmts end -->")
+
+;;***************************************************
+
+;; extend html-helper-mode.el begin
+;; to support Use Case Design Description entries in HTML documents
+
+(require 'html-helper-mode)
+
+;(mapcar 'html-helper-add-type-to-alist
+;  '(
+;    (vlt     . (html-helper-vlt-map "\C-c\C-v" html-helper-uml-menu "Insert VLT Elements"))
+;    )
+;)
+
+;(mapcar 'html-helper-install-type '(vlt))
+
+;(mapcar
+; 'html-helper-add-tag
+; '(
+;   (vlt "\C-da" "<VLT-DD"   "UC DD Anchor" ("<!-- VLT-DD --><TABLE>\n<TR VALIGN=\"top\"><TD WIDTH=12 BGCOLOR=\"\#D0D0D0\"><A HREF=\"../Help/DDEntry.htm\" TARGET=\"UseCaseHelp\">\n<IMG SRC=\"../../../Images/arrow.gif\" ALT=\"[Design Description Entry]\"></A>\n<TD>" (r "UC DD Anchor: ") "\n</TR>\n</TABLE><!-- /VLT-DD -->") "documentation")
+;   (vlt "\C-dl" "<VLT-DD"   "UC DD ListItem" ("<!-- VLT-DD --><LI><TABLE><TR VALIGN=\"top\">\n<TD WIDTH=12 BGCOLOR=\"\#D0D0D0\"><A HREF=\"../Help/DDEntry.htm\" TARGET=\"UseCaseHelp\">\n<IMG SRC=\"../../../Images/arrow.gif\" ALT=\"[Design Description Entry]\"></A>\n<TD>" (r "UC DD List Item: ") "\n</TR>\n</TABLE><!-- /VLT-DD -->\n") "documentation")
+;   (vlt "\C-dt" "<VLT-DD"   "UC DD Text" ("<!-- VLT-DD --><FONT FACE=\"Courier\"><B>" (r "UC DD text: ") "</B></FONT><!-- /VLT-DD -->") "documentation")
+;   (vlt "\C-ib" "<VLT-ICD"  "ICD Begin Table" ("<P  ALIGN=\"CENTER\">\n<TABLE BORDER=1 CELLSPACING=0 CELLPADDING=3 WIDTH=800>\n<TR><P>\n<TH WIDTH=\"6%\" COLSPAN=\"1\"><FONT SIZE=\"2\"><B>Item</B></FONT></TH>\n<TH WIDTH=\"6%\" COLSPAN=\"1\"><FONT SIZE=\"2\"><B>From</B></FONT></TH>\n<TH WIDTH=\"6%\" COLSPAN=\"1\"><FONT SIZE=\"2\"><B>To</B></FONT></TH>\n<TH WIDTH=\"30%\" COLSPAN=\"1\"><FONT SIZE=\"2\"><B>Signal</B></FONT></TH>\n<TH WIDTH=\"43%\" COLSPAN=\"1\"><FONT SIZE=\"2\"><B>Description</B></FONT></TH>\n<TH WIDTH=\"9%\" COLSPAN=\"1\"><FONT SIZE=\"2\"><B>Pin</B></FONT></TH>\n</TR>\n") "documentation")
+;   (vlt "\C-is" "<VLT-ICD"  "ICD Table Section" ("<TR><P><TH COLSPAN=\"6\"><FONT SIZE=\"2\"><B><A NAME=\"" (r "ICD Row Bookmark: ") "\">" (r "ICD Row Section: ") "</A>:</B></FONT></TH></TR>\n") "documentation")
+;   (vlt "\C-ir" "<VLT-ICD"  "ICD Row" ("<TR>\n<TD VALIGN=\"TOP\"><FONT SIZE=\"2\">" (r "ICD Row Item #: ") "</FONT></TD><TD VALIGN=\"TOP\"><FONT SIZE=\"2\">" (r "ICD Row From: ") "</FONT></TD><TD VALIGN=\"TOP\"><FONT SIZE=\"2\">" (r "ICD Row To: ") "</FONT></TD>\n<TD VALIGN=\"TOP\"><FONT SIZE=\"2\">" (r "ICD Row Signal: ") "</FONT></TD>\n<TD VALIGN=\"TOP\"><FONT SIZE=\"2\">" (r "ICD Row Description: ") "</FONT></TD><TD VALIGN=\"TOP\"><FONT SIZE=\"2\">" (r "ICD Row Pin: ") "</FONT></TD>\n</TR>\n") "documentation")
+;   (vlt "\C-ie" "<VLT-ICD"  "ICD Table End" ("</TABLE>\n") "documentation")
+;   (vlt "\C-ix" "<VLT-ICD"  "ICD ESO Only" ("<!-- ESO-ICD --><TABLE BORDER=0>\n<TR VALIGN=\"top\"><TH WIDTH=12 BGCOLOR=\"#D0D0D0\">\n<IMG SRC=\"../../Images/arrow.gif\" ALT=\"[Design Description Entry]\">\n<BR>E<BR>S<BR>O<BR><BR>O<BR>n<BR>l<BR>y\n</TH><TD>\nYour text\n</TD></TR></TABLE>\n<!-- /ESO-ICD -->") "documentation")
+;  )
+;)
+
+;;; extend html-helper-mode.el end
+
+;; uncomment is upcase-region function should be enabled
+;(put 'upcase-region 'disabled nil)

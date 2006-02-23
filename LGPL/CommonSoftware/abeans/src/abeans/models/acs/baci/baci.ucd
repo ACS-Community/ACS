@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" size="1361,867" id="CSL01Matejjacscommon0" metadata="nsuml-1.4" initialized="true" showWireOptions="1" zoom="0.75">
+  <children xsi:type="editmodel:ClassEditModel" location="400,77" size="152,85" targetConnections="//@children.1/@sourceConnections.0" id="CSL01Matejjacscommon501" runTimeClassModel="CSL01Matejjacscommon586;CSL01Matejjacscommon529;CSL01Matejjacscommon542;CSL01Matejjacscommon612;CSL01Matejjacscommon557;CSL01Matejjacscommon504;CSL01Matejjacscommon589;CSL01Matejjacscommon578;CSL01Matejjacscommon545;CSL01Matejjacscommon606;CSL01Matejjacscommon555;CSL01Matejjacscommon514;CSL01Matejjacscommon1085;CSL01Matejjacscommon597;CSL01Matejjacscommon608;CSL01Matejjacscommon594;CSL01Matejjacscommon549;CSL01Matejjacscommon568;CSL01Matejjacscommon563;CSL01Matejjacscommon1087;CSL01Matejjacscommon686;CSL01Matejjacscommon603;CSL01Matejjacscommon610;CSL01Matejjacscommon649;CSL01Matejjacscommon616;CSL01Matejjacscommon614;CSL01Matejjacscommon525;CSL01Matejjacscommon571;CSL01Matejjacscommon547;CSL01Matejjacscommon540;CSL01Matejjacscommon583">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="194,576">
+      <children xsi:type="editmodel:MethodEditModel" location="341,108" id="CSL01Matejjacscommon1087"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1085"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="390,230" size="172,319" targetConnections="//@children.2/@sourceConnections.0" id="CSL01Matejjacscommon951" runTimeClassModel="CSL01Matejjacscommon1655;CSL01Matejjacscommon1801;CSL01Matejjacscommon1717;CSL01Matejjacscommon1010;CSL01Matejjacscommon958;CSL01Matejjacscommon985;CSL01Matejjacscommon1001;CSL01Matejjacscommon991;CSL01Matejjacscommon1016;CSL01Matejjacscommon1020;CSL01Matejjacscommon993;CSL01Matejjacscommon1013;CSL01Matejjacscommon953;CSL01Matejjacscommon988;CSL01Matejjacscommon1003;CSL01Matejjacscommon999;CSL01Matejjacscommon1018;CSL01Matejjacscommon1607">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="149,270">
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon958"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon953"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1010"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon985"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1013"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1016"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1018"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon999"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon991"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon993"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1001"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1020"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon988"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1003"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1801"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="CSL01Matejjacscommon952" connectionRouterKind="Manual" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@sourceConnections.0/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="8,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="335,599" size="106,85" id="CSL01Matejjacscommon1347" runTimeClassModel="CSL01Matejjacscommon1354;CSL01Matejjacscommon1349">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="103,54">
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1349"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1354"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.3/@sourceConnections.0" id="CSL01Matejjacscommon1348" connectionRouterKind="GeneralizationManhattan" source="//@children.2" target="//@children.1" targetEnd="//@children.2/@sourceConnections.0/@children.1" sourceEnd="//@children.2/@sourceConnections.0/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="53,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="86,319" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="491,599" size="141,193" id="CSL01Matejjacscommon1406" runTimeClassModel="CSL01Matejjacscommon1552;CSL01Matejjacscommon1554;CSL01Matejjacscommon1570;CSL01Matejjacscommon1413;CSL01Matejjacscommon1433;CSL01Matejjacscommon1435;CSL01Matejjacscommon1438;CSL01Matejjacscommon1408">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="118,144">
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1408"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1413"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1554"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1552"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1433"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1435"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1570"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1438"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="CSL01Matejjacscommon1407" connectionRouterKind="Manual" source="//@children.3" target="//@children.2/@sourceConnections.0" targetEnd="//@children.3/@sourceConnections.0/@children.1" sourceEnd="//@children.3/@sourceConnections.0/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="69,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="715,120" size="116,103" targetConnections="//@children.5/@sourceConnections.0" id="CSL01Matejjacscommon1832" runTimeClassModel="CSL01Matejjacscommon1834;CSL01Matejjacscommon1840;CSL01Matejjacscommon1836">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="85,54">
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1834"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1836"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1840"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="727,273" size="91,103" id="CSL01Matejjacscommon1804" runTimeClassModel="CSL01Matejjacscommon1806;CSL01Matejjacscommon1808;CSL01Matejjacscommon1817">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="68,54">
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1808"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1806"/>
+      <children xsi:type="editmodel:MethodEditModel" id="CSL01Matejjacscommon1817"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="CSL01Matejjacscommon1805" connectionRouterKind="Manual" source="//@children.5" target="//@children.4" targetEnd="//@children.5/@sourceConnections.0/@children.1" sourceEnd="//@children.5/@sourceConnections.0/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="16,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showInterfaceStereotype="true" showClassStereotype="true" showPackageStereotype="true"/>
+</editmodel:ClassDiagramEditModel>

@@ -1,0 +1,134 @@
+#------------------------------------------------------------------------
+# E.S.O. - ACS project
+# 
+# "@(#) $Id: script.template.doc,v 1.19+ 2002/11/12 10:34:18 vltsccm Exp $" 
+# 
+# who        when      what
+# ---------  --------  ----------------------------------------------
+# gfilippi   21/02/95  created
+# 
+#------------------------------------------------------------------------
+/************************************************************************
+*   NAME
+*   script - script file using Bourne Shell
+*
+*   SYNOPSIS
+*       <mod>/src/<program>
+*            /test/<program>
+*      
+*       <mod>
+*           |/ws/src/<program>
+*           |   /test/<program>
+*           |/lcu/src/<program>
+*                /test/<program>
+*
+*   DESCRIPTION
+*   A Bourne Shell script shall be written using the convention
+*   established in the "VLT-PRO-ESO-10000-0228, 1.0 10/03/93 VLT Software
+*   Programming Standards".
+*
+*   An empty template is provided by getTemplate(7) in the "code" menu.
+*   Complete the template according to the following instruction:
+*   
+*
+*   #! /bin/sh
+*   #*************... .  .
+*   # E.S.O. - ACS project
+*   #
+*   # "@(#) ...."            <<<< the identificator DO NOT MODIFY IT
+*   #
+*   # who       when      what
+*   # --------  --------  --------------
+*   # NNNNNNNN  dd/mm/yy  created
+*   # |----------------| <<<<in the template these two fields are changed
+*                            according to the current value of username and date.
+*
+*
+*   >>>>complete the man page as explained<<<
+*   #*****************.. .
+*   #   NAME
+*   #   <program_name> - <brief description of program>
+*   # 
+*   #   SYNOPSIS
+*   #   <program_name> [<par_1> [<par_2>  . . . [<par_n>]]] 
+*   # 
+*   #   DESCRIPTION
+*   #   <detailed explanation of the functionality> 
+*   #   ...............................................
+*   #   ...............................................
+*   #   ...............................................
+*   #                .
+*   #                .
+*   #   ...............................................
+*   # 
+*   #   <par_1> <description and grammar rules for the first parameter>
+*   #            ....................................
+*   #   <par_2> ....................................
+*   #                .
+*   #                .
+*   #   <par_n> <description and grammar rules for the n-th parameter> 
+*   #            ....................................
+*   #
+*   #   FILES
+*   #   <file_1>  <access> <meaning and purpose of the file>
+*   #                           .................................
+*   #   <file_2>  <access> ....................................
+*   #   ......
+*   #
+*   #   ENVIRONMENT
+*   #   <var_1>   <access> <meaning and purpose of the variable>
+*   #                      ....................................
+*   #   <var_2>   <access> ....................................
+*   #   ......
+*   #
+*   #   COMMANDS
+*   #   <Command_1>  brief description of the action performed 
+*   #                     .........................................
+*   #   <Command_2>  .........................................
+*   #   ......
+*   #
+*   #   RETURN VALUES
+*   #   <ret_value_1> <message> <diagnostic of the error>
+*   #                                .........................
+*   #   <ret_value_2> <message> .........................
+*   #   ......
+*   #
+*   #   CAUTIONS 
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   #
+*   #   EXAMPLES
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   #
+*   #   SEE ALSO
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   #
+*   #   BUGS   
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   # 
+*   #------------ -  -  -
+*   #
+*   
+*   # signal trap (if any)
+*       .
+*      code 
+*       .
+*     
+*   #
+*       .
+*       .
+*      code 
+*       .
+*       .
+*
+*   #
+*   # ___oOo___
+*   ------------------------------------------------------------------------
+                              ___oOo___

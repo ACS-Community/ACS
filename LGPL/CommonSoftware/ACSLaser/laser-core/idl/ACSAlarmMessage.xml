@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EntitybuilderSettings>
+
+    <EntitySchema schemaName="ACSAlarmMessage.xsd" xmlNamespace="Alma/AlarmSystem"/>    
+    <XmlNamespace2JPackage xmlNamespace="Alma/AlarmSystem" jPackage="alma.alarmsystem.alarmmessage.generated"/>    
+</EntitybuilderSettings>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for a FilterWheel
+   -
+   - Author: Alessandro Caproni
+   -
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:FILTERWHEEL:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:FILTERWHEEL:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="FILTER">
+      		<xs:attribute name="Name" type="xs:string" />
+	      	<xs:attribute name="Delta" type="xs:integer"/>
+      		<xs:attribute name="Slot" type="xs:integer" /> 
+  </xs:complexType>
+
+    <xs:complexType name="FILTERWHEEL">
+		<xs:sequence>
+			<xs:element name="position" type="baci:ROdouble"/>
+			<xs:element name="desc" type="baci:ROstring"/>
+			<xs:element name="slots" type="baci:ROlong"/>
+
+			<xs:element name="Filter">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="_" type="FILTER" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="SlotStep" type="cdb:Array"/>
+
+		</xs:sequence>
+	
+		<xs:attribute name="FilterWheelDescription" type="xs:string" use="optional" default="UNDEFINED" />
+		<xs:attribute name="AvailableSlots" type="xs:integer" use="required" />
+    </xs:complexType>
+
+	<xs:element name="FILTERWHEEL" type="FILTERWHEEL" />
+
+</xs:schema>

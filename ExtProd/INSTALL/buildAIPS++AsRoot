@@ -1,0 +1,149 @@
+#! /bin/ksh
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildAIPS++AsRoot,v 1.2 2005/12/30 11:54:07 gchiozzi Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# psivera   2004-04-30  created
+#
+
+#************************************************************************
+#   NAME
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS AND LIMITATIONS
+#   The build will try to remove the same rpms that it 
+#   is going to install, before beginning the actual installation. 
+#
+#   The installation shall be done as root. The rpms get installed 
+#   under /usr. ~650MB of space are needed. 
+#
+#   AIPS++ installation can be done on RH9 only
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+#
+# Install AIPS++. We presume that no previous AIPS++ installation
+# are present on the machine. For the moment (ACS 3.1) root priviledges 
+# are needed. The installation will be done under /usr.
+#
+#  See http://aips2.nrao.edu/daily/docs/reference/install.html for information.
+#
+# Retrieve the sources from:  ftp://ftp.cv.nrao.edu/aips++/end-user-rpms
+#
+#set -x
+
+OSName=`uname -s`
+
+if [ ${OSName} != "Linux" ]
+then
+    echo ""
+    echo "AIPS++ is supported on Linux only"
+    echo "Script aborted"
+    exit 1
+fi
+OSVer=`cat /etc/redhat-release | awk '{print $5}'`
+if [ "$OSVer" != "9" ]
+then
+    echo "AIPS++ is supported on RH9 only"
+    echo "Script aborted"
+    exit 1
+fi
+
+user=`whoami`
+if [ ${user} != "root" ]
+then
+    echo ""
+    echo "AIPS++ can be installed by root only"
+    echo "Script aborted"
+    exit 2
+fi
+
+echo installing the AIPS++ distribution
+
+if [ ! -e ../PRODUCTS/AIPS++.tar.gz ]
+then
+    echo ""
+    echo Error: AIPS++ rpms are missing
+    exit 3
+fi
+
+cd ../PRODUCTS
+rm -rf AIPS++
+tar zxf AIPS++.tar.gz
+
+OSVer=`cat /etc/redhat-release | awk '{print $5}'`
+
+cd AIPS++/rh$OSVer
+echo "Removing previous installed AIPS++ rpms, if any..."
+rpm -e gppshare+3.3-11-2ds
+rpm -e g77share+3.3
+rpm -e gccshare+3.3
+rpm -e aips++-devel
+rpm -e aips++data-base
+rpm -e aips++
+rpm -e aips++-shared
+rpm -e aips++data
+rpm -e cfitsio
+rpm -e rpfits
+rpm -e pgplot-motif
+rpm -e pgplot
+
+echo "Installation of AIPS++ begins..."
+rpm -ivh pgplot*
+if [ "$?" != "0" ] 
+then
+    echo ""
+    echo "installation of pgplot* rpms NOT successful"
+    echo "please have a look at the $LOG file and fix the problem before continuing"
+    echo "Installation aborted"
+    exit 4
+fi
+rpm -ivh cfitsio* rpfits*
+if [ "$?" != "0" ] 
+then
+    echo ""
+    echo "installation of cfitsio* rpms NOT successful"
+    echo "please have a look at the $LOG file and fix the problem before continuing"
+    echo "Installation aborted"
+    exit 5
+fi
+rpm --ignoresize -ivh aips++*
+if [ "$?" != "0" ] 
+then
+    echo ""
+    echo "installation of aips++* rpms NOT successful"
+    echo "please have a look at the $LOG file and fix the problem before continuing"
+    echo "Installation aborted"
+    exit 6
+fi
+rpm -ivh g77share* gccshare* gppshare* 
+if [ "$?" != "0" ]
+then
+    echo ""
+    echo "installation of compiler libs rpms NOT successful"
+    echo "please have a look at the $LOG file and fix the problem before continuing"
+    echo "Installation aborted"
+    exit 7
+fi
+
+# __oOo__
+

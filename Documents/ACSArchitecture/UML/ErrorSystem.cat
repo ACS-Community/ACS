@@ -1,0 +1,5731 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Error System"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"38159A0B0294"
+    visible_categories 	(list visibility_relationship_list
+	(object Visibility_Relationship
+	    quid       	"3B42EFD5038C"
+	    documentation 	"getting time stamp"
+	    supplier   	"Logical View::Time System"
+	    quidu      	"38E8BF0803B9")
+	(object Visibility_Relationship
+	    quid       	"3B42F0550173"
+	    documentation 	
+|for mapping from error "ID" to string.
+|This feature will bu used before the error will be logged into Logging System or Visualzizat on the screen.
+	    
+	    supplier   	"Logical View::Configuration Database"
+	    quidu      	"3DCFB25A0148")
+	(object Visibility_Relationship
+	    quid       	"3A9258C102D2"
+	    documentation 	"logging error(s)"
+	    supplier   	"Logical View::Logging System"
+	    quidu      	"38159A1701D3"))
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "errorDisplay"
+	    quid       	"393FC1E2003E")
+	(object Class "ACSErr::ACSErrType"
+	    quid       	"3CC7FCAD0370"
+	    stereotype 	"CORBAEnum")
+	(object Class "ACSErr::ACSException"
+	    quid       	"3A92200B0024"
+	    documentation 	"Exception root class"
+	    stereotype 	"CORBAExceptions")
+	(object Class "ACSErr::ErrorCode"
+	    quid       	"3CC7FCF3029E"
+	    stereotype 	"CORBATypedef")
+	(object Class "ACSErr::ErrorTrace"
+	    quid       	"3B430CB000EF"
+	    stereotype 	"CORBAStruct"
+	    used_nodes 	(list uses_relationship_list
+		(object Uses_Relationship
+		    quid       	"3B430DC90283"
+		    supplier   	"Logical View::Error System::acserr::ACSError"
+		    quidu      	"3A913CD10292"))
+	    class_attributes 	(list class_attribute_list
+		(object ClassAttribute "timeStamp"
+		    quid       	"3A921EEB020A"
+		    type       	"Date"
+		    exportControl 	"Public")
+		(object ClassAttribute "severity"
+		    quid       	"3A921F7201FA"
+		    type       	"Long"
+		    exportControl 	"Public")
+		(object ClassAttribute "thread"
+		    quid       	"3A9BCB380023"
+		    type       	"String"
+		    exportControl 	"Public")
+		(object ClassAttribute "file"
+		    quid       	"3A921EDB012B"
+		    documentation 	"__FILE__"
+		    type       	"String"
+		    exportControl 	"Public")
+		(object ClassAttribute "lineNum"
+		    quid       	"3A9BCA9E0180"
+		    documentation 	"__LINE__"
+		    type       	"Integer"
+		    exportControl 	"Public")
+		(object ClassAttribute "routine"
+		    quid       	"3A9BCAA102D9"
+		    type       	"String"
+		    exportControl 	"Public")
+		(object ClassAttribute "host"
+		    quid       	"3A9BCB2C03AB"
+		    type       	"String"
+		    exportControl 	"Public")
+		(object ClassAttribute "process"
+		    quid       	"3A9BCB300130"
+		    type       	"String"
+		    exportControl 	"Public"))
+	    space      	"ACSErr")
+	(object Class "ACSErr::NameValue"
+	    quid       	"3B4322F50056"
+	    stereotype 	"CORBAStruct"
+	    class_attributes 	(list class_attribute_list
+		(object ClassAttribute "name"
+		    quid       	"3B4323080252"
+		    type       	"String"
+		    exportControl 	"Public")
+		(object ClassAttribute "value"
+		    quid       	"3B4323140231"
+		    type       	"String"
+		    exportControl 	"Public")))
+	(object Class "ACSErr::NameValueSeq"
+	    quid       	"3B43259401D8"
+	    stereotype 	"CORBATypedef")
+	(object Class "ACSErr::Completion"
+	    quid       	"3CE4F1DC0358"
+	    stereotype 	"CORBAStruct"
+	    space      	"ACS")
+	(object Parameterized_Class "CompletionHelper"
+	    quid       	"3DD278750384"
+	    parameters 	(list Parameters
+		(object Parameter "language"
+		    quid       	"3DD3642A0022")))
+	(object Parameterized_Class "ErrorTraceHelper"
+	    quid       	"3DD2818602DD"
+	    parameters 	(list Parameters
+		(object Parameter "language"
+		    quid       	"3DD364680011")))
+	(object Parameterized_Class "ACSExceptionHelper"
+	    quid       	"3DD364980030"
+	    parameters 	(list Parameters
+		(object Parameter "language"
+		    quid       	"3DD364A900FA")))
+	(object UseCase "Passing Error object"
+	    quid       	"3A8BEC5602F8"
+	    stereotype 	"use-case realization"
+	    logical_models 	(list unit_reference_list
+		(object Mechanism @1
+		    logical_models 	(list unit_reference_list
+			(object Object "error"
+			    quid       	"3A8CD96B0012"
+			    class      	"Logical View::Error System::acserr::ACSError"
+			    quidu      	"3A913CD10292"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "$UNNAMED$0"
+			    quid       	"3A8CD97801DD"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3A8CD9E30277"
+				    supplier   	"error"
+				    quidu      	"3A8CD96B0012"
+				    messages   	(list Messages
+					(object Message "new"
+					    quid       	"3A8CD9E30278"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1"
+					    ordinal    	0
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "ec:=isError( )"
+					    quid       	"3A8D3D060108"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"3"
+					    ordinal    	5
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3A8CDBA5015C"
+				    supplier   	"$UNNAMED$1"
+				    quidu      	"3A8CDAA10307"
+				    messages   	(list Messages
+					(object Message "f(....., error)"
+					    quid       	"3A8CDBA5015D"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"2"
+					    ordinal    	1
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3A8D3B9602C1"
+				    supplier   	"additionalError"
+				    quidu      	"3A8D3B7903E2"
+				    messages   	(list Messages
+					(object Message "[ec] new"
+					    quid       	"3A8D3B9602C2"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"4"
+					    ordinal    	6
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "[ec] add( error)"
+					    quid       	"3A8D3BE90054"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"6"
+					    ordinal    	8
+					    Operation  	"[ec] add( additionalError)"
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "[ec] set( )"
+					    quid       	"3A8D3C520380"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"5"
+					    ordinal    	7
+					    quidu      	"000000000000"
+					    creation   	FALSE))))
+			    class      	"Use Case View::Application"
+			    quidu      	"3A8CD9990267"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "$UNNAMED$1"
+			    quid       	"3A8CDAA10307"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3A8D3C10015E"
+				    supplier   	"error"
+				    quidu      	"3A8CD96B0012"
+				    messages   	(list Messages
+					(object Message "[errorCondition] set()"
+					    quid       	"3A8D3C10015F"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"2.3"
+					    ordinal    	4
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3A923E770357"
+				    supplier   	"$UNNAMED$2"
+				    quidu      	"3A923E56024B"
+				    messages   	(list Messages
+					(object Message "new"
+					    quid       	"3A923E770358"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"2.1"
+					    ordinal    	2
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "operator=(error)"
+					    quid       	"3A923E8C0072"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"2.2"
+					    ordinal    	3
+					    quidu      	"000000000000"
+					    creation   	FALSE))))
+			    class      	"Use Case View::SubRoutine"
+			    quidu      	"3A8D3E55018C"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "additionalError"
+			    quid       	"3A8D3B7903E2"
+			    class      	"Logical View::Error System::acserr::ACSError"
+			    quidu      	"3A913CD10292"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "$UNNAMED$2"
+			    quid       	"3A923E56024B"
+			    class      	"Logical View::Error System::acserr::ACSError"
+			    quidu      	"3A913CD10292"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)))
+		(object Mechanism @2
+		    logical_models 	(list unit_reference_list
+			(object Object "$UNNAMED$3"
+			    quid       	"3A913CF301B5"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3A913D31034F"
+				    supplier   	"$UNNAMED$4"
+				    quidu      	"3A913D0D0253"
+				    messages   	(list Messages
+					(object Message "f(..., *error=NULL)"
+					    quid       	"3A913D310350"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1"
+					    ordinal    	0
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3A913D6C02DB"
+				    supplier   	"error"
+				    quidu      	"3A913D030104")
+				(object Link
+				    quid       	"3A913E0201A1"
+				    supplier   	"additionalError"
+				    quidu      	"3A913DAC02C9"
+				    messages   	(list Messages
+					(object Message "[error!=NULL] new"
+					    quid       	"3A913E0201A2"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"2"
+					    ordinal    	2
+					    Operation  	"[error!=NULL] new()"
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "[error!=NULL] set( )"
+					    quid       	"3A913E2C0089"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"3"
+					    ordinal    	3
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "[error!=NULL] add(error)"
+					    quid       	"3A913E7201FC"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"4"
+					    ordinal    	4
+					    quidu      	"000000000000"
+					    creation   	FALSE))))
+			    class      	"Use Case View::Application"
+			    quidu      	"3A8CD9990267"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "error"
+			    quid       	"3A913D030104"
+			    class      	"Logical View::Error System::acserr::ACSError"
+			    quidu      	"3A913CD10292"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "$UNNAMED$4"
+			    quid       	"3A913D0D0253"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3A913D500000"
+				    supplier   	"error"
+				    quidu      	"3A913D030104"
+				    messages   	(list Messages
+					(object Message "[errorCondition] error := new"
+					    quid       	"3A913D500001"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1.1"
+					    ordinal    	1
+					    Operation  	"[errorCondition] error := new()"
+					    quidu      	"000000000000"
+					    creation   	FALSE))))
+			    class      	"Use Case View::SubRoutine"
+			    quidu      	"3A8D3E55018C"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "additionalError"
+			    quid       	"3A913DAC02C9"
+			    class      	"Logical View::Error System::acserr::ACSError"
+			    quidu      	"3A913CD10292"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)))
+		(object Mechanism @3
+		    logical_models 	(list unit_reference_list
+			(object Object "Client"
+			    quid       	"3DD369E800C8"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3DD36A2402EA"
+				    supplier   	"Servant"
+				    quidu      	"3DD369F90358"
+				    messages   	(list Messages
+					(object Message "service( )"
+					    quid       	"3DD36A2402EB"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1"
+					    ordinal    	0
+					    quidu      	"3DD36A120145"
+					    creation   	FALSE)
+					(object Message "[sync] throw ACSException"
+					    quid       	"3DD36FCF014D"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"ToClientFromSupplier"
+					    sequence   	"1.3"
+					    ordinal    	6
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3DD36B7A00E2"
+				    supplier   	"next"
+				    quidu      	"3DD36B5C0046"
+				    messages   	(list Messages
+					(object Message "[unrecoverable] log"
+					    quid       	"3DD370150061"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"2"
+					    ordinal    	7
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "delete"
+					    quid       	"3DD37049007F"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"4"
+					    ordinal    	9
+					    quidu      	"000000000000"
+					    creation   	FALSE))))
+			    class      	"Logical View::Applications::ACS application"
+			    quidu      	"393FC1FF0194"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "Servant"
+			    quid       	"3DD369F90358"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3DD36A8802BA"
+				    supplier   	"Another Servant"
+				    quidu      	"3DD36A6900A7"
+				    messages   	(list Messages
+					(object Message "service2( )"
+					    quid       	"3DD36A8802BB"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1.1"
+					    ordinal    	1
+					    quidu      	"3DD36A7D0328"
+					    creation   	FALSE)
+					(object Message "[sync] throw ACSException"
+					    quid       	"3DD36B2E019F"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Return"
+					    dir        	"ToClientFromSupplier"
+					    sequence   	"1.1.3"
+					    ordinal    	4
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3DD36D03010A"
+				    supplier   	"first"
+				    quidu      	"3DD36AC60048")
+				(object Link
+				    quid       	"3DD36F3A018E"
+				    supplier   	"next"
+				    quidu      	"3DD36B5C0046"
+				    messages   	(list Messages
+					(object Message "new ErrorTrace(previous)"
+					    quid       	"3DD36FC103AE"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1.2"
+					    ordinal    	5
+					    Operation  	"new ErrorTrace"
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3DD36F8F0054"
+				    supplier   	"next"
+				    quidu      	"3DD36B5C0046"))
+			    class      	"Logical View::Applications::ACS application"
+			    quidu      	"393FC1FF0194"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "Another Servant"
+			    quid       	"3DD36A6900A7"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3DD36A950327"
+				    supplier   	"Another Servant"
+				    quidu      	"3DD36A6900A7"
+				    messages   	(list Messages
+					(object Message "Error occurred"
+					    quid       	"3DD36A950328"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1.1.1"
+					    ordinal    	2
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3DD36AD902A9"
+				    supplier   	"first"
+				    quidu      	"3DD36AC60048"
+				    messages   	(list Messages
+					(object Message "new ErrorTrace"
+					    quid       	"3DD36AD902AA"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"1.1.2"
+					    ordinal    	3
+					    quidu      	"000000000000"
+					    creation   	FALSE)))
+				(object Link
+				    quid       	"3DD36B250180"
+				    supplier   	"Client"
+				    quidu      	"3DD369E800C8"))
+			    class      	"Logical View::Applications::ACS application"
+			    quidu      	"393FC1FF0194"
+			    persistence 	"Transient"
+			    creationObj 	FALSE
+			    multi      	FALSE)
+			(object Object "first"
+			    quid       	"3DD36AC60048"
+			    class      	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    persistence 	"Transient"
+			    creationObj 	TRUE
+			    multi      	FALSE)
+			(object Object "next"
+			    quid       	"3DD36B5C0046"
+			    collaborators 	(list link_list
+				(object Link
+				    quid       	"3DD3703B0070"
+				    supplier   	"first"
+				    quidu      	"3DD36AC60048"
+				    messages   	(list Messages
+					(object Message "log"
+					    quid       	"3DD3703B0071"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"3"
+					    ordinal    	8
+					    quidu      	"000000000000"
+					    creation   	FALSE)
+					(object Message "delete"
+					    quid       	"3DD370570060"
+					    frequency  	"Aperiodic"
+					    synchronization 	"Simple"
+					    dir        	"FromClientToSupplier"
+					    sequence   	"4.1"
+					    ordinal    	10
+					    quidu      	"000000000000"
+					    creation   	FALSE))))
+			    class      	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    persistence 	"Transient"
+			    creationObj 	TRUE
+			    multi      	FALSE))))
+	    logical_presentations 	(list unit_reference_list
+		(object InteractionDiagram "Scenario1"
+		    mechanism_ref 	@1
+		    quid       	"3A8CD9630074"
+		    title      	"Scenario1"
+		    zoom       	100
+		    max_height 	28350
+		    max_width  	21600
+		    origin_x   	0
+		    origin_y   	0
+		    items      	(list diagram_item_list
+			(object InterObjView "error" @4
+			    location   	(720, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@4
+				location   	(720, 224)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	282
+				justify    	0
+				label      	"error")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A8CD96B0012"
+			    width      	300
+			    height     	1628
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @5
+				location   	(720, 390)
+				line_color 	3342489
+				InterObjView 	@4
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @6
+				location   	(720, 855)
+				line_color 	3342489
+				InterObjView 	@4
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @7
+				location   	(720, 1080)
+				line_color 	3342489
+				InterObjView 	@4
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE))
+			(object InterObjView "$UNNAMED$0" @8
+			    location   	(165, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@8
+				location   	(165, 250)
+				anchor_loc 	1
+				nlines     	2
+				max_width  	360
+				justify    	0
+				label      	"")
+			    icon       	"Actor"
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A8CD97801DD"
+			    width      	120
+			    height     	1628
+			    icon_height 	162
+			    icon_width 	120
+			    icon_y_offset 	-1
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @9
+				location   	(165, 390)
+				line_color 	3342489
+				InterObjView 	@8
+				height     	1373
+				y_coord    	1283
+				Nested     	FALSE))
+			(object InterMessView "new" @10
+			    location   	(448, 384)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @11
+				Parent_View 	@10
+				location   	(442, 340)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A8CD9E30278"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	82
+				justify    	0
+				label      	"new"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@8
+			    supplier   	@4
+			    Focus_Src  	@9
+			    Focus_Entry 	@5
+			    origin     	(180, 384)
+			    terminus   	(704, 384)
+			    ordinal    	0)
+			(object InterObjView "$UNNAMED$1" @12
+			    location   	(1650, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@12
+				location   	(1650, 250)
+				anchor_loc 	1
+				nlines     	2
+				max_width  	360
+				justify    	0
+				label      	"")
+			    icon       	"Actor"
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A8CDAA10307"
+			    width      	120
+			    height     	1628
+			    icon_height 	162
+			    icon_width 	120
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @13
+				location   	(1650, 540)
+				line_color 	3342489
+				InterObjView 	@12
+				height     	428
+				y_coord    	338
+				Nested     	FALSE))
+			(object InterObjView "$UNNAMED$2" @14
+			    location   	(1978, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@14
+				location   	(1978, 224)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	282
+				justify    	0
+				label      	"")
+			    icon_style 	"Icon"
+			    line_color 	65280
+			    fill_color 	65535
+			    quidu      	"3A923E56024B"
+			    width      	300
+			    height     	1628
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @15
+				location   	(1978, 585)
+				line_color 	3342489
+				InterObjView 	@14
+				height     	202
+				y_coord    	112
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @16
+				location   	(1978, 720)
+				line_color 	3342489
+				InterObjView 	@14
+				height     	60
+				y_coord    	-30
+				Nested     	TRUE))
+			(object InterObjView "additionalError" @17
+			    location   	(1280, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@17
+				location   	(1280, 224)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	312
+				justify    	0
+				label      	"additionalError")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A8D3B7903E2"
+			    width      	330
+			    height     	1628
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @18
+				location   	(1280, 1335)
+				line_color 	3342489
+				InterObjView 	@17
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @19
+				location   	(1280, 1470)
+				line_color 	3342489
+				InterObjView 	@17
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @20
+				location   	(1280, 1635)
+				line_color 	3342489
+				InterObjView 	@17
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE))
+			(object InterMessView "f(....., error)" @21
+			    location   	(672, 544)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @22
+				Parent_View 	@21
+				location   	(907, 500)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A8CDBA5015D"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	213
+				justify    	0
+				label      	"f(....., error)"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@8
+			    supplier   	@12
+			    Focus_Src  	@9
+			    Focus_Entry 	@13
+			    origin     	(180, 544)
+			    terminus   	(1634, 544)
+			    ordinal    	1)
+			(object InterMessView "[ec] new" @23
+			    location   	(720, 1342)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @24
+				Parent_View 	@23
+				location   	(722, 1298)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A8D3B9602C2"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	163
+				justify    	0
+				label      	"[ec] new"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@8
+			    supplier   	@17
+			    Focus_Src  	@9
+			    Focus_Entry 	@18
+			    origin     	(180, 1342)
+			    terminus   	(1264, 1342)
+			    ordinal    	6)
+			(object InterMessView "[ec] add( error)" @25
+			    location   	(848, 1637)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @26
+				Parent_View 	@25
+				location   	(722, 1593)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A8D3BE90054"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	276
+				justify    	0
+				label      	"[ec] add( error)"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@8
+			    supplier   	@17
+			    Focus_Src  	@9
+			    Focus_Entry 	@20
+			    origin     	(180, 1637)
+			    terminus   	(1264, 1637)
+			    ordinal    	8)
+			(object InterMessView "[errorCondition] set()" @27
+			    location   	(944, 852)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @28
+				Parent_View 	@27
+				location   	(1185, 810)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A8D3C10015F"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	379
+				justify    	0
+				label      	"[errorCondition] set()"
+				pctDist    	0.500000
+				height     	43
+				orientation 	1)
+			    line_color 	3342489
+			    client     	@12
+			    supplier   	@4
+			    Focus_Src  	@13
+			    Focus_Entry 	@6
+			    origin     	(1634, 852)
+			    terminus   	(736, 852)
+			    ordinal    	4)
+			(object InterMessView "[ec] set( )" @29
+			    location   	(928, 1477)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @30
+				Parent_View 	@29
+				location   	(722, 1433)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A8D3C520380"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	185
+				justify    	0
+				label      	"[ec] set( )"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@8
+			    supplier   	@17
+			    Focus_Src  	@9
+			    Focus_Entry 	@19
+			    origin     	(180, 1477)
+			    terminus   	(1264, 1477)
+			    ordinal    	7)
+			(object InterMessView "ec:=isError( )" @31
+			    location   	(448, 1076)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @32
+				Parent_View 	@31
+				location   	(442, 1032)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A8D3D060108"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	248
+				justify    	0
+				label      	"ec:=isError( )"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@8
+			    supplier   	@4
+			    Focus_Src  	@9
+			    Focus_Entry 	@7
+			    origin     	(180, 1076)
+			    terminus   	(704, 1076)
+			    ordinal    	5)
+			(object NoteView @33
+			    location   	(2766, 1693)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@33
+				location   	(2628, 1633)
+				fill_color 	13434879
+				nlines     	2
+				max_width  	240
+				label      	"Can put together")
+			    line_color 	3342489
+			    fill_color 	13434879
+			    width      	300
+			    height     	132)
+			(object AttachView "" @34
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    client     	@18
+			    supplier   	@33
+			    vertices   	(list Points
+				(1295, 1367)
+				(2615, 1659))
+			    line_style 	0)
+			(object AttachView "" @35
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    client     	@19
+			    supplier   	@33
+			    vertices   	(list Points
+				(1295, 1501)
+				(2615, 1672))
+			    line_style 	0)
+			(object InterMessView "new" @36
+			    location   	(0, 581)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @37
+				Parent_View 	@36
+				location   	(1813, 537)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A923E770358"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	82
+				justify    	0
+				label      	"new"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	65280
+			    client     	@12
+			    supplier   	@14
+			    Focus_Src  	@13
+			    Focus_Entry 	@15
+			    origin     	(1665, 581)
+			    terminus   	(1962, 581)
+			    ordinal    	2)
+			(object InterMessView "operator=(error)" @38
+			    location   	(1813, 717)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @39
+				Parent_View 	@38
+				location   	(1813, 673)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A923E8C0072"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	288
+				justify    	0
+				label      	"operator=(error)"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	65280
+			    client     	@12
+			    supplier   	@14
+			    Focus_Src  	@13
+			    Focus_Entry 	@16
+			    origin     	(1665, 717)
+			    terminus   	(1962, 717)
+			    ordinal    	3)
+			(object NoteView @40
+			    location   	(2641, 644)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@40
+				location   	(2409, 428)
+				fill_color 	13434879
+				nlines     	8
+				max_width  	428
+				label      	
+|Alternative to set command.
+|error = ACSError(...)
+|
+|What will happend if error already contains error stat ?
+				)
+			    line_color 	3342489
+			    fill_color 	13434879
+			    width      	488
+			    height     	444)
+			(object AttachView "" @41
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    client     	@40
+			    supplier   	@14
+			    vertices   	(list Points
+				(2396, 488)
+				(2128, 284))
+			    line_style 	0)
+			(object AttachView "" @42
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    client     	@36
+			    supplier   	@40
+			    vertices   	(list Points
+				(1813, 581)
+				(2396, 625))
+			    line_style 	0)
+			(object AttachView "" @43
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    client     	@38
+			    supplier   	@40
+			    vertices   	(list Points
+				(1813, 717)
+				(2396, 664))
+			    line_style 	0)))
+		(object InteractionDiagram "Scenario2"
+		    mechanism_ref 	@2
+		    quid       	"3A913CE7030C"
+		    title      	"Scenario2"
+		    zoom       	100
+		    max_height 	28350
+		    max_width  	21600
+		    origin_x   	0
+		    origin_y   	0
+		    items      	(list diagram_item_list
+			(object InterObjView "$UNNAMED$3" @44
+			    location   	(120, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@44
+				location   	(120, 250)
+				anchor_loc 	1
+				nlines     	2
+				max_width  	360
+				justify    	0
+				label      	"")
+			    icon       	"Actor"
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A913CF301B5"
+			    width      	120
+			    height     	1077
+			    icon_height 	162
+			    icon_width 	120
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @45
+				location   	(120, 405)
+				line_color 	3342489
+				InterObjView 	@44
+				height     	307
+				y_coord    	217
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @46
+				location   	(120, 810)
+				line_color 	3342489
+				InterObjView 	@44
+				height     	402
+				y_coord    	312
+				Nested     	FALSE))
+			(object InterObjView "error" @47
+			    location   	(455, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@47
+				location   	(455, 225)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	282
+				justify    	0
+				label      	"error")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A913D030104"
+			    width      	300
+			    height     	1077
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @48
+				location   	(455, 540)
+				line_color 	3342489
+				InterObjView 	@47
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE))
+			(object InterObjView "$UNNAMED$4" @49
+			    location   	(1455, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@49
+				location   	(1455, 250)
+				anchor_loc 	1
+				nlines     	2
+				max_width  	360
+				justify    	0
+				label      	"")
+			    icon       	"Actor"
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A913D0D0253"
+			    width      	120
+			    height     	1077
+			    icon_height 	162
+			    icon_width 	120
+			    icon_y_offset 	-18
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @50
+				location   	(1455, 405)
+				line_color 	3342489
+				InterObjView 	@49
+				height     	247
+				y_coord    	157
+				Nested     	FALSE))
+			(object InterObjView "additionalError" @51
+			    location   	(1009, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@51
+				location   	(1009, 225)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	282
+				justify    	0
+				label      	"additionalError")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3A913DAC02C9"
+			    width      	300
+			    height     	1077
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @52
+				location   	(1009, 810)
+				line_color 	3342489
+				InterObjView 	@51
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @53
+				location   	(1009, 960)
+				line_color 	3342489
+				InterObjView 	@51
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @54
+				location   	(1009, 1095)
+				line_color 	3342489
+				InterObjView 	@51
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE))
+			(object InterMessView "f(..., *error=NULL)" @55
+			    location   	(0, 409)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @56
+				Parent_View 	@55
+				location   	(787, 365)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A913D310350"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	329
+				justify    	0
+				label      	"f(..., *error=NULL)"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@44
+			    supplier   	@49
+			    Focus_Src  	@45
+			    Focus_Entry 	@50
+			    origin     	(135, 409)
+			    terminus   	(1439, 409)
+			    ordinal    	0)
+			(object InterMessView "[errorCondition] error := new" @57
+			    location   	(620, 536)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @58
+				Parent_View 	@57
+				location   	(955, 492)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A913D500001"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	513
+				justify    	0
+				label      	"[errorCondition] error := new"
+				pctDist    	0.500000
+				height     	45
+				orientation 	1)
+			    line_color 	3342489
+			    client     	@49
+			    supplier   	@47
+			    Focus_Src  	@50
+			    Focus_Entry 	@48
+			    origin     	(1439, 536)
+			    terminus   	(471, 536)
+			    ordinal    	1)
+			(object InterMessView "[error!=NULL] new" @59
+			    location   	(0, 816)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @60
+				Parent_View 	@59
+				location   	(564, 772)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A913E0201A2"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	335
+				justify    	0
+				label      	"[error!=NULL] new"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@44
+			    supplier   	@51
+			    Focus_Src  	@46
+			    Focus_Entry 	@52
+			    origin     	(135, 816)
+			    terminus   	(993, 816)
+			    ordinal    	2)
+			(object InterMessView "[error!=NULL] set( )" @61
+			    location   	(565, 959)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @62
+				Parent_View 	@61
+				location   	(564, 915)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A913E2C0089"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	357
+				justify    	0
+				label      	"[error!=NULL] set( )"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@44
+			    supplier   	@51
+			    Focus_Src  	@46
+			    Focus_Entry 	@53
+			    origin     	(135, 959)
+			    terminus   	(993, 959)
+			    ordinal    	3)
+			(object InterMessView "[error!=NULL] add(error)" @63
+			    location   	(572, 1098)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @64
+				Parent_View 	@63
+				location   	(564, 1054)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3A913E7201FC"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	435
+				justify    	0
+				label      	"[error!=NULL] add(error)"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@44
+			    supplier   	@51
+			    Focus_Src  	@46
+			    Focus_Entry 	@54
+			    origin     	(135, 1098)
+			    terminus   	(993, 1098)
+			    ordinal    	4)
+			(object NoteView @65
+			    location   	(2309, 1069)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@65
+				location   	(2080, 922)
+				fill_color 	13434879
+				nlines     	5
+				max_width  	422
+				label      	
+|memory management !!!
+|Who will delete error object ?
+				)
+			    line_color 	3342489
+			    fill_color 	13434879
+			    width      	482
+			    height     	307)
+			(object AttachView "" @66
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    client     	@65
+			    supplier   	@57
+			    vertices   	(list Points
+				(2067, 973)
+				(955, 536))
+			    line_style 	0)
+			(object NoteView @67
+			    location   	(2537, 493)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@67
+				location   	(2337, 184)
+				fill_color 	13434879
+				nlines     	12
+				max_width  	365
+				label      	
+|Each function must have pointer to ACSError object, which is by default  NULL.
+|If error occures error will point to the newlly created ACSError object
+				)
+			    line_color 	3342489
+			    fill_color 	13434879
+			    width      	425
+			    height     	631)
+			(object AttachView "" @68
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    client     	@55
+			    supplier   	@67
+			    vertices   	(list Points
+				(787, 409)
+				(2324, 482))
+			    line_style 	0)))
+		(object InteractionDiagram "Synchronous calls"
+		    mechanism_ref 	@3
+		    quid       	"3DD369C20136"
+		    title      	"Synchronous calls"
+		    zoom       	85
+		    max_height 	28350
+		    max_width  	21600
+		    origin_x   	0
+		    origin_y   	0
+		    items      	(list diagram_item_list
+			(object InterObjView "Servant" @69
+			    location   	(1365, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@69
+				location   	(1365, 225)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	288
+				justify    	0
+				label      	"Servant")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD369F90358"
+			    width      	306
+			    height     	1695
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @70
+				location   	(1365, 375)
+				line_color 	3342489
+				InterObjView 	@69
+				height     	735
+				y_coord    	645
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @71
+				location   	(1365, 810)
+				line_color 	3342489
+				InterObjView 	@69
+				height     	60
+				y_coord    	-30
+				Nested     	TRUE))
+			(object InterObjView "Client" @72
+			    location   	(840, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@72
+				location   	(840, 225)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	282
+				justify    	0
+				label      	"Client")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD369E800C8"
+			    width      	300
+			    height     	1695
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @73
+				location   	(840, 375)
+				line_color 	3342489
+				InterObjView 	@72
+				height     	1260
+				y_coord    	1170
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @74
+				location   	(840, 990)
+				line_color 	3342489
+				InterObjView 	@72
+				height     	60
+				y_coord    	-30
+				Nested     	TRUE))
+			(object InterObjView "Another Servant" @75
+			    location   	(1725, 225)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@75
+				location   	(1725, 225)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	356
+				justify    	0
+				label      	"Another Servant")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD36A6900A7"
+			    width      	374
+			    height     	1695
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @76
+				location   	(1725, 450)
+				line_color 	3342489
+				InterObjView 	@75
+				height     	480
+				y_coord    	390
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @77
+				location   	(1725, 550)
+				line_color 	3342489
+				InterObjView 	@75
+				height     	60
+				y_coord    	-30
+				Nested     	TRUE))
+			(object InterObjView "first" @78
+			    location   	(2205, 570)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@78
+				location   	(2205, 570)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	464
+				justify    	0
+				label      	"first")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD36AC60048"
+			    width      	482
+			    height     	1350
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @79
+				location   	(2205, 650)
+				InterObjView 	@78
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @80
+				location   	(2205, 750)
+				line_color 	3342489
+				InterObjView 	@78
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @81
+				location   	(2205, 1215)
+				line_color 	3342489
+				InterObjView 	@78
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @82
+				location   	(2205, 1455)
+				line_color 	3342489
+				InterObjView 	@78
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE))
+			(object InterObjView "next" @83
+			    location   	(2715, 735)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	TRUE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@83
+				location   	(2715, 735)
+				fill_color 	13434879
+				anchor_loc 	1
+				nlines     	2
+				max_width  	404
+				justify    	0
+				label      	"next")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD36B5C0046"
+			    width      	422
+			    height     	1185
+			    icon_height 	0
+			    icon_width 	0
+			    icon_y_offset 	0
+			    annotation 	1
+			    Focus_Of_Control 	(object Focus_Of_Control "" @84
+				location   	(2715, 795)
+				InterObjView 	@83
+				height     	60
+				y_coord    	-30
+				Nested     	FALSE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @85
+				location   	(2715, 815)
+				line_color 	3342489
+				InterObjView 	@83
+				height     	540
+				y_coord    	450
+				Nested     	TRUE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @86
+				location   	(2715, 945)
+				line_color 	3342489
+				InterObjView 	@83
+				height     	60
+				y_coord    	-30
+				Nested     	TRUE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @87
+				location   	(2715, 1140)
+				line_color 	3342489
+				InterObjView 	@83
+				height     	60
+				y_coord    	-30
+				Nested     	TRUE)
+			    Focus_Of_Control 	(object Focus_Of_Control "" @88
+				location   	(2715, 1335)
+				line_color 	3342489
+				InterObjView 	@83
+				height     	240
+				y_coord    	150
+				Nested     	TRUE))
+			(object InterMessView "service( )" @89
+			    location   	(15, 375)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @90
+				Parent_View 	@89
+				location   	(1102, 420)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD36A2402EB"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	184
+				justify    	0
+				label      	"service( )"
+				pctDist    	0.500000
+				height     	45
+				orientation 	1)
+			    line_color 	3342489
+			    client     	@72
+			    supplier   	@69
+			    Focus_Src  	@73
+			    Focus_Entry 	@70
+			    origin     	(855, 375)
+			    terminus   	(1349, 375)
+			    ordinal    	0)
+			(object InterMessView "service2( )" @91
+			    location   	(15, 450)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @92
+				Parent_View 	@91
+				location   	(1543, 406)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD36A8802BB"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	210
+				justify    	0
+				label      	"service2( )"
+				pctDist    	0.498436
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@69
+			    supplier   	@75
+			    Focus_Src  	@70
+			    Focus_Entry 	@76
+			    origin     	(1380, 450)
+			    terminus   	(1709, 450)
+			    ordinal    	1)
+			(object SelfMessView "Error occurred" @93
+			    location   	(15, 525)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @94
+				Parent_View 	@93
+				location   	(1905, 497)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD36A950328"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	319
+				justify    	0
+				label      	"Error occurred"
+				pctDist    	1.093333
+				height     	29
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@75
+			    supplier   	@75
+			    Focus_Src  	@76
+			    Focus_Entry 	@77
+			    origin     	(1741, 525)
+			    terminus   	(1891, 525)
+			    ordinal    	2)
+			(object InterMessView "new ErrorTrace" @95
+			    location   	(15, 750)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @96
+				Parent_View 	@95
+				location   	(1930, 722)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD36AD902AA"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	347
+				justify    	0
+				label      	"new ErrorTrace"
+				pctDist    	0.423800
+				height     	29
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@75
+			    supplier   	@78
+			    Focus_Src  	@76
+			    Focus_Entry 	@80
+			    origin     	(1740, 750)
+			    terminus   	(2189, 750)
+			    ordinal    	3)
+			(object InterMessView "[sync] throw ACSException" @97
+			    location   	(1005, 810)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @98
+				Parent_View 	@97
+				location   	(1545, 766)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD36B2E019F"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	530
+				justify    	0
+				label      	"[sync] throw ACSException"
+				pctDist    	0.500000
+				height     	45
+				orientation 	1)
+			    line_color 	3342489
+			    client     	@75
+			    supplier   	@69
+			    Focus_Src  	@76
+			    Focus_Entry 	@71
+			    origin     	(1709, 810)
+			    terminus   	(1381, 810)
+			    ordinal    	4)
+			(object InterMessView "new ErrorTrace(previous)" @99
+			    location   	(15, 945)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @100
+				Parent_View 	@99
+				location   	(2039, 901)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD36FC103AE"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	517
+				justify    	0
+				label      	"new ErrorTrace(previous)"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@69
+			    supplier   	@83
+			    Focus_Src  	@70
+			    Focus_Entry 	@86
+			    origin     	(1380, 945)
+			    terminus   	(2699, 945)
+			    ordinal    	5)
+			(object InterMessView "[sync] throw ACSException" @101
+			    location   	(15, 990)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @102
+				Parent_View 	@101
+				location   	(1103, 946)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD36FCF014D"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	530
+				justify    	0
+				label      	"[sync] throw ACSException"
+				pctDist    	0.500000
+				height     	45
+				orientation 	1)
+			    line_color 	3342489
+			    client     	@69
+			    supplier   	@72
+			    Focus_Src  	@70
+			    Focus_Entry 	@74
+			    origin     	(1349, 990)
+			    terminus   	(856, 990)
+			    ordinal    	6)
+			(object InterMessView "[unrecoverable] log" @103
+			    location   	(15, 1140)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @104
+				Parent_View 	@103
+				location   	(1777, 1096)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD370150061"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	383
+				justify    	0
+				label      	"[unrecoverable] log"
+				pctDist    	0.500000
+				height     	45
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@72
+			    supplier   	@83
+			    Focus_Src  	@73
+			    Focus_Entry 	@87
+			    origin     	(855, 1140)
+			    terminus   	(2699, 1140)
+			    ordinal    	7)
+			(object InterMessView "log" @105
+			    location   	(15, 1215)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @106
+				Parent_View 	@105
+				location   	(2460, 1171)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD3703B0071"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	63
+				justify    	0
+				label      	"log"
+				pctDist    	0.500000
+				height     	45
+				orientation 	1)
+			    line_color 	3342489
+			    client     	@83
+			    supplier   	@78
+			    Focus_Src  	@85
+			    Focus_Entry 	@81
+			    origin     	(2699, 1215)
+			    terminus   	(2221, 1215)
+			    ordinal    	8)
+			(object InterMessView "delete" @107
+			    location   	(1200, 1335)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @108
+				Parent_View 	@107
+				location   	(1840, 1307)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD37049007F"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	125
+				justify    	0
+				label      	"delete"
+				pctDist    	0.534165
+				height     	29
+				orientation 	0)
+			    line_color 	3342489
+			    client     	@72
+			    supplier   	@83
+			    Focus_Src  	@73
+			    Focus_Entry 	@88
+			    origin     	(855, 1335)
+			    terminus   	(2699, 1335)
+			    ordinal    	9)
+			(object InterMessView "delete" @109
+			    location   	(1890, 1455)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @110
+				Parent_View 	@109
+				location   	(2460, 1411)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				quidu      	"3DD370570060"
+				anchor_loc 	1
+				nlines     	1
+				max_width  	125
+				justify    	0
+				label      	"delete"
+				pctDist    	0.500000
+				height     	45
+				orientation 	1)
+			    line_color 	3342489
+			    client     	@83
+			    supplier   	@78
+			    Focus_Src  	@88
+			    Focus_Entry 	@82
+			    origin     	(2699, 1455)
+			    terminus   	(2221, 1455)
+			    ordinal    	10)
+			(object Destruction_Marker @111
+			    Parent_View 	@83
+			    location   	(2715, 1920)
+			    line_color 	3342489
+			    fill_color 	13434879)
+			(object NoteView @112
+			    location   	(1290, 2145)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@112
+				location   	(173, 1905)
+				nlines     	8
+				max_width  	2198
+				label      	
+|This diagram shows the logical error handling for a synchronous service() request from a client to a servant. This request triggers subsequent requests. 
+|At a certain point, a failure occurrs and an error has to be reported back to the initial client.
+|The client can try to recover the error or logs the complete ErrorTrace, then it destroys the ErrorTrace itself.
+|All operations are actually performed not directly on the CORBA structures for ErrorTrace and ACSException (or Completion in an asynchronous case), but using Helper classes that provide the implementation for the operations needed to manipulate the CORBA structures.
+				)
+			    line_color 	3342489
+			    width      	2258
+			    height     	493)
+			(object Label @113
+			    location   	(45, 360)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    nlines     	1
+			    max_width  	600
+			    label      	"A client requests a service")
+			(object Label @114
+			    location   	(44, 644)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    nlines     	2
+			    max_width  	684
+			    label      	"The callee creates a first ErrorTrace and returns it in an ACSException")
+			(object Label @115
+			    location   	(45, 810)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    nlines     	4
+			    max_width  	699
+			    label      	"The caller creates a new ErrorTrace with context specific information and chains it with the one it hace received back. Then it rethrows the exception")
+			(object Label @116
+			    location   	(44, 1125)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    nlines     	4
+			    max_width  	670
+			    label      	"The client gets the exception containing the whole ErrorTrace and decides if it can recover or if it shall log it")))))
+	(object Association "propagate errorStack or ACSException"
+	    quid       	"393FC38F0028"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$5"
+		    quid       	"393FC38F02DB"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$6"
+		    quid       	"393FC38F02EF"
+		    supplier   	"Logical View::Applications::ACS application"
+		    quidu      	"393FC1FF0194")))
+	(object Association "display(ErrorTrace)"
+	    quid       	"393FC39F03CF"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$7"
+		    quid       	"393FC3A001B3"
+		    supplier   	"Logical View::Error System::errorDisplay"
+		    quidu      	"393FC1E2003E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$8"
+		    quid       	"393FC3A001B4"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115")))
+	(object Association "request service"
+	    quid       	"393FC4E20076"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$9"
+		    quid       	"393FC4E30258"
+		    supplier   	"Logical View::Applications::ACS application"
+		    quidu      	"393FC1FF0194"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$10"
+		    quid       	"393FC4E3026C"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115")))
+	(object Association "propagate Completion or ACSException"
+	    quid       	"393FC5E503A3"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$11"
+		    quid       	"393FC5E503A4"
+		    supplier   	"Logical View::Applications::ACS Client application"
+		    quidu      	"393F40110115"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$12"
+		    quid       	"393FC5E503A5"
+		    supplier   	"Logical View::Applications::ACS application"
+		    quidu      	"393FC1FF0194")))
+	(object Association "add ErrorTrace on top of ErrorTrace"
+	    quid       	"3ACC24A201CC"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$13"
+		    quid       	"3ACC24A4000C"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+		    quidu      	"3B430CB000EF"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$14"
+		    quid       	"3ACC24A40020"
+		    supplier   	"Logical View::Applications::ACS application"
+		    quidu      	"393FC1FF0194")))
+	(object Association "create ErrorTrace"
+	    quid       	"3AD16AD002C4"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$15"
+		    quid       	"3AD16AD30341"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+		    quidu      	"3B430CB000EF"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$16"
+		    quid       	"3AD16AD3034B"
+		    supplier   	"Logical View::Applications::ACS application"
+		    quidu      	"393FC1FF0194")))
+	(object Association "log()"
+	    quid       	"3DD2762803BA"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$17"
+		    quid       	"3DD2762803BB"
+		    supplier   	"Logical View::Error System::acserr::ACSError"
+		    quidu      	"3A913CD10292")
+		(object Role "$UNNAMED$18"
+		    quid       	"3DD2762803BC"
+		    supplier   	"Logical View::Logging System::C++ logging API::logMangerProxy"
+		    quidu      	"38EB569D038A"
+		    is_navigable 	TRUE)))
+	(object Association "convert to/from"
+	    quid       	"3DD27BDC0109"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$19"
+		    quid       	"3DD27BDC02FD"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:Completion"
+		    quidu      	"3CE4F1DC0358"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$20"
+		    quid       	"3DD27BDC030D"
+		    supplier   	"Logical View::Error System::CompletionHelper"
+		    quidu      	"3DD278750384"
+		    is_navigable 	TRUE)))
+	(object Association "convert to/from"
+	    quid       	"3DD27BE40242"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$21"
+		    quid       	"3DD27BE500EA"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:ACSException"
+		    quidu      	"3A92200B0024"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$22"
+		    quid       	"3DD27BE5010A"
+		    supplier   	"Logical View::Error System::CompletionHelper"
+		    quidu      	"3DD278750384"
+		    is_navigable 	TRUE)))
+	(object Association "convert to/from"
+	    quid       	"3DD27BF3008D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$23"
+		    quid       	"3DD27BF302DF"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+		    quidu      	"3B430CB000EF"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$24"
+		    quid       	"3DD27BF3030E"
+		    supplier   	"Logical View::Error System::ErrorTraceHelper"
+		    quidu      	"3DD2818602DD"
+		    is_navigable 	TRUE)))
+	(object Association "$UNNAMED$25"
+	    quid       	"3DD27FD80182"
+	    roles      	(list role_list
+		(object Role "completion"
+		    quid       	"3DD27FD80367"
+		    label      	"completion"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:Completion"
+		    quidu      	"3CE4F1DC0358"
+		    client_cardinality 	(value cardinality "1")
+		    Containment 	"By Value"
+		    exportControl 	"Protected"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$26"
+		    quid       	"3DD27FD80376"
+		    supplier   	"Logical View::Error System::acserr::ACSCompletion"
+		    quidu      	"3DD27FB50210"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "delete ErrorTrace"
+	    quid       	"3DD283990257"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$27"
+		    quid       	"3DD2839A0073"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+		    quidu      	"3B430CB000EF"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$28"
+		    quid       	"3DD2839A00A2"
+		    supplier   	"Logical View::Applications::ACS application"
+		    quidu      	"393FC1FF0194")))
+	(object Association "log ErrorTrace"
+	    quid       	"3DD283B90341"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$29"
+		    quid       	"3DD283BA016C"
+		    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+		    quidu      	"3B430CB000EF"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$30"
+		    quid       	"3DD283BA019B"
+		    supplier   	"Logical View::Applications::ACS application"
+		    quidu      	"393FC1FF0194")))
+	(object Class_Category "acserr"
+	    quid       	"3A9257740360"
+	    documentation 	"Error Subsystem for propagating error localy or remotly"
+	    exportControl 	"Public"
+	    logical_models 	(list unit_reference_list
+		(object Class "ACSError"
+		    quid       	"3A913CD10292"
+		    documentation 	"Wrapper class for Completion structure (ACS)Exception"
+		    used_nodes 	(list uses_relationship_list
+			(object Uses_Relationship
+			    quid       	"3A9220E10144"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ACSException"
+			    quidu      	"3A92200B0024"
+			    exportControl 	"Implementation")
+			(object Uses_Relationship
+			    quid       	"3B430DC501DD"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF")
+			(object Uses_Relationship
+			    quid       	"3DD27C27009F"
+			    stereotype 	"bind"
+			    label      	"(C++)"
+			    supplier   	"Logical View::Error System::ErrorTraceHelper"
+			    quidu      	"3DD2818602DD"))
+		    realized_interfaces 	(list realize_rel_list
+			(object Realize_Relationship
+			    quid       	"3B430E2D0056"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"))
+		    operations 	(list Operations
+			(object Operation "ACSError"
+			    quid       	"3A913E860164"
+			    documentation 	
+|Add previos error(s) to make error trace.
+|
+|Error trace is buld from top down. (first error trace is the most down in the trace, current object is the last error)
+|
+|Have to check that ther is NO previos error(s).
+|
+|? also log error
+|
+			    
+			    parameters 	(list Parameters
+				(object Parameter "completion"
+				    quid       	"3B43294C0064"
+				    type       	"Completion"
+				    quidu      	"38E0A9A2005C"))
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "ACSError"
+			    quid       	"3B43296600F8"
+			    parameters 	(list Parameters
+				(object Parameter "exception"
+				    quid       	"3B43297F02E8"
+				    type       	"ACSException"
+				    quidu      	"3DD364CA005E"))
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "~ACSError"
+			    quid       	"3A9140880196"
+			    documentation 	
+|Destructor of ACSError object.
+|It tkes care of deleting trace error objet(s).
+|
+			    
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "isOK"
+			    quid       	"3A9140CF029C"
+			    documentation 	
+|Check if ACSError contains an error state
+|
+			    
+			    result     	"Boolean"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "log"
+			    quid       	"3A92247F01BD"
+			    documentation 	"Log error(s) to the logging system"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getErrorTrace"
+			    quid       	"3A921F390054"
+			    result     	"ErrorTrace"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "returnErrorTrace"
+			    quid       	"3CC7FE6901E8"
+			    result     	"ErrorTrace"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "top"
+			    quid       	"3CC7FF9D00C8"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getNext"
+			    quid       	"3CC7FFAC034B"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getDescription"
+			    quid       	"3CC7FFC9034D"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "setData"
+			    quid       	"3B430949022D"
+			    parameters 	(list Parameters
+				(object Parameter "name"
+				    quid       	"3B43096501B5"
+				    type       	"String")
+				(object Parameter "value"
+				    quid       	"3B43097D0097"
+				    type       	"String"))
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getLineNumber"
+			    quid       	"3A921F0B02C4"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "setLineNumber"
+			    quid       	"3CC7FFE001D3"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getFileName"
+			    quid       	"3A921F2500A5"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "setFileName"
+			    quid       	"3CC800030025"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getThreadID"
+			    quid       	"3A921F2D0074"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getSeverity"
+			    quid       	"3A921FB7029A"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "setSeverity"
+			    quid       	"3CC8002F0191"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getDepth"
+			    quid       	"3A9272DB02B3"
+			    result     	"Integer"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getErrorCode"
+			    quid       	"3CC8003902E0"
+			    result     	"ErrorCode"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getErrorType"
+			    quid       	"3CC8004501D8"
+			    result     	"ACSErrType"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "setError"
+			    quid       	"3CC8005C01C7"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0))
+		    class_attributes 	(list class_attribute_list
+			(object ClassAttribute "depth"
+			    quid       	"3A92729B0242"
+			    documentation 	"Size (depth) of error trace")))
+		(object Class "ACSCompletion"
+		    quid       	"3DD27FB50210"
+		    used_nodes 	(list uses_relationship_list
+			(object Uses_Relationship
+			    quid       	"3DD281BC02CD"
+			    stereotype 	"bind"
+			    label      	"(C++)"
+			    supplier   	"Logical View::Error System::CompletionHelper"
+			    quidu      	"3DD278750384"))
+		    operations 	(list Operations
+			(object Operation "getACSCompletion"
+			    quid       	"3DD2804D0372"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "returnACSCompletion"
+			    quid       	"3DD2805A0120"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)
+			(object Operation "getACSError"
+			    quid       	"3DD280D702A2"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0)))
+		(object Class "ACSException"
+		    quid       	"3DD364CA005E"
+		    used_nodes 	(list uses_relationship_list
+			(object Uses_Relationship
+			    quid       	"3DD365AE0210"
+			    label      	"<<bind>(C++)"
+			    supplier   	"Logical View::Error System::ACSExceptionHelper"
+			    quidu      	"3DD364980030")))
+		(object Association "$UNNAMED$31"
+		    quid       	"3B430E4B008C"
+		    roles      	(list role_list
+			(object Role "error"
+			    quid       	"3B430E4B02BC"
+			    label      	"error"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    client_cardinality 	(value cardinality "1")
+			    Containment 	"By Value"
+			    exportControl 	"Protected")
+			(object Role "$UNNAMED$32"
+			    quid       	"3B430E4B02C6"
+			    supplier   	"Logical View::Error System::acserr::ACSError"
+			    quidu      	"3A913CD10292"
+			    exportControl 	"Protected"
+			    is_aggregate 	TRUE)))
+		(object Association "$UNNAMED$33"
+		    quid       	"3B4326F00084"
+		    roles      	(list role_list
+			(object Role "data"
+			    quid       	"3B4326F1002B"
+			    label      	"data"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:NameValueSeq"
+			    quidu      	"3B43259401D8"
+			    Containment 	"By Value"
+			    exportControl 	"Protected")
+			(object Role "$UNNAMED$34"
+			    quid       	"3B4326F10035"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    Containment 	"By Value"
+			    exportControl 	"Protected"
+			    is_aggregate 	TRUE)))
+		(object Association "$UNNAMED$35"
+		    quid       	"3CC7FA79031F"
+		    roles      	(list role_list
+			(object Role "$UNNAMED$36"
+			    quid       	"3CC7FA7B0029"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:NameValue"
+			    quidu      	"3B4322F50056"
+			    client_cardinality 	(value cardinality "0..n")
+			    Containment 	"By Value"
+			    is_navigable 	TRUE)
+			(object Role "$UNNAMED$37"
+			    quid       	"3CC7FA7B002A"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:NameValueSeq"
+			    quidu      	"3B43259401D8"
+			    is_navigable 	TRUE
+			    is_aggregate 	TRUE)))
+		(object Association "$UNNAMED$38"
+		    quid       	"3CC7FAD302E2"
+		    roles      	(list role_list
+			(object Role "previousError"
+			    quid       	"3CC7FAD903E5"
+			    label      	"previousError"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    client_cardinality 	(value cardinality "0..1")
+			    Containment 	"By Value"
+			    exportControl 	"Protected")
+			(object Role "$UNNAMED$39"
+			    quid       	"3CC7FADA0007"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    Containment 	"By Value"
+			    is_aggregate 	TRUE)))
+		(object Association "$UNNAMED$40"
+		    quid       	"3CC7FD280164"
+		    roles      	(list role_list
+			(object Role "errorType"
+			    quid       	"3CC7FD29006B"
+			    label      	"errorType"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ACSErrType"
+			    quidu      	"3CC7FCAD0370"
+			    Containment 	"By Value")
+			(object Role "$UNNAMED$41"
+			    quid       	"3CC7FD290075"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    exportControl 	"Protected"
+			    is_aggregate 	TRUE)))
+		(object Association "$UNNAMED$42"
+		    quid       	"3CC7FD370328"
+		    roles      	(list role_list
+			(object Role "errorCode"
+			    quid       	"3CC7FD3801F3"
+			    label      	"errorCode"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorCode"
+			    quidu      	"3CC7FCF3029E"
+			    Containment 	"By Value")
+			(object Role "$UNNAMED$43"
+			    quid       	"3CC7FD3801F4"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    Containment 	"By Value"
+			    exportControl 	"Protected"
+			    is_aggregate 	TRUE)))
+		(object Association "$UNNAMED$44"
+		    quid       	"3CE4F2AE006B"
+		    roles      	(list role_list
+			(object Role "error"
+			    quid       	"3CE4F2AE038C"
+			    label      	"error"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    client_cardinality 	(value cardinality "0..1")
+			    Containment 	"By Value"
+			    is_navigable 	TRUE)
+			(object Role "$UNNAMED$45"
+			    quid       	"3CE4F2AE03A0"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:Completion"
+			    quidu      	"3CE4F1DC0358"
+			    is_aggregate 	TRUE)))
+		(object Association "$UNNAMED$46"
+		    quid       	"3DD26FE201E3"
+		    roles      	(list role_list
+			(object Role "error"
+			    quid       	"3DD26FE203B8"
+			    label      	"error"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ErrorTrace"
+			    quidu      	"3B430CB000EF"
+			    client_cardinality 	(value cardinality "1")
+			    Containment 	"By Value"
+			    is_navigable 	TRUE)
+			(object Role "$UNNAMED$47"
+			    quid       	"3DD26FE203D7"
+			    supplier   	"Logical View::Error System::ACSErr\\:\\:ACSException"
+			    quidu      	"3A92200B0024"
+			    is_aggregate 	TRUE))))
+	    logical_presentations 	(list unit_reference_list)))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Error System architecture"
+	    quid       	"393FC1C702DE"
+	    title      	"Error System architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	1337
+	    origin_y   	1200
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Error System::errorDisplay" @117
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(420, 345)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@117
+			location   	(269, 304)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	302
+			justify    	0
+			label      	"errorDisplay")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"393FC1E2003E"
+		    width      	320
+		    height     	107
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ACSException" @118
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2250, 465)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@118
+			location   	(1979, 436)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	542
+			justify    	0
+			label      	"ACSErr::ACSException")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@118
+			location   	(1979, 386)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	542
+			justify    	0
+			label      	"<<CORBAExceptions>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3A92200B0024"
+		    width      	560
+		    height     	182
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:Completion" @119
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2475, 870)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@119
+			location   	(2242, 841)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	466
+			justify    	0
+			label      	"ACSErr::Completion")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@119
+			location   	(2242, 791)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	466
+			justify    	0
+			label      	"<<CORBAStruct>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3CE4F1DC0358"
+		    width      	484
+		    height     	182
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Applications::ACS Client application" @120
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(420, 735)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@120
+			location   	(135, 685)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	570
+			justify    	0
+			label      	"ACS Client application")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"393F40110115"
+		    width      	588
+		    height     	124
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "display(ErrorTrace)" @121
+		    location   	(420, 535)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @122
+			Parent_View 	@121
+			location   	(570, 551)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	346
+			justify    	0
+			label      	"display(ErrorTrace)"
+			pctDist    	3.000000
+			height     	16
+			orientation 	1)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"393FC39F03CF"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$7" @123
+			    Parent_View 	@121
+			    location   	(-45, 145)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393FC3A001B3"
+			    client     	@121
+			    supplier   	@117
+			    vertices   	(list Points
+				(420, 535)
+				(420, 398))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$8" @124
+			    Parent_View 	@121
+			    location   	(-45, 145)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393FC3A001B4"
+			    client     	@121
+			    supplier   	@120
+			    vertices   	(list Points
+				(420, 535)
+				(420, 672))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ErrorTrace" @125
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1665, 1065)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@125
+			location   	(1438, 831)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"ACSErr::ErrorTrace")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@125
+			location   	(1438, 781)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"<<CORBAStruct>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B430CB000EF"
+		    width      	472
+		    height     	592
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$38" @126
+		    location   	(2415, 1283)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3CC7FAD302E2"
+		    roleview_list 	(list RoleViews
+			(object RoleView "previousError" @127
+			    Parent_View 	@126
+			    location   	(255, 323)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @128
+				Parent_View 	@127
+				location   	(2060, 1306)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	277
+				justify    	0
+				label      	"#previousError"
+				pctDist    	0.782787
+				height     	241
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FAD903E5"
+			    client     	@126
+			    supplier   	@125
+			    vertices   	(list Points
+				(2415, 1283)
+				(2415, 1065)
+				(1901, 1065))
+			    line_style 	0
+			    label      	(object SegLabel @129
+				Parent_View 	@127
+				location   	(1978, 1360)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..1"
+				pctDist    	0.894809
+				height     	295
+				orientation 	0))
+			(object RoleView "$UNNAMED$39" @130
+			    Parent_View 	@126
+			    location   	(255, 323)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @131
+				Parent_View 	@130
+				location   	(2051, 1211)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FADA0007"
+			    client     	@126
+			    supplier   	@125
+			    vertices   	(list Points
+				(2415, 1283)
+				(2415, 1440)
+				(1901, 1182))
+			    line_style 	0)))
+		(object AssociationViewNew "$UNNAMED$46" @132
+		    location   	(2029, 688)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD26FE201E3"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$47" @133
+			    Parent_View 	@132
+			    location   	(-131, -272)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @134
+				Parent_View 	@133
+				location   	(2103, 554)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD26FE203D7"
+			    client     	@132
+			    supplier   	@118
+			    vertices   	(list Points
+				(2029, 688)
+				(2157, 556))
+			    line_style 	0)
+			(object RoleView "error" @135
+			    Parent_View 	@132
+			    location   	(-131, -272)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @136
+				Parent_View 	@135
+				location   	(1897, 767)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	115
+				justify    	0
+				label      	"+error"
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD26FE203B8"
+			    client     	@132
+			    supplier   	@125
+			    vertices   	(list Points
+				(2029, 688)
+				(1901, 818))
+			    line_style 	0
+			    label      	(object SegLabel @137
+				Parent_View 	@135
+				location   	(1953, 845)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"1"
+				pctDist    	0.900000
+				height     	54
+				orientation 	0))))
+		(object AssociationViewNew "$UNNAMED$44" @138
+		    location   	(2066, 966)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3CE4F2AE006B"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$45" @139
+			    Parent_View 	@138
+			    location   	(326, -114)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @140
+				Parent_View 	@139
+				location   	(2189, 895)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CE4F2AE03A0"
+			    client     	@138
+			    supplier   	@119
+			    vertices   	(list Points
+				(2066, 966)
+				(2232, 926))
+			    line_style 	0)
+			(object RoleView "error" @141
+			    Parent_View 	@138
+			    location   	(326, -114)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @142
+				Parent_View 	@141
+				location   	(1925, 958)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	115
+				justify    	0
+				label      	"+error"
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CE4F2AE038C"
+			    client     	@138
+			    supplier   	@125
+			    vertices   	(list Points
+				(2066, 966)
+				(1901, 1005))
+			    line_style 	0
+			    label      	(object SegLabel @143
+				Parent_View 	@141
+				location   	(1931, 1054)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..1"
+				pctDist    	0.900000
+				height     	54
+				orientation 	0))))
+		(object ClassView "Class" "Logical View::Applications::ACS application" @144
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(420, 1605)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@144
+			location   	(218, 1555)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	404
+			justify    	0
+			label      	"ACS application")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"393FC1FF0194"
+		    width      	422
+		    height     	124
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "propagate Completion or ACSException" @145
+		    location   	(577, 1111)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @146
+			Parent_View 	@145
+			location   	(875, 857)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	783
+			justify    	0
+			label      	"propagate Completion or ACSException"
+			pctDist    	5.466667
+			height     	255
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"393FC5E503A3"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$11" @147
+			    Parent_View 	@145
+			    location   	(262, -119)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393FC5E503A4"
+			    client     	@145
+			    supplier   	@120
+			    vertices   	(list Points
+				(577, 1111)
+				(445, 797))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$12" @148
+			    Parent_View 	@145
+			    location   	(262, -119)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393FC5E503A5"
+			    client     	@145
+			    supplier   	@144
+			    vertices   	(list Points
+				(577, 1111)
+				(600, 1166)
+				(444, 1542))
+			    line_style 	0)))
+		(object AssociationViewNew "request service" @149
+		    location   	(247, 1181)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @150
+			Parent_View 	@149
+			location   	(262, 1108)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	273
+			justify    	0
+			label      	"request service"
+			pctDist    	0.750000
+			height     	74
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"393FC4E20076"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$9" @151
+			    Parent_View 	@149
+			    location   	(-218, 791)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393FC4E30258"
+			    client     	@149
+			    supplier   	@144
+			    vertices   	(list Points
+				(247, 1181)
+				(393, 1542))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$10" @152
+			    Parent_View 	@149
+			    location   	(-218, 791)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393FC4E3026C"
+			    client     	@149
+			    supplier   	@120
+			    vertices   	(list Points
+				(247, 1181)
+				(225, 1125)
+				(387, 797))
+			    line_style 	0)))
+		(object AssociationViewNew "create ErrorTrace" @153
+		    location   	(994, 1354)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @154
+			Parent_View 	@153
+			location   	(911, 1326)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	324
+			justify    	0
+			label      	"create ErrorTrace"
+			pctDist    	-0.900000
+			height     	29
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3AD16AD002C4"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$15" @155
+			    Parent_View 	@153
+			    location   	(679, 124)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AD16AD30341"
+			    client     	@153
+			    supplier   	@125
+			    vertices   	(list Points
+				(994, 1354)
+				(1428, 1166))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$16" @156
+			    Parent_View 	@153
+			    location   	(679, 124)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3AD16AD3034B"
+			    client     	@153
+			    supplier   	@144
+			    vertices   	(list Points
+				(994, 1354)
+				(559, 1542))
+			    line_style 	0)))
+		(object AssociationViewNew "add ErrorTrace on top of ErrorTrace" @157
+		    location   	(1155, 1824)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @158
+			Parent_View 	@157
+			location   	(1231, 1825)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	716
+			justify    	0
+			label      	"add ErrorTrace on top of ErrorTrace"
+			pctDist    	1.766667
+			height     	1
+			orientation 	1)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3ACC24A201CC"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$13" @159
+			    Parent_View 	@157
+			    location   	(840, 594)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3ACC24A4000C"
+			    client     	@157
+			    supplier   	@125
+			    vertices   	(list Points
+				(1155, 1824)
+				(1212, 1841)
+				(1490, 1361))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$14" @160
+			    Parent_View 	@157
+			    location   	(840, 594)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3ACC24A40020"
+			    client     	@157
+			    supplier   	@144
+			    vertices   	(list Points
+				(1155, 1824)
+				(631, 1666))
+			    line_style 	0)))
+		(object AssociationViewNew "delete ErrorTrace" @161
+		    location   	(1057, 1463)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @162
+			Parent_View 	@161
+			location   	(1163, 1404)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	324
+			justify    	0
+			label      	"delete ErrorTrace"
+			pctDist    	2.266667
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD283990257"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$27" @163
+			    Parent_View 	@161
+			    location   	(637, -142)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD2839A0073"
+			    client     	@161
+			    supplier   	@125
+			    vertices   	(list Points
+				(1057, 1463)
+				(1428, 1219))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$28" @164
+			    Parent_View 	@161
+			    location   	(637, -142)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD2839A00A2"
+			    client     	@161
+			    supplier   	@144
+			    vertices   	(list Points
+				(1057, 1463)
+				(987, 1509)
+				(631, 1569))
+			    line_style 	0)))
+		(object AssociationViewNew "log ErrorTrace" @165
+		    location   	(1120, 1616)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @166
+			Parent_View 	@165
+			location   	(1120, 1557)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	272
+			justify    	0
+			label      	"log ErrorTrace"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD283B90341"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$29" @167
+			    Parent_View 	@165
+			    location   	(700, 11)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD283BA016C"
+			    client     	@165
+			    supplier   	@125
+			    vertices   	(list Points
+				(1120, 1616)
+				(1428, 1302))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$30" @168
+			    Parent_View 	@165
+			    location   	(700, 11)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD283BA019B"
+			    client     	@165
+			    supplier   	@144
+			    vertices   	(list Points
+				(1120, 1616)
+				(1078, 1659)
+				(631, 1621))
+			    line_style 	0)))))
+	(object ClassDiagram "Package Dependencies"
+	    quid       	"3A925841018E"
+	    title      	"Package Dependencies"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	175
+	    items      	(list diagram_item_list
+		(object CategoryView "Logical View::Time System" @169
+		    location   	(420, 885)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@169
+			location   	(243, 801)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	354
+			justify    	0
+			label      	"Time System")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E8BF0803B9"
+		    width      	366
+		    height     	180)
+		(object CategoryView "Logical View::Configuration Database" @170
+		    location   	(1005, 900)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@170
+			location   	(828, 816)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	354
+			justify    	0
+			label      	"Configuration Database")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DCFB25A0148"
+		    width      	366
+		    height     	180)
+		(object CategoryView "Logical View::Logging System" @171
+		    location   	(1545, 900)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@171
+			location   	(1368, 816)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	354
+			justify    	0
+			label      	"Logging System")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38159A1701D3"
+		    width      	366
+		    height     	180)
+		(object CategoryView "Logical View::Error System" @172
+		    location   	(990, 345)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@172
+			location   	(813, 261)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	354
+			justify    	0
+			label      	"Error System")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38159A0B0294"
+		    width      	366
+		    height     	180)
+		(object ImportView "" @173
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3A9258C102D2"
+		    client     	@172
+		    supplier   	@171
+		    vertices   	(list Points
+			(1080, 435)
+			(1400, 755))
+		    line_style 	0)
+		(object ImportView "" @174
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B42F0550173"
+		    client     	@172
+		    supplier   	@170
+		    vertices   	(list Points
+			(991, 435)
+			(1000, 755))
+		    line_style 	0)
+		(object ImportView "" @175
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B42EFD5038C"
+		    client     	@172
+		    supplier   	@169
+		    vertices   	(list Points
+			(893, 435)
+			(571, 740))
+		    line_style 	0)))
+	(object ClassDiagram "Native Language Helper"
+	    quid       	"3DD27B7B03A5"
+	    title      	"Native Language Helper"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	882
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Error System::acserr::ACSError" @176
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2160, 2475)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@176
+			location   	(1943, 1821)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	434
+			justify    	0
+			label      	"ACSError")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3A913CD10292"
+		    width      	452
+		    height     	1332
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ErrorTrace" @177
+		    ShowCompartmentStereotypes 	TRUE
+		    location   	(2175, 585)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@177
+			location   	(1948, 555)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"ACSErr::ErrorTrace")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@177
+			location   	(1948, 505)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"<<CORBAStruct>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B430CB000EF"
+		    width      	472
+		    height     	184
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::Error System::ErrorTraceHelper" @178
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2175, 1305)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@178
+			location   	(1977, 1275)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	396
+			justify    	0
+			label      	"ErrorTraceHelper")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD2818602DD"
+		    width      	414
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "convert to/from" @179
+		    location   	(2175, 950)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @180
+			Parent_View 	@179
+			location   	(2175, 891)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	300
+			justify    	0
+			label      	"convert to/from"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD27BF3008D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$23" @181
+			    Parent_View 	@179
+			    location   	(765, -340)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD27BF302DF"
+			    client     	@179
+			    supplier   	@177
+			    vertices   	(list Points
+				(2175, 950)
+				(2175, 677))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$24" @182
+			    Parent_View 	@179
+			    location   	(765, -340)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD27BF3030E"
+			    client     	@179
+			    supplier   	@178
+			    vertices   	(list Points
+				(2175, 950)
+				(2175, 1224))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ACSException" @183
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(615, 585)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@183
+			location   	(344, 556)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	542
+			justify    	0
+			label      	"ACSErr::ACSException")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@183
+			location   	(344, 506)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	542
+			justify    	0
+			label      	"<<CORBAExceptions>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3A92200B0024"
+		    width      	560
+		    height     	182
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:Completion" @184
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 585)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@184
+			location   	(1192, 556)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	466
+			justify    	0
+			label      	"ACSErr::Completion")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@184
+			location   	(1192, 506)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	466
+			justify    	0
+			label      	"<<CORBAStruct>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3CE4F1DC0358"
+		    width      	484
+		    height     	182
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::Error System::CompletionHelper" @185
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 1305)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@185
+			location   	(1212, 1275)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	426
+			justify    	0
+			label      	"CompletionHelper")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD278750384"
+		    width      	444
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "convert to/from" @186
+		    location   	(1025, 950)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @187
+			Parent_View 	@186
+			location   	(1025, 891)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	300
+			justify    	0
+			label      	"convert to/from"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD27BE40242"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$21" @188
+			    Parent_View 	@186
+			    location   	(-385, -340)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD27BE500EA"
+			    client     	@186
+			    supplier   	@183
+			    vertices   	(list Points
+				(1025, 950)
+				(717, 676))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$22" @189
+			    Parent_View 	@186
+			    location   	(-385, -340)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD27BE5010A"
+			    client     	@186
+			    supplier   	@185
+			    vertices   	(list Points
+				(1025, 950)
+				(1334, 1224))
+			    line_style 	0)))
+		(object AssociationViewNew "convert to/from" @190
+		    location   	(1425, 950)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @191
+			Parent_View 	@190
+			location   	(1425, 891)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	300
+			justify    	0
+			label      	"convert to/from"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD27BDC0109"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$19" @192
+			    Parent_View 	@190
+			    location   	(15, -340)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD27BDC02FD"
+			    client     	@190
+			    supplier   	@184
+			    vertices   	(list Points
+				(1425, 950)
+				(1425, 676))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$20" @193
+			    Parent_View 	@190
+			    location   	(15, -340)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD27BDC030D"
+			    client     	@190
+			    supplier   	@185
+			    vertices   	(list Points
+				(1425, 950)
+				(1425, 1224))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Error System::acserr::ACSCompletion" @194
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 1980)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@194
+			location   	(1150, 1826)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	550
+			justify    	0
+			label      	"ACSCompletion")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD27FB50210"
+		    width      	568
+		    height     	332
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::Error System::ACSExceptionHelper" @195
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(615, 1305)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@195
+			location   	(369, 1275)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	492
+			justify    	0
+			label      	"ACSExceptionHelper")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD364980030"
+		    width      	510
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::acserr::ACSException" @196
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(615, 1905)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@196
+			location   	(432, 1827)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	366
+			justify    	0
+			label      	"ACSException")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD364CA005E"
+		    width      	384
+		    height     	180
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object UsesView "<<bind>(C++)" @197
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@197
+			location   	(615, 1599)
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<bind>(C++)")
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD365AE0210"
+		    client     	@196
+		    supplier   	@195
+		    vertices   	(list Points
+			(615, 1814)
+			(615, 1385))
+		    line_style 	0)
+		(object UsesView "(C++)" @198
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@198
+			location   	(2170, 1597)
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"(C++)")
+		    stereotype 	(object SegLabel @199
+			Parent_View 	@198
+			location   	(2064, 1522)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<bind>>"
+			pctDist    	0.600361
+			height     	4
+			orientation 	0)
+		    line_color 	3342489
+		    quidu      	"3DD27C27009F"
+		    client     	@176
+		    supplier   	@178
+		    vertices   	(list Points
+			(2168, 1808)
+			(2173, 1385))
+		    line_style 	0)
+		(object UsesView "(C++)" @200
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@200
+			location   	(1425, 1599)
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"(C++)")
+		    stereotype 	(object SegLabel @201
+			Parent_View 	@200
+			location   	(1319, 1524)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	10
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"<<bind>>"
+			pctDist    	0.602804
+			height     	0
+			orientation 	0)
+		    line_color 	3342489
+		    quidu      	"3DD281BC02CD"
+		    client     	@194
+		    supplier   	@185
+		    vertices   	(list Points
+			(1425, 1813)
+			(1425, 1385))
+		    line_style 	0)))
+	(object ClassDiagram "CORBA Structures"
+	    quid       	"3DD35BFE00B0"
+	    title      	"CORBA Structures"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	325
+	    origin_y   	319
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:Completion" @202
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(795, 390)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@202
+			location   	(562, 360)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	466
+			justify    	0
+			label      	"ACSErr::Completion")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@202
+			location   	(562, 310)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	466
+			justify    	0
+			label      	"<<CORBAStruct>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3CE4F1DC0358"
+		    width      	484
+		    height     	184
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ACSException" @203
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1965, 390)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@203
+			location   	(1694, 338)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	542
+			justify    	0
+			label      	"ACSErr::ACSException")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@203
+			location   	(1694, 288)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	542
+			justify    	0
+			label      	"<<CORBAExceptions>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3A92200B0024"
+		    width      	560
+		    height     	228
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ACSErrType" @204
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(510, 1200)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@204
+			location   	(264, 1148)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	492
+			justify    	0
+			label      	"ACSErr::ACSErrType")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@204
+			location   	(264, 1098)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	492
+			justify    	0
+			label      	"<<CORBAEnum>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3CC7FCAD0370"
+		    width      	510
+		    height     	228
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ErrorCode" @205
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(495, 1455)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@205
+			location   	(268, 1403)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"ACSErr::ErrorCode")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@205
+			location   	(268, 1353)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"<<CORBATypedef>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3CC7FCF3029E"
+		    width      	472
+		    height     	228
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:ErrorTrace" @206
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1410, 1200)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@206
+			location   	(1183, 966)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"ACSErr::ErrorTrace")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@206
+			location   	(1183, 916)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"<<CORBAStruct>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B430CB000EF"
+		    width      	472
+		    height     	592
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$38" @207
+		    location   	(2150, 1533)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3CC7FAD302E2"
+		    roleview_list 	(list RoleViews
+			(object RoleView "previousError" @208
+			    Parent_View 	@207
+			    location   	(485, 378)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @209
+				Parent_View 	@208
+				location   	(1694, 1637)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	261
+				justify    	0
+				label      	"#previousError"
+				pctDist    	0.577197
+				height     	44
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FAD903E5"
+			    client     	@207
+			    supplier   	@206
+			    vertices   	(list Points
+				(2150, 1533)
+				(2150, 1593)
+				(1412, 1593)
+				(1411, 1496))
+			    line_style 	0
+			    label      	(object SegLabel @210
+				Parent_View 	@208
+				location   	(1452, 1632)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..1"
+				pctDist    	0.848441
+				height     	39
+				orientation 	0))
+			(object RoleView "$UNNAMED$39" @211
+			    Parent_View 	@207
+			    location   	(485, 378)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @212
+				Parent_View 	@211
+				location   	(1815, 1153)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FADA0007"
+			    client     	@207
+			    supplier   	@206
+			    vertices   	(list Points
+				(2150, 1533)
+				(2150, 1190)
+				(1646, 1196))
+			    line_style 	0)))
+		(object AssociationViewNew "$UNNAMED$44" @213
+		    location   	(1024, 692)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3CE4F2AE006B"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$45" @214
+			    Parent_View 	@213
+			    location   	(-641, -463)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @215
+				Parent_View 	@214
+				location   	(864, 549)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CE4F2AE03A0"
+			    client     	@213
+			    supplier   	@202
+			    vertices   	(list Points
+				(1024, 692)
+				(865, 482))
+			    line_style 	0)
+			(object RoleView "error" @216
+			    Parent_View 	@213
+			    location   	(-641, -463)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @217
+				Parent_View 	@216
+				location   	(1159, 739)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	115
+				justify    	0
+				label      	"+error"
+				pctDist    	0.447677
+				height     	80
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CE4F2AE038C"
+			    client     	@213
+			    supplier   	@206
+			    vertices   	(list Points
+				(1024, 692)
+				(1183, 903))
+			    line_style 	0
+			    label      	(object SegLabel @218
+				Parent_View 	@216
+				location   	(1163, 792)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..1"
+				pctDist    	0.613335
+				height     	51
+				orientation 	0))))
+		(object AssociationViewNew "$UNNAMED$46" @219
+		    location   	(1747, 703)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD26FE201E3"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$47" @220
+			    Parent_View 	@219
+			    location   	(82, -452)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @221
+				Parent_View 	@220
+				location   	(1823, 520)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD26FE203D7"
+			    client     	@219
+			    supplier   	@203
+			    vertices   	(list Points
+				(1747, 703)
+				(1884, 504))
+			    line_style 	0)
+			(object RoleView "error" @222
+			    Parent_View 	@219
+			    location   	(82, -452)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @223
+				Parent_View 	@222
+				location   	(1639, 740)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	115
+				justify    	0
+				label      	"+error"
+				pctDist    	0.377430
+				height     	70
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD26FE203B8"
+			    client     	@219
+			    supplier   	@206
+			    vertices   	(list Points
+				(1747, 703)
+				(1609, 903))
+			    line_style 	0
+			    label      	(object SegLabel @224
+				Parent_View 	@222
+				location   	(1597, 790)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"1"
+				pctDist    	0.648026
+				height     	76
+				orientation 	1))))
+		(object AssociationViewNew "$UNNAMED$40" @225
+		    location   	(969, 1200)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3CC7FD280164"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$41" @226
+			    Parent_View 	@225
+			    location   	(-1281, 60)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @227
+				Parent_View 	@226
+				location   	(1132, 1242)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FD290075"
+			    client     	@225
+			    supplier   	@206
+			    vertices   	(list Points
+				(969, 1200)
+				(1173, 1200))
+			    line_style 	0)
+			(object RoleView "errorType" @228
+			    Parent_View 	@225
+			    location   	(-1281, 60)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @229
+				Parent_View 	@228
+				location   	(897, 1226)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	195
+				justify    	0
+				label      	"+errorType"
+				pctDist    	0.356725
+				height     	26
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FD29006B"
+			    client     	@225
+			    supplier   	@204
+			    vertices   	(list Points
+				(969, 1200)
+				(765, 1200))
+			    line_style 	0)))
+		(object AssociationViewNew "$UNNAMED$42" @230
+		    location   	(952, 1326)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3CC7FD370328"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$43" @231
+			    Parent_View 	@230
+			    location   	(-1373, -279)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @232
+				Parent_View 	@231
+				location   	(1138, 1318)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FD3801F4"
+			    client     	@230
+			    supplier   	@206
+			    vertices   	(list Points
+				(952, 1326)
+				(1173, 1264))
+			    line_style 	0)
+			(object RoleView "errorCode" @233
+			    Parent_View 	@230
+			    location   	(-1373, -279)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @234
+				Parent_View 	@233
+				location   	(856, 1412)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	216
+				justify    	0
+				label      	"+errorCode"
+				pctDist    	0.503185
+				height     	57
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FD3801F3"
+			    client     	@230
+			    supplier   	@205
+			    vertices   	(list Points
+				(952, 1326)
+				(731, 1387))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:NameValueSeq" @235
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(555, 1725)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@235
+			location   	(276, 1696)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	558
+			justify    	0
+			label      	"ACSErr::NameValueSeq")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@235
+			location   	(276, 1646)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	558
+			justify    	0
+			label      	"<<CORBATypedef>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B43259401D8"
+		    width      	576
+		    height     	182
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$33" @236
+		    location   	(937, 1488)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B4326F00084"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$34" @237
+			    Parent_View 	@236
+			    location   	(457, -252)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @238
+				Parent_View 	@237
+				location   	(1104, 1338)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B4326F10035"
+			    client     	@236
+			    supplier   	@206
+			    vertices   	(list Points
+				(937, 1488)
+				(1173, 1343))
+			    line_style 	0)
+			(object RoleView "data" @239
+			    Parent_View 	@236
+			    location   	(457, -252)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @240
+				Parent_View 	@239
+				location   	(846, 1597)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	112
+				justify    	0
+				label      	"#data"
+				pctDist    	0.485930
+				height     	46
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B4326F1002B"
+			    client     	@236
+			    supplier   	@235
+			    vertices   	(list Points
+				(937, 1488)
+				(700, 1633))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Error System::ACSErr\\:\\:NameValue" @241
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(555, 2115)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@241
+			location   	(318, 2031)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	474
+			justify    	0
+			label      	"ACSErr::NameValue")
+		    stereotype 	(object ItemLabel
+			Parent_View 	@241
+			location   	(318, 1981)
+			fill_color 	13434879
+			anchor     	10
+			nlines     	1
+			max_width  	474
+			justify    	0
+			label      	"<<CORBAStruct>>")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3B4322F50056"
+		    width      	492
+		    height     	292
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$35" @242
+		    location   	(555, 1892)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3CC7FA79031F"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$37" @243
+			    Parent_View 	@242
+			    location   	(-15, -118)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @244
+				Parent_View 	@243
+				location   	(514, 1832)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FA7B002A"
+			    client     	@242
+			    supplier   	@235
+			    vertices   	(list Points
+				(555, 1892)
+				(555, 1816))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$36" @245
+			    Parent_View 	@242
+			    location   	(-15, -118)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @246
+				Parent_View 	@245
+				location   	(514, 1952)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3CC7FA7B0029"
+			    client     	@242
+			    supplier   	@241
+			    vertices   	(list Points
+				(555, 1892)
+				(555, 1968))
+			    line_style 	0
+			    label      	(object SegLabel @247
+				Parent_View 	@245
+				location   	(609, 1932)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.526316
+				height     	54
+				orientation 	0))))))))

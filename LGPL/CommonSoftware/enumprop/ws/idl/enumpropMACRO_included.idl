@@ -1,0 +1,114 @@
+#ifndef _ENUMPROP_MACRO_INCLUDED_IDL_
+#define _ENUMPROP_MACRO_INCLUDED_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: enumpropMACRO_included.idl,v 1.2 2004/04/21 14:06:14 acaproni Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* gchiozzi 2003-07-14 Created. SPR 2003048.
+* gchiozzi 2003-04-08 Added boundary ifdef
+* gchiozzi 2003-04-08 Renamed ENUM macro as ACS_ENUM. JacORB was complaining
+*/
+
+/*
+ * JacORB has problems when including twice a file with macros inside,
+ * since it tries to parse also preprocessor directives that should
+ * be excluded by the include guards, probably because it searches
+ * for the #endif preprocessor directive. Weird !!!!!
+ * See SPR ALMASW2003048 for details.
+ * This file in included by the master enumpropMACRO.idl
+ * file as a workaround.
+ * In this way, we have "added one layer" so that
+ * enumpropMACRO includes the code from an external
+ * file only the first time it passes.
+ * The second time guards are scanned properly.
+ */
+
+
+#define CALLBACK(T) interface CB##T : ACS::Callback {\
+ oneway void working(in T value, in ACSErr::Completion c, in  ACS::CBDescOut desc); \
+ oneway void done(in T value, in ACSErr::Completion c, in  ACS::CBDescOut desc); \
+};\
+typedef CB##T T##CB;
+
+#define ALARM(T) interface Alarm##T : ACS::Callback {\
+    oneway void alarm_raised(in T value, in ACSErr::Completion c, in ACS::CBDescOut desc);\
+    oneway void alarm_cleared(in T value, in ACSErr::Completion c, in ACS::CBDescOut desc);\
+  };\
+ \
+ typedef Alarm##T T##Alarm;
+
+#define PENUM(T)  interface P##T: ACS::TypelessProperty {\
+    T get_sync(out ACSErr::Completion c);\
+    void get_async(in ACS::CBpattern cb, in ACS::CBDescIn desc);\
+    long get_history(in long n_last_values, out T##Seq vs, out ACS::TimeSeq ts);\
+    ACS::Monitorpattern create_monitor(in ACS::CBpattern cb, in ACS::CBDescIn desc);\
+    ACS::Monitor create_postponed_monitor (in ACS::Time start_time, in ACS::CBpattern cb, in ACS::CBDescIn desc);\
+    readonly attribute ACS::TimeInterval default_timer_trigger;\
+    readonly attribute ACS::TimeInterval min_timer_trigger;\
+    readonly attribute T default_value;\
+    readonly attribute ACS::stringSeq statesDescription;\
+    readonly attribute ACS::ConditionSeq condition;\
+    readonly attribute T##Seq allStates;\
+  }
+/*
+get_async and create_monitor and create_postponed_monitor shoudl have CB##T instead CBpattern (problem due to add to baci new type is very difficulte)
+Should we rename states to enum(s) or similar ?
+allStates - all substates supported by device (do wee need?)
+default_value - default_states(?)
+*/
+
+#define ROENUM(T) interface RO##T: P##T{\
+    ACS::Subscription new_subscription_AlarmEnum(in ACS::Alarmpattern cb, in ACS::CBDescIn desc);\
+    readonly attribute T##Seq alarm_on;\
+    readonly attribute T##Seq alarm_off;\
+  }
+/*
+AlarmEnum ->Alarm##T (?)
+Alarmpattern -> Alarm##T
+alarm_on  - all alarm states (if device goes into that states alram will be triggerd)
+alarm_off  - all no alram  states 
+*/
+
+#define RWENUM(T) interface RW##T: P##T {\
+  ACSErr::Completion set_sync(in T value);\
+  void set_async(in T value, in ACS::CBvoid cb, in ACS::CBDescIn desc);\
+  void set_nonblocking(in T value);\
+}
+/*
+set_sync can raise NoSuchState or similar
+incrament, decrament - go to next/previous state ?
+*/
+
+
+#define ACS_ENUM(T) \
+    typedef sequence<T> T##Seq; \
+    CALLBACK(T)\
+    ALARM(T)\
+    PENUM(T);\
+    ROENUM(T);\
+    RWENUM(T)
+
+#endif /* ENUMPROP_MACRO_INCLUDED_IDL_ */
+

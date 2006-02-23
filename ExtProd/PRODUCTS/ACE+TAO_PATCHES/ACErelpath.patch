@@ -1,0 +1,29 @@
+diff -Naur TAO.org/ACE_wrappers/include/makeinclude/rules.local.GNU TAO/ACE_wrappers/include/makeinclude/rules.local.GNU
+--- TAO.org/ACE_wrappers/include/makeinclude/rules.local.GNU	1970-06-06 08:11:22.000000000 +0100
++++ TAO/ACE_wrappers/include/makeinclude/rules.local.GNU	2004-09-01 08:58:11.000000000 +0200
+@@ -8,6 +8,12 @@
+ #----------------------------------------------------------------------------
+ 
+ 
++### Those two variables are added to make links relative instead absolute when libraries and binaries are installed
++
++CUR_DIR := $(shell pwd)
++RELPATH := ..$(shell echo $(ACE_ROOT) $(CUR_DIR) | awk 'BEGIN {FS="/"; RS=" "; ORS=""} NR == 1 {last=$$NF; if(last=="") last=$$(NF-1)} NR == 2 {for(x=NF;x>0 && $$x!=last;x--) y=NF} END {for(i=x+1;i<=y;i++) print "/"$$i }')
++
++
+ CLEANUP_OBJDIRS =
+ CLEANUP_DIRS =
+ 
+@@ -267,10 +273,10 @@
+ 		else \
+ 			echo "Installing $(@F:%.$(SOEXT)$(SOVERSION)=%.$(SOEXT)) -> $(@D)" ; \
+ 			$(RM) $(@:%.$(SOEXT)$(SOVERSION)=%.$(SOEXT)); \
+-			$(LN_S) $(shell pwd)/$(@F) $(@:%.$(SOEXT)$(SOVERSION)=%.$(SOEXT)); \
++			$(LN_S) $(RELPATH)/$(@F) $(@:%.$(SOEXT)$(SOVERSION)=%.$(SOEXT)); \
+ 			echo "Installing $(@F) -> $(@D)" ; \
+ 			$(RM) $@; \
+-			$(LN_S) $(shell pwd)/$(@F) $@; \
++			$(LN_S) $(RELPATH)/$(@F) $@; \
+ 		fi ; \
+ 	fi
+ else

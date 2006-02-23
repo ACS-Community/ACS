@@ -1,0 +1,138 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<link rel=Edit-Time-Data href="FeaturesSerialization_files/editdata.mso">
+<title>FeaturesSerialization</title>
+<style><!--
+.Normal
+	{font-size:12.0pt;
+	font-family:"Times New Roman";}
+.SpellE
+	{}
+.GramE
+	{}
+-->
+</style>
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+</head>
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+<h2><a name="Archiving_System">Serialization</a></h2>
+<p><b>Entity data</b>, i.e. complex data structures of moderate volume, are often 
+  represented as XML in the ALMA system. According to the ALMA Technical Architecture 
+  described in the <i>ALMA Software <span class=GramE>Architecture</span></i><a
+href="ReferenceDocuments.html#RD33">[RD33]</a>, XML is used to:</p>
+<ul type=disc>
+  <li>define the content and structure of the entity objects that are passed between 
+    subsystems</li>
+  <li>automatically generate the classes needed to access the data contained in 
+    these entity objects, optionally validating changes to a data value by an 
+    explicit call to validate() or implicit validation during (un-)marshalling;</li>
+  <li>serialize these objects for network transmission;</li>
+  <li><span
+     class=GramE>facilitate</span> the storage of these.</li>
+</ul>
+<p>We are now well advanced in the process of migrating from XML to UML as the 
+  primary language used to define data entities, c.f.<i> ALMA Software <span class=GramE>Architecture</span></i><a
+href="ReferenceDocuments.html#RD33">[RD33]</a>. UML is used as a higher-level 
+  layer, from which the previously hand-crafted XML Schemas are now automatically 
+  generated. The data transport format will remain XML though, and the XML schemas 
+  are still visible to developeres when defining database queries. </p>
+<p>Currently support for data modeling, code generation, and data handling is 
+  spread between ACS and the HLA subsystem: </p>
+<ul>
+  <li>ACS provides the generator framework, </li>
+  <li>HLA maintains the UML model and defines what code gets generated from it 
+  </li>
+  <li>ACS provides generic mechanisms to generate Java binding classes from XML 
+    schema, and to present instances of these classes to application software, 
+    thus removing the need to explicitly deal with XML data. See below on details.</li>
+</ul>
+<p>We assume that access to entity data will be primary concern of Java high level 
+  <span class=GramE>applications,</span> therefore ACS priority is to provide 
+  optimal support for Java.</p>
+<h3>Entity data structures are conceptually defined as UML classes. Technically 
+  they are defined by means of XML Schemas which are derived automatically from 
+  UML.</h3>
+<h3>Programming language classes (for example Java, C++ and Python) to wrap and 
+  facilitate access to entity structures can be generated automatically from the 
+  XML Schema (XML binding to language-specific classes). The <span class=GramE>Castor</span><a
+href="ReferenceDocuments.html#RD36">[RD36]</a> open source framework is currently 
+  used for Java binding. Castor XML binding provides also validation code for 
+  the <span
+class=SpellE>accessors</span>, based on the XML Schema.</h3>
+<h3>For data structures defined in UML, code generators are based on the <b>Open 
+  ArchitectureWare</b> Project <a
+href="ReferenceDocuments.html#RD39">[RD39]</a> generator framework. We generate 
+  from the XMI UML representation:</h3>
+<ul>
+  <li>XML Schema as described in the previous paragraphs</li>
+  <li>Bingind classes for Java (based on Castor), C++ and Python (custom made)</li>
+  <li>IDL interface definition files</li>
+  <li>HTML documentation</li>
+  <li>any other format needed, by implmenting custom generators</li>
+</ul>
+<h3>Entity data is passed among Components as XML <span class=GramE>strings</span><a
+href="ReferenceDocuments.html#RD01">[RD01 - 10.5.10 XML]</a>. Each Component operation 
+  that sends/receives an entity data structure, will have an IDL interface where 
+  the corresponding parameter is represented as a CORBA string. This is a commonly 
+  accepted way of implementing serialization. <a
+href="ReferenceDocuments.html#RD01"><span class=GramE>[RD01 - 3.3.2.</span> Serialization]</a> 
+  and <span class=GramE>migration</span><a
+href="ReferenceDocuments.html#RD01">[RD01 - 3.3.3. <span class=GramE>Migration]</span></a><span
+class=GramE> of objects without using CORBA Object by Value (<span
+class=SpellE>ObV</span>).</span> As already mentioned in the Error System section, 
+  <span class=SpellE>ObV</span> that is not implemented by most <span
+class=SpellE><span class=GramE>ORBs</span></span><span class=GramE>,</span> is 
+  still immature and its usage is problematic.</h3>
+<h3>ACS Java Container makes (<span class=GramE>un</span>)-marshalling transparent 
+  to the user, interposing a proxy class between the IDL stub/skeleton and the 
+  implementation:</h3>
+<ul type=disc>
+  <li>Given the IDL description of a Component, a code generator is used to generate 
+    a &lt;<span class=SpellE>Component</span>&gt;Interface class. In this class, 
+    every <span class=SpellE>EntityDataXML</span> parameter has been replaced 
+    by the corresponding <span class=SpellE>EntityData</span> binding class.</li>
+  <li>Java introspection is used to dynamically generate a &lt;Component&gt;<span
+     class=SpellE>DynamicProxy</span> and a &lt;Component&gt;<span
+     class=SpellE>DynamicSkeleton</span> class.</li>
+  <li>&lt;Component&gt;<span
+     class=SpellE>DynamicProxy</span> is used by clients and converts client side 
+    calls from the <span class=SpellE>EntityDataXML</span> to the <span
+     class=SpellE>EntityData</span> (<span class=GramE>un</span>)-<span
+     class=SpellE>marshalled</span> calls and forwards the messages to the &lt;Component&gt;Stub 
+    class generated by the IDL compiler.</li>
+  <li>&lt;Component&gt;<span
+     class=SpellE>DynamicSkeleton</span> is a delegation class that converts servant 
+    side calls from the <span class=SpellE>EntityDataXML</span> to the <span class=SpellE>EntityData</span> 
+    (<span class=GramE>un</span>)-<span
+     class=SpellE>marshalled</span> calls and forwards the message to the user 
+    defined &lt;<span class=SpellE>Componet</span>&gt;<span class=SpellE>Impl</span> 
+    real implementation class. </li>
+  <li>Clients and the servant implementation of the component will therefore only 
+    see the interface of the &lt;Component&gt;Interface <span class=GramE>class, 
+    that</span> does not use XML strings but binding classes.</li>
+</ul>
+<p><img border=0 width=640 id="_x0000_i1025" src="Images/Class_Diagram-Serialization_Plugs-XML_serialization.png"><br>
+  <i>Figure 3.16: Example of class diagram showing transparent Entity Data serialization</i> 
+</p>
+<p>&nbsp;</p>
+<h3>The usage of the proxy approach allows the container to:</h3>
+<ul>
+  <li> <span><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    </span></span> Shortcut local calls (i.e. calls inside the same Container), 
+    so that no XML serialization is needed and the binding class is passed directly.</li>
+  <li><span><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    </span></span> Intercept calls to Components, allowing the implementation 
+    of the Tight Container pattern (see ACS Container section).</li>
+</ul>
+<h3>For C++ and Python it is not foreseen to implement transparent (un-)marshalling 
+  like in Java. This choice is based on the assumption that Java clients and Components 
+  will be the most adequate whenever serialization is needed. If C++ and Python 
+  support will be necessary, they will be implemented at a later stage based on 
+  the code generation engine <b>(Not implemented yet)</b>.</h3>
+<h3>In case no XML binding generator is available (for example for clients written 
+  in a language different from Java, C++ or Python)<span class=GramE>,</span> 
+  we anyway expect that it will be acceptable to work directly on the XML strings 
+  with an XML parser.</h3>
+</body>
+</html>

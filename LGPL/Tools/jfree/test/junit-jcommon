@@ -1,0 +1,1 @@
+acsStartJava --noDirectory -j $ACSROOT/lib:$INTROOT/lib:../lib alma.acs.testsupport.tat.TATJUnitRunner org.jfree.junit.JCommonTestSuite

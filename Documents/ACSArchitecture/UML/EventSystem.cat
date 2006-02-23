@@ -1,0 +1,2024 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Event System"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"381599F000AB"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "PropertyManager"
+	    quid       	"38E06F8A0386"
+	    documentation 	
+|This is an implementation detail.
+|To be discussed.
+	    
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"38EB61FE019E"
+		    supplier   	"Logical View::Event and Notification System::Subject"
+		    quidu      	"38EB5D910221")))
+	(object Parameterized_Class "Monitor"
+	    quid       	"38E06F9F023C"
+	    operations 	(list Operations
+		(object Operation "destroy"
+		    quid       	"38E073BE00EB"
+		    documentation 	
+|Destroy de-registers and delete the monitor.
+|This must be called by the client.
+		    
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "suspend"
+		    quid       	"38E073E401CC"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "resume"
+		    quid       	"38E073EF02F4"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "set_time_trigger"
+		    quid       	"3AC87CEE0207"
+		    result     	"time"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "get_time_trigger"
+		    quid       	"3AC87D14000C"
+		    result     	"time"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "set_value_trigger"
+		    quid       	"3AC87D270259"
+		    result     	"delta"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "get_value_trigger"
+		    quid       	"3AC87D3203C7"
+		    result     	"delta"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"392CE548035D")))
+	(object Parameterized_Class "Callback"
+	    quid       	"38E06FD50243"
+	    operations 	(list Operations
+		(object Operation "negotiate"
+		    quid       	"38E07EE4026C"
+		    parameters 	(list Parameters
+			(object Parameter "in TimeInterval time_to_transmit"
+			    quid       	"392CE5480360")
+			(object Parameter "in CBDescOut desc"
+			    quid       	"392CE5480361"))
+		    result     	"Boolean"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"392CE5480362")))
+	(object Class "Event Client"
+	    quid       	"38E070010174"
+	    stereotype 	"Actor")
+	(object Parameterized_Class "MonitorOnChange"
+	    quid       	"38E071E60006"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"38E0722C0292"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"392CE5480368")))
+	(object Parameterized_Class "MonitorOnTime"
+	    quid       	"38E071FF02DD"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"38E0722F00B5"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"))
+	    operations 	(list Operations
+		(object Operation "setTimer"
+		    quid       	"38E0755E0284"
+		    parameters 	(list Parameters
+			(object Parameter "deltaTime"
+			    quid       	"392CE5480384"))
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "getTimer"
+		    quid       	"38E07575022D"
+		    result     	"deltaTime"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "MonitorOnTime"
+		    quid       	"38E0769902FF"
+		    documentation 	
+|First parameter is obvioucly the callback to be triggered.
+|
+|repeatMode is:   SINGLESHOT or PERIODIC
+|   where SINGLESHOT means that the trigger is 
+|   generated only once.
+|
+|timeMode is:  FREERUN or ABSTIME
+|  where FREERUN means that the system is free to trigger
+|  the events whenever convenient at the given rate,
+|  ABSTIME that the event is synchronised to absolute time,
+|  i.e. a (1sec + offset) event always occurs aligned to the (1sec + offset) clock tick.
+|  It should be possible also to ask for events at a specific absolute time (JMD, UTC or whatever we decide as standard)
+|  Detail of the interface to be defined, to be able to specify and handle conbnations of modes and time setting, including offsets and UTC absolute time.
+|
+		    
+		    parameters 	(list Parameters
+			(object Parameter "Callback"
+			    quid       	"392CE5480387")
+			(object Parameter "repeatMode"
+			    quid       	"392CE5480388")
+			(object Parameter "timeMode"
+			    quid       	"392CE548038A"))
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0))
+	    parameters 	(list Parameters
+		(object Parameter "type"
+		    quid       	"392CE548038B")))
+	(object Class "CBDescIn"
+	    quid       	"38E07E47023E"
+	    class_attributes 	(list class_attribute_list
+		(object ClassAttribute "normal_timeout"
+		    quid       	"38E07E6B00D7")
+		(object ClassAttribute "negotiable_timeout"
+		    quid       	"38E07E710310")
+		(object ClassAttribute "tag"
+		    quid       	"38E07E7902F4")))
+	(object Class "CBDescOut"
+	    quid       	"38E07E52033E"
+	    class_attributes 	(list class_attribute_list
+		(object ClassAttribute "estimated_timeout"
+		    quid       	"38E07EC4017F"
+		    exportControl 	"Public")
+		(object ClassAttribute "tag"
+		    quid       	"38E07ECD0010"
+		    exportControl 	"Public")))
+	(object Class "Completion"
+	    quid       	"38E0A9A2005C"
+	    class_attributes 	(list class_attribute_list
+		(object ClassAttribute "time"
+		    quid       	"38E0AA8902AD")
+		(object ClassAttribute "error"
+		    quid       	"38E0AA900018"
+		    documentation 	
+|The error is most probably an ACSException, that in turns should contain an errorStack.
+|We still have to verify with a prototype is CORBA allows this.
+		    )))
+	(object Class "property value client"
+	    quid       	"38EB6240013E"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"38EB62860185"
+		    supplier   	"Logical View::Event and Notification System::Observer"
+		    quidu      	"38EB5DC9027B")))
+	(object Class "Time Server"
+	    quid       	"3940B24500B6")
+	(object Association "$UNNAMED$0"
+	    quid       	"38E0725B02D5"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$1"
+		    quid       	"38E0725C0196"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Callback"
+		    quidu      	"38E06FD50243"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$2"
+		    quid       	"38E0725C0197"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$3"
+	    quid       	"38EB62C70387"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$4"
+		    quid       	"38EB62C80194"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$5"
+		    quid       	"38EB62C8019E"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager"
+		    quidu      	"38E06F8A0386"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$6"
+	    quid       	"38EB63640261"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$7"
+		    quid       	"38EB63650031"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::MonitorOnTime"
+		    quidu      	"38E071FF02DD"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$8"
+		    quid       	"38EB6365003B"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager"
+		    quidu      	"38E06F8A0386"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$9"
+	    quid       	"38EB645A032D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$10"
+		    quid       	"38EB645B012F"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::MonitorOnChange"
+		    quidu      	"38E071E60006"
+		    client_cardinality 	(value cardinality "0..n")
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$11"
+		    quid       	"38EB645B0139"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager"
+		    quidu      	"38E06F8A0386"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$12"
+	    quid       	"38EB649F0278"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$13"
+		    quid       	"38EB64A0000C"
+		    supplier   	"Logical View::Event and Notification System::Observer"
+		    quidu      	"38EB5DC9027B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$14"
+		    quid       	"38EB64A0002A"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager"
+		    quidu      	"38E06F8A0386"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$15"
+	    quid       	"38EB64A40347"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$16"
+		    quid       	"38EB64A60264"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager"
+		    quidu      	"38E06F8A0386"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$17"
+		    quid       	"38EB64A6026E"
+		    supplier   	"Logical View::Event and Notification System::Observer"
+		    quidu      	"38EB5DC9027B"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "$UNNAMED$18"
+	    quid       	"38EB64B103BE"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$19"
+		    quid       	"38EB64B201A3"
+		    supplier   	"Logical View::Event and Notification System::Observer"
+		    quidu      	"38EB5DC9027B"
+		    Containment 	"By Value"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$20"
+		    quid       	"38EB64B201C1"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager"
+		    quidu      	"38E06F8A0386"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "Timer request"
+	    quid       	"3940B3BF031D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$21"
+		    quid       	"3940B3C2023B"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server"
+		    quidu      	"3940B24500B6"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$22"
+		    quid       	"3940B3C2023C"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C")))
+	(object Association "Read properties"
+	    quid       	"3940B3D6026B"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$23"
+		    quid       	"3940B3DE0281"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$24"
+		    quid       	"3940B3DE028B"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C")))
+	(object Association "Notification of property on 
+change"
+	    quid       	"3940B3E30025"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$25"
+		    quid       	"3940B3EA015C"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$26"
+		    quid       	"3940B3EA0166"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B")))
+	(object Association "Read properties"
+	    quid       	"3940B7A902F5"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$27"
+		    quid       	"3940B7A902F6"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B")
+		(object Role "$UNNAMED$28"
+		    quid       	"3940B7A902F7"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE)))
+	(object Association "Property change"
+	    quid       	"3940B7D10393"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$29"
+		    quid       	"3940B7D10394"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$30"
+		    quid       	"3940B7D10395"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B")))
+	(object Association "Attach to event"
+	    quid       	"3940B906004E"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$31"
+		    quid       	"3940B90A00EA"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$32"
+		    quid       	"3940B90A00F4"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Event Client"
+		    quidu      	"38E070010174")))
+	(object Association "Events"
+	    quid       	"3940B91103E3"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$33"
+		    quid       	"3940B91303B4"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Event Client"
+		    quidu      	"38E070010174"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$34"
+		    quid       	"3940B91303BE"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    client_cardinality 	(value cardinality "0..n"))))
+	(object Association "destroy"
+	    quid       	"3940B995032F"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$35"
+		    quid       	"3940B99A02D2"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$36"
+		    quid       	"3940B99A02E6"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Event Client"
+		    quidu      	"38E070010174")))
+	(object Association "time trigger"
+	    quid       	"3944E6630168"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$37"
+		    quid       	"3944E6650118"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$38"
+		    quid       	"3944E6650186"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server"
+		    quidu      	"3940B24500B6")))
+	(object Association "pippi"
+	    quid       	"3B9891C303D1"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$39"
+		    quid       	"3B9891C303DB"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicModel"
+		    quidu      	"38DB840500CB"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)
+		(object Role "$UNNAMED$40"
+		    quid       	"3B9891C303DC"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Characteristic"
+		    quidu      	"38CF59860126"
+		    client_cardinality 	(value cardinality "0..n")
+		    Containment 	"By Value"
+		    is_navigable 	TRUE)))
+	(object Association "get_sync"
+	    quid       	"3DD4CDF102B1"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$41"
+		    quid       	"3DD4CDF2039C"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property"
+		    quidu      	"3DD4C27D0030"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$42"
+		    quid       	"3DD4CDF203BB"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C")))
+	(object Association "create_monitor"
+	    quid       	"3DD4CDFB01A8"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$43"
+		    quid       	"3DD4CDFC008E"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property"
+		    quidu      	"3DD4C27D0030"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$44"
+		    quid       	"3DD4CDFC00BD"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Event Client"
+		    quidu      	"38E070010174")))
+	(object Association "Property change of value"
+	    quid       	"3DD4CE040263"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$45"
+		    quid       	"3DD4CE050273"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$46"
+		    quid       	"3DD4CE050282"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property"
+		    quidu      	"3DD4C27D0030"))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "EventModel"
+	    quid       	"38E06F4F00A6"
+	    title      	"EventModel"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager" @1
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1845, 1305)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@1
+			location   	(1644, 1264)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	402
+			justify    	0
+			label      	"PropertyManager")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06F8A0386"
+		    width      	420
+		    height     	107
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Event Client" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(435, 240)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(435, 400)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	362
+			justify    	0
+			label      	"Event Client")
+		    icon       	"Actor"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    quidu      	"38E070010174"
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::MonitorOnChange" @3
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(225, 1410)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@3
+			location   	(7, 1388)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	436
+			justify    	0
+			label      	"MonitorOnChange")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E071E60006"
+		    width      	454
+		    height     	145
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::MonitorOnTime" @4
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    ShowOperationSignature 	TRUE
+		    location   	(1005, 1410)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@4
+			location   	(448, 1300)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	1114
+			justify    	0
+			label      	"MonitorOnTime")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E071FF02DD"
+		    width      	1132
+		    height     	320
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Callback" @5
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1215, 615)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@5
+			location   	(1106, 593)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	218
+			justify    	0
+			label      	"Callback")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06FD50243"
+		    width      	236
+		    height     	145
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor" @6
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(585, 870)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@6
+			location   	(361, 660)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	448
+			justify    	0
+			label      	"Monitor")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06F9F023C"
+		    width      	466
+		    height     	520
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritTreeView "" @7
+		    location   	(585, 1220)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@6
+		    vertices   	(list Points
+			(585, 1220)
+			(585, 1130)))
+		(object InheritView "" @8
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38E0722C0292"
+		    client     	@3
+		    supplier   	@6
+		    vertices   	(list Points
+			(260, 1338)
+			(260, 1220))
+		    line_style 	3
+		    origin_attachment 	(260, 1338)
+		    terminal_attachment 	(260, 1220)
+		    drawSupplier 	@7)
+		(object InheritView "" @9
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38E0722F00B5"
+		    client     	@4
+		    supplier   	@6
+		    vertices   	(list Points
+			(993, 1249)
+			(993, 1220))
+		    line_style 	3
+		    origin_attachment 	(993, 1249)
+		    terminal_attachment 	(993, 1220)
+		    drawSupplier 	@7)
+		(object AssociationViewNew "$UNNAMED$0" @10
+		    location   	(957, 718)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38E0725B02D5"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$1" @11
+			    Parent_View 	@10
+			    location   	(357, -242)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38E0725C0196"
+			    client     	@10
+			    supplier   	@5
+			    vertices   	(list Points
+				(957, 718)
+				(1096, 661))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$2" @12
+			    Parent_View 	@10
+			    location   	(357, -242)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38E0725C0197"
+			    client     	@10
+			    supplier   	@6
+			    vertices   	(list Points
+				(957, 718)
+				(818, 774))
+			    line_style 	0)))
+		(object NoteView @13
+		    location   	(1665, 1920)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@13
+			location   	(1167, 1699)
+			fill_color 	13434879
+			nlines     	10
+			max_width  	960
+			label      	
+|A client ask a Property to instantiate a monitor for a given Callback.
+|The way this is done is implementation dependent. Actually we would have a propery manager hidden behing the Property that takes care of handling the monitor objects.
+|In particular:
+|- On propery changes, the property notifies the Manager that triggers all the callbacks registered via monitors.
+|- Timers are handled directly by the manager, that can in this way optimise the use of time gererated events.
+			)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	1020
+		    height     	455)
+		(object NoteView @14
+		    location   	(1575, 210)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@14
+			location   	(1130, 19)
+			fill_color 	13434879
+			nlines     	8
+			max_width  	855
+			label      	"ANKA has a fixed set of time  imtervals. This is good to make easier the life of the Property Manager, but do we really need it (or better, do we need more flexibility? To be discussed.")
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	915
+		    height     	395)
+		(object NoteView @15
+		    location   	(645, 1935)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@15
+			location   	(175, 1731)
+			fill_color 	13434879
+			nlines     	9
+			max_width  	905
+			label      	
+|Seems much better from a design point of view to have the client create the type of monitor he likes and call just an addMonitor() method of the property to register it.
+|Why is it not this way in ANKA? Is it perhaps a problem of passing objects from the client to the server, register and then back again the modified object? To be discussed
+			)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	965
+		    height     	420)))
+	(object ClassDiagram "CallbackHandling"
+	    quid       	"38E07E26022C"
+	    title      	"CallbackHandling"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Callback" @16
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    ShowOperationSignature 	TRUE
+		    location   	(825, 1095)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@16
+			location   	(14, 1060)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	1622
+			justify    	0
+			label      	"Callback")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06FD50243"
+		    width      	1640
+		    height     	170
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::CBDescIn" @17
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(765, 240)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@17
+			location   	(533, 134)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	464
+			justify    	0
+			label      	"CBDescIn")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E07E47023E"
+		    width      	482
+		    height     	236
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::CBDescOut" @18
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1440, 345)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@18
+			location   	(1213, 239)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	454
+			justify    	0
+			label      	"CBDescOut")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E07E52033E"
+		    width      	472
+		    height     	236
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Completion" @19
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(510, 630)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@19
+			location   	(364, 524)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	292
+			justify    	0
+			label      	"Completion")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E0A9A2005C"
+		    width      	310
+		    height     	236
+		    annotation 	8
+		    autoResize 	TRUE)))
+	(object ClassDiagram "Monitoring on time architecture"
+	    quid       	"38EB61DF0207"
+	    title      	"Monitoring on time architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	1156
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::property value client" @20
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(300, 945)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@20
+			location   	(60, 894)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	480
+			justify    	0
+			label      	"property value client")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB6240013E"
+		    width      	498
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Event and Notification System::Observer" @21
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(330, 330)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@21
+			location   	(13, 226)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	634
+			justify    	0
+			label      	"Observer")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB5DC9027B"
+		    width      	652
+		    height     	232
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Event and Notification System::Subject" @22
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 375)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@22
+			location   	(1108, 221)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	634
+			justify    	0
+			label      	"Subject")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB5D910221"
+		    width      	652
+		    height     	332
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @23
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38EB62860185"
+		    client     	@20
+		    supplier   	@21
+		    vertices   	(list Points
+			(302, 881)
+			(323, 446))
+		    line_style 	0)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::MonitorOnTime" @24
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1050, 1245)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@24
+			location   	(842, 1135)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	416
+			justify    	0
+			label      	"MonitorOnTime")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E071FF02DD"
+		    width      	434
+		    height     	320
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager" @25
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 915)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@25
+			location   	(1224, 864)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	402
+			justify    	0
+			label      	"PropertyManager")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06F8A0386"
+		    width      	420
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @26
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38EB61FE019E"
+		    client     	@25
+		    supplier   	@22
+		    vertices   	(list Points
+			(1425, 851)
+			(1425, 541))
+		    line_style 	0)
+		(object AssociationViewNew "$UNNAMED$6" @27
+		    location   	(1291, 1031)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38EB63640261"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$7" @28
+			    Parent_View 	@27
+			    location   	(-134, 116)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38EB63650031"
+			    client     	@27
+			    supplier   	@24
+			    vertices   	(list Points
+				(1291, 1031)
+				(1229, 1084))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$8" @29
+			    Parent_View 	@27
+			    location   	(-134, 116)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38EB6365003B"
+			    client     	@27
+			    supplier   	@25
+			    vertices   	(list Points
+				(1291, 1031)
+				(1351, 978))
+			    line_style 	0)))
+		(object NoteView @30
+		    location   	(480, 1815)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@30
+			location   	(62, 1611)
+			fill_color 	13434879
+			nlines     	9
+			max_width  	800
+			label      	
+|The property value client creates a monitor on time.
+|Call add Monitor() for the property.
+|The poperty passes the monitor to the PropertyManager.
+|When the time espires, the PropertyManager:
+| - reads the value of the property
+| - Notify() all observers fo r that monitor
+			)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	860
+		    height     	420)))
+	(object ClassDiagram "Monitoring on change architecture"
+	    quid       	"38EB641C0016"
+	    title      	"Monitoring on change architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::property value client" @31
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(435, 675)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@31
+			location   	(195, 624)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	480
+			justify    	0
+			label      	"property value client")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB6240013E"
+		    width      	498
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::MonitorOnChange" @32
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1155, 975)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@32
+			location   	(937, 945)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	436
+			justify    	0
+			label      	"MonitorOnChange")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E071E60006"
+		    width      	454
+		    height     	161
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Event and Notification System::Observer" @33
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1980, 240)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@33
+			location   	(1663, 136)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	634
+			justify    	0
+			label      	"Observer")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB5DC9027B"
+		    width      	652
+		    height     	232
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::PropertyManager" @34
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1695, 570)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@34
+			location   	(1494, 519)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	402
+			justify    	0
+			label      	"PropertyManager")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06F8A0386"
+		    width      	420
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$9" @35
+		    location   	(1433, 763)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38EB645A032D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$10" @36
+			    Parent_View 	@35
+			    location   	(-322, 88)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38EB645B012F"
+			    client     	@35
+			    supplier   	@32
+			    vertices   	(list Points
+				(1433, 763)
+				(1260, 894))
+			    line_style 	0
+			    label      	(object SegLabel @37
+				Parent_View 	@36
+				location   	(1311, 923)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.900000
+				height     	54
+				orientation 	0))
+			(object RoleView "$UNNAMED$11" @38
+			    Parent_View 	@35
+			    location   	(-322, 88)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38EB645B0139"
+			    client     	@35
+			    supplier   	@34
+			    vertices   	(list Points
+				(1433, 763)
+				(1608, 633))
+			    line_style 	0)))
+		(object AssociationViewNew "$UNNAMED$18" @39
+		    location   	(1812, 431)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"38EB64B103BE"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$19" @40
+			    Parent_View 	@39
+			    location   	(117, -139)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38EB64B201A3"
+			    client     	@39
+			    supplier   	@33
+			    vertices   	(list Points
+				(1812, 431)
+				(1877, 356))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$20" @41
+			    Parent_View 	@39
+			    location   	(117, -139)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"38EB64B201C1"
+			    client     	@39
+			    supplier   	@34
+			    vertices   	(list Points
+				(1812, 431)
+				(1747, 506))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Event and Notification System::Subject" @42
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2040, 1140)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@42
+			location   	(1723, 986)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	634
+			justify    	0
+			label      	"Subject")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB5D910221"
+		    width      	652
+		    height     	332
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object NoteView @43
+		    location   	(540, 1470)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@43
+			location   	(67, 1224)
+			fill_color 	13434879
+			nlines     	11
+			max_width  	910
+			label      	
+|The property value client creates a monitor on change.
+|Call add Monitor() for the property.
+|The poperty passes the monitor to the PropertyManager.
+|The property manager Attach() itself to the property to be notified of changes
+|When the tichange occurrs, the property notifies the propertyManager that:
+| - reads the value of the property
+| - Notify() all observers fo r that monitor
+			)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    width      	970
+		    height     	505)))
+	(object ClassDiagram "Event Architecture"
+	    quid       	"3940A69803CF"
+	    title      	"Event Architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	56
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server" @44
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1725, 990)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@44
+			location   	(1564, 949)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	322
+			justify    	0
+			label      	"Time Server")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B24500B6"
+		    width      	340
+		    height     	107
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Event Client" @45
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(225, 270)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@45
+			location   	(225, 430)
+			anchor_loc 	1
+			nlines     	2
+			max_width  	362
+			justify    	0
+			label      	"Event Client")
+		    icon       	"Actor"
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    quidu      	"38E070010174"
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor" @46
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    ShowOperationSignature 	TRUE
+		    location   	(1050, 990)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@46
+			location   	(753, 780)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	594
+			justify    	0
+			label      	"Monitor")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06F9F023C"
+		    width      	612
+		    height     	520
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Events" @47
+		    location   	(544, 548)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @48
+			Parent_View 	@47
+			location   	(544, 489)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	136
+			justify    	0
+			label      	"Events"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940B91103E3"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$33" @49
+			    Parent_View 	@47
+			    location   	(-506, -442)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B91303B4"
+			    client     	@47
+			    supplier   	@45
+			    vertices   	(list Points
+				(544, 548)
+				(282, 320))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$34" @50
+			    Parent_View 	@47
+			    location   	(-506, -442)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B91303BE"
+			    client     	@47
+			    supplier   	@46
+			    vertices   	(list Points
+				(544, 548)
+				(752, 729))
+			    line_style 	0
+			    label      	(object SegLabel @51
+				Parent_View 	@50
+				location   	(695, 752)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.900000
+				height     	54
+				orientation 	1))))
+		(object AssociationViewNew "destroy" @52
+		    location   	(775, 394)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @53
+			Parent_View 	@52
+			location   	(775, 335)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	137
+			justify    	0
+			label      	"destroy"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940B995032F"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$35" @54
+			    Parent_View 	@52
+			    location   	(370, 64)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B99A02D2"
+			    client     	@52
+			    supplier   	@46
+			    vertices   	(list Points
+				(775, 394)
+				(991, 444)
+				(1020, 729))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$36" @55
+			    Parent_View 	@52
+			    location   	(370, 64)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B99A02E6"
+			    client     	@52
+			    supplier   	@45
+			    vertices   	(list Points
+				(775, 394)
+				(282, 281))
+			    line_style 	0)))
+		(object AssociationViewNew "Timer request" @56
+		    location   	(1455, 990)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @57
+			Parent_View 	@56
+			location   	(1455, 931)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	284
+			justify    	0
+			label      	"Timer request"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940B3BF031D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$21" @58
+			    Parent_View 	@56
+			    location   	(405, 0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B3C2023B"
+			    client     	@56
+			    supplier   	@44
+			    vertices   	(list Points
+				(1455, 990)
+				(1554, 990))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$22" @59
+			    Parent_View 	@56
+			    location   	(405, 0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B3C2023C"
+			    client     	@56
+			    supplier   	@46
+			    vertices   	(list Points
+				(1455, 990)
+				(1356, 990))
+			    line_style 	0)))
+		(object AssociationViewNew "time trigger" @60
+		    location   	(1517, 1171)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @61
+			Parent_View 	@60
+			location   	(1590, 1231)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	233
+			justify    	0
+			label      	"time trigger"
+			pctDist    	1.733333
+			height     	60
+			orientation 	1)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3944E6630168"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$37" @62
+			    Parent_View 	@60
+			    location   	(-208, 181)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E6650118"
+			    client     	@60
+			    supplier   	@46
+			    vertices   	(list Points
+				(1517, 1171)
+				(1466, 1216)
+				(1356, 1156))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$38" @63
+			    Parent_View 	@60
+			    location   	(-208, 181)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E6650186"
+			    client     	@60
+			    supplier   	@44
+			    vertices   	(list Points
+				(1517, 1171)
+				(1663, 1043))
+			    line_style 	0)))
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Property" @64
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(405, 1620)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@64
+			location   	(2, 1437)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	806
+			justify    	0
+			label      	"Property")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD4C27D0030"
+		    width      	824
+		    height     	466
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "create_monitor" @65
+		    location   	(309, 920)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @66
+			Parent_View 	@65
+			location   	(309, 861)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	276
+			justify    	0
+			label      	"create_monitor"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4CDFB01A8"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$43" @67
+			    Parent_View 	@65
+			    location   	(-96, 590)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4CDFC008E"
+			    client     	@65
+			    supplier   	@64
+			    vertices   	(list Points
+				(309, 920)
+				(372, 1386))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$44" @68
+			    Parent_View 	@65
+			    location   	(-96, 590)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4CDFC00BD"
+			    client     	@65
+			    supplier   	@45
+			    vertices   	(list Points
+				(309, 920)
+				(247, 455))
+			    line_style 	0)))
+		(object AssociationViewNew "get_sync" @69
+		    location   	(593, 1179)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @70
+			Parent_View 	@69
+			location   	(593, 1136)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	177
+			justify    	0
+			label      	"get_sync"
+			pctDist    	0.500000
+			height     	44
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4CDF102B1"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$41" @71
+			    Parent_View 	@69
+			    location   	(-457, 189)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4CDF2039C"
+			    client     	@69
+			    supplier   	@64
+			    vertices   	(list Points
+				(593, 1179)
+				(538, 1203)
+				(478, 1386))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$42" @72
+			    Parent_View 	@69
+			    location   	(-457, 189)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4CDF203BB"
+			    client     	@69
+			    supplier   	@46
+			    vertices   	(list Points
+				(593, 1179)
+				(743, 1115))
+			    line_style 	0)))
+		(object AssociationViewNew "Property change of value" @73
+		    location   	(1050, 1552)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @74
+			Parent_View 	@73
+			location   	(1111, 1657)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	460
+			justify    	0
+			label      	"Property change of value"
+			pctDist    	1.516667
+			height     	105
+			orientation 	1)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD4CE040263"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$45" @75
+			    Parent_View 	@73
+			    location   	(555, -128)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4CE050273"
+			    client     	@73
+			    supplier   	@46
+			    vertices   	(list Points
+				(1050, 1552)
+				(1050, 1250))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$46" @76
+			    Parent_View 	@73
+			    location   	(555, -128)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD4CE050282"
+			    client     	@73
+			    supplier   	@64
+			    vertices   	(list Points
+				(1050, 1552)
+				(1050, 1622)
+				(817, 1621))
+			    line_style 	0)))))))

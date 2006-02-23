@@ -1,0 +1,153 @@
+How to build GNU Emacs W3 mode
+------------------------------
+
+    Robert J. Chassell, bob@rattlesnake.com
+    12 Aug 1997
+
+This is brief description of how to build a beta test version of GNU
+Emacs W3 mode.  Eventually, this note will be replaced by proper
+documentation in the W3 Info file.
+
+Here is one way to build version 3.0.99; you can adapt this to however
+you want to build W3:
+
+Untar the beta test file, in a directory above the one in which you want to
+place the sources:
+
+   $ cd /usr/local/src
+   $ tar xvzf w3-3.0.99.tar.gz
+
+Then cd into the w3-3.0.99 directory.
+
+In that directory, at your prompt, type this:
+
+   $ ./configure --help
+
+This documents how `configure' works; `configure' creates Makefiles
+for you.
+
+Then type a command such as this:
+
+   $ ./configure --with-emacs --prefix=/usr/local/src/w3-3.0.99  --exec-prefix=/usr/local/src/w3-3.0.99
+
+In this example, the byte compiled files will go into the same directories
+as their sources.  You can put them elsewhere, but this is a simple
+clean way to create a test version.
+
+There was a bug in the Makefiles for 3.0.99 (this is what beta test
+software is to find): the name for the Emacs executable was set to `t'
+rather than to `emacs'; I changed that by hand.
+
+Then build the byte compiled files:
+
+   $ make w3
+
+(Well, I do this in Emacs with the `M-x compile' command, and I invoke:
+    date; make w3; date
+with `date' commands sandwiching the meat.  This way I can see how
+long the compile takes.  Now up to 16 minutes.)
+
+You will note I did give the `make all' command.  That not only
+bytecompiles W3 mode, but creates the Info and DVI files; however,
+Wm. Perry thoughtfully includes the Info in the ...texi/ directory
+anyhow, so you don't need to create them again; and I don't bother to
+recreate DVI files to print out except occasionally.  If you do want
+all your documentation, type `make all' instead of `make w3'.
+
+Link the location of your .elc files to /usr/local/src/w3/ so you
+don't have to change old habits:
+
+  $ cd /usr/local/src
+  $ ln -s /usr/local/src/w3-3.0.99/lisp w3
+
+I am basing this suggestion on the presumption that sometime in your
+past, you set the load-path in your .emacs file to a w3 directory,
+using an expression like this:
+
+    ;; set load-path
+    (setq load-path (cons "/usr/local/src/w3" load-path))
+
+By linking the directory with the byte-compiled files to this
+directory, you can always start W3 mode by typing `M-x w3'.
+
+Also, since the `configure' commands I suggested leave the existing
+(or place any new) Info files in the `/usr/local/src/w3-3.0.99/texi/'
+directory, you should also link the texi/ directory appropriately:
+
+  $ cd /usr/local/src
+  $ ln -s /usr/local/src/w3-3.0.99/texi w3-info
+
+Also, be sure to set the name of the menu appropriately in your
+/usr/info/dir file, like this:
+
+    * W3: (/usr/local/src/w3-info/w3.info).  Emacs W3 mode, a Web browser
+
+Now, type `M-x w3' inside of Emacs and W3 mode should start.
+
+                         -------------
+
+There is a bug in W3 version 3.0.99, in that it does not respond to
+the `w3-default-stylesheet' variable which the documentation says you
+can set in your .emacs file, with a command such as:
+
+;; Specify my own stylesheet
+(setq w3-default-stylesheet "~bob/.w3.sty")
+
+So, instead, put your own stylesheet where W3 can find it, such as in:
+
+    /usr/lib/emacs/w3/stylesheet
+
+Otherwise, you will see a warning like this:
+
+    (style/warning) No stylesheets found!  Check configuration! DANGER DANGER!
+    Emacs-W3 checked for its stylesheet in the following places
+    and did not find one.  ...
+
+You can create your won stylesheet by basing it on `default.css' which
+comes with the distribution.
+
+                         -------------
+
+Once you have started W3 mode, you can submit bugs by typing `w'
+(w3-submit-bug) in a W3 mode buffer.
+
+That is how I sent this file to William Perry .... I saw a lack in the
+documentation (I am continuously forgetting how to build a new version
+of W3 so I figured I ought to do something about it.)
+
+                         -------------
+
+Incidentally, rather than download a complete tar.gz file, you can of
+download diff files, patch a previous distribution, and byte-recompile
+the directory.  This is usually quicker than downloading the whole
+half-magabyte tar.gz file and byte compiling it.  
+
+Using ange-ftp, the diffs are in:
+
+    /ftp@ftp.cs.indiana.edu:/pub/elisp/w3/.betas/diffs
+
+Or you can do as I described here.
+
+-------------------
+The widgets are a set of files to which your `--with-emacs' option to
+`./configure' should point.  They are in the emacs-20/lisp/ directory,
+called `widget.el' and the like.  Also, `custom.el' is there.
+
+If you think that you are configuring correctly, but W3 still does not
+build, check to ensure you are removing your old `config.*' files
+before running your `./config' command.
+
+The files to be removed are:
+
+    config.cache
+    config.log
+    config.status
+
+Use `make distclean' to remove them.  (Incidentally, the `clean-cache'
+script is for cleaning your cache of old URLs, not for configuration.)
+
+The build sequence is:
+
+    make distclean
+    ./configure --with-emacs=/usr/local/src/emacs-20.2/src/emacs-20.2.1 --prefix=/usr/local/src/w3-3.0.107 
+    make w3

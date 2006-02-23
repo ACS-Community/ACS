@@ -1,0 +1,287 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: acsIrfeed,v 1.10 2006/02/02 09:49:32 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# psivera  2004-07-28 added option -c[heck]
+# bjeram 2004-03-16   added support for MICO
+# david 2003-05-14 now bash for tat
+# psivera  2002-12-12 removed -e option for echo
+# gchiozzi 2001-11-16 created
+#
+
+#************************************************************************
+#   NAME
+#   acsIrfeed - Loads/checks IDL files for interface repository.
+# 
+#   SYNOPSIS
+#   acsIrfeed [-IRcorbaloc corbaloc::<HOST>:<port>/DefaultRepository] [files.idl]
+#             [-c[heck]]
+#
+#   DESCRIPTION
+#   acsIrfeed loads all/checks idl files found in ../idl $INTROOT/idl and $ACSROOT.idl
+#   into the interface repository or just the files passed on the command line.
+#   If no file names are passed on the command line, it:
+#       - goes in all ../idl $INTROOT/idl and $ACSROOT.idl directories
+#       - collects all names of idl files (removing any path)
+#       - generates a temporary unique idl file (/tmp/acsIrfeedDyn.$$.idl)
+#       - calls the IR loader with this file as argument
+#       - removes the temporary file when done
+#   If file names are passed on the command line, only that files are loaded.
+#   By default looks for the InterfaceRepository at:
+#       corbaloc::<HOST>:xxxx/DefaultRepository
+#   but the -IRcorbaloc command line option allows to override this value.
+#   It is possible to pass on the command line extra file names.
+#   If the option -c[heck] is passed from command line, it simply checks 
+#   the loadable idl files reporting errors or duplications, if any.
+#
+#   FILES
+#     /tmp/acsIrfeedDyn.$$.idl is a temporary file
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   0    if OK
+#   !=0  if FAILED
+#
+#   CAUTIONS
+#   The path of files passed on the command line is ignored.
+#   IDL Files are always searched in ../idl + $IDL_PATH
+#   in the standard search order.
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+export HOST=`getIP`
+
+#
+# Loading ACS IDL Interfaces in Interface Repository
+#
+
+#Find the port number of the IR
+ACS_IR_PORT=`getIRPort`
+
+IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/DefaultRepository"
+
+while [ $# -gt 0 ]
+do
+   case "$1" in
+    -c*) CHECK=on
+    ;;
+    -IRcorbaloc) IRcorbaloc=$2
+    shift
+    ;;
+    *) files="$files $1";;
+   esac
+   shift
+
+done
+
+if [ "$CHECK" = "on" ]
+then
+    FUNCTION_STRING="Checking"
+else
+    FUNCTION_STRING="Loading"
+fi
+
+ACS_LOG_INFO "acsIrfeed - $FUNCTION_STRING IDL interfaces in Interface Repository"
+
+ORBInitRef="InterfaceRepository=$IRcorbaloc"
+ACS_LOG_INFO "           ORBInitRef: $ORBInitRef"
+
+#
+# Check if files have been given on the command line
+#
+if [ "X" != "X$files" ]
+    then
+    ACS_LOG_INFO "Loading files passed on the command line: $files"
+    tot_list=$files
+else
+
+    #
+    # The list of IDL files to load is built dynamically
+    # All idl files in
+    #   ../idl, $INTROOT/idl, $ACSROOT/idl
+    # are loaded
+    
+    mod_list=`/bin/ls -1 ../idl/*.idl 2>/dev/null` 
+    int_list=`/bin/ls -1 $INTROOT/idl/*.idl 2>/dev/null`
+    acs_list=`/bin/ls -1 $ACSROOT/idl/*.idl 2>/dev/null`
+    
+    intlist_list=""
+
+    # Separation of dirs
+    item_list=`echo $INTLIST | sed s/:/\ /g`
+
+    # And now all .idl dir for each INTLIST item
+    for item in $item_list
+    do
+       intlist_list=`/bin/ls -1 $item/idl/*.idl 2>/dev/null`" $intlist_list"
+    done
+    
+    int_mod_list=`echo $mod_list`
+    for file in `echo $int_list`
+    do
+        file_name=`basename $file` 
+        echo $mod_list | grep "\/$file_name" 1>/dev/null
+        if [ $? != 0 ]
+        then
+            int_mod_list=`echo $file; echo $int_mod_list`
+        fi
+    done
+
+    tot_tmp_list=`echo $int_mod_list`
+    for file_tmp in $intlist_list
+    do
+        file_name=`basename $file_tmp`
+        echo $int_mod_list | grep "\/$file_name" 1>/dev/null
+        if [ $? != 0 ]
+        then
+            tot_tmp_list=`echo $file_tmp; echo $tot_tmp_list`
+        fi
+    done
+
+    tot_list=`echo $tot_tmp_list`
+    for file in `echo $acs_list`
+    do
+        file_name=`basename $file`
+        echo $tot_tmp_list | grep "\/$file_name" 1>/dev/null
+        if [ $? != 0 ]
+        then
+            tot_list=`echo $file; echo $tot_list`
+        fi
+    done
+fi
+# end of building files list
+    
+#***************************************************************
+# Creates dynamically the IDL file to include everything
+#***************************************************************
+
+#
+# Build a unique file name
+#
+ACS_IDL_IRFEED_FILE=/tmp/acsIrfeedDyn.$$.idl
+ACS_IDL_IRFEED_DEF=acsIrfeedDyn_$$_idl
+
+#
+# File header
+#
+echo "#ifndef $ACS_IDL_IRFEED_DEF" > $ACS_IDL_IRFEED_FILE
+echo "#define $ACS_IDL_IRFEED_DEF" >> $ACS_IDL_IRFEED_FILE
+echo "/*******************************************************************************" >> $ACS_IDL_IRFEED_FILE
+echo "* ALMA Project" >> $ACS_IDL_IRFEED_FILE
+echo "*" >> $ACS_IDL_IRFEED_FILE
+echo "* This file is dynamically created by acsIrfeed to load" >> $ACS_IDL_IRFEED_FILE
+echo "* in the Orbacus Interface Repository" >> $ACS_IDL_IRFEED_FILE
+echo "* the complete set of IDL interfaces" >> $ACS_IDL_IRFEED_FILE
+echo "*" >> $ACS_IDL_IRFEED_FILE
+echo "*/" >> $ACS_IDL_IRFEED_FILE
+
+echo "" >> $ACS_IDL_IRFEED_FILE
+
+echo "#define local" >> $ACS_IDL_IRFEED_FILE
+echo "#include <CosPropertyService.idl>" >> $ACS_IDL_IRFEED_FILE
+echo "#undef local" >> $ACS_IDL_IRFEED_FILE
+echo "" >> $ACS_IDL_IRFEED_FILE
+
+#
+# For some reasons, it seems that acserr.idl must be included first.
+#
+echo "#include <acserr.idl>" >> $ACS_IDL_IRFEED_FILE
+echo "" >> $ACS_IDL_IRFEED_FILE
+
+#
+# File body
+#
+for file in `echo $tot_list`
+do
+    file_name=`basename $file`
+    echo "#include <$file_name>" >> $ACS_IDL_IRFEED_FILE
+done
+
+# uncomment for debug purposes
+ACS_SILENT_LOG "Total list is: $tot_list"
+
+#
+# File footer
+#
+echo "" >> $ACS_IDL_IRFEED_FILE
+echo "#endif /*!$ACS_IDL_IRFEED_DEF*/" >> $ACS_IDL_IRFEED_FILE
+echo "" >> $ACS_IDL_IRFEED_FILE
+
+ACS_SILENT_LOG "Contents of IRFEED file is: `cat $ACS_IDL_IRFEED_FILE`"
+ACS_LOG_DEBUG "            loading: $ACS_IDL_IRFEED_FILE"
+
+
+#
+# This is the line that would be used with tha TAO interface repository
+#
+# IRFEED_CMD="$ACE_ROOT/TAO/orbsvcs/IFR_Service/tao_ifr  $IDL_PATH -ORBInitRef $ORBInitRef $ACS_IDL_IRFEED_FILE $files"
+
+#
+# But now we use MICO.
+#
+LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
+PATH=$MICO_HOME/bin:$PATH
+
+if [ "$CHECK" = "on" ]
+then
+    rm -f result.idl
+    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --codegen-idl --name=result.idl $ACS_IDL_IRFEED_FILE"
+else
+    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE"
+fi
+
+#
+# Execute the final command line
+#
+ACS_SILENT_LOG "Final command-line: $IRFEED_CMD"
+$IRFEED_CMD
+RET_CODE=$?
+
+#
+# Now deletes the file
+#
+rm $ACS_IDL_IRFEED_FILE
+
+if [ "$RET_CODE" = "0" ]
+then
+    ACS_LOG_INFO "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
+else
+    ACS_LOG_ERROR "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
+fi
+
+exit $RET_CODE
+
+#
+# ___oOo___

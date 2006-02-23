@@ -1,0 +1,21 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TestList.lite,v 1.10 2005/04/22 12:01:27 bjeram Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+SOURCE taskTATEnv
+PROLOGUE acsutilTATPrologue
+
+1 paramTaskTest "runParamTaskTest.sh"
+
+2 standaloneTaskTest "standaloneTaskTest -name TEST_TASK -nosvcs \"Hello World\""
+
+3 taskRunnerTest "taskRunner -name TEST_TASK -l execComponentTestImpl -nosvcs \"Hello World\""
+
+4 taskRunnerCharacteristicTaskTest "taskRunnerCharacteristicTaskTest.sh"
+
+EPILOGUE acsutilTATEpilogue

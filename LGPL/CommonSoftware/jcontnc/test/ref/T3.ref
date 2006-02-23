@@ -1,0 +1,13 @@
+1 - ----------T--:--:--.--- INFO [ABSTRACT_PUBLISHER] Attempting to create the AbstractNC_Channel channel.
+1 - Created NC Pulisher
+1 - Created NC Receiver
+1 - NC_TEST: Got temperatureDataBlockEvent in receive
+1 - NC_TEST: event 1
+1 - NC_TEST: Got temperatureDataBlockEvent in receive
+1 - NC_TEST: event 2
+1 - NC_TEST: Got temperatureDataBlockEvent in receive
+1 - NC_TEST: event 3
+1 - NC_TEST: Got temperatureDataBlockEvent in receive
+1 - NC_TEST: event 4
+1 - NC_TEST: Got temperatureDataBlockEvent in receive
+1 - NC_TEST: event 5

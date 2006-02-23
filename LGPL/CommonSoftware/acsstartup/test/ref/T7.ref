@@ -1,0 +1,2 @@
+1 - ERROR - Unable to shutdown because the lock directory 'something' does not exist!
+1 - INFO - An alternative is to use the 'something' command which kills all ACS processes 'something' owns

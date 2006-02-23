@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat31,v 1.76 2003/01/09 17:51:26 vltsccm Exp $" 
+#
+# tat31
+#
+
+# to test no interference between environment pool under VLTROOT and INTROOT
+INTROOT=`pwd`
+export INTROOT
+
+msgSend $lcu3 lccServer LCCGST ""
+dbWrite "@$ws3<alias>tat31.scan input control" 1
+if [ $? -eq 0 ]
+then echo dbWrite OK
+fi
+msgSend $lcu3 rdbServer DBGFAMN ":LAN"

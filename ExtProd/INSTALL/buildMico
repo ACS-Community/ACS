@@ -1,0 +1,129 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: buildMico,v 1.8 2005/12/30 11:54:07 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr 2004-03-24 created
+#
+
+#************************************************************************
+#   NAME
+#   buildJacORB
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#   This script is used to build Mico and install it in the proper
+#   ACS place ($ALMASW_ROOTDIR/$ALMASW_RELEASE/mico). 
+#   The script assumes that:
+#   - The environment variables 
+#     $ALMASW_ROOTDIR and $ALMASW_RELEASE
+#     are set.
+#   - The user has write permission in the installation directory
+#   Any previous installation of Mico will be erased.
+#
+#   To download Mico go to the home page:
+#    
+#       http://www.mico.org/
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+LOG=buildMico.log
+#
+exec > $LOG 2>&1
+
+date
+
+
+ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+MICO_SOURCES=`pwd`/../PRODUCTS
+CUR_DIR=`pwd`
+
+#MICO_FINAL_DEST=$ALMASW_ROOTDIR/$ALMASW_RELEASE/mico
+
+if [ "X$MICO_HOME" = X ]
+then
+   MICO_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/mico
+   echo "==== Setting MICO_HOME to $MICO_HOME"
+   unset CLASSPATH
+fi
+
+echo ==== Building MICO from: $MICO_SOURCES    into:   $ALMASW_INSTDIR
+
+if [ -d $MICO_HOME ]
+then
+   echo ==== mico build Directory exists. Removing it
+   rm -rf $MICO_HOME
+   if [ $? -ne 0 ]
+   then
+        echo "========= FAILED =========="
+	exit 1
+   fi
+fi
+
+echo ==== Extracting package
+cd $ALMASW_INSTDIR
+tar xfzp $MICO_SOURCES/mico-2.3.11.tar.gz
+cd $MICO_HOME
+
+
+echo ==== Patching mico
+patch -p2 < $CUR_DIR/../PRODUCTS/mico-gcc341fix.patch
+echo "done"
+echo ""
+
+echo ==== Building mico
+
+# Use this command line if you want to build also CORBA CCM support
+#./configure --prefix=$MICO_HOME --enable-ccm
+./configure --prefix=$MICO_HOME
+
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED configure =========="
+	exit 1
+fi
+
+make
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED make all =========="
+	exit 1
+fi
+
+make install
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED make install =========="
+	exit 1
+fi
+
+echo "==== MICO fully built   =========="
+echo ""
+echo "Please, ignore failures related to ldconfig, if any"
+echo ""
+echo "Make sure that the following environment variables"
+echo "are set before using MICO:"
+echo " - MICO_HOME=$MICO_HOME"
+echo "========= DONE   =========="
+
+echo MICO installation done!
+date
+

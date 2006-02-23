@@ -1,0 +1,597 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Indirect value retrieval"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"381599F901E4"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "Client"
+	    quid       	"3940BA100001")
+	(object Class "Indirect value retrieval Manager"
+	    quid       	"3940BA3D000F")
+	(object Association "$UNNAMED$0"
+	    quid       	"3940BD830321"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$1"
+		    quid       	"3940BD8903B6"
+		    supplier   	"Logical View::Indirect value retrieval::Indirect value retrieval Manager"
+		    quidu      	"3940BA3D000F"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$2"
+		    quid       	"3940BD8903C0"
+		    supplier   	"Logical View::Indirect value retrieval::Indirect value retrieval Manager"
+		    quidu      	"3940BA3D000F")))
+	(object Association "Subscribe"
+	    quid       	"3940E15F01AF"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$3"
+		    quid       	"3940E1610086"
+		    supplier   	"Logical View::Indirect value retrieval::Indirect value retrieval Manager"
+		    quidu      	"3940BA3D000F"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$4"
+		    quid       	"3940E1610090"
+		    supplier   	"Logical View::Indirect value retrieval::Client"
+		    quidu      	"3940BA100001")))
+	(object Association "Publish"
+	    quid       	"3940E16A0183"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$5"
+		    quid       	"3940E16D0263"
+		    supplier   	"Logical View::Indirect value retrieval::Client"
+		    quidu      	"3940BA100001"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$6"
+		    quid       	"3940E16D0264"
+		    supplier   	"Logical View::Indirect value retrieval::Indirect value retrieval Manager"
+		    quidu      	"3940BA3D000F")))
+	(object Association "Monitor data"
+	    quid       	"3940E22300E9"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$7"
+		    quid       	"3940E2260273"
+		    supplier   	"Logical View::Indirect value retrieval::Indirect value retrieval Manager"
+		    quidu      	"3940BA3D000F"
+		    client_cardinality 	(value cardinality "1..n")
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$8"
+		    quid       	"3940E226027E"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor"
+		    quidu      	"38E06F9F023C"))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Indirect value retrieval architecture"
+	    quid       	"3940B9DA02DE"
+	    title      	"Indirect value retrieval architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Indirect value retrieval::Client" @1
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(165, 360)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@1
+			location   	(69, 314)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	192
+			justify    	0
+			label      	"Client")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940BA100001"
+		    width      	210
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Indirect value retrieval::Indirect value retrieval Manager" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1005, 360)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(652, 314)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	706
+			justify    	0
+			label      	"Indirect value retrieval Manager")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940BA3D000F"
+		    width      	724
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Subscribe" @3
+		    location   	(456, 360)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @4
+			Parent_View 	@3
+			location   	(456, 301)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	204
+			justify    	0
+			label      	"Subscribe"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940E15F01AF"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$3" @5
+			    Parent_View 	@3
+			    location   	(66, 45)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940E1610086"
+			    client     	@3
+			    supplier   	@2
+			    vertices   	(list Points
+				(456, 360)
+				(642, 360))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$4" @6
+			    Parent_View 	@3
+			    location   	(66, 45)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940E1610090"
+			    client     	@3
+			    supplier   	@1
+			    vertices   	(list Points
+				(456, 360)
+				(270, 360))
+			    line_style 	0)))
+		(object AssociationViewNew "Publish" @7
+		    location   	(493, 458)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @8
+			Parent_View 	@7
+			location   	(493, 399)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	140
+			justify    	0
+			label      	"Publish"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940E16A0183"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$5" @9
+			    Parent_View 	@7
+			    location   	(-512, 98)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940E16D0263"
+			    client     	@7
+			    supplier   	@1
+			    vertices   	(list Points
+				(493, 458)
+				(270, 390))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$6" @10
+			    Parent_View 	@7
+			    location   	(-512, 98)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940E16D0264"
+			    client     	@7
+			    supplier   	@2
+			    vertices   	(list Points
+				(493, 458)
+				(550, 475)
+				(769, 418))
+			    line_style 	0)))
+		(object ClassView "ParameterizedClass" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Monitor" @11
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 960)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@11
+			location   	(1232, 926)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	386
+			justify    	0
+			label      	"Monitor")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38E06F9F023C"
+		    width      	404
+		    height     	168
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Monitor data" @12
+		    location   	(1205, 646)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @13
+			Parent_View 	@12
+			location   	(1205, 587)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	250
+			justify    	0
+			label      	"Monitor data"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940E22300E9"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$7" @14
+			    Parent_View 	@12
+			    location   	(-340, -299)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940E2260273"
+			    client     	@12
+			    supplier   	@2
+			    vertices   	(list Points
+				(1205, 646)
+				(1045, 418))
+			    line_style 	0
+			    label      	(object SegLabel @15
+				Parent_View 	@14
+				location   	(1133, 445)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"1..n"
+				pctDist    	0.745541
+				height     	57
+				orientation 	1))
+			(object RoleView "$UNNAMED$8" @16
+			    Parent_View 	@12
+			    location   	(-340, -299)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940E226027E"
+			    client     	@12
+			    supplier   	@11
+			    vertices   	(list Points
+				(1205, 646)
+				(1365, 875))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server" @17
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1815, 1470)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@17
+			location   	(1622, 1415)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	386
+			justify    	0
+			label      	"Time Server")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B24500B6"
+		    width      	404
+		    height     	134
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Timer request" @18
+		    location   	(1625, 1223)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @19
+			Parent_View 	@18
+			location   	(1625, 1164)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	600
+			justify    	0
+			label      	"Timer request"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940B3BF031D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "" @20
+			    Parent_View 	@18
+			    location   	(-115, -97)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @21
+				Parent_View 	@20
+				location   	(1484, 1106)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B3C2023C"
+			    client     	@18
+			    supplier   	@11
+			    vertices   	(list Points
+				(1625, 1223)
+				(1489, 1044))
+			    line_style 	0)
+			(object RoleView "" @22
+			    Parent_View 	@18
+			    location   	(-115, -97)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @23
+				Parent_View 	@22
+				location   	(1702, 1392)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B3C2023B"
+			    client     	@18
+			    supplier   	@17
+			    vertices   	(list Points
+				(1625, 1223)
+				(1762, 1402))
+			    line_style 	0)))
+		(object AssociationViewNew "time trigger" @24
+		    location   	(1909, 1055)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @25
+			Parent_View 	@24
+			location   	(1922, 954)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	233
+			justify    	0
+			label      	"time trigger"
+			pctDist    	0.716667
+			height     	102
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3944E6630168"
+		    roleview_list 	(list RoleViews
+			(object RoleView "" @26
+			    Parent_View 	@24
+			    location   	(94, -415)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E6650118"
+			    client     	@24
+			    supplier   	@11
+			    vertices   	(list Points
+				(1909, 1055)
+				(1922, 997)
+				(1627, 974))
+			    line_style 	0)
+			(object RoleView "" @27
+			    Parent_View 	@24
+			    location   	(94, -415)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E6650186"
+			    client     	@24
+			    supplier   	@17
+			    vertices   	(list Points
+				(1909, 1055)
+				(1829, 1402))
+			    line_style 	0)))))))

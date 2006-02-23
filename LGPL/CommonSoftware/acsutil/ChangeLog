@@ -1,0 +1,94 @@
+Mon Jun  2 19:23:06 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/src/Makefile,v 1.17 (SCRIPTS): Added acsIrfeed. Moved here
+	from acsBUILD module 
+
+Thu May 22 15:41:29 2003  Bogdan Jeram  <bjeram@te37.hq.eso.org>
+
+	* lcu/src/Makefile,v 1.16 (IDL_FILES): added acsutil + added
+	acsutilC and acsutilS to acsutil_OBJECTS + added procedure to make
+	IDL links
+
+Thu May 15 11:54:13 2003  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/test/Makefile,v 1.16 (USER_LIB): 
+	* ws/src/Makefile,v 1.15 (IDL_FILES): 
+	* ws/idl/acsutil.idl: Created
+	Added OffShoot interface for objects created from components.
+	Still the ACS namespace.
+	Wiil also modify inheritance in baci.idl and cdbDAL.idl
+
+Mon Mar 10 15:18:51 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/acsutilTempFile.cpp,v 1.14 (getTempFileName):
+	ACE_CString path(0, 30); -> ACE_CString path((const char*)0, 30);
+
+Thu Dec  5 13:27:27 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/src/acsutilWildcard.cpp: 
+	* ws/include/acsutilWildcard.h: 
+	Added proper GPL licence header
+
+Thu Dec 05 13:21:23 2002 <gchiozzi@te13.hq.eso.org>  acsutil version: 1.14 
+Tue Dec 03 16:58:11 2002 <rgeorgie@te13.hq.eso.org>  acsutil version: 1.13 
+Mon Nov 25 10:44:14 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/test/Makefile (SCRIPTS_L): Added tat modular test
+
+	* ws/src/Makefile: Added clean_dist target
+
+	* ws/src/acsutilTempFile.cpp (DEFAULT_TEMP_DIR): 
+	* ws/include/acsutilTempFile.h (getTempFileName): 
+	Replaced VLTDATA with ACSDATA
+
+Mon Nov 25 10:42:42 2002 <gchiozzi@te13.hq.eso.org>  acsutil version: 1.12 
+Mon Sep 23 11:32:59 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	* include/acsutil.h:
+	Removed ACS_HAS_<cdb type> definitions.
+
+Mon Sep 23 11:16:26 2002 <msekoran@te13.hq.eso.org>  acsutil version: 1.11 
+Fri Apr  5 14:48:00 2002  Birger Gustafsson  <bgustafs@te37>
+
+        * src/Makefile:  acsutilTempFile added
+
+Fri Apr 05 14:46:18 2002 <bgustafs@te13.hq.eso.org>  acsutil version: 1.10 
+Thu Apr 04 11:41:27 2002 <jibsen@te13.hq.eso.org>  acsutil version: 1.9 
+Wed Mar 27 17:26:19 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/include/acsutilTempFile.h:
+	* ws/include/acsutilTempFile.cpp:
+	* ws/test/testTmp.cpp:
+	Added helper method for generating temp. file's full paths
+	
+
+Wed Mar 27 12:04:40 2002 <msekoran@te13.hq.eso.org>  acsutil version: 1.8 
+Thu Mar 14 17:05:41 2002  Birger Gustafsson  <bgustafs@te37>
+
+	* ws/src/Makefile: added acsLL.h in include file list
+
+Thu Mar 14 16:59:18 2002 <bgustafs@te13.hq.eso.org>  acsutil version: 1.7 
+Tue Jan 08 15:18:10 2002 <bjeram@te13.hq.eso.org>  acsutil version: 1.6 
+Tue Jan  8 15:11:32 2002  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* added support for unsigned long long (acsLL)
+
+Mon Jan 07 11:02:44 2002 <bjeram@te13.hq.eso.org>  acsutil version: 1.5 
+Thu Dec  6 09:33:10 2001  Bogdan Jeram  <bjeram@te33.hq.eso.org>
+
+	* added acsFindFile under lcu
+
+Thu Dec 06 09:28:46 2001 <bjeram@te13.hq.eso.org>  acsutil version: 1.4 
+Mon Nov 12 10:36:18 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* added acsFindFile function
+
+Thu Nov 08 17:04:47 2001 <bjeram@te13.hq.eso.org>  acsutil version: 1.3 
+Thu Jul 12 08:57:54 2001 <bgustafs@te13.hq.eso.org>  acsutil version: 1.2 
+Thu Jul  5 15:12:42 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* created, now contains acsutil.h (common header) and
+	acsutilWildcards.* (wildcards support)
+
+Thu Jul 05 14:51:55 2001 <msekoran@te13.hq.eso.org>  acsutil version: 1.1 
+"@(#) $Id: ChangeLog,v 1.18 2003/06/02 16:21:23 gchiozzi Exp $"

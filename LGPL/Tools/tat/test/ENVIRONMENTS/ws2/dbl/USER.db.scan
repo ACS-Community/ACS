@@ -1,0 +1,67 @@
+//*****************************************************************************
+//* E.S.O. - VLT project
+//*
+//* "@(#) $Id: USER.db.scan,v 1.76 2003/01/09 17:50:50 vltsccm Exp $"
+//*
+//* who       when      what
+//* --------  --------  -----------------------------------------------
+//* B.GILLI   24/02/95  Created
+//*
+//*
+//************************************************************************
+//*
+//*  This file contains CCS points that need to be customized to match
+//*  the actual configuration.
+//*
+//*  The comments are guiding you to what shall/can be changed.
+//*----------------------------------------------------------------------
+
+// Loads classes definition from standard file
+#include "CCS.db"
+
+//
+//**************************************************************************
+//   SCAN SYSTEM points
+//**************************************************************************
+//
+#ifdef MAKE_VXWORKS
+//
+// Replace hereafter "remoteEnv" by the name of the
+// workstation environment the LCU shall report to.
+//
+POINT "<VLT scan dev>" "LAN:ws2"	
+BEGIN
+	ALIAS 	"ws2"
+END
+#else 
+
+//
+// Replace hereafter "remoteEnv" by the name of the LCU 
+// you want to scan data from.
+//
+POINT "<VLT scan dev>" "ccs_config:scan config:LAN:lcu2"
+BEGIN
+	ALIAS 	"lcu2"
+END
+#endif /*MAKE_VXWORKS*/
+
+
+//
+//**************************************************************************
+//   SAMPLING PLOTTING  points
+//**************************************************************************
+//
+// If you need more plots, just duplicate this point, giving:
+// - new point name
+// - new alias
+//
+
+#ifndef MAKE_VXWORKS
+POINT PLOT  "ccs_config:plot config:samplePlot"
+BEGIN
+	ALIAS "samplePlot"
+END
+#endif /*!MAKE_VXWORKS */
+
+//
+// ___oOo___

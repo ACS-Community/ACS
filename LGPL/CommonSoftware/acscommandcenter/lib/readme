@@ -1,0 +1,5 @@
+j2ssh-core-0.2.6.jar: j2ssh-0.2.6 (sshtools.com)
+JavaOnlyAcsConfig:    needed for stand-alone jManager (replaces jManagerConfig.jar)
+jnlp.jar:             Java Web Start
+jta.jar:              Telnet/SSH client (javassh.org & sf.net/projects/jta)
+

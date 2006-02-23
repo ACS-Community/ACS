@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat8,v 1.76 2003/01/09 17:51:30 vltsccm Exp $"
+#
+# tat8: bug of empty ref. generated if no .TestList.sed for
+# a TestList with no environment
+#
+# 
+
+rm -f .testSession
+rm -f .TestList.sed
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat8 TestList
+
+tat -g tat81
+cat ./ref/tat81.ref
+
+
+
+
+

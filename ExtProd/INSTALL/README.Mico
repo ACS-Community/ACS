@@ -1,0 +1,5 @@
+During the build on Linux ignore error due to ldconfig:
+
+ldconfig
+make: ldconfig: Command not found
+make: [install] Error 127 (ignored)

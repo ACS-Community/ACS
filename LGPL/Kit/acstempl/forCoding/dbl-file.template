@@ -1,0 +1,61 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: dbl-file.template,v 1.20 2002/12/05 19:09:20 vltsccm Exp $"
+#%# 
+#%# Template for dbl files         
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gchiozzi   26/04/95  created
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN dbl_file(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+#ifndef _DBL
+#define _DBL
+//**********************************************************************
+//* E.S.O. - ACS project
+//*
+//* "@(#) $I>-<d$"
+//*
+//* who       when      what
+//* --------  --------  ----------------------------------------------
+//* NNNNNNNN  dd/mm/yy  created 
+//*
+
+//************************************************************************
+//*   NAME
+//*   
+//* 
+//*   SYNOPSIS
+//*
+//*   
+//*   PARENT CLASS
+//*
+//* 
+//*   DESCRIPTION
+//*
+//*
+//*   CAUTIONS 
+//*
+//*   EXAMPLES
+//*
+//*   SEE ALSO
+//*
+//*   BUGS   
+//* 
+//*------------------------------------------------------------------------*/
+
+
+
+#endif /*!_DBL*/
+
+// *___oOo___*

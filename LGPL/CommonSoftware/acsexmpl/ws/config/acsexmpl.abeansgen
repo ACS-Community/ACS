@@ -1,0 +1,11 @@
+#pragma strict false
+IDL:alma/acsexmplLamp/Lamp:1.0
+IDL:alma/acsexmplHelloWorld/HelloWorld:1.0
+IDL:alma/acsexmplCalendar/Calendar:1.0
+IDL:alma/FRIDGE/FridgeControl:1.0
+IDL:alma/MOUNT_ACS/Mount:1.0
+IDL:alma/acsexmplDoor/Door:1.0
+IDL:alma/acsexmplBuilding/Building:1.0
+IDL:alma/AMSSEQ/AmsTestSeq:1.0
+IDL:alma/PS/PowerSupply:1.0
+IDL:alma/RampedPS/RampedPowerSupply:1.0

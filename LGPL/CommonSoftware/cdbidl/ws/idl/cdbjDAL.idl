@@ -1,0 +1,58 @@
+#ifndef _CDBJDAL_IDL_
+#define _CDBJDAL_IDL_
+
+
+/* TODO G.Chiozzi 2003-05-15
+   NOT USED. EVERYTHING IS IN cdbDAL.idl
+   but TAO IDL compiler complains with the following 
+   error message:
+    /alma/ACS-2.1-GCH/TAO/ACE_wrappers/build/linux/TAO/TAO_IDL/tao_idl: 
+    "../idl/cdbjDAL.idl", line 36: prefix at declaration 
+    differs from prefix at definition or use, , ::CDB
+*/
+
+
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: cdbjDAL.idl,v 1.1.1.1 2005/09/21 10:32:35 msekoran Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* gchiozzi 2003-05-15 Created
+*/
+
+#include "cdbDAL.idl"
+
+#pragma prefix "cosylab.com"
+
+module CDB { 
+	interface JDAL : DAL {
+		// cache handling
+		void	clear_cache(in string curl);
+		void	clear_cache_all();
+	};
+
+
+};
+
+#endif /* _CDBJDAL_IDL_ */

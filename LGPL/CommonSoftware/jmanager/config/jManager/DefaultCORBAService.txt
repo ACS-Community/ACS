@@ -1,0 +1,23 @@
+debug=true
+
+# JacORB
+org.omg.CORBA.ORBClass=org.jacorb.orb.ORB
+org.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton
+
+# port 
+#OAPort=3000
+
+# ORB name
+jacorb.implname=ORB
+			
+# by setting the following property, the ORB will
+# accept client requests targeted at the object with
+# key "Manager", so more readable corbaloc URLs can be used
+jacorb.orb.objectKeyMap.Manager=ORB/ManagerPOA/Manager
+
+# debug info verbosity
+jacorb.verbosity=1
+
+# BiDirectional policy
+# also used as workaround to "http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=473"
+org.omg.PortableInterceptor.ORBInitializerClass.bidir_init=org.jacorb.orb.connection.BiDirConnectionInitializer

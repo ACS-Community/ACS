@@ -1,0 +1,37 @@
+1 - --checkBasePort----------------------------------------------------------
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - -------------------------------------------------------------------------
+1 - Good
+1 - Good
+1 - Good
+1 - --getBasePort------------------------------------------------------------
+1 - Good
+1 - Good
+1 - Good
+1 - ERROR - The ACS_INSTANCE to use, 11, is not from 0-9!
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - --createInstanceDirectory------------------------------------------------
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - Good
+1 - --pickBasePort-----------------------------------------------------------
+1 - Good
+1 - Good
+1 - Good
+1 - ERROR - The ACS_INSTANCE to use, 11, is not from 0-9!
+1 - Good
+1 - Good
+1 - -------------------------------------------------------------------------

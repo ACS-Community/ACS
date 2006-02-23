@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry sourcepath="lib/mastercomp_if.jar" kind="lib" path="lib/mastercomp_if.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/jbaci.jar" kind="var" path="ACSROOT/lib/jbaci.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/jcont.jar" kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/baci.jar" kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/acserr.jar" kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/acserrj.jar" kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/acsjlog.jar" kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry sourcepath="JACORB_HOME/src" kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/jACSUtil.jar" kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/ACSErrTypeCommon.jar" kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry sourcepath="lib/mastercompTest_if.jar" kind="lib" path="lib/mastercompTest_if.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/acscodegen.jar" kind="var" path="ACSROOT/lib/acscodegen.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/backport-util-concurrent.jar" kind="var" path="ACSROOT/lib/backport-util-concurrent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

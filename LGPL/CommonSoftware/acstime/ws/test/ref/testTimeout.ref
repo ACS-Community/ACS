@@ -1,0 +1,14 @@
+1 - ----------T--:--:--.--- Logging proxy successfully created.
+1 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - id1=1
+1 - id2=2
+1 - id3=3
+1 - I'm in time handler 1
+1 - I'm in time handler 1
+1 - I'm in time handler 1
+1 - I'm in time handler 1
+1 - I'm in time handler 1
+1 - I'm in time handler 2
+1 - I'm in time handler 1
+1 - I'm in time handler 1
+1 - I'm in time handler 1

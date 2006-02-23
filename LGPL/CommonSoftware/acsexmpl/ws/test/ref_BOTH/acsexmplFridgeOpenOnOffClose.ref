@@ -1,0 +1,18 @@
+1 - Running acsexmplFridgeOpenOnOffClose.sh
+1 - Welcome to acsexmplClientFridgeCmd!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] OPEN
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - Welcome to acsexmplClientFridgeCmd!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] ON
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - Welcome to acsexmplClientFridgeCmd!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] OFF
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - Welcome to acsexmplClientFridgeCmd!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] CLOSE
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - All done!

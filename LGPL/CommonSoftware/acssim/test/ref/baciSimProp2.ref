@@ -1,0 +1,3 @@
+1 - Parameters to this generic test script are: LAMP1 _get_brightness()._get_min_value()
+1 - The evaluated return value is: some value that was filtered out by TestList.sed
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

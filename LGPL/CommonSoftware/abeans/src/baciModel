@@ -1,0 +1,97 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: baciModel,v 1.2 2003/10/02 19:22:37 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# msekoran 2003-10-02 created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+# signal trap (if any)
+#########################################################################
+
+CURRENTDIR=$PWD
+PID=$$
+OUTDIR=../object/generated
+
+echo "== IDL Generating BACI Abeans model (Java): baci.idl w/ dependencies"
+
+CLASSPATH=`vltMakeJavaClasspath`
+
+# add current path
+CLASSPATH=$CURRENTDIR:$CLASSPATH
+
+export CLASSPATH
+
+# Separation of dirs
+item_list=`echo $INTLIST | sed s/:/\ /g`
+intlist_list=""
+for item in $item_list
+do
+   intlist_list=$intlist_list" -I$item/idl"
+done
+
+mkdir -p $OUTDIR
+
+#
+# Find baci.idl in INTROOT or ACSROOT
+#
+
+result=`searchFile /idl/baci.idl`
+if [ "$result" != "#error#" ]
+then
+   BACIIDL=$result/idl/baci.idl
+fi
+
+java abeans.models.acs.baci.generator.IDLtoAbeansCompiler \
+    $BACIIDL -I$INTROOT/idl $intlist_list -I$ACSROOT/idl -I$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB/idl/jacorb -I$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB/idl/omg -all -d $OUTDIR
+
+FILES=`find $OUTDIR -name \*.java`; export FILES
+
+# compile
+# TODO exit on error
+echo "== IDL Compiling BACI Abeans Model (Java)"
+if [ "$FILES" != "" ] ; then javac -source 1.4 -d $OUTDIR $FILES; fi
+
+cd $OUTDIR; 
+FILES=`find . -name \*.class `; export FILES
+
+# jar
+JARNAME=abeansBaciModel.jar
+echo "== Packing into JAR (Java): $JARNAME"
+if [ "$FILES" != "" ] ; then jar cf $JARNAME $FILES ; fi
+
+cd $CURRENTDIR
+mkdir -p ../lib
+mv $OUTDIR/$JARNAME ../lib
+rm -rf $OUTDIR
+
+#
+# ___oOo___
+
+

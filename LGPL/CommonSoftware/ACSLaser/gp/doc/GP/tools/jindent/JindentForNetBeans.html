@@ -1,0 +1,383 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.77 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="Author" content="S.Sherbakov">
+   <title>Jindent Integration for Netbeans</title>
+</head>
+<body text="#000000" bgcolor="#CCCCFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+&nbsp;
+<center><table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="96%" >
+<tr>
+<td BGCOLOR="#008080">
+<center><a NAME="top_page"></a><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Jindent
+Gold Integration for Netbeans</font></font></font></b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<blockquote>&nbsp;
+<br><font size=-1><font face="Verdana">The integration module is shipped
+as a standard NetBeans Module - i.e. a .jar with a .nbm extension that
+contains a certain directory structure and an XML info document. Download
+the Netbeans file: </font><font face="Courier New,Courier"><a href="nbjindent.nbm">nbjindent.nbm</a></font></font>
+<br><font face="Verdana"><font size=-1>This module is packaged in <b>cern.cp.modules.jindent</b>
+for consistency with other GP modules.</font></font>
+<p><font face="Verdana"><font size=-1>The integration doesn't check the
+presence of the jindent code.<b>So be sure before you install the module
+that your Jindent.jar is located in &lt;netbeans-home>\lib\ext\ (such as
+'c:\netbeans\lib\ext') or you'll end up with class not found exceptions
+from NetBeans. </b>Download the Jindent Gold 3.5 zip file:
+<a href="/proj-gp/_notgenerated/tools/jindent/Jindent35Gold111.zip">Jindent35Gold</a></font></font>
+<br><font face="Verdana"><font size=-1>Extract the Jindent program archive
+file into your chosen Jindent home directory. Add the path of the file
+Jindent.jar to your CLASSPATH definition. You need your personal jindent
+key file before you can run Jindent. Please follow the instaructions:</font></font>
+<br><font face="Verdana"><font color="#FFFFFF"><font size=-1></font></font></font>&nbsp;
+<center><table BORDER=0 CELLSPACING=0 CELLPADDING=2 WIDTH="90%" BGCOLOR="#DFDFFF" >
+<tr>
+<td BGCOLOR="#5900B3"><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Enter
+the Jindent Customer Service Area:</font></font></font></b></td>
+</tr>
+
+<tr>
+<td>
+<ul>
+<li>
+<font face="Verdana"><font size=-1>Enter the URL <a href="http://license.jindent.com">http://license.jindent.com</a></font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Login using the login/password (for
+us AKF5739/K28MAF)</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>The first page shows our customer data.</font></font></li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#5900B3"><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Bind
+a license to a user:</font></font></font></b></td>
+</tr>
+
+<tr>
+<td>
+<ul>
+<li>
+<font face="Verdana"><font size=-1>Enter the Jindent Customer Service Area.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Enter the Licenses section to manage
+your current license account.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Unbound licenses are listed by their
+license id, license type and the identifier UNBOUND.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Choose the license you want to bind
+to the user to and click on Bind button (only unbound licenses offer a
+Bind button).</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Enter the user's data. If you do not
+know the user's login name you can find out by letting the user invoke
+the following command line in the Jindent root directory: java WhoAmI.
+If you are using different user names on differnt machines/platforms you
+can enter all your user names separated by commas (eg. "username1,username2,username
+mobile").</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click on Lock License.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Confirm by clicking Ok.</font></font></li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#5900B3"><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Unbind
+a license:</font></font></font></b></td>
+</tr>
+
+<tr>
+<td>
+<ul>
+<li>
+<font face="Verdana"><font size=-1>If a license is not needed by a registered
+user anymore you can unbind that license and bind it to another user afterwards.
+Please make sure that the license key and all copies of it is deleted permanently
+before unbinding a license. To unbind a license follow the instructions
+below:</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Enter the Jindent Customer Service Area.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Enter the Licenses section to manage
+your current license account. Bound licenses are listed by their license
+id, their license type and the user's data the license is bound to.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Choose the license you want to unbind
+click on the according Unbind button (only bound licenses offer a Unbind
+button).</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Confirm that the current license user
+does not use the Jindent program under that license anymore and that all
+copies of the license key are deleted permanently.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click on Unbind License.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Confirm by clicking Ok.</font></font></li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#5900B3"><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Obtain
+the license key file:</font></font></font></b></td>
+</tr>
+
+<tr>
+<td>
+<ul>
+<li>
+<font face="Verdana"><font size=-1>Enter the Jindent Customer Service Area.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Enter the Licenses section to manage
+your current license account.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Choose license you want to unbind and
+click on the according Send Key button (only bound licenses offer a Send
+Key button).</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Confirm that the current license user
+does not use the Jindent program under that license anymore and that all
+copies of the license key are deleted permanently.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click on Unbind License.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Confirm by clicking Ok.</font></font></li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#5900B3"><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Register
+the license key file:</font></font></font></b></td>
+</tr>
+
+<tr>
+<td>
+<ul>
+<li>
+<font face="Verdana"><font size=-1>Install the Jindent program.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>After receving your individual license
+key via email please save the key file (in our example let's name it licenseID.jlk)
+into Jindent's home directory.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Run java Register licenseID.jlk directly
+from your Jindent home (Jindent home has to be the current directory while
+registering your Jindent.jar file).</font></font></li>
+
+<br><font face="Verdana"><font size=-1>Now after a succesfull proceeding
+your Jindent.jar is registered and you are able to run Jindent as usual.</font></font></ul>
+</td>
+</tr>
+</table></center>
+<font face="Verdana"><font size=-1><a href="#top_page">To top</a></font></font></blockquote>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#008080">
+<center><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Module
+Installation</font></font></font></b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<blockquote>&nbsp;
+<br><font face="Verdana"><font size=-1>Place the module jindent.nbm in
+an appropriate download or temporary directory.</font></font>
+<blockquote>
+<li>
+<font face="Verdana"><font size=-1>Launch NetBeans.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Select the menu 'Tools, Update Center'...</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Select the radio button 'Install manually
+downloaded modules'.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click 'Next >'.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click 'Add...'.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Using the file chooser, browse to the
+directory where you placed jindent.nbm.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click 'Next >'.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>In the 'Available Modules' list you'll
+see 'Jindent'.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click 'Next>' again.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>The Forte/NetBeans Update Center then
+reads the module and verifies the contents.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Click 'Next >'.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>A list will show the NetBeans Jindent
+module as not being signed; if you wish to install the module, please check
+'Include'. The Update Center will then double check that you do wish to
+install it. If so, click 'Yes'.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Finally click 'Finish'; the module is
+installed and NetBeans is restarted.</font></font></li>
+</blockquote>
+<font face="Verdana"><font size=-1><a href="#top_page">To top</a></font></font></blockquote>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#008080">
+<center><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Module
+Verification</font></font></font></b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<blockquote>&nbsp;
+<br><font face="Verdana"><font size=-1>Select the 'Tools' menu; the menu
+items 'Jindent Commander' and 'Jindent Customizer' are available. Also,
+if a .java source file is currently open the 'Jindent' menu item also shows.</font></font></blockquote>
+<font face="Verdana"><font size=-1><a href="#top_page">To top</a></font></font></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#008080">
+<center><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Module
+Configuration</font></font></font></b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<blockquote>&nbsp;
+<br><font face="Verdana"><font size=-1>Before Jindent can be used, the
+locations of the Jindent environment and properties files must be specified.
+Please refer to the Jindent document for an explanation of these files.</font></font>
+<blockquote>
+<li>
+<font face="Verdana"><font size=-1>Select the menu <b>'Tools, Options'</b>.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Open subsection <b>'Uncategorized'</b>
+and you will find <b>'Jindent Settings'</b>. Select them by clicking with
+the mouse.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Two properties show up: <b>'Environment
+File'</b> and <b>'Properties File'</b></font></font></li>
+
+<br><font face="Verdana"><font size=-1>their initial values are the property
+type (</font></font><i><font face="Courier New,Courier">java.io.File</font></i><font face="Verdana"><font size=-1>).</font></font>
+<li>
+<font face="Verdana"><font size=-1>Click the <b>'Environment File'</b>
+value button; then enter the path of your environment file or use the file
+chooser to browse.</font></font></li>
+
+<li>
+<font face="Verdana"><font size=-1>Repeat these steps for the <b>'Properties
+File'</b>.</font></font></li>
+</blockquote>
+<font face="Verdana"><font size=-1>From now on, whenever a NetBeans project
+is saved, these settings are also saved. You can change these properties
+at any time, by following the above instructions.</font></font></blockquote>
+<font face="Verdana"><font size=-1><a href="#top_page">To top</a></font></font></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#008080">
+<center><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Module
+Usage</font></font></font></b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<blockquote>&nbsp;
+<br><font face="Verdana"><font size=-1>The Jindent Commander can be launched
+at any time, by selecting the <b>'Tools, Jindent Commander' </b>menu. The
+Jindent Customizer can be launched at any time, by selecting the <b>'Tools,
+Jindent Customizer' </b>menu. If you have configured the environment and/or
+properties file(s) the customizer is launched with their values. Whenever
+a <b>.java </b>source file is open, the <b>'Tools, Jindent'</b> menu is
+enabled and can be selected. When the <b>'Tools, Jindent' </b>menu is selected,
+the currently open source file is reformatted in memory. This means that
+the file is not re-read and no file is written to disk; rather the NetBeans
+standard Swing text document is used, allowing you to undo the reformat.
+Once the document is saved by NetBeans, the changes are made permanent.</font></font></blockquote>
+<font face="Verdana"><font size=-1><a href="#top_page">To top</a></font></font></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#008080">
+<center><b><font face="Verdana"><font color="#FFFFFF"><font size=-1>Module
+Uninstallation</font></font></font></b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<blockquote>&nbsp;
+<br><font face="Verdana"><font size=-1>To uninstall the NetBeans Jindent
+Module, shut downNetBeans; then locate the '&lt;netbeans-home>/modules'
+directory, where &lt;netbeans-home> is the NetBeans home directory (such
+as 'c:\netbeansj') and delete the nbjindent.jar file.</font></font>
+<br><font face="Verdana"><font size=-1>Then restart NetBeans. During the
+first restart you may see a 'Unable to read settings; default values will
+be used' error message.</font></font>
+<br><font face="Verdana"><font size=-1>This is normal, since Forte/NetBeans
+stores settings using Java Bean serialization.</font></font>
+<br><font face="Verdana"><font size=-1>When the module is removed from
+NetBeans' class path, the deserialization of those settings fail.</font></font>
+<br><font face="Verdana"><font size=-1>Once the settings have been rewritten
+(e.g. by a 'Save Project' menu selection) this error no longer occurs.</font></font></blockquote>
+<font face="Verdana"><font size=-1><a href="#top_page">To top</a></font></font></td>
+</tr>
+</table></center>
+
+</body>
+</html>

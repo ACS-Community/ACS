@@ -1,0 +1,43 @@
+Tue May  6 15:55:00 2003  Bogdan Jeram  <bjeram@te37.hq.eso.org>
+
+	* ws/test/ESTestImpl.cpp,v 1.9: added prfix ACSerr for error types
+
+Thu Apr  3 08:19:54 2003  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/src/acsLogSvc.cpp,v 1.9 (main): 
+	Porting to ACS 5.3. Fixed ACE_OS::string_to_argv 
+
+Thu Dec  5 17:41:52 2002  Radostina Georgieva  <rgeorgie@te1.hq.eso.org>
+
+	* checked for substituting LGPL. No occurances found. 
+
+Thu Dec 05 17:37:21 2002 <rgeorgie@te13.hq.eso.org>  acslog version: 1.8 
+Thu Aug 15 10:02:57 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/test/errorServer.cpp: changed argUnpack.h to acsutilArgUnpack.h
+
+Thu Aug 15 17:51:39 2002 <dfugate@te13.hq.eso.org>  acslog version: 1.7 
+Fri Jun 21 15:25:54 2002 <bjeram@te13.hq.eso.org>  acslog version: 1.6 
+Wed Apr 10 16:32:28 2002  Bogdan Jeram  <bjeram@te22.hq.eso.org>
+
+	* ws/src/acsLogSvc.cpp (main): added -silent command line options 
+
+Wed Apr 10 16:14:33 2002 <bjeram@te13.hq.eso.org>  acslog version: 1.5 
+Wed Apr 10 15:33:18 2002  Bogdan Jeram  <bjeram@te22.hq.eso.org>
+
+	* ws/src/acsLogSvc.cpp (main): added ACSError::init and done
+	(main): added -o options and writing ior to the file
+	(main): add ACSLogSvc to the Naming service
+
+Wed Apr 10 10:58:56 2002 <bjeram@te13.hq.eso.org>  acslog version: 1.4 
+Fri Jan 25 12:37:46 2002  Bogdan Jeram  <bjeram@te20.hq.eso.org>
+
+	* ws/idl/acslog.idl: added #pragma prefix "ALMA"
+
+Fri Jan 25 13:36:52 2002 <bjeram@te13.hq.eso.org>  acslog version: 1.3 
+Thu Sep 20 16:17:43 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/src/acsLogSvc.cpp: change of resolving Log Svc
+
+Thu Sep 20 09:05:47 2001 <bjeram@te13.hq.eso.org>  acslog version: 1.1 
+"@(#) $Id: ChangeLog,v 1.10 2003/05/06 13:56:03 bjeram Exp $"

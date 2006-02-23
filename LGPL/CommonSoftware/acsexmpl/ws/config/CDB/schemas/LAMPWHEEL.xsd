@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for a LAMPWHEEL
+   -
+   - Author: Alessandro Caproni
+   -
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:LAMPWHEEL:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:LAMPWHEEL:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="THELAMP">
+    <xs:sequence>
+      <xs:element name="WarmUpTime" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Watt" type="xs:integer" minOccurs="0" default="0" />
+    </xs:sequence>
+    <xs:attribute name="LampType" type="xs:string" use="optional" default="NO-LAMP" />
+  </xs:complexType>
+
+  <xs:complexType name="SLOT">
+    <xs:sequence>
+      <xs:element name="Lamp" type="THELAMP" />
+      <xs:element name="Position" type="xs:integer"/>
+    </xs:sequence>
+    <xs:attribute name="SlotNumber" type="xs:integer" use="required" />
+   </xs:complexType>
+
+  <xs:complexType name="LAMPWHEEL">
+    <xs:sequence>
+      <xs:element name="position" type="baci:ROdouble"/>
+      <xs:element name="desc" type="baci:ROstring"/>
+      <xs:element name="slots" type="baci:ROlong"/>
+      <xs:element name="Slot" type="SLOT" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  <xs:attribute name="LampWheelDescription" type="xs:string" use="optional" default="UNDEFINED" />
+  <xs:attribute name="AvailableSlots" type="xs:integer" use="required" /> 
+</xs:complexType>
+
+  <xs:element name="LAMPWHEEL" type="LAMPWHEEL"/>
+
+</xs:schema>

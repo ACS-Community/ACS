@@ -1,0 +1,377 @@
+******
+***+**     E U R O P E A N 
+***S+*
+*+E***     S O U T H E R N 
+***O**
+**+***     O B S E R V A T O R Y
+******
+
+
+
+            V E R Y   L A R G E   T E L E S C O P E 
+
+
+
+
+
+             +-                                  -+
+             |           VLT SOFTWARE             |
+                             ----
+                            vltMake
+                        TEST PROCEDURE 
+    
+
+                 Doc. No. VLT-VER-ESO-10000-xxxx
+
+                         Issue  1.3
+   
+                       Date - 24/10/94
+             |                                    |
+             +-                                  -+
+
+
+
+    Prepared . . G.Filippi . . . . . . . . . . . . . . 24/10/94
+
+    Approved . . . . . . . . . . . . . . . . . . . . . . . . . .
+ 
+    Released . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+
+------------------------------------------------------------------------------
+                      C H A N G E   R E C O R D
+
+ISSUE/REV.  DATE     SECTION/PARAG. AFFECTED   REASON
+1.3        24/10/94  All                       First Issue
+
+
+
+------------------------------------------------------------------------------
+
+1.0 INTRODUCTION 
+================
+1.1 PURPOSE
+-----------
+This manual describes the testing activity for the vltMake module.
+
+Being vltMake a stand-alone module, this test document covers 
+both module and acceptance test levels.
+
+1.2 SCOPE
+---------
+vltMake 1.3, as described in the Makefile(5) and vltMake(5) man-pages.
+
+
+2. TEST PLAN
+============
+
+2.2 Introduction
+----------------
+
+2.4 Features to be tested
+-------------------------
+For each type of file standardized by the Programming Standards,
+all the basic actions dealing with the targets: "all" "clean" "man" "install"
+in a INTROOT configuration for both UNIX and VxWorks applications.
+
+
+2.5 Features not to be tested
+-----------------------------
+ - "install" in VLTROOT because creating a dummy VLTROOT is too expensive and 
+   the features are a subset of the one tested using INTROOT.
+ - usage of C++, because not yet approved for VLT Software
+
+
+2.6 Approach
+------------
+Considering that:
+  - although vltMake is a basic component for building VLT software, it is not 
+    critical because it is used during development only,
+  - the intense usage during development by several independent people leads 
+    to a very good debugging level
+  - being written on "GNUmake"-language and interacting with VLTROOT area do
+    not allow an reasonably easy way to test
+
+the test coverage is limited to a feature subset.
+
+The test scenario is a fictitious UNIX-VxWorks module:
+
+  test/
+   |
+   |--mod/
+       |--ws
+       |   |--src/
+       |   |   |--Makefile
+       |   |   |--....
+       |   |
+       |   |--test/
+       |   |   |--Makefile
+       |   |   |--....
+       |   |
+       |   |--....
+       |
+       |--lcu
+           |--src/
+           |   |--Makefile
+           |   |--....
+           |
+           |--test/
+           |   |--Makefile
+           |   |--....
+           |
+           |--....
+
+
+The following test scenarios are identified:
+     - TEST01: UNIX application development   
+     - TEST02: UNIX application test         
+     - TEST03: VxWorks application development  
+     - TEST04: VxWorks application test        
+     - TEST05: installation into INTROOT
+
+For each scenario:
+  - ad hoc script, include, C-files, etc are created in src/, include/, etc
+    to simulate typical VLT usage of the the cases standardized by the 
+    Programming Standards
+  - a Makefile is used to invoke the appropriate vltMake functions.
+
+Features common to "development" and "test" are tested only in the development 
+scenario. 
+
+
+2.7 Item pass/fail criteria
+---------------------------
+(Same for every test) The test is passed when no Error messages neither from 
+make nor from the generated application are displaied.
+
+
+2.8 Suspension Criteria and Resumption Requirements
+---------------------------------------------------
+None.
+
+
+2.9 Test Deliverables
+---------------------
+- This document
+- the test software (vltMake/test)
+- the ModuleTestReport (vltMake/test/ModuleTestReport-TEST<i>)
+
+
+2.10 Schedule
+-------------
+
+       Preparation 
+           |
+           +---------+---------+
+        TEST01       |         |
+           |      TEST02       |
+        TEST03       |         |
+           |         |       TEST04
+           +---------+---------+
+           |
+        TEST05
+
+
+2.11 Environmental Needs
+------------------------
+  - GNUmake 3.70 installed
+  - HP-UX 9.03 or SunOS 5.3 (Solaris 2.3)
+
+
+2.12 Responsibilities
+---------------------
+vltMake author is responsible for planning, designing and executing the test.
+
+
+2.13 Staffing and training needs
+--------------------------------
+none
+
+
+2.14 Schedule
+-------------
+Design/development of test software: during implementation.
+The test, as acceptance test, is executed before handing over vltMake to 
+Archive.
+
+
+2.15 Risks and contingencies
+----------------------------
+The non complete coverage is balanced by the extensive usage of vltMake
+during operational non-critical phases (development of VLT software).
+
+Anyhow, the frequent need to update vltMake to support new features or recognized 
+new needs, provides also the possibility for a quick bug fixing.
+
+
+
+
+
+3. TEST SPECIFICATION
+=====================
+
+3.1 TEST01 - UNIX application development scenario
+----------
+
+Features to be tested
+    For UNIX applications and INTROOT configuration, "all" "clean" "install" 
+    for the following cases:
+      executable linked to a C library
+      C library
+      executable linked to a local C library
+      local C library
+      executable linked to CCS
+      shell script
+      local shell script
+      TCL library
+      TCL script
+      local shell script
+      man pages sections 1 2 3 4 5 6 7 8 
+      local man pages
+      ERROR files
+
+    and the following features:
+      used definable C-compilation flags (USER_CFLAG)
+      additional include and library search paths
+      auxiliary INTROOTi
+      warning message when CCS and RTAP are both specified
+      redefinition of the MAKEDIR
+
+
+Input Specification: vltMake/mod/ws/src/Makefile
+
+Output Specification:
+
+Environmental Needs: 
+
+Special Procedural Requirements
+
+Dependencies:
+
+
+
+3.1 TEST02 - UNIX application test scenario
+----------
+
+Features to be tested
+    For UNIX applications and INTROOT configuration, "all" "clean" "install" 
+    for the following cases:
+      executable linked to a C library
+      C library
+
+    and the following features:
+      copying of test/* into  INTROOT/test/mod-ws
+
+
+Input Specification: vltMake/mod/ws/test/Makefile
+
+Output Specification:
+
+Environmental Needs: 
+
+Special Procedural Requirements
+
+Dependencies:
+
+
+
+3.1 TEST03 - VxWorks application development scenario
+----------
+
+Features to be tested
+    For VxWorks applications and INTROOT configuration, "all" "clean" "install" 
+    for the following cases:
+      executable linked to a C library
+      C library
+      executable linked to a local C library
+      local C library
+      shell script
+       local shell script
+      ERROR files
+      CDT files
+      CIT files
+
+    and the following features:
+      additional include and library search paths
+      auxiliary INTROOTi
+      includes are found in the ws/include
+      MAKE_VXWORKS is passed as compilation flag
+
+
+Input Specification: vltMake/mod/lcu/src/Makefile
+
+Output Specification:
+
+Environmental Needs: 
+
+Special Procedural Requirements
+
+Dependencies: TEST01
+
+
+
+3.1 TEST04 - VxWorks application test scenario
+----------
+
+Features to be tested
+    For VxWorks applications and INTROOT configuration, "all" "clean" "install" 
+    for the following cases:
+      executable linked to a C library
+      C library
+
+    and the following features:
+      copying of test/* into  INTROOT/vw/test/mod-lcu
+
+
+Input Specification: vltMake/mod/lcu/test/Makefile
+
+Output Specification:
+
+Environmental Needs: 
+
+Special Procedural Requirements
+
+Dependencies:
+
+
+
+3.1 TEST05 - Installed files
+----------
+
+Features to be tested
+    All files have been properly installed into INTROOT
+
+
+Input Specification: vltMake/mod/*/*/Makefile
+
+Output Specification:
+
+Environmental Needs: 
+
+Special Procedural Requirements:
+
+Dependencies: TEST01-04
+
+
+
+4. TEST PROCEDURES
+==================
+
+4.1 Prepare
+
+    - verify Os version
+    - verify (GNU)make version
+    - create an empty INTROOT area (use getTemplate)
+    - update vltMake files   (cd vltMake/src; make clean all man)
+    - insert vltMake/bin into PATH
+
+
+4.2 Execute
+
+    - cd vltMake/test
+    - vltMakeTest ALL
+
+To run tests in stand alone mode, see vltMakeTest.
+
+                                ____oOo____

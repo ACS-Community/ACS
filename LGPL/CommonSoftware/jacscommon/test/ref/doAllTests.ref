@@ -1,0 +1,18 @@
+This is OK: Failed to do constructor connect.
+
+
+OK (3 tests)
+
+...
+
+OK (3 tests)
+
+.<Info TimeStamp="----------T--:--:--.---" File="abeans.pluggable.acs.logging.test.LoggingFormatterTest" Routine="testFormatter" Host="xxxxx" Thread="10" LogId="0">INFO message</Info>
+<Debug TimeStamp="----------T--:--:--.---" File="abeans.pluggable.acs.logging.test.LoggingFormatterTest" Line="0" Routine="testFormatter" Host="xxxxx" Thread="10" LogId="1">DEBUG message</Debug>
+<Error TimeStamp="----------T--:--:--.---" File="abeans.pluggable.acs.logging.test.LoggingFormatterTest" Line="1208" Routine="testFormatter" Host="xxxxx" Thread="MyThread" Context="Testing..." StackId="Stack ID" StackLevel="4" LogId="2" Uri="abeans-CDBDAL://csl01:5001/alma/gizmo/current/units?get" Priority="11" attribute1="value1" attribute2="value2">ERROR message<Data Name="name2">value2</Data><Data Name="name1">value1</Data></Error>
+<Emergency TimeStamp="----------T--:--:--.---" File="abeans.pluggable.acs.logging.test.LoggingFormatterTest" Routine="testFormatter" Host="xxxxx" Thread="10" StackId="unknown" StackLevel="0" LogId="3">EMERGENCY message</Emergency>
+<Error TimeStamp="----------T--:--:--.---" File="abeans.pluggable.acs.logging.test.LoggingFormatterTest" Routine="testFormatter" Host="xxxxx" Thread="10" StackId="unknown" StackLevel="0" LogId="4">ERROR message</Error>
+
+
+OK (1 test)
+

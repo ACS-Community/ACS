@@ -1,0 +1,2 @@
+1 astyle_cpp "astyle <astyle_main.cpp"
+2 astyle_java "astyle -j <LoggingClient.java"

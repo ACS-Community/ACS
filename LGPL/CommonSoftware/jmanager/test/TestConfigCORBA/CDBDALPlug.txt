@@ -1,0 +1,4 @@
+#DAL.defaultReference=corbaloc::dina.ijs.si:5000/CDB
+DAL.defaultReference=corbaloc::localhost:5000/CDB
+DAO.remote=true
+debug=true

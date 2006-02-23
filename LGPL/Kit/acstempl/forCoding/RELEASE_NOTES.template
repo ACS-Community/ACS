@@ -1,0 +1,58 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: RELEASE_NOTES.template,v 1.21 2004/04/08 12:40:31 mzampare Exp $" 
+#%# 
+#%# Template for release notes              
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# pforstma   30/01/95  created
+#%# gfilippi   20/02/95  added header and manpage
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN RELEASE_NOTES(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+RELEASE_NOTES
+
+Module: 
+ 
+From: 
+   NNNNNNNN
+
+Version: 
+   "@(#) $I>-<d$"
+
+Documents:
+
+
+Configuration Requirements:
+
+
+Tested:
+   
+
+Cost:
+
+
+Changes:
+
+   New Features:
+   
+     -
+     
+   Fixed Problems:
+
+     -
+
+Known bugs/problems:
+
+     -
+
+                          ___oOo___

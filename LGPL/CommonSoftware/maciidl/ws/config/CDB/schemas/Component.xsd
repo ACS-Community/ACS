@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+ targetNamespace="urn:schemas-cosylab-com:Component:1.0"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ xmlns="urn:schemas-cosylab-com:Component:1.0"
+ xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType name="ComponentInfo">
+	<xs:attribute name="Name" type="xs:string" use="required"/>
+	<xs:attribute name="Code" type="xs:string" use="required"/>
+	<xs:attribute name="Type" type="xs:string" use="required"/>
+	<xs:attribute name="Container" type="xs:string" use="required"/>
+	<xs:attribute name="Default" type="xs:boolean" use="optional" default="false"/>
+	<xs:attribute name="Autostart" type="xs:boolean" use="optional" default="false"/>
+  </xs:complexType>
+  <xs:element name="Component" type="ComponentInfo"/>
+</xs:schema>

@@ -1,0 +1,6 @@
+1 - {'handle': None, 'name': None, 'activateOffShootMethod': None, 'cdbAccess': <Acspy.Common.CDBAccess.CDBaccess instance at 0xXXXX>, 'token': None, 'logger': None}
+1 - 
+1 - {'handle': None, 'name': 'blar', 'activateOffShootMethod': <function dummie at 0xXXXX>, 'cdbAccess': <Acspy.Common.CDBAccess.CDBaccess instance at 0xXXXX>, 'token': None, 'logger': None}
+1 - 
+1 - Thread:  <Thread(Thread-1, initial)>
+1 - Done...

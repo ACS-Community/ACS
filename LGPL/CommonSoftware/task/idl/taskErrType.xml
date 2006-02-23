@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="taskErrType" type="42" _prefix="alma">
+	<ErrorCode name="TaskRunFailure" shortDescription="Task run failure" description="Run of the task failed"/>
+</Type>

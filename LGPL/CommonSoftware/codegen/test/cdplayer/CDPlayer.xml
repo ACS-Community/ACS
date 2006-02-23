@@ -1,0 +1,318 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1'?>
+<!-- <!DOCTYPE XMI SYSTEM 'UMLX13-11.dtd' > -->
+<XMI xmi.version = '1.1' xmlns:UML='href://org.omg/UML/1.3' timestamp = 'Tue Mar 02 17:19:49 2004' >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>Unisys.JCR.2</XMI.exporter>
+   <XMI.exporterVersion>1.3.6</XMI.exporterVersion>
+  </XMI.documentation>
+  <XMI.metamodel xmi.name = 'UML' xmi.version = '1.3'/>
+ </XMI.header>
+<XMI.content>
+<!-- ==================== CDPlayer    [Model] ==================== -->
+<UML:Model xmi.id = 'G.0' 
+  name = 'CDPlayer' visibility = 'public' isSpecification = 'false' 
+  isRoot = 'false' isLeaf = 'false' isAbstract = 'false' >
+  <UML:Namespace.ownedElement>
+    <!-- ==================== CDPlayer::CDPlayer    [StateMachine] ==================== -->
+    <UML:StateMachine xmi.id = 'S.061.1719.42.1' 
+      name = 'CDPlayer' visibility = 'public' isSpecification = 'false' 
+      context = 'G.0' >
+      <UML:StateMachine.top>
+        <!-- ==================== CDPlayer::CDPlayer::{top}    [CompositeState] ==================== -->
+        <UML:CompositeState xmi.id = 'XX.2.1719.42.2' 
+          name = '{top}' visibility = 'public' isSpecification = 'false' 
+          isConcurrent = 'false' >
+          <UML:CompositeState.subvertex>
+            <!-- ==================== CDPlayer::CDPlayer::{top}::PowerOff    [SimpleState] ==================== -->
+            <UML:SimpleState xmi.id = 'G.1' 
+              name = 'PowerOff' visibility = 'public' isSpecification = 'false' 
+              outgoing = 'G.2' incoming = 'G.5 G.8' />
+            <!-- ==================== CDPlayer::CDPlayer::{top}::PowerOn    [CompositeState] ==================== -->
+            <UML:CompositeState xmi.id = 'G.4' 
+              name = 'PowerOn' visibility = 'public' isSpecification = 'false' 
+              isConcurrent = 'false' 
+              outgoing = 'G.5' >
+              <UML:State.entry>
+                <UML:ActionSequence xmi.id = 'id.0621619.1' 
+                  name = '' visibility = 'public' isSpecification = 'false' 
+                  isAsynchronous = 'false' >
+                  <UML:Action.recurrence>
+                    <UML:IterationExpression 
+                      language = '' body = '' />
+                  </UML:Action.recurrence>
+                  <UML:Action.target>
+                    <UML:ObjectSetExpression 
+                      language = '' body = '' />
+                  </UML:Action.target>
+                  <UML:Action.script>
+                    <UML:ActionExpression 
+                      language = '' body = '' />
+                  </UML:Action.script>
+                  <UML:ActionSequence.action>
+                    <UML:UninterpretedAction xmi.id = 'XX.2.1719.42.7' 
+                      name = 'setOn' visibility = 'public' isSpecification = 'false' 
+                      isAsynchronous = 'false' >
+                      <UML:Action.recurrence>
+                        <UML:IterationExpression 
+                          language = '' body = '1' />
+                      </UML:Action.recurrence>
+                      <UML:Action.target>
+                        <UML:ObjectSetExpression 
+                          language = '' body = '' />
+                      </UML:Action.target>
+                      <UML:Action.script>
+                        <UML:ActionExpression 
+                          language = '' body = '' />
+                      </UML:Action.script>
+                    </UML:UninterpretedAction>
+                  </UML:ActionSequence.action>
+                </UML:ActionSequence>
+              </UML:State.entry>
+              <UML:State.exit>
+                <UML:ActionSequence xmi.id = 'id.0621619.2' 
+                  name = '' visibility = 'public' isSpecification = 'false' 
+                  isAsynchronous = 'false' >
+                  <UML:Action.recurrence>
+                    <UML:IterationExpression 
+                      language = '' body = '' />
+                  </UML:Action.recurrence>
+                  <UML:Action.target>
+                    <UML:ObjectSetExpression 
+                      language = '' body = '' />
+                  </UML:Action.target>
+                  <UML:Action.script>
+                    <UML:ActionExpression 
+                      language = '' body = '' />
+                  </UML:Action.script>
+                  <UML:ActionSequence.action>
+                    <UML:UninterpretedAction xmi.id = 'XX.2.1719.42.8' 
+                      name = 'setOff' visibility = 'public' isSpecification = 'false' 
+                      isAsynchronous = 'false' >
+                      <UML:Action.recurrence>
+                        <UML:IterationExpression 
+                          language = '' body = '1' />
+                      </UML:Action.recurrence>
+                      <UML:Action.target>
+                        <UML:ObjectSetExpression 
+                          language = '' body = '' />
+                      </UML:Action.target>
+                      <UML:Action.script>
+                        <UML:ActionExpression 
+                          language = '' body = '' />
+                      </UML:Action.script>
+                    </UML:UninterpretedAction>
+                  </UML:ActionSequence.action>
+                </UML:ActionSequence>
+              </UML:State.exit>
+              <UML:State.internalTransition>
+                <UML:Transition xmi.id = 'id.0621619.3' 
+                  name = '' visibility = 'public' isSpecification = 'false' 
+                  trigger = 'S.061.1719.42.10' source = 'G.4' target = 'G.4' >
+                  <UML:Transition.effect>
+                    <UML:UninterpretedAction xmi.id = 'XX.2.1719.42.10' 
+                      name = 'volUp' visibility = 'public' isSpecification = 'false' 
+                      isAsynchronous = 'false' >
+                      <UML:Action.recurrence>
+                        <UML:IterationExpression 
+                          language = '' body = '1' />
+                      </UML:Action.recurrence>
+                      <UML:Action.target>
+                        <UML:ObjectSetExpression 
+                          language = '' body = '' />
+                      </UML:Action.target>
+                      <UML:Action.script>
+                        <UML:ActionExpression 
+                          language = '' body = '' />
+                      </UML:Action.script>
+                    </UML:UninterpretedAction>
+                  </UML:Transition.effect>
+                </UML:Transition>
+              </UML:State.internalTransition>
+              <UML:CompositeState.subvertex>
+                <!-- ==================== CDPlayer::CDPlayer::{top}::PowerOn::Stop    [SimpleState] ==================== -->
+                <UML:SimpleState xmi.id = 'G.9' 
+                  name = 'Stop' visibility = 'public' isSpecification = 'false' 
+                  outgoing = 'G.10' incoming = 'G.2 G.13' />
+                <!-- ==================== CDPlayer::CDPlayer::{top}::PowerOn::Play    [SimpleState] ==================== -->
+                <UML:SimpleState xmi.id = 'G.12' 
+                  name = 'Play' visibility = 'public' isSpecification = 'false' 
+                  outgoing = 'G.13' incoming = 'G.10' />
+              </UML:CompositeState.subvertex>
+            </UML:CompositeState>
+            <!-- ==================== CDPlayer::CDPlayer::{top}::    [Pseudostate] ==================== -->
+            <UML:Pseudostate xmi.id = 'G.7' 
+              name = '' visibility = 'public' isSpecification = 'false' 
+              kind = 'initial' 
+              outgoing = 'G.8' />
+          </UML:CompositeState.subvertex>
+        </UML:CompositeState>
+      </UML:StateMachine.top>
+      <UML:StateMachine.transitions>
+        <UML:Transition xmi.id = 'G.2' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.061.1719.42.4' source = 'G.1' target = 'G.9' />
+        <UML:Transition xmi.id = 'G.10' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.061.1719.42.6' source = 'G.9' target = 'G.12' >
+          <UML:Transition.effect>
+            <UML:ActionSequence xmi.id = 'XX.2.1719.42.4' 
+              name = '' visibility = 'public' isSpecification = 'false' 
+              isAsynchronous = 'false' >
+              <UML:Action.recurrence>
+                <UML:IterationExpression 
+                  language = '' body = '' />
+              </UML:Action.recurrence>
+              <UML:Action.target>
+                <UML:ObjectSetExpression 
+                  language = '' body = '' />
+              </UML:Action.target>
+              <UML:Action.script>
+                <UML:ActionExpression 
+                  language = '' body = '' />
+              </UML:Action.script>
+              <UML:ActionSequence.action>
+                <UML:UninterpretedAction xmi.id = 'XX.2.1719.42.3' 
+                  name = 'startPlay' visibility = 'public' isSpecification = 'false' 
+                  isAsynchronous = 'false' >
+                  <UML:Action.recurrence>
+                    <UML:IterationExpression 
+                      language = '' body = '1' />
+                  </UML:Action.recurrence>
+                  <UML:Action.target>
+                    <UML:ObjectSetExpression 
+                      language = '' body = '' />
+                  </UML:Action.target>
+                  <UML:Action.script>
+                    <UML:ActionExpression 
+                      language = '' body = '' />
+                  </UML:Action.script>
+                </UML:UninterpretedAction>
+              </UML:ActionSequence.action>
+            </UML:ActionSequence>
+          </UML:Transition.effect>
+        </UML:Transition>
+        <UML:Transition xmi.id = 'G.13' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.061.1719.42.8' source = 'G.12' target = 'G.9' >
+          <UML:Transition.effect>
+            <UML:ActionSequence xmi.id = 'XX.2.1719.42.6' 
+              name = '' visibility = 'public' isSpecification = 'false' 
+              isAsynchronous = 'false' >
+              <UML:Action.recurrence>
+                <UML:IterationExpression 
+                  language = '' body = '' />
+              </UML:Action.recurrence>
+              <UML:Action.target>
+                <UML:ObjectSetExpression 
+                  language = '' body = '' />
+              </UML:Action.target>
+              <UML:Action.script>
+                <UML:ActionExpression 
+                  language = '' body = '' />
+              </UML:Action.script>
+              <UML:ActionSequence.action>
+                <UML:UninterpretedAction xmi.id = 'XX.2.1719.42.5' 
+                  name = 'stopPlay' visibility = 'public' isSpecification = 'false' 
+                  isAsynchronous = 'false' >
+                  <UML:Action.recurrence>
+                    <UML:IterationExpression 
+                      language = '' body = '1' />
+                  </UML:Action.recurrence>
+                  <UML:Action.target>
+                    <UML:ObjectSetExpression 
+                      language = '' body = '' />
+                  </UML:Action.target>
+                  <UML:Action.script>
+                    <UML:ActionExpression 
+                      language = '' body = '' />
+                  </UML:Action.script>
+                </UML:UninterpretedAction>
+              </UML:ActionSequence.action>
+            </UML:ActionSequence>
+          </UML:Transition.effect>
+        </UML:Transition>
+        <UML:Transition xmi.id = 'G.5' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          trigger = 'S.061.1719.42.12' source = 'G.4' target = 'G.1' />
+        <UML:Transition xmi.id = 'G.8' 
+          name = '' visibility = 'public' isSpecification = 'false' 
+          source = 'G.7' target = 'G.1' />
+      </UML:StateMachine.transitions>
+    </UML:StateMachine>
+    <UML:SignalEvent xmi.id = 'S.061.1719.42.4' 
+      name = 'powerBut' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.061.1719.42.5' />
+    <UML:Signal xmi.id = 'S.061.1719.42.5' 
+      name = 'powerBut' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.061.1719.42.6' 
+      name = 'playBut' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.061.1719.42.7' />
+    <UML:Signal xmi.id = 'S.061.1719.42.7' 
+      name = 'playBut' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.061.1719.42.8' 
+      name = 'stopBut' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.061.1719.42.9' />
+    <UML:Signal xmi.id = 'S.061.1719.42.9' 
+      name = 'stopBut' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.061.1719.42.10' 
+      name = 'volPlusBut' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.061.1719.42.11' />
+    <UML:Signal xmi.id = 'S.061.1719.42.11' 
+      name = 'volPlusBut' visibility = 'public' isSpecification = 'false' 
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' />
+    <UML:SignalEvent xmi.id = 'S.061.1719.42.12' 
+      name = 'powerBut' visibility = 'public' isSpecification = 'false' 
+      signal = 'S.061.1719.42.5' />
+  </UML:Namespace.ownedElement>
+</UML:Model>
+<UML:Diagram xmi.id = 'S.061.1719.42.13' 
+  name = 'Main' toolName = 'Rational Rose 98' diagramType = 'ClassDiagram' style = '' 
+  owner = 'G.0' />
+<UML:Diagram xmi.id = 'S.061.1719.42.14' 
+  name = 'CDPlayer' toolName = 'Rational Rose 98' diagramType = 'StateDiagram' style = '' 
+  owner = 'S.061.1719.42.1' >
+  <UML:Diagram.element>
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.11' 
+      geometry = ' 240, 513, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 12,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.1' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.12' 
+      geometry = ' 1491, 792, 1212, 780,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 12,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.4' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.13' 
+      geometry = ' 1122, 864, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 12,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.9' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.14' 
+      geometry = ' 1818, 864, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 12,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.12' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.15' 
+      geometry = ' 1122, 864, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 12,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.9' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.16' 
+      geometry = ' 1818, 864, 300, 134,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 12,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.12' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.17' 
+      geometry = ' 240, 174, 60, 60,' style = 'FillColor.Blue= 204,FillColor.Green= 255,FillColor.Red= 255,FillColor.Transparent=1,Font.Blue= 0,Font.Green= 0,Font.Red= 0,Font.FaceName=Arial,Font.Size= 12,Font.Bold=0,Font.Italic=0,Font.Strikethrough=0,Font.Underline=0,LineColor.Blue= 51,LineColor.Green= 0,LineColor.Red= 153,' 
+      subject = 'G.7' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.18' 
+      geometry = ' 240, 325, 54, 296,' style = 'Transition' 
+      subject = 'G.8' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.19' 
+      geometry = ' 637, 420, 549, 177,' style = 'Transition' 
+      subject = 'G.5' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.20' 
+      geometry = ' 661, 704, 676, 304,' style = 'Transition' 
+      subject = 'G.2' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.21' 
+      geometry = ' 1470, 814, 450, 95,' style = 'Transition' 
+      subject = 'G.10' />
+    <UML:DiagramElement xmi.id = 'XX.2.1719.42.22' 
+      geometry = ' 1470, 954, 450, 128,' style = 'Transition' 
+      subject = 'G.13' />
+  </UML:Diagram.element>
+</UML:Diagram>
+</XMI.content>
+</XMI>

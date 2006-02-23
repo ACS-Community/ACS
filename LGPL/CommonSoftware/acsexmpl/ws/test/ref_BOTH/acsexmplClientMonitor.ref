@@ -1,0 +1,330 @@
+1 - -->Starting manager script
+2 - corbaloc::---:----/CDB
+3 - Running acsexmplClientMonitor MOUNT1 10 4
+1 - -->Please see 'manager.log' for output
+2 - rlogin LCU
+2 - 
+2 - LCU->< reloadScript 
+2 - #! VxWorks
+2 - 
+2 - # ALMA - Atacama Large Millimiter Array
+2 - 
+2 - #******************************************************************************
+2 - 
+2 - 
+2 - 
+2 - #unld "acsdo"
+2 - 
+2 - #unld "baci"
+2 - 
+2 - #unld "acsnc"
+2 - 
+2 - unld "ACSErrTypeCommon"
+2 - 
+2 - value = -1 = xxxxxxx
+2 - unld "Container"
+2 - 
+2 - value = xx
+2 - unld "recovery"
+2 - 
+2 - value = xx
+2 - unld "cdb"
+2 - 
+2 - value = xx
+2 - unld "expat"
+2 - 
+2 - value = xx
+2 - unld "acscomponent"
+2 - 
+2 - value = xx
+2 - unld "acserr"
+2 - 
+2 - value = xx
+2 - unld "loggingService"
+2 - 
+2 - value = xx
+2 - unld "acsutil"
+2 - 
+2 - value = xx
+2 - unld "libTAO_Messaging.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_IFR_Client.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_CosNotification.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_DsLogAdmin.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_ETCL.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_DynamicAny.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_CosNaming.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_Svc_Utils.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_CosProperty.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_IORTable.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO_PortableServer.so"
+2 - 
+2 - value = xx
+2 - unld "libTAO.so"
+2 - 
+2 - value = xx
+2 - unld "libACE.so"
+2 - 
+2 - value = xx
+2 - 
+2 - 
+2 - lcubootAutoLoad 1,"libACE.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libACE.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_PortableServer.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_PortableServer.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_IORTable.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_IORTable.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_CosProperty.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_CosProperty.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_Svc_Utils.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_Svc_Utils.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_CosNaming.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_CosNaming.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_DynamicAny.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_DynamicAny.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_ETCL.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_ETCL.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_DsLogAdmin.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_DsLogAdmin.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_CosNotification.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_CosNotification.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_IFR_Client.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_IFR_Client.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_Messaging.so"
+2 - 
+2 - lcubootAutoLoad: Loading module libTAO_Messaging.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"acsutil"
+2 - 
+2 - lcubootAutoLoad: Loading module acsutil, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"loggingService"
+2 - 
+2 - lcubootAutoLoad: Loading module loggingService, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"acserr"
+2 - 
+2 - lcubootAutoLoad: Loading module acserr, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"acscomponent"
+2 - 
+2 - lcubootAutoLoad: Loading module acscomponent, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"expat"
+2 - 
+2 - lcubootAutoLoad: Loading module expat, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"cdb"
+2 - 
+2 - lcubootAutoLoad: Loading module cdb, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"recovery"
+2 - 
+2 - lcubootAutoLoad: Loading module recovery, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"Container"
+2 - 
+2 - lcubootAutoLoad: Loading module Container, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"ACSErrTypeCommon"
+2 - 
+2 - lcubootAutoLoad: Loading module ACSErrTypeCommon, flags: 0,0
+2 - value = xx
+2 - #lcubootAutoLoad 1,"acsnc"
+2 - 
+2 - #lcubootAutoLoad 1,"baci"
+2 - 
+2 - #lcubootAutoLoad 1,"acsdo"
+2 - 
+2 - 
+2 - 
+2 - # ___oOo___
+2 - 
+2 - LCU->putenv "MANAGER_REFERENCE=corbaloc::---:----/Manager"
+2 - value = xx
+2 - LCU->putenv "DAL_REFERENCE=corbaloc::---:----/CDB"
+2 - value = xx
+2 - LCU->sp ContainerStart," Container"
+2 - task spawned
+2 - value = xx
+2 - LCU->Starting Container...
+2 - DALReference obtained via environment: 'corbaloc::---:----/CDB'Field ':Appl_data:MACI/Containers/Container.ManagerReference' empty or not set.Manager hostname obtained via environment: 'xxx'----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'main'
+2 - ----------T--:--:--.--- [cdb::DALaccess::resolveDALserverIOR] DALReference obtained via environment: 'corbaloc::---:----/CDB'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Container 'Container' activated.
+2 - ----------T--:--:--.--- Local file logger: Cache saved to 'logFile_Container_0'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'baci'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/baci'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/baci'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/acsnc'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsnc'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsnc'.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Container 'Container' initialized successfuly
+2 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::ContainerImpl::init
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Connecting to the Manager...
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Failed to connect to the InterfaceRepository.
+2 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] ManagerReference obtained via environment: 'corbaloc::---:----/Manager'
+2 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+2 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
+2 - 
+2 - 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Connecting to the Centralized Logger...
+2 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::ContainerImpl::init
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Logging into the Manager...
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Unable to set Naming Context to Logger.
+2 - system exception, ID 'IDL:omg.org/CORBA/TIMEOUT:1.0'
+2 - TAO exception, minor code = 4f (timeout during connect; low 7 bits of errno:  79 errno = xxxxxxx), completed = NO
+2 - 
+2 - 
+2 - ----------T--:--:--.--- [ContainerImpl::run] Container running...
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Logged into the Manager.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsexmplAmsSeqImpl'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/acsexmplAmsSeqImpl'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsexmplAmsSeqImpl'.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_NEW
+2 - ----------T--:--:--.--- acscomponent::ACSComponentImpl::ACSComponentImpl
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZED
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZING
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::initialize
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_OPERATIONAL
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::execute
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_component] Component 'AMSSEQ1' activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'AMSSEQ1::actionThread'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'AMSSEQ1::monitorThread'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsexmplMountImpl'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/acsexmplMountImpl'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsexmplMountImpl'.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_NEW
+2 - ----------T--:--:--.--- acscomponent::ACSComponentImpl::ACSComponentImpl
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZED
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZING
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::execute
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::initialize
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_component] Component 'MOUNT1' activated.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_OPERATIONAL
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'MOUNT1::actionThread'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'MOUNT1::monitorThread'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsexmplFridgeImpl'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/acsexmplFridgeImpl'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsexmplFridgeImpl'.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZING
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZED
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_OPERATIONAL
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_component] Component 'FRIDGE1' activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_component] Component 'FRIDGE1' does not implement acscomponent::ACSComponentImpl
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'FRIDGE1::actionThread'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'FRIDGE1::monitorThread'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsexmplDoorImpl'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/acsexmplDoorImpl'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsexmplDoorImpl'.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_NEW
+2 - ----------T--:--:--.--- acscomponent::ACSComponentImpl::ACSComponentImpl
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZED
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_INITIALIZING
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::execute
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::initialize
+2 - ----------T--:--:--.--- doorControl thread spawned.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'doorControl'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'TOWER1:FRONTDOOR::actionThread'
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_OPERATIONAL
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_component] Component 'TOWER1:FRONTDOOR' activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'TOWER1:FRONTDOOR::monitorThread'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 4 components queued to be activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 4 of 4 components activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::logout] Logging out from the Manager.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::logout] Logged out from the Manager.
+2 - ----------T--:--:--.--- CharacteristicComponentImpl::~CharacteristicComponentImpl
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_DESTROYING
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::cleanUp
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeComponent] Component 'TOWER1:FRONTDOOR' etherealized.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_DEFUNCT
+2 - ----------T--:--:--.--- acscomponent::ACSComponentImpl::~ACSComponentImpl
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acsexmplDoorImpl'.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeComponent] Component 'FRIDGE1' etherealized.
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acsexmplFridgeImpl'.
+2 - ----------T--:--:--.--- CharacteristicComponentImpl::~CharacteristicComponentImpl
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::cleanUp
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeComponent] Component 'AMSSEQ1' etherealized.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_DEFUNCT
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_DESTROYING
+2 - ----------T--:--:--.--- acscomponent::ACSComponentImpl::~ACSComponentImpl
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acsexmplAmsSeqImpl'.
+2 - ----------T--:--:--.--- CharacteristicComponentImpl::~CharacteristicComponentImpl
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_DESTROYING
+2 - ----------T--:--:--.--- baci::CharacteristicComponentImpl::cleanUp
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeComponent] Component 'MOUNT1' etherealized.
+2 - ----------T--:--:--.--- acscomponent::ACS::COMPSTATE_DEFUNCT
+2 - ----------T--:--:--.--- acscomponent::ACSComponentImpl::~ACSComponentImpl
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acsexmplMountImpl'.
+2 - ----------T--:--:--.--- Stopping container... 
+2 - ----------T--:--:--.--- [ContainerImpl::run] Container stopping...
+2 - ----------T--:--:--.--- Container stopped.
+2 - 
+2 - 
+3 - ----------T--:--:--.--- Logging proxy successfully created.
+3 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXXxxxx'.
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] ManagerReference obtained via environment: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- Welcome to acsexmplClient!
+3 - ----------T--:--:--.--- Login into maciManager!
+3 - ----------T--:--:--.--- Getting COB: MOUNT1
+3 - ----------T--:--:--.--- Mount narrowed.
+3 - ----------T--:--:--.--- Trying to get actAz... 
+3 - ----------T--:--:--.--- OK
+3 - ----------T--:--:--.--- Value: 0.000000
+3 - ----------T--:--:--.--- Trying to narrow CB for actAz... 
+3 - ----------T--:--:--.--- OK
+3 - ----------T--:--:--.--- Trying to create monitor for actAz...
+3 - ----------T--:--:--.--- Set a 4s timer trigger for the monitor...
+3 - ----------T--:--:--.--- OK
+3 - ----------T--:--:--.--- Going in main loop for 10s...
+3 - ----------T--:--:--.--- (actAz::CBdouble::working) Value: 0.000000
+3 - ----------T--:--:--.--- (actAz::CBdouble::working) Value: 0.000000
+3 - ----------T--:--:--.--- (actAz::CBdouble::done) Value: 0.000000
+3 - ----------T--:--:--.--- Releasing...
+3 - Shutting down Container
+3 - Shutting down Manager
+3 - All done!

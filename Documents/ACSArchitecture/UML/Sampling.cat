@@ -1,0 +1,930 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Sampling"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"38E8BEB402C8"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "Sampling Client"
+	    quid       	"3940BF8E00D5")
+	(object Class "Sampling Manager"
+	    quid       	"3940BFB4006B"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3B98E55501BA"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023")))
+	(object Class "Sampling Server"
+	    quid       	"3940BFD3021E")
+	(object Class "Sampling Database"
+	    quid       	"3940C14B0323")
+	(object Class "Data Channel"
+	    quid       	"3B98E4DF02AA")
+	(object Association "Sampling request"
+	    quid       	"3940C17D00AE"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$0"
+		    quid       	"3940C18202A0"
+		    supplier   	"Logical View::Sampling::Sampling Manager"
+		    quidu      	"3940BFB4006B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$1"
+		    quid       	"3940C18202A1"
+		    supplier   	"Logical View::Sampling::Sampling Client"
+		    quidu      	"3940BF8E00D5")))
+	(object Association "$UNNAMED$2"
+	    quid       	"3940C19802FC"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$3"
+		    quid       	"3940C19B004D"
+		    supplier   	"Logical View::Sampling::Sampling Server"
+		    quidu      	"3940BFD3021E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$4"
+		    quid       	"3940C19B0057"
+		    supplier   	"Logical View::Sampling::Sampling Manager"
+		    quidu      	"3940BFB4006B")))
+	(object Association "Request sampling"
+	    quid       	"3940C1B101CB"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$5"
+		    quid       	"3940C1B4034C"
+		    supplier   	"Logical View::Sampling::Sampling Server"
+		    quidu      	"3940BFD3021E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$6"
+		    quid       	"3940C1B40356"
+		    supplier   	"Logical View::Sampling::Sampling Manager"
+		    quidu      	"3940BFB4006B")))
+	(object Association "Data"
+	    quid       	"3940C1E4032D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$7"
+		    quid       	"3940C1E800F8"
+		    supplier   	"Logical View::Sampling::Sampling Manager"
+		    quidu      	"3940BFB4006B"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$8"
+		    quid       	"3940C1E80102"
+		    supplier   	"Logical View::Sampling::Sampling Server"
+		    quidu      	"3940BFD3021E")))
+	(object Association "Store data"
+	    quid       	"3940C1F5007F"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$9"
+		    quid       	"3940C1F6036F"
+		    supplier   	"Logical View::Sampling::Sampling Database"
+		    quidu      	"3940C14B0323"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$10"
+		    quid       	"3940C1F60370"
+		    supplier   	"Logical View::Sampling::Sampling Manager"
+		    quidu      	"3940BFB4006B")))
+	(object Association "Retrieve data"
+	    quid       	"3940C20000C1"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$11"
+		    quid       	"3940C2020023"
+		    supplier   	"Logical View::Sampling::Sampling Client"
+		    quidu      	"3940BF8E00D5"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$12"
+		    quid       	"3940C202002D"
+		    supplier   	"Logical View::Sampling::Sampling Database"
+		    quidu      	"3940C14B0323")))
+	(object Association "Timer request"
+	    quid       	"3940C22300E9"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$13"
+		    quid       	"3940C2240253"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server"
+		    quidu      	"3940B24500B6"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$14"
+		    quid       	"3940C224025D"
+		    supplier   	"Logical View::Sampling::Sampling Server"
+		    quidu      	"3940BFD3021E")))
+	(object Association "time trigger"
+	    quid       	"3944E801003C"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$15"
+		    quid       	"3944E80202BC"
+		    supplier   	"Logical View::Sampling::Sampling Server"
+		    quidu      	"3940BFD3021E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$16"
+		    quid       	"3944E80202BD"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server"
+		    quidu      	"3940B24500B6")))
+	(object Association "Timer request"
+	    quid       	"3944E80E015E"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$17"
+		    quid       	"3944E80E015F"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server"
+		    quidu      	"3940B24500B6")
+		(object Role "$UNNAMED$18"
+		    quid       	"3944E80E0160"
+		    supplier   	"Logical View::Sampling::Sampling Server"
+		    quidu      	"3940BFD3021E"
+		    is_navigable 	TRUE)))
+	(object Association "$UNNAMED$19"
+	    quid       	"3B98E43E0295"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$20"
+		    quid       	"3B98E4420132"
+		    supplier   	"Logical View::Sampling::Sampling Client"
+		    quidu      	"3940BF8E00D5"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$21"
+		    quid       	"3B98E442013C"
+		    supplier   	"Logical View::Sampling::Sampling Manager"
+		    quidu      	"3940BFB4006B")))
+	(object Association "Publish data"
+	    quid       	"3B98E5BE032D"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$22"
+		    quid       	"3B98E5C000F5"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$23"
+		    quid       	"3B98E5C00109"
+		    supplier   	"Logical View::Sampling::Sampling Manager"
+		    quidu      	"3940BFB4006B")))
+	(object Association "Publish data"
+	    quid       	"3B98E5C40033"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$24"
+		    quid       	"3B98E5C600AE"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$25"
+		    quid       	"3B98E5C600C2"
+		    supplier   	"Logical View::Sampling::Sampling Database"
+		    quidu      	"3940C14B0323")))
+	(object Association "Data subscribed"
+	    quid       	"3B98E5CA0009"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$26"
+		    quid       	"3B98E5CB0083"
+		    supplier   	"Logical View::Sampling::Sampling Client"
+		    quidu      	"3940BF8E00D5"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$27"
+		    quid       	"3B98E5CB008E"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Sampling Architecture"
+	    quid       	"3940BF7200FC"
+	    title      	"Sampling Architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	34
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::ACS Component/Container model::ACS Component::Distributed Object::Event System::Time Server" @1
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(450, 1815)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@1
+			location   	(257, 1760)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	386
+			justify    	0
+			label      	"Time Server")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B24500B6"
+		    width      	404
+		    height     	134
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Sampling::Sampling Server" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(450, 1350)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(237, 1304)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	426
+			justify    	0
+			label      	"Sampling Server")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940BFD3021E"
+		    width      	444
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Timer request" @3
+		    location   	(380, 1532)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @4
+			Parent_View 	@3
+			location   	(229, 1532)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	284
+			justify    	0
+			label      	"Timer request"
+			pctDist    	-2.016667
+			height     	1
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3944E80E015E"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$17" @5
+			    Parent_View 	@3
+			    location   	(-25, 182)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E80E015F"
+			    client     	@3
+			    supplier   	@1
+			    vertices   	(list Points
+				(380, 1532)
+				(359, 1588)
+				(422, 1747))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$18" @6
+			    Parent_View 	@3
+			    location   	(-25, 182)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E80E0160"
+			    client     	@3
+			    supplier   	@2
+			    vertices   	(list Points
+				(380, 1532)
+				(426, 1408))
+			    line_style 	0)))
+		(object AssociationViewNew "time trigger" @7
+		    location   	(532, 1624)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @8
+			Parent_View 	@7
+			location   	(665, 1535)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	233
+			justify    	0
+			label      	"time trigger"
+			pctDist    	2.716667
+			height     	90
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3944E801003C"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$15" @9
+			    Parent_View 	@7
+			    location   	(82, -191)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E80202BC"
+			    client     	@7
+			    supplier   	@2
+			    vertices   	(list Points
+				(532, 1624)
+				(556, 1569)
+				(478, 1408))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$16" @10
+			    Parent_View 	@7
+			    location   	(82, -191)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3944E80202BD"
+			    client     	@7
+			    supplier   	@1
+			    vertices   	(list Points
+				(532, 1624)
+				(477, 1747))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Sampling::Sampling Manager" @11
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(420, 840)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@11
+			location   	(183, 794)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	474
+			justify    	0
+			label      	"Sampling Manager")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940BFB4006B"
+		    width      	492
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Request sampling" @12
+		    location   	(208, 1134)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @13
+			Parent_View 	@12
+			location   	(208, 1075)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	376
+			justify    	0
+			label      	"Request sampling"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940C1B101CB"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$5" @14
+			    Parent_View 	@12
+			    location   	(-212, 294)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C1B4034C"
+			    client     	@12
+			    supplier   	@2
+			    vertices   	(list Points
+				(208, 1134)
+				(384, 1291))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$6" @15
+			    Parent_View 	@12
+			    location   	(-212, 294)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C1B40356"
+			    client     	@12
+			    supplier   	@11
+			    vertices   	(list Points
+				(208, 1134)
+				(163, 1094)
+				(360, 898))
+			    line_style 	0)))
+		(object AssociationViewNew "Data" @16
+		    location   	(655, 1137)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @17
+			Parent_View 	@16
+			location   	(655, 1078)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	100
+			justify    	0
+			label      	"Data"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940C1E4032D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$7" @18
+			    Parent_View 	@16
+			    location   	(250, -213)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C1E800F8"
+			    client     	@16
+			    supplier   	@11
+			    vertices   	(list Points
+				(655, 1137)
+				(697, 1094)
+				(483, 898))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$8" @19
+			    Parent_View 	@16
+			    location   	(250, -213)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C1E80102"
+			    client     	@16
+			    supplier   	@2
+			    vertices   	(list Points
+				(655, 1137)
+				(504, 1291))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Sampling::Sampling Database" @20
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1425, 840)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@20
+			location   	(1177, 794)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	496
+			justify    	0
+			label      	"Sampling Database")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940C14B0323"
+		    width      	514
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Store data" @21
+		    location   	(916, 840)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @22
+			Parent_View 	@21
+			location   	(916, 781)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	193
+			justify    	0
+			label      	"Store data"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940C1F5007F"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$9" @23
+			    Parent_View 	@21
+			    location   	(496, 0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C1F6036F"
+			    client     	@21
+			    supplier   	@20
+			    vertices   	(list Points
+				(916, 840)
+				(1167, 840))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$10" @24
+			    Parent_View 	@21
+			    location   	(496, 0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C1F60370"
+			    client     	@21
+			    supplier   	@11
+			    vertices   	(list Points
+				(916, 840)
+				(666, 840))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Sampling::Sampling Client" @25
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(435, 135)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@25
+			location   	(236, 89)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	398
+			justify    	0
+			label      	"Sampling Client")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940BF8E00D5"
+		    width      	416
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Sampling request" @26
+		    location   	(155, 482)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @27
+			Parent_View 	@26
+			location   	(155, 423)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	355
+			justify    	0
+			label      	"Sampling request"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940C17D00AE"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$0" @28
+			    Parent_View 	@26
+			    location   	(-295, 122)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C18202A0"
+			    client     	@26
+			    supplier   	@11
+			    vertices   	(list Points
+				(155, 482)
+				(376, 781))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$1" @29
+			    Parent_View 	@26
+			    location   	(-295, 122)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940C18202A1"
+			    client     	@26
+			    supplier   	@25
+			    vertices   	(list Points
+				(155, 482)
+				(119, 434)
+				(371, 193))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Event and Notification System::Notification Channel" @30
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(615, 465)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@30
+			location   	(295, 411)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	640
+			justify    	0
+			label      	"Notification Channel")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB58D80023"
+		    width      	658
+		    height     	132
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "Publish data" @31
+		    location   	(514, 656)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @32
+			Parent_View 	@31
+			location   	(514, 597)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"Publish data"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98E5BE032D"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$22" @33
+			    Parent_View 	@31
+			    location   	(94, -184)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E5C000F5"
+			    client     	@31
+			    supplier   	@30
+			    vertices   	(list Points
+				(514, 656)
+				(578, 531))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$23" @34
+			    Parent_View 	@31
+			    location   	(94, -184)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E5C00109"
+			    client     	@31
+			    supplier   	@11
+			    vertices   	(list Points
+				(514, 656)
+				(449, 781))
+			    line_style 	0)))
+		(object AssociationViewNew "Publish data" @35
+		    location   	(1029, 656)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @36
+			Parent_View 	@35
+			location   	(1029, 597)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"Publish data"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98E5C40033"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$24" @37
+			    Parent_View 	@35
+			    location   	(-396, -184)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E5C600AE"
+			    client     	@35
+			    supplier   	@30
+			    vertices   	(list Points
+				(1029, 656)
+				(760, 531))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$25" @38
+			    Parent_View 	@35
+			    location   	(-396, -184)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E5C600C2"
+			    client     	@35
+			    supplier   	@20
+			    vertices   	(list Points
+				(1029, 656)
+				(1300, 781))
+			    line_style 	0)))
+		(object AssociationViewNew "Data subscribed" @39
+		    location   	(522, 295)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @40
+			Parent_View 	@39
+			location   	(522, 236)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	450
+			justify    	0
+			label      	"Data subscribed"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3B98E5CA0009"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$26" @41
+			    Parent_View 	@39
+			    location   	(-93, -170)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E5CB0083"
+			    client     	@39
+			    supplier   	@25
+			    vertices   	(list Points
+				(522, 295)
+				(466, 193))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$27" @42
+			    Parent_View 	@39
+			    location   	(-93, -170)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3B98E5CB008E"
+			    client     	@39
+			    supplier   	@30
+			    vertices   	(list Points
+				(522, 295)
+				(577, 398))
+			    line_style 	0)))))))

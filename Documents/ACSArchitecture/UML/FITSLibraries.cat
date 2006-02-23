@@ -1,0 +1,13 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "FITS libraries"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"38159EA60177"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list)
+    logical_presentations 	(list unit_reference_list))

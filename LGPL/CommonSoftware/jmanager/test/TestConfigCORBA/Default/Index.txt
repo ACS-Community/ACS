@@ -1,0 +1,1 @@
+abeans.framework.ApplicationContext=ApplicationContext

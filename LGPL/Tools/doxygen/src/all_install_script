@@ -1,0 +1,141 @@
+#! /bin/ksh
+#***********************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: all_install_script,v 1.1 2005/09/26 11:57:20 mpasquat Exp $"
+#
+# who       when         what  
+# --------  --------     ----------------------------------------------
+# MPA       22 Sep 2005  created
+#************************************************************************
+#   NAME 
+#   all_install_script
+#
+#   SYNOPSIS
+#   all_install_script $doxygen_Version $graphviz_Version
+#
+#   DESCRIPTION
+#   This script 
+#   on linux: performs a compilation/installation of the doxygen/graphviz tools
+#   and maybe SUN: untars the sources, compiles/installs the doxygen/graphviz tools
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+OS=`uname -s`
+OS_REV=`uname -r`
+DOX_VER=$1
+GVIZ_VER=$2
+
+case $OS in
+Linux) 
+    TAG=linux.i386
+    ;;
+SunOS)
+    TAG=sol56.sun4
+    ;;
+*)      
+    echo "Unsupported Operative System. Script aborted"
+    exit 1
+    ;;
+esac
+
+if [ "$INTLIST" != "" ] && [ "X$INTROOT" = "X" ]
+then
+    INTROOT=`echo $INTLIST | awk -F: '{print $1}'`
+fi
+
+if [ "$INTROOT" != "" ] 
+then 
+   INSTALL_DIR=$INTROOT
+elif [ "$ACSROOT" != "" ] 
+then 
+   INSTALL_DIR=$ACSROOT
+elif [ "$VLTROOT" != "" ] 
+then 
+   INSTALL_DIR=$VLTROOT
+else 
+   echo "no installation directories (INTROOT, ACSROOT, VLTROOT) have been found"
+   echo "please define one and start again" 
+   exit 1
+fi
+
+BASE=`pwd`
+
+case $OS in
+Linux)
+
+    # Graphviz Compilation
+    echo ". . . graphviz $GVIZ_VER compilation"
+    cd graphviz-$GVIZ_VER
+    ./configure --prefix=$INSTALL_DIR 
+    make
+
+    # Graphviz Installation
+    echo ". . . graphviz $GVIZ_VER installation"
+    make install
+    make clean
+    cd ..
+
+    # Doxygen Compilation
+    echo ". . . doxygen $DOX_VER compilation"
+    cd doxygen-$DOX_VER
+    ./configure --prefix $INSTALL_DIR  
+    make
+
+    # Doxygen Installation
+    echo ". . . doxygen $DOX_VER installation"
+    make install
+    cd .. 
+
+    ;;
+
+SunOS)
+    
+    # Graphviz Compilation
+    echo ". . . graphviz $GVIZ_VER compilation"
+    cd graphviz-$GVIZ_VER
+
+    # png library is not available on SUNOS and the one under alma tcltk is used
+    #   
+    ./configure --prefix=$INSTALL_DIR --with-pnglibdir=$TCLTK_ROOT/lib --with-pngincludedir=$TCLTK_ROOT/include
+    make
+
+    # Graphviz Installation
+    echo ". . . graphviz $GVIZ_VER installation"
+    make install
+    make clean
+    cd ..
+
+    # Doxygen Compilation
+    echo ". . . doxygen $DOX_VER compilation"
+    cd doxygen-$DOX_VER
+    ./configure  --platform solaris-g++ --prefix $INSTALL_DIR --install install
+    make
+
+    # Doxygen Installation
+    echo ". . . doxygen $DOX_VER installation"
+    make install
+    cd .. 
+    ;;
+
+esac
+
+
+
+
+

@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+Contains standard actions that can be used in contextual menus or associated with buttons or toolbars, and base classes that can be used to create new actions.
+<p>
+An action is a way to make available a functionality to the GUI.
+Actions can be context insensitive which means that their execution is not dependant of any context such as the current selection, or context sensitive which means that their execution is dependent on the current selection. Actions shown in contextual menus, are usually context sensitive. 
+</p><p>
+Context sensitive actions can delegate their execution to the selected bean(s) or perform their own execution based on the selection. The first ones are called <code>BeanAction</code> and are linked to a <code>Capability</code> (see <code>capabilities</code> package). The second ones are called <code>NodeAction</code> and are self contained. They perform an execution that is dependant on the selection but that does not delegate to the actual selection.
+</p><p>
+To create a new action class you can inherit from <code><a href="support/NodeAction.html">NodeAction</a></code> and implement the abstract method <code>performAction()</code> or you can inherit from <code><a href="support/BeanAction.html">BeanAction</a></code> and implement <code>performCapability()</code>. An alternative is to inherit from <code><a href="support/BeanActionSupport.html">BeanActionSupport</a></code>. In this case you only have to write a constructor that pass a capability to the parent constructor. The method <code>performCapability()</code> is already implemented for you and calls automatically the corresponding method of the given capability.
+</p>
+
+<!-- Put @see and @since tags down here. -->
+  @author  GP Project Team
+  @since   GP 0.1
+</body>
+</html>
+

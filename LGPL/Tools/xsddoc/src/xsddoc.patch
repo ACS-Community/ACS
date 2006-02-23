@@ -1,0 +1,85 @@
+diff -Naur tmp_unpack/net/sf/xframe/xsddoc/Task.java net/sf/xframe/xsddoc/Task.java
+--- tmp_unpack/net/sf/xframe/xsddoc/Task.java	2005-02-26 13:58:03.000000000 +0000
++++ net/sf/xframe/xsddoc/Task.java	2005-04-06 12:14:21.000000000 +0000
+@@ -297,31 +297,47 @@
+      * @param schemaLocation the schema to add
+      */
+     private void addSchema(final Document mediatorSchema, final String base, final String schemaLocation) {
+-        if (verbose) {
+-            System.out.println("found schema " + schemaLocation);
+-        }
+         String namespace = null;
+         namespace = getNamespace(base, schemaLocation);
++	/*
++	 * G.Chiozzi
++	 * The messages here were confusing.
++	 * "found schema" was always printed also for
++	 * files that were later on found not
++	 * to be valid schema files
++	 */
+         if (namespace == null) {
+-            if (debug) {
+-                System.out.println("Seems not to be a schema, ignoring " + schemaLocation);
++            if (verbose) {
++                System.out.println("found file   " + schemaLocation + " does not seem a schema. Ignoring");
+             }
+             return;
+         }
++        if (verbose) {
++            System.out.println("found schema " + schemaLocation + " (namespace is: " + namespace + ")");
++        }
+         final Element importNode = mediatorSchema.createElementNS(SCHEMA_NS, "import");
+         final String projectDir = getProject().getBaseDir().getAbsolutePath() + File.separator;
++        
+         // Since the processor interprets everything as relative, the schemaLocation should
+         // be the relative path from the project base. However the base string may contain
+         // some path info not in the base. That is the base may be obtained from the fileset
+         // attribute.
+         final String schemaLoc;
+         //Does the base have additional information?
+-        if (base.length() > projectDir.length() && base.startsWith(projectDir)) {
+-            String relativePath = base.substring(projectDir.length());
+-            schemaLoc = relativePath + File.separator + schemaLocation;
+-        } else {
++/*
++ * G.Chiozzi
++ *   This code does not seem to work int our case
++ *   Actually everything goes fine int all tests I made
++ *   simply leaving the schema location as it is.
++ *   Therefore I comment out the test for now.
++ */
++//        if (base.length() > projectDir.length() && base.startsWith(projectDir)) {
++//            String relativePath = base.substring(projectDir.length());
++//            schemaLoc = relativePath + File.separator + schemaLocation;
++//        } else {
+             schemaLoc = schemaLocation;
+-        }
++//        }
++
+         importNode.setAttribute("schemaLocation", schemaLoc);
+         importNode.setAttribute("namespace", namespace);
+         mediatorSchema.getDocumentElement().appendChild(importNode);
+@@ -338,7 +354,22 @@
+         try {
+             final Document schema = getDocumentBuilder().parse(new File(base, filename));
+             final Element root = schema.getDocumentElement();
+-            return root.getAttribute("targetNamespace");
++
++            /*
++	     * G.Chiozzi
++	     *   getAttribute() on any XML file returns
++	     *   the empty string and NOT null is the attribute
++	     *   does not exist.
++	     *   Therefore I explicitly test here for the empty
++	     *   string and return null
++	     *   This was causing errors when an XML but not schema file
++	     *   was found int the directory
++	     */    
++            String namespace = root.getAttribute("targetNamespace");
++            if(namespace.length()==0)
++            	return null;
++            else
++            	return namespace;
+         } catch (Exception e) {
+             return null;
+         }

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../../Common/Documentation/Normal.xsl"?>
+<cosydoc xmlns="urn:schemas-cosylab-com:Document">
+<head>
+    <!-- Document's title (XHTML element)-->
+    <title>Abeans Visual Composition with Eclipse VE</title>
+
+    <!-- Information about the document -->    
+    <info file="TUT-Abeans_Visual_Composition_with_Eclipse_VEP"
+            url="http://www.cosylab.com/docs"
+            class="TUT"
+            id="@@DOC_ID@@"
+            project="Abeans VE Plug-in"
+            year="2003"
+            confidentiality="public"/>
+
+    <!-- List of contributors, along with their contact information -->
+    <contributor name="Jernej Kamenik"
+    	id="jkamenik"
+    	email="jernej.kamenik@cosylab.com"/>
+    
+    <!-- Document's history. Elements must be ordered chronologically. -->
+    <!-- A modification -->   
+   	<modification version="1.0" by="jkamenik" date="2005-03-02">
+	  <section>Created.</section>
+	</modification>
+   	<modification version="1.1" by="jkamenik" date="2005-09-01">
+	  <section id="running">Updated.</section>
+	</modification>
+   	<modification version="1.2" by="jkamenik" date="2005-09-01">
+	  <section id="appendix">Added notes on installation and config.</section>
+	</modification>
+    
+    <!-- A review -->   
+    
+    <!-- A release -->   
+    
+    <!-- A retirement -->   
+    
+    <!-- Scope of the document -->      
+    <scope>
+    	This is a tutorial that shows how to visually assemble BACI model based Abeans applications in the Eclipse Visual Editor with only a few mouse clicks.
+    	The application (Power Supply Panel) allows a user to control one power supply device at a time by means of Abeans components.
+    	It is intended for users who are not familiar with the Java programming language and for the ones who want to build applications visually. 
+	</scope>
+    
+    <!-- Intended audience of the document -->      
+    <audience>
+		The audience of this document are all users of Abeans application framework.
+	</audience>
+    
+    <!-- A reference to an external document -->
+    <reference
+    	id="install"
+    	title="ACS Eclipse Installation"
+    	href="http://almasw.hq.eso.org/almasw/bin/view/ACS/FAQJCompEclipse"
+    	author="Heiko Sommer" date="2005" revision="1.3" publisher="ALMASW" />
+</head>
+
+<body>
+	<section id="intro" title="Introduction">
+		<p>
+			This document provides a step-by-step procedure on how to create a simple ACS based Abeans application in the Eclipse Visual Editor just by dragging a few componnents on the canvas and connecting them via menu selections.
+			The showcase application Power Supply Panel (PSPanel) allows a user to control one power supply device at a time by means of Abeans components.
+			See the <a aref="install">ACS Eclipse installation</a> document on how to install and configure Eclipse for ACS java development, as well as the <a sref="appendix">Appendix</a> on how to compile and run ACS based Abeans applications with Eclipse Visual Editor.
+			The application discussed in this document is <i>com.cosylab.demo.PSPanel</i>, its source code can be found in the <f>acsabeans/src</f> module.
+		</p>
+	</section>
+	<section id="template" title="The Abeans BACI Application template">
+		<p>
+			The procedure for creating visual Abeans applications involves using the prepared Abeans Application templates installed with the Abeans VE plug-in in Eclipse IDE.
+			This section outlines the steps needed to start visually composing an ACS based Abeans visual application.
+		</p>
+			<ol>
+				<li>
+					In the system menu bar on top of the IDE select <m>File</m> and <m>New</m> and then from the drop-down menu select the <m>Visual Class</m> option.
+				</li>
+				<li>
+					A wizard pops up.
+					<figure id="newWizard.png">The wizard for creating a new visual application.</figure>
+				</li>
+				<li>
+					Select the style: <g>Abeans Applications</g>, <g>ACS Abeans Application</g>.
+				</li>
+				<li>
+					Type in the name (and package) of the application class - PSPanel.
+				</li>
+				<li>
+					Check the method stub options <m>public static void main(args[])</m> and <m>Constructors from superclass</m> and press <g>Finish</g>.
+				</li>
+			</ol>
+			<p>
+				With this steps the visual application class is created and Eclipse switches to Visual Java Class Editing mode.
+			</p>
+	</section>
+	<section id="gui" title="Creating the GUI">
+		<p>
+			In this section, we will make the GUI of our application. 
+		</p>
+		<section id="gui:layout" title="Application layout">
+			<p>
+				In this section we set up the layout in which GUI component will be placed inside the PSPanel.
+			</p>		
+			<ol>
+			<li>
+				First we want to choose a suitable layout for our application.			
+				Click on the panel in the GUI editor view or on the <g>this</g> root node in the [Java Beans] tree view.
+				A list of available properties is displayed in the bottom tab.
+				Click on the <g>layout</g> property and choose the <g>GridLayout</g> from the combo box on the right.
+				<figure id="layout.png">Selecting the layout manager for the PSPanel.</figure>
+			</li>
+			<li>
+				Next we modify the layout to display the contents in rows instead of columns (the default setting).
+				This is done by either expanding the <g>layout</g> option in the list of properties.
+				In the property table below click on the <g>columns</g> item and type in 1 instead of 0.
+				Similary in the <g>rows</g> column change the value from 1 to 0.
+				<p type="notice">
+				 	The layout can alternatively be custumized or by right clicking on the panel and selecting the <m>Custumize layout...</m> menu option.
+				</p>
+			</li>				
+			</ol>
+		</section>
+		<section id="gui:components" title="Adding GUI Components">
+			<p>
+				Now we can start adding the Abeans components to the panel by choosing them from the [Pallete] on the right side of the GUI Editor view.
+			</p>		
+		<ol>
+			<li>
+				Hold the mouse pointer over the palette bar or click on it to expand it.
+				From the [Pallete] select the folder <g>Abeans Components</g> and the Single Abean Selector icon from it:
+				<figure id="selectora.png">Click on the Single Abean Selector icon.</figure>
+				Then, click somewhere on the empty form and the selector will appear on it.
+				From the [Pallete] select the tab <g>Abeans Displayers (Single)</g> and add Gauger, Slider and Ledder to the form.
+				The application should now look like this:
+				<figure id="pspanel1a.png">PSPanel layout.</figure>
+				<p type="notice">
+					Alternatively, components from the [Palette] can be added directly to the [Java Beans] tree view instead to the GUI editor view.
+					This procedure is useful if there is now space in the GUI layout of the panel where to drop the new component.
+				</p>
+			</li>
+			<li>
+				We also need some other swing components to control the application.
+				From the <g>Swing Containers</g> folder select the JPanel and add it to the form.
+				From the [Java Beans] tree select the <g>jPanel1</g> node and set the <g>GridBagLayout</g> layout manager.
+				Then add three buttons to the added JPanel by selecting JButton from the <g>Swing Components</g> folder and clicking somewhere within the jPanel's space, repeating the procedure three times.
+				You may need to resize the form so that all the components are not squeezed together two much.
+				This is done by selecting the panel in the [Java Beans] tree and then mouse dragging the lower-right edge of the form.
+				In the [Java Beans] tree click on the first button <g>jButton</g> with the right mouse button.
+				In the popup dialog select <m>Rename field</m>.
+				<figure id="rename.png">Renaming components.</figure>
+				Another dialog shows up.
+				In the text field enter <i>onButton</i> and press <g>OK</g>.
+				Again select the first button now named <g>onButton</g> and in the properties tab set the <g>text</g> to <i>ON</i>.
+				Repeat the whole procedure with the second button (jButton1), renaming it to <i>offButton</i> and setting its text to <i>OFF</i> and the third button (jButton2) to <i>resetButton</i> with text <i>RESET</i>.
+				The application should now finally look like this:
+				<figure id="pspanel2.png">PSPanel layout.</figure>
+			</li>
+		</ol>
+		</section>
+	</section>
+	<section id="psbean" title="The Power Supply Bean">
+		<p>
+			In this section we lookup the invisible device bean representing a power supply and add it to our application.
+		</p>
+		<ol>
+			<li>
+				In the [Palette] click on the <g>Choose Bean</g> icon.
+				A dialog shows up.
+				In the text field type in "PowerSupply".
+				Select <g>PowerSupply</g> from the matching types list and press <g>OK</g>.
+				<figure id="powersupply.png">Finding power supply bean.</figure>
+			</li>
+			<li>
+				Click somewhere on the GUI canvas outside the applicaton panel.
+				The bean should appear in the [Java Beans] tree view as well as in the GUI Editor view.				
+				<figure id="powersupply1.png">The complete PSPanel Java Beans tree with Power Supply Bean.</figure>
+			</li>
+		</ol>
+	</section>
+	<section id="logic" title="Adding application logic">
+		<p>
+			In this section we add logic to the application by connecting beans nad handling events. 
+		</p>
+		<section id="logic:connections" title="Connecting Power Supply Bean to GUI Components">
+			<p>
+				First we want to connect the power supply bean to the abeans GUI components and dispalyers.
+			</p>
+			<ol>
+				<li>
+					First select the jSingleAbeanSelector from the [Java Beans] tree (or by clicking on it in the form).
+					From the property sheet click the <g>abean</g> property and in the combo box select <g>powerSupply</g>.
+				</li>
+				<li>
+					At this point we cannot avoid typing in a few lines of code.
+					Select from the [Outline] tree view the method <g>getJGauger()</g>.
+					The Java code view below the GUI editor scrolls to display the method.
+					Expand the Java code view by clicking on the up arrow in the split pane delimiter between the GUI editor and Java code view.
+					Below the Gauger constructor call type in the following:
+		<code language="Java" id="buttonAction"><![CDATA[
+			jGauger.setDoubleProperty(getPowerSupply().getReadback());		
+]]>
+			<desc>Setting the power supply readback to the gauger.</desc>
+		</code>
+										
+				</li>
+				<li>
+					Repeat the upper procedure for <i>doubleProperty</i> of <i>jSlider</i> only select the <i>getCurrent()</i> method of <i>powerSupply</i> bean.
+					Also apply same procedure for the <i>patternProperty</i> of <i>jLedder</i>  and use the <i>getStatus()</i> method from <i>powerSupply</i> bean.
+				</li>	
+			</ol>		
+		</section>
+		
+		<section id="logic:events" title="Handling events">
+			<p>
+				In this section we will add control of the power supply bean through the buttons in the PSPanel.
+				And inversely, we will add visual indications to internal state changes of the power supply by adding handlers to its link events. 
+			</p>
+			
+			<ol>
+				<li>
+					First we want to be able to turn the power supply on by pressing <g>onButton</g>.
+					Click on <g>onButton</g> in the [Java Beans] tree with the right mouse button.
+					From the popup menu select <m>Events</m> and <m>actionPerformed</m> option.
+					<figure id="action.png">Adding functionality to the onButton.</figure>
+					The Java code view changes to the the newly created <i>actionPerformed</i> method below the onButton constructor call. 
+					Type in the following:
+					
+		<code language="Java" id="buttonAction"><![CDATA[
+		try {
+			powerSupply.on();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+]]>
+			<desc>The code to be executed when onButton (ON) is pressed.</desc>
+		</code>
+				</li>
+				<li>
+					Repeat the upper procedure for <g>offButton</g> and execute <i>powerSupply.off()</i>.
+					The same for <g>resetButton</g> with <i>powerSupply.reset()</i> method invocation.
+				</li>
+				<li>
+					Finally we want to enable or disable the three buttons when the power supply bean successfully connects to the underlying modeling layer.
+					Select <g>powerSupply</g> from the [Java Beans] tree and select <m>Events</m> and <m>Add Events...</m> options from the popup menu.
+					<figure id="link.png">Adding functionality when the power supply link is established.</figure>					
+					In the Java code view of the <i>linkEstablished</i> method enter:					
+		<code language="Java" id="psLink"><![CDATA[
+		onButton.setEnabled(true);
+		offButton.setEnabled(true);
+		resetButton.setEnabled(true);
+]]>
+			<desc>The code to be executed when powerSupply becomes linked to the modeling layer.</desc>
+		</code>
+				</li>
+				<li>
+					Repeat the upper procedure for the <g>linkLost</g> event and disable all the PSPanel buttons in the handler method.	Only this time, from the [Add Event] dialog, choose the <m>Use existing listener</m> option.
+					<figure id="link1.png">Adding functionality when the power supply link is lost.</figure>					
+				</li>
+			</ol>
+		</section>
+	</section>
+	<section id="deviceSpecific" title="Creating the application for a specific device">
+		<p>
+			If you want a PSPanel that controls only one device, you do not need a SingleAbeanSelectorBean. 
+			To create such application just follow the steps outlined above, but remember to exclude the Selector Bean. 
+			Create all the connections and logic explained with one exception. 
+			Instead of setting the powerSupply as the abean of the selector (which is now missing) set the <g>remoteName</g> of the <g>powerSupply</g> to the name of the device you wish to control.
+			<ol>
+				<li>
+					Select <g>powerSupply</g> from the [Java Beans] tree.	
+				</li>	
+				<li>
+					In the property sheet click on the <g>remoteName</g> property and in the textField to the right enter the name	of the device you wish to control.	
+					<figure id="pscustom2.png">Setting remote name of a specific device you wish to control with the PSPanel.</figure>
+				</li>
+				<li>
+					Press <g>Enter</g> to confirm your entry. The corresponding method call is generated in the Java code view of PSPanel.
+				</li>
+				<li>
+					The newly generated method call <i>setRemoteName</i> throws declared exceptions, which still need to be handled.
+					Click on the light bulb icon on the left side of the code view.
+					From the popup menu select <g>Surround with try/catch</g> and press <g>Enter</g>.
+					A try/catch block is generated around the method call.
+					<figure id="pscustom1.png">Handling exceptions.</figure>
+				</li>
+			</ol>		
+		</p>	
+	</section>
+	<section id="running" title="Running the application from within the IDE">
+			<p>
+				Abeans applications can be launched easily using <i>com.cosylab.abeans.AbeansLaunchable</i>.
+				Just add the following code the the main method of PSPanel:
+		<code language="Java" id="buttonAction"><![CDATA[
+	public static void main(String[] args) {
+		//this launches PSPanel application
+		AbeansLaunchable.launch(PSPanel.class, args);
+	}
+]]>
+			<desc>The code for launching PSPanel.</desc>
+		</code>
+			</p>
+			<p>
+				The easiest way then to run the PSPanel application is from within the Eclipse IDE.
+			</p>
+			<ol>
+				<li>
+					Select the <m>Run</m> menu from the main menu bar and select the <m>Run...</m> option.
+				</li>
+				<li>
+					A dialog shows up. In the tree view on the left select <g>Java Application</g> and press <g>New</g>.
+					A new Java Application running configuration is created for PSPanel.
+					In the [Arguments] tab enter the JVM and program arguments you normally use for running ACS based Abeans applications and press <g>Apply</g>. 
+					<figure id="arguments.png">Enter JVM arguments for running the PSPanel.</figure>
+				</li>
+				<li>
+					Press <g>Run</g> to run the application for the first time.
+					Next time you want to run the application just press the <g>Run</g> icon in the menu bar or select PSPanel from its drop down menu.
+					<figure id="run.png">Running PSPanel from Eclipse menu bar.</figure>
+				</li>	
+			</ol>
+					<p type="notice">
+						By default setting JVM arguments is not necessary since default Abeans configuration has been already put in your classpath by the installation procedure.
+					</p>
+	</section>
+	<section id="conclusion" title="Conclusion">
+		<p>
+			With same grips we can visually build a lot of different but functional applications in very short time using the integration of Abeans libraries and the Eclipse IDE with the Visual Editor plug-in.
+		</p>
+	</section>
+	<section id="appendix" title="Appendix">
+		<section id="VEP-install" title="Abeans Visual Eclipse Plugin Installation">
+			<p>
+				This section describes the installation of the Abeans Visual Eclipse Plugin (Abeans-VEP) for building ACS Abeans java applications visually in Eclipse. 
+			</p>
+			<p type="warning">
+				The Abeans-VEP was tested to work with Eclipse v3.1.0 and Eclipse Visual Editor Plugin v1.1.0.1, on which this tutorial is based. 
+				The plugin is <it><b>not</b></it> compatible with Eclipse v3.0 or older, or Visual Editor Plugin 1.0.x or older.
+			</p>
+			<p>
+				<ol>
+					<li>
+				First you need to install the Eclipse Visual Editor Plugin, which is available for download at <a href="http://eclipse.org/vep/">eclipse.org/vep</a> website. 
+				The plugin version 1.1.0.1 references additional eclipse plugins: EMF build 2.1.0 and GEF Build 3.1 both available for download at the plugin site.
+				Unzip all of the plugins into the eclipse installation directory to match the subfolder structure. 
+					</li>
+					<li>
+				Next, fetch the Abeans-VEP distribution from the <f>acsabeans/lib</f> module. Install it by unpacking into the eclipse installation plugins subfolder.
+					</li>
+				</ol>
+			</p>
+			<p type="notice">
+				When installing additional plugins into an existing eclipse installation, it may occour on some systems, that the new plugins are not recognized by Eclipse.
+				In such cases delete the contents (including the hidden <f>.settings</f> subfolder) of the configuration subfolder of the Eclipse installation except the <f>config.ini</f> file. 
+			</p>
+		</section>
+		<section id="config" title="Configuring Eclipse Projects for Building and Running ACS Abeans Visual Applications">
+			<p>	
+				This section describes how to create and configure an Eclipse Java Project for visually building and running ACS Abeans applications. 
+			</p>
+			<p>
+				<ol>
+				<li>Create a new Java Project by Selecting <m>File/New/Project...</m>.</li> 
+				<li>A new project wizard dialog appears.
+				In the list select <m>Java Project</m> and click <g>Next</g>.</li>
+				<li>In the next page enter the Project's name and click <g>Next</g>.</li>
+				<li>In the Java Settings page select the <m>Libraries</m> tab and click <g>Add Variable...</g>.</li>
+				<li>A new variable classpath entry dialog appears.
+				From the list of variables select ACSROOT and click <g>Extend...</g>.</li>
+				<li>In the browser dialog select all the ACSROOT jars and click <g>OK</g>.</li>
+				<li>Repeat the procedure for the JACORB_HOME variable, then click <g>Finish</g> to finish the new project wizard.</li>
+				<li>A new project is created in the Eclipse workspace which is already configured for building and running ACS Abeans visual applications.</li>
+				</ol>	
+			</p>	
+		</section>
+	</section>
+	</body>
+</cosydoc>

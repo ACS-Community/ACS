@@ -1,0 +1,16 @@
+This directory contains:
+
+- ACE/TAO configuration files:
+   - config.h 
+   - platform_macros.GNU
+  for the platforms supported by ACS
+
+- ACE/TAO patches needed to properly 
+  build and run ACE/TAO on these platforms
+   - ACErelpatch.patch solves some problems with
+     absolute patchs that should instead be relative
+   - ACETAOVxWorks.patch fixes problems with VxWorks build
+     related to namespaces and some include file
+   - TAOifr.patch (currently not used)
+     Applies fixes to the interface repository, but is not
+     used for ACS 3.1, since we have switched to mico IFR

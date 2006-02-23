@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<_ Name="TEST_PS_1" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="Container"/>
+	<_ Name="MOUNT1" Code="acsexmplMountImpl" Type="IDL:alma/MOUNT_ACS/Mount:1.0" Container="Container"/>
+	<_ Name="LAMP1" Code="acsexmplLampImpl" Type="IDL:alma/acsexmplLamp/Lamp:1.0" Container="Container"/>
+	<_ Name="HELLODEMO1" Code="alma.demo.HelloDemoImpl.HelloDemoHelper" Type="IDL:alma/demo/HelloDemo:1.0" Container="frodoContainer"/>
+	<_ Name="XMLCOMP1" Code="alma.demo.XmlComponentImpl.XmlComponentHelper" Type="IDL:alma/demo/XmlComponent:1.0" Container="frodoContainer"/>
+	<_ Name="LAMPACCESS1" Code="alma.demo.LampAccessImpl.LampAccessHelper" Type="IDL:alma/demo/LampAccess:1.0" Container="frodoContainer"/>
+	<_ Name="LAMPCALLBACK1" Code="alma.demo.LampCallbackImpl.LampCallbackHelper" Type="IDL:alma/demo/LampCallback:1.0" Container="frodoContainer"/>
+	<_ Name="SUPPLIERCOMP1" Code="alma.demo.EventSupplierImpl.EventSupplierHelper" Type="IDL:alma/demo/SupplierComp:1.0" Container="eventContainer"/>
+	<_ Name="CONSUMERCOMP1" Code="alma.demo.EventConsumerImpl.EventConsumerHelper" Type="IDL:alma/demo/ConsumerComp:1.0" Container="eventContainer"/>
+    <_ Name="ErrorSys1"     Code="alma.demo.ErrorSystemComp.ErrorSystemHelper"
+                            Type="IDL:alma/demo/ErrorSystem:1.0"
+                            Container="frodoContainer"/>
+</Components>

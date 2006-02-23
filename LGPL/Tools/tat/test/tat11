@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat11,v 1.76 2003/01/09 17:51:22 vltsccm Exp $"
+#
+# tat11: modify PATH with absolute path for rtScheduleProcess
+# 
+
+rm -f .testSession
+rm -f .TestList.sed
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat11 TestList
+cp Makefile.tat11 Makefile
+
+if [ ! -d ./ENVIRONMENTS/rws ]
+then
+    mkdir ./ENVIRONMENTS/rws
+fi
+
+tat makeEnv
+
+tat -g tat111
+cat ./ref/tat111.ref
+
+tat cleanEnv
+
+#rm -rf ./ENVIRONMENTS/rws
+
+
+
+
+

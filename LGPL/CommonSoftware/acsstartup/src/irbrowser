@@ -1,0 +1,48 @@
+#! /bin/bash
+. acsstartupAcsPorts 
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: irbrowser,v 1.1 2004/07/26 21:38:45 dfugate Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dfugate  2004-07-26  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+#     Runs JacORB's IFR explorer.
+#  
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# signal trap (if any)
+export HOST=`getIP`
+#Find the port number of the IR
+export ACS_IR_PORT=`getIRPort`
+
+export IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository"
+
+acsStartJava -DORBInitRef.InterfaceRepository=$IRcorbaloc org.jacorb.ir.gui.IRBrowser &
+
+#
+# ___oOo___

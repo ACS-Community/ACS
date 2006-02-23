@@ -1,0 +1,43 @@
+#! /bin/bash
+. acsstartupAcsPorts  #Import functions like this in bash=(
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsStartLoggingClient,v 1.127 2003/10/16 23:22:16 dfugate Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# david 2003-05-14 now bash for tat
+# gchiozzi 2001-09-19 created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
+
+loggingClient LoggingChannel -ORBInitRef NameService=corbaloc::$HOST:$ACS_NAMING_SERVICE_PORT/NameService $1
+
+#
+# ___oOo___

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Container xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+           xmlns="urn:schemas-cosylab-com:Container:1.0" 
+           xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           CommandLine="" 
+           Timeout="20.0" 
+           UseIFR="1" 
+           ManagerRetry="10" 
+           ManagerReference="" 
+           CacheSize="10" 
+           MinCachePriority="0" 
+           MaxCachePriority="31" 
+           CentralizedLogger="Log">
+  <Autoload>
+    <cdb:_ string="baci"/>
+  </Autoload>
+</Container>

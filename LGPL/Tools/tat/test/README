@@ -1,0 +1,30 @@
+#
+# README for tat tests
+#
+# "@(#) $Id: README,v 1.76 2003/01/09 17:51:12 vltsccm Exp $"
+#
+
+1. Before running tat tests:
+
+- chmod u+x ttat
+- chmod u+x tat?
+- setenv LCUROOT ~vltsccm/LCUS (if LCUROOT not defined)
+- check that there is no $LCUROOT/lock.LcuEnv from a previous test
+session (if any, remove it with tatFreeLCUEnv <LcuEnv>).
+- setenv RHOST to a remote HOST where tat is installed for test5:
+  you may need to install the currently modified version so that it is
+  _not_ the $VLTROOT which is tested.
+
+That'all.
+
+2. To run tat tests:
+
+$ ttat
+
+3. After having run tat tests:
+
+$ chmod u+w cttat
+$ cttat
+
+
+   

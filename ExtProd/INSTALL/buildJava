@@ -1,0 +1,91 @@
+#!/bin/bash
+#
+# Script to automatically install Java 1.1.8 + SWING 1.1 -- WPI
+#
+# who       when       what
+# --------  ---------  ----------------------------------------------
+# wpirani   17/02/2000 Minor fixes for FEB2000
+# wpirani   21/07/2000 Updated for NOV2000 (jdk 1.1.8)
+# wpirani   07/03/2000 Updated for MAR2001
+# wpirani   11/09/2001 No changes required for OCT2001
+# wpirani   25/02/2002 No changes required for MAR2002
+# wpirani   27/05/2002 Corrected reference to HP archive
+# wpirani   10/03/2003 Updated for APR2003
+# psivera   2003-07-15 Ported to ACS 3.0
+# sturolla  10/09/2005 Ported to Bourne Shell and used external subroutine to determine OS/Release
+#
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+LOG=buildJava.log
+CWD=`pwd`
+#
+exec > $LOG 2>&1
+
+date
+echo "DISTRO = $DISTRO --- REL = $REL"
+
+if [ -z "$JAVA_HOME" ]
+then
+	echo "JAVA_HOME is not set, cannot continue.\n"
+	exit 1
+fi
+
+case "${DISTRO}-${REL}" 
+in
+	"RHLX-9") 	ARCHIVE=`pwd`/../PROPRIETARY/java.tar.gz ;;
+	"RHLX-7.2") 	ARCHIVE=`pwd`/../PROPRIETARY/java.tar.gz ;;
+	"RHLX-7.3") 	ARCHIVE=`pwd`/../PROPRIETARY/java.tar.gz ;;
+	*) 
+        echo "On all operating systems, but RH 7 and 9 we assume that JDK is already natively installed"
+        exit 1
+        ;;
+esac
+
+TITLE="      Installation of JAVA products"
+. ./standardPrologue
+cd ${INSTALL_ROOT}/PROPRIETARY/
+if ! [ -f java.tar.gz ]
+then
+    echo "java tar file missing "
+    exit 1
+fi
+cd $CWD
+
+JAVAEXEC=${JAVA_HOME}/bin/java
+JAVADIR=`dirname $JAVA_HOME`
+
+echo ""
+
+if [ -f $JAVAEXEC ]
+then
+	echo "JDK already existing; first remove it"
+	rm -rf $JAVADIR
+fi
+
+echo "Now installing Java 2 SDK... \c"
+mkdir -p $JAVADIR
+cd $JAVADIR
+tar xzf $ARCHIVE
+echo "done.\n"
+
+echo "Checking installed version..."
+${JAVAEXEC} -version
+RET=$?
+if [ $RET -eq 0 ]
+then
+	echo "ok"
+	echo "Installation complete.\n"
+else
+	echo "Installation failed!\n"
+fi
+
+cd $CWD
+echo Java installation done!
+date
+

@@ -1,0 +1,31 @@
+<?xml version = "1.0" encoding="ISO-8859-1"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:element name = "EntitybuilderSettings">
+    <xsd:complexType>
+      <xsd:sequence>
+
+        <!-- the schema files for which to run Castor builder explicitly -->
+        <xsd:element name = "EntitySchema" maxOccurs = "unbounded">
+          <xsd:complexType>
+            <xsd:attribute name = "schemaName" type = "xsd:string" use="required"/>
+            <xsd:attribute name = "relativePathSchemafile" type = "xsd:string" default = ""/>
+            <xsd:attribute name = "xmlNamespace" type = "xsd:string"/>
+          </xsd:complexType>
+        </xsd:element> 
+
+        <!-- instead of org.exolab.castor.builder.nspackages in castorbuilder.properties -->
+        <xsd:element name = "XmlNamespace2JPackage" minOccurs = "0" maxOccurs = "unbounded">
+          <xsd:complexType>
+            <xsd:attribute name = "xmlNamespace" type = "xsd:string"/>
+            <xsd:attribute name = "jPackage" type = "xsd:string"/>
+          </xsd:complexType>
+        </xsd:element> 
+
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+
+</xsd:schema>

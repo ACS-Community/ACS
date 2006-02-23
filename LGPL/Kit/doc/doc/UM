@@ -1,0 +1,235 @@
+
+
+			VLT SW LAPTOP USER'S MANUAL
+								P. FORSTMANN
+								29/08/94
+
+1 Scope
+
+  The Toshiba T1950 laptop is intented to be used mainly with FrameMaker
+  on  VLT SW documents.
+
+2 Objectives
+
+  With this laptop, any VLT SW team member should be able to transfer
+  FrameMaker files between Windows and Unix operating systems back and forth
+  so that it is possible at any time to work on a FrameMaker document on the
+  laptop or on Unix.
+  This document explains how to switch on an off the laptop, use to transfer
+  file between Unix and Windows using the floppy disk of an X terminal
+  or using ftp on the laptop.
+
+3 User's Manual
+
+  3.0 Booking procedure
+
+      Send a e-mail to vltsccm stating the foreseen period of use
+      (starting and ending dates) with the subject "laptop booking".
+      Depending on the current status, your request may be accepted.
+      delayed or rejected. If your request is accepted, you are asked
+      to fetch the laptop in the room 334, at your booking starting date.
+
+  3.1 Getting started with the laptop
+ 
+
+  3.1.1 Equipment
+
+      The laptop equipment is made up of:
+      - the portable personal computer itself
+      - a universal AC adaptor and power cord 
+      - a Ballpoint mouse
+      - an Ethernet adapter device
+  
+      The following software is installed on the computer:
+      - MS-DOS 6
+      - Microsoft Windows 3.1
+      - FrameMaker 3.0 
+      - PC/TCP 2.3 (UNIX networking)
+ 
+      The following documentation is available:
+      - Toshiba T1950 Series User's Manual
+
+
+  3.1.2 Power Modes
+ 
+      To AC adaptor's output plug must be connected to the socket input
+      on the left side of the computer. If you don't use it, the main
+      battery is automatically used. 
+
+      To switch the power on, press and hold the big button located on the
+      left side on the computer for 2 or 3 seconds. To switch it off,
+      do the same.
+
+      The battery indicator flashes orange when the battery charge is low.
+      To recharge it, connect the AC adaptor and turn the computer off:
+      it will take about 2,3 hours to recharge the battery. Note that the 
+      battery is also recharged if the computer is turned on, but very
+      slowly (48 hours).
+     
+      One of the most useful features of the laptop is the AutoResume.
+      This feature lets you turn the computer's power off without exiting
+      your software application. When you turn the power on again, you can
+      resume work where you left off, because the screen display is restored
+      as you left it.
+      But this feature will not work if the indicator Disk was in use (C or A)
+      is on or if the credit card Ethernet Adapter was working.
+
+      The reset button is located next to the power button: use it when
+      the computer does not respond to keyboard command. Use a narrow object
+      such as the tip of a ball-point pen.
+
+      
+  3.2 File transfer WINDOWS/UNIX.
+
+      There are two different ways to transfer files between the laptop
+      and a UNIX computer: using th X terminal floppy disk or using ftp
+      on the laptop. In both cases:
+      - you are asked to use the docUnix2Dos and docDos2Unix utilities in order
+      to avoid the file names discrepancies between Dos/Windows and UNIX.
+      - use always C:\temp directory to store your private files.
+
+      Basically, docUnix2Dos creates a directory on UNIX ready to be copied on 
+      DOS and docDos2Unix, from the copy of the DOS directory on UNIX, creates
+      a directory ready to be used on UNIX.
+
+  3.2.1 File transfer using a floppy.
+
+      From UNIX to DOS, follow these steps:
+
+      - get a formatted DOS 3 1/2 diskette (you can also format it with your
+        Envizex via your terminal setup: press F12 for two seconds to display
+        the configurations screens, click on Options, click on Format Floppy
+        and click twice on the format button that matches your media density).
+      - insert it into the Envizex floppy disk
+      - go to the UNIX directory to be transfered:
+        cd <source_dir>
+      - execute docUnix2Dos:
+        docUnix2Dos
+      - create the target directory on the floppy disk:
+        mkdir $HOME/floppy/<target_dir>
+      - copy the files from the UNIX directory to the DOS directory:
+        cp ../<source_dir>.dos/* $HOME/floppy/<target_dir>/.
+      - insert the diskette in the laptop floppy disk and copy 
+        your files to the temp directory:
+        copy a:\<target_dir>\* c:\temp\.  
+      	
+      From DOS to UNIX, follow these steps:
+
+      - insert a diskette into the laptop floppy disk and copy your files
+        to a directory:
+        copy c:\temp\* a:\<dir>\.
+      - insert the diskette into your Envizex floppy disk and copy the
+        DOS directory in the directory created by docUnix2Dos
+        ($HOME/<source_dir>.dos):
+        cp $HOME/floppy/<dir>/* $HOME/<source_dir>.dos
+      - go to the <source_dir>.dos directory
+        cd $HOME/<source_dir>.dos
+      - get your updated files on UNIX in their original directory:
+        docDos2Unix.
+
+      Note that cp -r does not work wit $HOME/floppy; thus, you need to
+      use mkdir and cp.
+
+  3.2.2 File transfer with ftp from the laptop
+
+      First connect the Ethernet adapter cable:
+     
+      - get the Ethernet device and screw it on the parrallel port in the
+        back of the laptop
+      - connect the Ethernet device to its power cord and then to the
+        T connector (one is available in room 334).
+
+      From UNIX to Windows:
+
+      On UNIX, prepare the directory by executing docUNix2Dos on UNIX in 
+      the directory you want to tranfer (you have created a <dir>.dos 
+      directory on UNIX).
+
+      On Windows, click the Wftp icon in the PC/TCP Winapps window displayed
+      just after Windows has started to start ftp:
+
+      - using the Create Local Directory option of the Commands Menu,
+        create your document directory on c:\temp\<doc>.
+      - go to this directory by clicking on directories in the Local
+        System file list
+      - open one session with the Open option of the Session Menu: click the
+        host from which you want to transfer files (you will be asked for
+        your Unix account and password): the Remote System file list now 
+        displays your home directory.
+      - go to the document directory <dir>.dos you want to transfer by 
+        clicking on directories in the Remote System file list.
+      - select every file of this directory by pressing the Control key and
+        clicking on the file name (you cannot click on a directory and you
+        cannot drag the mouse pointer); when every file has been selected,
+        click the Copy button: Wftp will ask you to confirm the Windows
+        file name for every selected file, since you have used the
+        docUnix2Dos utility to avoid file name truncations, click always Yes.
+      - close the session with the Close option of the Session Menu: click
+        the No button to answer the question "Save session before closing ?"
+        (otherwise your name and will be stored with the Session).
+
+      From Windows to UNIX:
+
+      - open one session with the Open option of the Session Menu: click the
+        host to which you want to transfer files (you will be asked for
+        your Unix account and password): the Remote System file list now 
+        displays your home directory.
+      - go to the Unix directory created by the DocUnix2Dos command <dir>.dos
+        by clicking on directories in the Remote System file list.
+      - go to the document directory you want to transfer by 
+        clicking on directories in the Local System file list.
+      - select every file of the directory by pressing the Control key and
+        clicking on the file name (you cannot click on a directory and you
+        cannot drag the mouse pointer); when every file has been selected,
+        click the Copy button: Wftp will ask you to confirm the Windows
+        file name for every selected file, since you have used the
+        docUnix2Dos utility to avoid file name truncations, click always Yes.
+      - get your updated files on Unix in their original directory by
+        executing: docDos2Unix on UNIX from the <dir>.dos directory.
+      - close the session with the Close option of the Session Menu: click
+        the No button to answer the question "Save session before closing ?"
+        (otherwise your name be stored with the Session).x
+      - delete your Windows document files by selecting them and clicking
+        the Delete button.
+     
+ 
+  3.3 Starting FrameMaker
+
+      In the Windows Program Manager window, click the FrameMaker group icon 
+      and then the FrameMaker 3.0 icon.
+       
+      Note that the file Documen_.boo (Document.book on Unix) cannot be used
+      on the PC. Edit each file independently.   
+
+
+  3.4 Warnings
+
+      If you plan to travel abroad with the laptop, take the invoice photocopy 
+      with the laptop for custom.
+  
+      Do not modify any system files; do not install any other other
+      software, no virus please ! Give back the laptop as it has been given
+      to you. 
+
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

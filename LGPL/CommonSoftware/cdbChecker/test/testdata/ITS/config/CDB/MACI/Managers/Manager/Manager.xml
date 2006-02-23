@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manager   xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+           xmlns="urn:schemas-cosylab-com:Manager:1.0" 
+           xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  CommandLine=""
+  Timeout="50000"
+  HeartbeatTimeout="2000"
+  CacheSize="10"
+  MinCachePriority="0"
+  MaxCachePriority="31"
+  CentralizedLogger="Log">
+  <Startup>
+
+<!-- ARCHIVE
+-->
+        <cdb:_ string="ARCHIVE_IDENTIFIER"/>
+        <cdb:_ string="ARCHIVE_CONNECTION"/>
+
+<!--
+	CONTROL
+-->
+	<cdb:_ string="CONTROL_lkmLoader:Test"/>
+	<cdb:_ string="CONTROL_lkmLoader:ARTM"/>
+	<cdb:_ string="CONTROL_lkmLoader:ABM001"/>
+	<cdb:_ string="CONTROL_lkmLoader:ABM002"/>
+	<cdb:_ string="CONTROL_AmbManager:ARTM"/>
+
+<!--
+	CORR
+-->
+        <cdb:_ string="CORR_SIM_RT_LOGGER"/>
+        <cdb:_ string="CORR_SIM_LKM_LOADER"/>
+        <cdb:_ string="CORR_SIM_ARRAY_TIME"/>
+        <cdb:_ string="CORR_CONFIGURATION_VALIDATOR"/>
+        <cdb:_ string="CORR_CDP_NODE_01"/>
+        <cdb:_ string="CORR_CDP_MASTER"/>
+        <cdb:_ string="CORR_CCC_MONITOR"/>
+        <cdb:_ string="CORR_OBSERVATION_CONTROL"/>
+        <cdb:_ string="CORR_CAN_MNGR"/>
+        <cdb:_ string="CORR_QUADRATURE" />
+
+
+<!-- OFFLINE
+-->
+        <cdb:_ string="OFFLINE_DATACAP1"/>
+
+<!-- TELCAL
+-->
+        <cdb:_ string="TELCAL_PUBLISHER"/>
+
+  </Startup>
+  <Execute>
+	<cdb:_ string=""/>
+  </Execute>
+  <ServiceComponents>
+	<cdb:_ string="Log"/>
+	<cdb:_ string="LogFactory"/>
+	<cdb:_ string="NotifyEventChannelFactory"/>
+	<cdb:_ string="ArchivingChannel"/>
+	<cdb:_ string="LoggingChannel"/>
+	<cdb:_ string="InterfaceRepository"/>
+	<cdb:_ string="CDB"/>
+	<cdb:_ string="ACSLogSvc"/>
+	<cdb:_ string="PDB"/>
+  </ServiceComponents>
+</Manager>

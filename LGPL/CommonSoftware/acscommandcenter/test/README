@@ -1,0 +1,24 @@
+
+for debugging:
+manualTest - runs the main test class through jUnit's command line
+test runner
+
+tat testing:
+1) commandcenterTest - runs the main test class through Acs' test runner
+
+
+the output of the script-commands started by command center goes to 
+./scriptlogs/runXX/yy_<name_of_test_procedure>. 
+where XX is incremented with every test run (starting with 01)
+and yy reflects the order of execution of test procedures, e.g.
+
+scriptlogs/run01/01_test_Start_Local_ServicesAndManager
+scriptlogs/run01/02_test_Stop_Local_ServicesAndManager
+...
+
+2) acscommandcenterGUITest - tests the acscommandcenter GUI via qftestJUI that of course needs to be installed in the same machine 
+
+The output of the script-command goes to ./tatlogs/run<X>/acscommandcenterGUITest.out reporting the exit status
+
+Another detail output goes to ./acscommandcenter.html 
+

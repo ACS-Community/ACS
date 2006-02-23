@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+    <jar path="/alma/ACS-4.1/ACSSW/lib/abeansACSPlug.jar"/>
+    <options overwrite="true" compress="true" exportErrors="false" exportWarnings="true" saveDescription="true" descriptionLocation="/abeans/abeansACSPlug.jardesc" useSourceFolders="false" buildIfNeeded="true"/>
+    <manifest manifestVersion="1.0" usesManifest="true" reuseManifest="false" saveManifest="false" generateManifest="true" manifestLocation="">
+        <sealing sealJar="true">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportOutputFolder="false" exportJavaFiles="false">
+        <javaElement handleIdentifier="=abeans/src&lt;abeans.pluggable.acs.maci"/>
+        <javaElement handleIdentifier="=abeans/src&lt;abeans.models.acs.baci.util.async"/>
+        <javaElement handleIdentifier="=abeans/src&lt;abeans.pluggable.acs.maci.settings"/>
+        <javaElement handleIdentifier="=abeans/src&lt;abeans.models.acs.baci.util"/>
+        <javaElement handleIdentifier="=abeans/src&lt;abeans.models.acs.baci"/>
+        <javaElement handleIdentifier="=abeans/src&lt;abeans.util"/>
+    </selectedElements>
+</jardesc>

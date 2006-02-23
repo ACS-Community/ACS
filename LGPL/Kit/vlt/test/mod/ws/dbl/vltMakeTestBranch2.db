@@ -1,0 +1,27 @@
+// "@(#) $Id: vltMakeTestBranch2.db,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $"
+//++ BCF for vltMake test
+//++ --------------------
+//
+
+#include "vltMakeTestCCD.class"
+
+POINT NULL_CLASS test32
+
+POINT CCD test32:overloadTest
+BEGIN
+	ATTRIBUTE bytes16	ace.dev		"myDevice"
+	ATTRIBUTE uint8		ace.devTimeout	30
+
+	ATTRIBUTE Table		ace.imageLink(16,
+						rtBytes16	devName,
+						rtUINT8		devTimeout)
+	BEGIN
+		ReadGroups 1010
+		Value (("device1", 10), ("device2", 20), ("device3", 30))
+	END
+
+	ATTRIBUTE bytes128	ace.msgSent	"this is a message sent"
+	ATTRIBUTE bytes128	ace.msgReceived	"this is a message received"
+
+	ATTRIBUTE logical	readout:hwDep.simulation	1
+END

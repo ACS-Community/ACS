@@ -1,0 +1,104 @@
+#ifndef _PERF_TEST_IDL_
+#define _PERF_TEST_IDL_
+
+#include <baci.idl>
+#include <BenchmarkErrType.idl>
+
+#pragma prefix "alma"
+
+module perftest
+{
+    //Generic definitions
+    typedef sequence<char> charSeq;
+
+    //Main use is for NC events.
+    struct charSeqStruct
+    {
+	charSeq aSequence;
+    };
+
+    ///Base performance test interface
+    interface BasePerfComp : ACS::CharacteristicComponent
+	{
+	/** 
+	 * Simple synchronous method. What exactly this does is
+	 * implementation dependent.
+	 */
+	void method();
+	
+	/** 
+	 * Setup CAN be used to setup data to be used within the "method" method
+	 * implementations. The only reason this helper method exists is because in some
+	 * implementations of SimpleBACIComponent it may take longer to generate data than
+	 * it does to send the data via CORBA.
+	 *  @param count is the number of times some action must be performed (by "method" implementation)
+	 *  @param size is the size of the data to be utilized by the method implementation.
+	 *  @param sleepTime amount of time to sleep between operations
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void setup(in unsigned long count, in unsigned long size, in ACS::TimeInterval sleepTime);
+	};
+    
+    ///Simple interface
+    interface SimpleBACIComponent : BasePerfComp
+	{
+	void action(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	
+	readonly attribute ACS::RWlong property;
+	};
+
+    ///Tests error system performance
+    interface ErrTestComponent : BasePerfComp
+	{
+	void testExceptions(in long depth, in boolean err) raises (ACSErr::ACSException, BenchmarkErrType::BenchmarkErr0Ex);
+	};
+
+    ///Tests size of method return values
+    interface MethodTestComponent : BasePerfComp
+	{
+	charSeq testReturnSize();
+	};
+
+    ///Complex interface
+    interface ComplexBACIComponent : BasePerfComp
+    {
+	void action01(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action02(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action03(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action04(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action05(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action06(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action07(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action08(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action09(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action10(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action11(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action12(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action13(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action14(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action15(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	void action16(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	readonly attribute ACS::RWlong property01;
+	readonly attribute ACS::RWlong property02;
+	readonly attribute ACS::RWlong property03;
+	readonly attribute ACS::RWlong property04;
+	readonly attribute ACS::RWlong property05;
+	readonly attribute ACS::RWlong property06;
+	readonly attribute ACS::RWlong property07;
+	readonly attribute ACS::RWlong property08;
+	readonly attribute ACS::RWlong property09;
+	readonly attribute ACS::RWlong property10;
+	readonly attribute ACS::RWlong property11;
+	readonly attribute ACS::RWlong property12;
+	readonly attribute ACS::RWlong property13;
+	readonly attribute ACS::RWlong property14;
+	readonly attribute ACS::RWlong property15;
+	readonly attribute ACS::RWlong property16;
+    };
+};
+
+#endif

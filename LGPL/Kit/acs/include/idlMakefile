@@ -1,0 +1,465 @@
+#*******************************************************************************
+# E.S.O. - ALMA  project
+#
+# "@(#) $Id: idlMakefile,v 1.108 2006/02/14 10:12:52 mzampare Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr 2003-08-26 Modified to support native exceptions: added TAO_IDLGLAGS+= -Ge 1
+# gchiozzi 2003-06-04 Added sleep of 2 seconds before calling javac.
+# gchiozzi 2003-03-04 Replace Orbacus with JacORB
+# gchiozzi 2003-03-04 Renamed variable ORBACUS_IDL as JAVA_IDL
+# mzampare  22/01/03  XmlIdl compiler now called only on demand
+# mzampare  19/01/03  added ALMA XmlIdl compiler to Java part
+# mzampare  27/11/02  added --tie to jidl Orbacus command
+# mzampare  24/07/02  changed all references to src with $(PWD)
+# mzampare  27/06/02  MAKE_VXWORKS flag error fixed
+# mzampare  27/06/02  SHELL changed to ksh
+# mzampare  24/06/02  created
+#
+#************************************************************************
+#   NAME
+#
+#   idlMakefile - language specific Makefile for IDL files.
+#
+#   DESCRIPTION
+#
+#   IDL files specified with the directive IDL_FILES are
+#   passed to the three CORBA compilers for stubs and skeletons
+#   generation.
+#   These are:
+#
+#      JacORB   for Java
+#      ACE/TAO  for C++
+#      OMNIORB  for Python
+#   
+#   Each of the files specified in IDL_FILES is passed to the three
+#   CORBA compilers in turn, and in addition to the ALMA XmlIdl compiler, 
+#   if the XML_IDL variable is set.
+#   
+#   The IDL_FILES are intended to be either IDL files (extension .idl) or
+#   IDL files containing only Macros (extension .midl)
+#
+#   The stubs and skeletons for C++ are stored in the object directory.
+#   The C++ Stubs will be compiled and put in a library called 
+#   ../lib/lib<idl>Stubs.a
+#   The Java files are directly compiled and jarred in a jarfile
+#   with the same name under lib, the source and class files deleted.
+#
+#   Generated Python files go into lib/python/site-packages.
+#
+#   The directive COMPONENT_HELPERS is a flag to specify whether
+#   component helper classes for Java have to be generated.
+#   Any non null value will trigger this behaviour.
+#
+#   Setting COMPONENT_HELPERS also implies ALMA XmlIdl compilation 
+#   (i.e. XML_IDL is set automatically to "NOTUSED").
+#
+#   The 'clean' target takes care of deleting all generated files.
+#
+#   Also, IDL files specified in the ABEANS variable are used with the
+#   ACS Beans generator and produce jarfiles in ../lib.
+#   These are installed by the install target and cleaned by the clean target.
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+#
+#  CHECK THE FOLLOWING VARIABLES!!!
+#  MK_IDL_PATH_LIST
+#  VLTIDL, MODIDL, MK_IDL_PATH
+#
+#  CHECK THE FOLLOWING VARIABLES!!!
+#  MK_IDL_PATH_LIST
+#  VLTIDL, MODIDL, MK_IDL_PATH
+
+SHELL=/bin/ksh
+
+IDL_LIST  = $(IDL_FILES) $(IDL_FILES_L)
+
+# Last dir in INTLIST
+ifdef INTLIST
+   DIRLIST = $(subst :, , $(INTLIST))
+   INSTALL_ROOT_LAST = $(word $(words $(DIRLIST)), $(DIRLIST))
+   INSTALL_ROOT_IDL = -I$(INSTALL_ROOT_LAST)/idl
+
+   # All dirs in INTLIST
+   intlist_list := $(foreach dir, $(DIRLIST), -I$(dir)/idl)
+endif
+
+# phony section
+######################################
+.PHONY : install_idl
+.PHONY : do_idl
+
+
+######################################
+# variables settings
+######################################
+TAO_IDL = $(TAO_ROOT)/TAO_IDL/tao_idl
+#TAO_IDLFLAGS+=-ciC.i -siS.i -stS_T.i
+#TAO_IDLFLAGS+=-ci -si -st
+### OMNI_IDL = $(OMNI_ROOT)/bin/$(FARCH)/omniidl
+OMNI_IDL = omniidl
+JAVA_IDL = $(JACORB_HOME)/bin/idl
+JACORB_MK_IDL_PATH = -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg
+XMLIDL = xmlIdlCompiler
+AlmaIDLMainClass=alma.tools.idlgen.XmlIdlCompiler
+ABEANSCOMP=abeans.models.acs.baci.generator.IDLtoAbeansCompiler
+ifeq ($(strip $(DEBUG)),on)
+  javaCompilerOptions=-g
+else
+  javaCompilerOptions=
+endif
+
+ifneq ($(strip $(COMPONENT_HELPERS)),)
+ CompHelpDoGenerateDef=-Dalma.acs.tools.comphelpergen.doGenerate=true
+ifneq ($(strip $(XML_IDL)),)
+else
+ XML_IDL=NOTUSED
+endif
+else
+ CompHelpDoGenerateDef=-Dalma.acs.tools.comphelpergen.doGenerate=false
+endif
+CompHelpOutRootDirDef=-Dalma.acs.tools.comphelpergen.outRootDir=.
+
+XMLIDL=java $(CompHelpDoGenerateDef) $(CompHelpOutRootDirDef) -DACS.idl2jbind=$(XML_IDL) $(AlmaIDLMainClass) -d ../object/src -notie $(verboseDef) 
+
+# set search path for idl files
+
+vpath %.idl $(MK_IDL_PATH_LIST)
+vpath %.fake ../object
+
+
+######################################
+# incrementing tasks
+######################################
+ifneq ($(strip $(IDL_LIST)),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_idl 
+endif
+
+ifneq ($(strip $(IDL_FILES)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_idl
+endif
+
+ifneq ($(strip $(IDL_LIST)),)
+# the stuff below here is commented because of a problem
+# in the order of execution
+ifeq (,$(findstring do_idl,$(ALL_TARGET)))
+#    ALL_TARGET := do_idl $(ALL_TARGET) 
+endif
+endif
+
+ifndef MAKE_VXWORKS
+ifneq ($(strip $(ABEANS)),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_abeans 
+endif
+
+ifneq ($(strip $(ABEANS)),)
+    INSTALL_ABEANS := $(foreach member, $(ABEANS), $(VLTTOP)/lib/$(member)Abeans.jar) 
+    INSTALL_TARGET := $(INSTALL_TARGET) install_abeans
+endif
+
+endif
+
+
+######################################
+# targets specification
+######################################
+
+## clean
+##
+clean_idl:
+	-$(AT)$(RM) vltMake_clean_idl       $(foreach member, $(IDL_LIST), ../object/$(member).didl ../object/$(member).didll ../object/$(member)Stubs.dx ../object/$(member)C.cpp ../object/$(member)C.o ../object/$(member)C.h ../object/$(member)C.inl ../object/$(member)S.cpp ../object/$(member)S.o ../object/$(member)S.h ../object/$(member)S.inl ../object/$(member)S_T.cpp ../object/$(member)S_T.h ../object/$(member)S_T.inl ../lib/$(member).jar ../object/.$(member).fake ../lib/lib$(member)Stubs.a ../lib/lib$(member)Stubs.so ../bin/$(member)Stubs )   $(OUTPUT)
+	-$(AT) for member in  $(foreach name, $(IDL_LIST), $(name) ) ; do \
+		    if [ -f ../idl/$${member}.midl ]; then \
+			$(RM) ../idl/$${member}.idl ;\
+		fi;\
+		done
+	-$(AT)if [ -f $(PWD)/.idl-compilation-start ]; then \
+	cd ../lib/python/site-packages;\
+	find . ! -name . -type d -depth -newer $(PWD)/.idl-compilation-start ! -newer $(PWD)/.idl-compilation-end -exec $(RM) {} \; ; \
+	find . -type f -newer $(PWD)/.idl-compilation-start ! -newer $(PWD)/.idl-compilation-end -exec $(RM) {} \;   ;\
+	cd $(PWD) ; \
+	$(RM) .idl-compilation-start .idl-compilation-end ;\
+	fi
+	-$(AT)if [ -d ../object  ]; then find ../object -type d ! -name object ! -name CVS | $(XARGS) -i $(RM) {} ; fi 
+	-@$(ECHO) " .\c"
+
+
+ifeq ($(call mustBuild,C++),true)
+TO_BE_INSTALLED = $(foreach member, $(IDL_FILES), $(VLTTOP)/idl/$(shell (cd ../idl; find . -name $(member).idl | tail -1 )) $(VLTTOP)/include/$(member)C.h $(VLTTOP)/include/$(member)C.inl $(VLTTOP)/include/$(member)S.h $(VLTTOP)/include/$(member)S.inl $(VLTTOP)/include/$(member)S_T.h $(VLTTOP)/include/$(member)S_T.inl $(VLTTOP)/include/$(member)S_T.cpp)
+
+ifndef MAKE_VXWORKS
+TO_BE_INSTALLED += $(foreach member, $(IDL_FILES), $(VLTTOP)/lib/lib$(member)Stubs.a $(VLTTOP)/lib/lib$(member)Stubs.so )
+else
+TO_BE_INSTALLED += $(foreach member, $(IDL_FILES), $(BIN)/$(member)Stubs )
+endif
+endif
+
+ifndef MAKE_VXWORKS
+ifeq ($(call mustBuild,Java),true)
+TO_BE_INSTALLED += install_java_idl
+endif
+endif
+
+## install
+##
+install_idl:
+ifneq ($(strip $(IDL_FILES)),)
+	-@$(ECHO) "install_idl: idl_begin $(TO_BE_INSTALLED) " >>$(FILE)
+	-@$(ECHO) "idl_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \".......idl:\"" >>$(FILE)
+#
+# installing Python Stubs by calling $OMNI_IDL again
+#
+ifndef MAKE_VXWORKS
+ifeq ($(call mustBuild,Python),true)
+	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
+		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+                    $(ECHO)  "	\$$(AT)$(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C$(VLTTOP)/lib/python/site-packages ../idl/$${tFile} > /dev/null 2>&1" >>$(FILE);\
+	done
+endif # must build Python
+endif # MAKE_VXWORKS
+
+ifndef MAKE_VXWORKS
+# two loops, one for the prerequisites of install_java_idl
+# checking which IDL Jarfiles have really been created.
+ifeq ($(call mustBuild,Java),true)
+	-$(AT) $(ECHO) "install_java_idl: \\" >>$(FILE);\
+	for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
+		    if [ -f ../lib/$${member}.jar ]; then \
+		    $(ECHO) "$(VLTTOP)/lib/$${member}.jar \\" >>$(FILE);\
+		    fi;\
+	done; $(ECHO) " " >>$(FILE);
+# second loop, to create the specific targets and how to install them
+# 
+	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
+		    $(ECHO) "$(VLTTOP)/lib/$${member}.jar: ../lib/$${member}.jar" >>$(FILE);\
+		    $(ECHO) "	-$(AT)echo  \"\t$${member} (Java)\";" >>$(FILE);\
+		    if [ -f ../lib/$${member}.jar ]; then \
+		    	$(ECHO) "	$(AT)cp ../lib/$${member}.jar $(VLTTOP)/lib/$${member}.jar;\\" >>$(FILE);\
+		    	$(ECHO) "	chmod $(P755) $(VLTTOP)/lib/$${member}.jar" >>$(FILE);\
+		    fi;\
+		done
+endif # must build Java
+endif # MAKE_VXWORKS
+
+ifeq ($(call mustBuild,C++),true)
+	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
+		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		    tDir=`dirname $${tFile}` ;\
+		    $(ECHO) "$(VLTTOP)/idl/$${tFile} $(VLTTOP)/include/$${member}C.h $(VLTTOP)/include/$${member}C.inl $(VLTTOP)/include/$${member}S.h $(VLTTOP)/include/$${member}S.inl $(VLTTOP)/include/$${member}S_T.h $(VLTTOP)/include/$${member}S_T.inl $(VLTTOP)/include/$${member}S_T.cpp: ../idl/$${tFile}" >>$(FILE);\
+		    $(ECHO) "	-$(AT)echo \"\t$${member}\";" >>$(FILE);\
+		    $(ECHO) "	-$(AT)if [ ! -d $(VLTTOP)/idl/$${tDir} ]; then mkdir -p $(VLTTOP)/idl/$${tDir} ; fi ;" >>$(FILE);\
+		    $(ECHO) "	-$(AT)cp ../idl/$${tFile} $(VLTTOP)/idl/$${tFile};\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P755) $(VLTTOP)/idl/$${tFile};\\" >>$(FILE);\
+		    extensions="C.h C.inl S.h S.inl S_T.h S_T.inl S_T.cpp"; for ext in $$extensions ; do \
+		                if [ -f ../object/$${member}$${ext} ]; then \
+			           	$(ECHO) "	cp ../object/$${member}$${ext} $(VLTTOP)/include/$${member}$${ext};\\" >>$(FILE);\
+			    	   	$(ECHO) "	chmod $(P755) $(VLTTOP)/include/$${member}$${ext};\\" >>$(FILE);\
+				fi;\
+			   done; $(ECHO) "" >>$(FILE); \
+	done
+ifndef MAKE_VXWORKS
+	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
+		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		    $(ECHO) "$(VLTTOP)/lib/lib$${member}Stubs.a :  ../lib/lib$${member}Stubs.a" >>$(FILE);\
+		    $(ECHO) "	-$(AT)if [[ -f ../lib/lib$${member}Stubs.a ]]; then \\" >>$(FILE);\
+		    $(ECHO) "	cp -v ../lib/lib$${member}Stubs.a $(VLTTOP)/lib/lib$${member}Stubs.a;\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P644) $(VLTTOP)/lib/lib$${member}Stubs.a;\\" >>$(FILE);\
+		    $(ECHO) "	fi " >>$(FILE);\
+		    $(ECHO) "$(VLTTOP)/lib/lib$${member}Stubs.so : ../lib/lib$${member}Stubs.so " >>$(FILE);\
+		    $(ECHO) "	-$(AT)if [[ -f ../lib/lib$${member}Stubs.so  ]]; then \\" >>$(FILE);\
+		    $(ECHO) "	cp -v ../lib/lib$${member}Stubs.so $(VLTTOP)/lib/lib$${member}Stubs.so;\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P644) $(VLTTOP)/lib/lib$${member}Stubs.so ; \\" >>$(FILE);\
+		    $(ECHO) "	fi " >>$(FILE);\
+	done
+else
+	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
+		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		    $(ECHO) "$(BIN)/$${member}Stubs: ../idl/$${tFile}" >>$(FILE);\
+		    $(ECHO) "	-$(AT)if [[ -f ../bin/$${member}Stubs ]]; then \\" >>$(FILE);\
+		    $(ECHO) "	cp ../bin/$${member}Stubs $(BIN)/$${member}Stubs;\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P755) $(BIN)/$${member}Stubs ;\\" >>$(FILE);\
+		    $(ECHO) "	fi " >>$(FILE);\
+	done
+endif
+	$(AT)$(ECHO) "" >>$(FILE);
+endif  # must build C++
+endif  #IDL_FILES
+
+
+
+##
+#########################################
+## ALL
+##
+
+%.idl: %.midl
+	- @echo "== (preprocessing) $(<F)"
+	$(AT) JacPrep $< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) " >  ../idl/$(*F).idl
+
+
+../object/.%.fake ../object/%S.cpp ../object/%C.cpp ../object/%C.h ../object/%C.inl ../object/%S.h ../object/%S.inl ../object/%S_T.cpp ../object/%S_T.h ../object/%S_T.inl : %.idl Makefile
+	$(AT) $(RM)  .$(*F).fake
+	$(AT) if [ ! -f .idl-compilation-start ]; then touch .idl-compilation-start ; fi
+
+ifndef MAKE_VXWORKS
+	$(shell if [ ! -d ../lib/python/site-packages ]; then mkdir -p ../lib/python/site-packages; fi)
+endif # MAKE_VXWORKS
+
+# - generating idl file depending files
+ifeq ($(call mustBuild,C++),true)
+	- @echo "== IDL Compiling for TAO (C++): $(<F)"
+	$(AT) $(TAO_IDL) $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object $(TAO_IDLFLAGS) $<
+endif
+
+#
+#  There is a compatibility problem with the tao/Policy.idl file and both
+#  Orbacus and OmniOrb, since this TAO idl file uses the keyword 
+#  "local", that is not recognized
+#  For the time being, we put then by hand the Orbacus and OmniOrb IDL directories in the MK_IDL_PATH
+#  BEFORE the TAO once when building java and Python.
+#
+#### Orbacus:	$(AT) $(JAVA_IDL) -I../idl -I$(JACORB_HOME)/Orbacus/local/idl/ -I$(JACORB_HOME)/Orbacus/local/idl/OB $(MK_IDL_PATH) --auto-package --tie --output-dir ../object  $< 
+# java
+ifndef MAKE_VXWORKS
+ifeq ($(call mustBuild,Java),true)
+	- @echo "== (preprocessing) $(<F)"
+	$(AT) JacPrep $< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) " >  /tmp/$(UNIQUE_NUMBER).$(<F)
+	- @echo "== IDL Compiling for JacORB (Java): $(<F)"
+	$(AT) 	mkdir -p ../object/src ; if [ -s /tmp/$(UNIQUE_NUMBER).$(<F) ]; then \
+	$(JAVA_IDL) -auto_prefix   $(JACORB_MK_IDL_PATH) $(MK_IDL_PATH) -d ../object/src   /tmp/$(UNIQUE_NUMBER).$(<F) ;\
+	fi
+	$(AT) $(RM) /tmp/$(UNIQUE_NUMBER).$(<F)
+ifneq ($(strip $(XML_IDL)),)
+	- @echo "== IDL Compiling for XmlIdl  (Java): $(<F)"
+ifdef ACSROOT 
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(ACSROOT)/lib/endorsed/xercesImpl.jar ;  export CLASSPATH; $(XMLIDL) $(MK_IDL_PATH) $(JACORB_MK_IDL_PATH) $< 
+else 
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar ;  export CLASSPATH; $(XMLIDL) $(MK_IDL_PATH) $(JACORB_MK_IDL_PATH) $< 
+endif #end ACSROOT
+
+endif #end $(strip $(XML_IDL))
+
+#
+# the assumption made here is that there are no other java files under
+# ../object besides those which result from processing IDL files
+# 
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find ../object/src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d ../object/src $$FILES; fi;
+#
+#
+# putting it into the jarfile
+#
+ifeq ($(strip $(DEBUG)),on)
+# first put the class files
+	$(AT) cd ../object/src; FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../lib/$(basename $(<F)).jar $$FILES ; fi
+# then, carefully, the java files prefixed with 'src'.
+	$(AT) cd ../object;  FILES=`find src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then jar uf ../lib/$(basename $(<F)).jar $$FILES ; fi; 
+	$(AT) echo "ACS-Generated-FromFile: $(<F)" >  ../object/$(basename $(<F)).manifest; \
+	      jar ufm ../lib/$(basename $(<F)).jar ../object/$(basename $(<F)).manifest; \
+              rm ../object/$(basename $(<F)).manifest
+else
+	$(AT) cd ../object/src; CLASSES=`find . -name \*.class`; export CLASSES;  if [ "$$CLASSES" != "" ] ; then jar cf ../../lib/$(basename $(<F)).jar $$CLASSES ; fi
+
+endif # DEBUG
+	$(AT) find ../object -type d ! -name object | $(XARGS) -i $(RM) {}
+endif # must build Java
+
+# Python
+ifeq ($(call mustBuild,Python),true)
+	- @echo "== IDL Compiling for OmniOrb (Python): $(<F)"
+	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages $<
+endif # must build Python
+endif # MAKE_VXWORKS
+
+# $(<F) 
+ifeq ($(call mustBuild,C++),true)
+	- @echo "== IDL Compiling Stubs into libraries/executable (C++): $(<F)"
+	$(AT) acsMakeCppStubsLibrary $(*F) $(MAKEDIR) $(MAKE_VXWORKS)
+	$(AT) touch ../object/.$(*F).fake
+	$(AT) touch .idl-compilation-end
+endif
+
+# - for Automatic Dependencies for idl files
+#   a "../object/xxxx.didl" containing the dependencies structure of a idl
+#   file is created using a special script that receives in input what 
+#   specified by the caller in the Makefile
+#
+../object/%.didl: 
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeIdlDependencies $(*F) >../object/$*.didl
+
+TMP_DEP_IDL := $(addprefix ../idl/, $(addsuffix .idl, $(IDL_LIST))) $(addprefix ../object/, $(addsuffix .didl, $(IDL_LIST))) $(addprefix ../object/., $(addsuffix .fake, $(IDL_LIST))) 
+
+do_idl: $(TMP_DEP_IDL) 
+
+#########################################################
+#########################################################
+# ABEANS AREA
+# protect agains VxWorks
+
+install_abeans:
+ifneq ($(strip $(ABEANS)),)
+ifeq ($(call mustBuild,Java),true)
+	-@$(ECHO) "install_abeans: abeans_begin $(INSTALL_ABEANS) " >>$(FILE)
+	-@$(ECHO) "abeans_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \".......abeans:\"" >>$(FILE)
+	-$(AT) for member in  $(foreach name, $(ABEANS), $(name) ) ; do \
+		    $(ECHO) "$(VLTTOP)/lib/$${member}Abeans.jar: ../lib/$${member}Abeans.jar" >>$(FILE);\
+		    $(ECHO) "	-$(AT)echo  \"\t$${member} (Java)\";" >>$(FILE);\
+		    if [ -f ../lib/$${member}Abeans.jar ]; then \
+		    	$(ECHO) "	$(AT)cp ../lib/$${member}Abeans.jar $(VLTTOP)/lib/$${member}Abeans.jar;\\" >>$(FILE);\
+		    	$(ECHO) "	chmod $(P755) $(VLTTOP)/lib/$${member}Abeans.jar" >>$(FILE);\
+		    fi;\
+		done
+endif # must build Java
+endif
+
+clean_abeans:
+	-$(AT) for member in  $(foreach name, $(ABEANS), $(name) ) ; do \
+		    if [ -f ../lib/$${member}Abeans.jar ]; then \
+			$(RM) ../lib/$${member}Abeans.jar ;\
+		fi;\
+		done
+
+ifndef MAKE_VXWORKS
+ifeq ($(call mustBuild,Java),true)
+TMP_ABEANS := $(addprefix ../lib/, $(addsuffix Abeans.jar, $(ABEANS))) 
+endif  # must build Java
+else
+	TMP_ABEANS := ""
+endif
+
+#@export INSTALLDIR=../lib;  abeansgen $?
+
+../lib/%Abeans.jar: %.idl
+	- @echo "== (ABEANS) $(<F)"
+	$(AT) mkdir -p ../object/src
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; java  $(ABEANSCOMP) ../idl/$(<F) -I../idl -I$(INTROOT)/idl $(intlist_list) $(INSTALL_ROOT_IDL) -I$(ACSROOT)/idl -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg -d ../object/src
+# compile
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find ../object/src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d ../object/src $$FILES; fi;
+# add to jarfile
+	$(AT) cd ../object/src; FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../lib/$(basename $(<F))Abeans.jar $$FILES ; fi
+# cleanup
+	$(AT) find ../object -type d ! -name object | $(XARGS) -i $(RM) {}
+
+do_abeans: $(TMP_ABEANS)
+
+#
+#___oOo___
+

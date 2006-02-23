@@ -1,0 +1,1269 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Argument List,  Next: Function Documentation,  Prev: Simple Lambda,  Up: Lambda Expressions
+
+Advanced Features of Argument Lists
+-----------------------------------
+
+   Our simple sample function, `(lambda (a b c) (+ a b c))', specifies
+three argument variables, so it must be called with three arguments: if
+you try to call it with only two arguments or four arguments, you get a
+`wrong-number-of-arguments' error.
+
+   It is often convenient to write a function that allows certain
+arguments to be omitted.  For example, the function `substring' accepts
+three arguments--a string, the start index and the end index--but the
+third argument defaults to the LENGTH of the string if you omit it.  It
+is also convenient for certain functions to accept an indefinite number
+of arguments, as the functions `list' and `+' do.
+
+   To specify optional arguments that may be omitted when a function is
+called, simply include the keyword `&optional' before the optional
+arguments.  To specify a list of zero or more extra arguments, include
+the keyword `&rest' before one final argument.
+
+   Thus, the complete syntax for an argument list is as follows:
+
+     (REQUIRED-VARS...
+      [&optional OPTIONAL-VARS...]
+      [&rest REST-VAR])
+
+The square brackets indicate that the `&optional' and `&rest' clauses,
+and the variables that follow them, are optional.
+
+   A call to the function requires one actual argument for each of the
+REQUIRED-VARS.  There may be actual arguments for zero or more of the
+OPTIONAL-VARS, and there cannot be any actual arguments beyond that
+unless the lambda list uses `&rest'.  In that case, there may be any
+number of extra actual arguments.
+
+   If actual arguments for the optional and rest variables are omitted,
+then they always default to `nil'.  There is no way for the function to
+distinguish between an explicit argument of `nil' and an omitted
+argument.  However, the body of the function is free to consider `nil'
+an abbreviation for some other meaningful value.  This is what
+`substring' does; `nil' as the third argument to `substring' means to
+use the length of the string supplied.
+
+     Common Lisp note: Common Lisp allows the function to specify what
+     default value to use when an optional argument is omitted; Emacs
+     Lisp always uses `nil'.
+
+   For example, an argument list that looks like this:
+
+     (a b &optional c d &rest e)
+
+binds `a' and `b' to the first two actual arguments, which are
+required.  If one or two more arguments are provided, `c' and `d' are
+bound to them respectively; any arguments after the first four are
+collected into a list and `e' is bound to that list.  If there are only
+two arguments, `c' is `nil'; if two or three arguments, `d' is `nil';
+if four arguments or fewer, `e' is `nil'.
+
+   There is no way to have required arguments following optional
+ones--it would not make sense.  To see why this must be so, suppose
+that `c' in the example were optional and `d' were required.  Suppose
+three actual arguments are given; which variable would the third
+argument be for?  Similarly, it makes no sense to have any more
+arguments (either required or optional) after a `&rest' argument.
+
+   Here are some examples of argument lists and proper calls:
+
+     ((lambda (n) (1+ n))                ; One required:
+      1)                                 ; requires exactly one argument.
+          => 2
+     ((lambda (n &optional n1)           ; One required and one optional:
+              (if n1 (+ n n1) (1+ n)))   ; 1 or 2 arguments.
+      1 2)
+          => 3
+     ((lambda (n &rest ns)               ; One required and one rest:
+              (+ n (apply '+ ns)))       ; 1 or more arguments.
+      1 2 3 4 5)
+          => 15
+
+
+File: elisp,  Node: Function Documentation,  Prev: Argument List,  Up: Lambda Expressions
+
+Documentation Strings of Functions
+----------------------------------
+
+   A lambda expression may optionally have a "documentation string" just
+after the lambda list.  This string does not affect execution of the
+function; it is a kind of comment, but a systematized comment which
+actually appears inside the Lisp world and can be used by the Emacs help
+facilities.  *Note Documentation::, for how the DOCUMENTATION-STRING is
+accessed.
+
+   It is a good idea to provide documentation strings for all commands,
+and for all other functions in your program that users of your program
+should know about; internal functions might as well have only comments,
+since comments don't take up any room when your program is loaded.
+
+   The first line of the documentation string should stand on its own,
+because `apropos' displays just this first line.  It should consist of
+one or two complete sentences that summarize the function's purpose.
+
+   The start of the documentation string is usually indented, but since
+these spaces come before the starting double-quote, they are not part of
+the string.  Some people make a practice of indenting any additional
+lines of the string so that the text lines up in the program source.
+*This is a mistake.*  The indentation of the following lines is inside
+the string; what looks nice in the source code will look ugly when
+displayed by the help commands.
+
+   You may wonder how the documentation string could be optional, since
+there are required components of the function that follow it (the body).
+Since evaluation of a string returns that string, without any side
+effects, it has no effect if it is not the last form in the body.
+Thus, in practice, there is no confusion between the first form of the
+body and the documentation string; if the only body form is a string
+then it serves both as the return value and as the documentation.
+
+
+File: elisp,  Node: Function Names,  Next: Defining Functions,  Prev: Lambda Expressions,  Up: Functions
+
+Naming a Function
+=================
+
+   In most computer languages, every function has a name; the idea of a
+function without a name is nonsensical.  In Lisp, a function in the
+strictest sense has no name.  It is simply a list whose first element is
+`lambda', or a primitive subr-object.
+
+   However, a symbol can serve as the name of a function.  This happens
+when you put the function in the symbol's "function cell" (*note Symbol
+Components::.).  Then the symbol itself becomes a valid, callable
+function, equivalent to the list or subr-object that its function cell
+refers to.  The contents of the function cell are also called the
+symbol's "function definition".  The procedure of using a symbol's
+function definition in place of the symbol is called "symbol function
+indirection"; see *Note Function Indirection::.
+
+   In practice, nearly all functions are given names in this way and
+referred to through their names.  For example, the symbol `car' works
+as a function and does what it does because the primitive subr-object
+`#<subr car>' is stored in its function cell.
+
+   We give functions names because it is convenient to refer to them by
+their names in Lisp expressions.  For primitive subr-objects such as
+`#<subr car>', names are the only way you can refer to them: there is
+no read syntax for such objects.  For functions written in Lisp, the
+name is more convenient to use in a call than an explicit lambda
+expression.  Also, a function with a name can refer to itself--it can
+be recursive.  Writing the function's name in its own definition is much
+more convenient than making the function definition point to itself
+(something that is not impossible but that has various disadvantages in
+practice).
+
+   We often identify functions with the symbols used to name them.  For
+example, we often speak of "the function `car'", not distinguishing
+between the symbol `car' and the primitive subr-object that is its
+function definition.  For most purposes, there is no need to
+distinguish.
+
+   Even so, keep in mind that a function need not have a unique name.
+While a given function object *usually* appears in the function cell of
+only one symbol, this is just a matter of convenience.  It is easy to
+store it in several symbols using `fset'; then each of the symbols is
+equally well a name for the same function.
+
+   A symbol used as a function name may also be used as a variable;
+these two uses of a symbol are independent and do not conflict.
+
+
+File: elisp,  Node: Defining Functions,  Next: Calling Functions,  Prev: Function Names,  Up: Functions
+
+Defining Functions
+==================
+
+   We usually give a name to a function when it is first created.  This
+is called "defining a function", and it is done with the `defun'
+special form.
+
+ - Special Form: defun NAME ARGUMENT-LIST BODY-FORMS
+     `defun' is the usual way to define new Lisp functions.  It defines
+     the symbol NAME as a function that looks like this:
+
+          (lambda ARGUMENT-LIST . BODY-FORMS)
+
+     `defun' stores this lambda expression in the function cell of
+     NAME.  It returns the value NAME, but usually we ignore this value.
+
+     As described previously (*note Lambda Expressions::.),
+     ARGUMENT-LIST is a list of argument names and may include the
+     keywords `&optional' and `&rest'.  Also, the first two forms in
+     BODY-FORMS may be a documentation string and an interactive
+     declaration.
+
+     There is no conflict if the same symbol NAME is also used as a
+     variable, since the symbol's value cell is independent of the
+     function cell.  *Note Symbol Components::.
+
+     Here are some examples:
+
+          (defun foo () 5)
+               => foo
+          (foo)
+               => 5
+          
+          (defun bar (a &optional b &rest c)
+              (list a b c))
+               => bar
+          (bar 1 2 3 4 5)
+               => (1 2 (3 4 5))
+          (bar 1)
+               => (1 nil nil)
+          (bar)
+          error--> Wrong number of arguments.
+          
+          (defun capitalize-backwards ()
+            "Upcase the last letter of a word."
+            (interactive)
+            (backward-word 1)
+            (forward-word 1)
+            (backward-char 1)
+            (capitalize-word 1))
+               => capitalize-backwards
+
+     Be careful not to redefine existing functions unintentionally.
+     `defun' redefines even primitive functions such as `car' without
+     any hesitation or notification.  Redefining a function already
+     defined is often done deliberately, and there is no way to
+     distinguish deliberate redefinition from unintentional
+     redefinition.
+
+ - Function: defalias NAME DEFINITION
+     This special form defines the symbol NAME as a function, with
+     definition DEFINITION (which can be any valid Lisp function).
+     It's best to use this rather than `fset' when defining a function
+     in a file, because `defalias' records which file defined the
+     function (*note Unloading::.), while `fset' does not.
+
+
+File: elisp,  Node: Calling Functions,  Next: Mapping Functions,  Prev: Defining Functions,  Up: Functions
+
+Calling Functions
+=================
+
+   Defining functions is only half the battle.  Functions don't do
+anything until you "call" them, i.e., tell them to run.  Calling a
+function is also known as "invocation".
+
+   The most common way of invoking a function is by evaluating a list.
+For example, evaluating the list `(concat "a" "b")' calls the function
+`concat' with arguments `"a"' and `"b"'.  *Note Evaluation::, for a
+description of evaluation.
+
+   When you write a list as an expression in your program, the function
+name is part of the program.  This means that you choose which function
+to call, and how many arguments to give it, when you write the program.
+Usually that's just what you want.  Occasionally you need to decide at
+run time which function to call.  To do that, use the functions
+`funcall' and `apply'.
+
+ - Function: funcall FUNCTION &rest ARGUMENTS
+     `funcall' calls FUNCTION with ARGUMENTS, and returns whatever
+     FUNCTION returns.
+
+     Since `funcall' is a function, all of its arguments, including
+     FUNCTION, are evaluated before `funcall' is called.  This means
+     that you can use any expression to obtain the function to be
+     called.  It also means that `funcall' does not see the expressions
+     you write for the ARGUMENTS, only their values.  These values are
+     *not* evaluated a second time in the act of calling FUNCTION;
+     `funcall' enters the normal procedure for calling a function at the
+     place where the arguments have already been evaluated.
+
+     The argument FUNCTION must be either a Lisp function or a
+     primitive function.  Special forms and macros are not allowed,
+     because they make sense only when given the "unevaluated" argument
+     expressions.  `funcall' cannot provide these because, as we saw
+     above, it never knows them in the first place.
+
+          (setq f 'list)
+               => list
+          (funcall f 'x 'y 'z)
+               => (x y z)
+          (funcall f 'x 'y '(z))
+               => (x y (z))
+          (funcall 'and t nil)
+          error--> Invalid function: #<subr and>
+
+     Compare these example with the examples of `apply'.
+
+ - Function: apply FUNCTION &rest ARGUMENTS
+     `apply' calls FUNCTION with ARGUMENTS, just like `funcall' but
+     with one difference: the last of ARGUMENTS is a list of arguments
+     to give to FUNCTION, rather than a single argument.  We also say
+     that `apply' "spreads" this list so that each individual element
+     becomes an argument.
+
+     `apply' returns the result of calling FUNCTION.  As with
+     `funcall', FUNCTION must either be a Lisp function or a primitive
+     function; special forms and macros do not make sense in `apply'.
+
+          (setq f 'list)
+               => list
+          (apply f 'x 'y 'z)
+          error--> Wrong type argument: listp, z
+          (apply '+ 1 2 '(3 4))
+               => 10
+          (apply '+ '(1 2 3 4))
+               => 10
+          
+          (apply 'append '((a b c) nil (x y z) nil))
+               => (a b c x y z)
+
+     For an interesting example of using `apply', see the description of
+     `mapcar', in *Note Mapping Functions::.
+
+   It is common for Lisp functions to accept functions as arguments or
+find them in data structures (especially in hook variables and property
+lists) and call them using `funcall' or `apply'.  Functions that accept
+function arguments are often called "functionals".
+
+   Sometimes, when you call such a function, it is useful to supply a
+no-op function as the argument.  Here are two different kinds of no-op
+function:
+
+ - Function: identity ARG
+     This function returns ARG and has no side effects.
+
+ - Function: ignore &rest ARGS
+     This function ignores any arguments and returns `nil'.
+
+
+File: elisp,  Node: Mapping Functions,  Next: Anonymous Functions,  Prev: Calling Functions,  Up: Functions
+
+Mapping Functions
+=================
+
+   A "mapping function" applies a given function to each element of a
+list or other collection.  Emacs Lisp has three such functions;
+`mapcar' and `mapconcat', which scan a list, are described here.  For
+the third mapping function, `mapatoms', see *Note Creating Symbols::.
+
+ - Function: mapcar FUNCTION SEQUENCE
+     `mapcar' applies FUNCTION to each element of SEQUENCE in turn, and
+     returns a list of the results.
+
+     The argument SEQUENCE may be a list, a vector, or a string.  The
+     result is always a list.  The length of the result is the same as
+     the length of SEQUENCE.
+
+     For example:
+
+          (mapcar 'car '((a b) (c d) (e f)))
+               => (a c e)
+          (mapcar '1+ [1 2 3])
+               => (2 3 4)
+          (mapcar 'char-to-string "abc")
+               => ("a" "b" "c")
+
+          ;; Call each function in `my-hooks'.
+          (mapcar 'funcall my-hooks)
+
+          (defun mapcar* (f &rest args)
+            "Apply FUNCTION to successive cars of all ARGS.
+          Return the list of results."
+            ;; If no list is exhausted,
+            (if (not (memq 'nil args))
+                ;; apply function to CARs.
+                (cons (apply f (mapcar 'car args))
+                      (apply 'mapcar* f
+                             ;; Recurse for rest of elements.
+                             (mapcar 'cdr args)))))
+
+          (mapcar* 'cons '(a b c) '(1 2 3 4))
+               => ((a . 1) (b . 2) (c . 3))
+
+ - Function: mapconcat FUNCTION SEQUENCE SEPARATOR
+     `mapconcat' applies FUNCTION to each element of SEQUENCE: the
+     results, which must be strings, are concatenated.  Between each
+     pair of result strings, `mapconcat' inserts the string SEPARATOR.
+     Usually SEPARATOR contains a space or comma or other suitable
+     punctuation.
+
+     The argument FUNCTION must be a function that can take one
+     argument and return a string.
+
+          (mapconcat 'symbol-name
+                     '(The cat in the hat)
+                     " ")
+               => "The cat in the hat"
+
+          (mapconcat (function (lambda (x) (format "%c" (1+ x))))
+                     "HAL-8000"
+                     "")
+               => "IBM.9111"
+
+
+File: elisp,  Node: Anonymous Functions,  Next: Function Cells,  Prev: Mapping Functions,  Up: Functions
+
+Anonymous Functions
+===================
+
+   In Lisp, a function is a list that starts with `lambda', a byte-code
+function compiled from such a list, or alternatively a primitive
+subr-object; names are "extra".  Although usually functions are defined
+with `defun' and given names at the same time, it is occasionally more
+concise to use an explicit lambda expression--an anonymous function.
+Such a list is valid wherever a function name is.
+
+   Any method of creating such a list makes a valid function.  Even
+this:
+
+     (setq silly (append '(lambda (x)) (list (list '+ (* 3 4) 'x))))
+     => (lambda (x) (+ 12 x))
+
+This computes a list that looks like `(lambda (x) (+ 12 x))' and makes
+it the value (*not* the function definition!) of `silly'.
+
+   Here is how we might call this function:
+
+     (funcall silly 1)
+     => 13
+
+(It does *not* work to write `(silly 1)', because this function is not
+the *function definition* of `silly'.  We have not given `silly' any
+function definition, just a value as a variable.)
+
+   Most of the time, anonymous functions are constants that appear in
+your program.  For example, you might want to pass one as an argument
+to the function `mapcar', which applies any given function to each
+element of a list.  Here we pass an anonymous function that multiplies
+a number by two:
+
+     (defun double-each (list)
+       (mapcar '(lambda (x) (* 2 x)) list))
+     => double-each
+     (double-each '(2 11))
+     => (4 22)
+
+In such cases, we usually use the special form `function' instead of
+simple quotation to quote the anonymous function.
+
+ - Special Form: function FUNCTION-OBJECT
+     This special form returns FUNCTION-OBJECT without evaluating it.
+     In this, it is equivalent to `quote'.  However, it serves as a
+     note to the Emacs Lisp compiler that FUNCTION-OBJECT is intended
+     to be used only as a function, and therefore can safely be
+     compiled.  Contrast this with `quote', in *Note Quoting::.
+
+   Using `function' instead of `quote' makes a difference inside a
+function or macro that you are going to compile.  For example:
+
+     (defun double-each (list)
+       (mapcar (function (lambda (x) (* 2 x))) list))
+     => double-each
+     (double-each '(2 11))
+     => (4 22)
+
+If this definition of `double-each' is compiled, the anonymous function
+is compiled as well.  By contrast, in the previous definition where
+ordinary `quote' is used, the argument passed to `mapcar' is the
+precise list shown:
+
+     (lambda (x) (* x 2))
+
+The Lisp compiler cannot assume this list is a function, even though it
+looks like one, since it does not know what `mapcar' does with the
+list.  Perhaps `mapcar' will check that the CAR of the third element is
+the symbol `*'!  The advantage of `function' is that it tells the
+compiler to go ahead and compile the constant function.
+
+   We sometimes write `function' instead of `quote' when quoting the
+name of a function, but this usage is just a sort of comment.
+
+     (function SYMBOL) == (quote SYMBOL) == 'SYMBOL
+
+   See `documentation' in *Note Accessing Documentation::, for a
+realistic example using `function' and an anonymous function.
+
+
+File: elisp,  Node: Function Cells,  Next: Inline Functions,  Prev: Anonymous Functions,  Up: Functions
+
+Accessing Function Cell Contents
+================================
+
+   The "function definition" of a symbol is the object stored in the
+function cell of the symbol.  The functions described here access, test,
+and set the function cell of symbols.
+
+   See also the function `indirect-function' in *Note Function
+Indirection::.
+
+ - Function: symbol-function SYMBOL
+     This returns the object in the function cell of SYMBOL.  If the
+     symbol's function cell is void, a `void-function' error is
+     signaled.
+
+     This function does not check that the returned object is a
+     legitimate function.
+
+          (defun bar (n) (+ n 2))
+               => bar
+          (symbol-function 'bar)
+               => (lambda (n) (+ n 2))
+          (fset 'baz 'bar)
+               => bar
+          (symbol-function 'baz)
+               => bar
+
+   If you have never given a symbol any function definition, we say that
+that symbol's function cell is "void".  In other words, the function
+cell does not have any Lisp object in it.  If you try to call such a
+symbol as a function, it signals a `void-function' error.
+
+   Note that void is not the same as `nil' or the symbol `void'.  The
+symbols `nil' and `void' are Lisp objects, and can be stored into a
+function cell just as any other object can be (and they can be valid
+functions if you define them in turn with `defun').  A void function
+cell contains no object whatsoever.
+
+   You can test the voidness of a symbol's function definition with
+`fboundp'.  After you have given a symbol a function definition, you
+can make it void once more using `fmakunbound'.
+
+ - Function: fboundp SYMBOL
+     This function returns `t' if the symbol has an object in its
+     function cell, `nil' otherwise.  It does not check that the object
+     is a legitimate function.
+
+ - Function: fmakunbound SYMBOL
+     This function makes SYMBOL's function cell void, so that a
+     subsequent attempt to access this cell will cause a `void-function'
+     error.  (See also `makunbound', in *Note Local Variables::.)
+
+          (defun foo (x) x)
+               => x
+          (foo 1)
+               =>1
+          (fmakunbound 'foo)
+               => x
+          (foo 1)
+          error--> Symbol's function definition is void: foo
+
+ - Function: fset SYMBOL OBJECT
+     This function stores OBJECT in the function cell of SYMBOL.  The
+     result is OBJECT.  Normally OBJECT should be a function or the
+     name of a function, but this is not checked.
+
+     There are three normal uses of this function:
+
+        * Copying one symbol's function definition to another.  (In
+          other words, making an alternate name for a function.)
+
+        * Giving a symbol a function definition that is not a list and
+          therefore cannot be made with `defun'.  For example, you can
+          use `fset' to give a symbol `s1' a function definition which
+          is another symbol `s2'; then `s1' serves as an alias for
+          whatever definition `s2' presently has.
+
+        * In constructs for defining or altering functions.  If `defun'
+          were not a primitive, it could be written in Lisp (as a
+          macro) using `fset'.
+
+     Here are examples of the first two uses:
+
+          ;; Give `first' the same definition `car' has.
+          (fset 'first (symbol-function 'car))
+               => #<subr car>
+          (first '(1 2 3))
+               => 1
+          
+          ;; Make the symbol `car' the function definition of `xfirst'.
+          (fset 'xfirst 'car)
+               => car
+          (xfirst '(1 2 3))
+               => 1
+          (symbol-function 'xfirst)
+               => car
+          (symbol-function (symbol-function 'xfirst))
+               => #<subr car>
+          
+          ;; Define a named keyboard macro.
+          (fset 'kill-two-lines "\^u2\^k")
+               => "\^u2\^k"
+
+     See also the related function `defalias', in *Note Defining
+     Functions::.
+
+   When writing a function that extends a previously defined function,
+the following idiom is often used:
+
+     (fset 'old-foo (symbol-function 'foo))
+     (defun foo ()
+       "Just like old-foo, except more so."
+       (old-foo)
+       (more-so))
+
+This does not work properly if `foo' has been defined to autoload.  In
+such a case, when `foo' calls `old-foo', Lisp attempts to define
+`old-foo' by loading a file.  Since this presumably defines `foo'
+rather than `old-foo', it does not produce the proper results.  The
+only way to avoid this problem is to make sure the file is loaded
+before moving aside the old definition of `foo'.
+
+
+File: elisp,  Node: Inline Functions,  Next: Related Topics,  Prev: Function Cells,  Up: Functions
+
+Inline Functions
+================
+
+   You can define an "inline function" by using `defsubst' instead of
+`defun'.  An inline function works just like an ordinary function
+except for one thing: when you compile a call to the function, the
+function's definition is open-coded into the caller.
+
+   Making a function inline makes explicit calls run faster.  But it
+also has disadvantages.  For one thing, it reduces flexibility; if you
+change the definition of the function, calls already inlined still use
+the old definition until you recompile them.  Since the flexibility of
+redefining functions is an important feature of Emacs, you should not
+make a function inline unless its speed is really crucial.
+
+   Another disadvantage is that making a large function inline can
+increase the size of compiled code both in files and in memory.  Since
+the speed advantage of inline functions is greatest for small
+functions, you generally should not make large functions inline.
+
+   It's possible to define a macro to expand into the same code that an
+inline function would execute.  But the macro would have a limitation:
+you can use it only explicitly--a macro cannot be called with `apply',
+`mapcar' and so on.  Also, it takes some work to convert an ordinary
+function into a macro.  (*Note Macros::.)  To convert it into an inline
+function is very easy; simply replace `defun' with `defsubst'.  Since
+each argument of an inline function is evaluated exactly once, you
+needn't worry about how many times the body uses the arguments, as you
+do for macros.  (*Note Argument Evaluation::.)
+
+   Inline functions can be used and open-coded later on in the same
+file, following the definition, just like macros.
+
+   Emacs versions prior to 19 did not have inline functions.
+
+
+File: elisp,  Node: Related Topics,  Prev: Inline Functions,  Up: Functions
+
+Other Topics Related to Functions
+=================================
+
+   Here is a table of several functions that do things related to
+function calling and function definitions.  They are documented
+elsewhere, but we provide cross references here.
+
+`apply'
+     See *Note Calling Functions::.
+
+`autoload'
+     See *Note Autoload::.
+
+`call-interactively'
+     See *Note Interactive Call::.
+
+`commandp'
+     See *Note Interactive Call::.
+
+`documentation'
+     See *Note Accessing Documentation::.
+
+`eval'
+     See *Note Eval::.
+
+`funcall'
+     See *Note Calling Functions::.
+
+`ignore'
+     See *Note Calling Functions::.
+
+`indirect-function'
+     See *Note Function Indirection::.
+
+`interactive'
+     See *Note Using Interactive::.
+
+`interactive-p'
+     See *Note Interactive Call::.
+
+`mapatoms'
+     See *Note Creating Symbols::.
+
+`mapcar'
+     See *Note Mapping Functions::.
+
+`mapconcat'
+     See *Note Mapping Functions::.
+
+`undefined'
+     See *Note Key Lookup::.
+
+
+File: elisp,  Node: Macros,  Next: Loading,  Prev: Functions,  Up: Top
+
+Macros
+******
+
+   "Macros" enable you to define new control constructs and other
+language features.  A macro is defined much like a function, but instead
+of telling how to compute a value, it tells how to compute another Lisp
+expression which will in turn compute the value.  We call this
+expression the "expansion" of the macro.
+
+   Macros can do this because they operate on the unevaluated
+expressions for the arguments, not on the argument values as functions
+do.  They can therefore construct an expansion containing these
+argument expressions or parts of them.
+
+   If you are using a macro to do something an ordinary function could
+do, just for the sake of speed, consider using an inline function
+instead.  *Note Inline Functions::.
+
+* Menu:
+
+* Simple Macro::            A basic example.
+* Expansion::               How, when and why macros are expanded.
+* Compiling Macros::        How macros are expanded by the compiler.
+* Defining Macros::         How to write a macro definition.
+* Backquote::               Easier construction of list structure.
+* Problems with Macros::    Don't evaluate the macro arguments too many times.
+                              Don't hide the user's variables.
+
+
+File: elisp,  Node: Simple Macro,  Next: Expansion,  Up: Macros
+
+A Simple Example of a Macro
+===========================
+
+   Suppose we would like to define a Lisp construct to increment a
+variable value, much like the `++' operator in C.  We would like to
+write `(inc x)' and have the effect of `(setq x (1+ x))'.  Here's a
+macro definition that does the job:
+
+     (defmacro inc (var)
+        (list 'setq var (list '1+ var)))
+
+   When this is called with `(inc x)', the argument `var' has the value
+`x'--*not* the *value* of `x'.  The body of the macro uses this to
+construct the expansion, which is `(setq x (1+ x))'.  Once the macro
+definition returns this expansion, Lisp proceeds to evaluate it, thus
+incrementing `x'.
+
+
+File: elisp,  Node: Expansion,  Next: Compiling Macros,  Prev: Simple Macro,  Up: Macros
+
+Expansion of a Macro Call
+=========================
+
+   A macro call looks just like a function call in that it is a list
+which starts with the name of the macro.  The rest of the elements of
+the list are the arguments of the macro.
+
+   Evaluation of the macro call begins like evaluation of a function
+call except for one crucial difference: the macro arguments are the
+actual expressions appearing in the macro call.  They are not evaluated
+before they are given to the macro definition.  By contrast, the
+arguments of a function are results of evaluating the elements of the
+function call list.
+
+   Having obtained the arguments, Lisp invokes the macro definition just
+as a function is invoked.  The argument variables of the macro are bound
+to the argument values from the macro call, or to a list of them in the
+case of a `&rest' argument.  And the macro body executes and returns
+its value just as a function body does.
+
+   The second crucial difference between macros and functions is that
+the value returned by the macro body is not the value of the macro call.
+Instead, it is an alternate expression for computing that value, also
+known as the "expansion" of the macro.  The Lisp interpreter proceeds
+to evaluate the expansion as soon as it comes back from the macro.
+
+   Since the expansion is evaluated in the normal manner, it may contain
+calls to other macros.  It may even be a call to the same macro, though
+this is unusual.
+
+   You can see the expansion of a given macro call by calling
+`macroexpand'.
+
+ - Function: macroexpand FORM &optional ENVIRONMENT
+     This function expands FORM, if it is a macro call.  If the result
+     is another macro call, it is expanded in turn, until something
+     which is not a macro call results.  That is the value returned by
+     `macroexpand'.  If FORM is not a macro call to begin with, it is
+     returned as given.
+
+     Note that `macroexpand' does not look at the subexpressions of
+     FORM (although some macro definitions may do so).  Even if they
+     are macro calls themselves, `macroexpand' does not expand them.
+
+     The function `macroexpand' does not expand calls to inline
+     functions.  Normally there is no need for that, since a call to an
+     inline function is no harder to understand than a call to an
+     ordinary function.
+
+     If ENVIRONMENT is provided, it specifies an alist of macro
+     definitions that shadow the currently defined macros.  Byte
+     compilation uses this feature.
+
+          (defmacro inc (var)
+              (list 'setq var (list '1+ var)))
+               => inc
+
+          (macroexpand '(inc r))
+               => (setq r (1+ r))
+
+          (defmacro inc2 (var1 var2)
+              (list 'progn (list 'inc var1) (list 'inc var2)))
+               => inc2
+
+          (macroexpand '(inc2 r s))
+               => (progn (inc r) (inc s))  ; `inc' not expanded here.
+
+
+File: elisp,  Node: Compiling Macros,  Next: Defining Macros,  Prev: Expansion,  Up: Macros
+
+Macros and Byte Compilation
+===========================
+
+   You might ask why we take the trouble to compute an expansion for a
+macro and then evaluate the expansion.  Why not have the macro body
+produce the desired results directly?  The reason has to do with
+compilation.
+
+   When a macro call appears in a Lisp program being compiled, the Lisp
+compiler calls the macro definition just as the interpreter would, and
+receives an expansion.  But instead of evaluating this expansion, it
+compiles the expansion as if it had appeared directly in the program.
+As a result, the compiled code produces the value and side effects
+intended for the macro, but executes at full compiled speed.  This would
+not work if the macro body computed the value and side effects
+itself--they would be computed at compile time, which is not useful.
+
+   In order for compilation of macro calls to work, the macros must be
+defined in Lisp when the calls to them are compiled.  The compiler has a
+special feature to help you do this: if a file being compiled contains a
+`defmacro' form, the macro is defined temporarily for the rest of the
+compilation of that file.  To use this feature, you must define the
+macro in the same file where it is used and before its first use.
+
+   Byte-compiling a file executes any `require' calls at top-level in
+the file.  This is in case the file needs the required packages for
+proper compilation.  One way to ensure that necessary macro definitions
+are available during compilation is to require the file that defines
+them.  *Note Features::.
+
+
+File: elisp,  Node: Defining Macros,  Next: Backquote,  Prev: Compiling Macros,  Up: Macros
+
+Defining Macros
+===============
+
+   A Lisp macro is a list whose CAR is `macro'.  Its CDR should be a
+function; expansion of the macro works by applying the function (with
+`apply') to the list of unevaluated argument-expressions from the macro
+call.
+
+   It is possible to use an anonymous Lisp macro just like an anonymous
+function, but this is never done, because it does not make sense to pass
+an anonymous macro to mapping functions such as `mapcar'.  In practice,
+all Lisp macros have names, and they are usually defined with the
+special form `defmacro'.
+
+ - Special Form: defmacro NAME ARGUMENT-LIST BODY-FORMS...
+     `defmacro' defines the symbol NAME as a macro that looks like this:
+
+          (macro lambda ARGUMENT-LIST . BODY-FORMS)
+
+     This macro object is stored in the function cell of NAME.  The
+     value returned by evaluating the `defmacro' form is NAME, but
+     usually we ignore this value.
+
+     The shape and meaning of ARGUMENT-LIST is the same as in a
+     function, and the keywords `&rest' and `&optional' may be used
+     (*note Argument List::.).  Macros may have a documentation string,
+     but any `interactive' declaration is ignored since macros cannot be
+     called interactively.
+
+
+File: elisp,  Node: Backquote,  Next: Problems with Macros,  Prev: Defining Macros,  Up: Macros
+
+Backquote
+=========
+
+   Macros often need to construct large list structures from a mixture
+of constants and nonconstant parts.  To make this easier, use the macro
+``' (often called "backquote").
+
+   Backquote allows you to quote a list, but selectively evaluate
+elements of that list.  In the simplest case, it is identical to the
+special form `quote' (*note Quoting::.).  For example, these two forms
+yield identical results:
+
+     (` (a list of (+ 2 3) elements))
+          => (a list of (+ 2 3) elements)
+     (quote (a list of (+ 2 3) elements))
+          => (a list of (+ 2 3) elements)
+
+   The special marker `,' inside of the argument to backquote indicates
+a value that isn't constant.  Backquote evaluates the argument of `,'
+and puts the value in the list structure:
+
+     (list 'a 'list 'of (+ 2 3) 'elements)
+          => (a list of 5 elements)
+     (` (a list of (, (+ 2 3)) elements))
+          => (a list of 5 elements)
+
+   You can also "splice" an evaluated value into the resulting list,
+using the special marker `,@'.  The elements of the spliced list become
+elements at the same level as the other elements of the resulting list.
+The equivalent code without using ``' is often unreadable.  Here are
+some examples:
+
+     (setq some-list '(2 3))
+          => (2 3)
+     (cons 1 (append some-list '(4) some-list))
+          => (1 2 3 4 2 3)
+     (` (1 (,@ some-list) 4 (,@ some-list)))
+          => (1 2 3 4 2 3)
+     
+     (setq list '(hack foo bar))
+          => (hack foo bar)
+     (cons 'use
+       (cons 'the
+         (cons 'words (append (cdr list) '(as elements)))))
+          => (use the words foo bar as elements)
+     (` (use the words (,@ (cdr list)) as elements))
+          => (use the words foo bar as elements)
+
+   Emacs 18 had a bug that made the previous example fail.  The bug
+affected `,@' followed only by constant elements.  If you are concerned
+with Emacs 18 compatibility, you can work around the bug like this:
+
+     (` (use the words (,@ (cdr list)) as elements `(,@ nil)'))
+
+`(,@ nil)' avoids the problem by being a nonconstant element that does
+not affect the result.
+
+ - Macro: ` LIST
+     This macro quotes LIST except for any sublists of the form `(,
+     SUBEXP)' or `(,@ LISTEXP)'.  Backquote replaces these sublists
+     with the value of SUBEXP (as a single element) or LISTEXP (by
+     splicing).  Backquote copies the structure of LIST down to the
+     places where variable parts are substituted.
+
+
+     Common Lisp note: in Common Lisp, `,' and `,@' are implemented as
+     reader macros, so they do not require parentheses.  In Emacs Lisp
+     they use function call syntax because reader macros are not
+     supported (for simplicity's sake).
+
+
+File: elisp,  Node: Problems with Macros,  Prev: Backquote,  Up: Macros
+
+Common Problems Using Macros
+============================
+
+   The basic facts of macro expansion have counterintuitive
+consequences.  This section describes some important consequences that
+can lead to trouble, and rules to follow to avoid trouble.
+
+* Menu:
+
+* Argument Evaluation::    The expansion should evaluate each macro arg once.
+* Surprising Local Vars::  Local variable bindings in the expansion
+                              require special care.
+* Eval During Expansion::  Don't evaluate them; put them in the expansion.
+* Repeated Expansion::     Avoid depending on how many times expansion is done.
+
+
+File: elisp,  Node: Argument Evaluation,  Next: Surprising Local Vars,  Up: Problems with Macros
+
+Evaluating Macro Arguments Repeatedly
+-------------------------------------
+
+   When defining a macro you must pay attention to the number of times
+the arguments will be evaluated when the expansion is executed.  The
+following macro (used to facilitate iteration) illustrates the problem.
+This macro allows us to write a simple "for" loop such as one might
+find in Pascal.
+
+     (defmacro for (var from init to final do &rest body)
+       "Execute a simple \"for\" loop.
+     For example, (for i from 1 to 10 do (print i))."
+       (list 'let (list (list var init))
+             (cons 'while (cons (list '<= var final)
+                                (append body (list (list 'inc var)))))))
+     => for
+     (for i from 1 to 3 do
+        (setq square (* i i))
+        (princ (format "\n%d %d" i square)))
+     ==>
+
+     (let ((i 1))
+       (while (<= i 3)
+         (setq square (* i i))
+         (princ (format "%d      %d" i square))
+         (inc i)))
+
+
+     -|1       1
+          -|2       4
+          -|3       9
+     => nil
+
+(The arguments `from', `to', and `do' in this macro are "syntactic
+sugar"; they are entirely ignored.  The idea is that you will write
+noise words (such as `from', `to', and `do') in those positions in the
+macro call.)
+
+   Here's an equivalent definition simplified through use of backquote:
+
+     (defmacro for (var from init to final do &rest body)
+       "Execute a simple \"for\" loop.
+     For example, (for i from 1 to 10 do (print i))."
+       (` (let (((, var) (, init)))
+             (while (<= (, var) (, final))
+               (,@ body)
+               (inc (, var))))))
+
+   Both forms of this definition (with backquote and without) suffer
+from the defect that FINAL is evaluated on every iteration.  If FINAL
+is a constant, this is not a problem.  If it is a more complex form,
+say `(long-complex-calculation x)', this can slow down the execution
+significantly.  If FINAL has side effects, executing it more than once
+is probably incorrect.
+
+   A well-designed macro definition takes steps to avoid this problem by
+producing an expansion that evaluates the argument expressions exactly
+once unless repeated evaluation is part of the intended purpose of the
+macro.  Here is a correct expansion for the `for' macro:
+
+     (let ((i 1)
+           (max 3))
+       (while (<= i max)
+         (setq square (* i i))
+         (princ (format "%d      %d" i square))
+         (inc i)))
+
+   Here is a macro definition that creates this expansion:
+
+     (defmacro for (var from init to final do &rest body)
+       "Execute a simple for loop: (for i from 1 to 10 do (print i))."
+       (` (let (((, var) (, init))
+                (max (, final)))
+            (while (<= (, var) max)
+              (,@ body)
+              (inc (, var))))))
+
+   Unfortunately, this introduces another problem.  Proceed to the
+following node.
+
+
+File: elisp,  Node: Surprising Local Vars,  Next: Eval During Expansion,  Prev: Argument Evaluation,  Up: Problems with Macros
+
+Local Variables in Macro Expansions
+-----------------------------------
+
+   In the previous section, the definition of `for' was fixed as
+follows to make the expansion evaluate the macro arguments the proper
+number of times:
+
+     (defmacro for (var from init to final do &rest body)
+       "Execute a simple for loop: (for i from 1 to 10 do (print i))."
+
+     (` (let (((, var) (, init))
+                (max (, final)))
+            (while (<= (, var) max)
+              (,@ body)
+              (inc (, var))))))
+
+   The new definition of `for' has a new problem: it introduces a local
+variable named `max' which the user does not expect.  This causes
+trouble in examples such as the following:
+
+     (let ((max 0))
+       (for x from 0 to 10 do
+         (let ((this (frob x)))
+           (if (< max this)
+               (setq max this)))))
+
+The references to `max' inside the body of the `for', which are
+supposed to refer to the user's binding of `max', really access the
+binding made by `for'.
+
+   The way to correct this is to use an uninterned symbol instead of
+`max' (*note Creating Symbols::.).  The uninterned symbol can be bound
+and referred to just like any other symbol, but since it is created by
+`for', we know that it cannot already appear in the user's program.
+Since it is not interned, there is no way the user can put it into the
+program later.  It will never appear anywhere except where put by
+`for'.  Here is a definition of `for' that works this way:
+
+     (defmacro for (var from init to final do &rest body)
+       "Execute a simple for loop: (for i from 1 to 10 do (print i))."
+       (let ((tempvar (make-symbol "max")))
+         (` (let (((, var) (, init))
+                  ((, tempvar) (, final)))
+              (while (<= (, var) (, tempvar))
+                     (,@ body)
+                     (inc (, var)))))))
+
+This creates an uninterned symbol named `max' and puts it in the
+expansion instead of the usual interned symbol `max' that appears in
+expressions ordinarily.
+
+
+File: elisp,  Node: Eval During Expansion,  Next: Repeated Expansion,  Prev: Surprising Local Vars,  Up: Problems with Macros
+
+Evaluating Macro Arguments in Expansion
+---------------------------------------
+
+   Another problem can happen if you evaluate any of the macro argument
+expressions during the computation of the expansion, such as by calling
+`eval' (*note Eval::.).  If the argument is supposed to refer to the
+user's variables, you may have trouble if the user happens to use a
+variable with the same name as one of the macro arguments.  Inside the
+macro body, the macro argument binding is the most local binding of this
+variable, so any references inside the form being evaluated do refer to
+it.  Here is an example:
+
+     (defmacro foo (a)
+       (list 'setq (eval a) t))
+          => foo
+     (setq x 'b)
+     (foo x) ==> (setq b t)
+          => t                  ; and `b' has been set.
+     ;; but
+     (setq a 'c)
+     (foo a) ==> (setq a t)
+          => t                  ; but this set `a', not `c'.
+
+   It makes a difference whether the user's variable is named `a' or
+`x', because `a' conflicts with the macro argument variable `a'.
+
+   Another reason not to call `eval' in a macro definition is that it
+probably won't do what you intend in a compiled program.  The
+byte-compiler runs macro definitions while compiling the program, when
+the program's own computations (which you might have wished to access
+with `eval') don't occur and its local variable bindings don't exist.
+
+   The safe way to work with the run-time value of an expression is to
+put the expression into the macro expansion, so that its value is
+computed as part of executing the expansion.
+
+
+File: elisp,  Node: Repeated Expansion,  Prev: Eval During Expansion,  Up: Problems with Macros
+
+How Many Times is the Macro Expanded?
+-------------------------------------
+
+   Occasionally problems result from the fact that a macro call is
+expanded each time it is evaluated in an interpreted function, but is
+expanded only once (during compilation) for a compiled function.  If the
+macro definition has side effects, they will work differently depending
+on how many times the macro is expanded.
+
+   In particular, constructing objects is a kind of side effect.  If the
+macro is called once, then the objects are constructed only once.  In
+other words, the same structure of objects is used each time the macro
+call is executed.  In interpreted operation, the macro is reexpanded
+each time, producing a fresh collection of objects each time.  Usually
+this does not matter--the objects have the same contents whether they
+are shared or not.  But if the surrounding program does side effects on
+the objects, it makes a difference whether they are shared.  Here is an
+example:
+
+     (defmacro empty-object ()
+       (list 'quote (cons nil nil)))
+
+     (defun initialize (condition)
+       (let ((object (empty-object)))
+         (if condition
+             (setcar object condition))
+         object))
+
+If `initialize' is interpreted, a new list `(nil)' is constructed each
+time `initialize' is called.  Thus, no side effect survives between
+calls.  If `initialize' is compiled, then the macro `empty-object' is
+expanded during compilation, producing a single "constant" `(nil)' that
+is reused and altered each time `initialize' is called.
+
+   One way to avoid pathological cases like this is to think of
+`empty-object' as a funny kind of constant, not as a memory allocation
+construct.  You wouldn't use `setcar' on a constant such as `'(nil)',
+so naturally you won't use it on `(empty-object)' either.
+
+
+File: elisp,  Node: Loading,  Next: Byte Compilation,  Prev: Macros,  Up: Top
+
+Loading
+*******
+
+   Loading a file of Lisp code means bringing its contents into the Lisp
+environment in the form of Lisp objects.  Emacs finds and opens the
+file, reads the text, evaluates each form, and then closes the file.
+
+   The load functions evaluate all the expressions in a file just as
+the `eval-current-buffer' function evaluates all the expressions in a
+buffer.  The difference is that the load functions read and evaluate
+the text in the file as found on disk, not the text in an Emacs buffer.
+
+   The loaded file must contain Lisp expressions, either as source code
+or as byte-compiled code.  Each form in the file is called a "top-level
+form".  There is no special format for the forms in a loadable file;
+any form in a file may equally well be typed directly into a buffer and
+evaluated there.  (Indeed, most code is tested this way.)  Most often,
+the forms are function definitions and variable definitions.
+
+   A file containing Lisp code is often called a "library".  Thus, the
+"Rmail library" is a file containing code for Rmail mode.  Similarly, a
+"Lisp library directory" is a directory of files containing Lisp code.
+
+* Menu:
+
+* How Programs Do Loading::     The `load' function and others.
+* Autoload::                    Setting up a function to autoload.
+* Repeated Loading::            Precautions about loading a file twice.
+* Features::                    Loading a library if it isn't already loaded.
+* Unloading::			How to "unload" a library that was loaded.
+* Hooks for Loading::		Providing code to be run when
+				  particular libraries are loaded.
+

@@ -1,0 +1,60 @@
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: rtaiMakefile,v 1.10 2004/07/20 16:23:25 mzampare Exp $"
+#
+#
+#************************************************************************
+#   NAME
+#   rtaiMakefile - language specific Makefile
+#
+#   DESCRIPTION
+#   The rtaiMakefile handles the targets to make, install and clean 
+#   RTAI kernel modules code.
+#   
+#   The main variable to be defined in the Makefile is RTAI_MODULES.
+#   It behaves similarly to the EXECUTABLES or LIBRARIES variables,
+#   and allows the customary specification of object files, compiler and
+#   linking options.
+#
+#   For RTAI modules to be build, installed or cleaned, the environment 
+#   variable  RTAI_HOME must be defined.
+#
+#   To customize compiling options USER_RTAI_CFLAGS can be used.
+#   Also available is the tag RTAI_MODULES_L which keeps the modules local
+#   without installing them.
+#   The clean target deletes all files from rtai directory
+#
+#   Support for modules load/unload:
+#
+#   for each module listed in RTAI_MODULES or RTAI_MODULES_L, the makefile assumes
+#   the existence of two corresponding C++ files called load<LKM>.cpp and unload<LKM>.cpp
+#
+#   These files are built into two binaries.
+#   Also, an additional script called "installLKM" is built, which contains instructions
+#   on how to copy the LKM into the suitable system directories and makes the
+#   load/unload binaries setuid root.
+#   This script must be executed as root.
+#
+#
+#   FILES
+#
+#
+#   ENVIRONMENT
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   ACSROOT/include/acsMakefile
+#             ACS wide definitions for UNIX or VxWorks
+#             This file includes the rtaiMakefile
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+# warning, this file left here only as a documentation holder.
+# pending thorough documentation restructuring.

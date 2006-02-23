@@ -1,0 +1,165 @@
+#!/usr/bin/ksh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: checkTcltk,v 1.3 2004/04/22 09:38:00 psivera Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# wpirani   31/08/99  Created for OCT99 (New Tcl/Tk baseline)
+
+#************************************************************************
+#   NAME
+#
+#   checkTcltk
+#
+#   SYNOPSIS
+#
+#   checkTcltk
+# 
+#   DESCRIPTION
+#
+#   Check installed Tcl/Tk by comparing the content of $TCLTK_ROOT
+#   with a reference file
+#
+#   BUGS     
+#
+#   None, just features!
+#
+#------------------------------------------------------------------------
+#
+
+#
+# print header
+#
+TITLE="     Checking Tcl/Tk installation  "
+BUILD_NAME="Tcltk"
+. ./standardPrologue
+
+TCLTK=${INSTALL_ROOT}/PRODUCTS/tcltk
+
+#
+# get current operating system
+#
+build_OS=`uname -s`
+build_OSV=`uname -r`
+
+if [ ${build_OS} = "Linux" ]
+then
+     build_OSV=`cat /etc/redhat-release | awk '{ print $5 }'`
+fi
+
+echo $SEPARATOR
+echo "Checking on $build_OS version $build_OSV:"
+echo ""
+
+if [     ${build_OS}-${build_OSV} != "SunOS-5.8"     \
+     -a  ${build_OS}-${build_OSV} != "HP-UX-B.11.00" \
+     -a  ${build_OS}-${build_OSV} != "Linux-9"       \
+   ]
+then
+    echo "\n\tWARNING: this procedure has not been tested on this system\n"
+fi
+
+
+#-------------------
+# check that ACSDATA is defined as directory (needed by msql)
+#
+echo "ACSDATA . . .\c"
+if [ "$ACSDATA" = "" ]
+then	
+    echo "$ACSDATA not defined, cannot continue."
+    exit 1
+fi
+
+echo "defined as: $ACSDATA . . .\c"
+if [ ! -d $ACSDATA ]
+then
+    echo "but is not a directory, cannot continue."
+    exit 1
+fi
+
+if [ ! -w $ACSDATA ]
+then
+    echo "but is not a writable directory, cannot continue."
+    exit 1
+fi
+echo " . . . ok"
+
+
+#
+# setup and check target directory
+#
+if [ "$TCLTK_ROOT" = "" ]
+then
+    TCLTK_ROOT=/usr/local
+fi
+
+PREFIX=$TCLTK_ROOT
+export PREFIX
+echo "Install directory. . .\c"
+echo "defined as: $PREFIX . . .\c"
+
+if [ ! -d $PREFIX ]
+then
+    echo "but is not a directory, cannot continue."
+    exit 1
+fi
+
+if [ ! -w $PREFIX ]
+then
+    echo "but is not a writable directory, cannot continue."
+    exit 1
+fi
+echo " . . . ok"
+
+
+# 
+# check that all expected files have been created 
+#
+SRC="$TCLTK/$build_OS-$build_OSV"
+reference=$TCLTK/TCLTK.$build_OS-$build_OSV
+
+cd $PREFIX
+echo ""
+echo "Checking that all expected files have been created"
+echo "(reference list: $reference) "
+cat  $reference | grep -v "###" | xargs -i ${INSTALL_ROOT}/INSTALL/buildCheckFileExist $PREFIX/\{\}
+echo "\n"
+
+#
+# test that each shell has the expected
+# set of commands. This cannot be done with tkman and tkinspect
+# because they are are interactive programs.
+#
+echo $SEPARATOR
+echo "verify:"
+rm -f test.tcl
+for shell in bltwish expect expectk tcl tclsh wish wishx
+do
+    echo "    ${shell} . . .\c"
+    out=${SRC}/${shell}.out
+    ref=${TCLTK}/ref/${shell}.ref
+    if [ -x $PREFIX/bin/$shell ] 
+    then
+	echo "puts [lsort [info commands]]; exit"  | $PREFIX/bin/$shell > $out
+        diff $out $ref
+        if [ $? -ne 0 ] 
+        then	
+            echo " FAILED"
+        else
+            echo " ok"
+        fi
+    else
+        echo " FAILED: $PREFIX/bin/$shell does not exist!"
+    fi
+done
+
+echo $SEPARATOR
+echo "\007"; sleep 1;echo "\007"; sleep 1;echo "\007"; sleep 1
+echo "Check completed. Please check the output for possible errors."
+
+. $CWD/standardEpilogue
+
+#
+#___oOo___

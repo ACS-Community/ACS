@@ -1,0 +1,68 @@
+#!/bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docExDbDir,v 1.31 2002/06/08 17:20:43 vltsccm Exp $" 
+#
+# docExDbDir
+#
+# who           when      what
+# ------------  --------  ----------------------------------------------
+# P.Forstmann  15/08/94  created from A. Longinotti script.
+#
+
+#************************************************************************
+#   NAME
+#   docExDbDir - extracts database info from definition files 
+# 
+#   SYNOPSIS
+#   docExDbDir <root_directory> <destination_directory>
+# 
+#   DESCRIPTION
+#   This script uses the utility docExDb to extract recursively useful 
+#   information from all files found in the specified <root_directory> and 
+#   sub-directories.
+#   The files are named <original name>_db and all located in the specified
+#   <destination_directory>.
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#   User must make sure that all files in the <root_directory> and 
+#   sub-directories are database definition files.
+#
+#   EXAMPLES
+#   docExDbDir $MODROOT/DATABASE $MODROOT/doc
+#
+#   SEE ALSO
+#   docExdb
+#
+#   BUGS     
+#------------------------------------------------------------------------
+#
+
+if [ $# -eq 0 ]
+then
+    echo DATABASE definition root directory parameter missing
+    echo Info files directory parameter missing
+    exit 1
+fi
+
+if [ $# -eq 1 ]
+then
+    echo Info files directory parameter missing
+    exit 1
+fi
+
+root_dir=$1
+dest_dir=$2
+
+find $root_dir ! -type d -exec docExDb {} \;
+find $root_dir -name "*_db" -exec mv {} $dest_dir \;
+
+unset root_dir
+unset dest_dir

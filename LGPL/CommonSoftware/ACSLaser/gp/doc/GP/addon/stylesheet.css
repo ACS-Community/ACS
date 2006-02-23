@@ -1,0 +1,238 @@
+/* AB-CO-AP GP project web pages style sheet */
+/* Define colors, fonts and other style attributes here to override the defaults  */
+
+/* Page background color */
+BODY
+{
+   color: #000000; 
+   background-color: #FFFFFF; 
+   font-size: 11pt;
+   font-family:Verdana, Helvetica, Arial, sans-serif;
+   Margin-left=1;
+   Margin-top=1;
+   Margin-right=1;
+   Margin-bottom=1;
+}
+
+/* Link behaviour */
+A:link    { color: #0000FF; text-decoration: none; }         
+A:visited { color: #0000FF; text-decoration: none; }        
+A:active  { color: #0000FF; text-decoration: none; }      
+/*A:hover   { color: #007FFF; text-decoration: none; }*/
+A:hover   { color: #FF0000; text-decoration: none; }
+
+/* normal text */
+ EM  {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ P   {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ LI  {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ UL  {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+ DIV {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ TD  {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+
+ H1 {font-size: 16pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H2 {font-size: 14pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H3 {font-size: 12pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H4 {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ H5 {font-size: 8pt; font-family: Verdana, Helvetica, Arial, sans-serif;} 
+ADDRESS {font-size: 8pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+  
+
+#Combobox {
+    background-color: #a0b4d8;
+    color: #FFFFFF;
+    font-size: 8pt;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+}
+
+
+
+
+/* Tables fonts and colors */
+/* HEADER fonts and colors */
+#NavBar
+{ 
+   font-size:       10pt; 
+   font-family:     Verdana, Helvetica, Arial, sans-serif; 
+   color:           #FFFFFF; 
+   font-weight:     plain;
+   text-align:      left;
+   vertical-align:  center;
+}
+
+
+
+#PageTitle        
+{ 
+   font-size:   16pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #a0b4d8;
+   font-weight: bold;
+   text-align:  left;
+   vertical-align:center;
+}
+
+#TableTitle        
+{ 
+   font-size:      12pt; 
+   font-family:    Verdana, Helvetica, Arial, sans-serif; 
+   color:          #FFFFFF;
+   background-color: #a0b4d8;  
+   font-weight:     bold;
+   text-align:     center;
+   vertical-align: center;
+}
+
+
+#CellCenter        
+{ 
+   font-size:   11pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:   center;
+   vertical-align:center;
+}
+
+#CellCenterBold        
+{ 
+   font-size:   11pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   font-weight:     bold;
+   text-align:center;
+   vertical-align:center;
+}
+
+#CellLeft        
+{ 
+   font-size:   12pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:left;
+   vertical-align:center;
+}
+
+#CellLeft10        
+{ 
+   font-size:   10pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:left;
+   vertical-align:center;
+}
+
+#CellLeft8        
+{ 
+   font-size:   8pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:left;
+   vertical-align:center;
+}
+
+#CellLeftTop10        
+{ 
+   font-size:   10pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:left;
+   vertical-align:top;
+}
+
+#CellLeftTop8        
+{ 
+   font-size:   8pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:left;
+   vertical-align:top;
+}
+#CellLeftBold        
+{ 
+   font-size:   11pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   font-weight:     bold;
+   text-align:left;
+   vertical-align:center;
+}
+
+#CellLeftTop        
+{ 
+   font-size:   11pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:left;
+   vertical-align:top;
+}
+
+#CellRight        
+{ 
+   font-size:   11pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:right;
+   vertical-align:center;
+}
+
+
+
+/* FOOTER fonts and colors */
+#FooterCERN      
+{ 
+   font-size:        10pt;
+   font-family:      Verdana, Helvetica, Arial, sans-serif; 
+   color:            #FFFFFF;
+   text-align:       left; 
+   vertical-align:   center; 
+   background-color: #a0b4d8; 
+}
+#FooterTimeStamp 
+{ 
+   font-size:        10pt;
+   font-family:      Verdana, Helvetica, Arial, sans-serif; 
+   color:            #FFFFFF;
+   text-align:       right;  
+   vertical-align:   center; 
+   background-color: #a0b4d8;  
+}
+
+#HeaderBar 
+{ 
+   font-size:        10pt;
+   font-family:      Verdana, Helvetica, Arial, sans-serif; 
+   color:            #FFFFFF;
+   font-weight:      plain;
+   text-align:       left;  
+   vertical-align:   center; 
+   background-color: #a0b4d8;  
+}
+
+#NavTableTitle        
+{ 
+   font-size:   10pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   font-weight: bold;
+   color:       #FFFFFF;
+   text-align:   center;
+   vertical-align:center;
+}
+
+#NavTableText        
+{ 
+   font-size:   10pt; 
+   font-family: Verdana, Helvetica, Arial, sans-serif; 
+   color:       #000000;
+   text-align:   Left;
+   vertical-align:center;
+}
+
+.big                  {font-size: 11pt; font-weight: bold; font-family: Verdana, Helvetica, Arial, sans-serif;}
+.normal               {font-size: 10pt; font-family: Verdana, Helvetica, Arial, sans-serif;}
+.small                {font-size: 8pt; font-family: Verdana, Helvetica, Arial, sans-serif; }
+.cellHeader           {font-size: 10pt; font-weight: bold; color: #FFFFFF; background-color:#a0b4d8; text-align: center;}
+.headerTitle          {font-size: 9pt; font-weight: bold; color: #FFFFFF; background-color:#a0b4d8}
+.headerText           {font-size: 9pt; background-color: #ccccf0}
+
+
+

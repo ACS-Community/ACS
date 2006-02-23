@@ -1,0 +1,193 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docSelectDocument,v 1.31 2002/06/08 17:20:44 vltsccm Exp $" 
+#
+# who        when        what
+# ---------  ----------  ----------------------------------------------
+# G.Filippi  23-12-1993  created 
+# G.Filippi  12-01-1994  "author" option added
+# G.Filippi  11-02-1994  restructured use of main index (totally on files)
+# G.Filippi  11-02-1994  "Keyword" option added
+#
+
+#************************************************************************
+#   NAME
+#   docSelectDocument -  document root directory selection
+# 
+#   SYNOPSIS
+#       docSelectDocument
+# 
+#   DESCRIPTION
+# 
+#   See doc.
+#
+#*******************************************************************************
+
+#
+# check environment
+
+if [ "$VLT_DOCARCHIVE_ROOT" = "" ]
+then 
+    echo "***ERROR. \$VLT_DOCARCHIVE_ROOT not defined. "
+    echo "Press <Enter> to continue . . .\c"
+    read a
+    exit 1
+fi
+
+if [ ! -d $VLT_DOCARCHIVE_ROOT ]
+then 
+    echo "***ERROR. $VLT_DOCARCHIVE_ROOT is not a valid directory."
+    echo "          Please check your environment "
+    echo "Press <Enter> to continue . . .\c"
+    read a
+    exit 1
+fi
+
+#
+# I need to rely on the standard behaviour (SystemV)
+unalias ls
+unalias cd
+
+#
+# 
+AUTHOR=`whoami`
+
+#
+#
+while clear
+do
+    # select data directory
+    cd $VLT_DOCARCHIVE_ROOT
+
+    echo "         ***** WELCOME TO VLT SOFTWARE DOCUMENT ARCHIVE *****"
+
+    if test -f indexGroups
+    then
+        cat indexGroups
+    else
+        echo "\n\ndocSelectDocument: WARNING indexGroups not found\n"
+    fi
+ 
+    echo "\n\n    only your documents _________________________ $AUTHOR\n\n"
+
+    echo "type    <groupId> to access that specific list of documents"
+    echo "        <author>  to get the list of documents belongin to a person"
+    echo "        <keyword> to get the list of documents having such a keyword"
+    echo "                  in the documentNumber or in the author (user)name"
+    echo "        <documentNumber>  to directly access a document"
+    echo "        <Enter>-key to exit."
+    echo ""
+    echo "\noption: \c"
+
+    read OPTION
+ 
+    echo " - - - - - - - - - - - - - - - - - - - - - - - -"
+
+    # if the user answer is not empty process it else go to previous level
+
+    if test -n "$OPTION"
+    then
+
+        # if user typed more than one, take only the first word
+        for i in $OPTION
+        do
+            OPTION=$i
+            break
+        done
+
+        # either is a documentNumber or is a keyword for an index:
+        if test -d $OPTION
+        then 
+            # a valid doc_number(directory) was selected --> activate issue selection
+            docSelectIssue $OPTION
+        else
+
+            # user can have typed:
+            #     - one of the a pre-coded group of document --> the index exists
+            #     - anything else, including his name:       --> create the index
+            # Unless the index already exists (pre-coded groups) a new index is produced
+            # The OPTION is used as keyword
+
+            if [ -f index$OPTION ]
+            then
+                INDEX_FILE=index$OPTION
+                DELETE_INDEX=NO
+            else
+                KEYWORD=$OPTION
+                echo "retrieving documents with keyword >>$KEYWORD<<. Please wait .\c"
+                INDEX_FILE=keyword/$$_$KEYWORD
+                DELETE_INDEX=YES
+                rm -f $INDEX_FILE
+                
+                echo "----------------------------------------------------------------------------" >$INDEX_FILE
+                echo " Keyword: $KEYWORD         `date`\n"                >>$INDEX_FILE
+                echo " .\c"
+
+                # REMARK: see docMakeReport for an explanation of the use of
+                #         ls, grep, awk to get the list.
+                ls -la | grep $KEYWORD > /tmp/$$docSelectDocument-grep
+                echo " .\c"
+                if [ -s /tmp/$$docSelectDocument-grep ]
+                then
+                    awk '$9 ~ /^[A-Z0-9\-]+$/ {print "grep " $9 " index?"}' \
+                        </tmp/$$docSelectDocument-grep \
+                        >/tmp/$$docSelectDocument
+                    echo " .\c"
+                    sh /tmp/$$docSelectDocument | sort >>$INDEX_FILE   
+                    echo "\n"                          >>$INDEX_FILE   
+                    echo " .\c"
+                    rm -f /tmp/$$docSelectDocument
+                else
+                    echo "\n\n      NO DOCUMENTS FOUND  \n\n" >>$INDEX_FILE   
+                fi
+                rm -f /tmp/$$docSelectDocument-grep
+                echo " done."
+            fi
+
+            # 
+            # display the index and allow choice
+            while clear 
+            do 
+                clear 
+                cat $INDEX_FILE
+                echo "***** using the mouse cut&paste, select a document number. "
+                echo "<Enter> to go to previous level: \c"
+                read DOC_NUMBER
+                if test -n "$DOC_NUMBER"
+                then
+                    if test -d $DOC_NUMBER
+                    then 
+                        # a valid doc_number(directory) was selected --> activate issue selection
+                        docSelectIssue $DOC_NUMBER
+                    else
+                        # an invalid doc_number(directory) was selected --> signal error and loop
+                        echo ""
+                        echo " Wrong document number or document not yet archived."
+                        echo " Press <Enter> to continue . . ."
+                        read a
+                    fi
+                else
+                    # <Enter> was pressed --> exit
+                    clear
+                    break
+                fi
+            done
+
+            #
+            # remove index file (only for temporary ones)
+            if [ "$DELETE_INDEX" = "YES" ]
+            then
+                rm -f $INDEX_FILE
+            fi
+        fi
+
+    else
+        # <Enter> was pressed --> exit (up to previous level)
+        clear
+        exit
+    fi
+done
+#
+#end-of-procedure

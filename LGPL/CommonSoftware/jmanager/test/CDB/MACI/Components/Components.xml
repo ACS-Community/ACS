@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+      
+  <_ Name="MOUNT1"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false" />
+ 
+  <_ Name="MOUNT2"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false" />
+ 
+  <_ Name="MOUNT3"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="true"		Autostart="false" />
+ 
+  <_ Name="MOUNT4"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false" />
+ 
+  <_ Name="MOUNT5"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container2"
+  			Default="false"		Autostart="false" />
+ 
+  <_ Name="PBEND_B_01"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false" />
+ 
+  <_ Name="PBEND_B_02"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false" />
+ 
+  <_ Name="*"		Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false" />
+
+</Components>
+

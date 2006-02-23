@@ -1,0 +1,6 @@
+#! /bin/bash
+#The only reason this script exists is to made the 
+#acscommandcenter to happy. That is, it seems incapable
+#of dealing with the Python interpreter if it's not
+#a background process
+ACSEventAdmin &

@@ -1,0 +1,40 @@
+RELEASE_NOTES
+
+Module: 
+  doc
+
+Date: 
+	01/08/97
+ 
+From: 
+  G.Filippi   ESO
+  F.Carbognani   ESO
+
+Version: 
+  revision "@(#) $Id: RELEASE_NOTES,v 1.31 2002/06/08 17:20:48 vltsccm Exp $"
+
+Documents:
+  manpages
+
+Configuration Requirements:
+
+Tested:
+  by the author. No formal test applied.
+
+Cost:
+  -
+
+Changes:
+
+   New Features:
+     - 
+   
+   Fixed Problems:
+     - docUnix2Dos changet into a tcl-scrip (Credit: M.Verola)
+     
+FILES:
+doc/src/docUnix2Dos.tcl ADDED
+doc/src/docUnix2Dos DELETED
+doc/src/Makefile MODIFIED
+
+                          ___oOo___

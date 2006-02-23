@@ -1,0 +1,170 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: maciManagerJ,v 1.27 2005/10/18 14:05:56 dfugate Exp $"
+#
+# who       when      what
+# -------- ---------- ----------------------------------------------
+# msekoran 2003-05-09 Created.
+#
+
+#************************************************************************
+#   NAME	maciManagerJ
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+#
+
+#Directory where we find Java properties defining the behavior of manager
+if [ "$ACS_MANAGER_CONFIG" = "" ]
+then
+    ACS_MANAGER_CONFIG=$ACSDATA/config/jManager
+fi
+
+#
+# Save the process ID
+#
+ACS_MANAGER_PID=$$
+if [ ! -d $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE ]
+then
+    ACS_LOG_ERROR "Unable to save manager's PID because '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
+
+elif [ ! -w $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE ]
+then
+    ACS_LOG_ERROR "Unable to save manager's PID because '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' is not owned by '$USER'!"
+
+else
+    cd $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE
+    #save the PID of this script so we can kill it later if we have to
+    echo $ACS_MANAGER_PID  > ACS_MANAGER_PID
+    #make of copy of manager's configuration
+    cp -r $ACS_MANAGER_CONFIG .
+    export ACS_MANAGER_CONFIG=$PWD/jManager
+fi
+
+# ----------------------------------------------------------------
+# Setup manager's config files
+
+#first we modify logging priorities
+if   [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+then
+	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=FINEST" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
+
+elif [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_INFO_PRIORITY ]
+then
+	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=CONFIG" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
+
+elif [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_ERROR_PRIORITY ]
+then
+	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=INFO" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
+
+elif [ "X$ACS_LOG_STDOUT" != "X" ]
+then
+	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=SEVERE" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
+fi
+
+# ----------------------------------------------------------------
+
+ACS_LOG_INFO "Starting jManager"
+
+#
+# Fetches the IP adress
+#
+export HOST=`getIP`
+
+#
+# If $NAMESERVICE_REFERENCE is not set, take the localhost name  
+#
+if [ "X$NAMESERVICE_REFERENCE" = "X" ]
+then  
+    ACS_NAMING_SERVICE_PORT=`getNamingServicePort`    
+    export NAMESERVICE_REFERENCE=iiop://$HOST:$ACS_NAMING_SERVICE_PORT
+fi
+
+#
+# Fetches port numbers
+#      
+export ACS_MANAGER_PORT=`getManagerPort`
+export ACS_CDB_PORT=`getCDBPort`
+
+if ! checkTCPPort $ACS_MANAGER_PORT
+then
+    ACS_LOG_ERROR "Manager port is being used by another process. Cannot continue!"
+    exit $EC_NOPORT
+fi
+                                                         
+ACS_LOG_DEBUG "ACS Naming Service: $NAMESERVICE_REFERENCE"
+ACS_LOG_DEBUG "Manager will be run on port: $ACS_MANAGER_PORT"
+
+#
+# Evaluates properties for Manager federation
+# The variable ACS_FEDERATION will remain empy if no federation
+# is requested.
+#
+ACS_FEDERATION=""
+if [ "X$ACS_DOMAINS" != "X" ]
+then  
+     ACS_FEDERATION="$ACS_FEDERATION -DACS.domains=$ACS_DOMAINS"
+fi
+if [ "X$ACS_FEDERATION_DIRECTORY" != "X" ]
+then  
+     ACS_FEDERATION="$ACS_FEDERATION -DACS.federationDirectory=$ACS_FEDERATION_DIRECTORY"
+fi
+
+              
+#
+# The easiest would be to delegate the rest to acsStartJava
+# as in the following commented command line.
+# But to get startup faster we pass explicitlyy the list of jar files
+# that are neede.
+#
+#
+# acsStartJava  -Dabeans.home=$ACSDATA/config/jManager -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE -DDAL.defaultReference=corbaloc::$HOST:$ACS_CDB_PORT/CDB -DOAPort=$ACS_MANAGER_PORT com.cosylab.acs.maci.manager.app.Manager $1 $2 $3 $4 $5 $6 $7 $8 $9
+#
+#
+acsStartJava -noClassLoader -noAutoClasspath \
+    -addToClasspath jManager.jar:maci.jar:jACSCommon.jar:cosyframework-core.jar:cosyframework-gui.jar:cosyicons.jar:prevayler-1.02.001.jar:concurrent.jar:activation.jar:CDB.jar:cdbDAL.jar:jACSUtil.jar:acscomponent.jar:acsjlog.jar \
+    -Dabeans.home=$ACS_MANAGER_CONFIG -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE -DDAL.defaultReference=corbaloc::$HOST:$ACS_CDB_PORT/CDB -DOAPort=$ACS_MANAGER_PORT $ACS_FEDERATION com.cosylab.acs.maci.manager.app.Manager $1 $2 $3 $4 $5 $6 $7 $8 $9
+

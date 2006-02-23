@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<body>
+	<entity type="abeans.pluggable.simulator.Namespace" name="PSBEND_M.01" parent="" descriptor="abeans.models.meta.NamespaceDescriptor"/>
+
+	<entity type="abeans.pluggable.simulator.Property" name="current" parent="PSBEND_M.01" descriptor="abeans.models.channel.ChannelDescriptor"/>
+
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.GetDescriptor"/>
+	<entity type="abeans.pluggable.simulator.SetQuery" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.SetDescriptor"/>
+
+	<entity type="abeans.pluggable.simulator.Property" name="minimum" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="value" type="java.lang.Double" value="0.0"/>
+	</entity>
+
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="PSBEND_M.01/current/minimum" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<entity type="abeans.pluggable.simulator.Property" name="maximum" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="value" type="java.lang.Double" value="5.0"/>
+	</entity>
+
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="PSBEND_M.01/current/maximum" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<entity type="abeans.pluggable.simulator.Property" name="description" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="Current of the power supply."/>
+	</entity>
+
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="PSBEND_M.01/current/description" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<entity type="abeans.pluggable.simulator.Property" name="units" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="A"/>
+	</entity>
+
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="PSBEND_M.01/current/units" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<entity type="abeans.datatypes.ChannelMonitorQuery" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.MonitorDescriptor">
+		<property name="enableTimeout" type="java.lang.Boolean" value="true"/>
+	</entity>
+
+	<entity type="abeans.datatypes.ChannelHistoryQuery" parent="PSBEND_M.01/current" descriptor="abeans.datatypes.HistoryDescriptor"/>
+	<entity type="abeans.datatypes.GetAsyncQuery" parent="PSBEND_M.01/current"/>
+	<entity type="abeans.datatypes.SetAsyncQuery" parent="PSBEND_M.01/current"/>
+</body>

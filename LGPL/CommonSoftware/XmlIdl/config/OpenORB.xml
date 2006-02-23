@@ -1,0 +1,161 @@
+<!-- ================================================================== -->
+<!-- =                        OpenORB XML profile                     = -->
+<!-- ================================================================== -->
+
+<!--
+<!DOCTYPE OpenORB 
+    PUBLIC "-//openorb.sf.net//OpenORB Config//EN" 
+    "http://openorb.sf.net/config/OpenORB.dtd"> 
+-->
+
+<OpenORB profile="default" 
+  xmlns="http://openorb.sf.net/config"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <description>
+  This is the default config file, as found in the jar file. It can be
+  copied into the user's home directory and modified.<p/>
+
+  Users are reccomended to modify the corbaloc reference to the
+  NameService, found in the BasicRefs profile, so that it locates the
+  name service.
+  </description>
+
+  <!-- ==================================================================== -->
+  <!-- The user modified profile. This is imported into all the below       -->
+  <!-- profiles to set some common user modifyable properties               -->
+  <!-- ==================================================================== -->
+  <profile name="user-mods" >
+    <import xlink:href="${openorb.home}config/default.xml#InitRef">
+      <property name="NameService" 
+         value="corbaloc::1.2@localhost:2001/NameService" />
+    </import>    
+  </profile>  
+  
+  <!-- ==================================================================== -->
+  <!-- DEFAULT PROFILE                                                      -->
+  <!--                                                                      -->
+  <!--  This profile is the default profile used by OpenORB when starting.  -->
+  <!--                                                                      -->
+  <!--  This profile extends another profile named "default" available      -->
+  <!--  in the default.xml file. In addition, it provides a way to overload -->
+  <!--  the property that defines the CORBA URL to find the Naming Service  -->
+  <!--                                                                      -->
+  <!-- ==================================================================== -->
+
+  <profile name="default" xlink:href="${openorb.home}config/default.xml#default">
+    <description>
+    The default profile loads the POA, iiop and some basic initial references.
+    </description>
+
+    <import profile="user-mods" />
+  </profile>
+
+  <!-- ==================================================================== -->
+  <!-- Example of a profile which extends another.                          -->
+  <!-- This profile extends the default, and sets debug logging to highest  -->
+  <!-- level.                                                               -->
+  <!-- ==================================================================== -->
+  <profile name="debug" extends="default" >
+    <description>
+    Activates debugging mode.
+    </description>
+
+    <import xlink:href="${openorb.home}config/default.xml#openorb" >
+      <property name="debug.level" value="MEDIUM" />
+      <property name="debug.trace" value="DEBUG" />
+      <property name="useStaticThreadGroup" value="true" />
+    </import>
+  </profile>
+
+
+  <!-- ==================================================================== -->
+  <!-- Example of a profile which imports modules.                          -->
+  <!-- This profile activates only the BOA, and not the POA.                -->
+  <!-- ==================================================================== -->
+  <profile name="boa-only" >
+    <description>
+    This profile uses the BOA instead of the POA.
+    </description>
+
+    <import xlink:href="${openorb.home}config/default.xml#BOA" />
+    <import xlink:href="${openorb.home}config/default.xml#iiop" />    
+    <import xlink:href="${openorb.home}config/default.xml#BasicRefs" />
+
+    <import profile="user-mods" />
+  </profile>    
+
+  <!-- ==================================================================== -->
+  <!-- Activate only the client side ORB. This just extends a profile of    -->
+  <!-- the same name in the default.xml file.                               -->
+  <!-- ==================================================================== -->
+  <profile name="client-only" xlink:href="${openorb.home}config/default.xml#client-only">
+    <description>
+    Activates only the client side ORB.
+    </description>
+  </profile>
+
+  <!-- ==================================================================== -->
+  <!--                                                                      -->
+  <!--      The following profiles are only used with OpenORB services      -->
+  <!--      and extensions. If you don't use any services and extensions    -->
+  <!--      don't take care of them.                                        -->
+  <!--                                                                      -->
+  <!-- ==================================================================== -->
+
+  <!-- ==================================================================== -->
+  <!-- TRANSACTION PROFILE                                                  -->
+  <!--                                                                      -->
+  <!--  This profile must be used for transactional applications. It        -->
+  <!--  requires the OpenORB OTS service.                                   -->
+  <!--                                                                      -->
+  <!-- ==================================================================== -->
+  
+  <profile name="ots" extends="default">
+    <description>
+    The ots profile loads the OTS interceptors required for the
+    management of distributed transaction. This profile must be used
+    on server and client sides for transaction applications.
+    </description>
+    
+    <import xlink:href="${openorb.home}config/ots.xml#ots" />    
+  </profile>
+
+  <!-- ==================================================================== -->
+  <!-- PERSISTENT PROFILE                                                   -->
+  <!--                                                                      -->
+  <!--  This profile must be used for persistent applications. It           -->
+  <!--  requires the OpenORB PSS service.                                   -->
+  <!--                                                                      -->
+  <!-- ==================================================================== -->
+  
+  <profile name="pss" extends="default">
+    <description>
+    The pss profile loads the PSS intializer required for persistence
+    management. This profile must be used on server side when a server
+    application is using the PSS.
+    </description>
+    
+    <import xlink:href="${openorb.home}config/pss.xml#pss" />
+  </profile>
+
+  <!-- ==================================================================== -->
+  <!-- TRANSACTION & PERSISTENT PROFILE                                     -->
+  <!--                                                                      -->
+  <!--  This profile must be used for persistent and transactional          -->
+  <!--  applications. It requires the OpenORB PSS and OTS services.         -->
+  <!--                                                                      -->
+  <!-- ==================================================================== -->
+
+  <profile name="transactionalpss" extends="default">
+    <description>
+    This profile is used for transactional and persistent server
+    applications.  It must be used on the server side only.
+    </description>
+       
+    <import xlink:href="${openorb.home}config/ots.xml#ots" />
+    <import xlink:href="${openorb.home}config/pss.xml#pss" />
+  </profile>       
+
+</OpenORB>
+

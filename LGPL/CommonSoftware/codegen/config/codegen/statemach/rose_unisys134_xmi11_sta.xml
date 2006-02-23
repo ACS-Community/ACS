@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!-- $Id: rose_unisys134_xmi11_sta.xml,v 1.1 2004/05/05 07:33:20 hsommer Exp $
+   *
+   * Open Generator FrameWork - a versatile MDA/D library
+   * Copyright (C) 2003 b+m Informatik AG
+   *
+   * This library is free software; you can redistribute it and/or
+   * modify it under the terms of the GNU Lesser General Public
+   * License as published by the Free Software Foundation; either
+   * version 2.1 of the License, or (at your option) any later version.
+   *
+   * This library is distributed in the hope that it will be useful,
+   * but WITHOUT ANY WARRANTY; without even the implied warranty of
+   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   * Lesser General Public License for more details.
+   *
+   * You should have received a copy of the GNU Lesser General Public
+   * License along with this library; if not, write to the Free Software
+   * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ -->
+
+<!DOCTYPE MetaModel
+          PUBLIC "-//b+m Informatik AG//DTD b+m Generator FrameWork XML2Meta 2.2//EN"
+                 "http://www.bmiag.com/dtds/xml2meta_2_2.dtd">
+
+<MetaModel name="StandardMetaModel.State">
+
+
+    <RefSettings id="xmi.id" idref="xmi.idref" idsep=" " />
+
+
+    <ResultSet>
+        <FilterCondition value = "/XMI/XMI.content/descendant::StateMachine" />
+    </ResultSet>
+
+
+    <!-- Stereotype -->
+
+    <Extension name="Stereotype" id="X.0">
+        <Source type="Node">UML:Stereotype</Source>
+        <Properties>
+          <Property>
+            <Source type="Attribute" name="name" />
+            <Target type="Attribute">Value</Target>
+          </Property>
+          <Property>
+            <Source type="Attribute" name="extendedElement" />
+            <Target type="Attribute">Scope</Target>
+          </Property>
+        </Properties>
+    </Extension>
+
+
+    <!-- TaggedValue -->
+
+    <Extension name="TaggedValue" id="X.1">
+        <Source type="Node">UML:TaggedValue</Source>
+        <Properties>
+          <Property>
+            <Source type="Attribute" name="tag" />
+            <Target type="Attribute">Tag</Target>
+          </Property>
+          <Property>
+            <Source type="Attribute" name="value" />
+            <Target type="Attribute">Value</Target>
+          </Property>
+          <Property>
+            <Source type="Attribute" name="modelElement" />
+            <Target type="Attribute">Scope</Target>
+          </Property>
+        </Properties>
+    </Extension>
+
+
+    <!-- ModelElement -->
+
+    <ModelElement name="ModelElement" id="E.0">
+        <Children>
+            <Child idref="E.1" />
+            <Child idref="E.2" />
+            <Child idref="E.14" />
+            <Child idref="E.15" />
+            <Child idref="E.17" />
+            <Child idref="E.30" />
+        </Children>
+        <Properties>
+            <Property>
+                <Source type="Attribute" name="xmi.id" />
+                <Target type="Attribute">Id</Target>
+            </Property>
+            <Property>
+                <Source type="Attribute" name="name" />
+                <Target type="Attribute">Name</Target>
+            </Property>
+            <Property>
+                <Source type="ImpliedReference" idref="E.30" />
+                <Target type="Association">Namespace</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- StateMachine -->
+
+    <ModelElement name="StateMachine" id="E.1">
+        <Source type="Node">UML:StateMachine</Source>
+        <Target type="Class">alma.acs.genfw.sm.AcsStateMachine</Target>
+        <Parents>
+            <Parent idref="E.0" />
+        </Parents>
+        <Properties>
+            <Property>
+                <Source type="AttributeReference" name="context" idref="E.0" />
+                <Target type="Association">Context</Target>
+            </Property>
+            <Property>
+                <Source type="Aggregate" idref="E.9">UML:StateMachine.top</Source>
+                <Target type="Association">TopState</Target>
+            </Property>
+            <Property>
+                <Source type="Aggregate" idref="E.14">UML:StateMachine.transitions</Source>
+                <Target type="Association">Transition</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- StateVertex -->
+
+    <ModelElement name="StateVertex" id="E.2">
+        <Parents>
+            <Parent idref="E.0" />
+        </Parents>
+        <Children>
+            <Child idref="E.3" />
+            <Child idref="E.4" />
+            <Child idref="E.5" />
+            <Child idref="E.6" />
+            <Child idref="E.8" />
+            <Child idref="E.9" />
+        </Children>
+        <Properties>
+            <Property>
+                <Source type="AttributeReference" name="incoming" idref="E.14" />
+                <Target type="Association">InTransition</Target>
+            </Property>
+            <Property>
+                <Source type="AttributeReference" name="outgoing" idref="E.14" />
+                <Target type="Association">OutTransition</Target>
+            </Property>
+            <Property>
+                <Source type="ImpliedReference" idref="E.11" />
+                <Target type="Association">Container</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- Entry -->
+
+    <ModelElement name="Entry" id="E.3">
+        <Source type="Node">UML:Pseudostate</Source>
+        <Filter value="initial" op="==">
+            <Source type="Attribute" name="kind" />
+        </Filter>
+        <Target type="Class">de.bmiag.genfw.meta.state.Entry</Target>
+        <Parents>
+            <Parent idref="E.2" />
+        </Parents>
+    </ModelElement>
+
+
+    <!-- Exit -->
+
+    <ModelElement name="Exit" id="E.4">
+        <Source type="Node">UML:FinalState</Source>
+        <Target type="Class">de.bmiag.genfw.meta.state.Exit</Target>
+        <Parents>
+            <Parent idref="E.2" />
+        </Parents>
+    </ModelElement>
+
+
+    <!-- Branch -->
+
+    <ModelElement name="Branch" id="E.5">
+        <Source type="Node">UML:Pseudostate</Source>
+        <Filter value="branch" op="==">
+            <Source type="Attribute" name="kind" />
+        </Filter>
+        <Target type="Class">de.bmiag.genfw.meta.state.Branch</Target>
+        <Parents>
+            <Parent idref="E.2" />
+        </Parents>
+    </ModelElement>
+
+
+    <!-- Fork -->
+
+    <ModelElement name="Fork" id="E.6">
+        <Source type="Node">UML:Pseudostate</Source>
+        <Filter value="fork" op="==">
+            <Source type="Attribute" name="kind" />
+        </Filter>
+        <Target type="Class">de.bmiag.genfw.meta.state.Fork</Target>
+        <Parents>
+            <Parent idref="E.2" />
+        </Parents>
+    </ModelElement>
+
+
+    <!-- Join -->
+
+    <ModelElement name="Join" id="E.8">
+        <Source type="Node">UML:Pseudostate</Source>
+        <Filter value="join" op="==">
+            <Source type="Attribute" name="kind" />
+        </Filter>
+        <Target type="Class">de.bmiag.genfw.meta.state.Join</Target>
+        <Parents>
+            <Parent idref="E.2" />
+        </Parents>
+    </ModelElement>
+
+
+    <!-- State -->
+
+    <ModelElement name="State" id="E.9">
+        <Parents>
+            <Parent idref="E.2" />
+        </Parents>
+        <Children>
+            <Child idref="E.10" />
+            <Child idref="E.11" />
+        </Children>
+        <Properties>
+            <Property>
+                <Source type="ImpliedReference" idref="E.1" />
+                <Target type="Association">StateMachine</Target>
+            </Property>
+            <Property>
+                <Source type="Aggregate" idref="E.14">UML:State.internalTransition</Source>
+                <Target type="Association">InternalTransition</Target>
+            </Property>
+            <Property>
+                <Source type="Aggregate" idref="E.17">UML:State.entry</Source>
+                <Target type="Association">EntryAction</Target>
+            </Property>
+            <Property>
+                <Source type="Aggregate" idref="E.17">UML:State.doActivity</Source>
+                <Target type="Association">DoAction</Target>
+            </Property>
+            <Property>
+                <Source type="Aggregate" idref="E.17">UML:State.exit</Source>
+                <Target type="Association">ExitAction</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- SimpleState -->
+
+    <ModelElement name="SimpleState" id="E.10">
+        <Source type="Node">UML:SimpleState</Source>
+        <Target type="Class">alma.acs.genfw.sm.AcsSimpleState</Target>
+        <Parents>
+            <Parent idref="E.9" />
+        </Parents>
+        <Children>
+            <Child idref="E.12" />
+        </Children>
+    </ModelElement>
+
+
+    <!-- CompositeState -->
+
+    <ModelElement name="CompositeState" id="E.11">
+        <Source type="Node">UML:CompositeState</Source>
+        <Target type="Class">alma.acs.genfw.sm.AcsCompositeState</Target>
+        <Parents>
+            <Parent idref="E.9" />
+        </Parents>
+        <Properties>
+            <Property>
+                <Source type="Aggregate" idref="E.2">UML:CompositeState.subvertex</Source>
+                <Target type="Association">SubVertex</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- ActivityState -->
+
+    <ModelElement name="ActivityState" id="E.12">
+        <Source type="Node">UML:ActionState</Source>
+        <Target type="Class">de.bmiag.genfw.meta.state.ActivityState</Target>
+        <Parents>
+            <Parent idref="E.10" />
+        </Parents>
+    </ModelElement>
+
+
+    <!-- Transition -->
+
+    <ModelElement name="Transition" id="E.14">
+        <Source type="Node">UML:Transition</Source>
+        <Target type="Class">de.bmiag.genfw.meta.state.Transition</Target>
+        <Parents>
+            <Parent idref="E.0" />
+        </Parents>
+        <Properties>
+            <Property>
+                <Source type="Path">UML:Transition.guard</Source>
+                <Source type="Path">UML:Guard</Source>
+                <Source type="Path">UML:Guard.expression</Source>
+                <Source type="Attribute" name="body">UML:BooleanExpression</Source>
+                <Target type="Attribute">Guard</Target>
+            </Property>
+            <Property>
+                <Source type="AttributeReference" name="trigger" idref="E.15" />
+                <Target type="Association">Trigger</Target>
+            </Property>
+            <Property>
+                <Source type="ImpliedReference" idref="E.1" />
+                <Target type="Association">StateMachine</Target>
+            </Property>
+            <Property>
+                <Source type="AttributeReference" name="source" idref="E.2" />
+                <Target type="Association">SourceVertex</Target>
+            </Property>
+            <Property>
+                <Source type="AttributeReference" name="target" idref="E.2" />
+                <Target type="Association">TargetVertex</Target>
+            </Property>
+            <Property>
+                <Source type="Aggregate" idref="E.17">UML:Transition.effect</Source>
+                <Target type="Association">Action</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- Event -->
+
+    <ModelElement name="Event" id="E.15">
+        <Parents>
+            <Parent idref="E.0" />
+        </Parents>
+        <Children>
+            <Child idref="E.16" />
+        </Children>
+        <Properties>
+            <Property>
+                <Source type="Path">UML:Event.parameter</Source>
+                <Source type="Attribute" name="name">UML:Parameter</Source>
+                <Target type="Attribute">Parameter</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- SignalEvent -->
+
+    <ModelElement name="SignalEvent" id="E.16">
+        <Source type="Node">UML:SignalEvent</Source>
+        <Target type="Class">de.bmiag.genfw.meta.state.SignalEvent</Target>
+        <Parents>
+            <Parent idref="E.15" />
+        </Parents>
+        <Properties>
+            <Property>
+                <Source type="AttributeReference" name="signal" />
+                <Source type="Attribute" name="name" />
+                <Target type="Attribute">Signal</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- Action -->
+
+    <ModelElement name="Action" id="E.17">
+        <Parents>
+            <Parent idref="E.0" />
+        </Parents>
+        <Children>
+            <Child idref="E.18" />
+            <Child idref="E.19" />
+            <Child idref="E.20" />
+        </Children>
+        <Properties>
+            <Property>
+                <Source type="Path">UML:Action.target</Source>
+                <Source type="Attribute" name="body">UML:ObjectSetExpression</Source>
+                <Target type="Attribute">Target</Target>
+            </Property>
+            <Property>
+                <Source type="Path">UML:Action.actualArgument</Source>
+                <Source type="Path">UML:Argument</Source>
+                <Source type="Path">UML:Argument.value</Source>
+                <Source type="Attribute" name="body">UML:Expression</Source>
+                <Target type="Attribute">Argument</Target>
+            </Property>
+            <Property>
+                <Source type="ImpliedReference" idref="E.9" />
+                <Target type="Association">State</Target>
+            </Property>
+            <Property>
+                <Source type="ImpliedReference" idref="E.14" />
+                <Target type="Association">Transition</Target>
+            </Property>
+            <Property>
+                <Source type="ImpliedReference" idref="E.18" />
+                <Target type="Association">ActionSequence</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- ActionSequence -->
+
+    <ModelElement name="ActionSequence" id="E.18">
+        <Source type="Node">UML:ActionSequence</Source>
+        <Target type="Class">de.bmiag.genfw.meta.state.ActionSequence</Target>
+        <Parents>
+            <Parent idref="E.17" />
+        </Parents>
+        <Properties>
+            <Property>
+                <Source type="Aggregate" idref="E.17">UML:ActionSequence.action</Source>
+                <Target type="Association">Action</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- SimpleAction -->
+
+    <ModelElement name="SimpleAction" id="E.19">
+        <Source type="Node">UML:UninterpretedAction</Source>
+        <Target type="Class">de.bmiag.genfw.meta.state.SimpleAction</Target>
+        <Parents>
+            <Parent idref="E.17" />
+        </Parents>
+    </ModelElement>
+
+
+    <!-- SendAction -->
+
+    <ModelElement name="SendAction" id="E.20">
+        <Source type="Node">UML:SendAction</Source>
+        <Target type="Class">de.bmiag.genfw.meta.state.SendAction</Target>
+        <Parents>
+            <Parent idref="E.17" />
+        </Parents>
+        <Properties>
+            <Property>
+                <Source type="AttributeReference" name="signal" />
+                <Source type="Attribute" name="name" />
+                <Target type="Attribute">Signal</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- Namespace -->
+
+    <ModelElement name="Namespace" id="E.30">
+        <Parents>
+            <Parent idref="E.0" />
+        </Parents>
+        <Children>
+            <Child idref="E.31" />
+        </Children>
+        <Properties>
+            <Property>
+                <Source type="Aggregate" idref="E.0">UML:Namespace.ownedElement</Source>
+                <Target type="Association">OwnedElement</Target>
+            </Property>
+        </Properties>
+    </ModelElement>
+
+
+    <!-- Model -->
+
+    <ModelElement name="Model" id="E.31">
+        <Source type="Node">UML:Model</Source>
+        <Filter value="Use Case View" op="!=">
+            <Source type="Attribute" name="name" />
+        </Filter>
+        <Target type="Class">de.bmiag.genfw.meta.core.Model</Target>
+        <Parents>
+            <Parent idref="E.30" />
+        </Parents>
+    </ModelElement>
+
+</MetaModel>

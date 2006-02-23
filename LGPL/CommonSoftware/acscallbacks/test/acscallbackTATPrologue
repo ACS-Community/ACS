@@ -1,0 +1,14 @@
+#! /bin/bash
+
+
+echo " ****************** mastercompTATPrologue ************* "
+ACS_CDB=$PWD
+
+echo " Starting ORB Services and Manager"
+acsutilTATPrologue
+
+echo " Starting Test Java Container"
+acsutilAwaitContainerStart -java frodoContainer
+
+echo ...acsStartContainer done
+

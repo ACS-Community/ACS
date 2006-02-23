@@ -1,0 +1,129 @@
+#------------------------------------------------------------------------
+# E.S.O. - ACS project
+# 
+# "@(#) $Id$" 
+# 
+# who        when      what
+# ---------  --------  ----------------------------------------------
+# srankin    07/04/04  created
+# 
+#------------------------------------------------------------------------
+/************************************************************************
+*   NAME
+*   pythonScript - script file using Python interpreter
+*
+*   SYNOPSIS
+*       <mod>/src/<name>.py
+*            /test/<name>.py
+*      
+*       <mod>
+*           |/ws/src/<name>.py
+*           |   /test/<name>.py
+*           |/lcu/src/<name>.py
+*                /test/<name>.py
+*
+*   DESCRIPTION
+*   Python scripts shall be written using the conventions established
+*   in ALMA document "Python Coding Standards" Doc Number: 
+*   COMP-70.20.00.00-002-A-STD.  This document is available in 
+*   ALMAEDM.
+*
+*   An empty template is provided by getTemplate(7) in the "code" menu.
+*   Complete the template according to the following instruction:
+*   
+*
+*   #*************... .  .
+*   # E.S.O. - ACS project
+*   #
+*   # "@(#) ...."            <<<< the identificator DO NOT MODIFY IT
+*   #
+*   # who       when      what
+*   # --------  --------  --------------
+*   # NNNNNNNN  dd/mm/yy  created
+*   # |----------------| <<<<in the template these two fields are changed
+*                            according to the current value of username 
+*                            and date.
+*
+*
+*   >>>>complete the man page as explained<<<
+*   #*****************.. .
+*   #   NAME
+*   #   <program_name> - <brief description of program>
+*   # 
+*   #   SYNOPSIS
+*   #   <program_name> [<par_1> [<par_2>  . . . [<par_n>]]] 
+*   # 
+*   #   DESCRIPTION
+*   #   <detailed explanation of the functionality> 
+*   #   ...............................................
+*   #   ...............................................
+*   #   ...............................................
+*   #                .
+*   #                .
+*   #   ...............................................
+*   # 
+*   #   <par_1> <description and grammar rules for the first parameter>
+*   #            ....................................
+*   #   <par_2> ....................................
+*   #                .
+*   #                .
+*   #   <par_n> <description and grammar rules for the n-th parameter> 
+*   #            ....................................
+*   #
+*   #   FILES
+*   #   <file_1>  <access> <meaning and purpose of the file>
+*   #                           .................................
+*   #   <file_2>  <access> ....................................
+*   #   ......
+*   #
+*   #   ENVIRONMENT
+*   #   <var_1>   <access> <meaning and purpose of the variable>
+*   #                      ....................................
+*   #   <var_2>   <access> ....................................
+*   #   ......
+*   #
+*   #   COMMANDS
+*   #   <Command_1>  brief description of the action performed 
+*   #                     .........................................
+*   #   <Command_2>  .........................................
+*   #   ......
+*   #
+*   #   RETURN VALUES
+*   #   <ret_value_1> <message> <diagnostic of the error>
+*   #                                .........................
+*   #   <ret_value_2> <message> .........................
+*   #   ......
+*   #
+*   #   CAUTIONS 
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   #
+*   #   EXAMPLES
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   #
+*   #   SEE ALSO
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   #
+*   #   BUGS   
+*   #   (optional)
+*   #   ......
+*   #   ......
+*   # 
+*   #------------ -  -  -
+*   #
+*   
+*       .
+*       .
+*      code 
+*       .
+*       .
+*
+*   #
+*   # ___oOo___
+*   ------------------------------------------------------------------------
+                              ___oOo___

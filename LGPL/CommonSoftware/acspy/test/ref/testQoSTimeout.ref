@@ -1,0 +1,9 @@
+1 - Method w/o timeout executed successfully.
+1 - exception caught, this is expected.
+1 - The exception was: Minor: TRANSIENT_CallTimedout, COMPLETED_MAYBE.
+1 - Method w/o timeout executed successfully.
+1 - Method w/o timeout executed successfully.
+1 - exception caught, this is expected.
+1 - The exception was: Minor: TRANSIENT_CallTimedout, COMPLETED_MAYBE.
+1 - Method w/o timeout executed successfully.
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

@@ -1,0 +1,277 @@
+/* @(#) $Id: acstime.midl,v 1.1 2004/11/22 11:47:01 jibsen Exp $
+ *
+ * Copyright (C) 2001
+ * Associated Universities, Inc. Washington DC, USA.
+ *
+ * Produced for the ALMA project
+ *
+ * This library is free software; you can redistribute it and/or modify it it 
+ * under the terms of the GNU Library General Public License as published by 
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public License 
+ * along with this library; if not, write to the Free Software Foundation, 
+ * Inc., 675 Massachusetts Ave, Cambridge, MA, 02139, USA.
+ *
+ * Correspondence concerning ALMA should be addressed as follows:
+ * Internet email: alma-sw-admin@nrao.edu
+ */
+#ifndef ACSTIME_IDL
+#define ACSTIME_IDL
+
+#include <baci.idl>
+#include "ACSTimeError.idl"
+
+#pragma prefix "alma"
+
+/** @file acstime.idl
+ *  This IDL file defines constants, exceptions, and interfaces for use
+ *  with the ACS time system.  The most important thing that can be said 
+ *  is that "ACS Time" is defined to be units of 100 nanoseconds, 
+ *  i.e. @f$ 10^-7 @f$ seconds, since October 15, 1582 at 00:00:00 
+ *
+ *  TODO:
+ *  - add more time conversion methods to the Clock interface.  There has 
+ *    been a general request for this but not for any specific time standards.
+ *  - Python and Java implementations of helper classes. Partially done.
+ *  - array2TAI and TAI2UTC properties in the Clock interface don't seem to 
+ *    be written to by anything in ACS.  Should they be moved to CONTROL 
+ *    entirely or made read-only and use devIOs?
+ */
+module acstime
+{
+    /**
+     * ACS time at which ACE time begins, 1970-01-01 00:00:00
+     */
+    const ACS::Time ACE_BEGIN = 122192928000000000;
+                      
+    /** 
+     * CORBA Time Service start date (1582-Oct-15)
+     */
+    const unsigned long STARTDATE = 577735;
+
+    /** 
+     * Modified Julian Day (MJD) of Oct 15, 1582 0h UT = Epoch start time.
+     */
+    const double EpochOriginInMJD = -100840.0;
+
+    /** 
+     * Julian Date in years of Oct 15, 1582 0h UT = Epoch start time.
+     */
+    const double EpochOriginInYears = 1582.793292;
+
+    /**
+     * The possible values that can be returned by comparing Durations/Epochs.
+     *
+     * This definition is taken from the CORBA Time Service.  "TCIndeterminate" 
+     * is not used here and could be removed.
+     *
+     * DWF-how are these being used or are they being used at all???
+     */
+    enum TimeComparison
+    {
+	TCEqualTo,       // values are equal
+	TCLessThan,      // this is less than comparee
+	TCGreaterThan,   // this is greater than comparee
+	TCIndeterminate  // comparison cannot be done
+    };
+    
+    /**
+     * The time systems that have some form of ACS support.
+     */
+    enum TimeSystem
+    {
+        TSArray,   // array time
+	TSTAI,     // International Atomic Time (TAI)
+	TSUTC      // Universal Coordinate Time (UTC)
+    };
+    
+    /**
+     * A structure to hold an epoch. This structure represents a particular 
+     * date and time.
+     *
+     * An epoch is encoded in units of 100 nanoseconds, i.e. @f$ 10^-7 @f$ 
+     * seconds, since October 15, 1582 at 00:00:00. It is stored in an 
+     * unsigned 64-bit integer, giving it a range of more than 58,454 years.  
+     * The last representable date is around March 11, 60038. This same 
+     * encoding is used by the CORBA and X/Open DCE Time Services.
+     *
+     * October 15, 1582 is the beginning of the Gregorian calendar. Before 
+     * then dates are represented in the Julian Calendar.  This implies a 
+     * Julian Calendar even for times when nobody knew about it (proleptic 
+     * Julian Calendar). There is a gap of ten days between October 4, 1582 
+     * and October 15, 1582 ordered by Pope Gregory to achieve better 
+     * agreement between the civil and the astronomical calendar.
+     */
+    struct Epoch
+    {
+	ACS::Time value;
+    };
+
+    /**
+     * A structure to hold a duration.  This structure holds a period or span 
+     * of time, or term.  It is not related to any particular instant of time.
+     *
+     * A duration is encoded in units of 100 nanoseconds, i.e. @f$ 10^-7 @f$ 
+     * seconds, and can be positive or negative.  A Duration is stored in a 
+     * signed 64-bit integer, giving it a range of more than +/- 29,227 years.
+     * This same representation is used by the CORBA and X/Open DCE Time 
+     * Services.
+     */
+    struct Duration
+    {
+	ACS::TimeInterval value;
+    };
+    
+    /**
+     * Clients create an object of this class to receive timeout events. This
+     * interface provides a callback type mechanism and can really be thought of
+     * as an alarm.
+     *
+     * A reference to the created object is passed as an argument with a call 
+     * to Timer::schedule. Other arguments to Timer::schedule are set when the 
+     * timeout(s) will occur, and when they invoke the handleTimeout method of 
+     * this object.
+     */
+    interface TimeoutHandler : ACS::OffShoot
+	{
+        /**
+	 * This method is called when a timeout occurs.
+	 * @param time the time at which this method is invoked
+	 */
+	void handleTimeout(in Epoch time);
+	};
+
+    /**
+     * An interface designed to schedule timeouts for TimeoutHandler instances.
+     */
+    interface Timer : ACS::ACSComponent
+	{
+	/**
+	 * Schedules timeout(s). When a timeout occurs, the handleTimeout() 
+         * method of TimeoutHandler is called.
+	 *
+         * There are two types of timeouts:
+         *   @li "one shot" where the @a period is zero
+         *   @li "continuous" where a non-zero @a period is given
+         *
+         * For one shot timers, it is not necessary to call the cancel() method 
+         * of this interface unless it is desired to cancel the timeout before 
+	 * it occurs. Continuous timeouts will continue to occur until cancel() 
+	 * is called to stop them.
+         *
+	 * Here is how timeouts are used:
+         * The client creates a TimeoutHandler object and passes its reference to 
+	 * schedule() along with @a start and @a period. The client @b 
+	 * must then call ci.run(), i.e. go to sleep. All the work is done in 
+	 * the handleTimeout() method of TimeoutHandler (that is called on each 
+	 * timeout). The client must sleep because there is only one thread on 
+	 * the client-side and it is used to call the TimeoutHandler's 
+	 * handleTimeout() method. This is assuming the usage of a C++ 
+	 * SimpleClient of course. If the "client" just happens to be a 
+	 * component, the sleep is unnecessary.
+	 *
+         *
+	 * @param handler     a TimeoutHandler object reference
+	 * @param start       epoch at which first timeout is to occur,
+	 *                      0 => use current time plus period
+	 * @param period      period at which timeouts are to occur after first,
+	 *                      0 => only first timeout will occur so long as
+         *                           the start time is not also 0
+	 * @return  identifier to be used in cancel()
+	 */
+	long schedule(in TimeoutHandler handler,
+                      in Epoch start,
+		      in Duration period)
+	    raises(ACSTimeError::ArgErrorEx);
+	
+        /**
+	 * Cancels scheduled timeout(s).
+	 *
+	 * @param id identifier returned by schedule()
+	 */
+	void cancel(in long id)
+	    raises(ACSTimeError::InvalidIDEx);
+	};
+
+    /**
+     * An interface to obtain the current time and provide some time conversion functions.
+     *
+     * This interface is normally only used as a COLLOCATED object, and will 
+     * normally be present on all machines, i.e. on both LCUs and general 
+     * purpose workstations.
+     */
+    interface Clock : ACS::CharacteristicComponent
+	{
+	/**
+	 *  Given another instance in time, this method returns the time interval
+	 *  between it and now().
+	 *  @return now() - prevEpoch
+	 */
+	Duration getTimeInterval(in Epoch prevEpoch);
+	
+	/**
+	 * Array Time to TAI Offset Property (@f$ 10^-7 @f$ second).
+	 *
+	 * This Property gives the difference between Array Time (Internal 
+	 * ALMA Time) and TAI (International Atomic Time) in units of 100's of 
+	 * nanoseconds. This value can be either positive or negative, and 
+	 * will change slowly as the array time driven by the local oscillator 
+	 * (maser) drifts against TAI.
+	 *
+	 * array2TAI Value = Array Time - TAI
+	 *
+	 * DWF-this property should NOT be RW!
+	 */
+	readonly attribute ACS::RWlong array2TAI;
+	
+	/**
+	 * TAI to UTC Time Offset Property (second).
+	 *
+	 * This Property gives the difference between TAI (International 
+	 * Atomic Time) and UTC (Universal Coordinate Time) in seconds.  
+	 * This value is always positive, and will change only when the UTC 
+	 * leap second changes.  Normally leap seconds change only at midnight 
+	 * on June 30 and/or December 31.
+	 *
+	 * TAI2UTC Value = TAI - UTC
+	 *
+	 * DWF-this property should NOT be RW!
+	 */
+	readonly attribute ACS::RWlong TAI2UTC;
+
+
+	/**
+	 * This property is simply the current time in standard ACS time 
+	 * format (i.e., an Epoch.value).
+	 */
+	readonly attribute ACS::ROuLongLong now;
+
+	//UTILITY METHODS
+	/** 
+	 * Converts a string consisting of an epoch in ISO-8601 format to 
+	 * the 100ns ACS format.
+	 * @param ts The time system the string's representation is using.
+	 * @param iso time in ISO-8601 format
+	 * @return String converted to an ACS Epoch
+	 */
+	Epoch fromISO8601(in TimeSystem ts, in string iso)
+	    raises (ACSTimeError::ArgErrorEx);
+
+	/** 
+	 * Converts the 100ns ACS time format to a string in ISO-8601 format.
+	 * @param ts The time system the epoch is really using.
+	 * @param timeValue Epoch value to convert into a string.
+	 * @return epoch converted to a string in ISO-8601 format
+	 */
+	string toISO8601(in TimeSystem ts, in Epoch timeValue)
+	    raises (ACSTimeError::ArgErrorEx);
+	};
+};
+#endif /* ! ACSTIME_IDL */

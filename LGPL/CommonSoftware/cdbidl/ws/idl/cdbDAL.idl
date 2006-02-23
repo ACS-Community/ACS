@@ -1,0 +1,131 @@
+#ifndef _CDBDAL_IDL_
+#define _CDBDAL_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: cdbDAL.idl,v 1.1.1.1 2005/09/21 10:32:35 msekoran Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* almamgr 2003-08-29 Replaced acsutil.idl with acscomponent.idl
+* gchiozzi 2003-05-15 jDAL interface taken out in separate IDL file
+* gchiozzi 2003-05-15 DAO extends ACS:OffShoot interface
+* gchiozzi 2003-05-15 Added include of acsutil.idl
+*/
+
+
+#include <acscomponent.idl>
+
+#pragma prefix "cosylab.com"
+
+module CDB { 
+
+	// sequences
+	typedef sequence <string> stringSeq;
+	typedef sequence <long> longSeq;
+	typedef sequence <double> doubleSeq;
+
+	// exceptions
+	exception WrongDataType{};
+	exception FieldDoesNotExist{};
+	exception RecordDoesNotExist{};
+	exception XMLerror{ string msg; };
+	
+	exception FieldIsReadOnly{};
+	exception RecordIsReadOnly{};
+	exception RecordAlreadyExists{};
+	exception CDBException{ string msg; };
+
+	// interfaces
+	interface DAO : ACS::OffShoot {
+		long		get_long( in string propertyName )		raises (WrongDataType, FieldDoesNotExist);
+		double		get_double( in string propertyName )	raises (WrongDataType, FieldDoesNotExist);
+		string		get_string( in string propertyName )	raises (WrongDataType, FieldDoesNotExist);
+		string		get_field_data( in string propertyName )raises (WrongDataType, FieldDoesNotExist);
+		
+		stringSeq	get_string_seq( in string propertyName )raises (WrongDataType, FieldDoesNotExist);
+		longSeq		get_long_seq( in string propertyName )	raises (WrongDataType, FieldDoesNotExist);
+		doubleSeq	get_double_seq( in string propertyName )raises (WrongDataType, FieldDoesNotExist);
+
+		void 		destroy();
+	};
+
+	interface DALChangeListener : ACS::OffShoot {
+		void		object_changed( in string curl );
+	};
+
+	interface DAL {
+		string		get_DAO( in string curl )		raises (RecordDoesNotExist,XMLerror);
+		DAO		get_DAO_Servant( in string curl )	raises (RecordDoesNotExist,XMLerror);
+		oneway 	void 	shutdown();
+
+		//data change handling
+		long	add_change_listener(  in DALChangeListener listener );
+		void	listen_for_changes( in string curl, in long listenerID );
+		void	remove_change_listener( in long listenerID );
+
+		// listing
+		string	list_nodes( in string name );
+	};
+
+	interface WDAO : DAO {
+		void set_long(in string propertyName, in long value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_double(in string propertyName, in double value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_string(in string propertyName, in string value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_field_data(in string propertyName, in string value) raises(WrongDataType, FieldDoesNotExist, FieldIsReadOnly);
+		void set_string_seq(in string propertyName, in stringSeq value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_long_seq(in string propertyName, in longSeq value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_double_seq(in string propertyName, in doubleSeq value) raises(FieldDoesNotExist, FieldIsReadOnly);
+	};
+
+	interface WDAL : DAL {
+		WDAO get_WDAO_Servant(in string curl) raises(RecordDoesNotExist, RecordIsReadOnly, XMLerror);
+		void add_node(in string curl, in string xml) raises(RecordAlreadyExists, XMLerror, CDBException);
+		void remove_node(in string curl) raises(RecordDoesNotExist, RecordIsReadOnly);
+		void set_DAO(in string curl, in string xml) raises(RecordDoesNotExist, FieldDoesNotExist, RecordIsReadOnly, XMLerror, CDBException);
+	};
+
+};
+
+/* TODO G.Chiozzi 2003-05-15
+   This should be moved in a separate file, 
+   but TAO IDL compiler complains with the following 
+   error message:
+    /alma/ACS-2.1-GCH/TAO/ACE_wrappers/build/linux/TAO/TAO_IDL/tao_idl: 
+    "../idl/cdbjDAL.idl", line 36: prefix at declaration 
+    differs from prefix at definition or use, , ::CDB
+*/
+module CDB { 
+	interface JDAL : CDB::DAL {
+		// cache handling
+		void	clear_cache(in string curl);
+		void	clear_cache_all();
+	};
+
+	interface WJDAL : JDAL, CDB::WDAL {
+	};
+
+};
+
+
+
+#endif /* _CDBDAL_IDL_ */

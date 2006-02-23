@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeCORBA" type="15" _prefix="alma">
+	<ErrorCode name="FailedToResolveService" shortDescription="Failed to resolve service reference." description="Failed to resolve service reference."/>
+</Type>

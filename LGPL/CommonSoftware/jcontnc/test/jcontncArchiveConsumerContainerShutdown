@@ -1,0 +1,3 @@
+#!/bin/bash
+
+acsutilTATTestRunner acsStopContainer archiveContainer > $ACS_TMP/archiveContainerShutdown.log

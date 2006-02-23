@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for a Calendar
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:Calendar:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:Calendar:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="Calendar">
+    <xs:sequence>
+
+      <xs:element name="yearAttributes">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:RWpattern">
+              <xs:attribute name="resolution" type="xs:int" use="optional" default="63"/>
+              <xs:attribute name="bitDescription" type="xs:string" use="optional" default=
+				"Good, Bad, Happy, Sad, Sunny, Cloudy"/>
+              <xs:attribute name="whenSet" type="xs:string" use="optional" default=
+				"3, 2, 1, 0, 1, 0"/>
+              <xs:attribute name="whenCleared" type="xs:string" use="optional" default=
+				"2, 3, 0, 1, 0, 1"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+
+     <xs:element name="state">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:ROEnum">
+              <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+              <xs:attribute name="graph_max" type="xs:int" use="optional" default="1" />
+              <xs:attribute name="statesDescription" type="xs:string" use="optional" default=
+				"LATE, UP-TO-DATE"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="day" >
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:RWEnum">
+              <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+              <xs:attribute name="graph_max" type="xs:int" use="optional" default="6" />
+              <xs:attribute name="statesDescription" type="xs:string" use="optional" default=
+				"Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="month" >
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:RWEnum">
+              <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+              <xs:attribute name="graph_max" type="xs:int" use="optional" default="11" />
+              <xs:attribute name="statesDescription" type="xs:string" use="optional" default=
+				"January, February, March, April, May, June, July, August, September,
+			        October, November, December"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+
+
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="Calendar" type="Calendar"/>
+</xs:schema>

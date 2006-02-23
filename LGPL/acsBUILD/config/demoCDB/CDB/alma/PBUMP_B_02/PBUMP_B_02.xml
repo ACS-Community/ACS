@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Entry for a Power Supply
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<PowerSupply xmlns="urn:schemas-cosylab-com:PowerSupply:1.0"
+             xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+			 xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             >
+  <current min_value 		=	"0.0"
+           max_value 		=	"20.0"
+           default_timer_trig 	=	"1.0"
+           min_timer_trig 	=	"0.001"
+           min_delta_trig 	=	"0.0003052"
+           default_value 	=	"0.0"
+           graph_min 		=	"0.0"
+           graph_max 		=	"20.0"
+           min_step 		=	"0.0003052"
+           description 		=	"Current"
+           format 		=	"%9.4f"
+           units 		=	"A"
+           resolution 		=	"65535"
+           />
+  <readback  alarm_low_on 	=	"0.2"
+             alarm_low_off	=	"0.4"
+             alarm_high_on	=	"19.8"
+             alarm_high_off	=	"19.6"
+             default_timer_trig =	"1.0"
+             min_timer_trig 	=	"0.001"
+             min_delta_trig 	=	"0.0003052"
+             default_value 	=	"0.0"
+             graph_min 		=	"0.0"
+             graph_max 		=	"20.0"
+             min_step 		=	"0.0003052"
+             description 	=	"Readback"
+             format 		=	"%9.4f"
+             units 		=	"A"
+             resolution 	=	"65535"
+           />
+  <status description		=	"Status"
+          format 		=	"%d"
+          units 		=	"w/o"
+          resolution 		=	"3263"
+           />
+</PowerSupply>

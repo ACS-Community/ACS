@@ -1,0 +1,1 @@
+com.cosylab.gui.plugins.VitragePlugIn

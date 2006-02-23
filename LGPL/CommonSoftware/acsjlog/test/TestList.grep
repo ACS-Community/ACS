@@ -1,0 +1,10 @@
+TEST_RUNNER_REPORT
+Starting Java/abeans application
+ACS abeans configuration directory: 
+exported 
+ACS Manager: corbaloc::
+ACS Name Service: 
+ACS Interface Repository: 
+Running the following command:
+java -classpath 
+alma.acs.testsupport.tat.TATJUnitRunner

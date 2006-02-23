@@ -1,0 +1,21 @@
+#! /bin/sh
+ 
+# History
+# --------
+# 2005-05    : mschilli : added to ACS
+# 2005-03-08 : mschilli : created
+# 
+
+. acsstartupConstants
+
+if [ ! $1 ] || [ $1 == -h ] || [ $1 == --help ] ; then
+   echo "Removes all security certificates from a jar"
+   echo "Usage: `basename $0` <jarfile>"
+	exit
+fi
+
+jar=$1
+zip -d $jar META-INF/*.SF  2>/dev/null
+
+
+

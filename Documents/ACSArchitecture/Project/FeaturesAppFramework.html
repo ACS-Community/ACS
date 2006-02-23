@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>FeaturesAppFramework</title>
+<style><!--
+.Normal
+	{font-size:12.0pt;
+	font-family:"Times New Roman";}
+-->
+</style>
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+</head>
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+<h2><a name=HighLevelApplicationFramework></a><a name=DeviceDrivers></a>ACS Application 
+  Framework</h2>
+<h3>The common software has to provide also an application framework that allows 
+  an easy implementation of a standard application (a skeleton application) with 
+  all essential features<a href="ReferenceDocuments.html#RD01">[RD01 - 5.1.1 Framework]</a>. 
+  Inheritance and other mechanisms are used to enhance and extend the basic application 
+  according to specific application needs.</h3>
+<h3>The application framework enforces common coding solutions and adherence to 
+  predefined standards. </h3>
+<h3>The application framework will be implemented as a set of classes that provide:</h3>
+<ul type=disc>
+  <li style='     '>Skeleton for standard application, with standard commands 
+    and states </li>
+  <li style='     '>Implementation of typical communication Design Patterns </li>
+  <li style='     '>Implementation of standard startup/shutdown/configuration 
+    procedures</li>
+</ul>
+<h3>This implementation follows defined protocols for command handling, to guarantee 
+  for example command concurrence and response time. A way to make sure that these 
+  requirements for a server are satisfied is to provide an extensible framework 
+  that implements all these design patterns. </h3>
+<h3>At the higher level the same concepts can be applied to coordination applications 
+  and most of these same patterns go well over the boundaries of the control system.</h3>
+<h3>The application framework will support the development of C++, Java and Python 
+  applications and clients</h3>
+<h3>For example, each physical sub-system is controlled by a Master Component 
+  that implements a standard State Machine and standard commands.</h3>
+<h3>The Master Component is available in Java because it is assumed that it is 
+  an high level coordinating Component. It will be used by higher level administration 
+  applications to assess and control the global state of a subsystem.</h3>
+<h4>The Master Component implements a hierarchical state machine and sub-classes 
+  can implement sub-states according to the application needs, keeping a stantard 
+  top level state machine.</h4>
+<h3>A State Machine Component will be made available for applications that need 
+  to design their own Hierarchival State Machines (Not implemented yet).</h3>
+<ul>
+  <li>State Machines will be designed in UML</li>
+  <li>The Open ArchitectureWare <a href="ReferenceDocuments.html#RD39">[RD39]</a> 
+    generator framework will generate Java, C++ and/or Python code implementing 
+    the state machine</li>
+</ul>
+</body>
+</html>

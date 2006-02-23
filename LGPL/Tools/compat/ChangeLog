@@ -1,0 +1,28 @@
+Mon Mar 13 14:09:41 2000 <eallaert@te13.hq.eso.org>  compat version: 1.23 
+	config/compat.OCT2001.config : created
+Sun Nov 07 20:00:58 1999 <gfilippi@te13.hq.eso.org>  compat version: 1.22 
+Mon Aug 30 15:22:05 1999 <psivera@te13.hq.eso.org>  compat version: 1.21 
+	config/compat.OCT1999.config : created
+Fri Jun 18 14:22:03 1999 <eallaert@te13.hq.eso.org>  compat version: 1.20 
+	config/compat.TclTk8.config: added barchart -mapped incompatibility
+	
+Wed Jun 09 16:45:24 1999 <eallaert@te13.hq.eso.org>  compat version: 1.19 
+	config/compat.TclTk8.config: added if-comment incompatibility
+	
+Mon Feb 22 10:02:54 1999 <eallaert@te13.hq.eso.org>  compat version: 1.18 
+ChangeLog
+
+  "@(#) $Id: ChangeLog,v 1.23 2001/06/20 11:14:44 vltsccm Exp $" 
+1999-02-17 added -verbose and -configFile flags.
+           Use regular expressions instead of glob-style pattern matching
+	
+==============================================================================
+950809: Added progress printout on tty for 2nd part
+        Removed * in pattern ("content" type) in compat.JUL1995.config
+
+950808: Added 1 argument to determined version (and consequently the config
+        file); modified Makefile to be better VLT-SW compliant; added
+	subdir config
+
+===================== 950301 External Release version 1.5 =====================
+950301: Creation for FEB95 VLT-SW release

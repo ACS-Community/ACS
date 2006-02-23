@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# "@(#) $Id"
+#
+# tat51
+#
+
+rm -f tat5.log
+
+# tat does not set the _remote_ env.
+RTAPENV=$rws
+export RTAPENV
+
+echo $RTAPENV
+dbWrite "@$RTAPENV:PARAMS:SCALARS.scalar_int32" 666
+if [ $? -ne 0 ]
+then
+	echo "dbWrite failed"
+	exit 1
+fi
+
+sleep 5
+
+dbRead "@$RTAPENV:PARAMS:SCALARS.scalar_int32"
+if [ $? -ne 0 ]
+then
+	echo "dbRead failed"
+	exit 1
+fi
+
+echo "tat51 OK"
+
+
+

@@ -1,0 +1,101 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+package alma.acs.component.client;
+
+import java.util.logging.Logger;
+
+import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.ClientPOA;
+
+/**
+ * Class to be used when logging in to the ACS Manager.
+ * 
+ * @author hsommer Apr 2, 2003 2:09:24 PM
+ */
+class ManagerClient extends ClientPOA
+{
+	private String m_clientName;
+
+	private Logger m_logger;
+
+
+	ManagerClient(String clientName, Logger logger)
+	{
+		m_clientName = clientName;
+		m_logger = logger;
+	}
+	
+	
+	/**
+	 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
+	 */
+	public String authenticate(String question)
+	{
+		return "C";
+	}
+	
+	/**
+	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
+	 */
+	public void components_available(ComponentInfo[] components)
+	{
+	}
+	
+	/**
+	 * @see si.ijs.maci.ClientOperations#components_unavailable(java.lang.String[])
+	 */
+	public void components_unavailable(String[] component_names)
+	{
+	}
+	
+	/**
+	 * @see si.ijs.maci.ClientOperations#disconnect()
+	 */
+	public void disconnect()
+	{
+		m_logger.info("disconnected from manager");
+	}
+	
+	/**
+	 * @see si.ijs.maci.ClientOperations#message(short, java.lang.String)
+	 */
+	public void message(short type, String message)
+	{
+		m_logger.info("message: " + message);
+	}
+	
+	/**
+	 * @see si.ijs.maci.ClientOperations#name()
+	 */
+	public String name()
+	{
+		return m_clientName;
+	}
+	
+	/**
+	 * @see si.ijs.maci.ClientOperations#ping()
+	 */
+	public boolean ping()
+	{
+		return true;
+	}
+}

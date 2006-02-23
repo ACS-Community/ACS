@@ -1,0 +1,11 @@
+Step by step instuctions
+------------------------
+
+[Install xpat C XML parser from module expat (come with ACS)]
+
+cd <root dir>/ACSSW/ACS/cdb/src
+make all install
+export ACS_DAL_ROOT=<root dir>/ACSSW/ACS/cdb/ws/config/DALdata
+cdbjDAL
+
+NOTE: C++ CDB server is obsolete - does not uses schemas (do not use startDAL)

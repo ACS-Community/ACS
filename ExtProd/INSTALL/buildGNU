@@ -1,0 +1,978 @@
+#!/usr/bin/ksh 
+#*****************************************************************************
+# E.S.O. - VLT project
+#
+# buildGNU
+#
+# "@(#) $Id: buildGNU,v 1.16 2005/03/14 14:59:53 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# pforstma  26/01/96  created 
+# gfilippi  30/01/96  included in DEC95
+# counnas   13/06/96  GNU installation on HP-UX10.10
+# gfilippi  19/06/96  included in JUN99
+# gfilippi  16/09/96  NOV96
+# gfilippi  14/11/96  NOV96 - added verification steps
+# gfilippi  16/11/96  NOV96 - HP-UX10 and Solaris merged
+# wpirani   01/04/97  Testing/hacking new installation in /vlt/local
+# wpirani   09/04/97  More testing/hacking for installation in /vlt/gnu
+# wpirani   03/11/97  Fine tuning for NOV97
+# gfilippi  20/10/98  OCT98 - corrected the version numbers used for verification
+# wpirani   29/03/99  Major update for OCT99
+# wpirani   14/04/99  Minor tweaks and cleanups for OCT99
+# ahuxley   19/10/99  added CVS for OCT99, checked for Linux libstdc++.so
+# wpirani   16/11/99  added ddd for OCT99
+# wpirani   24/11/99  fixed "cc" options for HP-UX (PA 2.0/PA 1.X compat.)
+# wpirani   26/11/99  fixed "cc" options using CCOPTS rathern than CFLAGS
+# wpirani   30/11/99  fixed make's man page installation
+# wpirani   01/12/99  added creation of $GNU_ROOT
+# wpirani   02/11/99  fixed PATH for gcc when bulding on Solaris
+# wpirani   14/01/2000 FEB2000: Now using gcc-2.95.2
+# wpirani   06/04/2000 NOV2000: Some tools updated!
+# wpirani   23/05/2000 NOV2000: Fixed a typo on gdb for HP-UX 10.20
+# wpirani   05/06/2000 NOV2000: Added zip and GNU tar
+# wpirani   06/06/2000 NOV2000: Fixed cvs on HP-UX 11.00
+# wpirani   20/07/2000 NOV2000: added unzip
+# wpirani   31/07/2000 NOV2000: GCC builds f77 as well (for pgplot and MIDAS!)
+# wpirani   11/01/2001 MAR2001: fixed for RH 6.2 (Linux 2.2.16-3)
+# wpirani   23/05/2001 OCT2001: added gdb 5.0, binutils 2.10 and perl 5.6.1
+# wpirani   22/08/2001 OCT2001: added m4 1.4 (required by autoconf)
+# wpirani   22/08/2001 OCT2001: added autoconf (required by TclPro)
+# wpirani   22/08/2001 OCT2001: fixed (?) gdb on HP-UX 11.00
+# wpirani   13/09/2001 OCT2001: HP-UX 11.00: fixed after PHCO_23092 removal
+# wpirani   27/02/2002 MAR2002: No changes since previous release
+# wpirani   07/05/2002 APR2003: First revision for tools upgrade
+# wpirani   14/05/2002 APR2003: groff moved from buildTcltk to buildGNU
+# wpirani   27/06/2002 APR2003: make updated to 3.79
+# wpirani   29/07/2002 APR2003: updated to gcc 3.1.1
+# wpirani   25/11/2002 APR2003: updated to gcc 3.2.1
+# wpirani   02/06/2003 APR2004: first update
+# wpirani   02/07/2003 APR2004: GNU grep added
+#
+# Installation of GNU products
+#
+# NOTES:
+#
+# * Now looks for the environment variable GNU_ROOT (usually /vlt/gnu/).
+#   If not defined, uses /usr/local instead -- Werther Pirani
+#
+# PREREQUISITES:
+#
+# * $GNU_ROOT directory structure is created but empty:
+#
+# - bin
+# - doc
+# - etc
+# - include
+# - lib
+# - man/man1
+# - info
+#
+# 
+# * $GNU_ROOT/bin is in $PATH
+#
+#
+# * additional requirements for HP-UX-10:
+#
+#   * cc & make from HP already installed.
+#     tested with 
+#
+#       $  what `which c89`
+#
+#	/usr/bin/c89:
+#	       LINT A.11.01.00 CXREF A.11.01.00
+#	       HP92453-01 A.11.01.00 HP C Compiler
+#	       $ PATCH/11.00:PHCO_95167  Oct  1 1998 13:46:32 $ 
+#
+#
+
+######################################################################
+#
+#  Useful functions
+#
+######################################################################
+
+#  Linux has no 'what'. So use 'ident'.
+
+what()
+{
+    #  Find and cache the real 'what'   
+    REAL_WHAT_CMD=${REAL_WHAT_CMD:-`which what`}
+
+    #  If we're on Linux use 'ident' else 'what'.
+    { [ ${build_OS:-`uname -s`} = Linux ] && ident "$@"; } || $REAL_WHAT_CMD "$@"
+}
+
+######################################################################
+#
+#  Product functions
+#
+######################################################################
+
+build_cvs()
+{
+    typeset PRODUCT VERSION
+
+    PRODUCT=cvs
+    VERSION=1.11.5
+
+    echo $SEPARATOR
+    echo $PRODUCT
+    cd $SRC
+    $GNU_ROOT/bin/gunzip -c $GNU/$PRODUCT-$VERSION.tar.gz | tar xf -
+    cd $PRODUCT-$VERSION
+    ./configure --prefix=$GNU_ROOT
+
+    $GNU_ROOT/bin/make CFLAGS="-O2"
+    $GNU_ROOT/bin/make install
+    echo "$PRODUCT done"
+}
+
+######################################################################
+#
+#  End of product functions
+#
+######################################################################
+
+LOG=buildGNU.log
+CWD=`pwd`
+#
+exec > $LOG 2>&1
+
+date
+
+
+if [ "$GNU_ROOT" = "" ]
+then
+     GNU_ROOT="/usr/local"
+     export GNU_ROOT
+fi
+
+if [ ! -d $GNU_ROOT ]
+then
+     mkdir -p $GNU_ROOT
+     RET=$?
+     if [ $RET -ne 0 ]
+     then
+	echo "Failed to create $GNU_ROOT, cannot continue..."
+	exit 1
+     fi
+fi
+
+if [ "$1" = "-t" ]
+then    set -x
+else if [ "$1" != "" ]
+     then  echo "usage: buildGNU [-t]"
+           exit 1
+     fi
+fi
+
+#
+# print header
+#
+TITLE="      Installation of GNU products"
+BUILD_NAME="GNU"
+. ./standardPrologue
+GNU=${INSTALL_ROOT}/PRODUCTS/gnu
+
+if [ "X$DISPLAY" = "X" ]
+then
+   echo "WARNING: DISPLAY not set. Some GNU checking tests will fail!"
+fi 
+
+CWD=`pwd`
+cd ${INSTALL_ROOT}/PRODUCTS/
+if [ -d gnu ]
+then
+    echo "$GNU already existing; first remove it"
+    rm -rf $GNU
+fi
+if [ -d gcc-SUN ]
+then
+    echo "${INSTALL_ROOT}/PRODUCTS/gcc-SUN already existing; first remove it"
+    rm -rf ${INSTALL_ROOT}/PRODUCTS/gcc-SUN
+fi
+echo "Unpacking gnu tar file with sources"
+if ! [ -f gnu.tar.gz ]
+then
+    echo "gnu tar file missing "
+    exit 1
+else
+    gunzip gnu.tar.gz
+    tar xf gnu.tar
+    gzip gnu.tar
+fi
+cd $CWD
+
+
+#
+# get current operating system
+#
+build_OS=`uname -s`
+build_OSV=`uname -r`
+
+if [ ${build_OS} = "Linux" ]
+then
+     build_OSV=`cat /etc/redhat-release | awk '{ print $5 }'`
+fi
+
+echo $SEPARATOR
+echo " Installing on $build_OS version $build_OSV"
+
+if [     ${build_OS}-${build_OSV} != "SunOS-5.8"     \
+     -a  ${build_OS}-${build_OSV} != "Linux-9"       \
+   ]
+then
+    echo "\n\tWARNING: this procedure has not been tested on this system\n"
+fi
+
+echo "\n--- Check current environment and prepare installation"
+
+
+#
+# check that $GNU_ROOT/doc exists: if not create it
+# 
+#   --> gcc tries to write there, but does not create it
+# 
+if [ ! -d $GNU_ROOT/doc ]
+then
+    mkdir $GNU_ROOT/doc
+fi
+
+
+#
+# create a temporary directory used to expand the tar files and
+# to compile
+#
+SRC="$GNU/$build_OS-$build_OSV"
+echo "set temporary build directory: $SRC . . ."
+if [ -d $SRC ]
+then
+    echo "\n\tthere is an old $SRC: start to remove it . . . "
+    for name in `ls $SRC`
+    do
+        echo "\t   remove $SRC/$name . . . "
+        rm -rf $SRC/$name
+    done
+    rmdir $SRC
+    echo "\tdone"
+fi
+mkdir $SRC
+echo "      . . . done"
+
+
+# -------------------
+# starting C compiler
+# -------------------
+#
+echo $SEPARATOR
+if [ ${build_OS} = "HP-UX" ] 
+then
+    #
+    # start using the HP compiler
+    #
+    echo "starting using HP-C compiler: "
+    what `which c89`
+    echo "\n it should be"
+    echo "/usr/bin/c89:"
+    echo "              LINT A.11.01.00 CXREF A.11.01.00"
+    echo "             HP92453-01 A.11.01.00 HP C Compiler"
+    #  Next line split to prevent RCS changing the ID.
+    echo "              \$ PATCH/11.00:PHCO_95167  Oct  1 1998 13:46:32 \
+\$"
+
+    # to use native compiler even if gcc is installed
+    # in /usr/local/bin
+    build_OLDPATH=$PATH
+    echo $PATH | tee buildGNU.dummy
+    PATH=`sed 's?/usr/local/bin??' buildGNU.dummy`
+    export PATH
+    echo $PATH
+    rm buildGNU.dummy
+
+    CC=""
+    export CC
+    #
+    # Force cc to generate portable binaries (PA 2.0 to PA 1.x)
+    #
+    CCOPTS="+DAportable"
+    export CCOPTS
+fi
+
+if [ ${build_OS} = "SunOS" ]
+then
+    #
+    # A SUN native compiler is not required.
+    # Or the path to a pre-installed gcc compiler is 
+    # specified using the 
+    #     GCC_PATH 
+    # environment variable or
+    # this script will try to install an old version of gcc,
+    # available as binary.
+    # But this requires that the directory /vlt exist and is writable
+    # (binaries of a gcc compiler can be only installed in
+    # the hardcoded absolute path where they have been generated)
+    # This is enough to start the installation process.
+    #
+    build_OLDPATH=$PATH
+    if [ X${GCC_PATH} = X ]
+    then
+       OLDPWD=`pwd`
+       echo "Installing temporary binary image of gcc-2.95.2 "
+       cd /
+       tar xf $GNU/../gcc-SUN/gcc-binaries-2.95.2.tar
+   
+       # to use this compiler
+       #
+       cd $OLDPWD
+       GCC_PATH=/vlt/gnu-tmp/bin
+    else
+       echo "Using pre-installed gcc from: ${GCC_PATH}"
+    fi
+    PATH=${GCC_PATH}:${PATH}
+    hash -r
+    export PATH
+    echo $PATH
+    gcc -v 
+    CC=gcc
+    export CC
+
+    # to be sure that all libraries will be found
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/ucblib:/usr/ccs/lib
+    export LD_LIBRARY_PATH
+fi
+
+
+# ------
+#  gzip
+# ------
+#
+echo $SEPARATOR
+cd $SRC
+echo "gzip"
+tar xf ${GNU}/gzip-1.2.4a.tar
+cd gzip-1.2.4a
+./configure --prefix=$GNU_ROOT
+make
+make install
+echo "gzip done"
+
+
+# ------
+#  make must come very early now! -- Werther
+# ------
+#
+echo $SEPARATOR
+echo "make"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/make-3.80.tar.gz -c | tar xf -
+cd make-3.80
+./configure --prefix=$GNU_ROOT
+
+make
+
+case $build_OS in
+    SunOS) NATIVE_MAKE=/usr/ccs/bin/make ;;
+    HP-UX) NATIVE_MAKE=/usr/bin/make ;;
+    Linux) NATIVE_MAKE=/usr/bin/make ;;
+esac
+
+# for this reason the native make is used:
+$NATIVE_MAKE install
+
+
+# ---------
+#  texinfo
+# ---------
+#
+echo $SEPARATOR
+cd $SRC
+echo "texinfo"
+$GNU_ROOT/bin/gunzip  ${GNU}/texinfo-4.5.tar.gz -c | tar xf -
+cd texinfo-4.5
+
+#
+# In case this is a regeneration and Tcl/Tk is already installed,
+# configure finds -lz, but not the include file zlib.h.  Here's the
+# fix:
+#
+if [ -n "$TCLTK_ROOT" ]
+then
+    CFLAGS="-I${TCLTK_ROOT}/include" LDFLAGS="-L${TCLTK_ROOT}/lib" \
+    ./configure --prefix=$GNU_ROOT
+else
+    ./configure --prefix=$GNU_ROOT
+fi
+
+ONLY_FOR_SUN=""
+if [ ${build_OS} = "SunOS" ]
+then
+     ONLY_FOR_SUN="CC=gcc"
+fi
+
+$GNU_ROOT/bin/make $ONLY_FOR_SUN
+
+$GNU_ROOT/bin/make $ONLY_FOR_SUN install
+
+if [ ! -f $GNU_ROOT/bin/makeinfo ]
+then
+    echo "\n\t ERROR: makeinfo not in $GNU_ROOT/bin "
+    echo "\t\t this may cause other error messages in the following modules "
+    echo "\n\t Please chech the output"
+else
+    echo "Ignore the above warning, we're installng the docs right away:"
+    echo "Installing texinfo.tex... \c"
+    mkdir -p $GNU_ROOT/share/texmf/tex/texinfo
+    cp doc/texinfo.tex $GNU_ROOT/share/texmf/tex/texinfo/texinfo.tex
+    echo "done."
+    echo "Installing epsf.tex... \c"
+    mkdir -p $GNU_ROOT/share/texmf/tex/generic/dvips
+    cp doc/epsf.tex $GNU_ROOT/share/texmf/tex/generic/dvips/epsf.tex
+    echo "done."
+fi 
+
+
+# ------
+# grep ... because some "configure scripts use GNU's grep syntax! :( -- Werther
+# ------
+echo $SEPARATOR
+cd $SRC
+echo "GNU grep (required by some configure scripts)"
+$GNU_ROOT/bin/gunzip ${GNU}/grep-2.5.tar.gz -c | tar xf -
+cd grep-2.5
+./configure --prefix=$GNU_ROOT
+make
+make install
+echo "GNU grep done"
+
+
+# -------------------
+# binutils (gas, ld, etc.)
+# -------------------
+#
+echo $SEPARATOR
+cd $SRC
+echo "binutils"
+$GNU_ROOT/bin/gunzip ${GNU}/binutils-2.14.tar.gz -c | tar xf -
+cd binutils-2.14
+
+if [ ${build_OS} = "HP-UX" ]
+then
+    CC="cc"
+    export CC   # be sure to use HP's cc! -- Werther
+    #
+    # fix a problem with gprof
+    #
+    echo "Patching gprof/gmon_io.c"
+    patch -p0 <<'EOF'
+*** gprof/gmon_io.c     Tue May 21 14:19:01 2002
+--- ../binutils-2.12.new/gprof/gmon_io.c        Tue May 21 14:11:16 2002
+***************
+*** 34,39 ****
+--- 34,44 ----
+  #include "hist.h"
+  #include "libiberty.h"
+  
++ #ifndef BFD_HOST_64_BIT
++ #define BFD_HOST_64_BIT long long
++ #define BFD_HOST_U_64_BIT unsigned long long
++ #endif
++ 
+  static int gmon_io_read_64 PARAMS ((FILE *, BFD_HOST_U_64_BIT *));
+  static int gmon_io_write_64 PARAMS ((FILE *, BFD_HOST_U_64_BIT));
+  static int gmon_read_raw_arc
+EOF
+fi
+
+if [ ${build_OS} = "Linux" ]
+then
+    OLD_PATH=$PATH
+    PATH=/usr/bin:$PATH
+fi
+
+CFLAGS="-O" ./configure --prefix=$GNU_ROOT
+
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+
+if [ ${build_OS} = "Linux" ]
+then
+    PATH=$OLD_PATH
+fi
+
+
+# GNU strip is totally broken on Solaris 2.8
+
+if [ ${build_OS} = "SunOS" ]
+then
+   echo "Renaming $GNU_ROOT/bin/strip to $GNU_ROOT/bin/strip.bad..."
+   mv $GNU_ROOT/bin/strip $GNU_ROOT/bin/strip.bad
+   echo "Done"
+fi
+
+
+# -----------------
+# NOTE NOTE NOTE NOTE:
+# We need to build GNU sed first and be sure to use that one.
+# -----------------
+#
+# ---
+# sed
+# ---
+echo $SEPARATOR
+echo "sed"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/sed-3.02.tar.gz -c | tar xf -
+cd sed-3.02
+
+CFLAGS="-O2" ./configure --prefix=$GNU_ROOT
+
+$GNU_ROOT/bin/make clean
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+
+
+# ---
+# m4
+# ---
+echo $SEPARATOR
+echo "Building GNU m4"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/m4-1.4.tar.gz -c | tar xf -
+cd m4-1.4
+./configure --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+
+
+# -------
+#  bison -- needed much earlier now!
+# -------
+#
+echo $SEPARATOR
+echo "bison"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/bison-1.35.tar.gz -c | tar xf -
+cd bison-1.35
+
+CFLAGS="-O2" ./configure --prefix=$GNU_ROOT
+
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+echo "bison done"
+
+
+# ------------
+# gcc compiler (and libraries)
+#
+# Werther Pirani, June 29, 1999
+#
+# ------------
+echo $SEPARATOR
+echo "GCC"
+echo "Building GCC and C/C++ libraries"
+cd  $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/gcc-3.3.tar.gz -c | tar xf -
+rm -rf $SRC/gcc-obj
+mkdir $SRC/gcc-obj
+cd  $SRC/gcc-obj
+
+echo $SEPARATOR
+if [ ${build_OS} = "SunOS" ] 
+then
+    #
+    # We MUST use GNU's assembler and linker! -- Werter 02/07/2003
+    #
+    $SRC/gcc-3.3/configure --with-gnu-as --with-gnu-ld --enable-shared \
+	--enable-languages=c++,f77 --prefix=$GNU_ROOT
+
+    # patch for RTAP -- do we still need it? 
+
+    # sed 's/rodata/rodata1/g' ../gcc-3.3/gcc/config/sparc/sysv4.h > ../gcc-3.3/gcc/config/sparc/sysv4.h.new
+    # chmod u+w ../gcc-3.3/gcc/config/sparc/sysv4.h
+    # cp ../gcc-3.3/gcc/config/sparc/sysv4.h.new ../gcc-3.3/gcc/config/sparc/sysv4.h
+    #
+elif [ ${build_OS} = "HP-UX" ]
+then
+    CCOPTS="-Wp,-H256000"
+    export CCOPTS
+    CC="cc" $SRC/gcc-3.3/configure --with-gnu-as --enable-shared \
+	--enable-languages=c++,f77 --prefix=$GNU_ROOT
+    #
+elif [ ${build_OS} = "Linux" ]
+then
+    $SRC/gcc-3.3/configure --with-gnu-as --enable-shared \
+	--enable-languages=c++,f77 --prefix=$GNU_ROOT \
+	--enable-threads=posix --host=i386-redhat-linux
+fi
+
+$GNU_ROOT/bin/make bootstrap
+$GNU_ROOT/bin/make install
+
+if [ ${build_OS} = "SunOS" ] 
+then
+    #
+    # get rid of the old gcc version used at the beginning,
+    #
+    echo "Removing temporary binary image of gcc-2.95.2: "
+    rm -rf /vlt/gnu-tmp
+    #
+    # to use the new compiler
+    #
+    PATH=${build_OLDPATH}
+    export PATH
+    echo $PATH
+    echo "from now using:"
+    gcc -v
+fi
+
+#
+# Make sure we're working with the new gcc compiler!
+#
+CC=gcc
+export CC
+echo
+gcc -v
+echo
+
+if [ ${build_OS} = "HP-UX" ]
+then
+    CCOPTS=""
+    export CCOPTS
+fi
+
+
+# -----
+#  gdb
+# -----
+#
+echo $SEPARATOR
+echo "gdb"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/gdb-6.0.tar.gz -c | tar xf -
+cd gdb-6.0
+./configure --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make CC="gcc" CFLAGS="-O2"
+$GNU_ROOT/bin/make install CC="gcc" CFLAGS="-O2"
+$GNU_ROOT/bin/make install-info
+
+
+# ------
+#  flex
+# ------
+#
+echo $SEPARATOR
+echo "flex"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/flex-2.5.4a.tar.gz -c | tar xf -
+cd flex-2.5.4
+./configure  --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make CFLAGS="-O2"
+$GNU_ROOT/bin/make check
+$GNU_ROOT/bin/make install
+
+
+# ------
+#  gawk
+# ------
+#
+echo $SEPARATOR
+echo "gawk"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/gawk-3.1.3.tar.gz  -c | tar xf -
+cd gawk-3.1.3
+./configure --prefix=$GNU_ROOT
+
+$GNU_ROOT/bin/make CC=gcc CFLAGS="-O2"
+$GNU_ROOT/bin/make CC=gcc CFLAGS="-O2" install
+
+
+# -------
+#  emacs
+# -------
+#
+echo $SEPARATOR
+echo "emacs"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/emacs-21.3.tar.gz -c | tar xf -
+cd emacs-21.3
+
+#
+# HP-UX is a special case... as usual!
+#
+if [ ${build_OS} = "HP-UX" ]
+then
+    CFLAGS=-I/usr/contrib/X11R6/include LDFLAGS=-L/usr/contrib/X11R6/lib ./configure --prefix=$GNU_ROOT --x-includes=/usr/include/X11R6 --x-libraries=/usr/lib/X11R6 --with-x-toolkit=lucid
+elif [ ${build_OS} = "SunOS" ]
+then
+    export LDFLAGS="-z nocombreloc"
+    ./configure --prefix=$GNU_ROOT --with-x-toolkit=lucid 
+    unset LDFLAGS
+else
+    ./configure --prefix=$GNU_ROOT --with-x-toolkit=lucid
+fi
+
+$GNU_ROOT/bin/make clean
+$GNU_ROOT/bin/make CFLAGS="-O2"
+$GNU_ROOT/bin/make install
+
+
+# ---------
+#  groff
+# ---------
+#
+echo $SEPARATOR
+cd $SRC
+echo "groff"
+$GNU_ROOT/bin/gunzip  ${GNU}/groff-1.17.tar.gz -c | tar xf -
+cd groff-1.17
+
+patch -p0 <<'EOF'
+*** src/preproc/html/pre-html.cc.orig   Fri Apr 13 11:03:57 2001
+--- src/preproc/html/pre-html.cc        Tue May 21 14:39:25 2002
+***************
+*** 616,622 ****
+   *  abs - returns the absolute value.
+   */
+  
+! int abs (int x)
+  {
+    if (x < 0) {
+      return( -x );
+--- 616,622 ----
+   *  abs - returns the absolute value.
+   */
+  
+! /* int abs (int x)
+  {
+    if (x < 0) {
+      return( -x );
+***************
+*** 623,629 ****
+    } else {
+      return( x );
+    }
+! }
+  
+  /*
+   *  min - returns the minimum of two numbers.
+--- 623,629 ----
+    } else {
+      return( x );
+    }
+! } */
+  
+  /*
+   *  min - returns the minimum of two numbers.
+EOF
+
+if [ $build_OS = "Linux" ]
+then
+    patch -p0 <<'EOF'
+*** src/include/lib.h.orig   Fri Apr 13 11:03:57 2001
+--- src/include/lib.h        Tue May 21 14:39:25 2002
+***************
+*** 19,27 ****
+  Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
+  
+  extern "C" {
+! #ifndef strerror
+    char *strerror(int);
+! #endif
+    const char *i_to_a(int);
+    const char *if_to_a(int, int);
+  }
+--- 19,27 ----
+  Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
+  
+  extern "C" {
+! /* #ifndef strerror
+    char *strerror(int);
+! #endif */
+    const char *i_to_a(int);
+    const char *if_to_a(int, int);
+  }
+EOF
+fi
+
+./configure --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+
+
+#
+# THE FOLLOWING PRODUCTS ARE REQUIRED BY CMM
+#
+
+# ---------
+# diffutils
+# ---------
+#
+echo $SEPARATOR
+echo "diffutils"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/diffutils-2.8.1.tar.gz -c | tar xf -
+cd diffutils-2.8.1
+./configure --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make clean
+$GNU_ROOT/bin/make CFLAGS="-O2"
+$GNU_ROOT/bin/make install
+
+
+# ---
+# rcs
+# ---
+echo $SEPARATOR
+echo "rcs"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/rcs-5.7.tar.gz -c | tar xf -
+cd rcs-5.7
+./configure --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make CFLAGS="-O2"
+$GNU_ROOT/bin/make install
+
+
+# ---
+# cvs
+# ---
+build_cvs
+
+
+# ---
+# ddd -- Werther
+# ---
+echo $SEPARATOR
+echo "Building DDD"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/ddd-3.3.7.tar.gz -c | tar xf -
+cd ddd-3.3.7
+chmod u+w ddd/*
+cp ${GNU}/ddd-3.3.7.patch .
+patch -p0 < ddd-3.3.7.patch
+
+if [ ${build_OS} = "HP-UX" ]
+then
+    CC="gcc" CFLAGS="-O" CXXFLAGS="-I/usr/contrib/X11R6/include" \
+    ./configure --prefix=$GNU_ROOT
+elif [ ${build_OS} = "SunOS" ]
+then
+    CFLAGS="-O" CXXFLAGS="-DHAVE_IOSTATE" \
+    ./configure --prefix=$GNU_ROOT --without-xpm
+else
+    CFLAGS="-O" ./configure --prefix=$GNU_ROOT
+fi
+
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+
+
+# ---
+# zip -- Werther
+# ---
+echo $SEPARATOR
+echo "Building zip"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/zip-2.3.tar.gz -c | tar xf -
+cd zip-2.3
+$GNU_ROOT/bin/make -f unix/Makefile generic
+$GNU_ROOT/bin/make -f unix/Makefile install
+
+
+# ---
+# unzip -- Werther
+# ---
+echo $SEPARATOR
+echo "Building unzip"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/unzip532.tar.gz -c | tar xf -
+cd unzip-5.32
+$GNU_ROOT/bin/make -f unix/Makefile generic
+$GNU_ROOT/bin/make -f unix/Makefile install
+
+
+# ---
+# GNU tar -- Werther
+# ---
+echo $SEPARATOR
+echo "Building GNU tar"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/tar-1.13.tar.gz -c | tar xf -
+cd tar-1.13
+./configure --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+#
+# To avoid confusion with /usr/bin/tar!
+#
+if [ -f $GNU_ROOT/bin/tar ]
+then
+    mv $GNU_ROOT/bin/tar $GNU_ROOT/bin/gtar
+fi
+
+
+# ---
+# Perl -- Werther
+# ---
+echo $SEPARATOR
+echo "Building Perl"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/perl-5.8.0.tar.gz -c | tar xf -
+cd perl-5.8.0
+./configure.gnu --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+
+
+# ---
+# autoconf
+# ---
+echo $SEPARATOR
+echo "Building GNU autoconf"
+cd $SRC
+$GNU_ROOT/bin/gunzip ${GNU}/autoconf-2.57.tar.gz -c | tar xf -
+cd autoconf-2.57
+./configure --prefix=$GNU_ROOT
+$GNU_ROOT/bin/make
+$GNU_ROOT/bin/make install
+
+# ---
+# patch
+# ---
+# For Solaris, we need to install also the GNU patch program.
+# For the time being we just do a binary installation:
+
+# Begin of special case for Solaris
+if [ "$build_OS" = "SunOS" ]
+then
+
+if ! [ -f ${INSTALL_ROOT}/PRODUCTS/patch.tar.gz ]
+then
+    echo "patch tar file missing "
+    exit 1
+else
+    cd $GNU_ROOT/bin
+    gtar xzf ${INSTALL_ROOT}/PRODUCTS/patch.tar.gz
+    if [ "$?" != "0" ]
+    then
+        echo "untar of patch tar file failed"
+        exit 2
+    fi
+    cd ${INSTALL_ROOT}/INSTALL
+fi
+
+# End of special case for Solaris
+fi
+
+# -------------
+# Verification
+# -------------
+#
+echo $SEPARATOR
+echo "\n                          VERIFICATION\n"
+
+cd ${INSTALL_ROOT}/INSTALL
+./checkGNU
+
+#
+#___oOo___

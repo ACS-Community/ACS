@@ -1,0 +1,220 @@
+<html>
+
+<head>
+
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+
+<link rel=Edit-Time-Data href="FeaturesCommands_files/editdata.mso">
+
+<title>FeaturesCommands</title>
+
+<style><!--
+
+.Normal
+
+	{font-size:12.0pt;
+
+	font-family:"Times New Roman";}
+
+.MsoHyperlink
+
+	{color:blue;
+
+	text-decoration:underline;
+
+	text-underline:single;}
+
+.SpellE
+
+	{}
+
+.GramE
+
+	{}
+
+-->
+
+</style>
+
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+
+<h2><a name=CommandHandling>Command </a>System</h2>
+
+<p>A command is the basic mechanism for communication from users to Distributed 
+
+  Objects and between Distributed Objects. A command is actually a method of a 
+
+  Component.</p>
+
+<h3>Commands are sent to Components <a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 6.1.2. Commands]</a> using remote 
+
+  method invocation. It is based on <span class=GramE>CORBA</span><a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 10.4.1. CORBA<span class=GramE>]</span></a><a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 13.1.1. Distributed Objects and Commands]</a>.</h3>
+
+<h4>CORBA provides full support for inter-process communication. </h4>
+
+<h4>CORBA objects have a public interface defined with the IDL <span class=GramE>language</span><a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 10.3.4. IDL]</a></h4>
+
+<h4>CORBA objects can be remotely accessed by creating stubs and invoking the 
+
+  defined IDL interface. </h4>
+
+<h4>Any language supported by CORBA can talk to any remote object, independently 
+
+  from implementation language and architecture. The Object Request Broker (ORB) 
+
+  does mapping of calls and marshalling. </h4>
+
+<h4>CORBA defines a standard Internet Inter-ORB Protocol (IIOP) that guarantees 
+
+  interoperability between any CORBA implementation and vendor based on TCP/IP. 
+
+  Any implementation must comply with IIOP, but a vendor can choose to additionally 
+
+  implement high performance transport protocols. For example there are native 
+
+  ATM implementations. Same-process messages are usually implemented as direct 
+
+  function calls while same-CPU messages are based on operating system message 
+
+  queues. </h4>
+
+<h4>Other non-IIOP CORBA messaging protocols, supported by the <span class=SpellE>ORBs</span> 
+
+  used in <span class=GramE>ACS,</span> can be used to satisfy special communication 
+
+  and security requirements.</h4>
+
+<h4>A call to a method of a CORBA Component, based on its IDL interface, is what 
+
+  can and has to <span class=GramE>be</span> mapped into the concept of Commands 
+
+  (the method call concept is very similar to RPC). </h4>
+
+<h3>A command has a well-defined syntax and set of call and return parameters. 
+
+  Full context validation and syntax check of commands is always done when the 
+
+  command is received by the server <span class=GramE>application</span><a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 6.1.4. <span class=GramE>Validation]</span></a><span
+
+class=GramE>.</span> A command can also be checked by the sender, but this is 
+
+  not mandatory except in the case of generic command-sending <span class=GramE>GUIs</span><a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 6.1.3. <span class=GramE>Syntax Check]</span></a><span class=GramE>.</span> 
+
+  The syntax check would check that the command is valid and that the parameters 
+
+  are within the static ranges.</h3>
+
+<h3>Commands are synchronous (the caller blocks and waits for a return reply, 
+
+  up to a defined timeout) <a href="ReferenceDocuments.html#RD01">[RD01 - 6.1.7. 
+
+  Mode]</a> <a href="ReferenceDocuments.html#RD01">[RD01 - 6.1.8. <span
+
+class=GramE>Timeout]</span></a><span class=GramE>.</span> Applications should 
+
+  take care of the fact that a synchronous call can block the whole application 
+
+  unless it is issued from a dedicated thread. Replies can be normal replies or 
+
+  error <span class=GramE>replies</span><a href="ReferenceDocuments.html#RD01">[RD01 
+
+  - 6.1.1. <span class=GramE>Messages]</span></a><span class=GramE>.</span> </h3>
+
+<h3>CORBA Asynchronous Method Invocation (AMI) <a
+
+href="ReferenceDocuments.html#RD29">[RD29]</a> can be used to implement asynchronous 
+
+  calls on the client side using synchronous methods on the servant side. AMI 
+
+  is only supported by few <span class=SpellE>ORBs</span>, for example TAO, but 
+
+  not by <span class=SpellE>omniORB</span> or JacORB.</h3>
+
+<h3>Asynchronous command handling using synchronous methods on the servant side 
+
+  can also be done by starting a separate thread, which sends a synchronous command. 
+
+  This way the main thread is not blocked.</h3>
+
+<h3>Asynchronous command handling can also be implemented using callbacks, in 
+
+  particular when multiple replies need to be sent. ACS provides support for Callbacks 
+
+  and uses callbacks for Monitors.</h3>
+
+<h3>Using synchronous commands, time-outs are handled using CORBA messaging (implemented 
+
+  in TAO but not in other <span class=SpellE>ORBs</span>) <a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 6.1.6 Command delivery]</a>. Intermediate 
+
+  replies are not handled by ACS, but must be taken care of by the application. 
+
+  ACS cannot therefore warranty that requirement <a href="ReferenceDocuments.html#RD01">[RD01 
+
+  - 6.1.9 Intermediate replies]</a> is satisfied. This is let to applications.</h3>
+
+<h3>Commands can be invoked from generic applications, that are able to browse 
+
+  the objects in the systems, show the available commands with the corresponding 
+
+  syntax, check dynamically the syntax of commands and send them<a
+
+href="ReferenceDocuments.html#RD01">[RD01 - 6.1.5. <span class=GramE>Programmatic 
+
+  use]</span></a><span class=GramE>.</span></h3>
+
+<h3>A server sub-system handling a command shall continue to operate if the client 
+
+  that has issued the command <span class=GramE>disappears</span>, e.g. between 
+
+  a command being initiated and completed. In this case the server logs a non-critical 
+
+  error, since a well-behaving client should always wait for replies to initiated 
+
+  actions, and continues.</h3>
+
+<h3>Components publish their interfaces via IDL interfaces. IDL allows use of 
+
+  inheritance to build new types. IDL allows only defining the pure interface 
+
+  in terms of parameters and types; it does not allow specifying range checking 
+
+  for the parameters. This checking has to be performed by the applications. IDL 
+
+  interfaces are registered in the CORBA Interface Repository (IREP) and made 
+
+  public.</h3>
+
+<p><img border=0 width=573 id="_x0000_i1025"
+
+src="Images/Class_Diagram-Command_System-Command_System_Architecture.png"><br>
+
+  <i>Figure 3.19: Command System architecture</i> </p>
+
+<h3>The implementation of checking functions and tools to implement command syntax 
+  checking both at the sender and receiving side of commands is provided by the 
+  Parameter package and Parameters have to be used when command checking is necessary.</h3>
+
+</body>
+
+</html>
+
+
+

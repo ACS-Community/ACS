@@ -1,0 +1,126 @@
+#! VxWorks
+#******************************************************************************
+# ALMA project
+#
+# "@(#) $Id: bootScript,v 1.122 2003/01/28 16:36:56 vltsccm Exp $"
+#
+# THIS IS A GENERATED FILE - DO NOT EDIT (unless you know how)
+#
+# Created by
+#   User: almamgr
+#   Host: jemez
+#   Date: Thu May 17 20:00:01 GMT 2001
+#   Tool: vccConfigLcu
+#   Proc: vccConfigLcuGenerateBootScript 2.46
+#
+
+#:::   VCCDATA   :::
+# vLcuEnv:	labm
+# vLcuHost:	lal02
+# vLcuIPaddr:	146.88.2.190
+# vLcuHost0:	lal02
+# vLcuIPaddr0:	146.88.2.190
+# vLcuHost1:	
+# vLcuIPaddr1:	
+# vLcuHost2:	
+# vLcuIPaddr2:	
+# vLcuTCPport:	2160
+# vLcuCpu:	PPC604
+# vLcuType:	ppc
+# vLcuBsp:	abm2700
+# vBwsEnv:	wjemez
+# vBwsHost:	jemez
+# vBwsIPaddr:	146.88.1.63
+# vBwsTCPport:	2302
+# vBwsCpu:	sparc
+# vBwsType:	solaris
+# vGateway:	146.88.2.167
+# BOOTROOT:	/export/home/jemez/vltdata
+# BOOTHOME:	/export/home/jemez/vltdata/ENVIRONMENTS/labm
+# VXROOT:	/export/home/jemez/alma/OCT2001/vw5.4/target
+# vVltHost:	jemez
+# vVltIPaddr:	146.88.1.63
+# VLTROOT:	/export/home/jemez/alma/OCT2001/CCSLite
+# ACSROOT:	/export/home/alma/OCT2001/ACSSW
+# ACE_ROOT_VW:	/export/home/alma/OCT2001/TAO/ACE_wrappers/build/vxworks
+# vIntHost:	jemez
+# vIntIPaddr:	146.88.1.63
+# INTROOT:	/export/home/blacktail/introot/almamgr.sun
+# vModHost:	jemez
+# vModIPaddr:	146.88.1.63
+# MODROOT:
+# vSysmodlist:	lqs lcc too sla
+# vUsrmodlist:	
+# vDevlist:	
+#
+
+#:::   ROOT   :::
+putenv "BOOTROOT=/export/home/jemez/vltdata"
+putenv "BOOTHOME=/export/home/jemez/vltdata/ENVIRONMENTS/labm"
+putenv "VLTROOT=/VLTROOT"
+putenv "INTROOT=/export/home/blacktail/introot/almamgr.sun"
+putenv "ACSROOT=/ACSROOT"
+putenv "ACE_ROOT_VW=/ACE_ROOT_VW"
+
+#:::   LCUBOOT   :::
+cd "/export/home/jemez/alma/OCT2001/CCSLite"
+ld 0,1,"vw/bin/PPC604/lcuboot"
+lcubootLogInit
+
+#:::   NETWORK   :::
+hostAdd "jemez","146.88.1.63"
+nfsIdSet 60006 /* vx */
+nfsAuthUnixSet "jemez",60006,335 /* vx,alma */
+
+lcubootNfsMount "jemez","/export/home/jemez/vltdata",0
+lcubootNfsMount "jemez","/export/home/jemez/alma/OCT2001/CCSLite","/VLTROOT"
+lcubootNfsMount "jemez","/export/home/blacktail/introot/almamgr.sun"
+lcubootNfsMount "jemez","/export/home/jemez/alma/OCT2001/ACSSW","/ACSROOT"
+lcubootNfsMount "jemez","/export/home/jemez/alma/OCT2001/TAO/ACE_wrappers/build/vxworks","/ACE_ROOT_VW"
+
+#:::   ENVIRONMENT   :::
+putenv "CPU=PPC604"
+putenv "LOCALENV=labm"
+putenv "LOCALTCPPORT=2160"
+putenv "HOSTENV=wjemez"
+putenv "HOSTTCPPORT=2302"
+putenv "LOCALHOST=lal02"
+putenv "LOCALIPADDRESS=146.88.2.190"
+#putenv "LOCALHOST_1="
+#putenv "LOCALIPADDRESS_1="
+#putenv "LOCALHOST_2="
+#putenv "LOCALIPADDRESS_2="
+lcubootAutoEnvInit /* set rest of variables automatically */
+
+#:::   MODULES   :::
+lcubootAutoLoadNoAbort 1,"lqs",0
+lcubootAutoLoadNoAbort 1,"lcc",0
+lcubootAutoLoadNoAbort 1,"too",0
+
+# Initialize System-Modules:
+lcubootAutoCdBoot 1,"lqs.boot"
+< lqs.boot
+lcubootAutoCdBoot 1,"lcc.boot"
+< lcc.boot
+lcubootAutoCdBoot 1,"too.boot"
+< too.boot
+lcubootAutoCdBoot 1,"sla.boot"
+< sla.boot
+
+#:::   DEVICES   :::
+
+#:::   USER   :::
+# Initialize User-Modules:
+
+# Execute User-Script:
+cd getenv("BOOTHOME")
+< userScript
+
+#:::   TERMINATION   :::
+taskDelay 100
+lcubootAutoSpawn 1,"tLccResumeInit",80,0x18,40000,"lccResumeInit"
+lcubootAutoExec 1,"lccWaitInit"
+lcubootLogFinish
+
+# ___END_OF_BOOT_SCRIPT___
+

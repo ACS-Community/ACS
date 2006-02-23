@@ -1,0 +1,45 @@
+BODY, TD, TH, A, P,H1,H2,H3{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+.clsNode, .clsNode:visited{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: black;
+	font-weight : bold;;
+	font-size : 12px;
+	text-decoration : none;
+}
+.clsNodeL1, .clsNodeL1:visited{
+	color: black;
+	font-size : 12px;
+	text-decoration : none;
+}
+.clsNodeL1:hover{
+	color: blue;
+	font-size : 12px;
+	text-decoration : underline;
+}
+
+.clsNodeL2, .clsNodeL2:visited{
+	color: black;
+	font-size : 12px;
+	text-decoration : none;
+}
+.clsNodeL2:hover{
+	color: blue;
+	font-size : 12px;
+	text-decoration : underline;
+}
+
+.clsNodeL3, .clsNodeL3:visited{
+	color: black;
+	font-size : 10px;
+	text-decoration : none;
+}
+.clsNodeL3:hover{
+	color: blue;
+	font-size : 10px;
+	text-decoration : underline;
+}
+

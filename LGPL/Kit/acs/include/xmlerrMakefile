@@ -1,0 +1,113 @@
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: xmlerrMakefile,v 1.15 2005/10/20 15:11:21 dfugate Exp $"
+#
+#
+#
+#************************************************************************
+#------------------------------------------------------------------------
+#
+SHELL=/bin/ksh
+######################################
+# phony section
+######################################
+.PHONY : clean_xmlerr
+.PHONY : install_xmlerr
+.PHONY : do_xmlerr
+
+######################################
+# variables settings
+######################################
+
+OMNI_IDL = omniidl
+
+######################################
+# incrementing tasks
+######################################
+ifneq ($(strip $(ACSERRDEF)),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_xmlerr
+endif
+
+ifneq ($(strip $(ACSERRDEF)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_xmlerr
+endif
+
+ifneq ($(strip $(ACSERRDEF)),)
+#    ALL_TARGET := $(ALL_TARGET) do_xmlerr
+endif
+
+######################################
+# targets specification
+######################################
+
+## install
+##
+ifndef MAKE_VXWORKS
+XMLERR_TO_BE_INSTALLED += $(foreach member, $(ACSERRDEF), $(VLTTOP)/lib/lib$(member).a $(VLTTOP)/lib/lib$(member).so $(VLTTOP)/lib/$(member).jar $(VLTTOP)/include/$(member).h $(VLTTOP)/include/$(member)C.h $(VLTTOP)/include/$(member)C.inl $(VLTTOP)/include/$(member)S.h $(VLTTOP)/include/$(member)S.inl $(VLTTOP)/include/$(member)S_T.h $(VLTTOP)/include/$(member)S_T.cpp $(VLTTOP)/include/$(member)S_T.inl $(VLTTOP)/idl/$(member).idl $(VLTTOP)/idl/$(member).xml $(VLTTOP)/lib/python/site-packages/$(member)Impl.py)
+else
+XMLERR_TO_BE_INSTALLED += $(foreach member, $(ACSERRDEF), $(BIN)/$(member) )
+endif
+
+install_xmlerr:
+ifneq ($(strip $(ACSERRDEF)),)
+	-@$(ECHO) "install_xmlerr: xmlerr_begin $(XMLERR_TO_BE_INSTALLED) ">>$(FILE)
+	-@$(ECHO) "xmlerr_begin:" >>$(FILE)
+	-@$(ECHO) "\t-@echo \"\"; $(ECHO) \"......XMLERR generated files: \""  >>$(FILE)
+ifndef MAKE_VXWORKS
+	-$(AT) for member in $(foreach name, $(ACSERRDEF), $(name) ); \
+		do \
+		$(ECHO) "$(VLTTOP)/lib/lib$${member}.a $(VLTTOP)/lib/lib$${member}.so $(VLTTOP)/include/$${member}.h $(VLTTOP)/include/$${member}C.h $(VLTTOP)/include/$${member}C.inl $(VLTTOP)/include/$${member}S.h $(VLTTOP)/include/$${member}S.inl $(VLTTOP)/include/$${member}S_T.h $(VLTTOP)/include/$${member}S_T.cpp $(VLTTOP)/include/$${member}S_T.inl $(VLTTOP)/idl/$${member}.idl $(VLTTOP)/idl/$${member}.xml $(VLTTOP)/lib/python/site-packages/$${member}Impl.py: ../idl/$${member}.xml" >>$(FILE);\
+		$(ECHO) "\t-\$$(AT)echo \"\t($${member})\";\\" >>$(FILE); \
+		$(ECHO) "\tacsMakeXmlErrLibraries $${member} install $(MAKEDIR) \"$(MAKE_ONLY)\" \"$(MAKE_VXWORKS)\" \"$(DEBUG)\"" >>$(FILE) ;  \
+		 tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		 $(ECHO)  "	-\$$(AT)$(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) -bacs_python -C$(VLTTOP)/lib/python/site-packages ../idl/$${tFile} > /dev/null 2>&1" >>$(FILE);\
+		done
+else
+	-$(AT) for member in $(foreach name, $(ACSERRDEF), $(name) ); \
+		do \
+		$(ECHO) "$(BIN)/$${member} : ../idl/$${member}.xml" >>$(FILE);\
+		$(ECHO) "\t-\$$(AT)echo \"\t($${member})\";\\" >>$(FILE);\
+		$(ECHO) "\tacsMakeXmlErrLibraries $${member} install $(MAKEDIR) \"$(MAKE_ONLY)\" \"$(MAKE_VXWORKS)\" \"$(DEBUG)\"" >>$(FILE) ;  \
+		done
+endif
+endif
+
+##  clean
+##
+clean_xmlerr:
+	$(AT) for member in $(foreach name, $(ACSERRDEF), $(name) ); \
+		do \
+		acsMakeXmlErrLibraries $${member} clean $(MAKEDIR)  "$(MAKE_ONLY)" "$(MAKE_VXWORKS)" "$(DEBUG)";  \
+		done
+## all
+##
+#
+ifneq ($(strip $(ACSERRDEF)),FALSE)
+do_xmlarr: 
+	$(AT) for member in $(foreach name, $(ACSERRDEF), $(name) ); \
+		do \
+		echo "== XMLERR Compiling XML into IDL, building ERR libraries : $${member}" ; \
+		acsMakeXmlErrLibraries $${member} all $(MAKEDIR) "$(MAKE_ONLY)" "$(MAKE_VXWORKS)" "$(DEBUG)" ;  \
+		done
+
+endif
+
+##########################
+###############
+
+ifneq ($(strip $(ACSERRDEF)),)
+ TMP_DEP_XMLERR := $(addprefix ../idl/, $(addsuffix .idl, $(ACSERRDEF))) 
+#$(addprefix ../lib/lib, $(addsuffix .a, $(ACSERRDEF)))
+endif
+
+
+vpath %.xml ../idl
+vpath %.jar ../lib
+
+../idl/%.idl ../lib/lib%.a lib%.so ../lib/%.jar: %.xml
+	$(AT)echo "==** XMLERR Compiling XML into IDL, building ERR libraries  ($(*F))" ; 
+	$(AT)acsMakeXmlErrLibraries $(*F) all $(MAKEDIR) "$(MAKE_ONLY)" "$(MAKE_VXWORKS)" "$(DEBUG)"
+	$(AT)echo "==** XMLERR Compiling completed ($(*F))" ; 
+
+do_xmlerr: $(TMP_DEP_XMLERR)

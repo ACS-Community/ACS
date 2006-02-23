@@ -1,0 +1,13 @@
+# AbeansLogger type of logger used as system logger by JavaMessageLog 
+# from startup.
+# Default value (if no configuration provided) is 
+# 'abeans.core.defaults.AbeansLogger'.
+
+# do not install remote logging (including remote directory)
+#logging.jml.system_logger=abeans.core.defaults.AbeansMultipleLogger
+
+# AbeansLogger type of log formatter used as system logger by JavaMessageLog
+# from startup.
+# Default value (if no configuration provided) is
+# 'abeans.core.defaults.DefaultLogFormatter'.
+logging.jml.formatter=abeans.pluggable.acs.logging.ConsoleLoggingFormatter

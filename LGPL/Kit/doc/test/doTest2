@@ -1,0 +1,261 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: doTest2,v 1.31 2002/06/08 17:20:36 vltsccm Exp $" 
+#
+# "@(#) $Id: doTest2,v 1.31 2002/06/08 17:20:36 vltsccm Exp $" 
+#
+# doTest2
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# pforstma  03/08/94  created
+#
+#************************************************************************
+#   NAME
+#   doTest2 - test docUnix2Dos and docDos2Unix
+# 
+#   SYNOPSIS
+#   doTest2 [-s]
+# 
+#   DESCRIPTION
+#
+#   test docUnix2Dos and docDos2Unix
+#   
+#   -s : do not delete file on $HOME/floppy (default: delete them)
+#
+#   FILES
+#
+#   ../tmp/t?/*        }
+#   ../tmp/t?.dos/*    }  
+#   ../tmp/t?.bis/*    }  created and deleted by the doTest2.
+#   ../tmp/t?.dos.ls   }   
+#   ../tmp/t?.unix.ls  }
+#   doTest2.out        }
+#
+#   doTest2.ref           read     test reference file (empty).
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   Must be launched from "test" directory.
+#   $HOME/floppy must be readable and writable (a floppy disk must 
+#   be inserted).
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#   Since the 'cp' and 'ls' commands from a Unix directory to a $HOME/floppy 
+#   directory turns every uppercase letter into lowercase letter, comparing
+#   UNIX directory and $HOME/floppy directory requires that filenames be
+#   uppercase, thus the use of double pipes with 'awk' and 'sort'.
+#
+#------------------------------------------------------------------------
+#
+
+delete_files="yes"
+if [ $# -eq 1 ]
+then if [ $1 -eq "-s" ]
+     then delete_files="no"
+     fi
+fi
+
+# delete previous test report
+rm -rf doTest2.out
+
+# OPEN ISSUES:
+# how to redirect every output and error ? (need a calling shell)
+# use current directory for temporary test files or ../tmp ?
+
+# test 1
+# ------
+
+# create environment
+rm -rf ../tmp/t1*
+mkdir ../tmp/t1
+rm -rf $HOME/floppy/t1
+
+cd ../tmp/t1
+
+#
+# All files are valid
+# 3 "aaa..." name collisions
+# 3 "fff..." name collisions
+
+echo SEmodel_GF.tex >  SEmodel_GF.tex
+echo a.b.c > a.b.c
+echo a.doc > a.doc
+echo aa.doc > aa.doc
+echo aaa.doc > aaa.do
+echo aaa_.doc > aaa_.doc
+echo aaaa.doc > aaaa.doc
+echo aaaa.f.doc > aaaa.f.doc
+echo aaaa_f.doc > aaaa_f.doc
+echo aaaaa.doc > aaaaa.doc
+echo aaaaaa.doc > aaaaaa.doc
+echo aaaaaaa.doc > aaaaaaa.doc
+echo aaaaaaaa.doc > aaaaaaaa.doc
+echo aaaaaaaaz.doc > aaaaaaaaz.doc 
+echo f > f 
+echo ff > ff
+echo fff > fff
+echo ffff > ffff 
+echo fffff > ffff
+echo ffffff > ffffff
+echo fffffff > fffffff 
+echo ffffffff > ffffffff
+echo ffffffffa > ffffffffa 
+echo merde > merde
+echo section1 > section1 
+echo section2 > section2 
+echo section3 > section3
+
+# UNIX->DOS
+docUnix2Dos 
+
+mkdir $HOME/floppy/t1
+cp  ../t1.dos/* $HOME/floppy/t1/.
+
+# verify that floppy t1 and DOS t1 have the same contents
+# (i.e. no file name has been modified due to DOS conventions).
+#
+ls $HOME/floppy/t1 | awk ' { for (i=0; i < NF; i++) print(toupper($i));}' | sort > ../t1.floppy.ls
+ls ../t1.dos | awk ' { for (i=0; i < NF; i++) print(toupper($i));}' | sort > ../t1.dos.ls
+diff -r ../t1.floppy.ls ../t1.dos.ls > ../../test/doTest2.out
+
+# DOS->UNIX
+cd ../t1.dos
+mkdir ../t1.bis
+docDos2Unix ../t1.bis
+
+# compare directories
+cd ../../test
+diff -r ../tmp/t1 ../tmp/t1.bis >> doTest2.out 
+
+#
+if [ $delete_files -eq "yes" ]
+then
+    rm -rf ../tmp/t1*
+fi
+
+# test 2
+# ------
+
+# create environment
+rm -rf ../tmp/t2*
+mkdir ../tmp/t2
+rm -rf $HOME/floppy/t2
+
+cd ../tmp/t2
+
+#
+# Invalid file names
+# 
+echo Ab >  Ab
+echo aB > aB
+echo .dot > .dot
+echo '$file' > '$file'
+
+# UNIX->DOS
+docUnix2Dos >>../../test/doTest2.out 2>&1
+
+#
+rm -rf ../tmp/t2*
+
+# test 3
+# ------
+
+
+# create environment
+rm -rf ../t3*
+mkdir ../t3
+rm -rf $HOME/floppy/t3
+
+cd ../t3
+
+#
+# All files are valid:
+# 7 name collisions name with "section<x>"
+# the extra '.' are translated into '_'
+# the suffix (up to 3 characters) is kept.
+
+echo Document.book > Document.book
+echo DocumentTOC.doc > DocumentTOC.doc
+echo FrontCover > FrontCover
+echo Introduction > Introduction
+echo acecom.h.mif > acecom.h.mif
+echo acecomAuxiliary.h.mif > acecomAuxiliary.h.mif
+echo acecomCm.occ.mif > acecomCm.occ.mif
+echo acecomCommDispatch.h.mif > acecomCommDispatch.h.mif 
+echo acecomRdoutControl.h.mif > acecomRdoutControl.h.mif
+echo acecomRdoutParams.h.mif > acecomRdoutParams.h.mif
+echo acecomRdoutTransm.h.mif > acecomRdoutTransm.h.mif
+echo acecomReceiveImage.mif > acecomReceiveImage.mif
+echo acecomSendCommand.mif > acecomSendCommand.mif
+echo acecomShutter.h.mif > acecomShutter.h.mif
+echo acecomTelemetry.h.mif > acecomTelemetry.h.mif
+echo acecomTemperature.h.mif > acecomTemperature.h.mif
+echo overview > overview
+echo section1 > section1
+echo section2 > section2
+echo section3 > section3
+echo section4 > section4
+echo section5 > section5
+echo section6 > section6
+echo section7 > section7
+
+# UNIX->DOS
+docUnix2Dos 
+
+mkdir $HOME/floppy/t3
+cp  ../t3.dos/* $HOME/floppy/t3/.
+
+# verify that floppy t3 and DOS t3 have the same contents
+# (i.e. no file name has been modified due to DOS conventions).
+#
+ls $HOME/floppy/t3 |  awk ' { for (i=0; i < NF; i++) print(toupper($i));}'  | sort > ../t3.floppy.ls
+ls ../t3.dos |awk ' { for (i=0; i < NF; i++) print(toupper($i));}' | sort > ../t3.dos.ls
+diff -r ../t3.floppy.ls ../t3.dos.ls >> ../../test/doTest2.out
+
+# DOS->UNIX
+cd ../t3.dos
+mkdir ../t3.bis
+docDos2Unix ../t3.bis
+
+# compare directories
+cd ../../test
+diff -r ../tmp/t3 ../tmp/t3.bis >> doTest2.out 
+
+#
+if [ $delete_files -eq "yes" ]
+then
+    rm -rf ../tmp/t3*
+fi
+
+#
+# compare test report with tst reference
+#
+diff doTest2.out doTest2.ref
+if [ $? -eq 0 ]
+then echo "doTest2 succeeded. "
+else echo "doTest2 failed. "
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+

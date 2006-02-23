@@ -1,0 +1,86 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: c++-small-main.template,v 1.21 2003/07/18 11:33:53 mpasquat Exp $"
+#%# 
+#%# Template for c++ small main program
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gchiozzi   26/04/95  created
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN h_file(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+/*******************************************************************************
+* PPPPPPPP
+*
+* "@(#) $I>-<d$"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created
+*/
+
+/************************************************************************
+*   NAME
+*   
+* 
+*   SYNOPSIS
+*   
+* 
+*   DESCRIPTION
+*
+*   FILES
+*
+*   ENVIRONMENT
+*
+*   COMMANDS
+*
+*   RETURN VALUES
+*
+*   CAUTIONS 
+*
+*   EXAMPLES
+*
+*   SEE ALSO
+*
+*   BUGS   
+* 
+*------------------------------------------------------------------------
+*/
+
+// Uncomment this if you are using the VLT environment
+// #include "vltPort.h"
+
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+static char *rcsId="@(#) $Id: c++-small-main.template,v 1.21 2003/07/18 11:33:53 mpasquat Exp $"; 
+static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+
+
+int main(int argc, char *argv[])
+{
+
+
+	return 0;
+
+}
+
+
+
+
+
+
+
+

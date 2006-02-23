@@ -1,0 +1,55 @@
+#! /bin/bash
+
+# History
+# --------
+# 2005-05    : mschilli : added to ACS
+# 2005-03-09 : mschilli : created
+# 
+
+
+if [ ! $1 ] || [ x$1 = x-h ] || [ x$1 = x--help ] || [ x$1 = x-help ] ; then
+   echo "Outputs a list of packages/directories being used in jarfiles (may take a while)"
+   echo "Usage: `basename $0`  jarfiles..."
+	exit
+fi
+
+tempfile=/tmp/packageinfo.$RANDOM
+
+rm $tempfile 2>/dev/null
+
+source=$@
+for a in $source ; do
+   b=`unzip -Z1 $a | grep -v "src/" | grep -v "META-INF"` 
+   for c in $b ; do
+
+      ## check if directory (i.e. last char is a slash)	
+      let o=${#c}-1
+		if [ `echo ${c:$o:1}` == "/" ] ; then
+		  ## strip slash off and store
+        echo ${c:0:$o} >> $tempfile
+		else
+		  ## not a directory. check if there's no slash at all
+        ## (i.e. it's a file in the rootfolder of a jar).
+        ## to make this clear, we explicitly store an "." 
+		  if [[ $c != */* ]] ; then 
+		     echo "." >> $tempfile
+		  fi
+		fi
+		
+   done
+done 
+
+cat $tempfile | sort -u
+
+rm $tempfile 2>/dev/null
+
+
+exit
+
+	   isDir=`echo $c | grep -e "/$"`
+		if [ $isDir ] ; then 
+         echo $c >> $tempfile   
+		else
+         echo `dirname $c`/ >> $tempfile		   
+		fi
+

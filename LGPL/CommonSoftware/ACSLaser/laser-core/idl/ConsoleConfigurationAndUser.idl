@@ -1,0 +1,126 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+
+#ifndef _CONSOLEUSER_IDL_
+#define _CONSOLEUSER_IDL_
+
+#include <acscomponent.idl>
+#include <AlarmDefinitions.idl>
+#include <LaserExceptions.idl>
+
+#pragma prefix "alma"
+
+module alarmsystem
+{
+
+	interface ConsoleUser;
+	
+	interface ConsoleConfiguration {
+	
+		typedef sequence<octet> octet_sequence;
+
+		string getName();
+		void setName(in string newName);
+		octet_sequence getBehaviour();
+		void setBehaviour(in octet_sequence newBehaviour);
+		octet_sequence getSelection();
+		void setSelection(in octet_sequence newSelection);
+		octet_sequence getMasked();
+		void setMasked(in octet_sequence newMasked);
+		octet_sequence getInhibited();
+		void setInhibited(in octet_sequence newInhibited);
+		octet_sequence getHighlighted();
+		void setHighlighted(in octet_sequence newHighlighted);
+		octet_sequence getAutoHighlighted();
+		void setAutoHighlighted(in octet_sequence newAutoHighlighted);
+		ConsoleUser getUser(); /* ?? */
+		void setUser(in ConsoleUser newUser); /* ?? */
+		octet_sequence getNewIndicator();
+		void setNewIndicator(in octet_sequence newNewIndicator);
+		boolean getActiveListFont();
+		void setActiveListFont(in boolean isActiveListFont);
+		ConsoleUser getRemoteUser();
+		void setRemoteUser(in string name);
+		long getConfigurationId();
+		void setConfigurationId(in long newConfigurationId);
+		boolean isDefault();
+		octet_sequence getAutoKlaxoned();
+		void setAutoKlaxoned(in octet_sequence newAutoKlaxoned);
+		octet_sequence getAcknowledged();
+		void setAcknowledged(in octet_sequence newAcknowledged);
+	};
+	
+	typedef sequence<ConsoleConfiguration> ConsoleConfigurationSequence;
+	
+	
+	interface ConsoleConfigurationService {
+	
+		ConsoleConfiguration create(in string name);
+	  	ConsoleConfigurationSequence findAll();
+	    	ConsoleConfigurationSequence findByName(in string name);
+		ConsoleConfiguration findByNameAndUserId(in string name, in string userId);
+	    ConsoleConfiguration findByPrimaryKey(in long primaryKeyId);
+	};	
+	
+	
+	
+	interface ConsoleUser {
+	
+		string getPassword();
+		void setDefaultPrinter(in string newDefaultPrinter);
+		string getDefaultPrinter();
+		void setPassword(in string newPassword);
+
+
+		/*ConsoleConfigurationSequence getConfigurations();
+		void setConfigurations(in ConsoleConfigurationSequence newConfigurations);/* ?? */
+
+		/*ConsoleConfiguration getRemoteDefaultConfiguration();*/
+		void setRemoteDefaultConfiguration(in string name);
+
+
+		/*ConsoleConfigurationSequence getRemoteConfigurations(); /* ?? */
+/*		ConsoleConfiguration createRemoteConfiguration(in string name);*/
+		void removeRemoteConfiguration(in string name);
+/*		ConsoleConfiguration getDefaultConfiguration(); /* ?? */
+/*		void setDefaultConfiguration(in ConsoleConfiguration newDefaultConfiguration); /* ?? */
+/*		ConsoleConfiguration getRemoteConfiguration(in string name);
+*/
+		string getUserId();
+		void setUserId(in string newUserId);
+		boolean isDefaultConfiguration(in string name);
+	};
+	
+	typedef sequence<ConsoleUser> ConsoleUserSequence;
+
+
+	interface ConsoleUserService {
+	
+	/*	ConsoleUser create(in string name, in string password);
+		ConsoleUserSequence findAll();
+	  	ConsoleUser findByName(in string name);
+		ConsoleUser findByPrimaryKey(in string primaryKeyId);
+	*/};
+
+};
+
+#endif

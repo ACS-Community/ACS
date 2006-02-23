@@ -1,0 +1,74 @@
+This is Info file cpp.info, produced by Makeinfo-1.54 from the input
+file cpp.texi.
+
+   This file documents the GNU C Preprocessor.
+
+   Copyright 1987, 1989, 1991, 1992, 1993 Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the entire resulting derived work is distributed under the terms
+of a permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions.
+
+
+Indirect:
+cpp.info-1: 778
+cpp.info-2: 49402
+cpp.info-3: 88162
+
+Tag Table:
+(Indirect)
+Node: Top778
+Node: Global Actions3339
+Node: Commands5843
+Node: Header Files7487
+Node: Header Uses8139
+Node: Include Syntax9631
+Node: Include Operation12761
+Node: Once-Only14617
+Node: Inheritance17040
+Node: Macros19600
+Node: Simple Macros20514
+Node: Argument Macros23495
+Node: Predefined29291
+Node: Standard Predefined29721
+Node: Nonstandard Predefined35176
+Node: Stringification38752
+Node: Concatenation41678
+Node: Undefining44951
+Node: Redefining45984
+Node: Macro Pitfalls47284
+Node: Misnesting48388
+Node: Macro Parentheses49402
+Node: Swallow Semicolon51279
+Node: Side Effects53179
+Node: Self-Reference54877
+Node: Argument Prescan57153
+Node: Cascaded Macros62155
+Node: Newlines in Args63300
+Node: Conditionals64645
+Node: Conditional Uses65991
+Node: Conditional Syntax67412
+Node: #if Command67990
+Node: #else Command70262
+Node: #elif Command70917
+Node: Deleted Code72279
+Node: Conditionals-Macros73340
+Node: Assertions77018
+Node: #error Command81248
+Node: Combining Sources82676
+Node: Other Commands85572
+Node: Output87007
+Node: Invocation88162
+Node: Concept Index99783
+Node: Index102581
+
+End Tag Table

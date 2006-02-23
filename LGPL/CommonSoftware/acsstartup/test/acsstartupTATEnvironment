@@ -1,0 +1,15 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: acsstartupTATEnvironment,v 1.2 2006/01/25 22:20:26 dfugate Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set env(ACS_STARTUP_TIMEOUT_MULTIPLIER) 1
+set env(ACS_LOG_STDOUT) 4
+
+
+#
+# ___oOo___

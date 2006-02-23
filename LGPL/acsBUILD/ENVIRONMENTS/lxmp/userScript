@@ -1,0 +1,61 @@
+#! VxWorks
+#******************************************************************************
+# ALMA project
+#
+# "@(#) $Id: userScript,v 1.122 2003/01/28 16:36:57 vltsccm Exp $"
+#
+# Boot script for Test Interferometer LCUs
+#
+#------------------------------------------------------------------------------
+# See userScript(5) for a detailed explanation on how to fill this file
+#------------------------------------------------------------------------------
+tooSetLCUTime()
+tooBootTime("update")
+
+#
+# The ip addresses and port numbers have to be changed depending on the 
+# local configuration
+#
+lcubootAutoExec 1,"lqsAddEnvTbl","wacc","blacktail","146.88.1.123",3000
+routeAdd "146.88.0.0","146.88.2.167"
+ 
+LDString=calloc(1,4000)
+sprintf(LDString,"LD_LIBRARY_PATH=%s/vw/bin/PPC604:%s/vw/bin/PPC604",getenv("INTROOT"),getenv("ACSROOT"))
+putenv LDString
+
+lcubootAutoLoad 1,"libACE.so"
+lcubootAutoLoad 1,"libTAO.so"
+lcubootAutoLoad 1,"libTAO_PortableServer.so"
+lcubootAutoLoad 1,"libTAO_IORTable.so"
+lcubootAutoLoad 1,"libTAO_CosProperty.so"
+lcubootAutoLoad 1,"libTAO_Svc_Utils.so"
+lcubootAutoLoad 1,"libTAO_CosNaming.so"
+lcubootAutoLoad 1,"libTAO_DynamicAny.so"
+lcubootAutoLoad 1,"libTAO_CosTrading.so"
+lcubootAutoLoad 1,"libTAO_DsLogAdmin.so"
+lcubootAutoLoad 1,"libTAO_CosNotification.so"
+lcubootAutoLoad 1,"libTAO_IFR_Client.so"
+lcubootAutoLoad 1,"acsutil"
+lcubootAutoLoad 1,"loggingService"
+lcubootAutoLoad 1,"cdb"
+lcubootAutoLoad 1,"recovery"
+lcubootAutoLoad 1,"Activate"
+#lcubootAutoLoad 1,"acserr"
+#lcubootAutoLoad 1,"errorServer"
+
+# TICS modules
+lcubootAutoLoad 1,"dePIO",0
+lcubootAutoLoad 1,"ticsAMBtp816",0
+lcubootAutoLoad 1,"ticsAMBCAN",0
+
+lcubootAutoCdBoot 1,"dePIO.boot"
+< dePIO.boot
+lcubootAutoCdBoot 1,"ticsAMBtp816.boot"
+< ticsAMBtp816.boot
+lcubootAutoCdBoot 1,"ticsAMBCAN.boot"
+< ticsAMBCAN.boot
+
+putenv "ACS_LOG_STDOUT=0"
+putenv "ACS_LOG_FILE=logFile"
+
+# ___oOo___

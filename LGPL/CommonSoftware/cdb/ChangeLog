@@ -1,0 +1,352 @@
+Thu Jul 10 08:38:00 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/cdbField.cpp,v 1.25 (Get(U)LongLong): fixed that it
+	converts value if it is not of (U)LongLong type
+
+	* ws/include/cdbField.h,v 1.26 (Field
+): added getValue(ULongLong) and getValue(LongLong)
+
+Wed Jul  9 08:34:31 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+ported to gcc 3.2
+	
+	* ws/src/cdb.cpp,v 1.25 (unbind): implementation changed
+	* ws/src/cdbField.cpp,v 1.24 : 
+	* ws/include/cdbIMDB.h,v 1.24 (Table): 
+	* ws/include/cdb.h,v 1.24 (TableStorage): 
+	* ws/include/cdbField.h,v 1.25: 
+	* ws/include/cdbDAOImpl.h,v 1.24 (CXMLTreeNode): 
+	* ws/include/cdbDALaccess.h,v 1.27 (Table): 
+	added std::
+
+Tue Jul  8 17:42:11 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/src/com/cosylab/cdb/jdal/Server.java,v 1.4: 
+	There was a bug here regictering in Name Service. Kind was " "
+	instead of ""
+
+Mon Jul  7 19:04:15 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/src/Makefile,v 1.31 (SCRIPTS): Added cdbjDALClearCache script
+
+Fri Jul  4 19:05:33 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/src/com/cosylab/cdb/jdal/Server.java,v 1.3: 
+        Here I have to catch Exception and not RuntimeException,
+        because otherwise org.omg.CORBA.ORBPackage.InvalidName
+        is not catched and jDAL gives up.
+        This situation occurrs when the NameSetvice initial reference
+        is not set at all with the ORBInitRef.NameService property
+          DAL root is: /alma/ACS-2.1/acsdata/config/defaultCDB/CDB/
+          ERROR: org.omg.CORBA.ORBPackage.InvalidName
+          org.omg.CORBA.ORBPackage.InvalidName
+            at org.jacorb.orb.ORB.resolve_initial_references(Unknown Source)
+            at com.cosylab.cdb.jdal.Server.main(Server.java:154)
+
+
+Thu May 15 14:12:49 2003  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/idl/cdbjDAL.idl: 
+	* ws/idl/cdbDAL.idl,v 1.29: 
+	* ws/src/Makefile:
+	TODO: 
+	Tried to take jDAL interface out in separate IDL file.
+	There is a problme with TAO IDL compiler and 
+        this does not work (could be fixed with TAO 1.3.1)
+	Everything is ready, but cdbjDAL.idl is not compiled.
+	
+	* ws/idl/cdbjDAL.idl: 
+	* ws/idl/cdbDAL.idl,v 1.29: 
+        DAO extends ACS:OffShoot interface
+        Added include of acsutil.idl
+
+Tue May  6 11:42:43 2003  Bogdan Jeram  <bjeram@te37>
+
+	* ws/src/cdb.cpp,v 1.24: porting to Tornado 2.2 ACE+TAO x.3:
+	- native namespaces: prefixed in cdb.cpp getDatabase and other two
+	function with cdb:: (namespace) it didn't work be4
+	- cdb.cpp template static member instantiation
+	- LCU/src/Makefile: added CDBS
+
+Thu Apr 17 12:23:37 2003    <dvitas@csl02.cosylab.com>
+
+	* Fixed TAT test 'pure virtual call' problem
+
+Thu Apr 17 09:28:17 2003    <dvitas@csl02.cosylab.com>
+
+	* Replaced list_elements() with list_nodes()
+
+Thu Apr 14 09:26:10 2003    <dvitas@csl02.cosylab.com>
+
+	* Fixed JNDI browsing and packages rearangement
+
+Wed Apr  2 12:18:20 2003    <dvitas@csl02.cosylab.com>
+
+	* Added clear cache mechanism to DAL
+
+Tue Mar 11 17:19:32 2003  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/test/Makefile,v 1.24: Removed baci library.
+	(all): Create ref directory if does not exist (because taken from CVS)
+
+Tue Jan 28 16:31:02 2003  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/Makefile (all): Creates lib/endorsed if does not exist
+
+Thu Dec  5 16:21:41 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* lcu/test/Makefile (COMMON_SOURCES): 
+	Patched Makefile to allow tat test on Linux.
+
+	* lcu/src/Makefile (cdb_OBJECTS_common): 
+	* ws/src/cdb.cpp: 
+	(TableStorage): 
+	* ws/test/Makefile ($(PROG)_LIBS): 
+        Commented out VLT CCS files.
+	CCS batabase not used any more and not linked any more.
+	Files not deleted if we will want to use them in the future.
+	
+	* ws/src/cdbRead: 
+	* ws/src/Makefile (SCRIPTS): 
+	Added cdbRead script
+
+Thu Dec 05 16:19:02 2002 <gchiozzi@te13.hq.eso.org>  cdb version: 1.20 
+Fri Nov 22 14:09:45 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/src/cdbjDAL:  added more cmd line arguments (8)
+
+	* ws/src/cdbjDALShutdown: removed -OAport option
+
+Tue Nov 19 13:44:01 2002  Bogdan Jeram  <bjeram@te37>
+
+	* lcu: made some changes that cdb compiles for VxWorks (namespaces)
+
+Mon Nov 18 16:30:14 2002 <bjeram@te13.hq.eso.org>  cdb version: 1.19 
+Wed Nov 13 15:48:19 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/cdbjDAL: added loop throug all arguments and check for -root and -OAport options
+
+Wed Nov 13 15:10:24 2002 <bjeram@te13.hq.eso.org>  cdb version: 1.18 
+Mon Nov 11 16:49:09 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/cdbjDAL: added support for ACS_CDB and defualt root
+
+Mon Nov 11 16:32:42 2002 <bjeram@te13.hq.eso.org>  cdb version: 1.17 
+Wed Nov  6 08:33:34 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* Merged cdb 1.15.1.23 into main trunk
+
+Tue Nov 05 17:00:28 2002 <dvitas@te13.hq.eso.org>  cdb version: 1.15.1.23 
+Tue Nov  5 14:41:49 2002  Dragan Vitas  <dvitas@dina.ijs.si>
+
+	* Added possibility to query 'root' data for a DAO using empty
+	 fieldName
+
+Tue Nov 05 11:45:01 2002 <dvitas@te13.hq.eso.org>  cdb version: 1.15.1.22 
+Tue Nov  5 10:26:30 2002  Dragan Vitas  <dvitas@dina.ijs.si>
+
+	* Changed JAVA and C++ code to enable tables in XML
+
+Tue Nov 05 08:13:39 2002 <dvitas@te13.hq.eso.org>  cdb version: 1.15.1.21 
+Fri Nov  1 13:34:30 2002  Dragan Vitas  <dvitas@dina.ijs.si>
+
+	* ws/src/cdbDALaccess.cpp (GetField): changed code for cache
+	handling and add error printout
+	* ws/src/cdbDAOImpl.cpp (get_field): removed error printout
+
+Fri Nov 01 13:07:20 2002 <dvitas@te13.hq.eso.org>  cdb version: 1.15.1.20 
+Tue Oct 29 13:20:54 2002 <dfugate@te13.hq.eso.org>  cdb version: 1.15.1.19 
+Fri Oct 25 14:31:14 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/cdbField.cpp (GetLong): added Convert
+
+Fri Oct 25 14:26:50 2002 <bjeram@te13.hq.eso.org>  cdb version: 1.15.1.18 
+Thu Oct 24 14:16:45 2002 <bjeram@te13.hq.eso.org>  cdb version: 1.15.1.17 
+Wed Oct 16 09:31:44 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/Makefile (CDB_SCHEMAS): Modified for new CDB to install
+	schema files. 
+
+	* ws/src/CDBImpl/DALfsServer.java: 
+	Changed name of CDB root directory from DALdata to CDB.
+	This is what is not supported by the Makefile.
+
+Wed Oct 16 11:28:55 2002 <gchiozzi@te13.hq.eso.org>  cdb version: 1.15.1.16 
+Mon Oct 14 22:18:16 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/CDBImpl/DALfsServer.java: 
+	Missing 2 import statements:
+	  import java.util.LinkedHashMap;
+          import java.util.Iterator;
+
+
+Tue Oct 15 00:16:56 2002 <gchiozzi@te13.hq.eso.org>  cdb version: 1.15.1.15 
+Mon Oct 14 13:37:33 2002 <msekoran@te13.hq.eso.org>  cdb version: 1.15.1.14 
+
+        * added search path for schemas, -o <iorFile> and shutdown in jDAL 
+
+Fri Oct  4 16:06:08 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/cdbjDAL: Added /bin/ksh to select startup shell
+
+Fri Oct 04 18:05:21 2002 <gchiozzi@te13.hq.eso.org>  cdb version: 1.15.1.13 
+Wed Oct 02 10:47:27 2002 <gchiozzi@te13.hq.eso.org>  cdb version: 1.15.1.12 
+Tue Oct  1 12:27:21 2002    <dvitas@csl02.cosylab.com>
+
+	*  ws/config/DALdata/MACI/COBs/LAMP1/LAMP1.xml :
+	fixed copy/paste error in '_Code' field
+	* ws/config/DALdata/alma/LAMP1/LAMP1.xml :
+	added 'units' field
+
+Tue Oct 01 10:49:02 2002 <dvitas@te13.hq.eso.org>  cdb version: 1.15.1.11 
+Mon Sep 30 13:47:11 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/Makefile: 
+	Added  Java DAL code (moved here from config.
+	(SCRIPTS): Added cdbjDAL script.
+
+	* ws/test/Makefile (SCRIPTS_L): added cdbTestJClient, removed start
+
+Mon Sep 30 14:05:00 2002 <gchiozzi@te13.hq.eso.org>  cdb version: 1.15.1.10 
+Thu Sep 26 16:03:50 2002    <dragan@csl02.cosylab.com>
+
+	* ws/test/TestDriver.grep :
+	added line for removing root directory from jDAL printout
+	* ws/test/startDALserver.sh :
+	added shell execution of startjDAL script because cmm remove x
+	permission from it
+	
+Thu Sep 26 15:52:00 2002 <dvitas@te13.hq.eso.org>  cdb version: 1.15.1.9 
+Thu Sep 26 09:40:21 2002    <dragan@csl02.ijs.si>
+
+	Added tat test and simple JAVA client 
+
+Mon Sep 23 16:22:56 2002 <dvitas@te13.hq.eso.org>  cdb version: 1.15.1.8 
+Tue Sep 17 18:16:24 2002    <dragan@csl02.ijs.si>
+
+	Minor fixes in code and XML data 
+
+Tue Sep 17 16:42:23 2002 <msekoran@te13.hq.eso.org>  cdb version: 1.15.1.7 
+Tue Sep 17 13:09:05 2002    <dragan@csl02.ijs.si>
+
+	New XMLs with schemas.
+	New Java DAL server (jDAL) in temp. in config/ directory
+	Implemented Abstract Factory pattern for DB access.
+
+Fri Sep 13 15:47:20 2002 <msekoran@te13.hq.eso.org>  cdb version: 1.15.1.6 
+Mon Sep  2 11:13:19 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/src/cdbDALaccess.cpp (DALaccess): added new constructor which
+	takes additionl third parameter: CORBA::ORB_ptr
+	(~DALaccess): added orb destroy 
+
+	* removed expat library (it is in cmm module exapt)
+
+Mon Sep 02 11:12:19 2002 <bjeram@te13.hq.eso.org>  cdb version: 1.15.1.5 
+Wed Aug  7 09:45:15 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/idl/cdbDAL.idl (CDB): renamed interface DALfs to DAL
+
+	* ported to LCU
+
+	* changed #include<DALfs*.h> to #include<DAL*.h>
+
+Wed Aug 07 09:20:15 2002 <bjeram@te13.hq.eso.org>  cdb version: 1.15.1.4 
+Wed Jul 24 09:24:50 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/config/DALdata/*:
+	data.xml renamed.
+
+	* ws/src/Makefile:
+	* ws.idl/cdbDALfs.idl:
+	cdbDALfs.idl renamed to cdbDAL.idl.
+
+	New version of prototype, working LAMP1 in some DOs.
+
+Tue Jul 23 14:52:33 2002 <msekoran@te13.hq.eso.org>  cdb version: 1.15.1.3 
+Fri Jul 12 11:19:17 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/src/Makefile: Added clean_dist target
+
+	* ws/config/DALdata/MACI/Activators/Activator/data.xml: 
+	Empy string instead of comment for MAnagerReference.
+
+	* ws/src/Makefile: Added cdbDAOImpl.h in INCLUDES list
+
+Fri Jul 12 10:57:04 2002 <gchiozzi@te13.hq.eso.org>  cdb version: 1.15.1.2 
+Tue Jul  9 11:39:25 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	XML CDB prototype.
+
+Tue Feb  5 14:18:49 2002  ALMA Project c/o Robert Karban  <GCH almamgr@te4.hq.eso.org>
+
+	* 
+
+	* ws/src/*.cpp: 
+	* ws/include/*: 
+	Changed #include <> with #include "" for local files.
+        This is neede by the Makefile to properly handle dependencies.
+	* ws/src/cdbField.cpp: 
+	* ws/include/cdbField.i: 
+	Moved BIG inline methods into code.
+	Purify gets confused and the code cannot be purified.
+
+Tue Feb 05 14:15:31 2002 <almamgr@te13.hq.eso.org>  cdb version: 1.15 
+Mon Jan 14 21:29:21 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* src/cdbCCs.cpp (SetField):
+	Added implementation handling arrays.
+
+	* include/cdb.h:
+	Added bool IsInitialized() method to cdb::Table.
+
+Sat Jan 05 21:28:00 2002 <msekoran@te13.hq.eso.org>  cdb version: 1.14 
+Fri Oct 19 08:31:01 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src/cdbCCS.cpp (SetField): 
+	Fixed bug handling Long - INT32 in CCS::SetField
+
+Tue Sep 18 10:05:24 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* src/cdbCCS.cpp: add default in switch statmen in GetField function
+
+Thu Jul 12 09:26:43 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* src/cdbINIReader.cpp: 
+	* src/cdbIMDB.cpp (GetRecordState): removed warnings for unused
+	parameters 
+
+	* src/cdbField.cpp: 
+	* include/cdbField.h: modified namespace for VxWorks
+	* lcu/src/Makefile: updated to cdb 1.10, no debug
+
+Thu Jul  5 16:55:39 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* removed cdbGuard
+	* std::string replaced with ACE_CString
+
+Thu Jul 05 13:56:32 2001 <msekoran@te13.hq.eso.org>  cdb version: 1.10 
+Tue Jun 26 10:42:51 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* lcu/src/cdbCCS.cpp: removed unused arg warnings
+
+	* lcu/src/Makefile: updated to cdb 1.8, added source cdbGuard,
+	removed reference to VxWorks compiler
+
+Tue Jun 26 10:40:42 2001 <bgustafs@te13.hq.eso.org>  cdb version: 1.9 
+Thu Dec  7 12:03:49 2000  rkarban  <almamgr@walmaacs.as.arizona.edu>
+
+	* src/cdbCCS.cpp: remove POSIX_SOURCE macro define to allow
+	compilation on SUN
+
+Fri Nov 17 12:36:23 2000  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* merging version from LJ with 1.4
+
+	* added cdb prefix to files, changed definition of TRUE/FALSE
+
+Mon Oct 16 10:08:17 2000 <almamgr@te13.hq.eso.org>  cdb version: 1.4 
+Mon Sep 18 15:54:32 2000  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* src/CCS.cpp: Fixed error handling
+
+"@(#) $Id: ChangeLog,v 1.34 2003/07/10 15:23:16 bjeram Exp $"

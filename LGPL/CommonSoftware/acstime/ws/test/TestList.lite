@@ -1,0 +1,22 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TestList.lite,v 1.6 2004/09/09 23:10:43 dfugate Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# oat 2002-12-17 added PROLOGUE / EPILOGUE
+# david 2002-10-04 commented out ENVIRONMENT
+# almamgr 2000-09-13 created
+
+SOURCE acstimeTATEnvironment
+PROLOGUE acstimeTATPrologue
+1 testClock    "@SLEEP 10" "acsutilTATTestRunner testClock"
+2 testDuration "@SLEEP 10" "acsutilTATTestRunner testDuration"
+3 testEpoch    "@SLEEP 10" "acsutilTATTestRunner testEpoch"
+4 testProp     "@SLEEP 10" "acsutilTATTestRunner testProp"
+#5 testTimeout  "@SLEEP 10" "testTimeout"
+6 testTimeUtil "@SLEEP 10" "acsutilTATTestRunner testTimeUtil"
+EPILOGUE acsutilTATEpilogue

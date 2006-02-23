@@ -1,0 +1,92 @@
+#ifndef _CALENDAR_IDL_
+#define _CALENDAR_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acsexmplCalendar.midl,v 1.1 2005/04/11 13:40:10 gchiozzi Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* gchiozzi 2003-05-19 Put back ACS_ENUM
+*/
+
+#include <baci.idl>
+#include <enumpropMACRO.idl>
+
+#pragma prefix "alma"
+
+/** @file acsexmplCalendar.idl
+ *  Calendars's IDL File
+ */
+
+module acsexmplCalendar 
+{
+
+    /// ACS_ENUM(...) must also be implemented for compatibility with abeans
+    /// This creates two new enums: RO... and RW...
+
+    /// Days enum definition.
+    enum DaysEnum { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday };
+    ACS_ENUM(DaysEnum);
+
+    
+    /// Month enum definition.
+    enum MonthEnum { January, February, March, April, May, June, July, August, September, October, November, December };
+    ACS_ENUM(MonthEnum);
+
+    
+    /// State enum definition.
+    enum StateEnum { Late, UpToDate };
+    ACS_ENUM(StateEnum);
+    
+    /** @interface Calendar
+     *  This interface belongs to the example device "Calendar". It represents
+     *  a simple Calendar and provides no methods. Mainly this example is used
+     *  to show developers how enumerations and pattern BACI properties are 
+     *  available in ACS.
+     */
+    interface Calendar : ACS::CharacteristicComponent
+	{
+	/** 
+	 * Day of the week
+	 */
+	readonly attribute RWDaysEnum day;
+
+	/** 
+	 * Month of the year
+	 */
+	readonly attribute RWMonthEnum month;
+
+	/** 
+	 * The year in the form of a RWpattern.
+	 */
+	readonly attribute ACS::RWpattern yearAttributes;
+
+	/** 
+	 * State of the Calendar interface.
+	 */
+	readonly attribute ROStateEnum state;
+	};  
+};
+
+#endif

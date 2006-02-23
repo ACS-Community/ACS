@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeCommon" type="10" _prefix="alma">
+	<ErrorCode name="FileNotFound" shortDescription="File couldn't
+	be found" description="File couldn't be found">
+	<Member name="FileName" type="string" description="File name"/>
+	</ErrorCode>
+	<ErrorCode name="OutOfBounds" shortDescription="Out of bounds" description="Out of bounds"/>
+	<ErrorCode name="IOError" shortDescription="Input Output Error" description="Input Output Error"/>
+	<ErrorCode name="Unknown" shortDescription="Unknown Error" description="Unknown Error"/>
+	<ErrorCode name="NoResources" shortDescription="No Resources" description="No Resources"/>
+	<ErrorCode name="MemoryFault" shortDescription="Memory Problem" description="Memory Problem"/>
+	<ErrorCode name="CouldntCreateObject" shortDescription="Object couldn't be created" description="Object couldn't be created"/>
+	<ErrorCode name="CouldntCreateThread" shortDescription="Thread couldn't be created" description="Thread couldn't be created"/>
+	<ErrorCode name="CouldntAccessComponent" shortDescription="Component couldn't be accessed" description="Component couldn't be accessed"/>
+	<ErrorCode name="CouldntAccessProperty" shortDescription="Property couldn't be accessed" description="Property couldn't be accessed"/>
+	<ErrorCode name="CouldntPerformAction" shortDescription="Action couldn't be performed" description="Action couldn't be performed"/>
+	<ErrorCode name="TypeNotFound" shortDescription="Type Not Found" description="Type Not Found"/>
+	<ErrorCode name="TypeNotSupported" shortDescription="Type Not Supported" description="Type Not Supported"/>
+	<ErrorCode name="CORBAProblem" shortDescription="CORBA Problem" description="CORBA Problem"/>
+	<ErrorCode name="IllegalStateEvent" shortDescription="illegal event sent to a state machine" description="illegal event sent to a state machine"/>
+	<ErrorCode name="NotImplemented" 
+                   shortDescription="Method or feature not implemented" 
+                   description="The specified feature is not
+		   implemented. If none is specified, the whole method
+		   is not implemented.">
+	<Member name="Feature" type="string" 
+ 	        description="Feature not implemented. Whole method is not specified"/>
+	</ErrorCode>
+</Type>

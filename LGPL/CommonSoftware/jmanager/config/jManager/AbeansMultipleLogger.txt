@@ -1,0 +1,20 @@
+# Add Policy-HandlerFactory pairs. 
+# AbeandMultipleLogger loades them at the beginning.
+#
+# Following pair is an example used by tests, could be removed.
+# logging.aml.class0=abeans.core.defaults.ConsoleLoggingPolicy
+# logging.aml.handler0=abeans.test.AbeansLoggerFactory
+# 
+# Uncomment and edit following lines. Maximum index is not limiteed, 
+# but indices must be sequential.
+#
+# logging.aml.class0=
+# logging.aml.handler0=
+# logging.aml.class1=
+# logging.aml.handler1=
+# 
+# etc.
+
+# install ACS logging factory
+logging.aml.class0=abeans.pluggable.acs.logging.LoggingLevelPolicy
+logging.aml.handler0=abeans.pluggable.acs.logging.LoggingHandlerFactory

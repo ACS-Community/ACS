@@ -1,0 +1,15 @@
+1 - make
+1 - checking
+1 - config.status
+1 - using ABI="standard"
+1 -       CC="gcc"
+1 -       CFLAGS="-pipe -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DACE_HAS_AIO_CALLS   -fno-exceptions -fcheck-new -Wall -fPIC -g -DDEBUG -O -DCCS_LIGHT                                "
+1 -       CPPFLAGS=""
+1 -       CXX="c++"
+1 -       CXXFLAGS="-pipe -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DACE_HAS_AIO_CALLS   -fno-exceptions -fcheck-new -Wall -fPIC -g -DDEBUG -O -DCCS_LIGHT                                "
+1 -       MPN_PATH=" x86/p6/p3mmx x86/p6/mmx x86/p6 x86 generic"
+1 - configure: creating libtool
+1 - appending configuration tag "CXX" to libtool
+1 - creating config.m4
+1 - configure: creating ./config.status
+1 -       CXX=

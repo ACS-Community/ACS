@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<project name="XmlIdl" default="buildGeneratedJars" basedir="..">
+
+  <property name="project.lib.dir" value="${basedir}/lib"/>
+  <property name="project.idl.dir" value="${basedir}/idl"/>
+  <property name="project.src.dir" value="${basedir}/src"/>
+
+  <property name="build.home" value="${basedir}/antbuild"/>
+  <property name="build.generated.dir" value="${build.home}/generated"/>
+  <property name="build.generated.src.dir" value="${build.generated.dir}/src"/>
+  <property name="build.generated.bin.dir" value="${build.generated.dir}/bin"/>
+  <property name="build.generated.bin.debug.dir" value="${build.generated.dir}/bindebug"/>
+
+  <property name="idlfile" value="${project.idl.dir}/xmltest.idl"/>
+  <property name="jarname" value="xmltest"/>
+  <property name="idljar" value="${project.lib.dir}/${jarname}.jar"/>
+  <property name="idljarJ" value="${project.lib.dir}/${jarname}J.jar"/>
+  <property name="idljarJ.debug" value="${project.lib.dir}/${jarname}JDebug.jar"/>
+
+
+
+  <!-- =================================================
+      Basic targets
+     ================================================= -->
+
+  <target name="init">
+
+    <tstamp/>
+
+    <fail unless="INTROOT.dir">
+      You must define the INTROOT.dir property as the path to your INTROOT directory!!
+      For example, type  ant -DINTROOT.dir=Z:\introot
+    </fail> 
+         
+  </target>
+
+
+  
+  <!-- ============================================
+      Code generation for xmltest.idl
+    ============================================ -->
+
+  <target name="compileIDL" 
+          description="generates transparent-xml classes from IDL">
+
+    <fail unless="idlfile">
+      You must specify the IDL file by setting the property 'idlfile', like in 
+      ant -Didlfile=/xx/yy/Hugo.idl compileIDL
+    </fail> 
+	
+	<delete dir="${build.generated.src.dir}"/>
+    <mkdir dir="${build.generated.src.dir}"/>
+    
+    <!-- don't know why it doesn't work without VM fork -->
+    <java classname="alma.tools.idlgen.XmlIdlCompiler" fork="yes">
+      <classpath>
+        <pathelement location="${project.lib.dir}/xmlidl.jar"/>
+        <pathelement location="${project.lib.dir}/openorb-1.3.0.jar"/>
+        <pathelement location="${project.lib.dir}/openorb_tools-1.3.0.jar"/>
+        <pathelement location="${project.lib.dir}/logkit.jar"/>
+        <pathelement location="${project.lib.dir}/avalon-framework.jar"/>
+      </classpath>
+      <jvmarg value="-Dopenorb.config=${basedir}/config/OpenORB.xml"/>
+      <arg line="-d ${build.generated.src.dir}  -I ${project.idl.dir} -I ${INTROOT.dir}/idl  -notie  ${idlfile}"/>
+    </java>
+  </target>
+
+
+
+  <!-- ============================================
+      Java compile of the generated sources
+    ============================================ -->
+
+  <path id="generated.path">
+    <pathelement location="${project.lib.dir}/openorb-1.3.0.jar"/>
+    <pathelement location="${project.lib.dir}/openorb_tools-1.3.0.jar"/>
+    <pathelement location="${INTROOT.dir}/lib/xmlentity.jar"/>
+    <pathelement location="${project.lib.dir}/entityclasses.jar"/>
+    <pathelement location="${idljar}"/>
+  </path>
+
+
+  <target name="compileGeneratedSrc" depends="compileIDL">
+          
+	<delete dir="${build.generated.bin.dir}"/>
+    <mkdir dir="${build.generated.bin.dir}"/>
+    
+    <javac srcdir="${build.generated.src.dir}" destdir="${build.generated.bin.dir}" includes="**/*.java"
+      debug="off" deprecation="on" optimize="on">
+      <classpath refid="generated.path"/>
+    </javac>
+    
+  </target>
+
+
+  <target name="compileGeneratedSrcDebug" depends="compileIDL">
+          
+	<delete dir="${build.generated.bin.debug.dir}"/>
+    <mkdir dir="${build.generated.bin.debug.dir}"/>
+    
+    <javac srcdir="${build.generated.src.dir}" 
+           destdir="${build.generated.bin.debug.dir}" 
+           includes="**/*.java"
+           debug="on" 
+           deprecation="on" 
+           optimize="off">
+      <classpath refid="generated.path"/>
+    </javac>
+    
+  </target>
+
+
+  <target name="buildGeneratedJars"
+          depends="compileGeneratedSrc,compileGeneratedSrcDebug">
+          
+    <fail unless="idljarJ">
+      You must specify the name of the Jarfile to be generated.
+    </fail> 
+	
+    <jar jarfile="${idljarJ}" 
+         basedir="${build.generated.bin.dir}"/>
+
+    <jar jarfile="${idljarJ.debug}">
+      <fileset dir="${build.generated.bin.debug.dir}"/>
+      <fileset dir="${build.generated.src.dir}"/>
+    </jar> 
+    
+	<delete dir="${build.generated.dir}"/>
+
+  </target>
+
+
+</project>

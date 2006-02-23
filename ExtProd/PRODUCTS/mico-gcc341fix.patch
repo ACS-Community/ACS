@@ -1,0 +1,11 @@
+--- mico.org/mico/admin/mkdepend.cc	2003-10-13 11:49:22.000000000 +0200
++++ micoFIXED/mico/admin/mkdepend.cc	2004-09-01 10:40:15.000000000 +0200
+@@ -106,7 +106,7 @@
+         }
+         deps.insert (f);
+ 
+-        while (!inp.getline (rawline, sizeof(rawline)).eof()) {
++        while (inp.getline (rawline, sizeof(rawline)).good()) {
+             string line = rawline;
+ 	    bool real_path = false;
+             if (line.length() == 0 || line[0] != '#')

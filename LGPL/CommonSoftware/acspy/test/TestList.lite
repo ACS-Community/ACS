@@ -1,0 +1,57 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.21 2006/02/17 06:48:09 sharring Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave 2003-08-13 converted to eccs test driver
+# 
+SOURCE acspyTATEnvironment
+PROLOGUE acspyTATPrologue
+#1   ClientMin           "acsutilTATTestRunner acspyTestClientMinimum"
+#2   ACSComponent        "acsutilTATTestRunner acspyTestACSComponent"
+#3   ACSCorba            "acsutilTATTestRunner acspyTestAcsCORBA"
+#4   Logging             "acsutilTATTestRunner acspyTestLogging"
+#6   CDB                 "acsutilTATTestRunner acspyTestCDB"
+#7   Callbacks           "acsutilTATTestRunner acspyTestCallbacks"
+#8   ErrorSystem         "acsutilTATTestRunner acspyTestError"
+#9   Container           "acsutilTATTestRunner acsStartContainer -py pyContainer" "@SLEEP 10" "acsutilTATTestRunner acspyTestContainer" "@SLEEP 20" "acsutilTATTestRunner acsStopContainer pyContainer" "@SLEEP 10"
+#10  ComponentLifeCycle  "acsutilTATTestRunner acspyTestComponentLifecycle"
+#11  CS                  "acsutilTATTestRunner acspyTestContainerServices"
+#13  NameTree            "acsutilTATTestRunner acspyTestNameTree"
+#15  TimeHelper          "acsutilTATTestRunner acspyTestTimehelper"
+#16  EpochHelper         "acsutilTATTestRunner acspyTestEpochHelper"
+#17  DurationHelper      "acsutilTATTestRunner acspyTestDurationHelper"
+#18  ContainerWithCDB    "acsutilTATTestRunner acsStartContainer -py PyTestCDBContainer" "@SLEEP 10" "acsutilTATTestRunner acsStopContainer PyTestCDBContainer" "@SLEEP 10"
+#19  reloadComponent     "acsutilTATTestRunner acsStartContainer -py pyContainer2" "@SLEEP 10" "acsutilTATTestRunner acspyTestCompReload" "@SLEEP 20" "acsutilTATTestRunner acsStopContainer pyContainer2" "@SLEEP 10"
+#20 testConsumerNoChannel  "acsutilTATTestRunner acspyTestConsumer no_name 5 0"
+#21 testSupplierNoChannel  "acsutilTATTestRunner acspyTestSupplier no_name 5"
+#22 testSupplierCDBChannel "acsutilTATTestRunner acspyTestSupplier cdb_channel 5"
+#23 testSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer no_name 15 1" "@SLEEP 2" "acsutilTATTestRunner acspyTestSupplier no_name 15"
+#24 testILSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer cdb_channelIL 15 1" "@SLEEP 2" "acsutilTATTestRunner acspyTestSupplier cdb_channelIL 15"
+#25 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumer 15 1"
+26 testQoSTimeout      "acsutilTATTestRunner acspyTestQoSTimeout"
+
+EPILOGUE acsutilTATEpilogue

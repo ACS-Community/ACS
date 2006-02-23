@@ -1,0 +1,35 @@
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	1970-02-10 11:43:49.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2006-01-11 13:38:24.000000000 +0100
+@@ -652,6 +652,19 @@
+                       -1);
+ #endif /* TCP_NODELAY */
+ 
++//begin: BJE: (allign the sizes of the buffers)
++  int bufSize=BUFSIZ;
++  int s= sizeof (bufSize);
++  if(  this->peer ().get_option (SOL_SOCKET, /*IPPROTO_TCP,*/
++				  SO_RCVBUF,
++                                (void *) &bufSize,&s
++			     ) == -1)
++       bufSize=BUFSIZ;
++
++    
++    ((TAO_AV_TCP_Object*)(this->protocol_object_))->frame_.size (bufSize);
++//end: BJE
++
+   // Called by the <Strategy_Acceptor> when the handler is completely
+   // connected.
+   ACE_INET_Addr addr;
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	1970-06-03 23:40:09.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2006-01-11 13:38:26.000000000 +0100
+@@ -244,7 +244,7 @@
+   /// end the stream.
+   virtual int destroy (void);
+ 
+-private:
++public:
+   /// Pre-allocated memory to receive the data...
+   ACE_Message_Block frame_;
+ };

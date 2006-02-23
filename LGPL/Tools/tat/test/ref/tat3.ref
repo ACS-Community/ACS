@@ -1,0 +1,22 @@
+makeEnv OK
+Reference file tat31.ref generated
+Reference file generated.
+MESSAGEBUFFER:
+Loaded
+dbWrite OK
+MESSAGEBUFFER:
+:,1,:LAN:tat31
+Reference file tat32.ref generated
+Reference file generated.
+MESSAGEBUFFER:
+"@(#) LCC  Revision: V.VV  Date: YYYY/MM/DD HH:MM:SS "
+dbWrite OK
+MESSAGEBUFFER:
+:PARAMS,1,:PARAMS:SCALARS:tat32
+TEST tat31 PASSED.
+TEST tat32 PASSED.
+PASSED.
+cleanEnv OK
+TEST tat31 PASSED.
+TEST tat32 PASSED.
+PASSED.

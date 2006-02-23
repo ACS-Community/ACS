@@ -1,0 +1,58 @@
+Error: cannot open TestList
+
+Error: No test specified in TestList
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments for -g option
+Error: tat : too many arguments for -g option
+Error: tat : too many arguments for -g option
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments for -g option
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments: makeEnv options exclude other options
+Error: tat : too many arguments: makeEnv options exclude other options
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments for -g option
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments: cleanEnv options exclude other options
+Error: tat : too many arguments: cleanEnv options exclude other options
+Error: tat : too many arguments: makeEnv options exclude other options
+Error: tat : too many arguments: makeEnv options exclude other options
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments for -g option
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments: makeEnv options exclude other options
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+Error: tat : too many arguments for -g option
+-s: invalid option.
+Error: usage: tat [-t] [-nc] [-g] [makeEnv] [cleanEnv] [all]
+TestList: xxtest a: invalid line
+TestList: xxtest a b: invalid line
+TestList: xxtest a b c: invalid line
+TestList: ENVIRONMENT: invalid line
+TestList: ENVIRONMENT ws1: invalid line
+TestList: ENVIRONMENT ws1 WS a: invalid line
+TestList: ENVIRONMENT lcu1: invalid line
+TestList: ENVIRONMENT lcu1 LCU b: invalid line
+Error: cannot analyse TestList
+TEST tat1.1 FAILED.
+FAILED.

@@ -1,0 +1,2 @@
+debug=true
+#Manager.defaultReference=corbaloc::csl01:3000/Manager

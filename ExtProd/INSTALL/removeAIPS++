@@ -1,0 +1,16 @@
+# These are the rpms delivered for ACS 3.1
+# Before starting a new AIPS++ installation, it could be useful 
+# to remove previous installations: 
+  rpm -e gppshare+3.3-11-2ds
+  rpm -e g77share+3.3
+  rpm -e gccshare+3.3
+  rpm -e aips++-devel
+  rpm -e aips++data-base
+  rpm -e aips++
+  rpm -e aips++-shared
+  rpm -e aips++data
+  rpm -e cfitsio
+  rpm -e rpfits
+  rpm -e pgplot-motif
+  rpm -e pgplot
+

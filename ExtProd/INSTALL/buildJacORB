@@ -1,0 +1,263 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: buildJacORB,v 1.12 2005/12/30 11:54:07 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr  2003-03-11 created
+# sturolla 2005-10-09 ported to Bourne Shell and added external subroutine to check OS
+#
+
+#************************************************************************
+#   NAME
+#   buildJacORB
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#   This script is used to build JacORB and install it in the proper
+#   ACS place ($ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB), 
+#   after having applied a number of patches.
+#   The script assumes that:
+#   - It is executed from the place where the JacORB download
+#     tat ball is, together with all necessary patch files
+#   - The environment variables 
+#     $ALMASW_ROOTDIR and $ALMASW_RELEASE
+#     are set.
+#   - The user has write permission in the installation directory
+#   Any previous installation of JarORB will be erased.
+#
+#   To download JacORB:
+#    
+#       wget http://www.jacorb.org/releases/1.4.1/JacORB_1_4_1-full.tar.gz
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+LOG=buildJacORB.log
+#
+exec > $LOG 2>&1
+
+date
+
+
+ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+JACORB_SOURCES=`pwd`/../PRODUCTS
+CUR_DIR=`pwd`
+
+if [ "X$JACORB_HOME" = X ]
+then
+   JACORB_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB
+   echo "==== Setting JACORB_HOME to $JACORB_HOME"
+   unset CLASSPATH
+fi
+
+if [ `echo $CLASSPATH | grep -c $JACORB_HOME` -ne 0 ]
+then
+   echo "==== CLASSPATH contains $JACORB_HOME. Unsetting it for this script"
+   echo "     But make sure we use the right version of ANT "
+   CLASSPATH=$ANT_HOME/lib/ant.jar
+fi
+
+echo ==== Building JacORB from: $JACORB_SOURCES    into:   $ALMASW_INSTDIR
+
+if [ -d $JACORB_HOME ]
+then
+   echo ==== JacORB build Directory exists. Removing it
+   rm -rf $JACORB_HOME
+   if [ $? -ne 0 ]
+   then
+        echo "========= FAILED =========="
+	exit 1
+   fi
+fi
+
+echo ==== Extracting package
+cd $ALMASW_INSTDIR
+tar xfzp $JACORB_SOURCES/JacORB_1_4_1-full.tar.gz
+mv JacORB_1_4_1 $JACORB_HOME
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+cd $JACORB_HOME
+
+# Apply a number of patches to JacORB.
+# All patches have been packed into one single patch command:
+# /bin/idltemplate
+# /build.xml
+#         Original file produces hard coded classpath to installaiton
+#         directory and is not relocatable
+# /idl/build.xml
+#         Extend the set of services we build support for with Peoperty Service
+# /src/org/jacorb/idl/AliasTypeSpec.java
+#         Replace with AliasTypeSpec.java 1.33 from CVS archive
+#         to fix unwinding of defines for output parameters.
+# /src/org/jacorb/idl/Module.java
+# /src/org/jacorb/idl/NameTable.java
+# /src/org/jacorb/idl/ScopedName.java
+# /src/org/jacorb/idl/parser.java
+#         Fix IDL compiler and handling of prefix/package names
+# /src/org/jacorb/orb/CDRInputStream.java
+#         Fix problem with CDRInputStream.java read boolean
+# /src/org/jacorb/security/level2/CredentialsImpl.java
+#         Replace with CredentialsImpl.java 1.9 1.33 from CVS archive
+#         because of fixed unwinding of defines for output parameters.
+#
+# Added 2005-09-14:
+# /...../build.xml
+#         Replaced "javac" with "javac source="1.4"
+#        This is necessary to build with JDK 1.5 compiler.
+#        We will hopefully be able to remove this with a porting
+#        to JDK 1.5 or by using a newer version of JacORB.
+# /src/org/jacorb/poa/RequestController.java
+#        With JDK 1.5 it seems that a variable of type State is assumed 
+#        to be a java.lang.Thread's public enum State, 
+#        in spite of explicitly importing org.omg.PortableServer.POAManagerPackage.State. 
+#        This results in a type mismatch.
+#        Thus we have to patch the JacORB code from
+#           State state;
+#        to
+#           org.omg.PortableServer.POAManagerPackage.State state;
+# The patch file has been generated from the following command:
+# LC_ALL=C TZ=UTC0 diff -Naur JacORB_1_4_1 JacORB_1_4_1-new >JacORB-ACS-2005-09-14.patch
+# (previous patch name, without 1.5 changes, was: JacORB-ACS-2005-03-08.patch
+
+echo ==== Cumulative Patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch.gz >$JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+    echo "========= FAILED =========="
+	exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+fi
+
+echo ==== Building jaco
+ant jaco
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+echo ==== Building jars
+cd $JACORB_HOME/
+ant
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+cd $JACORB_SOURCES
+
+echo ==== Build Notification service IDL
+
+cd $JACORB_HOME/idl
+ant notification
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+echo ==== Build extra IDLs CosPropertyService, DsLogAdmin and AVStreams
+
+cd $JACORB_HOME/idl/omg
+cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/CosPropertyService.idl .
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/DsLogAdmin.idl .
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/AVStreams.idl .
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+cd $JACORB_HOME/idl
+
+ant property
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+ant logging
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+ant audiovideo
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+echo ==== Build with extra IDLs
+
+cd $JACORB_HOME
+ant jar
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+cd $CUR_DIR
+
+echo "==== Build with extra IDLs"
+echo "==== JacORB fully built   =========="
+echo "Make sure that the following environment variables"
+echo "are set before using JacORB:"
+echo " - JACORB_HOME=$JACORB_HOME"
+echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar"
+echo " - PATH      contains: $JACORB_HOME/bin"
+echo "========= DONE   =========="
+
+echo JacORB installation done!
+date
+

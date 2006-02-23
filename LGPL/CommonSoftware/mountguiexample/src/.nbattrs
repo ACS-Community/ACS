@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="patternHrDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="patternHrDlg"/>
+    </fileobject>
+    <fileobject name="PointingDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="PointingDlg"/>
+    </fileobject>
+    <fileobject name="mainGUI.java">
+        <attr name="class_dependency_com.cosylab.abeans.AbeansLaunchable" stringvalue="mainGUI"/>
+    </fileobject>
+    <fileobject name="patternEqDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="patternEqDlg"/>
+    </fileobject>
+    <fileobject name="sourceHrDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="sourceHrDlg"/>
+    </fileobject>
+    <fileobject name="ConnectDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="ConnectDlg"/>
+    </fileobject>
+    <fileobject name="Pippo.java">
+        <attr name="NetBeansAttrArguments" serialvalue="aced0005757200135b4c6a6176612e6c616e672e537472696e673badd256e7e91d7b470200007870000000017400402d444d616e616765722e64656661756c745265666572656e63653d636f7262616c6f633a3a7465342e68712e65736f2e6f72673a333430302f4d616e61676572"/>
+        <attr name="class_dependency_com.cosylab.abeans.AbeansLaunchable" stringvalue="Pippo"/>
+    </fileobject>
+    <fileobject name="antMountGUI/sourceEqDlg.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="sourceEqDlg"/>
+    </fileobject>
+</attributes>

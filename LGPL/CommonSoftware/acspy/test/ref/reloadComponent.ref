@@ -1,0 +1,21 @@
+2 - ...should see 1 module message now...
+2 - ...and another one after it's released...
+2 - ...there should not be one here though...
+2 - ...or here...
+2 - ...or even here
+2 - ...but there should be one here...
+1 - ----------T--:--:--.--- pyContainer2 getCDBInfo - No container information found in the CDB
+1 - ----------T--:--:--.--- pyContainer2 __init__ - Container pyContainer2 waiting for requests
+1 - ----------T--:--:--.--- pyContainer2 message - Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- pyContainer2 message - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - #*# Inside acspytest.testSubPackage.PyTest #*#
+1 - ----------T--:--:--.--- pyContainer2 activate_component - Activated component: RELOADCOMP1
+1 - ----------T--:--:--.--- pyContainer2 deactivate_components - Deactivating component: RELOADCOMP1
+1 - #*# Inside acspytest.testSubPackage.PyTest #*#
+1 - ----------T--:--:--.--- pyContainer2 activate_component - Activated component: RELOADCOMP1
+1 - ----------T--:--:--.--- pyContainer2 activate_component - Activated component: RELOADCOMP2
+1 - ----------T--:--:--.--- pyContainer2 deactivate_components - Deactivating component: RELOADCOMP1
+1 - ----------T--:--:--.--- pyContainer2 deactivate_components - Deactivating component: RELOADCOMP2
+1 - #*# Inside acspytest.testSubPackage.PyTest #*#
+1 - Goodbye
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

@@ -1,0 +1,72 @@
+This directory contains all files needed to build the ACS Architecture
+document.
+All previous versions have been imported in CVS on 2003-12-29 by
+G.Chiozzi.
+
+ATTENTION:
+  - If HTML files or the Ration Rose model have been updated, run
+    'make' in this directory.
+  - The ACSArchitecturexx.doc files need to be updated BY HAND
+    opening it, selecting everything and pressing F9
+    I will have to search sometime for an automatic way to do it.
+  - The Makefiles and scripts make some assumptions about 
+    directories and command names.
+    If something goes wrong look inside for details.
+
+Document main files:
+-------------------
+
+ACSArchitecture.doc
+   This is the main document and the one to be actually edited
+   It contains links to all sub components (mainly HTML files)
+  
+ACSArchitectureNoNumber.doc
+   This is a "reading friendly" copy of the previous document where
+   only headings 1 to 3 have numbering.
+   Numbering is useful for requirement tracking, but
+   confuses readers.
+  
+ACSArchitectureNL.doc
+   This is generated from ACSArchitecture.doc
+   by breaking all links, to have a version that can be given around
+   without distributing the HTML sub components.
+   Remember that breaking the links is two steps:
+   - first brake all links for HTML files
+   - then brake all links to brake links to images
+     embedded in the html file.
+     Remember to tic "save pictures in document" in this step
+
+
+UML Directory:
+-------------
+This directory contains the UML model for ACS.
+It is important after check out and after changes to 
+export the model as html.
+
+Project Directory:
+-----------------
+This directory contains all HTML files that
+are used to compose the Document.doc document and that
+make the HTML version of this Architecture document
+(plus the contents of the Help directory).
+The sub-directory Project/Images contains all pictures
+used inside the HTML files.
+Most of the files in this directory are diagrams
+generated from the Rose UML model.
+Just a few diagrams come from other sources.
+After a checkout from CVS make sure that the Rose model 
+is exported in HTML and that these files are extracted.
+
+Makefile:
+--------
+The Makefile is used to generate in batch from the Rose Model
+the HTML export and all diagrams used in the HTML files.
+To use it:
+- Go on a windows Machine with Rose and cygwin
+- Go to this directory with a bash shell
+- Run:
+     make all
+  This will first try to generate the HTML of the Rose model
+  using the Rose Web Publisher
+  Then will extract all diagrams into Project/Images.
+

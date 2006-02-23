@@ -1,0 +1,69 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.10 2005/06/16 16:15:08 dfugate Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave 2003-08-13 converted to eccs test driver
+# 
+SOURCE acssimTATEnvironment
+PROLOGUE acssimTATPrologue
+
+#First test to ensure that pseudo inheritance from Acspy.Servants.CharacteristicComponent actually works
+1 T1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 _get_name()"
+
+#Test a method implementation from the CDB which doesn't do anything special
+2 T2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 displayMessage()"
+
+#Test a completely random implementation of a method
+3 T3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD2 displayMessage()"
+
+#Test a method implementation from the CDB that raises an exception
+4 cdbExcept "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 badMethod()"
+
+#Test a method implementation from the CDB that raises an exception
+5 charCompMethod "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 descriptor()"
+
+#Test the ability to dynamically generate other CORBA objects
+6 baciSimProp1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()"
+
+#Te the ability to invoke dynamically implemented methods of other CORBA objects
+7 baciSimProp2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()._get_min_value()"
+
+# Tests enumerations
+8 baciSimProp3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest FRIDGE1 _get_powerStatus()._get_default_value()"
+
+# Tests callbacks
+9 callbackVoid1 "@SLEEP 2" "acsutilTATTestRunner acssimCallbackTest LAMP1 on"
+
+# Tests master component
+10 masterComponent "@SLEEP 2" "acsutilTATTestRunner acssimMasterCompTest"
+
+# Tests to ensure in/inout parameters are accessible
+11 inParams "@SLEEP 2" "acssimInParamsHelper" "@SLEEP 20" "acsutilTATTestRunner acssimInParamsTest CLOCK1"
+
+
+
+EPILOGUE acsutilTATEpilogue

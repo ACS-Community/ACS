@@ -1,0 +1,30 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Applications"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"38159EF0008D"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "ACS Client application"
+	    quid       	"393F40110115")
+	(object Class "ACS application"
+	    quid       	"393FC1FF0194"
+	    operations 	(list Operations
+		(object Operation "service"
+		    quid       	"3DD36A120145"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)
+		(object Operation "service2"
+		    quid       	"3DD36A7D0328"
+		    concurrency 	"Sequential"
+		    opExportControl 	"Public"
+		    uid        	0)))
+	(object Class "NON-ACS Client"
+	    quid       	"3ACDD0A90364"))
+    logical_presentations 	(list unit_reference_list))

@@ -1,0 +1,35 @@
+This directory tree holds version p4.0pre.46 of Emacs/W3, the fully
+customizable, largely undocumented web browser for Emacs.
+
+You may encounter bugs in this release.  If you do, please report
+them; your bug reports are valuable contributions to Emacs/W3, since
+they allow us to notice and fix problems on machines we don't have, or
+in code we don't use often.  See the file BUGS for more information on
+how to report bugs.
+
+The file INSTALL in this directory says how to bring up Emacs/W3 on
+Unix, once you have loaded the entire subtree of this directory.
+
+Note that the Emacs/W3 installation procedure has changed since
+version 2.x; you will probably want to read the file INSTALL even if
+you have installed Emacs/W3 before.  The new procedure is intended to
+simplify installation, and make it easier to upgrade in the future.
+
+Reports of bugs in Emacs/W3 should be sent to the mailing list
+wmperry+w3@cs.indiana.edu.  See the "Reporting Bugs" section of the
+Emacs/W3 manual for more information on how to report bugs.  See the
+"More Help" section of the Emacs/W3 manual for more information on
+mailing lists relating to Emacs/W3.
+
+The file `configure' is a shell script to acclimate Emacs to the
+oddities of your processor and operating system.  It creates the file
+`Makefile' (a script for the `make' program), which automates the
+process of building and installing Emacs.  See INSTALL for more
+detailed information.
+
+There are several subdirectories:
+
+`etc' holds miscellaneous architecture-independent data files
+`lisp' holds the lisp code for Emacs/W3
+`texi' holds the documentation tree for Emacs/W3
+`contrib' holds user-contributed utilities that are not officially supported

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Simon Farrow (E.S.O.) -->
+<xs:schema targetNamespace="Alma/Archive/ArchiveRange" xmlns:ent="Alma/CommonEntity" xmlns:ran="Alma/Archive/ArchiveRange" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
+	<xs:element name="IdentifierRange">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+	            <xs:element name="IdentifierRangeEntity" type="ran:IdentifierRangeEntityT" />
+				<xs:element name="Range" type="ran:RangeT"/>
+			</xs:sequence>
+			<xs:attribute name="createdTimeStamp" type="xs:string" use="required"/>
+			<xs:attribute name="serialised" type="xs:boolean" use="required"/>
+			<xs:attribute name="ArchiveID" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="RangeT">
+		<xs:annotation>
+			<xs:documentation>Describes the values that a range can hold</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BaseDocumentID" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>A hex string that holds the minimum document id</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxDocumentID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A hex string that holds the maximum document id, if it not present then the range is  effectively infinite.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="RangeID" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="IdentifierRangeEntityT">
+    	<xs:complexContent>
+      		<xs:restriction base="ent:EntityT">
+        		<xs:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="IdentifierRange" />
+      		</xs:restriction>
+    	</xs:complexContent>
+  	</xs:complexType>
+</xs:schema>

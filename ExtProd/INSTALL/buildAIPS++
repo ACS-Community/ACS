@@ -1,0 +1,88 @@
+#! /bin/ksh
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildAIPS++,v 1.5 2005/09/09 14:58:12 sturolla Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# psivera   2004-04-30  created
+#
+
+#************************************************************************
+#   NAME
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS AND LIMITATIONS
+#   This is an external wrapper for buildAIPS++AsRoot.
+#   It is an interactive script and requires the user
+#   to confirm the action and give the root password.
+#   Essentially it
+#      - checks permissions and configuration,
+#      - allows to switch interactively to root
+#      - calls buildAIPS++AsRoot to install AIPS++
+#
+#   See buildAIPS++AsRoot for details on the installation
+#   of the AIPS++ RPMs
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+. standardUtilities
+CWD=`pwd`
+date
+
+#
+# This checks are repeated in buildAIPS++AsRoot,
+# but we do them also here before switching to root.
+#
+
+OSName=`uname -s`
+
+if [ ${OSName} != "Linux" ]
+then
+    echo ""
+    echo "AIPS++ is supported on Linux only"
+    echo "Script aborted"
+    exit 1
+fi
+OSVer=`cat /etc/redhat-release | awk '{print $5}'`
+if [ "$OSVer" != "9" ]
+then
+    echo "AIPS++ is supported on RH9 only"
+    echo "Script aborted"
+    exit 1
+fi
+
+echo "For Linux RH9 only, it is possible to install AIPS++ rpms."
+echo "The installation of AIPS++ RPMs requires root privileges"
+echo "You can press return to continue with the AIPS++ installation"
+echo "in this case you will have to type the root password" 
+echo "(unless you are already root) or you can press ctrl-c"
+echo "to finish the tools installation."
+echo "Note: if you choose to install AIPS++, you need ~650MB space under /usr."
+
+read input
+DIR=`pwd`
+su - -c "cd $DIR; ./buildAIPS++AsRoot"
+
+cd $CWD
+echo ""
+echo AIPS++ installation done!
+date
+

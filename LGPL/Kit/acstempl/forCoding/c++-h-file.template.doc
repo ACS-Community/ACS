@@ -1,0 +1,45 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: c++-h-file.template.doc,v 1.19+ 2002/11/12 10:34:14 vltsccm Exp $"
+#%# 
+#%# Template for c++ .h include files         
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gchiozzi   26/04/95  created
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c++h_file(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+#ifndef _H
+#define _H
+/*******************************************************************************
+* E.S.O. - ACS project
+*
+* "@(#) $I>-<d$"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created
+*/
+
+/************************************************************************
+ *
+ *----------------------------------------------------------------------
+ */
+
+#ifndef __cplusplus
+#error This is a C++ include file and cannot be used from plain C
+#endif
+
+
+
+#endif /*!_H*/

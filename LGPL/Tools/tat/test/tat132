@@ -1,0 +1,6 @@
+#
+# "@(#) $Id: tat132,v 1.76 2003/01/09 17:51:24 vltsccm Exp $"
+# not to be killed by tat
+sleep 5
+echo "tat132 OK"
+

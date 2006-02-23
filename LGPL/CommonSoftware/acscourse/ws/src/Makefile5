@@ -1,0 +1,113 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: Makefile5,v 1.2 2004/04/14 12:59:14 gchiozzi Exp $" 
+#
+# Makefile of ........
+#
+#
+
+#*******************************************************************************
+# REMARKS
+#    None
+#------------------------------------------------------------------------
+
+USER_LIB = 	-lACE \
+		-lTAO \
+		-lTAO_DsLogAdmin \
+		-lTAO_CosNaming \
+		-lTAO_IORTable \
+		-lTAO_PortableServer \
+		-lTAO_Svc_Utils \
+		-lTAO_CosTrading \
+                -lTAO_CosNotification \
+		-lTAO_DynamicAny \
+		-lTAO_IFR_Client \
+                -lTAO_CosProperty \
+		-lacsutil \
+		-lcdb \
+		-llogging \
+	        -lacscomponent \
+		-lbaci \
+		-lmaci \
+		-lmaciClient \
+		-lacserr \
+		-lm
+
+
+#
+# MODULE CODE DESCRIPTION:
+# ------------------------
+
+#
+# Includes (.h) files (public and local)
+# ---------------------------------
+INCLUDES =	acscourseMount5Impl.h 
+
+#
+# Libraries (public and local)
+# ----------------------------
+LIBRARIES =	acscourseMount5Impl
+
+acscourseMount5Impl_OBJECTS	= acscourseMount5Impl
+acscourseMount5Impl_LIBS	= acscourseMountStubs acsnc
+
+#
+# list of all possible C-sources (used to create automatic dependencies)
+# ------------------------------
+CSOURCENAMES = \
+	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
+	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+#
+# IDL FILES
+#
+IDL_FILES = 	acscourseMount
+USER_IDL = 
+
+#
+#>>>>> END OF standard rules
+
+#
+# CHOSE PLATFORM
+# --------------
+# Default is UNIX, for VxVorks application next line MUST BE UNCOMMENTED
+#MAKE_VXWORKS = on   
+
+#
+# INCLUDE STANDARDS
+# -----------------
+ifdef ACSROOT
+    MAKEDIR = $(ACSROOT)/include
+    include $(MAKEDIR)/acsMakefile
+else
+    MAKEDIR = $(VLTROOT)/include
+    include $(MAKEDIR)/vltMakefile
+endif
+
+#
+# TARGETS
+# -------
+all:	do_all
+	@echo " . . . 'all' done" 
+
+clean : clean_all 
+	$(RM) *~ ../include/*~ ../idl/*~ ../*~ ../../*~ ../doc/html/* core
+	$(RM) tmp.txt 
+	@echo " . . . clean done"
+
+clean_dist : clean clean_dist_all 
+	@echo " . . . clean_dist done"
+
+man   : do_man 
+	@echo " . . . man page(s) done"
+
+install : 
+	@echo " . . . no installation to be done for this test module"
+
+#___oOo___
+
+
+
+
+

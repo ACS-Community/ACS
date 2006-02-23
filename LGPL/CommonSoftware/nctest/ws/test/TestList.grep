@@ -1,0 +1,43 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+name service error resolving
+class CosNaming.NotFound
+Running the following command:
+Starting Java/abeans application
+Using endorsed jar files in: -Djava.endorsed.dirs=
+ACS abeans configuration directory:
+ACS Manager: corbaloc::
+ACS Name Service: corbaloc::
+ACS Interface Repository: corbaloc::
+java -classpath
+Logging to ACS log server.
+RTContext:
+SourceInfo:
+local manager from
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+^$
+SUP.
+Log outputed to the local file
+lcuboot: open
+DAL root is
+java -classpath
+Time:
+XTRADYNE Technologies
+www.jacorb.org
+Connected to
+ACS abeans configuration directory:
+Using naming reference
+Retrying to connect to
+Abnormal connection termination
+POA RootPOA
+POA ManagerPOA
+Disconnected.
+export
+Local file logger
+offshoot
+alma.acs.component.client.ComponentClient
+StaticMethodLogger
+alma.demo.EventConsumerImpl.FridgeConsumer

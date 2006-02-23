@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat14,v 1.76 2003/01/09 17:51:24 vltsccm Exp $"
+#
+# tat14
+#
+# ENVIRONMENTS/<WS> and ENVIRONMENTS/<LCU> really empty
+# (no file, no directory, no CVS)
+# 
+
+rm -f .testSession
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat14 TestList
+
+if [ -d ./ENVIRONMENTS/ws14 ]
+then
+	mkdir ./ENVIRONMENTS/ws14
+fi
+
+if [ -d ./ENVIRONMENTS/lcu14 ]
+then
+	mkdir ./ENVIRONMENTS/lcu14
+fi
+
+mkdir ./ENVIRONMENTS/ws14
+mkdir ./ENVIRONMENTS/lcu14
+
+# I test that makeEnv and cleanEnv is OK - that's all.
+tat makeEnv
+tat -g tat141
+cat ref/tat141.ref
+tat cleanEnv
+
+rm -rf ./ENVIRONMENTS/ws14
+rm -rf ./ENVIRONMENTS/lcu14
+
+
+
+
+

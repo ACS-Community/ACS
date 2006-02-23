@@ -1,0 +1,1262 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Character Type,  Next: Symbol Type,  Prev: Floating Point Type,  Up: Programming Types
+
+Character Type
+--------------
+
+   A "character" in Emacs Lisp is nothing more than an integer.  In
+other words, characters are represented by their character codes.  For
+example, the character `A' is represented as the integer 65.
+
+   Individual characters are not often used in programs.  It is far more
+common to work with *strings*, which are sequences composed of
+characters.  *Note String Type::.
+
+   Characters in strings, buffers, and files are currently limited to
+the range of 0 to 255--eight bits.  If you store a larger integer into a
+string, buffer or file, it is truncated to that range.  Characters that
+represent keyboard input have a much wider range.
+
+   Since characters are really integers, the printed representation of a
+character is a decimal number.  This is also a possible read syntax for
+a character, but writing characters that way in Lisp programs is a very
+bad idea.  You should *always* use the special read syntax formats that
+Emacs Lisp provides for characters.  These syntax formats start with a
+question mark.
+
+   The usual read syntax for alphanumeric characters is a question mark
+followed by the character; thus, `?A' for the character `A', `?B' for
+the character `B', and `?a' for the character `a'.
+
+   For example:
+
+     ?Q => 81     ?q => 113
+
+   You can use the same syntax for punctuation characters, but it is
+often a good idea to add a `\' so that the Emacs commands for editing
+Lisp code don't get confused.  For example, `?\ ' is the way to write
+the space character.  If the character is `\', you *must* use a second
+`\' to quote it: `?\\'.
+
+   You can express the characters Control-g, backspace, tab, newline,
+vertical tab, formfeed, return, and escape as `?\a', `?\b', `?\t',
+`?\n', `?\v', `?\f', `?\r', `?\e', respectively.  Those values are 7,
+8, 9, 10, 11, 12, 13, and 27 in decimal.  Thus,
+
+     ?\a => 7                 ; `C-g'
+     ?\b => 8                 ; backspace, BS, `C-h'
+     ?\t => 9                 ; tab, TAB, `C-i'
+     ?\n => 10                ; newline, LFD, `C-j'
+     ?\v => 11                ; vertical tab, `C-k'
+     ?\f => 12                ; formfeed character, `C-l'
+     ?\r => 13                ; carriage return, RET, `C-m'
+     ?\e => 27                ; escape character, ESC, `C-['
+     ?\\ => 92                ; backslash character, `\'
+
+   These sequences which start with backslash are also known as "escape
+sequences", because backslash plays the role of an escape character;
+this usage has nothing to do with the character ESC.
+
+   Control characters may be represented using yet another read syntax.
+This consists of a question mark followed by a backslash, caret, and the
+corresponding non-control character, in either upper or lower case.  For
+example, both `?\^I' and `?\^i' are valid read syntax for the character
+`C-i', the character whose value is 9.
+
+   Instead of the `^', you can use `C-'; thus, `?\C-i' is equivalent to
+`?\^I' and to `?\^i':
+
+     ?\^I => 9     ?\C-I => 9
+
+   For use in strings and buffers, you are limited to the control
+characters that exist in ASCII, but for keyboard input purposes, you
+can turn any character into a control character with `C-'.  The
+character codes for these non-ASCII control characters include the
+2**22 bit as well as the code for the corresponding non-control
+character.  Ordinary terminals have no way of generating non-ASCII
+control characters, but you can generate them straightforwardly using an
+X terminal.
+
+   You can think of the DEL character as `Control-?':
+
+     ?\^? => 127     ?\C-? => 127
+
+   For representing control characters to be found in files or strings,
+we recommend the `^' syntax; for control characters in keyboard input,
+we prefer the `C-' syntax.  This does not affect the meaning of the
+program, but may guide the understanding of people who read it.
+
+   A "meta character" is a character typed with the META modifier key.
+The integer that represents such a character has the 2**23 bit set
+(which on most machines makes it a negative number).  We use high bits
+for this and other modifiers to make possible a wide range of basic
+character codes.
+
+   In a string, the 2**7 bit indicates a meta character, so the meta
+characters that can fit in a string have codes in the range from 128 to
+255, and are the meta versions of the ordinary ASCII characters.  (In
+Emacs versions 18 and older, this convention was used for characters
+outside of strings as well.)
+
+   The read syntax for meta characters uses `\M-'.  For example,
+`?\M-A' stands for `M-A'.  You can use `\M-' together with octal
+character codes (see below), with `\C-', or with any other syntax for a
+character.  Thus, you can write `M-A' as `?\M-A', or as `?\M-\101'.
+Likewise, you can write `C-M-b' as `?\M-\C-b', `?\C-\M-b', or
+`?\M-\002'.
+
+   The case of an ordinary letter is indicated by its character code as
+part of ASCII, but ASCII has no way to represent whether a control
+character is upper case or lower case.  Emacs uses the 2**21 bit to
+indicate that the shift key was used for typing a control character.
+This distinction is possible only when you use X terminals or other
+special terminals; ordinary terminals do not indicate the distinction to
+the computer in any way.
+
+   The X Window System defines three other modifier bits that can be set
+in a character: "hyper", "super" and "alt".  The syntaxes for these
+bits are `\H-', `\s-' and `\A-'.  Thus, `?\H-\M-\A-x' represents
+`Alt-Hyper-Meta-x'.  Numerically, the bit values are 2**18 for alt,
+2**19 for super and 2**20 for hyper.
+
+   Finally, the most general read syntax consists of a question mark
+followed by a backslash and the character code in octal (up to three
+octal digits); thus, `?\101' for the character `A', `?\001' for the
+character `C-a', and `?\002' for the character `C-b'.  Although this
+syntax can represent any ASCII character, it is preferred only when the
+precise octal value is more important than the ASCII representation.
+
+     ?\012 => 10         ?\n => 10         ?\C-j => 10
+     ?\101 => 65         ?A => 65
+
+   A backslash is allowed, and harmless, preceding any character without
+a special escape meaning; thus, `?\+' is equivalent to `?+'.  There is
+no reason to add a backslash before most characters.  However, you
+should add a backslash before any of the characters `()\|;'`"#.,' to
+avoid confusing the Emacs commands for editing Lisp code.  Also add a
+backslash before whitespace characters such as space, tab, newline and
+formfeed.  However, it is cleaner to use one of the easily readable
+escape sequences, such as `\t', instead of an actual whitespace
+character such as a tab.
+
+
+File: elisp,  Node: Symbol Type,  Next: Sequence Type,  Prev: Character Type,  Up: Programming Types
+
+Symbol Type
+-----------
+
+   A "symbol" in GNU Emacs Lisp is an object with a name.  The symbol
+name serves as the printed representation of the symbol.  In ordinary
+use, the name is unique--no two symbols have the same name.
+
+   A symbol can serve as a variable, as a function name, or to hold a
+property list.  Or it may serve only to be distinct from all other Lisp
+objects, so that its presence in a data structure may be recognized
+reliably.  In a given context, usually only one of these uses is
+intended.  But you can use one symbol in all of these ways,
+independently.
+
+   A symbol name can contain any characters whatever.  Most symbol names
+are written with letters, digits, and the punctuation characters
+`-+=*/'.  Such names require no special punctuation; the characters of
+the name suffice as long as the name does not look like a number.  (If
+it does, write a `\' at the beginning of the name to force
+interpretation as a symbol.)  The characters `_~!@$%^&:<>{}' are less
+often used but also require no special punctuation.  Any other
+characters may be included in a symbol's name by escaping them with a
+backslash.  In contrast to its use in strings, however, a backslash in
+the name of a symbol simply quotes the single character that follows the
+backslash.  For example, in a string, `\t' represents a tab character;
+in the name of a symbol, however, `\t' merely quotes the letter `t'.
+To have a symbol with a tab character in its name, you must actually
+use a tab (preceded with a backslash).  But it's rare to do such a
+thing.
+
+     Common Lisp note: in Common Lisp, lower case letters are always
+     "folded" to upper case, unless they are explicitly escaped.  This
+     is in contrast to Emacs Lisp, in which upper case and lower case
+     letters are distinct.
+
+   Here are several examples of symbol names.  Note that the `+' in the
+fifth example is escaped to prevent it from being read as a number.
+This is not necessary in the last example because the rest of the name
+makes it invalid as a number.
+
+     foo                 ; A symbol named `foo'.
+     FOO                 ; A symbol named `FOO', different from `foo'.
+     char-to-string      ; A symbol named `char-to-string'.
+     1+                  ; A symbol named `1+'
+                         ;   (not `+1', which is an integer).
+     \+1                 ; A symbol named `+1'
+                         ;   (not a very readable name).
+     \(*\ 1\ 2\)         ; A symbol named `(* 1 2)' (a worse name).
+     +-*/_~!@$%^&=:<>{}  ; A symbol named `+-*/_~!@$%^&=:<>{}'.
+                         ;   These characters need not be escaped.
+
+
+File: elisp,  Node: Sequence Type,  Next: Cons Cell Type,  Prev: Symbol Type,  Up: Programming Types
+
+Sequence Types
+--------------
+
+   A "sequence" is a Lisp object that represents an ordered set of
+elements.  There are two kinds of sequence in Emacs Lisp, lists and
+arrays.  Thus, an object of type list or of type array is also
+considered a sequence.
+
+   Arrays are further subdivided into strings and vectors.  Vectors can
+hold elements of any type, but string elements must be characters in the
+range from 0 to 255.  However, the characters in a string can have text
+properties like characters in a buffer (*note Text Properties::.);
+vectors do not support text properties even when their elements happen
+to be characters.
+
+   Lists, strings and vectors are different, but they have important
+similarities.  For example, all have a length L, and all have elements
+which can be indexed from zero to L minus one.  Also, several
+functions, called sequence functions, accept any kind of sequence.  For
+example, the function `elt' can be used to extract an element of a
+sequence, given its index.  *Note Sequences Arrays Vectors::.
+
+   It is impossible to read the same sequence twice, since sequences are
+always created anew upon reading.  If you read the read syntax for a
+sequence twice, you get two sequences with equal contents.  There is one
+exception: the empty list `()' always stands for the same object, `nil'.
+
+
+File: elisp,  Node: Cons Cell Type,  Next: Array Type,  Prev: Sequence Type,  Up: Programming Types
+
+Cons Cell and List Types
+------------------------
+
+   A "cons cell" is an object comprising two pointers named the CAR and
+the CDR.  Each of them can point to any Lisp object.
+
+   A "list" is a series of cons cells, linked together so that the CDR
+of each cons cell points either to another cons cell or to the empty
+list.  *Note Lists::, for functions that work on lists.  Because most
+cons cells are used as part of lists, the phrase "list structure" has
+come to refer to any structure made out of cons cells.
+
+   The names CAR and CDR have only historical meaning now.  The
+original Lisp implementation ran on an IBM 704 computer which divided
+words into two parts, called the "address" part and the "decrement";
+CAR was an instruction to extract the contents of the address part of a
+register, and CDR an instruction to extract the contents of the
+decrement.  By contrast, "cons cells" are named for the function `cons'
+that creates them, which in turn is named for its purpose, the
+construction of cells.
+
+   Because cons cells are so central to Lisp, we also have a word for
+"an object which is not a cons cell".  These objects are called "atoms".
+
+   The read syntax and printed representation for lists are identical,
+and consist of a left parenthesis, an arbitrary number of elements, and
+a right parenthesis.
+
+   Upon reading, each object inside the parentheses becomes an element
+of the list.  That is, a cons cell is made for each element.  The CAR
+of the cons cell points to the element, and its CDR points to the next
+cons cell of the list, which holds the next element in the list.  The
+CDR of the last cons cell is set to point to `nil'.
+
+   A list can be illustrated by a diagram in which the cons cells are
+shown as pairs of boxes.  (The Lisp reader cannot read such an
+illustration; unlike the textual notation, which can be understood by
+both humans and computers, the box illustrations can be understood only
+by humans.)  The following represents the three-element list `(rose
+violet buttercup)':
+
+         ___ ___      ___ ___      ___ ___
+        |___|___|--> |___|___|--> |___|___|--> nil
+          |            |            |
+          |            |            |
+           --> rose     --> violet   --> buttercup
+
+   In this diagram, each box represents a slot that can refer to any
+Lisp object.  Each pair of boxes represents a cons cell.  Each arrow is
+a reference to a Lisp object, either an atom or another cons cell.
+
+   In this example, the first box, the CAR of the first cons cell,
+refers to or "contains" `rose' (a symbol).  The second box, the CDR of
+the first cons cell, refers to the next pair of boxes, the second cons
+cell.  The CAR of the second cons cell refers to `violet' and the CDR
+refers to the third cons cell.  The CDR of the third (and last) cons
+cell refers to `nil'.
+
+   Here is another diagram of the same list, `(rose violet buttercup)',
+sketched in a different manner:
+
+     ---------------       ----------------       -------------------
+     | car   | cdr   |     | car    | cdr   |     | car       | cdr   |
+     | rose  |   o-------->| violet |   o-------->| buttercup |  nil  |
+     |       |       |     |        |       |     |           |       |
+      ---------------       ----------------       -------------------
+
+   A list with no elements in it is the "empty list"; it is identical
+to the symbol `nil'.  In other words, `nil' is both a symbol and a list.
+
+   Here are examples of lists written in Lisp syntax:
+
+     (A 2 "A")            ; A list of three elements.
+     ()                   ; A list of no elements (the empty list).
+     nil                  ; A list of no elements (the empty list).
+     ("A ()")             ; A list of one element: the string `"A ()"'.
+     (A ())               ; A list of two elements: `A' and the empty list.
+     (A nil)              ; Equivalent to the previous.
+     ((A B C))            ; A list of one element
+                          ;   (which is a list of three elements).
+
+   Here is the list `(A ())', or equivalently `(A nil)', depicted with
+boxes and arrows:
+
+         ___ ___      ___ ___
+        |___|___|--> |___|___|--> nil
+          |            |
+          |            |
+           --> A        --> nil
+
+* Menu:
+
+* Dotted Pair Notation::        An alternative syntax for lists.
+* Association List Type::       A specially constructed list.
+
+
+File: elisp,  Node: Dotted Pair Notation,  Next: Association List Type,  Up: Cons Cell Type
+
+Dotted Pair Notation
+....................
+
+   "Dotted pair notation" is an alternative syntax for cons cells that
+represents the CAR and CDR explicitly.  In this syntax, `(A . B)'
+stands for a cons cell whose CAR is the object A, and whose CDR is the
+object B.  Dotted pair notation is therefore more general than list
+syntax.  In the dotted pair notation, the list `(1 2 3)' is written as
+`(1 .  (2 . (3 . nil)))'.  For `nil'-terminated lists, the two
+notations produce the same result, but list notation is usually clearer
+and more convenient when it is applicable.  When printing a list, the
+dotted pair notation is only used if the CDR of a cell is not a list.
+
+   Here's how box notation can illustrate dotted pairs.  This example
+shows the pair `(rose . violet)':
+
+         ___ ___
+        |___|___|--> violet
+          |
+          |
+           --> rose
+
+   Dotted pair notation can be combined with list notation to represent
+a chain of cons cells with a non-`nil' final CDR.  For example, `(rose
+violet . buttercup)' is equivalent to `(rose . (violet . buttercup))'.
+The object looks like this:
+
+         ___ ___      ___ ___
+        |___|___|--> |___|___|--> buttercup
+          |            |
+          |            |
+           --> rose     --> violet
+
+   These diagrams make it evident why `(rose . violet . buttercup)' is
+invalid syntax; it would require a cons cell that has three parts
+rather than two.
+
+   The list `(rose violet)' is equivalent to `(rose . (violet))' and
+looks like this:
+
+         ___ ___      ___ ___
+        |___|___|--> |___|___|--> nil
+          |            |
+          |            |
+           --> rose     --> violet
+
+   Similarly, the three-element list `(rose violet buttercup)' is
+equivalent to `(rose . (violet . (buttercup)))'.  It looks like this:
+
+         ___ ___      ___ ___      ___ ___
+        |___|___|--> |___|___|--> |___|___|--> nil
+          |            |            |
+          |            |            |
+           --> rose     --> violet   --> buttercup
+
+
+File: elisp,  Node: Association List Type,  Prev: Dotted Pair Notation,  Up: Cons Cell Type
+
+Association List Type
+.....................
+
+   An "association list" or "alist" is a specially-constructed list
+whose elements are cons cells.  In each element, the CAR is considered
+a "key", and the CDR is considered an "associated value".  (In some
+cases, the associated value is stored in the CAR of the CDR.)
+Association lists are often used as stacks, since it is easy to add or
+remove associations at the front of the list.
+
+   For example,
+
+     (setq alist-of-colors
+           '((rose . red) (lily . white)  (buttercup . yellow)))
+
+sets the variable `alist-of-colors' to an alist of three elements.  In
+the first element, `rose' is the key and `red' is the value.
+
+   *Note Association Lists::, for a further explanation of alists and
+for functions that work on alists.
+
+
+File: elisp,  Node: Array Type,  Next: String Type,  Prev: Cons Cell Type,  Up: Programming Types
+
+Array Type
+----------
+
+   An "array" is composed of an arbitrary number of slots for referring
+to other Lisp objects, arranged in a contiguous block of memory.
+Accessing any element of an array takes the same amount of time.  In
+contrast, accessing an element of a list requires time proportional to
+the position of the element in the list.  (Elements at the end of a
+list take longer to access than elements at the beginning of a list.)
+
+   Emacs defines two types of array, strings and vectors.  A string is
+an array of characters and a vector is an array of arbitrary objects.
+Both are one-dimensional.  (Most other programming languages support
+multidimensional arrays, but they are not essential; you can get the
+same effect with an array of arrays.)  Each type of array has its own
+read syntax; see *Note String Type::, and *Note Vector Type::.
+
+   An array may have any length up to the largest integer; but once
+created, it has a fixed size.  The first element of an array has index
+zero, the second element has index 1, and so on.  This is called
+"zero-origin" indexing.  For example, an array of four elements has
+indices 0, 1, 2, and 3.
+
+   The array type is contained in the sequence type and contains both
+the string type and the vector type.
+
+
+File: elisp,  Node: String Type,  Next: Vector Type,  Prev: Array Type,  Up: Programming Types
+
+String Type
+-----------
+
+   A "string" is an array of characters.  Strings are used for many
+purposes in Emacs, as can be expected in a text editor; for example, as
+the names of Lisp symbols, as messages for the user, and to represent
+text extracted from buffers.  Strings in Lisp are constants: evaluation
+of a string returns the same string.
+
+   The read syntax for strings is a double-quote, an arbitrary number of
+characters, and another double-quote, `"like this"'.  The Lisp reader
+accepts the same formats for reading the characters of a string as it
+does for reading single characters (without the question mark that
+begins a character literal).  You can enter a nonprinting character such
+as tab, `C-a' or `M-C-A' using the convenient escape sequences, like
+this: `"\t, \C-a, \M-\C-a"'.  You can include a double-quote in a
+string by preceding it with a backslash; thus, `"\""' is a string
+containing just a single double-quote character.  (*Note Character
+Type::, for a description of the read syntax for characters.)
+
+   If you use the `\M-' syntax to indicate a meta character in a string
+constant, this sets the 2**7 bit of the character in the string.  This
+is not the same representation that the meta modifier has in a
+character on its own (not inside a string).  *Note Character Type::.
+
+   Strings cannot hold characters that have the hyper, super, or alt
+modifiers; they can hold ASCII control characters, but no others.  They
+do not distinguish case in ASCII control characters.
+
+   The printed representation of a string consists of a double-quote,
+the characters it contains, and another double-quote.  However, you must
+escape any backslash or double-quote characters in the string with a
+backslash, like this: `"this \" is an embedded quote"'.
+
+   The newline character is not special in the read syntax for strings;
+if you write a new line between the double-quotes, it becomes a
+character in the string.  But an escaped newline--one that is preceded
+by `\'--does not become part of the string; i.e., the Lisp reader
+ignores an escaped newline while reading a string.
+
+     "It is useful to include newlines
+     in documentation strings,
+     but the newline is \
+     ignored if escaped."
+          => "It is useful to include newlines
+     in documentation strings,
+     but the newline is ignored if escaped."
+
+   A string can hold properties of the text it contains, in addition to
+the characters themselves.  This enables programs that copy text between
+strings and buffers to preserve the properties with no special effort.
+*Note Text Properties::.  Strings with text properties have a special
+read and print syntax:
+
+     #("CHARACTERS" PROPERTY-DATA...)
+
+where PROPERTY-DATA consists of zero or more elements, in groups of
+three as follows:
+
+     BEG END PLIST
+
+The elements BEG and END are integers, and together specify a range of
+indices in the string; PLIST is the property list for that range.
+
+   *Note Strings and Characters::, for functions that work on strings.
+
+
+File: elisp,  Node: Vector Type,  Next: Function Type,  Prev: String Type,  Up: Programming Types
+
+Vector Type
+-----------
+
+   A "vector" is a one-dimensional array of elements of any type.  It
+takes a constant amount of time to access any element of a vector.  (In
+a list, the access time of an element is proportional to the distance of
+the element from the beginning of the list.)
+
+   The printed representation of a vector consists of a left square
+bracket, the elements, and a right square bracket.  This is also the
+read syntax.  Like numbers and strings, vectors are considered constants
+for evaluation.
+
+     [1 "two" (three)]      ; A vector of three elements.
+          => [1 "two" (three)]
+
+   *Note Vectors::, for functions that work with vectors.
+
+
+File: elisp,  Node: Function Type,  Next: Macro Type,  Prev: Vector Type,  Up: Programming Types
+
+Function Type
+-------------
+
+   Just as functions in other programming languages are executable,
+"Lisp function" objects are pieces of executable code.  However,
+functions in Lisp are primarily Lisp objects, and only secondarily the
+text which represents them.  These Lisp objects are lambda expressions:
+lists whose first element is the symbol `lambda' (*note Lambda
+Expressions::.).
+
+   In most programming languages, it is impossible to have a function
+without a name.  In Lisp, a function has no intrinsic name.  A lambda
+expression is also called an "anonymous function" (*note Anonymous
+Functions::.).  A named function in Lisp is actually a symbol with a
+valid function in its function cell (*note Defining Functions::.).
+
+   Most of the time, functions are called when their names are written
+in Lisp expressions in Lisp programs.  However, you can construct or
+obtain a function object at run time and then call it with the primitive
+functions `funcall' and `apply'.  *Note Calling Functions::.
+
+
+File: elisp,  Node: Macro Type,  Next: Primitive Function Type,  Prev: Function Type,  Up: Programming Types
+
+Macro Type
+----------
+
+   A "Lisp macro" is a user-defined construct that extends the Lisp
+language.  It is represented as an object much like a function, but with
+different parameter-passing semantics.  A Lisp macro has the form of a
+list whose first element is the symbol `macro' and whose CDR is a Lisp
+function object, including the `lambda' symbol.
+
+   Lisp macro objects are usually defined with the built-in `defmacro'
+function, but any list that begins with `macro' is a macro as far as
+Emacs is concerned.  *Note Macros::, for an explanation of how to write
+a macro.
+
+
+File: elisp,  Node: Primitive Function Type,  Next: Byte-Code Type,  Prev: Macro Type,  Up: Programming Types
+
+Primitive Function Type
+-----------------------
+
+   A "primitive function" is a function callable from Lisp but written
+in the C programming language.  Primitive functions are also called
+"subrs" or "built-in functions".  (The word "subr" is derived from
+"subroutine".)  Most primitive functions evaluate all their arguments
+when they are called.  A primitive function that does not evaluate all
+its arguments is called a "special form" (*note Special Forms::.).
+
+   It does not matter to the caller of a function whether the function
+is primitive.  However, this does matter if you try to substitute a
+function written in Lisp for a primitive of the same name.  The reason
+is that the primitive function may be called directly from C code.
+Calls to the redefined function from Lisp will use the new definition,
+but calls from C code may still use the built-in definition.
+
+   The term "function" refers to all Emacs functions, whether written
+in Lisp or C.  *Note Function Type::, for information about the
+functions written in Lisp.
+
+   Primitive functions have no read syntax and print in hash notation
+with the name of the subroutine.
+
+     (symbol-function 'car)          ; Access the function cell
+                                     ;   of the symbol.
+          => #<subr car>
+     (subrp (symbol-function 'car))  ; Is this a primitive function?
+          => t                       ; Yes.
+
+
+File: elisp,  Node: Byte-Code Type,  Next: Autoload Type,  Prev: Primitive Function Type,  Up: Programming Types
+
+Byte-Code Function Type
+-----------------------
+
+   The byte compiler produces "byte-code function objects".
+Internally, a byte-code function object is much like a vector; however,
+the evaluator handles this data type specially when it appears as a
+function to be called.  *Note Byte Compilation::, for information about
+the byte compiler.
+
+   The printed representation for a byte-code function object is like
+that for a vector, with an additional `#' before the opening `['.
+
+
+File: elisp,  Node: Autoload Type,  Prev: Byte-Code Type,  Up: Programming Types
+
+Autoload Type
+-------------
+
+   An "autoload object" is a list whose first element is the symbol
+`autoload'.  It is stored as the function definition of a symbol as a
+placeholder for the real definition; it says that the real definition
+is found in a file of Lisp code that should be loaded when necessary.
+The autoload object contains the name of the file, plus some other
+information about the real definition.
+
+   After the file has been loaded, the symbol should have a new function
+definition that is not an autoload object.  The new definition is then
+called as if it had been there to begin with.  From the user's point of
+view, the function call works as expected, using the function definition
+in the loaded file.
+
+   An autoload object is usually created with the function `autoload',
+which stores the object in the function cell of a symbol.  *Note
+Autoload::, for more details.
+
+
+File: elisp,  Node: Editing Types,  Next: Type Predicates,  Prev: Programming Types,  Up: Lisp Data Types
+
+Editing Types
+=============
+
+   The types in the previous section are common to many Lisp dialects.
+Emacs Lisp provides several additional data types for purposes connected
+with editing.
+
+* Menu:
+
+* Buffer Type::         The basic object of editing.
+* Marker Type::         A position in a buffer.
+* Window Type::         Buffers are displayed in windows.
+* Frame Type::		Windows subdivide frames.
+* Window Configuration Type::   Recording the way a frame is subdivided.
+* Process Type::        A process running on the underlying OS.
+* Stream Type::         Receive or send characters.
+* Keymap Type::         What function a keystroke invokes.
+* Syntax Table Type::   What a character means.
+* Display Table Type::  How display tables are represented.
+* Overlay Type::        How an overlay is represented.
+
+
+File: elisp,  Node: Buffer Type,  Next: Marker Type,  Up: Editing Types
+
+Buffer Type
+-----------
+
+   A "buffer" is an object that holds text that can be edited (*note
+Buffers::.).  Most buffers hold the contents of a disk file (*note
+Files::.) so they can be edited, but some are used for other purposes.
+Most buffers are also meant to be seen by the user, and therefore
+displayed, at some time, in a window (*note Windows::.).  But a buffer
+need not be displayed in any window.
+
+   The contents of a buffer are much like a string, but buffers are not
+used like strings in Emacs Lisp, and the available operations are
+different.  For example, insertion of text into a buffer is very
+efficient, whereas "inserting" text into a string requires
+concatenating substrings, and the result is an entirely new string
+object.
+
+   Each buffer has a designated position called "point" (*note
+Positions::.).  At any time, one buffer is the "current buffer".  Most
+editing commands act on the contents of the current buffer in the
+neighborhood of point.  Many of the standard Emacs functions manipulate
+or test the characters in the current buffer; a whole chapter in this
+manual is devoted to describing these functions (*note Text::.).
+
+   Several other data structures are associated with each buffer:
+
+   * a local syntax table (*note Syntax Tables::.);
+
+   * a local keymap (*note Keymaps::.); and,
+
+   * a local variable binding list (*note Buffer-Local Variables::.).
+
+The local keymap and variable list contain entries that individually
+override global bindings or values.  These are used to customize the
+behavior of programs in different buffers, without actually changing the
+programs.
+
+   Buffers have no read syntax.  They print in hash notation with the
+buffer name.
+
+     (current-buffer)
+          => #<buffer objects.texi>
+
+
+File: elisp,  Node: Marker Type,  Next: Window Type,  Prev: Buffer Type,  Up: Editing Types
+
+Marker Type
+-----------
+
+   A "marker" denotes a position in a specific buffer.  Markers
+therefore have two components: one for the buffer, and one for the
+position.  Changes in the buffer's text automatically relocate the
+position value as necessary to ensure that the marker always points
+between the same two characters in the buffer.
+
+   Markers have no read syntax.  They print in hash notation, giving the
+current character position and the name of the buffer.
+
+     (point-marker)
+          => #<marker at 10779 in objects.texi>
+
+   *Note Markers::, for information on how to test, create, copy, and
+move markers.
+
+
+File: elisp,  Node: Window Type,  Next: Frame Type,  Prev: Marker Type,  Up: Editing Types
+
+Window Type
+-----------
+
+   A "window" describes the portion of the terminal screen that Emacs
+uses to display a buffer.  Every window has one associated buffer, whose
+contents appear in the window.  By contrast, a given buffer may appear
+in one window, no window, or several windows.
+
+   Though many windows may exist simultaneously, at any time one window
+is designated the "selected window".  This is the window where the
+cursor is (usually) displayed when Emacs is ready for a command.  The
+selected window usually displays the current buffer, but this is not
+necessarily the case.
+
+   Windows are grouped on the screen into frames; each window belongs to
+one and only one frame.  *Note Frame Type::.
+
+   Windows have no read syntax.  They print in hash notation, giving the
+window number and the name of the buffer being displayed.  The window
+numbers exist to identify windows uniquely, since the buffer displayed
+in any given window can change frequently.
+
+     (selected-window)
+          => #<window 1 on objects.texi>
+
+   *Note Windows::, for a description of the functions that work on
+windows.
+
+
+File: elisp,  Node: Frame Type,  Next: Window Configuration Type,  Prev: Window Type,  Up: Editing Types
+
+Frame Type
+----------
+
+   A FRAME is a rectangle on the screen that contains one or more Emacs
+windows.  A frame initially contains a single main window (plus perhaps
+a minibuffer window) which you can subdivide vertically or horizontally
+into smaller windows.
+
+   Frames have no read syntax.  They print in hash notation, giving the
+frame's title, plus its address in core (useful to identify the frame
+uniquely).
+
+     (selected-frame)
+          => #<frame xemacs@mole.gnu.ai.mit.edu 0xdac80>
+
+   *Note Frames::, for a description of the functions that work on
+frames.
+
+
+File: elisp,  Node: Window Configuration Type,  Next: Process Type,  Prev: Frame Type,  Up: Editing Types
+
+Window Configuration Type
+-------------------------
+
+   A "window configuration" stores information about the positions,
+sizes, and contents of the windows in a frame, so you can recreate the
+same arrangement of windows later.
+
+   Window configurations do not have a read syntax.  They print as
+`#<window-configuration>'.  *Note Window Configurations::, for a
+description of several functions related to window configurations.
+
+
+File: elisp,  Node: Process Type,  Next: Stream Type,  Prev: Window Configuration Type,  Up: Editing Types
+
+Process Type
+------------
+
+   The word "process" usually means a running program.  Emacs itself
+runs in a process of this sort.  However, in Emacs Lisp, a process is a
+Lisp object that designates a subprocess created by the Emacs process.
+Programs such as shells, GDB, ftp, and compilers, running in
+subprocesses of Emacs, extend the capabilities of Emacs.
+
+   An Emacs subprocess takes textual input from Emacs and returns
+textual output to Emacs for further manipulation.  Emacs can also send
+signals to the subprocess.
+
+   Process objects have no read syntax.  They print in hash notation,
+giving the name of the process:
+
+     (process-list)
+          => (#<process shell>)
+
+   *Note Processes::, for information about functions that create,
+delete, return information about, send input or signals to, and receive
+output from processes.
+
+
+File: elisp,  Node: Stream Type,  Next: Keymap Type,  Prev: Process Type,  Up: Editing Types
+
+Stream Type
+-----------
+
+   A "stream" is an object that can be used as a source or sink for
+characters--either to supply characters for input or to accept them as
+output.  Many different types can be used this way: markers, buffers,
+strings, and functions.  Most often, input streams (character sources)
+obtain characters from the keyboard, a buffer, or a file, and output
+streams (character sinks) send characters to a buffer, such as a
+`*Help*' buffer, or to the echo area.
+
+   The object `nil', in addition to its other meanings, may be used as
+a stream.  It stands for the value of the variable `standard-input' or
+`standard-output'.  Also, the object `t' as a stream specifies input
+using the minibuffer (*note Minibuffers::.) or output in the echo area
+(*note The Echo Area::.).
+
+   Streams have no special printed representation or read syntax, and
+print as whatever primitive type they are.
+
+   *Note Read and Print::, for a description of functions related to
+streams, including parsing and printing functions.
+
+
+File: elisp,  Node: Keymap Type,  Next: Syntax Table Type,  Prev: Stream Type,  Up: Editing Types
+
+Keymap Type
+-----------
+
+   A "keymap" maps keys typed by the user to commands.  This mapping
+controls how the user's command input is executed.  A keymap is actually
+a list whose CAR is the symbol `keymap'.
+
+   *Note Keymaps::, for information about creating keymaps, handling
+prefix keys, local as well as global keymaps, and changing key bindings.
+
+
+File: elisp,  Node: Syntax Table Type,  Next: Display Table Type,  Prev: Keymap Type,  Up: Editing Types
+
+Syntax Table Type
+-----------------
+
+   A "syntax table" is a vector of 256 integers.  Each element of the
+vector defines how one character is interpreted when it appears in a
+buffer.  For example, in C mode (*note Major Modes::.), the `+'
+character is punctuation, but in Lisp mode it is a valid character in a
+symbol.  These modes specify different interpretations by changing the
+syntax table entry for `+', at index 43 in the syntax table.
+
+   Syntax tables are used only for scanning text in buffers, not for
+reading Lisp expressions.  The table the Lisp interpreter uses to read
+expressions is built into the Emacs source code and cannot be changed;
+thus, to change the list delimiters to be `{' and `}' instead of `('
+and `)' would be impossible.
+
+   *Note Syntax Tables::, for details about syntax classes and how to
+make and modify syntax tables.
+
+
+File: elisp,  Node: Display Table Type,  Next: Overlay Type,  Prev: Syntax Table Type,  Up: Editing Types
+
+Display Table Type
+------------------
+
+   A "display table" specifies how to display each character code.
+Each buffer and each window can have its own display table.  A display
+table is actually a vector of length 261.  *Note Display Tables::.
+
+
+File: elisp,  Node: Overlay Type,  Prev: Display Table Type,  Up: Editing Types
+
+Overlay Type
+------------
+
+   An "overlay" specifies temporary alteration of the display
+appearance of a part of a buffer.  It contains markers delimiting a
+range of the buffer, plus a property list (a list whose elements are
+alternating property names and values).  Overlays are used to present
+parts of the buffer temporarily in a different display style.
+
+   *Note Overlays::, for how to create and use overlays.  They have no
+read syntax, and print in hash notation, giving the buffer name and
+range of positions.
+
+
+File: elisp,  Node: Type Predicates,  Next: Equality Predicates,  Prev: Editing Types,  Up: Lisp Data Types
+
+Type Predicates
+===============
+
+   The Emacs Lisp interpreter itself does not perform type checking on
+the actual arguments passed to functions when they are called.  It could
+not do so, since function arguments in Lisp do not have declared data
+types, as they do in other programming languages.  It is therefore up to
+the individual function to test whether each actual argument belongs to
+a type that the function can use.
+
+   All built-in functions do check the types of their actual arguments
+when appropriate, and signal a `wrong-type-argument' error if an
+argument is of the wrong type.  For example, here is what happens if you
+pass an argument to `+' that it cannot handle:
+
+     (+ 2 'a)
+          error--> Wrong type argument: integer-or-marker-p, a
+
+   Lisp provides functions, called "type predicates", to test whether
+an object is a member of a given type.  (Following a convention of long
+standing, the names of most Emacs Lisp predicates end in `p'.)
+
+   Here is a table of predefined type predicates, in alphabetical order,
+with references to further information.
+
+`atom'
+     *Note atom: List-related Predicates.
+
+`arrayp'
+     *Note arrayp: Array Functions.
+
+`bufferp'
+     *Note bufferp: Buffer Basics.
+
+`byte-code-function-p'
+     *Note byte-code-function-p: Byte-Code Type.
+
+`case-table-p'
+     *Note case-table-p: Case Table.
+
+`char-or-string-p'
+     *Note char-or-string-p: Predicates for Strings.
+
+`commandp'
+     *Note commandp: Interactive Call.
+
+`consp'
+     *Note consp: List-related Predicates.
+
+`floatp'
+     *Note floatp: Predicates on Numbers.
+
+`frame-live-p'
+     *Note frame-live-p: Deleting Frames.
+
+`framep'
+     *Note framep: Frames.
+
+`integer-or-marker-p'
+     *Note integer-or-marker-p: Predicates on Markers.
+
+`integerp'
+     *Note integerp: Predicates on Numbers.
+
+`keymapp'
+     *Note keymapp: Creating Keymaps.
+
+`listp'
+     *Note listp: List-related Predicates.
+
+`markerp'
+     *Note markerp: Predicates on Markers.
+
+`wholenump'
+     *Note wholenump: Predicates on Numbers.
+
+`nlistp'
+     *Note nlistp: List-related Predicates.
+
+`numberp'
+     *Note numberp: Predicates on Numbers.
+
+`number-or-marker-p'
+     *Note number-or-marker-p: Predicates on Markers.
+
+`overlayp'
+     *Note overlayp: Overlays.
+
+`processp'
+     *Note processp: Processes.
+
+`sequencep'
+     *Note sequencep: Sequence Functions.
+
+`stringp'
+     *Note stringp: Predicates for Strings.
+
+`subrp'
+     *Note subrp: Function Cells.
+
+`symbolp'
+     *Note symbolp: Symbols.
+
+`syntax-table-p'
+     *Note syntax-table-p: Syntax Tables.
+
+`user-variable-p'
+     *Note user-variable-p: Defining Variables.
+
+`vectorp'
+     *Note vectorp: Vectors.
+
+`window-configuration-p'
+     *Note window-configuration-p: Window Configurations.
+
+`window-live-p'
+     *Note window-live-p: Deleting Windows.
+
+`windowp'
+     *Note windowp: Basic Windows.
+
+
+File: elisp,  Node: Equality Predicates,  Prev: Type Predicates,  Up: Lisp Data Types
+
+Equality Predicates
+===================
+
+   Here we describe two functions that test for equality between any two
+objects.  Other functions test equality between objects of specific
+types, e.g., strings.  For these predicates, see the appropriate chapter
+describing the data type.
+
+ - Function: eq OBJECT1 OBJECT2
+     This function returns `t' if OBJECT1 and OBJECT2 are the same
+     object, `nil' otherwise.  The "same object" means that a change in
+     one will be reflected by the same change in the other.
+
+     `eq' returns `t' if OBJECT1 and OBJECT2 are integers with the same
+     value.  Also, since symbol names are normally unique, if the
+     arguments are symbols with the same name, they are `eq'.  For
+     other types (e.g., lists, vectors, strings), two arguments with
+     the same contents or elements are not necessarily `eq' to each
+     other: they are `eq' only if they are the same object.
+
+     (The `make-symbol' function returns an uninterned symbol that is
+     not interned in the standard `obarray'.  When uninterned symbols
+     are in use, symbol names are no longer unique.  Distinct symbols
+     with the same name are not `eq'.  *Note Creating Symbols::.)
+
+          (eq 'foo 'foo)
+               => t
+          
+          (eq 456 456)
+               => t
+          
+          (eq "asdf" "asdf")
+               => nil
+          
+          (eq '(1 (2 (3))) '(1 (2 (3))))
+               => nil
+          
+          (setq foo '(1 (2 (3))))
+               => (1 (2 (3)))
+          (eq foo foo)
+               => t
+          (eq foo '(1 (2 (3))))
+               => nil
+          
+          (eq [(1 2) 3] [(1 2) 3])
+               => nil
+          
+          (eq (point-marker) (point-marker))
+               => nil
+
+
+ - Function: equal OBJECT1 OBJECT2
+     This function returns `t' if OBJECT1 and OBJECT2 have equal
+     components, `nil' otherwise.  Whereas `eq' tests if its arguments
+     are the same object, `equal' looks inside nonidentical arguments
+     to see if their elements are the same.  So, if two objects are
+     `eq', they are `equal', but the converse is not always true.
+
+          (equal 'foo 'foo)
+               => t
+          
+          (equal 456 456)
+               => t
+          
+          (equal "asdf" "asdf")
+               => t
+          (eq "asdf" "asdf")
+               => nil
+          
+          (equal '(1 (2 (3))) '(1 (2 (3))))
+               => t
+          (eq '(1 (2 (3))) '(1 (2 (3))))
+               => nil
+          
+          (equal [(1 2) 3] [(1 2) 3])
+               => t
+          (eq [(1 2) 3] [(1 2) 3])
+               => nil
+          
+          (equal (point-marker) (point-marker))
+               => t
+          
+          (eq (point-marker) (point-marker))
+               => nil
+
+     Comparison of strings uses `string=', and is case-sensitive.
+
+          (equal "asdf" "ASDF")
+               => nil
+
+   The test for equality is implemented recursively, and circular lists
+may therefore cause infinite recursion (leading to an error).
+
+
+File: elisp,  Node: Numbers,  Next: Strings and Characters,  Prev: Lisp Data Types,  Up: Top
+
+Numbers
+*******
+
+   GNU Emacs supports two numeric data types: "integers" and "floating
+point numbers".  Integers are whole numbers such as -3, 0, 7, 13, and
+511.  Their values are exact.  Floating point numbers are numbers with
+fractional parts, such as -4.5, 0.0, or 2.71828.  They can also be
+expressed in exponential notation: 1.5e2 equals 150; in this example,
+`e2' stands for ten to the second power, and is multiplied by 1.5.
+Floating point values are not exact; they have a fixed, limited amount
+of precision.
+
+   Support for floating point numbers is a new feature in Emacs 19, and
+it is controlled by a separate compilation option, so you may encounter
+a site where Emacs does not support them.
+
+* Menu:
+
+* Integer Basics::            Representation and range of integers.
+* Float Basics::	      Representation and range of floating point.
+* Predicates on Numbers::     Testing for numbers.
+* Comparison of Numbers::     Equality and inequality predicates.
+* Numeric Conversions::	      Converting float to integer and vice versa.
+* Arithmetic Operations::     How to add, subtract, multiply and divide.
+* Rounding Operations::       Explicitly rounding floating point numbers.
+* Bitwise Operations::        Logical and, or, not, shifting.
+* Transcendental Functions::  Trig, exponential and logarithmic functions.
+* Random Numbers::            Obtaining random integers, predictable or not.
+
+
+File: elisp,  Node: Integer Basics,  Next: Float Basics,  Up: Numbers
+
+Integer Basics
+==============
+
+   The range of values for an integer depends on the machine.  The
+range is -8388608 to 8388607 (24 bits; i.e., -2**23 to 2**23 - 1) on
+most machines, but on others it is -16777216 to 16777215 (25 bits), or
+-33554432 to 33554431 (26 bits).  Many examples in this chapter assume
+an integer has 24 bits.
+
+   The Lisp reader reads an integer as a sequence of digits with
+optional initial sign and optional final period.
+
+      1               ; The integer 1.
+      1.              ; The integer 1.
+     +1               ; Also the integer 1.
+     -1               ; The integer -1.
+      16777217        ; Also the integer 1, due to overflow.
+      0               ; The integer 0.
+     -0               ; The integer 0.
+
+   To understand how various functions work on integers, especially the
+bitwise operators (*note Bitwise Operations::.), it is often helpful to
+view the numbers in their binary form.
+
+   In 24-bit binary, the decimal integer 5 looks like this:
+
+     0000 0000  0000 0000  0000 0101
+
+(We have inserted spaces between groups of 4 bits, and two spaces
+between groups of 8 bits, to make the binary integer easier to read.)
+
+   The integer -1 looks like this:
+
+     1111 1111  1111 1111  1111 1111
+
+-1 is represented as 24 ones.  (This is called "two's complement"
+notation.)
+
+   The negative integer, -5, is creating by subtracting 4 from -1.  In
+binary, the decimal integer 4 is 100.  Consequently, -5 looks like this:
+
+     1111 1111  1111 1111  1111 1011
+
+   In this implementation, the largest 24-bit binary integer is the
+decimal integer 8,388,607.  In binary, it looks like this:
+
+     0111 1111  1111 1111  1111 1111
+
+   Since the arithmetic functions do not check whether integers go
+outside their range, when you add 1 to 8,388,607, the value is the
+negative integer -8,388,608:
+
+     (+ 1 8388607)
+          => -8388608
+          => 1000 0000  0000 0000  0000 0000
+
+   Many of the following functions accept markers for arguments as well
+as integers.  (*Note Markers::.)  More precisely, the actual arguments
+to such functions may be either integers or markers, which is why we
+often give these arguments the name INT-OR-MARKER.  When the argument
+value is a marker, its position value is used and its buffer is ignored.
+

@@ -1,0 +1,237 @@
+/*******************************************************************************
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ */
+/*
+ * Created on Feb 9, 2004
+ *
+ * To change the template for this generated file go to
+ * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ */
+package com.cosylab.cdb.jdal;
+
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
+import org.omg.PortableServer.POA;
+
+import com.cosylab.CDB.FieldDoesNotExist;
+import com.cosylab.CDB.FieldIsReadOnly;
+import com.cosylab.CDB.WDAOPOA;
+import com.cosylab.CDB.WrongDataType;
+
+/**
+ * @author dvitas
+ *
+ * To change the template for this generated type comment go to
+ * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ */
+public class WDAOImpl extends WDAOPOA {
+	private DAOImpl daoImpl = null;
+	private WDALImpl wdal = null; // used for saving - nicer if it is an interface
+	/**
+	 * 
+	 */
+	public WDAOImpl(WDALImpl wdal, String name, DAOImpl daoImpl, POA poa) {
+		super();
+		this.wdal = wdal;
+		this.daoImpl = daoImpl;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.WDAOOperations#set_long(java.lang.String, int)
+	 */
+	public void set_long(String propertyName, int value) throws FieldDoesNotExist, FieldIsReadOnly {
+		setField(propertyName, String.valueOf(value));
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.WDAOOperations#set_double(java.lang.String, double)
+	 */
+	public void set_double(String propertyName, double value) throws FieldDoesNotExist, FieldIsReadOnly {
+		setField(propertyName, String.valueOf(value));
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.WDAOOperations#set_string(java.lang.String, java.lang.String)
+	 */
+	public void set_string(String propertyName, String value) throws FieldDoesNotExist, FieldIsReadOnly {
+		setField(propertyName, value);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.WDAOOperations#set_field_data(java.lang.String, java.lang.String)
+	 */
+	public void set_field_data(String propertyName, String value) throws WrongDataType, FieldDoesNotExist, FieldIsReadOnly {
+		setField(propertyName, value);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.WDAOOperations#set_string_seq(java.lang.String, java.lang.String[])
+	 */
+	public void set_string_seq(String propertyName, String[] value) throws FieldDoesNotExist, FieldIsReadOnly {
+		StringBuffer strValue = new StringBuffer(64);
+		for (int i = 0; i < value.length; i++) {
+			strValue.append(value[i]).append(',');
+		}
+		setField(propertyName, strValue.toString());
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.WDAOOperations#set_long_seq(java.lang.String, int[])
+	 */
+	public void set_long_seq(String propertyName, int[] value) throws FieldDoesNotExist, FieldIsReadOnly {
+		StringBuffer strValue = new StringBuffer(64);
+		for (int i = 0; i < value.length; i++) {
+			strValue.append(value[i]).append(',');
+		}
+		setField(propertyName, strValue.toString());
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.WDAOOperations#set_double_seq(java.lang.String, double[])
+	 */
+	public void set_double_seq(String propertyName, double[] value) throws FieldDoesNotExist, FieldIsReadOnly {
+		StringBuffer strValue = new StringBuffer(64);
+		for (int i = 0; i < value.length; i++) {
+			strValue.append(value[i]).append(',');
+		}
+		setField(propertyName, strValue.toString());
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#get_long(java.lang.String)
+	 */
+	public int get_long(String propertyName) throws WrongDataType, FieldDoesNotExist {
+		return daoImpl.get_long(propertyName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#get_double(java.lang.String)
+	 */
+	public double get_double(String propertyName) throws WrongDataType, FieldDoesNotExist {
+		return daoImpl.get_double(propertyName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#get_string(java.lang.String)
+	 */
+	public String get_string(String propertyName) throws WrongDataType, FieldDoesNotExist {
+		return daoImpl.get_string(propertyName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#get_field_data(java.lang.String)
+	 */
+	public String get_field_data(String propertyName) throws WrongDataType, FieldDoesNotExist {
+		return daoImpl.get_field_data(propertyName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#get_string_seq(java.lang.String)
+	 */
+	public String[] get_string_seq(String propertyName) throws WrongDataType, FieldDoesNotExist {
+		return daoImpl.get_string_seq(propertyName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#get_long_seq(java.lang.String)
+	 */
+	public int[] get_long_seq(String propertyName) throws WrongDataType, FieldDoesNotExist {
+		return daoImpl.get_long_seq(propertyName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#get_double_seq(java.lang.String)
+	 */
+	public double[] get_double_seq(String propertyName) throws WrongDataType, FieldDoesNotExist {
+		return daoImpl.get_double_seq(propertyName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DAOOperations#destroy()
+	 */
+	public void destroy() {
+		daoImpl.destroy();
+		try {
+			POA poa = getPOA();
+			byte[] thisId = poa.servant_to_id(this);
+			poa.deactivate_object(thisId);
+		} catch (Exception e) {
+			System.out.println(
+				"Exception destroying object " + this +" : " + e);
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public XMLTreeNode getRootNode() {
+		return daoImpl.getRootNode();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getName() {
+		return daoImpl.getName();
+	}
+
+	/**
+	 * @return
+	 */
+	public POA getPOA() {
+		return daoImpl.getPOA();
+	}
+
+	private void setField(String strFieldName, String value) throws FieldDoesNotExist {
+		XMLTreeNode pNode = getRootNode();
+		StringTokenizer st = new StringTokenizer(strFieldName, "/");
+		String fieldName = st.nextToken();
+		while (st.hasMoreTokens()) {
+			pNode = (XMLTreeNode) pNode.m_subNodesMap.get(fieldName);
+			if (pNode == null)
+				throw new FieldDoesNotExist("Field '" + strFieldName + "' does not exists.");
+			fieldName = st.nextToken();
+		}
+		String currentValue = (String) pNode.m_fieldMap.get(fieldName);
+		if (currentValue == null) {
+			System.err.println("WDAO:'" + getName() + "' Unable to find field: '" + strFieldName + "'");
+			throw new FieldDoesNotExist("Field '" + strFieldName + "' does not exists.");
+		}
+		System.err.println("WDAO:'" + getName() + "' set '" + strFieldName + "'=" + value);
+		// set value in memory
+		pNode.m_fieldMap.put(fieldName, value);
+		// and on disk
+		HashMap map = new HashMap();
+		map.put(strFieldName, value);
+		try {
+			wdal.saveChanges(getName(), map);
+		}
+		catch(FieldDoesNotExist e) {
+			throw e;
+		}
+		catch(Exception e) {
+			// TODO do something with this exception
+			e.printStackTrace();
+		}
+	}
+}

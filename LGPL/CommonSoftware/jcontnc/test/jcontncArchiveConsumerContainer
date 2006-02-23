@@ -1,0 +1,3 @@
+#!/bin/bash
+
+acsutilTATTestRunner acsStartContainer -cpp archiveContainer >& $ACS_TMP/archiveContainer.log

@@ -1,0 +1,30 @@
+<html>
+<head>
+   <meta name="Author" content="Eric ROUX">
+   <title>Gui Platform navigation bar </title>
+   <link REL="stylesheet" TYPE="text/css" HREF="addon/stylesheet.css">
+   <link REL="stylesheet" TYPE="text/css" HREF="addon/cooltree.css">
+	<script language="JavaScript" src="addon/cooltree.js"></script>
+	<script language="JavaScript" src="addon/cooltree_nodes.js"></script>
+	<script language="JavaScript" src="addon/cooltree_format.js"></script>
+<SCRIPT Language="JavaScript">
+function search(){
+   QueryString= document.Form1.QueryString.value
+   if (QueryString.length != 0)
+     parent.MAIN_FRAME.location= "http://wwwsearch.cern.ch:8765/query.html?col=cern&qp=&qt=url%3Ahttp%3A%2F%2Fproj-gp.web.cern.ch%2Fproj-gp%2F+%7C+"+QueryString+"&qs=&qc=cern&pw=600&ws=0&qm=0&st=1&nh=15&lk=1&rf=0"
+}
+</SCRIPT></head>
+<body bgcolor="#FFFFFF" MARGINWIDTH="0" MARGINHEIGHT="0" BACKGROUND="images/steel.jpg">
+<FORM NAME="Form1" METHOD="POST" ACTION="javascript:search()">
+<A HREF="private/index.html" TARGET="MAIN_FRAME"><IMG SRC="images/gplogo1.gif" BORDER="0"></A><BR>
+<BR>
+&nbsp;&nbsp;GP website search:<BR>
+&nbsp;&nbsp;<INPUT TYPE=text VALUE="" NAME="QueryString" SIZE="20" onChange="javascript:search()">
+</FORM>
+
+<script language="JavaScript">
+	var treeName = "cooltree";
+	new COOLjsTree (treeName, COOLTREE_NODES, COOLTREE_FORMAT);
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# standardEpilogue
+#
+# "@(#) $Id: standardEpilogue,v 1.4 2004/02/12 14:41:17 psivera Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  15/06/94  created
+# gfilippi  04/03/95  aesthetics
+#
+
+#************************************************************************
+#   NAME
+#   standardEpilogue - trailer used by all buildXxxxx script
+#
+#   SYNOPSIS
+#   source standardEpilogue
+#
+#   DESCRIPTION
+#   
+#   FILES
+#   $LOGFILE    WRITE    file containing the stout
+#   $ERRFILE    WRITE    file containing the sterr
+#
+#   ENVIRONMENT
+#     BUILD_NAME   Read    name of the installation
+#     SEPARATOR    Read    a line of --------
+#------------------------------------------------------------------------
+#
+
+echo "$SEPARATOR"
+echo "build${BUILD_NAME} - installation ended at `date`"
+echo "============================================================================"
+echo ""
+
+#
+#___oOo___

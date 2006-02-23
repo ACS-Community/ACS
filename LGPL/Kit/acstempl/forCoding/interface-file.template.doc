@@ -1,0 +1,102 @@
+#------------------------------------------------------------------------
+# E.S.O. - ACS project
+# 
+# "@(#) $Id: interface-file.template.doc,v 1.19+ 2002/11/12 10:34:17 vltsccm Exp $" 
+# 
+# who        when      what
+# ---------  --------  ----------------------------------------------
+# gfilippi   21/02/95  created
+# 
+#------------------------------------------------------------------------
+/************************************************************************
+*   NAME
+*   interface_file - include file specifying the interface of a module
+*
+*   SYNOPSIS
+*       <mod>/include/<mod>.h
+*
+*       <mod>/ws/include/<mod>.h
+*
+*   DESCRIPTION
+*   The include file specifying the callable interface of a software 
+*   module written in C language, according to the convention in the
+*   "VLT-PRO-ESO-10000-0228, 1.0 10/03/93 VLT Sw Programming Standards".
+*
+*   Use the h-file template provided by getTemplate(7) in the "code" menu,
+*   and complete as follows:
+*   
+*
+*   #ifndef <MOD>_H          <<<< the name of the module in UPPERCASE
+*   #define <MOD>_H          <<<< same as above
+*   /**********.. .  .
+*   * E.S.O. - ACS project
+*   *
+*   * "@(#) ...."            <<<< the identificator DO NOT MODIFY IT
+*   *
+*   * who       when      what
+*   * --------  --------  -------------------- 
+*   * NNNNNNNN  dd/mm/yy  created
+*   */|----------------| <<<<in the template these two fields are changed
+*                            according to the current value of username and date.
+*
+*   /****************.. .  .
+*   *  Module <MOD> <module brief description> - Interface File
+*   *  ..................................................
+*   *  ..................................................
+*   *------------ -  -  -
+*   */
+*   
+*       >>>> the interface is made of function prototypes, <<<<
+*       >>>>      data structures, macros, constants, etc. <<<<
+*       >>>>      complete as appropriate.                 <<<<
+*   
+*   /* 
+*    * header files
+*    */
+*   /*none*/
+*   
+*   /* 
+*    * constants 
+*    */
+*   #define modMAX_TIME_TO_WAIT   100
+*   
+*   /* 
+*    * data types
+*    */
+*   typedef enum {
+*       modSTART_MOTOR=1,
+*       modSTOP_MOTOR,
+*       modREACH_PARK_POSITION
+*   } modWHAT;
+*   
+*   typedef struct {
+*       ........;
+*       ........;
+*   } modTIME;
+*   
+*   
+*   /* 
+*    * macros 
+*    */
+*   # include modMacros.h
+*   
+*   
+*   /* 
+*    * functions prototypes 
+*    */
+*   integer modDoAction (modWHAT *modAction, modTIME *modWhen);
+*   integer modWait (int modTimeToWait);
+*   
+*   /* 
+*    * message definitions
+*    */
+*   #include modMessages.h
+*   
+*   /* 
+*    * error definitions
+*    */
+*   #include modErrors.h
+*   
+*   #endif /*!<MOD>_H*/          <<<< the name of the file in UPPERCASE
+*------------------------------------------------------------------------
+                              ___oOo___

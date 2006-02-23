@@ -1,0 +1,20 @@
+#ifndef _PERF_TEST_BD_IDL_
+#define _PERF_TEST_BD_IDL_
+
+#include <bulkDataSender.idl>
+
+#pragma prefix "alma"
+
+module perftestBD
+{
+
+    /** @interface BulkDataSenderEx1
+     *  Defines the interface for the Bulk Data Sender Ex1 Component.
+     */
+    interface BulkDataSenderEx1 : bulkdata::BulkDataSender
+	{
+	void setSize(in unsigned long long newSize);
+	};
+};
+
+#endif

@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat2,v 1.76 2003/01/09 17:51:25 vltsccm Exp $"
+#
+# tat - test2
+#
+# 
+# valid command line options with tests not needing any environment.
+# 
+#
+#
+rm -f TestList.sed
+rm -f TestList
+#
+#
+# needs a Makefile to test 'make' step and to put tests into ../bin
+#
+
+rm -f Makefile
+cp Makefile.tat2 Makefile
+
+#set -x
+
+# -s: single => execute all tests.
+
+rm -f tat21
+rm -f ./ref/tat21.ref
+touch tat21
+touch TestList
+echo "echo Executing tat21\n" >> tat21
+echo "tat21" >> TestList
+rm -f tat22
+rm -f ./ref/tat21.ref
+rm -f ./ref/tat22.ref
+echo "echo Executing tat22\n" >> tat22
+echo "tat22" >> TestList
+
+# -g generate => by default all
+
+rm -f ./ref/tat21.ref
+rm -f ./ref/tat22.ref
+tat -g
+cat ./ref/tat21.ref
+cat ./ref/tat22.ref
+
+rm -f ./ref/tat21.ref
+rm -f ./ref/tat22.ref
+tat -g all
+cat ./ref/tat21.ref
+cat ./ref/tat22.ref
+
+rm -f ./ref/tat21.ref
+rm -f ./ref/tat22.ref
+tat -g tat21
+cat ./ref/tat21.ref
+
+rm -f ./ref/tat21.ref
+rm -f ./ref/tat22.ref
+tat -g tat21 tat22
+cat ./ref/tat21.ref
+cat ./ref/tat22.ref
+
+# ref OK => all tests are run
+tat 
+
+# there is no env. but .testsession is needed
+tat makeEnv
+tat tat21
+
+tat tat22
+tat cleanEnv
+
+# no test session => create env.
+tat all

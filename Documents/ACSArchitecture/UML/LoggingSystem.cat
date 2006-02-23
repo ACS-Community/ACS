@@ -1,0 +1,2024 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Logging System"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"38159A1701D3"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "client for logs"
+	    quid       	"38EB56EF0265"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"38EB60B901F0"
+		    supplier   	"Logical View::Event and Notification System::Observer"
+		    quidu      	"38EB5DC9027B")))
+	(object Class "producer for logs"
+	    quid       	"38EB57030065"
+	    class_attributes 	(list class_attribute_list
+		(object ClassAttribute "logger"
+		    quid       	"393F82BA022A")))
+	(object Class "log monitor"
+	    quid       	"393F820C0202"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"393F831E03B5"
+		    supplier   	"Logical View::Logging System::client for logs"
+		    quidu      	"38EB56EF0265")))
+	(object Class "Archive"
+	    quid       	"393F836902AE")
+	(object Class "ACS Logging Service"
+	    quid       	"3DD39AAC0000")
+	(object Class "Log Archiver"
+	    quid       	"3DD39BF801DF"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3DD39C09027B"
+		    supplier   	"Logical View::Logging System::client for logs"
+		    quidu      	"38EB56EF0265")))
+	(object Parameterized_Class "log API"
+	    quid       	"3DD39DC90030"
+	    parameters 	(list Parameters
+		(object Parameter "language"
+		    quid       	"3DD39DE20272")))
+	(object Association "browse logs"
+	    quid       	"393F84300200"
+	    roles      	(list role_list
+		(object Role "log archive"
+		    quid       	"393F84310161"
+		    label      	"log archive"
+		    supplier   	"Logical View::Logging System::Archive"
+		    quidu      	"393F836902AE")
+		(object Role "$UNNAMED$0"
+		    quid       	"393F84310162"
+		    supplier   	"Logical View::Logging System::log monitor"
+		    quidu      	"393F820C0202")))
+	(object Association "store in archive"
+	    quid       	"393F859C0358"
+	    roles      	(list role_list
+		(object Role "log archive"
+		    quid       	"393F859D01E7"
+		    label      	"log archive"
+		    supplier   	"Logical View::Logging System::Archive"
+		    quidu      	"393F836902AE"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$1"
+		    quid       	"393F859D01E8"
+		    supplier   	"Logical View::Logging System::Log Archiver"
+		    quidu      	"3DD39BF801DF")))
+	(object Association "$UNNAMED$2"
+	    quid       	"3DD399E302A2"
+	    roles      	(list role_list
+		(object Role "LoggingChannel"
+		    quid       	"3DD399E4013B"
+		    label      	"LoggingChannel"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"
+		    Containment 	"By Value"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$3"
+		    quid       	"3DD399E4013D"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "[logging service OK] send logs"
+	    quid       	"3DD39A2C037C"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$4"
+		    quid       	"3DD39A2C037D"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$5"
+		    quid       	"3DD39A2C037E"
+		    supplier   	"Logical View::Logging System::C++ logging API::logMangerProxy"
+		    quidu      	"38EB569D038A"
+		    client_cardinality 	(value cardinality "0..n"))))
+	(object Association "push logs"
+	    quid       	"3DD39A5102DF"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$6"
+		    quid       	"3DD39A5102E0"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023")
+		(object Role "$UNNAMED$7"
+		    quid       	"3DD39A5102E1"
+		    supplier   	"Logical View::Logging System::client for logs"
+		    quidu      	"38EB56EF0265"
+		    client_cardinality 	(value cardinality "0..n")
+		    is_navigable 	TRUE)))
+	(object Association "subscribes to logs"
+	    quid       	"3DD39A5601D6"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$8"
+		    quid       	"3DD39A5601E5"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$9"
+		    quid       	"3DD39A5601E6"
+		    supplier   	"Logical View::Logging System::client for logs"
+		    quidu      	"38EB56EF0265")))
+	(object Association "un-subscribe to logs"
+	    quid       	"3DD39A6D0204"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$10"
+		    quid       	"3DD39A6D0205"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$11"
+		    quid       	"3DD39A6D0206"
+		    supplier   	"Logical View::Logging System::client for logs"
+		    quidu      	"38EB56EF0265")))
+	(object Association "log"
+	    quid       	"3DD39AB8036B"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$12"
+		    quid       	"3DD39AB901F4"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$13"
+		    quid       	"3DD39AB90203"
+		    supplier   	"Logical View::Logging System::ACS Logging Service"
+		    quidu      	"3DD39AAC0000")))
+	(object Association "[use API]log"
+	    quid       	"3DD39DAE01D7"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$14"
+		    quid       	"3DD39DAF0215"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$15"
+		    quid       	"3DD39DAF0217"
+		    supplier   	"Logical View::Logging System::producer for logs"
+		    quidu      	"38EB57030065"))
+	    AssociationClass 	"Logical View::Logging System::log API")
+	(object Association "[use CORBA service] log"
+	    quid       	"3DD39E8C0270"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$16"
+		    quid       	"3DD39E8D0108"
+		    supplier   	"Logical View::Logging System::ACS Logging Service"
+		    quidu      	"3DD39AAC0000"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$17"
+		    quid       	"3DD39E8D0118"
+		    supplier   	"Logical View::Logging System::producer for logs"
+		    quidu      	"38EB57030065")))
+	(object Class_Category "C++ logging API"
+	    quid       	"3DD398220067"
+	    exportControl 	"Public"
+	    logical_models 	(list unit_reference_list
+		(object Class "logMangerProxy"
+		    quid       	"38EB569D038A"
+		    superclasses 	(list inheritance_relationship_list
+			(object Inheritance_Relationship
+			    quid       	"38EB602A0191"
+			    supplier   	"Logical View::Event and Notification System::Subject"
+			    quidu      	"38EB5D910221"))
+		    operations 	(list Operations
+			(object Operation "ACS_LOG"
+			    quid       	"38EB57FC0276"
+			    concurrency 	"Sequential"
+			    opExportControl 	"Public"
+			    uid        	0))
+		    class_attributes 	(list class_attribute_list
+			(object ClassAttribute "timer"
+			    quid       	"38EB5B2100C5")
+			(object ClassAttribute "buffer"
+			    quid       	"38EB5B250099")))
+		(object Class "C++ log producer"
+		    quid       	"3DD39C6C00B4"
+		    used_nodes 	(list uses_relationship_list
+			(object Uses_Relationship
+			    quid       	"3DD39D1D0341"
+			    stereotype 	"bind"
+			    label      	"C++"
+			    supplier   	"Logical View::Logging System::producer for logs"
+			    quidu      	"38EB57030065")))
+		(object Class "file"
+		    quid       	"3DD39CA60297")
+		(object Association "calls ACS_LOG() to send log"
+		    quid       	"3DD39C7A01FC"
+		    roles      	(list role_list
+			(object Role "$UNNAMED$18"
+			    quid       	"3DD39C7A01FD"
+			    supplier   	"Logical View::Logging System::C++ logging API::C++ log producer"
+			    quidu      	"3DD39C6C00B4"
+			    client_cardinality 	(value cardinality "0..n"))
+			(object Role "$UNNAMED$19"
+			    quid       	"3DD39C7A01FE"
+			    supplier   	"Logical View::Logging System::C++ logging API::logMangerProxy"
+			    quidu      	"38EB569D038A"
+			    is_navigable 	TRUE)))
+		(object Association "[logging service failure] send logs"
+		    quid       	"3DD39CB202B6"
+		    roles      	(list role_list
+			(object Role "XML log file"
+			    quid       	"3DD39CB301BC"
+			    label      	"XML log file"
+			    supplier   	"Logical View::Logging System::C++ logging API::file"
+			    quidu      	"3DD39CA60297"
+			    is_navigable 	TRUE)
+			(object Role "$UNNAMED$20"
+			    quid       	"3DD39CB301BE"
+			    supplier   	"Logical View::Logging System::C++ logging API::logMangerProxy"
+			    quidu      	"38EB569D038A"))))
+	    logical_presentations 	(list unit_reference_list
+		(object ClassDiagram "C++ logging API"
+		    quid       	"3DD39C450316"
+		    title      	"C++ logging API"
+		    zoom       	100
+		    max_height 	28350
+		    max_width  	21600
+		    origin_x   	0
+		    origin_y   	0
+		    items      	(list diagram_item_list
+			(object ClassView "Class" "Logical View::Logging System::producer for logs" @1
+			    ShowCompartmentStereotypes 	TRUE
+			    IncludeAttribute 	TRUE
+			    IncludeOperation 	TRUE
+			    location   	(1320, 150)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@1
+				location   	(1118, 46)
+				fill_color 	13434879
+				nlines     	1
+				max_width  	404
+				justify    	0
+				label      	"producer for logs")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"38EB57030065"
+			    width      	422
+			    height     	232
+			    annotation 	8
+			    autoResize 	TRUE)
+			(object ClassView "Class" "Logical View::Logging System::C++ logging API::C++ log producer" @2
+			    ShowCompartmentStereotypes 	TRUE
+			    IncludeAttribute 	TRUE
+			    IncludeOperation 	TRUE
+			    location   	(420, 150)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@2
+				location   	(226, 59)
+				fill_color 	13434879
+				nlines     	1
+				max_width  	389
+				justify    	0
+				label      	"C++ log producer")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD39C6C00B4"
+			    width      	407
+			    height     	206
+			    annotation 	8
+			    autoResize 	TRUE)
+			(object ClassView "Class" "Logical View::CORBA Middleware::CORBA Telecom Logging Service" @3
+			    ShowCompartmentStereotypes 	TRUE
+			    IncludeAttribute 	TRUE
+			    IncludeOperation 	TRUE
+			    location   	(420, 1620)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@3
+				location   	(46, 1542)
+				fill_color 	13434879
+				nlines     	1
+				max_width  	748
+				justify    	0
+				label      	"CORBA Telecom Logging Service")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD39920012E"
+			    width      	766
+			    height     	180
+			    annotation 	8
+			    autoResize 	TRUE)
+			(object ClassView "Class" "Logical View::Logging System::C++ logging API::file" @4
+			    ShowCompartmentStereotypes 	TRUE
+			    IncludeAttribute 	TRUE
+			    IncludeOperation 	TRUE
+			    location   	(1530, 1260)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@4
+				location   	(1434, 1210)
+				fill_color 	13434879
+				nlines     	1
+				max_width  	192
+				justify    	0
+				label      	"file")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"3DD39CA60297"
+			    width      	210
+			    height     	124
+			    annotation 	8
+			    autoResize 	TRUE)
+			(object ClassView "Class" "Logical View::Logging System::C++ logging API::logMangerProxy" @5
+			    ShowCompartmentStereotypes 	TRUE
+			    IncludeAttribute 	TRUE
+			    IncludeOperation 	TRUE
+			    location   	(420, 765)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@5
+				location   	(230, 634)
+				fill_color 	13434879
+				nlines     	1
+				max_width  	380
+				justify    	0
+				label      	"logMangerProxy")
+			    icon_style 	"Icon"
+			    line_color 	3342489
+			    fill_color 	13434879
+			    quidu      	"38EB569D038A"
+			    width      	398
+			    height     	286
+			    annotation 	8
+			    autoResize 	TRUE)
+			(object AssociationViewNew "calls ACS_LOG() to send log" @6
+			    location   	(420, 437)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @7
+				Parent_View 	@6
+				location   	(420, 378)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	TRUE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	550
+				justify    	0
+				label      	"calls ACS_LOG() to send log"
+				pctDist    	0.500000
+				height     	60
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39C7A01FC"
+			    roleview_list 	(list RoleViews
+				(object RoleView "$UNNAMED$18" @8
+				    Parent_View 	@6
+				    location   	(-1110, -583)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    label      	(object SegLabel @9
+					Parent_View 	@8
+					location   	(379, 290)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					hidden     	TRUE
+					anchor     	1
+					anchor_loc 	1
+					nlines     	1
+					max_width  	450
+					justify    	0
+					label      	""
+					pctDist    	0.800000
+					height     	42
+					orientation 	0)
+				    stereotype 	TRUE
+				    line_color 	3342489
+				    quidu      	"3DD39C7A01FD"
+				    client     	@6
+				    supplier   	@2
+				    vertices   	(list Points
+					(420, 437)
+					(420, 253))
+				    line_style 	0
+				    label      	(object SegLabel @10
+					Parent_View 	@8
+					location   	(474, 271)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					anchor     	2
+					anchor_loc 	1
+					nlines     	1
+					max_width  	15
+					justify    	0
+					label      	"0..n"
+					pctDist    	0.900000
+					height     	54
+					orientation 	1))
+				(object RoleView "$UNNAMED$19" @11
+				    Parent_View 	@6
+				    location   	(-1110, -583)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    label      	(object SegLabel @12
+					Parent_View 	@11
+					location   	(379, 584)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					hidden     	TRUE
+					anchor     	1
+					anchor_loc 	1
+					nlines     	1
+					max_width  	450
+					justify    	0
+					label      	""
+					pctDist    	0.800000
+					height     	42
+					orientation 	1)
+				    stereotype 	TRUE
+				    line_color 	3342489
+				    quidu      	"3DD39C7A01FE"
+				    client     	@6
+				    supplier   	@5
+				    vertices   	(list Points
+					(420, 437)
+					(420, 621))
+				    line_style 	0)))
+			(object AssociationViewNew "[logging service OK] send logs" @13
+			    location   	(420, 1218)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @14
+				Parent_View 	@13
+				location   	(462, 1246)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	TRUE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	566
+				justify    	0
+				label      	"[logging service OK] send logs"
+				pctDist    	1.200000
+				height     	28
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39A2C037C"
+			    roleview_list 	(list RoleViews
+				(object RoleView "$UNNAMED$5" @15
+				    Parent_View 	@13
+				    location   	(-975, -387)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    label      	(object SegLabel @16
+					Parent_View 	@15
+					location   	(379, 970)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					hidden     	TRUE
+					anchor     	1
+					anchor_loc 	1
+					nlines     	1
+					max_width  	450
+					justify    	0
+					label      	""
+					pctDist    	0.800000
+					height     	42
+					orientation 	0)
+				    stereotype 	TRUE
+				    line_color 	3342489
+				    quidu      	"3DD39A2C037E"
+				    client     	@13
+				    supplier   	@5
+				    vertices   	(list Points
+					(420, 1218)
+					(420, 908))
+				    line_style 	0
+				    label      	(object SegLabel @17
+					Parent_View 	@15
+					location   	(474, 940)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					anchor     	2
+					anchor_loc 	1
+					nlines     	1
+					max_width  	15
+					justify    	0
+					label      	"0..n"
+					pctDist    	0.900000
+					height     	54
+					orientation 	1))
+				(object RoleView "$UNNAMED$4" @18
+				    Parent_View 	@13
+				    location   	(-975, -387)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    label      	(object SegLabel @19
+					Parent_View 	@18
+					location   	(379, 1466)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					hidden     	TRUE
+					anchor     	1
+					anchor_loc 	1
+					nlines     	1
+					max_width  	450
+					justify    	0
+					label      	""
+					pctDist    	0.800000
+					height     	42
+					orientation 	1)
+				    stereotype 	TRUE
+				    line_color 	3342489
+				    quidu      	"3DD39A2C037D"
+				    client     	@13
+				    supplier   	@3
+				    vertices   	(list Points
+					(420, 1218)
+					(420, 1529))
+				    line_style 	0)))
+			(object AssociationViewNew "[logging service failure] send logs" @20
+			    location   	(1021, 1032)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @21
+				Parent_View 	@20
+				location   	(1139, 943)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	TRUE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	618
+				justify    	0
+				label      	"[logging service failure] send logs"
+				pctDist    	2.466667
+				height     	90
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39CB202B6"
+			    roleview_list 	(list RoleViews
+				(object RoleView "XML log file" @22
+				    Parent_View 	@20
+				    location   	(-509, 12)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    label      	(object SegLabel @23
+					Parent_View 	@22
+					location   	(1268, 1225)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					anchor     	1
+					anchor_loc 	1
+					nlines     	1
+					max_width  	232
+					justify    	0
+					label      	"+XML log file"
+					pctDist    	0.688840
+					height     	76
+					orientation 	1)
+				    stereotype 	TRUE
+				    line_color 	3342489
+				    quidu      	"3DD39CB301BC"
+				    client     	@20
+				    supplier   	@4
+				    vertices   	(list Points
+					(1021, 1032)
+					(1424, 1212))
+				    line_style 	0)
+				(object RoleView "$UNNAMED$20" @24
+				    Parent_View 	@20
+				    location   	(-509, 12)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    label      	(object SegLabel @25
+					Parent_View 	@24
+					location   	(683, 927)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					hidden     	TRUE
+					anchor     	1
+					anchor_loc 	1
+					nlines     	1
+					max_width  	148
+					justify    	0
+					label      	""
+					pctDist    	0.800000
+					height     	42
+					orientation 	0)
+				    stereotype 	TRUE
+				    line_color 	3342489
+				    quidu      	"3DD39CB301BE"
+				    client     	@20
+				    supplier   	@5
+				    vertices   	(list Points
+					(1021, 1032)
+					(619, 852))
+				    line_style 	0)))
+			(object UsesView "C++" @26
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object ItemLabel
+				Parent_View 	@26
+				location   	(865, 150)
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	"C++")
+			    stereotype 	(object SegLabel @27
+				Parent_View 	@26
+				location   	(759, 75)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	10
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	"<<bind>>"
+				pctDist    	0.500000
+				height     	120
+				orientation 	0)
+			    line_color 	3342489
+			    quidu      	"3DD39D1D0341"
+			    client     	@2
+			    supplier   	@1
+			    vertices   	(list Points
+				(623, 150)
+				(1108, 150))
+			    line_style 	0))))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Logging Architecture"
+	    quid       	"393F824102DB"
+	    title      	"Logging Architecture"
+	    zoom       	89
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	443
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Logging System::log monitor" @28
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2835, 1215)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@28
+			location   	(2625, 1166)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	420
+			justify    	0
+			label      	"log monitor")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"393F820C0202"
+		    width      	438
+		    height     	122
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Logging System::Archive" @29
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(3120, 1935)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@29
+			location   	(3024, 1889)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	192
+			justify    	0
+			label      	"Archive")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"393F836902AE"
+		    width      	210
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "browse logs" @30
+		    location   	(2977, 1576)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @31
+			Parent_View 	@30
+			location   	(2844, 1561)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	418
+			justify    	0
+			label      	"browse logs"
+			pctDist    	-1.733333
+			height     	16
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"393F84300200"
+		    roleview_list 	(list RoleViews
+			(object RoleView "log archive" @32
+			    Parent_View 	@30
+			    location   	(2482, 301)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @33
+				Parent_View 	@32
+				location   	(2930, 1814)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	244
+				justify    	0
+				label      	"+log archive"
+				pctDist    	0.628041
+				height     	132
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393F84310161"
+			    client     	@30
+			    supplier   	@29
+			    vertices   	(list Points
+				(2977, 1576)
+				(3096, 1876))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$0" @34
+			    Parent_View 	@30
+			    location   	(2482, 301)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393F84310162"
+			    client     	@30
+			    supplier   	@28
+			    vertices   	(list Points
+				(2977, 1576)
+				(2858, 1276))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Logging System::Log Archiver" @35
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(3285, 1215)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@35
+			location   	(3057, 1166)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	456
+			justify    	0
+			label      	"Log Archiver")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD39BF801DF"
+		    width      	474
+		    height     	122
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "store in archive" @36
+		    location   	(3201, 1576)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @37
+			Parent_View 	@36
+			location   	(3277, 1546)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	295
+			justify    	0
+			label      	"store in archive"
+			pctDist    	1.766667
+			height     	31
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"393F859C0358"
+		    roleview_list 	(list RoleViews
+			(object RoleView "log archive" @38
+			    Parent_View 	@36
+			    location   	(1806, 571)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @39
+				Parent_View 	@38
+				location   	(3283, 1791)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	244
+				justify    	0
+				label      	"+log archive"
+				pctDist    	0.623675
+				height     	128
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393F859D01E7"
+			    client     	@36
+			    supplier   	@29
+			    vertices   	(list Points
+				(3201, 1576)
+				(3132, 1876))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$1" @40
+			    Parent_View 	@36
+			    location   	(1806, 571)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @41
+				Parent_View 	@40
+				location   	(3216, 1329)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	244
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"393F859D01E8"
+			    client     	@36
+			    supplier   	@35
+			    vertices   	(list Points
+				(3201, 1576)
+				(3270, 1276))
+			    line_style 	0)))
+		(object ClassView "ParameterizedClass" "Logical View::Logging System::log API" @42
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1620, 765)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@42
+			location   	(1491, 737)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	258
+			justify    	0
+			label      	"log API")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD39DC90030"
+		    width      	276
+		    height     	156
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Logging System::client for logs" @43
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(3075, 225)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@43
+			location   	(2873, 179)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	404
+			justify    	0
+			label      	"client for logs")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB56EF0265"
+		    width      	422
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Event and Notification System::Notification Channel" @44
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2220, 1470)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@44
+			location   	(1866, 1393)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	708
+			justify    	0
+			label      	"Notification Channel")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB58D80023"
+		    width      	726
+		    height     	178
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "push logs" @45
+		    location   	(2656, 831)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @46
+			Parent_View 	@45
+			location   	(2625, 847)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	600
+			justify    	0
+			label      	"push logs"
+			pctDist    	-0.016667
+			height     	16
+			orientation 	1)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD39A5102DF"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$6" @47
+			    Parent_View 	@45
+			    location   	(2116, 261)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @48
+				Parent_View 	@47
+				location   	(2390, 1294)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39A5102E0"
+			    client     	@45
+			    supplier   	@44
+			    vertices   	(list Points
+				(2656, 831)
+				(2280, 1380))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$7" @49
+			    Parent_View 	@45
+			    location   	(2116, 261)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @50
+				Parent_View 	@49
+				location   	(2993, 417)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39A5102E1"
+			    client     	@45
+			    supplier   	@43
+			    vertices   	(list Points
+				(2656, 831)
+				(3033, 283))
+			    line_style 	0
+			    label      	(object SegLabel @51
+				Parent_View 	@49
+				location   	(3039, 369)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.900000
+				height     	54
+				orientation 	1))))
+		(object AssociationViewNew "subscribes to logs" @52
+		    location   	(2392, 675)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @53
+			Parent_View 	@52
+			location   	(2420, 557)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	600
+			justify    	0
+			label      	"subscribes to logs"
+			pctDist    	0.966667
+			height     	119
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD39A5601D6"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$9" @54
+			    Parent_View 	@52
+			    location   	(1057, 270)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @55
+				Parent_View 	@54
+				location   	(2767, 369)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39A5601E6"
+			    client     	@52
+			    supplier   	@43
+			    vertices   	(list Points
+				(2392, 675)
+				(2445, 432)
+				(2892, 283))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$8" @56
+			    Parent_View 	@52
+			    location   	(1057, 270)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @57
+				Parent_View 	@56
+				location   	(2311, 1248)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39A5601E5"
+			    client     	@52
+			    supplier   	@44
+			    vertices   	(list Points
+				(2392, 675)
+				(2238, 1380))
+			    line_style 	0)))
+		(object AssociationViewNew "un-subscribe to logs" @58
+		    location   	(2509, 742)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @59
+			Parent_View 	@58
+			location   	(2597, 641)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	600
+			justify    	0
+			label      	"un-subscribe to logs"
+			pctDist    	1.966667
+			height     	102
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD39A6D0204"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$11" @60
+			    Parent_View 	@58
+			    location   	(1174, 337)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @61
+				Parent_View 	@60
+				location   	(2909, 399)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39A6D0206"
+			    client     	@58
+			    supplier   	@43
+			    vertices   	(list Points
+				(2509, 742)
+				(2565, 601)
+				(2995, 283))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$10" @62
+			    Parent_View 	@58
+			    location   	(1174, 337)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @63
+				Parent_View 	@62
+				location   	(2344, 1268)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	450
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39A6D0205"
+			    client     	@58
+			    supplier   	@44
+			    vertices   	(list Points
+				(2509, 742)
+				(2255, 1380))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::CORBA Middleware::CORBA Telecom Logging Service" @64
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1245, 1470)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@64
+			location   	(1016, 1372)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	458
+			justify    	0
+			label      	"CORBA Telecom Logging Service")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD39920012E"
+		    width      	476
+		    height     	222
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$2" @65
+		    location   	(1669, 1470)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD399E302A2"
+		    roleview_list 	(list RoleViews
+			(object RoleView "LoggingChannel" @66
+			    Parent_View 	@65
+			    location   	(499, -420)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @67
+				Parent_View 	@66
+				location   	(1711, 1431)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	317
+				justify    	0
+				label      	"+LoggingChannel"
+				pctDist    	0.232365
+				height     	40
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD399E4013B"
+			    client     	@65
+			    supplier   	@44
+			    vertices   	(list Points
+				(1669, 1470)
+				(1856, 1470))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$3" @68
+			    Parent_View 	@65
+			    location   	(499, -420)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD399E4013D"
+			    client     	@65
+			    supplier   	@64
+			    vertices   	(list Points
+				(1669, 1470)
+				(1483, 1470))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Logging System::ACS Logging Service" @69
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(660, 840)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@69
+			location   	(458, 766)
+			fill_color 	13434879
+			nlines     	2
+			max_width  	404
+			justify    	0
+			label      	"ACS Logging Service")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD39AAC0000"
+		    width      	422
+		    height     	172
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "log" @70
+		    location   	(940, 1142)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @71
+			Parent_View 	@70
+			location   	(923, 1096)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	60
+			justify    	0
+			label      	"log"
+			pctDist    	0.216667
+			height     	47
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD39AB8036B"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$12" @72
+			    Parent_View 	@70
+			    location   	(-1325, -748)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39AB901F4"
+			    client     	@70
+			    supplier   	@64
+			    vertices   	(list Points
+				(940, 1142)
+				(1140, 1358))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$13" @73
+			    Parent_View 	@70
+			    location   	(-1325, -748)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39AB90203"
+			    client     	@70
+			    supplier   	@69
+			    vertices   	(list Points
+				(940, 1142)
+				(740, 926))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Logging System::producer for logs" @74
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(990, 120)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@74
+			location   	(788, 42)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	404
+			justify    	0
+			label      	"producer for logs")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB57030065"
+		    width      	422
+		    height     	180
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "[use API]log" @75
+		    location   	(1115, 784)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @76
+			Parent_View 	@75
+			location   	(1174, 637)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	227
+			justify    	0
+			label      	"[use API]log"
+			pctDist    	1.483333
+			height     	148
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD39DAE01D7"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$14" @77
+			    Parent_View 	@75
+			    location   	(-820, 379)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39DAF0215"
+			    client     	@75
+			    supplier   	@64
+			    vertices   	(list Points
+				(1115, 784)
+				(1223, 1358))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$15" @78
+			    Parent_View 	@75
+			    location   	(-820, 379)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39DAF0217"
+			    client     	@75
+			    supplier   	@74
+			    vertices   	(list Points
+				(1115, 784)
+				(1006, 210))
+			    line_style 	0)))
+		(object AssocAttachView "" @79
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    client     	@42
+		    supplier   	@75
+		    vertices   	(list Points
+			(1481, 769)
+			(1115, 784))
+		    line_style 	0)
+		(object AssociationViewNew "[use CORBA service] log" @80
+		    location   	(823, 481)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @81
+			Parent_View 	@80
+			location   	(792, 586)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	468
+			justify    	0
+			label      	"[use CORBA service] log"
+			pctDist    	-0.033333
+			height     	105
+			orientation 	1)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD39E8C0270"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$16" @82
+			    Parent_View 	@80
+			    location   	(-1112, 76)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39E8D0108"
+			    client     	@80
+			    supplier   	@69
+			    vertices   	(list Points
+				(823, 481)
+				(697, 753))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$17" @83
+			    Parent_View 	@80
+			    location   	(-1112, 76)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD39E8D0118"
+			    client     	@80
+			    supplier   	@74
+			    vertices   	(list Points
+				(823, 481)
+				(948, 210))
+			    line_style 	0)))
+		(object InheritTreeView "" @84
+		    location   	(3075, 887)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@43
+		    vertices   	(list Points
+			(3075, 887)
+			(3075, 283)))
+		(object InheritView "" @85
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD39C09027B"
+		    client     	@35
+		    supplier   	@43
+		    vertices   	(list Points
+			(3270, 1153)
+			(3270, 887))
+		    line_style 	3
+		    origin_attachment 	(3270, 1153)
+		    terminal_attachment 	(3270, 887)
+		    drawSupplier 	@84)
+		(object InheritView "" @86
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"393F831E03B5"
+		    client     	@28
+		    supplier   	@43
+		    vertices   	(list Points
+			(2842, 1153)
+			(2842, 887))
+		    line_style 	3
+		    origin_attachment 	(2842, 1153)
+		    terminal_attachment 	(2842, 887)
+		    drawSupplier 	@84)))))

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Configuration Database Schema for a Simulated Component
+   -
+   - Author: David Fugate
+   -
+   - History:
+   -   2003-12-16  DF  Created  
+  -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:SimulatedComponent:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:SimulatedComponent:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="corbaAttribute">
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="Value" type="xs:string" use="optional" default="None"/>
+		<xs:attribute name="Timeout" type="xs:int" use="optional" default="1"/>
+	</xs:complexType>
+	<xs:complexType name="method">
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="Value" type="xs:string" use="optional" default="None"/>
+		<xs:attribute name="Timeout" type="xs:int" use="optional" default="5"/>
+		<xs:attribute name="Random" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:element name="SimulatedComponent">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="_method" type="method" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="_attribute" type="corbaAttribute" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,46 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: acssampManager,v 1.7 2004/12/01 09:25:57 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave  2003-09-09  created
+#
+
+#************************************************************************
+#   NAME
+#   acssampManager
+#
+#   SYNOPSIS
+#   acssampManager
+# 
+#   DESCRIPTION
+#   Simple script designed to hide the output of manager from the eccs
+#   test driver
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+echo "-->Starting manager script"
+echo "-->Please see 'manager.log' for output"
+acsStartManager >& $ACS_TMP/manager.log
+echo "-->Manager started"
+
+
+#
+# ___oOo___

@@ -1,0 +1,114 @@
+JDE 2.1.5 Release Notes
+
+This releases incorporates the following changes:
+
+New Features
+============
+
+This release:
+
+* Improves applet development support. Specifically, it
+
+  - Adds a menu item and command (jde-db-applet) that runs an applet
+    in appletviewer in debug mode.
+
+  - Adds file completion and default-to-last-entry features for
+    entering the name of the html document used to run or debug
+    an applet (available only with the applet commands not the
+    menu items).
+
+  - Adds support for appletviewer's -encoding and -J options.
+
+  - Expands applet section in the JDE User's Guide
+
+* Provides the latest version of the Speedbar.
+
+* Provides the latest version of the BeanShell. The latest version
+  removes the requirement to use native threads on Solaris.
+
+* Added default keybindings for the speedbar, interface wizard, and
+  other features.
+
+* Implements XEmacs for Windows compatibility changes suggested by 
+  the XEmacs development team. Thanks to Andy Piper.
+
+* The jde-db command now remembers previously entered debugger options.
+  Thanks to Brian Burton <brian@burton-computer.com>.
+
+* The debugger interface now handle package names with
+  underscores (thanks to Brian Burton <brian@burton-computer.com>. 
+
+* The debugger interface now recognizes inner classes.
+  (Thanks to Michael Lepore <lepore@process.com>)
+
+* Added JDE->Wizards->Import Class command. This command creates
+  an import statement for a specified class at the head of the buffer
+  from any point in the buffer.
+
+* Provides more robust error handling for the interface wizard. The wizard 
+  no longer kills the bsh when it cannot create an interface. The wizard provides
+  meaningfull error messages.
+
+* Provides a set-value function for jde-db-source-directories that appends a slash to
+  the end of each path if the path does not already end in a slash.
+
+* Defines a new command, jde-find-class-source, that finds and opens the source file
+  for a specified class.
+
+* Improves the regular expression used by jde-db-get-package to ignore tabs at the
+  beginning of a line.
+
+
+Bug Fixes
+=========
+
+* Fixed a bug that would prevent the JDE keybindings from being
+  set on startup in some circumstances. 
+  Thanks to Matthew Moore <matthew.moore@Schwab.COM>.
+
+* Removed two line feeds at the end of make command as they appeared to
+  confuse GNU make for NT.
+
+* Fixed Jdb->Print menu item.
+
+* The jde-db-option-properties (-D) option now works.
+
+* Fixed regular expression bug that was causing the jdb package extraction
+  code to extract commented-out package statements.
+  (Thanks to Frederic Baumann <baumann@ilog.fr>)
+
+* Fixed bug in interface implementation wizard that was causing the
+  wizard to fail in some circumstances  to create or expand the 
+  implements clause for the class implementing the interface.
+
+* The JDE debugger interface fails to track breakpoints in the source due
+  to a bug in jde-db-make-qualified-class-name-regexp.
+
+* The override method wizard fails to find the overriding class when
+  the open bracket of the class is not on the same line as the class
+  keyword.
+
+* Catch non-existant directory errors when searching for source
+  files and packages. Thanks to Thanh Nguyen <Thanh.Nguyen@Eng.Sun.COM>
+  for finding and providing a fix for this bug.
+
+* Fixed jde-db-find-file so that it displays an error when it cannot 
+  find a file instead of opening an empty source buffer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

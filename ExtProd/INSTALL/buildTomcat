@@ -1,0 +1,83 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# build
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# simon   2003-3-31  created
+#
+
+#************************************************************************
+#   NAME
+#   buildTomcat - unpack the tomcat tar file
+#
+#   SYNOPSIS
+#   buildTomcat
+#
+#   DESCRIPTION
+#
+#
+#   FILES
+#
+#------------------------------------------------------------------------
+
+#
+# which platform?
+#
+TITLE="     ALMA Common Software buildTomcat build  "
+BUILD_NAME=""
+
+LOG=buildTomcat.log
+CWD=`pwd`
+#
+exec > $LOG 2>&1
+
+date
+
+#
+# Checks for tar file
+#
+if [ ! -e ../PRODUCTS/Tomcat.tar.gz ]
+then
+  echo Error: Tomcat tar file is missing
+  exit 2
+fi
+
+#
+# Checks for and cleanup webapps 
+#
+if [ -d $ALMASW_INSTDIR/webapps ]
+then
+  echo  $ALMASW_INSTDIR/webapps directory exists already. I clean it up.
+  rm -rf $ALMASW_INSTDIR/webapps
+fi
+mkdir -p $ALMASW_INSTDIR/webapps
+RET=$?
+if [ "$RET" != "0" ]
+ then
+    echo "Failed to create $ACSDATA/webapps, cannot continue..."
+    exit 1
+ fi
+chmod g+w $ALMASW_INSTDIR/webapps
+
+#
+# Checks for and cleanup Tomcat
+#
+if [ -d $ALMASW_INSTDIR/Tomcat ]
+then
+  echo  $ALMASW_INSTDIR/Tomcat directory exists already. I clean it up.
+  rm -rf $ALMASW_INSTDIR/Tomcat
+fi
+
+#
+# Unpack Tomcat
+#
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE
+echo "Untarring the Tomcat.5.tar.gz file"
+tar zxf $CWD/../PRODUCTS/Tomcat.tar.gz
+
+cd $CWD
+echo Tomcat installation done!
+date

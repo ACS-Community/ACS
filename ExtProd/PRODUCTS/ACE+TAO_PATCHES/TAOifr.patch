@@ -1,0 +1,484 @@
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.cpp TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.cpp	2003-12-12 18:39:32.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.cpp	2004-02-20 17:31:27.000000000 +0100
+@@ -2330,17 +2330,44 @@
+   ACE_DECLARE_NEW_CORBA_ENV;
+   ACE_TRY
+     {
+-      this->element_type (node->base_type ()
+-                          ACE_ENV_ARG_PARAMETER);
+-      ACE_TRY_CHECK;
++      bool recursive_seq = false;
+ 
+-      this->ir_current_ =
++      // check if we've got a recursive sequence
++      if (ACE_OS::strcmp(this->scope_->repoID (), 
++			 node->base_type()->repoID ()) == 0 )
++	{
++	  recursive_seq = true;
++
++	  this->ir_current_ =
++	      be_global->repository ()->get_primitive (
++		  CORBA::pk_objref
++		  ACE_ENV_ARG_PARAMETER
++		  );
++	  ACE_TRY_CHECK;
++
++
++	}
++      else
++	{
++	  this->element_type (node->base_type ()
++			      ACE_ENV_ARG_PARAMETER);
++	  ACE_TRY_CHECK;
++	}
++
++      CORBA::SequenceDef_ptr seqDef =
+         be_global->repository ()->create_sequence (
+                                       node->max_size ()->ev ()->u.ulval,
+                                       this->ir_current_.in ()
+                                       ACE_ENV_ARG_PARAMETER
+                                     );
+       ACE_TRY_CHECK;
++
++      this->ir_current_ = seqDef;
++
++      // put into queue so that element_type will be fixed
++      if (recursive_seq)
++	this->recursive_sequence_post_creation_queue_.enqueue_tail (seqDef);
++
+     }
+   ACE_CATCHANY
+     {
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.h TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.h
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.h	2003-08-05 02:08:51.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor.h	2004-02-20 17:31:27.000000000 +0100
+@@ -274,6 +274,14 @@
+ 
+   CORBA::Boolean in_reopened_;
+   // Are we traversing the scope of a reopened module?
++
++  ACE_Unbounded_Queue<CORBA::SequenceDef_ptr> recursive_sequence_post_creation_queue_;
++  // Recursive sequences cannot have to be created, after this structure is created,
++  // which requires all its members to be know. Since these sequences are members of
++  // this structure and for its creation Contained object of this structure is needed,
++  // this causes a chicken-egg dilemma ("What was first a chicken or an egg?")
++  // Solution: sequence is first created with dummy element_type and later, 
++  // after this structure si created, fixed.
+ };
+ 
+ #endif /* TAO_IFR_ADDING_VISITOR_H */
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor_structure.cpp TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor_structure.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor_structure.cpp	2003-06-17 17:09:23.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/ifr_adding_visitor_structure.cpp	2004-02-20 17:31:27.000000000 +0100
+@@ -243,6 +243,26 @@
+                 }
+             }
+ 
++	  // fix recursive sequences
++
++          size = this->recursive_sequence_post_creation_queue_.size ();
++
++          if (size > 0)
++            {
++              CORBA::SequenceDef_var seq;
++
++              for (size_t i = 0; i < size; ++i)
++                {
++                  this->recursive_sequence_post_creation_queue_.dequeue_head (seq);
++		   seq->_add_ref();
++                  seq->element_type_def (this->ir_current_.in()
++					 ACE_ENV_ARG_PARAMETER);
++
++                  ACE_TRY_CHECK;
++
++                }
++            }
++
+           node->ifr_added (1);
+         }
+       else
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/IFR_Service.mpc TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/IFR_Service.mpc
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/IFR_Service/IFR_Service.mpc	2003-12-23 22:04:23.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/IFR_Service/IFR_Service.mpc	2004-02-20 17:22:14.000000000 +0100
+@@ -1,5 +1,5 @@
+ // -*- MPC -*-
+-// IFR_Service.mpc,v 1.10 2003/12/23 21:04:23 dhinton Exp
++// $Id: TAOifr.patch,v 1.1 2004/03/24 09:40:00 gchiozzi Exp $
+ 
+ project(IFR_Service) : orbsvcsexe, core, ifrservice, typecodefactory, svc_utils, ifr_client, iortable, portableserver, crosscompile {
+   avoids   += minimum_corba
+@@ -37,10 +37,18 @@
+   avoids         += minimum_corba
+   after          += TAO_IFR_BE TAO_IDL_FE
+   exename         = tao_ifr
+-  idlpreprocessor = 1
+   libs           += TAO_IFR_BE TAO TAO_IDL_FE
+   includes       += $(TAO_ROOT)/TAO_IDL/include $(TAO_ROOT)/TAO_IDL/fe
+   libpaths       += $(TAO_ROOT)/TAO_IDL
++  install         = $(ACE_ROOT)/bin
++
++  verbatim(gnuace, local) {
++    ifeq ($(TAO_IDL_PREPROCESSOR),)
++      CPPFLAGS += -DTAO_IDL_PREPROCESSOR=\\\"$(strip $(CXX))\\\"
++    else
++      CPPFLAGS += -DTAO_IDL_PREPROCESSOR=\\\"$(subst \\,\\,$(TAO_IDL_PREPROCESSOR))\\\"
++    endif
++  }
+ 
+   Source_Files {
+     tao_ifr.cpp
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/concrete_classes.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/concrete_classes.h
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/concrete_classes.h	2003-03-12 17:17:51.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/concrete_classes.h	2004-02-20 17:28:40.000000000 +0100
+@@ -1,4 +1,4 @@
+-// concrete_classes.h,v 1.2 2003/03/12 16:17:51 parsons Exp
++// $Id: TAOifr.patch,v 1.1 2004/03/24 09:40:00 gchiozzi Exp $
+ 
+ // ============================================================================
+ //
+@@ -38,8 +38,8 @@
+ #include "ValueDef_i.h"
+ #include "ExceptionDef_i.h"
+ #include "ModuleDef_i.h"
+-#include "AbstractInterfaceDef_i.h"
+-#include "LocalInterfaceDef_i.h"
++#include "ExtAbstractInterfaceDef_i.h"
++#include "ExtLocalInterfaceDef_i.h"
+ 
+ #include "ComponentDef_i.h"
+ #include "HomeDef_i.h"
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/InterfaceDef_i.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/InterfaceDef_i.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/InterfaceDef_i.cpp	2003-06-08 18:16:00.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/InterfaceDef_i.cpp	2004-02-20 17:31:27.000000000 +0100
+@@ -490,21 +490,36 @@
+     }
+ 
+   CORBA::ULong size = ACE_static_cast (CORBA::ULong, key_queue.size ());
++  CORBA::ULong realSize = 0;
+   fifd->operations.length (size);
+ 
+-  for (i = 0; i < size; ++i)
++  for (i = 0; i < size; i++)
+     {
+       ACE_Configuration_Section_Key key;
+       key_queue.dequeue_head (key);
+ 
++      // remove attribute operations starting with "_get_" and/or "_set_"
++      ACE_TString opname;
++      this->repo_->config ()->get_string_value (key,
++						"name",
++						opname);
++
++      if (ACE_OS::strncmp(opname.c_str(), "_get_", 5) == 0 ||
++	  ACE_OS::strncmp(opname.c_str(), "_set_", 5) == 0)
++	continue;
++
+       TAO_OperationDef_i op (this->repo_);
+       op.section_key (key);
+ 
+-      op.make_description (fifd->operations[i]
++      op.make_description (fifd->operations[realSize++]
+                            ACE_ENV_ARG_PARAMETER);
+       ACE_CHECK_RETURN (0);
+     }
+ 
++  // fix length
++  if (realSize != size)
++    fifd->operations.length (realSize);
++
+   // Attributes
+   this->inherited_attributes (key_queue);
+ 
+@@ -1145,6 +1160,8 @@
+                                                 "attrs",
+                                                 0,
+                                                 attrs_key);
++	  count = 0;
++
+ 
+           this->repo_->config ()->get_integer_value (attrs_key,
+                                                      "count",
+@@ -1198,6 +1215,8 @@
+                                                 0,
+                                                 ops_key);
+ 
++	  count = 0;
++
+           this->repo_->config ()->get_integer_value (ops_key,
+                                                      "count",
+                                                      count);
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.cpp	2003-08-18 08:42:14.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.cpp	2004-02-20 17:22:44.000000000 +0100
+@@ -1,6 +1,6 @@
+ // -*- C++ -*-
+ //
+-// Repository_i.cpp,v 1.7 2003/08/18 06:42:14 ossama Exp
++// $Id: TAOifr.patch,v 1.1 2004/03/24 09:40:00 gchiozzi Exp $
+ 
+ #include "concrete_classes.h"
+ #include "Repository_i.h"
+@@ -17,7 +17,7 @@
+ 
+ ACE_RCSID (IFR_Service,
+            Repository_i,
+-           "Repository_i.cpp,v 1.7 2003/08/18 06:42:14 ossama Exp")
++           "$Id: TAOifr.patch,v 1.1 2004/03/24 09:40:00 gchiozzi Exp $")
+ 
+ 
+ TAO_Repository_i::TAO_Repository_i (CORBA::ORB_ptr orb,
+@@ -858,7 +858,7 @@
+   switch (def_kind)
+   {
+     case CORBA::dk_AbstractInterface:
+-      return this->AbstractInterfaceDef_servant_->_tied_object ();
++      return this->ExtAbstractInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_Alias:
+       return this->AliasDef_servant_->_tied_object ();
+     case CORBA::dk_Array:
+@@ -868,9 +868,9 @@
+     case CORBA::dk_Fixed:
+       return this->FixedDef_servant_->_tied_object ();
+     case CORBA::dk_Interface:
+-      return this->InterfaceDef_servant_->_tied_object ();
++      return this->ExtInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_LocalInterface:
+-      return this->LocalInterfaceDef_servant_->_tied_object ();
++      return this->ExtLocalInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_Native:
+       return this->NativeDef_servant_->_tied_object ();
+     case CORBA::dk_Primitive:
+@@ -900,13 +900,13 @@
+   switch (def_kind)
+   {
+     case CORBA::dk_AbstractInterface:
+-      return this->AbstractInterfaceDef_servant_->_tied_object ();
++      return this->ExtAbstractInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_Exception:
+       return this->ExceptionDef_servant_->_tied_object ();
+     case CORBA::dk_Interface:
+-      return this->InterfaceDef_servant_->_tied_object ();
++      return this->ExtInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_LocalInterface:
+-      return this->LocalInterfaceDef_servant_->_tied_object ();
++      return this->ExtLocalInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_Repository:
+       return ACE_const_cast (TAO_Repository_i *, this);
+     case CORBA::dk_Struct:
+@@ -926,7 +926,7 @@
+   switch (def_kind)
+   {
+     case CORBA::dk_AbstractInterface:
+-      return this->AbstractInterfaceDef_servant_->_tied_object ();
++      return this->ExtAbstractInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_Alias:
+       return this->AliasDef_servant_->_tied_object ();
+     case CORBA::dk_Attribute:
+@@ -938,9 +938,9 @@
+     case CORBA::dk_Exception:
+       return this->ExceptionDef_servant_->_tied_object ();
+     case CORBA::dk_Interface:
+-      return this->InterfaceDef_servant_->_tied_object ();
++      return this->ExtInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_LocalInterface:
+-      return this->LocalInterfaceDef_servant_->_tied_object ();
++      return this->ExtLocalInterfaceDef_servant_->_tied_object ();
+     case CORBA::dk_Native:
+       return this->NativeDef_servant_->_tied_object ();
+     case CORBA::dk_Operation:
+@@ -966,7 +966,7 @@
+   switch (def_kind)
+   {
+     case CORBA::dk_AbstractInterface:
+-      return this->AbstractInterfaceDef_poa_.in ();
++      return this->ExtAbstractInterfaceDef_poa_.in ();
+     case CORBA::dk_Alias:
+       return this->AliasDef_poa_.in ();
+     case CORBA::dk_Array:
+@@ -982,9 +982,9 @@
+     case CORBA::dk_Fixed:
+       return this->FixedDef_poa_.in ();
+     case CORBA::dk_Interface:
+-      return this->InterfaceDef_poa_.in ();
++      return this->ExtInterfaceDef_poa_.in ();
+     case CORBA::dk_LocalInterface:
+-      return this->LocalInterfaceDef_poa_.in ();
++      return this->ExtLocalInterfaceDef_poa_.in ();
+     case CORBA::dk_Native:
+       return this->NativeDef_poa_.in ();
+     case CORBA::dk_Operation:
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.h
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.h	2003-08-04 07:12:12.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/Repository_i.h	2004-02-20 17:22:44.000000000 +0100
+@@ -1,5 +1,5 @@
+ /* -*- C++ -*- */
+-// Repository_i.h,v 1.5 2003/08/04 05:12:12 parsons Exp
++// $Id: TAOifr.patch,v 1.1 2004/03/24 09:40:00 gchiozzi Exp $
+ 
+ // ============================================================================
+ //
+@@ -43,7 +43,7 @@
+ class TAO_IDLType_i;
+ class TAO_Container_i;
+ class TAO_Contained_i;
+-class TAO_AbstractInterfaceDef_i;
++class TAO_ExtAbstractInterfaceDef_i;
+ class TAO_AliasDef_i;
+ class TAO_ArrayDef_i;
+ class TAO_AttributeDef_i;
+@@ -51,8 +51,8 @@
+ class TAO_EnumDef_i;
+ class TAO_ExceptionDef_i;
+ class TAO_FixedDef_i;
+-class TAO_InterfaceDef_i;
+-class TAO_LocalInterfaceDef_i;
++class TAO_ExtInterfaceDef_i;
++class TAO_ExtLocalInterfaceDef_i;
+ class TAO_NativeDef_i;
+ class TAO_OperationDef_i;
+ class TAO_PrimitiveDef_i;
+@@ -333,7 +333,7 @@
+ #endif
+ 
+ #define CONCRETE_IR_OBJECT_TYPES \
+-  GEN_IR_OBJECT (AbstractInterfaceDef) \
++  GEN_IR_OBJECT (ExtAbstractInterfaceDef) \
+   GEN_IR_OBJECT (AliasDef) \
+   GEN_IR_OBJECT (ArrayDef) \
+   GEN_IR_OBJECT (AttributeDef) \
+@@ -341,8 +341,8 @@
+   GEN_IR_OBJECT (EnumDef) \
+   GEN_IR_OBJECT (ExceptionDef) \
+   GEN_IR_OBJECT (FixedDef) \
+-  GEN_IR_OBJECT (InterfaceDef) \
+-  GEN_IR_OBJECT (LocalInterfaceDef) \
++  GEN_IR_OBJECT (ExtInterfaceDef) \
++  GEN_IR_OBJECT (ExtLocalInterfaceDef) \
+   GEN_IR_OBJECT (NativeDef) \
+   GEN_IR_OBJECT (OperationDef) \
+   GEN_IR_OBJECT (PrimitiveDef) \
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.cpp	2003-07-26 21:37:52.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.cpp	2004-02-20 17:31:27.000000000 +0100
+@@ -5,11 +5,14 @@
+ #include "Repository_i.h"
+ #include "IFR_Service_Utils.h"
+ #include "ace/Auto_Ptr.h"
++#include "ace/Thread.h"
+ 
+ ACE_RCSID (IFRService, 
+            StructDef_i, 
+            "StructDef_i.cpp,v 1.5 2003/07/26 19:37:52 parsons Exp")
+ 
++TAO_StructDef_i::STAMP_MAP TAO_StructDef_i::stamp_map_;
++
+ TAO_StructDef_i::TAO_StructDef_i (TAO_Repository_i *repo)
+   : TAO_IRObject_i (repo),
+     TAO_Contained_i (repo),
+@@ -67,6 +70,35 @@
+   return this->type_i (ACE_ENV_SINGLE_ARG_PARAMETER);
+ }
+ 
++class ScopeStamp {
++  public:
++    ScopeStamp(TAO_StructDef_i::STAMP_MAP * map, const char * id) : 
++	m_released(false), m_map(map), m_id(id)
++	{
++	    int dummy = 0;
++	    m_map->bind (m_id.c_str(), dummy);
++	};
++
++    ~ScopeStamp()
++	{
++	    if (!m_released)
++		release();
++	}
++
++    void release()
++	{
++	    m_released = true;
++	    int dummy = 0;
++	    m_map->unbind (m_id.c_str(), dummy);
++	}
++
++  private:
++
++    bool m_released;
++    TAO_StructDef_i::STAMP_MAP * m_map;
++    ACE_TString m_id;
++};
++
+ CORBA::TypeCode_ptr
+ TAO_StructDef_i::type_i (ACE_ENV_SINGLE_ARG_DECL)
+   ACE_THROW_SPEC ((CORBA::SystemException))
+@@ -76,14 +108,29 @@
+                                             "id",
+                                             id);
+ 
++  char *stamp = TAO_IFR_Service_Utils::int_to_string(ACE_Thread::self());
++  ACE_TString full_stamp = stamp + id;
++ 
++  int dummy = 0;
++  bool no_matching_stamp = stamp_map_.find (full_stamp.c_str(), dummy);
++
++  if (!no_matching_stamp)
++    {
++      return this->repo_->tc_factory ()->create_recursive_tc (id.c_str ()
++							      ACE_ENV_ARG_PARAMETER);
++    }
++ 
+   ACE_TString name;
+   this->repo_->config ()->get_string_value (this->section_key_,
+                                             "name",
+                                             name);
++  ScopeStamp stamper(&stamp_map_, full_stamp.c_str());
+ 
+   CORBA::StructMemberSeq_var members = this->members_i (ACE_ENV_SINGLE_ARG_PARAMETER);
+   ACE_CHECK_RETURN (CORBA::TypeCode::_nil ());
+ 
++  stamper.release();
++
+   return this->repo_->tc_factory ()->create_struct_tc (id.c_str (),
+                                                        name.c_str (),
+                                                        members.in ()
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.h
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.h	2003-03-12 17:17:51.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/StructDef_i.h	2004-02-20 17:31:27.000000000 +0100
+@@ -23,6 +23,8 @@
+ #include "TypedefDef_i.h"
+ #include "Container_i.h"
+ #include "ifr_service_export.h"
++#include "ace/Recursive_Thread_Mutex.h"
++#include "ace/Hash_Map_Manager_T.h"
+ 
+ #if !defined (ACE_LACKS_PRAGMA_ONCE)
+ # pragma once
+@@ -101,6 +103,27 @@
+       ACE_ENV_ARG_DECL_WITH_DEFAULTS)
+ 
+     ACE_THROW_SPEC ((CORBA::SystemException));
++
++
++    typedef ACE_Hash_Map_Entry<const char *, int> STAMP_MAP_ENTRY;
++    typedef ACE_Hash_Map_Manager_Ex<const char *, 
++                                  int, 
++                                  ACE_Hash<const char *>, 
++                                  ACE_Equal_To<const char *>, 
++                                  ACE_Recursive_Thread_Mutex>
++    STAMP_MAP;
++
++    typedef ACE_Hash_Map_Iterator_Ex<const char *, 
++				     int, 
++				     ACE_Hash<const char *>, 
++				     ACE_Equal_To<const char *>, 
++				     ACE_Recursive_Thread_Mutex>
++    STAMP_MAP_ITERATOR;
++
++  protected:
++
++    static STAMP_MAP stamp_map_;
++
+ };
+ 
+ #if defined(_MSC_VER) && (_MSC_VER >= 1200)

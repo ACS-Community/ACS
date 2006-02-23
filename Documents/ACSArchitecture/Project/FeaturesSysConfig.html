@@ -1,0 +1,28 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>FeaturesSysConfig</TITLE>
+<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<H2><A NAME="SystemConfigurationIssues">System configuration issues</A></H2>
+<P>The are a number of important issues related to the way the system is built, installed and configured. These issues are very important and must be analyzed early enough, since they can have an impact on the system architecture and on the ACS. </P>
+<P>The software-engineering group will have to play a key role in defining the solutions to these issues. It will be esseintial to make a first design and then to assess the impact.</P>
+<P>What follows are some important points:</P>
+<H3>The whole building process for the system (checking from the software archive, compilation, installation, population of database, system first bootstrap) must be handled by a build tool to allow fast regeneration of the complete system when patches or new versions of modules are made available. </H3>
+<H3>Synchronization of the Configuration Database with the code: </H3><DIR>
+<DIR>
+
+<H4>The Configuration Database structure must be synchronized with the code. Changes in the code typically introduce changes in the data structure (like adding new data items, a motor is replaced)</H4>
+<H4>When a new version of the software is installed, the corresponding Configuration Database must be installed as well.</H4>
+<H4>Different versions of the system can exist in different places at the same time, with different Configuration Databases, but it must be possible to synchronize them (for example, development is done on a control model, with certain test motors, and installation is done on the telescope, that has different motors). It is typically not possible just copying the Configuration Database from one place to another. </H4></DIR>
+</DIR>
+
+<H3>Different versions of the same system must be handled (as already seen, a typical example is control model and real telescope). <A HREF="ReferenceDocuments.html#RD01">[RD01 - 13.1.5 Configuration]</A> </H3>
+<H3>De coupling between components. All components must be as much as possible de-coupled. It cannot be acceptable to have to rebuild the whole system and possibly instruments if a TCS application is modified because of a bug or a new interface method or parameter in a method is added. This could have a tremendous impact during commissioning. It seems that this could be a problem using IDL interfaces and must be analyzed carefully. </H3>
+<H3>Restore and backup of configuration data </H3>
+<H3>ACS and application packages are installed in central distribution places, under the responsibility of a special account, but it must be possible to install any ACS or application component (eventually the whole package) from normal user accounts in a private development area. No root access should be required. The SE group will define the details of this for ALMA</H3>
+<P>&nbsp;</P></BODY>
+</HTML>

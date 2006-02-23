@@ -1,0 +1,13 @@
+Wed Jun 18 10:02:00 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* src/acsabeans,v 1.1.1.1 : replaced "sleep 3" with "while
+	... done" loop which waits for the ior file
+
+Mon Jun  2 17:26:08 2003    <almamgr@alma>
+
+	* Makefile,v 1.1.1.1: 
+	Create doc directory if it does not exist (CVS does not create
+	empty directories)
+
+	
+

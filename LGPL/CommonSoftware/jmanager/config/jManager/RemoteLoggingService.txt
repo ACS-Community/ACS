@@ -1,0 +1,7 @@
+debug=true
+CentralizedLogger=Log
+CacheSize=10
+MinCachePriority=0
+MaxCachePriority=31
+#MaxCacheSize=500
+#MaxThreads=10

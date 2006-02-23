@@ -1,0 +1,85 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: acsabeans,v 1.13 2004/09/20 13:32:41 mpasquat Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# msekoran 2003-10-02 ported to new generator
+# gchiozzi 2003-09-01 Uses timeout waiting for IR
+# bjeram 2003-06-18 replaced "sleep 3" with "while ... done" loop which waits for ior file
+# almamgr 2003-05-31 Re-written to handle IR in a more generic way
+# david 2003-05-23 adapted for acsexmpl module.
+# david 2002-09-11 run msqld is a background process for some linux distributions
+# david 2002-09-03 moved some tics references to Makefile 
+# david 2002-08-27 automated the startup and shutdown of the orb services
+# david  26/08/02  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+# signal trap (if any)
+#########################################################################
+
+ABEANSCONFIG=$PWD/../config/abeansgen.config # list of IDL filenames.
+
+#
+# Start the job
+#
+echo "Now generating abeans . . ."
+
+
+INSTALLDIR=../lib; export INSTALLDIR
+
+mkdir -p ../lib
+
+local_list=`cat $ABEANSCONFIG`
+for file in $local_list
+do
+  if [ -r ./$file ] ; then
+      abeansgen "./$file"
+  else
+     result=`searchFile /idl/$file` 
+     if [ "$result" != "#error#" ]
+     then
+        abeansgen "$result/idl/$file"
+     else
+        if [ -r $file ]
+        then
+           abeansgen "$file"
+        else
+           echo "File $file cannot be found."
+        fi
+     fi
+  fi
+  echo "----------------------------------------------------------"
+done
+
+
+
+#########################################################################
+echo ". . . Done!"
+#
+# ___oOo___

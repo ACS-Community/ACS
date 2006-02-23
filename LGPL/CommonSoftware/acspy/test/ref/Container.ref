@@ -1,0 +1,87 @@
+2 - Testing TESTCOMPONENT (i.e., immortal components)
+2 - Testing TESTCOMPONENT1 (i.e., mortal components)
+2 - Testing TESTCOMPONENT2 (i.e., getComponent() and component activation/deactivation
+2 - Deactivating components
+2 - The end __oOo__
+1 - ----------T--:--:--.--- pyContainer getCDBInfo - No container information found in the CDB
+1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT4
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT5
+1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 components queued to be activated.
+1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 of 3 components activated.
+1 - HelloWorld
+1 - name is:  TESTCOMPONENT
+1 - getCDBRecord is:  <?xml version='1.0' encoding='UTF-8'?>
+1 - <Manager xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" CommandLine="" Timeout="50.0" HeartbeatTimeout="2.0" CacheSize="0" MinCachePriority="0" MaxCachePriority="31" CentralizedLogger="Log" ServerThreads="5">
+1 -   <Startup>
+1 -         <cdb:_ string="TESTCOMPONENT"></cdb:_>
+1 -         <cdb:_ string="TESTCOMPONENT4"></cdb:_>
+1 -         <cdb:_ string="TESTCOMPONENT5"></cdb:_>
+1 -   </Startup>
+1 -   <Execute>
+1 - 	<cdb:_ string=""></cdb:_>
+1 -   </Execute>
+1 -   <ServiceComponents>
+1 - 	<cdb:_ string="Log"></cdb:_>
+1 - 	<cdb:_ string="LogFactory"></cdb:_>
+1 - 	<cdb:_ string="NotifyEventChannelFactory"></cdb:_>
+1 - 	<cdb:_ string="ArchivingChannel"></cdb:_>
+1 - 	<cdb:_ string="LoggingChannel"></cdb:_>
+1 - 	<cdb:_ string="InterfaceRepository"></cdb:_>
+1 - 	<cdb:_ string="CDB"></cdb:_>
+1 - 	<cdb:_ string="ACSLogSvc"></cdb:_>
+1 - 	<cdb:_ string="PDB"></cdb:_>
+1 -   </ServiceComponents>
+1 - </Manager>
+1 - getCDBElement is:  {}
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT1
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT3
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- TESTCOMPONENT1 testServices - the logger works
+1 - ----------T--:--:--.--- TESTCOMPONENT testServices - the logger works
+1 - HelloWorld
+1 - HelloWorld
+1 - HelloWorld
+1 - HelloWorld
+1 - HelloWorld
+1 - ['TESTCOMPONENT3', 'TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT4', 'TESTCOMPONENT2', 'TESTCOMPONENT5', 'TEST_PS_1']
+1 - ['TESTCOMPONENT3', 'TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT4', 'TESTCOMPONENT2', 'TESTCOMPONENT5', 'TEST_PS_1']
+1 - HelloWorld
+1 - HelloWorld
+1 - name is:  TESTCOMPONENT1
+1 - getCDBRecord is:  <?xml version='1.0' encoding='UTF-8'?>
+1 - HelloWorld
+1 - <Manager xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" CommandLine="" Timeout="50.0" HeartbeatTimeout="2.0" CacheSize="0" MinCachePriority="0" MaxCachePriority="31" CentralizedLogger="Log" ServerThreads="5">
+1 -   <Startup>
+1 -         <cdb:_ string="TESTCOMPONENT"></cdb:_>
+1 -         <cdb:_ string="TESTCOMPONENT4"></cdb:_>
+1 -         <cdb:_ string="TESTCOMPONENT5"></cdb:_>
+1 -   </Startup>
+1 -   <Execute>
+1 - 	<cdb:_ string=""></cdb:_>
+1 -   </Execute>
+1 -   <ServiceComponents>
+1 - 	<cdb:_ string="Log"></cdb:_>
+1 - 	<cdb:_ string="LogFactory"></cdb:_>
+1 - 	<cdb:_ string="NotifyEventChannelFactory"></cdb:_>
+1 - 	<cdb:_ string="ArchivingChannel"></cdb:_>
+1 - 	<cdb:_ string="LoggingChannel"></cdb:_>
+1 - 	<cdb:_ string="InterfaceRepository"></cdb:_>
+1 - 	<cdb:_ string="CDB"></cdb:_>
+1 - 	<cdb:_ string="ACSLogSvc"></cdb:_>
+1 - 	<cdb:_ string="PDB"></cdb:_>
+1 -   </ServiceComponents>
+1 - </Manager>
+1 - getCDBElement is:  {}
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT1
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT3
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT4
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT5
+1 - Goodbye

@@ -1,0 +1,112 @@
+#!/bin/sh
+# rpackMakeTarball -- Make ACS RPMs
+
+# Preconditions: - the compilefarm must be created before
+#                - the tarballs should be at the SOURCE directory of 
+#		   the compile farm
+
+echo "###### Executing rpackBuildPackage"
+
+NO_ARGS=0
+E_OPTERROR=65
+COMPILE_FARM="../redhat"
+ACS_PACKAGER="RPM autopackager <acs@listas.inf.utfsm.cl>"
+USAGE="Usage: `basename $0` -n <name> -v <version> -r <release> [ -c <compfarm> ] | -h | -l "
+HELP_TEXT="$0 is an automatic RPM maker builder for RPM generation, developed by UTFSM Team.
+
+Usage: `basename $0` -n <name> -v <version> -r <release> [ -c <compfarm> ] | -h | -l 
+
+-n <name>     : is the package name, a full list of names with the -l option
+-v <version>  : Set the version of the package (by default checks ACS source tree)
+-r <release>  : Set the release of the package (needed)
+-c <compfarm> : Set the compilefarm, by default: $COMPILE_FARM
+-p <packager> : Set the packager name, by default $ACS_PACKAGER
+-l 	      : List the possible packages
+-h	      : Display this help message
+"
+
+if test $# -eq "$NO_ARGS"   # Script invoked with no command-line args?
+then
+  echo $USAGE
+  echo "### ERROR in rpackBuildPackage."
+  exit $E_OPTERROR        # Exit and explain usage, if no argument(s) given.
+fi
+
+while getopts "hln:v:r:c:p:" Option
+do
+  case $Option in
+    c     ) COMPILE_FARM=$OPTARG;;
+    v     ) ACS_VERSION=$OPTARG;;
+    r     ) ACS_RELEASE=$OPTARG;;
+    h     ) echo -e "$HELP_TEXT"; exit 0;;
+    l     ) ls ../config/specs/ | cut -d "." -f1 ; exit 0;;
+    n     ) ACS_PACKAGE_NAME=$OPTARG;;
+    p     ) ACS_PACKAGER=$OPTARG;;
+    *     ) echo "Invalid Option or missing parameter"; exit 1;;   # DEFAULT
+  esac
+done
+
+#
+# If not passed, tries to retrieve the
+# ACS version assuming the ACS_VERSION file
+# is available in the standard directory structure stored in CVS
+#
+if test -z $ACS_VERSION; then
+  ACS_SOURCES_DIR="../../../"
+  if ! ACS_VERSION=`cat $ACS_SOURCES_DIR/ACS_VERSION`; then exit 1; fi;
+fi
+
+if test -z $ACS_RELEASE; then
+  echo $USAGE
+  echo "### ERROR in rpackBuildPackage."
+  exit $E_OPTERROR        # Exit and explain usage, if no name argument given.
+fi
+
+if test -z $ACS_PACKAGE_NAME; then
+  echo $USAGE
+  echo "### ERROR in rpackBuildPackage."
+  exit $E_OPTERROR        # Exit and explain usage, if no name argument given.
+fi
+
+
+if ! cp ../config/specs/$ACS_PACKAGE_NAME.spec $COMPILE_FARM/SPECS; then
+  echo "No Such Package"
+  echo "### ERROR in rpackBuildPackage."
+  exit $E_OPTERROR        # Exit and explain usage, if no name argument given.
+fi
+
+if test -e $HOME/.rpmmacros ; then
+  mv $HOME/.rpmmacros $HOME/.rpmmacros.old
+fi
+
+cd $COMPILE_FARM
+TOPDIR=`pwd`
+cd -
+
+RPM_MACROS_CONT="%packager               $ACS_PACKAGER\n
+%acs_ver		$ACS_VERSION\n
+%acs_rel		$ACS_RELEASE\n
+%_topdir                $TOPDIR\n
+%_tmppath               %{_topdir}/TMP\n
+%_builddir              %{_topdir}/BUILD\n
+%_rpmtopdir             %{_topdir}\n
+%_rpmdir                %{_topdir}/RPMS\n
+%_sourcedir             %{_topdir}/SOURCES\n
+%_specdir               %{_topdir}/SPECS\n
+%_srcrpmdir             %{_topdir}/SRPMS\n
+%debug_package          %{nil}\n
+%_unpackaged_files_terminate_build 1\n
+"
+
+echo -e $RPM_MACROS_CONT > $HOME/.rpmmacros
+echo -e $RPM_MACROS_CONT > $HOME/.rpmmacros.debug
+
+echo "### Build package $ACS_PACKAGE_NAME"
+cd $COMPILE_FARM
+rpmbuild -ba -vv SPECS/$ACS_PACKAGE_NAME.spec
+
+if test -e $HOME/.rpmmacros.old ; then
+  mv $HOME/.rpmmacros.old $HOME/.rpmmacros
+fi
+
+echo "### Done rpackBuildPackage."

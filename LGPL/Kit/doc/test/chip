@@ -1,0 +1,223 @@
+#####################################
+### Hewlett Packard (Canada) Ltd. ###
+###         RTAP Database         ###
+###   Point Configuration File    ###
+#####################################
+#
+# Date Created : Tue May 24 13:08:28 1994
+# chip ----------------------------------------------------------
+
+Name = chip
+Alias = ccdtestChip
+Residence = RAM
+Categories = 00000000000000000000000000000000
+CE Indicator = Disabled
+CE Order = Natural
+
+#
+# Static Configuration parameters
+#
+
+BEGIN ATTRIBUTE
+#A Description of the chip used
+#A desc1
+    Name = description
+    De Type = Bytes16
+    Write Groups =
+#A desc2
+    Read Groups =
+    Type =rtSCALAR
+    Value = " "
+    Definition =
+    Usage =
+#A desc3
+#S desc4
+END
+BEGIN ATTRIBUTE
+#S desc5
+#A Type of chip (0=norm.,1=frame tran)
+#A desc6
+    Name = type
+    De Type = UInt16
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Value = 0
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A Skipper CCD 
+#A (repeated pixel readout possible)
+    Name = skipper
+    De Type = Logical
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Value = 0
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A MPP mode
+    Name = mpp
+    De Type = Logical
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Value = 0
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A Number of pixels hor. in one chip
+    Name = xPixels
+    De Type = UInt16
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A Number of pixels vert. in one chip
+    Name = yPixels
+    De Type = UInt16
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A Pixel size (microns) horizontally
+    Name = yPixelSize
+    De Type = Float
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A Pixel size (microns) vertically
+    Name = xPixelSize
+    De Type = Float
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A number of on-chip outputs
+    Name = nOutputs
+    De Type = Float
+    Write Groups =
+    Read Groups =
+    Type =rtSCALAR
+    Value = 1
+    Definition =
+    Usage =
+END
+
+BEGIN ATTRIBUTE
+#A Description of each output in the chip
+    Name = output
+    Write Groups =
+    Read Groups =
+    Type = rtTABLE
+    Record Count = 16
+    Usage =
+    BEGIN FIELD
+#A x place of output (1=first pix from left)
+#A x1
+        Name = xLocation
+#A x2
+        De Type = UInt16
+#A x3
+    END
+#A t1
+    BEGIN FIELD
+#A y1
+#A y place of output (1=first pix from bottom)
+        Name = yLocation
+#A y2
+#A y3
+        De Type = UInt16
+#A y4
+    END
+#S t2
+#S t3
+    BEGIN FIELD
+#A readout direction
+        Name = direction
+        De Type = Logical
+    END
+    BEGIN FIELD
+#A Id of the output in the chip 
+#A (as defined by the producer)
+        Name = id
+        De Type = Bytes8
+    END
+    BEGIN FIELD
+#A Number of horizontal prescan pixels
+        Name = xPrescan
+        De Type = UInt16
+    END
+    BEGIN FIELD
+#A Number of vertical prescan pixels
+        Name = yPrescan
+        De Type = UInt16
+    END
+#A y4
+    BEGIN FIELD
+#A Number of horizontal active pixels
+        Name = xPix
+        De Type = UInt16
+    END
+    BEGIN FIELD
+#A Number of vertical active pixels
+        Name = yPix
+        De Type = UInt16
+    END
+    BEGIN FIELD
+#A Number of horizontal overscan pixels
+        Name = xOverscan
+        De Type = UInt16
+    END
+    BEGIN FIELD
+#A Number of vertical overscan pixels
+        Name = yOverscan
+        De Type = UInt16
+    END
+END
+
+#
+# Dynamic Configuration parameters
+#
+
+#
+# Setup parameters
+#
+
+#
+# Status parameters
+#
+
+BEGIN ATTRIBUTE
+     Name = fieldNoCommant
+     De Type = UInt16
+     Type=rtbug
+END
+
+
+
+

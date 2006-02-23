@@ -1,0 +1,59 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: pythonModule.template,v 1.2 2004/10/05 03:24:16 srankin Exp $" 
+#%# 
+#%# Template for Python module files          
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# srankin    07/04/04  created
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN pythonModule(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+#! /usr/bin/env python
+#*******************************************************************************
+# PPPPPPPP
+#
+# "@(#) $I>-<d$"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# NNNNNNNN  dd/mm/yy  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+
+#
+# ___oOo___

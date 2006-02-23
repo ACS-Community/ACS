@@ -1,0 +1,4 @@
+This directory contains Java code for ANKA and BACI engines, that do not
+compile with the ACS set of abeans files.
+ANKA engine has been removed from the source tree.
+BACI engine has just been patched there, but this is the original versions.

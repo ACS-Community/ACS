@@ -1,0 +1,64 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: configure_script,v 1.5 2005/04/07 12:08:59 bjeram Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr 2003-12-12 created
+#
+
+echo Configuring cppunit
+#
+# Check parameters
+#
+CPP_UNIT_TAR=$1
+CPP_UNIT_VER=$2
+
+echo  "   cppunit tar file is: $CPP_UNIT_TAR"
+echo  "   cppunit version  is: $CPP_UNIT_VER"
+
+#
+# Check for installation directories
+#
+if [ "$INTROOT" != "" ] 
+then 
+   INSTALL_DIR=$INTROOT
+elif [ "$INTLIST" != "" ] 
+then 
+   INSTALL_DIR=`echo $INTLIST | awk 'BEGIN {FS=":"} {print $1}'`
+elif [ "$ACSROOT" != "" ] 
+then 
+   INSTALL_DIR=$ACSROOT
+elif [ "$VLTROOT" != "" ] 
+then 
+   INSTALL_DIR=$VLTROOT
+else 
+   echo "no installation directories (INTROOT, INTLIST, ACSROOT, VLTROOT) have been found"
+   echo "please define one and start again" 
+   exit 1
+fi
+
+#
+# For some unknown reason, configure failes on SunOS
+# by replacing RANLIB with @/bin/true instead of 
+# the proper application
+#
+
+PLATFORM=`uname`
+if [ "$PLATFORM" != "SunOS" ] 
+then 
+   CONFIGPARMS=""
+else
+   RANLIB=`which ranlib`
+   CONFIGPARMS="CC=gcc CXX=g++ LD=g++ RANLIB=$RANLIB"
+fi
+
+cd cppunit-$CPP_UNIT_VER
+./configure $CONFIGPARMS --prefix=$INSTALL_DIR
+
+echo "configuration file created"
+
+#
+# ___oOo___

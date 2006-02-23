@@ -1,0 +1,5 @@
+#! /bin/bash
+
+echo $$  > $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE/ACS_MANAGER_PID
+
+acsstartupGenericProcess.sh -s 1 "Mock maciManagerShutdown"

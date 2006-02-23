@@ -1,0 +1,808 @@
+#!/usr/bin/ksh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: buildTcltk,v 1.10 2005/12/30 11:54:07 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# pforstma  31/05/96  created
+# gfilippi  13/06/96  integrated in the JUN96 tape
+# gfilippi  16/08/96  create libtk.a link
+# gfilippi  22/08/96  check that /usr/local/doc exists (tkman installs there)
+# gfilippi  14/11/96  NOV96 - do not remove old version (it should start on a clean/usr/local) 
+# gfilippi  14/11/96  NOV96 - added verification step based on reference list
+# eallaert  12/02/97  MAY97 - adapted to new versions of Tcl/Tk etc
+# eallaert  28/02/97  MAY97 - remove "w" permission from sl libraries
+# gfilippi  05/03/97  MAY97 - expect 5.22
+# gfilippi  23/03/97  MAY97 - use ${SHARED}, namely .sl for HP and .so for SUN
+# wpirani   03/04/97  Testing/hacking new installation in /vlt/tcltk
+# wpirani   09/04/97  More testing/hacking to install in /vlt/tcltk
+# wpirani   24/04/97  Patched tclIndex.tcl for expect on HP 10.x
+# wpirani   05/05/97  Now using msql 1.0.16
+# wpirani   08/09/97  Testing/hacking for NOV97 release
+# wpirani   03/11/97  Fine tuning for NOV97
+# wpirani   29/06/98  Updated for OCT98 (tkTable extension added)
+# wpirani   18/03/99  Updated for FEB99 (Solaris 2.6 supported)
+# wpirani   20/04/99  Updated for OCT99 (New Tcl/Tk baseline)
+# wpirani   01/12/99  Added creation of $TCLTK_ROOT
+# wpirani   14/01/2000 FEB2000: Now using tcltk-FEB2000.tar.gz (minor patches)
+# wpirani   14/01/2000 FEB2000: Added pgplot 5.5.2 (HP-UX only)
+# wpirani   03/04/2000 NOV2000: Minor patches for HP-UX 11.00 added
+# wpirani   31/05/2000 NOV2000: Minor patches introduced
+# wpirani   03/08/2000 NOV2000: pgplot added to Solaris and Linux
+# wpirani   12/01/2001 MAR2001: fixed for RH 6.2 (Linux 2.2.16-3)
+# wpirani   09/05/2001 OCT2001: updated for OCT2001 (tcltk 8.3.3)
+# wpirani   22/08/2001 OCT2001: added tcllib 0.8 (required by TclPro)
+# wpirani   22/08/2001 OCT2001: added TclPro 1.5.0
+# wpirani   29/01/2002 MAR2002: Snack fix for HP-UX 11.00 added
+# wpirani   30/01/2002 MAR2002: pgplot builds shared libraries
+# wpirani   05/02/2002 MAR2002: Sybase libraries for Tcl/Tk added
+# wpirani   14/05/2002 APR2003: Updated from APR2003
+# wpirani   14/05/2002 APR2003: groff moved to buildGNU
+# wpirani   19/05/2002 APR2003: Some tools updated (see below for details)
+# wpirani   28/05/2002 APR2003: More tools updated
+# wpirani   17/12/2002 APR2003: Expect updated to 5.38
+# wpirani   13/03/2003 APR2003: msql patched and now called msql-APR2003.tar
+# wpirani   23/06/2003 APR2004: first update
+# wpirani   25/11/2003 APR2004: Updated for MSQL2
+
+#************************************************************************
+#   NAME
+#
+#   buildTcltk
+#
+#   SYNOPSIS
+#
+#   buildTcltk [-t]
+# 
+#   DESCRIPTION
+#
+#   Compiles and install the Tcl/Tk packages needed for VLT Common Software 
+#
+#   - msql 2.0.11
+#
+#   - tcl 8.4.5
+#   - tk 8.4.5
+#   - [incr Tcl] 3.3
+#   - [incr Tk] 3.3
+#   - iwidgets 4.0.2
+#   - tclX 8.4
+#   - tkX 8.4
+#   - blt 2.4z
+#   - msqltcl 1.99
+#   - img 1.3rc2
+#   - Tktable 2.8
+#   - snack 2.2.1
+#   - tkman 2.2
+#   - rman 3.1
+#   - expect 5.38
+#   - tclCheck 1.1.10
+#   - tkinspect 5.1.6
+#   - Sybtcl
+#   - pgplot
+#
+#   Target installation directory is specified by the enviroment
+#   variable $TCLTK_ROOT (usually /vlt/tcltk).  If undefined,
+#   /usr/local is used instead.
+#
+#   Each installed shell is tested after installation. Tkman and
+#   tkinspect are not checked because they are interactive programs.
+#
+#   Option -t allows to run the shell in verbose mode.
+#
+#   FILES
+#   
+#   input files: are taken from ../tcltk, the exact names are listed below
+#   
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   Tkman assumes that groff is already installed. If tkman does
+#   not start, modify "man(print)" in $HOME/.tkman.
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#   Does not stop in case of compilation errors.
+#------------------------------------------------------------------------
+#
+
+#
+# Some builds might failed if the tty is closed
+echo "WARNING: Do not close this terminal: TclTk msql build will fail!"
+
+if [ "X$DISPLAY" = "X" ]
+then
+   echo "WARNING: DISPLAY not set. TclTk checking tests will fail!"
+fi 
+
+if [ "$1" = "-t" ]
+then	set -x
+else if [ "$1" != "" ]
+     then  echo "usage: build [-t]"
+	   exit 1
+     fi
+fi
+
+LOG=buildTcltk.log
+CWD=`pwd`
+#
+exec > $LOG 2>&1
+
+date
+
+#
+# print header
+#
+TITLE="     Installing TCL/TK and other related tools  "
+BUILD_NAME="Tcltk"
+. ./standardPrologue
+
+if [ "X$DISPLAY" = "X" ]
+then
+   echo "WARNING: DISPLAY not set. Some build/tests might fail!"
+fi 
+
+TCLTK=${INSTALL_ROOT}/PRODUCTS/tcltk
+cd ${INSTALL_ROOT}/PRODUCTS/
+if [ -d tcltk ]
+then
+    echo "$TCLTK already existing; first remove it"
+    rm -rf $TCLTK
+fi
+if ! [ -f tcltk.tar.gz ]
+then
+    echo "tcltk tar file missing"
+    exit 1
+else
+    tar xzf tcltk.tar.gz
+fi
+cd $CWD
+
+#
+# get current operating system
+#
+build_OS=`uname -s`
+build_OSV=`uname -r`
+
+if [ ${build_OS} = "Linux" ]
+then
+     build_OSV=`cat /etc/redhat-release | awk '{ print $5 }'`
+fi
+
+echo $SEPARATOR
+echo " Installing on $build_OS version $build_OSV"
+
+if [     ${build_OS}-${build_OSV} != "SunOS-5.8"     \
+     -a  ${build_OS}-${build_OSV} != "HP-UX-B.11.00" \
+     -a  ${build_OS}-${build_OSV} != "Linux-9"       \
+   ]
+then
+    echo "\n\tWARNING: this procedure has not been tested on this system\n"
+fi
+
+echo "--- Check current environment and prepare installation"
+
+#-------------------
+# check that ACSDATA is defined as directory (needed by msql)
+#
+echo "check ACSDATA . . .\c"
+if [ "$ACSDATA" = "" ]
+then	
+    echo "$ACSDATA not defined, cannot continue."
+    exit 1
+fi
+
+if [ ${build_OS} = "Linux" ]
+then
+    DIR_LIST="
+         ENVIRONMENTS      \
+         config            \
+         tmp               \
+        "
+else
+    DIR_LIST="
+         ENVIRONMENTS      \
+         config            \
+         tmp               \
+         msql              \
+         msql/.tmp         \
+         msql/msqldb       \
+         msql/msqldb/.tmp  \
+        "
+fi
+
+if [ ! -d $ACSDATA ]
+then
+    if mkdir $ACSDATA
+    then
+        echo "   CREATED >>> |---$ACSDATA "
+    else
+        echo "\n ERROR: I cannot create the starting directory >>$ACSDATA<<"
+        echo "          Please fix the problem and try again."
+        echo ""
+        exit 1
+    fi
+else
+    echo "               |---$ACSDATA "
+fi
+#
+# if not already there, create all the needed subdirectories
+for dir in $DIR_LIST
+do
+    if [ ! -d $ACSDATA/$dir ]
+    then
+        mkdir $ACSDATA/$dir
+        chmod g+w $ACSDATA/$dir
+        echo "   CREATED >>>     |---$dir "
+    else
+        echo "                   |---$dir "
+    fi
+done
+chmod -R g+w $ACSDATA
+echo " . . . ok"
+
+
+#-------------------
+# check that all needed files are there
+#
+for file in \
+	     sybtcl-2.5.tar.gz         \
+             expect-5.38-custom.tar.gz \
+             msql2.tar.gz              \
+	     pgplot-APR2004.tar.gz     \
+             tclCheck-1.1.13.tar.gz    \
+             tcltk-APR2004.tar.gz      \
+             tkinspect-5.1.6.tar       \
+             tkinspect_install.tcl
+do
+    if [ ! -f ${TCLTK}/$file ]
+    then
+    	echo "$file missing."
+	exit 1
+    fi
+done
+
+#
+# setup and check target directory
+#
+if [ "$TCLTK_ROOT" = "" ]
+then
+    TCLTK_ROOT=/usr/local
+fi
+
+if [ ! -d $TCLTK_ROOT ]
+then
+     mkdir -p $TCLTK_ROOT
+     RET=$?
+     if [ $RET -ne 0 ]
+     then
+        echo "Failed to create $TCLTK_ROOT, cannot continue..."
+        exit 1  
+     fi
+fi
+
+PREFIX=$TCLTK_ROOT
+export PREFIX
+echo "target directory. . .\c"
+echo "defined as: $PREFIX . . .\c"
+
+if [ ! -d $PREFIX ]
+then
+    echo "but is not a directory, cannot continue."
+    exit 1
+fi
+
+if [ ! -w $PREFIX ]
+then
+    echo "but is not a writable directory, cannot continue."
+    exit 1
+fi
+echo " . . . ok"
+
+#
+# when target dir is not /usr/local, delete the current content
+#
+if [ "$PREFIX" != "/usr/local" ]
+then	
+    echo "remove ${PREFIX} . . .\c"
+    rm -rf $PREFIX
+    mkdir $PREFIX
+    mkdir $PREFIX/bin
+    mkdir $PREFIX/lib
+    mkdir $PREFIX/include
+    mkdir $PREFIX/man
+    mkdir $PREFIX/man/man1
+    mkdir $PREFIX/man/man3
+    mkdir $PREFIX/doc
+    echo " . . . done"
+fi
+
+#
+# if HP, set where to look for X11 libraries
+#
+if [ $build_OS = "HP-UX" ] 
+then	
+    XLIB_OPTIONS="--x-libraries=/usr/lib/X11R5" 
+else
+    XLIB_OPTIONS=""
+fi
+
+
+#
+# Use GNU c compiler
+#
+CC=gcc
+export CC
+
+
+#
+# create a temporary directory used to expand the tar files and 
+# to compile
+#
+SRC="$TCLTK/$build_OS-$build_OSV"
+echo "set temporary build directory: $SRC . . .\c"
+if [ -d $SRC ]
+then
+    echo "remove current content . . .\c"
+    rm -rf $SRC
+fi
+mkdir $SRC
+echo "done"
+
+#
+# get current content of the target directory
+#
+cwd=`pwd`
+bFile=$SRC/before_buildTcltk
+aFile=$SRC/after_buildTcltk
+rm -f $bfile $aFile
+cwd=`pwd`
+cd $PREFIX
+find . -print > $bFile
+cd $cwd
+
+#
+# 1. msql   
+#
+#    needed to implement the VCC/ACC database. 
+#    The msql library is required by Sequencer (at list until dynamic load is available)
+#    The ad hoc installation procedure created the database in ACSDATA and the
+#    binaries in the target directory
+#
+echo $SEPARATOR
+echo "msql: untarring . . . "
+cd $SRC
+gunzip $TCLTK/msql2.tar.gz -c | tar xf -
+cd msql-2.0.11/targets/$build_OS
+./setup
+make install
+cp ../../msql.acl $TCLTK_ROOT/include
+cd $TCLTK_ROOT
+rm -fr README README.sco makegen misc www msql.acl.sample
+cd bin
+rm -f msqld msqlrelshow
+ln -s msql2d msqld
+ln -s relshow msqlrelshow
+
+
+# 3: Tcl/Tk installation, namely:
+#
+#    - tcl 8.4.5
+#    - tk 8.4.5
+#    - [incr Tcl] 3.3
+#    - [incr Tk] 3.3
+#    - iwidgets 4.0.2
+#    - tclX 8.4
+#    - tkX 8.4
+#    - blt 2.4z
+#    - msqltcl 1.99
+#    - img 1.3rc2
+#    - Tktable 2.8
+#    - snack 2.2.1
+#    - tkman 2.2
+#    - rman 3.1
+#
+echo $SEPARATOR
+echo "tcltk: untarring . . . "
+cd $SRC
+gunzip $TCLTK/tcltk-APR2004.tar.gz -c | tar xf -
+CC=gcc
+export CC
+
+# Make first the static libraries for Tcl/Tk and [incr Tcl]
+# then the shared version; this should come second, so tclConfig.sh
+# refers to the shared version, and the executables are the shared ones.
+
+for dir in tcl8.4.5/unix tk8.4.5/unix tclx-2002-04-11 itcl-2003-04-04
+do
+    cd ${dir}
+    echo "Configuring for static libraries..."
+    ./configure --prefix=$PREFIX --disable-shared --enable-gcc --srcdir=`pwd`
+    make
+    make -k install
+    make distclean
+    echo "Configuring for shared libraries..."
+    ./configure --prefix=$PREFIX --enable-shared --enable-gcc --srcdir=`pwd`
+    make
+    make -k install
+    cd $SRC
+done
+
+# Link the default shell names to the version specific names
+
+cd $PREFIX/bin
+rm -f tclsh wish
+ln -s tclsh8.4   tclsh
+ln -s wish8.4    wish
+
+# Link the default library names to the versions under specific subdirs
+SHLIB_EXT=`echo "puts [info sharedlibextension]"|${PREFIX}/bin/tclsh`
+cd $PREFIX/lib
+rm -f libtclx8.4${SHLIB_EXT}
+ln -s `pwd`/tclx8.4/libtclx8.4${SHLIB_EXT} libtclx8.4${SHLIB_EXT}
+ln -s `pwd`/tclx8.4/libtclx8.4.a           libtclx8.4.a
+
+# Install the wrapper scripts for the pre-8.4 TclX shells (tcl, wishx)
+cd $SRC
+cp tcl $PREFIX/bin
+cp wishx $PREFIX/bin
+chmod +x $PREFIX/bin/tcl $PREFIX/bin/wishx
+
+cd $SRC/iwidgets-2003-04-25
+./configure --prefix=$PREFIX --enable-shared --with-itcl=../itcl-2003-04-04
+make install
+
+# Next command should be temporary (i.e. it deals with itcl Makefile bugs)
+if [ "$build_OS" = "HP-UX" ]
+then
+    chmod 555 $TCLTK_ROOT/lib/*sl
+else
+    chmod 555 $TCLTK_ROOT/lib/*so
+fi
+
+
+# The "configure" of BLT, MSQLTCL and IMG depend on an *installed* Tcl/Tk,
+# so that is why they have to come after the "make install" of Tcl/Tk
+cd $SRC/blt2.4z
+./configure --prefix=$PREFIX --enable-shared
+make 
+make -k install
+#
+# Setup symbolic link(s)
+#
+SHLIB_EXT=`${PREFIX}/bin/tcl -c "puts [info sharedlibextension]"`
+cd $PREFIX/lib
+rm -f libBLT${SHLIB_EXT}
+ln -s libBLT24${SHLIB_EXT} libBLT${SHLIB_EXT}
+
+cd $SRC/msqltcl-1.99
+./configure --prefix=$PREFIX --enable-shared --with-msql-include=$TCLTK_ROOT/include --with-msql-library=$TCLTK_ROOT/lib
+make 
+make -k install
+
+
+#
+# Build the "image" extension
+#
+cd $SRC/tkimg1.3rc2
+./configure --prefix=$PREFIX --enable-shared --disable-stubs --srcdir=`pwd`
+make 
+make -k install
+chmod 755 $TCLTK_ROOT/lib/Img1.3/*
+
+
+#
+# Build the Tktable extension
+#
+cd $SRC/Tktable2.8
+./configure --prefix=$PREFIX --enable-shared 
+make 
+make -k install
+
+
+#
+# Build snack
+#
+cd $SRC/snack2.2.1/unix
+./configure --prefix=$PREFIX --enable-shared --with-tcl=../../tcl8.4.5/unix --with-tk=../../tk8.4.5/unix --disable-stubs
+mv Makefile Makefile.orig
+# Minipatch for broken Makefile! -- Werther
+cat Makefile.orig | sed s'/DESTDIR.=/DESTDIR = ${TCLTK_ROOT}/' > Makefile
+make
+make -k install
+
+
+#
+# build rman
+#
+cd $SRC/rman-3.1
+make 
+make -k install
+
+
+#
+# build tkman
+#
+cd $SRC/tkman-2.2
+make 
+make -k install
+
+
+#
+# 4. expect
+#
+echo $SEPARATOR
+echo "expect: untarring . . . "
+cd $SRC
+gunzip $TCLTK/expect-5.38-custom.tar.gz -c | tar xf -
+cd expect-5.38-custom
+if [ $build_OS = "HP-UX" ] 
+then	
+    LIBS=/usr/lib/libdld.sl
+fi
+
+if [ $build_OS = Linux ]
+then
+    autoconf
+    ./configure --prefix=$PREFIX $XLIB_OPTIONS --enable-shared
+    patch <<'EOF'
+*** exp_command.c.orig  2002-06-26 09:21:29.000000000 +0200
+--- exp_command.c       2002-06-26 09:21:51.000000000 +0200
+***************
+*** 503,508 ****
+--- 503,510 ----
+  }
+  #endif
+  
++ #define SETPGRP_VOID
++ 
+  static
+  void
+  expSetpgrp()
+EOF
+else
+    ./configure --prefix=$PREFIX $XLIB_OPTIONS --enable-shared 
+fi
+
+make clean
+make 
+make install  
+LIBS=""
+
+
+#
+# 5. tclCheck
+# 
+# no man page, only $PREFIX/bin/tclCheck has been installed
+#
+echo $SEPARATOR
+echo "tclCheck: untarring . . . "
+cd $SRC
+gunzip $TCLTK/tclCheck-1.1.13.tar.gz -c | tar xf -
+cd tclCheck-1.1.13
+
+# 1. to avoid problem with 'getopt': comment the line 
+#    extern int getopt(int, char**, char*);
+# 2. replace  'install -s' by 'cp' in Makefile
+
+cp tclCheck.c tclCheck.orig.c
+rm -rf tclCheck.c
+cat tclCheck.orig.c | grep -v 'int getopt' > tclCheck.c
+
+make
+
+cp Makefile Makefile.orig
+rm -rf Makefile
+cat Makefile.orig | sed s'/install -s/cp/' > Makefile
+make install BIN=$PREFIX/bin
+
+
+#
+# 6. tkinspect
+#
+echo $SEPARATOR
+echo "tkinspect: untarring . . . "
+cd $SRC
+tar xf $TCLTK/tkinspect-5.1.6.tar
+cd tkinspect-5
+TCL_LIBRARY=$PREFIX/lib/tcl8.3
+export TCL_LIBRARY
+${PREFIX}/bin/tcl ${TCLTK}/tkinspect_install.tcl
+
+
+#
+# 7. Install Sybtcl files
+#
+echo $SEPARATOR
+echo "Installing Sybase libraries... \c"
+cd $SRC
+gunzip $TCLTK/sybtcl-2.5.tar.gz -c | tar xf -
+cd sybtcl-2.5
+if [ ${build_OS}-${build_OSV} = "HP-UX-B.11.00" ]
+then
+    cd hpux_1100
+    tar cf - . | ( cd $TCLTK_ROOT/lib; tar xf - )
+elif [ ${build_OS}-${build_OSV} = "SunOS-5.6" ]
+then
+    cd solaris6
+    tar cf - . | ( cd $TCLTK_ROOT/lib; tar xf - )
+elif [ ${build_OS} = "Linux" ]
+then
+    cd intel_linux
+    tar cf - . | ( cd $TCLTK_ROOT/lib; tar xf - )
+else
+    echo "Note: Not installing Sybtcl!"
+fi
+echo "done."
+
+
+#
+# 8. pgplot
+#
+# Yes, this is really ugly.  Blame pgplot's author, not me! -- Werther
+#
+echo $SEPARATOR
+echo "pgplot: untarring . . . "
+cd $SRC
+gunzip $TCLTK/pgplot-APR2004.tar.gz -c | tar xf -
+PGPLOT_DIR=$TCLTK_ROOT/pgplot
+export PGPLOT_DIR
+rm -rf $PGPLOT_DIR
+mkdir $PGPLOT_DIR
+DIST=`pwd`
+cd $PGPLOT_DIR
+
+if [ $build_OS = "HP-UX" ]     # using HP's f77 and cc
+then
+    cp $SRC/pgplot/makefile.hp makefile
+    cp $SRC/pgplot/drivers.list .
+    cp $SRC/pgplot/grexec.f .
+elif [ $build_OS = "SunOS" ]   # using GNU's gcc and g77
+then
+    cp $SRC/pgplot/makefile.solaris makefile
+    cp $SRC/pgplot/drivers.list .
+    cp $SRC/pgplot/grexec.f .
+elif [ $build_OS = "Linux" ]   # using GNU's gcc and g77
+then
+    cp $SRC/pgplot/makefile.linux makefile
+    cp $SRC/pgplot/drivers.list.linux drivers.list
+    cp $SRC/pgplot/grexec.f.linux grexec.f
+fi
+
+cp $SRC/pgplot/src/grpckg1.inc .
+cp $SRC/pgplot/src/pgplot.inc .
+cp $SRC/pgplot/rgb.txt .
+
+export SRC # used by make!
+
+make       # standard tools and libraries
+make cpg   # C binding
+make clean
+rm -f *.o *.orig
+mv lib* $TCLTK_ROOT/lib
+mv *.h $TCLTK_ROOT/include
+
+if [ $build_OS = "HP-UX" ]
+then
+    chatr +s enable cpgdemo pgdemo* pgmdemo pgtkdemo > /dev/null
+fi
+
+
+#
+# 9. tcllib
+#
+# Since we're going to build TclPro, we need this one
+#
+echo $SEPARATOR
+echo "tcllib: untarring . . . "
+cd $SRC
+gunzip $TCLTK/tcllib-1.3.tar.gz -c | tar xf -
+cd tcllib-1.3
+sh ./install.sh $TCLTK_ROOT
+
+
+#
+# 10. TclPro 1.5.0 -- it's a two step process!
+#
+echo $SEPARATOR
+echo "TclPro: untarring . . . "
+cd $SRC
+gunzip $TCLTK/tclpro1.5.0.tar.gz -c | tar xf -
+cd tclpro1.5.0/tclpro
+mkdir ${build_OS}-${build_OSV}
+cd ${build_OS}-${build_OSV}
+
+# Local fix for expect!
+
+if [ $build_OS = Linux ]
+then
+    WORKDIR=`pwd`
+    cd ../../expect5.32
+    autoconf
+    patch <<'EOF'
+*** exp_command.c.orig  2002-06-26 09:21:29.000000000 +0200
+--- exp_command.c       2002-06-26 09:21:51.000000000 +0200
+***************
+*** 503,508 ****
+--- 503,510 ----
+  }
+  #endif
+  
++ #define SETPGRP_VOID
++ 
+  static
+  void
+  expSetpgrp()
+EOF
+    cd $WORKDIR
+fi
+
+#
+# step #1
+#
+../configure --prefix=$TCLTK_ROOT/TclPro --with-flavor=Release --with-protools=$TCLTK_ROOT/TclPro --enable-gcc --enable-shared
+make
+make install
+#
+# step #2
+#
+rm -fr *
+../configure --prefix=$TCLTK_ROOT/TclPro --with-flavor=Release --with-protools=$TCLTK_ROOT/TclPro --enable-gcc --enable-shared
+make
+make install
+#
+# Let's add some links to avoid adding an extra directory to PATH
+#
+cd $TCLTK_ROOT/bin
+if [ "${build_OS}" = "Linux" ]
+then
+    ln -s $TCLTK_ROOT/TclPro/linux-ix86/bin/procheck .
+    ln -s $TCLTK_ROOT/TclPro/linux-ix86/bin/procomp .
+    ln -s $TCLTK_ROOT/TclPro/linux-ix86/bin/prodebug .
+    ln -s $TCLTK_ROOT/TclPro/linux-ix86/bin/prowrap .
+elif [ "${build_OS}" = "SunOS" ]
+then
+    ln -s $TCLTK_ROOT/TclPro/solaris-sparc/bin/procheck .
+    ln -s $TCLTK_ROOT/TclPro/solaris-sparc/bin/procomp .
+    ln -s $TCLTK_ROOT/TclPro/solaris-sparc/bin/prodebug .
+    ln -s $TCLTK_ROOT/TclPro/solaris-sparc/bin/prowrap .
+elif [ "${build_OS}" = "HP-UX" ]
+then
+    ln -s $TCLTK_ROOT/TclPro/hpux-parisc/bin/procheck .
+    ln -s $TCLTK_ROOT/TclPro/hpux-parisc/bin/procomp .
+    ln -s $TCLTK_ROOT/TclPro/hpux-parisc/bin/prodebug .
+    ln -s $TCLTK_ROOT/TclPro/hpux-parisc/bin/prowrap .
+    chatr +s enable $TCLTK_ROOT/bin/* > /dev/null 2>&1
+    chatr +s enable $TCLTK_ROOT/TclPro/hpux-parisc/bin/* > /dev/null 2>&1
+fi
+
+# fix to the msql.conf file to put the real path to the TCLTK_ROOT 
+# and the ACSDATA directories because the msql deamon does not 
+# understand the corresponding environment variables
+cd $TCLTK_ROOT
+REAL_TCL=`echo $TCLTK_ROOT`
+REAL_ADT=`echo $ACSDATA`
+sed 's,\$TCLTK_ROOT,'"$REAL_TCL,g" msql.conf > msql.conf.out
+sed 's,\$ACSDATA,'"$REAL_ADT,g" msql.conf.out > msql.conf
+rm msql.conf.out
+
+
+#-------------------------
+# VERIFICATION
+#
+echo $SEPARATOR
+echo "\n                          VERIFICATION\n"
+
+cd ${INSTALL_ROOT}/INSTALL
+./checkTcltk
+
+#
+#___oOo___

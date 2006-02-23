@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EntitybuilderSettings>
+
+    <EntitySchema schemaName="ACSError.xsd" xmlNamespace="Alma/ACSError"/>    
+    <XmlNamespace2JPackage xmlNamespace="Alma/ACSError" jPackage="alma.acs.acserr"/>    
+</EntitybuilderSettings>

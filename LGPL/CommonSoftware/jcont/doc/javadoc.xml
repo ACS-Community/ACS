@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project_name" default="javadoc">
+    <target name="javadoc">
+        <javadoc destdir="D:\acs-x\doc\api" access="package" use="true"
+            notree="false" nonavbar="false" noindex="false"
+            splitindex="true" author="true" version="true"
+            nodeprecatedlist="false" nodeprecated="false"
+            packagenames="alma.testcomponents,alma.entity.corbamappers,alma.acs.logging,alma.acs.util,alma.server,alma.acs.component,alma.acs.container.corba,alma.tools.idlgen,alma.xmlentity,alma.testbyhand,alma.xmltest,alma.xmltest.TransportTesterPackage,alma.xmltest.TransportTesterJPackage,alma.HelloApp,alma.client,alma.acs.component.clientwrapper,alma.acs.container"
+            sourcepath="D:\acs-x\test;D:\acs-x\src_generated;D:\acs-x\src"
+            classpath="D:\acs-x\bin;D:\acs-x\lib\entityclasses.jar;D:\acs-x\lib\OB.jar;D:\acs-x\lib\castor.jar;D:\acs-x\lib\openorb_tools-1.3.0.jar;D:\acs-x\lib\openorb-1.3.0.jar;D:\acs-x\lib\abeans\abeans.jar;D:\acs-x\lib\abeans\aplugACS.jar;D:\acs-x\lib\maciabeansstuff.jar" doctitle="ACS-x The Java Activator and more..."/>
+    </target>
+</project>

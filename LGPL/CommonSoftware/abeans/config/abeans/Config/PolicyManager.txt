@@ -1,0 +1,40 @@
+#Enable debug output
+abeans.core.defaults.DebugPolicy=true
+
+#Default timeout for all calls to the remote system
+abeans.models.DefaultTimeoutPolicy=5000
+
+# Specifies the severity of the events that get reported to the console
+# Value of this parameter is defined by java.util.logging.Level class
+# Accepted values are:
+# ALL, FINEST, FINER, FINE, CONFIG, WARNING, SEVERE, OFF
+# First value shows all logs, last value none, with other values defining
+# different ammount of output in increasing order of importance
+abeans.core.defaults.ConsoleLoggingPolicy=INFO
+#abeans.core.defaults.ConsoleLoggingPolicy=ALL
+#abeans.core.defaults.LoggingHandlerPolicy=SEVERE
+#abeans.framework.LogReportsPolicy=true
+
+#abeans.engine.IndexingPolicy=abeans.engine.LatestIndexingComparator
+
+#abeans.engine.RequestThreadingPolicy=SINGLE_THREAD
+
+abeans.pluggable.acs.logging.LoggingLevelPolicy=INFO
+#abeans.pluggable.acs.logging.LoggingLevelPolicy=ALL
+
+# Specify the Level definitions for logging
+# This value overrides the default Java policy
+abeans.core.defaults.LevelDefinitionPolicy=abeans.pluggable.acs.logging.LoggingLevel
+
+#>>>>
+#Following lines are for the ExceptionHandlerService (EHS)
+
+#Uncomment this line if you do not want stack trace to appear in output
+#abeans.core.defaults.EHSStackTrace=false
+#Uncomment this line if you want detailed info about components in exception report
+#abeans.core.defaults.EHSReportLevel=2
+#Specify how long will EHS wait for exception after first one to gather all chain in one unit. Default is 5 seconds
+#abeans.core.defaults.EHSWaitTimeForTree=5000
+#Uncomment this line if you do not want EHS to print all consequent exceptions that are caused by an exception. Default is ‘false’ since this chain can be quite long.
+#abeans.core.defaults.EHSExceptionTree=true
+#<<<<

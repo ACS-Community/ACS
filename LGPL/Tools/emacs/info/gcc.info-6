@@ -1,0 +1,1098 @@
+This is Info file gcc.info, produced by Makeinfo-1.54 from the input
+file gcc.texi.
+
+   This file documents the use and the internals of the GNU compiler.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1988, 1989, 1992, 1993 Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "GNU General Public License" and "Protect
+Your Freedom--Fight `Look And Feel'" are included exactly as in the
+original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this
+one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "GNU General Public
+License" and "Protect Your Freedom--Fight `Look And Feel'", and this
+permission notice, may be included in translations approved by the Free
+Software Foundation instead of in the original English.
+
+
+File: gcc.info,  Node: Configurations,  Next: Other Dir,  Up: Installation
+
+Configurations Supported by GNU CC
+==================================
+
+   Here are the possible CPU types:
+
+     1750a, a29k, alpha, arm, cN, clipper, elxsi, h8300, hppa1.0,
+     hppa1.1, i370, i386, i486, i860, i960, m68000, m68k, m88k, mips,
+     ns32k, pyramid, romp, rs6000, sh, sparc, sparclite, sparc64, vax,
+     we32k.
+
+   Here are the recognized company names.  As you can see, customary
+abbreviations are used rather than the longer official names.
+
+     acorn, alliant, altos, apollo, att, bull, cbm, convergent, convex,
+     crds, dec, dg, dolphin, elxsi, encore, harris, hitachi, hp, ibm,
+     intergraph, isi, mips, motorola, ncr, next, ns, omron, plexus,
+     sequent, sgi, sony, sun, tti, unicom.
+
+   The company name is meaningful only to disambiguate when the rest of
+the information supplied is insufficient.  You can omit it, writing
+just `CPU-SYSTEM', if it is not needed.  For example, `vax-ultrix4.2'
+is equivalent to `vax-dec-ultrix4.2'.
+
+   Here is a list of system types:
+
+     386bsd, aix, acis, amigados, aos, aout, bosx, bsd, clix, ctix,
+     cxux, dgux, dynix, ebmon, elf, esix, freebsd, hms, genix, gnu,
+     hiux, hpux, iris, irix, isc, linux, luna, lynxos, mach, minix,
+     msdos, mvs, netbsd, newsos, nindy, ns, osf, osfrose, riscix,
+     riscos, rtu, sco, solaris, sunos, sym, sysv, ultrix, unicos,
+     uniplus, unos, vms, vxworks, xenix.
+
+You can omit the system type; then `configure' guesses the operating
+system from the CPU and company.
+
+   You can add a version number to the system type; this may or may not
+make a difference.  For example, you can write `bsd4.3' or `bsd4.4' to
+distinguish versions of BSD.  In practice, the version number is most
+needed for `sysv3' and `sysv4', which are often treated differently.
+
+   If you specify an impossible combination such as `i860-dg-vms', then
+you may get an error message from `configure', or it may ignore part of
+the information and do the best it can with the rest.  `configure'
+always prints the canonical name for the alternative that it used.  GNU
+CC does not support all possible alternatives.
+
+   Often a particular model of machine has a name.  Many machine names
+are recognized as aliases for CPU/company combinations.  Thus, the
+machine name `sun3', mentioned above, is an alias for `m68k-sun'.
+Sometimes we accept a company name as a machine name, when the name is
+popularly used for a particular machine.  Here is a table of the known
+machine names:
+
+     3300, 3b1, 3bN, 7300, altos3068, altos, apollo68, att-7300,
+     balance, convex-cN, crds, decstation-3100, decstation, delta,
+     encore, fx2800, gmicro, hp7NN, hp8NN, hp9k2NN, hp9k3NN, hp9k7NN,
+     hp9k8NN, iris4d, iris, isi68, m3230, magnum, merlin, miniframe,
+     mmax, news-3600, news800, news, next, pbd, pc532, pmax, powerpc,
+     ps2, risc-news, rtpc, sun2, sun386i, sun386, sun3, sun4, symmetry,
+     tower-32, tower.
+
+Remember that a machine name specifies both the cpu type and the company
+name.  If you want to install your own homemade configuration files,
+you can use `local' as the company name to access them.  If you use
+configuration `CPU-local', the configuration name without the cpu prefix
+is used to form the configuration file names.
+
+   Thus, if you specify `m68k-local', configuration uses files
+`local.md', `local.h', `local.c', `xm-local.h', `t-local', and
+`x-local', all in the directory `config/m68k'.
+
+   Here is a list of configurations that have special treatment or
+special things you must know:
+
+`1750a-*-*'
+     MIL-STD-1750A processors.  This port is preliminary.
+
+     You should ignore a fatal error during the building of libgcc
+     (libgcc is not yet implemented for the 1750A.)
+
+     The Tektronix MIL-STD-1750A Assembler requires the file
+     `m1750.inc', which is found in the directory `config/1750a'.
+
+     GNU CC produced the same sections as the Fairchild F9450 C
+     Compiler, namely:
+
+    `NREL'
+          The program code section.
+
+    `SREL'
+          The read/write (RAM) data section.
+
+    `KREL'
+          The read-only (ROM) constants section.
+
+    `IREL'
+          Initialization section (code to copy KREL to SREL).
+
+     The smallest addressable unit is 16 bits (BITS_PER_UNIT is 16).
+     This means that type `char' is represented with a 16-bit word per
+     character.  The 1750A's "Load/Store Upper/Lower Byte" instructions
+     are not used by GNU CC.
+
+     There is a problem with long argument lists to functions.  The
+     compiler aborts if the sum of space needed by all arguments
+     exceeds 14 words.  This is because the arguments are passed in
+     registers (R0..R13) not on the stack, and there is a problem with
+     passing further arguments (i.e.  beyond those in R0..R13) via the
+     stack.
+
+     If efficiency is less important than using long argument lists, you
+     can change the definition of the `FUNCTION_ARG' macro in
+     `config/1750/1750a.h' to always return zero.  If you do that, GNU
+     CC will pass all parameters on the stack.
+
+`alpha-*-osf1'
+     Systems using processors that implement the DEC Alpha architecture
+     and are running the OSF/1 operating system, for example the DEC
+     Alpha AXP systems.  (VMS on the Alpha is not currently supported
+     by GNU CC.)
+
+     GNU CC writes a `.verstamp' directive to the assembler output file
+     unless it is built as a cross-compiler.  It gets the version to
+     use from the system header file `/usr/include/stamp.h'.  If you
+     install a new version of OSF/1, you should rebuild GCC to pick up
+     the new version stamp.
+
+     Note that since the Alpha is a 64-bit architecture,
+     cross-compilers from 32-bit machines will not generate code as
+     efficient as that generated when the compiler is running on a
+     64-bit machine because many optimizations that depend on being
+     able to represent a word on the target in an integral value on the
+     host cannot be performed.  Building cross-compilers on the Alpha
+     for 32-bit machines has only been tested in a few cases and may
+     not work properly.
+
+     `make compare' may fail on old versions of OSF/1 unless you add
+     `-save-temps' to `CFLAGS'.  On these systems, the name of the
+     assembler input file is stored in the object file, and that makes
+     comparison fail if it differs between the `stage1' and `stage2'
+     compilations.  The option `-save-temps' forces a fixed name to be
+     used for the assembler input file, instead of a randomly chosen
+     name in `/tmp'.  Do not add `-save-temps' unless the comparisons
+     fail without that option.  If you add `-save-temps', you will have
+     to manually delete the `.i' and `.s' files after each series of
+     compilations.
+
+     GNU CC now supports both the native (ECOFF) debugging format used
+     by DBX and GDB and an encapsulated STABS format for use only with
+     GDB.  See the discussion of the `--with-stabs' option of
+     `configure' above for more information on these formats and how to
+     select them.
+
+     There is a bug in DEC's assembler that produces incorrect line
+     numbers for ECOFF format when the `.align' directive is used.  To
+     work around this problem, GNU CC will not emit such alignment
+     directives while writing ECOFF format debugging information even
+     if optimization is being performed.  Unfortunately, this has the
+     very undesirable side-effect that code addresses when `-O' is
+     specified are different depending on whether or not `-g' is also
+     specified.
+
+     To avoid this behavior, specify `-gstabs+' and use GDB instead of
+     DBX.  DEC is now aware of this problem with the assembler and
+     hopes to provide a fix shortly.
+
+`arm'
+     Advanced RISC Machines ARM-family processors.  These are often
+     used in embedded applications.  There are no standard Unix
+     configurations.  This configuration corresponds to the basic
+     instruction sequences and will produce a.out format object modules.
+
+     You may need to make a variant of the file `arm.h' for your
+     particular configuration.
+
+`arm-*-riscix'
+     The ARM2 or ARM3 processor running RISC iX, Acorn's port of BSD
+     Unix.  If you are running a version of RISC iX prior to 1.2 then
+     you must specify the version number during configuration.  Note
+     that the assembler shipped with RISC iX does not support stabs
+     debugging information; a new version of the assembler, with stabs
+     support included, is now available from Acorn.
+
+`a29k'
+     AMD Am29k-family processors.  These are normally used in embedded
+     applications.  There are no standard Unix configurations.  This
+     configuration corresponds to AMD's standard calling sequence and
+     binary interface and is compatible with other 29k tools.
+
+     You may need to make a variant of the file `a29k.h' for your
+     particular configuration.
+
+`a29k-*-bsd'
+     AMD Am29050 used in a system running a variant of BSD Unix.
+
+`decstation-*'
+     DECstations can support three different personalities: Ultrix, DEC
+     OSF/1, and OSF/rose.  To configure GCC for these platforms use the
+     following configurations:
+
+    `decstation-ultrix'
+          Ultrix configuration.
+
+    `decstation-osf1'
+          Dec's version of OSF/1.
+
+    `decstation-osfrose'
+          Open Software Foundation reference port of OSF/1 which uses
+          the OSF/rose object file format instead of ECOFF.  Normally,
+          you would not select this configuration.
+
+     The MIPS C compiler needs to be told to increase its table size
+     for switch statements with the `-Wf,-XNg1500' option in order to
+     compile `cp/parse.c'.  If you use the `-O2' optimization option,
+     you also need to use `-Olimit 3000'.  Both of these options are
+     automatically generated in the `Makefile' that the shell script
+     `configure' builds.  If you override the `CC' make variable and
+     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
+     3000'.
+
+`elxsi-elxsi-bsd'
+     The Elxsi's C compiler has known limitations that prevent it from
+     compiling GNU C.  Please contact `mrs@cygnus.com' for more details.
+
+`h8300-*-*'
+     The calling convention and structure layout has changed in release
+     2.6.  All code must be recompiled.  The calling convention now
+     passes the first three arguments in function calls in registers.
+     Structures are no longer a multiple of 2 bytes.
+
+`hppa*-*-*'
+     There are two variants of this CPU, called 1.0 and 1.1, which have
+     different machine descriptions.  You must use the right one for
+     your machine.  All 7NN machines and 8N7 machines use 1.1, while
+     all other 8NN machines use 1.0.
+
+     The easiest way to handle this problem is to use `configure hpNNN'
+     or `configure hpNNN-hpux', where NNN is the model number of the
+     machine.  Then `configure' will figure out if the machine is a 1.0
+     or 1.1.  Use `uname -a' to find out the model number of your
+     machine.
+
+     `-g' does not work on HP-UX, since that system uses a peculiar
+     debugging format which GNU CC does not know about.  However, `-g'
+     will work if you also use GAS and GDB in conjunction with GCC.  We
+     highly recommend using GAS for all HP-PA configurations.
+
+     You should be using GAS-2.3 (or later) along with GDB-4.12 (or
+     later).  These can be retrieved from all the traditional GNU ftp
+     archive sites.
+
+     Build GAS and install the resulting binary as:
+
+          /usr/local/lib/gcc-lib/CONFIGURATION/GCCVERSION/as
+
+     where CONFIGURATION is the configuration name (perhaps
+     `hpNNN-hpux') and GCCVERSION is the GNU CC version number.  Do
+     this *before* starting the build process, otherwise you will get
+     errors from the HPUX assembler while building `libgcc2.a'.  The
+     command
+
+          make install-dir
+
+     will create the necessary directory hierarchy so you can install
+     GAS before building GCC.
+
+     To enable debugging, configure GNU CC with the `--with-gnu-as'
+     option before building.
+
+     It has been reported that GNU CC produces invalid assembly code for
+     1.1 machines running HP-UX 8.02 when using the HP assembler.
+     Typically the errors look like this:
+          as: bug.s @line#15 [err#1060]
+            Argument 0 or 2 in FARG upper
+                   - lookahead = ARGW1=FR,RTNVAL=GR
+          as: foo.s @line#28 [err#1060]
+            Argument 0 or 2 in FARG upper
+                   - lookahead = ARGW1=FR
+
+     You can check the version of HP-UX you are running by executing
+     the command `uname -r'.   If you are indeed running HP-UX 8.02 on
+     a PA and using the HP assembler then configure GCC with
+     "hpNNN-hpux8.02".
+
+`i370-*-*'
+     This port is very preliminary and has many known bugs.  We hope to
+     have a higher-quality port for this machine soon.
+
+`i386-*-linux'
+     Bash-1.12 has a bug that causes configure to fail.  The symptom is
+     that the c++ subdirectory, cp, is not configured.  Bash-1.14 and
+     later work fine.
+
+`i386-*-sco'
+     Compilation with RCC is recommended.  Also, it may be a good idea
+     to link with GNU malloc instead of the malloc that comes with the
+     system.
+
+`i386-*-sco3.2.4'
+     Use this configuration for SCO release 3.2 version 4.
+
+`i386-*-isc'
+     It may be good idea to link with GNU malloc instead of the malloc
+     that comes with the system.
+
+`i386-*-esix'
+     It may be good idea to link with GNU malloc instead of the malloc
+     that comes with the system.
+
+`i386-ibm-aix'
+     You need to use GAS version 2.1 or later, and and LD from GNU
+     binutils version 2.2 or later.
+
+`i386-sequent'
+     Go to the Berkeley universe before compiling.  In addition, you
+     probably need to create a file named `string.h' containing just
+     one line: `#include <strings.h>'.
+
+`i386-sun-sunos4'
+     You may find that you need another version of GNU CC to begin
+     bootstrapping with, since the current version when built with the
+     system's own compiler seems to get an infinite loop compiling part
+     of `libgcc2.c'.  GNU CC version 2 compiled with GNU CC (any
+     version) seems not to have this problem.
+
+     See *Note Sun Install::, for information on installing GNU CC on
+     Sun systems.
+
+`i860-intel-osf1'
+     This is the Paragon.  If you have version 1.0 of the operating
+     system, see *Note Installation Problems::, for special things you
+     need to do to compensate for peculiarities in the system.
+
+`m68000-hp-bsd'
+     HP 9000 series 200 running BSD.  Note that the C compiler that
+     comes with this system cannot compile GNU CC; contact
+     `law@cs.utah.edu' to get binaries of GNU CC for bootstrapping.
+
+`m68k-altos'
+     Altos 3068.  You must use the GNU assembler, linker and debugger.
+     Also, you must fix a kernel bug.  Details in the file
+     `README.ALTOS'.
+
+`m68k-att-sysv'
+     AT&T 3b1, a.k.a. 7300 PC.  Special procedures are needed to
+     compile GNU CC with this machine's standard C compiler, due to
+     bugs in that compiler.  You can bootstrap it more easily with
+     previous versions of GNU CC if you have them.
+
+     Installing GNU CC on the 3b1 is difficult if you do not already
+     have GNU CC running, due to bugs in the installed C compiler.
+     However, the following procedure might work.  We are unable to
+     test it.
+
+       1. Comment out the `#include "config.h"' line on line 37 of
+          `cccp.c' and do `make cpp'.  This makes a preliminary version
+          of GNU cpp.
+
+       2. Save the old `/lib/cpp' and copy the preliminary GNU cpp to
+          that file name.
+
+       3. Undo your change in `cccp.c', or reinstall the original
+          version, and do `make cpp' again.
+
+       4. Copy this final version of GNU cpp into `/lib/cpp'.
+
+       5. Replace every occurrence of `obstack_free' in the file
+          `tree.c' with `_obstack_free'.
+
+       6. Run `make' to get the first-stage GNU CC.
+
+       7. Reinstall the original version of `/lib/cpp'.
+
+       8. Now you can compile GNU CC with itself and install it in the
+          normal fashion.
+
+`m68k-bull-sysv'
+     Bull DPX/2 series 200 and 300 with BOS-2.00.45 up to BOS-2.01. GNU
+     CC works either with native assembler or GNU assembler. You can use
+     GNU assembler with native coff generation by providing
+     `--with-gnu-as' to the configure script or use GNU assembler with
+     dbx-in-coff encapsulation by providing `--with-gnu-as --stabs'.
+     For any problem with native assembler or for availability of the
+     DPX/2 port of GAS, contact `F.Pierresteguy@frcl.bull.fr'.
+
+`m68k-crds-unox'
+     Use `configure unos' for building on Unos.
+
+     The Unos assembler is named `casm' instead of `as'.  For some
+     strange reason linking `/bin/as' to `/bin/casm' changes the
+     behavior, and does not work.  So, when installing GNU CC, you
+     should install the following script as `as' in the subdirectory
+     where the passes of GCC are installed:
+
+          #!/bin/sh
+          casm $*
+
+     The default Unos library is named `libunos.a' instead of `libc.a'.
+     To allow GNU CC to function, either change all references to
+     `-lc' in `gcc.c' to `-lunos' or link `/lib/libc.a' to
+     `/lib/libunos.a'.
+
+     When compiling GNU CC with the standard compiler, to overcome bugs
+     in the support of `alloca', do not use `-O' when making stage 2.
+     Then use the stage 2 compiler with `-O' to make the stage 3
+     compiler.  This compiler will have the same characteristics as the
+     usual stage 2 compiler on other systems.  Use it to make a stage 4
+     compiler and compare that with stage 3 to verify proper
+     compilation.
+
+     (Perhaps simply defining `ALLOCA' in `x-crds' as described in the
+     comments there will make the above paragraph superfluous.  Please
+     inform us of whether this works.)
+
+     Unos uses memory segmentation instead of demand paging, so you
+     will need a lot of memory.  5 Mb is barely enough if no other
+     tasks are running.  If linking `cc1' fails, try putting the object
+     files into a library and linking from that library.
+
+`m68k-hp-hpux'
+     HP 9000 series 300 or 400 running HP-UX.  HP-UX version 8.0 has a
+     bug in the assembler that prevents compilation of GNU CC.  To fix
+     it, get patch PHCO_0800 from HP.
+
+     In addition, if you wish to use gas `--with-gnu-as' you must use
+     gas version 2.1 or later, and you must use the GNU linker version
+     2.1 or later.  Earlier versions of gas relied upon a program which
+     converted the gas output into the native HP/UX format, but that
+     program has not been kept up to date.  gdb does not understand
+     that native HP/UX format, so you must use gas if you wish to use
+     gdb.
+
+`m68k-sun'
+     Sun 3.  We do not provide a configuration file to use the Sun FPA
+     by default, because programs that establish signal handlers for
+     floating point traps inherently cannot work with the FPA.
+
+     See *Note Sun Install::, for information on installing GNU CC on
+     Sun systems.
+
+`m88k-*-svr3'
+     Motorola m88k running the AT&T/Unisoft/Motorola V.3 reference port.
+     These systems tend to use the Green Hills C, revision 1.8.5, as the
+     standard C compiler.  There are apparently bugs in this compiler
+     that result in object files differences between stage 2 and stage
+     3.  If this happens, make the stage 4 compiler and compare it to
+     the stage 3 compiler.  If the stage 3 and stage 4 object files are
+     identical, this suggests you encountered a problem with the
+     standard C compiler; the stage 3 and 4 compilers may be usable.
+
+     It is best, however, to use an older version of GNU CC for
+     bootstrapping if you have one.
+
+`m88k-*-dgux'
+     Motorola m88k running DG/UX.  To build native or cross compilers on
+     DG/UX, you must first change to the 88open BCS software development
+     environment.  This is done by issuing this command:
+
+          eval `sde-target m88kbcs`
+
+`m88k-tektronix-sysv3'
+     Tektronix XD88 running UTekV 3.2e.  Do not turn on optimization
+     while building stage1 if you bootstrap with the buggy Green Hills
+     compiler.  Also, The bundled LAI System V NFS is buggy so if you
+     build in an NFS mounted directory, start from a fresh reboot, or
+     avoid NFS all together.  Otherwise you may have trouble getting
+     clean comparisons between stages.
+
+`mips-mips-bsd'
+     MIPS machines running the MIPS operating system in BSD mode.  It's
+     possible that some old versions of the system lack the functions
+     `memcpy', `memcmp', and `memset'.  If your system lacks these, you
+     must remove or undo the definition of `TARGET_MEM_FUNCTIONS' in
+     `mips-bsd.h'.
+
+     The MIPS C compiler needs to be told to increase its table size
+     for switch statements with the `-Wf,-XNg1500' option in order to
+     compile `cp/parse.c'.  If you use the `-O2' optimization option,
+     you also need to use `-Olimit 3000'.  Both of these options are
+     automatically generated in the `Makefile' that the shell script
+     `configure' builds.  If you override the `CC' make variable and
+     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
+     3000'.
+
+`mips-mips-riscos*'
+     The MIPS C compiler needs to be told to increase its table size
+     for switch statements with the `-Wf,-XNg1500' option in order to
+     compile `cp/parse.c'.  If you use the `-O2' optimization option,
+     you also need to use `-Olimit 3000'.  Both of these options are
+     automatically generated in the `Makefile' that the shell script
+     `configure' builds.  If you override the `CC' make variable and
+     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
+     3000'.
+
+     MIPS computers running RISC-OS can support four different
+     personalities: default, BSD 4.3, System V.3, and System V.4 (older
+     versions of RISC-OS don't support V.4).  To configure GCC for
+     these platforms use the following configurations:
+
+    `mips-mips-riscos`rev''
+          Default configuration for RISC-OS, revision `rev'.
+
+    `mips-mips-riscos`rev'bsd'
+          BSD 4.3 configuration for RISC-OS, revision `rev'.
+
+    `mips-mips-riscos`rev'sysv4'
+          System V.4 configuration for RISC-OS, revision `rev'.
+
+    `mips-mips-riscos`rev'sysv'
+          System V.3 configuration for RISC-OS, revision `rev'.
+
+     The revision `rev' mentioned above is the revision of RISC-OS to
+     use.  You must reconfigure GCC when going from a RISC-OS revision
+     4 to RISC-OS revision 5.  This has the effect of avoiding a linker
+     bug (see *Note Installation Problems::, for more details).
+
+`mips-sgi-*'
+     Silicon Graphics MIPS machines running IRIX.  In order to compile
+     GCC on an SGI the "c.hdr.lib" option must be installed from the
+     CD-ROM supplied from Silicon Graphics.  This is found on the 2nd
+     CD in release 4.0.1.
+
+     `make compare' may fail on version 5 of IRIX unless you add
+     `-save-temps' to `CFLAGS'.  On these systems, the name of the
+     assembler input file is stored in the object file, and that makes
+     comparison fail if it differs between the `stage1' and `stage2'
+     compilations.  The option `-save-temps' forces a fixed name to be
+     used for the assembler input file, instead of a randomly chosen
+     name in `/tmp'.  Do not add `-save-temps' unless the comparisons
+     fail without that option.  If you do you `-save-temps', you will
+     have to manually delete the `.i' and `.s' files after each series
+     of compilations.
+
+     The MIPS C compiler needs to be told to increase its table size
+     for switch statements with the `-Wf,-XNg1500' option in order to
+     compile `cp/parse.c'.  If you use the `-O2' optimization option,
+     you also need to use `-Olimit 3000'.  Both of these options are
+     automatically generated in the `Makefile' that the shell script
+     `configure' builds.  If you override the `CC' make variable and
+     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
+     3000'.
+
+     On Irix version 4.0.5F, and perhaps on some other versions as well,
+     there is an assembler bug that reorders instructions incorrectly.
+     To work around it, specify the target configuration
+     `mips-sgi-irix4loser'.  This configuration inhibits assembler
+     optimization.
+
+     In a compiler configured with target `mips-sgi-irix4', you can turn
+     off assembler optimization by using the `-noasmopt' option.  This
+     compiler option passes the option `-O0' to the assembler, to
+     inhibit reordering.
+
+     The `-noasmopt' option can be useful for testing whether a problem
+     is due to erroneous assembler reordering.  Even if a problem does
+     not go away with `-noasmopt', it may still be due to assembler
+     reordering--perhaps GNU CC itself was miscompiled as a result.
+
+     See the file `README.IRIX5' for information on how to make
+     debugging work.
+
+`mips-sony-sysv'
+     Sony MIPS NEWS.  This works in NEWSOS 5.0.1, but not in 5.0.2
+     (which uses ELF instead of COFF).  Support for 5.0.2 will probably
+     be provided soon by volunteers.  In particular, the linker does
+     not like the code generated by GCC when shared libraries are
+     linked in.
+
+`ns32k-encore'
+     Encore ns32000 system.  Encore systems are supported only under
+     BSD.
+
+`ns32k-*-genix'
+     National Semiconductor ns32000 system.  Genix has bugs in `alloca'
+     and `malloc'; you must get the compiled versions of these from GNU
+     Emacs.
+
+`ns32k-sequent'
+     Go to the Berkeley universe before compiling.  In addition, you
+     probably need to create a file named `string.h' containing just
+     one line: `#include <strings.h>'.
+
+`ns32k-utek'
+     UTEK ns32000 system ("merlin").  The C compiler that comes with
+     this system cannot compile GNU CC; contact `tektronix!reed!mason'
+     to get binaries of GNU CC for bootstrapping.
+
+`romp-*-aos'
+`romp-*-mach'
+     The only operating systems supported for the IBM RT PC are AOS and
+     MACH.  GNU CC does not support AIX running on the RT.  We
+     recommend you compile GNU CC with an earlier version of itself; if
+     you compile GNU CC with `hc', the Metaware compiler, it will work,
+     but you will get mismatches between the stage 2 and stage 3
+     compilers in various files.  These errors are minor differences in
+     some floating-point constants and can be safely ignored; the stage
+     3 compiler is correct.
+
+`rs6000-*-aix'
+     If you are running AIX version 3.2.5 and have XLC version 1.3.0.0,
+     you must obtain XLC 1.3.0.2 by requesting PTF 421749 from IBM.  If
+     you are using an older version of AIX you may have an old version
+     of the IBM assembler, which cannot correctly handle debugging
+     directives.  See the file `README.RS6000' for more details.
+
+     The PowerPC and POWER2 architectures are now supported, but have
+     not been very extensively tested due to lack of appropriate
+     systems.  Only AIX is supported on the PowerPC.  GNU CC does not
+     yet support the 64-bit PowerPC instructions.
+
+     Objective C does not work on this architecture.
+
+     AIX on the RS/6000 provides support (NLS) for environments outside
+     of the United States.  Compilers and assemblers use NLS to support
+     locale-specific representations of various objects including
+     floating-point numbers ("." vs "," for separating decimal
+     fractions).  There have been problems reported where the library
+     linked with GNU CC does not produce the same floating-point
+     formats that the assembler accepts.  If you have this problem, set
+     the LANG environment variable to "C" or "En_US".
+
+`vax-dec-ultrix'
+     Don't try compiling with Vax C (`vcc').  It produces incorrect code
+     in some cases (for example, when `alloca' is used).
+
+     Meanwhile, compiling `cp/parse.c' with pcc does not work because of
+     an internal table size limitation in that compiler.  To avoid this
+     problem, compile just the GNU C compiler first, and use it to
+     recompile building all the languages that you want to run.
+
+`sparc-sun-*'
+     See *Note Sun Install::, for information on installing GNU CC on
+     Sun systems.
+
+`vax-dec-vms'
+     See *Note VMS Install::, for details on how to install GNU CC on
+     VMS.
+
+`we32k-*-*'
+     These computers are also known as the 3b2, 3b5, 3b20 and other
+     similar names.  (However, the 3b1 is actually a 68000; see *Note
+     Configurations::.)
+
+     Don't use `-g' when compiling with the system's compiler.  The
+     system's linker seems to be unable to handle such a large program
+     with debugging information.
+
+     The system's compiler runs out of capacity when compiling `stmt.c'
+     in GNU CC.  You can work around this by building `cpp' in GNU CC
+     first, then use that instead of the system's preprocessor with the
+     system's C compiler to compile `stmt.c'.  Here is how:
+
+          mv /lib/cpp /lib/cpp.att
+          cp cpp /lib/cpp.gnu
+          echo '/lib/cpp.gnu -traditional ${1+"$@"}' > /lib/cpp
+          chmod +x /lib/cpp
+
+     The system's compiler produces bad code for some of the GNU CC
+     optimization files.  So you must build the stage 2 compiler without
+     optimization.  Then build a stage 3 compiler with optimization.
+     That executable should work.  Here are the necessary commands:
+
+          make LANGUAGES=c CC=stage1/xgcc CFLAGS="-Bstage1/ -g"
+          make stage2
+          make CC=stage2/xgcc CFLAGS="-Bstage2/ -g -O"
+
+     You may need to raise the ULIMIT setting to build a C++ compiler,
+     as the file `cc1plus' is larger than one megabyte.
+
+
+File: gcc.info,  Node: Other Dir,  Next: Cross-Compiler,  Prev: Configurations,  Up: Installation
+
+Compilation in a Separate Directory
+===================================
+
+   If you wish to build the object files and executables in a directory
+other than the one containing the source files, here is what you must
+do differently:
+
+  1. Make sure you have a version of Make that supports the `VPATH'
+     feature.  (GNU Make supports it, as do Make versions on most BSD
+     systems.)
+
+  2. If you have ever run `configure' in the source directory, you must
+     undo the configuration.  Do this by running:
+
+          make distclean
+
+  3. Go to the directory in which you want to build the compiler before
+     running `configure':
+
+          mkdir gcc-sun3
+          cd gcc-sun3
+
+     On systems that do not support symbolic links, this directory must
+     be on the same file system as the source code directory.
+
+  4. Specify where to find `configure' when you run it:
+
+          ../gcc/configure ...
+
+     This also tells `configure' where to find the compiler sources;
+     `configure' takes the directory from the file name that was used to
+     invoke it.  But if you want to be sure, you can specify the source
+     directory with the `--srcdir' option, like this:
+
+          ../gcc/configure --srcdir=../gcc sun3
+
+     The directory you specify with `--srcdir' need not be the same as
+     the one that `configure' is found in.
+
+   Now, you can run `make' in that directory.  You need not repeat the
+configuration steps shown above, when ordinary source files change.  You
+must, however, run `configure' again when the configuration files
+change, if your system does not support symbolic links.
+
+
+File: gcc.info,  Node: Cross-Compiler,  Next: Sun Install,  Prev: Other Dir,  Up: Installation
+
+Building and Installing a Cross-Compiler
+========================================
+
+   GNU CC can function as a cross-compiler for many machines, but not
+all.
+
+   * Cross-compilers for the Mips as target using the Mips assembler
+     currently do not work, because the auxiliary programs
+     `mips-tdump.c' and `mips-tfile.c' can't be compiled on anything
+     but a Mips.  It does work to cross compile for a Mips if you use
+     the GNU assembler and linker.
+
+   * Cross-compilers between machines with different floating point
+     formats have not all been made to work.  GNU CC now has a floating
+     point emulator with which these can work, but each target machine
+     description needs to be updated to take advantage of it.
+
+   * Cross-compilation between machines of different word sizes has not
+     really been addressed yet.
+
+   Since GNU CC generates assembler code, you probably need a
+cross-assembler that GNU CC can run, in order to produce object files.
+If you want to link on other than the target machine, you need a
+cross-linker as well.  You also need header files and libraries suitable
+for the target machine that you can install on the host machine.
+
+* Menu:
+
+* Steps of Cross::      Using a cross-compiler involves several steps
+                          that may be carried out on different machines.
+* Configure Cross::     Configuring a cross-compiler.
+* Tools and Libraries:: Where to put the linker and assembler, and the C library.
+* Cross Headers::       Finding and installing header files
+                          for a cross-compiler.
+* Cross Runtime::       Supplying arithmetic runtime routines (`libgcc1.a').
+* Build Cross::         Actually compiling the cross-compiler.
+
+
+File: gcc.info,  Node: Steps of Cross,  Next: Configure Cross,  Up: Cross-Compiler
+
+Steps of Cross-Compilation
+--------------------------
+
+   To compile and run a program using a cross-compiler involves several
+steps:
+
+   * Run the cross-compiler on the host machine to produce assembler
+     files for the target machine.  This requires header files for the
+     target machine.
+
+   * Assemble the files produced by the cross-compiler.  You can do this
+     either with an assembler on the target machine, or with a
+     cross-assembler on the host machine.
+
+   * Link those files to make an executable.  You can do this either
+     with a linker on the target machine, or with a cross-linker on the
+     host machine.  Whichever machine you use, you need libraries and
+     certain startup files (typically `crt....o') for the target
+     machine.
+
+   It is most convenient to do all of these steps on the same host
+machine, since then you can do it all with a single invocation of GNU
+CC.  This requires a suitable cross-assembler and cross-linker.  For
+some targets, the GNU assembler and linker are available.
+
+
+File: gcc.info,  Node: Configure Cross,  Next: Tools and Libraries,  Prev: Steps of Cross,  Up: Cross-Compiler
+
+Configuring a Cross-Compiler
+----------------------------
+
+   To build GNU CC as a cross-compiler, you start out by running
+`configure'.  You must specify two different configurations, the host
+and the target.  Use the `--host=HOST' option for the host and
+`--target=TARGET' to specify the target type.  For example, here is how
+to configure for a cross-compiler that runs on a hypothetical Intel 386
+system and produces code for an HP 68030 system running BSD:
+
+     ./configure --target=m68k-hp-bsd4.3 --host=i386-bozotheclone-bsd4.3
+
+
+File: gcc.info,  Node: Tools and Libraries,  Next: Cross Headers,  Prev: Configure Cross,  Up: Cross-Compiler
+
+Tools and Libraries for a Cross-Compiler
+----------------------------------------
+
+   If you have a cross-assembler and cross-linker available, you should
+install them now.  Put them in the directory `/usr/local/TARGET/bin'.
+Here is a table of the tools you should put in this directory:
+
+`as'
+     This should be the cross-assembler.
+
+`ld'
+     This should be the cross-linker.
+
+`ar'
+     This should be the cross-archiver: a program which can manipulate
+     archive files (linker libraries) in the target machine's format.
+
+`ranlib'
+     This should be a program to construct a symbol table in an archive
+     file.
+
+   The installation of GNU CC will find these programs in that
+directory, and copy or link them to the proper place to for the
+cross-compiler to find them when run later.
+
+   The easiest way to provide these files is to build the Binutils
+package and GAS.  Configure them with the same `--host' and `--target'
+options that you use for configuring GNU CC, then build and install
+them.  They install their executables automatically into the proper
+directory.  Alas, they do not support all the targets that GNU CC
+supports.
+
+   If you want to install libraries to use with the cross-compiler,
+such as a standard C library, put them in the directory
+`/usr/local/TARGET/lib'; installation of GNU CC copies all all the
+files in that subdirectory into the proper place for GNU CC to find
+them and link with them.  Here's an example of copying some libraries
+from a target machine:
+
+     ftp TARGET-MACHINE
+     lcd /usr/local/TARGET/lib
+     cd /lib
+     get libc.a
+     cd /usr/lib
+     get libg.a
+     get libm.a
+     quit
+
+The precise set of libraries you'll need, and their locations on the
+target machine, vary depending on its operating system.
+
+   Many targets require "start files" such as `crt0.o' and `crtn.o'
+which are linked into each executable; these too should be placed in
+`/usr/local/TARGET/lib'.  There may be several alternatives for
+`crt0.o', for use with profiling or other compilation options.  Check
+your target's definition of `STARTFILE_SPEC' to find out what start
+files it uses.  Here's an example of copying these files from a target
+machine:
+
+     ftp TARGET-MACHINE
+     lcd /usr/local/TARGET/lib
+     prompt
+     cd /lib
+     mget *crt*.o
+     cd /usr/lib
+     mget *crt*.o
+     quit
+
+
+File: gcc.info,  Node: Cross Runtime,  Next: Build Cross,  Prev: Cross Headers,  Up: Cross-Compiler
+
+`libgcc.a' and Cross-Compilers
+------------------------------
+
+   Code compiled by GNU CC uses certain runtime support functions
+implicitly.  Some of these functions can be compiled successfully with
+GNU CC itself, but a few cannot be.  These problem functions are in the
+source file `libgcc1.c'; the library made from them is called
+`libgcc1.a'.
+
+   When you build a native compiler, these functions are compiled with
+some other compiler-the one that you use for bootstrapping GNU CC.
+Presumably it knows how to open code these operations, or else knows how
+to call the run-time emulation facilities that the machine comes with.
+But this approach doesn't work for building a cross-compiler.  The
+compiler that you use for building knows about the host system, not the
+target system.
+
+   So, when you build a cross-compiler you have to supply a suitable
+library `libgcc1.a' that does the job it is expected to do.
+
+   To compile `libgcc1.c' with the cross-compiler itself does not work.
+The functions in this file are supposed to implement arithmetic
+operations that GNU CC does not know how to open code, for your target
+machine.  If these functions are compiled with GNU CC itself, they will
+compile into infinite recursion.
+
+   On any given target, most of these functions are not needed.  If GNU
+CC can open code an arithmetic operation, it will not call these
+functions to perform the operation.  It is possible that on your target
+machine, none of these functions is needed.  If so, you can supply an
+empty library as `libgcc1.a'.
+
+   Many targets need library support only for multiplication and
+division.  If you are linking with a library that contains functions for
+multiplication and division, you can tell GNU CC to call them directly
+by defining the macros `MULSI3_LIBCALL', and the like.  These macros
+need to be defined in the target description macro file.  For some
+targets, they are defined already.  This may be sufficient to avoid the
+need for libgcc1.a; if so, you can supply an empty library.
+
+   Some targets do not have floating point instructions; they need other
+functions in `libgcc1.a', which do floating arithmetic.  Recent
+versions of GNU CC have a file which emulates floating point.  With a
+certain amount of work, you should be able to construct a floating
+point emulator that can be used as `libgcc1.a'.  Perhaps future
+versions will contain code to do this automatically and conveniently.
+That depends on whether someone wants to implement it.
+
+   If your target system has another C compiler, you can configure GNU
+CC as a native compiler on that machine, build just `libgcc1.a' with
+`make libgcc1.a' on that machine, and use the resulting file with the
+cross-compiler.  To do this, execute the following on the target
+machine:
+
+     cd TARGET-BUILD-DIR
+     ./configure --host=sparc --target=sun3
+     make libgcc1.a
+
+And then this on the host machine:
+
+     ftp TARGET-MACHINE
+     binary
+     cd TARGET-BUILD-DIR
+     get libgcc1.a
+     quit
+
+   Another way to provide the functions you need in `libgcc1.a' is to
+define the appropriate `perform_...' macros for those functions.  If
+these definitions do not use the C arithmetic operators that they are
+meant to implement, you should be able to compile them with the
+cross-compiler you are building.  (If these definitions already exist
+for your target file, then you are all set.)
+
+   To build `libgcc1.a' using the perform macros, use
+`LIBGCC1=libgcc1.a OLDCC=./xgcc' when building the compiler.
+Otherwise, you should place your replacement library under the name
+`libgcc1.a' in the directory in which you will build the
+cross-compiler, before you run `make'.
+
+
+File: gcc.info,  Node: Cross Headers,  Next: Cross Runtime,  Prev: Tools and Libraries,  Up: Cross-Compiler
+
+Cross-Compilers and Header Files
+--------------------------------
+
+   If you are cross-compiling a standalone program or a program for an
+embedded system, then you may not need any header files except the few
+that are part of GNU CC (and those of your program).  However, if you
+intend to link your program with a standard C library such as `libc.a',
+then you probably need to compile with the header files that go with
+the library you use.
+
+   The GNU C compiler does not come with these files, because (1) they
+are system-specific, and (2) they belong in a C library, not in a
+compiler.
+
+   If the GNU C library supports your target machine, then you can get
+the header files from there (assuming you actually use the GNU library
+when you link your program).
+
+   If your target machine comes with a C compiler, it probably comes
+with suitable header files also.  If you make these files accessible
+from the host machine, the cross-compiler can use them also.
+
+   Otherwise, you're on your own in finding header files to use when
+cross-compiling.
+
+   When you have found suitable header files, put them in
+`/usr/local/TARGET/include', before building the cross compiler.  Then
+installation will run fixincludes properly and install the corrected
+versions of the header files where the compiler will use them.
+
+   Provide the header files before you build the cross-compiler, because
+the build stage actually runs the cross-compiler to produce parts of
+`libgcc.a'.  (These are the parts that *can* be compiled with GNU CC.)
+Some of them need suitable header files.
+
+   Here's an example showing how to copy the header files from a target
+machine.  On the target machine, do this:
+
+     (cd /usr/include; tar cf - .) > tarfile
+
+   Then, on the host machine, do this:
+
+     ftp TARGET-MACHINE
+     lcd /usr/local/TARGET/include
+     get tarfile
+     quit
+     tar xf tarfile
+
+
+File: gcc.info,  Node: Build Cross,  Prev: Cross Runtime,  Up: Cross-Compiler
+
+Actually Building the Cross-Compiler
+------------------------------------
+
+   Now you can proceed just as for compiling a single-machine compiler
+through the step of building stage 1.  If you have not provided some
+sort of `libgcc1.a', then compilation will give up at the point where
+it needs that file, printing a suitable error message.  If you do
+provide `libgcc1.a', then building the compiler will automatically
+compile and link a test program called `cross-test'; if you get errors
+in the linking, it means that not all of the necessary routines in
+`libgcc1.a' are available.
+
+   If you are making a cross-compiler for an embedded system, and there
+is no `stdio.h' header for it, then the compilation of `enquire' will
+probably fail.  The job of `enquire' is to run on the target machine
+and figure out by experiment the nature of its floating point
+representation.  `enquire' records its findings in the header file
+`float.h'.  If you can't produce this file by running `enquire' on the
+target machine, then you will need to come up with a suitable `float.h'
+in some other way (or else, avoid using it in your programs).
+
+   Do not try to build stage 2 for a cross-compiler.  It doesn't work to
+rebuild GNU CC as a cross-compiler using the cross-compiler, because
+that would produce a program that runs on the target machine, not on the
+host.  For example, if you compile a 386-to-68030 cross-compiler with
+itself, the result will not be right either for the 386 (because it was
+compiled into 68030 code) or for the 68030 (because it was configured
+for a 386 as the host).  If you want to compile GNU CC into 68030 code,
+whether you compile it on a 68030 or with a cross-compiler on a 386, you
+must specify a 68030 as the host when you configure it.
+
+   To install the cross-compiler, use `make install', as usual.
+
+
+File: gcc.info,  Node: Sun Install,  Next: VMS Install,  Prev: Cross-Compiler,  Up: Installation
+
+Installing GNU CC on the Sun
+============================
+
+   On Solaris (version 2.1), do not use the linker or other tools in
+`/usr/ucb' to build GNU CC.  Use `/usr/ccs/bin'.
+
+   Make sure the environment variable `FLOAT_OPTION' is not set when
+you compile `libgcc.a'.  If this option were set to `f68881' when
+`libgcc.a' is compiled, the resulting code would demand to be linked
+with a special startup file and would not link properly without special
+pains.
+
+   There is a bug in `alloca' in certain versions of the Sun library.
+To avoid this bug, install the binaries of GNU CC that were compiled by
+GNU CC.  They use `alloca' as a built-in function and never the one in
+the library.
+
+   Some versions of the Sun compiler crash when compiling GNU CC.  The
+problem is a segmentation fault in cpp.  This problem seems to be due to
+the bulk of data in the environment variables.  You may be able to avoid
+it by using the following command to compile GNU CC with Sun CC:
+
+     make CC="TERMCAP=x OBJS=x LIBFUNCS=x STAGESTUFF=x cc"
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for a Fridge
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:Fridge:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:Fridge:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="Fridge">
+    <xs:sequence>
+      <xs:element name="refTemperature" type="baci:RWdouble"/>
+      <xs:element name="currTemperature" type="baci:ROdouble"/>
+      <xs:element name="powerStatus" >
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:ROEnum">
+              <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+              <xs:attribute name="graph_max" type="xs:int" use="optional" default="1" />
+              <xs:attribute name="statesDescription" type="xs:string" use="optional" default="ON, OFF"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="doorStatus" >
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:ROEnum">
+              <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+              <xs:attribute name="graph_max" type="xs:int" use="optional" default="1" />
+              <xs:attribute name="statesDescription" type="xs:string" use="optional" default="OPEN, CLOSE"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="Fridge" type="Fridge"/>
+</xs:schema>

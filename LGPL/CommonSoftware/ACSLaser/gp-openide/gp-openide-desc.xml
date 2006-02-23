@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="@project.version@" default="@project.version@">
+	<product name="@project.name@">
+		<dependencies>
+          <dep package="openide" local="true"/>
+          <dep package="commons-logging" local="true"/>
+		</dependencies>
+	</product>
+</project>

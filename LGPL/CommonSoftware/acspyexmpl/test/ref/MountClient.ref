@@ -1,0 +1,26 @@
+1 - COBs available are: 
+1 - HOUSE1/PYLAMP1  of type  IDL:alma/acsexmplLamp/Lamp:1.0
+1 - IDENTIFIER_ARCHIVE  of type  IDL:alma/xmlstore/Identifier:1.0
+1 - HELLODEMO2  of type  IDL:alma/demo/HelloDemo:1.0
+1 - LAMPCB2  of type  IDL:alma/demo/LampCallback:1.0
+1 - CLOCK1  of type  IDL:alma/acstime/Clock:1.0
+1 - FRIDGE1  of type  IDL:alma/FRIDGE/FridgeControl:1.0
+1 - HELLOWORLD1  of type  IDL:alma/acsexmplHelloWorld/HelloWorld:1.0
+1 - HELLODEMO1  of type  IDL:alma/demo/HelloDemo:1.0
+1 - LAMPCB1  of type  IDL:alma/demo/LampCallback:1.0
+1 - ARCHIVE_DATABASE  of type  IDL:alma/archiveinternal/Database:1.0
+1 - MOUNT1  of type  IDL:alma/MOUNT_ACS/Mount:1.0
+1 - LAMPACCESS2  of type  IDL:alma/demo/LampAccess:1.0
+1 - OPERATIONAL_ARCHIVE  of type  IDL:alma/xmlstore/Operational:1.0
+1 - LAMP1  of type  IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ES1  of type  IDL:alma/demo/ErrorSystem:1.0
+1 - PYLAMP1  of type  IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ADMINISTRATIVE_ARCHIVE  of type  IDL:alma/xmlstore/Administrative:1.0
+1 - TIMER1  of type  IDL:alma/acstime/Timer:1.0
+1 - ES2  of type  IDL:alma/demo/ErrorSystem:1.0
+1 - LAMPACCESS1  of type  IDL:alma/demo/LampAccess:1.0
+1 - 
+1 - We can directly manipulate a device once we get it, which is easy.
+1 - MOUNT1 actual azimuth:  0.0
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - The end __oOo__

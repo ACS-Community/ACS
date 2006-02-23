@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Example Configuration Database Schema for the Sampling CharacteriscticComponent
+   -
+   - Author: oat
+   -
+   - History:
+   -   2003-29-04  KZ  Created
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:SAMP:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:SAMP:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+  <xs:complexType name="SAMP">
+    <xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SAMP" type="SAMP"/>
+</xs:schema>

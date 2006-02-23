@@ -1,0 +1,168 @@
+#*******************************************************************************
+# E.S.O. - ALMA  project
+#
+# "@(#) $Id: xsdMakefile,v 1.70 2005/03/16 12:15:10 mzampare Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# mzampare  22012003  created
+#************************************************************************
+#   NAME
+#   xsdMakefile - xsd specific Makefile for processing of 
+#   XML schema definition.
+#
+#   DESCRIPTION
+#
+#   XSD schemas shall for the time being be hosted on the idl directory,
+#   since they have a similar processing. The makefile will contain a
+#   XSDBIND variable which specifies an existing XML file which
+#   serves as a configuration for the ALMA XMLJBIND schema to java
+#   compiler The name of the config file will also provide the name for
+#   the jarfile where the compiled java files will go into.
+#   
+#   The generated java files will be compiled, the resulting class files
+#   put into the jarfile, (with or without source according to DEBUG), and
+#   they will be removed from src.  The resulting jarfile will be
+#   installed by the 'install' target.
+#   
+#   XSD files can have inclusion relatioship. At this stage it is
+#   envisioned that only the ALMA file entity.xsd will have to be included
+#   by all XSD files. It will be therefore initially be treated as a
+#   special case, and put into a reference location ($ACSROOT/config).
+#   Its location will be passed as a command line argument to the castor
+#   compile command.
+#   
+#   
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+SHELL=/bin/ksh
+
+# Last dir in INTLIST
+ifdef INTLIST
+   DIRLIST = $(subst :, , $(INTLIST))
+   INSTALL_ROOT_LAST = $(word $(words $(DIRLIST)), $(DIRLIST))
+endif
+
+# phony section
+######################################
+.PHONY : install_xsd
+.PHONY : do_xsd
+
+
+######################################
+# variables settings
+######################################
+CASTOR = alma.tools.entitybuilder.CastorBuilder
+
+# java alma.tools.entitybuilder.CastorBuilder . .
+
+# set search path for idl files
+
+vpath %.xsdl $(MK_IDL_PATH_LIST)
+
+######################################
+# incrementing tasks
+######################################
+
+ifeq ($(call mustBuild,Java),true)
+ifneq ($(strip $(XSDBIND)),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_xsd
+endif
+
+ifneq ($(strip $(XSDBIND)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_xsd
+endif
+
+ifneq ($(strip $(XSDBIND)),)
+#    ALL_TARGET := do_xsd $(ALL_TARGET) 
+endif
+endif
+
+######################################
+# targets specification
+######################################
+
+## clean
+##
+clean_xsd:
+	-$(AT)$(RM) ../lib/$(XSDBIND).jar
+	-@$(ECHO) " .\c"
+
+## install
+##
+install_xsd:
+	-@$(ECHO) "install_xsd: xsd_begin $(VLTTOP)/idl/$(XSDBIND).xml  $(VLTTOP)/lib/$(XSDBIND).jar " >>$(FILE)
+	-@$(ECHO) "xsd_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......XML schemas:\"" >>$(FILE)
+	-@$(ECHO) "$(VLTTOP)/idl/$(XSDBIND).xml: ../idl/$(XSDBIND).xml" >>$(FILE);
+	-@$(ECHO) "	-\$$(AT)echo \"\t$(XSDBIND).xml\";" >>$(FILE);
+	-@$(ECHO) "	-$(AT) cp ../idl/$(XSDBIND).xml $(VLTTOP)/idl/   " >>$(FILE);
+	-@$(ECHO) "	-$(AT) cp ../idl/*.xsd $(VLTTOP)/idl/   " >>$(FILE);
+	-@$(ECHO) "	-$(AT) chmod $(P755) $(VLTTOP)/idl/$(XSDBIND).xml" >>$(FILE);
+	-@$(ECHO) "$(VLTTOP)/lib/$(XSDBIND).jar: ../lib/$(XSDBIND).jar" >>$(FILE);
+	-@$(ECHO) "	-\$$(AT)echo \"\t$(XSDBIND).jar\";" >>$(FILE);
+	-@$(ECHO) "	-$(AT)cp ../lib/$(XSDBIND).jar $(VLTTOP)/lib/   " >>$(FILE);
+	-@$(ECHO) "	-$(AT)chmod $(P755) $(VLTTOP)/lib/$(XSDBIND).jar" >>$(FILE);
+##
+#########################################
+## ALL
+##
+
+../lib/$(XSDBIND).jar: ../idl/$(XSDBIND).xml ../idl/*.xsd
+	- @echo "== XSD Compiling with Castor (Java): $(<F)"
+# calling castor
+# what if the file is not there?, we should check that.
+	$(AT) mkdir -p ../object/src
+
+ifdef ACSROOT
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(ACSROOT)/lib/endorsed/xercesImpl.jar;  export CLASSPATH; java -DACS.schemaconfigfiles="$(XSDBIND_INCLUDE)" $(CASTOR)  ../idl/$(XSDBIND).xml ../object/src $(MK_IDL_PATH)
+else
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar;  export CLASSPATH; java -DACS.schemaconfigfiles="$(XSDBIND_INCLUDE)" $(CASTOR)  ../idl/$(XSDBIND).xml ../object/src $(MK_IDL_PATH)	
+endif #ACSROOT
+
+# compiling the generated classes
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find ../object/src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d ../object/src $$FILES; fi;
+# putting them into a jarfile
+
+ifeq ($(strip $(DEBUG)),on)
+# first put the class files
+	$(AT) cd ../object/src; FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../lib/$(basename $(<F)).jar $$FILES ; fi
+# then, carefully, the java files prefixed with 'src'.
+	$(AT) cd ../object;  FILES=`find src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then jar uf ../lib/$(basename $(<F)).jar $$FILES ; fi; 
+else
+	$(AT) cd ../object/src; CLASSES=`find . -name \*.class`; export CLASSES;  if [ "$$CLASSES" != "" ] ; then jar cf ../../lib/$(basename $(<F)).jar $$CLASSES ; fi
+endif # DEBUG
+	$(AT) find ../object -type d ! -name object | $(XARGS) -i $(RM) {}
+###################  CASTOR END  ####################################
+#####################################################################
+
+ifdef XSDBIND
+ifeq ($(call mustBuild,Java),true)
+do_xsd: ../lib/$(XSDBIND).jar
+else 
+do_xsd:
+endif
+else
+do_xsd: 
+endif
+
+#
+#___oOo___
+
+

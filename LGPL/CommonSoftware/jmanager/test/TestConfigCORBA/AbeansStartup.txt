@@ -1,0 +1,19 @@
+<Resources>
+	
+	<Resource NAME="Configuration" LOADER="abeans.core.defaults.FileLoader">
+		<Property NAME="root.path" VALUE="$abeans.home$">
+ 		</Property>
+ 	</Resource>
+ 	
+ 	<Resource NAME="Home" LOADER="abeans.core.defaults.HomeLoader">
+ 	</Resource>
+ 	
+ 	<Resource NAME="Simulator" LOADER="abeans.core.defaults.FileLoader">
+ 		<Property NAME="root.path" VALUE="$abeans.home$/Simulated"/>
+ 	</Resource>
+ 	
+ 	<Resource NAME="Data" LOADER="abeans.core.defaults.FileLoader">
+ 		<Property NAME="root.path" VALUE="$abeans.home$/../../config/jManager/Resources/Data"/>
+ 	</Resource>
+ 	
+</Resources>

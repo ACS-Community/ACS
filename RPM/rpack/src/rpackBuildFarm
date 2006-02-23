@@ -1,0 +1,43 @@
+#!/bin/sh
+
+echo "###### Executing rpackBuildFarm"
+
+NO_ARGS=0
+E_OPTERROR=65
+HELP_TEXT="rpackBuildFarm -- Generates a compilefarm at the specified directory.
+
+Usage: `basename $0` -h | -c <DestDir> 
+
+-c <DestDir>  : Destination directory where the compilefarm will be created.
+-h            : Display this help message
+"
+
+if [ $# -eq "$NO_ARGS" ]  # Script invoked with no command-line args?
+then
+  echo "Usage: `basename $0` -h | -c <DestDir>" 
+  echo "### ERROR in rpackBuildFarm."
+  exit $E_OPTERROR        # Exit and explain usage, if no argument(s) given.
+fi
+
+while getopts ":hc:" Option
+do
+  case $Option in
+    h     ) echo -e "$HELP_TEXT"; exit 0;;
+    c     ) RPM_COMPILE_FARM=$OPTARG;;
+    *     ) echo "Invalid option or missing parameter"; exit 1;;   # DEFAULT
+  esac
+done
+
+if [ -d $RPM_COMPILE_FARM ]
+then
+	rm -rf $RPM_COMPILE_FARM
+fi
+
+CWD=`pwd`
+echo "### Create build farm in: $RPM_COMPILE_FARM"
+mkdir $RPM_COMPILE_FARM
+cd $RPM_COMPILE_FARM
+mkdir BUILD RPMS SOURCES SPECS SRPMS TMP
+cd $CWD
+exit 0
+echo "### Done rpackBuildFarm."

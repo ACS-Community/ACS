@@ -1,0 +1,8 @@
+Method w/o timeout executed successfully.
+Timeout exception caught, this is expected.
+Timeout exception caught, this is expected.
+Method w/o timeout executed successfully.
+Setting timeout to: 5000. Previous timeout was: 400
+length of previous policy override list = 1. length of current policy override list = 1.
+Timeout destructor resetting timeout to: 400
+length of previous policy override list = 0. length of current policy override list = 1.

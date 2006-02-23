@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><title>Abeans Visual Composition with Eclipse VE</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/><meta name="generator" content="CosyDoc 2.0.1, Apache Software Foundation 1.0"/><style type="text/css">
+/* ==========================[ General Styles ]========================== */
+body {
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: small;
+	text-align: left;
+	background-color: white;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+img {
+	border-width: 0px;
+}
+
+/* All tables are as wide as possible. */
+table {
+	width: 100%;
+}
+
+/* Cells that carry content (notices, warnings, ...). */
+td.content {
+	width: 100%;
+}
+
+/* ==========================[ Heading Styles ]========================== */
+h1, h2, h3, h4, h5, h6,
+h1 a:visited, h2 a:visited, h3 a:visited,
+h4 a:visited, h5 a:visited, h6 a:visited,
+h1 a, h2 a, h3 a,
+h4 a, h5 a, h6 a {
+	background-color: white;
+	color: black;
+	margin-top: 2em;
+	margin-bottom: 1em;
+	text-decoration: none;
+}
+
+h1 {
+	color: #003c8c;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+	border-bottom: #888 2px solid;
+	padding-bottom: 10px;
+}
+
+h2 {
+	padding-bottom: 5px;
+	font-size: normal;
+	font-weight: bold;
+	border-bottom: #bbb 2px solid;
+}
+
+h3 {
+	font-size: normal;
+	font-weight: normal;
+	font-style: italic;
+}
+
+h4 {
+	font-size: small;
+	font-weight: bold;
+}
+
+h5 {
+	font-size: small;
+	font-weight: bolder;
+}
+
+h6 {
+	font-size: small;
+	font-weight: bold;
+	font-style: italic;
+}
+
+h1 a, h2 a, h3 a,
+h4 a, h5 a, h6 a {
+	color: #003c8c;
+}
+
+h1.toc, h2.toc, h3.toc, h4.toc, h5.toc, h6.toc {
+	text-align: left;
+	background-color: white;
+	font-size: small;
+	color: #003c8c;
+	margin-right: 0%;
+	margin-bottom: 0%;
+}
+
+h1.toc {
+	margin-left: 3ex;
+	margin-top: 6px;
+	border-bottom: black 1px solid;
+	padding-bottom: 1px;
+	font-weight: bold;
+}
+
+h2.toc {
+	margin-left: 6ex;
+	margin-top: 2px;
+	border-bottom: #bbb 1px solid;
+	font-size: x-small;
+}
+
+h3.toc {
+	margin-left: 9ex;
+	margin-top: 2px;
+	font-size: x-small;
+	font-weight: bold;
+	font-style: normal;
+}
+
+h4.toc {
+	margin-left: 15ex;
+	margin-top: 2px;
+	font-size: xx-small;
+	font-weight: normal;
+}
+
+h5.toc {
+	margin-left: 18ex;
+	margin-top: 1px;
+	font-size: xx-small;
+	font-weight: normal;
+}
+
+h6.toc {
+	margin-left: 21ex;
+	margin-top: 1px;
+	font-size: xx-small;
+	font-weight: normal;
+}
+
+/* ============================[ Paragraphs ]============================ */
+p {
+	margin-bottom: 0.5em;
+	margin-top: 0.5em;
+	text-align: justify;
+}
+
+
+/* ==============================[ Notice ]============================== */
+table.notice,
+table.warning {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+table tr td.icon {
+	text-align: center;
+	vertical-align: middle;
+	width: 20px;
+}
+
+table.warning tr td {
+	border-left-color: red;
+	border-top-color: red;
+}
+
+table.warning {
+	border-right-color: red;
+	border-bottom-color: red;
+}
+
+table.notice tr td,
+table.warning tr td {
+	padding-top: 0.5ex;
+	padding-bottom: 0.5ex;
+	padding-left: 1ex;
+	padding-right: 1ex;
+	margin: 0;
+	vertical-align: middle;
+}
+
+p.figure {
+	text-align: center;
+	margin-top: 2ex;
+}
+
+p.caption {
+	text-align: center;
+	margin-bottom: 1.5ex;
+}
+
+p.comment {
+	background-color: white;
+	color: red;
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+p.warning {
+	background-color: #E0E0E0;
+	color: black;
+}
+
+p.warning tr td {
+	border-width: 0.02cm;
+	border-color: red;
+}
+
+p.notice {
+	background-color: #F0F0F0;
+	color: black;
+}
+
+p.notice tr td {
+	border-width: 0.02cm;
+	border-color: black;
+}
+
+/* ===========================[ Table Styles ]=========================== */
+table {
+	border-left: 1px solid gray;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+}
+
+table.code,
+table.table {
+	margin-top: 1.5ex;
+	margin-bottom: 1.5ex;
+}
+
+th {
+	border-left: 1px solid black;
+	border-top: 1px solid black;
+	border-bottom: 1px solid gray;
+	border-right: 1px solid gray;
+	text-align: left;
+	color: black;
+	background-color: #D8D8E8;
+	padding-left: 0.5ex;
+	padding-right: 0.5ex;
+	padding-top: 0.25ex;
+	padding-bottom: 0.25ex;
+}
+
+td {
+	border-left: 1px solid black;
+	border-top: 1px solid black;
+	border-bottom: 1px solid gray;
+	border-right: 1px solid gray;
+	padding-left: 0.5ex;
+	padding-right: 0.5ex;
+	padding-top: 0.25ex;
+	padding-bottom: 0.25ex;
+}
+
+th.caption {
+	text-align: center;
+	font-weight: normal;
+	background-color: #CACAD4; 
+}
+
+/* ---------------------------[ Frame Table ]---------------------------- */
+table#frame {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+td#checkpoints {
+	border: none;
+}
+
+td#history {
+	border: none;
+}
+
+td#cosyline {
+	padding: 0;
+	border: none;
+	text-align: right;
+	background-image: url('../../Common/Documentation/images/CosyLine.png');
+}
+
+td#content {
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	border-left: none;
+	color: black;
+	background-color: white;
+	padding-left: 0.5ex;
+	padding-right: 0.5ex;
+	padding-top: 0ex;
+}
+
+/* -------------------------------[ Menu ]------------------------------- */
+td#menu {
+	vertical-align: top;
+	color: black;
+	background-color: #E0E0E0;
+	border-top: none;
+	border-left: none;
+	border-bottom: none;
+	border-right: 1px solid gray;
+	padding-left: 0ex;
+	padding-right: 0ex;
+	width: 200px;
+}
+
+p#menu-title {
+	background-color: #CE2B25;
+	color: white;
+	font-weight: bold;
+}
+
+p.menu-group {
+	background-color: #CE2B25;
+	color: white;
+	padding-top: 1ex;
+	font-weight: bold;
+}
+
+td#menu p {
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: 0;
+	border-bottom: 1px solid gray;
+}
+
+td#menu p a {
+	text-decoration: none;
+}
+
+td#menu p a:hover {
+	background-color: white;
+	color: black;
+	display: block;
+}
+
+td#menu ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+td#menu ul li ul {
+	list-style-type: none;
+	padding-left: 2ex;
+}
+
+td#menu li {
+	font-weight: normal;
+}
+
+td#menu li.group {
+	font-weight: bold;
+	margin-top: 1em;
+}
+
+td#menu li.group ul {
+	padding: 0;
+}
+
+/* ----------------------------[ Checkpoints ]--------------------------- */
+td.cpCheckbox {
+	width: 3ex;
+	text-align: center;
+}
+
+/* -----------------------[ Document Header Table ]---------------------- */
+table.title,
+table.header {
+	width: 100%;
+	background-color: white;
+	border: none;
+}
+
+table.title tr th,
+table.title tr td {
+	border: none;
+	background-color: white;
+}
+
+table.title tr th {
+	width: 100%;
+}
+
+table.header tr th,
+table.header tr td {
+	text-align: left;
+	font-weight: normal;
+	background-color: white;
+	border-right: none;
+	border-left: none;
+	border-bottom: none;
+	border-top: #bbb 1px solid;
+}
+
+table.header tr td {
+	font-style: italic;
+}
+
+p#title {
+	text-align: center;
+	font-size: xx-large;
+	font-family: palatino linotype, garamond, serif;
+	padding-bottom: 20px;
+	border-bottom: #ce2b25 2px solid;
+}
+
+p#subject {
+	text-align: center;
+	font-size: x-large;
+	font-family: amyriad web, verdana, tahoma, arial, helvetica, sans-serif;
+	padding-bottom: 50px;
+}
+
+table.header tr th#copyright {
+	text-align: left;
+	font-size: x-small;
+	border-top: #bbb 1px solid;
+	padding-top: 10px;
+}
+
+/* ----------------------[ Document History Table ]---------------------- */
+tr.reviewAccepted,
+.statusGreen {
+	background: #D0FFD0;
+	color: black;
+}
+
+tr.reviewRejected,
+.statusRed {
+	background: #FFD0D0;
+	color: black;
+}
+
+.statusUnknown {
+	background: #F0F080;
+	color: black;
+}
+
+table.document-history {
+	width: 100%;
+}
+
+table.document-history tr.retire {
+	background: lightgray;
+}
+
+table.document-history tr td.revision,
+table.document-history tr td.date,
+table.document-history tr td.author {
+	text-align: center;
+	vertical-align: middle;
+	padding-left: 0.5ex;
+	padding-right: 0.5ex;
+}
+
+table.document-history tr td.section-modification-00,
+table.document-history tr td.modification-00 {
+	border-top: 1px dashed black;
+	border-bottom: none;
+	vertical-align: middle;
+}
+
+table.document-history tr td.section-modification-01,
+table.document-history tr td.modification-01 {
+	border-top: 1px dashed black;
+	vertical-align: middle;
+}
+
+table.document-history tr td.section-modification-10,
+table.document-history tr td.modification-10 {
+	border-bottom: none;
+	vertical-align: middle;
+}
+
+table.document-history tr td.section-modification-11,
+table.document-history tr td.modification-11 {
+	vertical-align: middle;
+}
+
+table.document-history tr td.section-modification-00,
+table.document-history tr td.section-modification-01,
+table.document-history tr td.section-modification-10,
+table.document-history tr td.section-modification-11 {
+	text-align: center;
+}
+
+td.author {
+	width: 20ex;
+}
+
+/* ===============================[ Code ]=============================== */
+table.code tr td {
+	background: #F0F0F0;
+	color: black;
+	padding: 0;
+}
+
+table.code tr th {
+	text-align: center;
+	font-weight: normal;
+}
+
+table.code tr td pre {
+	margin-top: 0.5ex;
+	margin-bottom: 0.5ex;
+	margin-left: 1ex;
+	margin-right: 1ex;
+}
+
+/* ===============================[ Lists ]============================== */
+ol, ul {
+}
+
+li {
+	text-align: justify;
+}
+
+/* =============================[ Hyperlinks ]=========================== */
+h1 a:hover, h2 a:hover, h3 a:hover,
+h4 a:hover, h5 a:hover, h6 a:hover,
+a:hover {
+	background-color: white;
+	color: black;
+	text-decoration: underline;
+}
+
+.equation tr td {
+	border-width: 0;
+}
+
+span.menu {
+	color: white;
+	background: #787996;
+	font-family: tahoma, sans-serif;
+	font-size: x-small;
+}
+
+span.gui {
+	border-left-width: 0.025cm;
+	border-top-width: 0.025cm;
+	border-right-width: 0.04cm;
+	border-bottom-width: 0.04cm;
+	border-style: solid;
+	font-family: tahoma, sans-serif;
+	font-size: x-small;
+}
+
+span.keystroke {
+	border-style: groove;
+	border-color: #E0E0E0;
+	font-family: tahoma, sans-serif;
+	font-size: x-small;
+}
+
+span.emphasis {
+	font-style: italic;
+}
+
+span.bold {
+	font-weight: bold;
+}
+
+span.underline {
+	text-decoration: underline;
+}
+
+tt.filename {
+	font-family: tahoma, sans-serif;
+	font-weight: bold;
+}
+
+tt.availability {
+	font-family: tahoma, sans-serif;
+	font-weight: normal;
+}
+
+tt.keyword {
+	font-weight: bold;
+}
+
+tt.command {
+	font-family: tahoma, sans-serif;
+	font-weight: bold;
+}
+
+p.description {
+	text-align: center;
+	margin-top: 0cm;
+}
+
+td.center {
+	text-align: center;
+	vertical-align: middle;
+}
+
+/* ===============================[ Printer ]============================ */
+
+@media print {
+	body {
+		font-family: serif;
+	}
+}
+</style><script type="text/javascript">
+function mailTo(part2, part1) {
+	window.location.href = "mailto:" + part1 + "@" + part2;
+}
+
+function getBody(body) {
+	var body2 = "";
+
+	for(i = 0; body.length > i; ++i)
+	{
+		if(body.charAt(i) == '\n')
+		{
+			body2 += "%0d%0a";
+		}
+		else
+		{
+			body2 += body.charAt(i);
+		}
+	}
+	return body2;
+}
+
+function fullMailTo(part2, part1, subject, body) {
+	var i;
+
+	window.location.href = "mailto:" + part1 + "@" + part2 + "?subject=" + subject + String.fromCharCode(38) + "body=" + getBody(body);
+}
+
+function createRequestTicket(queue, owner, subject, body, start, due, priority,estimatedtime) {
+	var mail = "";
+	var engDay = 480;
+	if(owner != null) if(owner != "")
+		mail += "RT-Owner: " + owner + "\n";
+	if(start != null) if(start != "")
+		mail += "RT-Starts: " + start + "\n";
+	if(due != null) if(due != "")
+		mail += "RT-Due: " + due + "\n";
+	if(priority != null) if(priority != "")
+		mail += "RT-Priority: " + priority + "\n";
+	if(estimatedtime != null) if(estimatedtime != "")
+		mail += "RT-EstimatedTime: " + estimatedtime*engDay + "\n";
+	if(body != null) if(body != "") {
+		mail += "\n";
+		mail += body;
+	}
+
+	window.location.href = "mailto:rt-" + queue + "@cosylab.com?subject=" + subject + String.fromCharCode(38) + "body=" + getBody(mail);
+}</script></head><body><table cellspacing="0" id="frame"><tr><td id="content"><table class="title" cellspacing="0"><tr><th><p id="title">Abeans Visual Composition with Eclipse VE</p><p id="subject">Tutorial</p></th></tr></table><table class="header" cellspacing="0"><tr><th>Project:</th><td>Abeans VE Plug-in </td></tr><tr><th>Status:</th><td>Draft</td></tr><tr><th>Availability:</th><td><tt class="availability">:/Abeans VE Plug-in//TUT-Abeans_Visual_Composition_with_Eclipse_VEP.xml</tt></td></tr><tr><th>Creation:</th><td>2005-03-02 (<a href="javascript:mailTo(&quot;cosylab.com&quot;,&quot;jernej.kamenik&quot;);">Jernej Kamenik</a>)
+			</td></tr><tr><th>Last Modification:</th><td>2005-09-01 (<a href="javascript:mailTo(&quot;cosylab.com&quot;,&quot;jernej.kamenik&quot;);">Jernej Kamenik</a>)
+			</td></tr><tr><th colspan="2" id="copyright">Copyright © 2005 by Cosylab d.o.o. All Rights Reserved.<br/></th></tr></table><h2>Scope</h2><p>
+    	This is a tutorial that shows how to visually assemble BACI model based Abeans applications in the Eclipse Visual Editor with only a few mouse clicks.
+    	The application (Power Supply Panel) allows a user to control one power supply device at a time by means of Abeans components.
+    	It is intended for users who are not familiar with the Java programming language and for the ones who want to build applications visually. 
+	</p><h2 id="secAudience">Audience</h2><p>
+		The audience of this document are all users of Abeans application framework.
+	</p><h2 id="toc">Table of Contents</h2><h1 class="toc"><a href="#intro">1. Introduction</a></h1><h1 class="toc"><a href="#template">2. The Abeans BACI Application template</a></h1><h1 class="toc"><a href="#gui">3. Creating the GUI</a></h1><h2 class="toc"><a href="#gui:layout">3.1. Application layout</a></h2><h2 class="toc"><a href="#gui:components">3.2. Adding GUI Components</a></h2><h1 class="toc"><a href="#psbean">4. The Power Supply Bean</a></h1><h1 class="toc"><a href="#logic">5. Adding application logic</a></h1><h2 class="toc"><a href="#logic:connections">5.1. Connecting Power Supply Bean to GUI Components</a></h2><h2 class="toc"><a href="#logic:events">5.2. Handling events</a></h2><h1 class="toc"><a href="#deviceSpecific">6. Creating the application for a specific device</a></h1><h1 class="toc"><a href="#running">7. Running the application from within the IDE</a></h1><h1 class="toc"><a href="#conclusion">8. Conclusion</a></h1><h1 class="toc"><a href="#appendix">9. Appendix</a></h1><h2 class="toc"><a href="#VEP-install">9.1. Abeans Visual Eclipse Plugin Installation</a></h2><h2 class="toc"><a href="#config">9.2. Configuring Eclipse Projects for Building and Running ACS Abeans Visual Applications</a></h2><br/><h1 class="toc"><a href="#references">References</a></h1><h1 class="toc"><a href="#documentHistory">Document History</a></h1><h2>How to Read This Document</h2><p>
+						 This document's meta-information (authors, revision history, table of contents, ...) can be found above.
+						 What follows below is the body of the document.
+						 The body is composed of several sections, which may be further composed of subsections.
+					 </p><p>
+						 Typographical styles are used to denote entities of different kinds.
+						 For a full list of entities and their respective typographic conventions, please refer to the <a href="../../Common/Documentation/cosycvs/CosyDoc/cosydocs/DOC-CosyDoc.xml#secSchemaContentStyles">Styles section of the XML Documentation</a> document.
+					 </p><p>
+						 When viewing the document in a non-printed form, it is possible to submit comments regarding a given section to the document's owner.
+						 This is achieved by clicking the mail icon next to the section title.
+						 For this to work, your mail must be configured to properly handle the <tt>mailto</tt> URLs.
+					 </p>
+	<h1><a href="#toc" id="intro">1. Introduction</a> </h1>
+		<p>
+			This document provides a step-by-step procedure on how to create a simple ACS based Abeans application in the Eclipse Visual Editor just by dragging a few componnents on the canvas and connecting them via menu selections.
+			The showcase application Power Supply Panel (PSPanel) allows a user to control one power supply device at a time by means of Abeans components.
+			See the <a href="#install">ACS Eclipse installation</a> document on how to install and configure Eclipse for ACS java development, as well as the <a href="#appendix">Appendix
+					(9.)
+				</a> on how to compile and run ACS based Abeans applications with Eclipse Visual Editor.
+			The application discussed in this document is <tt class="identifier">com.cosylab.demo.PSPanel</tt>, its source code can be found in the <tt class="filename">acsabeans/src</tt> module.
+		</p>
+	
+	<h1><a href="#toc" id="template">2. The Abeans BACI Application template</a> </h1>
+		<p>
+			The procedure for creating visual Abeans applications involves using the prepared Abeans Application templates installed with the Abeans VE plug-in in Eclipse IDE.
+			This section outlines the steps needed to start visually composing an ACS based Abeans visual application.
+		</p>
+			<ol>
+				<li>
+					In the system menu bar on top of the IDE select <span class="menu">  File  </span> and <span class="menu">  New  </span> and then from the drop-down menu select the <span class="menu">  Visual Class  </span> option.
+				</li>
+				<li>
+					A wizard pops up.
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/newWizard.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/newWizard.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/newWizard.png"/></p><p class="description"><b>Figure 1:</b> The wizard for creating a new visual application.</p>
+				</li>
+				<li>
+					Select the style: <span class="gui">  Abeans Applications  </span>, <span class="gui">  ACS Abeans Application  </span>.
+				</li>
+				<li>
+					Type in the name (and package) of the application class - PSPanel.
+				</li>
+				<li>
+					Check the method stub options <span class="menu">  public static void main(args[])  </span> and <span class="menu">  Constructors from superclass  </span> and press <span class="gui">  Finish  </span>.
+				</li>
+			</ol>
+			<p>
+				With this steps the visual application class is created and Eclipse switches to Visual Java Class Editing mode.
+			</p>
+	
+	<h1><a href="#toc" id="gui">3. Creating the GUI</a> </h1>
+		<p>
+			In this section, we will make the GUI of our application. 
+		</p>
+		<h2><a href="#toc" id="gui:layout">3.1. Application layout</a> </h2>
+			<p>
+				In this section we set up the layout in which GUI component will be placed inside the PSPanel.
+			</p>		
+			<ol>
+			<li>
+				First we want to choose a suitable layout for our application.			
+				Click on the panel in the GUI editor view or on the <span class="gui">  this  </span> root node in the [Java Beans] tree view.
+				A list of available properties is displayed in the bottom tab.
+				Click on the <span class="gui">  layout  </span> property and choose the <span class="gui">  GridLayout  </span> from the combo box on the right.
+				<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/layout.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/layout.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/layout.png"/></p><p class="description"><b>Figure 2:</b> Selecting the layout manager for the PSPanel.</p>
+			</li>
+			<li>
+				Next we modify the layout to display the contents in rows instead of columns (the default setting).
+				This is done by either expanding the <span class="gui">  layout  </span> option in the list of properties.
+				In the property table below click on the <span class="gui">  columns  </span> item and type in 1 instead of 0.
+				Similary in the <span class="gui">  rows  </span> column change the value from 1 to 0.
+				<table class="notice" cellspacing="0"><tr><td class="icon"><img alt="notice" src="../../Common/Documentation/images/Notice.gif"/></td><td class="content">
+				 	The layout can alternatively be custumized or by right clicking on the panel and selecting the <span class="menu">  Custumize layout...  </span> menu option.
+				</td></tr></table>
+			</li>				
+			</ol>
+		
+		<h2><a href="#toc" id="gui:components">3.2. Adding GUI Components</a> </h2>
+			<p>
+				Now we can start adding the Abeans components to the panel by choosing them from the [Pallete] on the right side of the GUI Editor view.
+			</p>		
+		<ol>
+			<li>
+				Hold the mouse pointer over the palette bar or click on it to expand it.
+				From the [Pallete] select the folder <span class="gui">  Abeans Components  </span> and the Single Abean Selector icon from it:
+				<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/selectora.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/selectora.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/selectora.png"/></p><p class="description"><b>Figure 3:</b> Click on the Single Abean Selector icon.</p>
+				Then, click somewhere on the empty form and the selector will appear on it.
+				From the [Pallete] select the tab <span class="gui">  Abeans Displayers (Single)  </span> and add Gauger, Slider and Ledder to the form.
+				The application should now look like this:
+				<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pspanel1a.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pspanel1a.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pspanel1a.png"/></p><p class="description"><b>Figure 4:</b> PSPanel layout.</p>
+				<table class="notice" cellspacing="0"><tr><td class="icon"><img alt="notice" src="../../Common/Documentation/images/Notice.gif"/></td><td class="content">
+					Alternatively, components from the [Palette] can be added directly to the [Java Beans] tree view instead to the GUI editor view.
+					This procedure is useful if there is now space in the GUI layout of the panel where to drop the new component.
+				</td></tr></table>
+			</li>
+			<li>
+				We also need some other swing components to control the application.
+				From the <span class="gui">  Swing Containers  </span> folder select the JPanel and add it to the form.
+				From the [Java Beans] tree select the <span class="gui">  jPanel1  </span> node and set the <span class="gui">  GridBagLayout  </span> layout manager.
+				Then add three buttons to the added JPanel by selecting JButton from the <span class="gui">  Swing Components  </span> folder and clicking somewhere within the jPanel's space, repeating the procedure three times.
+				You may need to resize the form so that all the components are not squeezed together two much.
+				This is done by selecting the panel in the [Java Beans] tree and then mouse dragging the lower-right edge of the form.
+				In the [Java Beans] tree click on the first button <span class="gui">  jButton  </span> with the right mouse button.
+				In the popup dialog select <span class="menu">  Rename field  </span>.
+				<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/rename.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/rename.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/rename.png"/></p><p class="description"><b>Figure 5:</b> Renaming components.</p>
+				Another dialog shows up.
+				In the text field enter <tt class="identifier">onButton</tt> and press <span class="gui">  OK  </span>.
+				Again select the first button now named <span class="gui">  onButton  </span> and in the properties tab set the <span class="gui">  text  </span> to <tt class="identifier">ON</tt>.
+				Repeat the whole procedure with the second button (jButton1), renaming it to <tt class="identifier">offButton</tt> and setting its text to <tt class="identifier">OFF</tt> and the third button (jButton2) to <tt class="identifier">resetButton</tt> with text <tt class="identifier">RESET</tt>.
+				The application should now finally look like this:
+				<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pspanel2.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pspanel2.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pspanel2.png"/></p><p class="description"><b>Figure 6:</b> PSPanel layout.</p>
+			</li>
+		</ol>
+		
+	
+	<h1><a href="#toc" id="psbean">4. The Power Supply Bean</a> </h1>
+		<p>
+			In this section we lookup the invisible device bean representing a power supply and add it to our application.
+		</p>
+		<ol>
+			<li>
+				In the [Palette] click on the <span class="gui">  Choose Bean  </span> icon.
+				A dialog shows up.
+				In the text field type in "PowerSupply".
+				Select <span class="gui">  PowerSupply  </span> from the matching types list and press <span class="gui">  OK  </span>.
+				<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/powersupply.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/powersupply.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/powersupply.png"/></p><p class="description"><b>Figure 7:</b> Finding power supply bean.</p>
+			</li>
+			<li>
+				Click somewhere on the GUI canvas outside the applicaton panel.
+				The bean should appear in the [Java Beans] tree view as well as in the GUI Editor view.				
+				<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/powersupply1.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/powersupply1.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/powersupply1.png"/></p><p class="description"><b>Figure 8:</b> The complete PSPanel Java Beans tree with Power Supply Bean.</p>
+			</li>
+		</ol>
+	
+	<h1><a href="#toc" id="logic">5. Adding application logic</a> </h1>
+		<p>
+			In this section we add logic to the application by connecting beans nad handling events. 
+		</p>
+		<h2><a href="#toc" id="logic:connections">5.1. Connecting Power Supply Bean to GUI Components</a> </h2>
+			<p>
+				First we want to connect the power supply bean to the abeans GUI components and dispalyers.
+			</p>
+			<ol>
+				<li>
+					First select the jSingleAbeanSelector from the [Java Beans] tree (or by clicking on it in the form).
+					From the property sheet click the <span class="gui">  abean  </span> property and in the combo box select <span class="gui">  powerSupply  </span>.
+				</li>
+				<li>
+					At this point we cannot avoid typing in a few lines of code.
+					Select from the [Outline] tree view the method <span class="gui">  getJGauger()  </span>.
+					The Java code view below the GUI editor scrolls to display the method.
+					Expand the Java code view by clicking on the up arrow in the split pane delimiter between the GUI editor and Java code view.
+					Below the Gauger constructor call type in the following:
+		<table class="code" cellspacing="0"><tr><td class="content"><pre xml:lang="Java">
+			jGauger.setDoubleProperty(getPowerSupply().getReadback());		
+
+			
+		</pre></td></tr><tr><th><b>Listing 1:</b> Setting the power supply readback to the gauger.</th></tr></table>
+										
+				</li>
+				<li>
+					Repeat the upper procedure for <tt class="identifier">doubleProperty</tt> of <tt class="identifier">jSlider</tt> only select the <tt class="identifier">getCurrent()</tt> method of <tt class="identifier">powerSupply</tt> bean.
+					Also apply same procedure for the <tt class="identifier">patternProperty</tt> of <tt class="identifier">jLedder</tt>  and use the <tt class="identifier">getStatus()</tt> method from <tt class="identifier">powerSupply</tt> bean.
+				</li>	
+			</ol>		
+		
+		
+		<h2><a href="#toc" id="logic:events">5.2. Handling events</a> </h2>
+			<p>
+				In this section we will add control of the power supply bean through the buttons in the PSPanel.
+				And inversely, we will add visual indications to internal state changes of the power supply by adding handlers to its link events. 
+			</p>
+			
+			<ol>
+				<li>
+					First we want to be able to turn the power supply on by pressing <span class="gui">  onButton  </span>.
+					Click on <span class="gui">  onButton  </span> in the [Java Beans] tree with the right mouse button.
+					From the popup menu select <span class="menu">  Events  </span> and <span class="menu">  actionPerformed  </span> option.
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/action.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/action.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/action.png"/></p><p class="description"><b>Figure 9:</b> Adding functionality to the onButton.</p>
+					The Java code view changes to the the newly created <tt class="identifier">actionPerformed</tt> method below the onButton constructor call. 
+					Type in the following:
+					
+		<table class="code" cellspacing="0"><tr><td class="content"><pre xml:lang="Java">
+		try {
+			powerSupply.on();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+			
+		</pre></td></tr><tr><th><b>Listing 2:</b> The code to be executed when onButton (ON) is pressed.</th></tr></table>
+				</li>
+				<li>
+					Repeat the upper procedure for <span class="gui">  offButton  </span> and execute <tt class="identifier">powerSupply.off()</tt>.
+					The same for <span class="gui">  resetButton  </span> with <tt class="identifier">powerSupply.reset()</tt> method invocation.
+				</li>
+				<li>
+					Finally we want to enable or disable the three buttons when the power supply bean successfully connects to the underlying modeling layer.
+					Select <span class="gui">  powerSupply  </span> from the [Java Beans] tree and select <span class="menu">  Events  </span> and <span class="menu">  Add Events...  </span> options from the popup menu.
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/link.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/link.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/link.png"/></p><p class="description"><b>Figure 10:</b> Adding functionality when the power supply link is established.</p>					
+					In the Java code view of the <tt class="identifier">linkEstablished</tt> method enter:					
+		<table class="code" cellspacing="0"><tr><td class="content"><pre xml:lang="Java">
+		onButton.setEnabled(true);
+		offButton.setEnabled(true);
+		resetButton.setEnabled(true);
+
+			
+		</pre></td></tr><tr><th><b>Listing 3:</b> The code to be executed when powerSupply becomes linked to the modeling layer.</th></tr></table>
+				</li>
+				<li>
+					Repeat the upper procedure for the <span class="gui">  linkLost  </span> event and disable all the PSPanel buttons in the handler method.	Only this time, from the [Add Event] dialog, choose the <span class="menu">  Use existing listener  </span> option.
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/link1.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/link1.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/link1.png"/></p><p class="description"><b>Figure 11:</b> Adding functionality when the power supply link is lost.</p>					
+				</li>
+			</ol>
+		
+	
+	<h1><a href="#toc" id="deviceSpecific">6. Creating the application for a specific device</a> </h1>
+		<p>
+			If you want a PSPanel that controls only one device, you do not need a SingleAbeanSelectorBean. 
+			To create such application just follow the steps outlined above, but remember to exclude the Selector Bean. 
+			Create all the connections and logic explained with one exception. 
+			Instead of setting the powerSupply as the abean of the selector (which is now missing) set the <span class="gui">  remoteName  </span> of the <span class="gui">  powerSupply  </span> to the name of the device you wish to control.
+			<ol>
+				<li>
+					Select <span class="gui">  powerSupply  </span> from the [Java Beans] tree.	
+				</li>	
+				<li>
+					In the property sheet click on the <span class="gui">  remoteName  </span> property and in the textField to the right enter the name	of the device you wish to control.	
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pscustom2.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pscustom2.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pscustom2.png"/></p><p class="description"><b>Figure 12:</b> Setting remote name of a specific device you wish to control with the PSPanel.</p>
+				</li>
+				<li>
+					Press <span class="gui">  Enter  </span> to confirm your entry. The corresponding method call is generated in the Java code view of PSPanel.
+				</li>
+				<li>
+					The newly generated method call <tt class="identifier">setRemoteName</tt> throws declared exceptions, which still need to be handled.
+					Click on the light bulb icon on the left side of the code view.
+					From the popup menu select <span class="gui">  Surround with try/catch  </span> and press <span class="gui">  Enter  </span>.
+					A try/catch block is generated around the method call.
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pscustom1.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pscustom1.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/pscustom1.png"/></p><p class="description"><b>Figure 13:</b> Handling exceptions.</p>
+				</li>
+			</ol>		
+		</p>	
+	
+	<h1><a href="#toc" id="running">7. Running the application from within the IDE</a> </h1>
+			<p>
+				Abeans applications can be launched easily using <tt class="identifier">com.cosylab.abeans.AbeansLaunchable</tt>.
+				Just add the following code the the main method of PSPanel:
+		<table class="code" cellspacing="0"><tr><td class="content"><pre xml:lang="Java">
+	public static void main(String[] args) {
+		//this launches PSPanel application
+		AbeansLaunchable.launch(PSPanel.class, args);
+	}
+
+			
+		</pre></td></tr><tr><th><b>Listing 4:</b> The code for launching PSPanel.</th></tr></table>
+			</p>
+			<p>
+				The easiest way then to run the PSPanel application is from within the Eclipse IDE.
+			</p>
+			<ol>
+				<li>
+					Select the <span class="menu">  Run  </span> menu from the main menu bar and select the <span class="menu">  Run...  </span> option.
+				</li>
+				<li>
+					A dialog shows up. In the tree view on the left select <span class="gui">  Java Application  </span> and press <span class="gui">  New  </span>.
+					A new Java Application running configuration is created for PSPanel.
+					In the [Arguments] tab enter the JVM and program arguments you normally use for running ACS based Abeans applications and press <span class="gui">  Apply  </span>. 
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/arguments.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/arguments.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/arguments.png"/></p><p class="description"><b>Figure 14:</b> Enter JVM arguments for running the PSPanel.</p>
+				</li>
+				<li>
+					Press <span class="gui">  Run  </span> to run the application for the first time.
+					Next time you want to run the application just press the <span class="gui">  Run  </span> icon in the menu bar or select PSPanel from its drop down menu.
+					<p class="figure"><img alt="Image: TUT-Abeans_Visual_Composition_with_Eclipse_VEP/run.png" onclick="window.open('TUT-Abeans_Visual_Composition_with_Eclipse_VEP/run.png', '', 'menubar=0,status=0,toolbar=0,width=640,height=480,resizable=1');" src="TUT-Abeans_Visual_Composition_with_Eclipse_VEP/run.png"/></p><p class="description"><b>Figure 15:</b> Running PSPanel from Eclipse menu bar.</p>
+				</li>	
+			</ol>
+					<table class="notice" cellspacing="0"><tr><td class="icon"><img alt="notice" src="../../Common/Documentation/images/Notice.gif"/></td><td class="content">
+						By default setting JVM arguments is not necessary since default Abeans configuration has been already put in your classpath by the installation procedure.
+					</td></tr></table>
+	
+	<h1><a href="#toc" id="conclusion">8. Conclusion</a> </h1>
+		<p>
+			With same grips we can visually build a lot of different but functional applications in very short time using the integration of Abeans libraries and the Eclipse IDE with the Visual Editor plug-in.
+		</p>
+	
+	<h1><a href="#toc" id="appendix">9. Appendix</a> </h1>
+		<h2><a href="#toc" id="VEP-install">9.1. Abeans Visual Eclipse Plugin Installation</a> </h2>
+			<p>
+				This section describes the installation of the Abeans Visual Eclipse Plugin (Abeans-VEP) for building ACS Abeans java applications visually in Eclipse. 
+			</p>
+			<table class="warning" cellspacing="0"><tr><td class="icon"><img alt="warning" src="../../Common/Documentation/images/Warning.gif"/></td><td class="content">
+				The Abeans-VEP was tested to work with Eclipse v3.1.0 and Eclipse Visual Editor Plugin v1.1.0.1, on which this tutorial is based. 
+				The plugin is <it xmlns="urn:schemas-cosylab-com:Document"><span xmlns="http://www.w3.org/1999/xhtml" class="bold">not</span></it> compatible with Eclipse v3.0 or older, or Visual Editor Plugin 1.0.x or older.
+			</td></tr></table>
+			<p>
+				<ol>
+					<li>
+				First you need to install the Eclipse Visual Editor Plugin, which is available for download at <a href="http://eclipse.org/vep/">eclipse.org/vep</a> website. 
+				The plugin version 1.1.0.1 references additional eclipse plugins: EMF build 2.1.0 and GEF Build 3.1 both available for download at the plugin site.
+				Unzip all of the plugins into the eclipse installation directory to match the subfolder structure. 
+					</li>
+					<li>
+				Next, fetch the Abeans-VEP distribution from the <tt class="filename">acsabeans/lib</tt> module. Install it by unpacking into the eclipse installation plugins subfolder.
+					</li>
+				</ol>
+			</p>
+			<table class="notice" cellspacing="0"><tr><td class="icon"><img alt="notice" src="../../Common/Documentation/images/Notice.gif"/></td><td class="content">
+				When installing additional plugins into an existing eclipse installation, it may occour on some systems, that the new plugins are not recognized by Eclipse.
+				In such cases delete the contents (including the hidden <tt class="filename">.settings</tt> subfolder) of the configuration subfolder of the Eclipse installation except the <tt class="filename">config.ini</tt> file. 
+			</td></tr></table>
+		
+		<h2><a href="#toc" id="config">9.2. Configuring Eclipse Projects for Building and Running ACS Abeans Visual Applications</a> </h2>
+			<p>	
+				This section describes how to create and configure an Eclipse Java Project for visually building and running ACS Abeans applications. 
+			</p>
+			<p>
+				<ol>
+				<li>Create a new Java Project by Selecting <span class="menu">  File/New/Project...  </span>.</li> 
+				<li>A new project wizard dialog appears.
+				In the list select <span class="menu">  Java Project  </span> and click <span class="gui">  Next  </span>.</li>
+				<li>In the next page enter the Project's name and click <span class="gui">  Next  </span>.</li>
+				<li>In the Java Settings page select the <span class="menu">  Libraries  </span> tab and click <span class="gui">  Add Variable...  </span>.</li>
+				<li>A new variable classpath entry dialog appears.
+				From the list of variables select ACSROOT and click <span class="gui">  Extend...  </span>.</li>
+				<li>In the browser dialog select all the ACSROOT jars and click <span class="gui">  OK  </span>.</li>
+				<li>Repeat the procedure for the JACORB_HOME variable, then click <span class="gui">  Finish  </span> to finish the new project wizard.</li>
+				<li>A new project is created in the Eclipse workspace which is already configured for building and running ACS Abeans visual applications.</li>
+				</ol>	
+			</p>	
+		
+	
+	<h1 id="documentHistory"><a href="#toc">Document History</a></h1><table class="document-history" cellspacing="0"><tr><th>Revision</th><th>Date</th><th>Author</th><th>Section</th><th>Modification</th></tr><tr><td rowspan="1" class="revision">1.0</td><td rowspan="1" class="date">2005-03-02</td><td rowspan="1" class="author"><a href="javascript:mailTo(&quot;cosylab.com&quot;,&quot;jernej.kamenik&quot;);">Jernej Kamenik</a></td><td class="section-modification-11">all</td><td class="modification-11">Created.</td></tr><tr><td rowspan="1" class="revision">1.1</td><td rowspan="1" class="date">2005-09-01</td><td rowspan="1" class="author"><a href="javascript:mailTo(&quot;cosylab.com&quot;,&quot;jernej.kamenik&quot;);">Jernej Kamenik</a></td><td class="section-modification-11"><a href="#running">7.</a></td><td class="modification-11">Updated.</td></tr><tr><td rowspan="1" class="revision">1.2</td><td rowspan="1" class="date">2005-09-01</td><td rowspan="1" class="author"><a href="javascript:mailTo(&quot;cosylab.com&quot;,&quot;jernej.kamenik&quot;);">Jernej Kamenik</a></td><td class="section-modification-11"><a href="#appendix">9.</a></td><td class="modification-11">Added notes on installation and config.</td></tr></table><h1 id="references"><a href="#toc">References</a></h1><table cellspacing="0"><tr><th>ID</th><th>Author</th><th>Reference</th><th>Revision</th><th>Date</th><th>Publisher</th></tr><tr><td id="install">1</td><td>Heiko Sommer</td><td><a href="http://almasw.hq.eso.org/almasw/bin/view/ACS/FAQJCompEclipse">ACS Eclipse Installation</a></td><td>1.3</td><td>2005</td><td>ALMASW</td></tr></table></td></tr><tr><td id="cosyline"><img alt="Image: ../../Common/Documentation/images/Cosylab.png" src="../../Common/Documentation/images/Cosylab.png"/></td></tr></table></body></html>

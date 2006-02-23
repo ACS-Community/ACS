@@ -1,0 +1,6 @@
+SOURCE loggingTATEnvironment
+1 testNoLogging         "testNoLogging"
+2 testLogger            "testLogger"
+3 loggingXMLParserTest	"loggingXMLParserTest"
+4 testMacros		"testMacros"
+5 testGenericLogger     "testGenericLogger"

@@ -1,0 +1,4 @@
+On Sun the native patch does not work. We need to download and install the GNU patch program
+The sources are (for ACS 3.0) in PRODUCTS/patch-2.5.4-sources.tar.gz
+The program already compiled is in PRODUCTS/patch.tar.gz 
+The buildGNU takes care of installing the binary file.

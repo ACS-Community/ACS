@@ -1,0 +1,72 @@
+This is Info file iostream.info, produced by Makeinfo-1.55 from the
+input file ./iostream.texi.
+
+START-INFO-DIR-ENTRY
+* iostream: (iostream).                    The C++ input/output facility.
+END-INFO-DIR-ENTRY
+
+   This file describes libio, the GNU library for C++ iostreams and C
+stdio.
+
+   libio includes software developed by the University of California,
+Berkeley.
+
+   Copyright (C) 1993 Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the entire resulting derived work is distributed under the terms
+of a permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions.
+
+
+Indirect:
+iostream.info-1: 996
+iostream.info-2: 50802
+
+Tag Table:
+(Indirect)
+Node: Top996
+Node: Introduction1482
+Node: Copying2052
+Node: Acknowledgements3265
+Node: Operators4249
+Node: Streams7014
+Node: Ios7496
+Node: States9097
+Node: Format Control12075
+Node: Manipulators17236
+Node: Extending19209
+Node: Synchronization21008
+Node: Streambuf from Ios22322
+Node: Ostream22672
+Node: Writing23806
+Node: Output Position25183
+Node: Ostream Housekeeping26341
+Node: Istream27597
+Node: Char Input28974
+Node: String Input29570
+Node: Input Position33078
+Node: Istream Housekeeping34285
+Node: Iostream36590
+Node: Files and Strings37881
+Node: Files38508
+Node: Strings43132
+Node: Streambuf45578
+Node: Areas46471
+Node: Formatting46945
+Node: Stdiobuf48354
+Node: Procbuf49295
+Node: Backing Up50802
+Node: Indirectbuf53070
+Node: Stdio53612
+Node: Index54640
+
+End Tag Table

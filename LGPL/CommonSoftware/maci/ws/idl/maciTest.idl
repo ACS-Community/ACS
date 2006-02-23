@@ -1,0 +1,53 @@
+#ifndef _MACI_TEST_IDL_
+#define _MACI_TEST_IDL_
+
+/** IDL interface for test classes in MACI modular test  */
+
+#include <maci.idl>
+#include <acscomponent.idl>
+
+#pragma prefix "alma"
+
+module MACI_TEST {
+
+interface MaciTestClass : ACS::ACSComponent {  
+  // Method to request execution of server-side MACI testing.
+  boolean test();
+  
+  // Request a component
+  Object get_component(in maci::CURL component_url,
+                 in boolean activate,
+                 out unsigned long status);
+  
+  // Release a component
+  long release_component(in maci::CURL component_url);
+};
+
+// The component to test the container services methods
+interface ContainerServicesTestClass : ACS::ACSComponent {
+  // Test the get component
+  void getComponentTest();
+  
+  // Test the dynamic component activation
+  void dynamicComponentTest();
+
+  // Test the defaultComponent activation
+  void defaultComponentTest();
+  
+  // Test the request of a component descriptor
+  void componentDescriptorTest();
+
+  // Test the relase of all components
+  void releaseResourcesTest();
+};
+
+// The Dynamic components activated by the container services test
+interface DynamicTestClass : ACS::ACSComponent {
+	// Log a message with the component of the component
+	void whoami();
+};
+
+
+};
+
+#endif

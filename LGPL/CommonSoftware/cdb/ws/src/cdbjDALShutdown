@@ -1,0 +1,33 @@
+#! /bin/bash
+. acsstartupLogging.sh
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: cdbjDALShutdown,v 1.31 2005/10/17 17:05:22 dfugate Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dvitas 2003-04-14 changed package name and removed unused argument
+# bjeram 2002-11-22 removed -OAport
+# bjeram 2002-10-24 created
+#
+
+acsStartJava com.cosylab.cdb.DALShutdown $1 $2 $3 $4

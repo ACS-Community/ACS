@@ -1,0 +1,261 @@
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: pythonMakefile,v 1.75 2006/02/02 15:25:17 mzampare Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# mzampare  27/06/02  SHELL changed to ksh
+# mzampare  20/06/02  created
+#
+#************************************************************************
+#   NAME
+#     
+#   pythonMakefile - language specific makefile for Python
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   Available variables are: 
+#
+#   1.PY_SCRIPTS and PY_SCRIPTS_L: These
+#     scripts, specified without the .py extension, will be copied to the
+#     local bin directory of the module. make install copies them to the
+#     $INTROOT/bin. No further handling is done. As for any generic script, 
+#     the PY_SCRIPTS_L are not installed by make install 
+#
+#   2.PY_MODULES:
+#     These scripts, specified without the .py extension, will be copied 
+#     to the local  lib/python/site-packages/module directory. Notice that 
+#     they are scripts, not directories. 
+#
+#   3.PY_PACKAGES:
+#     Packages specified in here must be under the corresponding directory 
+#     under src. They are copied to the local lib/python/site-packages/package 
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO: acsMakefile
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+SHELL=/bin/ksh
+PYTHON_VERS = $(shell python -V 2>&1 | awk '{print $$2}' | awk -F. '{print $$1 "." $$2}')
+PYTHON_DOCS=../doc/api/html/python
+PYTHONPATHDOC=${PYTHONPATH}:../../../../src
+######################################
+# phony section
+######################################
+.PHONY : clean_python
+.PHONY : install_python
+.PHONY : install_python_modules
+.PHONY : install_python_packages
+.PHONY : install_pythondoc
+.PHONY : do_pythonscripts
+.PHONY : do_pythonmod
+.PHONY : do_pythonpack
+
+PY_ALL_LIST = $(PY_SCRIPTS) $(PY_SCRIPTS_L) $(PY_PACKAGES) $(PY_PACKAGES_L)  $(PY_MODULES) $(PY_MODULES_L)  
+######################################
+# incrementing tasks
+######################################
+
+ifndef MAKE_VXWORKS
+ifeq ($(call mustBuild,Python),true)
+ifneq ($(strip $(PY_SCRIPTS)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_python_scripts
+endif
+
+ifneq ($(strip $(PY_MODULES)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_python_modules 
+endif
+
+ifneq ($(strip $(PY_PACKAGES)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_python_packages
+endif
+
+ifneq ($(strip $(join $(PY_MODULES), $(PY_PACKAGES),$(PY_SCRIPTS)) ),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_pythondoc
+endif
+
+ifneq ($(strip $(PY_ALL_LIST)),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_python
+endif
+
+ifneq ($(strip $(join $(PY_SCRIPTS), $(PY_SCRIPTS_L) ) ),)
+    ALL_TARGET := $(ALL_TARGET) do_pythonscripts
+endif
+
+ifneq ($(strip $(PY_MODULES) $(PY_MODULES_L)),)
+    ALL_TARGET := $(ALL_TARGET) do_pythonmod 
+endif
+
+ifneq ($(strip $(PY_PACKAGES) $(PY_PACKAGES_L)),)
+    ALL_TARGET := $(ALL_TARGET) do_pythonpack 
+endif
+
+endif # must build Python
+endif
+######################################
+# targets specification
+######################################
+
+##  clean
+##
+clean_python:
+	-$(AT)$(RM) vltMake_clean_scripts      $(foreach member, $(PY_SCRIPTS) $(PY_SCRIPTS_L), ../bin/$(member) ../object/$(member).ds ) ../object/vltMakeScriptDependencies.ds  $(OUTPUT)
+	-@$(ECHO) " .\c"
+	-$(AT)$(RM) vltMake_clean_python_mod   $(foreach member, $(PY_MODULES) $(PY_MODULES_L), ../lib/python/site-packages/$(member).py ../object/$(member).dpms )   $(OUTPUT)
+	-@$(ECHO) " .\c"
+	-$(AT)$(RM) vltMake_clean_python_pack   $(foreach member, $(PY_PACKAGES), ../lib/python/site-packages/$(member) ../object/$(member).dpps ) $(OUTPUT)
+	-@$(ECHO) " .\c"
+
+## install
+##
+install_python_scripts:
+ifneq ($(strip $(PY_SCRIPTS)),)
+	-@$(ECHO) "install_python_scripts: python_scripts_begin $(foreach member, $(PY_SCRIPTS), $(BIN)/$(member)  )" >>$(FILE)
+	-@$(ECHO) "python_scripts_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python scripts:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(PY_SCRIPTS), $(name) ); \
+		do \
+		    $(ECHO) "$(BIN)/$${member}: ../bin/$${member}" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"\t$${member}\";\\" >>$(FILE);\
+		    $(ECHO) "	cp ../bin/$${member} $(BIN)/$${member};\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P755) $(BIN)/$${member}" >>$(FILE);\
+		done
+endif
+
+# I could write a python script which does something like:
+#import compileall
+#compileall.compile_dir(".")
+#
+# or even better, simply call 
+# python $PYTHON_ROOT/lib/python2.3/compileall.py <dirname>
+# the problem with this approach is that this file must be changed
+# whenever the above path changes, i.e. for new python releases.
+# I go that way nevertheless.
+#
+install_python_modules:
+ifneq ($(strip $(PY_MODULES)),)
+	-@$(ECHO) "install_python_modules: python_modules_begin $(foreach member, $(PY_MODULES), $(LIB)/python/site-packages/$(member).py  )" >>$(FILE)
+	-@$(ECHO) "python_modules_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_modules:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(PY_MODULES), $(name) ); \
+		do \
+		    $(ECHO) "$(LIB)/python/site-packages/$${member}.py: ../lib/python/site-packages/$${member}.py" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"\t$${member}.py\";\\" >>$(FILE);\
+		    $(ECHO) "	cp ../lib/python/site-packages/$${member}.py $(LIB)/python/site-packages;\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P644) $(LIB)/python/site-packages/$${member}.py" >>$(FILE);\
+		    $(ECHO) "	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages ;\\" >>$(FILE);\
+		    $(ECHO) "	cp ../lib/python/site-packages/$${member}.pyc $(LIB)/python/site-packages;\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P644) $(LIB)/python/site-packages/$${member}.pyc" >>$(FILE);\
+		done
+endif
+
+install_python_packages:
+ifneq ($(strip $(PY_PACKAGES)),)
+	-@$(ECHO) "install_python_packages: python_packages_begin $(foreach member, $(PY_PACKAGES), $(LIB)/python/site-packages/$(member)  )" >>$(FILE)
+	-@$(ECHO) "python_packages_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_packages:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
+		do \
+		    $(ECHO) "$(LIB)/python/site-packages/$${member}: `find ../lib/python/site-packages/$${member} -type f |tr  '\n' ' '`" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"\t$${member}\";\\" >>$(FILE);\
+		    $(ECHO) "	cp -pr ../lib/python/site-packages/$${member} $(LIB)/python/site-packages;\\" >>$(FILE);\
+		    $(ECHO) "	find $(LIB)/python/site-packages/$${member} -type f -exec chmod $(P644) {} \\; ;\\" >>$(FILE);\
+		    $(ECHO) "	find $(LIB)/python/site-packages/$${member} -type d -exec chmod $(P755) {} \\; ;\\" >>$(FILE);\
+		    $(ECHO) "	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages/$${member} ;\\" >>$(FILE);\
+		    $(ECHO) "	cp ../lib/python/site-packages/$${member}/*.pyc $(LIB)/python/site-packages/$${member};\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P644) $(LIB)/python/site-packages/$${member}/*.pyc" >>$(FILE);\
+		    $(ECHO) "	touch $(LIB)/python/site-packages/$${member}" >>$(FILE);\
+		done
+endif
+
+install_pythondoc:
+	-@$(ECHO) "install_pythondoc: pythondoc_begin" >>$(FILE)
+	-@$(ECHO) "pythondoc_begin:" >>$(FILE)
+	-$(AT) if [ -d  $(PYTHON_DOCS) ]; \
+		then \
+		 mkdir -p $(MAN)/py; \
+		 cp -p $(PYTHON_DOCS)/*.html $(MAN)/py/ || echo "== No Pydoc files found to be installed"; \
+		fi
+
+## all
+##
+# - for Automatic Dependencies for Python modules
+#
+../object/%.ds:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeScriptDependencies $(*F)  >../object/$*.ds
+#
+../object/%.dpms:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakePythonModDependencies $(*F)  >../object/$*.dpms
+
+# - for Automatic Dependencies for Python Packages
+#
+../object/%.dpps:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakePythonPackDependencies $(*F) "$($(*F)_MODULES)"  >../object/$*.dpps
+
+#
+PY_MOD_LIST = $(PY_MODULES) $(PY_MODULES_L)  
+TMP_DEP_PYMOD := $(addprefix ../object/, $(addsuffix .dpms, $(PY_MOD_LIST)))
+PY_PACK_LIST = $(PY_PACKAGES) $(PY_PACKAGES_L)  
+TMP_DEP_PYPACK := $(addprefix ../object/, $(addsuffix .dpps, $(PY_PACK_LIST)))
+PY_SCRIPT_LIST = $(PY_SCRIPTS) $(PY_SCRIPTS_L)
+TMP_DEP_PYSCRIPTS := $(addprefix ../object/, $(addsuffix .ds, $(PY_SCRIPT_LIST)))
+
+do_pythonscripts: $(TMP_DEP_PYSCRIPTS)
+	$(AT) for member in $(foreach name, $(PY_SCRIPT_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.ds ../bin/$${member};\
+		done
+
+do_pythonmod: $(TMP_DEP_PYMOD)
+	$(AT) for member in $(foreach name, $(PY_MOD_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.dpms ../lib/python/site-packages/$${member}.py;\
+		done
+
+do_pythonpack: $(TMP_DEP_PYPACK)
+	$(AT) for member in $(foreach name, $(PY_PACK_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.dpps ../lib/python/site-packages/$${member};\
+		done
+
+do_pythondoc:
+ifneq ($(strip $(PY_ALL_LIST)),)
+	-$(AT) echo "Pydoc..."
+	-$(AT) mkdir -p $(PYTHON_DOCS)
+	-$(AT) PYTHONPATH=${PYTHONPATHDOC}; for member in $(foreach name, $(PY_SCRIPTS), $(name) ); \
+	       do \
+		(cd $(PYTHON_DOCS) ;  pydoc -w $${member} ); \
+	       done
+	-$(AT) PYTHONPATH=${PYTHONPATHDOC}; for member in $(foreach name, $(PY_MODULES), $(name) ); \
+	       do \
+		(cd $(PYTHON_DOCS) ;  pydoc -w $${member} ); \
+	       done
+	-$(AT) PYTHONPATH=${PYTHONPATHDOC}; for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
+	       do \
+		PYFILES=`find $${member} | tr '\/' '.' |  sed 's/\.py//;' | grep -v '\.CVS'`; export PYFILES;  if [ "$$PYFILES" != "" ] ; then \
+		      for pyfile in  $$PYFILES ; \
+		      do \
+			(cd $(PYTHON_DOCS); pydoc -w $${pyfile}) ; \
+		      done ;\
+	       fi ; \
+               done
+endif	
+

@@ -1,0 +1,22 @@
+#!/bin/bash
+#--------------------------------------------------
+#first need to figure out $ACS_TMP
+if [ "$ACS_TMP" = "" ]
+then 
+    export ACS_TMP=$ACSDATA/tmp
+fi
+
+#replace /'s with _'s in the container name
+FILE=`echo "$2.out" | sed 's/\//_/g'`
+
+#params that go to acsutilBlock
+EXTRA_PARAMS=
+
+#if this is being used from tat, make sure acsutilTATTestRunner is used
+if [ -e $ACS_TMP/acs_instance ]
+then
+    EXTRA_PARAMS="$EXTRA_PARAMS -x"
+fi
+
+#Just delgate to helper script
+acsutilBlock -f $ACS_TMP/$FILE -b "components activated." $EXTRA_PARAMS acsStartContainer $@

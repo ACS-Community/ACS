@@ -1,0 +1,30 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: java-class-interface.template,v 1.1 2004/08/04 13:55:50 mpasquat Exp $"
+#%# 
+#%# Template for java class interface documentation header include files         
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c++class_file(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+
+PPPPPPPP
+
+/** 
+ * @author  NNNNNNNN
+ * @version $Id: java-class-interface.template,v 1.1 2004/08/04 13:55:50 mpasquat Exp $
+ * @since    
+ */
+
+/**
+ * Insert a Class/Interface comment.
+ * 
+ */

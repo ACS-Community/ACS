@@ -1,0 +1,22 @@
+/*************************************************************************
+* E.S.O. - VLT project
+*
+* "@(#) $Id: vltPort.h.DUMMY,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+*
+* vltPort.h  dummy file  (needed the first time vlt is made)
+*
+* who        when      what
+* --------  --------  ----------------------------------------------
+* gfilippi  22/05/96  created form vltPort.h
+*
+*/
+
+/************************************************************************
+*  REMARK: This file belongs to the "vltMake" module.
+*------------------------------------------------------------------------
+*/
+
+#ifndef VLTPORT_H
+#define VLTPORT_H
+
+#endif /*!VLTPORT_H*/

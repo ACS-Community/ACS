@@ -1,0 +1,25 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "CORBA Middleware"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"381599B7035C"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "CORBA NamingService"
+	    quid       	"393F3FA402C7")
+	(object Class "CORBA Interface Repository"
+	    quid       	"3B9E2EDC0003")
+	(object Class "CORBA Notification Service"
+	    quid       	"3AD0C91803D1")
+	(object Class "CosNotifyComm::StructuredPushConsumer"
+	    quid       	"3DD2264401E4")
+	(object Class "CosNotifyComm::StructuredPushSupplier"
+	    quid       	"3DD226AF039E")
+	(object Class "CORBA Telecom Logging Service"
+	    quid       	"3DD39920012E"))
+    logical_presentations 	(list unit_reference_list))

@@ -1,0 +1,867 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 8.3.0407.2800"
+    charSet    	0)
+
+(object Class_Category "Alarm System"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"38E8BE8D014F"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "Alarm"
+	    quid       	"3940B25000D3"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3940B2FD0316"
+		    supplier   	"Logical View::ACS Component/Container model::ACS Component::Distributed Object::ACS\\:\\:CharacteristicComponent"
+		    quidu      	"38CF597A029B")))
+	(object Class "alarmServer"
+	    quid       	"3940B4260075"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3DD3BF420166"
+		    supplier   	"Logical View::Alarm System::alarmClient"
+		    quidu      	"3940B4F103B6")))
+	(object Class "alarmDisplay"
+	    quid       	"3940B48702D7"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3DD3BFD3029C"
+		    supplier   	"Logical View::Alarm System::alarmClient"
+		    quidu      	"3940B4F103B6")))
+	(object Class "alarmClient"
+	    quid       	"3940B4F103B6")
+	(object Class "StateAlarm"
+	    quid       	"3DD3BE7D0188"
+	    superclasses 	(list inheritance_relationship_list
+		(object Inheritance_Relationship
+		    quid       	"3DD3BE86034D"
+		    supplier   	"Logical View::Alarm System::Alarm"
+		    quidu      	"3940B25000D3")))
+	(object Association "log status change"
+	    quid       	"3940B384013A"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$0"
+		    quid       	"3940B384039D"
+		    supplier   	"Logical View::Logging System::C++ logging API::logMangerProxy"
+		    quidu      	"38EB569D038A"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$1"
+		    quid       	"3940B38403B1"
+		    supplier   	"Logical View::Alarm System::Alarm"
+		    quidu      	"3940B25000D3")))
+	(object Association "$UNNAMED$2"
+	    quid       	"3940B43C006C"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$3"
+		    quid       	"3940B43C02D9"
+		    supplier   	"Logical View::Alarm System::Alarm"
+		    quidu      	"3940B25000D3"
+		    client_cardinality 	(value cardinality "0..n"))
+		(object Role "$UNNAMED$4"
+		    quid       	"3940B43C02E3"
+		    supplier   	"Logical View::Alarm System::alarmServer"
+		    quidu      	"3940B4260075")))
+	(object Association "$UNNAMED$5"
+	    quid       	"3940B49700E5"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$6"
+		    quid       	"3940B49702B2"
+		    supplier   	"Logical View::Alarm System::alarmServer"
+		    quidu      	"3940B4260075"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$7"
+		    quid       	"3940B49702B3"
+		    supplier   	"Logical View::Alarm System::alarmDisplay"
+		    quidu      	"3940B48702D7")))
+	(object Association "get history"
+	    quid       	"3940B49D031F"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$8"
+		    quid       	"3940B49E033E"
+		    supplier   	"Logical View::Alarm System::alarmDisplay"
+		    quidu      	"3940B48702D7"
+		    client_cardinality 	(value cardinality "0..n")
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$9"
+		    quid       	"3940B49E033F"
+		    supplier   	"Logical View::Alarm System::alarmServer"
+		    quidu      	"3940B4260075")))
+	(object Association "notify alarms"
+	    quid       	"3940B52503CE"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$10"
+		    quid       	"3940B52700EC"
+		    supplier   	"Logical View::Alarm System::alarmClient"
+		    quidu      	"3940B4F103B6"
+		    client_cardinality 	(value cardinality "0..n")
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$11"
+		    quid       	"3940B52700F6"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023")))
+	(object Association "$UNNAMED$12"
+	    quid       	"3940B5AF0355"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$13"
+		    quid       	"3940B5B003BA"
+		    supplier   	"Logical View::Alarm System::alarmServer"
+		    quidu      	"3940B4260075"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$14"
+		    quid       	"3940B5B003C4"
+		    supplier   	"Logical View::Alarm System::alarmDisplay"
+		    quidu      	"3940B48702D7")))
+	(object Association "$UNNAMED$15"
+	    quid       	"3DD3BEBD039A"
+	    roles      	(list role_list
+		(object Role "AlarmChannel"
+		    quid       	"3DD3BEBE0204"
+		    label      	"AlarmChannel"
+		    supplier   	"Logical View::Event and Notification System::Notification Channel"
+		    quidu      	"38EB58D80023"
+		    Containment 	"By Value"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$16"
+		    quid       	"3DD3BEBE0242"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE
+		    is_aggregate 	TRUE)))
+	(object Association "push hierachical alarms"
+	    quid       	"3DD3BFE003A6"
+	    roles      	(list role_list
+		(object Role "$UNNAMED$17"
+		    quid       	"3DD3BFE2004B"
+		    supplier   	"Logical View::CORBA Middleware::CORBA Telecom Logging Service"
+		    quidu      	"3DD39920012E"
+		    is_navigable 	TRUE)
+		(object Role "$UNNAMED$18"
+		    quid       	"3DD3BFE20079"
+		    supplier   	"Logical View::Alarm System::alarmServer"
+		    quidu      	"3940B4260075"))))
+    logical_presentations 	(list unit_reference_list
+	(object ClassDiagram "Alarm Architecture"
+	    quid       	"3940B2330208"
+	    title      	"Alarm Architecture"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	325
+	    origin_y   	0
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Alarm System::StateAlarm" @1
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(735, 1110)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@1
+			location   	(590, 1069)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	290
+			justify    	0
+			label      	"StateAlarm")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD3BE7D0188"
+		    width      	308
+		    height     	107
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Alarm System::alarmClient" @2
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1560, 465)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@2
+			location   	(1420, 419)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	280
+			justify    	0
+			label      	"alarmClient")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B4F103B6"
+		    width      	298
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Event and Notification System::Notification Channel" @3
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(2295, 1575)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@3
+			location   	(1975, 1488)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	640
+			justify    	0
+			label      	"Notification Channel")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"38EB58D80023"
+		    width      	658
+		    height     	198
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "notify alarms" @4
+		    location   	(2299, 673)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @5
+			Parent_View 	@4
+			location   	(2310, 645)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	279
+			justify    	0
+			label      	"notify alarms"
+			pctDist    	0.700000
+			height     	29
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940B52503CE"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$10" @6
+			    Parent_View 	@4
+			    location   	(859, 448)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B52700EC"
+			    client     	@4
+			    supplier   	@2
+			    vertices   	(list Points
+				(2299, 673)
+				(2300, 463)
+				(1709, 464))
+			    line_style 	0
+			    label      	(object SegLabel @7
+				Parent_View 	@6
+				location   	(1790, 518)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.900000
+				height     	54
+				orientation 	0))
+			(object RoleView "$UNNAMED$11" @8
+			    Parent_View 	@4
+			    location   	(859, 448)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B52700F6"
+			    client     	@4
+			    supplier   	@3
+			    vertices   	(list Points
+				(2299, 673)
+				(2295, 1475))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Alarm System::alarmDisplay" @9
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1875, 885)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@9
+			location   	(1715, 839)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	320
+			justify    	0
+			label      	"alarmDisplay")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B48702D7"
+		    width      	338
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object ClassView "Class" "Logical View::Alarm System::Alarm" @10
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(735, 885)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@10
+			location   	(639, 839)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	192
+			justify    	0
+			label      	"Alarm")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B25000D3"
+		    width      	210
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object InheritView "" @11
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD3BE86034D"
+		    client     	@1
+		    supplier   	@10
+		    vertices   	(list Points
+			(735, 1056)
+			(735, 943))
+		    line_style 	0)
+		(object ClassView "Class" "Logical View::CORBA Middleware::CORBA Telecom Logging Service" @12
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1260, 1575)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@12
+			location   	(886, 1501)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	748
+			justify    	0
+			label      	"CORBA Telecom Logging Service")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3DD39920012E"
+		    width      	766
+		    height     	172
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "$UNNAMED$15" @13
+		    location   	(1804, 1575)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD3BEBD039A"
+		    roleview_list 	(list RoleViews
+			(object RoleView "AlarmChannel" @14
+			    Parent_View 	@13
+			    location   	(529, -255)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @15
+				Parent_View 	@14
+				location   	(1836, 1535)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	284
+				justify    	0
+				label      	"+AlarmChannel"
+				pctDist    	0.198864
+				height     	41
+				orientation 	0)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD3BEBE0204"
+			    client     	@13
+			    supplier   	@3
+			    vertices   	(list Points
+				(1804, 1575)
+				(1965, 1575))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$16" @16
+			    Parent_View 	@13
+			    location   	(529, -255)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    label      	(object SegLabel @17
+				Parent_View 	@16
+				location   	(1676, 1534)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				hidden     	TRUE
+				anchor     	1
+				anchor_loc 	1
+				nlines     	1
+				max_width  	284
+				justify    	0
+				label      	""
+				pctDist    	0.800000
+				height     	42
+				orientation 	1)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD3BEBE0242"
+			    client     	@13
+			    supplier   	@12
+			    vertices   	(list Points
+				(1804, 1575)
+				(1643, 1575))
+			    line_style 	0)))
+		(object ClassView "Class" "Logical View::Alarm System::alarmServer" @18
+		    ShowCompartmentStereotypes 	TRUE
+		    SuppressAttribute 	TRUE
+		    SuppressOperation 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(1260, 885)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@18
+			location   	(1112, 839)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	296
+			justify    	0
+			label      	"alarmServer")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B4260075"
+		    width      	314
+		    height     	117
+		    annotation 	8
+		    autoResize 	TRUE)
+		(object AssociationViewNew "get history" @19
+		    location   	(1561, 885)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @20
+			Parent_View 	@19
+			location   	(1563, 929)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	193
+			justify    	0
+			label      	"get history"
+			pctDist    	0.533333
+			height     	44
+			orientation 	1)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940B49D031F"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$8" @21
+			    Parent_View 	@19
+			    location   	(121, 660)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B49E033E"
+			    client     	@19
+			    supplier   	@9
+			    vertices   	(list Points
+				(1561, 885)
+				(1705, 885))
+			    line_style 	0
+			    label      	(object SegLabel @22
+				Parent_View 	@21
+				location   	(1648, 833)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.610063
+				height     	53
+				orientation 	0))
+			(object RoleView "$UNNAMED$9" @23
+			    Parent_View 	@19
+			    location   	(121, 660)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B49E033F"
+			    client     	@19
+			    supplier   	@18
+			    vertices   	(list Points
+				(1561, 885)
+				(1417, 885))
+			    line_style 	0)))
+		(object AssociationViewNew "$UNNAMED$2" @24
+		    location   	(971, 885)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3940B43C006C"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$3" @25
+			    Parent_View 	@24
+			    location   	(-478, 719)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B43C02D9"
+			    client     	@24
+			    supplier   	@10
+			    vertices   	(list Points
+				(971, 885)
+				(840, 885))
+			    line_style 	0
+			    label      	(object SegLabel @26
+				Parent_View 	@25
+				location   	(894, 849)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				anchor     	2
+				anchor_loc 	1
+				nlines     	1
+				max_width  	15
+				justify    	0
+				label      	"0..n"
+				pctDist    	0.595177
+				height     	37
+				orientation 	1))
+			(object RoleView "$UNNAMED$4" @27
+			    Parent_View 	@24
+			    location   	(-478, 719)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3940B43C02E3"
+			    client     	@24
+			    supplier   	@18
+			    vertices   	(list Points
+				(971, 885)
+				(1102, 885))
+			    line_style 	0)))
+		(object AssociationViewNew "push hierachical alarms" @28
+		    location   	(1260, 1215)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object SegLabel @29
+			Parent_View 	@28
+			location   	(1260, 1156)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			anchor     	1
+			anchor_loc 	1
+			nlines     	1
+			max_width  	428
+			justify    	0
+			label      	"push hierachical alarms"
+			pctDist    	0.500000
+			height     	60
+			orientation 	0)
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD3BFE003A6"
+		    roleview_list 	(list RoleViews
+			(object RoleView "$UNNAMED$17" @30
+			    Parent_View 	@28
+			    location   	(-45, 420)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD3BFE2004B"
+			    client     	@28
+			    supplier   	@12
+			    vertices   	(list Points
+				(1260, 1215)
+				(1260, 1488))
+			    line_style 	0)
+			(object RoleView "$UNNAMED$18" @31
+			    Parent_View 	@28
+			    location   	(-45, 420)
+			    stereotype 	TRUE
+			    line_color 	3342489
+			    quidu      	"3DD3BFE20079"
+			    client     	@28
+			    supplier   	@18
+			    vertices   	(list Points
+				(1260, 1215)
+				(1260, 943))
+			    line_style 	0)))
+		(object InheritTreeView "" @32
+		    location   	(1560, 616)
+		    line_color 	3342489
+		    fill_color 	13434879
+		    supplier   	@2
+		    vertices   	(list Points
+			(1560, 616)
+			(1560, 523)))
+		(object InheritView "" @33
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD3BFD3029C"
+		    client     	@9
+		    supplier   	@2
+		    vertices   	(list Points
+			(1859, 827)
+			(1859, 616))
+		    line_style 	3
+		    origin_attachment 	(1859, 827)
+		    terminal_attachment 	(1859, 616)
+		    drawSupplier 	@32)
+		(object InheritView "" @34
+		    stereotype 	TRUE
+		    line_color 	3342489
+		    quidu      	"3DD3BF420166"
+		    client     	@18
+		    supplier   	@2
+		    vertices   	(list Points
+			(1256, 827)
+			(1256, 616))
+		    line_style 	3
+		    origin_attachment 	(1256, 827)
+		    terminal_attachment 	(1256, 616)
+		    drawSupplier 	@32)))
+	(object ClassDiagram "ACS 2.0 prototype"
+	    quid       	"3DD3C0740058"
+	    title      	"ACS 2.0 prototype"
+	    zoom       	100
+	    max_height 	28350
+	    max_width  	21600
+	    origin_x   	0
+	    origin_y   	397
+	    items      	(list diagram_item_list
+		(object ClassView "Class" "Logical View::Alarm System::alarmClient" @35
+		    ShowCompartmentStereotypes 	TRUE
+		    IncludeAttribute 	TRUE
+		    IncludeOperation 	TRUE
+		    location   	(690, 465)
+		    font       	(object Font
+			size       	10
+			face       	"Arial"
+			bold       	FALSE
+			italics    	FALSE
+			underline  	FALSE
+			strike     	FALSE
+			color      	0
+			default_color 	TRUE)
+		    label      	(object ItemLabel
+			Parent_View 	@35
+			location   	(550, 414)
+			fill_color 	13434879
+			nlines     	1
+			max_width  	280
+			justify    	0
+			label      	"alarmClient")
+		    icon_style 	"Icon"
+		    line_color 	3342489
+		    fill_color 	13434879
+		    quidu      	"3940B4F103B6"
+		    width      	298
+		    height     	126
+		    annotation 	8
+		    autoResize 	TRUE)))))

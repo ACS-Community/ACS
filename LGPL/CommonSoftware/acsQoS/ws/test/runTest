@@ -1,0 +1,4 @@
+#!/bin/bash
+timeoutTestServer &
+waitForServer 
+timeoutTestClient

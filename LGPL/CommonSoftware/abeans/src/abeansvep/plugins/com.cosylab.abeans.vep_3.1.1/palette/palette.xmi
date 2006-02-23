@@ -1,0 +1,167 @@
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+  xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" 
+  xmlns:palette="http:///org/eclipse/ve/internal/cde/palette.ecore"
+  xmlns:cdm="http:///org/eclipse/ve/internal/cdm.ecore" 
+  xmlns:utility="http:///org/eclipse/ve/internal/cde/utility.ecore">  
+   
+<palette:CategoryCmp xmi:id="AbeansSingleDisplayers">
+  <categoryLabel xsi:type="utility:ConstantString" string="Abeans Displayers (Single)"/>
+  <cmpGroups xsi:type="palette:GroupCmp">
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Gauger16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Gauger"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jGauger"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Gauger"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Piper16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Piper"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jPiper"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Piper"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Wheelswitch16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Wheelswitch"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jWheelswitch"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Wheelswitch"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Slider16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Slider"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jSlider"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Slider"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/NumberField16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#DoubleNumberField"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jDoubleNumberField"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Double Number Field"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/NumberField16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#LongNumberField"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jLongNumberField"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Long Number Field"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Label16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Label"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jLabel"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Label"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Ledder16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Ledder"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jLedder"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Ledder"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/IconDisplayer16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#SeverityImage"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jSeverityImage"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Severity Image"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Label16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Enumer"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jEnumer"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Enumer"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/IconDisplayer16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Imager"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jImager"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Imager"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/DialKnob16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#DialKnob"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jDialKnob"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Dial Knob"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/AboutDialog16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#CharacteristicsMap"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jCharacteristicsMap"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Characteristics Map"/>
+      </cmpEntries>
+  </cmpGroups>
+</palette:CategoryCmp>
+
+<palette:CategoryCmp xmi:id="AbeansMultipleDisplayers">
+  <categoryLabel xsi:type="utility:ConstantString" string="Abeans Displayers (Multiple)"/>
+  <cmpGroups xsi:type="palette:GroupCmp">
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Table16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Table"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jTable"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Table"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Trend16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Trend"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jTrend"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Trend"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Profile16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Profile"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jProfile"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Profile"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Profile16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.displayers#Histogram"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jHistogram"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Histogram"/>
+      </cmpEntries>
+   </cmpGroups>
+</palette:CategoryCmp>
+
+<palette:CategoryCmp xmi:id="AbeansDataPiping">
+  <categoryLabel xsi:type="utility:ConstantString" string="Data Piping"/>
+  <cmpGroups xsi:type="palette:GroupCmp">
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Pan16.gif">
+       	<objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans.adapters#DataPipeBean"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="dataPipeBean"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Data Pipe Bean"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/ArrowRight16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.gui.adapters#LinearConverter"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="linearConverter"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Linear Converter"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/ArrowRightRight16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.gui.adapters#MultiplierConverter"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="multiplierConverter"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Multiplier Converter"/>
+      </cmpEntries>
+   </cmpGroups>
+</palette:CategoryCmp>
+
+<palette:CategoryCmp xmi:id="AbeansComponents">
+  <categoryLabel xsi:type="utility:ConstantString" string="Abeans Components"/>
+  <cmpGroups xsi:type="palette:GroupCmp">
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Introspection16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans#CosyNavigator"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jCosyNavigator"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Cosy Navigator"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Introspection16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.abeans#SingleAbeanSelector"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jSingleAbeanSelector"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Single Abean Selector"/>
+      </cmpEntries>
+   </cmpGroups>
+</palette:CategoryCmp>
+
+<palette:CategoryCmp xmi:id="CosyComponents">
+  <categoryLabel xsi:type="utility:ConstantString" string="CosyBeans Components"/>            
+  <cmpGroups xsi:type="palette:GroupCmp">
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/ImagePanel16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.gui.components.util#ImagePanel"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jImagePanel"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Image Panel"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/DateSelector16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.gui.components#DateSpanSelector"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jDateSpanSelector"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Date Span Selector"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/GradientLabel16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.gui.components#GradientLabel"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jGradientLabel"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Gradient Label"/>
+      </cmpEntries>
+      <cmpEntries xsi:type="palette:AnnotatedCreationEntry" icon16Name="platform:/plugin/com.cosylab.abeans.vep/icons/Smart16.gif">
+        <objectCreationEntry xsi:type="palette:EMFCreationToolEntry" creationClassURI="java:/com.cosylab.gui.components#TitledPanel"/>
+        <values xmi:type="ecore:EStringToStringMapEntry" key="org.eclipse.ve.internal.cde.core.nameincomposition" value="jTitledPanel"/>
+        <entryLabel xsi:type="utility:ConstantString" string="Titled Panel"/>
+      </cmpEntries>
+   </cmpGroups>
+</palette:CategoryCmp>
+  
+</xmi:XMI>

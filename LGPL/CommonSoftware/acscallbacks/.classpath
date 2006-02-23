@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/jcont.jar" kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/acserr.jar" kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/acserrj.jar" kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
+
+	<classpathentry kind="lib" path="lib/DemoCallbackResponderIF.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/idl.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

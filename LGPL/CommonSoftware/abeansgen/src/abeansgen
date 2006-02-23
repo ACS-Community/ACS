@@ -1,0 +1,130 @@
+#! /bin/ksh
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: abeansgen,v 1.23 2004/09/20 13:12:22 mpasquat Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# bjeram 2004-01-30 added -I../idl
+# bjeram 2003-10-24 replace grep with egrep
+# msekoran 2003-10-01 ported to Abeans R3 generator
+# gchiozzi 2002-03-13 created
+#
+
+#************************************************************************
+#   NAME	abeansgen
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+#
+
+if [ $# != 1 ]
+then
+   echo "Usage: `basename $0` <idl file>"
+   exit 1
+fi
+
+#
+# Call acsStartJava
+#
+
+CURRENTDIR=$PWD
+PID=$$
+OUTDIR=./generated
+
+# Separation of dirs
+item_list=`echo $INTLIST | sed s/:/\ /g`
+intlist_list=""
+for item in $item_list
+do
+   intlist_list=$intlist_list" -I$item/idl"
+done
+
+if [ "$INSTALLDIR" == "" ] ; then INSTALLDIR=.; fi
+
+# Call JacPrep, needed for macros, 
+# note that this will strip comments, which IDLtoAbeansCompiler can use to generate documentation
+# include <enumpropMACRO.idl> is removed
+# ATTENTION: List of include directories shall be in quotes!"
+echo "== (preprocessing) $1"
+JacPrep $1 "-I../idl -I$INTROOT/idl $intlist_list -I$ACSROOT/idl -I$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB/idl/jacorb -I$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB/idl/omg" | egrep -ve "enumpropMACRO.idl" > /tmp/$PID.abeansgen.idl
+echo "== IDL Generating for Abeans (Java): $1"
+
+CLASSPATH=`vltMakeJavaClasspath`
+# add jars in the current directory, e.g. RampedPowerSupply bean JAR depends on PowerSupply bean
+local_list=`/bin/ls -1 *.jar 2>/dev/null`
+for file in $local_list
+do
+  CLASSPATH="$CLASSPATH:$file"
+done
+
+export CLASSPATH
+
+
+java \
+    abeans.models.acs.baci.generator.IDLtoAbeansCompiler \
+    /tmp/$PID.abeansgen.idl -I../idl -I$INTROOT/idl $intlist_list -I$ACSROOT/idl -I$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB/idl/jacorb -I$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB/idl/omg -d $OUTDIR
+
+# TODO exit on error
+
+rm /tmp/$PID.abeansgen.idl
+
+
+FILES=`find $OUTDIR -name \*.java`; export FILES
+
+# compile
+# TODO exit on error
+echo "== IDL Compiling for Abeans (Java): $1"
+if [ "$FILES" != "" ] ; then javac -d $OUTDIR $FILES; fi
+
+cd $OUTDIR; 
+FILES=`find . -name \*.class `; export FILES
+
+# jar
+# TODO exit on error
+JARNAME=`basename $1 .idl`Abeans.jar
+echo "== Packing into JAR (Java): $JARNAME"
+if [ "$FILES" != "" ] ; then jar cf $JARNAME $FILES ; fi
+
+cd $CURRENTDIR
+echo "== Installing $JARNAME to $INSTALLDIR"
+mv $OUTDIR/$JARNAME $INSTALLDIR
+echo "done."
+rm -rf $OUTDIR

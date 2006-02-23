@@ -1,0 +1,25 @@
+Module abeansgen contains sources and compiled binaries for Abeans Generator. 
+
+The contents of the module is as follows:
+
+/src
+
+ -- abeansgen script to startup the generator.
+ -- Makefile
+ -- *.java (source files)
+ 
+/lib
+
+/doc
+ 
+/test
+ -- in.txt example input file used to test the generator.
+    Modular test to be implemented.
+ 
+Note: In order to run Abeans Generator, the following jar files must
+      be included in the classpath:
+
+     - $ACSROOT/lib/openorb13Debug.jar
+
+
+     

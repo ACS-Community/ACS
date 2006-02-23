@@ -1,0 +1,98 @@
+Fri Jan 24 11:38:06 2003  Matej Sekoranja  <matej@csl01>
+
+	* src/objexp:
+	Removed JVM -D properties for JacORB since they are default.
+	
+Fri Jan 24 11:34:01 2003 <msekoran@te13.hq.eso.org>  objexp version: 1.13 
+Mon Jan 20 15:30:03 2003  Matej Sekoranja  <matej@csl01>
+
+	* Ported to JacORB
+	
+	* src/objexp:
+	Added JVM -D properties for JacORB.
+
+	* src/si/ijs/acs/objectexplorer/engine/BACI/BACIRemoteAccess.java:
+	Removed harcoded properties to CORBA ORB classes and removed minor
+	ORB dependencies.
+
+Mon Jan 20 13:51:14 2003 <msekoran@te13.hq.eso.org>  objexp version: 1.12 
+Wed Jan 15 10:36:17 2003  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* src/si/ijs/acs/objectexplorer/engine/BACI/BACIRemoteAccess.java: 
+	Added exception handling in Dispatcher thread loop.
+	Fixed IFR buffering (added buffering for
+	ORB.create_operation_list() method call).
+
+	* src/si/ijs/acs/objectexplorer/ObjectExplorer.java:
+	Fixed GUI deadlock (Swing thread) - Java 1.4.1 problem.
+
+Wed Jan 15 10:23:03 2003 <msekoran@te13.hq.eso.org>  objexp version: 1.11 
+Wed Nov 27 15:44:40 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src
+	Moved resourse files (gif) in src directory and used EXTRAS
+	makefile option to handle them.
+
+	* src/si/ijs/acs/objectexplorer/engine/BACI/BACIRemoteAccess.java: 
+	Patched to check is a node to be deactivated is NOT a Property
+	instead of checking if it is a DO.
+	In this way we can deactivate also COBs that are not DOs
+
+	* src/Makefile (oe_EXTRAS): Gif file are handle with oe_EXTRAS option
+
+Wed Nov 27 15:41:43 2002 <gchiozzi@te13.hq.eso.org>  objexp version: 1.10 
+Wed Nov 27 10:39:47 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/:
+	Patched OE to ask for the IR id of COBs to Manager and not to COB
+	itself.
+	A better implementation would keep inside OE tree the result of
+	the initial call to get_COB_info()
+	
+
+Wed Nov 27 10:35:11 2002 <gchiozzi@te13.hq.eso.org>  objexp version: 1.9 
+Fri Sep 27 16:37:42 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	Improved expanding, sequences support.
+
+Thu Sep 26 17:05:18 2002 <msekoran@te13.hq.eso.org>  objexp version: 1.8 
+Mon Feb 25 23:55:13 2002 <jdovc@te13.hq.eso.org>
+
+	last stable version before bug 785
+
+Mon Feb 25 23:55:13 2002 <jdovc@te13.hq.eso.org>  objexp version: 1.7 
+Tue Feb 19 01:04:53 2002 <jdovc@te13.hq.eso.org>
+
+	*/src: oe.zip instead of oe.eso.zip
+	*/lib/apputil.jar: Added
+	Automatic connect on startup
+
+Tue Feb 19 01:04:53 2002 <jdovc@te13.hq.eso.org>  objexp version: 1.6 
+Thu Feb 14 01:37:57 2002 <jdovc@te13.hq.eso.org>
+
+	Bugfixes, new featues.
+
+Thu Feb 14 00:55:57 2002 <jdovc@te13.hq.eso.org>  objexp version: 1.5 
+Mon Jan 21 23:59:01 2002 <jdovc@te13.hq.eso.org>
+
+	* src/objexp:	abeansStart instead of abeansRun
+	New version implementing ping().
+
+Mon Jan 21 23:51:01 2002 <jdovc@te13.hq.eso.org>  objexp version: 1.4
+
+Tue Sep 18 13:02:51 2001  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* src/Makefile: acsMakefile and not vltMakefile 
+
+Tue Sep 18 11:56:14 2001 <almamgr@te13.hq.eso.org>  objexp version: 1.3 
+Mon Sep 17 11:46:27 2001 Janez Dovc    <janez.dovc@ijs.si>
+
+        Removed unnecessary directories, added Makefile to the src dir.
+
+Mon Sep 17 11:47:12 2001 <jdovc@te13.hq.eso.org>  objexp version: 1.2 
+
+Sun Sep 16 22:09:53 2001  Janez Dovc    <janez.dovc@ijs.si>
+
+        Added repository, jar files and README file to the module.
+
+Sun Sep 16 21:00:10 2001 <jdovc@te13.hq.eso.org>  objexp version: 1.1 

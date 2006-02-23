@@ -1,0 +1,1249 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Horizontal Scrolling,  Next: Size of Window,  Prev: Vertical Scrolling,  Up: Windows
+
+Horizontal Scrolling
+====================
+
+   Because we read English first from top to bottom and second from left
+to right, horizontal scrolling is not like vertical scrolling.  Vertical
+scrolling involves selection of a contiguous portion of text to display.
+Horizontal scrolling causes part of each line to go off screen.  The
+amount of horizontal scrolling is therefore specified as a number of
+columns rather than as a position in the buffer.  It has nothing to do
+with the display-start position returned by `window-start'.
+
+   Usually, no horizontal scrolling is in effect; then the leftmost
+column is at the left edge of the window.  In this state, scrolling to
+the right is meaningless, since there is no data to the left of the
+screen to be revealed by it; so this is not allowed.  Scrolling to the
+left is allowed; it scrolls the first columns of text off the edge of
+the window and can reveal additional columns on the right that were
+truncated before.  Once a window has a nonzero amount of leftward
+horizontal scrolling, you can scroll it back to the right, but only so
+far as to reduce the net horizontal scroll to zero.  There is no limit
+to how far left you can scroll, but eventually all the text will
+disappear off the left edge.
+
+ - Command: scroll-left COUNT
+     This function scrolls the selected window COUNT columns to the
+     left (or to the right if COUNT is negative).  The return value is
+     the total amount of leftward horizontal scrolling in effect after
+     the change--just like the value returned by `window-hscroll'.
+
+ - Command: scroll-right COUNT
+     This function scrolls the selected window COUNT columns to the
+     right (or to the left if COUNT is negative).  The return value is
+     the total amount of leftward horizontal scrolling in effect after
+     the change--just like the value returned by `window-hscroll'.
+
+     Once you scroll a window as far right as it can go, back to its
+     normal position where the total leftward scrolling is zero,
+     attempts to scroll any farther right have no effect.
+
+ - Function: window-hscroll &optional WINDOW
+     This function returns the total leftward horizontal scrolling of
+     WINDOW--the number of columns by which the text in WINDOW is
+     scrolled left past the left margin.
+
+     The value is never negative.  It is zero when no horizontal
+     scrolling has been done in WINDOW (which is usually the case).
+
+     If WINDOW is `nil', the selected window is used.
+
+          (window-hscroll)
+               => 0
+          (scroll-left 5)
+               => 5
+          (window-hscroll)
+               => 5
+
+ - Function: set-window-hscroll WINDOW COLUMNS
+     This function sets the number of columns from the left margin that
+     WINDOW is scrolled to the value of COLUMNS.  The argument COLUMNS
+     should be zero or positive; if not, it is taken as zero.
+
+     The value returned is COLUMNS.
+
+          (set-window-hscroll (selected-window) 10)
+               => 10
+
+   Here is how you can determine whether a given position POSITION is
+off the screen due to horizontal scrolling:
+
+     (save-excursion
+       (goto-char POSITION)
+       (and
+        (>= (- (current-column) (window-hscroll WINDOW)) 0)
+        (< (- (current-column) (window-hscroll WINDOW))
+           (window-width WINDOW))))
+
+
+File: elisp,  Node: Size of Window,  Next: Resizing Windows,  Prev: Horizontal Scrolling,  Up: Windows
+
+The Size of a Window
+====================
+
+   An Emacs window is rectangular, and its size information consists of
+the height (the number of lines) and the width (the number of character
+positions in each line).  The mode line is included in the height.  But
+the width does not count the scroll bar or the column of `|' characters
+separates side-by-side windows.
+
+   The following three functions return size information about a window:
+
+ - Function: window-height &optional WINDOW
+     This function returns the number of lines in WINDOW, including its
+     mode line.  If WINDOW fills its entire frame, this is one less
+     than the value of `frame-height' on that frame (since the last line
+     is always reserved for the minibuffer).
+
+     If WINDOW is `nil', the function uses the selected window.
+
+          (window-height)
+               => 23
+          (split-window-vertically)
+               => #<window 4 on windows.texi>
+          (window-height)
+               => 11
+
+ - Function: window-width &optional WINDOW
+     This function returns the number of columns in WINDOW.  If WINDOW
+     fills its entire frame, this is the same as the value of
+     `frame-width' on that frame.  The width does not include the
+     window's scroll bar or the column of `|' characters that separates
+     side-by-side windows.
+
+     If WINDOW is `nil', the function uses the selected window.
+
+          (window-width)
+               => 80
+
+ - Function: window-edges &optional WINDOW
+     This function returns a list of the edge coordinates of WINDOW.
+     If WINDOW is `nil', the selected window is used.
+
+     The order of the list is `(LEFT TOP RIGHT BOTTOM)', all elements
+     relative to 0, 0 at the top left corner of the frame.  The element
+     RIGHT of the value is one more than the rightmost column used by
+     WINDOW, and BOTTOM is one more than the bottommost row used by
+     WINDOW and its mode-line.
+
+     When you have side-by-side windows, the right edge value for a
+     window with a neighbor on the right includes the width of the
+     separator between the window and that neighbor.  This separator
+     may be a column of `|' characters or it may be a scroll bar.
+     Since the width of the window does not include this separator, the
+     width does not equal the difference between the right and left
+     edges in this case.
+
+     Here is the result obtained on a typical 24-line terminal with
+     just one window:
+
+          (window-edges (selected-window))
+               => (0 0 80 23)
+
+     If WINDOW is at the upper left corner of its frame, RIGHT and
+     BOTTOM are the same as the values returned by `(window-width)' and
+     `(window-height)' respectively, and TOP and BOTTOM are zero.  For
+     example, the edges of the following window are `0 0 5 8'.
+     Assuming that the frame has more than 8 columns, the last column
+     of the window (column 7) holds a border rather than text.  The
+     last row (row 4) holds the mode line, shown here with `xxxxxxxxx'.
+
+                     0
+                     _______
+                  0 |       |
+                    |       |
+                    |       |
+                    |       |
+                    xxxxxxxxx  4
+          
+                            7
+
+     When there are side-by-side windows, any window not at the right
+     edge of its frame has a separator in its last column or columns.
+     The separator counts as one or two columns in the width of the
+     window.  A window never includes a separator on its left, since
+     that belongs to the window to the left.
+
+     In the following example, let's suppose that the frame is 7
+     columns wide.  Then the edges of the left window are `0 0 4 3' and
+     the edges of the right window are `4 0 7 3'.
+
+                     ___ ___
+                    |   |   |
+                    |   |   |
+                    xxxxxxxxx
+          
+                     0  34  7
+
+
+File: elisp,  Node: Resizing Windows,  Next: Coordinates and Windows,  Prev: Size of Window,  Up: Windows
+
+Changing the Size of a Window
+=============================
+
+   The window size functions fall into two classes: high-level commands
+that change the size of windows and low-level functions that access
+window size.  Emacs does not permit overlapping windows or gaps between
+windows, so resizing one window affects other windows.
+
+ - Command: enlarge-window SIZE &optional HORIZONTAL
+     This function makes the selected window SIZE lines bigger,
+     stealing lines from neighboring windows.  It takes the lines from
+     one window at a time until that window is used up, then takes from
+     another.  If a window from which lines are stolen shrinks below
+     `window-min-height' lines, that window disappears.
+
+     If HORIZONTAL is non-`nil', this function makes WINDOW wider by
+     SIZE columns, stealing columns instead of lines.  If a window from
+     which columns are stolen shrinks below `window-min-width' columns,
+     that window disappears.
+
+     If the window's frame is smaller than SIZE lines (or columns),
+     then the function makes the window occupy the entire height (or
+     width) of the frame.
+
+     If SIZE is negative, this function shrinks the window by -SIZE
+     lines or columns.  If that makes the window smaller than the
+     minimum size (`window-min-height' and `window-min-width'),
+     `enlarge-window' deletes the window.
+
+     `enlarge-window' returns `nil'.
+
+ - Command: enlarge-window-horizontally COLUMNS
+     This function makes the selected window COLUMNS wider.  It could
+     be defined as follows:
+
+          (defun enlarge-window-horizontally (columns)
+            (enlarge-window columns t))
+
+ - Command: shrink-window SIZE &optional HORIZONTAL
+     This function is like `enlarge-window' but negates the argument
+     SIZE, making the selected window smaller by giving lines (or
+     columns) to the other windows.  If the window shrinks below
+     `window-min-height' or `window-min-width', then it disappears.
+
+     If SIZE is negative, the window is enlarged by -SIZE lines or
+     columns.
+
+ - Command: shrink-window-horizontally COLUMNS
+     This function makes the selected window COLUMNS narrower.  It
+     could be defined as follows:
+
+          (defun shrink-window-horizontally (columns)
+            (shrink-window columns t))
+
+   The following two variables constrain the window size changing
+functions to a minimum height and width.
+
+ - User Option: window-min-height
+     The value of this variable determines how short a window may become
+     before it is automatically deleted.  Making a window smaller than
+     `window-min-height' automatically deletes it, and no window may be
+     created shorter than this.  The absolute minimum height is two
+     (allowing one line for the mode line, and one line for the buffer
+     display).  Actions which change window sizes reset this variable
+     to two if it is less than two.  The default value is 4.
+
+ - User Option: window-min-width
+     The value of this variable determines how narrow a window may
+     become before it automatically deleted.  Making a window smaller
+     than `window-min-width' automatically deletes it, and no window
+     may be created narrower than this.  The absolute minimum width is
+     one; any value below that is ignored.  The default value is 10.
+
+
+File: elisp,  Node: Coordinates and Windows,  Next: Window Configurations,  Prev: Resizing Windows,  Up: Windows
+
+Coordinates and Windows
+=======================
+
+   This section describes how to compare screen coordinates with
+windows.
+
+ - Function: window-at X Y &optional FRAME
+     This function returns the window containing the specified cursor
+     position in the frame FRAME.  The coordinates X and Y are measured
+     in characters and count from the top left corner of the frame.  If
+     they are out of range, `window-at' returns `nil'.
+
+     If you omit FRAME, the selected frame is used.
+
+ - Function: coordinates-in-window-p COORDINATES WINDOW
+     This function checks whether a particular frame position falls
+     within the window WINDOW.
+
+     The argument COORDINATES is a cons cell of this form:
+
+          (X . Y)
+
+     The coordinates X and Y are measured in characters, and count from
+     the top left corner of the screen or frame.
+
+     The value of `coordinates-in-window-p' is non-`nil' if the
+     coordinates are inside WINDOW.  The value also indicates what part
+     of the window the position is in, as follows:
+
+    `(RELX . RELY)'
+          The coordinates are inside WINDOW.  The numbers RELX and RELY
+          are the equivalent window-relative coordinates for the
+          specified position, counting from 0 at the top left corner of
+          the window.
+
+    `mode-line'
+          The coordinates are in the mode line of WINDOW.
+
+    `vertical-split'
+          The coordinates are in the vertical line between WINDOW and
+          its neighbor to the right.  This value occurs only if the
+          window doesn't have a scroll bar; positions in a scroll bar
+          are considered outside the window.
+
+    `nil'
+          The coordinates are not in any part of WINDOW.
+
+     The function `coordinates-in-window-p' does not require a frame as
+     argument because it always uses the frame that WINDOW is on.
+
+
+File: elisp,  Node: Window Configurations,  Prev: Coordinates and Windows,  Up: Windows
+
+Window Configurations
+=====================
+
+   A "window configuration" records the entire layout of a frame--all
+windows, their sizes, which buffers they contain, what part of each
+buffer is displayed, and the values of point and the mark.  You can
+bring back an entire previous layout by restoring a window
+configuration previously saved.
+
+   If you want to record all frames instead of just one, use a frame
+configuration instead of a window configuration.  *Note Frame
+Configurations::.
+
+ - Function: current-window-configuration
+     This function returns a new object representing Emacs's current
+     window configuration, namely the number of windows, their sizes
+     and current buffers, which window is the selected window, and for
+     each window the displayed buffer, the display-start position, and
+     the positions of point and the mark.  An exception is made for
+     point in the current buffer, whose value is not saved.
+
+ - Function: set-window-configuration CONFIGURATION
+     This function restores the configuration of Emacs's windows and
+     buffers to the state specified by CONFIGURATION.  The argument
+     CONFIGURATION must be a value that was previously returned by
+     `current-window-configuration'.
+
+     Here is a way of using this function to get the same effect as
+     `save-window-excursion':
+
+          (let ((config (current-window-configuration)))
+            (unwind-protect
+                (progn (split-window-vertically nil)
+                       ...)
+              (set-window-configuration config)))
+
+ - Special Form: save-window-excursion FORMS...
+     This special form records the window configuration, executes FORMS
+     in sequence, then restores the earlier window configuration.  The
+     window configuration includes the value of point and the portion
+     of the buffer which is visible.  It also includes the choice of
+     selected window.  However, it does not include the value of point
+     in the current buffer; use `save-excursion' if you wish to
+     preserve that.
+
+     The return value is the value of the final form in FORMS.  For
+     example:
+
+          (split-window)
+               => #<window 25 on control.texi>
+          (setq w (selected-window))
+               => #<window 19 on control.texi>
+          (save-window-excursion
+            (delete-other-windows w)
+            (switch-to-buffer "foo")
+            'do-something)
+               => do-something
+               ;; The screen is now split again.
+
+ - Function: window-configuration-p OBJECT
+     This function returns `t' if OBJECT is a window configuration.
+
+   Primitives to look inside of window configurations would make sense,
+but none are implemented.  It is not clear they are useful enough to be
+worth implementing.
+
+
+File: elisp,  Node: Frames,  Next: Positions,  Prev: Windows,  Up: Top
+
+Frames
+******
+
+   A FRAME is a rectangle on the screen that contains one or more Emacs
+windows.  A frame initially contains a single main window (plus perhaps
+a minibuffer window) which you can subdivide vertically or horizontally
+into smaller windows.
+
+   When Emacs runs on a text-only terminal, it has just one frame, a
+"terminal frame".  There is no way to create another terminal frame
+after startup.  If Emacs has an X display, it does not have a terminal
+frame; instead, it starts with a single "X window frame".  You can
+create more; see *Note Creating Frames::.
+
+ - Function: framep OBJECT
+     This predicate returns `t' if OBJECT is a frame, and `nil'
+     otherwise.
+
+* Menu:
+
+* Creating Frames::		Creating additional X Window frames.
+* Frame Parameters::		Controlling frame size, position, font, etc.
+* Deleting Frames::		Frames last until explicitly deleted.
+* Finding All Frames::		How to examine all existing frames.
+* Frames and Windows::		A frame contains windows;
+				  display of text always works through windows.
+* Minibuffers and Frames::	How a frame finds the minibuffer to use.
+* Input Focus::			Specifying the selected frame.
+* Visibility of Frames::	Frames may be visible or invisible, or icons.
+* Raising and Lowering::	Raising a frame makes it hide other X windows;
+				  lowering it makes the others hide them.
+* Frame Configurations::	Saving the state of all frames.
+* Mouse Tracking::		Getting events that say when the mouse moves.
+* Mouse Position::		Asking where the mouse is, or moving it.
+* Pop-Up Menus::		Displaying a menu for the user to select from.
+* Dialog Boxes::                Displaying a box to ask yes or no.
+* X Selections::		Transferring text to and from other X clients.
+* X Connections::	        Opening and closing the X server connection.
+* Resources::		        Getting resource values from the server.
+* Server Data::		        Getting info about the X server.
+
+   *Note Display::, for related information.
+
+
+File: elisp,  Node: Creating Frames,  Next: Frame Parameters,  Up: Frames
+
+Creating Frames
+===============
+
+   To create a new frame, call the function `make-frame'.
+
+ - Function: make-frame ALIST
+     This function creates a new frame, if the display mechanism permits
+     creation of frames.  (An X server does; an ordinary terminal does
+     not.)
+
+     The argument is an alist specifying frame parameters.  Any
+     parameters not mentioned in ALIST default according to the value
+     of the variable `default-frame-alist'; parameters not specified
+     there either default from the standard X defaults file and X
+     resources.
+
+     The set of possible parameters depends in principle on what kind of
+     window system Emacs uses to display its the frames.  *Note X Frame
+     Parameters::, for documentation of individual parameters you can
+     specify when creating an X window frame.
+
+ - Variable: default-frame-alist
+     This is an alist specifying default values of frame parameters.
+     Each element has the form:
+
+          (PARAMETER . VALUE)
+
+ - Variable: initial-frame-alist
+     This is an alist specifying frame parameters for the initial Emacs
+     frame.
+
+     Emacs creates the initial X frame before it reads the user's init
+     file, which is the first occasion that the user has to set this
+     variable.  So after reading the init file, Emacs modifies the
+     parameters according to the value of this variable.  In most
+     cases, that is good enough.  However, for window position
+     parameters, it may be inconvenient that the window initially
+     appears in the wrong place or the wrong size.  The way to overcome
+     this annoyance is to specify the initial frame's geometry with an
+     X resource.
+
+   If you use options that specify window appearance when you invoke
+Emacs, they take effect by adding elements to `default-frame-alist'.
+One exception is `-geometry', which adds to `initial-frame-alist'
+instead.  *Note Command Arguments: (emacs)Command Arguments.
+
+ - Variable: before-make-frame-hook
+     A normal hook run by `make-frame' before it actually creates the
+     frame.
+
+ - Variable: after-make-frame-hook
+     A normal hook run by `make-frame' after it creates the frame.
+
+
+File: elisp,  Node: Frame Parameters,  Next: Deleting Frames,  Prev: Creating Frames,  Up: Frames
+
+Frame Parameters
+================
+
+   A frame has many parameters that control its appearance and behavior.
+Just what parameters a frame has depends on what display mechanism it
+uses.
+
+   Frame parameters exist for the sake of window systems.  A terminal
+frame has a few parameters, for compatibility's sake only.  You can't
+change these parameters directly; the only ones that ever change are
+the height and width.
+
+* Menu:
+
+* Parameter Access::       How to change a frame's parameters.
+* Initial Parameters::	   Specifying frame parameters when you make a frame.
+* X Frame Parameters::     Individual parameters documented.
+* Size and Position::      Changing the size and position of a frame.
+
+
+File: elisp,  Node: Parameter Access,  Next: Initial Parameters,  Up: Frame Parameters
+
+Access to Frame Parameters
+--------------------------
+
+   These functions let you read and change the parameter values of a
+frame.
+
+ - Function: frame-parameters FRAME
+     The function `frame-parameters' returns an alist listing all the
+     parameters of FRAME and their values.
+
+ - Function: modify-frame-parameters FRAME ALIST
+     This function alters the parameters of frame FRAME based on the
+     elements of ALIST.  Each element of ALIST has the form `(PARM .
+     VALUE)', where PARM is a symbol naming a parameter.  If you don't
+     mention a parameter in ALIST, its value doesn't change.
+
+
+File: elisp,  Node: Initial Parameters,  Next: X Frame Parameters,  Prev: Parameter Access,  Up: Frame Parameters
+
+Initial Frame Parameters
+------------------------
+
+   You can specify the parameters for the initial startup frame by
+setting `initial-frame-alist' in your `.emacs' file.
+
+ - Variable: initial-frame-alist
+     This variable's value is an alist of parameter values used when
+     creating the initial X window frame.
+
+   If these parameters specify a separate minibuffer-only frame, and
+you have not created one, Emacs creates one for you.
+
+ - Variable: minibuffer-frame-alist
+     This variable's value is an alist of parameter values used when
+     creating an initial minibuffer-only frame--if such a frame is
+     needed, according to the parameters for the main initial frame.
+
+
+File: elisp,  Node: X Frame Parameters,  Next: Size and Position,  Prev: Initial Parameters,  Up: Frame Parameters
+
+X Window Frame Parameters
+-------------------------
+
+   Just what parameters a frame has depends on what display mechanism it
+uses.  Here is a table of the parameters of an X window frame:
+
+`name'
+     The name of the frame.  Most window managers display the frame's
+     name in the frame's border, at the top of the frame.  If you don't
+     specify a name, and you have more than one frame, Emacs sets the
+     frame name based on the buffer displayed in the frame's selected
+     window.
+
+     If you specify the frame name explicitly when you create the
+     frame, the name is also used (instead of the name of the Emacs
+     executable) when looking up X resources for the frame.
+
+`left'
+     The screen position of the left edge, in pixels.  The value may be
+     `-' instead of a number; that represents `-0' in a geometry
+     specification.
+
+`top'
+     The screen position of the top edge, in pixels.  The value may be
+     `-' instead of a number; that represents `-0' in a geometry
+     specification.
+
+`user-position'
+     Non-`nil' if the screen position of the frame was explicitly
+     requested by the user (for example, with the `-geometry' option).
+     Nothing automatically makes this parameter non-`nil'; it is up to
+     Lisp programs that call `make-frame' to specify this parameter as
+     well as specifying the `left' and `top' parameters.
+
+`height'
+     The height of the frame contents, in characters.  (To get the
+     height in pixels, call `frame-pixel-height'; see *Note Size and
+     Position::.)
+
+`width'
+     The width of the frame contents, in characters.  (To get the
+     height in pixels, call `frame-pixel-width'; see *Note Size and
+     Position::.)
+
+`window-id'
+     The number of the X window for the frame.
+
+`minibuffer'
+     Whether this frame has its own minibuffer.  The value `t' means
+     yes, `nil' means no, `only' means this frame is just a minibuffer,
+     a minibuffer window (in some other frame) means the new frame uses
+     that minibuffer.
+
+`font'
+     The name of the font for displaying text in the frame.  This is a
+     string.
+
+`auto-raise'
+     Whether selecting the frame raises it (non-`nil' means yes).
+
+`auto-lower'
+     Whether deselecting the frame lowers it (non-`nil' means yes).
+
+`vertical-scroll-bars'
+     Whether the frame has scroll bars for vertical scrolling
+     (non-`nil' means yes).
+
+`horizontal-scroll-bars'
+     Whether the frame has scroll bars for horizontal scrolling
+     (non-`nil' means yes).  (Horizontal scroll bars are not currently
+     implemented.)
+
+`icon-type'
+     The type of icon to use for this frame when it is iconified.
+     Non-`nil' specifies a bitmap icon, `nil' a text icon.
+
+`foreground-color'
+     The color to use for the inside of a character.  This is a string;
+     the X server defines the meaningful color names.
+
+`background-color'
+     The color to use for the background of text.
+
+`mouse-color'
+     The color for the mouse cursor.
+
+`cursor-color'
+     The color for the cursor that shows point.
+
+`border-color'
+     The color for the border of the frame.
+
+`cursor-type'
+     The way to display the cursor.  There are two legitimate values:
+     `bar' and `box'.  The symbol `bar' specifies a vertical bar
+     between characters as the cursor.  The symbol `box' specifies an
+     ordinary black box overlaying the character after point; that is
+     the default.
+
+`border-width'
+     The width in pixels of the window border.
+
+`internal-border-width'
+     The distance in pixels between text and border.
+
+`unsplittable'
+     If non-`nil', this frame's window is never split automatically.
+
+`visibility'
+     The state of visibility of the frame.  There are three
+     possibilities: `nil' for invisible, `t' for visible, and `icon' for
+     iconified.  *Note Visibility of Frames::.
+
+`menu-bar-lines'
+     The number of lines to allocate at the top of the frame for a menu
+     bar.  The default is 1.  *Note Menu Bar::.
+
+`parent-id'
+     The X window number of the window that should be the parent of
+     this one.  Specifying this lets you create an Emacs window inside
+     some other application's window.  (It is not certain this will be
+     implemented; try it and see if it works.)
+
+
+File: elisp,  Node: Size and Position,  Prev: X Frame Parameters,  Up: Frame Parameters
+
+Frame Size And Position
+-----------------------
+
+   You can read or change the size and position of a frame using the
+frame parameters `left', `top', `height' and `width'.  Whatever
+geometry parameters you don't specify are chosen by the window manager
+in its usual fashion.
+
+   Here are some special features for working with sizes and positions:
+
+ - Function: set-frame-position FRAME LEFT TOP
+     This function sets the position of the top left corner of
+     FRAME--to LEFT and TOP.  These arguments are measured in pixels,
+     counting from the top left corner of the screen.
+
+ - Function: frame-height &optional FRAME
+ - Function: frame-width &optional FRAME
+     These functions return the height and width of FRAME, measured in
+     characters.  If you don't supply FRAME, they use the selected
+     frame.
+
+ - Function: frame-pixel-height &optional FRAME
+ - Function: frame-pixel-width &optional FRAME
+     These functions return the height and width of FRAME, measured in
+     pixels.  If you don't supply FRAME, they use the selected frame.
+
+ - Function: frame-char-height &optional FRAME
+ - Function: frame-char-width &optional FRAME
+     These functions return the height and width, respectively, of a
+     character in FRAME, measured in pixels.  The values depend on the
+     choice of font.  If you don't supply FRAME, these functions use
+     the selected frame.
+
+ - Function: set-frame-size FRAME COLS ROWS
+     This function sets the size of FRAME, measured in characters; COLS
+     and ROWS specify the new width and height.
+
+     To set the size based on values measured in pixels, use
+     `frame-char-height' and `frame-char-width' to convert them to
+     units of characters.
+
+   The old-fashioned functions `set-screen-height' and
+`set-screen-width', which were used to specify the height and width of
+the screen in Emacs versions that did not support multiple frames, are
+still usable.  They apply to the selected frame.  *Note Screen Size::.
+
+ - Function: x-parse-geometry GEOM
+     The function `x-parse-geometry' converts a standard X windows
+     geometry string to an alist which you can use as part of the
+     argument to `make-frame'.
+
+     The alist describes which parameters were specified in GEOM, and
+     gives the values specified for them.  Each element looks like
+     `(PARAMETER . VALUE)'.  The possible PARAMETER values are `left',
+     `top', `width', and `height'.
+
+          (x-parse-geometry "35x70+0-0")
+               => ((width . 35) (height . 70) (left . 0) (top . -1))
+
+
+File: elisp,  Node: Deleting Frames,  Next: Finding All Frames,  Prev: Frame Parameters,  Up: Frames
+
+Deleting Frames
+===============
+
+   Frames remain potentially visible until you explicitly "delete"
+them.  A deleted frame cannot appear on the screen, but continues to
+exist as a Lisp object until there are no references to it.  There is no
+way to cancel the deletion of a frame aside from restoring a saved frame
+configuration (*note Frame Configurations::.); this is similar to the
+way windows behave.
+
+ - Command: delete-frame &optional FRAME
+     This function deletes the frame FRAME.  By default, FRAME is the
+     selected frame.
+
+ - Function: frame-live-p FRAME
+     The function `frame-live-p' returns non-`nil' if the frame FRAME
+     has not been deleted.
+
+
+File: elisp,  Node: Finding All Frames,  Next: Frames and Windows,  Prev: Deleting Frames,  Up: Frames
+
+Finding All Frames
+==================
+
+ - Function: frame-list
+     The function `frame-list' returns a list of all the frames that
+     have not been deleted.  It is analogous to `buffer-list' for
+     buffers.  The list that you get is newly created, so modifying the
+     list doesn't have any effect on the internals of Emacs.
+
+ - Function: visible-frame-list
+     This function returns a list of just the currently visible frames.
+     *Note Visibility of Frames::.
+
+ - Function: next-frame &optional FRAME MINIBUF
+     The function `next-frame' lets you cycle conveniently through all
+     the frames from an arbitrary starting point.  It returns the "next"
+     frame after FRAME in the cycle.  If FRAME is omitted or `nil', it
+     defaults to the selected frame.
+
+     The second argument, MINIBUF, says which frames to consider:
+
+    `nil'
+          Exclude minibuffer-only frames.
+
+    `visible'
+          Consider all visible frames.
+
+    a window
+          Consider only the frames using that particular window as their
+          minibuffer.
+
+    anything else
+          Consider all frames.
+
+ - Function: previous-frame &optional FRAME MINIBUF
+     Like `next-frame', but cycles through all frames in the opposite
+     direction.
+
+
+File: elisp,  Node: Frames and Windows,  Next: Minibuffers and Frames,  Prev: Finding All Frames,  Up: Frames
+
+Frames and Windows
+==================
+
+   Each window is part of one and only one frame; you can get the frame
+with `window-frame'.
+
+ - Function: window-frame WINDOW
+     This function returns the frame that WINDOW is on.
+
+   All the non-minibuffer windows in a frame are arranged in a cyclic
+order.  The order runs from the frame's top window, which is at the
+upper left corner, down and to the right, until it reaches the window at
+the lower right corner (always the minibuffer window, if the frame has
+one), and then it moves back to the top.
+
+ - Function: frame-top-window FRAME
+     This returns the topmost, leftmost window of frame FRAME.  This is
+     a window
+
+   At any time, exactly one window on any frame is "selected within the
+frame".  The significance of this designation is that selecting the
+frame also selects this window.  You can get the frame's current
+selected window with `frame-selected-window'.
+
+ - Function: frame-selected-window FRAME
+     This function returns the window on FRAME which is selected within
+     FRAME.
+
+   Conversely, selecting a window for Emacs with `select-window' also
+makes that window selected within its frame.  *Note Selecting Windows::.
+
+
+File: elisp,  Node: Minibuffers and Frames,  Next: Input Focus,  Prev: Frames and Windows,  Up: Frames
+
+Minibuffers and Frames
+======================
+
+   Normally, each frame has its own minibuffer window at the bottom,
+which is used whenever that frame is selected.  If the frame has a
+minibuffer, you can get it with `minibuffer-window' (*note Minibuffer
+Misc::.).
+
+   However, you can also create a frame with no minibuffer.  Such a
+frame must use the minibuffer window of some other frame.  When you
+create the frame, you can specify explicitly the frame on which to find
+the minibuffer to use.  If you don't, then the minibuffer is found in
+the frame which is the value of the variable
+`default-minibuffer-frame'.  Its value should be a frame which does
+have a minibuffer.
+
+   If you use a minibuffer-only frame, you might want that frame to
+raise when you enter the minibuffer.  If so, set the variable
+`minibuffer-auto-raise' to `t'.  *Note Raising and Lowering::.
+
+
+File: elisp,  Node: Input Focus,  Next: Visibility of Frames,  Prev: Minibuffers and Frames,  Up: Frames
+
+Input Focus
+===========
+
+   At any time, one frame in Emacs is the "selected frame".  The
+selected window always resides on the selected frame.
+
+ - Function: selected-frame
+     This function returns the selected frame.
+
+   The X server normally directs keyboard input to the X window that the
+mouse is in.  Some window managers use mouse clicks or keyboard events
+to "shift the focus" to various X windows, overriding the normal
+behavior of the server.
+
+   Lisp programs can switch frames "temporarily" by calling the
+function `select-frame'.  This does not override the window manager;
+rather, it escapes from the window manager's control until that control
+is somehow reasserted.
+
+ - Function: select-frame FRAME
+     This function selects frame FRAME, temporarily disregarding the
+     focus of the X server.  The selection of FRAME lasts until the
+     next time the user does something to select a different frame, or
+     until the next time this function is called.
+
+   Emacs cooperates with the X server and the window managers by
+arranging to select frames according to what the server and window
+manager ask for.  It does so by generating a special kind of input
+event, called a "focus" event.  The command loop handles a focus event
+by calling `handle-select-frame'.  *Note Focus Events::.
+
+ - Command: handle-switch-frame FRAME
+     This function handles a focus event by selecting frame FRAME.
+
+     Focus events normally do their job by invoking this command.
+     Don't call it for any other reason.
+
+ - Function: redirect-frame-focus FRAME FOCUS-FRAME
+     This function redirects focus from FRAME to FOCUS-FRAME.  This
+     means that FOCUS-FRAME will receive subsequent keystrokes and
+     intended for FRAME.  After such an event, the value of
+     `last-event-frame' will be FOCUS-FRAME.  Also, switch-frame events
+     specifying FRAME will instead select FOCUS-FRAME.
+
+     If FOCUS-FRAME is `nil', that cancels any existing redirection for
+     FRAME, which therefore once again receives its own events.
+
+     One use of focus redirection is for frames that don't have
+     minibuffers.  These frames use minibuffers on other frames.
+     Activating a minibuffer on another frame redirects focus to that
+     frame.  This puts the focus on the minibuffer's frame, where it
+     belongs, even though the mouse remains in the frame which
+     activated the minibuffer.
+
+     Selecting a frame can also change focus redirections.  Selecting
+     frame `bar', when `foo' had been selected, changes any redirections
+     pointing to `foo' so that they point to `bar' instead.  This
+     allows focus redirection to work properly when the user switches
+     from one frame to another using `select-window'.
+
+     This means that a frame whose focus is redirected to itself is
+     treated differently from a frame whose focus is not redirected.
+     `select-frame' affects the former but not the latter.
+
+     The redirection lasts until `redirect-frame-focus' is called to
+     change it.
+
+
+File: elisp,  Node: Visibility of Frames,  Next: Raising and Lowering,  Prev: Input Focus,  Up: Frames
+
+Visibility of Frames
+====================
+
+   A frame may be "visible", "invisible", or "iconified".  If it is
+visible, you can see its contents.  If it is iconified, the frame's
+contents do not appear on the screen, but an icon does.  If the frame
+is invisible, it doesn't show in the screen, not even as an icon.
+
+ - Command: make-frame-visible &optional FRAME
+     This function makes frame FRAME visible.  If you omit FRAME, it
+     makes the selected frame visible.
+
+ - Command: make-frame-invisible &optional FRAME
+     This function makes frame FRAME invisible.  If you omit FRAME, it
+     makes the selected frame invisible.
+
+ - Command: iconify-frame &optional FRAME
+     This function iconifies frame FRAME.  If you omit FRAME, it
+     iconifies the selected frame.
+
+ - Function: frame-visible-p FRAME
+     This returns the visibility status of frame FRAME.  The value is
+     `t' if FRAME is visible, `nil' if it is invisible, and `icon' if
+     it is iconified.
+
+   The visibility status of a frame is also available as a frame
+parameter.  You can read or change it as such.  *Note X Frame
+Parameters::.
+
+
+File: elisp,  Node: Raising and Lowering,  Next: Frame Configurations,  Prev: Visibility of Frames,  Up: Frames
+
+Raising and Lowering Frames
+===========================
+
+   The X Window System uses a desktop metaphor.  Part of this metaphor
+is the idea that windows are stacked in a notional third dimension
+perpendicular to the screen surface, and thus ordered from "highest" to
+"lowest".  Where two windows overlap, the one higher up covers the one
+underneath.  Even a window at the bottom of the stack can be seen if no
+other window overlaps it.
+
+   A window's place in this ordering is not fixed; in fact, users tend
+to change the order frequently.  "Raising" a window means moving it
+"up", to the top of the stack.  "Lowering" a window means moving it to
+the bottom of the stack.  This motion is in the notional third
+dimension only, and does not change the position of the window on the
+screen.
+
+   You can raise and lower Emacs's X windows with these functions:
+
+ - Function: raise-frame FRAME
+     This function raises frame FRAME.
+
+ - Function: lower-frame FRAME
+     This function lowers frame FRAME.
+
+ - User Option: minibuffer-auto-raise
+     If this is non-`nil', activation of the minibuffer raises the frame
+     that the minibuffer window is in.
+
+   You can also enable auto-raise (raising automatically when a frame is
+selected) or auto-lower (lowering automatically when it is deselected)
+for any frame using frame parameters.  *Note X Frame Parameters::.
+
+
+File: elisp,  Node: Frame Configurations,  Next: Mouse Tracking,  Prev: Raising and Lowering,  Up: Frames
+
+Frame Configurations
+====================
+
+   A "frame configuration" records the current arrangement of frames,
+all their properties, and the window configuration of each one.
+
+ - Function: current-frame-configuration
+     This function returns a frame configuration list which describes
+     the current arrangement of frames and their contents.
+
+ - Function: set-frame-configuration CONFIGURATION
+     This function restores the state of frames described in
+     CONFIGURATION.
+
+
+File: elisp,  Node: Mouse Tracking,  Next: Mouse Position,  Prev: Frame Configurations,  Up: Frames
+
+Mouse Tracking
+==============
+
+   Sometimes it is useful to "track" the mouse, which means, to display
+something to indicate where the mouse is and move the indicator as the
+mouse moves.  For efficient mouse tracking, you need a way to wait until
+the mouse actually moves.
+
+   The convenient way to track the mouse is to ask for events to
+represent mouse motion.  Then you can wait for motion by waiting for an
+event.  In addition, you can easily handle any other sorts of events
+that may occur.  That is useful, because normally you don't want to
+track the mouse forever--only until some other event, such as the
+release of a button.
+
+ - Special Form: track-mouse BODY...
+     Execute BODY, meanwhile generating input events for mouse motion.
+     The code in BODY can read these events with `read-event' or
+     `read-key-sequence'.  *Note Motion Events::, for the format of
+     mouse motion events.
+
+     The value of `track-mouse' is that of the last form in BODY.
+
+   The usual purpose of tracking mouse motion is to indicate on the
+screen the consequences of pushing or releasing a button at the current
+position.
+
+
+File: elisp,  Node: Mouse Position,  Next: Pop-Up Menus,  Prev: Mouse Tracking,  Up: Frames
+
+Mouse Position
+==============
+
+   The functions `mouse-position' and `set-mouse-position' give access
+to the current position of the mouse.
+
+ - Function: mouse-position
+     This function returns a description of the position of the mouse.
+     The value looks like `(FRAME X . Y)', where X and Y are integers
+     giving the position in characters relative to the top left corner
+     of the inside of FRAME.
+
+ - Function: set-mouse-position FRAME X Y
+     This function "warps the mouse" to position X, Y in frame FRAME.
+     The arguments X and Y are integers, giving the position in
+     characters relative to the top left corner of the inside of FRAME.
+
+ - Function: mouse-pixel-position
+     This function is like `mouse-position' except that it returns
+     coordinates in units of pixels rather than units of characters.
+
+ - Function: set-mouse-pixel-position FRAME X Y
+     This function warps the mouse like `set-mouse-position' except that
+     X and Y are in units of pixels rather than units of characters.
+     These coordinates are not required to be within the frame.
+
+
+File: elisp,  Node: Pop-Up Menus,  Next: Dialog Boxes,  Prev: Mouse Position,  Up: Frames
+
+Pop-Up Menus
+============
+
+ - Function: x-popup-menu POSITION MENU
+     This function displays a pop-up menu and returns an indication of
+     what selection the user makes.
+
+     The argument POSITION specifies where on the screen to put the
+     menu.  It can be either a mouse button event (which says to put
+     the menu where the user actuated the button) or a list of this
+     form:
+
+          ((XOFFSET YOFFSET) WINDOW)
+
+     where XOFFSET and YOFFSET are coordinates, measured in pixels,
+     counting from the top left corner of WINDOW's frame.
+
+     If POSITION is `t', it means to use the current mouse position.
+     If POSITION is `nil', it means to precompute the key binding
+     equivalents for the keymaps specified in MENU, without actually
+     displaying or popping up the menu.
+
+     The argument MENU says what to display in the menu.  It can be a
+     keymap or a list of keymaps (*note Menu Keymaps::.).
+     Alternatively, it can have the following form:
+
+          (TITLE PANE1 PANE2...)
+
+     where each pane is a list of form
+
+          (TITLE (LINE ITEM)...)
+
+     Each LINE should be a string, and each ITEM should be the value to
+     return if that LINE is chosen.
+
+   *Usage note:* Don't use `x-popup-menu' to display a menu if a prefix
+key with a menu keymap would do the job.  If you use a menu keymap to
+implement a menu, `C-h c' and `C-h a' can see the individual items in
+that menu and provide help for them.  If instead you implement the menu
+by defining a command that calls `x-popup-menu', the help facilities
+cannot know what happens inside that command, so they cannot give any
+help for the menu's items.  This is the reason why all the menu bar
+items except `Buffers' are implemented with menu keymaps (*note Menu
+Keymaps::.).
+
+
+File: elisp,  Node: Dialog Boxes,  Next: X Selections,  Prev: Pop-Up Menus,  Up: Frames
+
+Dialog Boxes
+============
+
+   A dialog box is a variant of a pop-up menu.  It looks a little
+different (if Emacs uses an X toolkit), it always appears in the center
+of a frame, and it has just one level and one pane.  The main use of
+dialog boxes is for asking questions that the user can answer with
+"yes", "no", and a few other alternatives.  The functions `y-or-n-p'
+and `yes-or-no-p' use dialog boxes instead of the keyboard, when called
+from commands invoked by mouse clicks.
+
+ - Function: x-popup-dialog POSITION CONTENTS
+     This function displays a pop-up dialog box and returns an
+     indication of what selection the user makes.  The argument
+     CONTENTS specifies the alternatives to offer; it has this format:
+
+          (TITLE (STRING . VALUE)...)
+
+     which looks like the list that specifies a single pane for
+     `x-popup-menu'.
+
+     The return value is VALUE from the chosen alternative.
+
+     An element of the list may be just a string instead of a cons cell
+     `(STRING . VALUE)'.  That makes a box that cannot be selected.
+
+     If `nil' appears in the list, it separates the left-hand items from
+     the right-hand items; items that precede the `nil' appear on the
+     left, and items that follow the `nil' appear on the right.  If you
+     don't include a `nil' in the list, then approximately half the
+     items appear on each side.
+
+     Dialog boxes always appear in the center of a frame; the argument
+     POSITION specifies which frame.  The possible values are as in
+     `x-popup-menu', but the precise coordinates don't matter; only the
+     frame matters.
+
+     If your Emacs executable does not use an X toolkit, then it cannot
+     display a real dialog box; so instead it displays the same items
+     in a pop-up menu in the center of the frame.
+
+
+File: elisp,  Node: X Selections,  Next: X Connections,  Prev: Dialog Boxes,  Up: Frames
+
+X Selections
+============
+
+   The X server records a set of "selections" which permit transfer of
+data between application programs.  The various selections are
+distinguished by "selection types", represented in Emacs by symbols.  X
+clients including Emacs can read or set the selection for any given
+type.
+
+ - Function: x-set-selection TYPE DATA
+     This function sets a "selection" in the X server.  It takes two
+     arguments: a selection type TYPE, and the value to assign to it,
+     DATA.  If DATA is `nil', it means to clear out the selection.
+     Otherwise, DATA may be a string, a symbol, an integer (or a cons
+     of two integers or list of two integers), an overlay, or a cons of
+     two markers pointing to the same buffer.  An overlay or a pair of
+     markers stands for text in the overlay or between the markers.
+
+     The data may also be a vector of valid non-vector selection values.
+
+     Each possible TYPE has its own selection value, which changes
+     independently.  The usual values of TYPE are `PRIMARY' and
+     `SECONDARY'; these are symbols with upper-case names, in accord
+     with X Window System conventions.  The default is `PRIMARY'.
+
+ - Function: x-get-selection TYPE DATA-TYPE
+     This function accesses selections set up by Emacs or by other X
+     clients.  It takes two optional arguments, TYPE and DATA-TYPE.
+     The default for TYPE, the selection type, is `PRIMARY'.
+
+     The DATA-TYPE argument specifies the form of data conversion to
+     use, to convert the raw data obtained from another X client into
+     Lisp data.  Meaningful values include `TEXT', `STRING', `TARGETS',
+     `LENGTH', `DELETE', `FILE_NAME', `CHARACTER_POSITION',
+     `LINE_NUMBER', `COLUMN_NUMBER', `OWNER_OS', `HOST_NAME', `USER',
+     `CLASS', `NAME', `ATOM', and `INTEGER'.  (These are symbols with
+     upper-case names in accord with X conventions.)  The default for
+     DATA-TYPE is `STRING'.
+
+   The X server also has a set of numbered "cut buffers" which can
+store text or other data being moved between applications.  Cut buffers
+are considered obsolete, but Emacs supports them for the sake of X
+clients that still use them.
+
+ - Function: x-get-cut-buffer N
+     This function returns the contents of cut buffer number N.
+
+ - Function: x-set-cut-buffer STRING
+     This function stores STRING into the first cut buffer (cut buffer
+     0), moving the other values down through the series of cut
+     buffers, much like the way successive kills in Emacs move down the
+     kill ring.
+

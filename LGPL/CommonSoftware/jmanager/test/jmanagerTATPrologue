@@ -1,0 +1,21 @@
+#!/bin/bash
+#A general purpose script designed to be used as the prologue
+#for most tat modular tests
+
+#Set the CDB to be the present working directory
+OLD_CDB=$ACS_CDB
+ACS_CDB=$PWD
+
+#Start the services and manager
+echo " Starting ORB Services"
+acsStartORBSRVC > $ACS_TMP/acsStart.log
+#This sleep is more of a precautionary measure than anything else
+sleep 3
+
+#Get the ACS_INSTANCE from the log file just written out
+export ACS_INSTANCE=`grep "For this ACS session, please do an" $ACS_TMP/acsStart.log | cut -d\' -f2 | cut -d= -f2`
+echo $ACS_INSTANCE > $ACS_TMP/acs_instance
+
+#Set the CDB back to what it was before. This really should not
+#matter.
+ACS_CDB=$OLD_CDB

@@ -1,0 +1,223 @@
+#!/usr/bin/ksh 
+#*****************************************************************************
+# E.S.O. - VLT project
+#
+# buildGNU
+#
+# "@(#) $Id: checkGNU,v 1.4 2005/03/03 15:33:18 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# wpirani   01/09/99  Created for OCT99 (New GNU baseline)
+
+######################################################################
+#
+#  Useful functions
+#
+######################################################################
+
+#  Linux has no 'what'. So use 'ident'.
+
+what()
+{
+    #  Find and cache the real 'what'   
+    REAL_WHAT_CMD=${REAL_WHAT_CMD:-`which what`}
+
+    #  If we're on Linux use 'ident' else 'what'.
+    { [ ${build_OS:-`uname -s`} = Linux ] && ident "$@"; } || $REAL_WHAT_CMD "$@"
+}
+
+if [ "$GNU_ROOT" = "" ]
+then
+     GNU_ROOT="/usr/local"
+     export GNU_ROOT
+fi
+
+#
+# print header
+#
+TITLE="   Checking installation of GNU products"
+BUILD_NAME="GNU"
+. ./standardPrologue
+GNU=${INSTALL_ROOT}/PRODUCTS/gnu
+
+#
+# get current operating system
+#
+build_OS=`uname -s`
+build_OSV=`uname -r`
+
+if [ ${build_OS} = "Linux" ]
+then
+     build_OSV=`cat /etc/redhat-release | awk '{ print $5 }'`
+fi
+
+echo $SEPARATOR
+echo "Checking on $build_OS version $build_OSV"
+
+if [     ${build_OS}-${build_OSV} != "SunOS-5.8"     \
+     -a  ${build_OS}-${build_OSV} != "HP-UX-B.11.00" \
+     -a  ${build_OS}-${build_OSV} != "Linux-9"       \
+   ]
+then
+    echo "\n\tWARNING: this procedure has not been tested on this system\n"
+fi
+
+
+#
+# compare all the installed files with the reference list
+#
+SRC="$GNU/$build_OS-$build_OSV"
+cd $SRC
+PREFIX=$GNU_ROOT
+echo $SEPARATOR
+reference=$GNU/GNU.$build_OS-$build_OSV
+echo "checking that all expected files have been created "
+echo "(reference list: $reference) "
+cat  $reference | grep -v "###" | xargs -i ${INSTALL_ROOT}/INSTALL/buildCheckFileExist $PREFIX/\{\}
+echo "\n\t If missing files, please chech the output for possible errors."
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/gcc ]
+then
+    echo "gcc should be gcc 3.3:"
+    which gcc
+    gcc -v 
+else
+    echo "\n\t ERROR: gcc not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+echo "$GNU_ROOT/lib/libstdc++.a... \c"
+if [ -f $GNU_ROOT/lib/libstdc++.a ]
+then
+    echo "found."
+else
+    echo "not found -- please check your installation."
+fi
+
+if [ $build_OS = "HP-UX" ]
+then
+    echo "$GNU_ROOT/lib/libstdc++.sl... \c"
+    if [ -f $GNU_ROOT/lib/libstdc++.sl ]
+    then
+	echo "found."
+    else
+	echo "not found -- please check your installation."
+    fi
+else
+    echo "$GNU_ROOT/lib/libstdc++.so... \c"
+    if [ -f $GNU_ROOT/lib/libstdc++.so ]
+    then
+	echo "found."
+    else
+	echo "not found -- please check your installation."
+    fi
+fi
+
+echo "$GNU_ROOT/lib/libg2c.a... \c"
+if [ -f $GNU_ROOT/lib/libg2c.a ]
+then
+    echo "found."
+else
+    echo "not found -- please check your installation."
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/make ]
+then
+    echo "make should be 3.80"
+    which make
+    $GNU_ROOT/bin/make -version  
+else
+    echo "\n\t ERROR: make not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/gdb ]
+then
+    echo "gdb should be 6.0"
+    what `which gdb`
+    gdb -v 
+else
+    echo "\n\t ERROR: gdb not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/gawk ]
+then
+    echo "gawk should be 3.1.3"
+    what `which gawk`
+    gawk -W  version
+else
+    echo "\n\t ERROR: gawk not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/emacs ]
+then
+    echo "emacs should be 21.3.1"
+    what `which emacs`
+    emacs --version
+else
+    echo "\n\t ERROR: emacs not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/diff ]
+then
+    echo "diff should be 2.8.1: "
+    what `which diff`
+    diff -v
+else
+    echo "\n\t ERROR: diff not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/sed ]
+then
+    echo "sed should be 3.02: "
+    what `which sed`
+    sed --version
+else
+    echo "\n\t ERROR: sed not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/rcs ]
+then
+    echo "rcs should be 5.7: "
+    what `which rcs`
+    rcs -V
+else
+    echo "\n\t ERROR: rcs not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+echo $SEPARATOR
+if [ -f $GNU_ROOT/bin/perl ]
+then
+    echo "perl should be 5.8.0: "
+    perl -v
+else
+    echo "\n\t ERROR: perl not in $GNU_ROOT/bin "
+    echo "\n\t Please chech the output"
+fi
+
+# bye bye
+#
+echo $SEPARATOR
+echo "\007"; sleep 1;echo "\007"; sleep 1;echo "\007"; sleep 1
+echo "Check completed. Please check the output for possible errors."
+
+. $CWD/standardEpilogue
+
+#
+#___oOo___

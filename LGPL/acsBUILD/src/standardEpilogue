@@ -1,0 +1,37 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# standardEpilogue
+#
+# "@(#) $Id: standardEpilogue,v 1.122 2003/01/28 16:37:10 vltsccm Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  15/06/94  created
+# gfilippi  04/03/95  aesthetics
+#
+
+#************************************************************************
+#   NAME
+#   standardEpilogue - trailer used by all buildXxxxx script
+#
+#   SYNOPSIS
+#   source standardEpilogue
+#
+#   DESCRIPTION
+#   
+#   FILES
+#
+#   ENVIRONMENT
+#     BUILD_NAME   Read    name of the installation
+#     SEPARATOR    Read    a line of --------
+#------------------------------------------------------------------------
+#
+
+echo "$SEPARATOR"
+echo "build${BUILD_NAME} - installation ended at `date`"
+echo "============================================================================"
+echo ""
+
+#
+#___oOo___

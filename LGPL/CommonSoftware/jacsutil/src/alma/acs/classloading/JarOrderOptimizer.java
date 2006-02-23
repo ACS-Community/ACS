@@ -1,0 +1,213 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2004
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+package alma.acs.classloading;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+/**
+ * Helps sort a list of jar files so that more important jar files appear first.
+ * The more important jar files are listed in {@link #orderedAcsJarNames} and optionally also 
+ * in the property <code>acs.system.classpath.appltopjars</code>.
+ * <p>
+ * The classloader will then not have to read through unimportant jar files first, 
+ * which should improve class loading performance on IO-challenged machines.
+ *   
+ * @author hsommer
+ * created Sep 21, 2004 2:28:51 PM
+ */
+public class JarOrderOptimizer implements Comparator
+{
+	private boolean verbose = false;
+
+	public static final String PROPERTY_APPLICATION_TOPJARS = "acs.system.classpath.appltopjars";
+
+	/**
+	 * Hardcoded list of jar files that are sufficient to start an ACS container or other basic ACS software.
+	 * The class loader will sort these jar files toward the beginning of the classpath (in the given order),
+	 * and will append jar files from the optional property <code>acs.system.classpath.appltopjars</code>.
+	 */
+	public static final String[] orderedAcsJarNames = {
+		"jcont.jar",
+		"jACSUtil.jar",
+		"acsjlog.jar",
+		"maci.jar",
+		"jacorb.jar",
+		"concurrent.jar", //todo: remove after ACS 4.1
+        "backport-util-concurrent.jar",
+		"acscomponent.jar",
+		"jmanager.jar",
+		"cdbDAL.jar",
+		"archive_xmlstore_if.jar",
+		"xmlentity.jar",
+		"systementities.jar",
+		"acserr.jar",
+		"acserrj.jar",
+		"acsnc.jar",
+		"baci.jar",
+//		"xercesImpl.jar", currently separate, location defined by -Djava.endorsed.dirs=...
+		"xmljbind.jar",
+		"junit.jar",
+		"oe.jar",
+		"abeansR2Components.jar",
+		"acscommandcenter.jar",
+		"AcsCommandCenterEntities.jar",
+		"lc.jar", // cosylab logging client
+		"jdom.jar"
+	};
+	
+	/**
+	 * key = (String) jarname, value = (Integer) position.
+	 */
+	private Map topJarMap;
+	
+	JarOrderOptimizer(boolean verbose) {
+		this.verbose = verbose;
+		// use a map for more efficient lookup of jarfile names 
+		topJarMap = new HashMap();
+		int i = 0;
+		for (i = 0; i < orderedAcsJarNames.length; i++) {
+			topJarMap.put(orderedAcsJarNames[i], new Integer(i));
+		}
+		String applJarPath = System.getProperty(PROPERTY_APPLICATION_TOPJARS);
+		if (applJarPath != null) {
+			String[] applJarNames = parseJarNames(applJarPath);
+			for (int j=0; j < applJarNames.length; j++) {
+				if (!topJarMap.containsKey(applJarNames[j])) {
+					topJarMap.put(applJarNames[j], new Integer(i+j));
+				}
+			}
+		}
+//		if (verbose) {		
+//			for (Iterator iter = topJarMap.keySet().iterator(); iter.hasNext();) {
+//				String jarName = (String) iter.next();
+//				Integer pos = (Integer) topJarMap.get(jarName);
+//				System.out.print(pos.toString() + "-" + jarName + "  ");
+//			}
+//			System.out.println();
+//		}
+	}
+	
+	public int compare(Object o1, Object o2)
+	{
+		int ret = 0;
+		
+		if (o1 == null || o2 == null) { // todo: check if this can happen
+			throw new NullPointerException("bad null arg"); 
+		}
+		String n1 = ((File) o1).getName();
+		String n2 = ((File) o2).getName();
+
+		Integer i1 = (Integer) topJarMap.get(n1);
+		Integer i2 = (Integer) topJarMap.get(n2);
+
+		if (i1 != null) {
+			if (i2 != null) {
+				ret = i1.compareTo(i2);
+			}
+			else {
+				ret = -1;
+			}
+		}
+		else {
+			if (i2 != null) {
+				ret = 1;
+			}
+			else { // both not in list -- need to find some sorting criterium, why not alphabetically				
+				return n1.compareTo(n2);
+			}
+		}
+		return ret;
+	}
+
+	
+	/**
+	 * Sorts <code>jars</code> using {@link #compare(Object, Object)}.
+	 * @see Arrays#sort(java.lang.Object[], java.util.Comparator)
+	 */
+	void sortJars(File[] jars) {
+		Arrays.sort(jars, this);
+	}
+
+	
+	/**
+	 * To be used for testing only -- allows to filter out all jar files from a list which are not 
+	 * given priority by the <code>compare</code> method of this class.
+	 * This allows to write tests that will fail unless all required classes are listed explicitly.
+	 * @param allJars  jar files to be filtered
+	 * @return  those whose name matches one from the prio list
+	 */
+	File[] getTopJarsOnly(File[] allJars) {
+		List topJars = new ArrayList();
+		for (int i = 0; i < allJars.length; i++) {
+			if (topJarMap.containsKey(allJars[i].getName())) {
+				topJars.add(allJars[i]);
+			}
+		}
+		return (File[]) topJars.toArray(new File[topJars.size()]);
+	}
+	
+	
+	/**
+	 * Parses a string of concatenated jar file names.
+	 * For example, the string "ab:cd.jar:ef" should yield {"ab.jar", "cd.jar", "ef.jar"}. 
+	 */
+	private String[] parseJarNames(String jarNamePath)
+	{
+		StringTokenizer tok = new StringTokenizer(jarNamePath, ":"
+				+ File.pathSeparatorChar); // to also allow platform style separator
+		List jarNameList = new ArrayList();
+		for (int i = 0; tok.hasMoreTokens(); i++) {
+			String jarName = tok.nextToken();
+			if (jarName != null && jarName.trim().length() > 0) {
+				jarName = jarName.trim();
+				if (!jarName.toLowerCase().endsWith(".jar")) {
+					jarName += ".jar";
+				}
+				jarNameList.add(jarName);
+			}
+		}
+		return (String[]) jarNameList.toArray(new String[jarNameList.size()]);
+	}
+
+	/**
+	 * Checks if a class comes from any of the subpackages of <code>sun.</code> or <code>com.sun.</code>
+	 * which we strongly assume to not be contained in any jar files that our classloaders have to deal with.
+	 * These classes should either be loaded by the real system class loader, and when it fails, we assume that they 
+	 * don't exist anywhere so we can skip searching for them. 
+	 * @param name
+	 * @return
+	 */
+	boolean isClassKnownToBeUnavailable(String name) {
+		return (name.startsWith("sun.util.logging.") || 
+				name.startsWith("sun.text.resources.") ||
+				name.startsWith("sun.awt.resources.") ||
+				name.startsWith("com.sun.swing.internal.plaf.")
+			);
+	}
+}

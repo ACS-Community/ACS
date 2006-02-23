@@ -1,0 +1,21 @@
+This directory contains the UML Model for ACS in Raitonal Rose.
+
+In order to be able to work with the Model, the Rose virtual path map variable
+
+        $ALMA_ACS_ROOT
+
+must be set to the absolute path or this directory
+
+The script extractDiagrams.sh is a wrapper around the python script
+extractDiagrams.py.
+Their purpose is to copy the diagrams produced by the Rose Web
+Publisher in a different directory with a file name derived from the
+original diagram name.
+The file names produced by the Web Publisher are random names that
+bare no relation with the original diagram name, making it impossible
+to use them outside the Web Publisher itself.
+
+-----------------------------------
+
+    Gianluca Chiozzi - 2003-12-30
+

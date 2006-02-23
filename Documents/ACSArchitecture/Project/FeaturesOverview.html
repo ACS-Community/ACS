@@ -1,0 +1,404 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Template" content="C:\Program Files\MSOffice\Office\html.dot">
+<meta name="GENERATOR" content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+<title>FeaturesOverview</title>
+<link rel=Edit-Time-Data href="FeaturesOverview_files/editdata.mso">
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+
+ name="City"/> <o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+
+ name="place"/> 
+<style><!--
+.Normal
+	{font-size:12.0pt;
+	font-family:"Times New Roman";}
+.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+-->
+</style>
+</head>
+<body link="#0000FF" vlink="#800080" lang="EN-US" class="Normal" bgcolor="#FFFFFF">
+<h2> Overview</h2>
+The ALMA Common Software (ACS) is located in between the&nbsp;<st1:City><st1:place>ALMA</st1:place></st1:City> 
+application software (Applications) and other basic commercial or shared software 
+on top of the operating systems. In particular, ACS is based on CORBA (CORBA Middleware), 
+which provides the whole infrastructure for the exchange of messages between distributed 
+objects. Whenever possible, ACS features will be provided using off the shelf 
+components and ACS itself will provide the packaging and the glue between these 
+components. 
+<p>The ACS is also based on an Object Oriented architecture <a href="ReferenceDocuments.html#RD01">[RD01 
+  - 13.1.1 Distributed Objects and commands]</a>. 
+<p>The following UML Package Diagram shows the main packages in which ACS has 
+  been subdivided. 
+<center>
+  <p><img SRC="Images/Class_Diagram-Logical_View-Main.png" BORDER=0 id="_x0000_i1025" width="640"> 
+  <p><i>Figure 2.1: ACS Packages</i> 
+</center>
+<p>Each package provides a basic set of services and tools that shall be used 
+  by all&nbsp;<st1:City><st1:place>ALMA</st1:place></st1:City> applications. 
+<p>Packages have been grouped in 4 layers. Packages are allowed to use services 
+  provided by other packages on the lower layers and on the same layer, but not 
+  on higher layers. 
+<p>A 5<sup>th</sup> group contains packages for software that is used by many 
+  ALMA Subsystems, but that is not used by other ACS packages. These packages 
+  are for convenience integrated and distributed together with ACS but are not 
+  integral parts of ACS. 
+<p>A brief description of the layers and the packages is provided hereafter, while 
+  the next chapter will contain a detailed description of the features included 
+  in the packages. 
+<p><b>1 - Base Tools</b> 
+<p>The bottom layer contains base tools that are distributed as part of ACS to 
+  provide a uniform development and run time environment on top of the operating 
+  system for all higher layers and applications. These are essentially off-the-shelf 
+  components and ACS itself just provides packaging and installation and distribution 
+  support. This ensure that all installations of ACS (development and run-time) 
+  will have the same basic set of tools with versions kept under configuration 
+  control. 
+<p>The exact set of tools and versions are described in the documentation coming 
+  with each ACS release. Being these normally big packages the ACS installation 
+  procedures will have to offer the options of installing the tools in binary 
+  format, building them from sources or using an independent installation. 
+<p>Three main packages have been identified in this layer: 
+  <ul type=circle>
+    <li class="MsoNormal"> <b>Development tools</b>
+    <br>
+    Software development tools (compilers, configuration controls tools, languages, 
+    debuggers, documentation tools). </li>
+    <li class="MsoNormal"> <b>CORBA Middleware</b>
+    <br>
+    Packaging of off-the-shelf CORBA implementations (ORB and services) to cover 
+    the languages and operating systems supported by ACS. </li>
+    <li class="MsoNormal"> <b>ACE</b>
+    <br>
+    Distribution of the Adaptive Communication Environment<a href="ReferenceDocuments.html#RD23">[RD23]</a>. </li>
+  </ul>
+<b>2 - Core components</b> 
+<p>This second layer provides essential components that are necessary for the 
+  development of any application 
+  <ul type=circle>
+    <li class="MsoNormal"> <b>ACS Component</b>
+    <br>
+    Base interfaces and classes for Component part of the ACS Component Model. 
+    In particular C++ Distributed Objects, Properties and Characteristics are 
+    implemented in this package. </li>
+    <li class="MsoNormal"> <b>Configuration Database</b>
+    <br>
+    Interfaces and basic implementation for the Configuration Database from where 
+    ACS Components retrieve their initial configuration </li>
+    <li class="MsoNormal"> <b>Event and Notification System</b>
+    <br>
+    The Event and Notification System provides a generic mechanism to asynchronously pass information 
+    between data publishers and data subscribers, in a many-to-many relation scheme. </li>
+    <li class="MsoNormal"> <b>Error System</b>
+    <br>
+    API for handling and logging run-time errors, tools for defining error conditions, 
+    tools for browsing and analyzing run-time errors. </li>
+    <li class="MsoNormal"> <b>Logging System</b>
+    <br>
+    API for logging of data, actions and events. Transport of logs from the producer 
+    to the central archive. Tools for browsing logs. </li>
+    <li class="MsoNormal"> <b>Time System</b>
+    <br>
+    Time and synchronization services. </li>
+  </ul>
+<b>3 - Services</b> 
+<p>The third layer implements services that are not strictly necessary for the 
+  development of prototypes and test applications or that are meant to allow optimization 
+  of the performances of the system: 
+  
+<ul type=circle>
+  <li class="MsoNormal"> <b>ACS Container</b> <br>
+    Design patterns, protocols and high level services for Component/Container 
+    life-cycle management. </li>
+  <li class="MsoNormal"> <b>Serialization Plugs</b> <br>
+    This package provides a generic mechanism to serialyze entity data between 
+    high level applications, typically written in Java. </li>
+  <li class="MsoNormal"> <b>Archiving System</b> <br>
+    API and services for archiving monitoring data and events from the run time 
+    system. Tools to browse, monitor and administer the flow of data toward the 
+    archive. </li>
+  <li class="MsoNormal"> <b>Command System</b> <br>
+    Tools for the definition of commands, API for run-time command syntax checking, 
+    API and tools for dynamic command invocation. </li>
+  <li class="MsoNormal"> <b>Alarm System</b> <br>
+    API and tools for configuration of hierarchical alarm conditions, API for 
+    requesting notification of alarms at the application level, tools for displaying 
+    and handling the list of active alarms. </li>
+  <li class="MsoNormal"> <b>Sampling</b> <br>
+    Low level engine and high level tools for fast data sampling (virtual oscilloscope).</li>
+  <li><b>Bulk Data</b><br>
+    API and services for the transport of bulk science data (images or big data 
+    files) and continuous data streaming.</li>
+</ul>
+<b>4 - API and High-level tools</b> 
+<p>The fourth and last layer provides high level APIs and tools. More will be 
+  added in the future. The main goals for this packages is to offer a clear path 
+  for the implementation of applications, with the goal of obtaining implicit 
+  conformity to design standards and maintainable software<a href="ReferenceDocuments.html#RD01">[RD01 
+  - 3.1.2. Design]</a>. 
+<ul type=circle>
+  <li class="MsoNormal"> <b>UIF Libraries</b> <br>
+    Development tools and widget libraries for User Interface development .</li>
+  <li class="MsoNormal"><b>Parameters</b> <br>
+    Support libraries and classes for &quot;parameter sets&quot;, i.e support 
+    for definition, parsing and validation of sets of parameters, plus some additional 
+    metadata such as help information, valid ranges, default values, whether the 
+    parameters are required or optional, etc.</li>
+  <li class="MsoNormal"><b>Task</b> <br>
+    A task is a concise program which starts up, performs some processing, and 
+    then shuts down. A task may or may not require other more advanced ACS services, 
+    depending on context .</li>
+  <li class="MsoNormal"> <b>Scripting</b> <br>
+    Scripting language and access libraries for the integration with ACS core 
+    components.</li>
+  <li class="MsoNormal"> <b>ACS Application Framework</b> <br>
+    Implementation of design patterns and to allow the development of standard&nbsp; 
+    C++, Java and Python applications using ACS services.</li>
+  <li><b>ACS Installer</b><br>
+    Tolls for installing ACS with different options.</li>
+</ul>
+<b>5 - Integrated APIs and tools</b> 
+<p>The 5<sup>th</sup>&nbsp; group of packages contains software that is used by 
+  many ALMA Subsystems, but that is not used by other ACS packages. These packages 
+  are for convenience integrated and distributed together with ACS but are not 
+  integral parts of ACS. The list of packages will be extended according to the&nbsp;<st1:City><st1:place>ALMA</st1:place></st1:City> 
+  integration needs. If considered useful, some packages can be hidden on the 
+  back of an ACS abstraction layer with the purpose of facilitating the usage 
+  of the package and its integration with other ACS facilities (like error and 
+  alarm handling). In this case the package would be moved in layer 4 of the ACS 
+  architecture. 
+  <ul type=circle>
+    <li class="MsoNormal"> <b>Device Drivers</b>
+    <br>
+    Low-level device drivers for commonly used devices </li>
+    <li class="MsoNormal"> <b>Astronomical libraries</b>
+    <br>
+    Libraries for astronomical calculations and data reduction. </li>
+  <li class="MsoNormal"> <b>External libraries</b> <br>
+    Support for the handling of FITS files is just an example of other high-level 
+    components that will be integrated and/or distributed as part of ACS. </li>
+  </ul>
+<h2> Component Container model</h2>
+The Technical Architecture in the&nbsp;ALMA Software Architecture document&nbsp;<a href="ReferenceDocuments.html#RD33">[RD33]</a>identifies 
+a Container-Component model for software organization and development as our primary 
+instrument for achieving separation of functional from technical concerns. 
+<p>A Component is defined in <a href="ReferenceDocuments.html#RD33">[RD33]</a> 
+  as a software element that exposes its services through a published interface 
+  and explicitly declares its dependencies on other components and services, can 
+  be deployed independently and, in addition: 
+<ul>
+  <li> &quot;is coarse grained: In contrast to a programming language class, a 
+    component has a much larger granularity and thus usually more responsibilities. 
+    Internally, a component can be made up of classes, or, if no OO language is 
+    used, can be made up of any other suitable constructs. Component based development 
+    and OO are not technically related." </li>
+  <li> "requires a runtime environment: A components cannot exist on its own, 
+    it requires something which provides it with some necessary services." This 
+    "something" is called a <b><i>Container</i></b>. </li>
+  <li> "is remotely accessible, in order to support distributed, component based 
+    applications." </li>
+</ul>
+<p>The division of responsibilities between Components and Containers enables 
+  decisions about where individual components are deployed to be deferred until 
+  runtime. If the container manages component security as well, authorization 
+  policies can be configured at run time in the same way. </p>
+<p>A Component is required to provide: 
+<ul>
+  <li> <span><span style='font:7.0pt "Times New Roman"'></span></span> a Lifecycle 
+    interface, so that the Container where it resides can manage it </li>
+  <li><span><span style='font:7.0pt "Times New Roman"'></span></span> a Service 
+    interface, that is the interface it exposes to clients </li>
+</ul>
+<p>A Container is required to provide: 
+<ul>
+  <li> <span><span style='font:7.0pt "Times New Roman"'></span></span> an implementation 
+    for all basic services used by the Components </li>
+  <li><span><span style='font:7.0pt "Times New Roman"'></span></span> a ContainerServices 
+    interface used by the Components to get access to the services </li>
+</ul>
+<p>ACS provides a simple implementation of the Component-Container model implemented 
+  in C++, Java and Python. 
+<p>In order to decouple the Component and Container implementations, the ACS Component 
+  package contains the definition of all the interfaces needed for the implementation 
+  of Components and the default implementation of the interface which can be used 
+  as base classes for the Components themselves. 
+<p>The ACS Container package contains the actual implementation for the Container 
+  model, including the high level management of Containers (Manager). The following 
+  diagram provides an overview class diagram of the Component-Container model. 
+  More details are given in the description of the Component and Container architectural 
+  packages. 
+<p><img SRC="Images/Class_Diagram-ACS_Component-Container_model-Overview.png" BORDER=0 id="_x0000_i1026" width=640> 
+<p><i>Figure 2.2: ACS Component-Container overview class diagram</i> 
+<p>For a more detailed discussion of rationale behind the choice of the Component-Container 
+  model, see the&nbsp;ALMA Software Architecture document&nbsp;<a href="ReferenceDocuments.html#RD33">[RD33]</a>. 
+<h2> Deployment</h2>
+The choice of CORBA for the implementation of a Component/Container model and 
+of all services that are part of the previously described packages makes it possible 
+to have every software operation available in a transparent way both locally and 
+at the Control Center in San Pedro. This applies also to all data, logs and alarms<a href="ReferenceDocuments.html#RD01">[RD01 
+- 12.1.6 Location]</a>. The choice for the LAN and access optimization mechanisms, 
+described in the following sections, will ensure that no significant degradation 
+in performances will take place <a href="ReferenceDocuments.html#RD01">[RD01 - 
+3.2.4. Local and central operation]</a>. 
+<p>In principle, this same mechanism allows a reliable remote access from the 
+  US and Europe, although with reduced performance. It is anyway necessary that 
+  applications are designed in order to prevent unauthorized access and undesired 
+  side effects on the performance of the control system <a href="ReferenceDocuments.html#RD01">[RD01 
+  - 3.2.5. Remote access]</a>. ACS provides the basic building blocks for the 
+  implementation of these mechanisms. 
+<p>All packages in the lower ACS layers are available for developing code both 
+  for the Linux<a href="ReferenceDocuments.html#RD01">[RD01 - 10.5.4 OS]</a> and 
+  the VxWorks<a href="ReferenceDocuments.html#RD01">[RD01 - 10.5.3 RTOS]</a> platforms. 
+  The usage of the ACE C++ toolkit allows writing portable code that can migrate 
+  from Linux to VxWorks and vice versa according to development and run-time needs. 
+<p>Real Time Linux is replacing VxWorks as the real time development platform. 
+  In this configuration, only hard real time tasks will run in the real time kernel, 
+  while every other task will run in the normal Linux kernel. ACS provides &quot;bridge 
+  modules&quot; that allow the real time tasks to communicate with non real time 
+  tasks is a standard way. For example, a logging &quot;bridge module&quot; allows 
+  to generate logs on the real time side and propagate them on the non real time 
+  side. 
+<p>Higher-level components will be often not needed on the real-time platform.In 
+  this case Java will be used to provide portability among non real-time platforms 
+  (for example Linux and Windows). This will apply in particular for user interface 
+  applications. 
+<p>Some development tools can be required to run or can be more convenient to 
+  use on Windows platforms (like Eclipse<a href="ReferenceDocuments.html#RD35">[RD35]</a>). 
+<p>Using CORBA, all objects publishing an IDL interface will be available to any 
+  environment, host and programming language where a CORBA implementation is available. 
+  In particular it will be possible to write client applications for Components 
+  in any CORBA-aware platform. ACS explicitly supports C++, Java, C and Python 
+  <a href="ReferenceDocuments.html#RD01">[RD01 - 10.3.3. Compiled Languages]</a> 
+  <a href="ReferenceDocuments.html#RD01">[RD01 - 10.5.6.<span 
+
+class=MsoHyperlink></span></a><span 
+
+class=MsoHyperlink> Scripting language].</span> 
+<p>The ACS Component/Container model is then implemented in C++, Java an Python. 
+  The three implementations are not identical, but are tailored to the specific 
+  application domain of the language. For example, the C++ implementation provides 
+  strong support for the Component/Property/Characteristic pattern of interest 
+  for Control Applications and provides a more sophisticated threading model handling 
+  of interest for the Pipeline and Offline Data Reduction applications. On the 
+  other hand, the Java implementation provides Tight Containers and transparent 
+  XML serialization. 
+<p>The ACS installation procedures will allow selecting the installation platform 
+  and will allow selecting between development and run time installations. For 
+  a development installation, all development tools will be installed, including 
+  compilers and debuggers, while a run-time installation will be much lighter 
+  and include only the libraries and components needed at run-time. There is also 
+  a separate installation for "pure Java" applications that will be installable 
+  and usable from any machine supporting a Java Virtual Machine.&nbsp;This is 
+  based on Web Start technology to make installation as simple and automatic as 
+  possible, as well as software upgrades. 
+<p>Per each package, it will be specified at design time what components will 
+  be available on each platform and for run-time and development installations. 
+<p>We foresee 7 different types of deployment nodes (connections in the diagram 
+  show the foreseen communication paths among node types, for example a Remote 
+  User Station is allowed to communicate only with a Linux run-time workstation): 
+<p><img src="Images/Main--Deployment_View.png" id="_x0000_i1027" width=640> 
+<p><i>Figure 2.3: ACS Deployment</i> 
+<ul type=disc>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>Linux Development workstation</span> <span 
+
+     style='color:windowtext;font-weight:normal;text-decoration:none;
+
+     text-underline:none'> <br>
+    Linux is the main development and run-time platform. <br>
+    This installation includes all ACS components necessary for development and 
+    at run-time.&nbsp;</span> </li>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>Windows Development workstation</span> <br>
+    <span style='color:windowtext;font-weight:normal;text-decoration:
+
+     none;text-underline:none'>Windows is a development and run-time platform 
+    for Java based applications and user interfaces. In many cases Java development 
+    tools are more reliable and stable under Windows than under Linux. More over, 
+    in some cases and in particular for very high level tools that have to be 
+    installed at the premises of astronomers, it is explicitly required that they 
+    are supported on various platforms. Developing not only from a Linux but also 
+    from a Windows environment would help in ensuring better compliance with Java 
+    Virtual Machines on various platforms. <br>
+    An ACS Windows Development installation will allow installing Java development 
+    tools and Java libraries for development, including CORBA ORB and services. 
+    <br>
+    We assume that an ACS developer will have a Windows desktop used for Java 
+    development and as a terminal to connect to a Linux Development Workstation. 
+    This does not exclude users having access only to Linux workstations but limit 
+    their capability and/or comfort in developing Java applications.&nbsp;</span> 
+  </li>
+  <li>Linux Real Time Computer<br>
+    Linux real time computers can be normal PCs or VME racks with Intel CPU running 
+    a real time Linux kernel.</li>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>VxWorks real-time computer</span> <span 
+
+     style='color:windowtext;font-weight:normal;text-decoration:none;
+
+     text-underline:none'> <br>
+    VxWorks computers are used only as run time platforms and as cross-development 
+    computer is necessary to develop code. <br>
+    ACS will deploy on VxWorks only run time libraries, which are downloaded from 
+    a file server at boot time or when needed.<br>
+    VxWorks computers will be phased out from ALMA and replaced by Linux real 
+    time computers.&nbsp;</span> </li>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>Sun/Linux VxWorks cross-development workstation</span> 
+    <span 
+
+     style='color:windowtext;font-weight:normal;text-decoration:none;
+
+     text-underline:none'> <br>
+    The VxWorks cross development environment is installed on a UNIX (Sun or Linux) 
+    workstation. This includes all development tools and ACS components. Typically 
+    the same development workstation should be used for Linux and VxWorks development. 
+    We are currently constrained on Sun by the fact that WindRiver does not support 
+    Linux as a VxWorks cross-development environment. We have now a cross development 
+    environment for Linux, but we cannot run Wind River debugging and development 
+    tools there. Therefore we use normally Linux for </span>cross-development, 
+    but we keep available Sun workstations when we need to run Wind River develop;ment 
+    tools. Sun will be phased out together with VxWorks.</li>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>Linux run-time workstation</span> <span 
+
+     style='color:windowtext;font-weight:normal;text-decoration:none;
+
+     text-underline:none'> <br>
+    When disk space is an issue for small run-time only boxes, it will be possible 
+    to deploy on ACS runtime libraries and components. The main limitation of 
+    this configuration is that it offers very poor debugging capabilities in case 
+    of problems, with respect to a full development installation&nbsp;</span> 
+  </li>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>Remote user station</span> <span 
+
+     style='color:windowtext;font-weight:normal;text-decoration:none;
+
+     text-underline:none'> <br>
+    A very light ACS installation will be provided for users that need only to 
+    run Java/Python applications to remotely interact with other ALMA subsystems. 
+    This will allow installing only Java/Python ACS run time libraries and applications 
+    (including CORBA ORB and services) on Linux, Windows or other operating systems 
+    supporting a Java Virtual Machine (officially supported and tested Java Virtual 
+    Machines will be defined at each ACS and specific application release) or 
+    a Python interpreter.</span> </li>
+</ul>
+<div class="MsoNormal"><span class=MsoHyperlink><span 
+
+style='color:windowtext;text-decoration:none;text-underline:none'></span></span></div>
+</body>
+</html>
+

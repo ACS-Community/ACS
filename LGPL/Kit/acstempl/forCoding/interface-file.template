@@ -1,0 +1,67 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: interface-file.template,v 1.20 2002/12/05 19:09:21 vltsccm Exp $" 
+#%# 
+#%# Template for .h interface file        
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gfilippi   24/05/93  created
+#%# gfilippi   20/02/95  added header and manpage
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN interface_file(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+#ifndef _H
+#define _H
+/*******************************************************************************
+* PPPPPPPP
+*
+* "@(#) $I>-<d$"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created
+*/
+
+/************************************************************************
+ * Module  - Interface File
+ */
+
+/* 
+ * header files
+ */
+
+/* 
+ * constants 
+ */
+
+/* 
+ * data types
+ */
+
+/* 
+ * macros 
+ */
+
+/* 
+ * functions prototypes 
+ */
+
+/* 
+ * message definitions
+ */
+
+/* 
+ * error definitions
+ */
+
+#endif /*!_H*/

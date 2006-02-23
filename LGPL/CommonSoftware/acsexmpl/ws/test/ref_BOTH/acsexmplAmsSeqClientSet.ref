@@ -1,0 +1,682 @@
+1 - 
+2 - rlogin LCU
+3 - Running acsexmplAmsSeqClientSet AMSSEQ1 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2
+2 - 
+2 - LCU->< reloadScript 
+2 - #! VxWorks
+2 - #******************************************************************************
+2 - 
+2 - unld "acsdo"
+2 - value = xx
+2 - unld "baci"
+2 - value = xx
+2 - unld "Container"
+2 - value = xx
+2 - unld "acserr"
+2 - value = xx
+2 - unld "recovery"
+2 - value = xx
+2 - unld "cdb"
+2 - value = xx
+2 - unld "loggingService"
+2 - value = xx
+2 - unld "acsutil"
+2 - value = xx
+2 - unld "libTAO_IFR_Client.so"
+2 - value = xx
+2 - unld "libTAO_CosNotification.so"
+2 - value = xx
+2 - unld "libTAO_DsLogAdmin.so"
+2 - value = xx
+2 - unld "libTAO_CosTrading.so"
+2 - value = xx
+2 - unld "libTAO_DynamicAny.so"
+2 - value = xx
+2 - unld "libTAO_CosNaming.so"
+2 - value = xx
+2 - unld "libTAO_Svc_Utils.so"
+2 - value = xx
+2 - unld "libTAO_CosProperty.so"
+2 - value = xx
+2 - unld "libTAO_IORTable.so"
+2 - value = xx
+2 - unld "libTAO_PortableServer.so"
+2 - value = xx
+2 - unld "libTAO.so"
+2 - value = xx
+2 - unld "libACE.so"
+2 - value = xx
+2 - 
+2 - lcubootAutoLoad 1,"libACE.so"
+2 - lcubootAutoLoad: Loading module libACE.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO.so"
+2 - lcubootAutoLoad: Loading module libTAO.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_PortableServer.so"
+2 - lcubootAutoLoad: Loading module libTAO_PortableServer.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_IORTable.so"
+2 - lcubootAutoLoad: Loading module libTAO_IORTable.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_CosProperty.so"
+2 - lcubootAutoLoad: Loading module libTAO_CosProperty.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_Svc_Utils.so"
+2 - lcubootAutoLoad: Loading module libTAO_Svc_Utils.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_CosNaming.so"
+2 - lcubootAutoLoad: Loading module libTAO_CosNaming.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_DynamicAny.so"
+2 - lcubootAutoLoad: Loading module libTAO_DynamicAny.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_CosTrading.so"
+2 - lcubootAutoLoad: Loading module libTAO_CosTrading.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_DsLogAdmin.so"
+2 - lcubootAutoLoad: Loading module libTAO_DsLogAdmin.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_CosNotification.so"
+2 - lcubootAutoLoad: Loading module libTAO_CosNotification.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"libTAO_IFR_Client.so"
+2 - lcubootAutoLoad: Loading module libTAO_IFR_Client.so, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"acsutil"
+2 - lcubootAutoLoad: Loading module acsutil, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"loggingService"
+2 - lcubootAutoLoad: Loading module loggingService, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"cdb"
+2 - lcubootAutoLoad: Loading module cdb, flags: 0,0
+2 - Undefined symbol: __ls__7ostreamUx (binding 1 type 0)
+2 - Undefined symbol: __ls__7ostreamx (binding 1 type 0)
+2 - Undefined symbol: __rs__7istreamRx (binding 1 type 0)
+2 - Undefined symbol: __rs__7istreamRUx (binding 1 type 0)
+2 - value = xx
+2 - lcubootAutoLoad 1,"recovery"
+2 - lcubootAutoLoad: Loading module recovery, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"acserr"
+2 - lcubootAutoLoad: Loading module acserr, flags: 0,0
+2 - value = xx
+2 - lcubootAutoLoad 1,"Container"
+2 - lcubootAutoLoad: Loading module Container, flags: 0,0
+2 - value = xx
+2 - 
+2 - # ___oOo___
+2 - LCU->dbWrite(":Appl_data:MACI:Containers:Container.CommandLine","-ORBEndpoint iiop://LCU")
+2 - value = xx
+2 - LCU->dbWrite(":Appl_data:MACI:Containers:Container.ManagerReference","corbaloc::---:----/Manager")
+2 - value = xx
+2 - LCU->sp ContainerStart," Container"
+2 - task spawned
+2 - value = xx
+2 - LCU->Starting Container...
+2 - Manager hostname obtained via CDB: 'WS'----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- [main] Starting Manager...
+1 - ----------T--:--:--.--- [::checkORBEndpointArg] Generated CommandLine: /----/bin/maciManager  -ORBDottedDecimalAddresses 1 -ORBEndpoint iiop://LCU---:----
+1 - ----------T--:--:--.--- [maci::ManagerImpl::ManagerImpl] 
+1 - ----------T--:--:--.--- [ACSError::init] Dyn Any Factory initialised ! 
+1 - ----------T--:--:--.--- [ACSError::init] Initialising Dyn Any Factory ... 
+1 - 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::initWithORB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::initNewManager] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::init] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::parseArgs] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat_maciManager_xxxx'.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::internalInitializer] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::internalInitializer] Invocation timeout set to xxxx 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::internalInitializer] Connecting to the Naming Service...
+1 - ----------T--:--:--.--- [maci::ManagerImpl::initNamingContext] 
+1 - ----------T--:--:--.--- [maci::MACIHelper::resolveNameService] 
+1 - ----------T--:--:--.--- multicast_query: unable to accept: Connection timed out
+1 - 
+1 - ----------T--:--:--.--- (----|----) EXCEPTION, (maci::MACIHelper::resolveNameService) CORBA exception caught!
+1 - ----------T--:--:--.--- [maci::MACIHelper::resolveNameService] Unable to resolve NameService reference using CORBA::ORB::resolve_intial_references().
+1 - ----------T--:--:--.--- [maci::MACIHelper::resolveNameService] 
+1 - ----------T--:--:--.--- [maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
+1 - ----------T--:--:--.--- [maci::MACIHelper::resolveNameService] Resolving reference: 'corbaloc::---:----/NameService'
+1 - user exception, ID 'IDL:omg.org/CORBA/ORB/InvalidName:1.0'
+1 - 
+1 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::MACIHelper::resolveNameService
+1 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+1 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
+1 - 
+1 - 
+1 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::MACIHelper::resolveNameService
+1 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+1 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
+1 - 
+1 - 
+1 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::MACIHelper::resolveNameService
+1 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+1 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
+1 - 
+1 - 
+1 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::MACIHelper::resolveNameService
+1 - ----------T--:--:--.--- [maci::ManagerImpl::internalInitializer] Failed to connect to the Naming Service - disabling Naming Service Mapping.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::getManager] 
+1 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+1 - ----------T--:--:--.--- [maci::HeartbeatController::HeartbeatController] 
+1 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
+1 - 
+1 - ----------T--:--:--.--- [maci::HeartbeatController::start] 
+1 - 
+1 - ----------T--:--:--.--- [recovery::RecoveryStore::load] Creating or loading recovery file
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] 
+1 - ----------T--:--:--.--- [maci::HeartbeatInitializationHandler::handle_timeout] Heartbeat ping() invocation timeout set to xxxx 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] Getting Log.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::resolve] 
+1 - ----------T--:--:--.--- [main] Failed to connect to the Centralized Logger.
+1 - ----------T--:--:--.--- [main] Manager is now waiting for requests.
+1 - ----------T--:--:--.--- [maci::HeartbeatInitialization::handle_close] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Generated CommandLine: Container Container -ORBEndpoint iiop://LCU -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/DefaultRepository
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initializeCORBA] 
+2 - ----------T--:--:--.--- Local file logger: Cache saved to 'logFile_Container_0'.
+2 - ----------T--:--:--.--- [ACSError::init] Dyn Any Factory initialised ! 
+2 - ----------T--:--:--.--- [ACSError::init] Initialising Dyn Any Factory ... 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activateCORBAObject] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Container 'Container' activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Autoloading 'baci'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Using DLL path: .....
+2 - ----------T--:--:--.--- [maci::LibraryManager::setSearchPath] 
+2 - 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::loadDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::ldfind] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'baci'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::locateLibrary] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/baci'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loading '/----/bin/PPC604/baci'.
+2 - ----------T--:--:--.--- [baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '/tmp/baci_recovery_Container.'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] DLLOpen executed.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Executing DLLOpen
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/baci'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::setupCORBAinDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/----/bin/PPC604/baci'
+2 - ----------T--:--:--.--- [baci::CDBPropertySet::CDBPropertySet] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::initThreadsInDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/----/bin/PPC604/baci'
+2 - ----------T--:--:--.--- [maci::LibraryManager::setupCORBAinDLL] DLLSetupCORBA executed
+2 - ----------T--:--:--.--- [maci::LibraryManager::setupCORBAinDLL] Executing DLLSetupCORBA
+2 - ----------T--:--:--.--- [maci::LibraryManager::initThreadsInDLL] DLLInitThreads executed
+2 - ----------T--:--:--.--- [maci::LibraryManager::initThreadsInDLL] Executing DLLInitThreads
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Autoloading 'acsdo'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::loadDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::ldfind] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsdo'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::locateLibrary] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/acsdo'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loading '/----/bin/PPC604/acsdo'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsdo'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::setupCORBAinDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/----/bin/PPC604/acsdo'
+2 - ----------T--:--:--.--- [maci::LibraryManager::initThreadsInDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/----/bin/PPC604/acsdo'
+2 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::ContainerImpl::init
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Container 'Container' initialized successfuly
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Connecting to the Manager...
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Failed to connect to the InterfaceRepository.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::resolveManager] 
+2 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+2 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
+2 - 
+2 - 
+2 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] ManagerReference obtained via CDB: 'corbaloc::---:----/Manager'
+2 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+2 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Manager reference narrowed.
+2 - ----------T--:--:--.--- [maci::ContainerImpl:::authenticate] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_COB] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::loadDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::ldfind] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsexmplAmsSeq'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::locateLibrary] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/acsexmplAmsSeq'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loading '/----/bin/acsexmplAmsSeq'.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::login] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::login] Container 'Container' logged in
+1 - ----------T--:--:--.--- [maci::ManagerImpl::reactivateUnavailableCOBs] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::startupCOBs] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::checkHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COBs] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::checkHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] Getting AMSSEQ1.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::hasPermission] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::hasPermission] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::resolveCURL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::getSymbol] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] DLLOpen executed.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Executing DLLOpen
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/acsexmplAmsSeq'.
+2 - ----------T--:--:--.--- [::AmsTestSeq::AmsTestSeq] 
+2 - ----------T--:--:--.--- [baci::BACICOB::BACICOB] 
+2 - ----------T--:--:--.--- [baci::BACICOB::BACICOB] Creating COB 'AMSSEQ1'
+2 - ----------T--:--:--.--- [baci::BACICOB::setRTResponseTime] 
+2 - ----------T--:--:--.--- [baci::BACICOB::setMTResponseTime] 
+2 - ----------T--:--:--.--- [baci::BACICOB::setMTSleepTime] 
+2 - ----------T--:--:--.--- [baci::BACICOB::setRTSleepTime] 
+2 - ----------T--:--:--.--- [baci::RWdoubleSeq::RWdoubleSeq] 
+2 - ----------T--:--:--.--- [baci::BACICOB::registerCallback] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Archiver monitor with priority 3
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Creating monitor 'RWdoubleSeqPM' (archiving: 1, triggerTime: 0)
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] Creating property 'AMSSEQ1:RWdoubleSeqPM'
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerTime] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerValue] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::addMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::updateMonitorStates] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] No DevIO provided - created DevIOMem.
+2 - ----------T--:--:--.--- [baci::ROdoubleSeq::ROdoubleSeq] 
+2 - ----------T--:--:--.--- [baci::RWdoubleSeq::RWdoubleSeq] Successfully created.
+2 - ----------T--:--:--.--- [baci::BACICOB::registerCallback] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Archiver monitor with priority 3
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Creating monitor 'ROdoubleSeqPM' (archiving: 1, triggerTime: 0)
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerTime] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerValue] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] Creating property 'AMSSEQ1:ROdoubleSeqPM'
+2 - ----------T--:--:--.--- [baci::BACIProperty::addMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::updateMonitorStates] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty] 
+2 - ----------T--:--:--.--- [baci::BACICOB::startAllThreads] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [baci::BACIThread::BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThread::BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThread::create] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] No DevIO provided - created DevIOMem.
+2 - ----------T--:--:--.--- [baci::ROdoubleSeq::ROdoubleSeq] Successfully created.
+2 - ----------T--:--:--.--- [baci::BACIThread::create] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'AMSSEQ1::actionThread'
+2 - ----------T--:--:--.--- [AmsTestSeq/DLLOpen] Succesfully created COB!
+2 - ----------T--:--:--.--- [baci::actionThreadWorker] 
+2 - ----------T--:--:--.--- [baci::actionThreadWorker] AMSSEQ1
+2 - ----------T--:--:--.--- [baci::monitorThreadWorker] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activateCORBAObject] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'AMSSEQ1::monitorThread'
+2 - ----------T--:--:--.--- [baci::monitorThreadWorker] AMSSEQ1
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_COB] COB 'AMSSEQ1' activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_COB] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::loadDLL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::ldfind] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Request to load 'acsexmplMount'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::locateLibrary] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Full path '/----/bin/PPC604/acsexmplMount'
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loading '/----/bin/PPC604/acsexmplMount'.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::addHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::bind] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] Getting MOUNT1.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::checkHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::hasPermission] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::resolveCURL] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] DLLOpen executed.
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Executing DLLOpen
+2 - ----------T--:--:--.--- [maci::LibraryManager::load] Loaded '/----/bin/PPC604/acsexmplMount'.
+2 - ----------T--:--:--.--- [maci::LibraryManager::getSymbol] 
+2 - ----------T--:--:--.--- [::Mount::Mount] 
+2 - ----------T--:--:--.--- [baci::BACICOB::BACICOB] 
+2 - ----------T--:--:--.--- [baci::BACICOB::BACICOB] Creating COB 'MOUNT1'
+2 - ----------T--:--:--.--- [baci::BACICOB::setMTResponseTime] 
+2 - ----------T--:--:--.--- [baci::BACICOB::setMTSleepTime] 
+2 - ----------T--:--:--.--- [baci::BACICOB::setRTResponseTime] 
+2 - ----------T--:--:--.--- [baci::BACICOB::setRTSleepTime] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACICOB::registerCallback] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Archiver monitor with priority 3
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Creating monitor 'cmdAz' (archiving: 1, triggerTime: 0)
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerTime] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerValue] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:cmdAz'
+2 - ----------T--:--:--.--- [baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::addMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::updateMonitorStates] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] No DevIO provided - created DevIOMem.
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] Successfully created.
+2 - ----------T--:--:--.--- [baci::BACICOB::registerCallback] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Creating monitor 'cmdEl' (archiving: 1, triggerTime: 0)
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:cmdEl'
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Archiver monitor with priority 3
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerTime] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerValue] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::addMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::updateMonitorStates] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] No DevIO provided - created DevIOMem.
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] Successfully created.
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] 
+2 - ----------T--:--:--.--- [baci::BACICOB::registerCallback] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Archiver monitor with priority 3
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Creating monitor 'actAz' (archiving: 1, triggerTime: 0)
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerTime] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerValue] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:actAz'
+2 - ----------T--:--:--.--- [baci::BACIProperty::addMonitor] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::updateMonitorStates] 
+2 - ----------T--:--:--.--- [baci::BACICOB::registerCallback] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::BACIProperty] Creating property 'MOUNT1:actEl'
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] No DevIO provided - created DevIOMem.
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] Successfully created.
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Archiver monitor with priority 3
+2 - ----------T--:--:--.--- [baci::BACIMonitor::BACIMonitor] Creating monitor 'actEl' (archiving: 1, triggerTime: 0)
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerTime] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::setTriggerValue] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::addMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::updateMonitorStates] 
+2 - ----------T--:--:--.--- [baci::BACICOB::addProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::startAllThreads] 
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] No DevIO provided - created DevIOMem.
+2 - ----------T--:--:--.--- [baci::ROdouble::ROdouble] Successfully created.
+2 - ----------T--:--:--.--- [baci::BACIThread::BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThread::BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThread::create] 
+2 - ----------T--:--:--.--- [baci::BACIThread::create] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activateCORBAObject] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::activate_COB] COB 'MOUNT1' activated.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'MOUNT1::actionThread'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::initThread] Thread name: 'MOUNT1::monitorThread'
+2 - ----------T--:--:--.--- [baci::actionThreadWorker] 
+2 - ----------T--:--:--.--- [baci::actionThreadWorker] MOUNT1
+2 - ----------T--:--:--.--- [baci::monitorThreadWorker] 
+2 - ----------T--:--:--.--- [baci::monitorThreadWorker] MOUNT1
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Connected to the Manager.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Connecting to the Centralized Logger...
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Failed to connect to the Centralized Logger.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Failed to connect to the Centralized Logger.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::init] Unable to set Naming Context to Logger.
+2 - ----------T--:--:--.--- [ContainerImpl::run] Container running...
+2 - ----------T--:--:--.--- [maci::ContainerImpl::run] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::addHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::bind] 
+1 - ----------T--:--:--.--- [maci::HeartbeatController::registerClient] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::registerClient] Registering client with handle: xxxxx.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::login] Login completed.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] Getting Log.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::resolve] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] Getting NameService.
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] Heartbeat check requested for: xxxxx.
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] Heartbeat check requested for: xxxxx.
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] Heartbeat check requested for: xxxxx.
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] Heartbeat check requested for: xxxxx.
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] Heartbeat check requested for: xxxxx.
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::handle_timeout] Heartbeat check requested for: xxxxx.
+3 - ----------T--:--:--.--- Instantiating SimpleClient.
+3 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__xxxx'.
+2 - ----------T--:--:--.--- [baci::BACICOB::pushAction] 
+2 - ----------T--:--:--.--- [baci::BACICOB::registerAction] 
+2 - ----------T--:--:--.--- [baci::BACICOB::registerCallback] 
+3 - ----------T--:--:--.--- Logging proxy successfully created.
+2 - ----------T--:--:--.--- [::AmsTestSeq::setCoeffAction] AMSSEQ1
+2 - ----------T--:--:--.--- [baci::BACICOB::popAction] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeCallback] 
+2 - ----------T--:--:--.--- acsexmplAmsSeq: .. final value is (length 12):
+2 - ----------T--:--:--.--- setCoeffAction!
+3 - ----------T--:--:--.--- [ACSError::init] Initialising Dyn Any Factory ... 
+3 - ----------T--:--:--.--- [ACSError::init] Dyn Any Factory initialised ! 
+3 - 
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] Getting Log.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::resolve] 
+3 - ----------T--:--:--.--- Simple client are not going to use Centralized Logger (nil problem).
+1 - ----------T--:--:--.--- [maci::ManagerImpl::login] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::login] Client 'Simple MACI Client' logged in
+1 - ----------T--:--:--.--- [maci::HeartbeatController::registerClient] 
+1 - ----------T--:--:--.--- [maci::HeartbeatHandler::registerClient] Registering client with handle: xxxxx.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::login] Login completed.
+3 - ----------T--:--:--.--- Logged in.
+3 - ----------T--:--:--.--- Getting device: 'curl://AMSSEQ1'. Creating it...
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::get_COB] Getting curl://AMSSEQ1.
+1 - ----------T--:--:--.--- [maci::ManagerImpl::checkHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::hasPermission] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::resolveCURL] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::hasHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::addHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::addHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::hasHandle] 
+3 - ----------T--:--:--.--- acsexmplAmsSeqClientSet: .. new value to be set is (length 12):
+3 - ----------T--:--:--.--- acsexmplAmsSeqClient: .. value is (length 12):
+3 - ----------T--:--:--.--- 	(0): 0.100000
+3 - ----------T--:--:--.--- 	(1): 0.200000
+3 - ----------T--:--:--.--- 	(2): 0.300000
+3 - ----------T--:--:--.--- 	(3): 0.400000
+3 - ----------T--:--:--.--- 	(4): 0.500000
+3 - ----------T--:--:--.--- 	(5): 0.600000
+3 - ----------T--:--:--.--- 	(6): 0.700000
+3 - ----------T--:--:--.--- 	(7): 0.800000
+3 - ----------T--:--:--.--- 	(8): 0.900000
+3 - ----------T--:--:--.--- 	(9): 1.000000
+3 - ----------T--:--:--.--- 	(10): 1.100000
+3 - ----------T--:--:--.--- 	(11): 1.200000
+3 - ----------T--:--:--.--- Binding value to ROdoubleSeq
+3 - ----------T--:--:--.--- (CBvoid::done)
+3 - ----------T--:--:--.--- Releasing...
+1 - ----------T--:--:--.--- [maci::ManagerImpl::checkHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::release_COB] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::hasPermission] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::removeHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::resolveCURL] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::removeHandle] 
+3 - ----------T--:--:--.--- Logging out...
+1 - ----------T--:--:--.--- [maci::ManagerImpl::logout] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::checkHandle] 
+1 - ----------T--:--:--.--- [maci::ManagerImpl::logout] Client 'Simple MACI Client' logged out
+1 - ----------T--:--:--.---
+3 - ----------T--:--:--.--- Destroying CORBA...
+3 - ----------T--:--:--.--- Client destroyed.
+3 - Shutting down Container
+2 - ----------T--:--:--.--- [maci::ContainerImpl::logout] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::logout] Logging out from the Manager.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::shutdown] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::logout] Logged out from the Manager.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::shutdown] 2 COBs left unactivated.
+2 - ----------T--:--:--.--- [::AmsTestSeq::~AmsTestSeq] 
+2 - ----------T--:--:--.--- [::AmsTestSeq::~AmsTestSeq] Destroying AMSSEQ1...
+2 - ----------T--:--:--.--- [baci::BACICOB::stopAllThreads] 
+2 - ----------T--:--:--.--- [baci::BACIThread::stop] 
+2 - ----------T--:--:--.--- [baci::BACIThread::terminate] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::doneThread] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::doneThread] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeCOB] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeCOB] Etherealizing 'AMSSEQ1'
+2 - ----------T--:--:--.--- [maci::ContainerImpl::shutdown] Shutting down ORB
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat_maciContainerShutdown_xxxx'.
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Manager reference narrowed.
+3 - ----------T--:--:--.--- Calling maci::Container::shutdown() on 'Container'
+3 - ----------T--:--:--.--- Done.
+3 - ----------T--:--:--.--- Done all.
+3 - Shutting down Manager
+2 - ----------T--:--:--.--- [RWdoubleSeq::~RWdoubleSeq] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::destroy] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::internalDestroy] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Destroying: AMSSEQ1:RWdoubleSeqPM
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'AMSSEQ1:RWdoubleSeqPM'.
+2 - ----------T--:--:--.--- [baci::RWdoubleSeq::destroy] 
+2 - ----------T--:--:--.--- [ROdoubleSeq::~ROdoubleSeq] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Destroying monitor 'RWdoubleSeqPM'
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Monitor 'RWdoubleSeqPM' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Destroying: AMSSEQ1:ROdoubleSeqPM
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Property 'AMSSEQ1:RWdoubleSeqPM' destroyed.
+2 - ----------T--:--:--.--- [baci::ROdoubleSeq::destroy] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty done] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::destroy] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::internalDestroy] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Destroying monitor 'ROdoubleSeqPM'
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Monitor 'ROdoubleSeqPM' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'AMSSEQ1:ROdoubleSeqPM'.
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Property 'AMSSEQ1:ROdoubleSeqPM' destroyed.
+2 - ----------T--:--:--.--- [::AmsTestSeq::~AmsTestSeq] Properties destroyed
+2 - ----------T--:--:--.--- [baci::BACICOB::~BACICOB] 
+2 - ----------T--:--:--.--- [::AmsTestSeq::~AmsTestSeq] COB destroyed
+2 - ----------T--:--:--.--- [baci::BACICOB::~BACICOB] COB 'AMSSEQ1' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIThread::~BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThread::~BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThreadManager::~BACIThreadManager] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeCOB] COB 'AMSSEQ1' etherealized.
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::unlock] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloading '/----/bin/acsexmplAmsSeq'
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] DLLClose executed
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Executing DLLClose
+2 - ----------T--:--:--.--- [baci::BACICOB::stopAllThreads] 
+2 - ----------T--:--:--.--- [baci::BACIThread::terminate] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeCOB] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeCOB] Etherealizing 'MOUNT1'
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloaded '/----/bin/acsexmplAmsSeq'.
+2 - ----------T--:--:--.--- [baci::BACIThread::stop] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::doneThread] 
+2 - ----------T--:--:--.--- [maci::ContainerImpl::doneThread] 
+2 - ----------T--:--:--.--- [ROdouble::~ROdouble] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::internalDestroy] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:cmdAz
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:cmdAz'.
+2 - ----------T--:--:--.--- [baci::ROdouble::destroy] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::destroy] 
+2 - ----------T--:--:--.--- [ROdouble::~ROdouble] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Destroying monitor 'cmdAz'
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Monitor 'cmdAz' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:cmdEl
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Property 'MOUNT1:cmdAz' destroyed.
+2 - ----------T--:--:--.--- [baci::ROdouble::destroy] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::internalDestroy] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:cmdEl'.
+2 - ----------T--:--:--.--- [baci::BACIMonitor::destroy] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Destroying monitor 'cmdEl'
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Monitor 'cmdEl' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Property 'MOUNT1:cmdEl' destroyed.
+2 - ----------T--:--:--.--- [ROdouble::~ROdouble] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::internalDestroy] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:actAz
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:actAz'.
+2 - ----------T--:--:--.--- [baci::ROdouble::destroy] 
+2 - ----------T--:--:--.--- [ROdouble::~ROdouble] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::destroy] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Destroying monitor 'actAz'
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Monitor 'actAz' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Destroying: MOUNT1:actEl
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Property 'MOUNT1:actAz' destroyed.
+2 - ----------T--:--:--.--- [baci::ROdouble::destroy] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty done] 
+2 - ----------T--:--:--.--- [baci::BACICOB::removeProperty] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::internalDestroy] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'MOUNT1:actEl'.
+2 - ----------T--:--:--.--- [baci::BACIMonitor::destroy] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Destroying monitor 'actEl'
+2 - ----------T--:--:--.--- [baci::BACIMonitor::~BACIMonitor] Monitor 'actEl' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::removeMonitor] 
+2 - ----------T--:--:--.--- [baci::BACICOB::stopAllThreads] 
+2 - ----------T--:--:--.--- [baci::BACICOB::~BACICOB] 
+2 - ----------T--:--:--.--- [baci::BACIProperty::~BACIProperty] Property 'MOUNT1:actEl' destroyed.
+2 - ----------T--:--:--.--- [baci::BACIThread::~BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThread::~BACIThread] 
+2 - ----------T--:--:--.--- [baci::BACIThreadManager::~BACIThreadManager] 
+2 - ----------T--:--:--.--- [baci::BACICOB::~BACICOB] COB 'MOUNT1' destroyed.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::etherealizeCOB] COB 'MOUNT1' etherealized.
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::unlock] 
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloading '/----/bin/PPC604/acsexmplMount'
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] DLLClose executed
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Executing DLLClose
+2 - ----------T--:--:--.--- [ContainerImpl::run] Container stopping...
+2 - ----------T--:--:--.--- [maci::ContainerImpl::shutdown] Done
+2 - ----------T--:--:--.--- [maci::LibraryManager::unload] Unloaded '/----/bin/PPC604/acsexmplMount'.
+2 - ----------T--:--:--.--- Container stopped.
+2 - ----------T--:--:--.--- Stopping Container... 
+2 - ----------T--:--:--.--- [ContainerImpl::run] Leaving ContainerImpl::run() method.
+2 - ----------T--:--:--.--- [maci::ContainerImpl::doneCORBA] 
+2 - 
+2 - 
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat_maciManagerShutdown_xxxx'.
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [maci::MACIHelper::resolveManager] Manager reference narrowed.
+3 - ----------T--:--:--.--- Calling maci::Manager::shutdown()...
+3 - ----------T--:--:--.--- Done.
+3 - All done!
+
+
+

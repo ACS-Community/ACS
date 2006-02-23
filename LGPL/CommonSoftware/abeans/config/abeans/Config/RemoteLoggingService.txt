@@ -1,0 +1,11 @@
+debug=true
+CentralizedLogger=Log
+CacheSize=10
+MinCachePriority=0
+MaxCachePriority=31
+
+# use ACSPlug to obtain NS from the Manager
+DisableRemoteDirectoryLookup=true
+
+#MaxCacheSize=500
+#MaxThreads=10

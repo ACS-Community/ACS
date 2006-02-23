@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+
+<project name="AcsMasterCompGenerator" default="runBeautifier" basedir="..">
+
+	<!-- should be overridden on the command line (-DACSROOT=...);
+       only used here to make Eclipse ANT editor happy... 
+  <property name="ACSROOT" value="Y:\alma\ACS-3.1\ACSSW" /> -->
+
+
+	<property name="build.sysclasspath" value="ignore" />
+
+	<property name="acslib" value="${ACSROOT}/lib" />
+	<property name="modlib" value="${basedir}/lib" />
+	
+	<property name="config.home" value="${basedir}/config/codegen" />
+	<property name="config.statemach" value="${config.home}/statemach" />
+
+	<!-- all build results are put under this dir -->
+	<property name="build.home" value="${basedir}/object/antbuild" />
+	<property name="build.src" value="${build.home}/src" />
+
+	<property name="build.tmp" value="${build.home}/tmp" />
+
+
+
+	<!-- =================================================
+      Custom Tasks (should be defined centrally elsewhere, 
+      once the ACS build system can handle ANT file referencing
+     ================================================= -->
+
+	<taskdef name="beautify" classname="genfwutil.beautifier.ant.BeautifierTask">
+		<classpath>
+			<fileset dir="${acslib}">
+				<include name="genfwutil.jar" />
+				<include name="jdom.jar" /> 
+				<include name="log4j-1.2.8.jar" />				
+			</fileset>
+		</classpath>
+	</taskdef>
+
+	<taskdef name="statemachinegen" classname="alma.acs.genfw.AcsGeneratorTask">
+		<classpath>
+			<fileset dir="${modlib}">
+				<include name="acscodegen.jar" />
+			</fileset>
+			<fileset dir="${acslib}">
+				<include name="genfw.jar" />
+				<include name="metacore.jar" />
+				<include name="genfwutil.jar" />
+				<include name="acscodegen.jar" />
+				<include name="xercesImpl.jar" />
+				<include name="xercesImpl.jar" />
+				<include name="gnu-regexp-1.1.4.jar" />
+				<include name="log4j-1.2.8.jar" />
+			</fileset>
+		</classpath>
+	</taskdef>
+
+
+	<!-- =================================================
+      Basic targets
+     ================================================= -->
+
+	<target name="init">
+
+		<tstamp />
+
+		<!-- will actually fail before (in the taskdef) -->
+		<fail unless="ACSROOT" message="must call ANT with -DACSROOT=... option" />
+
+		<delete dir="${build.home}" />
+		<mkdir dir="${build.tmp}" />
+		<mkdir dir="${build.src}" />
+
+		<condition property="astyleexe" value="${modlib}/astyle.exe">
+			<os family="windows"/>
+		</condition>
+		
+		<condition property="astyleexe" value="${ACSROOT}/bin/astyle">
+			<and>
+				<os family="unix"/>
+				<not>
+					<os family="mac"/>
+				</not>
+			</and>
+		</condition>
+		
+		<condition property="astyleexe" value="${modlib}/astyle_darwin">
+			<os family="mac"/>
+		</condition>
+						
+	</target>
+
+
+	<!-- =================================================
+      Run Code Generator 
+     ================================================= -->
+
+	<target name="runStateMachineGenerator" description="bla" depends="init">
+
+	    <statemachinegen 
+	      log4JPropertiesFile="${basedir}/log4j.properties"
+	      templateEvalCallbackClassname="genfwutil.templateEvalCallback.CallTreeTemplateEvalCallback"                 
+	      outDir="${build.src}"
+	      srcDir="${build.tmp}" 
+	      logLevel="2"
+	      mode="generate"
+	      >  
+	      <modeConfig name="generate" plugins="mm, gen"/>
+	      <plugin name="mm" classname="alma.acs.genfw.AlmaMetamodelPlugin">
+	        <property name="MODEL" value="${basedir}/test/MasterComponent.xml"/>
+	        <property name="XMLMAP" value="${config.statemach}/rose_unisys134_xmi11_sta.xml"/>
+	        <property name="METAMAP" value="${config.statemach}/metamappings.xml"/>
+	        <property name="TOOLADAPTER" value="de.bmiag.genfw.instantiator.xml.toolsupport.baseuml.rose.RoseAdapter"/>
+	      </plugin>
+	      <plugin name="gen" classname="alma.acs.genfw.AlmaGeneratorPlugin">
+	        <property name="TEMPLATES.ROOT" value="${config.statemach}"/>
+	      </plugin>
+	    </statemachinegen>
+
+	</target>
+
+
+	
+	<!-- =================================================
+      Run Code Beautifier
+     ================================================= -->
+
+	<target name="runBeautifier" description="beautify the generated code" depends="runStateMachineGenerator">
+
+		<fail unless="astyleexe" message="no 'astyle' executable seems to match your OS." />
+		
+		<beautify 
+			directory="${build.src}"
+			aStyleExecutable="${astyleexe}"
+			deep="true"
+			log4JPropertiesFile="${basedir}/log4j.properties"
+		/>
+
+	</target>
+	
+</project>

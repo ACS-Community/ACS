@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+#  "@(#) $Id: tat1,v 1.76 2003/01/09 17:51:21 vltsccm Exp $"
+#
+#  tat1 - invalid arguments
+#
+#
+
+rm -f TestList.sed
+rm -f TestList.grep
+cp TestList.grep.tat1 TestList.grep
+
+# no TestList
+rm -f TestList
+tat
+
+# no test in TestList 
+
+touch TestList
+echo # >> TestList
+tat
+
+# invalid command lines ...
+
+tat -s makeEnv cleanEnv
+tat -s makeEnv
+tat -s cleanEnv
+tat -s xxtest1
+tat -s xxtest1 xxtest2
+tat -g makeEnv cleanEnv
+tat -g makeEnv
+tat -g cleanEnv
+tat makeEnv -s -g
+tat makeEnv -g
+tat makeEnv -s
+tat makeEnv xxtest1
+tat makeEnv xxtest1 xxtest2
+tat cleanEnv -s -g
+tat cleanEnv -g
+tat cleanEnv -s
+tat cleanEnv xxtest1
+tat cleanEnv xxtest1 xxtest2
+tat makeEnv cleanEnv
+tat cleanEnv makeEnv
+tat makeEnv cleanEnv -s
+tat makeEnv cleanEnv -g
+tat makeEnv cleanEnv -s -g
+tat makeEnv cleanEnv xxtest1
+tat makeEnv cleanEnv xxtest1 -s
+tat makeEnv cleanEnv xxtest1 -g -s
+tat makeEnv cleanEnv xxtest1 xxtest2 -s
+tat makeEnv cleanEnv xxtest1 xxtest2 -g
+tat makeEnv cleanEnv xxtest1 xxtest2 -s -g
+
+# wrong TestList inputs ...
+
+rm -f TestList
+echo xxtest a  >>TestList
+echo xxtest a b >>TestList
+echo xxtest a b c >>TestList
+echo ENVIRONMENT >>TestList
+echo ENVIRONMENT ws1 >> TestList
+echo ENVIRONMENT ws1 WS a >>TestList
+echo ENVIRONMENT lcu1 >>TestList
+echo ENVIRONMENT lcu1 LCU b >>TestList
+
+tat
+
+# no reference file
+rm -f TestList
+rm -f tat1.1
+echo tat1.1 >> TestList
+echo "echo tat1.1" >> tat1.1
+tat

@@ -1,0 +1,33 @@
+1 - Running acsexmplClientAmsSeq AMSSEQ1 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2
+1 - Welcome to acsexmplClientAmsSeq!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] acsexmplAmsSeqClient: .. value is (length 12):
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(0): 0.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(1): 1.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(2): 2.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(3): 3.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(4): 4.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(5): 5.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(6): 6.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(7): 7.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(8): 8.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(9): 9.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(10): 10.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(11): 11.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] acsexmplAmsSeqClientSet: .. new value to be set is (length 12):
+1 - ----------T--:--:--.--- [GlobalLogger - ] acsexmplAmsSeqClient: .. value is (length 12):
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(0): 0.100000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(1): 0.200000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(2): 0.300000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(3): 0.400000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(4): 0.500000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(5): 0.600000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(6): 0.700000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(7): 0.800000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(8): 0.900000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(9): 1.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(10): 1.100000
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	(11): 1.200000
+1 - ----------T--:--:--.--- [GlobalLogger - ] Binding value to ROdoubleSeq
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - All done!

@@ -1,0 +1,102 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2004
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+package alma.acs.logging;
+
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
+
+/**
+ * Copied over from <code>ConsoleHandler</code>, but using <code>System.out</code> instead of <code>System.err</code>.
+ * <p>
+ * Note that we can't inherit from <code>ConsoleHandler</code> and reset the output stream 
+ * using <code>setOutputStream(System.out)</code>, because this would yield a call to <code>System.err.close()</code>.
+ * 
+ * @author hsommer
+ * created Jun 1, 2005 5:52:36 PM
+ */
+public class StdOutConsoleHandler extends StreamHandler {
+
+	public final static String PROPERTYNAME_ACS_LOG_STDOUT = "ACS.logstdout";
+	
+    private void configure() {
+    	// hardcoded default
+    	Level minLogLevel = Level.FINER;
+    	
+    	// try logging properties
+        LogManager manager = LogManager.getLogManager();        
+        String val = manager.getProperty(getClass().getName() + ".level");
+    	if (val != null) {
+    		minLogLevel = Level.parse(val);
+//    		System.out.println("StdOutConsoleHandler will use log level " + minLogLevel.getName());
+    	}
+        // todo: configure also from CDB. Or from env var ACS_LOG_STOUT (see Logging_and_Archiving.doc)
+
+    	// check if env variable ACS_LOG_STDOUT was set. Then this overwrites any other setting.
+    	Integer ACS_LOG_STDOUT = Integer.getInteger(PROPERTYNAME_ACS_LOG_STDOUT);
+    	if (ACS_LOG_STDOUT != null) {
+	    	AcsLogLevel Level_ACS_LOG_STDOUT = AcsLogLevel.fromAcsCoreLevel(ACS_LOG_STDOUT.intValue());
+	    	if (Level_ACS_LOG_STDOUT != null) {
+	    		minLogLevel = Level_ACS_LOG_STDOUT;
+	    	}
+    	}
+    	
+        setLevel(minLogLevel);
+    }
+
+    /**
+     * Create a <tt>ConsoleHandler</tt> for <tt>System.err</tt>.
+     * <p>
+     * The <tt>ConsoleHandler</tt> is configured based on <tt>LogManager</tt>
+     * properties (or their default values).
+     */
+    public StdOutConsoleHandler() {
+    	configure();
+        setOutputStream(System.out);
+    }
+
+    /**
+     * Publish a <tt>LogRecord</tt>.
+     * <p>
+     * The logging request was made initially to a <tt>Logger</tt> object,
+     * which initialized the <tt>LogRecord</tt> and forwarded it here.
+     * <p>
+     * 
+     * @param record
+     *            description of the log event. A null record is silently
+     *            ignored and is not published
+     */
+    public void publish(LogRecord record) {
+        super.publish(record);
+        flush();
+    }
+
+    /**
+     * Override <tt>StreamHandler.close</tt> to do a flush but not to close
+     * the output stream. That is, we do <b>not</b> close <tt>System.err</tt>.
+     */
+    public void close() {
+        flush();
+    }
+
+}

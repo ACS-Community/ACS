@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="ACSError.xsd"
+      name="acsthreadErrType"
+      type="37"
+      _prefix="alma"
+>
+  <ErrorCode name="CanNotSpawnThread"
+             shortDescription="Thread could not be spawned"
+            description="Thread could not be spawned"
+  >
+	<Member name="ThreadName" type="string" description="Name of the thread that could not be spawned"/>	
+  </ErrorCode>
+ <ErrorCode name="CanNotCreateThread"
+             shortDescription="Thread could not be created"
+            description="Thread could not be created"
+  />
+ <ErrorCode name="ThreadAlreadyExist"
+             shortDescription="Thread already exists"
+            description="Thread with this name already exists"
+ >
+	<Member name="ThreadName" type="string" description="Name of the thread that already exsists."/>	
+ </ErrorCode>
+</Type>

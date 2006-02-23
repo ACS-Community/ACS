@@ -1,0 +1,11 @@
+
+msc(2004-12-17)
+
+if you need to debug this test:
+
+1) change acsstartupSetEnv so that it doesn't pipe output to /dev/null
+   e.g. put a # after the ampersand
+       $2 $3 $4 $5 $6 $7 $8 $9 & #> /dev/null
+
+2) then you can look at the output in /tmp/<yourname>_test12345.x
+

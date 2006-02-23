@@ -1,0 +1,914 @@
+Tue Oct  21 09:38:39 2003  oat  <oat@pykon.oat.ts.astro.it>
+
+	* ws/include: added flag to allow automatic destruction of user DevIO
+
+Fri Aug  8 09:38:39 2003  Bogdan Jeram  <bjeram@te33.hq.eso.org>
+
+	* ws/test/*.cpp,v 1.90: added -ORBDottedDecimalAddresses 1 to argv
+	which is passed to ORB_init(). It solves problem to communicatig
+	LCU with WS (callbacks etc.)
+
+	* ws/include/baciValue.h,v 1.91 (BACIValue
+): changed octet inlineData[8] to double inlineData[2] duo to having problem on Sun with alignment
+
+Mon Jul 28 14:31:30 2003  Bogdan Jeram  <bjeram@te20.hq.eso.org>
+
+	* ws/test/: porting test to gcc 3.2 (adding std::) 
+
+Wed Jul  9 15:39:26 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciValue.*,v 1.90: (unsigned) long long support 
+	* ws/include/baciTypes.h,v 1.89: added (unsigned) longLong
+
+Wed Jul  9 08:15:55 2003  Bogdan Jeram  <bjeram@te37.hq.eso.org>
+        ported to gcc 3.2:
+	* ws/src/baciCallbackDispatcher.cpp,v 1.89: added #include
+	<baci.h>
+	(finishCallback): added baci::
+	* ws/include/baciThread.h,v 1.89: 
+	* ws/include/baci.h,v 1.89: 
+	* ws/include/baciEvent.h,v 1.89: 
+	   added std::
+
+Tue Jul  8 16:20:09 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src: removed baciAlarm*.cpp and baciMonitor*.cpp
+
+Mon Jul  7 11:31:56 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciAlarm_T.i,v 1.2 (check): for discreet type copied
+	from alarmpattern
+	- removed #ifdef MAKE_VXWORKS since long long is supported
+
+Tue Jun 24 14:31:59 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciROdiscImpl_T.*,v 1.3 (new_subscription_Alarm): 
+	* ws/include/baciROcontImpl_T.*,v 1.8 (new_subscription_Alarm):
+	implemented using template implementation of Alarms
+
+Wed Jun 18 15:21:37 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciAlarm_T.*: template implementation of Alarms
+
+Fri Jun  6 12:58:59 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciTestUtils.h,v 1.88: added baciTestCBpattern
+
+	* ws/test/baciTestMonitor.cpp,v 1.88: added monitor test for ROpattern
+
+Mon Jun  2 16:31:20 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciDB.h,v 1.89 (DBConnector::initDB
+): added argv, argc and orb parameter that DB can be initalize using
+already created ORB
+
+Mon Jun  2 11:22:50 2003  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/include/baciDevIOMem(_T).h,v 1.88: renamed to baciDevIOMem 
+
+Fri May 30 12:40:56 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciDevIOMem_T.h,v 1.90 (T>
+): value inside DevIOMem_T is represented as reference of type T.
+
+Thu May 29 12:22:39 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciDevInOut(Mem).h,v 1.1: 
+	* ws/include/baciDevIn(Mem).h,v 1.1: moved back to old DevIO in
+	which intalizeValue was added
+
+Thu May 29 10:21:57 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/src/Makefile,v 1.94: Added missing include files
+
+Wed May 28 15:51:57 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciPcommonImpl_T.i,v 1.8 (destroy): uncommented
+	_remove_ref + moved  PortableServer::RefCountServantBase to
+	NamedComponentImpl what causes that _remove_ref works as it should
+
+Tue May 27 13:40:14 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/idl/baci.idl,v 1.95: changed type of timeStamp inside
+	Completion from unsigned long long to Time (=unsigned long long)
+
+	* ws/include/baciROSeqContImpl_T.h,v 1.2 (ACS_RO_TL>): put again ROSeq
+
+	* ws/include/baciDevIn(Out)(Mem).h :  changed DevIO interface: DevIn +
+	DevInOut + provided implementation for memory one + made changes
+	inside properties: seting inital value, error handling ,....
+
+Fri May 23 11:06:44 2003  ALMA Project  <almamgr@te37.hq.eso.org>
+
+	* ws/src/baci.cpp,v 1.91: removed 
+	#ifdef MAKE_VXWORKS
+	#include <ccs.h>
+	#include <err.h>
+	#endif
+
+Thu May 22 11:40:45 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciROSeqContImpl_T.h,v 1.2 :  removed! 
+	We do not need it anymore since we can use ROCont directly. We can
+	do this after setting inital value was reomved from Pcommon.
+
+Wed May 21 14:12:14 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciPcommonImpl_T.i,v 1.6 (PcommonImpl): removed
+	setting initial value fro DevIO
+
+Mon May 19 15:35:30 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/baciValue.cpp,v 1.91 (getValue): fixed problem with
+	getting ACE_CString out of BACIValue which caused malfunction of RW/Ostring
+
+	* ws/test/startBaciTestClient.sh,v 1.88: increased sleep befor
+	client start (WS) and put sleep after the excution is over
+
+	* ws/include/baciRWcontImpl_T.i,v 1.4 (setValue): fixed checking
+	upper and lower limites
+
+Thu May 15 11:03:35 2003  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/idl/baci.idl,v 1.93: Added OffShoot interface and changed
+	inheritance for interfaces deriving from it.
+	Now the following interfaces derive from OffShoot:
+	- Callback
+	- Subscription
+
+Thu May 15 16:01:49 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciPcommonImpl_T.i,v 1.4 (destroy): remove
+	_remove_ref() which is called by TAO when object is deactivated
+
+Wed May  7 15:51:11 2003    <matej.sekoranja@ijs.si>
+
+	* ws/src/baci.cpp:
+	Monitor with zero trigger time bug fixed.
+
+Thu Apr 10 16:45:58 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include: 
+	- removed virtual inheritance of class PcommonImpl
+	- just RWcommonImpl and ROcommonImpl derives out of PcommmonImpl
+	(Pcont and Pdist do not need)
+	- added defulat parameter ACE_TRY_ENV for some implementation functions
+	- changed DevIO::write(T&... to write(const T&....
+
+Sat Mar 15 00:30:36 2003  INAF OAT  <oat@pykon.oat.ts.astro.it>
+
+	* ws/include/baciMonitor_T.h,v 1.90: implementation of Monitors
+	with templates
+	Remove from the Makefile all the Monitor<type> files
+
+Mon Mar 10 11:29:18 2003  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/include/baciPcommonImpl_T.h,v 1.2: uncomment RefCount
+
+Thu Feb 27 10:45:49 2003  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* first version og baci with template implementation of
+	properties. NOT yet all properties use template. They could but ...
+
+Fri Jan 24 16:08:59 2003  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/include/baciNamedComponentImpl.* (POA_ACS::NamedComponent
+): introduced
+
+	* ws/include/baciDevIO_T.h (DevIOT
+): integrated (temporary name for class is DevIOT)
+
+	* ws/include/baciDevIOMem_T.h (T>
+): integrated (temporary name for class is DevIOMemT)
+
+	* ws/include/baciROImpl_T.h: integrated DevIOT<> & DevIOMemT<> and derived
+	ROImpl out of NamedComponentImpl. DevIOT and DevIOMemT (ended with
+	T) are just temporary names !!
+
+Fri Jan 24 11:22:01 2003 <bjeram@te13.hq.eso.org>  baci version: 1.88 
+Thu Jan 23 17:24:35 2003  Bogdan Jeram  <bjeram@te37>
+
+	* ws/include/baciROImpl_T.*: added ... +  changed baciROdouble.h +
+	removed baciROdouble.cpp from make file, tested but not regenerat
+	reference files !!!.
+	Minor changes also in Monitor_T that lcu side compiles too (const
+	problem in constructor argument list).
+
+Tue Jan 21 15:58:47 2003 <bjeram@te13.hq.eso.org>  baci version: 1.87 
+Tue Jan 21 12:44:08 2003  oat  <oat@vega.oat.ts.astro.it>
+
+	* ws/src/Makefile: added baciMonitor_T.h (templates)
+
+	* ws/src/baciRWdouble.cpp: added templates for Monitors
+
+	* ws/src/baciROdouble.cpp: added templates for Monitors
+
+	* ws/include/baciMonitor_T.h: added templates for Monitors for
+	simple type double
+
+Tue Jan 21 09:54:40 2003 <rcirami@te13.hq.eso.org>  baci version: 1.86 
+Wed Jan  8 16:12:28 2003  Bogdan Jeram  <bjeram@te37>
+
+	* lcu/src/baciRWdouble.cpp (*): changed Value<T>() (accesor and
+	muttator) calls to setValue() and getValue() 
+
+	* lcu/src/baciRWdoubleSeq.cpp: changed Value<T>() (accesor and
+	muttator) calls to setValue() and getValue() 
+
+	* lcu/src/baciValue.*: since gcc 2.7.2 (vxWorks) does not support calls like Value<double>() I've changed accessor function to T getValue(T*) and I've also changed mutator function to setValue (to be consistent)
+
+Fri Dec 20 15:08:26 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciValue.h:  added accesor mutator template functions (temporary!!!)
+
+	* ws/src/baciValue.cpp: added template implementation for mutator and accessor functions (tmp)
+
+	* ws/src/baciRWdoubleSeq.cpp: replaced doubleSeqValue with Value<ACS::doubleSeq> or just Value
+
+	* ws/src/baciRWdouble.cpp: replaced doubleValue with Value<double> or just Value
+
+Fri Dec 20 11:20:06 2002 <bjeram@te13.hq.eso.org>  baci version: 1.85 
+Thu Dec 12 12:46:06 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/test/Makefile (USER_LIB): 
+	* ws/src/Makefile (USER_LIB): Removed CCS library
+
+Thu Dec 12 12:44:18 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.84 
+Thu Dec  5 11:42:44 2002  Radostina Georgieva  <rgeorgie@te1.hq.eso.org>
+
+	* changed GPL to LGPL.
+
+Thu Dec 05 11:08:50 2002 <rgeorgie@te13.hq.eso.org>  baci version: 1.83 
+Fri Nov 29 12:52:00 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+        
+	changed RO/Wpatter::create_monitor to return Monitorpattern
+	(on-change) instead just Monitor
+	* ws/idl/baci.idl: Ppattern::create_monitor returns Monitor pattern
+
+Fri Nov 29 12:41:53 2002 <bjeram@te13.hq.eso.org>  baci version: 1.82 
+Mon Nov 25 10:20:13 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/test/TestDriver: changed RTAPENV setting
+
+	* ws/test/TestList_BOTH.lite: added acsTATPrologue/Epilogue
+
+	* ws/test/ENVIRONMENTS/lcuTat/userScript (LDString): added putenv "DAL_REFERENCE=file://DAL.ior"
+
+Mon Nov 25 09:16:01 2002 <bjeram@te13.hq.eso.org>  baci version: 1.81 
+Fri Nov  8 13:29:58 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciMonitorpattern.h: added MonitorpatterOC
+	(onchange) (and not removed Monitorpattern (timer only))
+
+	* ws/include/baciValue.i (lessThanDeta): added support for pattern type
+
+Thu Nov 07 11:13:21 2002 <bjeram@te13.hq.eso.org>  baci version: 1.80 
+Tue Nov  5 14:22:02 2002  Dragan Vitas  <dvitas@dina.ijs.si>
+
+	* ws/test/CDB/MACI/Components structure is changed
+
+Tue Nov 05 14:12:03 2002 <dvitas@te13.hq.eso.org>  baci version: 1.79 
+Thu Oct 31 11:09:52 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/baciRW/O<T>.cpp (RW/O<T>): noew default value is set also
+	for provided devIO not just for default one (does not affect Seq) 
+
+Thu Oct 31 08:29:38 2002 <bjeram@te13.hq.eso.org>  baci version: 1.78 
+Mon Oct 28 15:53:48 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/test: added TestLit.grep 
+
+	* ws/test/baciTestThreads.cpp (worker): limited workerthread lopp
+	to 30 times to get deterministic output
+
+Mon Oct 21 11:19:44 2002 <bjeram@te13.hq.eso.org>  baci version: 1.77 
+Thu Oct 17 15:00:50 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/Makefile: 
+	* Added BACI.xsd schema file
+
+Thu Oct 17 16:39:15 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.76 
+Mon Oct 07 10:33:23 2002 <bjeram@te13.hq.eso.org>  baci version: 1.75 
+Thu Sep 26 15:56:21 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	* ws/src/baci.cpp:
+	* ws/src/baciROstring.cpp:
+	* ws/src/baciRWstring.cpp:
+	* ws/include/baciThread.h:
+	Memory managment
+
+	* ws/test/baciTestServer.cpp:
+	Ported to new version
+	
+
+Thu Sep 26 12:19:52 2002 <msekoran@te13.hq.eso.org>  baci version: 1.74 
+Mon Sep 23 14:03:02 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	* ws/include/baciDB.h:
+	* ws/src/baciDB.cpp:
+	Removed ACS_HAS_INI parts.
+
+	* ws/src/baciROpattern.h:
+	* ws/src/baciRWpattern.h:
+	Added additional 0 ptr check on get<type>Array() when reading CDB.
+
+Mon Sep 23 12:29:12 2002 <msekoran@te13.hq.eso.org>  baci version: 1.73 
+Tue Sep 17 18:19:47 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	Ported to new CDB.
+
+Tue Sep 17 12:33:40 2002 <msekoran@te13.hq.eso.org>  baci version: 1.72 
+Fri Sep 13 15:08:14 2002  Matej Sekoranja  <matej@csl01.ijs.si>
+
+	* ws/include/baciThread.h:
+	* ws/include/cdbCDBPropertySet.h:
+	Documentation added.
+
+	* ws/src/baciThread.cpp:
+	Variable sleep(TimeInterval timeIn100ms=0) implemented.
+
+Tue Sep 10 21:11:57 2002 <msekoran@te13.hq.eso.org>  baci version: 1.71 
+Mon Sep  9 09:25:12 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/test/baciTestServer.cpp:
+	* ws/test/baciTestThreads.cpp:
+	changed argUnpack.h to acsutilArgUnpack.h
+
+Mon Sep 09 17:21:21 2002 <dfugate@te13.hq.eso.org>  baci version: 1.70 
+Sun Sep  1 19:31:43 2002  Matej Sekoranja  <matej@csl01.ijs.si>
+
+	* ws/src/baci.cpp:
+	* ws/include/baciMonitorMacro.h:
+	* ws/src/baciThread.h:
+	Fixed destruction.
+
+Sun Sep 01 17:54:28 2002 <msekoran@te13.hq.eso.org>  baci version: 1.69 
+Mon Jul  8 16:55:13 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/baciRW{long,double}[Seq].cpp:
+	Removed snprintf.
+
+Mon Jul 08 16:20:22 2002 <msekoran@te13.hq.eso.org>  baci version: 1.68 
+Wed Jul  3 13:00:01 2002  ALMA Project c/o Robert Karban  <almamgr@te4.hq.eso.org>
+
+	* lcu/src/Makefile (baci_COMMON): Added baciError to baci_COMMON
+
+Wed Jul 03 12:57:36 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.67 
+Mon Jul  1 17:12:07 2002  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/test: regenerated tests reference files (just for WS). Some test are still
+	not stable. 
+
+Mon Jul 01 09:20:41 2002 <bjeram@te13.hq.eso.org>  baci version: 1.66 
+Thu Jun  6 11:31:29 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	*  renamed ACS_ERROR_STACK into ACS_COMPLETION
+	* ws/idl/baci.idl: ACSErr::Completion replaced with ACSErr::ErrorTrace
+
+Wed Jun  5 16:24:13 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/src/baciError.cpp (ACSErrHelper): added ACSErrStack( const ACE_TCHAR * file, int line, ACSErr::Completion &completion, ACSError& error);
+
+Wed Jun 05 13:40:50 2002 <bjeram@te13.hq.eso.org>  baci version: 1.65 
+Sun May 26 20:24:05 2002  Matej Sekoranja  <matej@localhost.localdomain>
+
+	* all priperties: ACS Error System added, get_history fixed
+
+Sat May 18 14:38:19 2002 <msekoran@te13.hq.eso.org>  baci version: 1.64 
+Mon Apr 22 09:11:25 2002 <bgustafs@te13.hq.eso.org>  baci version: 1.63 
+Sun Apr 14 22:33:01 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+        * ws/src/baciThread.cpp:
+        New suspend approach.
+
+Sun Apr 14 15:22:03 2002 <msekoran@te13.hq.eso.org>  baci version: 1.62 
+Mon Apr 08 15:18:05 2002 <bjeram@te13.hq.eso.org>  baci version: 1.61 
+        * regeneration of ref files
+Thu Apr 04 16:21:09 2002 <bjeram@te13.hq.eso.org>  baci version: 1.60 
+
+	* ws/include/baciRO/W<T>Seq.h: added getDevIO 
+	
+Thu Apr  4 10:32:41 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/baciRO/W<T>.h: added getDevIO 
+
+	* ws/include/baciRO<T>.h: removed set_sync
+
+Tue Apr 02 11:04:30 2002 <bjeram@te13.hq.eso.org>  baci version: 1.59 
+Thu Mar 28 13:51:39 2002  Bogdan Jeram  <bjeram@te22.hq.eso.org>
+
+	* ws/src/baciRO<T>.cpp (RO<T>): added m_devIO = devIO 
+
+Thu Mar 28 09:13:16 2002 <bjeram@te13.hq.eso.org>  baci version: 1.58 
+Thu Mar 28 09:10:54 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/include/baciRecovery.h:
+	* ws/src/baciRecovery.cpp:
+	Using getTempFileName().
+
+Wed Mar 27 08:46:27 2002 <msekoran@te13.hq.eso.org>  baci version: 1.57 
+Tue Mar 26 18:32:31 2002  Birger Gustafsson  <bgustafs@te4.hq.eso.org>
+
+	* updated LCU tat tests
+
+Tue Mar 26 13:30:37 2002 <bgustafs@te13.hq.eso.org>  baci version: 1.56 
+Mon Mar 25 14:32:27 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/baci.cpp:
+	Sync. monitors fixed (monitors with larger interval)
+
+Mon Mar 25 08:59:20 2002 <msekoran@te13.hq.eso.org>  baci version: 1.55 
+Wed Mar 20 13:55:06 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/include/baciDevIO.h (DevIO
+): cahnged all methods that are no more abstract virtual but just virtual
+
+Wed Mar 20 13:50:53 2002 <bjeram@te13.hq.eso.org>  baci version: 1.54 
+Fri Mar 15 17:57:37 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/baci.cpp:
+	Sync. monitors fixed
+
+Fri Mar 15 13:53:55 2002 <msekoran@te13.hq.eso.org>  baci version: 1.53 
+Wed Mar 13 16:50:11 2002  Birger Gustafsson  <bgustafs@te37>
+
+	* Completed modification by bjeram for memory properties. The
+	following files have been modified:
+	ws/src/baciROdouble.cpp
+	ws/src/baciROlong.cpp
+	ws/src/baciROpattern.cpp
+	ws/src/baciRWdouble.cpp
+	ws/src/baciRWlong.cpp
+	ws/src/baciRWstring.cpp
+	ws/src/baciRWpattern.cpp
+	ws/src/baciROstring.cpp
+	ws/include/baciROdouble.h
+	ws/include/baciROlong.h
+	ws/include/baciROpattern.h
+	ws/include/baciRWdouble.h
+	ws/include/baciRWlong.h
+	ws/include/baciRWstring.h
+	ws/include/baciROstring.h
+	ws/include/baciRWpattern.h
+	ws/dbl/acsProperty.class
+
+Mon Mar 11 09:29:07 2002 <bgustafs@te13.hq.eso.org>  baci version: 1.52 
+Fri Mar 01 16:56:57 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.51 
+Fri Mar  1 15:14:03 2002  ALMA Project c/o Robert Karban  <almamgr@te37>
+
+	* lcu/src/Makefile (baci_GENERATED): Removed S_T generated file.
+
+Fri Mar 01 15:12:45 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.50 
+Tue Feb 26 17:46:53 2002  Birger Gustafsson  <bgustafs@te37>
+	* ported tat tests to LCU, modified most files in 
+	ws/test and lcu/test
+
+	* lcu/include/argUnpack.h: added file for LCU test sw
+
+	* ws/src/baci.cpp: changed case of longlong for monitor interval
+
+	* lcu/src/Makefile: updated for new property type
+
+Tue Feb 26 16:53:13 2002 <bgustafs@te13.hq.eso.org>  baci version: 1.49 
+Tue Feb 26 15:47:23 2002  Bogdan Jeram  <bjeram@te22.hq.eso.org>
+
+	* ws/src/baciROpattern.cpp, 
+	ws/src/baciROstring.cpp, 
+	ws/src/baciROlong.cpp, 
+	ws/src/baciROdouble.cpp: changed to use DevIO for communicating
+	with property implementation
+
+Mon Feb 25 14:03:23 2002 <bjeram@te13.hq.eso.org>  baci version: 1.48 
+Mon Feb 18 19:24:05 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/test/baciTestThread.cpp: thread test added.
+	* ws/dbl/acsProperties.clas, properties: alarm_timer_trig added
+	* ws/src/baciCallbackDispatcher.cpp: performace improvement.
+	* ws/idl/baci.idl: new Completion introduced and properties,
+	alarms applied to new Completion
+
+Tue Feb 12 15:15:19 2002 <msekoran@te13.hq.eso.org>  baci version: 1.47 
+Mon Feb 11 20:08:58 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* baciTestPropertySync test: New properties added.
+	* tests regenerated 
+	* ROdoubleSeq property added
+	* Alarm support for sequences added (triggering to be revised).
+
+Mon Feb 11 15:39:37 2002 <msekoran@te13.hq.eso.org>  baci version: 1.46 
+Sun Feb 10 20:12:58 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/src/baciAlarm*:
+	Alarm destruction fixed.
+
+	* ws/src/baci.cpp:
+	Monitor destruction fixed.
+
+	* RWlongSeq property added and ROdoubleSeq property added (not
+	completely finished - no alarm support).
+
+	* ws/include/baciMonitorMacro.h:
+	Fixed ##type contentation, recovery narrow changed to native CB type
+	(so that DII would work).
+
+	No tests regererated (this is only an archive version)!
+	New properties to be tested (test written).
+
+	* ws/src/baciThread.cpp:
+	ACE_Thread::kill commented out. Should be node with cancel, kill
+	causes maciActivate to shutdown (it captures that signal).
+	
+Sat Feb 09 14:43:40 2002 <msekoran@te13.hq.eso.org>  baci version: 1.45 
+Thu Feb  7 15:13:36 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* ws/test/*:
+	Fixed baciTestServer desctruction.
+	baciTestMonitor (test 4) is not deterministic (one monitor
+	notification can sometimes comes sometimes not). To be checked.
+
+	* ws/src/baciCORBA.cpp:
+	Minor changes.
+
+Thu Feb 07 09:52:01 2002 <msekoran@te13.hq.eso.org>  baci version: 1.44 
+Wed Feb  6 21:18:42 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/test/baciTestServer.cpp (endif): 
+	Fixed bug in call to DBConnector::initDB().
+	In baci 1.42 the second parameter (DB root point)
+	has been replaced from the correct value "Appl_data:alma"
+	to "baciTestServer". Bug to original value.
+
+	The modular test shows that ##macro_parms is not replaced in strings.
+        Will have to be fixed in next version.
+
+	From the modular test seems also that DOs are not any more
+	destroyed on shutdown. TO BE CHECKED URGENTLY.
+	
+Wed Feb 06 20:05:40 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.43 
+Tue Feb  5 16:06:55 2002  ALMA Project c/o Robert Karban  <almamgr@te4.hq.eso.org>
+
+	* ws/dbl/acsProperty.class: 
+	* ws/dbl/acsDefine.class (_characteristics): 
+	Added _characsteristics attribute.
+
+	* ws/src/baciCallbackDispatcher.cpp: 
+	* ws/include/baciMonitorMacro.h: 
+	* ws/include/baciValue.i: 
+	Removed ## concatenation characters in macros.
+	gcc 2.96 complains when the ## concatenation does not produce a
+	valid C++ token.
+	In these case actually the ## is not necessary and can be simply
+	removed.
+	
+	* ws/src/*:
+	* ws/include/*:
+	Changed #include <> with #include "" for local includes.
+	
+
+Tue Feb 05 15:44:04 2002 <almamgr@te13.hq.eso.org>  baci version: 1.42 
+Sun Feb  3 20:35:25 2002  Matej Sekoranja  <matej@matej.cns9.si>
+
+	* ws/include/baciMonitorMacro.h:
+	Recovery of non-delta monitors fixed.
+
+	* ws/src/baciR*.cpp:
+	Destruction of properties improved.
+
+	* ws/src/baciAlarm*.cpp:
+	Destruction of event dispatcher improved.
+	
+Sun Feb 03 14:57:32 2002 <msekoran@te13.hq.eso.org>  baci version: 1.41 
+Fri Feb  1 09:59:17 2002  Gianluca Chiozzi  <gchiozzi@te37>
+
+	* ws/dbl/acsProperty.class: 
+	Added reasonable default values (ALMASW2001103)
+
+	* ws/src/baci.cpp: 
+	Removed ccsInit and ccsExit from TheadWorker() functions.
+	This shall be handled by the BACIThread::InitThread()
+	and BACIThread::DoneThread() handlers.
+	The maci::ActivatorImpl takes care of installing proper handlers
+	in maci.
+	
+
+Fri Feb 01 09:57:52 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.40 
+Fri Jan 18 22:10:38 2002  Gianluca Chiozzi  <gchiozzi@te22.hq.eso.org>
+
+	* ws/test/baciTestClassImpl.cpp: Removed maci support
+	functions. We are ot using maci for the baci test.
+
+	* ws/test/TestDriver.sed: Added filtering of pid in logging filename.
+
+Fri Jan 18 22:09:43 2002 <gchiozzi@te13.hq.eso.org>  baci version: 1.39 
+Mon Jan 14 21:42:01 2002  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	Implementation and tests of RWpattern and ROstring (alarm impl. missing)
+	added.
+	RWdoubleSeq property added (alarm impl. missing).
+	
+	Minor fixes.
+	
+
+Thu Dec 27 20:19:26 2001 <msekoran@te13.hq.eso.org>  baci version: 1.38 
+Thu Dec 20 09:58:20 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/baciCORBA.cpp: 
+	* ws/include/baciCORBA.h (BACI_CORBA): 
+	Added getPOAManager() and getPOARoot() methods.
+	
+Thu Dec 20 08:28:30 2001 <gchiozzi@te13.hq.eso.org>  baci version: 1.37 
+Wed Dec 19 10:55:31 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/test/baciTestDescriptor.cpp (main): 
+	* ws/test/baciTestMonitor.cpp (main): 
+	* ws/test/baciTestPropertySync.cpp (main): 
+	* ws/test/baciTestServer.cpp: 
+	* ws/test/baciTestActions.cpp (worker): 
+	Added initialisation of standard LoggingProxy fields
+	(Bugzilla 690)
+	
+	* ws/*:
+	Cleaned ^M characters (SPR.2001102)
+
+Tue Dec 18 14:00:58 2001 <gchiozzi@te13.hq.eso.org>  baci version: 1.36 
+Mon Nov 12 15:07:38 2001 <rlemke@te13.hq.eso.org>  baci version: 1.35 
+
+	* baci/ws/include/baciMonitorMacro.h
+        * baci/ws/test/baciTestClient.cpp 
+	* baci/ws/test/baciTestServer.cpp 
+	* baci/ws/test/baciTestActions.cpp
+	* baci/ws/test/baciTestDescriptor.cpp 
+	* baci/ws/test/baciTestPropertySync.cpp 
+	* baci/ws/test/baciTestMonitor.cpp 
+	* baci/ws/src/baci.cpp 
+	* baci/ws/src/baciAlarmdouble.cpp
+	* baci/ws/src/baciAlarmlong.cpp
+	* baci/ws/src/baciAlarmpattern.cpp
+	added functions for printing and scanning long long for VxWorks
+	(convString2LLU(char *) and char *printLLUasString(numToPrint))
+	* ws/test/TestDriver: Added rm /tmp/local_log.dat 
+
+	LCU tat is nearly finshed	
+
+Fri Nov  9 13:38:44 2001  Roland Lemke  <rlemke@te33.hq.eso.org>
+
+	* ws/test/TestDriver: Added rm/tmp/baci_recovery.dat
+
+Fri Nov  9 09:53:41 2001  Roland Lemke  <rlemke@te1.hq.eso.org>
+
+	* ws/test/baciTestMonitor.cpp (main): 
+	Added missing delete at end of main for dynamically allocated objects
+
+	* ws/test/baciTestMonitor.cpp: 
+	Removed baciTest global variable. Not used.
+
+	* ws/test/baciTestActions.cpp: 
+	Added sleep in command loop, to make test deterministic.
+
+	* ws/test/baciTestMonitor.cpp (main): 
+	* ws/test/baciTestDescriptor.cpp (main): 
+	* ws/test/baciTestClient.cpp (main): 
+	* ws/test/baciTestActions.cpp (main): 
+	Added call to new BACI_TEST::shutdown() method to get servant exiting cleanly.
+
+Thu Nov  8 16:49:17 2001  Roland Lemke  <rlemke@te1.hq.eso.org>
+
+	* 
+	Replaced everywhere %Lu and %Ld printf formatting with %llu and
+	%lld.
+	There are quite some problems with formatting for long long
+	variables.
+	
+	* ws/test/baciTestActions.cpp (worker): 
+	* ws/test/baciTestClient.cpp (main): 
+	* ws/test/baciTestMonitor.cpp (main): 
+	Added initialisation of ACS::CBDescIn
+	The structure MUST be initialysed by hand, otherwise it will
+	contain garbage.
+	It would be better to have an object with a default constructor,
+	but how can we do it with IDL?
+
+Thu Nov 08 09:37:48 2001 <rlemke@te13.hq.eso.org>  baci version: 1.34 
+Fri Oct 19 09:38:57 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/test/
+	Cleaned up modular test.
+	Still baciTestDescirptor test does not work
+	
+	* ws/test/baciTestUtils.cpp: 
+	* ws/include/baciTestUtils.h (baciTestUtils_h): 
+	* ws/test/Makefile: 
+	Added baciTestUtils library with read/write IOR functions
+
+Thu Oct 18 09:16:37 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/test/ENVIRONMENTS/wsTat/dbl/Makefile (DBL_FLAGS): 
+	Added -I $(MODROOT)/include
+
+	* ws/include/baciTestClassImpl.h:
+	Added more properties for test.
+
+	* ws/dbl/baciTestClass.class (bitDescription): 
+	Removed name and id characteristics. They are not in the database.
+
+	* ws/dbl/acsProperty.class:
+	Class RWlong was missing.
+
+Thu Oct 18 10:33:45 2001 <gchiozzi@te13.hq.eso.org>  baci version: 1.33 
+Wed Oct 17 15:55:15 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/include/baciTestClassImpl.h: 
+	* ws/include/baciRWstring.h: 
+	* ws/include/baciRWlong.h: 
+	* ws/include/baciRWdouble.h: 
+	* ws/include/baciROpattern.h: 
+	* ws/include/baciROlong.h: 
+	* ws/include/baciROdouble.h: 
+	* ws/include/baciMonitorMacro.h: 
+	* ws/include/baciEvent.h (RecoverableObject):  
+	Added warning in documentation:
+	@warning We have virtual inheritance from PortableServer::RefCountServantBase
+        because of a bug in gcc 2.95 (see SPR. ALMASW2001075)
+
+
+Wed Oct 17 17:02:54 2001 <gchiozzi@te13.hq.eso.org>  baci version: 1.32 
+Fri Sep 21 06:39:27 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* ws/src/baci.cpp (BACIProperty): 
+	Renamed database attributes from Archive* to archive_*
+        to follow actual database and agreed conventions.
+	
+	* ws/dbl/acsProperty.class (bitDescription): 
+	Added TypelessProperty::archive_priority 
+
+Fri Sep 21 08:33:15 2001 <gchiozzi@te13.hq.eso.org>  baci version: 1.31 
+Mon Sep 10 15:17:51 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/idl/baci.idl:
+	Modified to support doxygen.
+
+Mon Sep 10 15:01:44 2001 <msekoran@te13.hq.eso.org>  baci version: 1.30 
+Sat Sep 08 17:06:35 2001 <rlemke@astro.ruhr-uni-bochum.de>  baci version: 1.29 
+	* added baciTestActions
+	* added setenv ACS_LOG_STDOUT 0 to TestDriver
+	* updated TestDriver.sed
+
+Thu Aug 30 12:59:39 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	*  ws/include/baciROdouble.h
+	*  ws/include/baciROlong.h
+        *  ws/include/baciROpattern.h
+        *  ws/include/baciRWdouble.h
+        *  ws/include/baciRWlong.h
+        *  ws/include/baciRWstring.h:
+	Chganging inheritance policy of RefCountServantBase class to
+	"virtual" because of the problem "virtual base and virtaul functions"
+	
+
+Wed Aug 29 15:53:39 2001 <rlemke@te13.hq.eso.org>  baci version: 1.27 
+Sun Aug 26 22:02:55 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/include/baciCORBA.h:
+	* ws/src/baciCORBA.cpp:
+	Added InitCORBA and DoneCORBA for baci modular tests
+
+Sun Aug 26 18:06:11 2001 <msekoran@te13.hq.eso.org>  baci version: 1.26 
+Tue Aug  7 15:12:16 2001  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* ws/test/baciTest1.cpp: 
+	Tried to port to ACS 1.0, but now baci misses essential
+	features that were previously available in BACI_CORBA class.
+
+Tue Aug 07 15:29:34 2001 <almamgr@te13.hq.eso.org>  baci version: 1.25 
+Thu Jul 26 16:32:50 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/include/baciValue.h:
+	* ws/include/baciValue.i:
+	* ws/src/baciValue.cpp:
+	Fixed string type.
+
+Thu Jul 26 16:33:27 2001 <msekoran@te13.hq.eso.org>  baci version: 1.24 
+Tue Jul 17 11:10:45 2001    <gchiozzi@mercury.aoc.nrao.edu>
+
+	* src/Makefile: 
+	Removed IDL files from INCLUDE. Redundant, since handled directly
+	by the Makefile itself.
+
+Tue Jul 17 19:08:43 2001 <gchiozzi@te13.hq.eso.org>  baci version: 1.23 
+Thu Jul 12 09:56:30 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* include/baci.h: changed name of parameter in setCompletion
+
+Thu Jul 12 09:54:27 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* ws/src/baciDB.cpp: 
+	* ws/src/baciCDBPropertySet.cpp: 
+	* ws/src/baciROdouble.cpp: 
+	* ws/src/baciRWdouble.cpp: 
+	* ws/src/baciROlong.cpp: 
+	* ws/src/baciRWlong.cpp: 
+	* ws/src/baciRWstring.cpp: removed warnings for unused arguments
+
+	* lcu/src/Makefile: updated for baci 1.11, no debug
+
+Thu Jul 12 09:50:43 2001 <bgustafs@te13.hq.eso.org>  baci version: 1.22 
+Fri Jul  6 15:48:50 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* fixed unused arguments using ACE_TRY_ENV macro
+	* improved error handling of property, monitor creation
+	* fixed BACI_CORBA class
+	* redesigned DB reading (OO design) 
+	
+Thu Jul 05 13:57:04 2001 <msekoran@te13.hq.eso.org>  baci version: 1.21 
+Tue Jun 26 15:56:26 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* ws/include/baciMonitorMacro.h: 
+	* ws/src/baciMonitorImpl.cpp: 
+	* ws/include/baciEvent.h: 
+	* ws/src/baciAlarmdouble.cpp: 
+	* ws/include/baciAlarmdouble.h:
+	* ws/src/baciROpattern.cpp: 
+	* ws/src/baciROdouble.cpp: 
+	* ws/src/baciRWdouble.cpp: removed warnings for unused arguments
+	for VxWorks
+
+Tue Jun 26 16:06:57 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+Tue Jun 26 15:20:09 2001 <bgustafs@te13.hq.eso.org>  baci version: 1.20 
+Wed Jun 13 18:01:04 2001  msekoran <matej.sekoranja@ijs.si>
+
+	* clean merge
+
+Thu May 10 10:41:15 2001  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* src/ROpattern.cpp: Typo in ROpattern::set_sync
+	completion_retn() -> completion._retn()
+
+Thu May 10 12:40:24 2001 <almamgr@te13.hq.eso.org>  baci version: 1.15 
+Tue May  8 11:49:40 2001  Bogdan Jeram  <bjeram@te20.hq.eso.org>
+
+	* ws/include/ROlong:
+	   change set_sync that returns ESO::Completion*
+
+	* ws/include/ROdouble
+	   change set_sync that returns ESO::Completion*
+
+	* ws/include/ROpattern
+	   add set_sync
+
+	* ws/include/baciDB:
+	   add writeULong
+	
+Tue May 08 13:02:05 2001 <bjeram@te13.hq.eso.org>  baci version: 1.14 
+Fri Apr 20 16:41:12 2001    <gchiozzi@lap003469vm.hq.eso.org>
+
+	* test/TESTLIST.td: Fixed bug for parameters in first test.
+
+	* test/Makefile (clean): Added removal of *.diff and *.rep files
+
+Fri Apr 20 16:39:34 2001 <gchiozzi@te13.hq.eso.org>  baci version: 1.13 
+Wed Mar 21 14:45:48 2001  Roland Lemke  <rlemke@te1.hq.eso.org>
+
+	* include/baciDB.h: 
+	Fixed problem with failure in initDB
+	Now checks also if CCS object initialized.
+
+Tue Mar 20 15:48:24 2001  Roland Lemke  <rlemke@te1.hq.eso.org>
+
+	* test/BaciTestClassImpl.cpp: 
+	* include/BaciTestClassImpl.h: 
+	* test/Makefile: 
+	* test/ENVIRONMENTS/wsTat/dbl/USER.db: 
+	   Created first modular tests
+
+Fri Feb 23 09:34:37 2001  Bogdan Jeram  <bjeram@te20.hq.eso.org>
+
+	* ws/idl/baci:
+	
+	   add #ifndef/#endif directives
+
+Fri Feb 23 10:29:36 2001 <bjeram@te13.hq.eso.org>  baci version: 1.11 
+Tue Dec 05 16:31:27 2000 <almamgr@te13.hq.eso.org>  baci version: 1.10 
+Mon Dec  4 14:53:39 2000  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* merging branch 1.7.1.1 with newest CoCoS (20001128)
+
+Sat Nov 25 21:51:44 2000  ALMA manager  <almamgr@jemez>
+
+	* lcu/idl: create idl directory
+
+Sat Nov 25 21:49:11 2000  gchiozzi/rkarban  <almamgr@jemez>
+
+	* lcu/src/Makefile: 
+	link also idl files from ws part and generate stubs from idl files
+	otherwise it is not possible to do make of lcu part indepedently
+	of making the ws part.
+	don't link generated files from ws part, because otherwise we
+	depend on generation in ws part
+
+Wed Oct 25 09:49:20 2000 <almamgr@te13.hq.eso.org>  baci version: 1.7 
+	* ACS version 0.0/Prep 5
+
+Mon Oct 16 10:28:03 2000 <almamgr@te13.hq.eso.org>  baci version: 1.6 
+
+

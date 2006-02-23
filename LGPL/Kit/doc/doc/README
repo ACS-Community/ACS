@@ -1,0 +1,82 @@
+
+		UNIX TO DOS AND DOS TO UNIX FILE TRANFER SCRIPTS
+
+These scripts serve solely the tranfer for FrameMaker documents.
+
+docUnix2Dos
+===========
+
+copy one UNIX directory to $HOME/floppy.
+
+The source directory is always the current directory.
+	
+A directory, named from the basename (path last name) of the chosen directory,
+is created in $HOME/floppy. If that directory already exists on the floppy disk
+, you are asked another name.
+Every file from the chosen directory is copied into this directory with the 
+following name conversions:
+
+- UNIX file name can only contain alphanumeric characters, the dot ('.')
+  character and the underscore ('_') character, but UNIX filenames which 
+  contains several dots or which begin with the dotc character are rejected.
+- UNIX file names which are the same when uppercase are rejected
+  (a DOS file name is always uppercase).
+
+- otherwise, the DOS file name is built the following way:
+  - the 7 first characters are taken from the UNIX name
+  if there is a name duplication problem, a character (digit from 0 to 9,
+  uppercase letter and lowercase letter is added), otherwise a underscore is 
+  concatenated.
+  - if there is no UNIX suffix, there is not DOS suffix.
+  - if there is a UNIX suffix, it is truncated to the first 3 characters.
+  
+
+  Ex.1.: comment_list0 -> COMMENT1
+         comment_list9 -> COMMENT2
+         conclusions_of_discussion_on_open_points_after_INS_review ->
+         CONCLUS_
+
+  Ex.2.: comment_list.doc10 -> COMMENT_.DOC
+         comment_list.doc3  -> COMMENT1.DOC
+         com.doc3           -> COM.DOC
+         test.fm            -> TEST.FM
+
+
+Note that a child directory, named <basename>.DOS will be created on the 
+floppy disk, containing the executed file name conversions.
+This directory must not be deleted: it is needed to copy the files from DOS 
+to UNIX.
+
+
+docDos2Unix [<dirname>]
+=======================
+
+copy from one DOS directory to a UNIX directory.
+
+The source directory is always the current directory.
+
+<dirname> is the optional parameter for the target directory: if not specified
+, the target directory is the one where docUnix2Dos has been executed.
+
+The files, which have been copied from the UNIX directory to the floppy
+directory with docCopyFromUnixToDos, are copied to the UNIX directory and
+are named with their original UNIX names.
+
+Caution: if there is new file (created on PC), it is just copied, the name is 
+not changed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

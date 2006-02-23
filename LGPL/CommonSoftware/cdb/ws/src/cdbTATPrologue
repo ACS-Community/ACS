@@ -1,0 +1,77 @@
+#! /bin/bash
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: cdbTATPrologue,v 1.4 2005/10/03 21:11:19 gchiozzi Exp $"
+#
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gchiozzi  11/02/02  created
+#
+
+# setup the ports
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+
+#Find a valid baseport number
+JOE=`pickBasePort $ACS_INSTANCE`
+if [ `echo $JOE | grep -c "ERROR"` = 0 ]
+then 
+    export ACS_INSTANCE="$JOE"
+elif [ "X$JOE" == "X" ]
+then
+    echo $JOE
+    echo "==> Please check $ACSDATA/tmp/* and try again!"
+    exit 42 
+else 
+    echo $JOE
+    echo "==> Please check $ACSDATA/tmp/* and try again!"
+    exit 42     
+fi
+unset JOE
+
+export ACS_TMP=../test/tmp
+
+echo $ACS_INSTANCE > $ACS_TMP/acs_instance
+
+_CDB_PORT_=`getCDBPort`
+echo $_CDB_PORT_ > $ACS_TMP/.cdbport
+
+_WRITE_IOR_=""
+if [ "X$WIND_BASE" != X ]; then
+  # Make sure the directory exists
+  mkdir -p ENVIRONMENTS/lcuTat
+  _WRITE_IOR_="-o ENVIRONMENTS/lcuTat/DAL.ior" 
+fi
+
+if [ "X$TAT_VERBOSE" = X ]; then
+ _REDIR_=/dev/null
+else
+ _REDIR_=cdb.log
+ echo " ****************** cdbTATPrologue *************** " >  $_REDIR_
+fi
+
+cdbjDAL -root ../test -OAport $_CDB_PORT_ $_WRITE_IOR_ >>$_REDIR_ 2>&1 &
+sleep 10
+exit 0
+#
+# ___oOo___
+

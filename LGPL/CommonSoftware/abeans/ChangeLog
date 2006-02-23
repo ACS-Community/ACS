@@ -1,0 +1,277 @@
+Fri Oct  3 11:38:00 2003    <matej@csl01>
+
+	* Scraped all and added Abeans R3 ACS plug and model. 
+	
+Fri Jul  4 18:38:00 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* src/abeansStart,v 1.41: 
+	Set also Name Service Initial Reference using ACS_NAME_SERVICE
+	environment variable or using the HOSTNAME of the Manager.
+
+Tue May 27 19:36:56 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* config/abeans/.jacorb_properties: 
+	* src/abeansStart,v 1.40: Added setting .jacorb.properties in
+	classpath inside $ACS_ABEANS_CONFIG 
+
+Fri Jan 24 11:22:44 2003  Matej Sekoranja  <matej@csl01>
+
+	Ported to JacORB (also removed ORBacus jars from third party jars).
+
+Thu Jan 23 10:14:45 2003 <msekoran@te13.hq.eso.org>  abeans version: 1.37 
+Tue Nov 12 12:10:41 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src/Makefile: Added junit jar file as standard third party tool.
+
+Tue Nov 12 11:54:17 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.36 
+Mon Oct 14 22:14:26 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src/abeansStart (tot_list): Added passing more command line
+	parameters to final java command line 
+
+Tue Oct 15 00:12:05 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.35 
+Wed Oct  2 09:51:24 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src/abeansStart (tot_list): Fixed small bug in building endorsed
+	lib path 
+	Added handling of -endorsed as first option.
+	Using the jars in the endorsed directory is now optional.
+
+Wed Oct 02 11:37:16 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.34 
+Fri Sep 27 15:49:20 2002  Matej Sekoranja  <matej@csl01.cosylab.com>
+
+	ACS 2.0 version.
+
+Thu Sep 26 16:41:47 2002 <msekoran@te13.hq.eso.org>  abeans version: 1.33 
+Fri Jul 26 16:23:26 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* lib/abeans.jar:
+	* lib/aplugACS.jar:
+	* src/abeans.jar:
+	* src/abeans.zip:
+	RWInt support added.
+
+Fri Jul 26 16:16:17 2002 <msekoran@te13.hq.eso.org>  abeans version: 1.32 
+Thu Jul 25 18:15:40 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* lib/abeans.jar: There were missing files here. Updated.
+
+Thu Jul 25 17:29:52 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.31 
+Thu Jul 11 17:43:32 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/ACSConnectionInitializer.java
+          Added patch file (see spr. ALMASW2002073)
+
+	* src/Makefile (install): Ignored errors when copying/chmod abeans files.
+
+Thu Jul 11 11:31:45 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.30 
+Mon Jul  8 16:14:30 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* src
+	abeans/fix file integrated and removed from cmm. Abeans support
+	fro enumeration added. Package named ALMA Beans with simple panels
+	added. All exported from VAJ 3.5.
+
+Mon Jul 08 16:10:05 2002 <msekoran@te13.hq.eso.org>  abeans version: 1.29 
+Mon Jun 24 13:54:08 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/abeansTutorial.zip
+	Problem with repository fixed.
+        Created new repository with VAJ 3.5.
+
+Mon Jun 24 13:45:32 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.28 
+Fri Jun 21 09:33:12 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src
+	New abeans-fix_20020619.zip. This file is a fix for the abeans
+	repository that must be imported in VAJ after the abeans normal
+	repositoty. Now does not require any more to disable the Manager
+	popup panel.
+	Will be integrated in the big abeans repository at the next
+	version of the module.
+
+Fri Jun 21 11:29:31 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.27 
+Tue Jun 18 11:02:57 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src:
+	Added abeans-fix_20020612.zip. This file is a fix for the abeans
+	repository that must be imported in VAJ after the abeans normal
+	repositoty.
+	Will be integrated in the big abeans repository at the next
+	version of the module.
+
+Tue Jun 18 10:53:13 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.26 
+Fri Apr 26 16:01:48 2002 <jdovc@te13.hq.eso.org>
+
+	Removed constructor for AAplet from tutorial files.
+ 
+Fri Apr 26 16:01:48 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.25 
+Fri Apr 19 01:03:50 2002 <jdovc@te13.hq.eso.org>
+
+	Updated version of abeansTutorial files according to Visual Bean Tutorial.
+	
+Fri Apr 19 01:03:50 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.24 
+Sun Apr  7 13:00:26 2002  ALMA Project c/o Robert Karban  <almamgr@te37>
+
+	* src/Makefile (install): Fixed bug in chmod for config/abeans:
+	755 and not 644 
+
+Sun Apr 07 12:44:21 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.23 
+Thu Mar 14 16:30:00 2002 <jdovc@te13.hq.eso.org>
+
+	* lib/aplugSimulator.jar:
+	Remved becouse aplugSimulator.jar already exists
+	
+	Support for Java 1.4.0 improved
+
+Thu Mar 14 15:47:47 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.22 
+Wed Mar 13 11:05:56 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/Makefile: 
+	Added making and installing endorsed jar files
+
+	* src/abeansStart: 
+	Added handling of endorsed directory path.
+	This is necessary to allow overriding packages that are part of
+	the JDK endorsed standards.
+        See
+           http://java.sun.com/j2se/1.4/docs/guide/standards/index.html
+        and
+           http://groups.google.de/groups?q=endorsed.dirs&hl=de&selm=3C6FED66.7010404%40tkuhn.de&rnum=2
+        for details
+        In order not to patch the JDK installation, we create our own
+	endorsed directory(ies) and tell explicitly 
+        java and javac to look there using the 
+	     -Djava.endorsed.dirs 
+	system property.
+
+	Added handling of $JAVA_OPTIONS environment variable.
+	This can be used to pass specivic options and properties to the
+	java command.
+
+Fri Mar 08 16:35:15 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.21 
+Fri Mar 08 00:18:57 2002 <jdovc@te13.hq.eso.org>
+
+	New completition.
+
+Fri Mar 08 00:18:57 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.20 
+Wed Feb 27 17:43:54 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/abeansStart: Changed shell from /din/sh to /bin/ksh
+	to avoit problems on SUN Solaris
+
+Wed Feb 27 17:41:41 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.19 
+Mon Feb 25 23:52:03 2002 <jdovc@te13.hq.eso.org>
+
+	chart bug fix and several other minor fixes
+	
+Mon Feb 25 23:52:03 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.18 
+Tue Feb 19 01:34:22 2002 <jdovc@te13.hq.eso.org>
+
+	New completition implementation
+	*/src: Filenames without .eso.	
+
+Tue Feb 19 01:08:22 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.17 
+Fri Feb 15 11:02:04 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+        */lib
+	Completely deleted OR.jar and OBUtil.jar, since they are
+	already part of Orbacus installation.
+	Also OBEvent.jar and OBNotify.jar should be removed, but they are
+	currently not in out Orbacus distribution, so we leave them here
+	for the time being.
+	
+	* src/Makefile:
+	Pur third party jar files in tar file abeans3rdPartyJars.tar.gz
+	This is necessary because CMM (actually, RCS) was corrupting
+	xerces.jar while archiving.
+	jar files should be handled as binary files, but are not.
+
+Fri Feb 15 10:29:58 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.16 
+Thu Feb 14 11:32:36 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* lib/xerces.jar: Fixed version.
+
+Thu Feb 14 11:22:27 2002 <msekoran@te13.hq.eso.org>  abeans version: 1.15 
+Thu Feb 14 10:53:55 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* lib/xerces.jar: Fixed version.
+
+Thu Feb 14 10:42:51 2002 <msekoran@te13.hq.eso.org>  abeans version: 1.14 
+Thu Feb 14 00:53:25 2002 <jdovc@te13.hq.eso.org>
+
+	* lib/ - OB and XML parser libs
+	Bugfixes and new features.
+
+Thu Feb 14 00:53:25 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.13 
+Tue Jan 22 08:37:18 2002  Gianluca Chiozzi  <gchiozzi@te22.hq.eso.org>
+
+	* src/Makefile: 
+        Updated version of jcchart.
+
+
+Tue Jan 22 08:34:16 2002 <gchiozzi@te13.hq.eso.org>  abeans version: 1.12 
+Tue Jan 22 01:11:07 2002 <jdovc@te13.hq.eso.org>
+
+	* lib/jcchart451K.jar: new version of chart
+	* src/abeansStart: replaced abeansRun
+	New version of abeans implementing ping() method.
+
+Tue Jan 22 00:42:07 2002 <jdovc@te13.hq.eso.org>  abeans version: 1.11 
+Thu Dec 20 13:49:27 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.10 
+
+	* src/abeansStart: Added.
+
+Thu Dec 20 13:49:27 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.10
+Fri Dec 14 23:03:33 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.9
+
+	* src/abeansTutorial.zip: Added.
+	* src/abeansTutorial.jar: Added.
+	* lib/abeansTutorial.jar: Added. 
+
+Fri Dec 14 23:03:33 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.9
+Mon Sep 24 15:46:27 2001 Janez Dovc    <janez.dovc@ijs.si>   
+
+        * lib/aplugACS.jar: Logging fix in si.ijs.anka.abeans.pluggable.ACS <2.48>
+
+Mon Sep 24 18:17:17 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.8 
+Mon Sep 24 15:46:27 2001 Janez Dovc    <janez.dovc@ijs.si>
+
+	* src/abeans.eso.zip: Logging fix in si.ijs.anka.abeans.pluggable.ACS <2.48>
+	* src/abeans.jar: Logging fix in si.ijs.anka.abeans.pluggable.ACS <2.48>
+	* src/README: New versions
+
+Mon Sep 24 14:47:56 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.7 
+Fri Sep 21 14:00:49 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src/Makefile (INSTALL_FILES): Added abeansTutorial jar file
+
+Fri Sep 21 15:53:42 2001 <gchiozzi@te13.hq.eso.org>  abeans version: 1.6 
+Wed Sep 19 16:08:58 2001  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src/Makefile (clean_dist): Added configuration files for abeans
+	and clean_dist target 
+
+Wed Sep 19 17:38:30 2001 <gchiozzi@te13.hq.eso.org>  abeans version: 1.5 
+Wed Sep 19 10:25:24 2001 <almamgr@te13.hq.eso.org>  abeans version: 1.4 
+	* src/abeansRun: filtered standard error
+Tue Sep 18 12:06:02 2001  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* src/Makefile (MAKEDIR): uses acsMakefile and not vltMakefile
+
+	* Re-Added some needed directories: object, bin
+	* Added jcchart401K.jar
+	* Created first abeansRun script.
+
+Tue Sep 18 11:55:23 2001 <almamgr@te13.hq.eso.org>  abeans version: 1.3 
+Mon Sep 17 11:46:27 2001 Janez Dovc    <janez.dovc@ijs.si>
+
+        Removed unnecessary directories, added Makefile to the src dir.
+
+Mon Sep 17 11:47:48 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.2 
+
+Sun Sep 16 22:09:53 2001  Janez Dovc    <janez.dovc@ijs.si>
+
+        Added repository, jar files and README file to the module.
+
+Sun Sep 16 20:59:32 2001 <jdovc@te13.hq.eso.org>  abeans version: 1.1 

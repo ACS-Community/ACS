@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<_ Name="SUPPLIERCOMP1" 
+   Code="alma.demo.test.EventSupplierImpl.EventSupplierHelper" 
+   Type="IDL:alma.demo.test/SupplierComp:1.0" 
+   Container="frodoContainer"/>
+<_ Name="IL_SUPPLIERCOMP1" 
+   Code="alma.demo.test.EventILSupplierImpl.EventSupplierHelper" 
+   Type="IDL:alma.demo.test/SupplierComp:1.0" 
+   Container="frodoContainer"/>
+<_ Name="SUPPLIER_CDB_CHANNEL_COMP1" 
+   Code="alma.demo.test.EventSupplierCDBChannel.EventSupplierCDBChannelHelper" 
+   Type="IDL:alma.demo.test/SupplierComp:1.0" 
+   Container="frodoContainer"/>
+<_ Name="CONSUMERCOMP1" 
+   Code="alma.demo.test.EventConsumerImpl.EventConsumerHelper" 
+   Type="IDL:alma.demo.test/ConsumerComp:1.0" 
+   Container="frodoContainer"/>
+<_ Name="IL_CONSUMERCOMP1" 
+   Code="alma.demo.test.EventILConsumerImpl.EventConsumerHelper" 
+   Type="IDL:alma.demo.test/ConsumerComp:1.0" 
+   Container="frodoContainer"/>
+<_ Name="ABSTRACT_PUBLISHER"
+   Code="alma.demo.test.AbstractNC.NCPublisherHelper"
+   Type="IDL:alma.demo.test/NCPublisher:1.0"
+   Container="frodoContainer"/>
+<_ Name="ABSTRACT_RECEIVER"
+   Code="alma.demo.test.AbstractNC.NCReceiverHelper"
+   Type="IDL:alma.demo.test/NCReceiver:1.0"
+   Container="frodoContainer"/>    
+<_ Name="TEST_PS_1"    Code="acsexmplPowerSupplyImpl"
+                       Type="IDL:alma/PS/PowerSupply:1.0"
+                       Container="archiveContainer"/>
+</Components>
+

@@ -1,0 +1,43 @@
+#! /bin/bash
+OLD_CDB=$ACS_CDB
+ACS_CDB=../test
+
+#If VxWorks is being used we unfortunately need a different Container CDB entry.
+mkdir -p CDB/MACI/Containers/Container/
+if [ "$WIND_BASE" != "" ] 
+then
+  cp ENVIRONMENTS/lcuTat/Container.xml CDB/MACI/Containers/Container/Container.xml
+else 
+  cp ENVIRONMENTS/wsTat/Container.xml CDB/MACI/Containers/Container/Container.xml
+fi
+
+ACS_TMP=$PWD/tmp
+#Start the ORB services and manager.
+acsutilTATPrologue
+
+ACS_CDB=$OLD_CDB
+
+
+#Start the container
+if [ "$WIND_BASE" != "" ]
+then
+    . acsstartupAcsPorts  #Import functions like this in bash=(
+    ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+
+    MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
+    DAL_REFERENCE=corbaloc::`getIP`:`getCDBPort`/CDB
+
+    cp ENVIRONMENTS/lcuTat/userScript.temp ENVIRONMENTS/lcuTat/userScript
+    echo "putenv \"MANAGER_REFERENCE=$MANAGER_REFERENCE\"" >> ENVIRONMENTS/lcuTat/userScript
+#    echo "putenv \"DAL_REFERENCE=$DAL_REFERENCE\"" >> ENVIRONMENTS/lcuTat/userScript
+    echo "sp ContainerStart, \"Container\"" >> ENVIRONMENTS/lcuTat/userScript
+
+    #LCU=`grep lcuTat .testSession | awk '{print $3}'`
+    #vccResetLcu $LCU PPC604 > /dev/null
+    #acsexmplTest $LCU ContainerStart Container >& $ACS_TMP/Container.log&
+else  
+    acsutilAwaitContainerStart -cpp Container
+fi
+
+#
+# ___oOo___

@@ -1,0 +1,19 @@
+There are problems with Solaris.
+For some reason I have not be able to identify:
+
+- configure produces wrong substitutions for ranlib: @/bin/true
+  I have then passed it by hand as /bin/true in configure_script.
+
+- then the build believes that we cannot handle DLLs and
+  include/cppunit/config/SelectDllLoader.h believes that
+  CPPUNIT_NO_TESTPLUGIN=1.
+  As a consequence PlugInManager is not built.
+  But then DllPlugInTester fails to build as well as the tests.
+  DllPlugInTester itself has no test on CPPUNIT_NO_TESTPLUGIN and
+  therefore there are for sure problem with the cppunit Makefile.
+
+We have to monitor the webpage and see with a next version.
+Eventually we should send an email.
+
+In any case, the basic cppunit works and the two tests I have prepared
+as examples are OK also on Sun.

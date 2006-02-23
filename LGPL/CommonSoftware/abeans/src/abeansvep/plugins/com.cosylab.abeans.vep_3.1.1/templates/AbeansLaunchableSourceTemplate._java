@@ -1,0 +1,60 @@
+<%@ jet 
+	skeleton="VisualClassSourceWizardSkeleton.java" 
+	package="templates"
+	class="ComponentSetSizeGenerator" %>
+
+public class <%=typeName%> {
+
+	public <%=typeName%>() {
+		if (java.beans.Beans.isDesignTime()) initialize();
+	}
+
+	/**
+	 * This method initializes this
+	 * 
+	 * @return void
+	 */
+		private void initialize() {
+			this.setSize(300,200);
+		}
+
+		/** 
+		 * This method is called by the Abeans framework at initialization.
+		 */
+		public void userInitializeGUI() {
+			initialize();
+	        getSystemPane().setPreferredSize(getPreferredSize());
+		}
+
+		/**
+		 * The main entry point for every Java application.
+		 */
+		public static void main(String args[]) {
+			launch(<%=typeName%>.class,args);
+		}
+		
+		/**
+		 * This method initializes the standard Abeans plugins.
+		 */
+		public void userInitializePlugIns()	{
+			try
+			{
+
+				// uncomment following line(s) to get plugin(s) installed at startup
+				// installPlugIn(AbeansSystemMenuPlugIn.class);
+				// installPlugIn(CosyStandardActionsPlugIn.class);
+				// installPlugIn(AboutPlugIn.class);
+				// installPlugIn(AbeansStandardActionsPlugIn.class);
+				// installPlugIn(VitragePlugIn.class);
+				// installPlugIn(AbeansExceptionPanelPlugIn.class);
+				// installPlugIn(TreeBrowserPlugIn.class);
+				// installPlugIn(LoggingPlugIn.class);
+				// installPlugIn(ReportAreaPlugIn.class);
+				// installPlugIn(ACSPlugSettingsPlugIn.class);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	 
+}

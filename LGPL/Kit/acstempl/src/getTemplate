@@ -1,0 +1,58 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: getTemplate,v 1.20 2002/12/05 19:09:16 vltsccm Exp $" 
+#
+# who        when      what
+# --------  ----------  ----------------------------------------------
+# psivera   2000-10-07  created
+#
+
+#************************************************************************
+#   NAME
+#   getTemplate - create a file from a ACS template (code or document)
+# 
+#   SYNOPSIS
+#         getTemplate
+# 
+#   DESCRIPTION
+#   Create a file from a ACS template for:
+#             - code:     - shell scripts
+#                         - C      (.c, .h) 
+#                         - OCCAM 
+#                         - Makefile
+#			  - RELEASE_NOTES
+#
+#             - directory structure
+#
+#
+#   FILES
+#   $ACSROOT/templates/forXxxxxx  <IN>   various template files
+#   getXxxxxxTemplate                    command to get a Xxxxx template
+#
+#   ENVIRONMENT
+#   ACSROOT  <IN>  where to look for template files (templates/)
+#   VLTSCCM  <IN>  if defined, the procedure assumes to be at ESO 
+#   EDITOR   <IN>  if defined, a "$EDITOR <file> &" is spawned automatically
+#
+#   RETURN VALUES
+# 
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#------------------------------------------------------------------------
+
+XTERM=" xterm -ls -sb -geometry 80x40 "
+TITLE=" \" ACS SOFTWARE - TEMPLATES \" "
+COMMAND=" -e getTemplateMainMenu"
+
+$XTERM -title "$TITLE" $COMMAND &
+echo "Connecting Archive .\c";  sleep 1; echo " .\c"; sleep 1; echo " ."
+
+# ___oOo___

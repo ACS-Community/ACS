@@ -1,0 +1,821 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Standard Keymaps,  Next: Standard Hooks,  Prev: Standard Buffer-Local Variables,  Up: Top
+
+Standard Keymaps
+****************
+
+                  The following symbols are used as the names for
+various keymaps.  Some of these exist when Emacs is first started,
+others are only loaded when their respective mode is used.  This is not
+an exhaustive list.
+
+                  Almost all of these maps are used as local maps.
+Indeed, of the modes that presently exist, only Vip mode and Terminal
+mode ever change the global keymap.
+
+              `Buffer-menu-mode-map'
+                    A full keymap used by Buffer Menu mode.
+
+              `c-mode-map'
+                    A sparse keymap used in C mode as a local map.
+
+              `command-history-map'
+                    A full keymap used by Command History mode.
+
+              `ctl-x-4-map'
+                    A sparse keymap for subcommands of the prefix `C-x
+                    4'.
+
+              `ctl-x-map'
+                    A full keymap for `C-x' commands.
+
+              `debugger-mode-map'
+                    A full keymap used by Debugger mode.
+
+              `dired-mode-map'
+                    A full keymap for `dired-mode' buffers.
+
+              `doctor-mode-map'
+                    A sparse keymap used by Doctor mode.
+
+              `edit-abbrevs-map'
+                    A sparse keymap used in `edit-abbrevs'.
+
+              `edit-tab-stops-map'
+                    A sparse keymap used in `edit-tab-stops'.
+
+              `electric-buffer-menu-mode-map'
+                    A full keymap used by Electric Buffer Menu mode.
+
+              `electric-history-map'
+                    A full keymap used by Electric Command History mode.
+
+              `emacs-lisp-mode-map'
+                    A sparse keymap used in Emacs Lisp mode.
+
+              `function-key-map'
+                    The keymap for translating keypad and function keys.
+                    If there are none, then it contains an empty sparse
+                    keymap.
+
+              `fundamental-mode-map'
+                    The local keymap for Fundamental mode.
+                    It is empty and should not be changed.
+
+              `Helper-help-map'
+                    A full keymap used by the help utility package.
+                    It has the same keymap in its value cell and in its
+                    function cell.
+
+              `Info-edit-map'
+                    A sparse keymap used by the `e' command of Info.
+
+              `Info-mode-map'
+                    A sparse keymap containing Info commands.
+
+              `isearch-mode-map'
+                    A keymap that defines the characters you can type
+                    within incremental search.
+
+              `key-translation-map'
+                    Another keymap for translating keys.  This one
+                    overrides ordinary key bindings.
+
+              `lisp-interaction-mode-map'
+                    A sparse keymap used in Lisp mode.
+
+              `lisp-mode-map'
+                    A sparse keymap used in Lisp mode.
+
+              `mode-specific-map'
+                    The keymap for characters following `C-c'.  Note,
+                    this is in the global map.  This map is not
+                    actually mode specific: its name was chosen to be
+                    informative for the user in `C-h b'
+                    (`display-bindings'), where it describes the main
+                    use of the `C-c' prefix key.
+
+              `occur-mode-map'
+                    A local keymap used in Occur mode.
+
+              `query-replace-map'
+                    A local keymap used for responses in
+                    `query-replace' and related commands; also for
+                    `y-or-n-p' and `map-y-or-n-p'.  The functions that
+                    use this map do not support prefix keys; they look
+                    up one event at a time.
+
+              `text-mode-map'
+                    A sparse keymap used by Text mode.
+
+              `view-mode-map'
+                    A full keymap used by View mode.
+
+
+File: elisp,  Node: Standard Hooks,  Next: Antinews,  Prev: Standard Keymaps,  Up: Top
+
+Standard Hooks
+**************
+
+                  The following is a list of hook variables which let
+you provide functions to be called from within Emacs on suitable
+occasions.
+
+                  Most of these variables have names ending with
+`-hook' are "normal hooks", that are run with `run-hooks'.  The value of
+such a hook is a list of functions.  The recommended way to put a new
+function on such a hook is to call `add-hook'.  *Note Hooks::, for more
+information about using hooks.
+
+                  The variables whose names end in `-function' have
+single functions as their values.  Usually there is a specific reason
+why the variable is not a normal hook, such as, the need to pass an
+argument to the function.  (In older Emacs versions, some of these
+variables had names ending in `-hook' even though they were not normal
+hooks.)
+
+                  The variables whose names end in `-hooks' have lists
+of functions as their values, but these functions are called in a
+special way (they are passed arguments, or else their values are used).
+
+              `activate-mark-hook'
+              `after-change-function'
+              `after-change-functions'
+              `after-init-hook'
+              `after-insert-file-functions'
+              `after-make-frame-hook'
+              `auto-fill-function'
+              `auto-save-hook'
+              `before-change-function'
+              `before-change-functions'
+              `before-init-hook'
+              `before-make-frame-hook'
+              `blink-paren-function'
+              `c-mode-hook'
+              `calendar-load-hook'
+              `command-history-hook'
+              `comment-indent-function'
+              `deactivate-mark-hook'
+              `diary-display-hook'
+              `diary-hook'
+              `dired-mode-hook'
+              `disabled-command-hook'
+              `edit-picture-hook'
+              `electric-buffer-menu-mode-hook'
+              `electric-command-history-hook'
+              `electric-help-mode-hook'
+              `emacs-lisp-mode-hook'
+              `find-file-hooks'
+              `find-file-not-found-hooks'
+              `first-change-hook'
+              `fortran-comment-hook'
+              `fortran-mode-hook'
+              `ftp-setup-write-file-hooks'
+              `ftp-write-file-hook'
+              `indent-mim-hook'
+              `initial-calendar-window-hook'
+              `kill-buffer-query-functions'
+              `kill-emacs-query-functions'
+              `LaTeX-mode-hook'
+              `ledit-mode-hook'
+              `lisp-indent-function'
+              `lisp-interaction-mode-hook'
+              `lisp-mode-hook'
+              `list-diary-entries-hook'
+              `m2-mode-hook'
+              `mail-mode-hook'
+              `mail-setup-hook'
+              `mark-diary-entries-hook'
+              `medit-mode-hook'
+              `mh-compose-letter-hook'
+              `mh-folder-mode-hook'
+              `mh-letter-mode-hook'
+              `mim-mode-hook'
+              `minibuffer-setup-hook'
+              `minibuffer-exit-hook'
+              `news-mode-hook'
+              `news-reply-mode-hook'
+              `news-setup-hook'
+              `nongregorian-diary-listing-hook'
+              `nongregorian-diary-marking-hook'
+              `nroff-mode-hook'
+              `outline-mode-hook'
+              `plain-TeX-mode-hook'
+              `post-command-hook'
+              `pre-abbrev-expand-hook'
+              `pre-command-hook'
+              `print-diary-entries-hook'
+              `prolog-mode-hook'
+              `protect-innocence-hook'
+              `rmail-edit-mode-hook'
+              `rmail-mode-hook'
+              `rmail-summary-mode-hook'
+              `scheme-indent-hook'
+              `scheme-mode-hook'
+              `scribe-mode-hook'
+              `shell-mode-hook'
+              `shell-set-directory-error-hook'
+              `suspend-hook'
+              `suspend-resume-hook'
+              `temp-buffer-show-function'
+              `term-setup-hook'
+              `terminal-mode-hook'
+              `terminal-mode-break-hook'
+              `TeX-mode-hook'
+              `text-mode-hook'
+              `today-visible-calendar-hook'
+              `today-invisible-calendar-hook'
+              `vi-mode-hook'
+              `view-hook'
+              `window-setup-hook'
+              `write-contents-hooks'
+              `write-file-hooks'
+              `write-region-annotation-functions'
+
+File: elisp,  Node: Antinews,  Next: Index,  Prev: Standard Hooks,  Up: Top
+
+Emacs 18 Antinews
+*****************
+
+                  For those users who live backwards in time, here is
+information about downgrading to Emacs version 18.  We hope you will
+enjoy the greater simplicity that results from the absence of many
+Emacs 19 features.
+
+Old Features in the Lisp Language
+=================================
+
+                  The following functions are missing or different in
+Emacs version 18.
+
+                  * The functions `delete', `member',
+                    `indirect-function', `map-y-or-n-p', and
+                    `invocation-name' have been removed.
+
+                  * The function `read' now skips a terminator
+                    character that terminates a symbol when reading
+                    from a buffer.  Thus, if you use `read' on a buffer
+                    containing `foo(bar)' following point, it returns
+                    `foo' and leaves point after the open-parenthesis.
+                    This means there's no way you can properly read the
+                    list `(bar)', but that's the way the cookie
+                    crumbles.
+
+                    Because of this simplification, it's no longer
+                    necessary for an input stream function to accept an
+                    optional argument.  In Emacs 18, an input stream is
+                    always called with no arguments, and should always
+                    return the next character of input.
+
+                  * The function `documentation' takes just one
+                    argument; `documentation-property' takes just two.
+
+                  * `random' no longer has the optional argument N.
+
+                  * You can no longer arrange to run a hook if a
+                    particular Lisp library is loaded.  The variable
+                    `after-load-alist' and the function
+                    `eval-after-load' have been removed.
+
+                  * The function `autoload' no longer supports
+                    autoloading a keymap.
+
+                  * ``Magic'' comments of the form `;;;###autoload' are
+                    now just comments.  They don't do anything in
+                    particular except look pretty.  If you want a
+                    function to be autoloaded by default, edit
+                    `loaddefs.h' by hand.  What do you think editors
+                    are for?
+
+                  * We took out the `%S' from the `format' function,
+                    and the optional argument NOESCAP from
+                    `prin1-to-string'.  We removed the `print-level'
+                    variable.
+
+Compilation Features
+====================
+
+                  * Inline functions are nonexistent in Emacs 18.  We
+                    find they make the calling function unnecessarily
+                    large.  (Small size is one of the features of Emacs
+                    18.)
+
+                  * We eliminated the two special forms,
+                    `eval-when-compile' and `eval-and-compile', as well
+                    as the `compile-defun' command.
+
+                  * When you load a Lisp file or library, you will no
+                    longer receive a warning if the directory contains
+                    both a `.elc' file and a new `.el' file that is
+                    newer.  So be on your toes.
+
+                  * We removed the special data type for byte-code
+                    functions.  Compiled functions now work by means of
+                    an interpreted function which calls the function
+                    `bytecode'.  That function runs the byte code
+                    interpreter.
+
+Floating Point Numbers
+======================
+
+                  Emacs 18 doesn't have or need floating point
+arithmetic built in.  It has a handy Lisp program that allows you to
+emulate floating point.  You'll have to write programs specially to use
+it, though.
+
+                  As a result, certain macros, functions, and
+predicates no longer handle specifications for floating point numbers.
+
+                  The function `string-to-number', the predicate
+`floatp', and the variable `float-output-format' have all been
+eliminated.
+
+                  The functions `float', `truncate', `floor', `ceil',
+`round', and `logb' do not exist; neither do the functions `abs',
+`cos', `sin', `tan', `acos', `asin', `atan', `exp', `expt', `log10',
+`log', or `sqrt'.
+
+                  The `format' function no longer handles the
+specifications `%e', `%f' and `%g' for printing floating point numbers;
+likewise for `message'.
+
+Changes in Basic Editing Functions
+==================================
+
+                  * `kill-new' and `kill-append', the primitives for
+                    putting text in the kill ring, have been eliminated.
+
+                  * The variables `interprogram-paste-function' and
+                    `interprogram-cut-function' have been removed in
+                    Emacs 18.
+
+                    In addition, there's no need for `mark-active' and
+                    `deactivate-mark' because there is no Transient
+                    Mark mode.  We also removed the hooks
+                    `activate-mark-hook' and `deactivate-mark-hook'.
+
+                  * The `kill-region' function can no longer be used in
+                    read-only buffers.  The `compare-buffer-substrings'
+                    and `current-kill' functions have been removed.
+
+                  * The variable `overwrite-mode-binary' has been
+                    removed.
+
+                  * The function `move-to-column' allows just one
+                    argument, COLUMN.
+
+                  * The search functions now just return `t' when
+                    successful.  This affects the functions
+                    `search-forward', `search-backward',
+                    `word-search-forward', `word-search-backward',
+                    `re-search-forward', and `re-search-backward'.
+
+                  * When you do regular expression searching or
+                    matching, there is a fixed limit of ten `\(...\)'
+                    pairs that you can get information about with
+                    `match-beginning' and `match-end'.  Moreover,
+                    `save-match-data' does not exist; you must use an
+                    explicit `unwind-protect' to save the match data.
+
+                  * `translate-region' is gone.
+
+                  * The variables `before-change-function',
+                    `after-change-function', and `first-change-hook'
+                    have been eliminated.
+
+                  * The second argument to
+                    `insert-abbrev-table-description' is no longer
+                    optional.
+
+Text Properties
+===============
+
+                  We eliminated text properties.
+
+Features for Files
+==================
+
+                  Many file-related functions have been eliminated or
+simplified.  Here is a basic listing of these functions.
+
+                  The functions `file-accessible-directory-p',
+`file-truename', `make-directory', `delete-directory',
+`set-visited-file-modtime', `directory-abbrev-alist',
+`abbreviate-file-name', `write-region', `write-contents-hooks',
+`after-save-hook', `set-default-file-modes', `default-file-modes', and
+`unix-sync' have been eliminated.
+
+                  We got rid of the ``initial file name'' argument to
+`read-file-name'.
+
+                  Additionally, we removed the 12th element from the
+list returned by `file-attributes'.
+
+                  `directory-files' always sorts the list of files.
+It's not user friendly to process the files in any haphazard order.
+
+                  We eliminated the variables `write-contents-hooks' and
+`local-write-file-hooks'.
+
+Making Certain File Names ``Magic''
+===================================
+
+                  There are no more magic filenames.  Sorry, but all
+the mana has been used up.
+
+Frames
+======
+
+                  There is only one frame in Emacs 18, so all of the
+frame functions have been eliminated.
+
+X Window System Features
+========================
+
+                  We have simplified the way Emacs and X interact by
+removing a great deal of creeping featurism.
+
+                  * The functions `mouse-position' and
+                    `set-mouse-position', and the special form
+                    `track-mouse' have been eliminated.
+
+                  * Likewise, the functions `x-set-selection',
+                    `x-set-cut-buffer', `x-close-current-connection',
+                    and `x-open-connection' have all been removed from
+                    Emacs Lisp 18.
+
+                  * We removed a series of functions that gave
+                    information about the X server and the screen you
+                    were using; after all, the whole point of X is that
+                    all servers are equivalent.  The names of the
+                    removed functions are: `x-display-screens',
+                    `x-server-version', `x-server-vendor',
+                    `x-display-pixel-height', `x-display-mm-height',
+                    `x-display-pixel-width', `x-display-mm-width',
+                    `x-display-backing-store', `x-display-save-under',
+                    `x-display-planes', `x-display-visual-class',
+                    `x-display-color-p', and `x-display-color-cells'.
+
+                    Additionally, we removed the variable
+                    `x-no-window-manager' and the functions
+                    `x-synchronize' and `x-get-resource'.
+
+                    We didn't abolish `x-display-color-p', but we
+                    renamed it to `x-color-display-p'.  We did abolish
+                    `x-color-defined-p'.
+
+                  * `x-popup-menu' no longer accepts a keymap for its
+                    first argument.
+
+                  * We removed both the function `x-rebind-key' and the
+                    related function `x-rebind-keys'.
+
+                  * We abolished `x-parse-geometry'.
+
+Window Actions that Were No Longer Useful
+=========================================
+
+                  Various behaviors of windows in Emacs 19 were
+obsolete by the time Emacs 18 was due to come out.  We have removed
+them.  These changes are listed below.
+
+                  * We removed the functions `window-at',
+                    `window-minibuffer-p', `set-window-dedicated-p',
+                    `coordinates-in-window-p', `walk-windows',
+                    `window-dedicated-p', and `window-end'.
+
+                  * We removed the variables `pop-up-frames',
+                    `pop-up-frame-function', `display-buffer-function',
+                    and `other-window-scroll-buffer'.
+
+                  * The function `minibuffer-window' no longer accepts
+                    a frame as argument, since frames as objects do not
+                    exist in Emacs version 18.  It returns the window
+                    used for minibuffers.
+
+                  * The functions `next-window' and `previous-window'
+                    no longer accept the ALL-FRAMES argument since
+                    there is just one frame.
+
+                  * The functions `get-lru-window',
+                    `get-largest-window', `get-buffer-window', and
+                    `get-buffer-window' also no longer take the
+                    optional argument ALL-FRAMES because there is just
+                    one frame to search.
+
+Display Features
+================
+
+                  * There are no overlays, and no faces.
+
+                  * We eliminated the mode line spec `%l' that in later
+                    versions used to display the current line number.
+                    We removed the variables `line-number-mode' and
+                    `line-number-display-limit'.
+
+                  * `baud-rate' is now a function rather than a
+                    variable.
+
+                  * You can no longer call `message' with `nil' as the
+                    only argument; therefore, you can not reliably make
+                    the contents of the minibuffer visible.
+
+                  * The variable `temp-buffer-show-function' has been
+                    renamed `temp-buffer-show-hook'.
+
+                  * We removed the function `force-mode-line-update'.
+                    Use the following idiom instead:
+
+                         (set-buffer-modified-p (buffer-modified-p))
+
+                  * Display tables no longer exist.  We know what the
+                    ASCII characters should look like, and we made them
+                    look that way.
+
+Working with Input Events
+=========================
+
+                  The big news about input events is that we got rid of
+function key and mouse events.  Now the only input events are
+characters.  What's more, these characters now have to be in the range
+of 0 to 127, optionally with a meta bit.  This makes for big
+simplifications.
+
+                  * Functions like `define-key', `global-set-key',
+                    `read-key-sequence', and `local-set-key' used to
+                    accept strings or vectors in Emacs 19; now they
+                    only accept strings.
+
+                  * The documentation functions
+                    (`single-key-description', `key-description', etc.)
+                    also no longer accept vectors, but they do accept
+                    strings.
+
+                  * We removed the `read-event', `event-start',
+                    `posn-window', `posn-point', `posn-col-row',
+                    `posn-timestamp', `scroll-bar-scale', and
+                    `event-end' functions, since they were only useful
+                    for non-character events.
+
+                  * We removed the `unread-command-events' and
+                    `last-event-frame' variables.
+
+                  * The functions `this-command-keys' and `recent-keys'
+                    now always return a string.  Likewise, a keyboard
+                    macro's definition can only be a string, not a
+                    vector.
+
+                  * We eliminated `e' as an interactive specification
+                    since it was useful only with non-character events.
+
+                  * In Emacs 18, we represent Meta characters as
+                    character objects with the same encoding used in
+                    strings: 128 plus the corresponding non-Meta ASCII
+                    character.
+
+Menus
+=====
+
+                  You can no longer define menus as keymaps; good
+system design requires crafting a special-purpose interface for each
+facility, so it can precisely fit the requirements of that facility.
+We decided that unifying keymaps and menus was simply too much of a
+strain.
+
+                  In Emacs 18, you can only activate menus with the
+mouse.  Using them with a keyboard was too confusing for too many users.
+
+                  Emacs 18 has no menu bars.  All functions and
+variables related to the menu bar have been eliminated.
+
+Changes in Minibuffer Features
+==============================
+
+                  The minibuffer history feature has been eliminated.
+Thus, we removed the optional argument HIST from the minibuffer input
+functions `read-from-minibuffer' and `completing-read'.
+
+                  The INITIAL argument to `read-from-minibuffer' and
+other minibuffer input functions can no longer be a cons cell `(STRING
+. POSITION)'.
+
+                  In the function `read-no-blanks-input', the INITIAL
+argument is no longer optional.
+
+New Features for Defining Commands
+==================================
+
+                  * The special meaning of `@' in an interactive
+                    specification has been eliminated.
+
+                  * Emacs 18 does not support use of format-style
+                    `%'-sequences in the prompt strings in interactive
+                    specifications.
+
+                  * The property `enable-recursive-minibuffers' no
+                    longer has any special meaning.
+
+Removed Features for Reading Input
+==================================
+
+                  We removed the third argument (META) from the function
+`set-input-mode'.  Consequently, we added the variable `meta-flag'; set
+it to `t' to enable use of a Meta key, and to `nil' to disable it.
+(Those are the only two alternatives.)
+
+                  We also removed the variable
+`extra-keyboard-modifiers'.
+
+                  We removed the function `keyboard-translate' and the
+variables `num-input-keys' and `function-key-map'.
+
+Removed Syntax Table Features
+=============================
+
+                  * We eliminated the functions `skip-syntax-forward',
+                    `skip-syntax-backward', `forward-comment'.
+
+                  * We removed the syntax flag for ``prefix syntax''
+                    and the flag for the alternate comment style.
+                    Emacs 18 supports only one style of comment in any
+                    given syntax table.
+
+                  * We abolished the variable `words-include-escapes'.
+
+The Case Table
+==============
+
+                  Case tables do not exist in Emacs 18.  Due to this
+change, we have removed the associated functions
+`set-standard-case-table', `standard-case-table', `current-case-table',
+`set-case-table', and `set-case-syntax-pair'.
+
+Features for Dealing with Buffers
+=================================
+
+                  * We eliminated several functions for dealing with
+                    buffers: `buffer-modified-tick' and
+                    `generate-new-buffer-name'.
+
+                  * We renamed `buffer-disable-undo' to
+                    `buffer-flush-undo'---a more picturesque name, you
+                    will agree.
+
+                  * The function `other-buffer' takes just one argument
+                    in Emacs 18.
+
+                  * The function `rename-buffer' now requires you to
+                    specify precisely the new name you want.
+
+                  * We removed the local variable
+                    `list-buffers-directory'.
+
+                  * We got rid of the hook `kill-buffer-hook'.
+
+Local Variables Features
+========================
+
+                  * The function `kill-all-local-variables' always
+                    eliminates all buffer-local variables of the
+                    current buffer.  No more exceptions.
+
+                  * Making a variable buffer-local when it is void now
+                    sets it to `nil'.
+
+                  * We eliminated the functions `default-boundp',
+                    because it is no longer possible for the default
+                    binding of a variable to be void.
+
+                  * The special forms `defconst' and `defvar' now set
+                    the variable's local value rather than its default
+                    value when the variable is local in the current
+                    buffer.
+
+Features for Subprocesses
+=========================
+
+                  `call-process' and `call-process-region' no longer
+indicate the termination status of the subprocess.  We call on users to
+have faith that the subprocess executed properly.
+
+                  * The standard asynchronous subprocess features do
+                    not work on VMS; instead, special VMS asynchronous
+                    subprocess functions have been added.  Since they
+                    are only for VMS, we can't be bothered documenting
+                    them; sorry.  Use the source, Luke!
+
+                  * The function `signal-process' has been removed.
+
+                  * We eliminated the transaction queue feature, and
+                    the associated functions `tq-create', `tq-enqueue',
+                    and `tq-close'.
+
+Dealing with Times And Time Delays
+==================================
+
+                  * We removed the functions `current-time',
+                    `current-time-zone', `run-at-time', and
+                    `cancel-timer'.
+
+                  * The function `current-time-string' no longer
+                    accepts any optional arguments.
+
+                  * The functions `sit-for' and `sleep-for' no longer
+                    allow an optional argument to let you specify the
+                    time period in milliseconds; just in seconds.
+                    Additionally, we took out the optional third
+                    argument NODISP from `sit-for'.
+
+                  * We removed the optional second and third arguments
+                    from the `accept-process-output' function.  It
+                    accepts just one argument, the process.
+
+Features not Available for Lisp Debuggers
+=========================================
+
+                  * In Emacs 18, you can no longer specify to invoke
+                    the Lisp debugger only upon encountering certain
+                    types of errors.  Any non-`nil' value for the
+                    variable `debug-on-error' says to invoke the
+                    debugger for any error whatever.
+
+                  * We removed the variable `command-debug-status' and
+                    the function `backtrace-frame'.
+
+Memory Allocation Changes
+=========================
+
+                  We removed the function `memory-limit'.
+
+                  The list returned by `garbage-collect' no longer
+contains an element to describe floating point numbers, since there
+aren't any floating point numbers in Emacs 18.
+
+Hook Changes
+============
+
+                  * We removed the hooks `pre-abbrev-expand-hook',
+                    `pre-command-hook', `post-command-hook', and
+                    `auto-save-hook'.
+
+                  * We removed the variable
+                    `revert-buffer-insert-file-contents-function'.
+
+                  * We also removed the new function `add-hook'; you
+                    will have to set your hooks by hand.  If you want
+                    to get really into the swing of things, set your
+                    hook variables the archaic way: store just one
+                    function rather than a list of functions.  But that
+                    is optional.
+
+                  * The variable `lisp-indent-hook' has been renamed to
+                    `lisp-indent-function'.
+
+                  * The variable `auto-fill-function' has been renamed
+                    to `auto-fill-hook'.
+
+                  * The `blink-paren-function' has been renamed to
+                    `blink-paren-hook'.
+
+                  * The variable `temp-buffer-show-function' has been
+                    renamed to `temp-buffer-show-hook'.
+

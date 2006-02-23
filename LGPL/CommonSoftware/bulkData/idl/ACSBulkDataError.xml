@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSBulkDataError" type="53" _prefix="alma">
+	<ErrorCode name="AVFlowEndpointError" shortDescription="Flow Endpoint error" description=""/>
+	<ErrorCode name="AVStreamEndpointError" shortDescription="Stream Endpoint error" description=""/>
+	<ErrorCode name="AVStreamBindError" shortDescription="Stream bind error" description=""/>
+	<ErrorCode name="AVSendFrameError" shortDescription="Send frame error" description=""/>
+	<ErrorCode name="AVCouldNotOpenFile" shortDescription="Opening file error" description=""/>
+	<ErrorCode name="AVObjectNotFound" shortDescription="Founding object error" description=""/>
+	<ErrorCode name="AVInitError" shortDescription="Initialization error" description=""/>
+	<ErrorCode name="AVCallbackError" shortDescription="Callback error" description=""/>
+	<ErrorCode name="AVProtocolError" shortDescription="Data Protocol error" description=""/>
+	<ErrorCode name="AVInvalidFlowNumber" shortDescription="Invalid Flow Number error" description=""/>
+
+	<ErrorCode name="AVConnectError" shortDescription="Sender connect error" description=""/>
+	<ErrorCode name="AVDisconnectError" shortDescription="Sender disconnect error" description=""/>
+	<ErrorCode name="AVStartSendError" shortDescription="Sender startSend error" description=""/>
+	<ErrorCode name="AVPaceDataError" shortDescription="Sender paceData error" description=""/>
+	<ErrorCode name="AVStopSendError" shortDescription="Sender stopSend error" description=""/>
+
+	<ErrorCode name="AVOpenReceiverError" shortDescription="Receiver openReceiver error" description=""/>
+	<ErrorCode name="AVReceiverConfigError" shortDescription="Receiver getReceiverConfig error" description=""/>
+	<ErrorCode name="AVCloseReceiverError" shortDescription="Receiver closeReceiver error" description=""/>
+</Type>

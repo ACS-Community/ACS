@@ -1,0 +1,8 @@
+#! /bin/bash
+#trivial script which just sleeps for 10 seconds
+#before running a command passed in.
+#extremely useful for running acsStop immediately
+#after acsStart (which still might be loading the IFR)
+
+sleep 10
+$@

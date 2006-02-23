@@ -1,0 +1,79 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: c-procedure.template,v 1.20 2002/12/05 19:09:20 vltsccm Exp $" 
+#%# 
+#%# Template for c-procedure          
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gfilippi   14/01/94  created
+#%# gfilippi   20/02/95  added header and manpage
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c_procedure(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+/*******************************************************************************
+* PPPPPPPP
+*
+* 
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created
+*/
+
+/************************************************************************
+*   NAME
+* 
+*   SYNOPSIS
+* 
+*   DESCRIPTION
+*
+*   FILES
+*
+*   ENVIRONMENT
+*
+*   RETURN VALUES 
+*
+*   CAUTIONS 
+*
+*   EXAMPLES
+*
+*   SEE ALSO
+*
+*   BUGS   
+*
+*------------------------------------------------------------------------
+*/
+
+#define _POSIX_SOURCE 1
+#include "vltPort.h"
+
+static char *rcsId="@(#) $I>-<d$"; 
+static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+
+/* 
+ * System Headers
+ */
+
+/* 
+ * Local Headers
+ */
+
+
+/* 
+ * 
+ */
+
+{
+}
+
+/*___oOo___*/
