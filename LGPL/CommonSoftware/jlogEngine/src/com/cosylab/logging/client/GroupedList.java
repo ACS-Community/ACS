@@ -147,60 +147,59 @@ public final class GroupedList {
 
 		public final void run() {
 			while (true) {
-			//	if (!GroupedList.this.isUpdating()) {
-                    			synchronized(uiQueue) {
-						if (!uiQueue.isEmpty()) {
-							UpdateAction ua = uiQueue.get(0);
-							uiQueue.remove(0);
-			
-							int i = internalGet(ua.index);
-							if (i >= 0) {
-								GroupedListItem group = GroupedList.this.getGroup(i);
-								group.setExpanded(ua.action == ITEM_EXPAND);
-							}
-						} 
-                    			} 
-                    			synchronized(queue) {
-						if (!queue.isEmpty()) {
-							UpdateAction ua = queue.get(0);
-							queue.remove(0);
-                            
-		
-							if (ua.action == ITEM_ADD) {
-                                			GroupedList.this.addInternal(ua.data);
-                            				} else if (ua.action == ITEM_REMOVE) {
-							    GroupedList.this.removeInternal(ua.data);
-                            				}
+				// if (!GroupedList.this.isUpdating()) {
+				synchronized (uiQueue) {
+					if (!uiQueue.isEmpty()) {
+						UpdateAction ua = uiQueue.get(0);
+						uiQueue.remove(0);
+
+						int i = internalGet(ua.index);
+						if (i >= 0) {
+							GroupedListItem group = GroupedList.this
+									.getGroup(i);
+							group.setExpanded(ua.action == ITEM_EXPAND);
 						}
-                    		      }
-					boolean cond =true;
-					 synchronized(queue){
-						cond = queue.isEmpty();
 					}
-					 synchronized(uiQueue) {
-						cond = cond &&  uiQueue.isEmpty();
+				}
+				synchronized (queue) {
+					if (!queue.isEmpty()) {
+						UpdateAction ua = queue.get(0);
+						queue.remove(0);
+
+						if (ua.action == ITEM_ADD) {
+							GroupedList.this.addInternal(ua.data);
+						} else if (ua.action == ITEM_REMOVE) {
+							GroupedList.this.removeInternal(ua.data);
+						}
 					}
-                    		      if (cond) {
-    	                		try {
-    		                		synchronized (this) {
-    			                		wait();
-    		                		}
-    	                		} catch (InterruptedException e) {}
-                    		      } 
-			//	} 
+				}
+				synchronized (this) {
+					if (!queue.isEmpty() && !uiQueue.isEmpty()) {
+						try {
+							synchronized (this) {
+								wait();
+							}
+						} catch (InterruptedException e) {
+						}
+					}
+				}
+				// }
 			}
 		}
 	}
 
 	/**
-	 * This is wrapper class for <code>GroupedList</code> items. It provides efficient
-	 * grouping support for linear lists. It is designed to offer good performance for
-	 * both large and single element groups.<p>
-	 * Items contained in this group are maintained by List. However, if
-	 * the group contains only one object, the groupList is null to avoid excesive
-	 * memory consumption, and the item is stored in a single variable. The class
-	 * provides this functionality transparently.<p>
+	 * This is wrapper class for <code>GroupedList</code> items. It provides
+	 * efficient grouping support for linear lists. It is designed to offer good
+	 * performance for both large and single element groups.
+	 * <p>
+	 * Items contained in this group are maintained by List. However, if the
+	 * group contains only one object, the groupList is null to avoid excesive
+	 * memory consumption, and the item is stored in a single variable. The
+	 * class provides this functionality transparently.
+	 * <p>
 	 * Creation date: (11/30/2001 13:21:50)
+	 * 
 	 * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
 	 */
 	public final class GroupedListItem {
