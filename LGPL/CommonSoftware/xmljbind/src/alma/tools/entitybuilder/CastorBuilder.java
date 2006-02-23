@@ -214,9 +214,13 @@ public class CastorBuilder
         String[] allSchemaNames = ebc.getAllSchemaNames();
         for (int i = 0; i < allSchemaNames.length; i++) {
             String jPackage = ebc.getJPackageForSchema(allSchemaNames[i]);
-            String schemafileWithPath = xsdFileFinder.resolveXsdFile(allSchemaNames[i]).getAbsolutePath();
-//            System.out.println("SourceGenerator#setLocationPackageMapping: " + schemafileWithPath + " -> " + jPackage);
-            sgen.setLocationPackageMapping(schemafileWithPath, jPackage);
+            File schemaFileWithPath = xsdFileFinder.resolveXsdFile(allSchemaNames[i]);
+            if (schemaFileWithPath == null) {
+            	throw new FileNotFoundException(
+        				"Schema file '" + allSchemaNames[i] + "' is used in mappings but does not exist!");
+            }
+//            System.out.println("SourceGenerator#setLocationPackageMapping: " + schemaFileWithPath.getAbsolutePath() + " -> " + jPackage);
+            sgen.setLocationPackageMapping(schemaFileWithPath.getAbsolutePath(), jPackage);
         }
         
 		// adjust options here 
