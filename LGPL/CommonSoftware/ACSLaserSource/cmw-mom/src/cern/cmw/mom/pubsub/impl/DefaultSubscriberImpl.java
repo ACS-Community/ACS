@@ -545,6 +545,8 @@ public class DefaultSubscriberImpl implements Subscriber, ExceptionListener {
       notificationPublisher.setTimeToLive(60000);
       notificationMessage = serviceSession.createMessage();
     } catch (JMSException e) {
+    	System.out.println("Exception caught: "+e.getMessage());
+    	e.printStackTrace(System.err);
       throw (new MOMException("Exception raised attempting to create the notifications publisher, cause is : " + e.getMessage()));
     }
   }
