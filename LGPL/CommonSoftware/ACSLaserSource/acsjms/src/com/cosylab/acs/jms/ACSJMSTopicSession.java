@@ -33,6 +33,7 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 	 * @see javax.jms.TopicSession#createSubscriber(javax.jms.Topic)
 	 */
 	public TopicSubscriber createSubscriber(Topic topic) throws JMSException {
+		System.out.println("\n==>\n==>createSubscriber Selector EMPTY "+topic.getTopicName()+"\n==>\n");
 		return new ACSJMSTopicSubscriber(topic, this.containerServices,null);
 	}
 
@@ -45,14 +46,30 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 		boolean noLocal)
 		throws JMSException {
 		// TODO messageSelector and noLocal arguments should be used somehow
-		return new ACSJMSTopicSubscriber(topic, this.containerServices,null);
+		System.out.println("\n==>\n==>createSubscriber Selector "+messageSelector+topic.getTopicName()+"\n==>\n");
+		return new ACSJMSTopicSubscriber(topic, this.containerServices,messageSelector);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.TopicSession#createPublisher(javax.jms.Topic)
 	 */
 	public TopicPublisher createPublisher(Topic topic) throws JMSException {
-		return new ACSJMSTopicPublisher(topic, this.containerServices);
+		if (topic!=null) {
+			System.out.println("\n==>\n==>createPublisher XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+topic.getTopicName()+"\n==>\n");
+		} else {
+			System.out.println("\n==>\n==>createPublisher XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n==>\n");
+		}
+		ACSJMSTopicPublisher newPublisher;
+		try {
+			newPublisher = new ACSJMSTopicPublisher(topic, this.containerServices);
+		} catch (JMSException e) {
+			System.err.println("######################################");
+			System.err.println("Exception caught "+e.getMessage());
+			e.printStackTrace(System.err);
+			System.err.println("######################################");
+			throw e;
+		}
+		return newPublisher;
 	}
 
 	/* (non-Javadoc)
