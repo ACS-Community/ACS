@@ -72,6 +72,7 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 	public void setMessageSelector(String selectorString) {
 		try {
 			this.selector.setSelectorString(selectorString);
+			System.out.println("## Selector set to ["+selectorString+"]");
 		} catch (InvalidSelectorException e) {
 			System.err.println("Exception setting the selector "+selectorString);
 			System.err.println("Exception message: "+e.getMessage());
@@ -173,8 +174,13 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 			this.messages.add(jmsMessage);
 		}
 		
-		if(this.listener != null) {
+		if(this.listener == null) {
+			return;
+		} else if (selector.match(jmsMessage)) {
+			System.out.println("==> Delivering the message");
 			this.listener.onMessage(jmsMessage);
+		} else {
+			System.out.println("==> Message not delivered");
 		}
 	}
 }
