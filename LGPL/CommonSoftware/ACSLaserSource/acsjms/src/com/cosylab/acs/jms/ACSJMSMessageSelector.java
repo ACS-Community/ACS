@@ -2,6 +2,7 @@ package com.cosylab.acs.jms;
 
 import com.codestreet.selector.Selector;
 import com.codestreet.selector.ISelector;
+import com.codestreet.selector.parser.Identifier;
 import com.codestreet.selector.parser.InvalidSelectorException;
 import com.codestreet.selector.parser.IValueProvider;
 import com.codestreet.selector.parser.Result;
@@ -59,24 +60,30 @@ public class ACSJMSMessageSelector {
 		 * @return The value of the property or null if the property was not found
 		 */
 		public Object getValue(Object identifier, Object correlation) {
-			if (!(identifier instanceof String)) {
-				throw new IllegalArgumentException("The identifier must be a String!");
+			if (!(identifier instanceof Identifier)) {
+				throw new IllegalArgumentException("Wrong class "+identifier.getClass().getName()+" for identifier!");
 			}
-			String key = ((String)identifier).trim();
+			String key = ((Identifier)identifier).getIdentifier().trim();
 			if (key.length()==0) {
 				throw new IllegalArgumentException("The identifier can't be empty!");
 			}
 			// Look for the key in the properties in the body of the message
 			Object retVal = null;
+			System.out.println("==> looking for key "+key);
 			for(int i = 0; i < message.entity.properties.length; ++i) {
+				System.out.print("\t ["+message.entity.properties[i].property_name);
+				System.out.println(","+message.entity.properties[i].property_value+"]");
 				if (message.entity.properties[i].property_name.trim().equals(key)) {
+					System.out.println("\tFOUND");
 					retVal = message.entity.properties[i].property_value;
 					break;
 				}
 			}
 			if (retVal==null) {
+				System.out.println("==> getValue returning null");
 				return null;
 			} else {
+				System.out.println("==> getValue returning "+retVal);
 				if (retVal instanceof Long) {
 					return new NumericValue((Long)retVal);
 				}
@@ -174,6 +181,7 @@ public class ACSJMSMessageSelector {
 		} else {
 			ACSJMSValueProvider valueProvider = new ACSJMSValueProvider(message);
 			Result result = selector.eval(valueProvider,null);
+			System.out.println("==> match returning "+result);
 			return result==Result.RESULT_TRUE;
 		}
 	}
