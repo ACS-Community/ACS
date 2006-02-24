@@ -41,6 +41,8 @@ public class ACSJMSTopicSubscriber
 			this.consumer = new ACSJMSMessageEntityConsumer(topic.getTopicName(), containerServices, this);
 			this.consumer.consumerReady();
 		} catch (AcsJException e) {
+			System.err.println("Error creating the subscriber: "+e.getMessage());
+			e.printStackTrace(System.err);
 			throw new JMSException("Error creating topic subscriber: " + e.getMessage());
 		}
 	}
