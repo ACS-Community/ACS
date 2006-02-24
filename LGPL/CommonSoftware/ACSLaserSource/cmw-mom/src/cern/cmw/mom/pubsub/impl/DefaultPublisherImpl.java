@@ -417,8 +417,12 @@ public class DefaultPublisherImpl implements Publisher, ExceptionListener {
       publisher = session.createPublisher(null);
       closed = false;
     } catch (ConnectionException e) {
+    	System.out.println("Exception caught: "+e.getMessage());
+    	e.printStackTrace(System.err);
       throw new MOMException("Unable to estabilish a connection, cause is : " + e.getMessage());
     } catch (JMSException e) {
+    	System.out.println("Exception caught: "+e.getMessage());
+    	e.printStackTrace(System.err);
       throw (new MOMException(e.getMessage()));
     }
   }
