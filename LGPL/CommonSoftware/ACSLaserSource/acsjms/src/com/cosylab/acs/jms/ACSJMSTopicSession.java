@@ -33,7 +33,6 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 	 * @see javax.jms.TopicSession#createSubscriber(javax.jms.Topic)
 	 */
 	public TopicSubscriber createSubscriber(Topic topic) throws JMSException {
-		System.out.println("\n==>\n==>createSubscriber Selector EMPTY "+topic.getTopicName()+"\n==>\n");
 		return new ACSJMSTopicSubscriber(topic, this.containerServices,null);
 	}
 
@@ -46,7 +45,6 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 		boolean noLocal)
 		throws JMSException {
 		// TODO messageSelector and noLocal arguments should be used somehow
-		System.out.println("\n==>\n==>createSubscriber Selector "+messageSelector+topic.getTopicName()+"\n==>\n");
 		return new ACSJMSTopicSubscriber(topic, this.containerServices,messageSelector);
 	}
 
@@ -54,11 +52,6 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 	 * @see javax.jms.TopicSession#createPublisher(javax.jms.Topic)
 	 */
 	public TopicPublisher createPublisher(Topic topic) throws JMSException {
-		if (topic!=null) {
-			System.out.println("\n==>\n==>createPublisher XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+topic.getTopicName()+"\n==>\n");
-		} else {
-			System.out.println("\n==>\n==>createPublisher XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n==>\n");
-		}
 		ACSJMSTopicPublisher newPublisher;
 		try {
 			newPublisher = new ACSJMSTopicPublisher(topic, this.containerServices);

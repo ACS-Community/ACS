@@ -177,10 +177,7 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 		if(this.listener == null) {
 			return;
 		} else if (selector.match(jmsMessage)) {
-			System.out.println("==> Delivering the message");
 			this.listener.onMessage(jmsMessage);
-		} else {
-			System.out.println("==> Message not delivered");
 		}
 	}
 }

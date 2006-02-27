@@ -136,6 +136,18 @@ public class ACSJMSTopicPublisher
 	private static void sendMessage(CorbaPublisher publisher, Message message)
 	{
 		if(message instanceof ACSJMSMessage) {
+			
+			// Debug print the props of the message
+			/*System.out.println("===> Properties of the message to send: ");
+			for(int i = 0; i < ((ACSJMSMessage)message).entity.properties.length; ++i) {
+				System.out.print("Props: "+
+						((ACSJMSMessage)message).entity.properties[i].property_name);
+				System.out.print("=====> "+((ACSJMSMessage)message).entity.properties[i].property_value);
+				System.out.println(" class ["+((ACSJMSMessage)message).entity.properties[i].property_value.getClass().getName()+"]");
+			}*/
+			
+			
+			
 			((ACSJMSMessage)message).getEntity().type=message.getClass().getName();
 			publisher.publish(((ACSJMSMessage)message).getEntity());			
 			//this.publisher.publish(new EventDescription("a", 32, 64));
