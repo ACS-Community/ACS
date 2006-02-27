@@ -1,18 +1,45 @@
 #!/bin/bash
 #A general purpose script designed to be used as the prologue
 #for most tat modular tests
-
+#---------------------------------------------------------------------------
 #Set the CDB to be the present working directory IFF
 #it's set to be the default ACS CDB
 if [ "$ACS_CDB" = "$ACSDATA/config/defaultCDB" ] || [ "$ACS_CDB" = "" ]
 then
     ACS_CDB=$PWD
 fi 
+#---------------------------------------------------------------------------
+#Pick an ACS base port to use
 
+#unset ACS_INSTANCE - we do not allow people to set this from TAT!
+unset ACS_INSTANCE
+
+#iterate through the ten possible choices
+i=0
+while [ $i -lt 10 ]
+do
+	#if the directory has not already been created.
+	if [ ! -e $ACSDATA/tmp/ACS_INSTANCE.$i ]
+	then
+		#we've found a free one and we're done
+		ACS_INSTANCE=$i
+	        break
+ 	fi
+
+ 	i=$(( $i + 1 ))
+done
+
+if [ "$ACS_INSTANCE" = "" ]
+then
+    echo "No ACS instances were available!" > /dev/stderr
+    exit 1
+fi
+
+#---------------------------------------------------------------------------
 #Start the services and manager
 echo " Starting ORB Services and Manager"
 acsStart > $ACS_TMP/acsStart.log
-
+#---------------------------------------------------------------------------
 #Get the ACS_INSTANCE from the log file just written out
 export ACS_INSTANCE=`grep -m 1 "For this ACS session, please do an" $ACS_TMP/acsStart.log | cut -d\' -f2 | cut -d= -f2`
 if [ "$ACS_INSTANCE" = "" ]
@@ -23,7 +50,7 @@ then
 else 
     echo $ACS_INSTANCE > $ACS_TMP/acs_instance
 fi
-
+#---------------------------------------------------------------------------
 #
 # Checks LOGGING mode
 #
@@ -42,3 +69,4 @@ then
 	## store pid in file, so that acsutilTATEpilogue can kill the logging client process (there's no other way to end it)
 	echo $pid >> $pidfile
 fi
+#---------------------------------------------------------------------------
