@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.29 2006/01/25 22:20:26 dfugate Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.30 2006/02/27 20:45:16 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -125,12 +125,7 @@ then
 fi
 
 ########################################################################
-#SANITY CHECKS----------------------------------------------------------
-#If it's undefined, the developer must have meant the default
-if [ "X$ACS_INSTANCE" == "X" ]
-then 
-    export ACS_INSTANCE="0"
-fi
+#SANITY CHECKS-------------------------------------------------------
 
 #Cannot shutdown everything if we don't know the process IDs.
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]

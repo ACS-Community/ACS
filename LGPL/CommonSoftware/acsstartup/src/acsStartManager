@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStartManager,v 1.27 2006/01/17 23:21:11 dfugate Exp $"
+# "@(#) $Id: acsStartManager,v 1.28 2006/02/27 20:44:07 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -136,12 +136,6 @@ fi
 if [ "$CL_BASEPORT" ]
 then
     export ACS_INSTANCE="$CL_BASEPORT"
-fi
-
-#If it's undefined, the developer must have meant the default
-if [ "X$ACS_INSTANCE" == "X" ]
-then 
-    export ACS_INSTANCE="0"
 fi
 
 #save manager output

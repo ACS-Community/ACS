@@ -107,12 +107,6 @@ then
     export ACS_INSTANCE="$CL_BASEPORT"
 fi
 
-#If it's undefined, the developer must have meant the default
-if [ "X$ACS_INSTANCE" == "X" ]
-then 
-    export ACS_INSTANCE="0"
-fi
-
 #Cannot do anything if the directory doesn't exist
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
 then

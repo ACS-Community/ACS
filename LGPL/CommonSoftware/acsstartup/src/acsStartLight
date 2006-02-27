@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acsStartLight,v 1.5 2005/10/25 09:33:52 dfugate Exp $
+# @(#) $Id: acsStartLight,v 1.6 2006/02/27 20:44:07 dfugate Exp $
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -145,7 +145,6 @@ function addToCdbSchemaPath {
 #
 # acs instance
 #
-acsinstance=0
 
 if [ x$ACS_INSTANCE != x ] ; then
    acsinstance=$ACS_INSTANCE
