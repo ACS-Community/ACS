@@ -53,7 +53,11 @@ public class ACSJMSMessageSelector {
 		 * JMS specification states that the properties to check should only be 
 		 * those of the header so we are not following the specs here (even if it
 		 * is common use). 
-		 * It should be better at least to check ALSO in the header properties 
+		 * It should be better at least to check ALSO in the header properties
+		 * 
+		 *  NOTE: Properties are object of type org.jacorb.orb.Any containing a String.
+		 *        This method tries to parse the String in order to return
+		 *        an object of the right type (true and false for booleans)
 		 * 
 		 * @param identifier The identifier of the property (the key, it is a String)
 		 * @param correlation The correlation object (not used)
@@ -69,40 +73,56 @@ public class ACSJMSMessageSelector {
 			}
 			// Look for the key in the properties in the body of the message
 			Object retVal = null;
-			System.out.println("==> looking for key "+key);
 			for(int i = 0; i < message.entity.properties.length; ++i) {
-				System.out.print("\t ["+message.entity.properties[i].property_name);
-				System.out.println(","+message.entity.properties[i].property_value+"]");
 				if (message.entity.properties[i].property_name.trim().equals(key)) {
-					System.out.println("\tFOUND");
 					retVal = message.entity.properties[i].property_value;
 					break;
 				}
 			}
 			if (retVal==null) {
-				System.out.println("==> getValue returning null");
 				return null;
 			} else {
-				System.out.println("==> getValue returning "+retVal);
-				if (retVal instanceof Long) {
-					return new NumericValue((Long)retVal);
+				/*
+				 * We have the value now we try to build an object of the
+				 * right type before returning the value
+				 * This is done trying to build a Numeric object with the Any
+				 * object and returning it in case of success.
+				 * If the conversion to a NumericValue failed then the object is 
+				 * converted to a string an compared to true and false 
+				 * (for booleans) or returned as String.
+				 */
+				
+				
+				// Integer
+				try {
+					NumericValue num = new NumericValue((Integer)retVal);
+					return num;
+				} catch (Exception e) {}
+				// Long
+				try {
+					NumericValue num = new NumericValue((Long)retVal);
+					return num;
+				} catch (Exception e) {}
+				// Float
+				try {
+					NumericValue num = new NumericValue((Float)retVal);
+					return num;
+				} catch (Exception e) {}
+				// Double
+				try {
+					NumericValue num = new NumericValue((Double)retVal);
+					return num;
+				} catch (Exception e) {}
+				// Boolean
+				String val = retVal.toString().trim();
+				if (val.compareToIgnoreCase("true")==0) {
+					return true;
 				}
-				if (retVal instanceof Integer) {
-					return new NumericValue((Integer)retVal);
+				if (val.compareToIgnoreCase("false")==0) {
+					return false;
 				}
-				if (retVal instanceof Short) {
-					return new NumericValue((Short)retVal);
-				}
-				if (retVal instanceof Float) {
-					return new NumericValue((Float)retVal);
-				}
-				if (retVal instanceof Double) {
-					return new NumericValue((Double)retVal);
-				}
-				if (retVal instanceof Byte) {
-					return new NumericValue((Byte)retVal);
-				}
-				return retVal;
+				// String
+				return val;
 			}
 		}
 	}
@@ -181,7 +201,6 @@ public class ACSJMSMessageSelector {
 		} else {
 			ACSJMSValueProvider valueProvider = new ACSJMSValueProvider(message);
 			Result result = selector.eval(valueProvider,null);
-			System.out.println("==> match returning "+result);
 			return result==Result.RESULT_TRUE;
 		}
 	}
