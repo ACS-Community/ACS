@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.53 2006/02/07 00:45:43 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.54 2006/02/27 23:14:47 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -148,23 +148,6 @@ fi
 MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 export STD_SLEEP=3
 
-#Find a valid baseport number
-JOE=`pickBasePort $ACS_INSTANCE`
-if [ `echo $JOE | grep -c "ERROR"` = 0 ]
-then 
-    export ACS_INSTANCE="$JOE"
-elif [ "X$JOE" == "X" ]
-then
-    ACS_LOG_ERROR "$JOE"
-    ACS_LOG_ERROR "Please check using 'acsList' and try again!"
-    exit $EC_FAILURE
-else 
-    ACS_LOG_ERROR "$JOE"
-    ACS_LOG_ERROR "Please check using 'acsList' and try again!"
-    exit $EC_FAILURE
-fi
-unset JOE
-
 #a sanity check to ensure user does not run acsStartORBSRVC twice in a row
 #using the same baseport
 if [ -e `getInstanceDirName $ACS_INSTANCE`/ACS_NAMING_SERVICE_PID ]
@@ -174,14 +157,13 @@ then
     exit $EC_FAILURE
 fi
 
-
 #
 # Makes sure that the directory for temporary 
 # ACS_INSTANCE files exists.
 #
-if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
+if ! createInstanceDirectory $ACS_INSTANCE
   then
-     ACS_LOG_ERROR "Cannot cd to `getInstanceDirName $ACS_INSTANCE`"
+     ACS_LOG_ERROR "Cannot create `getInstanceDirName $ACS_INSTANCE`"
      exit $EC_CANNOTCREATE
   fi
 ACS_INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`

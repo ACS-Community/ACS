@@ -78,88 +78,6 @@ return $EC_OK
 }
 
 export checkTCPPort
-
-#------------------------------------------------------------------------------------
-#--Gets a base port (0-9) for the ACS_INSTANCE 
-#--If no baseport is provided to this script as the sole parameter, we're free to 
-#--choose whatever we want that has not been taken already.
-#--If it is provided, we'll use what the developer wants.
-#--Assumes $ACSDATA/tmp exists and is writeable
-#--If a baseport can be found and used, the return value is EC_OK and the baseport
-#--is printed so stdout.
-#--If a baseport cannot be found, the return value is something other than EC_OK.
-#--------------------
-function getBasePort
-{
-local i
-local ACS_INSTANCE
-
-ACS_INSTANCE=$1
-
-
-#sanity check. if they've defined it, we need to verify it's actually useable.
-if [ "X$ACS_INSTANCE" != "X" ]
-then
-
-	#if the number is not valid, bail
-	if ! checkBasePort $ACS_INSTANCE
-	then
-		#bad situation, but possibly recoverable
-		ACS_LOG_ERROR "The ACS_INSTANCE to use, $ACS_INSTANCE, is not from 0-9!"
-		return $EC_BADARGS
-
-	#the directory has already been created, but is not writeable by this user
-	elif [ -d `getInstanceDirName $ACS_INSTANCE` ] && [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
-	then
-		#another bad situation, but recoverable as well.
-		#the ACS_INSTANCE directory is not writeable by this user.
-		#warn them and unset the instance
-		ACS_LOG_ERROR "The ACS_INSTANCE to use, $ACS_INSTANCE, cannot be used by $USER!"
-		ACS_LOG_ERROR "        Check the permissions on `getInstanceDirName $ACS_INSTANCE` next time."
-		return $EC_CANNOTUSE
-
-	#the directory has already been created and is writeable by this user	
-	elif [ -d `getInstanceDirName $ACS_INSTANCE` ] && [ -w `getInstanceDirName $ACS_INSTANCE` ]
-	then
-		#good, nothing else to do from our end
-		echo $ACS_INSTANCE
-		return $EC_OK
-
-	#the directory has not been created	
-	elif [ ! -d `getInstanceDirName $ACS_INSTANCE` ] 
-	then
-		#good, nothing else to do from our end
-		echo $ACS_INSTANCE
-		return $EC_OK
-	fi
-
-fi
-
-
-
-#iterate through the ten possible choices
-i=0
-
-while [ $i -lt 10 ] 
-do
-
-	#if the directory has not already been created.
-	if [ ! -e `getInstanceDirName $i` ]
-	then
-		#we've found a free one and we're done
-		echo $i
-		return $EC_OK
-	fi
-
-	i=$(( $i + 1 ))
-done
-
-#getting this far is very bad - no ports available
-return $EC_NOPORT
-}
-
-export getBasePort
-
 #------------------------------------------------------------------------------------
 #--Creates an ACS INSTANCE directory.
 #--Sole parameter is 0-9 corresponding to the ACS_INSTANCE to use.
@@ -238,46 +156,8 @@ else
 fi
 
 }
-
 export createInstanceDirectory
 
-#------------------------------------------------------------------------------------
-#--Picks a baseport to use, takes care of creating the ACS_INSTANCE.$ACS_INSTANCE
-#--directory, etc.
-#--If no baseport is provided to this script as the sole parameter, we're free to 
-#--choose whatever we want that has not been taken already.
-#--If it is provided, we'll use what the developer wants.
-#--Assumes $ACSDATA/tmp exists and is writeable
-#--If a baseport can be found and used, the return value is EC_OK and the baseport
-#--is printed so stdout.
-#--If a baseport cannot be found, the return value is something other than EC_OK.
-#--------------------
-function pickBasePort
-{
-local ACS_INSTANCE
-local temp
-
-ACS_INSTANCE=$1
-
-#get a free port
-if ! temp=`getBasePort $ACS_INSTANCE`
-then
-	return $EC_NOPORT
-fi
-
-#create the ACS instance directory
-if ! createInstanceDirectory $temp
-then 
-	return $EC_CANNOTCREATE
-fi
-
-echo $temp
-
-return $EC_OK
-
-}
-
-export pickBasePort
 #------------------------------------------------------------
 function checkDeadInstance
 {
@@ -286,23 +166,41 @@ local temp
 
 ACS_INSTANCE=$1
 
-
-
+#------------------------------------------------
 #Check manager's port
+#check for the process ID followed by the TCP port
 
+MANAGER_PID=``
 
+if [ ! MANAGER_PORT=`getManagerPort` ] || [ `netstat -l -t --numeric-ports | grep ":$MANAGER_PORT"` = "" ] 
+then
+	echo "The TCP port manager should be using is not being used!"
+fi
+
+if [ ! MANAGER_PID=`getManagerPid` ] || [ `ps h --pid $MANAGER_PID` = "" ] 
+then
+	echo "The manager process does not appear to be up!"
+fi
+
+#------------------------------------------------
 #Check naming service port
 
+#------------------------------------------------
 #Check notify service port
 
+#------------------------------------------------
 #Check logging service port
 
+#------------------------------------------------
 #Check IFR port
 
+#------------------------------------------------
 #Check log port
 
+#------------------------------------------------
 #Check CDB port
 
+#------------------------------------------------
 }
 
 export checkInstanceDir
