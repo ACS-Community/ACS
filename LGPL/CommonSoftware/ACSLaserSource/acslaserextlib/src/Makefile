@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2006/02/22 17:12:25 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.6 2006/02/28 16:24:07 acaproni Exp $"
 #
 #
 
@@ -41,7 +41,6 @@ INSTALL_FILES =  ../lib/AbsoluteLayout.jar \
                  ../lib/openide.jar \
                  ../lib/openide-io.jar \
                  ../lib/mail.jar \
-                 ../lib/jakarta-oro-2.0.8.jar \
                  ../lib/selector-1.1.jar
 
 #
