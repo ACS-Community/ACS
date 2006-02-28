@@ -34,6 +34,9 @@ public class RecoveryFilesRemover {
 	}
 
 	public static File removeSnapshots(File recoveryDirectory, boolean leaveLast, String suffix, long limit) throws IOException {
+			if (!recoveryDirectory.exists())
+				return null;
+		
 			File[] snapshots = recoveryDirectory.listFiles(new SnapshotFilter(suffix, limit));
 			if (snapshots == null)
 				throw new IOException("Error reading file list from directory " + recoveryDirectory);
