@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.8 2005/11/10 00:26:20 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.9 2006/02/28 16:09:10 acaproni Exp $"
 #
 #
 
@@ -25,7 +25,8 @@ MODULES = acslaserextlib \
           laser-guiplatform \
           laser-CppUtil \
           laser-CppSource \
-          demo
+          NetbeansACS \
+          demo 
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
     MAKE_FLAGS = "NOCCS=1"
