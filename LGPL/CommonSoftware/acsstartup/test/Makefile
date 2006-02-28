@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.10 2005/10/19 11:22:20 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.11 2006/02/28 21:47:29 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -69,7 +69,7 @@ lllll_OBJECTS   =
 SCRIPTS         =
 SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	acsstartupSetEnv \
-	testAcsInstance.sh \
+	testAcsInstance.sh testPids.sh \
 	acsstartupGenericProcess.sh \
 	maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
 	maciManagerShutdown maciContainerShutdown acsStartJavaContainer
