@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: timeoutTestImpl.cpp,v 1.2 2004/10/14 20:37:49 gchiozzi Exp $"
+* "@(#) $Id: timeoutTestImpl.cpp,v 1.3 2006/02/28 19:25:12 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-08-24  created 
 */
 
-static char *rcsId="@(#) $Id: timeoutTestImpl.cpp,v 1.2 2004/10/14 20:37:49 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: timeoutTestImpl.cpp,v 1.3 2006/02/28 19:25:12 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "timeoutTestImpl.h"
@@ -48,4 +48,9 @@ TimeOutTestImpl::echo (CORBA::Long x,
   return x;
 }
 
+void TimeOutTestImpl::shutdownOrb()
+  ACE_THROW_SPEC ((CORBA::SystemException))
+{
+	orb_->shutdown(0);
+}
 /*___oOo___*/

@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: timeoutTestClient.cpp,v 1.7 2006/02/10 21:44:16 sharring Exp $"
+* "@(#) $Id: timeoutTestClient.cpp,v 1.8 2006/02/28 19:25:11 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-08-24  created
 */
 
-static char *rcsId="@(#) $Id: timeoutTestClient.cpp,v 1.7 2006/02/10 21:44:16 sharring Exp $"; 
+static char *rcsId="@(#) $Id: timeoutTestClient.cpp,v 1.8 2006/02/28 19:25:11 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "timeoutTestC.h"
@@ -103,13 +103,8 @@ int main(int argc, char *argv[])
 	}
 
 	acsQoS::done();
+
+	timeoutTest->shutdownOrb();
+	orb->shutdown(0);
 	return 0;
 }
-
-
-
-
-
-
-
-

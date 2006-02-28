@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: timeoutTestServer.cpp,v 1.4 2006/02/10 21:44:16 sharring Exp $"
+* "@(#) $Id: timeoutTestServer.cpp,v 1.5 2006/02/28 19:25:12 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-08-24  created
 */
 
-static char *rcsId="@(#) $Id: timeoutTestServer.cpp,v 1.4 2006/02/10 21:44:16 sharring Exp $"; 
+static char *rcsId="@(#) $Id: timeoutTestServer.cpp,v 1.5 2006/02/28 19:25:12 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "timeoutTestImpl.h"
@@ -33,9 +33,10 @@ const char *ior_output_file = "s1.ior";
 
 int main(int argc, char *argv[])
 {
+	CORBA::ORB_var orb;
 	try
 	{
-		CORBA::ORB_var orb = CORBA::ORB_init(argc, argv, "");
+		orb = CORBA::ORB_init(argc, argv, "");
 
 		CORBA::Object_var poa_object = orb->resolve_initial_references("RootPOA");
 
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
 		PortableServer::POA_var root_poa = PortableServer::POA::_narrow(poa_object.in ());
 
 		PortableServer::POAManager_var poa_manager = root_poa->the_POAManager();
+		poa_manager->activate();
 
 		TimeOutTestImpl timeOutTestImpl(orb.in ());
 
@@ -78,8 +80,21 @@ int main(int argc, char *argv[])
 	}
 	catch (CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION (ex, "Caught exception:");
+		ACE_PRINT_EXCEPTION (ex, "Caught CORBA exception:");
+		if(NULL != orb) 
+		{
+			orb->shutdown(0);
+		}
 		return 1;
+	}
+	catch(...)
+	{
+		ACS_SHORT_LOG((LM_DEBUG, "Caught an unknown exception"));
+		if(NULL != orb) 
+		{
+			orb->shutdown(0);
+		}
+		return 2;
 	}
 
 	return 0;
