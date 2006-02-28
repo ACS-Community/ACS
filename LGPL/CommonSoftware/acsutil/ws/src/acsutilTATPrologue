@@ -22,14 +22,14 @@ do
 	if [ ! -e $ACSDATA/tmp/ACS_INSTANCE.$i ]
 	then
 		#we've found a free one and we're done
-		ACS_INSTANCE=$i
+		export ACS_INSTANCE=$i
 	        break
  	fi
 
  	i=$(( $i + 1 ))
 done
 
-if [ "$ACS_INSTANCE" = "" ]
+if [ "X$ACS_INSTANCE" = "X" ]
 then
     echo "No ACS instances were available!" > /dev/stderr
     exit 1
