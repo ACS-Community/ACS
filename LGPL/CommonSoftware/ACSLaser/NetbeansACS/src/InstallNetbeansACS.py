@@ -73,7 +73,7 @@ if not tarfile.is_tarfile(sourceTarFile):
 homeDir = os.environ['HOME']
 
 # Get the name of the dest folder
-# Here we unpack the tar
+# Here we'll unpack the tar
 installationDir = getDestinationName()
 
 # Get the destination folder name from the tar file
@@ -86,14 +86,13 @@ for tarinfo in tarFile:
 destDir = installationDir+mainDir
 if destDir[len(destDir)-1]=='/':
     destDir=destDir[0:len(destDir)-1]
-print ">>>",destDir
 
 if not checkDestination(destDir,False):
     sys.exit(-1)
     
 # Uncompress the archive
 for tarinfo in tarFile:
-    tarFile.extract(tarinfo,destDir)
+    tarFile.extract(tarinfo,installationDir)
 tarFile.close()
 
 print "\nInstalling Netbeans for ACS in",destDir
