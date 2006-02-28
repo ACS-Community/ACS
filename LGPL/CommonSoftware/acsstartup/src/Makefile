@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.38 2006/02/28 21:47:29 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.39 2006/02/28 22:47:56 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -40,7 +40,8 @@ SCRIPTS         = acsStartContainer acsStopContainer \
                   acsstartupConstants \
 		  acsstartupAcsInstance \
 		  acsstartupLogging.sh \
-		  acsstartupReport
+		  acsstartupReport \
+		  acsStatus
 
 SCRIPTS_L       =
 
