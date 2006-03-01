@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStartManager,v 1.28 2006/02/27 20:44:07 dfugate Exp $"
+# "@(#) $Id: acsStartManager,v 1.29 2006/03/01 20:57:29 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -138,8 +138,10 @@ then
     export ACS_INSTANCE="$CL_BASEPORT"
 fi
 
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
 #save manager output
-MANAGER_OUT=`getInstanceDirName $ACS_INSTANCE`/manager.out
+MANAGER_OUT=$INSTANCE_DIR/$ACS_MANAGER_OUT
 
 #a sanity check to ensure user does not run acsStartManager twice in a row
 #using the same baseport
@@ -165,7 +167,7 @@ export STD_SLEEP=3
 #manager's process ID
 maciManagerJ $@ -n 2>&1 | tee $MANAGER_OUT &
 #See tee's PID
-echo $! >> `getInstanceDirName $ACS_INSTANCE`/ACS_PIDS
+echo $! >> $INSTANCE_DIR/$ACS_PIDSFILE
 
 #Give manager MAX_TIMEOUT to initialize. If this does not occur, 
 #then forcibly kill it
@@ -179,7 +181,8 @@ do
   if [ "$i" = "$MAX_TIMEOUT" ]
   then
       ACS_LOG_ERROR "Unable to start Manager in a timely fashion! Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-      acsKillProc `getInstanceDirName $ACS_INSTANCE`/ACS_MANAGER_PID 2> /dev/null || ACS_LOG_ERROR "Cannot kill the manager"
+      MANAGER_PID=`cat $INSTANCE_DIR/$ACS_MANAGER_PIDFILE`
+      acsKillProc $MANAGER_PID 2> /dev/null || ACS_LOG_ERROR "Cannot kill the manager"
       exit $EC_TIMEOUT
   #got the output we need
   elif [ "X$joe" != "X" ] 

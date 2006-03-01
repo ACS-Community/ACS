@@ -107,27 +107,31 @@ then
     export ACS_INSTANCE="$CL_BASEPORT"
 fi
 
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+MANAGER_PIDFILE=$INSTANCE_DIR/$ACS_MANAGER_PIDFILE
+MANAGER_OUT=$INSTANCE_DIR/$ACS_MANAGER_OUT
+
 #Cannot do anything if the directory doesn't exist
-if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
+if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "The directory '`getInstanceDirName $ACS_INSTANCE`' does not exist!"
+    ACS_LOG_ERROR "The directory '$INSTANCE_DIR' does not exist!"
     ACS_LOG_ERROR "This implies an ACS instance with ACS_INSTANCE=$ACS_INSTANCE is not really running!"
     exit $EC_CANNOTUSE
-elif [ ! -e `getInstanceDirName $ACS_INSTANCE`/ACS_MANAGER_PID ]
+elif [ ! -e $MANAGER_PIDFILE ]
 then
-    ACS_LOG_ERROR "The temporary file '`getInstanceDirName $ACS_INSTANCE`/ACS_MANAGER_PID' does not exist!"
+    ACS_LOG_ERROR "The temporary file '$MANAGER_PIDFILE' does not exist!"
     ACS_LOG_ERROR "This implies manager is not really running!"
     exit $EC_CANNOTUSE
 fi
 
 #Stop user A from interfering with user B
-if [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
+if [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "The directory '`getInstanceDirName $ACS_INSTANCE`' is not owned by $USER!"
+    ACS_LOG_ERROR "The directory '$INSTANCE_DIR' is not owned by $USER!"
     exit $EC_CANNOTUSE
-elif [ ! -w `getInstanceDirName $ACS_INSTANCE`/ACS_MANAGER_PID ]
+elif [ ! -w $MANAGER_PIDFILE ]
 then
-    ACS_LOG_ERROR "The temporary file '`getInstanceDirName $ACS_INSTANCE`/ACS_MANAGER_PID' is not owned by $USER!"
+    ACS_LOG_ERROR "The temporary file '$MANAGER_PIDFILE' is not owned by $USER!"
     exit $EC_CANNOTUSE
 fi
 
@@ -136,10 +140,10 @@ acsutilBlock -t 15 -k maciManagerShutdown
 
 #-----------------------------------------------------
 #assume the worst has happened...manager is hung
-cd `getInstanceDirName $ACS_INSTANCE`
+cd $INSTANCE_DIR
 #get a copy of manager's PID
-export ACS_MANAGER_PID=`cat ACS_MANAGER_PID`
-rm ACS_MANAGER_PID || ACS_LOG_ERROR "Cannot remove ACS_MANAGER_PID!"
+MANAGER_PID=`cat $MANAGER_PIDFILE`
+rm $MANAGER_PIDFILE || ACS_LOG_ERROR "Cannot remove $MANAGER_PIDFILE!"
 
 #Makes shure there is an initial value
 if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
@@ -153,8 +157,8 @@ MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 #delegate to this helper script. if jManager does not
 #really go away in $MAX_TIMEOUT seconds, the helper
 #script will forcefully kill it!
-acsutilBlock -p $ACS_MANAGER_PID -t $MAX_TIMEOUT -k
+acsutilBlock -p $MANAGER_PID -t $MAX_TIMEOUT -k
 
 #some final cleanup
-rm manager.out || ACS_LOG_ERROR "Cannot remove manager.out!"
+rm $MANAGER_OUT || ACS_LOG_ERROR "Cannot remove $MANAGER_OUT!"
 ACS_LOG_INFO "`basename $0`: done."

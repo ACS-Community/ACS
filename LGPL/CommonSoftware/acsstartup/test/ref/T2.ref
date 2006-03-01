@@ -7,28 +7,29 @@
 1 - INFO - Starting Interface Repository
 3 - INFO - Stopping Manager
 1 - INFO - Starting Naming Service
-3 - INFO - acsStopManager: done.
+3 - Max timeout exceeded!
 1 - INFO - acsIrfeed - Loading IDL interfaces in Interface Repository
-3 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
+3 - INFO - acsStopManager: done.
 1 - INFO -            ORBInitRef: InterfaceRepository=corbaloc::xxxx:3904/InterfaceRepository
-3 - INFO - Stopping the CDB
+3 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
 1 - INFO - Starting ACS Configuration Database
-3 - INFO - Stopping the CORBA Naming Service
+3 - INFO - Stopping the CDB
 1 - INFO -     CDB data is in:  /alma/ACS-x.y/acsdata/config/defaultCDB
-3 - INFO - Stopping the CORBA Notification Service
+3 - INFO - Stopping the CORBA Naming Service
 1 - INFO - Starting Notify Service
-3 - INFO - Stopping the CORBA Logging Notification Service
+3 - INFO - Stopping the CORBA Notification Service
 1 - JDAL is ready and waiting
-3 - INFO - Stopping the CORBA Archive Notification Service
+3 - INFO - Stopping the CORBA Logging Notification Service
 1 - INFO - Starting Logging Notify Service
-3 - INFO - Stopping the CORBA Logging Service
+3 - INFO - Stopping the CORBA Archive Notification Service
 1 - INFO - Starting Archive Notify Service
-3 - INFO - Stopping the CORBA Interface Repository
+3 - INFO - Stopping the CORBA Logging Service
 1 - INFO - Starting Logging Service
-3 - INFO - Stopping the ACS Logging Service
+3 - INFO - Stopping the CORBA Interface Repository
 1 - INFO - Starting ACS Log service
-3 - INFO - Killing any rogue ACS processes...
+3 - INFO - Stopping the ACS Logging Service
 1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
-3 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.9
+3 - INFO - Killing any rogue ACS processes...
 1 - INFO - The acsStartORBSRVC script has now completed!
+3 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.9
 1 - INFO - Loading of IDL interfaces in Interface Repository completed OK

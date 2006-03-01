@@ -3,10 +3,11 @@
 . acsstartupLogging.sh
 . acsstartupConstants
 . acsstartupAcsInstance
+. acsstartupPids
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.30 2006/02/27 20:45:16 dfugate Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.31 2006/03/01 20:57:29 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -124,30 +125,32 @@ then
     export ACS_INSTANCE="$CL_BASEPORT"
 fi
 
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
 ########################################################################
 #SANITY CHECKS-------------------------------------------------------
 
 #Cannot shutdown everything if we don't know the process IDs.
-if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
+if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '`getInstanceDirName $ACS_INSTANCE`' does not exist!"
+    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$INSTANCE_DIR' does not exist!"
     ACS_LOG_ERROR "An alternative is to use the 'killACS' command which kills all ACS processes '$USER' owns"
     exit $EC_CANNOTUSE
 fi
 
 #Cannot shutdown everything if this user does not own the processes.
-if [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
+if [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '`getInstanceDirName $ACS_INSTANCE`' is not owned by '$USER'!"
+    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 fi
 
 ACS_LOG_INFO "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$ACS_INSTANCE'"
 
 #just to be sure...
-chmod -R 777 `getInstanceDirName $ACS_INSTANCE` &> /dev/null || (ACS_LOG_ERROR "Unable to change permissions on `getInstanceDirName $ACS_INSTANCE`")
+chmod -R 777 $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Unable to change permissions on $INSTANCE_DIR")
 #go to the directory where all process IDs are stored
-cd `getInstanceDirName $ACS_INSTANCE` &> /dev/null || (ACS_LOG_ERROR "Cannot cd to `getInstanceDirName $ACS_INSTANCE`"; exit $EC_FAILURE)
+cd $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Cannot cd to $INSTANCE_DIR"; exit $EC_FAILURE)
 
 ########################################################################
 #SHUTDOWN CDB-----------------------------------------------------------
@@ -156,9 +159,6 @@ ACS_LOG_INFO "Stopping the CDB"
 ACS_CDB_PORT=`getCDBPort`
 #Try the "correct" way of shutting down the CDB
 cdbjDALShutdown -k corbaloc::$HOST:$ACS_CDB_PORT/CDB &> /dev/null || (ACS_LOG_ERROR "Cannot shutdown the CDB using the cdbjDALShutdown command")
-#if what's above failled kill it using the PID
-acsKillProc ACS_CDB_PID &> /dev/null
-rm -f ACS_CDB_PID
 
 ########################################################################
 #SHUTDOWN ORB SERVICES--------------------------------------------------
@@ -166,73 +166,53 @@ rm -f ACS_CDB_PID
 #kill the processes one at a time
 
 ACS_LOG_INFO "Stopping the CORBA Naming Service"
-if [ -e ACS_NAMING_SERVICE_PID ]
+if PID=`getNamingServicePid`
 then
-    acsKillProc ACS_NAMING_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the naming service")
-    rm -f ACS_NAMING_SERVICE_PID
-else
-    ACS_LOG_ERROR "The file containing the naming service's process ID, 'ACS_NAMING_SERVICE_PID', does not exist"
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the naming service")
 fi
 
 ACS_LOG_INFO "Stopping the CORBA Notification Service"
-if [ -e ACS_NOTIFY_SERVICE_PID ]
+if PID=`getNotifyServicePid`
 then
-    acsKillProc ACS_NOTIFY_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the notification service")
-    rm -f ACS_NOTIFY_SERVICE_PID
-else
-    ACS_LOG_ERROR "The file containing the notify service's process ID, 'ACS_NOTIFY_SERVICE_PID', does not exist"
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the notification service")
 fi
 
 ACS_LOG_INFO "Stopping the CORBA Logging Notification Service"
-if [ -e ACS_LOGGING_NOTIFY_SERVICE_PID ]
+if PID=`getLoggingNotifyServicePid`
 then
-    acsKillProc ACS_LOGGING_NOTIFY_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the logging notification service")
-    rm -f ACS_LOGGING_NOTIFY_SERVICE_PID
-else
-    ACS_LOG_ERROR "The file containing the logging notify service's process ID, 'ACS_LOGGING_NOTIFY_SERVICE_PID', does not exist"
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the logging notification service")
 fi
 
 ACS_LOG_INFO "Stopping the CORBA Archive Notification Service"
-if [ -e ACS_ARCHIVE_NOTIFY_SERVICE_PID ]
+if PID=`getArchiveNotifyServicePid`
 then
-    acsKillProc ACS_ARCHIVE_NOTIFY_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the archive notification service")
-    rm -f ACS_ARCHIVE_NOTIFY_SERVICE_PID
-else
-    ACS_LOG_ERROR "The file containing the archive notify service's process ID, 'ACS_ARCHIVE_NOTIFY_SERVICE_PID', does not exist"
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the archive notification service")
 fi
 
 ACS_LOG_INFO "Stopping the CORBA Logging Service"
-if [ -e ACS_LOGGING_SERVICE_PID ]
+if PID=`getLoggingServicePid`
 then
-    acsKillProc ACS_LOGGING_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the logging service")
-    rm -f ACS_LOGGING_SERVICE_PID
-else
-    ACS_LOG_ERROR "The file containing the logging service's process ID, 'ACS_LOGGING_SERVICE_PID', does not exist"
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the logging service")
 fi
 
 ACS_LOG_INFO "Stopping the CORBA Interface Repository"
-if [ -e ACS_IR_PID ]
+if PID=`getIRPid`
 then
-    acsKillProc ACS_IR_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the interface repository")
-    rm -f ACS_IR_PID
-else
-    ACS_LOG_ERROR "The file containing the interface repository's process ID, 'ACS_IR_PID', does not exist"
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the interface repository")
 fi
 
 ACS_LOG_INFO "Stopping the ACS Logging Service"
-if [ -e ACS_LOG_SERVICE_PID ]
+if PID=`getLogPid`
 then
-    acsKillProc ACS_LOG_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the ACS logging service")
-    rm -f ACS_LOG_SERVICE_PID
-else
-    ACS_LOG_ERROR "The file containing the ACS logging service's process ID, 'ACS_LOG_SERVICE_PID', does not exist"
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the ACS logging service")
 fi
 
 ########################################################################
 #FINAL CLEANUP----------------------------------------------------------
-if [ -e ACS_PIDS ]
+PIDSFILE=$INSTANCE_DIR/$ACS_PIDSFILE
+if [ -e $PIDSFILE ]
 then
-    file=`cat ACS_PIDS`
+    file=`cat $PIDSFILE`
     
     ACS_LOG_INFO "Killing any rogue ACS processes..."
     for line in $file
@@ -241,9 +221,9 @@ then
     done
 fi
 
-ACS_LOG_INFO "Freeing `getInstanceDirName $ACS_INSTANCE`"
+ACS_LOG_INFO "Freeing $INSTANCE_DIR"
 cd ..     # just jump one level up that we can delete the instance directory
-rm -rf `getInstanceDirName $ACS_INSTANCE` &> /dev/null || (ACS_LOG_ERROR "Cannot remove `getInstanceDirName $ACS_INSTANCE`")
+rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Cannot remove $INSTANCE_DIR")
 
 
 #
