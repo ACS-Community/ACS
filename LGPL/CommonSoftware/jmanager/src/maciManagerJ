@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: maciManagerJ,v 1.27 2005/10/18 14:05:56 dfugate Exp $"
+# "@(#) $Id: maciManagerJ,v 1.28 2006/03/01 19:58:22 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -63,22 +63,25 @@ then
     ACS_MANAGER_CONFIG=$ACSDATA/config/jManager
 fi
 
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+MANAGER_PIDFILE=$INSTANCE_DIR/$ACS_MANAGER_PIDFILE
+
 #
 # Save the process ID
 #
 ACS_MANAGER_PID=$$
-if [ ! -d $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE ]
+if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to save manager's PID because '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
+    ACS_LOG_ERROR "Unable to save manager's PID because '$INSTANCE_DIR' does not exist!"
 
-elif [ ! -w $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE ]
+elif [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to save manager's PID because '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' is not owned by '$USER'!"
+    ACS_LOG_ERROR "Unable to save manager's PID because '$INSTANCE_DIR' is not owned by '$USER'!"
 
 else
-    cd $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE
+    cd $INSTANCE_DIR
     #save the PID of this script so we can kill it later if we have to
-    echo $ACS_MANAGER_PID  > ACS_MANAGER_PID
+    echo $ACS_MANAGER_PID  > $MANAGER_PIDFILE
     #make of copy of manager's configuration
     cp -r $ACS_MANAGER_CONFIG .
     export ACS_MANAGER_CONFIG=$PWD/jManager

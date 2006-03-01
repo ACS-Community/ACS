@@ -1,6 +1,8 @@
 #! /bin/bash
 . acsstartupAcsPorts
+. acsstartupConstants
 . acsstartupLogging.sh
+. acsstartupAcsInstance
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
@@ -22,7 +24,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDAL,v 1.39 2005/10/17 17:05:22 dfugate Exp $"
+# "@(#) $Id: cdbjDAL,v 1.40 2006/03/01 19:58:22 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -32,13 +34,11 @@
 # gchiozzi 2002-10-04 Added /bin/ksh to select startup shell
 # almamgr 2000-09-13 created
 
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+CDB_PIDFILE=$INSTANCE_DIR/$ACS_CDB_PIDFILE
+
 #First save a copy of our PID
-#If it's undefined, the developer must have meant the default
-if [ "X$ACS_INSTANCE" == "X" ]
-then 
-    export ACS_INSTANCE="0"
-fi
-echo $$ > $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE/ACS_CDB_PID
+echo $$ > $CDB_PIDFILE
 
 
 ACS_CDB_PORT=`getCDBPort`

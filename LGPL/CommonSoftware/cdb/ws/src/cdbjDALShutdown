@@ -1,5 +1,7 @@
 #! /bin/bash
 . acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
@@ -21,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDALShutdown,v 1.31 2005/10/17 17:05:22 dfugate Exp $"
+# "@(#) $Id: cdbjDALShutdown,v 1.32 2006/03/01 19:58:22 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -30,4 +32,15 @@
 # bjeram 2002-10-24 created
 #
 
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+CDB_PIDFILE=$INSTANCE_DIR/$ACS_CDB_PIDFILE
+
+#issue the CORBA shutdown command
 acsStartJava com.cosylab.cdb.DALShutdown $1 $2 $3 $4
+
+if [ -e $CDB_PIDFILE ]
+then
+    CDB_PID=`cat $CDB_PIDFILE`
+    acsKillProc $CDB_PID &> /dev/null
+    rm $CDB_PIDFILE
+fi
