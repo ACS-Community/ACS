@@ -248,11 +248,18 @@ module xmlstore
 		 */
 		void forceUpdate(in xmlentity::XmlEntityStruct entity)
 			raises (ArchiveInternalError, IllegalEntity);
-			
+		
 		/** Retrieves an entity (latest version) from the Archive. If the entity
 		 * is marked as dirty an exception is thrown. 
 		 */
 		xmlentity::XmlEntityStruct retrieve(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
+		
+		
+		/** Checks whether an entity with given UID already exists in Archive. 
+		 * Returns true, if this is the case.
+		 */
+		boolean exists(in URI identifier)
 			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
 		
 		/** Retrieves part of an entity (latest version). The part is specified 
