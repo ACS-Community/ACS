@@ -19,12 +19,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.44 2005/09/28 13:32:19 msekoran Exp $" 
+# "@(#) $Id: Makefile,v 1.45 2006/03/02 10:41:42 cparedes Exp $" 
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# cparedes 2006-02-28 Added cdbSetDefaultComponent
 # almamgr 2003-09-01 Cleaned up USER-INC
 # gchiozzi 2003-07-07 Added cdbjDALClearCache script
 # gchiozzi 2003-01-28 Creates lib/endorsed if does not exist
@@ -107,7 +108,7 @@ cdb_LIBS      = cdbDALStubs ACSErrTypeCommon ACSErrTypeCORBA cdbErrType
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = cdbjDAL cdbjDALShutdown cdbjDALClearCache cdbRead cdbTATPrologue cdbTATEpilogue
+SCRIPTS         = cdbjDAL cdbjDALShutdown cdbjDALClearCache cdbRead cdbTATPrologue cdbTATEpilogue cdbSetDefaultComponent cdbChangeComponentDeployment  
 
 SCRIPTS_L       =
 
