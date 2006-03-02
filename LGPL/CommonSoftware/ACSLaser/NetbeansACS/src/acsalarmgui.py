@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Start the netbeans GUI for alarm'''
 
 import os, os.path, exceptions, sys, socket, re
@@ -117,7 +118,6 @@ def getACSProps(instance,managerCORBALoc):
     nameServicePort = 3001+instance*100
     if managerCORBALoc==None:
         localIP = getLocalIP()
-        print localIP
         managerCORBALoc= 'corbaloc::%(ip)s:%(port)d:/Manager' % \
             { 'ip': localIP, 'port': managerPort }
         NSCORBALoc= 'corbaloc::%(ip)s:%(port)d/NameService' % \
@@ -327,7 +327,7 @@ JVMPropString = ""
 for prop in jvmProps:
     JVMPropString+=prop+" "
 
-print "Configuring up netbeans"
+print "Configuring netbeans"
 cleanNetbeansModules(modulesJars)
 setupNetbeansModules(modulesJars,laserJars,searchDirs)
 
