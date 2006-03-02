@@ -4,7 +4,12 @@
 #defaults to 0.
 function getBasePort
 {
-echo $ACS_INSTANCE
+if [ -z  $ACS_INSTANCE ]
+then
+	echo 0
+else
+	echo $ACS_INSTANCE
+fi
 }
 #############################################################
 #Returns the port manager is running on.
