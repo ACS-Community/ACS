@@ -4,6 +4,25 @@ import os, os.path, exceptions, sys, socket, re
 
 ####################### Useful methods #####################
 
+def copyFile(src,dst):
+    '''Copy src in dst'''
+    if not os.access(src,os.R_OK):
+        raise exceptions.IOError, (src+" not found")
+    #Open the files
+    inF = file(src,"rb")
+    outF= file(dst,"w+b")
+    bufSize = 1024
+    done = False
+    while not done:
+        buf=inF.read(bufSize)
+        if len(buf)>0:
+            outF.write(buf)
+        else:
+            done = True
+    outF.flush()
+    inF.close()
+    outF.close()
+
 def NormalizeDirName(name):
     '''Add a trailing '/' to the dir name, if not already present'''
     if name[len(name)-1]!='/':
@@ -148,6 +167,33 @@ def getLocalIP():
     ip =  socket.gethostbyname(name)
     return ip
 
+def cleanNetbeansModules(modJars):
+    '''Clean the modules folder of netbeans before installing the new
+    jars
+    It removes all the old jars and prepare that lasr dir (empty)'''
+    global netbeansHomeDir
+    modulesDir = netbeansHomeDir+"modules/"
+    for jar in modJars:
+        if os.access(modulesDir+jar,os.F_OK):
+            os.remove(modulesDir+jar)
+    laserModDir = modulesDir+"laser/"
+    if os.access(laserModDir,os.F_OK):
+        jars = os.listdir(laserModDir)
+        for jar in jars:
+            os.remove(laserModDir+jar)
+    else:
+        os.mkdir(laserModDir)
+        
+def setupNetbeansModules(modJars,laserJars,dirs):
+    '''Copy the jar files in netbeans/modules and netbeans/modules/laser'''
+    global netbeansHomeDir
+    for jar in modJars:
+        src = getJarPath(jar,dirs)
+        copyFile(src,netbeansHomeDir+"modules/"+jar)
+    for jar in laserJars:
+        src = getJarPath(jar,dirs)
+        copyFile(src,netbeansHomeDir+"modules/laser/"+jar)
+
 ####################### MAIN ###############################
 
 # The list of ACS jar files required to run the GUI
@@ -179,6 +225,28 @@ jvmProps = [
              "-Xdebug", \
              "-Xnoagent" , \
              "-Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=n" ]
+
+# The jars to install in netbeans/modules
+modulesJars = [ "laserguiplatform.jar"]
+
+# The jars in netbeans/modules/laser
+laserJars = [  "log4j-1.2.8.jar", \
+              "castor.jar", \
+              "commons-logging.jar", \
+              "acsjms.jar", \
+              "alarmsysteminterface.jar", \
+              "cmwmom.jar", \
+              "gp.jar", \
+              "gpopenide.jar", \
+              "jms.jar", \
+              "laserclient.jar", \
+              "laserconsole.jar", \
+              "lasercore.jar", \
+              "laserdefinition.jar", \
+              "laserutil.jar", \
+              "ACSJMSMessageEntity.jar", \
+              "AlarmSystem.jar", \
+              "ACSAlarmMessage.jar" ]
 
 # The program accepts only one parameter: the CORBALOC of the manager
 if len(sys.argv)==2:
@@ -259,8 +327,12 @@ JVMPropString = ""
 for prop in jvmProps:
     JVMPropString+=prop+" "
 
+print "Configuring up netbeans"
+cleanNetbeansModules(modulesJars)
+setupNetbeansModules(modulesJars,laserJars,searchDirs)
+
 # Build the command 
-command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s" % \
+command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s &" % \
     { 'exe': javaExe, 
       'classpath':classpath, 
       'jvmprops':  JVMPropString, 
@@ -268,8 +340,7 @@ command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s"
       'nbprops': getNetbeansProps(), 
       'main': javaMainClass }
 
-print "\n",command,"\n"
-#os.system(command)
-getLocalIP()
+print "Executing",command
+os.system(command)
 
 
