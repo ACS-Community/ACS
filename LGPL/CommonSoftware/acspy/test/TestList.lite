@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.21 2006/02/17 06:48:09 sharring Exp $"
+# "@(#) $Id: TestList.lite,v 1.22 2006/03/03 17:18:43 dfugate Exp $"
 #
 # TestList
 #
@@ -30,28 +30,62 @@
 # 
 SOURCE acspyTATEnvironment
 PROLOGUE acspyTATPrologue
-#1   ClientMin           "acsutilTATTestRunner acspyTestClientMinimum"
-#2   ACSComponent        "acsutilTATTestRunner acspyTestACSComponent"
-#3   ACSCorba            "acsutilTATTestRunner acspyTestAcsCORBA"
-#4   Logging             "acsutilTATTestRunner acspyTestLogging"
-#6   CDB                 "acsutilTATTestRunner acspyTestCDB"
-#7   Callbacks           "acsutilTATTestRunner acspyTestCallbacks"
-#8   ErrorSystem         "acsutilTATTestRunner acspyTestError"
-#9   Container           "acsutilTATTestRunner acsStartContainer -py pyContainer" "@SLEEP 10" "acsutilTATTestRunner acspyTestContainer" "@SLEEP 20" "acsutilTATTestRunner acsStopContainer pyContainer" "@SLEEP 10"
-#10  ComponentLifeCycle  "acsutilTATTestRunner acspyTestComponentLifecycle"
-#11  CS                  "acsutilTATTestRunner acspyTestContainerServices"
-#13  NameTree            "acsutilTATTestRunner acspyTestNameTree"
-#15  TimeHelper          "acsutilTATTestRunner acspyTestTimehelper"
-#16  EpochHelper         "acsutilTATTestRunner acspyTestEpochHelper"
-#17  DurationHelper      "acsutilTATTestRunner acspyTestDurationHelper"
-#18  ContainerWithCDB    "acsutilTATTestRunner acsStartContainer -py PyTestCDBContainer" "@SLEEP 10" "acsutilTATTestRunner acsStopContainer PyTestCDBContainer" "@SLEEP 10"
-#19  reloadComponent     "acsutilTATTestRunner acsStartContainer -py pyContainer2" "@SLEEP 10" "acsutilTATTestRunner acspyTestCompReload" "@SLEEP 20" "acsutilTATTestRunner acsStopContainer pyContainer2" "@SLEEP 10"
-#20 testConsumerNoChannel  "acsutilTATTestRunner acspyTestConsumer no_name 5 0"
-#21 testSupplierNoChannel  "acsutilTATTestRunner acspyTestSupplier no_name 5"
-#22 testSupplierCDBChannel "acsutilTATTestRunner acspyTestSupplier cdb_channel 5"
-#23 testSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer no_name 15 1" "@SLEEP 2" "acsutilTATTestRunner acspyTestSupplier no_name 15"
-#24 testILSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer cdb_channelIL 15 1" "@SLEEP 2" "acsutilTATTestRunner acspyTestSupplier cdb_channelIL 15"
-#25 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumer 15 1"
-26 testQoSTimeout      "acsutilTATTestRunner acspyTestQoSTimeout"
+#-------------------------------------------------------------------
+0   testQoSTimeout      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" \
+			"acsutilTATTestRunner acspyTestQoSTimeout" "@SLEEP 25" \
+			"acsutilTATTestRunner acsStopContainer pyContainer"
 
+1   ClientMin           "acsutilTATTestRunner acspyTestClientMinimum"
+
+2   ACSComponent        "acsutilTATTestRunner acspyTestACSComponent"
+
+3   ACSCorba            "acsutilTATTestRunner acspyTestAcsCORBA"
+
+4   Logging             "acsutilTATTestRunner acspyTestLogging"
+
+6   CDB                 "acsutilTATTestRunner acspyTestCDB"
+
+7   Callbacks           "acsutilTATTestRunner acspyTestCallbacks"
+
+8   ErrorSystem         "acsutilTATTestRunner acspyTestError"
+
+9   Container           "acsutilTATTestRunner acsStartContainer -py pyContainer" "@SLEEP 10" \
+                        "acsutilTATTestRunner acspyTestContainer" "@SLEEP 20" \
+                        "acsutilTATTestRunner acsStopContainer pyContainer" "@SLEEP 10"
+
+10  ComponentLifeCycle  "acsutilTATTestRunner acspyTestComponentLifecycle"
+
+11  CS                  "acsutilTATTestRunner acspyTestContainerServices"
+
+13  NameTree            "acsutilTATTestRunner acspyTestNameTree"
+
+15  TimeHelper          "acsutilTATTestRunner acspyTestTimehelper"
+
+16  EpochHelper         "acsutilTATTestRunner acspyTestEpochHelper"
+
+17  DurationHelper      "acsutilTATTestRunner acspyTestDurationHelper"
+
+18  ContainerWithCDB    "acsutilTATTestRunner acsStartContainer -py PyTestCDBContainer" "@SLEEP 10" \
+                        "acsutilTATTestRunner acsStopContainer PyTestCDBContainer" "@SLEEP 10"
+
+19  reloadComponent     "acsutilTATTestRunner acsStartContainer -py pyContainer2" "@SLEEP 10" \
+
+                        "acsutilTATTestRunner acspyTestCompReload" "@SLEEP 20" \
+
+                        "acsutilTATTestRunner acsStopContainer pyContainer2" "@SLEEP 10"
+
+20 testConsumerNoChannel  "acsutilTATTestRunner acspyTestConsumer no_name 5 0"
+
+21 testSupplierNoChannel  "acsutilTATTestRunner acspyTestSupplier no_name 5"
+
+22 testSupplierCDBChannel "acsutilTATTestRunner acspyTestSupplier cdb_channel 5"
+
+23 testSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer no_name 15 1" "@SLEEP 2" \
+                          "acsutilTATTestRunner acspyTestSupplier no_name 15"
+
+24 testILSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer cdb_channelIL 15 1" "@SLEEP 2" \
+                            "acsutilTATTestRunner acspyTestSupplier cdb_channelIL 15"
+
+25 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumer 15 1"
+#-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue

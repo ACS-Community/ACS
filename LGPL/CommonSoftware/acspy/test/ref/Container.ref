@@ -7,8 +7,8 @@
 1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT4
-1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT5
 1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 components queued to be activated.
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT5
 1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 of 3 components activated.
 1 - HelloWorld
 1 - name is:  TESTCOMPONENT
@@ -49,8 +49,8 @@
 1 - HelloWorld
 1 - HelloWorld
 1 - HelloWorld
-1 - ['TESTCOMPONENT3', 'TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT4', 'TESTCOMPONENT2', 'TESTCOMPONENT5', 'TEST_PS_1']
-1 - ['TESTCOMPONENT3', 'TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT4', 'TESTCOMPONENT2', 'TESTCOMPONENT5', 'TEST_PS_1']
+1 - ['TEST_QOS_COMPONENT', 'TESTCOMPONENT3', 'TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT4', 'TESTCOMPONENT2', 'TESTCOMPONENT5', 'TEST_PS_1']
+1 - ['TEST_QOS_COMPONENT', 'TESTCOMPONENT3', 'TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT4', 'TESTCOMPONENT2', 'TESTCOMPONENT5', 'TEST_PS_1']
 1 - HelloWorld
 1 - HelloWorld
 1 - name is:  TESTCOMPONENT1
