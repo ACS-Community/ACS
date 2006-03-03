@@ -1,4 +1,4 @@
-# @(#) $Id: CDBProperties.py,v 1.8 2005/10/24 11:40:56 dfugate Exp $
+# @(#) $Id: CDBProperties.py,v 1.9 2006/03/03 17:20:10 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - lots
 '''
 
-__revision__ = "$Id: CDBProperties.py,v 1.8 2005/10/24 11:40:56 dfugate Exp $"
+__revision__ = "$Id: CDBProperties.py,v 1.9 2006/03/03 17:20:10 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -96,36 +96,36 @@ def get_channel_dict(channel_name):
                                        "EventChannel")[0]
 
 #------------------------------------------------------------------------------
-INTEGRATION_LOGS_CALLED = 0
-INTEGRATION_LOGS_RET    = 0
+INTEGRATION_LOGS = {}
 
 def get_integration_logs(channel_name):
     '''
     Requested by HLA/ITS. Should be removed at some later date.
     '''
-    global INTEGRATION_LOGS_CALLED
-    global INTEGRATION_LOGS_RET
+    global INTEGRATION_LOGS
 
     #check to see if this function has been called before to save system
     #resources
-    if INTEGRATION_LOGS_CALLED==1:
-        return INTEGRATION_LOGS_RET
+    if INTEGRATION_LOGS.has_key(channel_name):
+        return INTEGRATION_LOGS[channel_name]
 
-    else:
-        INTEGRATION_LOGS_CALLED=1
 
     #well if the channel does not exist of course we do not
     #want to log everything!!!
     if cdb_channel_config_exists(channel_name)==0:
-        INTEGRATION_LOGS_RET = 0
+        INTEGRATION_LOGS[channel_name] = 0
 
     #OK, the channel exists. time to do the dirty work.
     elif get_channel_dict(channel_name)["IntegrationLogs"] == "false":
-        INTEGRATION_LOGS_RET = 0
+        INTEGRATION_LOGS[channel_name] = 0
     elif get_channel_dict(channel_name)["IntegrationLogs"] == "true":
-        INTEGRATION_LOGS_RET = 1
+        INTEGRATION_LOGS[channel_name] = 1
 
-    return INTEGRATION_LOGS_RET
+    #should never be the case...
+    else:
+        INTEGRATION_LOGS[channel_name] = 0
+
+    return INTEGRATION_LOGS[channel_name]
 
 #------------------------------------------------------------------------------
 def get_channel_qofs_props(channel_name):
