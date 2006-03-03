@@ -1,4 +1,4 @@
-# @(#) $Id: Consumer.py,v 1.16 2005/10/24 11:40:56 dfugate Exp $
+# @(#) $Id: Consumer.py,v 1.17 2006/03/03 22:29:49 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -27,7 +27,7 @@ This module includes classes to be used as Consumers for the CORBA Notification
 service.
 '''
 
-__revision__ = "$Id: Consumer.py,v 1.16 2005/10/24 11:40:56 dfugate Exp $"
+__revision__ = "$Id: Consumer.py,v 1.17 2006/03/03 22:29:49 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -43,7 +43,14 @@ from ACSErr                       import NameValue
 from Acspy.Common.Log         import getLogger
 from Acspy.Nc.CommonNC        import CommonNC
 from Acspy.Nc.CDBProperties   import get_integration_logs
+from Acspy.Nc.CDBProperties   import getEventHandlerTimeoutDict
+from Acspy.Util.Profiler      import Profiler
 #--GLOBALS---------------------------------------------------------------------
+#the default maximum amount of time an event handler is given to process event
+#before an exception is logged. this is used when an enduser does *not* define
+#the appropriate XML elements within the ACS CDB. see the inline doc on EventChannel.xsd
+#for more info
+DEFAULT_MAX_PROCESS_TIME = 2.0
 
 #------------------------------------------------------------------------------
 class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
@@ -79,7 +86,12 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         #CORBA ref to this consumers structured proxy push supplier
         self.spps = None
         #Dictionary containing handler functions for different object types
-        self.handlers = {}  
+        self.handlers = {}
+        #diction mapping events to the total amount of time they have
+        #to finish
+        self.handlerTimeoutDict = getEventHandlerTimeoutDict(name)
+        #profiler to time how long it takes events to be processed
+        self.profiler = Profiler()
        
         #Handle all of the CORBA stuff now
         CommonNC.initCORBA(self)
@@ -142,6 +154,12 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
                 
             self.logger.logNotice("Receiver:" + comp_name +
                                   ", Event Type:" + event.header.fixed_header.event_type.type_name)
+
+        #For HLA - maximum amount of time the consumer has to process the event
+        if self.handlerTimeoutDict.has_key(event.header.fixed_header.event_type.type_name) == 0:
+            self.handlerTimeoutDict[event.header.fixed_header.event_type.type_name] = DEFAULT_MAX_PROCESS_TIME
+
+        max_process_time = self.handlerTimeoutDict[event.header.fixed_header.event_type.type_name]
         
         #check to see if the developer has provided a handler first
         if self.handlers.has_key(event.header.fixed_header.event_type.type_name):
@@ -153,8 +171,17 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
                 real_obj = event.filterable_data[0].value
                 real_obj = real_obj.value()
 
-                #invoke the user-defined function on it
+                #invoke the user-defined function on it. must time it
+                self.profiler.start()
                 temp_func(real_obj)
+                time_to_run = self.profiler.stop() / 1000.0
+                self.profiler.reset()
+
+                if time_to_run > max_process_time:
+                    self.logger.logCritical("Took too long to handle an '" +
+                                            event.header.fixed_header.event_type.type_name +
+                                            "' event: " + str(time_to_run) + " seconds.")
+                    self.logger.logInfo("Maximum time to process an event is: " + str(max_process_time) + " seconds.")
 
                 #ignore everything else
                 return
@@ -167,10 +194,22 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         #either a handler is not used or it failed...pass the se to
         #processEvent(...) and hope the developer has overriden that method.
         try:
+            self.profiler.start()
+            
             self.processEvent(type_name=event.header.fixed_header.event_type.type_name,
                               event_name=event.header.fixed_header.event_name,
                               corba_any=event.filterable_data[0].value,
                               se=event)
+
+            time_to_run = self.profiler.stop() / 1000.0
+            self.profiler.reset()
+
+            if time_to_run > max_process_time:
+                self.logger.logCritical("Took too long to handle an '" +
+                                        event.header.fixed_header.event_type.type_name +
+                                        "' event: " + str(time_to_run) + " seconds.")
+                self.logger.logInfo("Maximum time to process an event is: " + str(max_process_time) + " seconds.")
+            
         except Exception, e:
             self.logger.logCritical('processEvent(...)...' + str(e))
             print_exc()
