@@ -1,4 +1,4 @@
-# @(#) $Id: CDBProperties.py,v 1.9 2006/03/03 17:20:10 dfugate Exp $
+# @(#) $Id: CDBProperties.py,v 1.10 2006/03/03 18:22:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,17 +29,19 @@ TODO:
 - lots
 '''
 
-__revision__ = "$Id: CDBProperties.py,v 1.9 2006/03/03 17:20:10 dfugate Exp $"
+__revision__ = "$Id: CDBProperties.py,v 1.10 2006/03/03 18:22:31 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
+from operator import isSequenceType
 #--CORBA STUBS-----------------------------------------------------------------
 import CosNotification
 from omniORB import any
 
 #--ACS Imports-----------------------------------------------------------------
-from Acspy.Common.Log       import getLogger
-from Acspy.Common.CDBAccess import CDBaccess
+from Acspy.Common.Log          import getLogger
+from Acspy.Common.CDBAccess    import CDBaccess
+from Acspy.Util.XmlObjectifier import XmlObject
 #--GLOBALS---------------------------------------------------------------------
 _cdb_access = None
 
@@ -242,3 +244,48 @@ def get_channel_admin_props(channel_name):
     
     return prop_seq
 #------------------------------------------------------------------------------
+def getEventHandlerTimeoutDict(channel_name):
+    '''
+    The following returns a dict where each key is the
+    name of an event and the value is the maximum amount of time
+    an event handler has to process the event before a warning
+    message is logged.
+    
+    Params: channelName - name of the channel
+
+    Return: a dictionary mapping event types to the maximum amount of time a
+    handler has to process the event.
+
+    Raises: ???
+    '''
+    ret_val = {}
+
+    #sanity check to see if the CDB entry is present
+    if  cdb_channel_config_exists(channel_name)==0:
+        return ret_val
+
+    #get the raw XML
+    t_xml = get_cdb_access().getField("MACI/Channels/" + channel_name)
+
+    #create an xml helper object
+    xml_obj = XmlObject(xmlString = t_xml)
+
+    #get the events section
+    try:
+        events = xml_obj.EventChannel.Events._
+    except:
+        #if there's an except, obviously the optional
+        #events section was not added to this particular
+        #event channel XML. OK to bail
+        return ret_val
+    
+    if isSequenceType(events)==0:
+        events = [ events ]
+
+    #for each event in the list populate our dict
+    for dom in events:
+        event_name = dom.getAttribute('Name')
+        #set the max timeout
+        ret_val[event_name] = float(dom.getAttribute('MaxProcessTime'))
+
+    return ret_val
