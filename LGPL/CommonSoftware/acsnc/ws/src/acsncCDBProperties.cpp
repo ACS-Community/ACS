@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.cpp,v 1.6 2005/10/19 15:52:35 dfugate Exp $"
+* "@(#) $Id: acsncCDBProperties.cpp,v 1.7 2006/03/03 14:55:55 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 #include "acsncCDBProperties.h"
 #include <maciContainerImpl.h>
 
-static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.6 2005/10/19 15:52:35 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.7 2006/03/03 14:55:55 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace nc {
@@ -411,7 +411,48 @@ namespace nc {
 	    return true;
 	    }
     }	
-    //------------------------------------------------------
-};
 
+//------------------------------------------------------
+    CDBProperties::EventHandlerTimeoutMap
+    CDBProperties::getEventHandlerTimeoutMap(const std::string& channelName)
+    {
+	EventHandlerTimeoutMap retVal;
+
+	//sanity check
+	if (cdbChannelConfigExists(channelName)==false)
+	    {
+	    return retVal;
+	    }
+
+	//CDB
+	//complete name of the channel within the CDB
+	std::string cdbChannelName = "MACI/Channels/" + channelName;
+	CDB::DAL_var cdbRef = getCDB();
+	CDB::DAO_var tempDAO = cdbRef->get_DAO_Servant(cdbChannelName.c_str());
+
+	//names of all the events
+	CDB::stringSeq_var keys = tempDAO->get_string_seq("Events");
+	
+	//another sanity check
+	if (keys.ptr()==0)
+	    {
+	    return retVal;
+	    }
+	
+	//populate the map
+	for (CORBA::ULong i=0; i<keys->length(); i++) 
+	    {
+	    //get the key's value
+	    std::string timeoutLocation = "Events/";
+	    timeoutLocation =  timeoutLocation + (const char*)keys[i] + "/MaxProcessTime";
+	    double value = tempDAO->get_double(timeoutLocation.c_str());
+	    
+	    //set the map's contents
+	    retVal[(const char*)keys[i]] = value;
+	    }
+	return retVal;
+    }
+
+//------------------------------------------------------
+};
 /*___oOo___*/

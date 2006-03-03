@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.h,v 1.3 2005/10/19 15:52:35 dfugate Exp $"
+* "@(#) $Id: acsncCDBProperties.h,v 1.4 2006/03/03 14:55:55 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,6 +38,7 @@
 #include <cdbDALC.h>
 #include <iostream>
 #include <string>
+#include <map>
 
 namespace nc {
 
@@ -85,11 +86,20 @@ namespace nc {
 
 
 	/**
-	 * The following was requested by Heiko Sommer and is needed for integrations.
+	 * The following was requested by H. Sommer and is needed for integrations.
 	 * It should be removed at some later date.
 	 */
 	static bool
 	getIntegrationLogs(const std::string& channelName);
+
+	/**
+	 * The following returns a map where each key is the
+	 * name of an event and the value is 
+	 */
+	typedef std::map<std::string, double> EventHandlerTimeoutMap;
+
+	static EventHandlerTimeoutMap
+	getEventHandlerTimeoutMap(const std::string& channelName);
 
       private:
 	/**
