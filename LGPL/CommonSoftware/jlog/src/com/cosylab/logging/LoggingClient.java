@@ -183,8 +183,10 @@ public class LoggingClient extends JFrame
      */
     private JCheckBoxMenuItem viewToolbarMenuItem;
     
-    // The ComboBox in the toolbar
+    // The ComboBox in the toolbar and its default value (i.e. the log level
+    // at startup
     private JComboBox logLevelCB;
+    private final int DEFAULT_LOGLEVEL = LogTypeHelper.ENTRYTYPE_INFO;
     
     // The search button in the toolbar
     private JButton searchBtn;
@@ -852,7 +854,8 @@ public class LoggingClient extends JFrame
         // Build the renderer for the combo boxes
         LogTypeRenderer rendererCB = new LogTypeRenderer();
         
-        logLevelCB.setSelectedIndex(0);
+        logLevelCB.setSelectedIndex(DEFAULT_LOGLEVEL);
+        setLogLevel(DEFAULT_LOGLEVEL);
         logLevelCB.setEditable(false);
         logLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
         logLevelCB.setRenderer(rendererCB);
@@ -1956,20 +1959,27 @@ public class LoggingClient extends JFrame
     private void setLogLevel(int level) {
         // Get the system filters
         FiltersVector filters = getLCModel1().getSystemFilters();
-        for (int t=0; t<filters.size(); t++) {
+        System.out.println("SystemFilters size "+filters.size());
+        /*for (int t=0; t<filters.size(); t++) {
             Filter f = (Filter)filters.get(t);
+            System.out.println("\tSystemFilter type "+f.getField());
             if (f.getField()==LogEntry.FIELD_ENTRYTYPE) {
                 // We have found the LogLevel filter: we remove it in order to
                 // replace with the new filter
                 filters.remove(t);
-                break;
             }
-        }
+        }*/
+        filters.clear();
         // Build the new filter
         try {
             Filter levelFilter =
-                new Filter(LogEntry.FIELD_ENTRYTYPE,false,new Integer(level),null,false);
-            filters.add(levelFilter);
+                new Filter(
+                		LogEntry.FIELD_ENTRYTYPE,
+                		false,
+                		new Integer(level),
+                		new Integer(LogTypeHelper.ENTRYTYPE_EMERGENCY),
+                		false);
+            filters.addFilter(levelFilter,true);
         } catch (Exception e) {
             // TODO: use the log instead of this message
             System.err.println("Error creating the log level filter");
@@ -1977,6 +1987,7 @@ public class LoggingClient extends JFrame
             // to trace
             logLevelCB.setSelectedIndex(0);
         }
+        System.out.println("SystemFilters size "+filters.size());
         // Invalidate the logs (the changes will appear in the GUI)
         tableModel.invalidateVisibleLogs();
     }
