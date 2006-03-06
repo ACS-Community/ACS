@@ -426,10 +426,10 @@ protected final void invalidateRowCache() {
 				// filters
 				FiltersVector tempFilters = new FiltersVector();
 				for (int t=0; t<filters.size(); t++) {
-					tempFilters.add(filters.get(t));
+					tempFilters.addFilter(filters.get(t),filters.isActive(t));
 				}
-				for (int t=0; t<filters.size(); t++) {
-					tempFilters.add(systemFilters.get(t));
+				for (int t=0; t<systemFilters.size(); t++) {
+					tempFilters.addFilter(systemFilters.get(t),systemFilters.isActive(t));
 				}
 				
 				allLogs.loadLogs(in,tempFilters,visibleLogs,true);
