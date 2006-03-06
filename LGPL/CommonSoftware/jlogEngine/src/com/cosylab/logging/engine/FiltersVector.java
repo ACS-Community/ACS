@@ -132,6 +132,25 @@ public class FiltersVector extends Vector<Filter> {
 	}
 	
 	/**
+	 * Return true if the filter is active
+	 * 
+	 * @param n The index of the filters
+	 * @return true if the filter is active
+	 */
+	public boolean isActive(int n) {
+		if (activeFilters.isEmpty()) {
+			return false;
+		} else {
+			for (int t=0; t<activeFilters.size(); t++) {
+				if (activeFilters.get(t).intValue()==n) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Apply the (active) filters to a log
 	 * 
 	 * @param log The log to check 
@@ -413,6 +432,38 @@ public class FiltersVector extends Vector<Filter> {
 		}
 		dataOutStream.writeBytes("</FILTER_LIST>\n");
 		dataOutStream.writeBytes("</FILTERS>\n");
+	}
+	
+	/**
+	 * Remove an element from the FiltersVector
+	 * (We need to override this method because we need to keep the
+	 * activeFilters aligned) 
+	 */
+	public Filter remove(int index) {
+		if (index<0 || index>=this.size()) {
+			throw new IndexOutOfBoundsException("Invalid index");
+		}
+		// Get and remove the element from the Vector
+		Filter f = super.remove(index);
+		// The removed caused that all the filters following the removed one 
+		// have been moved back by the remove 
+		// @see java.util.Vector.remove for further details
+		// To keep up to date the activeFilters vector we have to:
+		// 1 remove index if present in the vector
+		// 2 decrease all the indexes in activeFilters, greater then index
+		int pos=-1; // pos of index in activeFilters
+		for (int t=0; t<activeFilters.size(); t++) {
+			int idx = activeFilters.get(t);
+			if (idx==index) {
+				pos=t;
+			} else if (idx>index) {
+				activeFilters.set(t,new Integer(idx-1));
+			}
+		}
+		if (pos!=-1) {
+			activeFilters.remove(pos);
+		}
+		return f;
 	}
 
 }
