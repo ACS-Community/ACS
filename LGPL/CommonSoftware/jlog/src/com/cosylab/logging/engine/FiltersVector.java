@@ -453,7 +453,7 @@ public class FiltersVector extends Vector<Filter> {
 		// 2 decrease all the indexes in activeFilters, greater then index
 		int pos=-1; // pos of index in activeFilters
 		for (int t=0; t<activeFilters.size(); t++) {
-			int idx = activeFilters.get(t);
+			int idx = activeFilters.get(t).intValue();
 			if (idx==index) {
 				pos=t;
 			} else if (idx>index) {
