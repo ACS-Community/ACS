@@ -233,7 +233,7 @@ public class LogFileCache {
 			do {
 				// Try to create the file in the home diretory
 				int random = new Random().nextInt();
-				name = "~/jlog"+random+".jlog";
+				name = "./jlog"+random+".jlog";
 				f = new File(name);
 			} while (f.exists());
 		}
