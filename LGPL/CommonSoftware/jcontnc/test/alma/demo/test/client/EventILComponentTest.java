@@ -61,8 +61,8 @@ public class EventILComponentTest extends ComponentClient
 
     public void cleanupNC() throws Exception {
 	getContainerServices().releaseComponent("SUPPLIERCOMP1");
-	//give consumer five seconds to process the events
-	Thread.sleep(5000);
+	//give consumer fifty seconds to process the events
+	Thread.sleep(50000);
 	getContainerServices().releaseComponent("CONSUMERCOMP1");
     }
 

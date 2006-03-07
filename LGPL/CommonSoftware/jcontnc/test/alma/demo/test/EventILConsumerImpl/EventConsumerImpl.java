@@ -151,6 +151,12 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
       if (m_count <5)
       {
          System.out.println("The component responsible for the supplier is:" + joe.name);
+         try {
+         Thread.sleep(3000);
+         }
+         catch(Exception e) {
+            e.printStackTrace();
+         }
       }
       else if(m_count == 5)
       {

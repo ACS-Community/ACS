@@ -14,3 +14,4 @@ Starting Java
 FINE \[alma.demo.test.client.ArchiveConsumerTest\]
 Logging proxy successfully created
 ManagerReference generated using localhost
+Took too long to handle an 'alma.acsnc.EventDescription' event
