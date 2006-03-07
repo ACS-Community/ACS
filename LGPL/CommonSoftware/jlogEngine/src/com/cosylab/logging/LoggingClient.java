@@ -188,6 +188,12 @@ public class LoggingClient extends JFrame
     private JComboBox logLevelCB;
     private final int DEFAULT_LOGLEVEL = LogTypeHelper.ENTRYTYPE_INFO;
     
+    // The ComboBox with the discard level in the toolbar
+    // (the logs with a level lower then what is shown in this ComboBox
+    // are discarded when read from the NC)
+    private JComboBox discardLevelCB;
+    private final int DEFAULT_DISCARDLEVEL = LogTypeHelper.ENTRYTYPE_DEBUG;
+    
     // The search button in the toolbar
     private JButton searchBtn;
     
@@ -250,6 +256,8 @@ public class LoggingClient extends JFrame
 				saveAsFilters();
 			} else if (e.getSource()==LoggingClient.this.logLevelCB) {
                 setLogLevel(logLevelCB.getSelectedIndex());
+            } else if (e.getSource()==LoggingClient.this.discardLevelCB) {
+                setDiscardLevel(discardLevelCB.getSelectedIndex());
             } else if (e.getSource()==LoggingClient.this.searchBtn ||
                     e.getSource()==searchMenuItem) {
                 if (searchDialog==null) {
@@ -851,7 +859,7 @@ public class LoggingClient extends JFrame
         // Add the ComboBox for the log level
         logLevelCB = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
         
-        // Build the renderer for the combo boxes
+        // Build the renderer for the combo boxex
         LogTypeRenderer rendererCB = new LogTypeRenderer();
         
         logLevelCB.setSelectedIndex(DEFAULT_LOGLEVEL);
@@ -860,8 +868,27 @@ public class LoggingClient extends JFrame
         logLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
         logLevelCB.setRenderer(rendererCB);
         logLevelCB.addActionListener(eventHandler);
-        
         tbLevelPanel.add(logLevelCB);
+        
+        JLabel discardLevelLbl = new JLabel("<HTML><FONT size=-2>Discard level: </FONT></HTML>");
+        tbLevelPanel.add(discardLevelLbl);
+        // Add the ComboBox for the log level
+        LogTypeRenderer discardRendererCB = new LogTypeRenderer();
+        String[] discardLevelStr = new String[LogTypeHelper.getAllTypesDescriptions().length+1];
+        discardLevelStr[0] = "None";
+        for (int t=0; t<LogTypeHelper.getAllTypesDescriptions().length; t++) {
+        	discardLevelStr[t+1]=LogTypeHelper.getAllTypesDescriptions()[t];
+        }
+        discardLevelCB = new JComboBox(discardLevelStr);
+        discardLevelCB.setMaximumRowCount(discardLevelStr.length);
+        discardLevelCB.setSelectedIndex(DEFAULT_DISCARDLEVEL+1);
+        discardLevelCB.setEditable(false);
+        discardLevelCB.setRenderer(discardRendererCB);
+        discardLevelCB.addActionListener(eventHandler);
+        setDiscardLevel(DEFAULT_DISCARDLEVEL+1);
+        
+        tbLevelPanel.add(discardLevelCB);
+        
         userPanel.add(tbLevelPanel);
         
         // Add the  search button
@@ -1974,6 +2001,18 @@ public class LoggingClient extends JFrame
         }
         // Invalidate the logs (the changes will appear in the GUI)
         tableModel.invalidateVisibleLogs();
+    }
+    
+    /**
+     * Set the discard level i.e. all the logs with a log level (type)
+     * equal or less then the discard level will be discarded when received
+     * from the NC)
+     * 
+     * @param level The desired level inserted by the user
+     *              in the combo box of the GUI
+     */
+    private void setDiscardLevel(int level) {
+    	getLCEngine().setDiscardLevel(level);
     }
 	
     /**

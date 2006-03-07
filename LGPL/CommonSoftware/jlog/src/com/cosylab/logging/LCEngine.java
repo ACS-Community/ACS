@@ -102,6 +102,8 @@ public class LCEngine implements Runnable {
 	private java.lang.String accessType = "ACS";
 	private boolean suspended = false;
 	
+	private int discardLevel;
+	
 	/**
 	 * LCEngine constructor comment.
 	 */
@@ -169,6 +171,12 @@ public class LCEngine implements Runnable {
 	 * If all filters return pass, it returns true, false otherwise.
 	 */
 	private boolean filter(LogEntry logEntry) {
+		if (discardLevel>0) {
+			int logLevel = (Integer)logEntry.getField(LogEntry.FIELD_ENTRYTYPE);
+			if (logLevel<discardLevel) {
+				return false;
+			}
+		}
 		for (int i = 0; i < filters.size(); i++) {
 			Filter filter = (Filter)filters.elementAt(i);
 			boolean result = filter.applyTo(logEntry, true);
@@ -194,6 +202,20 @@ public class LCEngine implements Runnable {
 	public boolean isSuspended() {
 		return suspended;
 	}
+	
+	/**
+	 * Set the discard level: all the log with a level (type) lower or equal
+	 * to discard level are filtered out in the filter method.
+	 * 
+	 * @param level The discard level plus one i.e. LOGENTRYTYPE_<type>+1;
+	 *              0 means that all the logs are accepted
+	 * 
+	 * @see LCEngine.filter
+	 */
+	public synchronized void setDiscardLevel(int level) {
+		discardLevel = level; 
+	}
+	
 	/**
 	 * This method is called by the remote event supplier.
 	 */
