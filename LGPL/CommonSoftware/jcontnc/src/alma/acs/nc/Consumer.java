@@ -43,6 +43,7 @@ import org.omg.CosNotifyFilter.FilterFactory;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.time.Profiler;
 
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.acsnc.EventDescription;
@@ -65,6 +66,19 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
 {
    private static final String RECEIVE_METHOD_NAME = "receive";
 
+   /**
+    * The default maximum amount of time an event handler is given to process event
+    * before an exception is logged. this is used when an enduser does *not* define
+    * the appropriate XML elements within the ACS CDB. see the inline doc on EventChannel.xsd
+    * for more info
+    */
+   private static final long DEFAULT_MAX_PROCESS_TIME = 2000;
+   
+   protected HashMap m_handlerTimeoutMap = null;
+   protected ChannelInfo m_channelInfo = null;
+   
+   private alma.acs.util.StopWatch profiler_m = null;
+   
     /**
     * Creates a new instance of Consumer
     * 
@@ -80,11 +94,17 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
          throws AcsJException
    {
       m_channelName = channelName;
+      
+      profiler_m = new alma.acs.util.StopWatch();
 
       m_logger = services.getLogger();
       
       m_anyAide = new AnyAide(services);
+      
+      m_channelInfo = new ChannelInfo(services);
 
+      m_handlerTimeoutMap = m_channelInfo.getEventHandlerTimeoutMap(channelName);
+      
       // sanity check
       if (m_channelName == null)
       {
@@ -659,7 +679,19 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
       // created
       // and registered a receiver object with this instance.
       Class[] parm = { corbaData.getClass() };
+      
+      //event name
+      String eventName = corbaData.getClass().getName();
 
+      //figure out how much time this event has to be processes
+      if(m_handlerTimeoutMap.containsKey(eventName)==false)
+      {
+         //setup a timeout if it's undefined
+         m_handlerTimeoutMap.put(eventName, new Double(DEFAULT_MAX_PROCESS_TIME));
+      }
+      Double maxProcessTimeDouble = (Double)m_handlerTimeoutMap.get(eventName);
+      long maxProcessTime = (long)maxProcessTimeDouble.doubleValue();
+      
       // Here we search the hash of registered receiver objects.
       // If a receiver capable of processing this event is found, it is
       // invoked.
@@ -683,8 +715,17 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
 
                // finally we can invoke the "receive" method on the receiver
                // object
+               profiler_m.reset();
                handlerFunction.invoke(m_handlerFunctions.get(corbaData.getClass().getName()), arg);
-
+               long timeToRun = profiler_m.getLapTimeMillis();
+               
+               if (timeToRun > maxProcessTime)
+               {
+                  m_logger.warning("Took too long to handle an '" + eventName +
+                                          "' event: " + timeToRun/1000.0 + " seconds.");
+                  m_logger.info("Maximum time to process an event is: " + maxProcessTime/1000.0 + " seconds.");
+               }
+               
                // everything looks OK...return control.
                return;
             }
@@ -696,7 +737,16 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
          }
 
       // If this isn't overriden, just pass it on down the chain.
+      profiler_m.reset();
       this.processEvent(corbaData);
+      long timeToRun = profiler_m.getLapTimeMillis();
+      
+      if (timeToRun > maxProcessTime)
+      {
+         m_logger.warning("Took too long to handle an '" + eventName +
+                                 "' event: " + timeToRun/1000.0 + " seconds.");
+         m_logger.info("Maximum time to process an event is: " + maxProcessTime/1000.0 + " seconds.");
+      }
    }
 
    /**
