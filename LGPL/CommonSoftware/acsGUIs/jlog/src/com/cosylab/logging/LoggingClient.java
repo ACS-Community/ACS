@@ -880,18 +880,6 @@ public class LoggingClient extends JFrame
         toolBarPanel.add(progressPanel,BorderLayout.EAST);
         
         toolBar.add(toolBarPanel);
-        
-        // Create the system filter for the log level
-        try {
-            // Create the filter
-            Filter levelFilter =new Filter(LogEntry.FIELD_ENTRYTYPE,false,new Integer(0),null,false);
-            // Insert the filter in the list
-            getLCModel1().getSystemFilters().addFilter(levelFilter,true);
-            // Invalidate the filters
-            //getLCModel1().invalidateVisibleLogs();
-        } catch (Exception e) {
-            System.err.println("Error building the filter: "+e.toString());
-        }
     }
 
 	/**
@@ -1959,17 +1947,15 @@ public class LoggingClient extends JFrame
     private void setLogLevel(int level) {
         // Get the system filters
         FiltersVector filters = getLCModel1().getSystemFilters();
-        System.out.println("SystemFilters size "+filters.size());
-        /*for (int t=0; t<filters.size(); t++) {
-            Filter f = (Filter)filters.get(t);
-            System.out.println("\tSystemFilter type "+f.getField());
+        for (int t=0; t<filters.size(); t++) {
+            Filter f = filters.get(t);
             if (f.getField()==LogEntry.FIELD_ENTRYTYPE) {
                 // We have found the LogLevel filter: we remove it in order to
                 // replace with the new filter
                 filters.remove(t);
-            }
-        }*/
-        filters.clear();
+            } 
+        }
+        //filters.clear();
         // Build the new filter
         try {
             Filter levelFilter =
@@ -1987,7 +1973,6 @@ public class LoggingClient extends JFrame
             // to trace
             logLevelCB.setSelectedIndex(0);
         }
-        System.out.println("SystemFilters size "+filters.size());
         // Invalidate the logs (the changes will appear in the GUI)
         tableModel.invalidateVisibleLogs();
     }
