@@ -41,6 +41,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import javax.swing.ListSelectionModel;
+import javax.swing. DefaultListSelectionModel;
 
 import com.cosylab.logging.client.EntryTypeRenderer;
 import com.cosylab.logging.client.ExpandButtonRenderer;
@@ -81,6 +83,8 @@ public class LogEntryTable extends javax.swing.JTable
 	private LoggingClient loggingClient;
 	
 	public TextTransfer textTransfer;
+	
+	private DefaultListSelectionModel selectionModel;
 
 	protected class JMyMenuItem extends JRadioButtonMenuItem
 	{
@@ -196,11 +200,18 @@ public class LogEntryTable extends javax.swing.JTable
 			this.textToCopy=new String(text);
 			// Add the Label
 			setLabel("Paste");
+			
 			// Add the menu items
 			add(copyClipboard);
 			add(copyAddInfo);
 			addSeparator();
 			add(addUserInfo);
+			// Hide the uneeded buttons
+			boolean singleLineSelected =
+				selectionModel.getMinSelectionIndex() == selectionModel.getMaxSelectionIndex(); 
+			copyAddInfo.setEnabled(singleLineSelected);
+			addUserInfo.setEnabled(singleLineSelected);
+			copyClipboard.setEnabled(true);
 			// Add the listeners
 			copyClipboard.addActionListener(this);
 			copyAddInfo.addActionListener(this);
@@ -244,37 +255,22 @@ public class LogEntryTable extends javax.swing.JTable
 				return;
 			}
 			if (e.getSource()==copyClipboard) {
-				// Get the selected columns
-				int[] rows = LogEntryTable.this.getSelectedRows();
 				// Build the text to copy in the clipboard
-				if (rows!=null ) {
+				if (!selectionModel.isSelectionEmpty()) {
 					StringBuffer strBuffer = new StringBuffer();
-					for (int i=0; i<rows.length; i++) {
-						for (int c=0; c<LogEntryTable.this.getLCModel().getColumnCount(); c++) {
-							
-							Object obj = LogEntryTable.this.getLCModel().getValueAt(rows[i],c);
-							if (obj!=null) {
-								if (c!=2) {
-									strBuffer.append(obj.toString().trim());
-								} else {
-									// This is the entry type: I transform it to a string insted of an integer
-									int type = Integer.parseInt(obj.toString());
-									strBuffer.append(LogTypeHelper.getLogTypeDescription(type));
-								}
-							} else strBuffer.append(" ");
-							if (c!=LogEntryTable.this.getLCModel().getColumnCount()-1) {
-								strBuffer.append("\t");
-							}
+					for (int i=selectionModel.getMinSelectionIndex(); 
+						i<=selectionModel.getMaxSelectionIndex(); i++) {
+						if (!selectionModel.isSelectedIndex(i)) {
+							continue;
+						} else {
+							LogEntry log = getLCModel().getVisibleLogEntry(row);
+							strBuffer.append(log.toXMLString());
+							strBuffer.append("\n");
 						}
-						strBuffer.append("\n");
 					}
 					// Copy the text to the clipboard
 					textTransfer.setClipboardContents(strBuffer.toString());
-				} else {
-					// The user forgot to select a row?
-					// In this case I copy the row under the pointer
-					System.out.println("No rows selected");
-				}
+				} 
 			} else if (e.getSource()==copyAddInfo) {
 				// Copy the text to the additionalInfo field
 				LogEntry logEntry = getLCModel().getVisibleLogEntry(row);
@@ -643,11 +639,13 @@ public class LogEntryTable extends javax.swing.JTable
 				}
 				owner.updateExtraInfo();
 			} else if (e.isPopupTrigger()) {
-				changeSelection(row,col,false,false);
 				// The mouse button is the pop up trigger so we show the menu
-				String textUnderMouse = getCellStringContent(row, col);
-				ColumnPopupMenu popupMenu = new ColumnPopupMenu(row, col, textUnderMouse);
-				popupMenu.show(LogEntryTable.this,e.getX(),e.getY());
+				// but only if the user selectd at least one row
+				if (selectionModel.getMaxSelectionIndex()>=0) {
+					String textUnderMouse = getCellStringContent(row, col);
+					ColumnPopupMenu popMenu = new ColumnPopupMenu(row, col, textUnderMouse);
+					popMenu.show(LogEntryTable.this,e.getX(),e.getY());
+				}
 			}
 		}
 
@@ -975,6 +973,11 @@ public class LogEntryTable extends javax.swing.JTable
 
 		sortMenu = new SortMenu();
 		sortMenu.rebuild();
+		
+		// Build and set the slection model
+		selectionModel = new DefaultListSelectionModel();
+		selectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		setSelectionModel(selectionModel);
 
 		//	firePropertyChange("filterString", "", getFilterString());
 

@@ -1955,7 +1955,6 @@ public class LoggingClient extends JFrame
                 filters.remove(t);
             } 
         }
-        //filters.clear();
         // Build the new filter
         try {
             Filter levelFilter =
