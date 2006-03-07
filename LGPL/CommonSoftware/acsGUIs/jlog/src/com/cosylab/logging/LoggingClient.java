@@ -194,6 +194,9 @@ public class LoggingClient extends JFrame
     private JComboBox discardLevelCB;
     private final int DEFAULT_DISCARDLEVEL = LogTypeHelper.ENTRYTYPE_DEBUG;
     
+    // The radio button to enable/disable the scroll lock
+    private JToggleButton scrollLockTB;
+    
     // The search button in the toolbar
     private JButton searchBtn;
     
@@ -886,8 +889,12 @@ public class LoggingClient extends JFrame
         discardLevelCB.setRenderer(discardRendererCB);
         discardLevelCB.addActionListener(eventHandler);
         setDiscardLevel(DEFAULT_DISCARDLEVEL+1);
-        
         tbLevelPanel.add(discardLevelCB);
+        
+        scrollLockTB = new JToggleButton("Scroll lock");
+        scrollLockTB.setSelected(false);
+        //tbLevelPanel.add(scrollLockTB);
+        
         
         userPanel.add(tbLevelPanel);
         
@@ -2074,6 +2081,23 @@ public class LoggingClient extends JFrame
     	if (!connected) {
     		setTitle(getTitle()+" - Offline");
     	}
+    }
+    
+    /**
+     * 
+     * @return true if the scrool lock is enabled
+     */
+    public boolean scrollLock() {
+    	return scrollLockTB.isSelected();
+    }
+    
+    /**
+     * 
+     * @return The discard log level
+     * @see LoggingClient.discardLevelCB
+     */
+    public int getDiscardLevel() {
+    	return discardLevelCB.getSelectedIndex();
     }
 }
 

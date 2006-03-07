@@ -76,7 +76,7 @@ public class LogTableDataModel extends AbstractTableModel
     // The list of the filters not defined by the user as for example the log level
     // defined in the toolbar
     private final FiltersVector systemFilters = new FiltersVector();
-
+    
 	// Contains references to the filters that are currently applied to logs.
 	// Actual filters are stored in filters.
 	//private final Vector appliedFilters = new Vector();

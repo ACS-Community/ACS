@@ -38,6 +38,7 @@ import com.cosylab.logging.client.GroupedList;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.LoggingClient;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -768,6 +769,13 @@ public class IOCacheHelper extends Thread  {
 			System.out.println("Log Str: ["+logStr+"]");
 			JOptionPane.showMessageDialog(null, formatErrorMsg(e.getMessage(),logStr),"Error parsing a log!",JOptionPane.ERROR_MESSAGE);
 			return;
+		}
+		int discardLevel = LoggingClient.getInstance().getDiscardLevel();
+		if (discardLevel!=0) {
+			int logLevel = (Integer)log.getField(LogEntry.FIELD_ENTRYTYPE);
+			if (logLevel<discardLevel) {
+				return;
+			}
 		}
 		if (filters.applyFilters(log)) {
 			visibles.add(index);
