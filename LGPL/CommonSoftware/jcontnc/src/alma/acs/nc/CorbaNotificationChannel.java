@@ -87,7 +87,9 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
         try {
     		corbaPublisher = new CorbaPublisher(inChannelName, cs);
 	    	corbaReceiver = new CorbaReceiver(inChannelName, cs);
-        } catch(AcsJException e) {}
+        } catch(AcsJException e) {
+           //OK to swallow???
+        }
 	}
 	
 	/**
@@ -101,7 +103,9 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	    	this.corbaPublisher = inCorbaPublisher;
         try {
 		    this.corbaReceiver = new CorbaReceiver(channelName, cs);
-        }catch(AcsJException e) {}
+        }catch(AcsJException e) {
+           //OK to swallow???
+        }
 
 	}
 	
@@ -179,6 +183,7 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
         try {
             corbaPublisher.destroyNotificationChannel();
         } catch(Exception e) {
+           //OK to swallow???
         }
 	}
 	

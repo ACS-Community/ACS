@@ -72,6 +72,7 @@ public class CorbaPublisher extends alma.acs.nc.SimpleSupplier {
         try {
             super.publishEvent(event);
         } catch(AcsJException e) {
+           //OK to swallow???
         }
 	}
 	

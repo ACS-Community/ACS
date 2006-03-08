@@ -118,7 +118,9 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
                 }
 			}
 			consumerReady();
-		} catch (AcsJException acse) {}
+		} catch (AcsJException acse) {
+		   //OK to swallow???
+      }
 	}
 	
 	/**
@@ -133,7 +135,9 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 				removeSubscription(Class.forName(types[i]));
 			}
 		} catch(AcsJException acse) {
+         //OK to swallow???
         } catch(ClassNotFoundException e) {
+           //OK to swallow???
         }
 		super.disconnect();
 	}
@@ -270,6 +274,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
                 } catch (java.lang.ClassNotFoundException e) {
                     throw new IllegalArgumentException(e.toString());
                 } catch(AcsJException acse) {
+                   //OK to swallow???
                 }
 			}
 		}
@@ -302,7 +307,9 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 				try {
 					removeSubscription(Class.forName(eventTypeName));
 				} catch(AcsJException acse) {
+               //OK to swallow???
                 }catch(ClassNotFoundException e) {
+                   //OK to swallow???
                 }
 			}
 			return;

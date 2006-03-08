@@ -43,7 +43,6 @@ import org.omg.CosNotifyFilter.FilterFactory;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.time.Profiler;
 
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.acsnc.EventDescription;
@@ -73,10 +72,13 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * for more info
     */
    private static final long DEFAULT_MAX_PROCESS_TIME = 2000;
-   
+   ///maps event names to the maximum amount of time allowed for 
+   ///receiver methods to complete
    protected HashMap m_handlerTimeoutMap = null;
+   ///helper object contain yields various info about the 
+   ///notification channel
    protected ChannelInfo m_channelInfo = null;
-   
+   ///used to time the execution of receive methods
    private alma.acs.util.StopWatch profiler_m = null;
    
     /**
@@ -683,7 +685,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
       //event name
       String eventName = corbaData.getClass().getName();
 
-      //figure out how much time this event has to be processes
+      //figure out how much time this event has to be processed
       if(m_handlerTimeoutMap.containsKey(eventName)==false)
       {
          //setup a timeout if it's undefined
@@ -715,10 +717,13 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
 
                // finally we can invoke the "receive" method on the receiver
                // object
+               //start the time
                profiler_m.reset();
                handlerFunction.invoke(m_handlerFunctions.get(corbaData.getClass().getName()), arg);
+               //get the execution time of "receive'
                long timeToRun = profiler_m.getLapTimeMillis();
                
+               //warn the end-user if the receiver is taking too long
                if (timeToRun > maxProcessTime)
                {
                   m_logger.warning("Took too long to handle an '" + eventName +

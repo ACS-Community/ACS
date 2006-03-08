@@ -34,34 +34,45 @@ import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServices;
 
 /**
+ * ChannelInfo is intended to provide various tidbits on information
+ * on CORBA Notification Channels to the ACS NC APIs.
  * @author dfugate
- *
  */
 public class ChannelInfo
 {
+   ///our own private copy of the container services. used 
+   ///to access the ACS CDB among other things
    private ContainerServices m_services = null;
+   ///standard logger
    private Logger m_logger   = null;
    
+   /**
+    * Constructor.
+    * @param services A component or client's container services.
+    */
    public ChannelInfo(ContainerServices services)
    {
       m_services = services;
       // immediately grab a logger
       m_logger = m_services.getLogger();
-      
    }
+   
    /**
     * The following returns a map where each key is the
     * name of an event and the value is the maximum amount of time
     * an event receiver has to process the event before a warning
     * message is logged.
     * @param channelName - name of the channel
+    * @return HashMap described above
     */
    public HashMap getEventHandlerTimeoutMap(String channelName)
    {
       //initialize the return value
       HashMap retVal = new HashMap();
+      
       //data access object to traverse the ACS CDB
       DAO dao = null;
+      
       //keys into the DAO
       String [] keys = null;
       
@@ -117,6 +128,13 @@ public class ChannelInfo
       
       return retVal;
    }
+   
+   
+   /**
+    * Used strictly for testing purposes at the moment. Should be 
+    * moved to the test directory???
+    * @param args
+    */
    static public void main(String[] args)
    {
       try{
@@ -134,7 +152,7 @@ public class ChannelInfo
          }
       }
       catch(Exception e){
-      
+         e.printStackTrace();
       }
    }
 }

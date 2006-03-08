@@ -33,7 +33,6 @@ import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 
 import alma.ACS.doubleSeqHelper;
-import alma.ACS.doubleSeqHolder;
 import alma.ACS.floatSeqHelper;
 import alma.ACS.longSeqHelper;
 import alma.ACS.stringSeqHelper;

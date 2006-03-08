@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.3 2005/10/21 13:49:32 dfugate Exp $
+ * @version $Id: ChannelProperties.java,v 1.4 2006/03/08 23:10:18 dfugate Exp $
  * @since
  */
 
@@ -116,6 +116,16 @@ public class ChannelProperties
       }
    }
    // -----------------------------------------------------------
+   /**
+    * Requested by HLA. When some attribute is set within the CDB
+    * (see NC document for details), a log is published each time
+    * an event is sent or received. For performance reasons, this should
+    * be used very carefully to say the least.
+    * @param channelName Name of the channel.
+    * @return True if we've got the go ahead to publish the extra
+    * logs for integration.
+    * @throws AcsJException
+    */
    public boolean getIntegrationLogs(String channelName)
    throws alma.acs.exceptions.AcsJException
    {
@@ -156,10 +166,7 @@ public class ChannelProperties
          {
             return false;
          }
-         else
-         {
-            return true;
-         }
+         return true;
       }
       catch (WrongDataType e)
       {
