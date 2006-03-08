@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.16 2006/03/08 17:50:44 dfugate Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.17 2006/03/08 22:10:00 dfugate Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -82,9 +82,11 @@ SimpleConsumer<T>::push_structured_event(const CosNotification::StructuredEvent 
 	{
 	//start the profiler
 	profiler_mp->start();
+	//invoke the handler
 	templateFunction_mp(*customIDLStruct_p, handlerParam_mp);
 	//stop timing
 	ACS::Time acsTime = profiler_mp->stop();
+	//reset the profiler to avoid consuming too much memory
 	profiler_mp->reset();
 
 	//convert acsTime from 100ns units to floating point seconds

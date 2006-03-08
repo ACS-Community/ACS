@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.59 2006/03/08 17:50:44 dfugate Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.60 2006/03/08 22:10:00 dfugate Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -362,7 +362,7 @@ class Consumer :
      * Default maximum amount of time an event handler is given to process event
      * before an exception is logged. this is used when an enduser does *not* define
      * the appropriate XML elements within the ACS CDB. see the inline doc on EventChannel.xsd
-     * for more info.
+     * for more info. Also, this value is in floating point seconds.
      */
     static double DEFAULT_MAX_PROCESS_TIME;
 
