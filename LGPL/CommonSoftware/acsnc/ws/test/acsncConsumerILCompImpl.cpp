@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncConsumerILCompImpl.cpp,v 1.2 2006/03/08 17:50:44 dfugate Exp $"
+* "@(#) $Id: acsncConsumerILCompImpl.cpp,v 1.3 2006/03/08 21:18:19 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * david  25/09/02  created 
 */
 
-static char *rcsId="@(#) $Id: acsncConsumerILCompImpl.cpp,v 1.2 2006/03/08 17:50:44 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncConsumerILCompImpl.cpp,v 1.3 2006/03/08 21:18:19 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsncConsumerCompImpl.h"
@@ -47,7 +47,7 @@ ConsumerCompImpl::myHandlerFunction(acsnc::EventDescription joe, void *handlerPa
 	{
 	ACS_STATIC_SHORT_LOG((LM_ALERT, "myHandlerFunction()...value is:%d", joe.count));
 	myself->m_count++;
-	ACE_OS::sleep(3);
+	ACE_OS::sleep(2.50);
 	}
 }
 /* ----------------------------------------------------------------*/

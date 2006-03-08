@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.67 2006/01/27 19:07:07 dfugate Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.68 2006/03/08 21:18:19 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,7 +44,8 @@ Helper::Helper(const char* channelName):
     channelName_mp(0),
     orbHelper_mp(0),
     notifyFactory_m(0),
-    channelID_m(0)
+    channelID_m(0),
+    okToLog_m(false)
 {
     ACS_TRACE("Helper::Helper");
     //make a copy of the channel's name
@@ -61,6 +62,16 @@ Helper::Helper(const char* channelName):
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::Helper");
 	throw err.getCORBAProblemEx();
 	}
+
+    //check the CDB to see if we use integration logs
+    if(nc::CDBProperties::getIntegrationLogs(channelName_mp)==false)
+	    {
+	    okToLog_m = false;
+	    }
+	else
+	    {
+	    okToLog_m = true;
+	    }
 }
 //-----------------------------------------------------------------------------
 Helper::~Helper()
@@ -386,28 +397,7 @@ Helper::extractStructName(const char* idlStruct)
 void
 Helper::integrationLog(const std::string& log)
 {
-    //use a little magic here to make sure we just contact the CDB
-    //one time
-    static bool calledBefore = false;
-    static bool okToLog      = false;
-    //little block of code that only get executed once
-    if (calledBefore==false)
-	{
-	//first make sure we never get this far again!
-	calledBefore=true;
-
-	//check the CDB
-	if(nc::CDBProperties::getIntegrationLogs(channelName_mp)==false)
-	    {
-	    okToLog = false;
-	    }
-	else
-	    {
-	    okToLog = true;
-	    }
-	}
-    
-    if (okToLog==true)
+    if (okToLog_m==true)
 	{
 	//fine, send the log
 	getNamedLogger("IntegrationLogger")->log(Logging::BaseLog::LM_NOTICE,

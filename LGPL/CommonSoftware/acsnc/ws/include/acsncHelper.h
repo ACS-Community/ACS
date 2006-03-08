@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.59 2006/01/27 19:07:07 dfugate Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.60 2006/03/08 21:18:19 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -277,6 +277,12 @@ class Helper
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     Helper(const Helper&);
+
+    /**
+     * The following was requested by Heiko Sommer and is needed for integrations.
+     * It should be removed at some later date.
+     */
+    bool okToLog_m;
 };
 NAMESPACE_END(nc);
 
