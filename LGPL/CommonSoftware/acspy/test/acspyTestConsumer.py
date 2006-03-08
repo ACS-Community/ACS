@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestConsumer.py,v 1.2 2005/10/24 11:40:56 dfugate Exp $
+# @(#) $Id: acspyTestConsumer.py,v 1.3 2006/03/08 18:53:20 dfugate Exp $
 ###############################################################################
 '''
 Tests the Python Consumer/Supplier.
@@ -46,6 +46,7 @@ def dataHandler(someParam):
         if count==(magicNumber-1):
             g.removeSubscription(acsnc.EventDescription)
         count = count + 1
+        sleep(1.5)
         
     return
 #-----------------------------------------------------------------------------

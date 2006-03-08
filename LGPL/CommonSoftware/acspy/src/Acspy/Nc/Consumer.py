@@ -1,4 +1,4 @@
-# @(#) $Id: Consumer.py,v 1.17 2006/03/03 22:29:49 dfugate Exp $
+# @(#) $Id: Consumer.py,v 1.18 2006/03/08 18:53:20 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -27,7 +27,7 @@ This module includes classes to be used as Consumers for the CORBA Notification
 service.
 '''
 
-__revision__ = "$Id: Consumer.py,v 1.17 2006/03/03 22:29:49 dfugate Exp $"
+__revision__ = "$Id: Consumer.py,v 1.18 2006/03/08 18:53:20 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -87,7 +87,7 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         self.spps = None
         #Dictionary containing handler functions for different object types
         self.handlers = {}
-        #diction mapping events to the total amount of time they have
+        #dictionary mapping events to the total amount of time they have
         #to finish
         self.handlerTimeoutDict = getEventHandlerTimeoutDict(name)
         #profiler to time how long it takes events to be processed
@@ -157,8 +157,11 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
 
         #For HLA - maximum amount of time the consumer has to process the event
         if self.handlerTimeoutDict.has_key(event.header.fixed_header.event_type.type_name) == 0:
+            #give it the default timeout if it's undefined by the CDB
             self.handlerTimeoutDict[event.header.fixed_header.event_type.type_name] = DEFAULT_MAX_PROCESS_TIME
 
+        #maximum amount of time the event handler has to process the event.
+        #if it takes too long, a message is logged.
         max_process_time = self.handlerTimeoutDict[event.header.fixed_header.event_type.type_name]
         
         #check to see if the developer has provided a handler first
@@ -171,12 +174,16 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
                 real_obj = event.filterable_data[0].value
                 real_obj = real_obj.value()
 
-                #invoke the user-defined function on it. must time it
-                self.profiler.start()
-                temp_func(real_obj)
+                #invoke the user-defined function on it.
+                self.profiler.start() #start the timer
+                temp_func(real_obj) #invoke the handler
+                #stop the timer and convert the time it took to run to floating
+                #point seconds
                 time_to_run = self.profiler.stop() / 1000.0
+                #reset the timer to keep memory consumption low
                 self.profiler.reset()
 
+                #check if the event took too long to be processed
                 if time_to_run > max_process_time:
                     self.logger.logCritical("Took too long to handle an '" +
                                             event.header.fixed_header.event_type.type_name +
@@ -194,16 +201,19 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         #either a handler is not used or it failed...pass the se to
         #processEvent(...) and hope the developer has overriden that method.
         try:
+            #start the timer
             self.profiler.start()
-            
             self.processEvent(type_name=event.header.fixed_header.event_type.type_name,
                               event_name=event.header.fixed_header.event_name,
                               corba_any=event.filterable_data[0].value,
                               se=event)
-
+            #stop the timer and convert the time it took to run to floating
+            #point seconds
             time_to_run = self.profiler.stop() / 1000.0
+            #reset the timer to keep memory consumption low
             self.profiler.reset()
 
+            #check if the event took too long to be processed
             if time_to_run > max_process_time:
                 self.logger.logCritical("Took too long to handle an '" +
                                         event.header.fixed_header.event_type.type_name +

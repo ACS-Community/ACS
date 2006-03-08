@@ -1,4 +1,4 @@
-# @(#) $Id: CDBProperties.py,v 1.10 2006/03/03 18:22:31 dfugate Exp $
+# @(#) $Id: CDBProperties.py,v 1.11 2006/03/08 18:53:20 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - lots
 '''
 
-__revision__ = "$Id: CDBProperties.py,v 1.10 2006/03/03 18:22:31 dfugate Exp $"
+__revision__ = "$Id: CDBProperties.py,v 1.11 2006/03/08 18:53:20 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -261,14 +261,14 @@ def getEventHandlerTimeoutDict(channel_name):
     ret_val = {}
 
     #sanity check to see if the CDB entry is present
-    if  cdb_channel_config_exists(channel_name)==0:
+    if cdb_channel_config_exists(channel_name)==0:
         return ret_val
 
     #get the raw XML
     t_xml = get_cdb_access().getField("MACI/Channels/" + channel_name)
 
     #create an xml helper object
-    xml_obj = XmlObject(xmlString = t_xml)
+    xml_obj = XmlObject(xmlString=t_xml)
 
     #get the events section
     try:
@@ -278,14 +278,17 @@ def getEventHandlerTimeoutDict(channel_name):
         #events section was not added to this particular
         #event channel XML. OK to bail
         return ret_val
-    
+
+    #XmlObject will not convert to a sequence if only one
+    #element is present. this we must do ourselves.
     if isSequenceType(events)==0:
         events = [ events ]
 
     #for each event in the list populate our dict
     for dom in events:
+        #get the event type
         event_name = dom.getAttribute('Name')
-        #set the max timeout
+        #set the max timeout 
         ret_val[event_name] = float(dom.getAttribute('MaxProcessTime'))
 
     return ret_val

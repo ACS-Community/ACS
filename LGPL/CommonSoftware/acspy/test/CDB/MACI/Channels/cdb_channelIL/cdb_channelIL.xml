@@ -4,6 +4,6 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 IntegrationLogs="true">
    <Events>
-     <_ Name="EventDescription" />
+     <_ Name="EventDescription" MaxProcessTime="1.25" />
    </Events>
 </EventChannel>
