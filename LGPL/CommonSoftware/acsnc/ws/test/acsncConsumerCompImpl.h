@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncConsumerCompImpl.h,v 1.6 2005/05/25 17:13:17 dfugate Exp $"
+* "@(#) $Id: acsncConsumerCompImpl.h,v 1.7 2006/03/08 17:50:44 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,15 +68,7 @@ class ConsumerCompImpl: public virtual acscomponent::ACSComponentImpl,
     int m_count;
 
     //
-    static void myHandlerFunction(acsnc::EventDescription joe, void *handlerParam)
-	{
-	    ConsumerCompImpl *myself = (ConsumerCompImpl *)handlerParam;
-	    if(myself->m_count<5)
-		{
-		ACS_STATIC_SHORT_LOG((LM_ALERT, "myHandlerFunction()...value is:%d", joe.count));
-		myself->m_count++;
-		}
-	}
+    static void myHandlerFunction(acsnc::EventDescription joe, void *handlerParam);
 
     //
     nc::SimpleConsumer<acsnc::EventDescription> *m_testConsumer_p;

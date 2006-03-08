@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.15 2005/10/21 14:23:44 dfugate Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.16 2006/03/08 17:50:44 dfugate Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -53,7 +53,14 @@ SimpleConsumer<T>::push_structured_event(const CosNotification::StructuredEvent 
 {
     //update the internal counter
     numEvents_m++;
-    
+
+    //figure out the maximum amount of time the handler is given to run here
+    if (handlerTimeoutMap_m.count((const char*)notification.header.fixed_header.event_type.type_name)==0)
+	{
+	handlerTimeoutMap_m[(const char*)notification.header.fixed_header.event_type.type_name] = DEFAULT_MAX_PROCESS_TIME;
+	}
+    double maxProcessTime = handlerTimeoutMap_m[(const char*)notification.header.fixed_header.event_type.type_name];
+
     //extract the correct data first of all
     T *customIDLStruct_p = 0, customIDLStruct;
     customIDLStruct_p = &customIDLStruct;
@@ -73,7 +80,26 @@ SimpleConsumer<T>::push_structured_event(const CosNotification::StructuredEvent 
     //function doesn't segfault when it gets it...
     try
 	{
+	//start the profiler
+	profiler_mp->start();
 	templateFunction_mp(*customIDLStruct_p, handlerParam_mp);
+	//stop timing
+	ACS::Time acsTime = profiler_mp->stop();
+	profiler_mp->reset();
+
+	//convert acsTime from 100ns units to floating point seconds
+	double secTime = acsTime / 10000000.0;
+
+	//finally check to see if the event processing time was too slow
+	if (secTime > maxProcessTime)
+	    {
+	     ACS_SHORT_LOG((LM_WARNING, 
+			    "Took too long to handle an '%s' event: %f seconds.",
+			    (const char*)notification.header.fixed_header.event_type.type_name, secTime));
+
+	     ACS_SHORT_LOG((LM_INFO, 
+			    "Maximum time to process an event is: %f seconds.", maxProcessTime));
+	    }
 	}
     catch(...)
 	{

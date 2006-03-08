@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acsncTestConSup.py,v 1.5 2005/04/25 23:45:51 dfugate Exp $
+# @(#) $Id: acsncTestConSup.py,v 1.6 2006/03/08 17:50:44 dfugate Exp $
 
 """
 """
@@ -42,7 +42,7 @@ if len(argv)==3:
 else:
     sleep(10)
 
-sleep(10)
+sleep(50)
 
 
 simpleClient.releaseComponent(argv[1])

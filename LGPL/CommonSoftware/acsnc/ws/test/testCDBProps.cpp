@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testCDBProps.cpp,v 1.2 2006/03/03 14:55:55 dfugate Exp $"
+* "@(#) $Id: testCDBProps.cpp,v 1.3 2006/03/08 17:50:44 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -137,8 +137,18 @@ class CDBPropsCompImpl: public virtual acscomponent::ACSComponentImpl,
 	    std::cout << std::endl;
 
 	    //-----------------------------------------------
+	    {
 	    nc::CDBProperties::EventHandlerTimeoutMap ncMap = nc::CDBProperties::getEventHandlerTimeoutMap("blarIL");
-	    std::cout << "getEventHandlerTimeoutMap(blarIL):" << ncMap["EventDescription"] << std::endl;
+	    std::cout << "getEventHandlerTimeoutMap(blarIL):" << ncMap.count("EventDescription") << std::endl;
+	    }
+	    {
+	    nc::CDBProperties::EventHandlerTimeoutMap ncMap = nc::CDBProperties::getEventHandlerTimeoutMap("blar");
+	    std::cout << "getEventHandlerTimeoutMap(blar):" << ncMap.count("EventDescription") << std::endl;
+	    }
+	    {
+	    nc::CDBProperties::EventHandlerTimeoutMap ncMap = nc::CDBProperties::getEventHandlerTimeoutMap("nah");
+	    std::cout << "getEventHandlerTimeoutMap(nah):" << ncMap.count("EventDescription") << std::endl;
+	    }
 	}
     
   private:

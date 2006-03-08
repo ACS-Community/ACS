@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.h,v 1.4 2006/03/03 14:55:55 dfugate Exp $"
+* "@(#) $Id: acsncCDBProperties.h,v 1.5 2006/03/08 17:50:43 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,12 +92,15 @@ namespace nc {
 	static bool
 	getIntegrationLogs(const std::string& channelName);
 
+ 
+	typedef std::map<std::string, double> EventHandlerTimeoutMap;
 	/**
 	 * The following returns a map where each key is the
-	 * name of an event and the value is 
+	 * name of an event and the value is the maximum amount of time
+	 * an event handler has to process the event before a warning
+	 * message is logged.
+	 * @param channelName - name of the channel
 	 */
-	typedef std::map<std::string, double> EventHandlerTimeoutMap;
-
 	static EventHandlerTimeoutMap
 	getEventHandlerTimeoutMap(const std::string& channelName);
 

@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.53 2005/04/25 03:57:05 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.54 2006/03/08 17:50:44 dfugate Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -30,7 +30,8 @@
 USER_CFLAGS =
 USER_LIB    =  	-lbaci \
 		-lmaci \
-		-lTAO_CosNotification 
+		-lTAO_CosNotification \
+		-lacstime
 
 DEBUG=on
 

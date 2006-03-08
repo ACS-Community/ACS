@@ -2,7 +2,6 @@ s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9]
 s/IOR:[a-z,0-9,.,-]*/IOR:xxxxxxxxxxxxxx/g
 s/iioploc:\/\/[a-z,0-9,.,-]*:[0-9]*/iioploc:\/\/xxxxx\.xxxxx:xxxx/g
 s/Handle: [0-9]*/Handle: xxxxxxxxx/g
-s/handle [0-9]*/handle xxxxxxxxx/g
 s/ProcessID=\"[0-9]*\"/ProcessID=xxxxxxxxx/g
 s/ThreadID=\"[0-9]*\"/ProcessID=xxxxxxxxx/g
 s/v[0-9]*\.[0-9]*\.[0-9]*.* built at [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]/v-.-.- built at ---------- --:--:--/g
@@ -39,3 +38,4 @@ s/log_cache.dat_\([a-z,A-Z,0-9,_,-]*\)_[0-9]*/\log_cache.dat_\1_xxxx/g
 s/Invocation timeout set to [0-9, m, s]*/Invocation timeout set to xxxx /g
 s/invocation timeout set to [0-9, m, s]*/invocation timeout set to xxxx /g
 s/via environment: '[a-z,A-Z,0-9,-]*'/via environment: 'xxx'/g
+s/event: [0-9].[0-9]* seconds./event: x.yz seconds./g

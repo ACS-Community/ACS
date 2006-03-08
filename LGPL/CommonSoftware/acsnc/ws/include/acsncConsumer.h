@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.58 2005/06/24 21:57:06 dfugate Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.59 2006/03/08 17:50:44 dfugate Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -32,6 +32,9 @@
  */
 
 #include "acsncHelper.h"
+#include <acstimeProfiler.h>
+#include "acsncCDBProperties.h"
+
 #include <list>
 NAMESPACE_BEGIN(nc);
 
@@ -349,7 +352,24 @@ class Consumer :
      */
     virtual const char* 
     getFilterLanguage();
-    
+
+    /**
+     * Maps events to the total amount of time they have to be processed.
+     */
+    CDBProperties::EventHandlerTimeoutMap handlerTimeoutMap_m;
+
+    /**
+     * Default maximum amount of time an event handler is given to process event
+     * before an exception is logged. this is used when an enduser does *not* define
+     * the appropriate XML elements within the ACS CDB. see the inline doc on EventChannel.xsd
+     * for more info.
+     */
+    static double DEFAULT_MAX_PROCESS_TIME;
+
+    /**
+     * Used to profile handler times.
+     */
+    Profiler *profiler_mp;
   private:
 
     /**
@@ -405,7 +425,6 @@ class Consumer :
     void
     removeSubscription(const char* type_name)
 	throw (CORBAProblemEx);
-
     ///////////////////////////////////////////////////////////////////////////////////////
 };
 NAMESPACE_END(nc);

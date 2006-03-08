@@ -1,5 +1,5 @@
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.63 2005/10/19 15:52:35 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.64 2006/03/08 17:50:44 dfugate Exp $"
 #
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002  
@@ -25,7 +25,7 @@
 # Makefile for acsnc/ws/test applications
 
 USER_CFLAGS =
-USER_LIB = 	#-lacscomponent
+USER_LIB = 	-lacsnc
 
 PROG = 
 

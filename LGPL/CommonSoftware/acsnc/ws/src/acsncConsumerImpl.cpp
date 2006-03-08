@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.62 2005/06/24 21:57:06 dfugate Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.63 2006/03/08 17:50:44 dfugate Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -29,12 +29,15 @@
 //-----------------------------------------------------------------------------
 NAMESPACE_BEGIN(nc);
 //-----------------------------------------------------------------------------
+double Consumer::DEFAULT_MAX_PROCESS_TIME = 2.0;
+//-----------------------------------------------------------------------------
 Consumer::Consumer(const char* channelName) : 
     Helper(channelName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),
     reference_m(0),
+    profiler_mp(0),
     orb_mp(0)
 {
     ACS_TRACE("Consumer::Consumer");
@@ -47,6 +50,7 @@ Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb) :
     proxySupplier_m(0),
     numEvents_m(0),
     reference_m(0),
+    profiler_mp(0),
     orb_mp(0)
 {
     ACS_TRACE("Consumer::Consumer");
@@ -59,6 +63,7 @@ Consumer::Consumer(const char* channelName, int argc, char *argv[]) :
     proxySupplier_m(0),
     numEvents_m(0),
     reference_m(0),
+    profiler_mp(0),
     orb_mp(0)
 {
     ACS_TRACE("Consumer::Consumer");
@@ -89,6 +94,9 @@ void
 Consumer::init(CORBA::ORB_ptr orb)
     throw (CORBAProblemEx)
 {    
+    //setup profiling stuff here
+    handlerTimeoutMap_m = CDBProperties::getEventHandlerTimeoutMap(channelName_mp);
+    profiler_mp = new Profiler();
 
     // Must call resolveNamingService B-4 resolveNotifyChannel!
     // using activator's orb
@@ -178,6 +186,12 @@ Consumer::disconnect()
 	    ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect failed for the '%s' channel!",
 			   channelName_mp));
 	    }
+	}
+
+    if (profiler_mp!=0)
+	{
+	delete profiler_mp;
+	profiler_mp = 0;
 	}
     ACS_TRACE("Consumer::disconnect");
 }

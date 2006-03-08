@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.cpp,v 1.7 2006/03/03 14:55:55 dfugate Exp $"
+* "@(#) $Id: acsncCDBProperties.cpp,v 1.8 2006/03/08 17:50:44 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 #include "acsncCDBProperties.h"
 #include <maciContainerImpl.h>
 
-static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.7 2006/03/03 14:55:55 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.8 2006/03/08 17:50:44 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace nc {
@@ -429,10 +429,15 @@ namespace nc {
 	std::string cdbChannelName = "MACI/Channels/" + channelName;
 	CDB::DAL_var cdbRef = getCDB();
 	CDB::DAO_var tempDAO = cdbRef->get_DAO_Servant(cdbChannelName.c_str());
-
+	CDB::stringSeq_var keys;
 	//names of all the events
-	CDB::stringSeq_var keys = tempDAO->get_string_seq("Events");
-	
+	try {
+	keys = tempDAO->get_string_seq("Events");
+	}
+	catch(...){
+	return retVal;
+	}
+	    
 	//another sanity check
 	if (keys.ptr()==0)
 	    {
