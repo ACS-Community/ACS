@@ -57,7 +57,10 @@ public class DALShutdown {
 
 			DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 
-			dal.shutdown();
+			if (dal == null)
+				System.out.println("ERROR: Failed to resolve DAL reference.");
+			else
+				dal.shutdown();
 		}
 		catch (Exception e) {
 			System.out.println("ERROR : " + e);
