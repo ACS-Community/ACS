@@ -1,0 +1,16 @@
+1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
+1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-5.0/ACSSW/lib/endorsed:
+1 - 25,26d24
+1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
+1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-5.0/ACSSW/lib/endorsed:
+1 - 29d28
+1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
+1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-5.0/ACSSW/lib/endorsed:
+1 - 29d28
+1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
+1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-5.0/ACSSW/lib/endorsed:
+1 - 25,26d24

@@ -25,5 +25,6 @@ PROLOGUE cdbTATPrologue
 1 cdbTest    "cdbTATHelper cdbTest"
 2 jDALTest   "cdbTATHelper acsStartJava junit.textui.TestRunner com.cosylab.cdb.jdal.tests.TestJDAL"
 3 nodeTest	 "cdbTATHelper nodeTest"
+4 setDefaultComponent	 "cdbTestSetDefaultComponent"
 
 EPILOGUE cdbTATEpilogue
