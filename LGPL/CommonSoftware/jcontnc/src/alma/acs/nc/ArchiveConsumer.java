@@ -19,7 +19,7 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: ArchiveConsumer.java,v 1.7 2006/01/27 19:07:07 dfugate Exp $
+ * @version $Id: ArchiveConsumer.java,v 1.8 2006/03/09 21:52:10 dfugate Exp $
  * @since
  */
 
@@ -35,15 +35,14 @@ import alma.acs.exceptions.AcsJException;
  * of processing notification channel structured events sent automatically by
  * BACI properties under certain conditions. Basically all one has to do to use
  * this class is create an ArchiveConsumer object providing an object with
- * implements "receive(String timeStamp, String device, String parameter, String
+ * implements "receive(Long timeStamp, String device, String parameter, Object
  * value)" and then invoke the consumerReady() method. Since archive events do
  * not contain complex IDL structs, filtering using the extended trader
  * constraint language should work as well.
  * 
  * @author dfugate
  */
-public class ArchiveConsumer extends Consumer
-{
+public class ArchiveConsumer extends Consumer {
 
    /**
     * Creates a new instance of ArchiveConsumer
@@ -52,38 +51,39 @@ public class ArchiveConsumer extends Consumer
     *           This is used to access ACS logging system.
     * @param receiver
     *           An object which implements a method called "receive". The
-    *           "receive" method must accept four parameters, all strings, which
-    *           are: timeStamp, device, parameter, and value.
+    *           "receive" method must accept four parameters which
+    *           are: timeStamp(long), device(string), parameter(string), 
+    *           and value(Object).
     * @throws AcsJException
     *            Thrown on any <I>really bad</I> error conditions encountered.
     */
    public ArchiveConsumer(ContainerServices services, Object receiver)
-         throws AcsJException
-   {
+         throws AcsJException {
       // call the super.
       super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, services);
 
       // check to ensure receiver is capable to processing the event
       Class receiverClass = receiver.getClass();
       Method receiveMethod = null;
-      // receive will have four parameters - all strings
+      
+      // receive will have four parameters
       Class[] parm = { Long.class, String.class, String.class, Object.class };
+      
       // if this fails we know that the developer has not defined "receive"
       // correctly at not at all. we can do nothing more
-      try
-      {
+      try {
          receiveMethod = receiverClass.getMethod("receive", parm);
       }
-      catch (NoSuchMethodException err)
-      {
+      catch (NoSuchMethodException err) {
+         m_logger.warning(err.getMessage());
          // Well the method doesn't exist...that sucks!
          String reason = "The '"
                + m_channelName
                + "' channel: the receiver object is incapable of handling events!";
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
       }
-      catch (SecurityException err)
-      {
+      catch (SecurityException err) {
+         m_logger.warning(err.getMessage());
          // Developer has defined the method to be protected or private...this
          // doesn't work either.
          String reason = "The '"
@@ -104,36 +104,31 @@ public class ArchiveConsumer extends Consumer
     * 
     * @return string
     */
-   protected String getChannelKind()
-   {
+   protected String getChannelKind() {
       // because archive channels are registered differently
-      // int the CORBA naming service than ICD-style channels
+      // in the CORBA naming service than ICD-style channels
       return alma.acscommon.ARCHIVING_CHANNEL_KIND.value;
    }
 
-    /**
-     * Overridden.
-     * 
-     * @return string
-     */
-    protected String getNotificationFactoryName()
-	{
-	    return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
-	}
+   /**
+    * Overridden.
+    * 
+    * @return string
+    */
+   protected String getNotificationFactoryName() {
+      return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
+   }
 
    /**
     * Overridden
     */
-   protected void configSubscriptions()
-   {
+   protected void configSubscriptions() {
       // calling addsubscription on null automatically subscribes
       // to all event types.
-      try
-      {
+      try {
          addSubscription(null);
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          String msg = "Failed to subscribe to archive events: ";
          msg = msg + e.getMessage();
          m_logger.severe(msg);
@@ -144,12 +139,12 @@ public class ArchiveConsumer extends Consumer
 
    /**
     * Overridden.
+    * @param structuredEvent CORBA NC StructuredEvent
+    * @throws Disconnected 
     */
    public void push_structured_event(StructuredEvent structuredEvent)
-         throws org.omg.CosEventComm.Disconnected
-   {
-      try
-      {
+         throws org.omg.CosEventComm.Disconnected {
+      try {
          String[] eventNames = structuredEvent.header.fixed_header.event_name
                .split(":");
 
@@ -170,16 +165,14 @@ public class ArchiveConsumer extends Consumer
          // try sending it to the receiver.
          receiveMethod_m.invoke(receiver_m, arg);
       }
-      catch (java.lang.IllegalAccessException e)
-      {
+      catch (java.lang.IllegalAccessException e) {
          // should never happen...
          String msg = "Failed to process an event on the '" + m_channelName
                + "' channel because: ";
          msg = msg + e.getMessage();
          m_logger.warning(msg);
       }
-      catch (java.lang.reflect.InvocationTargetException e)
-      {
+      catch (java.lang.reflect.InvocationTargetException e) {
          // should never happen...
          String msg = "Failed to process an event on the '" + m_channelName
                + "' channel because: ";

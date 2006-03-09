@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.4 2006/03/08 23:10:18 dfugate Exp $
+ * @version $Id: ChannelProperties.java,v 1.5 2006/03/09 21:52:10 dfugate Exp $
  * @since
  */
 
@@ -71,8 +71,7 @@ import alma.acs.exceptions.AcsJException;
  * @author dfugate
  * 
  */
-public class ChannelProperties
-{
+public class ChannelProperties {
    /**
     * Creates a new instance of ChannelProperties.
     * 
@@ -80,8 +79,7 @@ public class ChannelProperties
     *           A reference to the ContainerServices. Used to retrieve other
     *           CORBA references and to access the logger.
     */
-   public ChannelProperties(ContainerServices services)
-   {
+   public ChannelProperties(ContainerServices services) {
       // save a local reference to the container services
       m_services = services;
 
@@ -102,83 +100,76 @@ public class ChannelProperties
     *         $ACS_CDB/CDB/MACI/EventChannels/channel_name/channel_name.xml
     *         exists and is a valid XML. false otherwise.
     */
-   public boolean cdbChannelConfigExists(String channelName)
-   {
-      try
-      {
+   public boolean cdbChannelConfigExists(String channelName) {
+      try {
          m_services.getCDB().get_DAO("MACI/Channels/" + channelName);
          return true;
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.finer("No CDB entry found for '" + channelName + "' channel");
          return false;
       }
    }
+
    // -----------------------------------------------------------
    /**
-    * Requested by HLA. When some attribute is set within the CDB
-    * (see NC document for details), a log is published each time
-    * an event is sent or received. For performance reasons, this should
-    * be used very carefully to say the least.
-    * @param channelName Name of the channel.
-    * @return True if we've got the go ahead to publish the extra
-    * logs for integration.
+    * Requested by HLA. When some attribute is set within the CDB (see NC
+    * document for details), a log is published each time an event is sent or
+    * received. For performance reasons, this should be used very carefully to
+    * say the least.
+    * 
+    * @param channelName
+    *           Name of the channel.
+    * @return True if we've got the go ahead to publish the extra logs for
+    *         integration.
     * @throws AcsJException
     */
    public boolean getIntegrationLogs(String channelName)
-   throws alma.acs.exceptions.AcsJException
-   {
-      //sanity check
-      if (this.cdbChannelConfigExists(channelName)==false)
-      {
+         throws alma.acs.exceptions.AcsJException {
+      // sanity check
+      if (this.cdbChannelConfigExists(channelName) == false) {
          return false;
       }
-      
-      //use this object to get at channel information from the CDB
+
+      // use this object to get at channel information from the CDB
       DAO tempDAO = null;
-      try
-      {
+      try {
          tempDAO = m_services.getCDB().get_DAO_Servant(
                "MACI/Channels/" + channelName);
       }
-      catch (com.cosylab.CDB.XMLerror e)
-      {
+      catch (com.cosylab.CDB.XMLerror e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
       }
-      catch (com.cosylab.CDB.RecordDoesNotExist e)
-      {
+      catch (com.cosylab.CDB.RecordDoesNotExist e) {
          m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
       }
-      catch (alma.acs.container.ContainerException e)
-      {
+      catch (alma.acs.container.ContainerException e) {
          m_logger.log(Level.SEVERE, "CDB unavailable", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
-      
-      try
-      {
-         if (tempDAO.get_string("IntegrationLogs").equals("false"))
-         {
+
+      try {
+         if (tempDAO.get_string("IntegrationLogs").equals("false")) {
             return false;
          }
          return true;
       }
-      catch (WrongDataType e)
-      {
-         m_logger.log(Level.SEVERE, "Wrong type of data for IntegrationLogs", e);
+      catch (WrongDataType e) {
+         m_logger
+               .log(Level.SEVERE, "Wrong type of data for IntegrationLogs", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
-      catch (FieldDoesNotExist e)
-      {
-         m_logger.log(Level.SEVERE, "Field does not exist for IntegrationLogs", e);
+      catch (FieldDoesNotExist e) {
+         m_logger.log(Level.SEVERE, "Field does not exist for IntegrationLogs",
+               e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
    }
+
    // //////////////////////////////////////////////////////////////////////////
    /**
     * Given a channel name that exists in the ACS CDB
@@ -192,29 +183,24 @@ public class ChannelProperties
     *            if the channel's CDB entry is corrupted in any way
     */
    public Property[] getCDBAdminProps(String channelName)
-         throws alma.acs.exceptions.AcsJException
-   {
+         throws alma.acs.exceptions.AcsJException {
       // use this object to get at channel information from the CDB
       DAO tempDAO = null;
-      try
-      {
+      try {
          tempDAO = m_services.getCDB().get_DAO_Servant(
                "MACI/Channels/" + channelName);
       }
-      catch (com.cosylab.CDB.XMLerror e)
-      {
+      catch (com.cosylab.CDB.XMLerror e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
       }
-      catch (com.cosylab.CDB.RecordDoesNotExist e)
-      {
+      catch (com.cosylab.CDB.RecordDoesNotExist e) {
          m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
       }
-      catch (alma.acs.container.ContainerException e)
-      {
+      catch (alma.acs.container.ContainerException e) {
          m_logger.log(Level.SEVERE, "CDB unavailable", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
@@ -223,12 +209,10 @@ public class ChannelProperties
       // infinite amount of events to be stored. 20 seems like
       // a reasonable default.
       Any maxQLAny = m_services.getAdvancedContainerServices().getAny();
-      try
-      {
+      try {
          maxQLAny.insert_long(tempDAO.get_long("MaxQueueLength"));
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -237,12 +221,10 @@ public class ChannelProperties
 
       // MaxConsumers - ///////////////////////////////////////////////////////
       Any maxConsumersAny = m_services.getAdvancedContainerServices().getAny();
-      try
-      {
+      try {
          maxConsumersAny.insert_long(tempDAO.get_long("MaxConsumers"));
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -251,12 +233,10 @@ public class ChannelProperties
 
       // MaxSuppliers - ///////////////////////////////////////////////////////
       Any maxSuppliersAny = m_services.getAdvancedContainerServices().getAny();
-      try
-      {
+      try {
          maxSuppliersAny.insert_long(tempDAO.get_long("MaxSuppliers"));
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -267,15 +247,12 @@ public class ChannelProperties
       // trying to push events onto the channel.
       Any rejectNEAny = m_services.getAdvancedContainerServices().getAny();
       boolean tBool = true;
-      try
-      {
-         if (tempDAO.get_string("RejectNewEvents").equals("false"))
-         {
+      try {
+         if (tempDAO.get_string("RejectNewEvents").equals("false")) {
             tBool = false;
          }
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -300,29 +277,24 @@ public class ChannelProperties
     *            if the channel's CDB entry is corrupted in any way
     */
    public Property[] getCDBQoSProps(String channelName)
-         throws alma.acs.exceptions.AcsJException
-   {
+         throws alma.acs.exceptions.AcsJException {
       // use this object to get at channel information from the CDB
       DAO tempDAO = null;
-      try
-      {
+      try {
          tempDAO = m_services.getCDB().get_DAO_Servant(
                "MACI/Channels/" + channelName);
       }
-      catch (com.cosylab.CDB.XMLerror e)
-      {
+      catch (com.cosylab.CDB.XMLerror e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
       }
-      catch (com.cosylab.CDB.RecordDoesNotExist e)
-      {
+      catch (com.cosylab.CDB.RecordDoesNotExist e) {
          m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
       }
-      catch (alma.acs.container.ContainerException e)
-      {
+      catch (alma.acs.container.ContainerException e) {
          m_logger.log(Level.SEVERE, "CDB unavailable", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
@@ -330,15 +302,12 @@ public class ChannelProperties
       // EventReliability - ///////////////////////////////////////////////
       Any eventRelAny = m_services.getAdvancedContainerServices().getAny();
       short eventRelVal = Persistent.value;
-      try
-      {
-         if (tempDAO.get_string(EventReliability.value).equals("BestEffort"))
-         {
+      try {
+         if (tempDAO.get_string(EventReliability.value).equals("BestEffort")) {
             eventRelVal = BestEffort.value;
          }
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -349,16 +318,13 @@ public class ChannelProperties
       // ConnectionReliability - ///////////////////////////////////////////////
       Any connectRelAny = m_services.getAdvancedContainerServices().getAny();
       short connectRelVal = Persistent.value;
-      try
-      {
+      try {
          if (tempDAO.get_string(ConnectionReliability.value).equals(
-               "BestEffort"))
-         {
+               "BestEffort")) {
             connectRelVal = BestEffort.value;
          }
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -370,12 +336,10 @@ public class ChannelProperties
 
       // Priority - ///////////////////////////////////////////////
       Any priorityAny = m_services.getAdvancedContainerServices().getAny();
-      try
-      {
+      try {
          priorityAny.insert_short((short) tempDAO.get_long(Priority.value));
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -384,13 +348,11 @@ public class ChannelProperties
 
       // Timeout - ///////////////////////////////////////////////
       Any timeoutAny = m_services.getAdvancedContainerServices().getAny();
-      try
-      {
+      try {
          org.omg.TimeBase.TimeTHelper.insert(timeoutAny, tempDAO
                .get_long(Timeout.value));
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -401,33 +363,26 @@ public class ChannelProperties
       Any orderPolAny = m_services.getAdvancedContainerServices().getAny();
       short orderPolicyVal;
 
-      try
-      {
-         if (tempDAO.get_string(OrderPolicy.value).equals("AnyOrder"))
-         {
+      try {
+         if (tempDAO.get_string(OrderPolicy.value).equals("AnyOrder")) {
             orderPolicyVal = AnyOrder.value;
          }
-         else if (tempDAO.get_string(OrderPolicy.value).equals("FifoOrder"))
-         {
+         else if (tempDAO.get_string(OrderPolicy.value).equals("FifoOrder")) {
             orderPolicyVal = FifoOrder.value;
          }
-         else if (tempDAO.get_string(OrderPolicy.value).equals("PriorityOrder"))
-         {
+         else if (tempDAO.get_string(OrderPolicy.value).equals("PriorityOrder")) {
             orderPolicyVal = PriorityOrder.value;
          }
-         else if (tempDAO.get_string(OrderPolicy.value).equals("DeadlineOrder"))
-         {
+         else if (tempDAO.get_string(OrderPolicy.value).equals("DeadlineOrder")) {
             orderPolicyVal = DeadlineOrder.value;
          }
-         else
-         {
+         else {
             m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                   + channelName + "' channel");
             throw new Exception("No value found for order policy.");
          }
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -441,39 +396,31 @@ public class ChannelProperties
       Any discardPolAny = m_services.getAdvancedContainerServices().getAny();
       short discardPolicyVal;
 
-      try
-      {
-         if (tempDAO.get_string(DiscardPolicy.value).equals("AnyOrder"))
-         {
+      try {
+         if (tempDAO.get_string(DiscardPolicy.value).equals("AnyOrder")) {
             discardPolicyVal = AnyOrder.value;
          }
-         else if (tempDAO.get_string(DiscardPolicy.value).equals("FifoOrder"))
-         {
+         else if (tempDAO.get_string(DiscardPolicy.value).equals("FifoOrder")) {
             discardPolicyVal = FifoOrder.value;
          }
          else if (tempDAO.get_string(DiscardPolicy.value).equals(
-               "PriorityOrder"))
-         {
+               "PriorityOrder")) {
             discardPolicyVal = PriorityOrder.value;
          }
          else if (tempDAO.get_string(DiscardPolicy.value).equals(
-               "DeadlineOrder"))
-         {
+               "DeadlineOrder")) {
             discardPolicyVal = DeadlineOrder.value;
          }
-         else if (tempDAO.get_string(DiscardPolicy.value).equals("LifoOrder"))
-         {
+         else if (tempDAO.get_string(DiscardPolicy.value).equals("LifoOrder")) {
             discardPolicyVal = LifoOrder.value;
          }
-         else
-         {
+         else {
             m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                   + channelName + "' channel");
             throw new Exception("No value found for discard policy.");
          }
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -485,15 +432,12 @@ public class ChannelProperties
       // StartTimeSupported - ///////////////////////////////////////////////
       Any startTSAny = m_services.getAdvancedContainerServices().getAny();
       boolean startTSVal = true;
-      try
-      {
-         if (tempDAO.get_string(StartTimeSupported.value).equals("false"))
-         {
+      try {
+         if (tempDAO.get_string(StartTimeSupported.value).equals("false")) {
             startTSVal = false;
          }
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -505,15 +449,12 @@ public class ChannelProperties
       // StopTimeSupported - ///////////////////////////////////////////////
       Any stopTSAny = m_services.getAdvancedContainerServices().getAny();
       boolean stopTSVal = true;
-      try
-      {
-         if (tempDAO.get_string(StopTimeSupported.value).equals("false"))
-         {
+      try {
+         if (tempDAO.get_string(StopTimeSupported.value).equals("false")) {
             stopTSVal = false;
          }
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -524,12 +465,10 @@ public class ChannelProperties
 
       // MaxEventsPerConsumer - ///////////////////////////////////////////////
       Any MEPCAny = m_services.getAdvancedContainerServices().getAny();
-      try
-      {
+      try {
          MEPCAny.insert_long(tempDAO.get_long(MaxEventsPerConsumer.value));
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry datatype found for '"
                + channelName + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(e);
@@ -560,12 +499,10 @@ public class ChannelProperties
     * @throws AcsJException
     *            Thrown if a CORBA Any cannot be created.
     */
-   protected Property[] configQofS(String channelName) throws AcsJException
-   {
+   protected Property[] configQofS(String channelName) throws AcsJException {
 
       // if there's a CDB entry for this channel...
-      if (cdbChannelConfigExists(channelName) == true)
-      {
+      if (cdbChannelConfigExists(channelName) == true) {
          // ...return that CDB entry
          m_logger.finer("Using CDB for '" + channelName
                + "' channel's Q of S properties");
@@ -590,11 +527,9 @@ public class ChannelProperties
     *            Thrown if a CORBA Any cannot be created.
     */
    protected Property[] configAdminProps(String channelName)
-         throws AcsJException
-   {
+         throws AcsJException {
       // if there's a CDB entry for this channel...
-      if (cdbChannelConfigExists(channelName) == true)
-      {
+      if (cdbChannelConfigExists(channelName) == true) {
          // ...return that CDB entry
          m_logger.finer("Using CDB for '" + channelName
                + "' channel's admin properties");
@@ -610,5 +545,8 @@ public class ChannelProperties
     */
    private ContainerServices m_services = null;
 
+   /**
+    * Standard logger
+    */
    private Logger            m_logger   = null;
 }

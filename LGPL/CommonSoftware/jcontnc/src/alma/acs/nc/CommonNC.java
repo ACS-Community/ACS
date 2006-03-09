@@ -32,8 +32,7 @@ import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
  * 
  * @author dfugate
  */
-public interface CommonNC
-{
+public interface CommonNC {
    /**
     * Supplier and Consumer both need a Helper which provides access to the
     * naming service among other things.
@@ -45,6 +44,6 @@ public interface CommonNC
    /**
     * Not too useful right now but it has to be specified.
     */
-   static final InterFilterGroupOperator m_ifgop = InterFilterGroupOperator.AND_OP;
+   static final InterFilterGroupOperator IFGOP = InterFilterGroupOperator.AND_OP;
    // //////////////////////////////////////////////////////////////////////////
 }

@@ -61,27 +61,29 @@ import alma.acsnc.OSPushConsumerPOA;
  * 
  * @author dfugate
  */
-public class Consumer extends OSPushConsumerPOA implements CommonNC
-{
-   private static final String RECEIVE_METHOD_NAME = "receive";
+public class Consumer extends OSPushConsumerPOA implements CommonNC {
+   private static final String     RECEIVE_METHOD_NAME      = "receive";
 
    /**
-    * The default maximum amount of time an event handler is given to process event
-    * before an exception is logged. this is used when an enduser does *not* define
-    * the appropriate XML elements within the ACS CDB. see the inline doc on EventChannel.xsd
-    * for more info
+    * The default maximum amount of time an event handler is given to process
+    * event before an exception is logged. this is used when an enduser does
+    * *not* define the appropriate XML elements within the ACS CDB. see the
+    * inline doc on EventChannel.xsd for more info
     */
-   private static final long DEFAULT_MAX_PROCESS_TIME = 2000;
-   ///maps event names to the maximum amount of time allowed for 
-   ///receiver methods to complete
-   protected HashMap m_handlerTimeoutMap = null;
-   ///helper object contain yields various info about the 
-   ///notification channel
-   protected ChannelInfo m_channelInfo = null;
-   ///used to time the execution of receive methods
-   private alma.acs.util.StopWatch profiler_m = null;
-   
-    /**
+   private static final long       DEFAULT_MAX_PROCESS_TIME = 2000;
+
+   // /maps event names to the maximum amount of time allowed for
+   // /receiver methods to complete
+   protected HashMap               m_handlerTimeoutMap      = null;
+
+   // /helper object contain yields various info about the
+   // /notification channel
+   protected ChannelInfo           m_channelInfo            = null;
+
+   // /used to time the execution of receive methods
+   private alma.acs.util.StopWatch profiler_m               = null;
+
+   /**
     * Creates a new instance of Consumer
     * 
     * @param channelName
@@ -93,23 +95,22 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            Thrown on any <I>really bad</I> error conditions encountered.
     */
    public Consumer(String channelName, ContainerServices services)
-         throws AcsJException
-   {
+         throws AcsJException {
       m_channelName = channelName;
-      
+
       profiler_m = new alma.acs.util.StopWatch();
 
       m_logger = services.getLogger();
-      
+
       m_anyAide = new AnyAide(services);
-      
+
       m_channelInfo = new ChannelInfo(services);
 
-      m_handlerTimeoutMap = m_channelInfo.getEventHandlerTimeoutMap(channelName);
-      
+      m_handlerTimeoutMap = m_channelInfo
+            .getEventHandlerTimeoutMap(channelName);
+
       // sanity check
-      if (m_channelName == null)
-      {
+      if (m_channelName == null) {
          String reason = "Null reference obtained for the channel name!";
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
       }
@@ -129,9 +130,8 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
       // for each consumer subclass instance.
       configSubscriptions();
       configFilters();
-      
-      if (m_helper.getChannelProperties().getIntegrationLogs(m_channelName)==true)
-      {
+
+      if (m_helper.getChannelProperties().getIntegrationLogs(m_channelName) == true) {
          m_integrationLogs = true;
       }
    }
@@ -148,18 +148,15 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            Standard ACS Java exception.
     */
    protected EventChannel getNotificationChannel(String channelName)
-         throws AcsJException
-   {
-      if (m_channel == null)
-      {
+         throws AcsJException {
+      if (m_channel == null) {
          m_channel = getHelper().getNotificationChannel(channelName,
-							getChannelKind(),
-							getNotificationFactoryName());
+               getChannelKind(), getNotificationFactoryName());
       }
       return m_channel;
 
    }
-   
+
    /**
     * This method returns a constant character pointer to the "kind" of
     * notification channel as registered with the naming service (i.e., the kind
@@ -171,8 +168,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * 
     * @return string
     */
-   protected String getChannelKind()
-   {
+   protected String getChannelKind() {
       return alma.acscommon.NC_KIND.value;
    }
 
@@ -185,22 +181,20 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * 
     * @return string
     */
-   protected String getChannelDomain()
-   {
+   protected String getChannelDomain() {
       return alma.acscommon.ALMADOMAIN.value;
    }
 
    /**
-    * This method returns a the notify service name as registered with the
-    * CORBA Naming Service. This is normally equivalent to acscommon::ALMADOMAIN. The
+    * This method returns a the notify service name as registered with the CORBA
+    * Naming Service. This is normally equivalent to acscommon::ALMADOMAIN. The
     * sole reason this method is provided is to accomodate subclasses which
     * subscribe/publish non-ICD style events (ACS archiving channel for
     * example).In that case, the developer would override this method.
     * 
     * @return string
     */
-   protected String getNotificationFactoryName()
-   {
+   protected String getNotificationFactoryName() {
       return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
    }
 
@@ -211,37 +205,32 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            Any CORBA exceptions encountered are converted to an
     *            AcsJException for developer's ease of use.
     */
-   protected void createConsumer() throws AcsJException
-   {
-       IntHolder consumerAdminID = new IntHolder();
+   protected void createConsumer() throws AcsJException {
+      IntHolder consumerAdminID = new IntHolder();
 
       // get the Consumer admin object
-      m_consumerAdmin = getNotificationChannel().new_for_consumers(m_ifgop,
+      m_consumerAdmin = getNotificationChannel().new_for_consumers(IFGOP,
             consumerAdminID);
       // sanity check
-      if (m_consumerAdmin == null)
-      {
+      if (m_consumerAdmin == null) {
          String reason = "The '" + m_channelName
                + "' channel: null consumer admin";
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
       }
 
       // get the Supplier proxy
-      try
-      {
+      try {
          m_proxySupplier = StructuredProxyPushSupplierHelper
                .narrow(m_consumerAdmin.obtain_notification_push_supplier(
                      ClientType.STRUCTURED_EVENT, new IntHolder()));
       }
-      catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e)
-      {
+      catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
          // convert it into an exception developers care about
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
       }
       // sanity check
-      if (m_proxySupplier == null)
-      {
+      if (m_proxySupplier == null) {
          String reason = "The '" + m_channelName
                + "' channel: null proxy supplier";
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
@@ -263,30 +252,25 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            Thrown if the consumer cannot begin receiving events for some
     *            CORBA reason.
     */
-   public void consumerReady() throws AcsJException
-   {
+   public void consumerReady() throws AcsJException {
 
-      try
-      {
+      try {
          m_corbaRef = OSPushConsumerHelper.narrow(getHelper()
                .getContainerServices().activateOffShoot(this));
          m_proxySupplier
                .connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper
                      .narrow(m_corbaRef));
       }
-      catch (alma.acs.container.ContainerException e)
-      {
+      catch (alma.acs.container.ContainerException e) {
          // convert it to an ACS Error System Exception
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
       }
-      catch (org.omg.CosEventChannelAdmin.AlreadyConnected e)
-      {
+      catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
       }
-      catch (org.omg.CosEventChannelAdmin.TypeError e)
-      {
+      catch (org.omg.CosEventChannelAdmin.TypeError e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
@@ -300,10 +284,8 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * @throws AcsJException
     *            Thrown if the reference is null.
     */
-   protected EventChannel getNotificationChannel() throws AcsJException
-   {
-      if (m_channel == null)
-      {
+   protected EventChannel getNotificationChannel() throws AcsJException {
+      if (m_channel == null) {
          String reason = "Null reference obtained for the Notification Channel!";
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
       }
@@ -315,8 +297,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * this method is invoked by consumer's constructor after everything else has
     * been initialized.
     */
-   protected void configSubscriptions()
-   {
+   protected void configSubscriptions() {
       // addSubscription();
       return;
    }
@@ -331,19 +312,16 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * @throws AcsJException
     *            Thrown if there is some CORBA problem.
     */
-   public void addSubscription(Class structClassName) throws AcsJException
-   {
+   public void addSubscription(Class structClassName) throws AcsJException {
       String type = "*";
       String domain = "*";
-      if (structClassName != null)
-      {
+      if (structClassName != null) {
          type = structClassName.getName().substring(
                structClassName.getName().lastIndexOf('.') + 1);
          domain = getChannelDomain();
       }
 
-      try
-      {
+      try {
          // Subscribe to events
          EventType[] added = { new EventType(domain, type) };
          EventType[] removed = {};
@@ -351,8 +329,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
          // really subscribe to the events
          m_consumerAdmin.subscription_change(added, removed);
       }
-      catch (org.omg.CosNotifyComm.InvalidEventType e)
-      {
+      catch (org.omg.CosNotifyComm.InvalidEventType e) {
          String msg = "'" + type + "' event type is invalid for the '"
                + m_channelName + "' channel: ";
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(msg
@@ -379,29 +356,25 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            Thrown if there is some CORBA problem.
     */
    public void addSubscription(Class structClassName, Object receiver)
-         throws AcsJException
-   {
+         throws AcsJException {
       // check to ensure receiver is capable to processing the event
       Class receiverClass = receiver.getClass();
       Method receiveMethod = null;
       Class[] parm = { structClassName };
-      try
-      {
+      try {
          receiveMethod = receiverClass.getMethod(RECEIVE_METHOD_NAME, parm);
       }
-      catch (NoSuchMethodException err)
-      {
+      catch (NoSuchMethodException err) {
          // Well the method doesn't exist...that sucks!
          String reason = "The '" + m_channelName
                + "' channel: the receiver object is incapable of handling '"
                + structClassName.getName() + "' type of events! "
-               + "It must have a method 'public void " + RECEIVE_METHOD_NAME 
+               + "It must have a method 'public void " + RECEIVE_METHOD_NAME
                + "(" + structClassName.getName() + ")'.";
          m_logger.log(Level.WARNING, reason, err);
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
       }
-      catch (SecurityException err)
-      {
+      catch (SecurityException err) {
          // Developer has defined the method to be protected or private...this
          // doesn't work either.
          String reason = "The '"
@@ -413,16 +386,14 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
       }
 
       // Add this eventTypeName/receiver to the list of m_handlerFunctions.
-      synchronized (m_handlerFunctions)
-      {
-         //make sure the developer has not subscribed to the same
-         //event type with two different handlers. makes unsubscribing
-         //easier (i.e., developer need not keep track of receiver
-         //objects that would otherwise have to be passed
-         //back to the removeSubscription method
-         if(m_handlerFunctions.containsKey(structClassName.getName())==true)
-         {            
-            //throw an exception
+      synchronized (m_handlerFunctions) {
+         // make sure the developer has not subscribed to the same
+         // event type with two different handlers. makes unsubscribing
+         // easier (i.e., developer need not keep track of receiver
+         // objects that would otherwise have to be passed
+         // back to the removeSubscription method
+         if (m_handlerFunctions.containsKey(structClassName.getName()) == true) {
+            // throw an exception
             throw new AcsJJavaAnyEx("Type already subscribed to.");
          }
          m_handlerFunctions.put(structClassName.getName(), receiver);
@@ -443,45 +414,39 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            Thrown if there is some CORBA problem (like this consumer has
     *            never subscribed to the IDL struct).
     */
-   public void removeSubscription(Class structClassName) throws AcsJException
-   {
+   public void removeSubscription(Class structClassName) throws AcsJException {
       String type = "*";
       String domain = "*";
 
       // If the developer is not unsubscribing from everything...
-      if (structClassName != null)
-      {
+      if (structClassName != null) {
          // get the type/domain to unsubscribe from
          type = structClassName.getName().substring(
                structClassName.getName().lastIndexOf('.') + 1);
          domain = getChannelDomain();
 
          // Remove the handler function if there is one...
-         synchronized (m_handlerFunctions)
-         {
-            if(m_handlerFunctions.containsKey(structClassName.getName())==true)
-            {
-               //remove the subscription from the hash
+         synchronized (m_handlerFunctions) {
+            if (m_handlerFunctions.containsKey(structClassName.getName()) == true) {
+               // remove the subscription from the hash
                m_handlerFunctions.remove(structClassName.getName());
             }
-            else
-            {
-               
-               throw new AcsJJavaAnyEx("Unsubscribing from '" + 
-                     structClassName.getName() +
-                     "' type of event when not actually subscribed to this type.");
+            else {
+
+               throw new AcsJJavaAnyEx(
+                     "Unsubscribing from '"
+                           + structClassName.getName()
+                           + "' type of event when not actually subscribed to this type.");
             }
          }
       }
-      //they're removing all subscriptions so let's clear
-      //the hash
-      else
-      {
-       m_handlerFunctions.clear();  
+      // they're removing all subscriptions so let's clear
+      // the hash
+      else {
+         m_handlerFunctions.clear();
       }
 
-      try
-      {
+      try {
          // Unsubscribe to events
          EventType[] added = {};
          EventType[] removed = { new EventType(domain, type) };
@@ -489,8 +454,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
          // really unsubscribe from events
          m_consumerAdmin.subscription_change(added, removed);
       }
-      catch (org.omg.CosNotifyComm.InvalidEventType e)
-      {
+      catch (org.omg.CosNotifyComm.InvalidEventType e) {
          String msg = "'" + type + "' event type is invalid for the '"
                + m_channelName + "' channel: ";
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(msg
@@ -504,8 +468,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * addFilter(...). Important to note this is the last method invoked by
     * consumer's constructor.
     */
-   protected void configFilters()
-   {
+   protected void configFilters() {
       return;
    }
 
@@ -525,13 +488,11 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            using the correct grammar).
     */
    public int addFilter(Class structClassName, String filter)
-         throws AcsJException
-   {
+         throws AcsJException {
       String type = structClassName.getName().substring(
             structClassName.getName().lastIndexOf('.') + 1);
 
-      try
-      {
+      try {
          FilterFactory t_filterFactory = getNotificationChannel()
                .default_filter_factory();
 
@@ -545,15 +506,13 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
          // add the filter to the proxy
          return m_proxySupplier.add_filter(t_filter);
       }
-      catch (org.omg.CosNotifyFilter.InvalidGrammar e)
-      {
+      catch (org.omg.CosNotifyFilter.InvalidGrammar e) {
          String msg = "'" + filter + "' filter is invalid for the '"
                + m_channelName + "' channel: ";
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(msg
                + e.getMessage());
       }
-      catch (org.omg.CosNotifyFilter.InvalidConstraint e)
-      {
+      catch (org.omg.CosNotifyFilter.InvalidConstraint e) {
          String msg = "'" + filter + "' filter is invalid for the '"
                + m_channelName + "' channel: ";
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(msg
@@ -571,26 +530,22 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * @throws AcsJException
     *            Thrown if CORBA problems are encountered.
     * @return True if the filter was succesfully removed and false otherwise.
-    * TODO: this method should not throw an AcsJException
+    *         TODO: this method should not throw an AcsJException
     */
-   public boolean removeFilter(int filter) throws AcsJException
-   {
+   public boolean removeFilter(int filter) throws AcsJException {
       // not a real filter in the first place
-      if (filter == -1)
-      {
+      if (filter == -1) {
          String msg = "Cannot remove the '" + filter + "' filter ID for the '"
                + m_channelName + "' channel: bad filter ID!";
          m_logger.warning(msg);
          return false;
       }
 
-      try
-      {
+      try {
          m_proxySupplier.remove_filter(filter);
          return true;
       }
-      catch (org.omg.CosNotifyFilter.FilterNotFound e)
-      {
+      catch (org.omg.CosNotifyFilter.FilterNotFound e) {
          String msg = "Cannot remove the '" + filter + "' filter ID for the '"
                + m_channelName + "' channel: filter not found!";
          m_logger.warning(msg);
@@ -605,8 +560,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * 
     * @return pointer to a constant string.
     */
-   protected String getFilterLanguage()
-   {
+   protected String getFilterLanguage() {
       // return a constant defined in acsnc.idl to be portable in the other
       // programming languages supported by ACS.
       return alma.acsnc.FILTER_LANGUAGE_NAME.value;
@@ -617,10 +571,9 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * Notification Service itself each time a Supplier subclass is destroyed.
     * <b>Do not call it from your code!</b>
     */
-   public void disconnect_structured_push_consumer()
-   {
-      //ACS does not provide an implementation of this method. developers
-      //are free to override it if they want though.
+   public void disconnect_structured_push_consumer() {
+      // ACS does not provide an implementation of this method. developers
+      // are free to override it if they want though.
    }
 
    /**
@@ -633,29 +586,27 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * @throws org.omg.CosEventComm.Disconnected
     */
    public void push_structured_event(StructuredEvent structuredEvent)
-         throws org.omg.CosEventComm.Disconnected
-   {
-         // time to get the event description
-         EventDescription eDescrip = EventDescriptionHelper
-               .extract(structuredEvent.remainder_of_body);
+         throws org.omg.CosEventComm.Disconnected {
+      // time to get the event description
+      EventDescription eDescrip = EventDescriptionHelper
+            .extract(structuredEvent.remainder_of_body);
 
-         Object convertedAny = null;
-         convertedAny = m_anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
-         
-         if(m_integrationLogs==true)
-         {
-            m_logger.log(Level.INFO, "Channel:" + m_channelName +
-                  ", Publisher:" + eDescrip.name +
-                  ", Event Type:" + structuredEvent.header.fixed_header.event_type.type_name);
-         }
-         
-         // only called when the correct receiver was not found or failed for
-         // some
-         // reason or another.
-         if (convertedAny!=null)
-         {
+      Object convertedAny = null;
+      convertedAny = m_anyAide
+            .complexAnyToObject(structuredEvent.filterable_data[0].value);
+
+      if (m_integrationLogs == true) {
+         m_logger.log(Level.INFO, "Channel:" + m_channelName + ", Publisher:"
+               + eDescrip.name + ", Event Type:"
+               + structuredEvent.header.fixed_header.event_type.type_name);
+      }
+
+      // only called when the correct receiver was not found or failed for
+      // some
+      // reason or another.
+      if (convertedAny != null) {
          processEvent(convertedAny, eDescrip);
-         }
+      }
    }
 
    /**
@@ -674,69 +625,67 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *           An instance of an IDL struct which describes the event. See
     *           acsnc.idl for the defintion.
     */
-   protected void processEvent(Object corbaData, EventDescription eventDescrip)
-   {
+   protected void processEvent(Object corbaData, EventDescription eventDescrip) {
       // Create the IDL class
       // The only reason we have to do this is in case the developer has
       // created
       // and registered a receiver object with this instance.
       Class[] parm = { corbaData.getClass() };
-      
-      //event name
+
+      // event name
       String eventName = corbaData.getClass().getName();
 
-      //figure out how much time this event has to be processed
-      if(m_handlerTimeoutMap.containsKey(eventName)==false)
-      {
-         //setup a timeout if it's undefined
-         m_handlerTimeoutMap.put(eventName, new Double(DEFAULT_MAX_PROCESS_TIME));
+      // figure out how much time this event has to be processed
+      if (m_handlerTimeoutMap.containsKey(eventName) == false) {
+         // setup a timeout if it's undefined
+         m_handlerTimeoutMap.put(eventName,
+               new Double(DEFAULT_MAX_PROCESS_TIME));
       }
-      Double maxProcessTimeDouble = (Double)m_handlerTimeoutMap.get(eventName);
-      long maxProcessTime = (long)maxProcessTimeDouble.doubleValue();
-      
+      Double maxProcessTimeDouble = (Double) m_handlerTimeoutMap.get(eventName);
+      long maxProcessTime = (long) maxProcessTimeDouble.doubleValue();
+
       // Here we search the hash of registered receiver objects.
       // If a receiver capable of processing this event is found, it is
       // invoked.
       // Otherwise the developer should have overriden the process event
       // method.
-      if (m_handlerFunctions.containsKey(corbaData.getClass().getName())==true)
-         try
-         {
-            //get the receive method
-            Method handlerFunction = m_handlerFunctions.get(corbaData.getClass().getName()).getClass()
-                  .getMethod(RECEIVE_METHOD_NAME, parm);
+      if (m_handlerFunctions.containsKey(corbaData.getClass().getName()) == true)
+         try {
+            // get the receive method
+            Method handlerFunction = m_handlerFunctions.get(
+                  corbaData.getClass().getName()).getClass().getMethod(
+                  RECEIVE_METHOD_NAME, parm);
             // get the parameters of this method...
             Class[] tArray = handlerFunction.getParameterTypes();
             // if the first parameter to the receiver method is identical
             // to the Java class...
-            if (tArray[0].equals(corbaData.getClass()))
-            {
+            if (tArray[0].equals(corbaData.getClass())) {
                // good...user has registered a receiver
                // parameters are the IDL struct
                Object[] arg = { corbaData };
 
                // finally we can invoke the "receive" method on the receiver
                // object
-               //start the time
+               // start the time
                profiler_m.reset();
-               handlerFunction.invoke(m_handlerFunctions.get(corbaData.getClass().getName()), arg);
-               //get the execution time of "receive'
+               handlerFunction.invoke(m_handlerFunctions.get(corbaData
+                     .getClass().getName()), arg);
+               // get the execution time of "receive'
                long timeToRun = profiler_m.getLapTimeMillis();
-               
-               //warn the end-user if the receiver is taking too long
-               if (timeToRun > maxProcessTime)
-               {
-                  m_logger.warning("Took too long to handle an '" + eventName +
-                                          "' event: " + timeToRun/1000.0 + " seconds.");
-                  m_logger.info("Maximum time to process an event is: " + maxProcessTime/1000.0 + " seconds.");
+
+               // warn the end-user if the receiver is taking too long
+               if (timeToRun > maxProcessTime) {
+                  m_logger.warning("Took too long to handle an '" + eventName
+                        + "' event: " + timeToRun / 1000.0 + " seconds.");
+                  m_logger.info("Maximum time to process an event is: "
+                        + maxProcessTime / 1000.0 + " seconds.");
                }
-               
+
                // everything looks OK...return control.
                return;
             }
          }
-         catch (Exception e)
-         {
+         catch (Exception e) {
             e.printStackTrace();
             // if there's an exception in this case, we don't really care!
          }
@@ -745,12 +694,12 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
       profiler_m.reset();
       this.processEvent(corbaData);
       long timeToRun = profiler_m.getLapTimeMillis();
-      
-      if (timeToRun > maxProcessTime)
-      {
-         m_logger.warning("Took too long to handle an '" + eventName +
-                                 "' event: " + timeToRun/1000.0 + " seconds.");
-         m_logger.info("Maximum time to process an event is: " + maxProcessTime/1000.0 + " seconds.");
+
+      if (timeToRun > maxProcessTime) {
+         m_logger.warning("Took too long to handle an '" + eventName
+               + "' event: " + timeToRun / 1000.0 + " seconds.");
+         m_logger.info("Maximum time to process an event is: " + maxProcessTime
+               / 1000.0 + " seconds.");
       }
    }
 
@@ -766,8 +715,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *           and a simple typecast on it to the correct type should be enough
     *           to make it usable.
     */
-   protected void processEvent(Object corbaData)
-   {
+   protected void processEvent(Object corbaData) {
       String msg = "Consumer.processEvent(...) the '" + m_channelName
             + "' channel: " + "override this method in derived classes for '"
             + corbaData.getClass().getName() + "' objects!";
@@ -789,10 +737,9 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     *            ...
     */
    public void offer_change(EventType[] eventType, EventType[] eventType1)
-         throws org.omg.CosNotifyComm.InvalidEventType
-   {
-      //ACS does not provide an implementation of this method although 
-      //developers are free to do so if they like.
+         throws org.omg.CosNotifyComm.InvalidEventType {
+      // ACS does not provide an implementation of this method although
+      // developers are free to do so if they like.
    }
 
    /**
@@ -801,11 +748,9 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * not invoked multiple times. Once it has been called, events will no longer
     * be received.
     */
-   public void disconnect()
-   {
+   public void disconnect() {
 
-      try
-      {
+      try {
          // stop receiving events
          suspend();
 
@@ -826,28 +771,23 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
          m_consumerAdmin = null;
          m_proxySupplier = null;
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          e.printStackTrace();
       }
    }
 
    /** Used to temporarily halt receiving events of all types */
-   public void suspend()
-   {
-      try
-      {
+   public void suspend() {
+      try {
          m_proxySupplier.suspend_connection();
       }
-      catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e)
-      {
-         //if this fails, it does not matter because the connection
-         //has already been suspended.
+      catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e) {
+         // if this fails, it does not matter because the connection
+         // has already been suspended.
       }
-      catch (org.omg.CosNotifyChannelAdmin.NotConnected e)
-      {
-         //if this fails, it does not matter because we cannot suspend
-         //a connection that isn't really connected in the first place.
+      catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
+         // if this fails, it does not matter because we cannot suspend
+         // a connection that isn't really connected in the first place.
       }
    }
 
@@ -855,23 +795,19 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * Used to reenable the Consumer. That is, it nullifies a call to the suspend
     * method.
     */
-   public void resume()
-   {
-      try
-      {
+   public void resume() {
+      try {
 
          m_proxySupplier.resume_connection();
 
       }
-      catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive e)
-      {
-         //if this fails, it does not matter because the connection
-         //has already been resumed.
+      catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive e) {
+         // if this fails, it does not matter because the connection
+         // has already been resumed.
       }
-      catch (org.omg.CosNotifyChannelAdmin.NotConnected e)
-      {
-         //if this fails, it does not matter because we cannot resume
-         //a connection that isn't connected in the first place.
+      catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
+         // if this fails, it does not matter because we cannot resume
+         // a connection that isn't connected in the first place.
       }
    }
 
@@ -881,8 +817,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * 
     * @return A valid reference to this instances helper.
     */
-   public alma.acs.nc.Helper getHelper()
-   {
+   public alma.acs.nc.Helper getHelper() {
       return m_helper;
    }
 
@@ -903,7 +838,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
     * Contains a list of handler/receiver functions to be invoked when an event
     * of a particular type is received.
     */
-   protected HashMap                   m_handlerFunctions = new HashMap();
+   protected HashMap                     m_handlerFunctions = new HashMap();
 
    /**
     * The consumer admin object used by consumers to get a reference to the
@@ -918,8 +853,8 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC
    protected OSPushConsumer              m_corbaRef         = null;
 
    /** Helper class used to manipulate CORBA anys */
-   protected AnyAide m_anyAide = null;
-   
-   /** Requested by HLA/ITS.*/
-   private boolean m_integrationLogs = false;
+   protected AnyAide                     m_anyAide          = null;
+
+   /** Requested by HLA/ITS. */
+   private boolean                       m_integrationLogs  = false;
 }

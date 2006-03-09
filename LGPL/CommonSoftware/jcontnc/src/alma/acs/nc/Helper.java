@@ -44,8 +44,7 @@ import alma.acs.exceptions.AcsJException;
 /**
  * This class provides methods useful to both supplier and consumer objects.
  */
-public class Helper
-{
+public class Helper {
    /**
     * Creates a new instance of Helper.
     * 
@@ -55,8 +54,7 @@ public class Helper
     *            Generic ACS exception will be thrown if anything in this class
     *            is broken.
     */
-   public Helper(ContainerServices services) throws AcsJException
-   {
+   public Helper(ContainerServices services) throws AcsJException {
       // save a local reference to the container services
       m_services = services;
 
@@ -80,10 +78,8 @@ public class Helper
     *            Thrown when the reference is null.
     * @return A valid reference to the ContainerServices instance.
     */
-   public ContainerServices getContainerServices() throws AcsJException
-   {
-      if (m_services == null)
-      {
+   public ContainerServices getContainerServices() throws AcsJException {
+      if (m_services == null) {
          // make sure this code is being run within a container or client
          String reason = "Null reference obtained for the ContainerServices!";
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
@@ -99,16 +95,13 @@ public class Helper
     *            Thrown when there's a bad corbaloc given for the Naming Service
     *            or the reference cannot be narrowed.
     */
-   public NamingContext getNamingService() throws AcsJException
-   {
+   public NamingContext getNamingService() throws AcsJException {
       // Most likely the first call to this method...
-      if (m_nContext == null)
-      {
+      if (m_nContext == null) {
          // acsStartJava always add this Java property for us
          String nameCorbaloc = System.getProperty(m_nameJavaProp);
          // make sure the end-user is using acsStartJava
-         if (nameCorbaloc == null)
-         {
+         if (nameCorbaloc == null) {
             String reason = "Null reference obtained from the Java property '"
                   + m_nameJavaProp + "'for the Naming Service corbaloc!";
             throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
@@ -118,8 +111,7 @@ public class Helper
          org.omg.CORBA.Object tempCorbaObject = getContainerServices()
                .getAdvancedContainerServices().corbaObjectFromString(
                      nameCorbaloc);
-         if (tempCorbaObject == null)
-         {
+         if (tempCorbaObject == null) {
             // very bad situation. without the naming service we cannot do
             // anything.
             String reason = "Null reference obtained for the Naming Service!";
@@ -128,8 +120,7 @@ public class Helper
          }
 
          m_nContext = NamingContextHelper.narrow(tempCorbaObject);
-         if (m_nContext == null)
-         {
+         if (m_nContext == null) {
             // very bad situation. without the naming service we cannot do
             // anything.
             String reason = "Unable to narrow Naming Service reference to the correct type!";
@@ -151,40 +142,35 @@ public class Helper
     * @param channelKind
     *           Kind of the channel as registered with the CORBA naming service.
     * @param notifyFactoryName
-    *           Name of the notification service as registered with the CORBA 
+    *           Name of the notification service as registered with the CORBA
     *           naming service.
     * @throws AcsJException
     *            Standard ACS Java exception.
     */
    protected EventChannel getNotificationChannel(String channelName,
-						 String channelKind,
-						 String notifyFactoryName) throws AcsJException
-   {
+         String channelKind, String notifyFactoryName) throws AcsJException {
       // return value
       EventChannel retValue = null;
 
       // this is expected when this object is first created
-      try
-      {
+      try {
          NameComponent[] t_NameSequence = { new NameComponent(channelName,
                channelKind) };
          retValue = EventChannelHelper.narrow(getNamingService().resolve(
                t_NameSequence));
       }
-      catch (org.omg.CosNaming.NamingContextPackage.NotFound e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
          // No other suppliers have created the channel yet...create it
          m_logger.info("Attempting to create the " + channelName + " channel.");
-         return createNotificationChannel(channelName, channelKind, notifyFactoryName);
+         return createNotificationChannel(channelName, channelKind,
+               notifyFactoryName);
       }
-      catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
       }
-      catch (org.omg.CosNaming.NamingContextPackage.InvalidName e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
@@ -205,22 +191,19 @@ public class Helper
     * @param channelKind
     *           Kind of the channel as registered with the CORBA naming service.
     * @param notifyFactoryName
-    *           Name of the notification service as registered with the CORBA 
+    *           Name of the notification service as registered with the CORBA
     *           naming service.
     * @throws AcsJException
     *            Standard ACS Java exception.
     */
    protected EventChannel createNotificationChannel(String channelName,
-						    String channelKind,
-						    String notifyFactoryName) throws AcsJException
-   {
+         String channelKind, String notifyFactoryName) throws AcsJException {
       // return value
       EventChannel retValue = null;
-      try
-      {
+      try {
          // get the Notification Factory first.
-      NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName,
-							  /*alma.acscommon.NOTIFICATION_FACTORY_NAME.value,*/ "") };
+         NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName,
+         /* alma.acscommon.NOTIFICATION_FACTORY_NAME.value, */"") };
          EventChannelFactory notifyFactory = EventChannelFactoryHelper
                .narrow(getNamingService().resolve(t_NameFactory));
 
@@ -232,8 +215,7 @@ public class Helper
                .configQofS(channelName), m_channelProperties
                .configAdminProps(channelName), new IntHolder());
          // sanity check
-         if (retValue == null)
-         {
+         if (retValue == null) {
             // a null refernce implies we cannot go any further
             String reason = "Null reference obtained for the '" + channelName
                   + "' channel!";
@@ -245,8 +227,7 @@ public class Helper
                channelKind) };
          getNamingService().rebind(t_NameChannel, retValue);
       }
-      catch (org.omg.CosNaming.NamingContextPackage.NotFound e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
          // Think there is virtually no chance of this every happening
          // but...it's
          // a very serious issue if the Notification Service cannot be found!
@@ -254,27 +235,23 @@ public class Helper
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason
                + e.getMessage());
       }
-      catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
       }
-      catch (org.omg.CosNaming.NamingContextPackage.InvalidName e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
       }
-      catch (org.omg.CosNotification.UnsupportedAdmin e)
-      {
+      catch (org.omg.CosNotification.UnsupportedAdmin e) {
          String reason = "The administrative properties specified for the '"
                + channelName + "' channel are unsupported: ";
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason
                + e.getMessage());
       }
-      catch (org.omg.CosNotification.UnsupportedQoS e)
-      {
+      catch (org.omg.CosNotification.UnsupportedQoS e) {
          String reason = "The quality of service properties specified for the '"
                + channelName + "' channel are unsupported: ";
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason
@@ -302,10 +279,8 @@ public class Helper
     * @warning this method assumes
     */
    protected void destroyNotificationChannel(String channelName,
-         String channelKind, EventChannel channelRef) throws AcsJException
-   {
-      try
-      {
+         String channelKind, EventChannel channelRef) throws AcsJException {
+      try {
          // destroy the remote CORBA object
          channelRef.destroy();
 
@@ -314,48 +289,48 @@ public class Helper
                channelKind) };
          getNamingService().unbind(t_NameChannel);
       }
-      catch (org.omg.CosNaming.NamingContextPackage.NotFound e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
          // Think there is virtually no chance of this every happening but...
          String msg = "Cannot unbind the '" + channelName
                + "' channel from the Naming Service!";
          m_logger.severe(msg);
       }
-      catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
       }
-      catch (org.omg.CosNaming.NamingContextPackage.InvalidName e)
-      {
+      catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
          // Think there is virtually no chance of this every happening but...
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
                .getMessage());
       }
    }
+
    /**
-    * Provides access to the information about the channel
-    * contained within the ACS CDB
+    * Provides access to the information about the channel contained within the
+    * ACS CDB
+    * 
     * @return This class's channel properties member.
     */
-   public ChannelProperties getChannelProperties()
-   {
+   public ChannelProperties getChannelProperties() {
       return m_channelProperties;
    }
+
    // --------------------------------------------------------------------------
-   ///In a running system, there can be only one reference to the Naming Service
+   // /In a running system, there can be only one reference to the Naming
+   // Service
    private static NamingContext m_nContext          = null;
 
-   ///Java property name for the CORBA Naming Service corbaloc.
+   // /Java property name for the CORBA Naming Service corbaloc.
    private static final String  m_nameJavaProp      = "ORBInitRef.NameService";
 
-   /// Access to the component's name along with the logging service.
+   // / Access to the component's name along with the logging service.
    private ContainerServices    m_services          = null;
 
-   /// Our own personal logger
+   // / Our own personal logger
    private Logger               m_logger            = null;
 
-   /// Provides access to channel's quality of service properties
+   // / Provides access to channel's quality of service properties
    private ChannelProperties    m_channelProperties = null;
 }
