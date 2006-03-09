@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.h,v 1.6 2005/12/13 21:35:13 dfugate Exp $"
+* "@(#) $Id: acsutilAnyAide.h,v 1.7 2006/03/09 18:49:42 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,12 +100,14 @@ class AnyAide
      * as longs, doubles, strings, etc at the moment and sequence typdefs defined 
      * within acscommon.idl. Support for enumerations is given however.
      * @param a CORBA any with a supported BACI type embedded within it
+     * @param An optional parameter which sets the the precision of the return value.
+     *        Only used when non-zero (zero is the default value).
      * @return the any param converted to a string
      * @throws UnsupportedType exception if the implementation does not know about the 
      * CORBA type embedded within the any parameter.
      */
     static std::string
-    anyToString(const CORBA::Any&)
+    anyToString(const CORBA::Any&, unsigned short precision=0)
 	throw(UnsupportedType);
 
     /**

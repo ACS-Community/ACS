@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.cpp,v 1.5 2005/12/15 20:13:36 dfugate Exp $"
+* "@(#) $Id: acsutilAnyAide.cpp,v 1.6 2006/03/09 18:49:42 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,7 +56,7 @@
 #include <acscommonC.h>
 #include <tao/DynamicAny/DynamicAny.h>
 
-static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.5 2005/12/15 20:13:36 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.6 2006/03/09 18:49:42 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 const std::string AnyAide::nullType_m      = "null";
@@ -270,11 +270,16 @@ AnyAide::getId(const CORBA::Any& any)
 }
 //----------------------------------------------------------------------
 std::string
-AnyAide::anyToString(const CORBA::Any& value)
+AnyAide::anyToString(const CORBA::Any& value, unsigned short precision)
     throw(UnsupportedType)
 {
     
     std::ostringstream ostr;
+    //if they've changed the precision from the default value, set it
+    if(precision!=0)
+	{
+	ostr.precision(precision);
+	}
     
     if (AnyAide::isString(value)==true)
 	{
@@ -288,7 +293,7 @@ AnyAide::anyToString(const CORBA::Any& value)
     
     else if (AnyAide::isFloat(value)==true)
 	{
-	ostr << AnyAide::getValue<CORBA::Float>(value);
+	ostr <<  AnyAide::getValue<CORBA::Float>(value);
 	}
     
     else if (AnyAide::isLong(value)==true)
@@ -343,7 +348,7 @@ AnyAide::anyToString(const CORBA::Any& value)
 	ACS::floatSeq* seqVar = AnyAide::getValue<ACS::floatSeq *>(value);
 	for (unsigned int i = 0; i < seqVar->length(); i++)
 	    {
-	    ostr << (*seqVar)[i] << " ";
+	    ostr <<  (*seqVar)[i] << " ";
 	    }
 	}
 
