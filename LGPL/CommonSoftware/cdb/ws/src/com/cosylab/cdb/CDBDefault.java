@@ -25,6 +25,8 @@ package com.cosylab.cdb;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -39,42 +41,54 @@ import com.cosylab.CDB.XMLerror;
 import com.cosylab.cdb.jdal.XMLHandler;
 import com.cosylab.cdb.jdal.XMLTreeNode;
 
+import alma.acs.logging.ClientLogManager;
 import alma.acs.util.ACSPorts;
 
 
 /**
- * todo: small description what this class does
+ * Allow switching the default component of a given IDL type. 
+ * This is useful if there is only one component instance per type, but the CDB contains two entries, 
+ * one for the real component, and one for a simulator. 
+ * The client (test code or real component in the system) is then not affected by this switching, 
+ * because it always uses the IDL type to retrieve the component.
  * 
- * todo: This class currently only works with CDB component deployment data inside the Components.xml file.
- * It probably does not work when a component's deployment data is inside a separate XML file in a subdirectory.
- * Thus we need to extend this class to also deal with this alternative component description.
- * First try one way, and if it fails, try the other. 
+ * Sets Default=true the given component and sets Default=false the other components with the same
+ * type.
+ * Assumes the curl of the components = "MACI/Components"
  * 
  * @author cparedes
  */
 public class CDBDefault {
-	static	int indent = 0;
-
+	static String strIOR;
+	static String curl;
+	static String curl_allComponents;
+	static ORB orb;
+	private static Logger m_logger;
+	
 	public static void main(String args[]) {
 		try {
 			if (args.length != 2) {
 				System.out.println("Usage: cmd idl_type instance_name ");
 				return;
 			}
+			m_logger = ClientLogManager.getAcsLogManager().
+						getLoggerForApplication("SettingDefaultComponent", false);
 			String in_type = args[0];
 			String in_name = args[1];
-			String curl = "MACI/Components"; 
+		
+			curl_allComponents = "MACI/Components";
+			curl = curl_allComponents + "/" + in_name;
 
-			String strIOR = "corbaloc::" + InetAddress.getLocalHost().getHostName() + ":" + ACSPorts.getCDBPort() + "/CDB";
+			strIOR = "corbaloc::" + InetAddress.getLocalHost().getHostName() + ":" +
+					ACSPorts.getCDBPort() + "/CDB";
 
 			// create and initialize the ORB
-			ORB orb = ORB.init(new String[0], null);
+			orb = ORB.init(new String[0], null);
 
-			//DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 			WDAL wdal = WDALHelper.narrow(orb.string_to_object(strIOR));
 
-			String xml = wdal.get_DAO(curl);
-//			System.out.println(xml);
+			String xml = wdal.get_DAO(curl_allComponents);
+
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
 			XMLHandler xmlSolver = new XMLHandler(false);
@@ -83,53 +97,77 @@ public class CDBDefault {
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
 				XMLerror xmlErr = new XMLerror(info);
-//				System.err.println(info);
 				throw xmlErr;
-			}
-			
-			XMLTreeNode node_root = xmlSolver.m_rootNode;
-
-			//see if there is a in_name and in_type child before to do this....
-			//
-			//
+			}		
+			setDefault(xmlSolver.m_rootNode, in_type, in_name);
+		}
+		catch (XMLerror e) {
+			m_logger.log(Level.WARNING, "Xml Error", e);
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+    /**
+     * Recursively go throw the xml finding nodes with the same Type. If the type match,
+     * compares the Name. If is the same name, sets the Default=true, in the other case
+     * sets the Default attribute to false.
+     * @param node_root the root of all components xml .
+     * @param in_type  the type of the component.
+     * @param in_name the name of the component to set up default.
+     *                             
+     */
+	public static void setDefault(XMLTreeNode node_root, String in_type, String in_name){
+		try{
 			Iterator nodesIter = node_root.getNodesMap().keySet().iterator();
-			int i = 0;
+			WDAL wdal = WDALHelper.narrow(orb.string_to_object(strIOR));
 			while (nodesIter.hasNext()) {
 				String key = (String) nodesIter.next();
 				XMLTreeNode node = (XMLTreeNode) node_root.getNodesMap().get(key);
-			
+		
 				String name = (String)node.getFieldMap().get("Name");
 				String type = (String)node.getFieldMap().get("Type");
 				String isDefault = (String)node.getFieldMap().get("Default");
-//				System.out.println(name + "\t" + type + "\t" + isDefault);
+
 				String strTrue = "true";
 				if(in_type.equals(type)){
 					if(strTrue.equals(isDefault)){
 						if(in_name.equals(name)) return;
 						else{
 							//write Default = false
-							WDAO wdao = wdal.get_WDAO_Servant(curl);
-							wdao.set_string(name +"/Default", "false");
+							try{
+								//System.out.println("1-"+curl_allComponents+"\t"+name);
+								WDAO wdao = wdal.get_WDAO_Servant(curl_allComponents);
+								wdao.set_string(name +"/Default", "false");
+							}catch(Exception e){
+								//System.out.println("2-"+curl_allComponents+ "/" + name);
+								WDAO wdao = wdal.get_WDAO_Servant(curl_allComponents + "/" + name);
+								wdao.set_string("Default", "false");
+							}
 						}
 					}else if(in_name.equals(name)){
-//						System.out.println("yes!!!");
-						//write Default = true
-						WDAO wdao = wdal.get_WDAO_Servant(curl);
-						wdao.set_string(in_name + "/Default", "true");
+//						write Default = true
+						try{
+							//System.out.println("3-"+curl_allComponents+ "\t" + name);
+							WDAO wdao = wdal.get_WDAO_Servant(curl_allComponents);
+							wdao.set_string(name + "/Default", "true");
+						}catch(Exception e){
+							//System.out.println("4-"+curl);
+							WDAO wdao = wdal.get_WDAO_Servant(curl);
+							wdao.set_string("Default", "true");
+						}
 					}
 				}
+				XMLTreeNode value = (XMLTreeNode) node_root.getNodesMap().get(key);
+				setDefault(value, in_type,in_name);
 			}
+		}catch(XMLerror e){
+			m_logger.log(Level.WARNING, "Xml Error", e);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		
-			//xml = wdal.get_DAO(curl);
-			
-			//System.out.println("Curl data:\n" + xml);
-		}
-		catch (XMLerror e) {
-			System.err.println("XMLerror : " + e.msg );
-			e.printStackTrace();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }
