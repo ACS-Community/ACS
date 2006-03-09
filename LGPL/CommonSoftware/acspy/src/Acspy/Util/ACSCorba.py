@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.15 2006/01/25 15:26:11 dfugate Exp $
+# @(#) $Id: ACSCorba.py,v 1.16 2006/03/09 16:36:43 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -33,7 +33,7 @@ and manager must be up and running. If not, nothing will ever work. This should
 be changed so that manager can go offline and a later invocation of this modules
 methods should return new references to manager!
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.15 2006/01/25 15:26:11 dfugate Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.16 2006/03/09 16:36:43 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -285,35 +285,24 @@ class _Client (maci__POA.Client):
         
     self.mgr.logout(self.token.h)
 
-    #wrap all of these ORB calls with try/except blocks to try to remove
-    #some random omniORBPy thread exception messages that occur. it looks
-    #as if Python's atexit module sometimes executes the disconnect method
-    #after some function internal to omniORB has already killed everything
-    #off
-    try:
-      self.corbaRef._release()
-    except:
-      pass
-
-    try:
-      getPOAManager().deactivate(CORBA.TRUE, CORBA.TRUE)
-    except:
-      pass
-
-    try:
-      getPOARoot().destroy(CORBA.TRUE, CORBA.TRUE)
-    except:
-      pass
-
-    try:
-      getORB().shutdown(CORBA.TRUE)
-    except:
-      pass
-
-    try:
-      getORB().destroy()
-    except:
-      pass
+    #According to Duncan Grisby, maintainer of omniORBPy,
+    #one should not use the textbook shutdown calls to
+    #stop omniORBPy:
+    #  Having said that, you are using a particularly byzantine and awkward way
+    #  of shutting everything down. You should just call orb->shutdown(0)
+    #  inside your shutdown method. That destroys the POAs then shuts down the
+    #  ORB in one easy and convenient call. It will make your code much
+    #  simpler, and also avoid the race condition.
+    #What he says should not be necessary at all but it
+    #does seem to fix a bug in omniORBPy (some assertion error)
+    #DWF - commented out the various shutdown calls for the
+    #time being.
+    self.corbaRef._release()
+    #getPOAManager().deactivate(CORBA.TRUE, CORBA.TRUE)
+    #getPOARoot().destroy(CORBA.TRUE, CORBA.TRUE)
+    #getORB().shutdown(CORBA.TRUE)
+    getORB().shutdown(CORBA.FALSE)
+    #getORB().destroy()
     
     _orb = None
     _poaRoot = None
