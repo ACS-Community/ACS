@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.22 2006/03/10 12:12:51 gchiozzi Exp $"
+* "@(#) $Id: acsThread.h,v 1.23 2006/03/10 12:20:11 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -108,8 +108,6 @@ namespace ACS
 	   and it will be possible to allocate only a few 
 	   hundred tests before crashing the machine 
 
-	   @todo Allow to pass the thread flags, for example as a new
-	   parameter in the constructor signature of thread creation classes.
 	 */
 	Thread(const ACE_CString & name,
 	       const bool suspended=false,
