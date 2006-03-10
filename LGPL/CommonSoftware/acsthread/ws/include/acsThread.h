@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.20 2006/02/09 02:12:46 gchiozzi Exp $"
+* "@(#) $Id: acsThread.h,v 1.21 2006/03/10 12:11:49 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,7 +46,7 @@ namespace ACS
     /**
        Thread class is a base class for the ACS based threads. 
        If a user wants to define his/her own thread, 
-       it has to create a class which derives from TACS::hread class 
+       it has to create a class which derives from ACS::hread class 
        and the override run or runLoop methods.
 
        The Thread class is ment to be used with the support 
