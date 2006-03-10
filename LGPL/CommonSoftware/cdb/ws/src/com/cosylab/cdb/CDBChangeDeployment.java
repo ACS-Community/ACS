@@ -29,19 +29,16 @@ package com.cosylab.cdb;
  */
 import org.omg.CORBA.*;
 import com.cosylab.CDB.*;
-import com.cosylab.cdb.jdal.XMLHandler;
-import com.cosylab.cdb.jdal.XMLTreeNode;
 
-import java.io.*;
 import java.net.InetAddress;
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
-import java.util.Iterator;
 
 import alma.acs.util.ACSPorts;
-import java.net.InetAddress;
 
+/**
+ * Modify the component attributes, like Container and Code, given the name.
+ * Assumes the curl of the components = "MACI/Components"
+ * @author cparedes
+ */
 public class CDBChangeDeployment {
 	static	int indent = 0;
 
@@ -62,9 +59,16 @@ public class CDBChangeDeployment {
 			ORB orb = ORB.init(args, null);
 
 			WDAL wdal = WDALHelper.narrow(orb.string_to_object(strIOR));
-			WDAO wdao = wdal.get_WDAO_Servant(curl);
-			wdao.set_string(in_name + "/Container", new_container);
-			wdao.set_string(in_name + "/Code", new_code);
+			
+			try{
+				WDAO wdao = wdal.get_WDAO_Servant(curl);
+				wdao.set_string(in_name + "/Container", new_container);
+				wdao.set_string(in_name + "/Code", new_code);
+			}catch(Exception e){
+				WDAO wdao = wdal.get_WDAO_Servant(curl+"/"+in_name);
+				wdao.set_string( "Container", new_container);
+				wdao.set_string( "Code", new_code);
+			}
 		}
 		catch (XMLerror e) {
 			System.out.println("XMLerror : " + e.msg );
