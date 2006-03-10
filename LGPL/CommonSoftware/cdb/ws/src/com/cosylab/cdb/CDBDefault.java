@@ -41,7 +41,6 @@ import com.cosylab.CDB.XMLerror;
 import com.cosylab.cdb.jdal.XMLHandler;
 import com.cosylab.cdb.jdal.XMLTreeNode;
 
-import alma.acs.logging.ClientLogManager;
 import alma.acs.util.ACSPorts;
 
 
@@ -71,8 +70,8 @@ public class CDBDefault {
 				System.out.println("Usage: cmd idl_type instance_name ");
 				return;
 			}
-			m_logger = ClientLogManager.getAcsLogManager().
-						getLoggerForApplication("SettingDefaultComponent", false);
+			// we can't use ClientLogManager from acsjlog because that module compiles after the cdb module
+			m_logger = Logger.getLogger("CDBDefault");
 			String in_type = args[0];
 			String in_name = args[1];
 		
@@ -106,6 +105,7 @@ public class CDBDefault {
 			e.printStackTrace();
 		}
 		catch (Exception e) {
+			m_logger.log(Level.WARNING, "Error", e);
 			e.printStackTrace();
 		}
 	}
@@ -164,8 +164,10 @@ public class CDBDefault {
 			}
 		}catch(XMLerror e){
 			m_logger.log(Level.WARNING, "Xml Error", e);
+			e.printStackTrace();
 		}
 		catch(Exception e){
+			m_logger.log(Level.WARNING, "Error", e);
 			e.printStackTrace();
 		}
 		

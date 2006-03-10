@@ -30,6 +30,8 @@ package com.cosylab.cdb;
 import org.omg.CORBA.*;
 import com.cosylab.CDB.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.net.InetAddress;
 
 import alma.acs.util.ACSPorts;
@@ -41,13 +43,14 @@ import alma.acs.util.ACSPorts;
  */
 public class CDBChangeDeployment {
 	static	int indent = 0;
-
+	private static Logger m_logger;
 	public static void main(String args[]) {
 		try {
 			if (args.length != 3) {
 				System.out.println("Usage: cmd instance_name newcontainer newcode");
 				return;
 			}
+			m_logger = Logger.getLogger("CDBChangeDeployment");
 			String in_name = args[0];
 			String new_container = args[1];
 			String new_code = args[2];
@@ -71,11 +74,11 @@ public class CDBChangeDeployment {
 			}
 		}
 		catch (XMLerror e) {
-			System.out.println("XMLerror : " + e.msg );
+			m_logger.log(Level.WARNING, "Xml Error", e);
 			e.printStackTrace(System.out);
 		}
 		catch (Exception e) {
-			System.out.println("ERROR : " + e);
+			m_logger.log(Level.WARNING, "Error", e);
 			e.printStackTrace(System.out);
 		}
 	}
