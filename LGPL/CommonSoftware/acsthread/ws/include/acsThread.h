@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.21 2006/03/10 12:11:49 gchiozzi Exp $"
+* "@(#) $Id: acsThread.h,v 1.22 2006/03/10 12:12:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ namespace ACS
            Therefore we have decided to always suspend the thread.
            The developer of a subclass can use the parameter to resume()
 	   the thread at the end of its own constructor, when everything has been
-	   allocated and initialised or can choos to do it afterwards.<br>
+	   allocated and initialised or can choose to do it afterwards.<br>
            The ThreadManager does exactly this:
 	   <ul>
 	      <li> creates the Thread object suspended
