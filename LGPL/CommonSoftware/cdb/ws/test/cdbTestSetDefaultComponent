@@ -1,12 +1,13 @@
 #! /bin/bash
 acsStop > /dev/null 2>&1
+
 export ACS_CDB=`pwd`/CDB-OLD
 acsStart > /dev/null 2>&1 
 #OLD FASHION Components
 diff CDB-OLD/CDB/MACI/Components/Components.xml Components_before.xml
 cdbSetDefaultComponent IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
 diff CDB-OLD/CDB/MACI/Components/Components.xml Components_after.xml
-acsStop > /dev/null 2>&1 
+acsStop > acsStop.old.log 2>&1 
 cp Components_before.xml CDB-OLD/CDB/MACI/Components/Components.xml
 
 #NEW Fashion Components
