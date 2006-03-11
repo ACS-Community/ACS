@@ -56,7 +56,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - Test::~Test] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ] ACS::Thread::~Thread
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
