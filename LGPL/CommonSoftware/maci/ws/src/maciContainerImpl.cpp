@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.61 2006/01/09 21:15:17 dfugate Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.62 2006/03/13 14:08:00 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -71,7 +71,7 @@
 
 #include <archiveeventsArchiveSupplier.h>
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.61 2006/01/09 21:15:17 dfugate Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.62 2006/03/13 14:08:00 gchiozzi Exp $")
 
 NAMESPACE_USE(maci);
 NAMESPACE_USE(cdb);
@@ -486,6 +486,8 @@ ContainerImpl::showUsage(int argc, char *argv[])
 
   ACE_OS::printf("Usage: %s <container name> <options>\n\t(e.g. %s Container)\n", argv[0], argv[0]);
   ACE_OS::printf ("Options:\n"
+                  "\t-d <dal reference>\tuse given DAL reference\n"
+                  "\t-DALReference <dal reference>\tuse given DAL reference\n"
 		  "\t-r\t\t\trun Container in recovery mode (default)\n"
 		  "\t-n\t\t\trun Container in non-recovery mode\n"
 		  "\t-m <manager reference>\tuse given Manager reference\n"
@@ -512,6 +514,8 @@ ContainerImpl::init(int argc, char *argv[])
       if (argc<2 || argv[1][0]=='-')
 	{
 	  showUsage(argc, argv);
+	  ACS_CHECK_LOGGER;
+	  m_logger = getNamedLogger("Undefined");
 	  return false;
 	}
 
@@ -1220,7 +1224,10 @@ ContainerImpl::done()
 
   ACSError::done();
 
-  m_dllmgr->unload("baci");  // baci has to be unloaded earlier because of DLLClose
+  if(m_dllmgr)
+      {
+      m_dllmgr->unload("baci");  // baci has to be unloaded earlier because of DLLClose
+      }
 
   if (m_database)
       {
