@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.5 2005/12/07 19:08:59 dfugate Exp $
+# @(#) $Id: acsdataClean.py,v 1.6 2006/03/13 18:12:49 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -40,7 +40,7 @@ from os.path import isfile, isdir
 from sys import argv
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.5 2005/12/07 19:08:59 dfugate Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.6 2006/03/13 18:12:49 dfugate Exp $"
 #------------------------------------------------------------------------------
 
 print "Cleaning up ACS temporary directories"
@@ -63,7 +63,8 @@ if argv.count("-all")==0 and argv.count("-a")==0:
        'ACS_INSTANCE.7'       : '',
        'ACS_INSTANCE.8'       : '',
        'ACS_INSTANCE.9'       : '',
-       'USED_CONTAINER_PORTS' : ''
+       'USED_CONTAINER_PORTS' : '',
+       '.acs_command_history' : ''
     }
    print "Safe directories (i.e., ACS_INSTANCE.*'s) and a few files used by ACS will be"
    print "preserved. To remove everything, provide the '-all' switch to this script."
