@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.14 2006/02/27 20:45:16 dfugate Exp $"
+# "@(#) $Id: acsStop,v 1.15 2006/03/13 16:55:43 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -123,6 +123,7 @@ then
     export ACS_INSTANCE=$CL_BASEPORT
 fi
 
+ACS_LOG_COMMAND
 ########################################################################
 #SANITY CHECKS----------------------------------------------------------
 #Cannot shutdown everything if we don't know the process IDs.

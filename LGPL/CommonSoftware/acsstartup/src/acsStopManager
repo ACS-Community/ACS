@@ -135,6 +135,8 @@ then
     exit $EC_CANNOTUSE
 fi
 
+ACS_LOG_COMMAND
+
 #everything checked out so manager can really be shutdown
 acsutilBlock -t 15 -k maciManagerShutdown
 

@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.55 2006/03/01 20:57:29 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.56 2006/03/13 16:55:43 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -190,6 +190,7 @@ CDB_PORT=`getCDBPort`
 # Always use -ORBDottedDecimalAddresses=1
 ORBOPTS="-ORBDottedDecimalAddresses 1"
 
+ACS_LOG_COMMAND
 #-------------------------------------------------------------------------
 #a sanity check to ensure user does not run acsStartORBSRVC twice in a row
 #using the same baseport

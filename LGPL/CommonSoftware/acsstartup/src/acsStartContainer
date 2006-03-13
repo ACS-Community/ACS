@@ -199,6 +199,8 @@ then
 fi
 
 #----------------------------------------------------------------------
+ACS_LOG_COMMAND
+
 #damn, it's been set and does not exist. Fine, create it!
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
 then

@@ -186,3 +186,33 @@ ACS_LOG $TS ERROR $@
 export ACS_LOG_ERROR
 
 #------------------------------------------------------------------------------------
+#--Logs a user command. 
+#--No parameters.
+#--Requires that $ACS_COMMAND_HISTORY_FILE be writeable if it exists
+function ACS_LOG_COMMAND
+{
+local TS   #timestamp
+local CMD  #command which was run
+local PID  #process ID
+local HOST #hostname
+local MSG  #entire message
+
+TS=`getTimeStamp`
+CMD=`basename $0`
+PID=$$
+HOST=$HOSTNAME
+
+#log the time, user, command, process ID, acs instance, host
+MSG="Time:$TS; User=$USER; Host=$HOST; Command:$CMD; Process ID:$PID; ACS_INSTANCE=$ACS_INSTANCE; ACS_TMP=$ACS_TMP"
+
+#sanity check on the history file
+if [ ! -e $ACS_COMMAND_HISTORY_FILE ]
+then
+    touch $ACS_COMMAND_HISTORY_FILE
+    chmod 666 $ACS_COMMAND_HISTORY_FILE
+fi
+
+echo $MSG >> $ACS_COMMAND_HISTORY_FILE
+}
+
+export ACS_LOG_COMMAND

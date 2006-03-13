@@ -136,7 +136,7 @@ if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
    ACS_STARTUP_TIMEOUT_MULTIPLIER=5
 fi
 
-
+ACS_LOG_COMMAND
 #------------------------------------------------------------------
 #maximum timeout for anything in this script to finish executing.
 MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))

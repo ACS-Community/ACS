@@ -24,7 +24,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsKillProc,v 1.14 2005/10/25 09:33:52 dfugate Exp $"
+# "@(#) $Id: acsKillProc,v 1.15 2006/03/13 16:55:43 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -98,6 +98,7 @@ unset POSIXLY_CORRECT
 if [ "$CL_HELP" ] ; then
    printUsage
 fi
+
 ########################################################################################
 #User wants to kill all commands of a certain type.
 if [ "$CL_COMMAND" ]
