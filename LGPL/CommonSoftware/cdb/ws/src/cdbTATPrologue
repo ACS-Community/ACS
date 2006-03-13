@@ -19,13 +19,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbTATPrologue,v 1.5 2006/03/07 16:07:40 dfugate Exp $"
+# "@(#) $Id: cdbTATPrologue,v 1.6 2006/03/13 15:12:32 cparedes Exp $"
 #
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # gchiozzi  11/02/02  created
 #
+
+
+#
+# By default this script will use ../test as the CDB.
+# But if you pass an argument, this will used as
+# absolute path for the CDB root directory.
+# (see cdbjDAL command line below and -root command line parameter)
+#
+if [ "X$1" = "X" ]; then
+   CDB_ROOT=../test
+else
+   CDB_ROOT=$1
+fi
 
 # setup the ports
 . acsstartupAcsPorts
@@ -80,7 +93,7 @@ else
  echo " ****************** cdbTATPrologue *************** " >  $_REDIR_
 fi
 
-cdbjDAL -root ../test -OAport $_CDB_PORT_ $_WRITE_IOR_ >>$_REDIR_ 2>&1 &
+cdbjDAL -root $CDB_ROOT -OAport $_CDB_PORT_ $_WRITE_IOR_ >>$_REDIR_ 2>&1 &
 sleep 10
 exit 0
 #
