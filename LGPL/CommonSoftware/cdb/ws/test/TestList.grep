@@ -15,3 +15,4 @@ ACS Manager:
 ACS Name Service:
 Running the following command:
 modified by jDAL
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=
