@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.157 2006/02/14 12:56:19 pmurphy Exp $" 
+# "@(#) $Id: acsMakefile,v 1.158 2006/03/13 20:03:35 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1588,7 +1588,7 @@ clean_all: clean_links $(CLEAN_TARGET)
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \#\* -print | $(XARGS) -i $(RM) {}
 	-@$(ECHO) " .\c"
-	-$(AT)find .. -name core -print | $(XARGS) -i $(RM) {}
+	-$(AT)find .. -name core -type f -print | $(XARGS) -i $(RM) {}
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \*\.gdb_history -print | $(XARGS) -i $(RM) {}
 	-@$(ECHO) " .\c"
