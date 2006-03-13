@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.1 2005/11/23 05:58:03 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.2 2006/03/13 22:09:39 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.1 2005/11/23 05:58:03 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.2 2006/03/13 22:09:39 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -40,12 +40,15 @@ import CORBA
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba        import interfaceRepository
 from Acssim.Servants.Components import getComponent as getComponent
+from Acspy.Common.CDBAccess    import CDBaccess
+from Acspy.Util.XmlObjectifier import XmlObject
 #--GLOBALS---------------------------------------------------------------------
 _COMPONENTS = {}
 
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
+LNS = 'LOCAL NAMESPACE'
 
 #Standard timeout for simulated methods to wait before returning control
 STD_TIMEOUT = 0.2
@@ -70,10 +73,33 @@ for character in "abcdefghijklmnopqrstuvwxyz _":
 #storage for "static data" that can be shared between components
 _GLOBALS = {}
 
+#namespace of individual components
+COMPONENTS_NS = {}
 #---------------------------------------------------------------------
 def getComponentsDict():
     global _COMPONENTS
     return _COMPONENTS
+#---------------------------------------------------------------------
+def getComponentXMLObj(comp_name):
+    '''
+    Returns an XMLObjectifier for the given component name provided
+    it exists within the ACS CDB. If this is not the case, simply 
+    returns None
+    '''
+    try:
+        #first get access to the CDB
+        cdb = CDBaccess()  
+        
+        #make sure the entry exists first of all...
+        t_xml = cdb.getField("alma/simulated/" + comp_name)
+    
+        #create an xml helper object
+        xml_obj = XmlObject(xmlString = t_xml)
+
+    except:
+        xml_obj = None
+    
+    return xml_obj
 #---------------------------------------------------------------------
 def addGlobalData(name, value):
     '''
@@ -122,7 +148,46 @@ def removeGlobalData(name):
 #add the functions to _GLOBALS
 _GLOBALS[addGlobalData.__name__] = addGlobalData
 _GLOBALS[removeGlobalData.__name__] = removeGlobalData
+#------------------------------------------------------------------------------
+def getCompLocalNS(comp_name):
+    '''
+    Gets the local namespace dictionary for a component.
+    
+    Parameters:
+    comp_name - name of the component
+    
+    Returns: A dictionary conforming to the return value of the native 
+    "locals()" function.
+    
+    Raises: Nothing
+    '''
+    global COMPONENTS_NS
 
+    #sanity check
+    if COMPONENTS_NS.has_key(comp_name)==0:
+        #initialize the temporary local namespace to be empty (in case
+        #of some failure with the CDB)
+        t_dict = {}
+        
+        #get the CDB helper object
+        xml_obj = getComponentXMLObj(comp_name)
+        
+        if xml_obj!=None:
+            try: #use a try here because pythonImports section is not required
+                #get the imports
+                dom = xml_obj.SimulatedComponent.pythonImports
+                py_imports = dom.getValue().rstrip().lstrip().split('\n')
+            
+                #populate the locals dictionary
+                for py_import in py_imports:
+                    exec py_import in globals(), t_dict
+            except:
+                pass
+        
+        COMPONENTS_NS[comp_name] = t_dict
+        
+        
+    return COMPONENTS_NS[comp_name]
 #------------------------------------------------------------------------------
 def setCHARS(newCharList):
     '''

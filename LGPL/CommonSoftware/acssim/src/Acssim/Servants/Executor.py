@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.3 2005/11/23 19:00:28 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.4 2006/03/13 22:09:39 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.3 2005/11/23 19:00:28 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.4 2006/03/13 22:09:39 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -50,7 +50,7 @@ from Acssim.Servants.DynamicEntry      import DynamicEntry
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-def _execute(compName, compType, methName, compRef, args):
+def _execute(compName, compType, methName, compRef, args, local_ns):
     '''
     Given a component name/type as well as a method or CORBA attribute name,
     this function will simulate the execution of it. It first searches to see
@@ -64,7 +64,8 @@ def _execute(compName, compType, methName, compRef, args):
     - methName is the name of the method being simulated
     - compRef just needs to be a real component we use to gain access to the
     ContainerServices object. It must provide an "activateOffShoot" method.
-
+    - local_ns is the local namespace
+    
     Returns: Anything
 
     Raises: Anything
@@ -84,25 +85,31 @@ def _execute(compName, compType, methName, compRef, args):
         #...execute it directly
         getLogger("Acssim.Servants.Executor").logDebug("Executing the '" + methName + "' method of the '" +
                              compName + "' simulated component using the API.")
-        return _executeDict(getComponentsDict()[compName][API].getMethod(methName), args)
+        return _executeDict(getComponentsDict()[compName][API].getMethod(methName), 
+                            args,
+                            local_ns)
     #if the end-user has setup a CDB entry for the method...
     elif getComponentsDict()[compName][CDB].getMethod(methName) != None:
         #...execute it directly
         getLogger("Acssim.Servants.Executor").logDebug("Executing the '" + methName + "' method of the '" +
                              compName + "' simulated component using the CDB.")
-        return _executeDict(getComponentsDict()[compName][CDB].getMethod(methName), args)
+        return _executeDict(getComponentsDict()[compName][CDB].getMethod(methName), 
+                            args,
+                            local_ns)
     #damn...everything needs to be generated on the fly
     else:
         getLogger("Acssim.Servants.Executor").logDebug("Executing the '" + methName + "' method of the '" +
                              compName + "' simulated component on the fly.")
         #...execute it directly
-        retVal = _executeDict(getComponentsDict()[compName][GEN].getMethod(methName, compRef), args)
+        retVal = _executeDict(getComponentsDict()[compName][GEN].getMethod(methName, compRef), 
+                              args,
+                              local_ns)
         
         getLogger("Acssim.Servants.Executor").logDebug(methName + " return value looks like:" + str(retVal) + " of type:" + str(type(retVal)))
         
         return retVal
 #------------------------------------------------------------------------------
-def _executeDict(dict, args):
+def _executeDict(dict, args, local_ns):
     '''
     Given a Python dictionary describing a simulated method, this function
     essentially just simulates execution of it. Really all this function does
@@ -112,15 +119,16 @@ def _executeDict(dict, args):
     Parameters:
     - dict is a dictionary defining the IDL method/attribute. Typically this
     defines at least a couple of keys including "Timeout" and "Value"
-
+    - local_ns is the local namespace
+    
     Returns: Anything
 
     Raises: Anything
     '''
     sleep(dict['Timeout'])
-    return _executeList(dict['Value'], args)
+    return _executeList(dict['Value'], args, local_ns)
 #------------------------------------------------------------------------------
-def _executeList(codeList, args):
+def _executeList(codeList, args, local_ns):
     '''
     Given a list where each element consists of a stringified Python statement,
     each line will be executed except for the very last line. If the final line
@@ -138,6 +146,7 @@ def _executeList(codeList, args):
     being evaluated by the "eval" function. A sample value for code
     could be [ "import CORBA", "CORBA.TRUE" ] or [ "import ACSExceptionCommon",
     "raise ACSExceptionCommon.CommonExImpl()" ]
+    - local_ns is the local namespace
 
     Returns: the last string in code evaluated by the Python eval statement if
     it does not contain the substring "raise " within it. If the last "string"
@@ -147,7 +156,10 @@ def _executeList(codeList, args):
     Raises: the last string in code if it does contain the substring "raise "
     within it.
     '''
-    _locals = { 'parameters' : args }
+    #force a copy of it
+    _locals = copy(local_ns)
+    #extend it
+    _locals['parameters'] = args
     
     #well...through the API the developer could have just specified a function...
     if isfunction(codeList):

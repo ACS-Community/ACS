@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.21 2005/11/23 05:58:03 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.22 2006/03/13 22:09:39 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.21 2005/11/23 05:58:03 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.22 2006/03/13 22:09:39 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -56,6 +56,7 @@ from Acssim.Servants.Generator             import tryCallbackParams
 from Acssim.Servants.Generator             import getRandomEnum
 from Acssim.Servants.Components            import addComponent
 from Acssim.Servants.Components            import removeComponent
+from Acssim.Servants.Goodies               import getCompLocalNS
 #--GLOBALS---------------------------------------------------------------------
 _DEBUG = 0
 #------------------------------------------------------------------------------
@@ -99,7 +100,8 @@ class BaseSimulator(DynamicImplementation):
                         self.__ir,
                         args[0],
                         self,
-                        args[1:])
+                        args[1:],
+                        getCompLocalNS(self.__name))
 
 #------------------------------------------------------------------------------
 class Simulator(CharacteristicComponent,  #Base IDL interface
@@ -182,7 +184,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
             if (tempType=="ROstringSeq")or(tempType=="ROdoubleSeq")or(tempType=="RWdoubleSeq")or(tempType=="ROlongSeq")or(tempType=="RWlongSeq"):
                 cdbAttrDict = simCDB.getMethod(attribute.name)
                 if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args)
+                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO([])                    
                     
@@ -193,7 +195,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
             elif (tempType=="ROdouble")or(tempType=="RWdouble"):
                 cdbAttrDict = simCDB.getMethod(attribute.name)
                 if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args)
+                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO(float(0))                    
                     
@@ -204,7 +206,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
             elif (tempType=="ROlong")or(tempType=="RWlong"):
                 cdbAttrDict = simCDB.getMethod(attribute.name)
                 if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args)
+                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO(0)                    
                     
@@ -215,7 +217,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
             elif (tempType=="ROpattern")or(tempType=="RWpattern")or(tempType=="ROlongLong")or(tempType=="RWlongLong")or(tempType=="ROuLongLong")or(tempType=="ROuLongLong"):
                 cdbAttrDict = simCDB.getMethod(attribute.name)
                 if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args)
+                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO(0L)                    
                     
@@ -226,7 +228,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
             elif (tempType=="ROstring")or(tempType=="RWstring"):
                 cdbAttrDict = simCDB.getMethod(attribute.name)
                 if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args)
+                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO("")                    
                     
@@ -249,7 +251,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
                             #GREAT! It's completely safe to add!
                             cdbAttrDict = simCDB.getMethod(attribute.name)
                             if  cdbAttrDict!= None:
-                                devio = _executeDict(cdbAttrDict, args)
+                                devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
                             else:
                                 devio = DevIO(getRandomEnum(tAttr.type))
                             addProperty(self, attribute.name, devio_ref=devio)
