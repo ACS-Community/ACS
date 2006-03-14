@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.4 2006/03/13 22:09:39 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.5 2006/03/14 23:59:06 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.4 2006/03/13 22:09:39 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.5 2006/03/14 23:59:06 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -47,6 +47,8 @@ from Acssim.Servants.Generator         import *
 from Acssim.Servants.SimulatedEntry    import SimulatedEntry
 from Acssim.Servants.SimulatedCDBEntry import SimulatedCDBEntry
 from Acssim.Servants.DynamicEntry      import DynamicEntry
+
+from Acssim.Corba.Utilities            import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -75,9 +77,13 @@ def _execute(compName, compType, methName, compRef, args, local_ns):
     #first check to see if this component has an entry
     if not getComponentsDict().has_key(compName):
         #if not, create it
+        
+        
         getComponentsDict()[compName] = { API:SimulatedEntry(compName),
-                                  CDB:SimulatedCDBEntry(compName),
-                                  GEN:DynamicEntry(compName, compType)}
+                                  CDB:SimulatedCDBEntry(compName,
+                                                        getSuperIDs(compType)),
+                                  GEN:DynamicEntry(compName, 
+                                                   compType)}
         
     #if the end-user has setup some specific code to be executed using the
     #API...
