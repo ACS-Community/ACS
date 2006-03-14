@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acserrTest.tcl,v 1.39 2005/09/29 15:18:47 bjeram Exp $"
+# "@(#) $Id: acserrTest.tcl,v 1.40 2006/03/14 11:55:19 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@ set Arg  [lindex $argv 2]
 if {[info exists env(LCU_WAIT)]} {
    set LCU_WAIT $env(LCU_WAIT)
 } else {
-   set LCU_WAIT 200
+   set LCU_WAIT 300
 }
 
 
@@ -52,19 +52,18 @@ set timeout $LCU_WAIT
 spawn rlogin $LCU
 expect -gl "*->"
 
-#send "< reloadScript \r"
-#expect -gl "*->"
-#after 5000
 
 if { $argc == 3 } {
-# send "sp $Proc,\"$Arg\"\r"
-send "taskSpawn \"$Proc\", 100, 0x0008, 65536, $Proc, \"$Arg\"\r"
+    send "taskSpawn \"$Proc\", 100, 0x0008, 65536, $Proc, \"$Arg\"\r"
 }
 
 if { $argc == 2 } {
-send "sp $Proc \r"
+    send "taskSpawn \"$Proc\", 100, 0x0008, 65536, $Proc \r"
 }
-expect -gl "*->"
+after 500
+# we have wait just that started proces isexecuted
+#expect -gl "*->"
+
 
 expect {
          "*Local file logger" { puts ""}

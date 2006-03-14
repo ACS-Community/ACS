@@ -4,6 +4,12 @@
 1 - LCU->taskSpawn "acserrOldTestServer", 100, 0x0008, 65536, acserrOldTestServer, "s1"
 1 - value = xx
 1 - LCU->----------T--:--:--.--- [GlobalLogger - ACS_TEST_INIT_CORBA] Initialising ORB ... 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS_TEST_INIT_CORBA] ORB initialised !
+1 - 
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] Creating test object ...
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] POA Manager -> activate
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] Writing ior to the file: s1 .... 
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] Waiting for requests ...
 1 - 
 2 - ----------T--:--:--.--- [GlobalLogger - acserrOldTestImpl::f1] *OLD* Test error 1 (type=11, code=1),Error Number=1,End of call's chain=
 2 - ----------T--:--:--.--- [GlobalLogger - acserrOldTestImpl::f1] *OLD* Test error 2 (type=11, code=2),isErr=true,Error Number=2,depth=0
@@ -243,18 +249,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
@@ -307,14 +302,14 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
@@ -340,34 +335,45 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "92"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test1 (remote call)... (2/10)
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created from errortrace (*)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "57"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::test"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::test"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -379,8 +385,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
@@ -388,30 +394,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -434,16 +418,38 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
@@ -471,16 +477,16 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "92"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test1 (remote call)... (3/10)
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created from errortrace (*)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
@@ -491,19 +497,19 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -523,17 +529,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
@@ -548,8 +543,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
@@ -557,8 +552,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -581,27 +576,38 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "92"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
@@ -615,10 +621,54 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
@@ -659,17 +709,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
@@ -684,88 +723,33 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "92"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test1 (remote call)... (5/10)
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created from errortrace (*)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "57"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::test"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
@@ -786,28 +770,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
@@ -844,14 +806,58 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "92"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
@@ -866,43 +872,10 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
@@ -938,13 +911,24 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -953,9 +937,20 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -969,6 +964,17 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "92"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
@@ -979,8 +985,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test1 (remote call)... (7/10)
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created from errortrace (*)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
@@ -1015,27 +1021,16 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
@@ -1052,8 +1047,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
@@ -1070,6 +1065,17 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -1081,17 +1087,17 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -1126,17 +1132,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
@@ -1151,28 +1146,17 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -1186,6 +1170,28 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
@@ -1221,28 +1227,28 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "92"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test1 (remote call)... (9/10)
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created from errortrace (*)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "57"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::test"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -1265,28 +1271,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
@@ -1298,8 +1282,30 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
@@ -1365,11 +1371,11 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
@@ -1378,6 +1384,28 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
@@ -1405,17 +1433,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
@@ -1453,19 +1470,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrOldTestImpl.cpp"
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "74"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrOldTestImpl::f1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "s1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 2"
@@ -1478,8 +1484,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "11"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "*OLD* Test error 1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "0"
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
 2 - ----------T--:--:--.--- [GlobalLogger - ] Test1 performed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (1/10)
@@ -1522,8 +1528,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSException !
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created from ACSException 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
-2 - ----------T--:--:--.--- [GlobalLogger - ] Test2 performed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test3 (no error) ... (1/10)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Test2 performed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test3 (no error) ... (2/10)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test3 (no error) ... (3/10)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test3 (no error) ... (4/10)
