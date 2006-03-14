@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.19 2006/02/13 22:33:12 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.20 2006/03/14 11:09:39 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@ NAMESPACE_USE(loggingXMLParser);
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.19 2006/02/13 22:33:12 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.20 2006/03/14 11:09:39 bjeram Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -606,9 +606,8 @@ LoggingProxy::AddData(const ACE_TCHAR *szName, const ACE_TCHAR *szFormat, ...)
   va_start (argp, szFormat);
 
   ACE_TCHAR data[ADD_DATA_VALUE_MAX];
-  ACE_OS::snprintf (data, ADD_DATA_VALUE_MAX, szFormat, va_arg (argp, ACE_TCHAR *));
+  vsnprintf (data, ADD_DATA_VALUE_MAX, szFormat, argp);
   (*tss)->addData(szName, data);
-
   va_end (argp);
 
 }
