@@ -2,7 +2,7 @@
 #*******************************************************************************
 # ALMA Project
 #
-# "@(#) $Id: acsUpdate,v 1.3 2005/12/29 13:53:06 gchiozzi Exp $"
+# "@(#) $Id: acsUpdate,v 1.4 2006/03/15 09:55:35 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -249,6 +249,7 @@ ACS_TAG_NEW=`gtar -xOzf $ACS_TAR_FILE alma/$ALMASW_RELEASE/ACSSW/ACS_TAG 2>/dev/
 if [ $? != 0 ] 
 then
   echo "ACS_TAG file not found in archive. This is not a tagged distribution."
+  ACS_TAG_NEW="UNKNOWN"
 fi
 
 #
