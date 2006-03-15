@@ -156,7 +156,7 @@ public class EntityDeserializer
 	 * @param xes the struct used for CORBA transport of serialized entity objects.
 	 * @param entityClass  the binding class of which we want an instance
 	 *                      filled with the xml data, e.g. <code>SchedBlock.class</code>.
-	 * @return  the binding class instance (should be casted to <code>entityClass</code> by the caller).
+	 * @return  the binding class instance (should be cast to <code>entityClass</code> by the caller).
 	 * @throws EntityException
 	 */
 	public Object deserializeEntity(XmlEntityStruct xes, Class entityClass)
