@@ -54,7 +54,7 @@ public class ArchiveProxy
 
 	private ContainerServices m_contServ;
 	
-	private Uid m_uid;
+	private volatile Uid m_uid;
 
 	// if true, use random ids instead of really unique ids from the archive
 	private boolean m_substituteRandomIds = true;  		
@@ -86,8 +86,11 @@ public class ArchiveProxy
 			throw new IllegalArgumentException(
 				"containerServices must not be null.");
 		}
-		m_contServ = contServ;
-		m_logger = logger;
+		// multithreading: ensure values are copied to main memory 
+		synchronized (this) {
+			m_contServ = contServ;
+			m_logger = logger;
+		}
 	}
 	
 
