@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.21 2006/02/23 13:26:03 vwang Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.22 2006/03/15 09:00:46 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -373,7 +373,14 @@ bool ThreadBase::stop() {
      */
     int n = 0;
     
-    ACE_Time_Value tv (0, rs/100);   // tenth of response time, in us
+    /* tv second parameter is in us units.
+     * We have to calculate 1/tenth of response time, in us
+     * where rs is expressed instead in 100ns, therefore:
+     *     rs_us = rs/10 is the response time in us
+     *     1/tenth of this expressed in us is therefore rs/100:
+     *       rs_us/10 = rs/10/10 = rs/100
+     */
+    ACE_Time_Value tv (0, rs/100);   
     
     /*
      * We loop for a total of 1.5 response time
