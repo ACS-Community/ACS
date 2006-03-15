@@ -78,9 +78,9 @@ import alma.entities.commonentity.EntityT;
  */
 public class ContainerServicesImpl implements ContainerServices
 {
-    private AdvancedContainerServicesImpl advancedContainerServices;
+    private volatile AdvancedContainerServicesImpl advancedContainerServices;
     
-	private ArchiveProxy m_archiveProxy;
+	private volatile ArchiveProxy m_archiveProxy;
 
 	protected AcsManagerProxy m_acsManagerProxy;
 
@@ -88,7 +88,7 @@ public class ContainerServicesImpl implements ContainerServices
 	protected Logger m_logger;
     
     // logger given to component
-    private Logger componentLogger;
+    private volatile Logger componentLogger;
 
 	// sync'd map, key=curl, value=corbaStub
 	private Map m_usedComponentsMap;
@@ -96,6 +96,7 @@ public class ContainerServicesImpl implements ContainerServices
 	// sync'd map, key=curl, value=ComponentDescriptor
 	private Map m_componentDescriptorMap;
 	
+	// the handle that the manager has assigned to the component to whom this ContainerServices object belongs
 	private int m_clientHandle;
     
     // the component name. "Client" refers to the component acting as a client to the manager 
@@ -109,7 +110,7 @@ public class ContainerServicesImpl implements ContainerServices
 	private ComponentStateManager m_componentStateManager;
     private ThreadFactory m_threadFactory;
 
-    private String[] methodsExcludedFromInvocationLogging;
+    private volatile String[] methodsExcludedFromInvocationLogging;
 
 
 	/**
@@ -131,20 +132,29 @@ public class ContainerServicesImpl implements ContainerServices
 									ComponentStateManager componentStateManager,
                                     ThreadFactory threadFactory)
 	{
-		m_acsManagerProxy = acsManagerProxy;
-		m_clientPOA = componentPOA;
-		this.acsCorba = acsCorba;
-		m_logger = logger;
-		m_clientHandle = clientHandle;
-		m_clientName = clientCurl;
-		
-		m_componentStateManager = componentStateManager;
-		 
-		// should do for thread-safety as long as we don't iterate over it
-		m_usedComponentsMap = Collections.synchronizedMap(new HashMap());
-		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap());
-        
-        m_threadFactory = threadFactory;        
+		// sync block to ensure that fields will be copied to main thread memory.
+		// An error reported by Lindsey on 2006-03-13 suggests that on her (multiprocessor?)
+		// machine, method "getName()" returned null in the component's ORB thread,
+		// even though it was set here in the container thread.
+		// The fields below are immutable, which means that we don't have to synchronize later access.
+		// All component threads will receive an up-to-date copy from main memory 
+		// the first time they access this ContainerServices object.
+		synchronized (this) {			
+			m_acsManagerProxy = acsManagerProxy;
+			m_clientPOA = componentPOA;
+			this.acsCorba = acsCorba;
+			m_logger = logger;
+			m_clientHandle = clientHandle;
+			m_clientName = clientCurl;
+			
+			m_componentStateManager = componentStateManager;
+			 
+			// should do for thread-safety as long as we don't iterate over it
+			m_usedComponentsMap = Collections.synchronizedMap(new HashMap());
+			m_componentDescriptorMap = Collections.synchronizedMap(new HashMap());
+	        
+	        m_threadFactory = threadFactory;        
+		}
 	}
 
 
