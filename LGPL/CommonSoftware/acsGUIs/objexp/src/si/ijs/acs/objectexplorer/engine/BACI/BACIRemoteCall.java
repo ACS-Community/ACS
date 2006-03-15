@@ -15,7 +15,7 @@ public class BACIRemoteCall implements RemoteCall {
 	private Throwable exception = null;
 	private int serial = 0;
 	private boolean timeout = false;
-	private static int SN = 0;
+	private static volatile int SN = 0;
 	private Attribute att = null;
 /**
  * Insert the method's description here.
