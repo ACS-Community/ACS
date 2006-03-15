@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadGuard.cpp,v 1.1 2006/02/23 13:26:48 vwang Exp $"
+* "@(#) $Id: testACSThreadGuard.cpp,v 1.2 2006/03/15 09:07:07 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -71,6 +71,16 @@ class TestThreadGuard :public ACS::Thread
        /* sleep to show runLoop is not blocked */      
        ACE_OS::sleep(3);
 
+       /*
+	* It is necessary to aquire the guard BEFORE
+	* the while check to protect atomically
+	* access to the loopCounter_m both in the
+	* test and in the assignment.
+	* Therefore we aquire BEFORE entering the loop
+	* AND again at the end of the block just 
+	* before going back up to check again for the
+	* while condition.
+	*/
        guard.acquire();
        while( loopCounter_m < 10 )
        {
