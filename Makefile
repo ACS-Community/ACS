@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.118 2006/03/08 15:49:15 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.119 2006/03/15 11:36:24 gchiozzi Exp $"
 #
 #
 
@@ -145,7 +145,7 @@ endef
 # Per each module it executes:
 #    make clean all install
 #
-build: 	clean_log checkModuleTree prepare update
+build: 	cvs-tag clean_log checkModuleTree prepare update
 	@$(ECHO) "... done"
 
 #
@@ -154,7 +154,7 @@ build: 	clean_log checkModuleTree prepare update
 # Per each module it executes:
 #    make clean all man install clean
 #
-build_clean:   	clean_log checkModuleTree prepare update_clean
+build_clean:   	cvs-tag clean_log checkModuleTree prepare update_clean
 	@$(ECHO) "... done"
 
 #
@@ -167,7 +167,7 @@ build_clean:   	clean_log checkModuleTree prepare update_clean
 # This is useful to discover circular dependencies between
 # modules.
 #
-build_clean_test:   	clean_log checkModuleTree prepare update_clean_test
+build_clean_test:   	cvs-tag clean_log checkModuleTree prepare update_clean_test
 	@$(ECHO) "... done"
 
 #
@@ -176,7 +176,7 @@ build_clean_test:   	clean_log checkModuleTree prepare update_clean_test
 # Per each module it executes:
 #    make clean all man install clean
 #
-rebuild:	clean_log update
+rebuild:	cvs-tag clean_log update
 	@$(ECHO) "... done"
 
 clean_log:
@@ -232,7 +232,7 @@ prepare:
 #   that is the LAST module fails the whole Make does not fail
 #
 
-update:	checkModuleTree
+update:	cvs-tag checkModuleTree
 	@$(ECHO) "############ (Re-)build ACS Software         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
@@ -447,10 +447,14 @@ ACS_TAG = $(shell awk -F/ '/^\/Makefile/{print substr($$6,2)}' CVS/Entries)
 cvs-tag:
 	@ $(ECHO) "Evaluating current ACS TAG"; \
           if [ X$(ACS_TAG) != X ]; then \
-             $(ECHO) "CVS tag is: $(ACS_TAG)"; \
-             $(ECHO) $(ACS_TAG) > ACS_TAG ; \
-          else \
-             $(ECHO) "No CVS tag available"; \
+               $(ECHO) "CVS tag is: $(ACS_TAG)"; \
+               $(ECHO) $(ACS_TAG) > ACS_TAG ; \
+            else \
+              if [ -f ACS_TAG ]; then\
+                $(ECHO) "CVS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
+	      else \
+                $(ECHO) "No CVS tag available"; \
+              fi; \
           fi
 
 #
