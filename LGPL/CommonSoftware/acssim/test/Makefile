@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.12 2005/06/16 16:15:08 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.13 2006/03/16 00:03:02 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -79,9 +79,10 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = acssimGenericTest acssimCallbackTest acssimInParamsTest acssimMasterCompTest
+PY_SCRIPTS_L       = acssimGenericTest acssimCallbackTest acssimInParamsTest acssimMasterCompTest \
+			interfaceInheritance
 
-PY_MODULES         = mastercompsim
+PY_MODULES         = mastercompsim interfaceInheritance
 PY_MODULES_L       = 
 
 PY_PACKAGES        =

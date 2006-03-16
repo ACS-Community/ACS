@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acssimInParamsTest.py,v 1.1 2005/02/08 19:12:12 dfugate Exp $
+# @(#) $Id: acssimInParamsTest.py,v 1.2 2006/03/16 00:03:02 dfugate Exp $
 #------------------------------------------------------------------------------
 
 '''
@@ -30,6 +30,7 @@ Tests to ensure parameters are available.
 from sys import argv
 from Acspy.Clients.SimpleClient import PySimpleClient
 import acstime
+from time import sleep
 
 compName = argv[1]
 
@@ -46,3 +47,5 @@ comp.toISO8601(acstime.TSArray, my_epoch)
     
 simpleClient.releaseComponent(compName)
 simpleClient.disconnect()
+
+sleep(10)

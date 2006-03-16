@@ -1,5 +1,5 @@
 #!/bin/bash
 
 acsutilTATTestRunner acsStopContainer pyContainer > $ACS_TMP/pyContainerShutdown.log
-
+echo "----------------------------------------------"  >> $ACS_TMP/pyContainer.log
 acsutilTATTestRunner acsStartContainer -py pyContainer

@@ -21,30 +21,49 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acssimGenericTest.py,v 1.3 2006/03/16 00:03:02 dfugate Exp $
+# @(#) $Id$
 #------------------------------------------------------------------------------
 
 '''
-Quite possibly the most generic component client throughout ALMA software.
+Tests interface inheritance using the CDB
 '''
 from sys import argv
 import ACS
 from Acspy.Clients.SimpleClient import PySimpleClient
+from Acspy.Common.Callbacks     import CBvoid
+from ACSImpl.DevIO import DevIO
 
-compName = argv[1]
-compMethod = argv[2]
+#-------------------------------------------------------
+class ReadbackDevIO(DevIO):
 
-print "Parameters to this generic test script are:", argv[1], argv[2]
+    def __init__(self):
+        DevIO.__init__(self, 3.14)
 
-# Make an instance of the PySimpleClient
-simpleClient = PySimpleClient()
-comp = simpleClient.getComponent(compName)
+    def read(self):
+        return 3.14
+#-------------------------------------------------------
+class MyCallback(CBvoid):
+     def working (self, completion, desc):
+         '''
+         '''
+         print "Ramped PowerSupply startRamping CB: working method called"
 
-try:
-    joe = eval("comp." + argv[2])
-    print "The evaluated return value is:", joe
-except Exception, e:
-    print "The exception that occured was:", e
+#-------------------------------------------------------
+from time import sleep
+if __name__=="__main__":
+    compName = "TEST_RPS_1"
+
+    # Make an instance of the PySimpleClient
+    simpleClient = PySimpleClient()
+    comp = simpleClient.getComponent(compName)
+
+    myCB = MyCallback()
+    myCorbaCB = simpleClient.activateOffShoot(myCB)
+    myDescIn = ACS.CBDescIn(0L, 0L, 0L)
     
-simpleClient.releaseComponent(compName)
-simpleClient.disconnect()
+    print "Ramped PowerSupply readback value:", comp._get_readback().get_sync()[0]
+
+    comp.startRamping(1L, myCorbaCB, myDescIn)
+    
+    simpleClient.releaseComponent(compName)
+    simpleClient.disconnect()
