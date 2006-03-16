@@ -9,15 +9,15 @@ html = "<HMTL><HEAD></HEAD><BODY>"
 html+='<H1 align="center">Comparison between ACS and Laser Alarm system code</H1><HR>'
 
 #The ACS and Laser folders
-ACSDir = "/home/almadev/workspace/ACSLaser"
-LaserDir="/home/almadev/workspace/LaserAlarmSystem"
+ACSDir = "/diska/home/almadev/workspace/ACSLaser"
+LaserDir="/diska/home/almadev/workspace/LaserAlarmSystem"
 
 # The total number of modified java files and misalignements (files present in only one system)
 GlobalStatistics = { "JFilesChanged": 0, "Misalignements": 0 }
 
 # The command line for diff and grep
-diffCmd = '/alma/ACS-4.1/gnu/bin/diff -E -b -w -B -r -q -I ".*System\.out.*" -I ".*System\.err.*" -I Revision -I Date -I Author -I Id '
-grepCmd = '/alma/ACS-4.1/gnu/bin/grep -v CVS|/alma/ACS-4.1/gnu/bin/grep -v Makefile|/alma/ACS-4.1/gnu/bin/grep -v cvsignore|/alma/ACS-4.1/gnu/bin/grep -v purify '
+diffCmd = '/usr/bin/diff -E -b -w -B -r -q -I ".*System\.out.*" -I ".*System\.err.*" -I Revision -I Date -I Author -I Id '
+grepCmd = '/bin/grep -v CVS|/bin/grep -v Makefile|/bin/grep -v cvsignore|/bin/grep -v purify '
 
 # The dictionary with the name of the modules and their path
 # in ACS and Laser
