@@ -35,8 +35,26 @@ import omniORB
 import CORBA
 #--CORBA STUBS-----------------------------------------------------------------
 from Acspy.Util.ACSCorba        import interfaceRepository
+from Acspy.Util.ACSCorba import getClient
+from Acspy.Util.ACSCorba import getManager
 #--GLOBALS---------------------------------------------------------------------
 omniORB.importIRStubs()
+#------------------------------------------------------------------------------
+def getCompIfrID(comp_name):
+    '''
+    Given a component's name, returns said component's interface repository ID
+    or throws an exception if the ID cannot be determined.
+    '''
+    #get a list of component info's
+    comp_list = getManager().get_component_info(getClient().token.h, [],"*", "*", 0)
+    
+    for comp in comp_list:
+        if comp.name==comp_name:
+            return comp.type
+        
+    #sanity check
+    raise "Component IFR ID not found"                                          
+                                    
 #------------------------------------------------------------------------------
 def getSuperIDs(ir_id):
     '''

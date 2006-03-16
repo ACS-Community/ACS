@@ -1,4 +1,4 @@
-# @(#) $Id: SimulatedCDBEntry.py,v 1.3 2006/03/14 23:59:06 dfugate Exp $
+# @(#) $Id: SimulatedCDBEntry.py,v 1.4 2006/03/16 00:00:59 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimulatedCDBEntry.py,v 1.3 2006/03/14 23:59:06 dfugate Exp $"
+# "@(#) $Id: SimulatedCDBEntry.py,v 1.4 2006/03/16 00:00:59 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -48,7 +48,7 @@ class SimulatedCDBEntry(SimulatedEntry):
     values.
     '''
     #--------------------------------------------------------------------------
-    def __init__ (self, compname, supported_interfaces = []):
+    def __init__ (self, compname, supported_interfaces):
         '''
         Constructor.
 
@@ -73,6 +73,12 @@ class SimulatedCDBEntry(SimulatedEntry):
         if allows_inheritence:
             #look at all supported IDL interfaces first
             self.handleInterfaces(supported_interfaces)
+            
+        #add this individual component one more time to override
+        #anything defined in the subinterfaces. this is necessary if
+        #the component is of type IDL:alma/x/y:1.0 and this entry
+        #exists in the CDB
+        self.handleCDBEntry(self.compname)
             
     #--------------------------------------------------------------------------
     def handleCDBEntry(self, name):

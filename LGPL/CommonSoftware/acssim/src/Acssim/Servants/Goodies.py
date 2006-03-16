@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.2 2006/03/13 22:09:39 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.3 2006/03/16 00:00:59 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.2 2006/03/13 22:09:39 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.3 2006/03/16 00:00:59 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -42,6 +42,8 @@ from Acspy.Util.ACSCorba        import interfaceRepository
 from Acssim.Servants.Components import getComponent as getComponent
 from Acspy.Common.CDBAccess    import CDBaccess
 from Acspy.Util.XmlObjectifier import XmlObject
+from Acssim.Corba.Utilities import getCompIfrID
+from Acssim.Corba.Utilities import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
 _COMPONENTS = {}
 
@@ -168,22 +170,37 @@ def getCompLocalNS(comp_name):
         #initialize the temporary local namespace to be empty (in case
         #of some failure with the CDB)
         t_dict = {}
+        comp_cdb_list = [comp_name]
         
-        #get the CDB helper object
-        xml_obj = getComponentXMLObj(comp_name)
+        #because we must check the inherited IDL interfaces as well
+        cdb_location = "interfaces/"
+        comp_ifr_id = getCompIfrID(comp_name)
+        comp_cdb_list.append(cdb_location + comp_ifr_id.split('IDL:')[1].replace(":", "/"))
         
-        if xml_obj!=None:
-            try: #use a try here because pythonImports section is not required
-                #get the imports
-                dom = xml_obj.SimulatedComponent.pythonImports
-                py_imports = dom.getValue().rstrip().lstrip().split('\n')
+        comp_ifr_ids = getSuperIDs(comp_ifr_id)
+        for id in comp_ifr_ids:
             
-                #populate the locals dictionary
-                for py_import in py_imports:
-                    exec py_import in globals(), t_dict
-            except:
-                pass
+            id = id.split('IDL:')[1].replace(":", "/")
+            id = cdb_location + id
+            comp_cdb_list.append(id)
         
+        for comp_name in comp_cdb_list:
+            #-------------------------------
+            #get the CDB helper object
+            xml_obj = getComponentXMLObj(comp_name)
+            
+            if xml_obj!=None:
+                try: #use a try here because pythonImports section is not required
+                    #get the imports
+                    dom = xml_obj.SimulatedComponent.pythonImports
+                    py_imports = dom.getValue().rstrip().lstrip().split('\n')
+            
+                    #populate the locals dictionary
+                    for py_import in py_imports:
+                        exec py_import in globals(), t_dict
+                except:
+                    pass
+            #-------------------------------
         COMPONENTS_NS[comp_name] = t_dict
         
         

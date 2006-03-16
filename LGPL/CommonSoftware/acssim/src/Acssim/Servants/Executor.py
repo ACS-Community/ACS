@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.5 2006/03/14 23:59:06 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.6 2006/03/16 00:00:59 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.5 2006/03/14 23:59:06 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.6 2006/03/16 00:00:59 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -77,11 +77,11 @@ def _execute(compName, compType, methName, compRef, args, local_ns):
     #first check to see if this component has an entry
     if not getComponentsDict().has_key(compName):
         #if not, create it
-        
-        
+        if_list = getSuperIDs(compType)
+        if_list.append(compType)
         getComponentsDict()[compName] = { API:SimulatedEntry(compName),
                                   CDB:SimulatedCDBEntry(compName,
-                                                        getSuperIDs(compType)),
+                                                        if_list),
                                   GEN:DynamicEntry(compName, 
                                                    compType)}
         

@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.22 2006/03/13 22:09:39 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.23 2006/03/16 00:00:59 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.22 2006/03/13 22:09:39 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.23 2006/03/16 00:00:59 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -57,6 +57,7 @@ from Acssim.Servants.Generator             import getRandomEnum
 from Acssim.Servants.Components            import addComponent
 from Acssim.Servants.Components            import removeComponent
 from Acssim.Servants.Goodies               import getCompLocalNS
+from Acssim.Corba.Utilities                import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
 _DEBUG = 0
 #------------------------------------------------------------------------------
@@ -156,7 +157,10 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #look in the CDB for instructions on how to setup the special cases. This
         #is mainly used to see if the end-user has specified some devIO class to
         #be used with a BACI property.
-        simCDB = SimulatedCDBEntry(self._get_name())
+        if_list = getSuperIDs(self.ir)
+        if_list.append(self.ir)
+        simCDB = SimulatedCDBEntry(self._get_name(),
+                                   if_list)
 
         #IFR
         ir = interfaceRepository()
