@@ -29,6 +29,9 @@
 #------------------------------------------------------------------------------
 '''
 Contains various utility methods of general use to the simulator.
+Eventually some of these should be moved to Acspy.Util.*
+These are NOT to be considered simulator API functions - for this see
+Acssim.Servants.Goodies
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 import omniORB
@@ -39,6 +42,8 @@ from Acspy.Util.ACSCorba import getClient
 from Acspy.Util.ACSCorba import getManager
 #--GLOBALS---------------------------------------------------------------------
 omniORB.importIRStubs()
+IFR = interfaceRepository()
+IFR = IFR._narrow(CORBA.Repository)
 #------------------------------------------------------------------------------
 def getCompIfrID(comp_name):
     '''
@@ -58,8 +63,10 @@ def getCompIfrID(comp_name):
 #------------------------------------------------------------------------------
 def getSuperIDs(ir_id):
     '''
-    Given an interface repository ID, ir_id, this function returns a list of
+    Given an interface repository ID, ir_id, this function returns a list
     consisting of the interface repository IDs ir_id inherits from.
+    This function leaves out ACS defined interfaces such as 
+    IDL:alma/ACS/ACSComponent:1.0
     
     Parameters: ir_id is the interface repository ID of an IDL interface
     
@@ -72,12 +79,8 @@ def getSuperIDs(ir_id):
                   'IDL:alma/ACS/ACSComponent:1.0', 
                   'IDL:alma/ACS/CharacteristicModel:1.0']
     
-    #get the IFR
-    ifr = interfaceRepository()
-    ifr = ifr._narrow(CORBA.Repository)
-    
     #get the interface definition
-    interface = ifr.lookup_id(ir_id)
+    interface = IFR.lookup_id(ir_id)
     interface = interface._narrow(CORBA.InterfaceDef)
     
     #use the definition to get a list of other interface definitions

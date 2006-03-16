@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.11 2006/03/16 00:03:02 dfugate Exp $"
+# "@(#) $Id: TestList.lite,v 1.12 2006/03/16 19:21:22 dfugate Exp $"
 #
 # TestList
 #
@@ -31,41 +31,50 @@
 SOURCE acssimTATEnvironment
 PROLOGUE acssimTATPrologue
 
+#Test Acssim.Corba.Utilities
+0 Utilities "acssimUtilities"
+
+#Test Acssim.Corba.DynamicImplementation
+1 DynamicImplementation "acssimDynamicImplementation"
+
+#Test Acssim.Servants.Goodies
+2 Goodies "acssimGoodies"
+
 #First test to ensure that pseudo inheritance from Acspy.Servants.CharacteristicComponent actually works
-1 T1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 _get_name()"
+11 T1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 _get_name()"
 
 #Test a method implementation from the CDB which doesn't do anything special
-2 T2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 displayMessage()"
+12 T2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 displayMessage()"
 
 #Test a completely random implementation of a method
-3 T3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD2 displayMessage()"
+13 T3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD2 displayMessage()"
 
 #Test a method implementation from the CDB that raises an exception
-4 cdbExcept "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 badMethod()"
+14 cdbExcept "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 badMethod()"
 
 #Test a method implementation from the CDB that raises an exception
-5 charCompMethod "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 descriptor()"
+15 charCompMethod "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 descriptor()"
 
 #Test the ability to dynamically generate other CORBA objects
-6 baciSimProp1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()"
+16 baciSimProp1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()"
 
 #Te the ability to invoke dynamically implemented methods of other CORBA objects
-7 baciSimProp2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()._get_min_value()"
+17 baciSimProp2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()._get_min_value()"
 
 # Tests enumerations
-8 baciSimProp3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest FRIDGE1 _get_powerStatus()._get_default_value()"
+18 baciSimProp3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest FRIDGE1 _get_powerStatus()._get_default_value()"
 
 # Tests callbacks
-9 callbackVoid1 "@SLEEP 2" "acsutilTATTestRunner acssimCallbackTest LAMP1 on"
+19 callbackVoid1 "@SLEEP 2" "acsutilTATTestRunner acssimCallbackTest LAMP1 on"
 
 # Tests master component
-10 masterComponent "@SLEEP 2" "acsutilTATTestRunner acssimMasterCompTest"
+20 masterComponent "@SLEEP 2" "acsutilTATTestRunner acssimMasterCompTest"
 
 # Tests to ensure the $ACS_CDB/alma/simulated/interfaces portion of the CDB
 # is used properly
-11 interfaceInheritance "@SLEEP 2" "acsutilTATTestRunner interfaceInheritance"
+21 interfaceInheritance "@SLEEP 2" "acsutilTATTestRunner interfaceInheritance"
 
 # Tests to ensure in/inout parameters are accessible
-12 inParams "@SLEEP 2" "acssimInParamsHelper" "@SLEEP 20" "acsutilTATTestRunner acssimInParamsTest CLOCK1"
+22 inParams "@SLEEP 2" "acssimInParamsHelper" "@SLEEP 20" "acsutilTATTestRunner acssimInParamsTest CLOCK1"
 
 EPILOGUE acsutilTATEpilogue

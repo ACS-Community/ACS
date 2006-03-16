@@ -1,4 +1,4 @@
-# @(#) $Id: DynamicImplementation.py,v 1.4 2004/08/23 22:01:42 dfugate Exp $
+# @(#) $Id: DynamicImplementation.py,v 1.5 2006/03/16 19:21:22 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: DynamicImplementation.py,v 1.4 2004/08/23 22:01:42 dfugate Exp $"
+# "@(#) $Id: DynamicImplementation.py,v 1.5 2006/03/16 19:21:22 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -30,15 +30,11 @@
 '''
 This module contains the implementation of a generic IDL implementation class
 specified in the Python Language Mapping, but not implemented by omniORB.
-
-TODO LIST:
-- parse the irLoc (IR ID) in a more generic, non-ALMA way.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 from new    import instancemethod
+from Acspy.Util.ACSCorba import interfaceRepository
 import omniORB
-
-#--CORBA STUBS-----------------------------------------------------------------
 import CORBA
 
 #--GLOBALS---------------------------------------------------------------------
@@ -55,6 +51,7 @@ def _mergeClasses(completeDict, newClass):
             completeDict[key] = newClass.__dict__[key]
 
     #unfortunately we must now look at base classes
+    #just use recursion to do this
     for base in newClass.__bases__:
         completeDict = _mergeClasses(completeDict, base)
 
@@ -160,27 +157,18 @@ class DynamicImplementation:
             tList.insert(0, self.__realClass)
         self.__class__.__bases__ = tuple(tList)
         
-            
-        #except:
-        #    #should really never be the case...
-        #    print "Something went terribly awry in DynamicImplementation..."
-        #    tList.insert(0, self.__realClass)
-
         #now that all the underlying infrastructure is in place, we can finally use
         #CORBA introspection to start adding methods!
         #get the interface repository.
         omniORB.importIRStubs()  # Make sure IR stubs are loaded
-        #have to do this because omniORB does not provide an IR at present
-        if 0:
-            ir = omniORB.orb.resolve_initial_references("InterfaceRepository")
-        else:
-            from Acspy.Util.ACSCorba import interfaceRepository
-            ir = interfaceRepository()
-
+        
+        ir = interfaceRepository()
         ir = ir._narrow(CORBA.Repository)
+        
         if ir is None:
             raise CORBA.INTF_REPOS(omniORB.INTF_REPOS_NotAvailable,
                                    CORBA.COMPLETED_NO)
+                                   
         #assume this can be found in a subclass as well.
         self.__interf = ir.lookup_id(self._NP_RepositoryId)
         self.__interf = self.__interf._narrow(CORBA.InterfaceDef)
@@ -216,16 +204,5 @@ class DynamicImplementation:
         '''
         print "DynamicImplementation.invoke(", args, moreargs, ")"
         return
-
-#------------------------------------------------------------------------------
-#--Main defined only for generic testing---------------------------------------
-#------------------------------------------------------------------------------
-if __name__ == "__main__":
-    print "Creating an object"
-    g = DynamicImplementation("IDL:alma/acspytest/PyTest:1.0")
-    g = DynamicImplementation("IDL:alma/PS/PowerSupply:1.0")
     
-    g.on(None)
-    print dir(g)
-    print "Done..."
 

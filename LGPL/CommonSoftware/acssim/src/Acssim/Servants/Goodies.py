@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.3 2006/03/16 00:00:59 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.4 2006/03/16 19:21:22 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.3 2006/03/16 00:00:59 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.4 2006/03/16 19:21:22 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -39,7 +39,6 @@ import omniORB
 import CORBA
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba        import interfaceRepository
-from Acssim.Servants.Components import getComponent as getComponent
 from Acspy.Common.CDBAccess    import CDBaccess
 from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
@@ -77,6 +76,51 @@ _GLOBALS = {}
 
 #namespace of individual components
 COMPONENTS_NS = {}
+
+_DEBUG = 0
+_compDict = {}
+#------------------------------------------------------------------------------
+def addComponent(compName, compRef):
+    '''
+    Adds a component to the singled dictionary contained within this module.
+
+    Parameters:
+    compName - name of the component in string format
+    compRef - reference to the component.
+
+    Raises: Nothing
+
+    Returns: Nothing
+    '''
+    _compDict[compName] = compRef
+    return
+#------------------------------------------------------------------------------
+def removeComponent(compName):
+    '''
+    Removes a component from the singled dictionary contained within this module.
+
+    Parameters:
+    compName - name of the component in string format
+
+    Raises: ???
+
+    Returns: Nothing
+    '''
+    _compDict.pop(compName)
+    return
+#------------------------------------------------------------------------------
+def getComponent(compName):
+    '''
+    Returns a reference to a simulated component which has been activated.
+
+    Parameters:
+    compName - name of the component in string format
+
+    Raises: ???
+
+    Returns: reference to a simulated component.
+    '''
+    return _compDict[compName]
 #---------------------------------------------------------------------
 def getComponentsDict():
     global _COMPONENTS

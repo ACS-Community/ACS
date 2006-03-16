@@ -1,4 +1,4 @@
-# @(#) $Id: Components.py,v 1.1 2004/12/15 14:29:41 dfugate Exp $
+# @(#) $Id: Components.py,v 1.2 2006/03/16 19:21:22 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Components.py,v 1.1 2004/12/15 14:29:41 dfugate Exp $"
+# "@(#) $Id: Components.py,v 1.2 2006/03/16 19:21:22 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -40,72 +40,5 @@ TODO LIST:
 #--ACS Imports-----------------------------------------------------------------
 
 #--GLOBALS---------------------------------------------------------------------
-_DEBUG = 0
-_compDict = {}
-#------------------------------------------------------------------------------
-def addComponent(compName, compRef):
-    '''
-    Adds a component to the singled dictionary contained within this module.
 
-    Parameters:
-    compName - name of the component in string format
-    compRef - reference to the component.
 
-    Raises: Nothing
-
-    Returns: Nothing
-    '''
-    _compDict[compName] = compRef
-    return
-#------------------------------------------------------------------------------
-def removeComponent(compName):
-    '''
-    Removes a component from the singled dictionary contained within this module.
-
-    Parameters:
-    compName - name of the component in string format
-
-    Raises: ???
-
-    Returns: Nothing
-    '''
-    _compDict.pop(compName)
-    return
-#------------------------------------------------------------------------------
-def getComponent(compName):
-    '''
-    Returns a reference to a simulated component which has been activated.
-
-    Parameters:
-    compName - name of the component in string format
-
-    Raises: ???
-
-    Returns: reference to a simulated component.
-    '''
-    return _compDict[compName]
-#------------------------------------------------------------------------------
-#--Main defined only for generic testing---------------------------------------
-#------------------------------------------------------------------------------
-if __name__ == "__main__":
-    print "Testing"
-
-    try:
-        getComponent("dkfjkdf")
-        print "Should not see this!"
-    except:
-        print "Good."
-    
-    addComponent("my", 7)
-
-    print "Good:", getComponent("my")
-
-    removeComponent("my")
-    try:
-        removeComponent("dfdfd")
-        print "Should not see this!"
-    except:
-        print "Good."    
-        
-         
-    print "Done:", _compDict

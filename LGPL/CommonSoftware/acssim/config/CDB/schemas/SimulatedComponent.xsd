@@ -7,8 +7,8 @@
    - History:
    -   2003-12-16  DF  Created  
   -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:SimulatedComponent:1.0" targetNamespace="urn:schemas-cosylab-com:SimulatedComponent:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xs:complexType name="imports" mixed="true">
+<xs:schema xmlns="urn:schemas-cosylab-com:SimulatedComponent:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="urn:schemas-cosylab-com:SimulatedComponent:1.0">
+	<xs:complexType mixed="true" name="imports">
 		<xs:annotation>
 			<xs:documentation>
 			This end-user nicety allows developers to declare Python import statements
@@ -25,7 +25,7 @@ import FRIDGE
 		</xs:annotation>
 	</xs:complexType>
 	<!--#####################################################################-->
-	<xs:complexType name="event" mixed="true">
+	<xs:complexType mixed="true" name="event">
 		<xs:annotation>
 			<xs:documentation>
 			The event type is an XML element describing ALMA events and channels. 
@@ -64,7 +64,7 @@ joe
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="Frequency" use="optional" default="0">
+		<xs:attribute default="0" name="Frequency" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 				The floating point number of seconds the simulator framework should wait
@@ -78,7 +78,7 @@ joe
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:attribute>
-		<xs:attribute name="SkippedEventProbability" use="optional" default="0">
+		<xs:attribute default="0" name="SkippedEventProbability" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 				The probability that any given event will be skipped. The default value of 0 means
@@ -95,7 +95,7 @@ joe
 		</xs:attribute>
 	</xs:complexType>
 	<!--#########################################################################-->
-	<xs:complexType name="eventResponse" mixed="true">
+	<xs:complexType mixed="true" name="eventResponse">
 		<xs:annotation>
 			<xs:documentation>
 			The eventResponse type is an XML element describing ALMA events and channels. 
@@ -122,7 +122,7 @@ joe
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="OutgoingChannel" type="xs:string" use="optional" default="">
+		<xs:attribute default="" name="OutgoingChannel" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 				Name of the channel we will send an event to as a response to an incoming event.
@@ -132,7 +132,7 @@ joe
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="OutgoingEventId" type="xs:string" use="optional" default="">
+		<xs:attribute default="" name="OutgoingEventId" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 				The IDL id of the ALMA event we will send out as a response to an incoming event.
@@ -143,7 +143,7 @@ joe
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="Timeout" type="xs:float" use="optional" default="1">
+		<xs:attribute default="1" name="Timeout" type="xs:float" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 					The floating point number of seconds the simulator framework should wait
@@ -155,7 +155,7 @@ joe
 		</xs:attribute>
 	</xs:complexType>
 	<!--#########################################################################-->
-	<xs:complexType name="corbaAttribute" mixed="true">
+	<xs:complexType mixed="true" name="corbaAttribute">
 		<xs:annotation>
 			<xs:documentation>
 			Type which defines CORBA attributes such as BACI properties.
@@ -171,7 +171,7 @@ return "this string value for the following IDL - readonly attribute string stuf
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="Timeout" type="xs:float" use="optional" default="1">
+		<xs:attribute default="1" name="Timeout" type="xs:float" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 				Amount of time in floating point seconds that must pass before the simulator framework returns
@@ -181,8 +181,8 @@ return "this string value for the following IDL - readonly attribute string stuf
 		</xs:attribute>
 	</xs:complexType>
 	<!--#########################################################################-->
-	<xs:complexType name="lifeCycleMethod" mixed="true"/>
-	<xs:complexType name="nativeMethod" mixed="true">
+	<xs:complexType mixed="true" name="lifeCycleMethod"/>
+	<xs:complexType mixed="true" name="nativeMethod">
 		<xs:annotation>
 			<xs:documentation>
 			Type which defines a non-CORBA, component method.
@@ -204,7 +204,7 @@ x
 		</xs:attribute>
 	</xs:complexType>
 	<!--#########################################################################-->
-	<xs:complexType name="corbaMethod" mixed="true">
+	<xs:complexType mixed="true" name="corbaMethod">
 		<xs:annotation>
 			<xs:documentation>
 			Type which defines a CORBA component method.
@@ -224,7 +224,7 @@ None
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="Timeout" type="xs:double" use="optional" default="5">
+		<xs:attribute default="5" name="Timeout" type="xs:double" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 				Amount of time in floating point seconds that must pass before the simulator framework returns
@@ -232,7 +232,7 @@ None
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="Random" type="xs:boolean" use="optional" default="false">
+		<xs:attribute default="false" name="Random" type="xs:boolean" use="optional">
 			<xs:annotation>
 				<xs:documentation>
 				Unused at the moment.
@@ -250,16 +250,16 @@ None
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="pythonImports" type="imports" minOccurs="0"/>
-				<xs:element name="initialize" type="lifeCycleMethod" minOccurs="0"/>
-				<xs:element name="cleanUp" type="lifeCycleMethod" minOccurs="0"/>
-				<xs:element name="_nativeMethod" type="nativeMethod" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element name="_corbaMethod" type="corbaMethod" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element name="_corbaAttribute" type="corbaAttribute" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element name="_almaEvent" type="event" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element name="_almaEventResponse" type="eventResponse" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="pythonImports" type="imports"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="initialize" type="lifeCycleMethod"/>
+				<xs:element maxOccurs="1" minOccurs="0" name="cleanUp" type="lifeCycleMethod"/>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="_nativeMethod" type="nativeMethod"/>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="_corbaMethod" type="corbaMethod"/>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="_corbaAttribute" type="corbaAttribute"/>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="_almaEvent" type="event"/>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="_almaEventResponse" type="eventResponse"/>
 			</xs:sequence>
-			<xs:attribute name="AllowInheritance" type="xs:boolean" use="optional" default="true">
+			<xs:attribute default="true" name="AllowInheritance" type="xs:boolean" use="optional">
 				<xs:annotation>
 					<xs:documentation>
 					This attribute is used by the simulator framework to determine if it's OK to look at superclasses
