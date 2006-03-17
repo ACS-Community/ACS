@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.7 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.8 2006/03/17 23:49:27 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.7 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.8 2006/03/17 23:49:27 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -101,7 +101,7 @@ def _executeDict(dict, args, local_ns):
     sleep(dict['Timeout'])
     return _executeList(dict['Value'], args, local_ns)
 #------------------------------------------------------------------------------
-def _executeList(codeList, args, local_ns):
+def _executeList(code_list, args, local_ns):
     '''
     Given a list where each element consists of a stringified Python statement,
     each line will be executed except for the very last line. If the final line
@@ -135,20 +135,20 @@ def _executeList(codeList, args, local_ns):
     _locals['parameters'] = args
     
     #well...through the API the developer could have just specified a function...
-    if isfunction(codeList):
+    if isfunction(code_list):
         #great, this makes things much easier for us
         try:
             #assume they want to see the arguments
-            return codeList(getCompSim(), _locals)
+            return code_list(getCompSim(), _locals)
         except:
             #fine...it's a parameterless function
-            return codeList()
+            return code_list()
     else:
         #to make sure the last value isn't really popped off
-        code = copy(codeList)
+        code = copy(code_list)
     
     #pop off the final return value
-    finalVal = code.pop()
+    final_val = code.pop()
     
     #execute each line still left in the list
     for line in code:
@@ -160,21 +160,21 @@ def _executeList(codeList, args, local_ns):
     #if there's a raise in the last line, obviously the developer is trying
     #to simulate an exception. in this case the line should be exec'ed instead
     #of eval'ed
-    if type(finalVal)==str and finalVal.count("raise ") == 1:
+    if type(final_val)==str and final_val.count("raise ") == 1:
         #it's OK to do this without a try/except because the end-user is
         #almost certainly TRYING to throw an exception.
-        exec finalVal in getCompSim(), _locals
+        exec final_val in getCompSim(), _locals
 
     #there was a complaint about not seeing output from commandcenter so we do this:(
     stdout.flush()
     
     #the final line is the actual return value which must be evaluated
     try:
-        return eval(finalVal, getCompSim(), _locals)
+        return eval(final_val, getCompSim(), _locals)
     except:
         #this is only a debug message because the finalVal may already be a Python object
-        getLogger("Acssim.Servants.Executor").logDebug("Failed to evaluate the '" + str(finalVal) + "' statement!")
-        return finalVal
+        getLogger("Acssim.Servants.Executor").logDebug("Failed to evaluate the '" + str(final_val) + "' statement!")
+        return final_val
 #---------------------------------
 #the final thing we do is startup the GUI
 import Acssim.Servants.SimGUI

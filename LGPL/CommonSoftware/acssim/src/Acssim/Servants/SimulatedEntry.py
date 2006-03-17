@@ -1,4 +1,4 @@
-# @(#) $Id: SimulatedEntry.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id: SimulatedEntry.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimulatedEntry.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id: SimulatedEntry.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -37,9 +37,9 @@ from copy    import copy
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log                  import getLogger
-from Acssim.Servants.SimulatedCDBEntry import SimulatedCDBEntry
-from Acssim.Servants.DynamicEntry      import DynamicEntry
-from Acssim.Servants.APIEntry          import APIEntry
+from Acssim.Servants.Entries.SimulatedCDBEntry import SimulatedCDBEntry
+from Acssim.Servants.Entries.DynamicEntry      import DynamicEntry
+from Acssim.Servants.Entries.APIEntry          import APIEntry
 from Acssim.Corba.Utilities            import getCompIfrID
 from Acssim.Corba.Utilities            import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# @(#) $Id: SimGUI.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id: SimGUI.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimGUI.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id: SimGUI.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -33,9 +33,6 @@ TODO LIST:
 
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
-from time    import sleep
-from inspect import isfunction
-from copy    import copy
 
 #--CORBA STUBS-----------------------------------------------------------------
 import CORBA
@@ -46,6 +43,16 @@ from Acssim.Servants.Goodies           import *
 from Acssim.Servants.SimulatedEntry import SimulatedEntry
 from Acssim.Servants.Goodies import getCompSim
 
+from thread     import start_new_thread
+from os         import environ
+
+import Tkinter
+import Pmw
+
+from Acspy.Util.ACSCorba import getClient
+from Acspy.Util.ACSCorba import getManager
+from Acssim.Servants.Goodies import setComponentMethod
+
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -55,69 +62,6 @@ from Acssim.Servants.Goodies import getCompSim
 #--In the future perhaps this can be moved to another module, but for now it---
 #--is more convenient to keep it here because it directly uses global objects--
 #--from this module.-----------------------------------------------------------
-from thread     import start_new_thread
-from os         import environ
-
-import Tkinter
-import Pmw
-
-from Acspy.Util.ACSCorba import getClient
-from Acspy.Util.ACSCorba import getManager
-
-#------------------------------------------------------------------------------
-def setComponentMethod(compName,
-                       methName,
-                       codeList,
-                       timeout=getStandardTimeout()):
-    '''
-    This is an ACS Component Simulator API method and developers are encouraged
-    to invoke it from their own code or from the Python interpreter at any time.
-    setComponentMethod is used to do exactly what its name implies - setup a
-    simulated component method to behave in a certain manner. Using this method,
-    one can:
-    - change the return value of a simulated method
-    - make a simulated method throw an exception
-    - make a simulated method sleep for a desired amount of time before returning
-    control
-
-    Paramters:
-    - compName is the components name in string format. "FRIDGESIM1" for example.
-    - methName is the name of the IDL method in string format that is being simulated.
-    "open" for example.
-    - code is a list of Python code in string format to be executed each time the
-    simulated method is invoked. The last string of this list should either
-    contain a "raise ..." statement where the exception being thrown is derived
-    from an IDL exception OR the last string should represent some return value
-    to be evaluated by the Python "eval" statement. A sample value for code
-    could be [ "import CORBA", "CORBA.TRUE" ] or [ "import ACSExceptionCommon",
-    "raise ACSExceptionCommon.CommonExImpl()" ]. It is important to note that
-    this list must not be empty!
-    - timeout is the amount of time that should pass before the method/attribute
-    returns control
-
-    Returns: Nothing
-
-    Raises: Nothing
-    '''
-    global API, CDB, GEN
-
-    if not isfunction(codeList):
-        code = copy(codeList)
-    else:
-        code = codeList
-
-    #first check to see if this component has an entry
-    if not getCompSim().has_key(compName):
-        #if not, create it
-        if not getCompSim().has_key(comp_name):
-            getCompSim()[comp_name] = SimulatedEntry(comp_name)
-
-    #create the temporary dictionary
-    tDict = { 'Value':code,
-             'Timeout': float(timeout)}
-
-    #store it globally
-    getCompSim()[compName].api_handler.setMethod(methName, tDict)
 
 
 #------------------------------------------------------------------------------

@@ -66,20 +66,20 @@ class BaseEntry:
         #and attributes
         self.methods = {}
     #--------------------------------------------------------------------------
-    def getMethod(self, methName):
+    def getMethod(self, method_name):
         '''
         Returns a Python dictionary describing the given method or None if it
         does not exist.
         '''
-        if self.methods.has_key(methName):
-            return self.methods[methName]
+        if self.methods.has_key(method_name):
+            return self.methods[method_name]
         else:
             return None
     #--------------------------------------------------------------------------
-    def setMethod(self, methName, dict):
+    def setMethod(self, method_name, dict):
         '''
         Associates a method with a Python dictionary describing it.
         '''
-        self.methods[methName] = copy(dict)
+        self.methods[method_name] = copy(dict)
     #--------------------------------------------------------------------------
     

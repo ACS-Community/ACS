@@ -1,4 +1,4 @@
-# @(#) $Id: DynamicImplementation.py,v 1.6 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id: DynamicImplementation.py,v 1.7 2006/03/17 23:49:27 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: DynamicImplementation.py,v 1.6 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id: DynamicImplementation.py,v 1.7 2006/03/17 23:49:27 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -40,25 +40,25 @@ import CORBA
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-def _mergeClasses(completeDict, newClass):
+def _mergeClasses(complete_dict, new_class):
     '''
     A helper function designed to merge the method and attributes of classes.
     '''
     #first just copy the new class's attributes and methods if applicable
-    tKeys = newClass.__dict__.keys()
-    for key in tKeys:
-        if not completeDict.has_key(key):
-            completeDict[key] = newClass.__dict__[key]
+    temp_keys = new_class.__dict__.keys()
+    for key in temp_keys:
+        if not complete_dict.has_key(key):
+            complete_dict[key] = new_class.__dict__[key]
 
     #unfortunately we must now look at base classes
     #just use recursion to do this
-    for base in newClass.__bases__:
-        completeDict = _mergeClasses(completeDict, base)
+    for base in new_class.__bases__:
+        complete_dict = _mergeClasses(complete_dict, base)
 
-    return completeDict
+    return complete_dict
         
 #------------------------------------------------------------------------------
-def _createMethodImplementation(objRef, methodName):
+def _createMethodImplementation(obj_ref, meth_name):
     '''
     A helper function designed to dynamically add methods to a Python object.
     Really all this does is pass the methodName and parameters to another method
@@ -88,22 +88,22 @@ def _createMethodImplementation(objRef, methodName):
         #corba specifies the operation's name should be the first parameter
         #of the invoke method
         args = list(args)
-        args.insert(1, methodName)
+        args.insert(1, meth_name)
 
         #CORBA specs say context object should be None
         if not moreargs.has_key('context'):
             moreargs['context'] = None
         #return whatever invoke returns
-        return objRef.invoke(tuple(args[1:]), moreargs)
+        return obj_ref.invoke(tuple(args[1:]), moreargs)
     
     #register the newly created method
     try:
         #if an exception on this occurs...the method does not already exist
-        temp = callable(getattr(objRef, methodName))
+        temp = callable(getattr(obj_ref, meth_name))
         del temp
     except:
         #add the method.
-        objRef.__dict__[methodName] = instancemethod(genericFunction, objRef)
+        obj_ref.__dict__[meth_name] = instancemethod(genericFunction, obj_ref)
     return
 
 #------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ class DynamicImplementation:
     '''
     A complete implementation of the OMG-defined DynamicImplementation class.
     '''
-    def __init__(self, irLoc=None):
+    def __init__(self, ir_id=None):
         '''
         Standard constructor dynamically changes this objects inheritance.
         Also implements all IDL methods/attributes on the fly which just pass
@@ -127,43 +127,40 @@ class DynamicImplementation:
         Raises: ???
         '''
         #set member variables
-        if irLoc == None:
+        if ir_id == None:
             #assume the _get_interface method is implemented in a subclass...
-            self.__irLoc = self._get_interface()
-            self.__irLoc = self.__irLoc._narrow(CORBA.InterfaceDef)
-            self.__irLoc = self.__irLoc._get_id()
+            self.__ir_id = self._get_interface()
+            self.__ir_id = self.__ir_id._narrow(CORBA.InterfaceDef)
+            self.__ir_id = self.__ir_id._get_id()
         else:
-            self.__irLoc = irLoc
+            self.__ir_id = ir_id
             
-        self.__realModule = None
-        self.__realClass = None
+        self.__real_mod = None
+        self.__real_class = None
         
         #create the POA class first...
-        self.__realClass =  self.__irLoc.split(':')[1].split('/').pop()  #get interface name
-        self.__realModule = self.__irLoc.split(':')[1].split('/')[1] + "__POA"  #"IDL:alma/acspytest/PyTest:1.0" becomes "acspytest__POA"
-        self.__realModule = __import__(self.__realModule, globals(), locals(), [self.__realClass]) #get module
-        self.__realClass = self.__realModule.__dict__.get(self.__realClass) #get class
+        self.__real_class =  self.__ir_id.split(':')[1].split('/').pop()  #get interface name
+        self.__real_mod = self.__ir_id.split(':')[1].split('/')[1] + "__POA"  #"IDL:alma/acspytest/PyTest:1.0" becomes "acspytest__POA"
+        self.__real_mod = __import__(self.__real_mod, globals(), locals(), [self.__real_class]) #get module
+        self.__real_class = self.__real_mod.__dict__.get(self.__real_class) #get class
 
         #copy it's class locally thereby converting DynamicImplementation
         #into the POA object!
-        self.__dict__ = _mergeClasses(self.__dict__, self.__realClass)
+        self.__dict__ = _mergeClasses(self.__dict__, self.__real_class)
         
-        tList = list(self.__class__.__bases__)
+        temp_list = list(self.__class__.__bases__)
         try:
             #OK for subclasses...
-            tList.insert(tList.index(DynamicImplementation), self.__realClass)
+            temp_list.insert(temp_list.index(DynamicImplementation), self.__real_class)
         except:
             #should really never be the case...
-            tList.insert(0, self.__realClass)
-        self.__class__.__bases__ = tuple(tList)
+            temp_list.insert(0, self.__real_class)
+        self.__class__.__bases__ = tuple(temp_list)
         
         #now that all the underlying infrastructure is in place, we can finally use
         #CORBA introspection to start adding methods!
-        #get the interface repository.
-        omniORB.importIRStubs()  # Make sure IR stubs are loaded
-        
+        #get the interface repository.       
         ir = interfaceRepository()
-        ir = ir._narrow(CORBA.Repository)
         
         if ir is None:
             raise CORBA.INTF_REPOS(omniORB.INTF_REPOS_NotAvailable,

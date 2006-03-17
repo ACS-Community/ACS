@@ -1,4 +1,4 @@
-# @(#) $Id: SimulatedCDBEntry.py,v 1.5 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id$
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimulatedCDBEntry.py,v 1.5 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id$"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -144,6 +144,8 @@ class SimulatedCDBEntry(BaseEntry):
     #--------------------------------------------------------------------------
     def getCorbaMethods(self, xml_obj):
         '''
+        Sets the CORBA methods of this object.
+        TODO: rename
         '''
         #methods is the somewhat formatted data taken from the XML. not really
         #nice enough to work with yet.
@@ -157,22 +159,24 @@ class SimulatedCDBEntry(BaseEntry):
         #for each method in the list
         for dom in methods:
             #dictionary defining the method
-            tDict = {}
+            temp_dict = {}
 
             #extract the method name
             methname = dom.getAttribute('Name')
 
             #set the timeout
-            tDict['Timeout'] = float(dom.getAttribute('Timeout'))
+            temp_dict['Timeout'] = float(dom.getAttribute('Timeout'))
 
             #get the code to be executed yielding a return value
-            tDict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
+            temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
         
             #save the dictionary
-            self.setMethod(methname, tDict)
+            self.setMethod(methname, temp_dict)
     #--------------------------------------------------------------------------
     def getCorbaAttributes(self, xml_obj):
         '''
+        Sets the CORBA attributes of this object.
+        TODO: rename
         '''
         #attributes is the somewhat formatted data taken from the XML. not really
         #nice enough to work with yet.
@@ -186,17 +190,17 @@ class SimulatedCDBEntry(BaseEntry):
         #for each method in the list
         for dom in attributes:
             #dictionary defining the attribute
-            tDict = {}
+            temp_dict = {}
 
             #extract the attribute name
             attrname = dom.getAttribute('Name')
 
             #set the timeout
-            tDict['Timeout'] = float(dom.getAttribute('Timeout'))
+            temp_dict['Timeout'] = float(dom.getAttribute('Timeout'))
 
             #get the code to be executed yielding a return value
-            tDict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
+            temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
         
             #save the dictionary
-            self.setMethod(attrname, tDict)
+            self.setMethod(attrname, temp_dict)
     #--------------------------------------------------------------------------
