@@ -1,4 +1,4 @@
-# @(#) $Id: SimulatedCDBEntry.py,v 1.4 2006/03/16 00:00:59 dfugate Exp $
+# @(#) $Id: SimulatedCDBEntry.py,v 1.5 2006/03/17 20:41:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimulatedCDBEntry.py,v 1.4 2006/03/16 00:00:59 dfugate Exp $"
+# "@(#) $Id: SimulatedCDBEntry.py,v 1.5 2006/03/17 20:41:31 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -37,13 +37,13 @@ from operator import isSequenceType
 
 #--ACS Imports-----------------------------------------------------------------
 from Acssim.Servants.Goodies import getComponentXMLObj
-from Acssim.Servants.SimulatedEntry import SimulatedEntry
+from Acssim.Servants.BaseEntry import BaseEntry
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-class SimulatedCDBEntry(SimulatedEntry):
+class SimulatedCDBEntry(BaseEntry):
     '''
-    Class derived from SimulatedEntry to be used only with the CDB. In other words,
+    Class derived from BaseEntry to be used only with the CDB. In other words,
     this class searches the CDB for entries describing method/attribute return
     values.
     '''
@@ -62,7 +62,7 @@ class SimulatedCDBEntry(SimulatedEntry):
         Raises: ???
         '''
         #superclass constructor
-        SimulatedEntry.__init__(self, compname)
+        BaseEntry.__init__(self, compname)
         
         #bool value showing whether the CDB entry exists or not
         self.exists=0

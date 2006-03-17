@@ -1,4 +1,4 @@
-# @(#) $Id: SimulatedEntry.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id$
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimulatedEntry.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id$"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -37,15 +37,10 @@ from copy    import copy
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log                  import getLogger
-from Acssim.Servants.SimulatedCDBEntry import SimulatedCDBEntry
-from Acssim.Servants.DynamicEntry      import DynamicEntry
-from Acssim.Servants.APIEntry          import APIEntry
-from Acssim.Corba.Utilities            import getCompIfrID
-from Acssim.Corba.Utilities            import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
  
 #------------------------------------------------------------------------------
-class SimulatedEntry:
+class BaseEntry:
     '''
     Class SimulatedEntry is a baseclass which describes simulated components.
     '''
@@ -66,52 +61,25 @@ class SimulatedEntry:
 
         #our logger
         self.logger = getLogger(compname)
-        
-        #objects which actually do something when a 
-        #method is invoked
-        self.dynamic_handler = None
-        self.cdb_handler = None
-        self.api_handler = None
-        
-        self.setupCases()
-    #--------------------------------------------------------------------------
-    def setupCases(self):
-        '''
-        Helper method which creates entries objects
-        '''
-        #get the IFR ID of the component
-        comp_type = getCompIfrID(self.compname)
 
-        #get all superclasses of the IDL interfaces
-        if_list = getSuperIDs(comp_type)
-        if_list.append(comp_type)
-        
-        #create a dynamic handler object
-        self.dynamic_handler = DynamicEntry(self.compname, comp_type)
-        
-        #create a CDB handler object
-        self.cdb_handler = SimulatedCDBEntry(self.compname, if_list)
-        
-        #create an API handler object
-        self.api_handler = APIEntry(self.compname)
+        #this dictionary contains descriptions of all simulated component methods
+        #and attributes
+        self.methods = {}
     #--------------------------------------------------------------------------
-    def getMethod(self, meth_name, comp_ref=None):
+    def getMethod(self, methName):
         '''
         Returns a Python dictionary describing the given method or None if it
         does not exist.
         '''
-        if self.api_handler.getMethod(meth_name) != None:
-            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
-                                 self.compname + "' simulated component using the API.")
-            return self.api_handler.getMethod(meth_name)
-        
-        elif self.cdb_handler.getMethod(meth_name) != None:
-            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
-                             self.compname + "' simulated component using the CDB.")
-            return self.cdb_handler.getMethod(meth_name)
-        
+        if self.methods.has_key(methName):
+            return self.methods[methName]
         else:
-            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
-                             self.compname + "' simulated component on the fly.")
-            return self.dynamic_handler.getMethod(meth_name, comp_ref)
-        
+            return None
+    #--------------------------------------------------------------------------
+    def setMethod(self, methName, dict):
+        '''
+        Associates a method with a Python dictionary describing it.
+        '''
+        self.methods[methName] = copy(dict)
+    #--------------------------------------------------------------------------
+    

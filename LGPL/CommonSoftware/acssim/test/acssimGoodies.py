@@ -49,6 +49,43 @@ if __name__ == "__main__":
         print "Should not see this!"
     except:
         print "Good."    
-        
-         
+             
     print "Done."
+    print
+    
+    print "--Testing----------------------------------------------------------"
+    
+    print "getCompSim():", getCompSim()
+    print
+    print "getComponentXMLObj('TEST_PS_1'):", getComponentXMLObj('TEST_PS_1')
+    print "getComponentXMLObj('HELLOWORLD1'):", getComponentXMLObj('HELLOWORLD1')
+    print "getComponentXMLObj(''):", getComponentXMLObj('')
+    print
+    print "addGlobalData('stuff',1L):", addGlobalData('stuff', 1L)
+    print "getGlobalData():", getGlobalData()
+    print "removeGlobalData('stuff'):", removeGlobalData('stuff')
+    print "getGlobalData():", getGlobalData()
+    print
+    print "getCompLocalNS('TEST_PS_1'):", getCompLocalNS('TEST_PS_1')
+    print "getCompLocalNS('HELLOWORLD1'):", getCompLocalNS('HELLOWORLD1')
+    print "getCompLocalNS(''):", getCompLocalNS('')
+    print
+    print "getCHARS():", getCHARS()
+    print "setCHARS(('a', 'b')):", setCHARS(('a', 'b'))
+    print "getCHARS():", getCHARS()
+    print
+    print "getStandardTimeout():", getStandardTimeout()
+    print "setStandardTimeout(5.0):", setStandardTimeout(5.0)
+    print "getStandardTimeout():", getStandardTimeout()
+    print
+    print "getExceptProb():", getExceptProb()
+    print "setExceptProb(0.5):", setExceptProb(0.5)
+    print "getExceptProb():", getExceptProb()
+    print
+    print "getMaxSeqSize():", getMaxSeqSize()
+    print "setMaxSeqSize(50):", setMaxSeqSize(50)
+    print "getMaxSeqSize():", getMaxSeqSize()
+    
+    
+    
+    

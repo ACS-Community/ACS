@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.4 2006/03/16 19:21:22 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.5 2006/03/17 20:41:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,22 +21,20 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.4 2006/03/16 19:21:22 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.5 2006/03/17 20:41:31 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-
-TODO LIST
-
+Module consists of user-friendly functions to be used for configuring
+simulated component behavior from interactive Python container sessions.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 
 #--CORBA STUBS-----------------------------------------------------------------
-import omniORB
-import CORBA
+
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba        import interfaceRepository
 from Acspy.Common.CDBAccess    import CDBaccess
@@ -44,8 +42,6 @@ from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
-_COMPONENTS = {}
-
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
@@ -61,10 +57,7 @@ EXCEPTION_CHANCE = 0.01
 MAX_SEQUENCE_SIZE = 15
 
 #use the IFR to get a description of this class
-#DWF-really this should be done from ACSCorba!
-omniORB.importIRStubs()
 IR = interfaceRepository()
-IR = IR._narrow(CORBA.Repository)
 
 #CHARS is a list full of random charcters that will be used
 CHARS = []
@@ -77,10 +70,16 @@ _GLOBALS = {}
 #namespace of individual components
 COMPONENTS_NS = {}
 
-_DEBUG = 0
-_compDict = {}
+#described simulated behavior of the components
+_COMP_SIM_DICT = {}
+
+#maps component names to component instances
+_COMP_REFS = {}
+
+#first get access to the CDB
+CDB_ACCESS = CDBaccess()
 #------------------------------------------------------------------------------
-def addComponent(compName, compRef):
+def addComponent(comp_name, comp_ref):
     '''
     Adds a component to the singled dictionary contained within this module.
 
@@ -92,10 +91,10 @@ def addComponent(compName, compRef):
 
     Returns: Nothing
     '''
-    _compDict[compName] = compRef
+    _COMP_REFS[comp_name] = comp_ref
     return
 #------------------------------------------------------------------------------
-def removeComponent(compName):
+def removeComponent(comp_name):
     '''
     Removes a component from the singled dictionary contained within this module.
 
@@ -106,10 +105,10 @@ def removeComponent(compName):
 
     Returns: Nothing
     '''
-    _compDict.pop(compName)
+    _COMP_REFS.pop(comp_name)
     return
 #------------------------------------------------------------------------------
-def getComponent(compName):
+def getComponent(comp_name):
     '''
     Returns a reference to a simulated component which has been activated.
 
@@ -120,11 +119,14 @@ def getComponent(compName):
 
     Returns: reference to a simulated component.
     '''
-    return _compDict[compName]
+    return _COMP_REFS[comp_name]
 #---------------------------------------------------------------------
-def getComponentsDict():
-    global _COMPONENTS
-    return _COMPONENTS
+def getCompSim():
+    '''
+    Returns a dictionary mapping component names to their simulated
+    behaivor object references.
+    '''
+    return _COMP_SIM_DICT
 #---------------------------------------------------------------------
 def getComponentXMLObj(comp_name):
     '''
@@ -133,11 +135,8 @@ def getComponentXMLObj(comp_name):
     returns None
     '''
     try:
-        #first get access to the CDB
-        cdb = CDBaccess()  
-        
         #make sure the entry exists first of all...
-        t_xml = cdb.getField("alma/simulated/" + comp_name)
+        t_xml = CDB_ACCESS.getField("alma/simulated/" + comp_name)
     
         #create an xml helper object
         xml_obj = XmlObject(xmlString = t_xml)
@@ -191,6 +190,20 @@ def removeGlobalData(name):
         raise "Cannot remove 'addGlobalData' or 'removeGlobalData'"  
     return
 
+def getGlobalData():
+    '''
+    Returns the global data dictionary shared between all simulated
+    components.
+
+    Parameters: None
+
+    Returns: the global data dictionary shared between all simulated
+    components
+    
+    Raises: Nothing
+    '''
+    return _GLOBALS
+
 #add the functions to _GLOBALS
 _GLOBALS[addGlobalData.__name__] = addGlobalData
 _GLOBALS[removeGlobalData.__name__] = removeGlobalData
@@ -207,8 +220,6 @@ def getCompLocalNS(comp_name):
     
     Raises: Nothing
     '''
-    global COMPONENTS_NS
-
     #sanity check
     if COMPONENTS_NS.has_key(comp_name)==0:
         #initialize the temporary local namespace to be empty (in case
@@ -218,8 +229,13 @@ def getCompLocalNS(comp_name):
         
         #because we must check the inherited IDL interfaces as well
         cdb_location = "interfaces/"
-        comp_ifr_id = getCompIfrID(comp_name)
-        comp_cdb_list.append(cdb_location + comp_ifr_id.split('IDL:')[1].replace(":", "/"))
+        try:
+            comp_ifr_id = getCompIfrID(comp_name)
+        except:
+            comp_ifr_id = "IDL:alma/ACS/ACSComponent:1.0"
+        
+        comp_cdb_list.append(cdb_location + 
+                             comp_ifr_id.split('IDL:')[1].replace(":", "/"))
         
         comp_ifr_ids = getSuperIDs(comp_ifr_id)
         for id in comp_ifr_ids:
@@ -250,7 +266,7 @@ def getCompLocalNS(comp_name):
         
     return COMPONENTS_NS[comp_name]
 #------------------------------------------------------------------------------
-def setCHARS(newCharList):
+def setCHARS(new_char_list):
     '''
     This API function allows developers to make methods and attributes returning a
     single character "less random" on a global level. In other words, by providing a new list of
@@ -272,10 +288,23 @@ def setCHARS(newCharList):
     Raises: Nothing
     '''
     global CHARS
-    CHARS=newCharList
+    CHARS=new_char_list
     return
 #------------------------------------------------------------------------------
-def setStandardTimeout(newTimeout):
+def getCHARS():
+    '''
+    Returns the list set by setCHARS method. See description there for more
+    info.
+
+    Parameters: None
+
+    Returns: a list of characters. e.g., ['a', 'b', ...]
+
+    Raises: Nothing
+    '''
+    return CHARS
+#------------------------------------------------------------------------------
+def setStandardTimeout(new_timeout):
     '''
     This API function allows developers to set the time simulated method/attribute
     invocations wait before returning control on a global level. Sample usage could
@@ -290,10 +319,23 @@ def setStandardTimeout(newTimeout):
     Raises: Nothing
     '''
     global STD_TIMEOUT
-    STD_TIMEOUT=float(newTimeout)
+    STD_TIMEOUT=float(new_timeout)
     return
 #------------------------------------------------------------------------------
-def setExceptProb(newProb):
+def getStandardTimeout():
+    '''
+    Returns the timeout set by getStandardTimeout. See description there for 
+    more info.
+    
+    Parameters: None
+    
+    Returns: the standard timeout in floating point seconds
+    
+    Raises: Nothing
+    '''
+    return STD_TIMEOUT
+#------------------------------------------------------------------------------
+def setExceptProb(new_prob):
     '''
     NOT CURRENTLY USED!
 
@@ -305,10 +347,24 @@ def setExceptProb(newProb):
     Raises: Nothing
     '''
     global EXCEPTION_CHANCE
-    EXCEPTION_CHANCE=newProb
+    EXCEPTION_CHANCE=new_prob
     return
+
 #------------------------------------------------------------------------------
-def setMaxSeqSize(newSequenceSize):
+def getExceptProb():
+    '''
+    NOT CURRENTLY USED!
+
+    Parameters: None
+
+    Returns: the new probability (a float) of an exception occuring on any given
+    simulated attribute/method invocation.
+
+    Raises: Nothing
+    '''
+    return EXCEPTION_CHANCE
+#------------------------------------------------------------------------------
+def setMaxSeqSize(new_seq_size):
     '''
     This API function allows developers to set the maximum sequence size for simulated
     methods/attributes on a global level. Sample usage could be:
@@ -323,5 +379,19 @@ def setMaxSeqSize(newSequenceSize):
     Raises: Nothing
     '''
     global MAX_SEQUENCE_SIZE
-    MAX_SEQUENCE_SIZE=newSequenceSize
+    MAX_SEQUENCE_SIZE=new_seq_size
     return
+
+def getMaxSeqSize():
+    '''
+    Returns the maximum sequence size for simulated
+    methods/attributes on a global level.
+
+    Parameters: None
+
+    Returns: the new maximum length of sequences that will be returned on any given
+    simulated attribute/method invocation.    
+
+    Raises: Nothing
+    '''
+    return MAX_SEQUENCE_SIZE

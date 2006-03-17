@@ -1,4 +1,4 @@
-# @(#) $Id: DynamicImplementation.py,v 1.5 2006/03/16 19:21:22 dfugate Exp $
+# @(#) $Id: DynamicImplementation.py,v 1.6 2006/03/17 20:41:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: DynamicImplementation.py,v 1.5 2006/03/16 19:21:22 dfugate Exp $"
+# "@(#) $Id: DynamicImplementation.py,v 1.6 2006/03/17 20:41:31 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -185,8 +185,6 @@ class DynamicImplementation:
             #but only normal attributes have the _set_ method defined
             if attribute.mode == CORBA.ATTR_NORMAL:
                 _createMethodImplementation(self, "_set_" + attribute.name)
-        
-        return
     #------------------------------------------------------------------------------
     def invoke(self, args, moreargs):
         '''

@@ -1,4 +1,4 @@
-# @(#) $Id: Generator.py,v 1.37 2005/11/23 05:58:03 dfugate Exp $
+# @(#) $Id: Generator.py,v 1.38 2006/03/17 20:41:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Generator.py,v 1.37 2005/11/23 05:58:03 dfugate Exp $"
+# "@(#) $Id: Generator.py,v 1.38 2006/03/17 20:41:31 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -227,15 +227,13 @@ def getRandomSimpleValue(valType):
 
     Raises: an exception if valType is not really a simple CORBA type
     '''
-    global CHARS
-    
     if valType == CORBA.tk_boolean:
         #randomly returns 0 or 1
         retVal = randrange(0,100) % 2
     
     elif valType == CORBA.tk_char:
         #randomly returns some predetermined character
-        retVal = choice(CHARS)
+        retVal = choice(getCHARS())
     
     elif valType == CORBA.tk_octet:
         #returns 0-255
@@ -398,8 +396,6 @@ def getRandomTuple(typeCode, compRef, valType):
     be returned or a CORBA.NO_IMPLEMENT if we have not gotten around to supporting
     the specific typecode yet (e.g., value boxes).
     '''
-    global MAX_SEQUENCE_SIZE
-    
     #if this next block does not throw an exception...
     if not isinstance(typeCode, CORBA.AttributeDescription):
         #just for methods
@@ -416,7 +412,7 @@ def getRandomTuple(typeCode, compRef, valType):
     if realValType == CORBA.tk_sequence:
         getLogger("Acssim.Servants.Generator").logTrace("Dealing with a sequence.")
         retVal = []
-        for i in range(0,randrange(0,MAX_SEQUENCE_SIZE)):
+        for i in range(0,randrange(0, getMaxSeqSize())):
             retVal.append(getRandomValue(realTypeCode, compRef))
         #Sequences of octects and characters must be handled specially in Python
         if realTypeCode.kind()==CORBA.tk_octet or realTypeCode.kind()==CORBA.tk_char:

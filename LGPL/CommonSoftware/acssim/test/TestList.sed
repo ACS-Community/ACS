@@ -17,3 +17,6 @@ s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
 s/The evaluated return value is: .*$/The evaluated return value is: some value that was filtered out by TestList.sed/g
+s/0x[0-9,a-z,A-Z]*>/0xXXXX>/g
+s/from '[^']*'>/from 'xxx'>/g
+

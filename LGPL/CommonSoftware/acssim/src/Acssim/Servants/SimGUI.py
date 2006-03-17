@@ -1,4 +1,4 @@
-# @(#) $Id: SimGUI.py,v 1.1 2005/11/23 05:58:03 dfugate Exp $
+# @(#) $Id: SimGUI.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimGUI.py,v 1.1 2005/11/23 05:58:03 dfugate Exp $"
+# "@(#) $Id: SimGUI.py,v 1.2 2006/03/17 20:41:31 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -44,7 +44,7 @@ from Acspy.Common.Log       import getLogger
 
 from Acssim.Servants.Goodies           import *
 from Acssim.Servants.SimulatedEntry import SimulatedEntry
-from Acssim.Servants.SimulatedCDBEntry import SimulatedCDBEntry
+from Acssim.Servants.Goodies import getCompSim
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ from Acspy.Util.ACSCorba import getManager
 def setComponentMethod(compName,
                        methName,
                        codeList,
-                       timeout=STD_TIMEOUT):
+                       timeout=getStandardTimeout()):
     '''
     This is an ACS Component Simulator API method and developers are encouraged
     to invoke it from their own code or from the Python interpreter at any time.
@@ -107,18 +107,17 @@ def setComponentMethod(compName,
         code = codeList
 
     #first check to see if this component has an entry
-    if not getComponentsDict().has_key(compName):
+    if not getCompSim().has_key(compName):
         #if not, create it
-        getComponentsDict()[compName] = { API:SimulatedEntry(compName),
-                                  CDB:SimulatedCDBEntry(compName),
-                                  GEN:None}
+        if not getCompSim().has_key(comp_name):
+            getCompSim()[comp_name] = SimulatedEntry(comp_name)
 
     #create the temporary dictionary
     tDict = { 'Value':code,
              'Timeout': float(timeout)}
 
     #store it globally
-    getComponentsDict()[compName][API].setMethod(methName, tDict)    
+    getCompSim()[compName].api_handler.setMethod(methName, tDict)
 
 
 #------------------------------------------------------------------------------
@@ -136,8 +135,6 @@ class MethodInfo:
         - parent is the parent widget
         - guiRef is a reference to an ACSSimGUI object
         '''
-        global STD_TIMEOUT
-
         #name of the component
         self.compName = guiRef.compNamesPanel.getvalue()
 
@@ -173,7 +170,7 @@ class MethodInfo:
                                         label_text = 'Sleep Time:',
                                         orient = 'horizontal',
                                         entry_width = 3,
-                                        entryfield_value = STD_TIMEOUT,
+                                        entryfield_value = getStandardTimeout(),
                                         entryfield_validate = {'validator' : 'real', 'min' : 0.0, 'max' : 10000.0})
         self.sleepCounter.pack(padx=10, pady=5)
         ############################################################
@@ -219,9 +216,8 @@ class MethodInfo:
         '''
         Clears all fields of the widget.
         '''
-        global STD_TIMEOUT
         #reset the timeout field
-        self.sleepCounter.setvalue(STD_TIMEOUT)
+        self.sleepCounter.setvalue(getStandardTimeout())
         #clear the scroll text box for code entry
         self.st.clear()
 #----------------------------------------------------------------------------------
@@ -242,9 +238,6 @@ class ACSSimGUI:
 
         Raises: ???
         '''
-        global STD_TIMEOUT
-        global MAX_SEQUENCE_SIZE
-        
         #Copy a reference to the parent widget
         self.parent = parent
 
@@ -296,7 +289,7 @@ class ACSSimGUI:
         
         self.globalTimeoutPanel = Pmw.EntryField(optionsGroup.interior(),
                                                  labelpos = 'w',
-                                                 value = STD_TIMEOUT,
+                                                 value = getStandardTimeout(),
                                                  label_text = "Timeout:",
                                                  validate = {'validator' : 'real','min' : 0.0, 'max' : 10000, 'minstrict' : 0},
                                                  command = setNewTimeout)
@@ -316,7 +309,7 @@ class ACSSimGUI:
 
         self.globalMaxSeqSizePanel = Pmw.EntryField(optionsGroup.interior(),
                                                     labelpos = 'w',
-                                                    value = MAX_SEQUENCE_SIZE,
+                                                    value = getMaxSeqSize(),
                                                     label_text = "Maximum Sequence Size:",
                                                     validate = {'validator' : 'integer','min' : 0, 'max' : 100000000L, 'minstrict' : 0},
                                                     command = setNewMaxSeqSize)
