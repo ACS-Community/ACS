@@ -172,6 +172,43 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
 
 
 template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p)
+{
+    ACS_TRACE("BulkDataReceiver<>::getFlowCallback");   
+
+    BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
+    ACE_CString flowName;
+
+    CORBA::ULong dim = fepsData.length();
+    if(flowNumber < 1 || flowNumber > dim)
+	{
+	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	throw err;
+	}
+    flowNumber--;
+
+    vector<string> vec = getFlowNames();
+    flowName = vec[flowNumber].c_str();
+
+    fepMap_m.find(flowName, fep);
+
+    if(fep == 0)
+	{
+	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	throw err;
+	} 
+    else
+	cb_p = fep->getBulkDataCallback();
+    
+    if(cb_p == 0)
+	{
+	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	throw err;
+	}
+}
+
+
+template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeReceiver()
 {
     ACE_TRACE("BulkDataReceiver<>::closeReceiver");

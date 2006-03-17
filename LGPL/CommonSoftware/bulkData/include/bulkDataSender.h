@@ -43,6 +43,10 @@
 
 #include "bulkDataC.h"
 
+// #include "ace/High_Res_Timer.h"
+
+#include <acsQoS.h>
+
 /** @file bulkDataSender.h  
  */
 
@@ -156,26 +160,29 @@ namespace AcsBulkdata
 	void startSend(CORBA::ULong flownumber, const char *param, size_t len);
 
 	/** 
-	 *  Calls the Receiver handle_stop() method.
-	 * @param ACE_CString
+	 * Calls the Receiver receive_frame() method.
+	 * @param CORBA::ULong flowNumber
 	 * @param ACE_Message_Block 
-	 *  @return void
-	 *  @htmlonly
+	 * @param unsigned long timeout (msec)
+	 * @return void
+	 * @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void sendData(CORBA::ULong flownumber, ACE_Message_Block *buffer);
+	void sendData(CORBA::ULong flownumber, ACE_Message_Block *buffer, unsigned long timeout = 60000);
            
 	/** 
-	 *  Calls the Receiver handle_stop() method.
-	 * @param ACE_CString
+	 * Calls the Receiver receive_frame() method.
+	 * @param CORBA::ULong flowNumber
 	 * @param const char *
-	 *  @return void
-	 *  @htmlonly
+	 * @param size_t len
+	 * @param unsigned long timeout (msec)
+	 * @return void
+	 * @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void sendData(CORBA::ULong flownumber, const char *buffer, size_t len);
+	void sendData(CORBA::ULong flownumber, const char *buffer, size_t len, unsigned long timeout = 60000);
 
 	/** 
 	 *  Calls the Receiver handle_stop() method.
@@ -202,8 +209,15 @@ namespace AcsBulkdata
 		return streamctrl_p;
 	    }
 
-	const char *  getFlowSpec(const ACE_CString & flowName);
+	const char *getFlowSpec(const ACE_CString & flowName);
 
+	/** Get the names of the connected flows
+	 *  @return vector<string>
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	vector<string> getFlowNames();
 
 	/* THE FOLLOWING METHODS ARE UNDER TESTING - PLEASE DO NOT USE THEM */
 	/********************************************************************/

@@ -5,6 +5,8 @@ BulkDataSenderImpl<TSenderCallback>::BulkDataSenderImpl(const ACE_CString& name,
     ACS_TRACE("BulkDataSenderImpl::BulkDataSenderImpl");
 
     containerServices_p = containerServices;
+
+    receiverObj_m = 0;
 }
 
 
@@ -12,6 +14,8 @@ template<class TSenderCallback>
 BulkDataSenderImpl<TSenderCallback>::~BulkDataSenderImpl()
 {
     ACS_TRACE("BulkDataSenderImpl::~BulkDataSenderImpl");
+
+    CORBA::release(receiverObj_m);
 }
 
 
@@ -28,6 +32,8 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
     throw (CORBA::SystemException, AVConnectErrorEx)
 {
     ACS_TRACE("BulkDataSenderImpl::connect");
+
+    receiverObj_m = bulkdata::BulkDataReceiver::_duplicate(receiverObj_p);
 
     char buf[BUFSIZ];
 
@@ -145,9 +151,38 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 {
     ACS_TRACE("BulkDataSenderImpl::disconnect");
 
+    CORBA::Boolean loop = true;
+
     try
 	{
+	if(receiverObj_m != 0)
+	    {
+	    vector<string> vec = getSender()->getFlowNames();
+	    for(CORBA::ULong i = 0; i < vec.size(); i++)
+		{
+		loop = true;
+		while(loop)
+		    {
+		    CompletionImpl comp = receiverObj_m->getCbStatus(i+1);
+		    if ((comp.getCode() == ACSBulkDataStatus::AVCbOk) || (comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
+			{
+			loop = false;
+			}
+		    ACE_OS::sleep(1);
+		    }
+		}
+	    }
+
+	    sender.disconnectPeer();
+	}
+    catch (AVInvalidFlowNumberExImpl & ex)
+	{   
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::disconnect AVInvalidFlowNumberExImpl exception catched !"));
+
 	sender.disconnectPeer();
+
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
+	throw err.getAVDisconnectErrorEx();
 	}
     catch(...)
 	{

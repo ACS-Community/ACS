@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.22 2005/07/21 12:38:26 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.23 2006/03/17 13:33:59 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@
 # So we set it locally: it works but it is not 100% safe.
 #
 USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV  
-USER_LIB = -lTAO_AV
+USER_LIB = -lTAO_AV -lacsQoS
 
 #
 # MODULE CODE DESCRIPTION:
@@ -145,7 +145,7 @@ IDL_FILES = bulkData bulkDataReceiver bulkDataSender bulkDataDistributer
 IDL_TAO_FLAGS =
 
 #ACS Error System target
-ACSERRDEF = ACSBulkDataError
+ACSERRDEF = ACSBulkDataError ACSBulkDataStatus
 
 #
 # Jarfiles and their directories

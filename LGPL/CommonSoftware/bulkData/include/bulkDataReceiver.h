@@ -131,6 +131,17 @@ namespace AcsBulkdata
 	void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p);
 
 
+	/** Accessor to allocated receiver callback
+	 * @param CORBA::ULong
+	 * @param TReceiverCallback 
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p);
+
+
 	/** Close the Receiver
 	 *  @return void
 	 *  @htmlonly

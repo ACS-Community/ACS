@@ -42,6 +42,8 @@
 #include <maciHelper.h>
 #include <maciContainerServices.h>
 
+#include "ACSBulkDataStatus.h"
+
 #include "bulkDataReceiverS.h"
 
 #include "bulkDataReceiver.h"
@@ -49,6 +51,7 @@
 
 using namespace baci;
 using namespace maci;
+using namespace ACSBulkDataStatus;
 
 /** @file bulkDataReceiverImpl.h  
  */
@@ -115,6 +118,9 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
     
     virtual void closeReceiver() 
 	throw (CORBA::SystemException, AVCloseReceiverErrorEx);
+
+    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
 
   protected: 
 

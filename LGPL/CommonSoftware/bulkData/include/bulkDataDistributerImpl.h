@@ -47,8 +47,11 @@
 
 #include "bulkDataDistributer.h"
 
+#include "ACSBulkDataStatus.h"
+
 using namespace baci;
 using namespace maci;
+using namespace ACSBulkDataStatus;
 
 /** @file bulkDataDistributerImpl.h  
  */
@@ -179,11 +182,19 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 
     //protected:
 
-    virtual AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback> * getDistributer () 
+    virtual AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback> * getDistributer() 
 	{
 	    return & distributer;
 	}
 
+    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	{
+	    ACS_TRACE("BulkDataDistributerImpl<>::getCbStatus");
+
+	    AVCbOkCompletion *comp = new AVCbOkCompletion();
+	    return comp->returnCompletion();
+	}
 
   private:
 

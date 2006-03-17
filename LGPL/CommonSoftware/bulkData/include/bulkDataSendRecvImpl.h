@@ -47,8 +47,11 @@
 
 #include "bulkDataSenderDefaultCb.h"
 
+#include "ACSBulkDataStatus.h"
+
 using namespace baci;
 using namespace maci;
+using namespace ACSBulkDataStatus;
 
 /** @file bulkDataSendRecvImpl.h 
  */
@@ -161,6 +164,16 @@ class BulkDataSendRecvImpl : public virtual CharacteristicComponentImpl,
 
     virtual void closeReceiver() 
 	throw (CORBA::SystemException, AVCloseReceiverErrorEx);
+
+    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	{
+	    ACS_TRACE("BulkDataSendRecvImpl::getCbStatus");
+
+	    AVCbOkCompletion *comp = new AVCbOkCompletion();
+	    
+	    return comp->returnCompletion();
+	}
 
   private:
 

@@ -157,6 +157,7 @@ class BulkDataSenderImpl : public CharacteristicComponentImpl,
 
     AcsBulkdata::BulkDataSender<TSenderCallback> sender;
 
+    bulkdata::BulkDataReceiver_ptr receiverObj_m;
 };
 
 typedef BulkDataSenderImpl<> BulkDataSenderDefaultImpl;

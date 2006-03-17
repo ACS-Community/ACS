@@ -32,6 +32,7 @@
 
 #include <baci.idl>
 #include "ACSBulkDataError.idl"
+#include "ACSBulkDataStatus.idl"
 #include <AVStreams.idl>
 #include <bulkData.idl>
 
@@ -78,6 +79,15 @@ module bulkdata
 	void closeReceiver()
 	    raises (ACSBulkDataError::AVCloseReceiverErrorEx);
 
+	/**
+	 *  Get callback status
+	 *  @return ACSErr::Completion
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	ACSErr::Completion getCbStatus(in unsigned long flowNumber)
+	    raises (ACSBulkDataError::AVInvalidFlowNumberEx);
 	};
 
     /** @interface BulkDataReceiverDistr

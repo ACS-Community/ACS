@@ -24,3 +24,4 @@ ManagerReference obtained via environment
 ManagerReference generated using localhost address
 Elapsed time
 Running the container with these arguments
+length of previous policy override list = 0. length of current policy override list = 1.

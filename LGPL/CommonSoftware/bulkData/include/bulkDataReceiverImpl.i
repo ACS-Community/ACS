@@ -136,3 +136,44 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 }
 
 
+template<class TCallback>
+ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong flowNumber) 
+    throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+{
+    ACS_TRACE("BulkDataReceiverImpl::getCbStatus");
+	
+    TCallback *cb = 0;
+
+    try
+	{
+	getReceiver()->getFlowCallback(flowNumber,cb);
+	}
+    catch(AVInvalidFlowNumberExImpl & ex)
+	{
+	throw ex.getAVInvalidFlowNumberEx();
+	}
+
+    if(cb->isTimeout() && cb->isSuspended())
+	{
+	AVCbPendingCompletion *comp = new AVCbPendingCompletion();
+	//comp->log();
+	return comp->returnCompletion();
+	}
+    if(cb->isTimeout())
+	{
+	AVCbTimeoutCompletion *comp = new AVCbTimeoutCompletion();
+	//comp->log();
+	return comp->returnCompletion();
+	}
+    if(cb->isSuspended())
+	{
+	AVCbWorkingCompletion *comp = new AVCbWorkingCompletion();
+	//comp->log();
+	return comp->returnCompletion();
+	}	
+    
+    AVCbOkCompletion *comp = new AVCbOkCompletion();
+    //comp->log();
+
+    return comp->returnCompletion();
+}

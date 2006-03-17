@@ -20,6 +20,8 @@ BulkDataCallback::BulkDataCallback()
     bufParam_p = 0;
 
     timeout_m = false;
+
+    suspend_m = false;
 }
 
 
@@ -35,8 +37,10 @@ int BulkDataCallback::handle_start(void)
     
     // cout << "BulkDataCallback::handle_start - state_m: " << state_m << endl;
 
-    if(timeout_m == true)
-	ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_start - timeout_m == true !!!"));
+    //if(timeout_m == true)
+    //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_start - timeout_m == true !!!"));
+
+    timeout_m = false;
     
     state_m = CB_UNS;
     substate_m = CB_SUB_UNS;
@@ -262,12 +266,14 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	
 	if (state_m == CB_SEND_DATA)
 	    {
+	    suspend_m = true;
 	    res = cbReceive(frame);
-	    if(timeout_m == true)
-		{
-		//cout << "!!!!!!! in receive_frame timeout_m == true after timeout - set it to false" << endl;
-		timeout_m = false;
-		}
+	    suspend_m = false;
+//	    if(timeout_m == true)
+//		{
+//		//cout << "!!!!!!! in receive_frame timeout_m == true after timeout - set it to false" << endl;
+//		timeout_m = false;
+//		}
 	    count_m += frame->length();
 	    errorCounter = 0;
 	    return res;
@@ -348,3 +354,17 @@ void BulkDataCallback::setSafeTimeout(CORBA::ULong locLoop)
 }
 
 
+CORBA::Boolean BulkDataCallback::isTimeout()
+{
+    ACS_TRACE("BulkDataCallback::isTimeout");
+
+    return timeout_m;
+}
+
+
+CORBA::Boolean BulkDataCallback::isSuspended()
+{
+    ACS_TRACE("BulkDataCallback::isSuspended");
+
+    return suspend_m;
+}

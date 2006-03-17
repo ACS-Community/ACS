@@ -60,6 +60,10 @@ class BulkDataCallback : public TAO_AV_Callback
 
     virtual void setSafeTimeout(CORBA::ULong locLoop);
 
+    virtual CORBA::Boolean isTimeout();
+
+    virtual CORBA::Boolean isSuspended();
+
     /********************* methods to be implemented by the user *****************/
 
     virtual int cbStart(ACE_Message_Block * userParam_p = 0) = 0;
@@ -94,6 +98,8 @@ class BulkDataCallback : public TAO_AV_Callback
     ACE_Message_Block *bufParam_p;
 
     CORBA::Boolean timeout_m;
+
+    CORBA::Boolean suspend_m;
 };
 
 

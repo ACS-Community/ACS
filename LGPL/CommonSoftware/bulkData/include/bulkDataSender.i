@@ -308,7 +308,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
 
 
 template<class TSenderCallback>
-void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, ACE_Message_Block *buffer_p)
+void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, ACE_Message_Block *buffer_p, unsigned long timeout)
 {
     ACS_TRACE("BulkDataSender<>::startSend(ACE_Message_Block *)");
 
@@ -352,14 +352,34 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	throw err;
 	}
 
-    streamctrl_p->stop(locSpec);
-}
+    // ACE_High_Res_Timer elapsed_timer;
+    // elapsed_timer.start ();
+ 
+    try
+	{
+	acsQoS::Timeout tim(timeout);
+
+	streamctrl_p->stop(locSpec);
+	}
+    catch(...)
+	{
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	throw err;
+	}
+    
+    // elapsed_timer.stop ();
+    // ACE_Time_Value elapsed_time;
+    // elapsed_timer.elapsed_time (elapsed_time);
+    // cout << "Elapsed_time in msec " << elapsed_time.msec () << endl;
+ }
 
 
 template<class TSenderCallback>
-void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, const char *buffer_p, size_t len)
+void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, const char *buffer_p, size_t len, unsigned long timeout)
 {
     ACS_TRACE("BulkDataSender<>::startSend(const char *)");
+
+// timeout
 
     int res = 0;
 
@@ -400,7 +420,19 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	throw err;
 	}
 
-    streamctrl_p->stop(locSpec);
+    try
+	{
+	acsQoS::Timeout tim(timeout);
+
+	streamctrl_p->stop(locSpec);
+	}
+    catch(...)
+	{
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	throw err;
+	}
+
+
 }
 
 
@@ -476,6 +508,24 @@ const char * AcsBulkdata::BulkDataSender<TSenderCallback>::getFlowSpec(const ACE
 
     return CORBA::string_dup (flowSpec.c_str());
 
+}
+
+
+template<class TSenderCallback>
+vector<string> AcsBulkdata::BulkDataSender<TSenderCallback>::getFlowNames()
+{
+    ACE_TRACE("BulkDataSender<>::getFlowNames");
+
+    vector<string> flwNames;
+    ACE_CString flowname;
+
+    for(CORBA::ULong i = 0; i < senderFeps_m.length(); i++)
+	{
+	flowname = TAO_AV_Core::get_flowname(senderFeps_m[i]);
+	flwNames.push_back(flowname.c_str());
+	}
+
+    return flwNames;
 }
 
 
