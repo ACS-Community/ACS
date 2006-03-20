@@ -37,16 +37,16 @@ import CORBA
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 
-from Acssim.Servants.BaseEntry         import BaseEntry
+from Acssim.Servants.Representations.BaseRepresentation         import BaseRepresentation
 from Acssim.Servants.Generator         import getRandomValue
 #--GLOBALS---------------------------------------------------------------------
 
 from Acssim.Servants.Goodies import IR
 from Acssim.Servants.Goodies import getStandardTimeout
 #------------------------------------------------------------------------------
-class DynamicEntry(BaseEntry):
+class Dynamic(BaseRepresentation):
     '''
-    Class derived from BaseEntry which dynamically generates method
+    Class derived from BaseRepresentation which dynamically generates method
     implementations on the fly.
     '''
     #--------------------------------------------------------------------------
@@ -55,7 +55,7 @@ class DynamicEntry(BaseEntry):
         '''
         global IR
         #superclass constructor
-        BaseEntry.__init__(self, compname)
+        BaseRepresentation.__init__(self, compname)
 
         #save the IDL type
         self.comp_type = comptype
@@ -64,7 +64,7 @@ class DynamicEntry(BaseEntry):
         self.__interf = self.__interf._narrow(CORBA.InterfaceDef)
         self.__interf = self.__interf.describe_interface()
         
-        self.__logger = getLogger("Acssim.Servants.DynamicEntry")
+        self.__logger = getLogger("Acssim.Servants.Dynamic")
         
     #--------------------------------------------------------------------------
     def getMethod(self, method_name, comp_ref):

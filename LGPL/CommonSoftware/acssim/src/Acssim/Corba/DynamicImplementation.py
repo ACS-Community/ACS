@@ -1,4 +1,4 @@
-# @(#) $Id: DynamicImplementation.py,v 1.7 2006/03/17 23:49:27 dfugate Exp $
+# @(#) $Id: DynamicImplementation.py,v 1.8 2006/03/20 21:06:51 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: DynamicImplementation.py,v 1.7 2006/03/17 23:49:27 dfugate Exp $"
+# "@(#) $Id: DynamicImplementation.py,v 1.8 2006/03/20 21:06:51 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -38,7 +38,7 @@ import omniORB
 import CORBA
 
 #--GLOBALS---------------------------------------------------------------------
-
+__revision__="@(#) $Id: DynamicImplementation.py,v 1.8 2006/03/20 21:06:51 dfugate Exp $"
 #------------------------------------------------------------------------------
 def _mergeClasses(complete_dict, new_class):
     '''
@@ -160,14 +160,10 @@ class DynamicImplementation:
         #now that all the underlying infrastructure is in place, we can finally use
         #CORBA introspection to start adding methods!
         #get the interface repository.       
-        ir = interfaceRepository()
-        
-        if ir is None:
-            raise CORBA.INTF_REPOS(omniORB.INTF_REPOS_NotAvailable,
-                                   CORBA.COMPLETED_NO)
+        ifr = interfaceRepository()
                                    
         #assume this can be found in a subclass as well.
-        self.__interf = ir.lookup_id(self._NP_RepositoryId)
+        self.__interf = ifr.lookup_id(self._NP_RepositoryId)
         self.__interf = self.__interf._narrow(CORBA.InterfaceDef)
         self.__interf = self.__interf.describe_interface()
 

@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.6 2006/03/17 23:49:27 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.7 2006/03/20 21:06:51 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.6 2006/03/17 23:49:27 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.7 2006/03/20 21:06:51 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -33,7 +33,6 @@ simulated component behavior from interactive Python container sessions.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 from inspect import isfunction
-from time    import sleep
 from copy    import copy
 #--CORBA STUBS-----------------------------------------------------------------
 
@@ -44,6 +43,7 @@ from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
+__revision__="@(#) $Id: Goodies.py,v 1.7 2006/03/20 21:06:51 dfugate Exp $"
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
@@ -166,7 +166,7 @@ def addGlobalData(name, value):
 
     Raises: ???
     '''
-    if name!="addGlobalData" and name!="removeGlobalData":
+    if name != "addGlobalData" and name != "removeGlobalData":
         _GLOBALS[str(name)] = value
     else:
         raise "Cannot add 'addGlobalData' or 'removeGlobalData'"
@@ -186,7 +186,7 @@ def removeGlobalData(name):
 
     Raises: ???
     '''
-    if name!="addGlobalData" and name!="removeGlobalData":
+    if name != "addGlobalData" and name != "removeGlobalData":
         del _GLOBALS[str(name)]
     else:
         raise "Cannot remove 'addGlobalData' or 'removeGlobalData'"  
@@ -240,11 +240,11 @@ def getCompLocalNS(comp_name):
                              comp_ifr_id.split('IDL:')[1].replace(":", "/"))
         
         comp_ifr_ids = getSuperIDs(comp_ifr_id)
-        for id in comp_ifr_ids:
+        for temp_id in comp_ifr_ids:
             
-            id = id.split('IDL:')[1].replace(":", "/")
-            id = cdb_location + id
-            comp_cdb_list.append(id)
+            temp_id = temp_id.split('IDL:')[1].replace(":", "/")
+            temp_id = cdb_location + temp_id
+            comp_cdb_list.append(temp_id)
         
         for comp_name in comp_cdb_list:
             #-------------------------------
@@ -290,7 +290,7 @@ def setCHARS(new_char_list):
     Raises: Nothing
     '''
     global CHARS
-    CHARS=new_char_list
+    CHARS = new_char_list
     return
 #------------------------------------------------------------------------------
 def getCHARS():
@@ -432,22 +432,14 @@ def setComponentMethod(comp_name,
 
     Raises: Nothing
     '''
-    from Acssim.Servants.SimulatedEntry import SimulatedEntry
-    
     if not isfunction(code_list):
         code = copy(code_list)
     else:
         code = code_list
-
-    #first check to see if this component has an entry
-    if not getCompSim().has_key(comp_name):
-        #if not, create it
-        if not getCompSim().has_key(comp_name):
-            getCompSim()[comp_name] = SimulatedEntry(comp_name)
-
+    
     #create the temporary dictionary
     temp_dict = { 'Value':code,
              'Timeout': float(timeout)}
-
+    
     #store it globally
-    getCompSim()[compName].api_handler.setMethod(methName, tDict)
+    getCompSim()[comp_name].api_handler.setMethod(meth_name, temp_dict)

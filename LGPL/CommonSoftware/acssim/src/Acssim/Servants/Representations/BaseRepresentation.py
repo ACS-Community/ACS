@@ -40,7 +40,7 @@ from Acspy.Common.Log                  import getLogger
 #--GLOBALS---------------------------------------------------------------------
  
 #------------------------------------------------------------------------------
-class BaseEntry:
+class BaseRepresentation:
     '''
     Class SimulatedEntry is a baseclass which describes simulated components.
     '''

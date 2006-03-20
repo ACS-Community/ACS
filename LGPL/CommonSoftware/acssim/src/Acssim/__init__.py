@@ -1,7 +1,6 @@
-# @(#) $Id: __init__.py,v 1.2 2004/11/10 22:53:04 dfugate Exp $
+# @(#) $Id: __init__.py,v 1.3 2006/03/20 21:06:51 dfugate Exp $
 '''
-Developers interested in the simulator API should examine the setXxx methods
-found in the Acssim.Servants.Generator module.
+Developers interested in the simulator API should examine the 
+Acssim.Servants.Goodies module.
 '''
-import Servants, Corba
-
+__revision__="@(#) $Id: __init__.py,v 1.3 2006/03/20 21:06:51 dfugate Exp $"

@@ -37,13 +37,13 @@ from operator import isSequenceType
 
 #--ACS Imports-----------------------------------------------------------------
 from Acssim.Servants.Goodies import getComponentXMLObj
-from Acssim.Servants.BaseEntry import BaseEntry
+from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-class SimulatedCDBEntry(BaseEntry):
+class CDB(BaseRepresentation):
     '''
-    Class derived from BaseEntry to be used only with the CDB. In other words,
+    Class derived from BaseRepresentation to be used only with the CDB. In other words,
     this class searches the CDB for entries describing method/attribute return
     values.
     '''
@@ -62,13 +62,13 @@ class SimulatedCDBEntry(BaseEntry):
         Raises: ???
         '''
         #superclass constructor
-        BaseEntry.__init__(self, compname)
+        BaseRepresentation.__init__(self, compname)
         
         #bool value showing whether the CDB entry exists or not
         self.exists=0
         
         #determine if this simulated component allows inheritence
-        allows_inheritence = self.handleCDBEntry(self.compname)
+        allows_inheritence = self.handleCDB(compname)
         
         if allows_inheritence:
             #look at all supported IDL interfaces first
@@ -78,10 +78,10 @@ class SimulatedCDBEntry(BaseEntry):
         #anything defined in the subinterfaces. this is necessary if
         #the component is of type IDL:alma/x/y:1.0 and this entry
         #exists in the CDB
-        self.handleCDBEntry(self.compname)
+        self.handleCDB(compname)
             
     #--------------------------------------------------------------------------
-    def handleCDBEntry(self, name):
+    def handleCDB(self, name):
         '''
         Handles an individual CDB entry. This means that if parameter, "name",
         exists within the ACS CDB; we take all info found within the CDB XML
@@ -139,7 +139,7 @@ class SimulatedCDBEntry(BaseEntry):
             cdb_location = cdb_location + supported_interface
             
             #now try to extract some useful info
-            self.handleCDBEntry(cdb_location)
+            self.handleCDB(cdb_location)
             
     #--------------------------------------------------------------------------
     def getCorbaMethods(self, xml_obj):

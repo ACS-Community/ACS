@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.8 2006/03/17 23:49:27 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.9 2006/03/20 21:06:51 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.8 2006/03/17 23:49:27 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.9 2006/03/20 21:06:51 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -177,4 +177,4 @@ def _executeList(code_list, args, local_ns):
         return final_val
 #---------------------------------
 #the final thing we do is startup the GUI
-import Acssim.Servants.SimGUI
+import Acssim.Servants.Widgets

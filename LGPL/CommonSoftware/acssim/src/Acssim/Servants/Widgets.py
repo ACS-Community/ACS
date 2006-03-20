@@ -1,4 +1,4 @@
-# @(#) $Id: SimGUI.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $
+# @(#) $Id$
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimGUI.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $"
+# "@(#) $Id$"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -51,7 +51,6 @@ import Pmw
 
 from Acspy.Util.ACSCorba import getClient
 from Acspy.Util.ACSCorba import getManager
-from Acssim.Servants.Goodies import setComponentMethod
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -77,7 +76,7 @@ class MethodInfo:
 
         Parameters:
         - parent is the parent widget
-        - guiRef is a reference to an ACSSimGUI object
+        - guiRef is a reference to an MainWindow object
         '''
         #name of the component
         self.compName = guiRef.compNamesPanel.getvalue()
@@ -89,7 +88,7 @@ class MethodInfo:
         self.compMethod = guiRef.methodsSLB.getvalue()[0]
         ############################################################
         #Create the top level widget which is completely separate from
-        #the parent (e.g., ACSSimGUI) widget
+        #the parent (e.g., MainWindow) widget
         megaTopLevel = Pmw.MegaToplevel(parent, title = self.compName + ": " + self.compMethod)
 	self.tl = megaTopLevel.interior()
         ############################################################
@@ -150,11 +149,13 @@ class MethodInfo:
         if self.opType=="Attributes":
             methName = "_get_" + methName
         
-        #just invoke the appropriate simulator API method!
-        setComponentMethod(self.compName,
-                           methName,
-                           codeList=self.st.getvalue().strip().split('\n'),
-                           timeout=self.sleepCounter.getvalue())
+        #create the temporary dictionary
+        temp_dict = { 'Value': self.st.getvalue().strip().split('\n'),
+                      'Timeout': float(self.sleepCounter.getvalue())}
+    
+        #store it globally
+        getCompSim()[self.compName].gui_handler.setMethod(methName, tDict)
+        
     #------------------------------------------------------------------------------
     def clear(self):
         '''
@@ -165,7 +166,7 @@ class MethodInfo:
         #clear the scroll text box for code entry
         self.st.clear()
 #----------------------------------------------------------------------------------
-class ACSSimGUI:
+class MainWindow:
     '''
     Primary GUI panel for the ACS Simulator GUI. Allows end-user to set global
     options as well as configure specific code to be executed on method invocations
@@ -408,7 +409,7 @@ if environ.has_key('DISPLAY'):
     #make sure everything can shutdown properly
     exitButton = Tkinter.Button(root, text = 'Exit', command = root.destroy)
     exitButton.pack(side = 'bottom')
-    widget = ACSSimGUI(root)
+    widget = MainWindow(root)
     
     #run the widget until the end-user clicks the Exit button
     start_new_thread(root.mainloop, ())

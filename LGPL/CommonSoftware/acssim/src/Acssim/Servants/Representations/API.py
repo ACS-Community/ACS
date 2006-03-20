@@ -35,13 +35,13 @@ TODO:
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
-from Acssim.Servants.BaseEntry import BaseEntry
+from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
 #--GLOBALS---------------------------------------------------------------------
  
 #------------------------------------------------------------------------------
-class APIEntry(BaseEntry):
+class API(BaseRepresentation):
     '''
-    APIEntry
+    API
     '''
     #--------------------------------------------------------------------------
     def __init__(self, compname):
@@ -55,6 +55,6 @@ class APIEntry(BaseEntry):
 
         Raises: Nothing
         '''
-        BaseEntry.__init__(self, compname)
+        BaseRepresentation.__init__(self, compname)
     #--------------------------------------------------------------------------
     

@@ -41,9 +41,9 @@ from Acspy.Util.ACSCorba        import interfaceRepository
 from Acspy.Util.ACSCorba import getClient
 from Acspy.Util.ACSCorba import getManager
 #--GLOBALS---------------------------------------------------------------------
+__revision__="@(#) $Id$"
 omniORB.importIRStubs()
 IFR = interfaceRepository()
-IFR = IFR._narrow(CORBA.Repository)
 #------------------------------------------------------------------------------
 def getCompIfrID(comp_name):
     '''
@@ -51,10 +51,14 @@ def getCompIfrID(comp_name):
     or throws an exception if the ID cannot be determined.
     '''
     #get a list of component info's
-    comp_list = getManager().get_component_info(getClient().token.h, [],"*", "*", 0)
+    comp_list = getManager().get_component_info(getClient().token.h, 
+                                                [], 
+                                                "*", 
+                                                "*", 
+                                                0)
     
     for comp in comp_list:
-        if comp.name==comp_name:
+        if comp.name == comp_name:
             return comp.type
         
     #sanity check

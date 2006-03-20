@@ -1,4 +1,4 @@
-# @(#) $Id: SimulatedEntry.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $
+# @(#) $Id: SimulatedEntry.py,v 1.4 2006/03/20 21:06:51 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimulatedEntry.py,v 1.3 2006/03/17 23:49:27 dfugate Exp $"
+# "@(#) $Id: SimulatedEntry.py,v 1.4 2006/03/20 21:06:51 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -37,9 +37,10 @@ from copy    import copy
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log                  import getLogger
-from Acssim.Servants.Entries.SimulatedCDBEntry import SimulatedCDBEntry
-from Acssim.Servants.Entries.DynamicEntry      import DynamicEntry
-from Acssim.Servants.Entries.APIEntry          import APIEntry
+from Acssim.Servants.Representations.CDB import CDB
+from Acssim.Servants.Representations.GUI import GUI
+from Acssim.Servants.Representations.Dynamic      import Dynamic
+from Acssim.Servants.Representations.API          import API
 from Acssim.Corba.Utilities            import getCompIfrID
 from Acssim.Corba.Utilities            import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
@@ -72,6 +73,7 @@ class SimulatedEntry:
         self.dynamic_handler = None
         self.cdb_handler = None
         self.api_handler = None
+        self.gui_handler = None
         
         self.setupCases()
     #--------------------------------------------------------------------------
@@ -87,19 +89,27 @@ class SimulatedEntry:
         if_list.append(comp_type)
         
         #create a dynamic handler object
-        self.dynamic_handler = DynamicEntry(self.compname, comp_type)
+        self.dynamic_handler = Dynamic(self.compname, comp_type)
         
         #create a CDB handler object
-        self.cdb_handler = SimulatedCDBEntry(self.compname, if_list)
+        self.cdb_handler = CDB(self.compname, if_list)
         
         #create an API handler object
-        self.api_handler = APIEntry(self.compname)
+        self.api_handler = API(self.compname)
+        
+        #create a GUI handler object
+        self.gui_handler = GUI(self.compname)
     #--------------------------------------------------------------------------
     def getMethod(self, meth_name, comp_ref=None):
         '''
         Returns a Python dictionary describing the given method or None if it
         does not exist.
         '''
+        if self.gui_handler.getMethod(meth_name) != None:
+            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
+                                 self.compname + "' simulated component using the GUI.")
+            return self.gui_handler.getMethod(meth_name)
+        
         if self.api_handler.getMethod(meth_name) != None:
             self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
                                  self.compname + "' simulated component using the API.")
