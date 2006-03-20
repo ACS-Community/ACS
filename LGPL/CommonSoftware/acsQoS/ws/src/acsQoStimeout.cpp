@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsQoStimeout.cpp,v 1.9 2006/02/10 21:44:16 sharring Exp $"
+* "@(#) $Id: acsQoStimeout.cpp,v 1.10 2006/03/20 22:28:46 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-08-24  created 
 */
 
-static char *rcsId="@(#) $Id: acsQoStimeout.cpp,v 1.9 2006/02/10 21:44:16 sharring Exp $"; 
+static char *rcsId="@(#) $Id: acsQoStimeout.cpp,v 1.10 2006/03/20 22:28:46 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsQoStimeout.h"
@@ -51,11 +51,14 @@ Timeout::Timeout(unsigned long timeout) :
 
 			TimeBase::TimeT oldTimeout = m->relative_expiry();
 
-			ACE_OS::printf("Setting timeout to: %lu. Previous timeout was: %lu\n", 
-				timeout_m, static_cast<unsigned long>(oldTimeout/10000));
+			ACS_DEBUG_PARAM ("Timeout::Timeout", "Constructing timeout; old timeout was: %lu", static_cast<unsigned long>(oldTimeout/10000));
+			ACS_DEBUG_PARAM ("Timeout::Timeout", "Constructing timeout; new timeout is: %lu", timeout_m);
 
 			previousPolicy_m.length(1);
 			previousPolicy_m[0] = (*policyList)[0]->copy();
+		}
+		else {
+			ACS_DEBUG_PARAM ("Timeout::Timeout", "Constructing timeout with value of: %lu and no previous timeout value.", timeout_m);
 		}
 
 		set();
@@ -78,16 +81,17 @@ Timeout::~Timeout()
 		// overriden_policy_list.length() has to be at least 1 since we override one in constructor
 		unsigned int j = previousPolicy_m.length();
 
-		ACE_OS::printf("length of previous policy override list = %d. length of current policy override list = %d.\n", 
-			j, overriden_policy_list->length());
-
 		if (j>0)
 		{
 			Messaging::RelativeRoundtripTimeoutPolicy_var m;
 			m = Messaging::RelativeRoundtripTimeoutPolicy::_narrow(previousPolicy_m[0]);
 			TimeBase::TimeT timeout = m->relative_expiry();
-			ACE_OS::printf("Timeout destructor resetting timeout to: %lu\n",  (unsigned long)(timeout/10000));
+			ACS_DEBUG_PARAM ("Timeout::~Timeout", "Deleting timeout and resetting timeout to prevous value of: %lu", (unsigned long)(timeout/10000)); 
 		}
+		else {
+			ACS_DEBUG("Timeout::~Timeout", "Deleting timeout: no previous value exists, so not resetting.");
+		}
+
 		previousPolicy_m.length (overriden_policy_list->length() - 1 + j );
     
 		for (unsigned int i=0u; i < overriden_policy_list->length(); i++)

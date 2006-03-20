@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: timeoutTestClient.cpp,v 1.8 2006/02/28 19:25:11 sharring Exp $"
+* "@(#) $Id: timeoutTestClient.cpp,v 1.9 2006/03/20 22:28:47 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-08-24  created
 */
 
-static char *rcsId="@(#) $Id: timeoutTestClient.cpp,v 1.8 2006/02/28 19:25:11 sharring Exp $"; 
+static char *rcsId="@(#) $Id: timeoutTestClient.cpp,v 1.9 2006/03/20 22:28:47 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "timeoutTestC.h"
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	try
 	{
 		timeoutTest->echo(0, 1000);
-		ACS_SHORT_LOG((LM_INFO,"Method w/o timeout executed successfully."));
+		ACS_SHORT_LOG((LM_INFO,"SUCCESS 1: Method w/o timeout executed successfully."));
 	}
 	catch (CORBA::TIMEOUT timeout)
 	{
@@ -74,27 +74,27 @@ int main(int argc, char *argv[])
 	}
 	catch (CORBA::TIMEOUT timeout)
 	{
-		ACS_SHORT_LOG((LM_INFO, "Timeout exception caught, this is expected."));
+		ACS_SHORT_LOG((LM_INFO, "SUCCESS 2: Timeout exception caught, this is expected."));
 	}
 
 	// test if setting timeout on the object level works
 	try
 	{
-		TimeOutTest_var timed_timeoutTest =  acsQoS::Timeout::setObjectTimeout(400, timeoutTest.in());
+		TimeOutTest_var timed_timeoutTest =  acsQoS::Timeout::setObjectTimeout(900, timeoutTest.in());
 
-		timed_timeoutTest->echo(0, 1000);
+		timed_timeoutTest->echo(0, 950);
 		ACS_SHORT_LOG((LM_INFO,"ERROR 2:  timeout exception was expected but not thrown."));
 	}
 	catch (CORBA::TIMEOUT timeout)
 	{
-		ACS_SHORT_LOG((LM_INFO, "Timeout exception caught, this is expected."));
+		ACS_SHORT_LOG((LM_INFO, "SUCCESS 3: Timeout exception caught, this is expected."));
 	}
 
 	// check if deleting timeout object resets timeout value
 	try
 	{
-		timeoutTest->echo(0, 1000);
-		ACS_SHORT_LOG((LM_INFO,"Method w/o timeout executed successfully."));
+		timeoutTest->echo(0, 450);
+		ACS_SHORT_LOG((LM_INFO,"SUCCESS 4: Method w/o timeout executed successfully."));
 	}
 	catch (CORBA::TIMEOUT timeout)
 	{
