@@ -164,7 +164,8 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 		while(loop)
 		    {
 		    CompletionImpl comp = receiverObj_m->getCbStatus(i+1);
-		    if ((comp.getCode() == ACSBulkDataStatus::AVCbOk) || (comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
+		    if ((comp.getCode() == ACSBulkDataStatus::AVCbReady) || 
+			(comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
 			{
 			loop = false;
 			}

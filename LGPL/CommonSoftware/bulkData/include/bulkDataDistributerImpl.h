@@ -192,7 +192,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	{
 	    ACS_TRACE("BulkDataDistributerImpl<>::getCbStatus");
 
-	    AVCbOkCompletion *comp = new AVCbOkCompletion();
+	    AVCbReadyCompletion *comp = new AVCbReadyCompletion();
 	    return comp->returnCompletion();
 	}
 

@@ -201,60 +201,70 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
 	}
     flowNumber--;
 
-    AVStreams::flowSpec locSpec(1);
-    locSpec.length(1);
-    ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
-    locSpec[0] = flowSpec_m[flowNumber];
-
-    streamctrl_p->start(locSpec);
-
-    TAO_AV_Protocol_Object *dp_p = 0;
-
-    getFlowProtocol(flowname, dp_p);
-
-    char tmp[255];
-
-    if(param_p != 0)
+    try
 	{
-	ACE_OS::sprintf(tmp, "1 %u", (unsigned int)param_p->length());
+	AVStreams::flowSpec locSpec(1);
+	locSpec.length(1);
+	ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
+	locSpec[0] = flowSpec_m[flowNumber];
+	
+	streamctrl_p->start(locSpec);
+	
+	TAO_AV_Protocol_Object *dp_p = 0;
+	
+	getFlowProtocol(flowname, dp_p);
+	
+	char tmp[255];
+	
+	if(param_p != 0)
+	    {
+	    ACE_OS::sprintf(tmp, "1 %u", (unsigned int)param_p->length());
+	    }
+	else
+	    {
+	    ACE_OS::sprintf(tmp, "1 0");
+	    }      
+
+	res = dp_p->send_frame(tmp, sizeof(tmp));
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	    throw err;
+	    }
+	
+	streamctrl_p->stop(locSpec);
+	
+	if(param_p != 0)
+	    {
+	    res = dp_p->send_frame(param_p);
+	    }
+	else
+	    {
+	    ACE_Message_Block *locMb;
+	    locMb = new ACE_Message_Block(1);
+	    *locMb->wr_ptr()='\0';
+	    locMb->wr_ptr(sizeof(char));
+	    
+	    res = dp_p->send_frame(locMb);
+	
+	    locMb->release();
+	    }
+	
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	throw err;
+	    }
+
+	streamctrl_p->stop(locSpec);
+	
 	}
-    else
+    catch(...)
 	{
-	ACE_OS::sprintf(tmp, "1 0");
-	}      
-
-    res = dp_p->send_frame(tmp, sizeof(tmp));
-    if(res < 0)
-	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
 
-    streamctrl_p->stop(locSpec);
-
-    if(param_p != 0)
-	{
-	res = dp_p->send_frame(param_p);
-	}
-    else
-	{
-	ACE_Message_Block *locMb;
-	locMb = new ACE_Message_Block(1);
-	*locMb->wr_ptr()='\0';
-	locMb->wr_ptr(sizeof(char));
-
-	res = dp_p->send_frame(locMb);
-	
-	locMb->release();
-	}
-	
-    if(res < 0)
-	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
-	throw err;
-	}
-
-    streamctrl_p->stop(locSpec);   
 }
 
 
@@ -274,36 +284,45 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
 
     flowNumber--;
 
-    AVStreams::flowSpec locSpec(1);
-    locSpec.length(1);
-    ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
-    locSpec[0] = flowSpec_m[flowNumber];
-
-    streamctrl_p->start(locSpec);
-
-    TAO_AV_Protocol_Object *dp_p = 0;
-    getFlowProtocol(flowname, dp_p);
-
-    int locDim = 255;
-    char tmp[locDim];
-    ACE_OS::sprintf(tmp, "1 %u", (unsigned int)len); 
-    res = dp_p->send_frame(tmp, locDim);
-    if(res < 0)
+    try
 	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	AVStreams::flowSpec locSpec(1);
+	locSpec.length(1);
+	ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
+	locSpec[0] = flowSpec_m[flowNumber];
+
+	streamctrl_p->start(locSpec);
+
+	TAO_AV_Protocol_Object *dp_p = 0;
+	getFlowProtocol(flowname, dp_p);
+
+	int locDim = 255;
+	char tmp[locDim];
+	ACE_OS::sprintf(tmp, "1 %u", (unsigned int)len); 
+	res = dp_p->send_frame(tmp, locDim);
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	    throw err;
+	    }
+
+	streamctrl_p->stop(locSpec);
+	
+	res = dp_p->send_frame(param_p, len);
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	    throw err;
+	    }
+
+	streamctrl_p->stop(locSpec);
+	}
+    catch(...)
+	{
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
 
-    streamctrl_p->stop(locSpec);
- 
-    res = dp_p->send_frame(param_p, len);
-    if(res < 0)
-	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
-	throw err;
-	}
-
-    streamctrl_p->stop(locSpec);
 }
 
 
@@ -322,44 +341,51 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     flowNumber--;
 
-    AVStreams::flowSpec locSpec(1);
-    locSpec.length(1);
-    ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
-    locSpec[0] = flowSpec_m[flowNumber];
-
-    streamctrl_p->start(locSpec);
-
-    TAO_AV_Protocol_Object *dp_p = 0;
-    getFlowProtocol(flowname, dp_p);
-
-    char tmp[255];
-    ACE_OS::sprintf(tmp, "2 %u", (unsigned int)buffer_p->length()); 
-
-    res = dp_p->send_frame(tmp, sizeof(tmp));
-    if(res < 0)
-	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
-	throw err;
-	}
-
-    streamctrl_p->stop(locSpec);
-
-    //cout << "TTTTTTTTTT: lenbuf: " << buffer_p->length() << endl;
-    res = dp_p->send_frame(buffer_p);
-    if(res < 0)
-	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
-	throw err;
-	}
-
-    // ACE_High_Res_Timer elapsed_timer;
-    // elapsed_timer.start ();
- 
     try
 	{
-	acsQoS::Timeout tim(timeout);
+
+	AVStreams::flowSpec locSpec(1);
+	locSpec.length(1);
+	ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
+	locSpec[0] = flowSpec_m[flowNumber];
+
+	streamctrl_p->start(locSpec);
+
+	TAO_AV_Protocol_Object *dp_p = 0;
+	getFlowProtocol(flowname, dp_p);
+
+	char tmp[255];
+	ACE_OS::sprintf(tmp, "2 %u", (unsigned int)buffer_p->length()); 
+
+	res = dp_p->send_frame(tmp, sizeof(tmp));
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	    throw err;
+	    }
 
 	streamctrl_p->stop(locSpec);
+
+	//cout << "TTTTTTTTTT: lenbuf: " << buffer_p->length() << endl;
+	res = dp_p->send_frame(buffer_p);
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	    throw err;
+	    }
+
+	// ACE_High_Res_Timer elapsed_timer;
+	// elapsed_timer.start ();
+ 
+	acsQoS::Timeout tim(timeout);
+	
+	streamctrl_p->stop(locSpec);
+	}
+    catch(CORBA::TIMEOUT & tim)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::sendData TIMEOUT expired!"));
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	throw err;
 	}
     catch(...)
 	{
@@ -391,40 +417,46 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     flowNumber--;
 
-    AVStreams::flowSpec locSpec(1);
-    locSpec.length(1);
-    ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
-    locSpec[0] = flowSpec_m[flowNumber];
-
-    streamctrl_p->start(locSpec);
-
-    TAO_AV_Protocol_Object *dp_p = 0;
-    getFlowProtocol(flowname, dp_p);
-
-    int locDim = 255;
-    char tmp[locDim];
-    ACE_OS::sprintf(tmp, "2 %u", (unsigned int)len); 
-    res = dp_p->send_frame(tmp, locDim);
-    if(res < 0)
-	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
-	throw err;
-	}
-
-    streamctrl_p->stop(locSpec);
-
-    res = dp_p->send_frame(buffer_p, len);
-    if(res < 0)
-	{
-	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
-	throw err;
-	}
-
     try
 	{
-	acsQoS::Timeout tim(timeout);
+	AVStreams::flowSpec locSpec(1);
+	locSpec.length(1);
+	ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
+	locSpec[0] = flowSpec_m[flowNumber];
+	
+	streamctrl_p->start(locSpec);
+
+	TAO_AV_Protocol_Object *dp_p = 0;
+	getFlowProtocol(flowname, dp_p);
+
+	int locDim = 255;
+	char tmp[locDim];
+	ACE_OS::sprintf(tmp, "2 %u", (unsigned int)len); 
+	res = dp_p->send_frame(tmp, locDim);
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	    throw err;
+	    }
 
 	streamctrl_p->stop(locSpec);
+
+	res = dp_p->send_frame(buffer_p, len);
+	if(res < 0)
+	    {
+	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	    throw err;
+	    }
+	
+	acsQoS::Timeout tim(timeout);
+	
+	streamctrl_p->stop(locSpec);
+	}
+    catch(CORBA::TIMEOUT & tim)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::sendData TIMEOUT expired!"));
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	throw err;
 	}
     catch(...)
 	{
@@ -448,13 +480,20 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::stopSend(CORBA::ULong flowNum
 	throw err;
 	}
     flowNumber--;
-
-    AVStreams::flowSpec locSpec(1);
-    locSpec.length(1);
-    ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
-    locSpec[0] = flowSpec_m[flowNumber];
-
-    streamctrl_p->stop(locSpec);
+    
+    try 
+	{
+	AVStreams::flowSpec locSpec(1);
+	locSpec.length(1);
+	ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
+	locSpec[0] = flowSpec_m[flowNumber];
+	
+	streamctrl_p->stop(locSpec);
+	}
+    catch(...)
+	{
+	throw;
+	}
 }
 
 

@@ -170,7 +170,7 @@ class BulkDataSendRecvImpl : public virtual CharacteristicComponentImpl,
 	{
 	    ACS_TRACE("BulkDataSendRecvImpl::getCbStatus");
 
-	    AVCbOkCompletion *comp = new AVCbOkCompletion();
+	    AVCbReadyCompletion *comp = new AVCbReadyCompletion();
 	    
 	    return comp->returnCompletion();
 	}

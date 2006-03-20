@@ -153,9 +153,9 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 	throw ex.getAVInvalidFlowNumberEx();
 	}
 
-    if(cb->isTimeout() && cb->isSuspended())
+    if(cb->isTimeout() && cb->isWorking())
 	{
-	AVCbPendingCompletion *comp = new AVCbPendingCompletion();
+	AVCbWorkingTimeoutCompletion *comp = new AVCbWorkingTimeoutCompletion();
 	//comp->log();
 	return comp->returnCompletion();
 	}
@@ -165,14 +165,14 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 	//comp->log();
 	return comp->returnCompletion();
 	}
-    if(cb->isSuspended())
+    if(cb->isWorking())
 	{
 	AVCbWorkingCompletion *comp = new AVCbWorkingCompletion();
 	//comp->log();
 	return comp->returnCompletion();
 	}	
     
-    AVCbOkCompletion *comp = new AVCbOkCompletion();
+    AVCbReadyCompletion *comp = new AVCbReadyCompletion();
     //comp->log();
 
     return comp->returnCompletion();

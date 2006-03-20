@@ -62,7 +62,7 @@ class BulkDataCallback : public TAO_AV_Callback
 
     virtual CORBA::Boolean isTimeout();
 
-    virtual CORBA::Boolean isSuspended();
+    virtual CORBA::Boolean isWorking();
 
     /********************* methods to be implemented by the user *****************/
 
@@ -99,7 +99,7 @@ class BulkDataCallback : public TAO_AV_Callback
 
     CORBA::Boolean timeout_m;
 
-    CORBA::Boolean suspend_m;
+    CORBA::Boolean working_m;
 };
 
 

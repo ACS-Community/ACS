@@ -21,7 +21,7 @@ BulkDataCallback::BulkDataCallback()
 
     timeout_m = false;
 
-    suspend_m = false;
+    working_m = false;
 }
 
 
@@ -46,7 +46,7 @@ int BulkDataCallback::handle_start(void)
     substate_m = CB_SUB_UNS;
     
     frameCount_m = 1; // we need to wait for 1 following frame before doing anything else  
-    
+ 
     return 0;
 }
 
@@ -72,6 +72,7 @@ int BulkDataCallback::handle_stop (void)
 
 	if(state_m == CB_UNS)
 	    { 
+
 	    int res = cbStop();
 	    errorCounter = 0;
 	    return res;
@@ -172,8 +173,6 @@ int BulkDataCallback::handle_stop (void)
 	    }
 	}
 
-
-
     return 0;
 }
 
@@ -193,6 +192,8 @@ int BulkDataCallback::handle_destroy (void)
 
 int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &)
 {
+
+    working_m = true;
 
     //ACS_TRACE("BulkDataCallback::receive_frame");
     //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::receive_frame for flow %s", flowname_m.c_str()));
@@ -242,6 +243,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    count_m = 0;
 
 	    frameCount_m = 0;
+	    working_m = false;
 
 	    return 0;
 	    }
@@ -253,6 +255,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 		{
 		res = cbStart();
 		errorCounter = 0;
+		working_m = false;
 		return res;
 		}
 
@@ -260,15 +263,13 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 
 	    count_m += frame->length();
 	    errorCounter = 0;
-	    
+	    working_m = false;
 	    return 0;
 	    }
 	
 	if (state_m == CB_SEND_DATA)
 	    {
-	    suspend_m = true;
 	    res = cbReceive(frame);
-	    suspend_m = false;
 //	    if(timeout_m == true)
 //		{
 //		//cout << "!!!!!!! in receive_frame timeout_m == true after timeout - set it to false" << endl;
@@ -276,6 +277,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 //		}
 	    count_m += frame->length();
 	    errorCounter = 0;
+	    working_m = false;
 	    return res;
 	    }
 
@@ -321,6 +323,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    }
 	}
 
+    working_m = false;
     return 0;
 }
 
@@ -362,9 +365,9 @@ CORBA::Boolean BulkDataCallback::isTimeout()
 }
 
 
-CORBA::Boolean BulkDataCallback::isSuspended()
+CORBA::Boolean BulkDataCallback::isWorking()
 {
-    ACS_TRACE("BulkDataCallback::isSuspended");
+    ACS_TRACE("BulkDataCallback::isWorking");
 
-    return suspend_m;
+    return working_m;
 }
