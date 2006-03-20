@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsQoStimeout.cpp,v 1.10 2006/03/20 22:28:46 sharring Exp $"
+* "@(#) $Id: acsQoStimeout.cpp,v 1.11 2006/03/20 23:29:57 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-08-24  created 
 */
 
-static char *rcsId="@(#) $Id: acsQoStimeout.cpp,v 1.10 2006/03/20 22:28:46 sharring Exp $"; 
+static char *rcsId="@(#) $Id: acsQoStimeout.cpp,v 1.11 2006/03/20 23:29:57 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsQoStimeout.h"
@@ -86,7 +86,7 @@ Timeout::~Timeout()
 			Messaging::RelativeRoundtripTimeoutPolicy_var m;
 			m = Messaging::RelativeRoundtripTimeoutPolicy::_narrow(previousPolicy_m[0]);
 			TimeBase::TimeT timeout = m->relative_expiry();
-			ACS_DEBUG_PARAM ("Timeout::~Timeout", "Deleting timeout and resetting timeout to prevous value of: %lu", (unsigned long)(timeout/10000)); 
+			ACS_DEBUG_PARAM ("Timeout::~Timeout", "Deleting timeout and resetting timeout to previous value of: %lu", (unsigned long)(timeout/10000)); 
 		}
 		else {
 			ACS_DEBUG("Timeout::~Timeout", "Deleting timeout: no previous value exists, so not resetting.");
