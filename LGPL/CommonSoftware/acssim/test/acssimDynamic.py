@@ -36,21 +36,21 @@ class MockComponent:
     def activateOffShoot(self, os):
         return os
 
-name_obj = MockComponent()
+comp_obj = MockComponent()
            
 if __name__=="__main__":
     
     print "--TEST_RPS_1--"
     dyn = Dynamic("TEST_RPS_1", "IDL:alma/RampedPS/RampedPowerSupply:1.0")
     #from RampedPowerSupply
-    print "dyn.getMethod('startRamping'):",  dyn.getMethod('startRamping', name_obj)                
+    print "dyn.getMethod('startRamping'):",  dyn.getMethod('startRamping')                
     #from PowerSuppy
-    print "dyn.getMethod('_get_readback'):",  dyn.getMethod('_get_readback', name_obj)
+    print "dyn.getMethod('_get_readback'):",  dyn.getMethod('_get_readback')
     print
     
     print "--HELLOWORLD1--"
     dyn = Dynamic("HELLOWORLD1", "IDL:alma/acsexmplHelloWorld/HelloWorld:1.0")
-    print "dyn.getMethod('displayMessage'):",  dyn.getMethod('displayMessage', name_obj)           
+    print "dyn.getMethod('displayMessage'):",  dyn.getMethod('displayMessage')           
     print
     
     print "--BADCOMPONENT--"

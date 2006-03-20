@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.25 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.26 2006/03/20 23:25:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.25 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.26 2006/03/20 23:25:57 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -50,7 +50,7 @@ from Acspy.Util.ACSCorba     import interfaceRepository
 
 from Acssim.Corba.DynamicImplementation    import DynamicImplementation
 from Acssim.Servants.Executor              import _execute
-from Acssim.Servants.Goodies               import getCompSim
+from Acssim.Servants.Goodies               import getSimProxy
 from Acssim.Servants.Executor              import _executeDict
 from Acssim.Servants.Generator             import tryCallbackParams
 from Acssim.Servants.Generator             import getRandomEnum
@@ -58,7 +58,7 @@ from Acssim.Servants.Goodies               import addComponent
 from Acssim.Servants.Goodies               import removeComponent
 from Acssim.Servants.Goodies               import getCompLocalNS
 from Acssim.Corba.Utilities                import getSuperIDs
-from Acssim.Servants.SimulatedEntry import SimulatedEntry
+from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
 #--GLOBALS---------------------------------------------------------------------
 _DEBUG = 0
 #------------------------------------------------------------------------------
@@ -160,10 +160,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #be used with a BACI property.
         if_list = getSuperIDs(self.ir)
         if_list.append(self.ir)
-        #first check to see if this component has an entry
-        if not getCompSim().has_key(self._get_name()):
-            getCompSim()[self._get_name()] = SimulatedEntry(self._get_name())
-        simCDB = getCompSim()[self._get_name()].cdb_handler
+        simCDB = getSimProxy(self._get_name()).cdb_handler
 
         #IFR
         ir = interfaceRepository()

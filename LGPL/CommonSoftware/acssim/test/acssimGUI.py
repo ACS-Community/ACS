@@ -25,32 +25,12 @@
 #------------------------------------------------------------------------------
 
 '''
-Tests API
+Tests GUI
 '''
-from Acssim.Servants.Representations.CDB import CDB
-        
+from Acssim.Servants.Representations.GUI import GUI
+          
 if __name__=="__main__":
-    
-    #get the IFR ID of the component
-    if_list = ["IDL:alma/RampedPS/RampedPowerSupply:1.0",
-               "IDL:alma/PS/PowerSupply:1.0",
-               "IDL:alma/ACS/CharacteristicComponent:1.0",
-               "IDL:alma/ACS/ACSComponent:1.0"]
-    
-    print "--TEST_RPS_1--"
-    cdb = CDB("TEST_RPS_1", if_list)
-    #from RampedPowerSupply
-    print "cdb.getMethod('startRamping'):",  cdb.getMethod('startRamping')                
-    #from PowerSuppy
-    print "cdb.getMethod('_get_readback'):",  cdb.getMethod('_get_readback')
-    print
-    
-    print "--HELLOWORLD1--"
-    cdb = CDB("HELLOWORLD1", ["IDL:alma/acsexmplHelloWorld/HelloWorld:1.0",
-                              "IDL:alma/ACS/ACSComponent:1.0"])
-    print "cdb.getMethod('displayMessage'):",  cdb.getMethod('displayMessage')           
-    print
-    
-    print "--BADCOMPONENT--"
-    cdb = CDB("BADCOMPONENT", [ "crap", "morecrap"])
-    print dir(cdb)
+    gui = GUI("HELLOWORLD1")
+    print "api.getMethod('displayMessage'):",  gui.getMethod('displayMessage')
+    gui.setMethod('displayMessage', { "nonempty" : "main"})                          
+    print "api.getMethod('displayMessage'):",  gui.getMethod('displayMessage')

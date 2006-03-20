@@ -28,7 +28,7 @@
 Tests API
 '''
 from Acssim.Servants.Representations.API import API
-                 
+           
 if __name__=="__main__":
     api = API("HELLOWORLD1")
     print "api.getMethod('displayMessage'):",  api.getMethod('displayMessage')

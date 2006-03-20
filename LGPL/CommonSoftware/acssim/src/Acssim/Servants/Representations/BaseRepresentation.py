@@ -37,12 +37,13 @@ from copy    import copy
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log                  import getLogger
+from Acssim.Servants.Goodies import getComponent
 #--GLOBALS---------------------------------------------------------------------
  
 #------------------------------------------------------------------------------
 class BaseRepresentation:
     '''
-    Class SimulatedEntry is a baseclass which describes simulated components.
+    Class BaseRepresentation is a baseclass which describes simulated components.
     '''
     #--------------------------------------------------------------------------
     def __init__(self, compname):
@@ -65,11 +66,18 @@ class BaseRepresentation:
         #this dictionary contains descriptions of all simulated component methods
         #and attributes
         self.methods = {}
+        
+        #reference to the component
+        self.comp_ref = None
     #--------------------------------------------------------------------------
     def getMethod(self, method_name):
         '''
         Returns a Python dictionary describing the given method or None if it
         does not exist.
+        
+        Parameters:
+            method_name - name of the method
+            comp_ref - reference to the component
         '''
         if self.methods.has_key(method_name):
             return self.methods[method_name]
@@ -82,4 +90,12 @@ class BaseRepresentation:
         '''
         self.methods[method_name] = copy(dict)
     #--------------------------------------------------------------------------
-    
+    def __checkCompRef(self):
+        '''
+        Helper method does a sanity check on the component reference member.
+        This method is just around because an enduser might try to to define
+        simulated component behavior long before the simulated component has
+        ever been instantiated.
+        '''
+        if self.comp_ref == None:
+            self.comp_ref = getComponent(self.compname)

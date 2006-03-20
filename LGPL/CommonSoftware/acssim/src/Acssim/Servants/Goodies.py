@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.7 2006/03/20 21:06:51 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.8 2006/03/20 23:25:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.7 2006/03/20 21:06:51 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.8 2006/03/20 23:25:57 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -43,7 +43,7 @@ from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id: Goodies.py,v 1.7 2006/03/20 21:06:51 dfugate Exp $"
+__revision__="@(#) $Id: Goodies.py,v 1.8 2006/03/20 23:25:57 dfugate Exp $"
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
@@ -73,7 +73,7 @@ _GLOBALS = {}
 COMPONENTS_NS = {}
 
 #described simulated behavior of the components
-_COMP_SIM_DICT = {}
+_COMP_PROXIES = {}
 
 #maps component names to component instances
 _COMP_REFS = {}
@@ -123,12 +123,16 @@ def getComponent(comp_name):
     '''
     return _COMP_REFS[comp_name]
 #---------------------------------------------------------------------
-def getCompSim():
+def getSimProxy(comp_name):
     '''
-    Returns a dictionary mapping component names to their simulated
-    behaivor object references.
+    Returns a proxy object for this particular component.
     '''
-    return _COMP_SIM_DICT
+    #sanity check
+    if not _COMP_PROXIES.has_key(comp_name):
+        from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
+        _COMP_PROXIES[comp_name] = BehaviorProxy(comp_name)
+    
+    return _COMP_PROXIES[comp_name]
 #---------------------------------------------------------------------
 def getComponentXMLObj(comp_name):
     '''
@@ -442,4 +446,4 @@ def setComponentMethod(comp_name,
              'Timeout': float(timeout)}
     
     #store it globally
-    getCompSim()[comp_name].api_handler.setMethod(meth_name, temp_dict)
+    getSimProxy(comp_name).api_handler.setMethod(meth_name, temp_dict)

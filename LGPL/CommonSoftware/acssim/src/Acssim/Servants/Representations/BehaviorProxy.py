@@ -1,4 +1,4 @@
-# @(#) $Id: SimulatedEntry.py,v 1.4 2006/03/20 21:06:51 dfugate Exp $
+# @(#) $Id$
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimulatedEntry.py,v 1.4 2006/03/20 21:06:51 dfugate Exp $"
+# "@(#) $Id$"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -46,9 +46,9 @@ from Acssim.Corba.Utilities            import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
  
 #------------------------------------------------------------------------------
-class SimulatedEntry:
+class BehaviorProxy:
     '''
-    Class SimulatedEntry is a baseclass which describes simulated components.
+    Class BehaviorProxy is a baseclass which describes simulated components.
     '''
     #--------------------------------------------------------------------------
     def __init__(self, compname):
@@ -100,7 +100,7 @@ class SimulatedEntry:
         #create a GUI handler object
         self.gui_handler = GUI(self.compname)
     #--------------------------------------------------------------------------
-    def getMethod(self, meth_name, comp_ref=None):
+    def getMethod(self, meth_name):
         '''
         Returns a Python dictionary describing the given method or None if it
         does not exist.
@@ -123,5 +123,5 @@ class SimulatedEntry:
         else:
             self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
                              self.compname + "' simulated component on the fly.")
-            return self.dynamic_handler.getMethod(meth_name, comp_ref)
+            return self.dynamic_handler.getMethod(meth_name)
         

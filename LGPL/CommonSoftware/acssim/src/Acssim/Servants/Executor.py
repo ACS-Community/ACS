@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.9 2006/03/20 21:06:51 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.10 2006/03/20 23:25:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.9 2006/03/20 21:06:51 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.10 2006/03/20 23:25:57 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -43,12 +43,12 @@ from sys     import stdout
 from Acspy.Common.Log       import getLogger
 
 from Acssim.Servants.Goodies           import *
-from Acssim.Servants.Goodies           import getCompSim
+from Acssim.Servants.Goodies           import getSimProxy
 from Acssim.Servants.Generator         import *
-from Acssim.Servants.SimulatedEntry    import SimulatedEntry
+from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
 
 #--GLOBALS---------------------------------------------------------------------
-
+LOGGER = getLogger("Acssim.Servants.Executor")
 #------------------------------------------------------------------------------
 def _execute(comp_name, comp_type, meth_name, comp_ref, args, local_ns):
     '''
@@ -69,17 +69,12 @@ def _execute(comp_name, comp_type, meth_name, comp_ref, args, local_ns):
     Returns: Anything
 
     Raises: Anything
-    '''
-
-    #first check to see if this component has an entry
-    if not getCompSim().has_key(comp_name):
-        getCompSim()[comp_name] = SimulatedEntry(comp_name)
-            
-    ret_val = _executeDict(getCompSim()[comp_name].getMethod(meth_name), 
+    '''     
+    ret_val = _executeDict(getSimProxy(comp_name).getMethod(meth_name), 
                            args,
                            local_ns)
         
-    getLogger("Acssim.Servants.Executor").logDebug(meth_name + " return value looks like:" + str(ret_val) + " of type:" + str(type(ret_val)))
+    LOGGER.logDebug(meth_name + " return value looks like:" + str(ret_val) + " of type:" + str(type(ret_val)))
     return ret_val
 #------------------------------------------------------------------------------
 def _executeDict(dict, args, local_ns):
@@ -139,7 +134,7 @@ def _executeList(code_list, args, local_ns):
         #great, this makes things much easier for us
         try:
             #assume they want to see the arguments
-            return code_list(getCompSim(), _locals)
+            return code_list(globals(), _locals)
         except:
             #fine...it's a parameterless function
             return code_list()
@@ -153,9 +148,9 @@ def _executeList(code_list, args, local_ns):
     #execute each line still left in the list
     for line in code:
         try:
-            exec line in getCompSim(), _locals
+            exec line in globals(), _locals
         except:
-            getLogger("Acssim.Servants.Executor").logWarning("Failed to execute the '" + line + "' statement!")
+            LOGGER.logWarning("Failed to execute the '" + line + "' statement!")
 
     #if there's a raise in the last line, obviously the developer is trying
     #to simulate an exception. in this case the line should be exec'ed instead
@@ -163,17 +158,17 @@ def _executeList(code_list, args, local_ns):
     if type(final_val)==str and final_val.count("raise ") == 1:
         #it's OK to do this without a try/except because the end-user is
         #almost certainly TRYING to throw an exception.
-        exec final_val in getCompSim(), _locals
+        exec final_val in globals(), _locals
 
     #there was a complaint about not seeing output from commandcenter so we do this:(
     stdout.flush()
     
     #the final line is the actual return value which must be evaluated
     try:
-        return eval(final_val, getCompSim(), _locals)
+        return eval(final_val, globals(), _locals)
     except:
         #this is only a debug message because the finalVal may already be a Python object
-        getLogger("Acssim.Servants.Executor").logDebug("Failed to evaluate the '" + str(final_val) + "' statement!")
+        LOGGER.logDebug("Failed to evaluate the '" + str(final_val) + "' statement!")
         return final_val
 #---------------------------------
 #the final thing we do is startup the GUI

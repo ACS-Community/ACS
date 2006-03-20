@@ -40,8 +40,8 @@ import CORBA
 from Acspy.Common.Log       import getLogger
 
 from Acssim.Servants.Goodies           import *
-from Acssim.Servants.SimulatedEntry import SimulatedEntry
-from Acssim.Servants.Goodies import getCompSim
+from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
+from Acssim.Servants.Goodies import getSimProxy
 
 from thread     import start_new_thread
 from os         import environ
@@ -154,7 +154,7 @@ class MethodInfo:
                       'Timeout': float(self.sleepCounter.getvalue())}
     
         #store it globally
-        getCompSim()[self.compName].gui_handler.setMethod(methName, tDict)
+        getSimProxy(self.compName).gui_handler.setMethod(methName, tDict)
         
     #------------------------------------------------------------------------------
     def clear(self):

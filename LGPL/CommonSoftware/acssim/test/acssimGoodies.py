@@ -55,7 +55,7 @@ if __name__ == "__main__":
     
     print "--Testing----------------------------------------------------------"
     
-    print "getCompSim():", getCompSim()
+    print "getSimProxy('TEST_PS_1'):", getSimProxy('TEST_PS_1')
     print
     print "getComponentXMLObj('TEST_PS_1'):", getComponentXMLObj('TEST_PS_1')
     print "getComponentXMLObj('HELLOWORLD1'):", getComponentXMLObj('HELLOWORLD1')

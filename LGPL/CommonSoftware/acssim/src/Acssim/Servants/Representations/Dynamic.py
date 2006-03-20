@@ -67,10 +67,13 @@ class Dynamic(BaseRepresentation):
         self.__logger = getLogger("Acssim.Servants.Dynamic")
         
     #--------------------------------------------------------------------------
-    def getMethod(self, method_name, comp_ref):
+    def getMethod(self, method_name):
         '''
         Overriden from baseclass.
         '''
+        #sanity check
+        self._BaseRepresentation__checkCompRef()
+        
         return_list = []
         
         #create the temporary dictionary that will be returned later
@@ -136,13 +139,13 @@ class Dynamic(BaseRepresentation):
         #good - no in/inout parameters
         elif len(return_list) == 1:
             self.__logger.logTrace("There were no out/inout params:" + str(method_name))
-            ret_val['Value'] = [getRandomValue(return_list[0], comp_ref)]
+            ret_val['Value'] = [getRandomValue(return_list[0], self.comp_ref)]
         else:
             #iterate through the return value and all 
             for i in range(0, len(return_list)):
                 self.__logger.logTrace("Adding a return value:" + str(method_name) +
                                      " " + str(return_list[i]))
-                return_list[i] = getRandomValue(return_list[i], comp_ref)
+                return_list[i] = getRandomValue(return_list[i], self.comp_ref)
             ret_val['Value'] = [tuple(return_list)]
 
             
