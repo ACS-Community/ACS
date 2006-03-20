@@ -35,8 +35,10 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -56,6 +58,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -946,7 +949,7 @@ public class LogEntryTable extends javax.swing.JTable
 			visibleColumns[i] = true;
 			if (i == LogEntry.FIELD_LOGMESSAGE+2)
 			{
-				columnsList[i].setPreferredWidth(150);
+				columnsList[i].setPreferredWidth(250);
 			}
 			columnsList[i].setHeaderRenderer(shr);
 		}
@@ -962,7 +965,7 @@ public class LogEntryTable extends javax.swing.JTable
         // Hide some columns (default at startuup)
 		hideColumn(LogEntry.FIELD_LINE+2);
 		hideColumn(LogEntry.FIELD_ROUTINE+2);
-		hideColumn(LogEntry.FIELD_HOST+1);
+		hideColumn(LogEntry.FIELD_HOST+2);
 		hideColumn(LogEntry.FIELD_PROCESS+2);
 		hideColumn(LogEntry.FIELD_CONTEXT+2);
 		hideColumn(LogEntry.FIELD_THREAD+2);
@@ -970,6 +973,8 @@ public class LogEntryTable extends javax.swing.JTable
 		hideColumn(LogEntry.FIELD_PRIORITY+2);
 		hideColumn(LogEntry.FIELD_URI+2);
         hideColumn(LogEntry.FIELD_STACKID+2);
+        hideColumn(LogEntry.FIELD_FILE+2);
+        hideColumn(LogEntry.FIELD_STACKLEVEL+2);
 
 		sortMenu = new SortMenu();
 		sortMenu.rebuild();
@@ -1174,6 +1179,46 @@ public class LogEntryTable extends javax.swing.JTable
 	protected void updateExtraInfo()
 	{
 		firePropertyChange("extraInfo", null, null);
+	}
+	
+	/**
+	 * Scroll the table in such a way the given row is visible
+	 * 
+	 * @param row The row to make visible
+	 */
+	public synchronized void showRow (int row) {
+		JScrollPane scrollPane = loggingClient.getLogTable();
+		//loggingClient.getScrollPaneTable().changeSelection(row,1,false,false);
+		//scrollRectToVisible(getCellRect(row,0,true));
+		/*JViewport vPort = scrollPane.getViewport();
+		
+		Rectangle visible = getVisibleRect();
+	    
+		Rectangle cellRect = getCellRect(row,0,true);
+		if (visible.contains(cellRect)) {
+			return;
+		}
+		
+		Rectangle dest = new Rectangle(visible);
+		
+		if (cellRect.y>visible.y+visible.height) {
+			dest.y = cellRect.y-visible.height-cellRect.height;
+			if (dest.y<0) {
+				dest.y=0;
+			}
+		}
+		
+		System.out.println("visible="+visible.toString()+
+				",  cell="+cellRect.toString());
+		System.out.println("row = "+row+", rowCount = "+getRowCount());
+		System.out.println("VP Viewport = "+vPort.getViewRect().toString());
+		System.out.println("VP ViewSize = "+vPort.getViewSize().toString()+", size="+vPort.getExtentSize().toString());
+		System.out.println("VP VisibleRect = "+vPort.getVisibleRect().toString());
+	    
+		if (!visible.contains(dest)) {
+			System.out.println("Scrolling from "+visible.toString()+" to "+dest.toString());
+			scrollPane.scrollRectToVisible(dest);
+		}*/
 	}
 	
 }
