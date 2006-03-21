@@ -495,18 +495,14 @@ public final class LogEntryXML implements ILogEntry
 	private StringBuffer getXMLDatas() {
 		StringBuffer tempStr = new StringBuffer();
 		if (datas!=null) {
-			Vector<String> temp=getAdditionalData();
+			Vector<AdditionalData> temp=getAdditionalData();
 			if (temp==null) {
 				// No additional data
 				return tempStr;
 			}
-			int size =temp.size();
-			if ((size % 2) !=0) {
-				throw new IllegalStateException("The vector of aditional data il malformed");
-			}
-			for (int t=0; t<size; t+=2) {
-				tempStr.append("<Data Name=\""+temp.get(t)+"\">");
-				tempStr.append(temp.get(t+1)+"</Data>");
+			for (int t=0; t<temp.size(); t++) {
+				tempStr.append("<Data Name=\""+temp.get(t).getName()+"\">");
+				tempStr.append(temp.get(t+1).getValue()+"</Data>");
 			}
 		}
 		return tempStr;
@@ -523,33 +519,33 @@ public final class LogEntryXML implements ILogEntry
 	 *         If the log does not contain any additional data,
 	 *         returns null
 	 */
-	public Vector<String> getAdditionalData() {
-		Vector<String> tempVector = null; 
+	public Vector<AdditionalData> getAdditionalData() {
+		Vector<AdditionalData> tempVector = null; 
 		if (datas!=null) {
 			if (datas.size()==0) {
 				return null;
 			} 
-			tempVector = new Vector<String>();
+			tempVector = new Vector<AdditionalData>();
 			int size = datas.size();
 			for (int t=0; t<size; t++) {
+				String dataName=null;
 				Node dataItem = datas.item(t);
 				if (dataItem.hasAttributes()) {
 					org.w3c.dom.NamedNodeMap attr=dataItem.getAttributes();
 					for (int at=0; at<attr.getLength(); at++) {
 						org.w3c.dom.Node attrNode = attr.item(t);
 						if (attrNode!=null) {
-							String attrContent = attrNode.getTextContent().trim();
+							dataName = attrNode.getTextContent().trim();
 							// Cleanup
-							attrContent=attrContent.replaceAll("<","&lt;");
-							attrContent=attrContent.replaceAll(">","&gt;");
-							tempVector.add(attrContent);
+							dataName=dataName.replaceAll("<","&lt;");
+							dataName=dataName.replaceAll(">","&gt;");
 						} else {
 							org.w3c.dom.Node temp = attr.getNamedItem("Name");
 							if (temp!=null) {
-								tempVector.add(temp.getNodeValue().replaceAll("<","&lt;").replaceAll(">","&gt;").trim());
+								dataName=temp.getNodeValue().replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
 							} else {
 								// The name should always be defined!
-								tempVector.add("N/A");
+								dataName=("N/A");
 							}
 						}
 					}
@@ -560,7 +556,7 @@ public final class LogEntryXML implements ILogEntry
 					Node child = dataItem.getFirstChild();
 					dataContent= child.getNodeValue().trim().replaceAll("<","&lt;").replaceAll(">","&gt;");
 				}
-				tempVector.add(dataContent);
+				tempVector.add(new AdditionalData(dataName,dataContent));
 			}
 			
 		}

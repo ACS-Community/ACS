@@ -1,6 +1,7 @@
 package com.cosylab.logging.engine.log;
 
 import java.util.Date;
+import java.util.Vector;
 
 /**
  * The interface for all the log entry.
@@ -13,6 +14,40 @@ import java.util.Date;
  *
  */
 public interface ILogEntry {
+	
+	/**
+	 * Each additional data is a couple <name,value>
+	 * The list of additional datas (see below) stores
+	 * objects of this class
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class AdditionalData {
+		private String name;
+		private String value;
+		
+		public AdditionalData(String name, String value) {
+			this.name=name;
+			this.value=value;
+		}
+		
+		/**
+		 * Getter method
+		 */ 
+		public String getValue() {
+			return this.value;
+		}
+		
+		/** 
+		 * Getter method
+		 */ 
+		public String getName() {
+			return this.name;
+		}
+		
+	}
+	
 	public static final short FIELD_TIMESTAMP = 0;
 	public static final short FIELD_ENTRYTYPE = 1;
     public static final short FIELD_SOURCEOBJECT=2;
@@ -125,4 +160,10 @@ public interface ILogEntry {
 	 * @param value The value of the field
 	 */
 	public void addData(String name, String value);
+	
+	/**
+	 * @return a Vector of AdditionalData
+	 *         null if if the log does not contain any additional data
+	 */
+	public Vector<AdditionalData> getAdditionalData();
 }

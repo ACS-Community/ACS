@@ -17,41 +17,6 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  */
 public class LogEntry implements ILogEntry {
 	
-	/**
-	 * Each additional data is a couple <name,value>
-	 * The list of additional datas (see below) stores
-	 * objects of this class
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	public class AdditionalData {
-		private String name;
-		private String value;
-		
-		public AdditionalData(String name, String value) {
-			this.name=name;
-			this.value=value;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The value of this data
-		 */
-		public String getValue() {
-			return this.value;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The name of this data
-		 */
-		public String getName() {
-			return this.name;
-		}
-		
-	}
-	
 	private Date date;
 	private Integer type;
 	private String file;
@@ -116,7 +81,7 @@ public class LogEntry implements ILogEntry {
 			int stacklevel,
 			String logmessage,
 	        String srcObject,
-	        Vector<String> addDatas) {
+	        Vector<AdditionalData> addDatas) {
 		this.date=new Date(milliseconds);
 		this.type=new Integer(entrytype);
 		this.file=file;
@@ -135,13 +100,8 @@ public class LogEntry implements ILogEntry {
 		this.sourceObject=srcObject;
 		// Add the additional datas, if any
 		if (addDatas!=null) {
-			int size = addDatas.size();
-			if (size % 2 !=0 ) {
-				throw new IllegalArgumentException("Additional data vector malformed");
-			}
-			for (int t=0; t<size; t+=2) {
-				addData(addDatas.get(t),addDatas.get(t+1));
-			}
+			additionalData = new Vector<LogEntry.AdditionalData>();
+			additionalData.addAll(addDatas);
 		}
 	}
 	
@@ -156,15 +116,10 @@ public class LogEntry implements ILogEntry {
 			setField(fieldIndex,logXML.getField(fieldIndex));
 		}
 		// Add the additional datas, if any
-		Vector<String> addDatas=logXML.getAdditionalData();
+		Vector<AdditionalData> addDatas=logXML.getAdditionalData();
 		if (addDatas!=null) {
-			int size = addDatas.size();
-			if (size % 2 !=0 ) {
-				throw new IllegalArgumentException("Additional data vector malformed");
-			}
-			for (int t=0; t<size; t+=2) {
-				addData(addDatas.get(t),addDatas.get(t+1));
-			}
+			additionalData = new Vector<LogEntry.AdditionalData>();
+			additionalData.addAll(addDatas);
 		}
 	}
 
@@ -433,6 +388,13 @@ public class LogEntry implements ILogEntry {
 		}
 
 		return sb.toString();
+	}
+	
+	/**
+	 * @see ILogEntry
+	 */
+	public Vector<AdditionalData> getAdditionalData() {
+		return additionalData;
 	}
 
 }
