@@ -192,7 +192,6 @@ int BulkDataCallback::handle_destroy (void)
 
 int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &)
 {
-
     working_m = true;
 
     //ACS_TRACE("BulkDataCallback::receive_frame");

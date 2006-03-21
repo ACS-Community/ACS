@@ -14,6 +14,10 @@ BulkDataDistributerCb::BulkDataDistributerCb()
     waitPeriod_m.set(0L, 400000L);
 
     frameCount_m = 0;
+
+    timeout_m = false;
+
+    working_m = false;
 }
 
 
@@ -34,6 +38,8 @@ int BulkDataDistributerCb::handle_start(void)
     ACS_TRACE("BulkDataDistributerCb::handle_start");
     
     //cout << "BulkDataDistributerCb::handle_start - state_m: " << state_m << endl;
+    
+    timeout_m = false;
     
     state_m = CB_UNS;
     substate_m = CB_SUB_UNS;
@@ -85,7 +91,10 @@ int BulkDataDistributerCb::handle_stop (void)
 	if ( locLoop == 0 )
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout expired, not all data received"));
-	    return -1;
+
+	    timeout_m = true;
+
+	    //return -1;
 	    }
 
 	int res = cbFwdStop();
@@ -115,8 +124,9 @@ int BulkDataDistributerCb::handle_destroy (void)
 
 int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &)
 {
+    working_m = true;
 
-    ACS_TRACE("BulkDataDistributerCb::receive_frame");
+    //ACS_TRACE("BulkDataDistributerCb::receive_frame");
     //ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::receive_frame for flow %s", flowname_m.c_str()));
     
     //cout << "BulkDataDistributerCb::receive_frame - state_m: " << state_m << endl;
@@ -164,6 +174,8 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 
 	frameCount_m = 0;
 
+	working_m = true;
+
 	return res;
 	}
 
@@ -174,11 +186,13 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 	if ( dim_m == 0 )
 	    {
 	    res = cbFwdStart();
+	    working_m = false;
 	    return res;
 	    }
 
 	res = cbFwdStart(frame);
 	count_m += frame->length();
+	working_m = false;
 	return res;
 	}
 
@@ -186,9 +200,11 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 	{
 	res = cbFwdReceive(frame);
 	count_m += frame->length();
+	working_m = false;
 	return res;
 	}
 
+    working_m = false;
     return 0;
 }
 
@@ -334,6 +350,22 @@ void BulkDataDistributerCb::setDistributerImpl(BulkDataDistributerImpl<BulkDataD
     ACS_TRACE("BulkDataDistributerCb::setDistributerImpl");
 
     distr_m = distr_p;
+}
+
+
+CORBA::Boolean BulkDataDistributerCb::isTimeout()
+{
+    ACS_TRACE("BulkDataDistributerCb::isTimeout");
+
+    return timeout_m;
+}
+
+
+CORBA::Boolean BulkDataDistributerCb::isWorking()
+{
+    ACS_TRACE("BulkDataDistributerCb::isWorking");
+
+    return working_m;
 }
 
 

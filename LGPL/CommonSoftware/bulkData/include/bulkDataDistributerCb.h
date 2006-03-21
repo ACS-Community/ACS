@@ -72,6 +72,9 @@ class BulkDataDistributerCb : public TAO_AV_Callback
 
     virtual void setDistributerImpl(BulkDataDistributerImpl<BulkDataDistributerCb> *distr_p);
 
+    virtual CORBA::Boolean isTimeout();
+
+    virtual CORBA::Boolean isWorking();
 
   protected:
 
@@ -95,6 +98,10 @@ class BulkDataDistributerCb : public TAO_AV_Callback
     CORBA::Long count_m;
 
     CORBA::Long frameCount_m;
+
+    CORBA::Boolean timeout_m;
+
+    CORBA::Boolean working_m;
 };
 
 
