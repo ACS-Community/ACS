@@ -92,9 +92,10 @@ public class LogEntry implements ILogEntry {
 	 * @param stacklevel ...
 	 * @param logmessage ...
 	 * @param srcObject ...
-	 * @param addDatas The additional data as a array of String
-	 *                 The array contains in the even position the name 
+	 * @param addDatas The additional data as a Vector<String>
+	 *                 The Vector contains in the even position the name 
 	 *                 and in the odd the value. It can be null.
+	 *                 @see LogEntryXML.getAdditionalData
 	 * 
 	 * @see ILogEntry
 	 */
@@ -115,7 +116,7 @@ public class LogEntry implements ILogEntry {
 			int stacklevel,
 			String logmessage,
 	        String srcObject,
-	        String[] addDatas) {
+	        Vector<String> addDatas) {
 		this.date=new Date(milliseconds);
 		this.type=new Integer(entrytype);
 		this.file=file;
@@ -134,11 +135,12 @@ public class LogEntry implements ILogEntry {
 		this.sourceObject=srcObject;
 		// Add the additional datas, if any
 		if (addDatas!=null) {
-			if (addDatas.length % 2!=0) {
-				throw new IllegalArgumentException("Additiona data array malformed");
+			int size = addDatas.size();
+			if (size % 2 !=0 ) {
+				throw new IllegalArgumentException("Additional data vector malformed");
 			}
-			for (int t=0; t<addDatas.length; t+=2) {
-				addData(addDatas[t],addDatas[t+1]);
+			for (int t=0; t<size; t+=2) {
+				addData(addDatas.get(t),addDatas.get(t+1));
 			}
 		}
 	}
@@ -151,6 +153,18 @@ public class LogEntry implements ILogEntry {
 	 */
 	public LogEntry(LogEntryXML logXML) {
 		for (int fieldIndex=0; fieldIndex<NUMBER_OF_FIELDS; fieldIndex++) {
+			setField(fieldIndex,logXML.getField(fieldIndex));
+		}
+		// Add the additional datas, if any
+		Vector<String> addDatas=logXML.getAdditionalData();
+		if (addDatas!=null) {
+			int size = addDatas.size();
+			if (size % 2 !=0 ) {
+				throw new IllegalArgumentException("Additional data vector malformed");
+			}
+			for (int t=0; t<size; t+=2) {
+				addData(addDatas.get(t),addDatas.get(t+1));
+			}
 		}
 	}
 
@@ -206,13 +220,12 @@ public class LogEntry implements ILogEntry {
 			int size = additionalData.size();
 			for (int t=0; t<size; t++) {
 				AdditionalData temp = additionalData.get(t);
-				tempStr.append("<Data "+temp.getName());
 				String name = temp.getName();
 				String value= temp.getValue();
 				// Cleanup
-				name=name.replaceAll("<","&lt;").replaceAll(">","&gt;");
-				value=value.replaceAll("<","&lt;").replaceAll(">","&gt;");
-				tempStr.append("<Data Name="+"\""+name+"\">");
+				name=name.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
+				value=value.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
+				tempStr.append("<Data Name=\""+name+"\">");
 				tempStr.append(value);
 				tempStr.append("</Data>");
 			}
