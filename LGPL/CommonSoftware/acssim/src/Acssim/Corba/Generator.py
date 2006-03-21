@@ -56,14 +56,10 @@ def getRandomValue(typeCode, compRef):
     '''
     #Determine the value type first. This is really just an enumeration for the
     #CORBA typecode
-    if not isinstance(typeCode, CORBA.AttributeDescription):
-        #just for methods
-        LOGGER.logTrace("Dealing with a CORBA AttributeDescription:" + 
-                         str(typeCode))
-        valType = typeCode.kind()
-    else:
-        valType = typeCode.type.kind()
-        
+    LOGGER.logTrace("Dealing with a CORBA AttributeDescription:" + 
+                     str(typeCode))
+    valType = typeCode.kind()
+    
     #--------------------------------------------------------------------------
     #First check to see if valType is a simple CORBA type we can immediately return.
     #If this is the case it's just returned...otherwise an exception is thrown and...
@@ -87,25 +83,14 @@ def getRandomValue(typeCode, compRef):
     elif valType == CORBA.tk_enum:
         return getRandomEnum(typeCode)
     elif valType == CORBA.tk_alias:
-        if not isinstance(typeCode, CORBA.AttributeDescription):
-            #just for methods
-            return getRandomValue(typeCode.content_type(), compRef)
-        else:
-            return getRandomValue(typeCode.type.content_type(), compRef)
+        return getRandomValue(typeCode.content_type(), compRef)
     elif valType == CORBA.tk_null:
         LOGGER.logTrace("Encountered null return value")
         return None
     #--------------------------------------------------------------------------
     elif valType == CORBA.tk_struct:
-
-        if not isinstance(typeCode, CORBA.AttributeDescription):
-            #just for methods
-            #first get the struct definition from the IFR
-            structDef =getDefinition(typeCode.id())
-        else:
-            #must be an attribute
-            structDef =getDefinition(typeCode.type.id())
-
+        structDef =getDefinition(typeCode.id())
+        
         try:
             return getKnownBaciType(structDef._get_id())
         except:
@@ -315,13 +300,9 @@ def getRandomCORBAObject(typeCode, compRef):
     except:
         #...and attributes
         irLabel = typeCode.type.id()
-
-    if not isinstance(typeCode, CORBA.AttributeDescription):
-        #just for methods
-        objName = irLabel.replace(":1.0","").replace("IDL:", "").replace("/", ".")
-    else:
-        objName = typeCode.name
-
+    
+    objName = irLabel.replace(":1.0","").replace("IDL:", "").replace("/", ".")
+    
     LOGGER.logTrace("CORBA object type is:" + str(irLabel))
     LOGGER.logTrace("CORBA object name is:" + str(objName))
 
@@ -352,14 +333,8 @@ def getRandomEnum(typeCode):
     
     #Determine the value type first. This is really just an enumeration 
     #for the CORBA typecode
-    if not isinstance(typeCode, CORBA.AttributeDescription):
-        #just for methods
-        #first get the enumeration definition
-        enumDef =getDefinition(typeCode.id())
-    else:
-        #first get the enumeration definition
-        enumDef =getDefinition(typeCode.type.id())
-        
+    enumDef =getDefinition(typeCode.id())
+    
     #determine which Python package the enum is in...
     #changes 'IDL:alma/someMod/.../enumeration:1.0" to [ 'someMod', 
     #..., 'enumeration' ]
@@ -404,13 +379,9 @@ def getRandomTuple(typeCode, compRef, valType):
     around to supporting the specific typecode yet (e.g., value boxes).
     '''
     #if this next block does not throw an exception...
-    if not isinstance(typeCode, CORBA.AttributeDescription):
-        #just for methods
-        realValType  = typeCode.content_type().kind()
-        realTypeCode = getDefinition(typeCode.id())._get_original_type_def()._get_element_type()
-    else:
-        realValType  = typeCode.type.content_type().kind()
-        realTypeCode = getDefinition(typeCode.type.id())._get_original_type_def()._get_element_type()
+    realValType  = typeCode.content_type().kind()
+    realTypeCode = getDefinition(typeCode.id())._get_original_type_def()._get_element_type()
+    
     #we're really dealing with a sequence, array, value_box, or an alias
     LOGGER.logTrace("Dealing with a sequence, array, value_box, or alias:" +
                      str(realValType) + " " + str(realTypeCode))
@@ -432,12 +403,8 @@ def getRandomTuple(typeCode, compRef, valType):
     #Array
     #DWF-take into consideration multi-dimensional arrays
     elif realValType == CORBA.tk_array:
-        #First determine size of the array
-        if not isinstance(typeCode, CORBA.AttributeDescription):
-            size = getDefinition(typeCode.id())._get_original_type_def()._get_type().length()
-        else:
-            size = getDefinition(typeCode.type.id())._get_original_type_def()._get_type().length()
-
+        size = getDefinition(typeCode.id())._get_original_type_def()._get_type().length()
+        
         LOGGER.logTrace("Dealing with an array of size:" + str(size))
         retVal = []
         for i in range(0,size):
@@ -459,12 +426,8 @@ def getRandomTuple(typeCode, compRef, valType):
     #If this block of code can ever really be executed in practice...I'll 
     #be amazed!
     elif valType == CORBA.tk_alias:
-        if not isinstance(typeCode, CORBA.AttributeDescription):
-            #just for methods
-            return getRandomValue(realTypeCode, compRef)
-        else:
-            return getRandomValue(realTypeCode, compRef)
-
+        return getRandomValue(realTypeCode, compRef)
+        
 #------------------------------------------------------------------------------
 def tryCallbackParams(params, compRef):
     '''

@@ -84,7 +84,7 @@ class Dynamic(BaseRepresentation):
         for attr in self.__interf.attributes:
             if method_name == attr.name:
                 #good...we found a match. just attach it to the list
-                in_list.append(attr)
+                in_list.append(attr.type)
                 self.__logger.logDebug("Readonly attribute:" + method_name)
                 break
         
