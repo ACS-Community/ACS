@@ -3,7 +3,7 @@ package com.cosylab.logging;
 import com.cosylab.logging.client.cache.*;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.client.GroupedList;
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 
 /**
@@ -86,7 +86,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	public void testGet() throws Exception {
-		LogEntry log;
+		LogEntryXML log;
 		for (int t=0; t<cache.getSize(); t++) {
 			log = cache.getLog(0);
 			assertNotNull("Error getting the log "+t,log);
@@ -102,11 +102,11 @@ public class CacheTest extends junit.framework.TestCase {
 		int oldSize = cache.getSize();
 		String logMsg = "Test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T15:33:09.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
-		LogEntry newLog = parser.parse(logStr);
+		LogEntryXML newLog = parser.parse(logStr);
 		cache.add(newLog);
 		assertEquals("Error adding a log",cache.getSize(),oldSize+1);
-		LogEntry log = cache.getLog(cache.getSize()-1);
-		String msg = (String)log.getField(LogEntry.FIELD_LOGMESSAGE);
+		LogEntryXML log = cache.getLog(cache.getSize()-1);
+		String msg = (String)log.getField(LogEntryXML.FIELD_LOGMESSAGE);
 		assertEquals("Error adding a log",logMsg,msg);
 	}
 	
@@ -118,17 +118,17 @@ public class CacheTest extends junit.framework.TestCase {
 		ACSLogParser parser = new ACSLogParser();
 		String logMsg = "Replaced test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T16:00:00.000\" Routine=\"CacheTest::testReplace\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
-		LogEntry newLog = parser.parse(logStr);
+		LogEntryXML newLog = parser.parse(logStr);
 		// Replace the first log
 		cache.replaceLog(0,newLog);
-		assertEquals("Error replacing log "+0,logMsg,(String)cache.getLog(0).getField(LogEntry.FIELD_LOGMESSAGE));
+		assertEquals("Error replacing log "+0,logMsg,(String)cache.getLog(0).getField(LogEntryXML.FIELD_LOGMESSAGE));
 		// Replace the last log
 		cache.replaceLog(cache.getSize()-1,newLog);
-		assertEquals("Error replacing log "+(cache.getSize()-1),logMsg,(String)cache.getLog(cache.getSize()-1).getField(LogEntry.FIELD_LOGMESSAGE));
+		assertEquals("Error replacing log "+(cache.getSize()-1),logMsg,(String)cache.getLog(cache.getSize()-1).getField(LogEntryXML.FIELD_LOGMESSAGE));
 		// Replace a log in the middle
 		int pos = cache.getSize()/2;
 		cache.replaceLog(pos,newLog);
-		assertEquals("Error replacing log "+pos,logMsg,(String)cache.getLog(pos).getField(LogEntry.FIELD_LOGMESSAGE));
+		assertEquals("Error replacing log "+pos,logMsg,(String)cache.getLog(pos).getField(LogEntryXML.FIELD_LOGMESSAGE));
 	}
 	
 	/**
@@ -152,21 +152,21 @@ public class CacheTest extends junit.framework.TestCase {
 	 */
 	public void testMemoryCache() throws Exception {
 		int first = 0;
-		String firstMsg = (String)cache.getLog(first).getField(LogEntry.FIELD_LOGMESSAGE);
+		String firstMsg = (String)cache.getLog(first).getField(LogEntryXML.FIELD_LOGMESSAGE);
 		int last = cache.getSize()-1;
-		String lastMsg = (String)cache.getLog(last).getField(LogEntry.FIELD_LOGMESSAGE);
+		String lastMsg = (String)cache.getLog(last).getField(LogEntryXML.FIELD_LOGMESSAGE);
 		int pos = cache.getSize()/2;
-		String posMsg = (String)cache.getLog(pos).getField(LogEntry.FIELD_LOGMESSAGE);
+		String posMsg = (String)cache.getLog(pos).getField(LogEntryXML.FIELD_LOGMESSAGE);
 		
 		// Scans the list
 		for (int t=0; t<last; t++) {
 			cache.getLog(t);
-			LogEntry firstLog = cache.getLog(first);
-			assertEquals("Error in mem cache pos "+first,firstMsg, firstLog.getField(LogEntry.FIELD_LOGMESSAGE));
-			LogEntry lastLog = cache.getLog(last);
-			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(LogEntry.FIELD_LOGMESSAGE));
-			LogEntry posLog = cache.getLog(pos);
-			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(LogEntry.FIELD_LOGMESSAGE));
+			LogEntryXML firstLog = cache.getLog(first);
+			assertEquals("Error in mem cache pos "+first,firstMsg, firstLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
+			LogEntryXML lastLog = cache.getLog(last);
+			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
+			LogEntryXML posLog = cache.getLog(pos);
+			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
 		}
 	}
 }

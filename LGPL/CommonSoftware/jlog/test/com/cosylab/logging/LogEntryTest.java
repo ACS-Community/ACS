@@ -25,7 +25,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 //import com.cosylab.logging.LogTypeHelper;
 
 /**
@@ -40,7 +41,7 @@ public class LogEntryTest extends junit.framework.TestCase
 {
 
 	Document doc = null;
-	LogEntry log = null;
+	LogEntryXML log = null;
 	Node node = null;
 	DocumentBuilderFactory factory = null;
 
@@ -85,13 +86,13 @@ public class LogEntryTest extends junit.framework.TestCase
 	}
 
 	public void testLogEntryConst() throws Exception
-	{ //public LogEntry(Node log) throws DOMException
+	{ //public LogEntryXML(Node log) throws DOMException
 
 		Node node = log.getNode();
-		LogEntry log1 = new LogEntry(node);
+		LogEntryXML log1 = new LogEntryXML(node);
 
 		Node node1 = log1.getNode();
-		LogEntry log2 = new LogEntry(node1);
+		LogEntryXML log2 = new LogEntryXML(node1);
 
 		String actual = log.toString();
 		String expected = log1.toString();
@@ -105,7 +106,7 @@ public class LogEntryTest extends junit.framework.TestCase
 
 		Node node = log.getNode();
 
-		LogEntry log1 = new LogEntry(node);
+		LogEntryXML log1 = new LogEntryXML(node);
 		Node node1 = log1.getNode();
 
 		String actual = node.toString();
@@ -179,7 +180,7 @@ public class LogEntryTest extends junit.framework.TestCase
 
 		for (int j = 0; j < 15; j++)
 		{
-			curFieldDesc = LogEntry.getFieldDescription(j); // File
+			curFieldDesc = LogEntryXML.getFieldDescription(j); // File
 			if (curFieldDesc.equalsIgnoreCase("File"))
 			{
 				actualField = log.getField(j);
@@ -200,10 +201,10 @@ public class LogEntryTest extends junit.framework.TestCase
 
 		for (int j = 0; j < 15; j++)
 		{
-			curFieldDesc = LogEntry.getFieldDescription(j);
+			curFieldDesc = LogEntryXML.getFieldDescription(j);
 			// can be anything: timstamp, entrytype, field
 			if (curFieldDesc.equals(currentFieldDesc))
-				curFieldClass = LogEntry.getFieldClass(j);
+				curFieldClass = LogEntryXML.getFieldClass(j);
 			// gets the class of the "File" which is String
 		}
 		assertEquals(
@@ -225,7 +226,7 @@ public class LogEntryTest extends junit.framework.TestCase
 		boolean actual = false;
 		for (int j = 0; j < 15; j++)
 		{
-			actual = LogEntry.isValidFieldIndex(j);
+			actual = LogEntryXML.isValidFieldIndex(j);
 		}
 		assertEquals("The two logs are not equal.", expected, actual);
 	}
@@ -236,7 +237,7 @@ public class LogEntryTest extends junit.framework.TestCase
 		boolean actual = false;
 		for (int j = 0; j < 9; j++)
 		{
-			actual = LogEntry.isValidLogEntryType(j);
+			actual = LogEntryXML.isValidLogEntryType(j);
 		}
 		assertEquals("The two logs are not equal.", expected, actual);
 
@@ -247,20 +248,20 @@ public class LogEntryTest extends junit.framework.TestCase
 		String expected = log.toString();
 		String actual = null;
 
-		StringBuffer sb = new StringBuffer("--- LogEntry ---\n");
+		StringBuffer sb = new StringBuffer("--- LogEntryXML ---\n");
 		for (int j = 0; j < 15; j++)
 		{
 			if (log.getField(j) != null)
 			{
-				if (j == LogEntry.FIELD_ENTRYTYPE)
+				if (j == LogEntryXML.FIELD_ENTRYTYPE)
 					sb.append(
-                            LogEntry.getFieldDescription(j)
+                            LogEntryXML.getFieldDescription(j)
 							+ ": "
 							+ log.getEntryTypeAsString()
 							+ "\n");
 				else
 					sb.append(
-                            LogEntry.getFieldDescription(j)
+                            LogEntryXML.getFieldDescription(j)
 							+ ": "
 							+ log.getField(j)
 							+ "\n");
@@ -292,7 +293,7 @@ public class LogEntryTest extends junit.framework.TestCase
 
 			if (f.equalsIgnoreCase(expectedField))
 			{ // maciHeartbeatController.cpp
-				actualFieldDesc = LogEntry.getFieldDescription(j);
+				actualFieldDesc = LogEntryXML.getFieldDescription(j);
 			}
 		}
 		assertEquals(
@@ -318,7 +319,7 @@ public class LogEntryTest extends junit.framework.TestCase
 							new java.io.StringReader(testEntry.log)));
 
 				Node root = doc.getFirstChild();
-				LogEntry le = new LogEntry(root);
+				LogEntryXML le = new LogEntryXML(root);
 				String act = le.getEntryTypeAsString();
 				String exp = testEntry.logType;
 
