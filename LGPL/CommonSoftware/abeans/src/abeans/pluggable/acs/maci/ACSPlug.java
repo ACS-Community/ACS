@@ -5,6 +5,7 @@
 package abeans.pluggable.acs.maci;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -65,6 +66,9 @@ import alma.acs.util.ACSPorts;
 public class ACSPlug extends Plug implements Configurable
 {
 
+	
+	Map unavailableConnectables = new HashMap();
+	
 	/**
 	 * Implementation of maci::Client interface. 
 	 */
@@ -96,26 +100,89 @@ public class ACSPlug extends Plug implements Configurable
 		}
 
 		/**
+		 * Find all connectables and reconnect
 		 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.COBInfo[])
 		 */
 		public void components_available(ComponentInfo[] components) {
-			// TODO components_available
-			// find all connectables, check if remote info equals (abeans could change the connectable)
-			// and connect(!)
-			
-			// additional thing: on connect, check if disconnected connectable is connecting to other
-			// instance, if it is, remove it from unavailable list (and drop the reference)
+			for (int n = 0; n < components.length; n++)
+			{
+				ComponentInfo ci = components[n];
+				String curl = ci.name;
+				if (curl == null || ci.reference == null)
+					continue;
+
+				new MessageLogEntry(ACSPlug.this, "Client.components_available", "Component '" + curl + "' is available again, reconnecting...", Level.INFO).dispatch();
+
+				synchronized (componentProxyReferenceCountMap)
+				{
+					ComponentProxyReferenceInfoEntry cprie = (ComponentProxyReferenceInfoEntry)componentProxyReferenceCountMap.get(curl);
+					if (cprie != null)
+					{
+						
+						// create new proxy, update it and mark as available
+						String compomentProxyClassName = IDtoClassName(ci.type, true);
+						Proxy newProxy = instatiateComponentProxy(curl, ci.reference, compomentProxyClassName);
+
+						cprie.setComponentProxy(newProxy);
+						cprie.markAvailable();
+
+						
+						// reconnect
+						ArrayList al = cprie.getConnectables();
+						for (int i = 0; i < al.size(); i++)
+						{
+							Connectable c = (Connectable)al.get(i);
+
+							// remove from unavailable list
+							unavailableConnectables.remove(c);
+
+							try {
+								c.initialize(cprie.getComponentProxy());
+							} catch (Throwable t) {
+								AssertionFailed af = new AssertionFailed(ACSPlug.this, "Failed to reconnect: '" + curl + "'.", t);
+								af.caughtIn(this, "Client.components_available");
+								af.putValue("c", c);
+								af.putValue("curl", curl);
+								// execption handler will handle this
+							}
+						}
+					}
+				}
+			}
 		}
 
 		/**
 		 * @see si.ijs.maci.ClientOperations#components_unavailable(java.lang.String[])
 		 */
 		public void components_unavailable(String[] curls) {
-			// TODO components_unavailable
-			// call disconnect on all connectables (!)
-			// and remember them
-			// not that this will call initialize(null) -> disconnect
-			// where you should not remove the reference count
+			// call disconnect on all connectables
+			for (int n = 0; n < curls.length; n++)
+			{
+				String curl = curls[n];
+
+				new MessageLogEntry(ACSPlug.this, "Client.components_unavailable", "Component '" + curl + "' is reported as unavailable, disconnecting...", Level.INFO).dispatch();
+				
+				synchronized (componentProxyReferenceCountMap)
+				{
+					ComponentProxyReferenceInfoEntry cprie = (ComponentProxyReferenceInfoEntry)componentProxyReferenceCountMap.get(curl);
+					if (cprie != null)
+					{
+						// mark as unavailable
+						cprie.markAsUnavailable();
+						
+						ArrayList al = cprie.getConnectables();
+						for (int i = 0; i < al.size(); i++)
+						{
+							Connectable c = (Connectable)al.get(i);
+
+							// add to unavailable list (remember its curl)
+							unavailableConnectables.put(c, curl);
+							
+							c.disconnect();
+						}
+					}
+				}
+			}
 		}
 
 		/**
@@ -219,13 +286,38 @@ public class ACSPlug extends Plug implements Configurable
 		 * Reference count.
 		 */
 		private int referenceCount;
+		
+		private boolean unavailable = false;
+		
+		public void markAsUnavailable()
+		{
+			unavailable = true;
+		}
 
+		public void markAvailable()
+		{
+			unavailable = false;
+		}
+
+		public boolean isUnavailable()
+		{
+			return unavailable;
+		}
+
+		private ArrayList connectables = new ArrayList();
+
+		public ArrayList getConnectables()
+		{
+			return connectables;
+		}
+		
 		/**
 		 * Default constructor.
 		 */
-		public ComponentProxyReferenceInfoEntry(Proxy proxy)
+		public ComponentProxyReferenceInfoEntry(Proxy proxy, Connectable connectable)
 		{
 			this.proxy = proxy;
+			connectables.add(connectable);
 			this.referenceCount = 1;
 		}
 		
@@ -238,18 +330,27 @@ public class ACSPlug extends Plug implements Configurable
 		}
 
 		/**
+		 * Set component proxy.
+		 * @param newProxy component proxy.
+		 */
+		public void setComponentProxy(Proxy newProxy) {
+			this.proxy = newProxy;
+		}
+
+		/**
 		 * Returns reference count.
 		 * @return reference count.
 		 */
 		public int getReferenceCount() {
-			return referenceCount;
+			return referenceCount; // or connectables.size();
 		}
 		
 		/**
 		 * Increments reference count.
 		 */
-		public void incrementReferenceCount()
+		public void incrementReferenceCount(Connectable c)
 		{
+			connectables.add(c);
 			referenceCount++;
 		}
 
@@ -257,8 +358,9 @@ public class ACSPlug extends Plug implements Configurable
 		 * Decrements reference count.
 		 * @return reference count.
 		 */
-		public int decrementReferenceCount()
+		public int decrementReferenceCount(Connectable c)
 		{
+			connectables.remove(c);
 			referenceCount--;
 			return referenceCount;
 		}
@@ -440,6 +542,14 @@ public class ACSPlug extends Plug implements Configurable
 			{
 				curl = c.getRemoteInfo().toURI().getPath().substring(1);
 				
+				// check if unavailable (disconnected) connectable is connecting to other compoment
+				// if it is, then release the connectable
+				String preexistingCURL = (String)unavailableConnectables.get(c); 
+				if (preexistingCURL != null)
+				{
+					releaseConnectable(c, preexistingCURL, true);
+				}
+				
 				// TODO is this OK - e.g. can exist same curls for different authority...
 				// check if already connected to this component
 				ComponentProxyReferenceInfoEntry cprie = null;
@@ -448,8 +558,18 @@ public class ACSPlug extends Plug implements Configurable
 					cprie = (ComponentProxyReferenceInfoEntry)componentProxyReferenceCountMap.get(curl);
 					if (cprie != null)
 					{
+						// check if unavailable or accept in disconnected state???!
+						if (cprie.isUnavailable())
+						{
+							RemoteException re = new RemoteException(this, "Component '" + curl + "' is unavailable.");
+							re.caughtIn(this, "internalConnect");
+							re.putValue("c", c);
+							re.putValue("curl", curl);
+							throw re;
+						}
+
 						// increment ref. count and take existing proxy
-						cprie.incrementReferenceCount();
+						cprie.incrementReferenceCount(c);
 						proxy = cprie.getComponentProxy();
 					}
 					else
@@ -486,7 +606,7 @@ public class ACSPlug extends Plug implements Configurable
 	
 					// create proxy
 					String compomentProxyClassName = IDtoClassName(componentInfo[0].type, true);
-					proxy =	instatiateComponentProxy(c, curl, component, compomentProxyClassName);
+					proxy =	instatiateComponentProxy(curl, component, compomentProxyClassName);
 					
 					// TODO not prefect code, named lock should be used
 					// add or increment (sync. leak) reference count
@@ -497,12 +617,12 @@ public class ACSPlug extends Plug implements Configurable
 						if (cprie == null)
 						{
 							// add new entry
-							componentProxyReferenceCountMap.put(curl, new ComponentProxyReferenceInfoEntry(proxy));
+							componentProxyReferenceCountMap.put(curl, new ComponentProxyReferenceInfoEntry(proxy, c));
 						}
 						else
 						{
 							// increment ref. count and take existing proxy
-							cprie.incrementReferenceCount();
+							cprie.incrementReferenceCount(c);
 							proxy = cprie.getComponentProxy();
 						}
 					}
@@ -911,6 +1031,7 @@ public class ACSPlug extends Plug implements Configurable
 	 */
 	public void internalDisconnect(Connectable c) throws RemoteException
 	{
+
 		assert (db != null);
 		assert (c != null);
 		
@@ -934,65 +1055,82 @@ public class ACSPlug extends Plug implements Configurable
 			// acknowledge disconnection
 			c.initialize(null);
 
-			// release the component
-			ManagerClientInfoEntry mcie = null;
-			String corbaloc = defaultManagerReference;
-						
-			try
+			releaseConnectable(c, curl, false);
+		}
+	}
+
+	/**
+	 * Releases <code>Connectable</code> (decrements its reference count and if necessary calls release_component on Manager). 
+	 * @param c
+	 * @param curl
+	 * @throws RemoteException
+	 */
+	private void releaseConnectable(Connectable c, String curl, boolean ignoreUnavailabeFlag) throws RemoteException {
+		// release the component
+		ManagerClientInfoEntry mcie = null;
+		String corbaloc = defaultManagerReference;
+			
+		try
+		{
+			String authority = c.getRemoteInfo().getAuthority();
+			if (authority != null && authority.length() > 0)
 			{
-				String authority = c.getRemoteInfo().getAuthority();
-				if (authority != null && authority.length() > 0)
-				{
-					StringBuffer tmp = new StringBuffer("corbaloc::");
-					tmp.append(authority);
-					tmp.append("/Manager");
-					corbaloc = tmp.toString();
-				}
+				StringBuffer tmp = new StringBuffer("corbaloc::");
+				tmp.append(authority);
+				tmp.append("/Manager");
+				corbaloc = tmp.toString();
+			}
 
-				synchronized(managerCache)
-				{
-					mcie = (ManagerClientInfoEntry)managerCache.get(corbaloc);
-				}
+			synchronized(managerCache)
+			{
+				mcie = (ManagerClientInfoEntry)managerCache.get(corbaloc);
+			}
+			
+			if (mcie==null)
+			{
+				RemoteException re = new RemoteException(this, "Failed to obtain the manager '" + corbaloc + "' for connectable '" + c + "'.");
+				re.caughtIn(this, "internalDisconnect");
+				re.putValue("c", c);
+				re.putValue("corbaloc", corbaloc);
+				throw re;
+			}
+			else
+			{
+
+				boolean release = false;
 				
-				if (mcie==null)
+				// decrement reference count
+				synchronized(componentProxyReferenceCountMap)
 				{
-					RemoteException re = new RemoteException(this, "Failed to obtain the manager '" + corbaloc + "' for connectable '" + c + "'.");
-					re.caughtIn(this, "internalDisconnect");
-					re.putValue("c", c);
-					re.putValue("corbaloc", corbaloc);
-					throw re;
-				}
-				else
-				{
+					ComponentProxyReferenceInfoEntry cprie = (ComponentProxyReferenceInfoEntry)componentProxyReferenceCountMap.get(curl);
 
-					boolean release = false;
-					
-					// decrement reference count
-					synchronized(componentProxyReferenceCountMap)
-					{
-						ComponentProxyReferenceInfoEntry cprie = (ComponentProxyReferenceInfoEntry)componentProxyReferenceCountMap.get(curl);
-						if (cprie.decrementReferenceCount() == 0)
+					// do not remove reference, if disconnect is initiated by Client.component_unavailable
+					// we need this reference to automatically reconnect
+					if (ignoreUnavailabeFlag || !cprie.isUnavailable())
+					{	
+						unavailableConnectables.remove(c);
+
+						if (cprie.decrementReferenceCount(c) == 0)
 						{
 							release = true;
 							componentProxyReferenceCountMap.remove(curl);
 						}
 					}
-					
-					if (release)
-					{
-						mcie.getManager().release_component(mcie.getClientInfo().h, curl);
-					}
-
+				}
+				
+				if (release)
+				{
+					mcie.getManager().release_component(mcie.getClientInfo().h, curl);
 				}
 
-			} catch (Exception ex)
-			{
-				RemoteException re = new RemoteException(this, "Failed to release component '" + c + "'.", ex);
-				re.caughtIn(this, "internalDisconnect");
-				re.putValue("c", c);
-				throw re;
 			}
 
+		} catch (Exception ex)
+		{
+			RemoteException re = new RemoteException(this, "Failed to release component '" + c + "'.", ex);
+			re.caughtIn(this, "internalDisconnect");
+			re.putValue("c", c);
+			throw re;
 		}
 	}
 
@@ -1352,7 +1490,7 @@ public class ACSPlug extends Plug implements Configurable
 	 * @return 							requested proxy instance.
 	 * @throws AssertionFailed
 	 */
-	private Proxy instatiateComponentProxy(Connectable c, String curl,
+	private Proxy instatiateComponentProxy(String curl,
 		org.omg.CORBA.Object component, String compomentProxyClassName) throws AssertionFailed
 	{
 		try
@@ -1386,7 +1524,6 @@ public class ACSPlug extends Plug implements Configurable
 		{
 			AssertionFailed af = new AssertionFailed(this, "Failed to instantiate proxy for component with CURL: '" + curl + "'.",ex);
 			af.caughtIn(this, "internalConnect");
-			af.putValue("c", c);
 			af.putValue("curl", curl);
 			af.putValue("compomentProxyClassName", compomentProxyClassName);
 			throw af;
