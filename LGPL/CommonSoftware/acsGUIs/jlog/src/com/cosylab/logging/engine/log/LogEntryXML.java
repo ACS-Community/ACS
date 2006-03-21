@@ -26,6 +26,7 @@ import java.util.Random;
 import org.w3c.dom.*;
 
 import java.util.Date;
+import java.util.Vector;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
@@ -494,33 +495,61 @@ public final class LogEntryXML implements ILogEntry
 	private StringBuffer getXMLDatas() {
 		StringBuffer tempStr = new StringBuffer();
 		if (datas!=null) {
+			Vector<String> temp=getAdditionalData();
+			if (temp==null) {
+				// No additional data
+				return tempStr;
+			}
+			int size =temp.size();
+			if ((size % 2) !=0) {
+				throw new IllegalStateException("The vector of aditional data il malformed");
+			}
+			for (int t=0; t<size; t+=2) {
+				tempStr.append("<Data Name=\""+temp.get(t)+"\">");
+				tempStr.append(temp.get(t+1)+"</Data>");
+			}
+		}
+		return tempStr;
+	}
+	
+	/**
+	 * The vector return contains only strings and it is formed
+	 * in this way:
+	 *  name value name value name value...
+	 * i.e. it is a plain representation of couples of values
+	 *  
+	 * @return a Vector of String with the key and value of each 
+	 *         additional data
+	 *         If the log does not contain any additional data,
+	 *         returns null
+	 */
+	public Vector<String> getAdditionalData() {
+		Vector<String> tempVector = null; 
+		if (datas!=null) {
+			if (datas.size()==0) {
+				return null;
+			} 
+			tempVector = new Vector<String>();
 			int size = datas.size();
 			for (int t=0; t<size; t++) {
 				Node dataItem = datas.item(t);
-				String itemName = dataItem.getNodeName(); // Data
-				tempStr.append("<"+itemName);
-				
 				if (dataItem.hasAttributes()) {
 					org.w3c.dom.NamedNodeMap attr=dataItem.getAttributes();
-					
 					for (int at=0; at<attr.getLength(); at++) {
 						org.w3c.dom.Node attrNode = attr.item(t);
 						if (attrNode!=null) {
-							String attrName = attrNode.getNodeName();
-							String attrContent = attrNode.getTextContent();
+							String attrContent = attrNode.getTextContent().trim();
 							// Cleanup
 							attrContent=attrContent.replaceAll("<","&lt;");
 							attrContent=attrContent.replaceAll(">","&gt;");
-							tempStr.append(" "+attrName+"=\""+attrContent+"\"");
+							tempVector.add(attrContent);
 						} else {
 							org.w3c.dom.Node temp = attr.getNamedItem("Name");
-							if (temp==null) {
-								tempStr.append(" Name=\"N/A\"");
+							if (temp!=null) {
+								tempVector.add(temp.getNodeValue().replaceAll("<","&lt;").replaceAll(">","&gt;").trim());
 							} else {
-								String value = temp.getNodeValue();
-								value=value.replaceAll("<","&lt;");
-								value=value.replaceAll(">","&gt;");
-								tempStr.append(" "+temp.getNodeName()+"=\""+temp.getNodeValue()+"\"");
+								// The name should always be defined!
+								tempVector.add("N/A");
 							}
 						}
 					}
@@ -529,15 +558,13 @@ public final class LogEntryXML implements ILogEntry
 				String dataContent = "";
 				if (dataItem.hasChildNodes()) {
 					Node child = dataItem.getFirstChild();
-					dataContent= child.getNodeValue();
-					dataContent=dataContent.replaceAll("<","&lt;");
-					dataContent=dataContent.replaceAll(">","&gt;");
+					dataContent= child.getNodeValue().trim().replaceAll("<","&lt;").replaceAll(">","&gt;");
 				}
-				tempStr.append(">"+dataContent+"</"+itemName+">");
+				tempVector.add(dataContent);
 			}
 			
 		}
-		return tempStr;
+		return tempVector;
 	}
 	
 	/**
