@@ -26,8 +26,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.LogEntry;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-//import com.cosylab.logging.LogTypeHelper;
+import java.util.Vector;
 
 /**
  * LogEntryTest tests whether the starting tag is the same as expected. 
@@ -336,4 +338,44 @@ public class LogEntryTest extends junit.framework.TestCase
 			System.out.println("Exception: " + e);
 		}
 	}
+	
+	/**
+	 * Test if a LogEntry built from a LogEntryXML contains the same
+	 * fields and additional data
+	 *
+	 */
+	public void testLogConversion() {
+		// Build the LogEntry from the LogEntryXML
+		LogEntry logEntry = new LogEntry(log);
+		// Check the value of each field
+		for (int t=0; t<LogEntry.NUMBER_OF_FIELDS; t++) {
+			assertEquals(
+					"The field "+t+" of LogEntry and LogEntryXML differs",
+					logEntry.getField(t),
+					log.getField(t));
+		}
+		// Check the length of AdditionalData vectors
+		Vector<ILogEntry.AdditionalData> addDatasLogEntryXML=log.getAdditionalData();
+		Vector<ILogEntry.AdditionalData> addDatasLogEntry =logEntry.getAdditionalData();
+		Integer logSizeXML = new Integer(addDatasLogEntryXML.size());
+		Integer logSize = new Integer(addDatasLogEntry.size());
+		assertEquals(
+				"The additional datas have different leghts",
+				logSizeXML,
+				logSize);
+		// Check the content of each AdditionalData in the vectors
+		for (int t=0; t<addDatasLogEntry.size(); t++) {
+			ILogEntry.AdditionalData xmlData = addDatasLogEntryXML.get(t);
+			ILogEntry.AdditionalData plainData= addDatasLogEntry.get(t);
+			assertEquals(
+					"The name of the additional data differs",
+					xmlData.getName(),
+					plainData.getName());
+			assertEquals(
+					"The value of the additional data differs",
+					xmlData.getValue(),
+					plainData.getValue());
+		}
+	}
+	
 }
