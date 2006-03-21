@@ -38,7 +38,7 @@ import CORBA
 from Acspy.Common.Log       import getLogger
 
 from Acssim.Servants.Representations.BaseRepresentation         import BaseRepresentation
-from Acssim.Servants.Generator         import getRandomValue
+from Acssim.Corba.Generator         import getRandomValue
 #--GLOBALS---------------------------------------------------------------------
 
 from Acssim.Servants.Goodies import IR
@@ -70,9 +70,70 @@ class Dynamic(BaseRepresentation):
             self.__logger.logCritical("Cannot find a definition for '" +
                                        self.comp_type + "' components!")
             raise CORBA.NO_RESOURCES()
+    #--------------------------------------------------------------------------
+    def __handleReadAttribute(self, method_name, in_list):
+        '''
+        Helper function which tries to handle a readonly CORBA attribute.
+        Modifies in_list in place.
+        '''
+        #strip this out to get the real CORBA attribute name
+        method_name = method_name.replace("_get_","",1)
+
+        #cycle through all attributes of the interface description
+        #looking for this particular CORBA attribute
+        for attr in self.__interf.attributes:
+            if method_name == attr.name:
+                #good...we found a match. just attach it to the list
+                in_list.append(attr)
+                self.__logger.logDebug("Readonly attribute:" + method_name)
+                break
         
+        return in_list
+    #--------------------------------------------------------------------------
+    def __handleNormalMethod(self, method_name, in_list):
+        '''
+        Helper function which tries to handle a normal IDL method.
+        Modifies in_list in place.
+        '''
+        #cycle through the list of methods from the interface
+        #description
+        for method in self.__interf.operations:
+            
+            if method_name == method.name:                
+                #well there has to be at least a single return value
+                #(even if it is void)
+                in_list.append(method.result)
+                
+                #next check for in and inout parameters
+                for param in method.parameters:
+                    #corba out parameters
+                    if str(param.mode) == "PARAM_OUT":
+                        in_list.append(param.type)
+                    #corba inout parameters
+                    elif str(param.mode) == "PARAM_INOUT":
+                        in_list.append(param.type)
+                
+                #no reason to continue...we know what has to be
+                #returned
+                self.__logger.logDebug("Method:" + method_name)
+                break
+    #--------------------------------------------------------------------------
+    def __typecodesToObjects(self, in_list):
+        '''
+        Converts a list full of typecodes to real implementations of those 
+        types.
+        '''
+        #good - no in/inout parameters
+        if len(in_list) == 1:
+            ret_val = [getRandomValue(in_list[0], self.comp_ref)]
         
-        
+        else:
+            #iterate through the return value and all 
+            for i in range(0, len(in_list)):
+                in_list[i] = getRandomValue(in_list[i], self.comp_ref)
+            ret_val = [tuple(in_list)]
+            
+        return ret_val
     #--------------------------------------------------------------------------
     def getMethod(self, method_name):
         '''
@@ -81,6 +142,7 @@ class Dynamic(BaseRepresentation):
         #sanity check
         self._BaseRepresentation__checkCompRef()
         
+        #list of return values
         return_list = []
         
         #create the temporary dictionary that will be returned later
@@ -91,72 +153,32 @@ class Dynamic(BaseRepresentation):
         #This will be true if the method name starts with "_set_". If this
         #happens to be the case, just return
         if method_name.rfind("_set_") == 0:
-            self.__logger.logDebug("Trying to simulate a write to an attribute...ignoring:" + str(method_name))
+            self.__logger.logDebug("Write attribute:" + method_name)
             return ret_val
 
-        #Check to see if the method's name begins with "_get_". If this is true,
-        #this is a special case because we do not have to worry about inout and
-        #out parameters.
-        if method_name.rfind("_get_") == 0:
+        #Check to see if the method's name begins with "_get_". If this is
+        #true, this is a special case because we do not have to worry 
+        #about inout and out parameters.
+        elif method_name.rfind("_get_") == 0:
+            self.__handleReadAttribute(method_name, return_list)
 
-            self.__logger.logTrace("Found what appears to be a read for an attribute:" + str(method_name))
-
-            #strip this out to get the real attribuute name
-            method_name = method_name.replace("_get_","",1)
-
-            for attr in self.__interf.attributes:
-                if method_name == attr.name:
-                    #good...we found a match
-                    self.__logger.logTrace("Encountered an attribute:" + str(method_name))
-                    return_list.append(attr)
-                    break
+        #Since we've gotten this far, we must now examine the IFR to determine
+        #which return values (if any) and exceptions this method can 
+        #return/throw.
         else:
-            #Since we've gotten this far, we must now examine the IFR to determine
-            #which return values (if any) and exceptions this method can return/throw.
-            self.__logger.logTrace("Must be an IDL method:" + str(method_name))
-            for method in self.__interf.operations:
-                if method_name == method.name:
-                    self.__logger.logTrace("Found a match for the IDL method:" + str(method_name))
-                    #well there has to be at least a single return value
-                    #(even if it is void)
-                    return_list.append(method.result)
-                
-                    #next check for in and inout parameters
-                    for param in method.parameters:
-                        if str(param.mode) == "PARAM_OUT":
-                            self.__logger.logTrace("Adding an OUT parameter for the IDL method:" +
-                                                 str(method_name) + " " + str(param.type))
-                            return_list.append(param.type)
-                        elif str(param.mode) == "PARAM_INOUT":
-                            self.__logger.logTrace("Adding an INOUT parameter for the IDL method:" +
-                                                 str(method_name) + " " + str(param.type))
-                            return_list.append(param.type)
-
-                    #no reason to continue...we know what has to be
-                    #returned
-                    self.__logger.logTrace("Was an IDL method:" + str(method_name))
-                    break
+            self.__handleNormalMethod(method_name, return_list)
         
+        #convert the list of typecodes to a list of real implementations of
+        #those types
         #if the methodname was not found...
         if len(return_list) == 0:
-            self.__logger.logWarning("Failed to dynamically generate the  '" + method_name +
-                                   "' method for the '" + self.compname + "' component " +
-                                   "because the IFR was missing information on the method!")
+            self.__logger.logWarning("Failed to dynamically generate '" +
+                                      method_name + "' because the IFR" + 
+                                      " was missing information on the method!")
             raise CORBA.NO_RESOURCES()
-        #good - no in/inout parameters
-        elif len(return_list) == 1:
-            self.__logger.logTrace("There were no out/inout params:" + str(method_name))
-            ret_val['Value'] = [getRandomValue(return_list[0], self.comp_ref)]
-        else:
-            #iterate through the return value and all 
-            for i in range(0, len(return_list)):
-                self.__logger.logTrace("Adding a return value:" + str(method_name) +
-                                     " " + str(return_list[i]))
-                return_list[i] = getRandomValue(return_list[i], self.comp_ref)
-            ret_val['Value'] = [tuple(return_list)]
-
-            
-        self.__logger.logDebug("retVal looks like:" + str(method_name) +
-                             " " + str(ret_val))
+        
+        ret_val['Value'] = self.__typecodesToObjects(return_list)
+        self.__logger.logDebug("retVal looks like:" + method_name +
+                               " " + str(ret_val))
         return ret_val
 

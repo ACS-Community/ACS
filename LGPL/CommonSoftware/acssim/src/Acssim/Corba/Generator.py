@@ -1,4 +1,4 @@
-# @(#) $Id: Generator.py,v 1.38 2006/03/17 20:41:31 dfugate Exp $
+# @(#) $Id$
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,16 +21,14 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Generator.py,v 1.38 2006/03/17 20:41:31 dfugate Exp $"
+# "@(#) $Id$"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-
 TODO LIST:
-
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 
@@ -49,7 +47,7 @@ from Acspy.Common.TimeHelper import getTimeStamp
 
 from Acssim.Servants.Goodies           import *
 #--GLOBALS---------------------------------------------------------------------
-
+LOGGER = getLogger("Acssim.Servants.Generator")
 #------------------------------------------------------------------------------
 def getRandomValue(typeCode, compRef):
     '''
@@ -60,7 +58,8 @@ def getRandomValue(typeCode, compRef):
     #CORBA typecode
     if not isinstance(typeCode, CORBA.AttributeDescription):
         #just for methods
-        getLogger("Acssim.Servants.Generator").logTrace("Dealing with a CORBA AttributeDescription:" + str(typeCode))
+        LOGGER.logTrace("Dealing with a CORBA AttributeDescription:" + 
+                         str(typeCode))
         valType = typeCode.kind()
     else:
         valType = typeCode.type.kind()
@@ -72,7 +71,7 @@ def getRandomValue(typeCode, compRef):
         return getRandomSimpleValue(valType)
     except:
         #we move on
-        getLogger("Acssim.Servants.Generator").logTrace("Not a simple CORBA Type:" + str(valType))
+        LOGGER.logTrace("Not a simple CORBA Type:" + str(valType))
     #--------------------------------------------------------------------------
     #if it's a sequence, array, etc...this is a very special case:
     try:
@@ -80,10 +79,10 @@ def getRandomValue(typeCode, compRef):
     except CORBA.NO_IMPLEMENT, e:
         raise e
     except:
-        getLogger("Acssim.Servants.Generator").logTrace("Wasn't an alias-related type:" + str(valType))
+        LOGGER.logTrace("Wasn't an alias-related type:" + str(valType))
     #--------------------------------------------------------------------------
     if valType == CORBA.tk_objref:
-        getLogger("Acssim.Servants.Generator").logTrace("Return value is a CORBA object:" + str(valType))
+        LOGGER.logTrace("Return value is a CORBA object:" + str(valType))
         return getRandomCORBAObject(typeCode, compRef)
     elif valType == CORBA.tk_enum:
         return getRandomEnum(typeCode)
@@ -94,7 +93,7 @@ def getRandomValue(typeCode, compRef):
         else:
             return getRandomValue(typeCode.type.content_type(), compRef)
     elif valType == CORBA.tk_null:
-        getLogger("Acssim.Servants.Generator").logTrace("Encountered null return value")
+        LOGGER.logTrace("Encountered null return value")
         return None
     #--------------------------------------------------------------------------
     elif valType == CORBA.tk_struct:
@@ -113,16 +112,18 @@ def getRandomValue(typeCode, compRef):
             pass
         
         #determine which Python package the struct is in...
-        #changes 'IDL:alma/someMod/.../struct:1.0" to [ 'someMod', ..., 'struct' ]
+        #changes 'IDL:alma/someMod/.../struct:1.0" to [ 'someMod', ...,
+        #'struct' ]
         packageName = structDef._get_id().split(':')[1].split('/')[1:]
 
         #Just the 'struct' part...
         structName = packageName.pop()
             
         #convert the list to a stringified module/package structure
-        packageName = reduce((lambda x, y : str(x) + '.' + str(y)), packageName)
+        packageName = reduce((lambda x, y : str(x) + '.' + str(y)), 
+                              packageName)
 
-        getLogger("Acssim.Servants.Generator").logTrace("structName=" + str(structName) +
+        LOGGER.logTrace("structName=" + str(structName) +
                              "; packageName=" + str(packageName))
         
         #import the proper module containing the struct defintion
@@ -138,51 +139,53 @@ def getRandomValue(typeCode, compRef):
 
         #populate the fields of the struct using the IFR
         for member in structDef._get_members():
-            getLogger("Acssim.Servants.Generator").logTrace("Adding a member variable for: " + str(member.name))
-            retVal.__dict__[member.name] = getRandomValue(member.type_def._get_type(), compRef)
+            LOGGER.logTrace("Adding a member variable for: " + 
+                             str(member.name))
+            retVal.__dict__[member.name] = getRandomValue(member.type_def._get_type(), 
+                                                          compRef)
 
         return retVal
     #--------------------------------------------------------------------------
     elif valType == CORBA.tk_Principal:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_TypeCode:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_abstract_interface:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_any:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_except:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_fixed:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_local_interface:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_native:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
 
     elif valType == CORBA.tk_union:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_value:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
 
     elif valType == CORBA.tk_wchar:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     elif valType == CORBA.tk_wstring:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
     else:
-        getLogger("Acssim.Servants.Generator").logCritical(str(valType) + " not yet supported")
+        LOGGER.logCritical(str(valType) + " not yet supported")
         raise CORBA.NO_IMPLEMENT()
 
 #------------------------------------------------------------------------------
@@ -192,7 +195,8 @@ def getDefinition(irLabel):
     its complete interface repository location.
 
     Parameters: irLabal is the location of the interface defintion within the
-    IFR. Typically this is something like "IDL:alma/someModule/someInterface:1.0"
+    IFR. Typically this is something like 
+    "IDL:alma/someModule/someInterface:1.0"
 
     Returns: the IFR definition of irLabel
 
@@ -206,7 +210,7 @@ def getKnownBaciType(structName):
     '''
     '''
     if structName=="IDL:alma/ACSErr/Completion:1.0":
-        return ACSErr.Completion(long(getTimeStamp().value),  #unsigned long long timeStamp;
+        return ACSErr.Completion(long(getTimeStamp().value),  #ULL;
                                  0L,  #ACSErr::CompletionType type;
                                  0L,  #ACSErr::CompletionCode code;
                                  ())
@@ -216,8 +220,8 @@ def getKnownBaciType(structName):
 #------------------------------------------------------------------------------
 def getRandomSimpleValue(valType):
     '''
-    Helper function returns a random value of (typecode) valType or throws an exception
-    if valType is not a simple type. Sample usage could be:
+    Helper function returns a random value of (typecode) valType or throws an
+    exception if valType is not a simple type. Sample usage could be:
 
        getRandomSimpleValue(CORBA.tk_boolean)
 
@@ -273,7 +277,7 @@ def getRandomSimpleValue(valType):
         #DWF-CORBA IDL->Py mapping specifies a CORBA.long_double() object
         #to be used in cases like these. Unfortunately omniORB does not
         #currently support it.
-        getLogger("Acssim.Servants.Generator").logDebug("long doubles not supported by omniORBPy")
+        LOGGER.logDebug("long doubles not supported by omniORBPy")
         return 3.1415926535897931
 
     elif valType == CORBA.tk_string:
@@ -303,7 +307,7 @@ def getRandomCORBAObject(typeCode, compRef):
     '''
     #has to be in this method unfortunately to avoid cyclic dependencies.
     from Acssim.Servants.Simulator import BaseSimulator
-    getLogger("Acssim.Servants.Generator").logTrace("Creating a random CORBA object")
+    LOGGER.logTrace("Creating a random CORBA object")
     
     try:
         #for methods...
@@ -318,8 +322,8 @@ def getRandomCORBAObject(typeCode, compRef):
     else:
         objName = typeCode.name
 
-    getLogger("Acssim.Servants.Generator").logTrace("CORBA object type is:" + str(irLabel))
-    getLogger("Acssim.Servants.Generator").logTrace("CORBA object name is:" + str(objName))
+    LOGGER.logTrace("CORBA object type is:" + str(irLabel))
+    LOGGER.logTrace("CORBA object name is:" + str(objName))
 
     #create a new simulated object
     retVal = BaseSimulator(irLabel, compRef._get_name() + objName)
@@ -335,7 +339,8 @@ def getRandomCORBAObject(typeCode, compRef):
 #------------------------------------------------------------------------------
 def getRandomEnum(typeCode):
     '''
-    Helper function returns a random enumueration based on the typecode provided.
+    Helper function returns a random enumueration based on the typecode 
+    provided.
 
     Parameters: type code is quite literally a CORBA typecode
 
@@ -343,10 +348,10 @@ def getRandomEnum(typeCode):
 
     Raises: ???
     '''
-    getLogger("Acssim.Servants.Generator").logTrace("Dealing with an enum")
+    LOGGER.logTrace("Dealing with an enum")
     
-    #Determine the value type first. This is really just an enumeration for the
-    #CORBA typecode
+    #Determine the value type first. This is really just an enumeration 
+    #for the CORBA typecode
     if not isinstance(typeCode, CORBA.AttributeDescription):
         #just for methods
         #first get the enumeration definition
@@ -356,7 +361,8 @@ def getRandomEnum(typeCode):
         enumDef =getDefinition(typeCode.type.id())
         
     #determine which Python package the enum is in...
-    #changes 'IDL:alma/someMod/.../enumeration:1.0" to [ 'someMod', ..., 'enumeration' ]
+    #changes 'IDL:alma/someMod/.../enumeration:1.0" to [ 'someMod', 
+    #..., 'enumeration' ]
     enumName = enumDef._get_id().split(':')[1].split('/')[1:]
     modName = enumName[0]
 
@@ -364,8 +370,8 @@ def getRandomEnum(typeCode):
     #be used with eval
     enumName = reduce((lambda x, y : str(x) + '.' + str(y)), enumName)
 
-    getLogger("Acssim.Servants.Generator").logTrace("enum name is:" + str(enumName))
-    getLogger("Acssim.Servants.Generator").logTrace("enum module is:" + str(modName))
+    LOGGER.logTrace("enum name is:" + str(enumName))
+    LOGGER.logTrace("enum module is:" + str(modName))
     
     #now comes the complicated part...importing the correct CORBA stub
     #without polluting the local namespace...
@@ -377,7 +383,7 @@ def getRandomEnum(typeCode):
     #with any luck, we should now be able to return the enumeration value
     #without any problems
     retVal = eval("choice(" + enumName + "._items)", tGlobals, tLocals)
-    getLogger("Acssim.Servants.Generator").logTrace("enum return value is:" + str(retVal))
+    LOGGER.logTrace("enum return value is:" + str(retVal))
     return retVal
 #------------------------------------------------------------------------------
 def getRandomTuple(typeCode, compRef, valType):
@@ -387,14 +393,15 @@ def getRandomTuple(typeCode, compRef, valType):
 
     Parameters:
     - type code is quite literally a CORBA typecode
-    - compRef is a reference to a component used to activated IDL OffShoot interfaces
+    - compRef is a reference to a component used to activated IDL OffShoot 
+    interfaces
     - valType is the value type of the random value we are trying to get
 
     Returns: a random enumeration of the type specified by typeCode
 
-    Raises: an (unknown) exception if the typecode does not really specify a list type to
-    be returned or a CORBA.NO_IMPLEMENT if we have not gotten around to supporting
-    the specific typecode yet (e.g., value boxes).
+    Raises: an (unknown) exception if the typecode does not really specify a
+    list type to be returned or a CORBA.NO_IMPLEMENT if we have not gotten
+    around to supporting the specific typecode yet (e.g., value boxes).
     '''
     #if this next block does not throw an exception...
     if not isinstance(typeCode, CORBA.AttributeDescription):
@@ -405,18 +412,19 @@ def getRandomTuple(typeCode, compRef, valType):
         realValType  = typeCode.type.content_type().kind()
         realTypeCode = getDefinition(typeCode.type.id())._get_original_type_def()._get_element_type()
     #we're really dealing with a sequence, array, value_box, or an alias
-    getLogger("Acssim.Servants.Generator").logTrace("Dealing with a sequence, array, value_box, or alias:" +
-                         str(realValType) + " " + str(realTypeCode))
+    LOGGER.logTrace("Dealing with a sequence, array, value_box, or alias:" +
+                     str(realValType) + " " + str(realTypeCode))
 
     #Sequence
     if realValType == CORBA.tk_sequence:
-        getLogger("Acssim.Servants.Generator").logTrace("Dealing with a sequence.")
+        LOGGER.logTrace("Dealing with a sequence.")
         retVal = []
         for i in range(0,randrange(0, getMaxSeqSize())):
             retVal.append(getRandomValue(realTypeCode, compRef))
-        #Sequences of octects and characters must be handled specially in Python
+        #Sequences of octects and characters must be handled specially in 
+        #Python
         if realTypeCode.kind()==CORBA.tk_octet or realTypeCode.kind()==CORBA.tk_char:
-            getLogger("Acssim.Servants.Generator").logTrace("Dealing with a sequence of characters/octets.")
+            LOGGER.logTrace("Dealing with a sequence of characters/octets.")
             return reduce((lambda x, y : str(x) + str(y)), retVal)
         else:
             return tuple(retVal)
@@ -430,24 +438,26 @@ def getRandomTuple(typeCode, compRef, valType):
         else:
             size = getDefinition(typeCode.type.id())._get_original_type_def()._get_type().length()
 
-        getLogger("Acssim.Servants.Generator").logTrace("Dealing with an array of size:" + str(size))
+        LOGGER.logTrace("Dealing with an array of size:" + str(size))
         retVal = []
         for i in range(0,size):
             retVal.append(getRandomValue(realTypeCode, compRef))
             
-        #Sequences of octects and characters must be handled specially in Python
+        #Sequences of octects and characters must be handled specially in
+        #Python
         if realTypeCode.kind()==CORBA.tk_octet or realTypeCode.kind()==CORBA.tk_char:
-            getLogger("Acssim.Servants.Generator").logTrace("Dealing with an array of characters/octets.")
+            LOGGER.logTrace("Dealing with an array of characters/octets.")
             return reduce((lambda x, y : str(x) + str(y)), retVal)
         else:
             return tuple(retVal)
             
     #Value Box
     elif realValType == CORBA.tk_value_box:
-        getLogger("Acssim.Servants.Generator").logCritical("value_box not yet supported")
+        LOGGER.logCritical("value_box not yet supported")
         raise CORBA.NO_IMPLEMENT()
 
-    #If this block of code can ever really be executed in practice...I'll be amazed!
+    #If this block of code can ever really be executed in practice...I'll 
+    #be amazed!
     elif valType == CORBA.tk_alias:
         if not isinstance(typeCode, CORBA.AttributeDescription):
             #just for methods
@@ -459,13 +469,11 @@ def getRandomTuple(typeCode, compRef, valType):
 def tryCallbackParams(params, compRef):
     '''
     '''
-    compl = ACSErr.Completion(long(getTimeStamp().value),  #unsigned long long timeStamp;
+    compl = ACSErr.Completion(long(getTimeStamp().value),  #ULL
                               0L,  #ACSErr::CompletionType type;
                               0L,  #ACSErr::CompletionCode code;
                               ())
-    #compl = getRandomValue(ACSErr._tc_Completion, compRef)
-
-
+    
     cbId = 0L    #default value
     for param in params:
         if isinstance(param, ACS.CBDescIn):
@@ -514,15 +522,3 @@ def tryCallbackParams(params, compRef):
         else:
             pass
 #-----------------------------------------------------------------------
-if __name__=="__main__":
-    #This just exists for testing purposes. Should be removed later.
-    from time import sleep
-    sleep(100)
-    
-
-
-
-
-
-
-
