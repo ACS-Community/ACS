@@ -33,3 +33,38 @@ diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h TAO/ACE_wrappers/TA
    /// Pre-allocated memory to receive the data...
    ACE_Message_Block frame_;
  };
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2006-03-21 18:13:44.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2006-03-21 17:10:16.000000000 +0100
+@@ -111,6 +111,10 @@
+             }
+         }
+     }
++  ACE_CATCH(CORBA::SystemException, ex)
++      {
++      ACE_RE_THROW; //ACS mod 2006-03
++      }
+   ACE_CATCHANY
+     {
+       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_Basic_StreamCtrl::stop");
+@@ -504,6 +508,10 @@
+           ACE_TRY_CHECK;
+         }
+     }
++  ACE_CATCH(CORBA::SystemException, ex)
++      {
++      ACE_RE_THROW; //ACS mod 2006-03
++      }
+   ACE_CATCHANY
+     {
+       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_Basic_StreamCtrl::stop");
+@@ -3922,6 +3930,10 @@
+           ACE_TRY_CHECK;
+         }
+     }
++  ACE_CATCH(CORBA::SystemException, ex)
++      {
++      ACE_RE_THROW; //ACS mod 2006-03
++      }
+   ACE_CATCHANY
+     {
+       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_FlowConnection::stop");
