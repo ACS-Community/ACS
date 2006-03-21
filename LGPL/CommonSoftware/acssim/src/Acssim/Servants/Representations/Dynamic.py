@@ -56,15 +56,22 @@ class Dynamic(BaseRepresentation):
         global IR
         #superclass constructor
         BaseRepresentation.__init__(self, compname)
+        
+        self.__logger = getLogger(str(Dynamic) + "(" + compname + ")")
 
         #save the IDL type
         self.comp_type = comptype
 
         self.__interf = IR.lookup_id(comptype)
-        self.__interf = self.__interf._narrow(CORBA.InterfaceDef)
-        self.__interf = self.__interf.describe_interface()
+        try:
+            self.__interf = self.__interf._narrow(CORBA.InterfaceDef)
+            self.__interf = self.__interf.describe_interface()
+        except Exception, e:
+            self.__logger.logCritical("Cannot find a definition for '" +
+                                       self.comp_type + "' components!")
+            raise CORBA.NO_RESOURCES()
         
-        self.__logger = getLogger("Acssim.Servants.Dynamic")
+        
         
     #--------------------------------------------------------------------------
     def getMethod(self, method_name):
@@ -84,7 +91,7 @@ class Dynamic(BaseRepresentation):
         #This will be true if the method name starts with "_set_". If this
         #happens to be the case, just return
         if method_name.rfind("_set_") == 0:
-            self.__logger.logTrace("Trying to simulate a write to an attribute...ignoring:" + str(method_name))
+            self.__logger.logDebug("Trying to simulate a write to an attribute...ignoring:" + str(method_name))
             return ret_val
 
         #Check to see if the method's name begins with "_get_". If this is true,
@@ -135,7 +142,7 @@ class Dynamic(BaseRepresentation):
             self.__logger.logWarning("Failed to dynamically generate the  '" + method_name +
                                    "' method for the '" + self.compname + "' component " +
                                    "because the IFR was missing information on the method!")
-            return ret_val
+            raise CORBA.NO_RESOURCES()
         #good - no in/inout parameters
         elif len(return_list) == 1:
             self.__logger.logTrace("There were no out/inout params:" + str(method_name))

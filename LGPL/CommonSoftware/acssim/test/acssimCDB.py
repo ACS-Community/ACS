@@ -49,6 +49,7 @@ if __name__=="__main__":
     cdb = CDB("HELLOWORLD1", ["IDL:alma/acsexmplHelloWorld/HelloWorld:1.0",
                               "IDL:alma/ACS/ACSComponent:1.0"])
     print "cdb.getMethod('displayMessage'):",  cdb.getMethod('displayMessage')           
+    print "cdb.getMethod('nonexistentMethod'):",  cdb.getMethod('nonexistentMethod')
     print
     
     print "--BADCOMPONENT--"

@@ -49,6 +49,8 @@ def getCompIfrID(comp_name):
     '''
     Given a component's name, returns said component's interface repository ID
     or throws an exception if the ID cannot be determined.
+    
+    Raises: CORBA.NO_RESOURCES
     '''
     #get a list of component info's
     comp_list = getManager().get_component_info(getClient().token.h, 
@@ -62,7 +64,7 @@ def getCompIfrID(comp_name):
             return comp.type
         
     #sanity check
-    raise "Component IFR ID not found"                                          
+    raise CORBA.NO_RESOURCES()                                          
                                     
 #------------------------------------------------------------------------------
 def getSuperIDs(ir_id):

@@ -25,43 +25,49 @@
 #------------------------------------------------------------------------------
 
 '''
-Tests Dynamic
+Tests BehaviorProxy
 '''
-import CORBA
-from Acssim.Servants.Representations.Dynamic import Dynamic
+from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
 from Acssim.Servants.Goodies import addComponent
+import CORBA
 
 class MockComponent:
     def __init__(self, name): self.name = name
     def _get_name(self): return self.name
     def activateOffShoot(self, os): return os
 
-addComponent("TEST_RPS_1", MockComponent("TEST_RPS_1"))
-addComponent("HELLOWORLD1", MockComponent("HELLOWORLD1"))
-addComponent("BADCOMPONENT", MockComponent("BADCOMPONENT"))
-       
 if __name__=="__main__":
-    
-    print "--TEST_RPS_1--"
-    dyn = Dynamic("TEST_RPS_1", "IDL:alma/RampedPS/RampedPowerSupply:1.0")
-    #from RampedPowerSupply
-    print "dyn.getMethod('startRamping'):",  dyn.getMethod('startRamping')                
-    #from PowerSuppy
-    print "dyn.getMethod('_get_readback'):",  dyn.getMethod('_get_readback')
+    bp = BehaviorProxy("TEST_RPS_1")
+    print "dir(TEST_RPS_1):", dir(bp)
     print
     
-    print "--HELLOWORLD1--"
-    dyn = Dynamic("HELLOWORLD1", "IDL:alma/acsexmplHelloWorld/HelloWorld:1.0")
-    print "dyn.getMethod('displayMessage'):",  dyn.getMethod('displayMessage')
     try:
-        print "dyn.getMethod('nonexistentMethod'):",  dyn.getMethod('nonexistentMethod')
-    except CORBA.NO_RESOURCES, exception:
-        print "Good...cannot invoke 'nonexistent' which does not exist in the IDL"           
+        print "bp.getMethod('on'):", bp.getMethod('on')
+        print "Bad!"
+    except:
+        print "Good...cannot get 'on' method before a MockComponent has been created"
     print
     
-    print "--BADCOMPONENT--"
+    addComponent("TEST_RPS_1", MockComponent("TEST_RPS_1"))
     try:
-        dyn = Dynamic("BADCOMPONENT", "crap")
-        print dir(dyn)
-    except CORBA.NO_RESOURCES, exception:
-        print "Good...cannot create 'BADCOMPONENT' of no real type"
+        print "bp.getMethod('on'):", bp.getMethod('on')
+        print "Good!"
+    except:
+        print "Bad...cannot get 'on' method after a MockComponent has been created"
+    print
+    
+    try:
+        print "bp.getMethod('nonexistentMethod'):", bp.getMethod('nonexistentMethod')
+        print "Bad!"
+    except CORBA.NO_RESOURCES, temp_ex:
+        print "Good...got a NO_RESOURCES exception for a nonexistent method"
+    print
+    
+    try:
+        bp = BehaviorProxy("NON_EXISTENT")
+        print "Bad!"
+    except CORBA.NO_RESOURCES, temp_ex:
+        print "Good...could not create a 'NON_EXISTENT' proxy"
+    print
+    
+    

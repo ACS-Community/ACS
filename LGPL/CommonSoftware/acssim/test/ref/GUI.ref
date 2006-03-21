@@ -1,0 +1,2 @@
+1 - gui.getMethod('displayMessage'): None
+1 - gui.getMethod('displayMessage'): {'nonempty': 'main'}

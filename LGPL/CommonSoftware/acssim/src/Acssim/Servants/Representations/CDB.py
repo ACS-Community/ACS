@@ -36,6 +36,7 @@ from operator import isSequenceType
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
+from Acspy.Common.Log       import getLogger
 from Acssim.Servants.Goodies import getComponentXMLObj
 from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
 #--GLOBALS---------------------------------------------------------------------
@@ -63,6 +64,9 @@ class CDB(BaseRepresentation):
         '''
         #superclass constructor
         BaseRepresentation.__init__(self, compname)
+        
+        #setup the logger
+        self.__logger = getLogger(str(CDB) + "(" + compname + ")")
         
         #bool value showing whether the CDB entry exists or not
         self.exists=0
@@ -135,7 +139,11 @@ class CDB(BaseRepresentation):
             cdb_location = "interfaces/"
             #Turn "IDL:alma/someModule/someInterface:1.0" into:
             #"alma/someModule/someInterface/1.0/1.0"
-            supported_interface = supported_interface.split('IDL:')[1].replace(":", "/")
+            try:
+                supported_interface = supported_interface.split('IDL:')[1].replace(":", "/")
+            except Exception, temp_exc:
+                self.__logger.logWarning("Cannot parse '" + supported_interface +
+                                          "' to a CDB location!")
             cdb_location = cdb_location + supported_interface
             
             #now try to extract some useful info

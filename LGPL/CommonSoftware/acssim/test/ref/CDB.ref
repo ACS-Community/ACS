@@ -1,0 +1,12 @@
+1 - --TEST_RPS_1--
+1 - cdb.getMethod('startRamping'): {'Timeout': 0.0, 'Value': ['print "Simulated startRamping - messing with callback"', 'compl = ACSErr.Completion(0L, 0L, 0L, ())', 'cbdo  = ACS.CBDescOut(0L, 0L)', 'parameters[1].working(compl, cbdo)', 'None']}
+1 - cdb.getMethod('_get_readback'): None
+1 - 
+1 - --HELLOWORLD1--
+1 - cdb.getMethod('displayMessage'): {'Timeout': 3.0, 'Value': ["print 'Simulated Hello World!'", 'None']}
+1 - cdb.getMethod('nonexistentMethod'): None
+1 - 
+1 - --BADCOMPONENT--
+1 - ----------T--:--:--.--- Acssim.Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'crap' to a CDB location!
+1 - ----------T--:--:--.--- Acssim.Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'morecrap' to a CDB location!
+1 - ['_BaseRepresentation__checkCompRef', '_CDB__logger', '__doc__', '__init__', '__module__', 'comp_ref', 'compname', 'exists', 'getCorbaAttributes', 'getCorbaMethods', 'getMethod', 'handleCDB', 'handleInterfaces', 'logger', 'methods', 'setMethod']

@@ -31,6 +31,6 @@ from Acssim.Servants.Representations.GUI import GUI
           
 if __name__=="__main__":
     gui = GUI("HELLOWORLD1")
-    print "api.getMethod('displayMessage'):",  gui.getMethod('displayMessage')
+    print "gui.getMethod('displayMessage'):",  gui.getMethod('displayMessage')
     gui.setMethod('displayMessage', { "nonempty" : "main"})                          
-    print "api.getMethod('displayMessage'):",  gui.getMethod('displayMessage')
+    print "gui.getMethod('displayMessage'):",  gui.getMethod('displayMessage')
