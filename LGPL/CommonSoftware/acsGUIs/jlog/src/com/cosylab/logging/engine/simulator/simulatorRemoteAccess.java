@@ -21,8 +21,9 @@
  */
 package com.cosylab.logging.engine.simulator;
 
-import com.cosylab.logging.engine.*;
+import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.LCEngine;
+
 import java.util.Random;
 /**
  * Simulator for remote access that initializes, runs and destroys the engine.
@@ -52,16 +53,16 @@ public void destroy() {
 public void initialize() {
 /*
 	try {
-//	engine.addFilter(new Filter(LogEntry.FIELD_ENTRYTYPE, true, new Short(LogEntry.ENTRYTYPE_EMERGENCY)));
+//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, new Short(LogEntryXML.ENTRYTYPE_EMERGENCY)));
 
-//	engine.addFilter(new Filter(LogEntry.FIELD_ENTRYTYPE, true, 
-//		new Short(LogEntry.ENTRYTYPE_INFO),new Short(LogEntry.ENTRYTYPE_ERROR)));
+//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, 
+//		new Short(LogEntryXML.ENTRYTYPE_INFO),new Short(LogEntryXML.ENTRYTYPE_ERROR)));
 
-	engine.addFilter(new Filter(LogEntry.FIELD_STACKID, true, "Ex*rmi*t?r*"));
+	engine.addFilter(new Filter(LogEntryXML.FIELD_STACKID, true, "Ex*rmi*t?r*"));
 
-//	engine.addFilter(new Filter(LogEntry.FIELD_ENTRYTYPE, true, new Short(LogEntry.ENTRYTYPE_ERROR), null));
+//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, new Short(LogEntryXML.ENTRYTYPE_ERROR), null));
 
-//	engine.addFilter(new Filter(LogEntry.FIELD_ENTRYTYPE, true, null, new Short(LogEntry.ENTRYTYPE_ERROR)));
+//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, null, new Short(LogEntryXML.ENTRYTYPE_ERROR)));
 	
 	} catch (InvalidFilterConstraintException ifce) {
 		System.out.println("Exception in simulatorRemoteAccess::initialize(): " + ifce);
@@ -85,7 +86,7 @@ public void run() {
 //		sleep(5000);
 		while (isInitalized) {
 //			System.out.println(">sim< A Random Log is being sent.");
-			engine.pushStructuredEvent(LogEntry.generateRandomLog(random));
+			engine.pushStructuredEvent(LogEntryXML.generateRandomLog(random));
 			sleep(300*(random.nextInt(5)));
 		}
 	} catch (InterruptedException e) {

@@ -21,7 +21,7 @@
  */
 package com.cosylab.logging.client;
 
-import com.cosylab.logging.LogTypeHelper;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * A specialized renderer to display both icon and text for each type of the log.

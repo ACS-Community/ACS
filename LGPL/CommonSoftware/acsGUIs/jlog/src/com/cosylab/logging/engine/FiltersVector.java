@@ -24,6 +24,7 @@ import org.jdom.input.DOMBuilder;
 import org.jdom.adapters.JAXPDOMAdapter;
 import org.jdom.JDOMException;
 
+import com.cosylab.logging.engine.log.LogEntryXML;
 
 /**
  * @author acaproni
@@ -156,7 +157,7 @@ public class FiltersVector extends Vector<Filter> {
 	 * @param log The log to check 
 	 * @return true if the log pass all the active filters check
 	 */
-	public boolean applyFilters(LogEntry log) {
+	public boolean applyFilters(LogEntryXML log) {
 		boolean testPassed=activeFilters.size()>=0;
 		
 		// Check the log against all the active Filters (if any)
@@ -180,7 +181,7 @@ public class FiltersVector extends Vector<Filter> {
 		for (int t = 0; t<activeFilters.size(); t++) {
 			int pos = activeFilters.get(t).intValue();
 			if (t>0) returnValue.append(", ");
-			returnValue.append(LogEntry.getFieldDescription(((Filter)elementAt(pos)).field));
+			returnValue.append(LogEntryXML.getFieldDescription(((Filter)elementAt(pos)).field));
 		}
 		return "Filtered by: "+returnValue.toString();
 	}

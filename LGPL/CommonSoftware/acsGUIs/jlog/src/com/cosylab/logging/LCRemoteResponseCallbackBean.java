@@ -74,7 +74,7 @@ public javax.swing.JTextArea getTextArea() {
 public void invocationDestroyed() {}
 /**
  */
-public void logEntryReceived(com.cosylab.logging.engine.LogEntry logEntry) {
+public void logEntryReceived(com.cosylab.logging.engine.log.LogEntryXML logEntry) {
 	logEntryTable.getLCModel().appendLog(logEntry);
 }
 /**

@@ -29,7 +29,7 @@ import java.util.Collections;
 
 import java.awt.Cursor;
 
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.client.cache.LogFileCache;
 
@@ -43,12 +43,12 @@ public final class GroupedList {
 	// The cache with all the logs
 	// In this implementation we keep the indexes of the position
 	// in the cache of the visible log entries insted of a copy of the
-	// LogEntry themself.
+	// LogEntryXML themself.
 	private LogFileCache cache;
 	
 	private final List<GroupedListItem> elements = new ArrayList<GroupedListItem>();
 
-	private Comparator<LogEntry> sortComparator = null;
+	private Comparator<LogEntryXML> sortComparator = null;
 	private final GroupedListComparator groupComparator =
 		new GroupedListComparator();
 	private final GroupedListIndexComparator indexComparator =
@@ -230,7 +230,7 @@ public final class GroupedList {
 		/**
 		 * GroupedListItem constructor comment.
 		 * Creation date: (11/30/2001 14:12:41)
-		 * @param item The index in the cache of all the logs of a LogEntry  
+		 * @param item The index in the cache of all the logs of a LogEntryXML  
 		 */
 		public GroupedListItem(Integer item) {
 			super();
@@ -483,7 +483,7 @@ public final class GroupedList {
 		 */
 		public final void sort() {
 			if ((expanded) && (size() > 1)) {
-				Comparator<LogEntry> comparator = GroupedList.this.getSortComparator();
+				Comparator<LogEntryXML> comparator = GroupedList.this.getSortComparator();
 
 				if (comparator != null) {
 					//Collections.sort(indexOfGroupedItems, comparator);
@@ -553,7 +553,7 @@ public final class GroupedList {
 	 * Adds an item to the grouped list at a proper position.
 	 * <p>
 	 * Creation date: (12/25/2001 11:36:48)
-	 * @param item The index of the LogEntry to add
+	 * @param item The index of the LogEntryXML to add
 	 */
 	protected final synchronized void addInternal(Integer item) {
 		int index = 0;
@@ -756,7 +756,7 @@ public final class GroupedList {
 	 * @return  
 	 * @param index int
 	 */
-	public synchronized final LogEntry get(int index) {
+	public synchronized final LogEntryXML get(int index) {
 
 		int i = internalGet(index);
 
@@ -809,7 +809,7 @@ public final class GroupedList {
 	 * Creation date: (12/1/2001 12:50:41)
 	 * @return java.util.Comparator
 	 */
-	public final Comparator<LogEntry> getSortComparator() {
+	public final Comparator<LogEntryXML> getSortComparator() {
 		return sortComparator;
 	}
 	
@@ -1037,7 +1037,7 @@ public final class GroupedList {
 	 * Creation date: (11/30/2001 16:44:54)
 	 * @param GroupedListComparator
 	 */
-	public final void setGroupComparator(Comparator<LogEntry> newGroupComparator) {
+	public final void setGroupComparator(Comparator<LogEntryXML> newGroupComparator) {
 		groupComparator.setComparator(newGroupComparator);
 //		Collections.sort(elements, groupComparator);
 	}
@@ -1047,7 +1047,7 @@ public final class GroupedList {
 	 * Creation date: (12/1/2001 12:50:41)
 	 * @param newSortComparator java.util.Comparator
 	 */
-	public void setSortComparator(Comparator<LogEntry> newSortComparator) {
+	public void setSortComparator(Comparator<LogEntryXML> newSortComparator) {
 		sortComparator = newSortComparator;
 		reSort();
 	}
@@ -1075,7 +1075,7 @@ public final class GroupedList {
 	 * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
 	 */
 	private final class GroupedListComparator implements Comparator<GroupedListItem> {
-		private Comparator<LogEntry> comparator = null;
+		private Comparator<LogEntryXML> comparator = null;
 
 		private boolean sortAscending = true;
 
@@ -1083,20 +1083,20 @@ public final class GroupedList {
 		}
 
 		public final int compare(GroupedListItem glist1, GroupedListItem glist2) {
-			LogEntry log1 = cache.getLog(glist1.getFirst());
-			LogEntry log2 = cache.getLog(glist2.getFirst());
+			LogEntryXML log1 = cache.getLog(glist1.getFirst());
+			LogEntryXML log2 = cache.getLog(glist2.getFirst());
 			if (sortAscending)
 				return comparator.compare(log1, log2);
 			else
 				return -comparator.compare(log1, log2);
 		}
-		public Comparator<LogEntry> getComparator() {
+		public Comparator<LogEntryXML> getComparator() {
 			return comparator;
 		}
 		public boolean isSortAscending() {
 			return sortAscending;
 		}
-		public void setComparator(Comparator<LogEntry> newComparator) {
+		public void setComparator(Comparator<LogEntryXML> newComparator) {
 			comparator = newComparator;
 		}
 		public void setSortAscending(boolean newSortAscending) {

@@ -33,7 +33,7 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 
 
 
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 
 /**
  * ACSStructuredPushConsumer gets an XML log from the Engine 
@@ -48,7 +48,7 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 		public void run()
 		{
 			String log = null;
-			LogEntry logEntry = null;
+			LogEntryXML logEntry = null;
 			while (true) {
 				try {
 					if (!xmlLogs.isEmpty()) {

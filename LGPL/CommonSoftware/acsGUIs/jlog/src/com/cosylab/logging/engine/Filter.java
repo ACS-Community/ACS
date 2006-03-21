@@ -27,11 +27,13 @@ import java.util.Date;
 import java.util.regex.*;
 import javax.swing.JOptionPane;
 
-import com.cosylab.logging.LogTypeHelper;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.LogEntryXML;
+
 
 /**
  * A Filter is a class used for filtering LogEntries. It has the following characteristics:
- * <UL><LI>Filterable field: A LogEntry's attribute to be used as a filterable criteria.</LI>
+ * <UL><LI>Filterable field: A LogEntryXML's attribute to be used as a filterable criteria.</LI>
  * <LI>Constraint type: A type of filter to apply, e.g. regular expression for Strings, lower bound for integers, etc</LI>
  * <LI>Constraints: Specific constraints to be used for this filter. Number and class of constraints depends on
  * Constraint type</LI>
@@ -102,7 +104,7 @@ public Filter(
 	if ((minimum == null) && (maximum == null)) throw new InvalidFilterConstraintException("No constraint specified");
 	 
 	if (minimum != null) {
-	    if (!(LogEntry.getFieldClass(field).isInstance(minimum))) {
+	    if (!(LogEntryXML.getFieldClass(field).isInstance(minimum))) {
 			throw new InvalidFilterConstraintException("Invalid minimum");
 	    }
 	    this.minimum = minimum;
@@ -111,7 +113,7 @@ public Filter(
 	}
 	
 	if (maximum != null) {
-	    if (!(LogEntry.getFieldClass(field).isInstance(maximum)))
+	    if (!(LogEntryXML.getFieldClass(field).isInstance(maximum)))
  	       throw new InvalidFilterConstraintException("Invalid maximum");
 	    this.maximum = maximum;
 	} else {
@@ -160,7 +162,7 @@ public Filter(int field, boolean isLethal, Integer minimum, Integer maximum, boo
 public Filter(int field, boolean isLethal, Object exact, boolean notFilter) throws InvalidFilterConstraintException {
 	this(field, EXACT, isLethal,notFilter);
 
-	if (LogEntry.getFieldClass(field) != exact.getClass())
+	if (LogEntryXML.getFieldClass(field) != exact.getClass())
  		throw new InvalidFilterConstraintException("Invalid exact value: "+exact);
 	 
 	this.exact = exact;
@@ -176,7 +178,7 @@ public Filter(int field, boolean isLethal, String regularExpression, boolean not
 //	System.out.println("short, boolean, String");
 //	System.out.println(field+" "+isLethal+" "+regularExpression);
 	
-	if (!(LogEntry.getFieldClass(field).equals(String.class)))
+	if (!(LogEntryXML.getFieldClass(field).equals(String.class)))
  		throw new InvalidFilterConstraintException("Invalid regular expression: "+regularExpression);
  	
 	// Build a pattern to ensure if the regular expression is valid
@@ -244,7 +246,7 @@ public Filter(int field, boolean isLethal, Date minimum, Date maximum, boolean n
 
 /**
  * The most imporant method of this class. Returns true
- * if LogEntry passes through the filter and false
+ * if LogEntryXML passes through the filter and false
  * otherwise.
  *
  * If this instance is a non-lethal filter and is called in lethal circumstances
@@ -253,7 +255,7 @@ public Filter(int field, boolean isLethal, Date minimum, Date maximum, boolean n
  * If this instance is a lethal filter and is called in non-lethal circumstances
  * (at a GUI level), this filter always returns true.
  */
-public boolean applyTo(LogEntry logEntry, boolean lethalCircumstances) {
+public boolean applyTo(LogEntryXML logEntry, boolean lethalCircumstances) {
 	
 	if (lethalCircumstances != isLethal) return true;
 
@@ -337,7 +339,7 @@ public String toString() {
 			break;
 	}
 	
-	type.insert(0,LogEntry.getFieldDescription(field)+", ");
+	type.insert(0,LogEntryXML.getFieldDescription(field)+", ");
 	if (notFilter) type.insert(0,"NOT ");
 	return type.toString();
 }

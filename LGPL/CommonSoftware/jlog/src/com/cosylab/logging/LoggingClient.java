@@ -42,6 +42,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.JSplitPane;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
@@ -59,7 +60,8 @@ import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DomTable;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
 
@@ -545,7 +547,7 @@ public class LoggingClient extends JFrame
 				ivjJFrameContentPane = new javax.swing.JPanel();
 				ivjJFrameContentPane.setName("JFrameContentPane");
 				ivjJFrameContentPane.setLayout(new java.awt.BorderLayout());
-				getJFrameContentPane().add(getJSplitPane1(), "Center");
+				ivjJFrameContentPane.add(getJSplitPane1(), "Center");
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -665,7 +667,7 @@ public class LoggingClient extends JFrame
 	 * @return javax.swing.JScrollPane
 	 */
 
-	private javax.swing.JScrollPane getLogTable()
+	public javax.swing.JScrollPane getLogTable()
 	{
 		if (ivjLogTable == null)
 		{
@@ -681,6 +683,7 @@ public class LoggingClient extends JFrame
 				ivjLogTable.addComponentListener(new CustomColumnListener());
 				ivjLogTable.setColumnHeaderView(getScrollPaneTable().getTableHeader());
 				ivjLogTable.setViewportView(getScrollPaneTable());
+				ivjLogTable.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -893,7 +896,7 @@ public class LoggingClient extends JFrame
         
         scrollLockTB = new JToggleButton("Scroll lock");
         scrollLockTB.setSelected(false);
-        //tbLevelPanel.add(scrollLockTB);
+        tbLevelPanel.add(scrollLockTB);
         
         
         userPanel.add(tbLevelPanel);
@@ -929,7 +932,7 @@ public class LoggingClient extends JFrame
             setupMenuBar();
 			setJMenuBar(loggingClientJMenuBar);
             
-            setSize(633, 533);
+            setSize(750, 550);
             // Move the window to the center of the screen 
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             Dimension windowSize = getSize();
@@ -940,8 +943,6 @@ public class LoggingClient extends JFrame
             // and the other stuffs like the table (CENTER position)
             JPanel toolBarPanel = new JPanel();
             toolBarPanel.setLayout(new BorderLayout());
-            
-            
             
             // Add the GUI in the center position
             toolBarPanel.add(getJFrameContentPane(),BorderLayout.CENTER);
@@ -1253,7 +1254,7 @@ public class LoggingClient extends JFrame
 			// a row is selected
 			else
 			{
-				LogEntry log = jt.getLCModel().getVisibleLogEntry(selectedRow);
+				LogEntryXML log = jt.getLCModel().getVisibleLogEntry(selectedRow);
 				getJScrollPane2().setViewportView(getDataTable(log));
 			}
 		}
@@ -1268,7 +1269,7 @@ public class LoggingClient extends JFrame
 	 * @param log The log entry which datas are to be shown
 	 * @return The component that displays the datas
 	 */
-	public Component getDataTable(LogEntry log)
+	public Component getDataTable(LogEntryXML log)
 	{
 		DomTable table = null;
 		// Try to build a DomTable
@@ -1697,8 +1698,8 @@ public class LoggingClient extends JFrame
 				ivjJSplitPane1.setName("JSplitPane1");
 				ivjJSplitPane1.setLastDividerLocation(350);
 				ivjJSplitPane1.setDividerLocation(350);
-				getJSplitPane1().add(getJScrollPane1(), "bottom");
-				getJSplitPane1().add(getJPanel2(), "top");
+				ivjJSplitPane1.add(getJScrollPane1(), "bottom");
+				ivjJSplitPane1.add(getJPanel2(), "top");
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1722,12 +1723,12 @@ public class LoggingClient extends JFrame
 			{
 				ivjJSplitPane2 = new javax.swing.JSplitPane(javax.swing.JSplitPane.HORIZONTAL_SPLIT);
 				ivjJSplitPane2.setName("JSplitPane2");
-				ivjJSplitPane2.setLastDividerLocation(500);
+				ivjJSplitPane2.setLastDividerLocation(570);
 				ivjJSplitPane2.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 				ivjJSplitPane2.setContinuousLayout(true);
-				ivjJSplitPane2.setDividerLocation(501);
-				getJSplitPane2().add(getJPanel1(), "left");
-				getJSplitPane2().add(getJPanel3(), "right");
+				//ivjJSplitPane2.setDividerLocation(501);
+				ivjJSplitPane2.add(getJPanel1(), "left");
+				ivjJSplitPane2.add(getJPanel3(), "right");
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1983,7 +1984,7 @@ public class LoggingClient extends JFrame
         FiltersVector filters = getLCModel1().getSystemFilters();
         for (int t=0; t<filters.size(); t++) {
             Filter f = filters.get(t);
-            if (f.getField()==LogEntry.FIELD_ENTRYTYPE) {
+            if (f.getField()==LogEntryXML.FIELD_ENTRYTYPE) {
                 // We have found the LogLevel filter: we remove it in order to
                 // replace with the new filter
                 filters.remove(t);
@@ -1993,7 +1994,7 @@ public class LoggingClient extends JFrame
         try {
             Filter levelFilter =
                 new Filter(
-                		LogEntry.FIELD_ENTRYTYPE,
+                		LogEntryXML.FIELD_ENTRYTYPE,
                 		false,
                 		new Integer(level),
                 		new Integer(LogTypeHelper.ENTRYTYPE_EMERGENCY),

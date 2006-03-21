@@ -34,7 +34,7 @@ import java.io.BufferedReader;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.client.GroupedList;
 
@@ -71,7 +71,7 @@ public class LogFileCache {
 	
 	// The logs replaced (for example the logs with some info added)
 	// They are usually a few so we keep them in memory
-	private HashMap<Integer,LogEntry> replacedLogs = new HashMap<Integer,LogEntry>();
+	private HashMap<Integer,LogEntryXML> replacedLogs = new HashMap<Integer,LogEntryXML>();
 	
 	// Monitor if an async IO operation is in progress
 	private boolean IOOperationInProgress =false;
@@ -347,9 +347,9 @@ public class LogFileCache {
 	 * Return the log in the given position
 	 *  
 	 * @param pos The position of the log
-	 * @return The LogEntry or null in case of error
+	 * @return The LogEntryXML or null in case of error
 	 */
-	public LogEntry getLog(int pos) {
+	public LogEntryXML getLog(int pos) {
 		// Check if the log is present in the list of the replaced logs
 		if (replacedLogs.containsKey(new Integer(pos))) {
 			return replacedLogs.get(new Integer(pos));
@@ -370,7 +370,7 @@ public class LogFileCache {
 	 * @param log The log to append in the cache
 	 * @return The position in the cache of the added log
 	 */
-	public int add(LogEntry log) throws LogCacheException {
+	public int add(LogEntryXML log) throws LogCacheException {
 		String xml=log.toXMLString();
 		long pos;
 		synchronized(file) {
@@ -395,7 +395,7 @@ public class LogFileCache {
 	 * @param position The position of the log to replace
 	 * @param log The new log
 	 */
-	public void replaceLog(int position, LogEntry log) {
+	public void replaceLog(int position, LogEntryXML log) {
 		replacedLogs.put(new Integer(position),log);
 	}
 	

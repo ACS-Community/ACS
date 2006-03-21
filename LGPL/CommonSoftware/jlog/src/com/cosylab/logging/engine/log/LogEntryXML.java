@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging.engine;
+package com.cosylab.logging.engine.log;
 
 import java.util.Random;
 
@@ -29,7 +29,8 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
-import com.cosylab.logging.LogTypeHelper;
+import com.cosylab.logging.engine.VectorNodeList;
+import com.cosylab.logging.engine.DataNode;
 
 /**
  * This is the container class for generic Log Entries.
@@ -39,89 +40,14 @@ import com.cosylab.logging.LogTypeHelper;
  * class is used when parsing nodes. The class is used when 
  * a file is read or a node is received by the push consumer.
  */
-public final class LogEntry
+public final class LogEntryXML implements ILogEntry
 {
-	public static final short FIELD_TIMESTAMP = 0;
-	public static final short FIELD_ENTRYTYPE = 1;
-    public static final short FIELD_SOURCEOBJECT=2;
-	public static final short FIELD_FILE = 3;
-	public static final short FIELD_LINE = 4;
-	public static final short FIELD_ROUTINE = 5;
-	public static final short FIELD_HOST = 6;
-	public static final short FIELD_PROCESS = 7;
-	public static final short FIELD_CONTEXT = 8;
-	public static final short FIELD_THREAD = 9;
-	public static final short FIELD_LOGID = 10;
-	public static final short FIELD_PRIORITY = 11;
-	public static final short FIELD_URI = 12;
-	public static final short FIELD_STACKID = 13;
-	public static final short FIELD_STACKLEVEL = 14;
-	public static final short FIELD_LOGMESSAGE = 15;
     
 	private VectorNodeList datas = null;
 	public VectorNodeList complexLogEntryMessage = null;
 
-	public static final short NUMBER_OF_FIELDS = 16;
 	private final Object[] fields = new Object[NUMBER_OF_FIELDS];
-	private static final String[] fieldNames =
-		{
-			"Timestamp",
-			"Entry Type",
-            "Source Object",
-			"File",
-			"Line",
-			"Routine",
-			"Host",
-			"Process",
-			"Context",
-			"Thread",
-			"Log ID",
-			"Priority",
-			"URI",
-			"Stack ID",
-			"Stack Level",
-			"Log Message"} ;
-
-	private static final Class[] fieldClasses = { 
-        Date.class, // Time Stamp
-		Integer.class, //EntryType
-        String.class, //Source Object
-		String.class, //File
-		Integer.class, //Line
-		String.class, //Routine 
-		String.class, //Host
-		String.class, //Process
-		String.class, //Context
-		String.class, //Thread
-		String.class, //LogID
-		Integer.class, //Priority
-		String.class, //URI
-		String.class, //Stack ID
-		Integer.class, //Stack Level
-		String.class}; // Log Message
 	
-	// The name of the attributes in the XML file
-	private static final String[] tagAttributes =
-	{
-		"TimeStamp",
-		"", // Place holeder: not an attribute in the XML
-        "SourceObject",
-		"File",
-		"Line",
-		"Routine",
-		"Host",
-		"Process",
-		"Context",
-		"Thread",
-		"LogId",
-		"Priority",
-		"URI",
-		"StackId",
-		"StackLevel",
-		""} ; // Place holeder: not an attribute in the XML
-        
-	// private static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'hh':'mm':'ss'.'SSSS";
-	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSS";
 
 	private Node log = null;
 	private boolean isLogEntrySimple = true;
@@ -134,7 +60,7 @@ public final class LogEntry
 	 * It is called by com.cosylab.logging.test.LogEntryTest
 	 * @args 
 	 */
-	public LogEntry(
+	public LogEntryXML(
 		String d,
 		int entrytype,
 		String file,
@@ -172,7 +98,7 @@ public final class LogEntry
         setField(FIELD_SOURCEOBJECT,srcObject);
 	}
 
-	public LogEntry(String stackId, int stackLevel) throws DOMException
+	public LogEntryXML(String stackId, int stackLevel) throws DOMException
 	{
 		setField(FIELD_STACKID, stackId);
 		setField(FIELD_STACKLEVEL, new Integer(stackLevel));
@@ -181,10 +107,10 @@ public final class LogEntry
 	/**
 	 * This costructor is used only for testing purposes.
 	 * It is called by com.cosylab.logging.engine.simulator.simulatorRemoteAccess
-	 * It generates a random LogEntry
+	 * It generates a random LogEntryXML
 	 */
-	// public LogEntry(Random random) {
-	public LogEntry(Random random)
+	// public LogEntryXML(Random random) {
+	public LogEntryXML(Random random)
 	{
 		// set whatever you want here (depending of the test you are performing);
 
@@ -205,14 +131,14 @@ public final class LogEntry
 	 * This constructor is called by the DOMParser.
 	 * @param log org.w3c.Node 
 	 */
-	public LogEntry(Node log) throws DOMException
+	public LogEntryXML(Node log) throws DOMException
 	{
 		initialize(log);
 	}
     
-	public static LogEntry generateRandomLog(Random random)
+	public static LogEntryXML generateRandomLog(Random random)
 	{
-		return new LogEntry(random);
+		return new LogEntryXML(random);
 	}
 	
 	/**
@@ -279,16 +205,6 @@ public final class LogEntry
 	public static String getFieldDescription(int fieldIndex)
 	{
 		return (isValidFieldIndex(fieldIndex) ? fieldNames[fieldIndex] : "");
-	}
-    
-	/**
-	 * Returns all fields as an array of objects
-	 * Creation date: (11/21/2001 18:15:15)
-	 * @return java.lang.Object[]
-	 */
-	public Object[] getFieldsAsArray()
-	{
-		return fields;
 	}
     
 	private void initAttributes(Node log) throws DOMException
@@ -483,7 +399,7 @@ public final class LogEntry
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("--- LogEntry ---\n");
+		StringBuffer sb = new StringBuffer("--- LogEntryXML ---\n");
 
 		/* Attributes */
 		for (int i = 0; i < NUMBER_OF_FIELDS; i++)
@@ -531,6 +447,9 @@ public final class LogEntry
 		}
 	}
 	
+	/**
+	 * Return the object as XML string
+	 */
 	public String toXMLString() {
 		if (log==null) {
 			throw new IllegalStateException("Node is null");
@@ -540,8 +459,8 @@ public final class LogEntry
 		String logType =getEntryTypeAsString();
 		sb.append("<"+logType);
 		
-		for (int t=0; t<LogEntry.NUMBER_OF_FIELDS; t++) {
-			if (t==LogEntry.FIELD_LOGMESSAGE || t==LogEntry.FIELD_ENTRYTYPE) {
+		for (int t=0; t<LogEntryXML.NUMBER_OF_FIELDS; t++) {
+			if (t==LogEntryXML.FIELD_LOGMESSAGE || t==LogEntryXML.FIELD_ENTRYTYPE) {
 				continue;
 			}
 			Object attrValue = getField(t);
@@ -557,15 +476,15 @@ public final class LogEntry
 				String attrValStr = attrValue.toString();
 				attrValStr=attrValStr.replaceAll("<","&lt;");
 				attrValStr=attrValStr.replaceAll(">","&gt;");
-				sb.append(" "+LogEntry.tagAttributes[t]+"=\""+attrValStr+"\"");
+				sb.append(" "+LogEntryXML.tagAttributes[t]+"=\""+attrValStr+"\"");
 			}
 		}
 		
-		Integer type = (Integer)getField(LogEntry.FIELD_ENTRYTYPE);
+		Integer type = (Integer)getField(LogEntryXML.FIELD_ENTRYTYPE);
 		if (type==LogTypeHelper.ENTRYTYPE_TRACE) {
 			sb.append("/>");
 		} else {
-			sb.append("><![CDATA["+getField(LogEntry.FIELD_LOGMESSAGE).toString()+"]]>");
+			sb.append("><![CDATA["+getField(LogEntryXML.FIELD_LOGMESSAGE).toString()+"]]>");
 			sb.append(getXMLDatas());
 			sb.append("</"+logType+">");
 		}

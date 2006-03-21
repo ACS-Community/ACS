@@ -21,8 +21,8 @@ import java.awt.event.ItemEvent;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
-import com.cosylab.logging.engine.LogEntry;
-import com.cosylab.logging.LogTypeHelper;
+import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * A class to edit a filter based on the type of the log

@@ -22,7 +22,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 
 /**
  * The table used to represent datas in the right panel of the
@@ -57,7 +57,7 @@ public class DomTable extends JTable
 	 * 
 	 * @param log The logEntry with the datas to display 
 	 */
-	public DomTable(LogEntry log) throws Exception {
+	public DomTable(LogEntryXML log) throws Exception {
 		super();
 
 		NodeList nl  = log.getDatas();

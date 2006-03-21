@@ -33,11 +33,11 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 
 /**
  * ACSLogParser is used for parsing an xml string (starting with like <Info>,<Debug> and so on) 
- * to produce a valid LogEntry. It gets the string  
+ * to produce a valid LogEntryXML. It gets the string  
  * from inside the ACSStructuredPushConsumer class where the logs get accumulated from the 
  * CORBA Logging Service. 
  * Creation date: (11/8/2001 6:22:53 PM)
@@ -74,7 +74,7 @@ public static void main(java.lang.String[] args) {
 	try {
 		parser = new ACSLogParser();
 	} catch (Exception e) {};
-	LogEntry log = null;
+	LogEntryXML log = null;
 	try {
 		// log = parser.parse("<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logsger.</Info>");
 		log = parser.parse("<Log><Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" /><Info TimeStamp=\"2002-11-07T15:13:20.641\">Error</Info></Log>");
@@ -88,7 +88,7 @@ public static void main(java.lang.String[] args) {
  * Parses the xmlLog. This method must be synchronized to ensure that the
  * parses parses only one log at a time.
  */
-public synchronized LogEntry parse(String string) 
+public synchronized LogEntryXML parse(String string) 
 	throws SAXException, DOMException, IOException {
 	Document document = null;
 	
@@ -117,7 +117,7 @@ public synchronized LogEntry parse(String string)
 			throw ioe;
 		}
 	}
-	return new LogEntry(document.getFirstChild());
+	return new LogEntryXML(document.getFirstChild());
 }
 
 /**

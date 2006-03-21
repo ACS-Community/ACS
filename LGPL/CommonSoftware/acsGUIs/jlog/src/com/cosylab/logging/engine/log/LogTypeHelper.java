@@ -19,11 +19,11 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging;
+package com.cosylab.logging.engine.log;
 
 import javax.swing.ImageIcon;
 
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 
 /**
  * @author acaproni
@@ -145,18 +145,18 @@ public class LogTypeHelper {
     }
     
     /**
-     * Return the type of the log of a LogEntry
+     * Return the type of the log of a LogEntryXML
      * 
-     * @param log The LogEntry we need the type
+     * @param log The LogEntryXML we need the type
      * 
      * @return A String describing the type of the log 
      *         ("Undeclared" if the type is unknown)
      */
-    public static String getLogTypeDescription(LogEntry log) {
+    public static String getLogTypeDescription(LogEntryXML log) {
         if (log==null) {
             throw new IllegalArgumentException("Impossible to get the type of a null log");
         }
-        Integer type = (Integer)log.getField(LogEntry.FIELD_ENTRYTYPE);
+        Integer type = (Integer)log.getField(LogEntryXML.FIELD_ENTRYTYPE);
         if (type==null || type.intValue()<0 || type.intValue()>NUMBER_OF_ENTRYTYPES) {
             return "Undeclared";
         } else {

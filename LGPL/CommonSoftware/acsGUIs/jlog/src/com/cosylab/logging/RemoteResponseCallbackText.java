@@ -21,7 +21,9 @@
  */
 package com.cosylab.logging;
 
-import com.cosylab.logging.engine.*;
+import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.RemoteResponseCallback;
+
 /**
  * This class implements RemoteResponseCallback and its methods logEntryReceived and reportStatus.
  * Creation date: (11/2/2001 3:21:42 PM)
@@ -47,7 +49,7 @@ public RemoteResponseCallbackText() {
 public void invocationDestroyed() {}
 /**
  */
-public void logEntryReceived(LogEntry logEntry) {
+public void logEntryReceived(LogEntryXML logEntry) {
 	System.out.println(logEntry);
 }
 /**

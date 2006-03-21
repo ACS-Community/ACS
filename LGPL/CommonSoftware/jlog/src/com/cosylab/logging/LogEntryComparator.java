@@ -21,13 +21,13 @@
  */
 package com.cosylab.logging;
 
-import com.cosylab.logging.engine.LogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 /**
- * This is specialized comparator to sort LogEntry objects using <code>Collections</code>.
+ * This is specialized comparator to sort LogEntryXML objects using <code>Collections</code>.
  * Creation date: (11/19/2001 10:45:07)
  * @author: 
  */
-public class LogEntryComparator implements java.util.Comparator<LogEntry> {
+public class LogEntryComparator implements java.util.Comparator<LogEntryXML> {
 
 	private short fieldIndex = 0;
 	
@@ -43,7 +43,7 @@ public class LogEntryComparator implements java.util.Comparator<LogEntry> {
 		ascending = sortAscending;
 	}
 	
-	public final int compare(LogEntry log1, LogEntry log2) {
+	public final int compare(LogEntryXML log1, LogEntryXML log2) {
 		if ((log1 == null) || (log2 == null))
 			return 0;
 			

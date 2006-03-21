@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import com.cosylab.logging.LogTypeHelper;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * The renderer for the item in the listbox
