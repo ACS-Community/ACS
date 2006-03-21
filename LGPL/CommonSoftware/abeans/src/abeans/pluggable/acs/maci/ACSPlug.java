@@ -100,6 +100,11 @@ public class ACSPlug extends Plug implements Configurable
 		 */
 		public void components_available(ComponentInfo[] components) {
 			// TODO components_available
+			// find all connectables, check if remote info equals (abeans could change the connectable)
+			// and connect(!)
+			
+			// additional thing: on connect, check if disconnected connectable is connecting to other
+			// instance, if it is, remove it from unavailable list (and drop the reference)
 		}
 
 		/**
@@ -107,6 +112,10 @@ public class ACSPlug extends Plug implements Configurable
 		 */
 		public void components_unavailable(String[] curls) {
 			// TODO components_unavailable
+			// call disconnect on all connectables (!)
+			// and remember them
+			// not that this will call initialize(null) -> disconnect
+			// where you should not remove the reference count
 		}
 
 		/**
