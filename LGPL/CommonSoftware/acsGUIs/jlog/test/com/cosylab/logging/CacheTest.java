@@ -4,6 +4,7 @@ import com.cosylab.logging.client.cache.*;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.client.GroupedList;
 import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 
 /**
@@ -86,7 +87,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	public void testGet() throws Exception {
-		LogEntryXML log;
+		ILogEntry log;
 		for (int t=0; t<cache.getSize(); t++) {
 			log = cache.getLog(0);
 			assertNotNull("Error getting the log "+t,log);
@@ -105,7 +106,7 @@ public class CacheTest extends junit.framework.TestCase {
 		LogEntryXML newLog = parser.parse(logStr);
 		cache.add(newLog);
 		assertEquals("Error adding a log",cache.getSize(),oldSize+1);
-		LogEntryXML log = cache.getLog(cache.getSize()-1);
+		ILogEntry log = cache.getLog(cache.getSize()-1);
 		String msg = (String)log.getField(LogEntryXML.FIELD_LOGMESSAGE);
 		assertEquals("Error adding a log",logMsg,msg);
 	}
@@ -161,11 +162,11 @@ public class CacheTest extends junit.framework.TestCase {
 		// Scans the list
 		for (int t=0; t<last; t++) {
 			cache.getLog(t);
-			LogEntryXML firstLog = cache.getLog(first);
+			ILogEntry firstLog = cache.getLog(first);
 			assertEquals("Error in mem cache pos "+first,firstMsg, firstLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
-			LogEntryXML lastLog = cache.getLog(last);
+			ILogEntry lastLog = cache.getLog(last);
 			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
-			LogEntryXML posLog = cache.getLog(pos);
+			ILogEntry posLog = cache.getLog(pos);
 			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
 		}
 	}
