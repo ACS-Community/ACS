@@ -1,4 +1,4 @@
-# @(#) $Id: DynamicImplementation.py,v 1.8 2006/03/20 21:06:51 dfugate Exp $
+# @(#) $Id: DynamicImplementation.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: DynamicImplementation.py,v 1.8 2006/03/20 21:06:51 dfugate Exp $"
+# "@(#) $Id: DynamicImplementation.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -34,11 +34,10 @@ specified in the Python Language Mapping, but not implemented by omniORB.
 #--REGULAR IMPORTS-------------------------------------------------------------
 from new    import instancemethod
 from Acspy.Util.ACSCorba import interfaceRepository
-import omniORB
 import CORBA
 
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id: DynamicImplementation.py,v 1.8 2006/03/20 21:06:51 dfugate Exp $"
+__revision__ = "@(#) $Id: DynamicImplementation.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
 #------------------------------------------------------------------------------
 def _mergeClasses(complete_dict, new_class):
     '''
@@ -99,9 +98,8 @@ def _createMethodImplementation(obj_ref, meth_name):
     #register the newly created method
     try:
         #if an exception on this occurs...the method does not already exist
-        temp = callable(getattr(obj_ref, meth_name))
-        del temp
-    except:
+        callable(getattr(obj_ref, meth_name))
+    except Exception, ex:
         #add the method.
         obj_ref.__dict__[meth_name] = instancemethod(genericFunction, obj_ref)
     return

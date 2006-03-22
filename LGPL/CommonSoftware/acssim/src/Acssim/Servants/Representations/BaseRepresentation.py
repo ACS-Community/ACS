@@ -39,7 +39,7 @@ from copy    import copy
 from Acspy.Common.Log                  import getLogger
 from Acssim.Servants.Goodies import getComponent
 #--GLOBALS---------------------------------------------------------------------
- 
+__revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------
 class BaseRepresentation:
     '''
@@ -84,11 +84,11 @@ class BaseRepresentation:
         else:
             return None
     #--------------------------------------------------------------------------
-    def setMethod(self, method_name, dict):
+    def setMethod(self, method_name, in_dict):
         '''
         Associates a method with a Python dictionary describing it.
         '''
-        self.methods[method_name] = copy(dict)
+        self.methods[method_name] = copy(in_dict)
     #--------------------------------------------------------------------------
     def __checkCompRef(self):
         '''

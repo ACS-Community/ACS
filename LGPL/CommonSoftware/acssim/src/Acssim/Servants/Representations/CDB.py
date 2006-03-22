@@ -28,8 +28,11 @@
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-TODO:
+Contains the concrete implementation of Acssim.Servants.Representations.
+BaseRepresentation.
 
+This particular implementation stores method/attribute definitions stored by
+the ACS CDB.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 from operator import isSequenceType
@@ -40,7 +43,7 @@ from Acspy.Common.Log       import getLogger
 from Acssim.Servants.Goodies import getComponentXMLObj
 from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
 #--GLOBALS---------------------------------------------------------------------
-
+__revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------
 class CDB(BaseRepresentation):
     '''
@@ -141,7 +144,7 @@ class CDB(BaseRepresentation):
             #"alma/someModule/someInterface/1.0/1.0"
             try:
                 supported_interface = supported_interface.split('IDL:')[1].replace(":", "/")
-            except Exception, temp_exc:
+            except Exception, ex:
                 self.__logger.logWarning("Cannot parse '" + supported_interface +
                                           "' to a CDB location!")
             cdb_location = cdb_location + supported_interface

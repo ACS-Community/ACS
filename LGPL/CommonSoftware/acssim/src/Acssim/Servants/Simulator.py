@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.27 2006/03/21 23:01:58 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.28 2006/03/22 21:06:17 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.27 2006/03/21 23:01:58 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.28 2006/03/22 21:06:17 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -99,9 +99,7 @@ class BaseSimulator(DynamicImplementation):
         tryCallbackParams(args[1:], self)
             
         return _execute(self.__name,
-                        self.__ir,
                         args[0],
-                        self,
                         args[1:],
                         getCompLocalNS(self.__name))
 

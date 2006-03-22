@@ -28,8 +28,12 @@
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-TODO:
-'''
+Contains the concrete implementation of Acssim.Servants.Representations.
+BaseRepresentation.
+
+This particular implementation stores method/attribute definitions stored by
+the simulator GUI.
+''' 
 #--REGULAR IMPORTS-------------------------------------------------------------
 
 #--CORBA STUBS-----------------------------------------------------------------
@@ -37,7 +41,7 @@ TODO:
 #--ACS Imports-----------------------------------------------------------------
 from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
 #--GLOBALS---------------------------------------------------------------------
- 
+__revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------
 class GUI(BaseRepresentation):
     '''

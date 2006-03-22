@@ -41,7 +41,7 @@ from Acspy.Util.ACSCorba        import interfaceRepository
 from Acspy.Util.ACSCorba import getClient
 from Acspy.Util.ACSCorba import getManager
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id$"
+__revision__ = "@(#) $Id$"
 omniORB.importIRStubs()
 IFR = interfaceRepository()
 #------------------------------------------------------------------------------

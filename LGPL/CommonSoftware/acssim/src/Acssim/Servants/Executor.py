@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.12 2006/03/22 18:54:38 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.13 2006/03/22 21:06:17 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,16 +21,14 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.12 2006/03/22 18:54:38 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.13 2006/03/22 21:06:17 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-
-TODO LIST:
-
+Module consists of code used to dynamically execute methods.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time    import sleep
@@ -44,12 +42,12 @@ from Acspy.Common.Log       import getLogger
 
 from Acssim.Servants.Goodies           import getSimProxy
 from Acssim.Corba.Generator            import *
-from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
 
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Servants.Executor")
+__revision__ = "@(#) $Id: Executor.py,v 1.13 2006/03/22 21:06:17 dfugate Exp $"
 #------------------------------------------------------------------------------
-def _execute(comp_name, comp_type, meth_name, comp_ref, args, local_ns):
+def _execute(comp_name, meth_name, args, local_ns):
     '''
     Given a component name/type as well as a method or CORBA attribute name,
     this function will simulate the execution of it. It first searches to see
@@ -59,10 +57,7 @@ def _execute(comp_name, comp_type, meth_name, comp_ref, args, local_ns):
 
     Parameters:
     - comp_name is the name of the component being simulated
-    - comp_type is the IDL type of the component being simulated
     - meth_name is the name of the method being simulated
-    - comp_ref just needs to be a real component we use to gain access to the
-    ContainerServices object. It must provide an "activateOffShoot" method.
     - local_ns is the local namespace
     
     Returns: Anything
@@ -76,7 +71,7 @@ def _execute(comp_name, comp_type, meth_name, comp_ref, args, local_ns):
     LOGGER.logDebug(meth_name + " return value looks like:" + str(ret_val) + " of type:" + str(type(ret_val)))
     return ret_val
 #------------------------------------------------------------------------------
-def _executeDict(dict, args, local_ns):
+def _executeDict(in_dict, args, local_ns):
     '''
     Given a Python dictionary describing a simulated method, this function
     essentially just simulates execution of it. Really all this function does
@@ -92,8 +87,8 @@ def _executeDict(dict, args, local_ns):
 
     Raises: Anything
     '''
-    sleep(dict['Timeout'])
-    return _executeList(dict['Value'], args, local_ns)
+    sleep(in_dict['Timeout'])
+    return _executeList(in_dict['Value'], args, local_ns)
 #------------------------------------------------------------------------------
 def _executeList(code_list, args, local_ns):
     '''

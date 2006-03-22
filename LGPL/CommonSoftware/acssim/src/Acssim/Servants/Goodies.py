@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.8 2006/03/20 23:25:57 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU Library General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 675 Massachusetts Ave, Cambridge, MA 02139, USA.  Correspondence concerning
-# ALMA should be addressed as follows:
+# ALMA should be addressed as follows: 
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.8 2006/03/20 23:25:57 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -43,7 +43,7 @@ from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id: Goodies.py,v 1.8 2006/03/20 23:25:57 dfugate Exp $"
+__revision__="@(#) $Id: Goodies.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
@@ -80,6 +80,7 @@ _COMP_REFS = {}
 
 #first get access to the CDB
 CDB_ACCESS = CDBaccess()
+
 #------------------------------------------------------------------------------
 def addComponent(comp_name, comp_ref):
     '''
@@ -250,10 +251,10 @@ def getCompLocalNS(comp_name):
             temp_id = cdb_location + temp_id
             comp_cdb_list.append(temp_id)
         
-        for comp_name in comp_cdb_list:
+        for name in comp_cdb_list:
             #-------------------------------
             #get the CDB helper object
-            xml_obj = getComponentXMLObj(comp_name)
+            xml_obj = getComponentXMLObj(name)
             
             if xml_obj!=None:
                 try: #use a try here because pythonImports section is not required
@@ -387,7 +388,7 @@ def setMaxSeqSize(new_seq_size):
     global MAX_SEQUENCE_SIZE
     MAX_SEQUENCE_SIZE=new_seq_size
     return
-
+#------------------------------------------------------------------
 def getMaxSeqSize():
     '''
     Returns the maximum sequence size for simulated

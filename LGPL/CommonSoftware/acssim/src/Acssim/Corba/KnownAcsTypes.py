@@ -28,7 +28,8 @@
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-TODO LIST:
+Module contains helper methods which generate and manipulate known ACS types.
+Generally these are defined in baci.idl.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 
@@ -39,14 +40,22 @@ import ACS
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 from Acspy.Common.TimeHelper import getTimeStamp
-#from Acssim.Servants.Goodies           import *
 #--GLOBALS---------------------------------------------------------------------
+__revision__ = "@(#) $Id$"
 LOGGER = getLogger("Acssim.Corba.KnownAcsTypes")
 #------------------------------------------------------------------------------
-def getKnownBaciType(structName):
+def getKnownBaciType(ifr_id):
     '''
+    Returns an instance of an ACS BACI type.
+    
+    Params: ifr_id interface repository ID of the type
+    
+    Returns: an instance of the class defined by ifr_id
+    
+    Raises: an exception if this type has not been implemented
+    by ACS.
     '''
-    if structName=="IDL:alma/ACSErr/Completion:1.0":
+    if ifr_id == "IDL:alma/ACSErr/Completion:1.0":
         return ACSErr.Completion(long(getTimeStamp().value),  #ULL;
                                  0L,  #ACSErr::CompletionType type;
                                  0L,  #ACSErr::CompletionCode code;
@@ -57,6 +66,9 @@ def getKnownBaciType(structName):
 #------------------------------------------------------------------------------
 def tryCallbackParams(params, compRef):
     '''
+    Takes in some parameters that were passed to a component method and checks
+    to see if any of them are actually callbacks. If this is the case, the
+    callbacks done method is invoked.
     '''
     from Acssim.Corba.Generator import getRandomValue
     
@@ -64,7 +76,7 @@ def tryCallbackParams(params, compRef):
                               0L,  #ACSErr::CompletionType type;
                               0L,  #ACSErr::CompletionCode code;
                               ())
-    
+                              
     cbId = 0L    #default value
     for param in params:
         if isinstance(param, ACS.CBDescIn):
@@ -72,7 +84,6 @@ def tryCallbackParams(params, compRef):
             break
         
     cbDescOut = ACS.CBDescOut(0L, cbId)
-    #cbDescOut = getRandomValue(ACS._tc_CBDescOut, compRef)
 
     for param in params:
         if isinstance(param, ACS._objref_CBvoid):

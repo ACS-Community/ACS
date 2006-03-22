@@ -31,7 +31,6 @@
 Contains base class definition for simulated entries.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
-from copy    import copy
 
 #--CORBA STUBS-----------------------------------------------------------------
 
@@ -44,7 +43,7 @@ from Acssim.Servants.Representations.API          import API
 from Acssim.Corba.Utilities            import getCompIfrID
 from Acssim.Corba.Utilities            import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
- 
+__revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------
 class BehaviorProxy:
     '''

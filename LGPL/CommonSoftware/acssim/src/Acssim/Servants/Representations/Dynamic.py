@@ -28,7 +28,11 @@
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-TODO LIST:
+Contains the concrete implementation of Acssim.Servants.Representations.
+BaseRepresentation.
+
+This particular implementation generates method/attribute definitions 
+on the fly using the CORBA IFR.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 
@@ -40,7 +44,7 @@ from Acspy.Common.Log       import getLogger
 from Acssim.Servants.Representations.BaseRepresentation         import BaseRepresentation
 from Acssim.Corba.Generator         import getRandomValue
 #--GLOBALS---------------------------------------------------------------------
-
+__revision__ = "@(#) $Id$"
 from Acssim.Servants.Goodies import IR
 from Acssim.Servants.Goodies import getStandardTimeout
 #------------------------------------------------------------------------------
@@ -52,8 +56,8 @@ class Dynamic(BaseRepresentation):
     #--------------------------------------------------------------------------
     def __init__ (self, compname, comptype):
         '''
+        Constructor
         '''
-        global IR
         #superclass constructor
         BaseRepresentation.__init__(self, compname)
         
@@ -66,7 +70,7 @@ class Dynamic(BaseRepresentation):
         try:
             self.__interf = self.__interf._narrow(CORBA.InterfaceDef)
             self.__interf = self.__interf.describe_interface()
-        except Exception, e:
+        except Exception, ex:
             self.__logger.logCritical("Cannot find a definition for '" +
                                        self.comp_type + "' components!")
             raise CORBA.NO_RESOURCES()
