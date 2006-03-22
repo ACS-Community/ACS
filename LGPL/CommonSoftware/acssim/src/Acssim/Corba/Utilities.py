@@ -110,6 +110,23 @@ def getSuperIDs(ir_id):
         ret_val = ret_val + getSuperIDs(base_interface_id)
         
     return ret_val
+
+#------------------------------------------------------------------------------
+def getDefinition(irLabel):
+    '''
+    Helper function returns the interface definition of some IDL type given
+    its complete interface repository location.
+
+    Parameters: irLabal is the location of the interface defintion within the
+    IFR. Typically this is something like 
+    "IDL:alma/someModule/someInterface:1.0"
+
+    Returns: the IFR definition of irLabel
+
+    Raises: ???
+    '''
+    interf = IFR.lookup_id(irLabel)
+    return interf
         
         
     

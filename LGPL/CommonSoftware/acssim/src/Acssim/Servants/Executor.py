@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.11 2006/03/21 23:01:58 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.12 2006/03/22 18:54:38 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.11 2006/03/21 23:01:58 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.12 2006/03/22 18:54:38 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -42,7 +42,6 @@ from sys     import stdout
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 
-from Acssim.Servants.Goodies           import *
 from Acssim.Servants.Goodies           import getSimProxy
 from Acssim.Corba.Generator            import *
 from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy

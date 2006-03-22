@@ -42,12 +42,13 @@ import ACSErr
 import ACS
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
-
 from Acspy.Common.TimeHelper import getTimeStamp
-
 from Acssim.Servants.Goodies           import *
+from Acssim.Corba.KnownAcsTypes import getKnownBaciType
+from Acssim.Corba.KnownAcsTypes import tryCallbackParams
+from Acssim.Corba.Utilities import getDefinition
 #--GLOBALS---------------------------------------------------------------------
-LOGGER = getLogger("Acssim.Servants.Generator")
+LOGGER = getLogger("Acssim.Corba.Generator")
 #------------------------------------------------------------------------------
 def getRandomValue(typeCode, compRef):
     '''
@@ -56,8 +57,6 @@ def getRandomValue(typeCode, compRef):
     '''
     #Determine the value type first. This is really just an enumeration for the
     #CORBA typecode
-    LOGGER.logTrace("Dealing with a CORBA AttributeDescription:" + 
-                     str(typeCode))
     valType = typeCode.kind()
     
     #--------------------------------------------------------------------------
@@ -78,130 +77,116 @@ def getRandomValue(typeCode, compRef):
         LOGGER.logTrace("Wasn't an alias-related type:" + str(valType))
     #--------------------------------------------------------------------------
     if valType == CORBA.tk_objref:
-        LOGGER.logTrace("Return value is a CORBA object:" + str(valType))
+        LOGGER.logTrace("CORBA object:" + str(valType))
         return getRandomCORBAObject(typeCode, compRef)
+    
     elif valType == CORBA.tk_enum:
         return getRandomEnum(typeCode)
+    
     elif valType == CORBA.tk_alias:
         return getRandomValue(typeCode.content_type(), compRef)
+    
     elif valType == CORBA.tk_null:
-        LOGGER.logTrace("Encountered null return value")
+        LOGGER.logTrace("Null return value")
         return None
     #--------------------------------------------------------------------------
     elif valType == CORBA.tk_struct:
-        structDef =getDefinition(typeCode.id())
+        return getRandomStruct(typeCode, compRef)
+    #--------------------------------------------------------------------------
+    else:
+        return getUnsupported(typeCode, compRef)
+#------------------------------------------------------------------------------
+def getUnsupported(typeCode, compRef):
+    '''
+    Helper function
+    '''
+    valType = typeCode.kind()
+    LOGGER.logCritical(str(valType) + " not yet supported")
+    raise CORBA.NO_IMPLEMENT()
+    
+    #if valType == CORBA.tk_Principal:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_TypeCode:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_abstract_interface:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_any:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_except:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_fixed:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_local_interface:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_native:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_union:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_value:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_wchar:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #elif valType == CORBA.tk_wstring:
+    #    raise CORBA.NO_IMPLEMENT()
+    #
+    #else:
+    #    raise CORBA.NO_IMPLEMENT()
+    
+#------------------------------------------------------------------------------
+def getRandomStruct(typeCode, compRef):
+    '''
+    Helper function
+    '''
+    structDef = getDefinition(typeCode.id())
         
-        try:
-            return getKnownBaciType(structDef._get_id())
-        except:
-            pass
+    try:
+        return getKnownBaciType(structDef._get_id())
+    except:
+        pass
+    
+    #determine which Python package the struct is in...
+    #changes 'IDL:alma/someMod/.../struct:1.0" to [ 'someMod', ...,
+    #'struct' ]
+    packageName = structDef._get_id().split(':')[1].split('/')[1:]
+    #Just the 'struct' part...
+    structName = packageName.pop()
         
-        #determine which Python package the struct is in...
-        #changes 'IDL:alma/someMod/.../struct:1.0" to [ 'someMod', ...,
-        #'struct' ]
-        packageName = structDef._get_id().split(':')[1].split('/')[1:]
-
-        #Just the 'struct' part...
-        structName = packageName.pop()
-            
-        #convert the list to a stringified module/package structure
-        packageName = reduce((lambda x, y : str(x) + '.' + str(y)), 
-                              packageName)
-
-        LOGGER.logTrace("structName=" + str(structName) +
+    #convert the list to a stringified module/package structure
+    packageName = reduce((lambda x, y : str(x) + '.' + str(y)), 
+                          packageName)
+    LOGGER.logTrace("structName=" + str(structName) +
                              "; packageName=" + str(packageName))
         
-        #import the proper module containing the struct defintion
-        tGlobals = {}
-        tLocals = {}
-        #module object where the struct is contained
-        tModule = __import__(packageName, tGlobals, tLocals, [structName])
-        #class object for the struct
-        tClass = tModule.__dict__.get(structName)
+    #import the proper module containing the struct defintion
+    tGlobals = {}
+    tLocals = {}
+    #module object where the struct is contained
+    tModule = __import__(packageName, tGlobals, tLocals, [structName])
+    #class object for the struct
+    tClass = tModule.__dict__.get(structName)
 
-        #create an instance of the struct using a kooky Python mechanism.
-        retVal = instance(tClass)
+    #create an instance of the struct using a kooky Python mechanism.
+    retVal = instance(tClass)
 
-        #populate the fields of the struct using the IFR
-        for member in structDef._get_members():
-            LOGGER.logTrace("Adding a member variable for: " + 
-                             str(member.name))
-            retVal.__dict__[member.name] = getRandomValue(member.type_def._get_type(), 
-                                                          compRef)
-
-        return retVal
-    #--------------------------------------------------------------------------
-    elif valType == CORBA.tk_Principal:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_TypeCode:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_abstract_interface:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_any:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_except:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_fixed:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_local_interface:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_native:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-
-    elif valType == CORBA.tk_union:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_value:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-
-    elif valType == CORBA.tk_wchar:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    elif valType == CORBA.tk_wstring:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-    else:
-        LOGGER.logCritical(str(valType) + " not yet supported")
-        raise CORBA.NO_IMPLEMENT()
-
-#------------------------------------------------------------------------------
-def getDefinition(irLabel):
-    '''
-    Helper function returns the interface definition of some IDL type given
-    its complete interface repository location.
-
-    Parameters: irLabal is the location of the interface defintion within the
-    IFR. Typically this is something like 
-    "IDL:alma/someModule/someInterface:1.0"
-
-    Returns: the IFR definition of irLabel
-
-    Raises: ???
-    '''
-    global IR
-    interf = IR.lookup_id(irLabel)
-    return interf
-#------------------------------------------------------------------------------
-def getKnownBaciType(structName):
-    '''
-    '''
-    if structName=="IDL:alma/ACSErr/Completion:1.0":
-        return ACSErr.Completion(long(getTimeStamp().value),  #ULL;
-                                 0L,  #ACSErr::CompletionType type;
-                                 0L,  #ACSErr::CompletionCode code;
-                                 ())
-    else:
-        raise "dummie exception"
-
+    #populate the fields of the struct using the IFR
+    for member in structDef._get_members():
+        LOGGER.logTrace("Adding a member variable for: " + 
+                         str(member.name))
+        retVal.__dict__[member.name] = getRandomValue(member.type_def._get_type(), 
+                                                      compRef)
+    
+    return retVal
 #------------------------------------------------------------------------------
 def getRandomSimpleValue(valType):
     '''
@@ -427,61 +412,4 @@ def getRandomTuple(typeCode, compRef, valType):
     #be amazed!
     elif valType == CORBA.tk_alias:
         return getRandomValue(realTypeCode, compRef)
-        
-#------------------------------------------------------------------------------
-def tryCallbackParams(params, compRef):
-    '''
-    '''
-    compl = ACSErr.Completion(long(getTimeStamp().value),  #ULL
-                              0L,  #ACSErr::CompletionType type;
-                              0L,  #ACSErr::CompletionCode code;
-                              ())
-    
-    cbId = 0L    #default value
-    for param in params:
-        if isinstance(param, ACS.CBDescIn):
-            cbId = param.id_tag
-            break
-        
-    cbDescOut = ACS.CBDescOut(0L, cbId)
-    #cbDescOut = getRandomValue(ACS._tc_CBDescOut, compRef)
-
-    for param in params:
-        if isinstance(param, ACS._objref_CBvoid):
-            param.done(compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBpattern):
-            param.done(getRandomValue(ACS._tc_pattern, compRef),
-                       compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBpattern):
-            param.done(getRandomValue(ACS._tc_pattern, compRef),
-                       compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBdouble):
-            param.done(getRandomValue(CORBA._tc_double, compRef),
-                       compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBstring):
-            param.done(getRandomValue(CORBA._tc_string, compRef),
-                       compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBstringSeq):
-            param.done(getRandomValue(ACS._tc_stringSeq, compRef),
-                       compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBlong):
-            param.done(getRandomValue(CORBA._tc_long, compRef),
-                       compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBdoubleSeq):
-            param.done(getRandomValue(ACS._tc_doubleSeq, compRef),
-                       compl,
-                       cbDescOut)
-        elif isinstance(param, ACS._objref_CBlongSeq):
-            param.done(getRandomValue(ACS._tc_longSeq, compRef),
-                       compl,
-                       cbDescOut)
-        else:
-            pass
 #-----------------------------------------------------------------------
