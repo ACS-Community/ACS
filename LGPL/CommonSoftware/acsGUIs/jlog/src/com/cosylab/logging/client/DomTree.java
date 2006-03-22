@@ -28,8 +28,6 @@ import javax.swing.tree.*;
 import javax.swing.event.*;
 import java.util.*;
 import javax.swing.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.Component;
 
 /** This class wraps a DOM node and returns the text we want to 

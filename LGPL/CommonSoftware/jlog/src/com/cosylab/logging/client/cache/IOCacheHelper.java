@@ -37,7 +37,7 @@ import com.cosylab.logging.client.GroupedList;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.LoggingClient;
 
 import java.awt.Dimension;
@@ -759,7 +759,7 @@ public class IOCacheHelper extends Thread  {
 			FiltersVector filters, 
 			GroupedList visibles, 
 			int index) {
-		LogEntryXML log=null;
+		ILogEntry log=null;
 		try {
 			ACSLogParser parser = new ACSLogParser();
 			//System.out.println("Parsing "+logStr);
@@ -772,7 +772,7 @@ public class IOCacheHelper extends Thread  {
 		}
 		int discardLevel = LoggingClient.getInstance().getDiscardLevel();
 		if (discardLevel!=0) {
-			int logLevel = (Integer)log.getField(LogEntryXML.FIELD_ENTRYTYPE);
+			int logLevel = (Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE);
 			if (logLevel<discardLevel) {
 				return;
 			}
@@ -926,7 +926,7 @@ public class IOCacheHelper extends Thread  {
 			e.printStackTrace(System.err);
 		}
 		for (int count =0; count<logs.getSize(); count++) {
-			LogEntryXML log = logs.getLog(count);
+			ILogEntry log = logs.getLog(count);
 			try {
 				outBW.write((log.toXMLString()+"\n").toCharArray());
 			} catch (IOException ioe) {

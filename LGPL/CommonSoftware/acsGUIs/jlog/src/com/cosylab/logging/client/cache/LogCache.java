@@ -28,7 +28,7 @@ import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 
 
 
@@ -51,7 +51,7 @@ public class LogCache extends LogFileCache {
 	 * The logs are stored into an HashMap.
 	 * The key is the index of the log
 	 */
-	private HashMap<Integer,LogEntryXML> cache = new HashMap<Integer,LogEntryXML>(CACHESIZE);
+	private HashMap<Integer,ILogEntry> cache = new HashMap<Integer,ILogEntry>(CACHESIZE);
 	
 	/**
 	 * The following list used to keep ordered the indexes
@@ -87,9 +87,9 @@ public class LogCache extends LogFileCache {
 	 * @param pos The position of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public LogEntryXML getLog(int pos) {
+	public ILogEntry getLog(int pos) {
 		Integer position = new Integer(pos);
-		LogEntryXML log = cache.get(position);
+		ILogEntry log = cache.get(position);
 		if (log!=null) {
 			// Hit! The log is in the cache
 			hitLog(position);
@@ -107,7 +107,7 @@ public class LogCache extends LogFileCache {
 	 * @param index The position of the log
 	 * @return The log read from the cache on disk
 	 */
-	private synchronized LogEntryXML loadNewLog(Integer index) {
+	private synchronized ILogEntry loadNewLog(Integer index) {
 		// A little check: each index must appear only once in the list
 		//
 		// This check can cause a scansion of the list
@@ -117,7 +117,7 @@ public class LogCache extends LogFileCache {
 		}
 		
 		// Read the new log from the cache on disk
-		LogEntryXML log = super.getLog(index);
+		ILogEntry log = super.getLog(index);
 		
 		// There is enough room in the lists?
 		if (cache.size()==CACHESIZE) {

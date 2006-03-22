@@ -35,7 +35,7 @@ import javax.swing.JViewport;
 
 import com.cosylab.logging.client.GroupedList;
 import com.cosylab.logging.client.GroupedListCallback;
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.LoggingClient;
 
@@ -83,7 +83,7 @@ public class LogTableDataModel extends AbstractTableModel
 
 	// Internal row cache information. See getValueCache(int).
 	private int rowCacheIndex = -1;
-	private LogEntryXML rowCacheLogEntry = null;
+	private ILogEntry rowCacheLogEntry = null;
 	
 	// Stores the current directory which is being accessed.	
 	public java.io.File currentDir = null;
@@ -94,7 +94,7 @@ public class LogTableDataModel extends AbstractTableModel
  * Return number of columns in table
  */
 public final int getColumnCount() {
-	return LogEntryXML.NUMBER_OF_FIELDS+2;
+	return ILogEntry.NUMBER_OF_FIELDS+2;
 }
 
 /**
@@ -103,7 +103,7 @@ public final int getColumnCount() {
  * @param pos The position in the cache of the log to replace 
  * @param newEntry The new LogEntryXML
  */
-public synchronized void replaceLog(int pos, LogEntryXML newEntry) {
+public synchronized void replaceLog(int pos, ILogEntry newEntry) {
 	// Replace the entry in the list of all the logs (allLogs)
 	allLogs.replaceLog(pos,newEntry);
 	return;
@@ -141,15 +141,15 @@ public Object getValueAt(int row, int column) {
 			else return new Integer(1);
 		} else return new Integer(0);
 	} else if (column==1) {
-			LogEntryXML log = getVisibleLogEntry(row);
+			ILogEntry log = getVisibleLogEntry(row);
 			return new Boolean(log.hasDatas());
 	} else {
 
 		column=column-2;
 		
-		LogEntryXML log = getVisibleLogEntry(row);
+		ILogEntry log = getVisibleLogEntry(row);
 	
-		if ((log != null) && (LogEntryXML.isValidFieldIndex(column))) {
+		if (log != null) {
 			return log.getField(column);
 		}
 		
@@ -168,7 +168,7 @@ public Object getValueAt(int row, int column) {
  * @return com.cosylab.logging.engine.LogEntryXML
  * @param row int
  */
-public final LogEntryXML getVisibleLogEntry(int row) {
+public final ILogEntry getVisibleLogEntry(int row) {
 	return getValueCache(row);	
 }
 
@@ -180,7 +180,7 @@ public final LogEntryXML getVisibleLogEntry(int row) {
  * @return com.cosylab.logging.engine.LogEntryXML
  * @param row int
  */
-private final LogEntryXML getValueCache(int row) {
+private final ILogEntry getValueCache(int row) {
 /*
 	if ((cacheHits+cacheMisses)%500 == 0) {
 	    System.out.println("LogEntryDataModel: Hits: "+cacheHits+", Misses: "+cacheMisses+", H/M ratio = "+(100*cacheHits/(cacheHits+cacheMisses+1)));
@@ -192,7 +192,7 @@ private final LogEntryXML getValueCache(int row) {
 	} else {
 		if ((row >= 0) && (row < visibleLogs.size())) {
 //	        cacheMisses++;
-			LogEntryXML log = (LogEntryXML) (visibleLogs.get(row));
+			ILogEntry log = visibleLogs.get(row);
 			rowCacheIndex = row;
 			rowCacheLogEntry = log;
 			return log;
@@ -233,7 +233,7 @@ public LogTableDataModel() {
  * Creation date: (11/11/2001 14:35:01)
  * @param log com.cosylab.logging.engine.LogEntryXML
  */
-public void appendLog(LogEntryXML log) {
+public void appendLog(ILogEntry log) {
 	try {
 		int pos=allLogs.add(log);
 		visibleLogInsert(log,pos);
@@ -276,8 +276,8 @@ public final Class getColumnClass(int column) {
 	} else {
 		column=column-2;
 	
-		if (LogEntryXML.isValidFieldIndex(column)) {
-			return LogEntryXML.getFieldClass(column);
+		if (column>=0 && column<ILogEntry.NUMBER_OF_FIELDS) {
+			return ILogEntry.fieldClasses[column];
 		}
 		return String.class;
 	}
@@ -297,8 +297,8 @@ public final String getColumnName(int columnIndex) {
 
 	columnIndex=columnIndex-2;
 	
-	return (LogEntryXML.isValidFieldIndex(columnIndex)) ? 
-				LogEntryXML.getFieldDescription(columnIndex) :
+	return (columnIndex>=0 && columnIndex<ILogEntry.NUMBER_OF_FIELDS) ? 
+				ILogEntry.fieldNames[columnIndex] :
 				BLANK_STRING;
 }
 
@@ -337,7 +337,7 @@ public LogEntryComparator getSortComparator() {
  * @return com.cosylab.logging.engine.LogEntryXML
  * @param i int
  */
-public final LogEntryXML getStoredLogEntry(int i) {
+public final ILogEntry getStoredLogEntry(int i) {
 
 
 // IMPLEMENTATION NOTICE
@@ -385,7 +385,6 @@ public void groupedListChanged(int changeType, int param1, int param2) {
 			break;
 		case GL_EXPAND :
 		case GL_INSERT :
-			System.out.println("Inserted ["+param1+","+param2+"]");
 			LoggingClient logging = LoggingClient.getInstance();
 			if (logging!=null && !logging.scrollLock()) {
 				LogEntryTable logTable = logging.getScrollPaneTable();
@@ -616,7 +615,7 @@ public void toggleExpand(int index) {
  * @param log The log to show or hide
  * @param pos The position of this log in the cache
  */
-public void visibleLogInsert(LogEntryXML log, int pos) {
+public void visibleLogInsert(ILogEntry log, int pos) {
 	if (filters.applyFilters(log) && systemFilters.applyFilters(log)) {
 		visibleLogs.add(pos);
 	}

@@ -10,22 +10,15 @@ import java.awt.Component;
 import java.util.Vector;
 
 import javax.swing.JComponent;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * The table used to represent datas in the right panel of the
+ * The table used to represent data in the right panel of the
  * main window
  * 
  * @author acaproni
@@ -57,64 +50,32 @@ public class DomTable extends JTable
 	 * 
 	 * @param log The logEntry with the datas to display 
 	 */
-	public DomTable(LogEntryXML log) throws Exception {
+	public DomTable(ILogEntry log) throws Exception {
 		super();
 
-		NodeList nl  = log.getDatas();
-
-		if (nl == null)
-		{
+		if (!log.hasDatas()) {
 			throw new Exception(); //getDomTree();
 		} 
 
 		//	gets the number of the "data" elements for the selected row
-		rowsNum = nl.getLength();
+		Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
+		rowsNum = additionalData.size();
 
-		if (rowsNum > 0)
-		{
+		if (rowsNum > 0) {
 			nameValue = new String[rowsNum][2];
-			for (int i = 0; i < rowsNum; i++)
-			{
-				Node node = nl.item(i);
-
-				if (node == null)
-				{
-					System.out.println("No datas 2");
-					throw new Exception(); //return getDomTree();
-				}
-
-				NamedNodeMap nnm = node.getAttributes();
-				if (nnm == null)
-				{
-					System.out.println("No datas attr");
-					throw new Exception(); // return getDomTree();
-				}
-				
-				// get the value of the "Name" attribute from the log
-				if (nnm.getNamedItem("Name") != null)
-				{
-					nameValue[i][0] = nnm.getNamedItem("Name").getNodeValue();
-				}
-				
-				// get the CDATA text from the log
-				NodeList nll = node.getChildNodes();
-				if (nll != null)
-				{
-					Node cdata = nll.item(0);
-					nameValue[i][1] = cdata.getNodeValue().trim();
-				}
-
-				setModel(dataModel);
-
-				JScrollPane scrollpane = new JScrollPane(this);
-				
-				// Change the name of the columns
-				getColumnModel().getColumn(0).setHeaderValue("Name");
-				getColumnModel().getColumn(1).setHeaderValue("Value");
-
-				// Force the header to resize and repaint itself
-				getTableHeader().resizeAndRepaint();
+			for (int i = 0; i < rowsNum; i++) {
+				nameValue[i][0] = additionalData.get(i).getName();
+				nameValue[i][1] = additionalData.get(i).getValue();
 			}
+
+			setModel(dataModel);
+
+			// Change the name of the columns
+			getColumnModel().getColumn(0).setHeaderValue("Name");
+			getColumnModel().getColumn(1).setHeaderValue("Value");
+
+			// Force the header to resize and repaint itself
+			getTableHeader().resizeAndRepaint();
 		}
 	}
 	

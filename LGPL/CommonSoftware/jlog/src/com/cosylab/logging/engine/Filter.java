@@ -28,7 +28,7 @@ import java.util.regex.*;
 import javax.swing.JOptionPane;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 
 
 /**
@@ -104,7 +104,7 @@ public Filter(
 	if ((minimum == null) && (maximum == null)) throw new InvalidFilterConstraintException("No constraint specified");
 	 
 	if (minimum != null) {
-	    if (!(LogEntryXML.getFieldClass(field).isInstance(minimum))) {
+	    if (!(ILogEntry.fieldClasses[field].isInstance(minimum))) {
 			throw new InvalidFilterConstraintException("Invalid minimum");
 	    }
 	    this.minimum = minimum;
@@ -113,7 +113,7 @@ public Filter(
 	}
 	
 	if (maximum != null) {
-	    if (!(LogEntryXML.getFieldClass(field).isInstance(maximum)))
+	    if (!(ILogEntry.fieldClasses[field].isInstance(maximum)))
  	       throw new InvalidFilterConstraintException("Invalid maximum");
 	    this.maximum = maximum;
 	} else {
@@ -162,7 +162,7 @@ public Filter(int field, boolean isLethal, Integer minimum, Integer maximum, boo
 public Filter(int field, boolean isLethal, Object exact, boolean notFilter) throws InvalidFilterConstraintException {
 	this(field, EXACT, isLethal,notFilter);
 
-	if (LogEntryXML.getFieldClass(field) != exact.getClass())
+	if (ILogEntry.fieldClasses[field] != exact.getClass())
  		throw new InvalidFilterConstraintException("Invalid exact value: "+exact);
 	 
 	this.exact = exact;
@@ -178,7 +178,7 @@ public Filter(int field, boolean isLethal, String regularExpression, boolean not
 //	System.out.println("short, boolean, String");
 //	System.out.println(field+" "+isLethal+" "+regularExpression);
 	
-	if (!(LogEntryXML.getFieldClass(field).equals(String.class)))
+	if (!(ILogEntry.fieldClasses[field].equals(String.class)))
  		throw new InvalidFilterConstraintException("Invalid regular expression: "+regularExpression);
  	
 	// Build a pattern to ensure if the regular expression is valid
@@ -255,7 +255,7 @@ public Filter(int field, boolean isLethal, Date minimum, Date maximum, boolean n
  * If this instance is a lethal filter and is called in non-lethal circumstances
  * (at a GUI level), this filter always returns true.
  */
-public boolean applyTo(LogEntryXML logEntry, boolean lethalCircumstances) {
+public boolean applyTo(ILogEntry logEntry, boolean lethalCircumstances) {
 	
 	if (lethalCircumstances != isLethal) return true;
 
@@ -339,7 +339,7 @@ public String toString() {
 			break;
 	}
 	
-	type.insert(0,LogEntryXML.getFieldDescription(field)+", ");
+	type.insert(0,ILogEntry.fieldNames[field]+", ");
 	if (notFilter) type.insert(0,"NOT ");
 	return type.toString();
 }

@@ -60,7 +60,7 @@ import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DomTable;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
@@ -1240,36 +1240,30 @@ public class LoggingClient extends JFrame
 	 */
 	private void connDomInfo(java.beans.PropertyChangeEvent arg1)
 	{
-		try
-		{
+		try {
 			LogEntryTable jt = getScrollPaneTable();
-			getDomTree().setRootNode(jt.getExtraInfo());
+			//getDomTree().setRootNode(jt.getExtraInfo());
 			int selectedRow = jt.getSelectedRow();
 			// Check whether a row has been selected
 			// no row selected
-			if (selectedRow == -1)
-			{
+			if (selectedRow == -1) {
 				getJScrollPane2().setViewportView(getDomTree());
-			}
-			// a row is selected
-			else
-			{
-				LogEntryXML log = jt.getLCModel().getVisibleLogEntry(selectedRow);
+			} else {
+				// a row is selected
+				ILogEntry log = jt.getLCModel().getVisibleLogEntry(selectedRow);
 				getJScrollPane2().setViewportView(getDataTable(log));
 			}
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
+		} catch (java.lang.Throwable ivjExc) {
 			handleException(ivjExc);
 		}
 	}
+	
 	/**
 	 * Returns a table that displays all the data elements for a selected table row.
 	 * @param log The log entry which datas are to be shown
 	 * @return The component that displays the datas
 	 */
-	public Component getDataTable(LogEntryXML log)
+	public Component getDataTable(ILogEntry log)
 	{
 		DomTable table = null;
 		// Try to build a DomTable
@@ -1984,7 +1978,7 @@ public class LoggingClient extends JFrame
         FiltersVector filters = getLCModel1().getSystemFilters();
         for (int t=0; t<filters.size(); t++) {
             Filter f = filters.get(t);
-            if (f.getField()==LogEntryXML.FIELD_ENTRYTYPE) {
+            if (f.getField()==ILogEntry.FIELD_ENTRYTYPE) {
                 // We have found the LogLevel filter: we remove it in order to
                 // replace with the new filter
                 filters.remove(t);
@@ -1994,7 +1988,7 @@ public class LoggingClient extends JFrame
         try {
             Filter levelFilter =
                 new Filter(
-                		LogEntryXML.FIELD_ENTRYTYPE,
+                		ILogEntry.FIELD_ENTRYTYPE,
                 		false,
                 		new Integer(level),
                 		new Integer(LogTypeHelper.ENTRYTYPE_EMERGENCY),
