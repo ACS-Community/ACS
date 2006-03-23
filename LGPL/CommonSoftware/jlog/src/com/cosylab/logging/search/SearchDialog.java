@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
  * @author acaproni
@@ -57,7 +57,7 @@ public class SearchDialog extends JDialog {
     // The logging client (main window)
     private LoggingClient loggingClient;
     
-    private JCheckBox coulmnToSearchIn[]= new JCheckBox[LogEntryXML.NUMBER_OF_FIELDS];
+    private JCheckBox coulmnToSearchIn[]= new JCheckBox[ILogEntry.NUMBER_OF_FIELDS];
 	private JCheckBox wholeWordCB = null;
     
     private SearchEngine searchEngine;
@@ -107,19 +107,19 @@ public class SearchDialog extends JDialog {
      */
     private void initializeAdvancedPanel() {
     	if (!(advancedPanel.getLayout() instanceof GridLayout)) {
-    		advancedPanel.setLayout(new GridLayout(LogEntryXML.NUMBER_OF_FIELDS,1,5,3));
+    		advancedPanel.setLayout(new GridLayout(ILogEntry.NUMBER_OF_FIELDS,1,5,3));
     	}
         boolean visibeColsInMainWindow[]=loggingClient.getScrollPaneTable().getVisibleColumns(true);
-        for (int t=0; t<LogEntryXML.NUMBER_OF_FIELDS; t++) {
+        for (int t=0; t<ILogEntry.NUMBER_OF_FIELDS; t++) {
         	if (coulmnToSearchIn[t]==null) {
-        		coulmnToSearchIn[t]=new JCheckBox(LogEntryXML.getFieldDescription(t));
+        		coulmnToSearchIn[t]=new JCheckBox(ILogEntry.fieldNames[t]);
         	}
             advancedPanel.add(coulmnToSearchIn[t]);
             coulmnToSearchIn[t].setVisible(true);
             coulmnToSearchIn[t].setEnabled(visibeColsInMainWindow[t]);
             coulmnToSearchIn[t].setSelected(visibeColsInMainWindow[t]);
             if (visibeColsInMainWindow[t]) {
-                coulmnToSearchIn[t].setToolTipText("Search in column "+LogEntryXML.getFieldDescription(t));
+                coulmnToSearchIn[t].setToolTipText("Search in column "+ILogEntry.fieldNames[t]);
             } else {
                 coulmnToSearchIn[t].setToolTipText("This column is not visible in the main window");
             }
