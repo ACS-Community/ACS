@@ -502,7 +502,7 @@ public final class LogEntryXML implements ILogEntry
 			}
 			for (int t=0; t<temp.size(); t++) {
 				tempStr.append("<Data Name=\""+temp.get(t).getName()+"\">");
-				tempStr.append(temp.get(t+1).getValue()+"</Data>");
+				tempStr.append(temp.get(t).getValue()+"</Data>");
 			}
 		}
 		return tempStr;
