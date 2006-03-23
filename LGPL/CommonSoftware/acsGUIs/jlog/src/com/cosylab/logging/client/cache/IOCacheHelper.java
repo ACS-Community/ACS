@@ -39,6 +39,7 @@ import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.LoggingClient;
+import com.cosylab.logging.LCEngine;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -74,8 +75,11 @@ import java.awt.event.WindowEvent;
  *
  */
 public class IOCacheHelper extends Thread  {
+	
+	private LCEngine engine = LoggingClient.getInstance().getLCEngine();
+	
 	// A reference to the LogFileCache this object belogs to
-	LogFileCache owner;
+	private LogFileCache owner;
 	
 	/**
 	 * The dialog to show the progress of time consuming 
@@ -555,16 +559,16 @@ public class IOCacheHelper extends Thread  {
 	}
 	
 	// A queue of actions to perform in a separate thread
-	LinkedList<LogFileCacheAction> actions = new LinkedList<LogFileCacheAction>();
+	private LinkedList<LogFileCacheAction> actions = new LinkedList<LogFileCacheAction>();
 	
-	ProgressDialog progressDialog;
+	private ProgressDialog progressDialog;
 	
 	/**
 	 * Load the logs from the given file in the Cache appending their
 	 * starting position in the index vector.
-	 * The logs are appended at the end of the cache as weel as the new
+	 * The logs are appended at the end of the cache as well as the new
 	 * positions are appended at the end of the index vector.
-	 * The load is performed in the thread as it might be very slow
+	 * The load is performed in a thread as it might be very slow
 	 * 
 	 * @param br The the file to read
 	 * @param cache The file cache where the logs are appended
@@ -770,16 +774,9 @@ public class IOCacheHelper extends Thread  {
 			JOptionPane.showMessageDialog(null, formatErrorMsg(e.getMessage(),logStr),"Error parsing a log!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		int discardLevel = LoggingClient.getInstance().getDiscardLevel();
-		if (discardLevel!=0) {
-			int logLevel = (Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE);
-			if (logLevel<discardLevel) {
-				return;
-			}
-		}
-		if (filters.applyFilters(log)) {
-			visibles.add(index);
-		}
+		
+		
+		engine.pushStructuredEvent(log);
 	}
 	
 	/**
