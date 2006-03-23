@@ -1761,7 +1761,7 @@ public class LoggingClient extends JFrame
 	 * Returns the LCEngine property value.
 	 * @return com.cosylab.logging.LCEngine
 	 */
-	private LCEngine getLCEngine()
+	public LCEngine getLCEngine()
 	{
 		if (ivjLCEngine == null)
 		{
