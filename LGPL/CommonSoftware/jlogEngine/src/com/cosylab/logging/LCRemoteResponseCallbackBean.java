@@ -21,6 +21,9 @@
  */
 package com.cosylab.logging;
 
+import com.cosylab.logging.engine.RemoteResponseCallback;
+import com.cosylab.logging.engine.log.ILogEntry;
+
 /**
  * This class implements RemoteResponseCallback as a bean and its methods logEntryReceived 
  * and reportStatus. It support custom callbacks for receiving entries submitted to 
@@ -28,7 +31,7 @@ package com.cosylab.logging;
  * Creation date: (1/22/02 10:22:42 AM)
  * @author: 
  */
-public class LCRemoteResponseCallbackBean implements com.cosylab.logging.engine.RemoteResponseCallback {
+public class LCRemoteResponseCallbackBean implements RemoteResponseCallback {
 //	private javax.swing.JTextArea textArea = null;
 //	private LogTableDataModel ltdm = null;
 	private javax.swing.JTextArea textArea = null;
@@ -74,7 +77,7 @@ public javax.swing.JTextArea getTextArea() {
 public void invocationDestroyed() {}
 /**
  */
-public void logEntryReceived(com.cosylab.logging.engine.log.LogEntryXML logEntry) {
+public void logEntryReceived(ILogEntry logEntry) {
 	logEntryTable.getLCModel().appendLog(logEntry);
 }
 /**

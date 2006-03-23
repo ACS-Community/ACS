@@ -21,7 +21,7 @@
  */
 package com.cosylab.logging;
 
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.RemoteResponseCallback;
 
 /**
@@ -49,7 +49,7 @@ public RemoteResponseCallbackText() {
 public void invocationDestroyed() {}
 /**
  */
-public void logEntryReceived(LogEntryXML logEntry) {
+public void logEntryReceived(ILogEntry logEntry) {
 	System.out.println(logEntry);
 }
 /**

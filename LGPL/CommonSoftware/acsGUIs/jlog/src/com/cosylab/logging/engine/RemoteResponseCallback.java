@@ -21,7 +21,7 @@
  */
 package com.cosylab.logging.engine;
 
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
  * This class defines the interface for classes (LCEngine, LCRemoteResponseCallbackBean) 
@@ -42,6 +42,6 @@ public interface RemoteResponseCallback {
 void invocationDestroyed();
 /**
  */
-void logEntryReceived(LogEntryXML logEntry);
+void logEntryReceived(ILogEntry logEntry);
 	public void reportStatus(String status);
 }
