@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import com.cosylab.logging.engine.log.ILogEntry;
 
 
@@ -77,17 +75,22 @@ public class LogCache extends LogFileCache {
 	 */
 	public LogCache() throws LogCacheException {
 		super();
-		cache.clear();
-		manager.clear();
+		clear();
 	}
 	
 	/**
-	 * Return the log in the given position
+	 * Return the log in the given position.
+	 * The method is synchronized because both the HashMap and
+	 * the LinkedList must be synchronized if there is a chance
+	 * to acces these objects from more then one thread in the same 
+	 * time
+	 * @see java.util.LinkedList
+	 * @see java.util.HashMap
 	 *  
 	 * @param pos The position of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public ILogEntry getLog(int pos) {
+	public synchronized ILogEntry getLog(int pos) {
 		Integer position = new Integer(pos);
 		ILogEntry log = cache.get(position);
 		if (log!=null) {
@@ -163,5 +166,15 @@ public class LogCache extends LogFileCache {
 		Integer temp=manager.get(pos+1);
 		manager.set(pos+1,index);
 		manager.set(pos,temp);
+	}
+	
+	/**
+	 * Empty the cache
+	 * 
+	 */
+	public synchronized void clear() {
+		cache.clear();
+		manager.clear();
+		super.clear();
 	}
 }
