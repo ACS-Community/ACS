@@ -25,7 +25,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.RemoteAccess;
 import com.cosylab.logging.engine.RemoteResponseCallback;
@@ -170,13 +170,7 @@ public class LCEngine implements Runnable {
 	 * This method takes a logEntry and applies all the filters to it.
 	 * If all filters return pass, it returns true, false otherwise.
 	 */
-	private boolean filter(LogEntryXML logEntry) {
-		if (discardLevel>0) {
-			int logLevel = (Integer)logEntry.getField(LogEntryXML.FIELD_ENTRYTYPE);
-			if (logLevel<discardLevel) {
-				return false;
-			}
-		}
+	private boolean filter(ILogEntry logEntry) {
 		for (int i = 0; i < filters.size(); i++) {
 			Filter filter = (Filter)filters.elementAt(i);
 			boolean result = filter.applyTo(logEntry, true);
@@ -219,10 +213,11 @@ public class LCEngine implements Runnable {
 	/**
 	 * This method is called by the remote event supplier.
 	 */
-	public void pushStructuredEvent(LogEntryXML logEntry) {	
-		if (filter(logEntry) && !suspended) {
+	public void pushStructuredEvent(ILogEntry logEntry) {
+		int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
+		if (filter(logEntry) && !suspended && logLevel>=discardLevel) {
 			remoteResponseCallback.logEntryReceived(logEntry);
-		}
+		} 
 	}
 	
 	/**
