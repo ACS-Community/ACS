@@ -1688,6 +1688,177 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 	}
 
+	
+	/**
+	 * Activation of an co-deployed component.
+	 * @param	id 	identification of the caller.
+	 * @param	c	component to be obtained.
+	 * @param	mark_as_default	mark component as default component of its type.
+	 * @param	target_component	target co-deployed component.
+	 * @return	<code>ComponentInfo</code> of requested co-deployed component.
+	 */
+	public ComponentInfo get_co_deployed_component(int id, si.ijs.maci.ComponentSpec c,
+			boolean mark_as_default, String target_component)
+		throws IncompleteComponentSpec,	InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent
+	{
+		pendingRequests.increment();
+
+		// invalid info (replacement for null)
+		final ComponentInfo invalidInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
+
+		try
+		{
+			if (isDebug())
+				new MessageLogEntry(this, "get_co_deployed_component", new java.lang.Object[] { new Integer(id), c, new Boolean(mark_as_default), target_component } ).dispatch();
+
+			// returned value
+			ComponentInfo retVal = null;
+
+			/*
+			URI uri = null;
+			if (c.component_name != null)
+				uri = CURLHelper.createURI(c.component_name);
+			ComponentSpec componentSpec = new ComponentSpec(uri, c.component_type, c.component_code, c.container_name);
+			*/
+			URI targetComponentURI = null;
+			if (target_component != null)
+				targetComponentURI = CURLHelper.createURI(target_component);
+
+			// TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
+			ComponentSpec componentSpec = new ComponentSpec(c.component_name, c.component_type, c.component_code, c.container_name);
+			com.cosylab.acs.maci.ComponentInfo info = manager.getCoDeployedComponent(id, componentSpec, mark_as_default, targetComponentURI);
+
+			// transform to CORBA specific
+			if (info != null)
+			{
+				Object obj = null;
+				if (info.getComponent() != null)
+					obj = (Object)info.getComponent().getObject();
+				String[] interfaces;
+				if (info.getInterfaces() != null)
+					interfaces = info.getInterfaces();
+				else
+					interfaces = new String[0];
+					
+				retVal = new ComponentInfo(info.getType(),
+										   info.getCode(),
+											obj,
+											info.getName(),
+											info.getClients().toArray(),
+											info.getContainer(),
+											info.getContainerName(),
+											info.getHandle(),
+											mapAccessRights(info.getAccessRights()),
+											interfaces);
+			}
+			else
+				retVal = invalidInfo;
+
+			if (isDebug())
+				new MessageLogEntry(this, "get_co_deployed_component", "Exiting.", Level.FINEST).dispatch();
+
+			return retVal;
+
+		}
+		catch (URISyntaxException usi)
+		{
+			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
+			hbpe.caughtIn(this, "get_co_deployed_component");
+			hbpe.putValue("target_component", target_component);
+			// exception service will handle this
+			reportException(hbpe);
+	
+			// rethrow CORBA specific
+			throw new BAD_PARAM(usi.getMessage());
+		}
+		catch (IncompleteComponentSpecException icse)
+		{
+			IncompleteComponentSpecException hicse = new IncompleteComponentSpecException(this, icse.getMessage(), icse, icse.getIncompleteSpec());
+			hicse.caughtIn(this, "get_co_deployed_component");
+			// exception service will handle this
+			reportException(hicse);
+
+			throw new IncompleteComponentSpec(icse.getMessage(),
+							new si.ijs.maci.ComponentSpec(
+								//icse.getIncompleteSpec().getCURL().getPath(),
+								icse.getIncompleteSpec().getName(),
+								icse.getIncompleteSpec().getType(),
+								icse.getIncompleteSpec().getCode(),
+								icse.getIncompleteSpec().getContainer())
+						);
+		}
+		catch (InvalidComponentSpecException incse)
+		{
+			InvalidComponentSpecException hincse = new InvalidComponentSpecException(this, incse.getMessage(), incse, incse.getInvalidSpec());
+			hincse.caughtIn(this, "get_co_deployed_component");
+			// exception service will handle this
+			reportException(hincse);
+			
+			throw new InvalidComponentSpec(incse.getMessage());
+		}
+		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
+		{
+			ComponentSpecIncompatibleWithActiveComponentException hciace = new ComponentSpecIncompatibleWithActiveComponentException(this, ciace.getMessage(), ciace, ciace.getActiveComponentSpec());
+			hciace.caughtIn(this, "get_co_deployed_component");
+			// exception service will handle this
+			reportException(hciace);
+
+			// rethrow CORBA specific
+			throw new ComponentSpecIncompatibleWithActiveComponent(ciace.getMessage(),
+							new si.ijs.maci.ComponentSpec(
+								//ciace.getActiveComponentSpec().getCURL().getPath(),
+								ciace.getActiveComponentSpec().getName(),
+								ciace.getActiveComponentSpec().getType(),
+								ciace.getActiveComponentSpec().getCode(),
+								ciace.getActiveComponentSpec().getContainer())
+						);
+		}
+		catch (BadParametersException bpe)
+		{
+			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
+			hbpe.caughtIn(this, "get_co_deployed_component");
+			// exception service will handle this
+			reportException(hbpe);
+
+			// rethrow CORBA specific
+			throw new BAD_PARAM(bpe.getMessage());
+		}
+		catch (NoPermissionException npe)
+		{
+			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
+			hnpe.caughtIn(this, "get_co_deployed_component");
+			// exception service will handle this
+			reportException(hnpe);
+
+			// rethrow CORBA specific
+			throw new NO_PERMISSION(npe.getMessage());
+		}
+		catch (NoResourcesException nre)
+		{
+			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
+			hnre.caughtIn(this, "get_co_deployed_component");
+			// exception service will handle this
+			reportException(hnre);
+
+			// rethrow CORBA specific
+			throw new NO_RESOURCES(nre.getMessage());
+		}
+		catch (Throwable ex)
+		{
+			CoreException hce = new CoreException(this, ex.getMessage(), ex);
+			hce.caughtIn(this, "get_co_deployed_component");
+			// exception service will handle this
+			reportException(hce);
+
+			// rethrow CORBA specific
+			throw new UNKNOWN(ex.getMessage());
+		}
+		finally
+		{
+			pendingRequests.decrement();
+		}
+	}
+
 	/**
 	 * Get a service, activating it if necessary (components).
 	 * The client represented by id (the handle) must have adequate access rights to access the service.

@@ -274,4 +274,18 @@ public interface Manager
 	 */
 	public ComponentInfo[] getDynamicComponents(int id, ComponentSpec[] components) throws NoPermissionException;
 
+	/**
+	 * Activation of an co-deployed component.
+	 * @param	id 				Identification of the caller.
+	 * @param	componentSpec	Component to be obtained.
+	 * @param	markAsDefault	Mark component as default component of its type.
+	 * @param	targetComponentURI	target co-deployed component.
+	 * @return	<code>ComponentInfo</code> of requested component.
+	 * 			If <code>componentSpec</code> if found to be incomplete <code>IncompleteComponentSpecException</code> exception is thrown.
+	 * 			If requested component collides with already activated component with the same name <code>ComponentSpecIncompatibleWithActiveComponentException</code> exception is thrown.
+	 */
+	public ComponentInfo getCoDeployedComponent(int id, ComponentSpec componentSpec,
+			boolean markAsDefault, URI targetComponentURI)
+		throws NoPermissionException, IncompleteComponentSpecException,
+			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;
 }

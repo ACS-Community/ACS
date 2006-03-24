@@ -7054,6 +7054,130 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
+	 * @see com.cosylab.acs.maci.Manager#getCoDeployedComponent(int, com.cosylab.acs.maci.ComponentSpec, boolean, URI)
+	 */
+	// TODO MF not supported
+	public ComponentInfo getCoDeployedComponent(int id, ComponentSpec componentSpec,
+			boolean markAsDefault, URI targetComponentURI)
+		throws NoPermissionException, IncompleteComponentSpecException,
+			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException
+	{
+		if (isDebug())
+			new MessageLogEntry(this, "getCoDeployedComponent", new Object[] { new Integer(id), componentSpec, new Boolean(markAsDefault), targetComponentURI }).dispatch(); 
+
+		// check if null
+		if (componentSpec == null) 
+		{
+			// BAD_PARAM
+			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' expected.");
+			af.caughtIn(this, "getCoDeployedComponent");
+			af.putValue("componentSpec", componentSpec);
+			throw af;
+		}
+
+		// check componentSpec components are null
+		if (componentSpec.getName() == null || componentSpec.getType() == null ||
+			componentSpec.getCode() == null || componentSpec.getContainer() == null) 
+		{
+			// BAD_PARAM
+			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' fields expected.");
+			af.caughtIn(this, "getCoDeployedComponent");
+			af.putValue("componentSpec", componentSpec);
+			throw af;
+		}
+
+		// check for empty componentSpec.name 
+		if (componentSpec.getName().length() == 0) 
+		{
+			// BAD_PARAM
+			BadParametersException af = new BadParametersException(this, "Non-empty 'componentSpec.name' field expected.");
+			af.caughtIn(this, "getCoDeployedComponent");
+			af.putValue("componentSpec", componentSpec);
+			throw af;
+		}
+
+		// check if null
+		if (targetComponentURI == null) 
+		{
+			// BAD_PARAM
+			BadParametersException af = new BadParametersException(this, "Non-null 'targetComponentURI' expected.");
+			af.caughtIn(this, "getCoDeployedComponent");
+			af.putValue("targetComponentURI", targetComponentURI);
+			throw af;
+		}
+
+		// check handle and NONE permissions
+		securityCheck(id, AccessRights.NONE);
+
+		/****************************************************************/
+
+		// TODO temporary quick implementation (does not look in the CDB if component is not activated)
+		String name = extractName(targetComponentURI);
+
+		int h = 0;
+		ComponentInfo targetComponentInfo = null;
+		synchronized (components)
+		{
+			h = components.first();
+			while (h != 0)
+		    {
+				ComponentInfo componentInfo = (ComponentInfo)components.get(h);
+				if (componentInfo.getName().equals(name))
+				{
+					targetComponentInfo = componentInfo;
+					break;
+				}
+				h = components.next(h);
+		    }
+		}
+		
+		// if not found, check the CDB
+		if (targetComponentInfo == null)
+		{
+			throw new NoPermissionException("not implemented yet");
+		}
+		
+		if (componentSpec.getContainer() != null && targetComponentInfo.getContainerName() != null &&
+			!componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY) &&
+			!componentSpec.getContainer().equals(targetComponentInfo.getContainerName()))
+		{
+			InvalidComponentSpecException icse = new InvalidComponentSpecException(this, 
+					"ComponentSpec.container_name and targetComponent component container differ.",
+					componentSpec);
+			icse.caughtIn(this, "getCoDeployedComponent");
+			icse.putValue("componentSpec", componentSpec);
+			icse.putValue("targetComponentInfo.getContainerName()", targetComponentInfo.getContainerName());
+			throw icse;
+			
+		}
+		
+		componentSpec.setContainer(targetComponentInfo.getContainerName());
+		
+		ComponentInfo componentInfo = internalRequestDynamicComponent(id, componentSpec);
+
+		// update default components table
+		if (componentInfo != null && markAsDefault)
+		{
+			synchronized (defaultComponents)
+			{
+				// !!! ACID 3
+				executeCommand(new DefaultComponentCommandPut(componentInfo.getType(), componentInfo));
+				//defaultComponents.put(componentInfo.getType(), componentInfo.getName());
+			}
+
+			new MessageLogEntry(this, "getCoDeployedComponent", "'" + componentInfo.getName() +"' has been marked as a default component of type '" +
+																      componentInfo.getType() +"'.", LoggingLevel.INFO).dispatch();
+		}
+
+		/****************************************************************/
+
+		if (isDebug())
+			new MessageLogEntry(this, "getCoDeployedComponent", "Exiting.", Level.FINEST).dispatch();
+			
+		return componentInfo;
+	}
+
+	/**
 	 * Searches for the best match in Components entry in the CDB.
 	 * 
 	 * @param fieldNames		array of fields names to be searched.
