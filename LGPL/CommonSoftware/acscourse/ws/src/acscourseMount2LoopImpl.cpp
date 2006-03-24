@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount2LoopImpl.cpp,v 1.7 2005/07/26 10:11:13 bjeram Exp $"
+* "@(#) $Id: acscourseMount2LoopImpl.cpp,v 1.8 2006/03/24 12:55:07 vwang Exp $"
 *
 */
  
@@ -34,10 +34,9 @@
 PositionControlThread::PositionControlThread(
     const ACE_CString& name, 
     Mount2LoopImpl *_mount_p, 
-    bool suspended,
     const ACS::TimeInterval& responseTime, 
     const ACS::TimeInterval& sleepTime) :
-    ACS::Thread(name, suspended, responseTime, sleepTime),
+    ACS::Thread(name, responseTime, sleepTime),
     mount_p(_mount_p)
 {
     ACS_TRACE("PositionControlThread::PositionControlThread");

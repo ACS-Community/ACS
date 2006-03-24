@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount4Impl.cpp,v 1.6 2005/07/12 11:30:11 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount4Impl.cpp,v 1.7 2006/03/24 12:55:07 vwang Exp $"
 *
 */
  
@@ -30,10 +30,9 @@
 PositionControlThread::PositionControlThread(
     const ACE_CString& name, 
     Mount4Impl *_mount_p, 
-    bool suspended,
     const ACS::TimeInterval& responseTime, 
     const ACS::TimeInterval& sleepTime) :
-    ACS::Thread(name, suspended),
+    ACS::Thread(name),
     mount_p(_mount_p)
 {
     ACS_TRACE("PositionControlThread::PositionControlThread");
