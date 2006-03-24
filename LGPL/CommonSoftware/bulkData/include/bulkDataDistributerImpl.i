@@ -336,6 +336,50 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 
 
 template<class TReceiverCallback, class TSenderCallback>
+ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::getCbStatus(CORBA::ULong flowNumber) 
+    throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::getCbStatus");
+    
+
+    TReceiverCallback *cb = 0;
+
+    try
+	{
+	getDistributer()->getReceiver()->getFlowCallback(flowNumber,cb);
+	}
+    catch(AVInvalidFlowNumberExImpl & ex)
+	{
+	throw ex.getAVInvalidFlowNumberEx();
+	}
+
+    if(cb->isTimeout() && cb->isWorking())
+	{
+	AVCbWorkingTimeoutCompletion *comp = new AVCbWorkingTimeoutCompletion();
+	//comp->log();
+	return comp->returnCompletion();
+	}
+    if(cb->isTimeout())
+	{
+	AVCbTimeoutCompletion *comp = new AVCbTimeoutCompletion();
+	//comp->log();
+	return comp->returnCompletion();
+	}
+    if(cb->isWorking())
+	{
+	AVCbWorkingCompletion *comp = new AVCbWorkingCompletion();
+	//comp->log();
+	return comp->returnCompletion();
+	}	
+    
+    AVCbReadyCompletion *comp = new AVCbReadyCompletion();
+    //comp->log();
+
+    return comp->returnCompletion();
+}
+
+
+template<class TReceiverCallback, class TSenderCallback>
 ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
     throw (CORBA::SystemException)
 {

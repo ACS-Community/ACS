@@ -188,13 +188,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	}
 
     virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
-	{
-	    ACS_TRACE("BulkDataDistributerImpl<>::getCbStatus");
-
-	    AVCbReadyCompletion *comp = new AVCbReadyCompletion();
-	    return comp->returnCompletion();
-	}
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
 
     virtual ACSErr::Completion *getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
 	throw (CORBA::SystemException);

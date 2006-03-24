@@ -78,19 +78,16 @@ int BulkDataDistributerCb::handle_stop (void)
 	    substate_m = CB_SUB_UNS;
 	    return 0;
 	    }
-	cout << "DDDDDDDDDDDDD BulkDataDistributerCb::handle_stop 5 - flowname: " << flowname_m << endl;
 
+	//TO BE REMOVED (?)
 	locLoop = loop_m;
 	while((count_m != dim_m) && locLoop > 0)
 	    {
-	    cout << "DDDDDDDDDDDDD BulkDataDistributerCb::handle_stop 5 - entrata bel while" << endl;
 	    ACE_OS::sleep(waitPeriod_m);
 	    locLoop--;
-	    cout << "DDDDDDDDDDDDDDDDDDDD loc loop: " << locLoop << endl;
-	    cout << "DDDDDDDDDDDDDDDDDDDD count - " << count_m << " - dim - " << dim_m << endl;
 	    }
 
-
+	
 	if ( locLoop == 0 )
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout expired, not all data received"));
@@ -202,11 +199,8 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 
     if (state_m == CB_SEND_DATA)
 	{
-	cout << "DDDDDDDDDDDDD - BulkDataDistributerCb::receive_frame - prima di cbFwdReceive " << endl;
 	res = cbFwdReceive(frame);
-	cout << "DDDDDDDDDDDDD - BulkDataDistributerCb::receive_frame - dopo cbFwdReceive " << endl;
 	count_m += frame->length();
-	cout << "DDDDDDDDDDDDD - BulkDataDistributerCb::receive_frame - count: " << count_m << endl;
 	working_m = false;
 	return res;
 	}
@@ -353,7 +347,6 @@ int
 BulkDataDistributerCb::cbFwdStop()
 {
     //ACS_TRACE("BulkDataDistributerCb::cbFwdStop"); 
-    cout << "DDDDDDDDDDDDD BulkDataDistributerCb::cbFwdStop entering..." << endl;
 
 /*
     TAO_AV_Protocol_Object *dp_p = 0;
@@ -369,7 +362,17 @@ BulkDataDistributerCb::cbFwdStop()
 
     try
 	{
+	//unsigned long timeout = 2000;
+
+	//acsQoS::Timeout tim(timeout);
+
 	distr_m->getDistributer()->distSendStop(flowname_m);
+	}
+    catch(CORBA::TIMEOUT & tim)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStop CORBA::TIMEOUT exception catched!"));
+
+	timeout_m = true;
 	}
     catch(...)
 	{

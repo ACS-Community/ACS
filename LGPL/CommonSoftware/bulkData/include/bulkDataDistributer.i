@@ -152,9 +152,8 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
 	entry->int_id_->getStreamCtrl()->stop(locSpec);
 
-	ACE_CString prova = entry->ext_id_;
-	cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << prova.c_str() << endl; 
+	//ACE_CString prova = entry->ext_id_;
+	//cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << prova.c_str() << endl; 
 	}
-    cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: distSendStop exiting..." << endl; 
 }
 

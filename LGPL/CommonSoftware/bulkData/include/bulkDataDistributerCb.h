@@ -13,6 +13,7 @@
 #include "orbsvcs/AV/Policy.h"
 
 #include <baci.h>
+#include <acsQoS.h>
 
 #include "ACSBulkDataError.h"
 
