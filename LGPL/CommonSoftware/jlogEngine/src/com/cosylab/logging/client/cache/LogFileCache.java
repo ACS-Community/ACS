@@ -105,9 +105,7 @@ public class LogFileCache {
 	 * @param visibleLogs The visible logs
 	 * @param showProgress If true a progress bar is shown
 	 */
-	public void loadLogs(
-			String fileName, 
-			boolean showProgress) throws LogCacheException {
+	public void loadLogs(String fileName, boolean showProgress) throws LogCacheException {
 		IOCacheHelper ioHelper = new IOCacheHelper(this);
 		try {
 			IOOperationInProgress=true;
@@ -133,9 +131,7 @@ public class LogFileCache {
 	 * @param visibleLogs The visible logs
 	 * @param showProgress If true a progress bar is shown
 	 */
-	public void loadLogs(
-			BufferedReader reader, 
-			boolean showProgress) throws LogCacheException {
+	public void loadLogs(BufferedReader reader, boolean showProgress) throws LogCacheException {
 		IOCacheHelper ioHelper = new IOCacheHelper(this);
 		try {
 			IOOperationInProgress=true;
