@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.10 2006/02/09 03:51:45 gchiozzi Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.11 2006/03/24 12:44:53 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.10 2006/02/09 03:51:45 gchiozzi Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.11 2006/03/24 12:44:53 vwang Exp $");
 
 NAMESPACE_BEGIN(baci);
 
@@ -376,12 +376,15 @@ bool BACIComponent::startAllThreads()
       {
       actionThread_mp=threadManager_mp->create(name_m+"::actionThread", 
 					       (void*)actionThreadWorker, (void*)this, 
-					       getRTResponseTime(), getRTSleepTime(),
-					       THR_NEW_LWP | THR_DETACHED);
+					       getRTResponseTime(), getRTSleepTime());
       }
   if (actionThread_mp == BACIThread::NullBACIThread)
     {
       return false;
+    }
+  else 
+    {
+      actionThread_mp->resume();
     }
 
   // monitor thread
@@ -389,14 +392,17 @@ bool BACIComponent::startAllThreads()
       {
       monitorThread_mp=threadManager_mp->create(name_m+"::monitorThread", 
 						(void*)monitorThreadWorker, (void*)this, 
-						getMTResponseTime(), getMTSleepTime(),
-						THR_NEW_LWP | THR_DETACHED);
+						getMTResponseTime(), getMTSleepTime());
       }
   if (monitorThread_mp == BACIThread::NullBACIThread)
     {
       delete actionThread_mp; 
       actionThread_mp = BACIThread::NullBACIThread;
       return false;
+    }
+  else 
+    {
+      monitorThread_mp->resume();
     }
 
   return true;
