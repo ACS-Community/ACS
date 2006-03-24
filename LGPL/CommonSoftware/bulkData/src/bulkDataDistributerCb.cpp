@@ -35,7 +35,7 @@ BulkDataDistributerCb::~BulkDataDistributerCb()
 
 int BulkDataDistributerCb::handle_start(void)
 {
-    ACS_TRACE("BulkDataDistributerCb::handle_start");
+    //ACS_TRACE("BulkDataDistributerCb::handle_start");
     
     //cout << "BulkDataDistributerCb::handle_start - state_m: " << state_m << endl;
     
@@ -52,7 +52,7 @@ int BulkDataDistributerCb::handle_start(void)
 
 int BulkDataDistributerCb::handle_stop (void)
 {
-    ACS_TRACE("BulkDataDistributerCb::handle_stop");
+    //ACS_TRACE("BulkDataDistributerCb::handle_stop");
 
     int locLoop;
 
@@ -73,18 +73,21 @@ int BulkDataDistributerCb::handle_stop (void)
 
     if((state_m == CB_SEND_PARAM) || (state_m == CB_SEND_DATA))
 	{ 
-
 	if  (substate_m == CB_SUB_INIT)
 	    {
 	    substate_m = CB_SUB_UNS;
 	    return 0;
 	    }
+	cout << "DDDDDDDDDDDDD BulkDataDistributerCb::handle_stop 5 - flowname: " << flowname_m << endl;
 
 	locLoop = loop_m;
 	while((count_m != dim_m) && locLoop > 0)
 	    {
+	    cout << "DDDDDDDDDDDDD BulkDataDistributerCb::handle_stop 5 - entrata bel while" << endl;
 	    ACE_OS::sleep(waitPeriod_m);
 	    locLoop--;
+	    cout << "DDDDDDDDDDDDDDDDDDDD loc loop: " << locLoop << endl;
+	    cout << "DDDDDDDDDDDDDDDDDDDD count - " << count_m << " - dim - " << dim_m << endl;
 	    }
 
 
@@ -111,7 +114,7 @@ int BulkDataDistributerCb::handle_stop (void)
 
 int BulkDataDistributerCb::handle_destroy (void)
 {
-    ACS_TRACE("BulkDataDistributerCb::handle_destroy");
+    //ACS_TRACE("BulkDataDistributerCb::handle_destroy");
 
     //cout << "BulkDataDistributerCb::handle_destroy" << endl;
 
@@ -124,9 +127,10 @@ int BulkDataDistributerCb::handle_destroy (void)
 
 int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &)
 {
+    //ACS_TRACE("BulkDataDistributerCb::receive_frame");
+
     working_m = true;
 
-    //ACS_TRACE("BulkDataDistributerCb::receive_frame");
     //ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::receive_frame for flow %s", flowname_m.c_str()));
     
     //cout << "BulkDataDistributerCb::receive_frame - state_m: " << state_m << endl;
@@ -198,13 +202,17 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 
     if (state_m == CB_SEND_DATA)
 	{
+	cout << "DDDDDDDDDDDDD - BulkDataDistributerCb::receive_frame - prima di cbFwdReceive " << endl;
 	res = cbFwdReceive(frame);
+	cout << "DDDDDDDDDDDDD - BulkDataDistributerCb::receive_frame - dopo cbFwdReceive " << endl;
 	count_m += frame->length();
+	cout << "DDDDDDDDDDDDD - BulkDataDistributerCb::receive_frame - count: " << count_m << endl;
 	working_m = false;
 	return res;
 	}
 
     working_m = false;
+
     return 0;
 }
 
@@ -241,20 +249,26 @@ void BulkDataDistributerCb::setSafeTimeout(CORBA::ULong locLoop)
 int
 BulkDataDistributerCb::cbHandshake(ACE_Message_Block * info_p)
 {
-    ACS_TRACE("BulkDataDistributerCb::cbHandshake"); 
-
+    //ACS_TRACE("BulkDataDistributerCb::cbHandshake"); 
 
     if(distr_m == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerCb::cbReceive - distr_m == 0"));
+	ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerCb::cbHandshake - distr_m == 0"));
 	return -1;
 	}
 
-    distr_m->getDistributer()->distSendStart(flowname_m);
-
-    distr_m->getDistributer()->distSendData(flowname_m,info_p);
-
-    distr_m->getDistributer()->distSendStop(flowname_m);
+    try
+	{
+	distr_m->getDistributer()->distSendStart(flowname_m);
+	
+	distr_m->getDistributer()->distSendData(flowname_m,info_p);
+	
+	distr_m->getDistributer()->distSendStop(flowname_m);
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbHandshake exception catched!"));
+	}
 
 
 // we replicate the mechanism of the sender
@@ -286,7 +300,7 @@ BulkDataDistributerCb::cbHandshake(ACE_Message_Block * info_p)
 int
 BulkDataDistributerCb::cbFwdStart(ACE_Message_Block * userParam_p)
 {
-    ACS_TRACE("BulkDataDistributerCb::cbFwdStart"); 
+    //ACS_TRACE("BulkDataDistributerCb::cbFwdStart"); 
  
 /*
     TAO_AV_Protocol_Object *dp_p = 0;
@@ -297,8 +311,14 @@ BulkDataDistributerCb::cbFwdStart(ACE_Message_Block * userParam_p)
     if(res < 0) { return -1; }
 */
 
-    distr_m->getDistributer()->distSendData(flowname_m,userParam_p);
-
+    try
+	{
+	distr_m->getDistributer()->distSendData(flowname_m,userParam_p);
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStart exception catched!"));
+	}
     return 0;
 
 }
@@ -306,7 +326,7 @@ BulkDataDistributerCb::cbFwdStart(ACE_Message_Block * userParam_p)
 int
 BulkDataDistributerCb::cbFwdReceive(ACE_Message_Block * frame_p)
 {
-    ACS_TRACE("BulkDataDistributerCb::cbReceive"); 
+    //ACS_TRACE("BulkDataDistributerCb::cbReceive"); 
 
 /*
     TAO_AV_Protocol_Object *dp_p = 0;
@@ -317,7 +337,14 @@ BulkDataDistributerCb::cbFwdReceive(ACE_Message_Block * frame_p)
     if(res < 0) { return -1; }
 */
 
-    distr_m->getDistributer()->distSendData(flowname_m, frame_p);
+    try
+	{
+	distr_m->getDistributer()->distSendData(flowname_m, frame_p);
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdReceive exception catched!"));
+	}
 
     return 0;
 }
@@ -325,7 +352,8 @@ BulkDataDistributerCb::cbFwdReceive(ACE_Message_Block * frame_p)
 int
 BulkDataDistributerCb::cbFwdStop()
 {
-    ACS_TRACE("BulkDataDistributerCb::cbFwdStop"); 
+    //ACS_TRACE("BulkDataDistributerCb::cbFwdStop"); 
+    cout << "DDDDDDDDDDDDD BulkDataDistributerCb::cbFwdStop entering..." << endl;
 
 /*
     TAO_AV_Protocol_Object *dp_p = 0;
@@ -339,7 +367,14 @@ BulkDataDistributerCb::cbFwdStop()
     distr_m->distributer.streamctrl_p->stop(locSpec);
 */
 
-    distr_m->getDistributer()->distSendStop(flowname_m);
+    try
+	{
+	distr_m->getDistributer()->distSendStop(flowname_m);
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStop exception catched!"));
+	}
 
     return 0;
 }

@@ -196,6 +196,9 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	    return comp->returnCompletion();
 	}
 
+    virtual ACSErr::Completion *getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
+	throw (CORBA::SystemException);
+
   private:
 
     ContainerServices *containerServices_p;

@@ -335,5 +335,18 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 }
 
 
+template<class TReceiverCallback, class TSenderCallback>
+ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
+    throw (CORBA::SystemException)
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::getReceiverCbStatus");
 
-
+    bulkdata::BulkDataReceiver_var receiver = containerServices_p->getComponent<bulkdata::BulkDataReceiver>(recvName);
+    if(!CORBA::is_nil(receiver.in()))
+	{
+	return receiver->getCbStatus(flowNumber);
+	}
+    
+    AVCbNotAvailableCompletion *comp = new AVCbNotAvailableCompletion();
+    return comp->returnCompletion();
+}

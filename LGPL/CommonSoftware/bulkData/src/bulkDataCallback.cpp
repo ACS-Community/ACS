@@ -92,6 +92,7 @@ int BulkDataCallback::handle_stop (void)
 		{
 		ACE_OS::sleep(waitPeriod_m);
 		locLoop--;
+		cout << "RRRRRRRRRRRRRRRRRRRR loc loop: " << locLoop << endl;
 		}
 
 	    if ( locLoop == 0 )

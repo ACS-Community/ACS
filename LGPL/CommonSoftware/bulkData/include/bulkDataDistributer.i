@@ -115,7 +115,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 
     int res = -1;
 
-    // call start on all the receivers.
+    // call send_frame on all the receivers.
     Sender_Map_Iterator iterator (senderMap_m);
     Sender_Map_Entry *entry = 0;
     for (;iterator.next (entry) !=  0;iterator.advance ())
@@ -125,6 +125,10 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	entry->int_id_->getFlowProtocol(flowName, dp_p);
 
 	res = dp_p->send_frame(frame_p);
+	if(res < 0)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData send frame error"));
+	    }
 	}
 
     return res;
@@ -137,7 +141,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 {
     ACS_TRACE("BulkDataDistributer<>::distSendStop");
 
-    // call start on all the receivers.
+    // call stop on all the receivers.
     Sender_Map_Iterator iterator (senderMap_m);
     Sender_Map_Entry *entry = 0;
     for (;iterator.next (entry) !=  0;iterator.advance ())
@@ -148,9 +152,9 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
 	entry->int_id_->getStreamCtrl()->stop(locSpec);
 
-	//ACE_CString prova = entry->ext_id_;
-	//cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << prova.c_str() << endl; 
-
+	ACE_CString prova = entry->ext_id_;
+	cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << prova.c_str() << endl; 
 	}
+    cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: distSendStop exiting..." << endl; 
 }
 
