@@ -475,12 +475,10 @@ public void loadFromFile() {
  */
 public void loadFromFile(String filename) {
     try {
-    	// Remove the existing logs
-		allLogs.clear();
-		
-		// Clear the list of the visible logs
-		visibleLogs.clear();
-		
+    	// Remove the existing logs from cache
+		clearAll();
+
+		// Load logs
 		allLogs.loadLogs(filename,true);
 		
     } catch (Exception e) {
@@ -546,15 +544,12 @@ public void saveFile(String fileName) {
 
 // clears all	
 public void clearAll() {
-		try {
 		    if (allLogs != null) {
 				allLogs.clear();
 		    }
 		    if (visibleLogs != null) {
 				visibleLogs.clear();
 		    }
-		} catch (Exception e) {
-		};
 }
 
 /**
