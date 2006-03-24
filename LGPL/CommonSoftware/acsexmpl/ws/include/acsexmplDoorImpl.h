@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplDoorImpl.h,v 1.101 2005/06/24 09:37:27 bjeram Exp $"
+* "@(#) $Id: acsexmplDoorImpl.h,v 1.102 2006/03/24 13:02:19 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,10 +70,10 @@ class DoorThread : public ACS::Thread
 {
 	public: 
 
-	DoorThread(const ACE_CString &name, Door * door_ptr, bool suspended=false, 
+	DoorThread(const ACE_CString &name, Door * door_ptr, 
 		const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 		const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
-		ACS::Thread(name, suspended) 
+		ACS::Thread(name) 
 	{
 		door_p = door_ptr;
 	}
@@ -142,7 +142,7 @@ respectively. &nbsp;This example has four properties and uses an ACS thread.
  *   - xxxAction() performs (asyncronously) the action and invokes the callback when finished.
  *  The Door::invokeAction method is called by the asynchronous dispatcher whenever there is a
  *  xxx pending action and it calls the corresponding xxxAction method.
- * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.101 2005/06/24 09:37:27 bjeram Exp $"
+ * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.102 2006/03/24 13:02:19 vwang Exp $"
  */
 class Door: public CharacteristicComponentImpl,     //Standard component superclass
             public virtual POA_acsexmplBuilding::Door,    //CORBA servant stub

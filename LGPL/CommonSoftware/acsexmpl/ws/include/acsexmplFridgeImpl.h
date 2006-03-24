@@ -22,7 +22,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.h,v 1.111 2005/06/22 23:29:11 sharring Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.h,v 1.112 2006/03/24 13:02:19 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------\
@@ -111,10 +111,9 @@ class FridgeThread : public ACS::Thread
 	public:
 		FridgeThread(const ACE_CString& name, 
 			FridgeControl  * fridgeControl, 
-			bool suspended=false,
 			const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 			const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
-			ACS::Thread(name, suspended)
+			ACS::Thread(name)
 		{
 			ACS_TRACE("FridgeThread::FridgeThread");
 			loopCounter_m = 0;
@@ -138,7 +137,7 @@ class FridgeThread : public ACS::Thread
  * for the "fridge" notification channel.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.111 2005/06/22 23:29:11 sharring Exp $"
+ * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.112 2006/03/24 13:02:19 vwang Exp $"
  */
 class FridgeControl: public CharacteristicComponentImpl,    //Standard component superclass
 		     public virtual POA_FRIDGE::FridgeControl    //CORBA servant stub
