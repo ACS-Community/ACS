@@ -539,6 +539,15 @@ Calling this function does not affect the internal state of the Manager.
 			in Handle client,	///< Identification of the caller.
 			in ComponentSpecSeq components	///< Components to be obtained.
 			);
+		
+		/** Activation of co-deployed component. */
+		ComponentInfo get_co_deployed_component(
+			in Handle client,	///< Identification of the caller.
+			in ComponentSpec c,	///< Component to be obtained.
+			in boolean mark_as_default,	///< Mark component as default component of its type.
+			in CURL target_component	///< CURL of the targer component (where to activate component).
+			)
+			raises (IncompleteComponentSpec, InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent);
 
 		/** Returns the default component of specific type. */
 		ComponentInfo get_default_component(
