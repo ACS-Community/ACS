@@ -11,15 +11,15 @@
 1 - Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
 1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the InterfaceRepository.
@@ -54,8 +54,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
@@ -84,6 +84,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ConstructComponent::ConstructComponent(XXXXXXX...,MACI_EXCEPTION_COSTR,IDL:alma/MACI_TEST/DynamicTestClass:1.0,...)] Error creating  component (type=25, code=0),Component=MACI_EXCEPTION_COSTR
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Failed to create component object 'MACI_EXCEPTION_COSTR' using library 'maciDynComp'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
@@ -117,9 +118,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_INIT: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - ] Throwing an exception in initialize
+1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::initialize() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::activate_component: got an exception intializing MACI_EXCEPTION_INIT
 1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize] Life cycle error (type=28, code=0)
-1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::initialize() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_EXCEPTION_INIT'
@@ -196,6 +197,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_EXCEPTION_CLEAN' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_EXCEPTION_CLEAN' deactivated.
@@ -236,6 +238,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_ABORT - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_ABORT - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_EXCEPTION_ABORT' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_EXCEPTION_ABORT' deactivated.

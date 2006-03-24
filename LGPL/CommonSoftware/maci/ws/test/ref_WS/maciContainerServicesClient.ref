@@ -27,11 +27,11 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Centralized Logger.
@@ -49,8 +49,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 of 0 components activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 of 0 components activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
@@ -125,6 +125,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -173,6 +174,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST2' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -222,6 +224,7 @@
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'IDL<Dynamic Component>' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -292,6 +295,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
@@ -310,6 +314,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST2' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -339,6 +344,7 @@
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_CS_TEST' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
