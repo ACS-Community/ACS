@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.7 2005/06/21 21:26:51 dfugate Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.8 2006/03/24 12:53:34 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,6 +49,7 @@ RTSupplier::RTSupplier(const char* channelName,
     threadManager_mp->create("worker", 
 			      (void*)RTSupplier::worker, 
 			      static_cast<void *>(this));
+    threadManager_mp->resume("worker");
 }
 //-----------------------------------------------------------------------------
 void 

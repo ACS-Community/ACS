@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.53 2005/08/30 08:50:32 gchiozzi Exp $"
+* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.54 2006/03/24 12:53:34 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -185,6 +185,7 @@ ORBHelper::runOrb()
 	throw err.getCouldntCreateThreadEx();
 	}
     threadManager_mp->create("runOrbThread", (void *)ORBHelper::runOrbThread, static_cast<void *>(this));
+    threadManager_mp->resume("runOrbThread");
     
     ACS_SHORT_LOG((LM_INFO,"ORBHelper::runORB the ORB is now running!"));
     return;   
