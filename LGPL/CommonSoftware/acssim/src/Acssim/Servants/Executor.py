@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.13 2006/03/22 21:06:17 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.14 2006/03/24 15:57:05 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.13 2006/03/22 21:06:17 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.14 2006/03/24 15:57:05 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -35,6 +35,7 @@ from time    import sleep
 from inspect import isfunction
 from copy    import copy
 from sys     import stdout
+import types
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
@@ -45,7 +46,7 @@ from Acssim.Corba.Generator            import *
 
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Servants.Executor")
-__revision__ = "@(#) $Id: Executor.py,v 1.13 2006/03/22 21:06:17 dfugate Exp $"
+__revision__ = "@(#) $Id: Executor.py,v 1.14 2006/03/24 15:57:05 dfugate Exp $"
 #------------------------------------------------------------------------------
 def _execute(comp_name, meth_name, args, local_ns):
     '''
@@ -120,6 +121,7 @@ def _executeList(code_list, args, local_ns):
     '''
     #force a copy of it
     _locals = copy(local_ns)
+    #_locals = local_ns
     #extend it
     _locals['parameters'] = args
     
@@ -132,6 +134,13 @@ def _executeList(code_list, args, local_ns):
         except:
             #fine...it's a parameterless function
             return code_list()
+    elif type(code_list)==types.CodeType:
+        
+        exec code_list in globals(), _locals
+        exec "joe = stringFunction(parameters)" in globals(), _locals
+        return _locals['joe']
+
+        
     else:
         #to make sure the last value isn't really popped off
         code = copy(code_list)

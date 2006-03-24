@@ -6,11 +6,11 @@ from acstime import Duration
         </pythonImports>
         <_corbaMethod Name="getTimeInterval" Timeout="0" Random="false">
 print 'Params passed to getTimeInterval', parameters
-Duration(34L)
+return Duration(34L)
         </_corbaMethod>
 	
         <_corbaMethod Name="toISO8601" Timeout="0" Random="false">
 print 'Params passed to toISO8601', parameters
-'simple return value'
+return 'simple return value'
         </_corbaMethod>
 </SimulatedComponent>

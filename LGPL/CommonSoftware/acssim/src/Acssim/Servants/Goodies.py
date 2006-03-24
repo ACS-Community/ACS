@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.10 2006/03/24 15:57:05 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows: 
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.10 2006/03/24 15:57:05 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -43,7 +43,7 @@ from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id: Goodies.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
+__revision__="@(#) $Id: Goodies.py,v 1.10 2006/03/24 15:57:05 dfugate Exp $"
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
@@ -71,6 +71,7 @@ _GLOBALS = {}
 
 #namespace of individual components
 COMPONENTS_NS = {}
+COMPONENTS_NS_LIST = {}
 
 #described simulated behavior of the components
 _COMP_PROXIES = {}
@@ -215,6 +216,12 @@ def getGlobalData():
 _GLOBALS[addGlobalData.__name__] = addGlobalData
 _GLOBALS[removeGlobalData.__name__] = removeGlobalData
 #------------------------------------------------------------------------------
+def getCompLocalNSList(comp_name):
+    '''
+    '''
+    getCompLocalNS(comp_name)
+    return COMPONENTS_NS_LIST[comp_name]
+
 def getCompLocalNS(comp_name):
     '''
     Gets the local namespace dictionary for a component.
@@ -229,10 +236,13 @@ def getCompLocalNS(comp_name):
     '''
     #sanity check
     if COMPONENTS_NS.has_key(comp_name)==0:
+        
         #initialize the temporary local namespace to be empty (in case
         #of some failure with the CDB)
         t_dict = {}
         comp_cdb_list = [comp_name]
+
+        COMPONENTS_NS_LIST[comp_name] = []
         
         #because we must check the inherited IDL interfaces as well
         cdb_location = "interfaces/"
@@ -261,7 +271,9 @@ def getCompLocalNS(comp_name):
                     #get the imports
                     dom = xml_obj.SimulatedComponent.pythonImports
                     py_imports = dom.getValue().rstrip().lstrip().split('\n')
-            
+
+                    COMPONENTS_NS_LIST[comp_name] = COMPONENTS_NS_LIST[comp_name] + py_imports
+
                     #populate the locals dictionary
                     for py_import in py_imports:
                         exec py_import in globals(), t_dict

@@ -6,11 +6,11 @@ import ACSErr
 import ACS
         </pythonImports>
 
-	<_corbaAttribute Name="startRamping" Timeout="0">
+	<_corbaMethod Name="startRamping" Timeout="0">
 print "Simulated startRamping - messing with callback"
 compl = ACSErr.Completion(0L, 0L, 0L, ())
 cbdo  = ACS.CBDescOut(0L, 0L)
 parameters[1].working(compl, cbdo)
 None
-        </_corbaAttribute>
+        </_corbaMethod>
 </SimulatedComponent>

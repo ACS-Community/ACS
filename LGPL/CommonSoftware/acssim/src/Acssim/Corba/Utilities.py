@@ -36,6 +36,8 @@ Acssim.Servants.Goodies
 #--REGULAR IMPORTS-------------------------------------------------------------
 import omniORB
 import CORBA
+from compiler import compile
+
 #--CORBA STUBS-----------------------------------------------------------------
 from Acspy.Util.ACSCorba        import interfaceRepository
 from Acspy.Util.ACSCorba import getClient
@@ -44,6 +46,7 @@ from Acspy.Util.ACSCorba import getManager
 __revision__ = "@(#) $Id$"
 omniORB.importIRStubs()
 IFR = interfaceRepository()
+STD_WHITESPACE="    "
 #------------------------------------------------------------------------------
 def getCompIfrID(comp_name):
     '''
@@ -127,6 +130,30 @@ def getDefinition(irLabel):
     '''
     interf = IFR.lookup_id(irLabel)
     return interf
+#-----------------------------------------------------------------------------
+def listToFunction(code_list, locals_dict):
+    '''
+    Converts code_list, a list of Python strings, into a function object.
+    code_list should only rely on one parameter, "parameters", which consists
+    of a list.
+    '''
+    function_name = "stringFunction"
+    function_declare = "def " + function_name + "(parameters):"
+    
+    #prepend some whitespace to each line
+    for i in range(0, len(code_list)):
+        code_list[i] = STD_WHITESPACE + code_list[i]
         
+    #add the define to the beginning of the list
+    code_list.insert(0, function_declare)
+    
+    #convert the list into a string delimited by '\n's
+    code_string = ""
+    for line in code_list:
+        code_string = code_string + line + '\n'
         
+    #finally ok to compile it
+    code_obj = compile(code_string, "sim_file", "exec")
+    #exec code_obj in globals(), locals_dict
+    return code_obj
     

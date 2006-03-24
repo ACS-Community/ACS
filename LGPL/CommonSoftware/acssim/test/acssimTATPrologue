@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acssimTATPrologue,v 1.4 2006/01/16 20:35:53 dfugate Exp $"
+# "@(#) $Id: acssimTATPrologue,v 1.5 2006/03/24 15:57:05 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,4 +29,5 @@
 
 acsutilTATPrologue
 acsutilAwaitContainerStart -py pyContainer
+sleep 15
 

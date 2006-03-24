@@ -40,7 +40,9 @@ from operator import isSequenceType
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
+from Acssim.Corba.Utilities import listToFunction
 from Acssim.Servants.Goodies import getComponentXMLObj
+from Acssim.Servants.Goodies import getCompLocalNSList
 from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
 #--GLOBALS---------------------------------------------------------------------
 __revision__ = "@(#) $Id$"
@@ -96,7 +98,7 @@ class CDB(BaseRepresentation):
         method/attribute defininitions where applicable.
         
         Parameters: name is the name of the CDB XML within the /alma/simulated
-        section we're searching for.
+        section we are searching for.
         
         Returns: True if the current XML allows us to look at superinterfaces.
         False otherwise.
@@ -180,7 +182,9 @@ class CDB(BaseRepresentation):
 
             #get the code to be executed yielding a return value
             temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
-        
+            temp_dict['Value'] = getCompLocalNSList(self.compname) + temp_dict['Value']
+            temp_dict['Value'] = listToFunction(temp_dict['Value'], {})
+            
             #save the dictionary
             self.setMethod(methname, temp_dict)
     #--------------------------------------------------------------------------

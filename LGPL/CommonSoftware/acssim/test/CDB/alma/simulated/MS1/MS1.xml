@@ -6,14 +6,6 @@ import CORBA
 from mastercompsim import MasterCompDevIO
         </pythonImports>
 
-	<_corbaMethod Name="method1" Timeout="2" Random="false">
-CORBA.TRUE
-	</_corbaMethod>
-
-	<_corbaMethod Name="method2" Timeout="5" Random="false">
-None
-	</_corbaMethod>
-
 	<_corbaAttribute Name="currentStateHierarchy" Timeout="0">
 MasterCompDevIO()
         </_corbaAttribute>

@@ -6,7 +6,7 @@ import ACSErrTypeCommonImpl
         </pythonImports>
 	<_corbaMethod Name="displayMessage" Timeout="3" Random="false">
 print 'Simulated Hello World!'
-None
+return None
         </_corbaMethod>
 
 	<_corbaMethod Name="badMethod" Timeout="4" Random="false">
