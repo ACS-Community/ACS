@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.28 2006/03/13 16:55:43 dfugate Exp $"
+# "@(#) $Id: acsStart,v 1.29 2006/03/24 23:24:53 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -173,8 +173,9 @@ if [ "$CL_TIMEOUT" ] ; then
    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$CL_TIMEOUT
 fi
 
-#maximum timeout for anything in this script to finish executing.
+#maximum timeout for anything in this script to finish executing...
 MAX_TIMEOUT=$(( 36 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
 
 #Check command-line args for baseport option
 if [ "$CL_BASEPORT" ]
@@ -190,7 +191,7 @@ export ACSSTARTLOG=$ACS_INSTANCES_DIR/.acsStart.$$
 ACS_LOG_COMMAND
 
 #start the ORB services
-acsStartORBSRVC 2>&1 | tee -a $ACSSTARTLOG &
+acsStartORBSRVC --waitifr 2>&1 | tee -a $ACSSTARTLOG &
 ORBSRVC_PID=$!
 
 if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -c "ERROR" -p $ORBSRVC_PID

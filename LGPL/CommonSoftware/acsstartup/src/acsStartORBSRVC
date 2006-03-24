@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.56 2006/03/13 16:55:43 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.57 2006/03/24 23:24:53 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -61,11 +61,12 @@ export HOST=`getIP`
 #
 CL_BASEPORT=
 CL_HELP=
+CL_WAITIFR=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:
+LONGOPTS=help,baseport:,timeout:,waitifr
 SHORTOPTS=hb:t:
 
 #
@@ -78,6 +79,7 @@ function printUsage {
 	echo "Options: "
 	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
 	echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
+	echo "        -waitifr                  waits for the CORBA Interface Repository to load before returning"
 	echo "   -h | -help                     prints this help and exits"
 }
 
@@ -104,6 +106,7 @@ do
 	-b)                 CL_BASEPORT=$2 ; shift ;;
 	--timeout)          export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
 	-t)                 export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	--waitifr)          CL_WAITIFR=true ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
 	--) break ;;
@@ -147,6 +150,9 @@ fi
 
 #maximum timeout for any given process to complete
 MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+#...except acsIrFeed. This requires more time
+MAX_IRFEED_TIMEOUT=$(( $MAX_TIMEOUT * 5 ))
 
 export STD_SLEEP=3
 
@@ -288,6 +294,11 @@ function timeoutExit
 	acsKillProc $LOGGING_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "Cannot kill the ACS logging service"
     fi 
 
+    if [ "X" != "X$IRFEED_PID" ]
+    then
+	acsKillProc $IRFEED_PID 2> /dev/null || ACS_LOG_ERROR "Cannot kill the interface repository"
+    fi 
+
     if [ "X" != "X$IR_PID" ]
     then
 	acsKillProc $IR_PID 2> /dev/null || ACS_LOG_ERROR "Cannot kill the interface repository"
@@ -315,8 +326,8 @@ ACS_LOG_INFO "    Orb options:  $ORBOPTS"
 ################################
 # The IOR is saved in $IR_IOR
 #
-# Note: this is started first, so that we can do the acsIrfeed (which depends on IR being started)
-#       immediately afterwards. acsIrfeed is a long-running process, so we want to start it ASAP.
+# Note: this is started first, so that we can do the IFR loading (which depends on IR being started)
+#       immediately afterwards. IFR loading is a long-running process, so we want to start it ASAP.
 #
 ACS_LOG_INFO "Starting Interface Repository"
 
@@ -340,10 +351,13 @@ then
 fi
 
 # Now that the Interface Repository is running, 
-# it is safe to load the Interface Repository with acsIrfeed.
+# it is safe to load the Interface Repository.
 #
 # Loading ACS IDL Interfaces in Interface Repository, as a background job, so processing can continue in parallel.
-acsIrfeed  -IRcorbaloc corbaloc::$HOST:$IR_PORT/InterfaceRepository &
+
+acsstartupLoadIFR & #this C++ based script is a couple of seconds faster than acsIrFeed.
+#acsIrfeed  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository &
+IRFEED_PID=$!
 
 ################################
 # Naming Service
@@ -510,6 +524,21 @@ then
     ACS_LOG_ERROR "Unable to start the ACS CDB!"
     ACS_LOG_ERROR "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
     timeoutExit
+fi
+
+
+#block until the interface repository has fully loaded
+if [ "$CL_WAITIFR" = "true" ]
+then
+    ACS_LOG_DEBUG "Waiting for the interface repository to finish loading."
+    if ! acsutilBlock -t $MAX_IRFEED_TIMEOUT -p $IRFEED_PID
+    then
+	ACS_LOG_ERROR "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
+	ACS_LOG_INFO  "There could be something genuinely wrong here or maybe your machine is just slow."
+	ACS_LOG_INFO  "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
+    else
+	ACS_LOG_DEBUG "The interface repository has finished loading."
+    fi
 fi
 
 ACS_LOG_FORCED "INFO - For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."

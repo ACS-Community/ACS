@@ -12,35 +12,33 @@
 5 - INFO - Shutting down jCont container
 1 - INFO - Starting Naming Service
 5 - INFO - Shutting down pyCont container
-1 - INFO - acsIrfeed - Loading IDL interfaces in Interface Repository
-5 - INFO - Shutting down TestContainer container
-1 - INFO -            ORBInitRef: InterfaceRepository=corbaloc::xxxx:3904/InterfaceRepository
-5 - INFO - Stopping Manager
 1 - INFO - Starting ACS Configuration Database
-5 - Max timeout exceeded!
+5 - INFO - Shutting down TestContainer container
 1 - INFO -     CDB data is in:  /alma/ACS-x.y/acsdata/config/defaultCDB
-5 - INFO - acsStopManager: done.
+5 - INFO - Stopping Manager
 1 - INFO - Starting Notify Service
-5 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
+5 - Max timeout exceeded!
 1 - JDAL is ready and waiting
-5 - INFO - Stopping the CDB
+5 - INFO - acsStopManager: done.
 1 - INFO - Starting Logging Notify Service
-5 - INFO - Stopping the CORBA Naming Service
+5 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
 1 - INFO - Starting Archive Notify Service
-5 - INFO - Stopping the CORBA Notification Service
+5 - INFO - Stopping the CDB
 1 - INFO - Starting Logging Service
-5 - INFO - Stopping the CORBA Logging Notification Service
+5 - INFO - Stopping the CORBA Naming Service
 1 - INFO - Starting ACS Log service
+5 - INFO - Stopping the CORBA Notification Service
+1 - INFO -  of IDL interfaces in Interface Repository completed OK
+5 - INFO - Stopping the CORBA Logging Notification Service
+1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 5 - INFO - Stopping the CORBA Archive Notification Service
-1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
-5 - INFO - Stopping the CORBA Logging Service
 1 - INFO - The acsStartORBSRVC script has now completed!
-5 - INFO - Stopping the CORBA Interface Repository
+5 - INFO - Stopping the CORBA Logging Service
 1 - Manager Application initialized
-5 - INFO - Stopping the ACS Logging Service
+5 - INFO - Stopping the CORBA Interface Repository
 1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
-5 - INFO - Killing any rogue ACS processes...
+5 - INFO - Stopping the ACS Logging Service
 1 - INFO - ACS is up and running
-5 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.9
+5 - INFO - Killing any rogue ACS processes...
 1 - INFO - Manager is up and running
-1 - INFO - Loading of IDL interfaces in Interface Repository completed OK
+5 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.9

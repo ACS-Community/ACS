@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.39 2006/02/28 22:47:56 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.40 2006/03/24 23:24:53 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -23,6 +23,8 @@
 #    None
 #------------------------------------------------------------------------
 
+USER_LIB = -lacsutil -lACE -lTAO -lTAO_PortableServer
+
 #
 # Scripts (public and local)
 # ----------------------------
@@ -41,7 +43,7 @@ SCRIPTS         = acsStartContainer acsStopContainer \
 		  acsstartupAcsInstance \
 		  acsstartupLogging.sh \
 		  acsstartupReport \
-		  acsStatus
+		  acsStatus acsstartupLoadIFR
 
 SCRIPTS_L       =
 
@@ -58,6 +60,10 @@ PY_PACKAGES        =
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
+EXECUTABLES = acsstartupIrFeed
+
+acsstartupIrFeed_OBJECTS = acsstartupIrFeed
+acsstartupIrFeed_LIBS    = 
 
 # 
 # IDL Files and flags
