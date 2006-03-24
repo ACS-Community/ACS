@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount4Impl.h,v 1.3 2005/07/04 17:18:25 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount4Impl.h,v 1.4 2006/03/24 12:54:38 vwang Exp $"
 *
 */
 
@@ -85,7 +85,6 @@ class PositionControlThread :public ACS::Thread
   public:
     PositionControlThread(const ACE_CString& name, 
 		  Mount4Impl *mount_p, 
-		  bool suspended=false,
 		  const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 			  const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime);
     ~PositionControlThread();
@@ -100,7 +99,7 @@ class PositionControlThread :public ACS::Thread
  * The class Mount4 is a basic example of a component and simulates the behaviour of an antenna interface.
  * It provides one asynchronous methods: objfix.  The methods only writes the data into 
  * virtual properties.
- * @version "@(#) $Id: acscourseMount4Impl.h,v 1.3 2005/07/04 17:18:25 gchiozzi Exp $"
+ * @version "@(#) $Id: acscourseMount4Impl.h,v 1.4 2006/03/24 12:54:38 vwang Exp $"
  */
 class Mount4Impl: public virtual CharacteristicComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount4,

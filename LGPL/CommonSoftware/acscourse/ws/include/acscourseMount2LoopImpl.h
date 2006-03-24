@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount2LoopImpl.h,v 1.4 2005/07/12 11:30:11 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount2LoopImpl.h,v 1.5 2006/03/24 12:54:38 vwang Exp $"
 *
 */
 
@@ -76,7 +76,7 @@ class Mount2LoopImpl;
  * In order to get access to the Mount2LoopImpl to read and set
  * the values of the properties in the loop, it
  * takes a pointer to it in the constructor and it is a friend class.
- * @version "@(#) $Id: acscourseMount2LoopImpl.h,v 1.4 2005/07/12 11:30:11 gchiozzi Exp $"
+ * @version "@(#) $Id: acscourseMount2LoopImpl.h,v 1.5 2006/03/24 12:54:38 vwang Exp $"
  */
 class PositionControlThread :public ACS::Thread
 {
@@ -91,7 +91,6 @@ class PositionControlThread :public ACS::Thread
      */
     PositionControlThread(const ACE_CString& name, 
 		  Mount2LoopImpl *mount_p, 
-		  bool suspended=false,
 		  const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 			  const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime);
     /**
@@ -118,7 +117,7 @@ class PositionControlThread :public ACS::Thread
  * The class Mount2 is a basic example of a component and simulates the behaviour of an antenna interface.
  * It provides one asynchronous methods: objfix.  The methods only writes the data into 
  * virtual properties.
- * @version "@(#) $Id: acscourseMount2LoopImpl.h,v 1.4 2005/07/12 11:30:11 gchiozzi Exp $"
+ * @version "@(#) $Id: acscourseMount2LoopImpl.h,v 1.5 2006/03/24 12:54:38 vwang Exp $"
  */
 class Mount2LoopImpl: public Mount2Impl
 {
