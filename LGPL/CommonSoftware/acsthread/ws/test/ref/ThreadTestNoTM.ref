@@ -1,8 +1,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 1 - Creating thread passing just thread name
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] Wait a few seconds. Nothing should happen
@@ -34,7 +34,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
@@ -62,8 +61,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 3 - Creating thread, suspend and resume a few times
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] Wait a few seconds. Nothing should happen
@@ -98,7 +97,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
@@ -114,8 +112,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 5 - Creating thread with long period and stop() it
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] Wait a few seconds. Nothing should happen
@@ -140,8 +138,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 6 - Creating thread with long period and cancel() it
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] Cancelling thread

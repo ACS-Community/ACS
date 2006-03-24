@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadJoinable.cpp,v 1.3 2006/02/13 17:21:26 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadJoinable.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.3 2006/02/13 17:21:26 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -42,7 +42,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
    can run much longer ( more than 3500 threads till now ).
 */
 
-#define MAX_THREADS 1000
+#define MAX_THREADS 2000
 
 /**
  * This is just a minimal thread class that executes an empty loop
@@ -51,23 +51,23 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 class FastACSThread :public ACS::Thread
 {
   public:
-    FastACSThread(const ACE_CString& name, bool suspended=false,
+    FastACSThread(const ACE_CString& name, 
 		  const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 		  const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 		  bool del=false
 	) :
-	ACS::Thread(name, suspended, responseTime, sleepTime, del)
+	ACS::Thread(name, responseTime, sleepTime, del)
 	{
 	    ACS_TRACE("FastACSThread::FastACSThread");
 	}
 
-    FastACSThread(const ACE_CString& name, bool suspended,
+    FastACSThread(const ACE_CString& name, 
 		  const ACS::TimeInterval& responseTime, 
 		  const ACS::TimeInterval& sleepTime,
 		  bool del,
 		  const long _thrFlags
 	) :
-	ACS::Thread(name, suspended, responseTime, sleepTime, del, _thrFlags)
+	ACS::Thread(name, responseTime, sleepTime, del, _thrFlags)
 	{
 	    ACS_TRACE("FastACSThread::FastACSThread");
 	}
@@ -76,7 +76,7 @@ class FastACSThread :public ACS::Thread
      * This is the method executed in the thread loop.
      * It is just an empty method.
      */
-    virtual void runLoop() {}
+    virtual void runLoop() { std::cout << pthread_self() << " runLoop()" << std::endl; }
 };
 
 int main(int argc, char *argv[])
@@ -109,12 +109,12 @@ int main(int argc, char *argv[])
 	for( l=0; l<MAX_THREADS; l++)
 	    {
 	    FastACSThread *a = tm.create<FastACSThread>("TestThreadA",
-							false,
-							1000000, /* 100ms */
+							5000000, /* 500ms */
 							1000000, /* 100ms */
 							false,
 							THR_NEW_LWP | THR_DETACHED);
 	    // ACS_SHORT_LOG(( LM_INFO, "Progress: %ld thread created", l+1 ));
+            a->resume();
 	    threadId = a->getThreadID();
 	    tm.destroy(a);
 	    }
@@ -137,14 +137,14 @@ int main(int argc, char *argv[])
     ACS_SHORT_LOG(( LM_INFO, "===== 2 - create JOINABLE threads"));
     try 
 	{
-	for( l=0; l<MAX_THREADS; l++)
+	for( l=0; l<MAX_THREADS ; l++)
 	    {
 	    FastACSThread *a = tm.create<FastACSThread>("TestThreadA",
-							false,
-							1000000, /* 100ms */
+							5000000, /* 500ms */
 							1000000, /* 100ms */
 							false,
 							THR_NEW_LWP | THR_JOINABLE);
+            a->resume();
 	    // ACS_SHORT_LOG(( LM_INFO, "Progress: %ld thread created", l+1 ));
 	    threadIdVec[l] = a->getThreadID();
 	    tm.destroy(a);
@@ -186,11 +186,11 @@ int main(int argc, char *argv[])
 	for( l=0; l<MAX_THREADS; l++)
 	    {
 	    FastACSThread *a = tm.create<FastACSThread>("TestThreadA",
-							false,
-							1000000, /* 100ms */
+							5000000, /* 500ms */
 							1000000, /* 100ms */
 							false,
 							THR_NEW_LWP | THR_JOINABLE);
+            a->resume();
 	    // ACS_SHORT_LOG(( LM_INFO, "Progress: %ld thread created", l+1 ));
 	    threadId = a->getThreadID();
 	    tm.destroy(a);

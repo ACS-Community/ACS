@@ -18,7 +18,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestA did not stop within 5000000 100ns
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::cancel] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::cancel] Thread TestA did not stop within 5000000 100ns
-1 - ----------T--:--:--.--- [GlobalLogger - main] restart fail, will retry
+1 - ----------T--:--:--.--- [GlobalLogger - main] restart fail, as we expected
 1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (2)
 1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (3)
 1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (4)
@@ -28,35 +28,62 @@
 1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (8)
 1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (9)
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::restart] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [GlobalLogger - main] restart success
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (0)
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestA
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (1)
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestA did not stop within 5000000 100ns
-1 - ----------T--:--:--.--- [GlobalLogger - main] stop fail, will retry
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (2)
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (3)
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (4)
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (5)
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (6)
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (7)
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (8)
-1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestA: runLoop (9)
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestA
-1 - ----------T--:--:--.--- [GlobalLogger - main] stop success
-1 - ----------T--:--:--.--- [GlobalLogger - main] Done
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Now try to delete TestA thread
 1 - ----------T--:--:--.--- [GlobalLogger - Test::~Test] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Creating thread
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - Test::Test] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (0)
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::restart] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestB
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (1)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (2)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (3)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (4)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (5)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (6)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (7)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (8)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (9)
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:TestB
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (0)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (1)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Now try to delete TestB thread
+1 - ----------T--:--:--.--- [GlobalLogger - Test::~Test] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestB
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (2)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (3)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (4)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (5)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (6)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (7)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (8)
+1 - ----------T--:--:--.--- [GlobalLogger - Test::runLoop] TestB: runLoop (9)
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:TestB
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Done
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 

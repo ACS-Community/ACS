@@ -5,6 +5,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::SleepThreadLoop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Waiting
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
@@ -27,9 +28,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Will sleep 1 sec.
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Done iteration.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Suspend
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Waiting
 1 - ----------T--:--:--.--- [GlobalLogger - ] Resume
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Will sleep 1 sec.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Waiting
@@ -37,9 +40,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Will sleep 1 sec.
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Done iteration.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Suspend
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Waiting
 1 - ----------T--:--:--.--- [GlobalLogger - ] Resume
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Will sleep 1 sec.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Waiting
@@ -59,6 +64,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Will sleep 1 sec.
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::runLoop] Done iteration.
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== Cleaning up thread
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stop] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread SleepThread
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - SleepThreadLoop::~SleepThreadLoop] 
@@ -70,3 +76,4 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] End of cleanup
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== The end
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadDoubleLoop.cpp,v 1.1 2006/02/04 00:47:07 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadDoubleLoop.cpp,v 1.2 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "acsThreadManager.h"
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadDoubleLoop.cpp,v 1.1 2006/02/04 00:47:07 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadDoubleLoop.cpp,v 1.2 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 1 - Creating thread with long period and stop() it"));
     b = tm.create<TestACSThread>("TestThreadC", 
-				 false, 
 				 20*100*1000*10 /*=2sec*/, 20*100*1000*10 /*2 sec*/);
+    b->resume();
     sleep(10);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Stopping thread"));
@@ -78,8 +78,8 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 2 - Creating thread with long period and cancel() it"));
     b = tm.create<TestACSThread>("TestThreadC", 
-				 false, 
 				 20*100*1000*10 /*=2 sec*/, 20*100*1000*10 /*2 sec*/);
+    b->resume();
     sleep(10);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Cancelling thread"));

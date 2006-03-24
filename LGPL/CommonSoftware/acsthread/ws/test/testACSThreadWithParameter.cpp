@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadWithParameter.cpp,v 1.9 2006/02/03 15:47:53 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadWithParameter.cpp,v 1.10 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "acsThreadManager.h"
 
 
-static char *rcsId="@(#) $Id: testACSThreadWithParameter.cpp,v 1.9 2006/02/03 15:47:53 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadWithParameter.cpp,v 1.10 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -40,11 +40,10 @@ class TestACSThreadWithParameter :public ACS::Thread
   public:
     TestACSThreadWithParameter(const ACE_CString& name, 
 			       char  *parmMsg, 
-			       bool suspended=false,
 			       const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 			       const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 			       bool del=false) :
-	ACS::Thread(name, suspended, responseTime, sleepTime, del)
+	ACS::Thread(name, responseTime, sleepTime, del)
 	{
 	    ACS_TRACE("TestACSThreadWithParameter::TestACSThreadWithParameter");
 	    loopCounter_m = 0;
@@ -92,6 +91,7 @@ int main(int argc, char *argv[])
 	    (LM_INFO, "=============== 1 - Creating thread passing just thread name"));
     char *msg="Thread msg";
     TestACSThreadWithParameter *a = tm.create<TestACSThreadWithParameter, char*>("TestThreadA", msg);
+    a->resume();
     sleep(20);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Requesting ThreadManager to destroy thread"));
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
      */
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 2 - Creating thread initially suspended"));
-    TestACSThreadWithParameter *b = tm.create<TestACSThreadWithParameter, char*>("TestThreadB", msg, true);
+    TestACSThreadWithParameter *b = tm.create<TestACSThreadWithParameter, char*>("TestThreadB", msg);
     sleep(20);
     b->resume();
     sleep(20);
@@ -128,8 +128,8 @@ int main(int argc, char *argv[])
 	    (LM_INFO, "=============== 3 - Creating thread"));
     b = tm.create<TestACSThreadWithParameter>("TestThreadC", 
 					      msg, 
-					      false, 
 					      100*1000*10/*=100ms*/, 142*100*1000*10 /*14.2 sec*/);
+    b->resume();
     sleep(20);
 
     /*
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
      */
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 4 - Creating thread that is never woken-up"));
-    TestACSThreadWithParameter *forEverSuspend = tm.create<TestACSThreadWithParameter>("SuspendForEver", msg, true);
+    TestACSThreadWithParameter *forEverSuspend = tm.create<TestACSThreadWithParameter>("SuspendForEver", msg);
     sleep(20);
 
     ACS_LOG(LM_SOURCE_INFO,"main", 

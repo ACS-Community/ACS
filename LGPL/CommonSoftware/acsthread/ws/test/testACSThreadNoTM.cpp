@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadNoTM.cpp,v 1.2 2006/02/04 00:43:57 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadNoTM.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "acsThreadManager.h"
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadNoTM.cpp,v 1.2 2006/02/04 00:43:57 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadNoTM.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /*
@@ -78,12 +78,13 @@ int main(int argc, char *argv[])
 
     /*
      * Creates a thread as before, but initially suspended.
+     *   ( without ThreadMaanger, it always suspended )
      * We wait a while to see if it is really suspended.
      * Then we resume its execution and we let it sun for a while.
      */
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 2 - Creating thread initially suspended"));
-    TestACSThread *b = new TestACSThread("TestThreadB", true);
+    TestACSThread *b = new TestACSThread("TestThreadB");
     sleep(20);
     b->resume();
     sleep(20);
@@ -99,6 +100,7 @@ int main(int argc, char *argv[])
 
     /*
      * Creates a thread as before not initially suspended
+     *   ( without a ThreadManager, it created suspended anyway )
      * and with specific responce and sleep times.
      * Then we suspend and resume its execution a few times to
      * see if suspend works properly.
@@ -107,9 +109,7 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 3 - Creating thread, suspend and resume a few times"));
     b = new TestACSThread("TestThreadC", 
-			  false, 
 			  100*1000*10/*=100ms*/, 142*100*1000*10 /*14.2 sec*/);
-    
     /*
      * Nothing happens here, because the thread is born
      * suspended no matter what parameter we pass.
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
      */
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 4 - Creating thread that is never woken-up"));
-    TestACSThread *forEverSleep = new TestACSThread("SuspendForEver", true);
+    TestACSThread *forEverSleep = new TestACSThread("SuspendForEver");
     sleep(20);
 
     ACS_LOG(LM_SOURCE_INFO,"main", 
@@ -151,7 +151,6 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 5 - Creating thread with long period and stop() it"));
     b = new TestACSThread("TestThreadC", 
-				 false, 
 				 20*100*1000*10 /*=2sec*/, 100*100*1000*10 /*10 sec*/);
     /*
      * Nothing happens here until I resume, because the thread is born
@@ -176,6 +175,7 @@ int main(int argc, char *argv[])
 	}
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Deleting thread"));
+    sleep(2);
     delete b;
 
     /*
@@ -186,7 +186,6 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 6 - Creating thread with long period and cancel() it"));
     b = new TestACSThread("TestThreadC", 
-			  false, 
 			  20*100*1000*10 /*=2 sec*/, 100*100*1000*10 /*10 sec*/);
     sleep(5);
     ACS_LOG(LM_SOURCE_INFO,"main", 

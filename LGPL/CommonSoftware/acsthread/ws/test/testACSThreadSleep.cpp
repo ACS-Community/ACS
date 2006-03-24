@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadSleep.cpp,v 1.2 2006/02/09 02:13:53 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadSleep.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,19 +32,17 @@
 #include <ACSErrTypeCommon.h>
 
 
-static char *rcsId="@(#) $Id: testACSThreadSleep.cpp,v 1.2 2006/02/09 02:13:53 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadSleep.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 class SleepThreadLoop : public ACS::Thread
 {
 public:
     SleepThreadLoop(const ACE_CString &name,
-		      bool suspended = false,
 		      const ACS::TimeInterval &responseTime = ThreadBase::defaultResponseTime,
 		      const ACS::TimeInterval &sleepTime = ThreadBase::defaultSleepTime,
 		      bool del=false) :
 	ACS::Thread(name, 
-		    suspended, 
 		    responseTime,
 		    sleepTime,
 		    del)
@@ -118,7 +116,6 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== Creating thread"));
     tm.create<SleepThreadLoop>("SleepThread",
-			       false, 
 			       ACS::ThreadBase::defaultResponseTime,
 			       10000000, // 1 sec
 			       true);   
@@ -126,6 +123,7 @@ int main(int argc, char *argv[])
      * GCH
      * Wait a while to simulate components lifetime
      */
+    tm.resume("SleepThread");
     ACS_SHORT_LOG((LM_INFO,"Waiting"));
     ACE_OS::sleep(20);
 

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testSelfDelThread.cpp,v 1.2 2005/11/23 14:54:10 bjeram Exp $"
+* "@(#) $Id: testSelfDelThread.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,17 +26,17 @@
 #include "acsThreadManager.h"
 
 
-static char *rcsId="@(#) $Id: testSelfDelThread.cpp,v 1.2 2005/11/23 14:54:10 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testSelfDelThread.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 class TestSelfDelThread :public ACS::Thread
 {
   public:
-    TestSelfDelThread(const ACE_CString& name, bool suspended=false,
+    TestSelfDelThread(const ACE_CString& name, 
 		  const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 		  const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 		  bool del=false) :
-	ACS::Thread(name, suspended, responseTime, sleepTime, del)
+	ACS::Thread(name, responseTime, sleepTime, del)
 	{
 	    ACS_TRACE("TestSelfDelThread::TestSelfDelThread");
 	}
@@ -62,17 +62,17 @@ int main(int argc, char *argv[])
 
     // let's create a thread that destroies the thread object when exits
     tm.create<TestSelfDelThread>("TestSelfDelThreadA",
-				 false,
 				 ACS::ThreadBase::defaultResponseTime,
 				 ACS::ThreadBase::defaultSleepTime,
-				 true);
+				 (bool)true);
+    tm.suspend("TestSelfDelThreadA");
     sleep(10);
      ACS_LOG(LM_SOURCE_INFO, "main", (LM_INFO, "Number of threads after execution: %d", tm.getThreadCount()));
 
 // thread should be self destroied
 /*
  // passing thread name and suspended flag
-    TestACSThread *b = tm.create<TestACSThread>("TestThreadB", true);
+    TestACSThread *b = tm.create<TestACSThread>("TestThreadB");
     sleep(20);
     b->resume();
     sleep(20);
@@ -81,11 +81,12 @@ int main(int argc, char *argv[])
     delete b;
 
  // passing thread name, suspended flag, respons and sleep time
-    b = tm.create<TestACSThread>("TestThreadC", false, 100*1000*10, ACS::ThreadBase::defaultSleepTime);
+    b = tm.create<TestACSThread>("TestThreadC", 100*1000*10, ACS::ThreadBase::defaultSleepTime);
+    b->resume();
     sleep(20);
 
     // create thread that is never woken-up
-    TestACSThread *forEverSleep = tm.create<TestACSThread>("SleepForEver", true);
+    TestACSThread *forEverSleep = tm.create<TestACSThread>("SleepForEver");
     sleep(20);
 */
     LoggingProxy::done();

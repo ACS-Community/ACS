@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadGuard.cpp,v 1.2 2006/03/15 09:07:07 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadGuard.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,10 +31,10 @@ using ACS::ThreadSyncGuard;
 class TestThreadGuard :public ACS::Thread
 {
   public:
-    TestThreadGuard(const ACE_CString& name, bool suspended=false,
+    TestThreadGuard(const ACE_CString& name,
 	 const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 	 const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime )
-        :  ACS::Thread(name, suspended, responseTime, sleepTime), loopCounter_m(0)
+        :  ACS::Thread(name, responseTime, sleepTime), loopCounter_m(0)
     {
        ACS_TRACE("TestThreadGuard::TestThreadGuard");
     }
@@ -120,8 +120,8 @@ int main(int argc, char *argv[])
 	    (LM_INFO, "Creating thread"));
     TestThreadGuard *a = 
 	tm.create<TestThreadGuard>("TestA", 
-			 false, 
 			 5 * 1000000 /* 0.5s */, 5 * 1000000 /* 0.5s */ );
+    a->resume();
 
     a->testGuard();
 

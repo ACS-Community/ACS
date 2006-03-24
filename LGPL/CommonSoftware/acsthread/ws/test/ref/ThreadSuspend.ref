@@ -3,13 +3,13 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] Creating thread
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::run] 
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::runLoop] TestThreadA: runLoop (0)
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::runLoop] TestThreadA: runLoop (1)
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::runLoop] TestThreadA: runLoop (2)
@@ -32,6 +32,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::runLoop] TestThreadA: runLoop (6)
 1 - ----------T--:--:--.--- [GlobalLogger - main] Done
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestThreadA
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 

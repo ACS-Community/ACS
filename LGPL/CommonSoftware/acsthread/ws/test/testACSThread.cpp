@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThread.cpp,v 1.21 2006/02/03 15:47:53 gchiozzi Exp $"
+* "@(#) $Id: testACSThread.cpp,v 1.22 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "acsThreadManager.h"
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThread.cpp,v 1.21 2006/02/03 15:47:53 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThread.cpp,v 1.22 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 1 - Creating thread passing just thread name"));
     TestACSThread *a = tm.create<TestACSThread>("TestThreadA");
+    a->resume();
     sleep(35);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Requesting ThreadManager to destroy thread"));
@@ -62,7 +63,7 @@ int main(int argc, char *argv[])
      */
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 2 - Creating thread initially suspended"));
-    TestACSThread *b = tm.create<TestACSThread>("TestThreadB", true);
+    TestACSThread *b = tm.create<TestACSThread>("TestThreadB");
     sleep(20);
     b->resume();
     sleep(20);
@@ -86,8 +87,8 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 3 - Creating thread, suspend and resume a few times"));
     b = tm.create<TestACSThread>("TestThreadC", 
-				 false, 
 				 100*1000*10/*=100ms*/, 142*100*1000*10 /*14.2 sec*/);
+    b->resume();
     sleep(10);
     b->suspend();
     sleep(10);
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
      */
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 4 - Creating thread that is never woken-up"));
-    TestACSThread *forEverSleep = tm.create<TestACSThread>("SuspendForEver", true);
+    TestACSThread *forEverSleep = tm.create<TestACSThread>("SuspendForEver");
     sleep(20);
 
     ACS_LOG(LM_SOURCE_INFO,"main", 
@@ -123,8 +124,8 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 5 - Creating thread with long period and stop() it"));
     b = tm.create<TestACSThread>("TestThreadC", 
-				 false, 
 				 20*100*1000*10 /*=2sec*/, 100*100*1000*10 /*10 sec*/);
+    b->resume();
     sleep(5);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Stopping thread"));
@@ -150,8 +151,8 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 6 - Creating thread with long period and cancel() it"));
     b = tm.create<TestACSThread>("TestThreadC", 
-				 false, 
 				 20*100*1000*10 /*=2 sec*/, 100*100*1000*10 /*10 sec*/);
+    b->resume();
     sleep(5);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Cancelling thread"));

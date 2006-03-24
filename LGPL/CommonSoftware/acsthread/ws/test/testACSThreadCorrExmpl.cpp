@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.3 2006/02/08 00:10:36 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <ACSErrTypeCommon.h>
 
 
-static char *rcsId="@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.3 2006/02/08 00:10:36 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /************************************************************** 
@@ -62,10 +62,9 @@ public:
      * See the CorrSimThreadLoop class and notes in the main()
      */
     CorrSimThread(const ACE_CString &name,
-		  bool suspended = false,
 		  const ACS::TimeInterval &responseTime = ThreadBase::defaultResponseTime,
 		  const ACS::TimeInterval &sleepTime = ThreadBase::defaultSleepTime) :
-	ACS::Thread(name, suspended)
+	ACS::Thread(name)
     {
 	ACS_TRACE("CorrSimThread::CorrSimThread");
     }
@@ -167,12 +166,10 @@ public:
      * when calling the parent class.
      */
     CorrSimThreadLoop(const ACE_CString &name,
-		      bool suspended = false,
 		      const ACS::TimeInterval &ignoreRT = ThreadBase::defaultResponseTime,
 		      const ACS::TimeInterval &ignoreST = ThreadBase::defaultSleepTime,
 		      bool del=false) :
 	ACS::Thread(name, 
-		    suspended, 
 		    10000000 /* 1 sec, hardcoded according to spec */, 
 		    10000000 /* 1 sec, hardcoded according to spec */,
 		    del)
@@ -260,6 +257,7 @@ int main(int argc, char *argv[])
 	    pCorrSimThread = tm.create<CorrSimThread>(CORR_SIM_THREAD_NAME);	
 	    if( pCorrSimThread != NULL )
 		{
+                pCorrSimThread->resume();
 		ACS_SHORT_LOG((LM_INFO,"%s thread created.", CORR_SIM_THREAD_NAME));
 		ACE_OS::sleep(2);
 		}
@@ -400,12 +398,12 @@ int main(int argc, char *argv[])
 	     * described in the above documentation, so I pass 0.
 	     */
 	    pCorrSimThread = tm.create<CorrSimThreadLoop>(CORR_SIM_THREAD_NAME,
-							  false, 
 							  0 , 0,
 							  true);
 	    ACS_SHORT_LOG((LM_INFO,"Spawning %s thread....", CORR_SIM_THREAD_NAME));
 	    if( pCorrSimThread != NULL )
 		{
+                pCorrSimThread->resume();
 		ACS_SHORT_LOG((LM_INFO,"%s thread created.", CORR_SIM_THREAD_NAME));
 		ACE_OS::sleep(2);
 		}

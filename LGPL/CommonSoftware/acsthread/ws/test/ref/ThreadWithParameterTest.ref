@@ -27,11 +27,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 2 - Creating thread initially suspended
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::TestACSThreadWithParameter] 
@@ -53,14 +53,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::runLoop] Thread (10) parameter: Thread msg
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::~TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 3 - Creating thread
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
@@ -75,8 +75,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 4 - Creating thread that is never woken-up
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::TestACSThreadWithParameter] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::TestACSThreadWithParameter] Thread parameter: Thread msg
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::runLoop] Thread (2) parameter: Thread msg
@@ -87,22 +87,23 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread SuspendForEver did not stop within 10000000 100ns
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::cancel] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::cancel] Thread stopped:SuspendForEver
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::runLoop] Thread (3) parameter: Thread msg
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::runLoop] Thread (4) parameter: Thread msg
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== The end
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestThreadC
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestThreadC did not stop within 1000000 100ns
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::cancel] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::cancel] Thread stopped:TestThreadC
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThreadWithParameter::~TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 

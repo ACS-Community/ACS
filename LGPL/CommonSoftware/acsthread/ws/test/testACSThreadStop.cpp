@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadStop.cpp,v 1.2 2006/02/03 15:47:53 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadStop.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include "acsThreadTest.h"
 
 
-static char *rcsId="@(#) $Id: testACSThreadStop.cpp,v 1.2 2006/02/03 15:47:53 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadStop.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -50,9 +50,9 @@ int main(int argc, char *argv[])
 	    (LM_INFO, "Creating thread"));
     TestACSThread *a = 
 	tm.create<TestACSThread>("TestThreadA", 
-				 false, 
 				 5 * 10 * 1000000 /* 5s */, 5 * 10 * 1000000 /* 5s */,
 				 true);
+    a->resume();
     sleep(18);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Stopping thread"));

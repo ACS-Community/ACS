@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadStress.cpp,v 1.2 2006/02/03 15:47:53 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadStress.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include "acsThread.h"
 #include <logging.h>
 
-static char *rcsId="@(#) $Id: testACSThreadStress.cpp,v 1.2 2006/02/03 15:47:53 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadStress.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /*****************************
@@ -89,7 +89,6 @@ class testThread: public ACS::Thread
 
     testThread(const ACE_CString &name,
 	       const structForThread* data,
-	       const bool suspended=false,
 	       const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime,
 	       const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 	       const bool del=true);
@@ -218,11 +217,10 @@ void threadManagerTestImpl::start()
 
 testThread::testThread(const ACE_CString &name,
 		       const structForThread* data,
-		       const bool suspended,
 		       const ACS::TimeInterval &responseTime,
 		       const ACS::TimeInterval &sleepTime,
 		       const bool del):
-    ACS::Thread(name, suspended, responseTime, sleepTime, del),
+    ACS::Thread(name, responseTime, sleepTime, del),
     tm(data->tm)
 {
 }

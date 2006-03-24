@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadRestart.cpp,v 1.1 2006/02/23 13:26:48 vwang Exp $"
+* "@(#) $Id: testACSThreadRestart.cpp,v 1.2 2006/03/24 12:42:31 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,11 +29,14 @@
 class Test :public ACS::Thread
 {
   public:
-    /* constructor, if you want to restart a thread, the parameter del must be false (not auto-delete) */
-    Test(const ACE_CString& name, bool suspended=false,
+    /* constructor,
+     * if you want to restart a thread, 
+     * the parameter del must be false (not auto-delete)
+     */
+    Test(const ACE_CString& name,
 	 const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 	 const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime )
-        :  ACS::Thread(name, suspended, responseTime, sleepTime, false) 
+        :  ACS::Thread(name, responseTime, sleepTime, false) 
     {
        ACS_TRACE("Test::Test");
     }
@@ -46,7 +49,9 @@ class Test :public ACS::Thread
     }
 
     /**
-     * This is the method executed in the thread loop.  will run for more then 10 secs per loop
+     * This is the method executed in the thread loop. 
+     * will run for more then 10 secs per loop
+     * I use 10 loop here to show it is still runing in log
      */
     virtual void runLoop()
     {
@@ -70,48 +75,53 @@ int main(int argc, char *argv[])
 
     /*
      * Creates an thread and try to restart it before one loop finish
+     * the runLoop will run for 10 sec. but the responseTime is 0.5
+     * in restart, both stop() and cancel() will fail
      */
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Creating thread"));
     Test *a = 
 	tm.create<Test>("TestA", 
-			 false, 
 			 5 * 1000000 /* 0.5s */, 5 * 1000000 /* 0.5s */ );
+    a->resume();
 
     ACE_OS::sleep(1);
-
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "try to restart thread"));
     
-    bool done;
+    bool done = a->restart();
 
-    while(true) {
-      done = a->restart();
+    if( !done ) {
+      ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "restart fail, as we expected"));
+      ACE_OS::sleep(15);
+    }
 
-      if( done ) {
-        ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "restart success"));
-        break;
-      }
-      else {
-        ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "restart fail, will retry"));
-        ACE_OS::sleep(15);
-      }
-    } /* end of while */
-
-    ACE_OS::sleep(1);
     
-    while(true) {
-      done = a->stop();
+    ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "Now try to delete TestA thread"));
+    delete a;
 
-      if( done ) {
-        ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "stop success"));
-        break;
-      }
-      else {
-        ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "stop fail, will retry"));
-        ACE_OS::sleep(10);
-      }
-    } /* end of while */
+    /*
+     * Creates an thread and try to restart it 
+     * the runLoop will run for 10 sec. the responseTime should be more than 10 sec
+     * in restart, stop() will be successful
+     */
+    ACS_LOG(LM_SOURCE_INFO,"main", 
+	    (LM_INFO, "Creating thread"));
+     
+    a =	tm.create<Test>("TestB", 
+			 11 * 10 * 1000000 /* 11s */, 5 * 100000 /* 0.05s */ );
+
+    a->resume();
+    ACE_OS::sleep(1);
+    done = a->restart();
+
+    if( !done ) {
+      ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "restart fail, something wrong !"));
+    }
+
+    sleep(2);
+    ACS_LOG(LM_SOURCE_INFO,"main", (LM_INFO, "Now try to delete TestB thread"));
+    delete a;
     
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Done"));
