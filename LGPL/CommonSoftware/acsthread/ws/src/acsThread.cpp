@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.cpp,v 1.30 2006/03/10 12:16:55 gchiozzi Exp $"
+* "@(#) $Id: acsThread.cpp,v 1.31 2006/03/24 12:13:09 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsThread.cpp,v 1.30 2006/03/10 12:16:55 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: acsThread.cpp,v 1.31 2006/03/24 12:13:09 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsThread.h"
@@ -36,10 +36,9 @@ using namespace ACS;
 ACE_TSS<ThreadManager::ThreadManagerTSS> ThreadManager::threadManagerTSS;
 
 Thread::Thread(const ACE_CString & name,
-	       const bool suspended,
 	       const TimeInterval& responseTime, 
 	       const TimeInterval& sleepTime,
-	       bool del
+	       const bool del
 		     ) : 
     ThreadBase(name, 
 	       ACE_Thread_Manager::instance(), 
@@ -47,7 +46,6 @@ Thread::Thread(const ACE_CString & name,
 	       (void*)this,
 	       responseTime,
 	       sleepTime,
-	       suspended,
 	       false /* super class shall not create a thread */),
     logger_mp(0), thrMgr_mp(0), delete_m(del)
 {
@@ -57,26 +55,16 @@ Thread::Thread(const ACE_CString & name,
 	{
 	thrMgr_mp->add2map(name, static_cast<ACS::Thread*>(this));
 	}
-    else
-	{
-        /* 
-	 * If the thread is not created by the thread manager,
-	 * it has to be created suspended.
-	 * Otherwise we risk that the thread service function starts
-	 * to execute before the creation of the the thread object
-	 * itself is completed. 
-	 * (problem with virtual functions: run/runLoop)
-	 */
-	suspend();
-	}
+
+    /* remove els - suspend  here
+     * since ThreadBase is suspended always
+     */
+
     /*
      * We create a Kernel Thread and the thread is:
-     * - DETACHED if it has to delete the Thread object itself upon exiting
-     * - JOINABLE in the opposite case.
-     * But we have to be careful: if we have a JOINABLE thread,
-     * we HAVE TO JOIN to it to release resources!!!!
+     * create without parameter, it will create as DETACHED
      */
-    if (!create(del ? (THR_NEW_LWP | THR_DETACHED): (THR_NEW_LWP | THR_JOINABLE)))
+    if (!create() )
 	{
 	if (thrMgr_mp != NULL)  thrMgr_mp->removeFromMap(name);
 	acsthreadErrType::CanNotSpawnThreadExImpl ex(__FILE__, __LINE__, "ACS::Thread::Thread");
@@ -86,10 +74,9 @@ Thread::Thread(const ACE_CString & name,
 }
 
 Thread::Thread(const ACE_CString & name,
-	       const bool suspended,
 	       const TimeInterval& responseTime, 
 	       const TimeInterval& sleepTime,
-	       bool del,
+	       const bool del,
 	       const long _thrFlags
 		     ) : 
     ThreadBase(name, 
@@ -98,7 +85,6 @@ Thread::Thread(const ACE_CString & name,
 	       (void*)this,
 	       responseTime,
 	       sleepTime,
-	       suspended,
 	       false /* super class shall not create a thread */),
     logger_mp(0), thrMgr_mp(0), delete_m(del)
 {
@@ -108,22 +94,9 @@ Thread::Thread(const ACE_CString & name,
 	{
 	thrMgr_mp->add2map(name, static_cast<ACS::Thread*>(this));
 	}
-    else
-	{
-        /* 
-	 * If the thread is not created by the thread manager,
-	 * it has to be created suspended.
-	 * Otherwise we risk that the thread service function starts
-	 * to execute before the creation of the the thread object
-	 * itself is completed. 
-	 * (problem with virtual functions: run/runLoop)
-	 */
-	suspend();
-	}
+
     /*
      * We create a Kernel Thread and the thread is:
-     * - DETACHED if it has to delete the Thread object itself upon exiting
-     * - JOINABLE in the opposite case.
      * But we have to be careful: if we have a JOINABLE thread,
      * we HAVE TO JOIN to it to release resources!!!!
      */
@@ -200,8 +173,6 @@ void Thread::run()
     ACS_TRACE("ACS::Thread::run");
     while (check())
     {
-       setRunning();
-
        /*
 	* This check if isSuspended should not be necessary and is just
 	* a precaution.
@@ -219,7 +190,6 @@ void Thread::run()
        //   {
        //   ACS_TRACE("ACS::Thread::run susp");
        //   }
-       resetRunning();
 
        /*
 	* GCH 2006-01-26
@@ -252,7 +222,7 @@ void Thread::threadSvc(void *param)
      * call the thread sleep() that will wait until released
      * or interrupted.
      * After that always perform a check() so that we can exit cleanly
-     * in case this war the reason for interrupting the sleep.
+     * in case this was the reason for interrupting the sleep.
      */
     if( thrObj_p->isSuspended() )
 	{

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.22 2006/03/15 09:00:46 gchiozzi Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.23 2006/03/24 12:13:09 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,17 +56,17 @@ ThreadBase* ThreadBase::NullThreadBase = 0;
 InitThreadFunc ThreadBase::InitThread = 0;
 DoneThreadFunc ThreadBase::DoneThread = 0;
 
-ThreadBase::ThreadBase(const ACE_CString _name,
+ThreadBase::ThreadBase(const ACE_CString& _name,
 		       ACE_Thread_Manager* _threadManager,
 		       void* _threadProcedure,
 		       void* _parameter,
 		       const TimeInterval& _responseTime,
 		       const TimeInterval& _sleepTime,
-		       const bool _suspended,
 		       const bool _create,
-		       long _thrFlags) :
+		       const long _thrFlags) :
     threadProcedure_mp(_threadProcedure), parameter_mp(_parameter),
     responseTime_m(_responseTime), sleepTime_m(_sleepTime), suspendStatus_m(0),
+    exitRequest_m(false), stopped_m(false),
     name_m(_name), threadID_m(0), 
     thrFlags_m(_thrFlags),
     threadManager_mp(_threadManager), 
@@ -76,10 +76,7 @@ ThreadBase::ThreadBase(const ACE_CString _name,
 
     ACS_TRACE("ACS::ThreadBase::ThreadBase");
 
-    if(_suspended)
-	{
-	suspend();
-	}
+    suspend();
 
     if (_create)
 	{
@@ -97,7 +94,7 @@ ThreadBase::~ThreadBase() {
     terminate();
 }
 
-bool ThreadBase::create(long _thrFlags) {
+bool ThreadBase::create(const long _thrFlags) {
     ACS_TRACE("ACS::ThreadBase::create");
 
     timeStamp_m = getTime();
@@ -111,7 +108,6 @@ bool ThreadBase::create(long _thrFlags) {
     int succ = threadManager_mp->spawn((ACE_THR_FUNC)threadProcedure_mp, 
 				      param_p, 
 				      _thrFlags, &threadID_m);
-  
     return (succ!=-1);
 }
 
@@ -137,6 +133,7 @@ bool ThreadBase::suspend() {
      */
     suspendStatus_m = true;
     m_suspendSemaphore.acquire();
+	return true;
 	    
     return true; 
 }
@@ -455,7 +452,7 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
     int acquireRet;
 
     TimeInterval timeToSleep = timeIn100ns ? timeIn100ns : getSleepTime();
-    
+
     /*
      * If the thread is suspended, we have to wait forever,
      * i.e. until it is resumed.
@@ -573,13 +570,14 @@ ThreadManagerBase::~ThreadManagerBase() {
 	}
 }
 
-ThreadBase* ThreadManagerBase::create(const ACE_CString name, 
+ThreadBase* ThreadManagerBase::create(const ACE_CString& name, 
 				      void* threadProc,
 				      void* parameter, 
 				      const TimeInterval& responseTime, 
 				      const TimeInterval& sleepTime,
 				      const long _thrFlags)
 {
+    ACS_TRACE("ACS::ThreadManagerBase::create");
     ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex); //  GUARD;
     if (getThreadByName(name)!=NULL) 
 	{
@@ -587,12 +585,10 @@ ThreadBase* ThreadManagerBase::create(const ACE_CString name,
 	}
     /*
      * Here hard codes
-     * suspended = false
      * create    = true
      */
     ThreadBase* thread_p = new ThreadBase(name, threadManager_mp, threadProc, parameter, 
 					  responseTime, sleepTime,
-					  false,
 					  true,
 					  _thrFlags);
     add2map(name, thread_p);
@@ -601,8 +597,9 @@ ThreadBase* ThreadManagerBase::create(const ACE_CString name,
 
 
 
-bool ThreadManagerBase::add(const ACE_CString name, ThreadBase* thread) 
+bool ThreadManagerBase::add(const ACE_CString& name, ThreadBase* thread) 
 {
+    ACS_TRACE("ACS::ThreadManagerBase::add");
     ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex); //   GUARD;
     if (getThreadByName(name)!=NULL) 
 	{
@@ -612,9 +609,10 @@ bool ThreadManagerBase::add(const ACE_CString name, ThreadBase* thread)
     return true;
 }
 
-bool ThreadManagerBase::stop(const ACE_CString name) {
+bool ThreadManagerBase::stop(const ACE_CString& name) {
 //  ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::stop");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -649,9 +647,10 @@ bool ThreadManagerBase::stopAll() {
   return failedCount==0 ? true : false;
 }
 
-void ThreadManagerBase::exit(const ACE_CString name) {
+void ThreadManagerBase::exit(const ACE_CString& name) {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::exit");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -663,15 +662,17 @@ void ThreadManagerBase::exit(const ACE_CString name) {
 void ThreadManagerBase::exitAll() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::exitAll");
   for (int n=0; n < getThreadCount(); n++)
       {
       threads_m[n]->exit();
       }
 }
 
-bool ThreadManagerBase::terminate(const ACE_CString name) {
+bool ThreadManagerBase::terminate(const ACE_CString& name) {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::terminate");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -683,6 +684,7 @@ bool ThreadManagerBase::terminate(const ACE_CString name) {
 bool ThreadManagerBase::terminateAll() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::terminateAll");
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
@@ -694,9 +696,10 @@ bool ThreadManagerBase::terminateAll() {
   return ok;
 }
 
-bool ThreadManagerBase::cancel(const ACE_CString name) {
+bool ThreadManagerBase::cancel(const ACE_CString& name) {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::cancel");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -708,6 +711,7 @@ bool ThreadManagerBase::cancel(const ACE_CString name) {
 bool ThreadManagerBase::cancelAll() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::cancelAll");
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
@@ -719,9 +723,10 @@ bool ThreadManagerBase::cancelAll() {
   return ok;
 }
 
-bool ThreadManagerBase::restart(const ACE_CString name) {
+bool ThreadManagerBase::restart(const ACE_CString& name) {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::restart");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -733,6 +738,7 @@ bool ThreadManagerBase::restart(const ACE_CString name) {
 bool ThreadManagerBase::restartAll() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::restartAll");
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
@@ -744,9 +750,10 @@ bool ThreadManagerBase::restartAll() {
   return ok;
 }
 
-bool ThreadManagerBase::suspend(const ACE_CString name) {
+bool ThreadManagerBase::suspend(const ACE_CString& name) {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::suspend");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -758,6 +765,7 @@ bool ThreadManagerBase::suspend(const ACE_CString name) {
 bool ThreadManagerBase::suspendAll() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::suspendAll");
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
@@ -769,9 +777,10 @@ bool ThreadManagerBase::suspendAll() {
   return ok;
 }
 
-bool ThreadManagerBase::resume(const ACE_CString name) {
+bool ThreadManagerBase::resume(const ACE_CString& name) {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::resume");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -783,6 +792,7 @@ bool ThreadManagerBase::resume(const ACE_CString name) {
 bool ThreadManagerBase::resumeAll() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::resumeAll");
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
@@ -794,9 +804,10 @@ bool ThreadManagerBase::resumeAll() {
   return ok;
 }
 
-bool ThreadManagerBase::isAlive(const ACE_CString name) {
+bool ThreadManagerBase::isAlive(const ACE_CString& name) {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::isAlive");
   ThreadBase* thread_p=getThreadByName(name);
   if (thread_p==NULL) 
       {
@@ -808,6 +819,7 @@ bool ThreadManagerBase::isAlive(const ACE_CString name) {
 bool ThreadManagerBase::areAllAlive() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::areAlive");
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
@@ -823,6 +835,7 @@ bool ThreadManagerBase::areAllAlive() {
 bool ThreadManagerBase::restartDead() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
+  ACS_TRACE("ACS::ThreadManagerBase::restartDead");
   bool ok = true;
   ThreadBase* thread_p;
   for (int n=0; n < getThreadCount(); n++) {
