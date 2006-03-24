@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
 
     BACIThread * thread = threadManager_p->create("Test thread", 
 						  (void*)worker, (void*)0);
+    thread->resume();
 
     ACS_SHORT_LOG((LM_INFO, "Spawned."));
  
