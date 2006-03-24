@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.2 2005/06/22 20:43:00 sharring Exp $"
+* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.3 2006/03/24 13:03:00 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #include <iostream>
 #include <string>
 
-static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.2 2005/06/22 20:43:00 sharring Exp $"; 
+static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.3 2006/03/24 13:03:00 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;
@@ -222,6 +222,7 @@ int main(int argc, char* argv[]) {
 	if (thread_p==NULL)  {
 		ACS_SHORT_LOG((LM_ERROR,"Error in spawning thread")); 
 	}
+        thread_p->resume();
 	
 	// The thread will run for 30 secs so we wait until it finishes
 	// There are better (and safer) solution to wait instead of a simple wait

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.110 2005/06/24 09:37:27 bjeram Exp $"
+* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.111 2006/03/24 13:03:00 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,9 +42,9 @@
 #include <acsexmplDoorImpl.h>
 
 #ifndef MAKE_VXWORKS
-ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.110 2005/06/24 09:37:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.111 2006/03/24 13:03:00 vwang Exp $")
 #else
-static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.110 2005/06/24 09:37:27 bjeram Exp $";
+static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.111 2006/03/24 13:03:00 vwang Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #endif
 
@@ -182,6 +182,7 @@ Door::execute()
   m_doorThread_p = getContainerServices()->getThreadManager()->create<DoorThread, Door*>
                  ("doorControl", // Name of the thread
                    selfPtr); // pass a ptr to this as parameter to thread so it can call back to us
+  m_doorThread_p->resume();
   
   ACS_SHORT_LOG((LM_INFO,"doorControl thread spawned.")); 
 

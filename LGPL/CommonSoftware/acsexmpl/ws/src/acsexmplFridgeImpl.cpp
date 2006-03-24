@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.129 2006/02/07 20:44:37 gchiozzi Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.130 2006/03/24 13:03:00 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include <acsexmplFridgeImpl.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.129 2006/02/07 20:44:37 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.130 2006/03/24 13:03:00 vwang Exp $")
 using namespace baci;
 
 /**
@@ -225,6 +225,7 @@ FridgeControl::on ()
 		FridgeControl * selfPtr = this;
 		m_controlLoop_p = getContainerServices()->getThreadManager()->
 			create<FridgeThread, FridgeControl*>("fridgeControlLoop", selfPtr);
+                m_controlLoop_p->resume();
 	}
 	else
 	{

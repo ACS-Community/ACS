@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplClientWave.cpp,v 1.99 2005/11/25 11:09:10 bjeram Exp $"
+* "@(#) $Id: acsexmplClientWave.cpp,v 1.100 2006/03/24 13:03:00 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,7 @@ This example shows a client that:
 #include <acsThread.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmpClientWave, "$Id: acsexmplClientWave.cpp,v 1.99 2005/11/25 11:09:10 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmpClientWave, "$Id: acsexmplClientWave.cpp,v 1.100 2006/03/24 13:03:00 vwang Exp $")
 using namespace ACS;
 using namespace maci;
 
@@ -117,10 +117,9 @@ class WorkerThread : public ACS::Thread
   public:
     WorkerThread(const ACE_CString& name, 
 		 MOUNT_ACS::Mount * mount, 
-		 bool suspended=false,
 		 const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 		 const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
-	ACS::Thread(name, suspended, responseTime, sleepTime),
+	ACS::Thread(name, responseTime, sleepTime),
 	 myCallback("objfix")
 	{
 	    ACS_TRACE("WorkerThread::WorkerThread");
@@ -249,7 +248,6 @@ int main(int argc, char *argv[])
 
 	WorkerThread thread_p("actionThread", // name of the thread
 		                       mount_p,  // the mount parameter
-                             false,
                              ThreadBase::defaultResponseTime,
                              INTERVAL);
 	// by default threads that are not created using a thread manager are creatd suspended so we have to resume them!!

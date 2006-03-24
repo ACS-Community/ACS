@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.106 2005/11/25 11:09:10 bjeram Exp $"
+* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.107 2006/03/24 13:03:00 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,7 +93,7 @@ necessary for this alarm to "go off" are set using an ACS thread.
 
 #include <acsexmplPowerSupplyC.h>
 
-ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.106 2005/11/25 11:09:10 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.107 2006/03/24 13:03:00 vwang Exp $")
 
 using namespace ACS;
 using namespace maci;
@@ -106,10 +106,9 @@ class WorkerThread : public ACS::Thread
 	public:
 		WorkerThread(const ACE_CString& name, 
 			ACS::RWdouble_var curr, 
-			bool suspended=false,
 			const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 			const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
-		    ACS::Thread(name, suspended, responseTime, sleepTime)
+		    ACS::Thread(name, responseTime, sleepTime)
 		{
 		    ACS_TRACE("WorkerThread::WorkerThread");
 		    current = curr;
@@ -235,7 +234,7 @@ int main(int argc, char *argv[])
 	
 	ACS::RWdouble_var current = ps->current();
 	// create the thread 
-	WorkerThread thread_p /*threadManager.create<WorkerThread,ACS::RWdouble_var>*/ ("actionThread", current, false, ThreadBase::defaultResponseTime, ThreadBase::defaultSleepTime*10 /*=1s*/);
+	WorkerThread thread_p /*threadManager.create<WorkerThread,ACS::RWdouble_var>*/ ("actionThread", current, ThreadBase::defaultResponseTime, ThreadBase::defaultSleepTime*10 /*=1s*/);
 	// by default threads that are not created using a thread manager are creatd suspended so we have to resume them!!
 	thread_p.resume();
 
