@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.29 2006/03/24 23:24:53 dfugate Exp $"
+# "@(#) $Id: acsStart,v 1.30 2006/03/24 23:59:40 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -69,12 +69,12 @@ CL_BASEPORT=
 CL_HELP=
 CL_TIMEOUT=
 CL_VERBOSE=
-
+CL_WAITIFR=true
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:,verbose
+LONGOPTS=help,baseport:,timeout:,verbose,nowaitifr
 SHORTOPTS=hb:t:v
 
 #
@@ -87,6 +87,7 @@ function printUsage {
    echo "Options: "
    echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
    echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
+   echo "        -nowaitifr                does not wait for the CORBA Interface Repository to load before returning"
    echo "   -v | -verbose                  print subprocess output to console (additionally to regular logfile)"
    echo "   -h | -help                     prints this help and exits"
 }
@@ -114,6 +115,7 @@ do
 	-b)                 CL_BASEPORT=$2 ; shift ;;
 	--timeout)          CL_TIMEOUT=$2 ; shift ;;
 	-t)                 CL_TIMEOUT=$2 ; shift ;;
+	--nowaitifr)        CL_WAITIFR=false ;;
 	--verbose)          CL_VERBOSE=true ;;
 	-v)                 CL_VERBOSE=true ;;
 	--help)             CL_HELP=true ;; 
@@ -156,6 +158,7 @@ then
     sleep 5
 fi
 
+
 #start the ORB services
 if [ "$CL_VERBOSE" ] ; then
    export ACS_LOG_STDOUT=0
@@ -176,6 +179,8 @@ fi
 #maximum timeout for anything in this script to finish executing...
 MAX_TIMEOUT=$(( 36 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 
+#...except acsIrFeed. This requires more time
+MAX_IRFEED_TIMEOUT=$(( $MAX_TIMEOUT * 5 ))
 
 #Check command-line args for baseport option
 if [ "$CL_BASEPORT" ]
@@ -191,7 +196,7 @@ export ACSSTARTLOG=$ACS_INSTANCES_DIR/.acsStart.$$
 ACS_LOG_COMMAND
 
 #start the ORB services
-acsStartORBSRVC --waitifr 2>&1 | tee -a $ACSSTARTLOG &
+acsStartORBSRVC 2>&1 | tee -a $ACSSTARTLOG &
 ORBSRVC_PID=$!
 
 if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -c "ERROR" -p $ORBSRVC_PID
@@ -202,7 +207,7 @@ fi
 #------------------------------------------------------
 #to ensure manager uses the same ACS_INSTANCE
 export ACS_INSTANCE=`grep "For this ACS session, please do an" $ACSSTARTLOG | cut -d\' -f2 | cut -d= -f2`
-
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #------------------------------------------------------
 #start the Manager
 acsStartManager 2>&1 | tee -a $ACSSTARTLOG &
@@ -214,6 +219,24 @@ then
     exit $EC_FAILURE
 fi
 #------------------------------------------------------
+#block until the interface repository has fully loaded
+if [ "$CL_WAITIFR" = "true" ]
+then
+    export IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
+    export IRFEED_PID=`cat $IRFEED_PIDFILE`
+
+    ACS_LOG_DEBUG "Waiting for the interface repository to finish loading."
+    if ! acsutilBlock -t $MAX_IRFEED_TIMEOUT -p $IRFEED_PID
+    then
+	ACS_LOG_ERROR "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
+	ACS_LOG_INFO  "There could be something genuinely wrong here or maybe your machine is just slow."
+	ACS_LOG_INFO  "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
+    else
+	ACS_LOG_DEBUG "The interface repository has finished loading."
+    fi
+fi
+#--------------------------------------------------------------------------------------------------------------------------
+
 ACS_LOG_FORCED "INFO - For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
 ACS_LOG_FORCED "INFO - ACS is up and running"
 rm $ACSSTARTLOG

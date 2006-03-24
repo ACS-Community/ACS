@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.57 2006/03/24 23:24:53 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.58 2006/03/24 23:59:40 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -61,12 +61,11 @@ export HOST=`getIP`
 #
 CL_BASEPORT=
 CL_HELP=
-CL_WAITIFR=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:,waitifr
+LONGOPTS=help,baseport:,timeout:
 SHORTOPTS=hb:t:
 
 #
@@ -79,7 +78,6 @@ function printUsage {
 	echo "Options: "
 	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
 	echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
-	echo "        -waitifr                  waits for the CORBA Interface Repository to load before returning"
 	echo "   -h | -help                     prints this help and exits"
 }
 
@@ -106,7 +104,6 @@ do
 	-b)                 CL_BASEPORT=$2 ; shift ;;
 	--timeout)          export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
 	-t)                 export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
-	--waitifr)          CL_WAITIFR=true ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
 	--) break ;;
@@ -151,9 +148,6 @@ fi
 #maximum timeout for any given process to complete
 MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 
-#...except acsIrFeed. This requires more time
-MAX_IRFEED_TIMEOUT=$(( $MAX_TIMEOUT * 5 ))
-
 export STD_SLEEP=3
 
 export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
@@ -167,6 +161,7 @@ LOGGING_NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
 ARCHIVE_NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
 LOGGING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_SERVICE_PIDFILE
 LOG_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOG_SERVICE_PIDFILE
+IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
 
 #set the filenames where binaries' output will be sent
 NOTIFY_OUT=$INSTANCE_DIR/$ACS_NOTIFY_OUT
@@ -358,6 +353,7 @@ fi
 acsstartupLoadIFR & #this C++ based script is a couple of seconds faster than acsIrFeed.
 #acsIrfeed  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository &
 IRFEED_PID=$!
+echo $IRFEED_PID > $IRFEED_PIDFILE
 
 ################################
 # Naming Service
@@ -524,21 +520,6 @@ then
     ACS_LOG_ERROR "Unable to start the ACS CDB!"
     ACS_LOG_ERROR "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
     timeoutExit
-fi
-
-
-#block until the interface repository has fully loaded
-if [ "$CL_WAITIFR" = "true" ]
-then
-    ACS_LOG_DEBUG "Waiting for the interface repository to finish loading."
-    if ! acsutilBlock -t $MAX_IRFEED_TIMEOUT -p $IRFEED_PID
-    then
-	ACS_LOG_ERROR "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
-	ACS_LOG_INFO  "There could be something genuinely wrong here or maybe your machine is just slow."
-	ACS_LOG_INFO  "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
-    else
-	ACS_LOG_DEBUG "The interface repository has finished loading."
-    fi
 fi
 
 ACS_LOG_FORCED "INFO - For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
