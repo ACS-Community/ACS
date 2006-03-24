@@ -262,7 +262,7 @@ public class IOCacheHelper extends Thread  {
 	 * @author acaproni
 	 *
 	 */
-	private class LogFileCacheAction {
+	private class IOAction {
 		
 		public final static int LOAD_ACTION=0;
 		public final static int SAVE_ACTION=1;
@@ -276,9 +276,6 @@ public class IOCacheHelper extends Thread  {
 		
 		// The cache on disk
 		private RandomAccessFile fileCache;
-		
-		// The index of positions of logs in the cache
-		private Vector<Long> index;
 		
 		// The buffered writer to writ the logs to save into
 		private BufferedWriter outFile;
@@ -296,10 +293,8 @@ public class IOCacheHelper extends Thread  {
 		 * @param filters The active filters
 		 * @param visibleLogs The vector of the visible logs
 		 */
-		public LogFileCacheAction(BufferedReader inFile, RandomAccessFile cache, Vector<Long> index) {
+		public IOAction(BufferedReader inFile, RandomAccessFile cache, Vector<Long> index) {
 			this.inFile=inFile;
-			this.fileCache=cache;
-			this.index=index;
 			this.type=LOAD_ACTION;
 		}
 		
@@ -308,9 +303,8 @@ public class IOCacheHelper extends Thread  {
 		 * 
 		 * @param outF The buffered file to save the logs into
 		 */
-		public LogFileCacheAction(BufferedWriter outF, LogFileCache logs) {
+		public IOAction(BufferedWriter outF) {
 			this.type=SAVE_ACTION;
-			this.logsCache=logs;
 			this.outFile=outF;
 		}
 		
@@ -320,8 +314,8 @@ public class IOCacheHelper extends Thread  {
 		 * and it will throw an IllegalStateException
 		 *
 		 */
-		public LogFileCacheAction() {
-			this.type=LogFileCacheAction.TERMINATE_THREAD_ACTION;
+		public IOAction() {
+			this.type=IOAction.TERMINATE_THREAD_ACTION;
 		}
 		
 		/**
@@ -341,28 +335,12 @@ public class IOCacheHelper extends Thread  {
 		}
 		
 		/**
-		 * Getter method 
-		 * @return The cache on disk
-		 */
-		public RandomAccessFile getFileCache() {
-			return fileCache;
-		}
-		
-		/**
 		 * Getter method
 		 *  
 		 * @return The cache of logs
 		 */
 		public LogFileCache getLogsCache() {
 			return logsCache;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The index
-		 */
-		public Vector<Long>getIndex() {
-			return index;
 		}
 		
 		/**
@@ -531,7 +509,7 @@ public class IOCacheHelper extends Thread  {
 	}
 	
 	// A queue of actions to perform in a separate thread
-	private LinkedList<LogFileCacheAction> actions = new LinkedList<LogFileCacheAction>();
+	private LinkedList<IOAction> actions = new LinkedList<IOAction>();
 	
 	private ProgressDialog progressDialog;
 	
@@ -549,14 +527,9 @@ public class IOCacheHelper extends Thread  {
 	 *                of the visible logs
 	 * @param visibleLogs The list of the visible logs
 	 */
-	private void loadLogsFromDisk(BufferedReader br, 
-			RandomAccessFile cache, 
-			Vector<Long> index) {
+	private void loadLogsFromDisk(BufferedReader br) {
 		
-		if (
-				br==null || 
-				cache==null || 
-				index==null) {
+		if (br==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
 		
@@ -590,17 +563,10 @@ public class IOCacheHelper extends Thread  {
 					if (buffer.hasClosingTag(tag)) {
 						//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
 						lookForOpenTag=true;
-						synchronized(index) {
-							index.add(cache.length());
-						}
-						synchronized(cache) {
-							cache.seek(cache.length());
-							cache.writeBytes(buffer.toString());
-						}
-						addToVisibleLog(buffer.toString(),index.size()-1);
+						injectLog(buffer.toString());
 						buffer.clear();
 						if (progressDialog!=null) {
-							progressDialog.updateStatus(""+index.size()+" logs loaded");
+							progressDialog.updateStatus(""+owner.getSize()+" logs loaded");
 							progressDialog.updateProgressBar(bytesRead);
 							// Check if the user pressed the abort button
 							if (progressDialog.wantsToAbort()) {
@@ -662,7 +628,7 @@ public class IOCacheHelper extends Thread  {
 		}
 		
 		// Add an action in the que
-		LogFileCacheAction action = new LogFileCacheAction(br,cache,index);
+		IOAction action = new IOAction(br,cache,index);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -703,7 +669,7 @@ public class IOCacheHelper extends Thread  {
 		}
 		
 		// Add an action in the que
-		LogFileCacheAction action = new LogFileCacheAction(reader,cache,index);
+		IOAction action = new IOAction(reader,cache,index);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -715,16 +681,11 @@ public class IOCacheHelper extends Thread  {
 	}
 	
 	/**
-	 * Add the log to the list of the visible logs 
+	 * Inject the log into the engine 
 	 * 
 	 * @param logStr The string representation of the log
-	 * @param filters The filter to check the log against
-	 * @param index The position of the log in the cache
-	 * @param visibles The list of the visible logs
 	 */
-	private void addToVisibleLog(
-			String logStr, 
-			int index) {
+	private void injectLog(String logStr) {
 		ILogEntry log=null;
 		try {
 			ACSLogParser parser = new ACSLogParser();
@@ -784,7 +745,7 @@ public class IOCacheHelper extends Thread  {
 		FileWriter fw = new FileWriter(fileName,false);
 		BufferedWriter outBW = new BufferedWriter(fw);
 		
-		LogFileCacheAction action = new LogFileCacheAction(outBW, cache);
+		IOAction action = new IOAction(outBW);
 		
 		if (showProgress) {
 			progressDialog = new ProgressDialog("Saving logs...",0,cache.getSize());
@@ -813,7 +774,7 @@ public class IOCacheHelper extends Thread  {
 	public void done() {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
-			LogFileCacheAction terminateAction = new LogFileCacheAction();
+			IOAction terminateAction = new IOAction();
 			synchronized(actions) {
 				actions.add(terminateAction);
 			}
@@ -830,25 +791,22 @@ public class IOCacheHelper extends Thread  {
 	 * task until there no more actions in the list
 	 */
 	public void run() {
-		LogFileCacheAction action;
+		IOAction action;
 		while (true) {
 			if (!actions.isEmpty()) {
 				synchronized(actions) {
 					action = actions.removeFirst();
 				}
 				switch (action.getActionType()) {
-					case LogFileCacheAction.LOAD_ACTION: {
-						loadLogsFromDisk(
-							action.getInputFile(),
-							action.getFileCache(),
-							action.getIndex());
+					case IOAction.LOAD_ACTION: {
+						loadLogsFromDisk(action.getInputFile());
 					}
-					case LogFileCacheAction.TERMINATE_THREAD_ACTION: {
+					case IOAction.TERMINATE_THREAD_ACTION: {
 						// Terminate the thrread
 						return;
 					}
-					case LogFileCacheAction.SAVE_ACTION: {
-						saveLogsOnDisk(action.getOutputFile(),action.getLogsCache());
+					case IOAction.SAVE_ACTION: {
+						saveLogsOnDisk(action.getOutputFile());
 					}
 				}
 			} else {
@@ -867,8 +825,8 @@ public class IOCacheHelper extends Thread  {
 	 * @param outBW The buffered writer where the logs have to be stored
 	 * @param logs The cahce with all the logs
 	 */
-	private void saveLogsOnDisk(BufferedWriter outBW, LogFileCache logs) {
-		if (outBW==null || logs==null) {
+	private void saveLogsOnDisk(BufferedWriter outBW) {
+		if (outBW==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
 		try {
@@ -880,8 +838,8 @@ public class IOCacheHelper extends Thread  {
 			System.err.println("Warning exception ignored "+e.getMessage());
 			e.printStackTrace(System.err);
 		}
-		for (int count =0; count<logs.getSize(); count++) {
-			ILogEntry log = logs.getLog(count);
+		for (int count =0; count<owner.getSize(); count++) {
+			ILogEntry log = owner.getLog(count);
 			try {
 				outBW.write((log.toXMLString()+"\n").toCharArray());
 			} catch (IOException ioe) {
