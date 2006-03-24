@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acsThreadManager.h,v 1.14 2006/02/09 02:12:46 gchiozzi Exp $"
+* "@(#) $Id: acsThreadManager.h,v 1.15 2006/03/24 12:12:49 vwang Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -57,28 +57,30 @@ namespace ACS
 	template <class T>
 	T* create(const ACE_CString name);
 
+       /* remove suspended parameter, same as create(name)
 	template <class T>
 	T* create(const ACE_CString name,
 		  const bool suspended);
+        */
 
 	template <class T>
 	T* create(const ACE_CString name,
-		  const bool suspended,
-		  const TimeInterval& responseTime,
-		  const TimeInterval& sleepTime);
+//		  const bool suspended,
+		  const TimeInterval responseTime,
+		  const TimeInterval sleepTime);
 
 	template <class T>
 	T* create(const ACE_CString name,
-		  const bool suspended,
-		  const TimeInterval& responseTime,
-		  const TimeInterval& sleepTime,
+//		  const bool suspended,
+		  const TimeInterval responseTime,
+		  const TimeInterval sleepTime,
 		  bool del);
 
 	template <class T>
 	T* create(const ACE_CString name,
-		  const bool suspended,
-		  const TimeInterval& responseTime,
-		  const TimeInterval& sleepTime,
+//		  const bool suspended,
+		  const TimeInterval responseTime,
+		  const TimeInterval sleepTime,
 		  bool del,
 		  const long thrFlags);
 
@@ -92,28 +94,30 @@ namespace ACS
 	template <class T, class P>
 	T* create(const ACE_CString name, P&);
 
+       /* to remove parameter suspended, same as create( name, P& )
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
 		  const bool suspended);
+        */
 
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
-		  const bool suspended,
-		  const TimeInterval& responseTime,
-		  const TimeInterval& sleepTime);
+//		  const bool suspended,
+		  const TimeInterval responseTime,
+		  const TimeInterval sleepTime);
 	
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
-		  const bool suspended,
-		  const TimeInterval& responseTime,
-		  const TimeInterval& sleepTime,
+//		  const bool suspended,
+		  const TimeInterval responseTime,
+		  const TimeInterval sleepTime,
 		  bool del);
 
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
-		  const bool suspended,
-		  const TimeInterval& responseTime,
-		  const TimeInterval& sleepTime,
+//		  const bool suspended,
+		  const TimeInterval responseTime,
+		  const TimeInterval sleepTime,
 		  bool del,
 		  const long thrFlags);
 

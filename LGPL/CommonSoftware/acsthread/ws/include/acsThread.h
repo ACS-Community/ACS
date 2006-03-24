@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.23 2006/03/10 12:20:11 gchiozzi Exp $"
+* "@(#) $Id: acsThread.h,v 1.24 2006/03/24 12:12:49 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,9 +66,6 @@ namespace ACS
 	   If someone wants to set thread parameters, s/he has to send these 
 	   parameters from the constructor of the derived class up to the base class.
 	   @param name thread's name
-	   @param suspended flag that indicates if thread is created in suspended mode. 
-	   Default value is false, meaning that by default the thread is not 
-	   created in the suspend mode - the tread starts immediately.
 	   @param responsTime thread's heartbeat response time in 100ns unit. 
 	   Default value is 1s.
 	   @param sleepTime thread's sleep time in 100ns unit Default value is 100ms.
@@ -85,8 +82,7 @@ namespace ACS
            deleted at any time.<br>
 	   A ThreadManager always creates a thread with new (on a heap) !!!
 
-	   @attention when NOT creating a Thread using a ThreadManager,
-           the 'suspended' parameter is ignored and the thread is always created
+	   @attention all of thread will be  
            suspended.<br>
            This has been done to protect the code from creation concurrency problems.<br>
            If we would start execution of the thread service function in the
@@ -110,10 +106,9 @@ namespace ACS
 
 	 */
 	Thread(const ACE_CString & name,
-	       const bool suspended=false,
 	       const TimeInterval& responseTime=ThreadBase::defaultResponseTime,
 	       const TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
-	       bool del=false);
+	       const bool del=false);
 
 	/*
 	 * This additional constructor allows to explicitly pass
@@ -124,10 +119,9 @@ namespace ACS
 	 *        See ACE threads and pthread documentation for details.
  	 */
 	Thread(const ACE_CString & name,
-	       const bool suspended,
 	       const TimeInterval& responseTime,
 	       const TimeInterval& sleepTime,
-	       bool del,
+	       const bool del,
 	       const long _thrFlags);
 
 	/**

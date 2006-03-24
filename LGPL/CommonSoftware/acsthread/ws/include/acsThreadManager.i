@@ -15,7 +15,7 @@ T* ThreadManager::create(const ACE_CString name)
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, true);
+	T* thread_p = new T(name);
 	/*
 	 * Here I call resume with complete ACS::Thread::resume
 	 * scope to avoid ambiguities when the thread class
@@ -23,7 +23,7 @@ T* ThreadManager::create(const ACE_CString name)
 	 * This happens in CONTROL/Device/MountController,
 	 * whose Threads are also ACE_Tasks
 	 */ 
-	thread_p->ACS::Thread::resume(); // the thread can be started !!
+//	thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 
@@ -34,6 +34,7 @@ T* ThreadManager::create(const ACE_CString name)
 	}
 }//create
 
+/* to remove suspended parameter, same as "create(name)"
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
 			 const bool suspended)
@@ -49,7 +50,7 @@ T* ThreadManager::create(const ACE_CString name,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, true);
+	T* thread_p = new T(name);
 	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
@@ -61,12 +62,13 @@ T* ThreadManager::create(const ACE_CString name,
 							 "ACS::ThreadManager<>::create");
 	}
 }//create
+*/
 
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
-			 const bool suspended,
-			 const TimeInterval& responseTime,
-			 const TimeInterval& sleepTime)
+//			 const bool suspended,
+			 const TimeInterval responseTime,
+			 const TimeInterval sleepTime)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -79,8 +81,8 @@ T* ThreadManager::create(const ACE_CString name,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, true, responseTime, sleepTime);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
+	T* thread_p = new T(name, responseTime, sleepTime);
+//	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 
@@ -95,9 +97,9 @@ T* ThreadManager::create(const ACE_CString name,
 
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
-			 const bool suspended,
-			 const TimeInterval& responseTime,
-			 const TimeInterval& sleepTime,
+//			 const bool suspended,
+			 const TimeInterval responseTime,
+			 const TimeInterval sleepTime,
 			 bool del)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
@@ -111,8 +113,8 @@ T* ThreadManager::create(const ACE_CString name,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, true, responseTime, sleepTime, del);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
+	T* thread_p = new T(name, responseTime, sleepTime, del);
+//	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 
@@ -126,9 +128,9 @@ T* ThreadManager::create(const ACE_CString name,
 
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
-			 const bool suspended,
-			 const TimeInterval& responseTime,
-			 const TimeInterval& sleepTime,
+//			 const bool suspended,
+			 const TimeInterval responseTime,
+			 const TimeInterval sleepTime,
 			 bool del,
                          const long thrFlags)
 {
@@ -143,8 +145,8 @@ T* ThreadManager::create(const ACE_CString name,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, true, responseTime, sleepTime, del, thrFlags);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
+	T* thread_p = new T(name, responseTime, sleepTime, del, thrFlags);
+//	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 
@@ -175,8 +177,8 @@ T* ThreadManager::create(const ACE_CString name, P& param)
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name,param,true);
-	thread_p->ACS::Thread::resume(); // the thread can be started !!
+	T* thread_p = new T(name,param);
+//	thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 
@@ -188,6 +190,7 @@ T* ThreadManager::create(const ACE_CString name, P& param)
 	}
 }//create
 
+/* to remove suspended parameter, same as "create(name,param)"
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
 			 const bool suspended)
@@ -202,7 +205,7 @@ T* ThreadManager::create(const ACE_CString name, P& param,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, param, true);
+	T* thread_p = new T(name, param);
 	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
@@ -214,12 +217,13 @@ T* ThreadManager::create(const ACE_CString name, P& param,
 							 "ACS::ThreadManager<>::create");
 	}
 }//create
+*/
 
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
-			 const bool suspended,
-			 const TimeInterval& responseTime,
-			 const TimeInterval& sleepTime)
+//			 const bool suspended,
+			 const TimeInterval responseTime,
+			 const TimeInterval sleepTime)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -233,8 +237,8 @@ T* ThreadManager::create(const ACE_CString name, P& param,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, param, true, responseTime, sleepTime);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
+	T* thread_p = new T(name, param, responseTime, sleepTime);
+//	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 
@@ -248,9 +252,9 @@ T* ThreadManager::create(const ACE_CString name, P& param,
 
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
-			 const bool suspended,
-			 const TimeInterval& responseTime,
-			 const TimeInterval& sleepTime,
+//			 const bool suspended,
+			 const TimeInterval responseTime,
+			 const TimeInterval sleepTime,
 			 bool del)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
@@ -265,8 +269,8 @@ T* ThreadManager::create(const ACE_CString name, P& param,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, param, true, responseTime, sleepTime, del);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
+	T* thread_p = new T(name, param, responseTime, sleepTime, del);
+//	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 
@@ -280,9 +284,9 @@ T* ThreadManager::create(const ACE_CString name, P& param,
 
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
-			 const bool suspended,
-			 const TimeInterval& responseTime,
-			 const TimeInterval& sleepTime,
+//			 const bool suspended,
+			 const TimeInterval responseTime,
+			 const TimeInterval sleepTime,
 			 bool del,
 			 const long thrFlags)
 {
@@ -298,8 +302,8 @@ T* ThreadManager::create(const ACE_CString name, P& param,
     try
 	{
 	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, param, true, responseTime, sleepTime, del, thrFlags);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
+	T* thread_p = new T(name, param, responseTime, sleepTime, del, thrFlags);
+//	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
 
 	return thread_p;
 	} 

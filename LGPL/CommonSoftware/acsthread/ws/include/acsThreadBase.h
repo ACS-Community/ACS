@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.h,v 1.23 2006/02/09 02:12:46 gchiozzi Exp $"
+* "@(#) $Id: acsThreadBase.h,v 1.24 2006/03/24 12:12:49 vwang Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -164,26 +164,22 @@ class ThreadBase
      * @param _parameter an optional parameter to the thread
      * @param _responseTime heartbeat response time in 100ns unit
      * @param _sleepTime default sleep time in 100ns unit
-     * @param _suspended create thread in suspended mode. Default is not.
      * @param _create should the thread be created in the constructoror not. 
      *                Default is yes. It is used if constructor is called from a subclass.
      *                and this will take care of creating the thread or if we want
      *                to call create ourselves.
      * @param _thrFlags Thread creation flags to be used if _create = TRUE.
      *        See ACE threads and pthread documentation for details.
-     *        Default is now THR_NEW_LWP | THR_JOINABLE 
-     *
-     * @todo GCH being discussed if _thrFlags should be changed in THR_DETACHED
+     *        Default is now THR_NEW_LWP | THR_DETACHED 
      *
      * @see the create method for important details about joinable threads.
      */
-    ThreadBase(const ACE_CString _name, ACE_Thread_Manager* _threadManager, 
+    ThreadBase(const ACE_CString& _name, ACE_Thread_Manager* _threadManager, 
 	       void* _threadProcedure, void* _parameter,
 	       const TimeInterval& _responseTime=ThreadBase::defaultResponseTime, 
 	       const TimeInterval& _sleepTime=ThreadBase::defaultSleepTime,
-	       const bool _suspended=false,
 	       const bool _create=true,
-	       const long _thrFlags= THR_NEW_LWP | THR_JOINABLE);
+	       const long _thrFlags= THR_NEW_LWP | THR_DETACHED);
 
     /**
      * Destructor.
@@ -428,26 +424,11 @@ class ThreadBase
     */
     virtual Logging::Logger::LoggerSmartPtr  getLogger() const { ACS_CHECK_LOGGER; return ::getLogger(); }
 
-    /**
-     * this thread is in running loop?
-     **/
-    bool isRunning() { return running_m; };
-
-    /**
-     * set status of this thread to running
-     **/
-    void setRunning() { running_m = true; };
-
-    /**
-     * reset running status of this thread 
-     **/
-    void resetRunning() { running_m = false; };
-
   protected:
     /**
      * Create a thread.
      * @param thrFlags_ what kind of thread should be created. 
-     * Default is kernel space thread (THR_NEW_LWP) joinable thread (THR_JOINABLE)
+     * Default is kernel space thread (THR_NEW_LWP) detached thread (THR_DETACHED)
      * For a list of the available thread flags, see the documentation for
      * the underlying ACE Threads 
      * anr/or the Linux documentation for the behavior of ACE Threads under Linux.
@@ -458,7 +439,7 @@ class ThreadBase
      * After the creation of a few hundred threads, the system will be unable
      * to allocate more threads.
      */
-    bool create(long _thrFlags= THR_NEW_LWP | THR_JOINABLE);
+    bool create(const long _thrFlags= THR_NEW_LWP | THR_DETACHED);
 
   private:
 
@@ -485,9 +466,6 @@ class ThreadBase
 
     /// is thread stopped ?
     volatile bool stopped_m;
-
-    /// is thread in runLoop ?
-    volatile bool running_m;
 
     /// name of the thread
     ACE_CString name_m;
@@ -580,7 +558,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @return pointer to ThreadBase object, NULL otherwise
      */
-    ThreadBase* getThreadByName(ACE_CString name) {
+    ThreadBase* getThreadByName(const ACE_CString& name) {
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 	
 	ThreadMap::iterator i = threadMap_m.find(name);
@@ -608,7 +586,7 @@ class ThreadManagerBase
     /**
      * Create a new thread and add it to the pool.
      * The thread is immediately created (create=true) and
-     * started (suspend=false)
+     * suspended
      * @param name of the thread
      * @param threadProc thread worker function
      * @param parameter an optional parameter to the thread
@@ -616,17 +594,15 @@ class ThreadManagerBase
      * @param sleepTime default sleep time in 100ns unit
      * @param _thrFlags Thread creation flags to be used if _create = TRUE.
      *        See ACE threads and pthread documentation for details.
-     *        Default is now THR_NEW_LWP | THR_JOINABLE 
+     *        Default is now THR_NEW_LWP | THR_DETACHED
      *
-     * @todo GCH being discussed if _thrFlags should be changed in THR_DETACHED
-     *
-      * @return pointer to ThreadBase object, NULL otherwise
+     * @return pointer to ThreadBase object, NULL otherwise
      * @see ThreadBase
      */
-    ThreadBase * create(const ACE_CString name, void * threadProc, void * parameter,
+    ThreadBase * create(const ACE_CString& name, void * threadProc, void * parameter,
 			const TimeInterval& responseTime=ThreadBase::defaultResponseTime,
 			const TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
-			const long _thrFlags= THR_NEW_LWP | THR_JOINABLE);
+			const long _thrFlags= THR_NEW_LWP | THR_DETACHED);
 
     /**
      * Add a thread to the ThreadBaseManger thread pool.
@@ -636,7 +612,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @param ThreadBase pointer to the thread
      */
-    bool add(const ACE_CString name, ThreadBase * acsBaseThread);
+    bool add(const ACE_CString& name, ThreadBase * acsBaseThread);
   
     /**
      * Stop named thread.
@@ -644,7 +620,7 @@ class ThreadManagerBase
      * @return true if thread has been stopped
      * @see ThreadBase#stop
      */
-    bool stop(const ACE_CString name);
+    bool stop(const ACE_CString& name);
 
     /**
      * Stop all the threads_m.
@@ -658,7 +634,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @see ThreadBase#exit
      */
-    void exit(const ACE_CString name);
+    void exit(const ACE_CString& name);
 
     /**
      * Notify all the threads to exit thread worker function.
@@ -673,7 +649,7 @@ class ThreadManagerBase
      * @see ThreadBase#cancel
      * @see ThreadManagerBase#terminate
      */
-    bool cancel(const ACE_CString name);
+    bool cancel(const ACE_CString& name);
 
     /**
      * Cancel (forceful termination) all threads.
@@ -686,7 +662,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @see ThreadBase#terminate
      */
-    bool terminate(const ACE_CString name);
+    bool terminate(const ACE_CString& name);
 
     /**
      * Terminate all threads.
@@ -700,7 +676,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @see ThreadBase#restart
      */
-    bool restart(const ACE_CString name);
+    bool restart(const ACE_CString& name);
 
     /**
      * Restart all threads.
@@ -720,7 +696,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @see ThreadBase#suspend
      */
-    bool suspend(const ACE_CString name);
+    bool suspend(const ACE_CString& name);
 
     /**
      * Suspend the execution of all running threads.
@@ -733,7 +709,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @see ThreadBase#resume
      */
-    bool resume(const ACE_CString name);
+    bool resume(const ACE_CString& name);
 
     /**
      * Continue the execution of all suspended threads.
@@ -747,7 +723,7 @@ class ThreadManagerBase
      * @return true if named thread is alive
      * @see ThreadBase#isAlive
      */
-    bool isAlive(const ACE_CString name);
+    bool isAlive(const ACE_CString& name);
 
     /**
      * Checks if all threads are alive (not terminated).
@@ -771,7 +747,7 @@ class ThreadManagerBase
      * @param name name of the thread
      * @param thread pointer to the thread
      */
-    void add2map(const ACE_CString name, ThreadBase* thread)
+    void add2map(const ACE_CString& name, ThreadBase* thread)
       {
 
 	threadMap_m[name]=thread;

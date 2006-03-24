@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadTest.h,v 1.3 2006/02/12 15:43:12 gchiozzi Exp $"
+* "@(#) $Id: acsThreadTest.h,v 1.4 2006/03/24 12:12:49 vwang Exp $"
 *
 * Classes used in ACS Thread modular tests
 *
@@ -30,24 +30,24 @@
 class TestACSThread :public ACS::Thread
 {
   public:
-    TestACSThread(const ACE_CString& name, bool suspended=false,
+    TestACSThread(const ACE_CString& name, 
 		  const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 		  const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 		  bool del=false
 	) :
-	ACS::Thread(name, suspended, responseTime, sleepTime, del)
+	ACS::Thread(name, responseTime, sleepTime, del)
 	{
 	    ACS_TRACE("TestACSThread::TestACSThread");
 	    loopCounter_m = 0;
 	}
 
-    TestACSThread(const ACE_CString& name, bool suspended,
+    TestACSThread(const ACE_CString& name,
 		  const ACS::TimeInterval& responseTime, 
 		  const ACS::TimeInterval& sleepTime,
 		  bool del,
 		  const long _thrFlags
 	) :
-	ACS::Thread(name, suspended, responseTime, sleepTime, del, _thrFlags)
+	ACS::Thread(name, responseTime, sleepTime, del, _thrFlags)
 	{
 	    ACS_TRACE("TestACSThread::TestACSThread");
 	    loopCounter_m = 0;
