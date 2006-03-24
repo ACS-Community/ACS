@@ -107,13 +107,11 @@ public class LogFileCache {
 	 */
 	public void loadLogs(
 			String fileName, 
-			FiltersVector filters, 
-			GroupedList visibleLogs,
 			boolean showProgress) throws LogCacheException {
 		IOCacheHelper ioHelper = new IOCacheHelper(this);
 		try {
 			IOOperationInProgress=true;
-			ioHelper.loadLogs(fileName,file,index,filters,visibleLogs,showProgress);
+			ioHelper.loadLogs(fileName,file,index,showProgress);
 		} catch (FileNotFoundException fnfe) {
 			IOOperationInProgress=false;
 			throw new LogCacheException("File "+fileName+"not found",fnfe);
@@ -137,13 +135,11 @@ public class LogFileCache {
 	 */
 	public void loadLogs(
 			BufferedReader reader, 
-			FiltersVector filters, 
-			GroupedList visibleLogs,
 			boolean showProgress) throws LogCacheException {
 		IOCacheHelper ioHelper = new IOCacheHelper(this);
 		try {
 			IOOperationInProgress=true;
-			ioHelper.loadLogs(reader,file,index,filters,visibleLogs,showProgress);
+			ioHelper.loadLogs(reader,file,index,showProgress);
 		} catch (Exception e) {
 			IOOperationInProgress=false;
 			throw new LogCacheException(e);

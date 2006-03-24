@@ -33,8 +33,6 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.File;
 
-import com.cosylab.logging.client.GroupedList;
-import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -276,14 +274,6 @@ public class IOCacheHelper extends Thread  {
 		// The buffered reader to read the logs
 		private BufferedReader inFile;
 		
-		// The vector of the filters (knowing the filters
-		// it is possible to add immediately each log in the list
-		// of the visible logs 
-		private FiltersVector filters;
-		
-		// The list of the visible logs
-		private GroupedList visibleLogs;
-		
 		// The cache on disk
 		private RandomAccessFile fileCache;
 		
@@ -306,12 +296,10 @@ public class IOCacheHelper extends Thread  {
 		 * @param filters The active filters
 		 * @param visibleLogs The vector of the visible logs
 		 */
-		public LogFileCacheAction(BufferedReader inFile, RandomAccessFile cache, Vector<Long> index, FiltersVector filters,GroupedList visibleLogs) {
+		public LogFileCacheAction(BufferedReader inFile, RandomAccessFile cache, Vector<Long> index) {
 			this.inFile=inFile;
 			this.fileCache=cache;
 			this.index=index;
-			this.filters=filters;
-			this.visibleLogs=visibleLogs;
 			this.type=LOAD_ACTION;
 		}
 		
@@ -375,22 +363,6 @@ public class IOCacheHelper extends Thread  {
 		 */
 		public Vector<Long>getIndex() {
 			return index;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The active filters
-		 */
-		public FiltersVector getFilters() {
-			return filters;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The list of the visible logs
-		 */
-		public GroupedList getVisibleLogs() {
-			return visibleLogs;
 		}
 		
 		/**
@@ -579,16 +551,12 @@ public class IOCacheHelper extends Thread  {
 	 */
 	private void loadLogsFromDisk(BufferedReader br, 
 			RandomAccessFile cache, 
-			Vector<Long> index,
-			FiltersVector filters, 
-			GroupedList visibleLogs) {
+			Vector<Long> index) {
 		
 		if (
 				br==null || 
 				cache==null || 
-				index==null || 
-				filters==null || 
-				visibleLogs==null) {
+				index==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
 		
@@ -629,7 +597,7 @@ public class IOCacheHelper extends Thread  {
 							cache.seek(cache.length());
 							cache.writeBytes(buffer.toString());
 						}
-						addToVisibleLog(buffer.toString(),filters,visibleLogs,index.size()-1);
+						addToVisibleLog(buffer.toString(),index.size()-1);
 						buffer.clear();
 						if (progressDialog!=null) {
 							progressDialog.updateStatus(""+index.size()+" logs loaded");
@@ -677,8 +645,6 @@ public class IOCacheHelper extends Thread  {
 			String fileName, 
 			RandomAccessFile cache, 
 			Vector<Long> index, 
-			FiltersVector filters, 
-			GroupedList visibleLogs,
 			boolean showProgress) throws FileNotFoundException  {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
@@ -696,7 +662,7 @@ public class IOCacheHelper extends Thread  {
 		}
 		
 		// Add an action in the que
-		LogFileCacheAction action = new LogFileCacheAction(br,cache,index,filters,visibleLogs);
+		LogFileCacheAction action = new LogFileCacheAction(br,cache,index);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -724,8 +690,6 @@ public class IOCacheHelper extends Thread  {
 			BufferedReader reader, 
 			RandomAccessFile cache, 
 			Vector<Long> index, 
-			FiltersVector filters, 
-			GroupedList visibleLogs,
 			boolean showProgress) {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
@@ -739,7 +703,7 @@ public class IOCacheHelper extends Thread  {
 		}
 		
 		// Add an action in the que
-		LogFileCacheAction action = new LogFileCacheAction(reader,cache,index,filters,visibleLogs);
+		LogFileCacheAction action = new LogFileCacheAction(reader,cache,index);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -760,8 +724,6 @@ public class IOCacheHelper extends Thread  {
 	 */
 	private void addToVisibleLog(
 			String logStr, 
-			FiltersVector filters, 
-			GroupedList visibles, 
 			int index) {
 		ILogEntry log=null;
 		try {
@@ -774,8 +736,6 @@ public class IOCacheHelper extends Thread  {
 			JOptionPane.showMessageDialog(null, formatErrorMsg(e.getMessage(),logStr),"Error parsing a log!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
-		
 		engine.pushStructuredEvent(log);
 	}
 	
@@ -881,9 +841,7 @@ public class IOCacheHelper extends Thread  {
 						loadLogsFromDisk(
 							action.getInputFile(),
 							action.getFileCache(),
-							action.getIndex(),
-							action.getFilters(),
-							action.getVisibleLogs());
+							action.getIndex());
 					}
 					case LogFileCacheAction.TERMINATE_THREAD_ACTION: {
 						// Terminate the thrread

@@ -430,17 +430,7 @@ protected final void invalidateRowCache() {
 				allLogs.clear();
 				visibleLogs.clear();
 		
-				// Create a filter list containing the system and the user
-				// filters
-				FiltersVector tempFilters = new FiltersVector();
-				for (int t=0; t<filters.size(); t++) {
-					tempFilters.addFilter(filters.get(t),filters.isActive(t));
-				}
-				for (int t=0; t<systemFilters.size(); t++) {
-					tempFilters.addFilter(systemFilters.get(t),systemFilters.isActive(t));
-				}
-				
-				allLogs.loadLogs(in,tempFilters,visibleLogs,true);
+				allLogs.loadLogs(in,true);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -491,17 +481,7 @@ public void loadFromFile(String filename) {
 		// Clear the list of the visible logs
 		visibleLogs.clear();
 		
-		// Create a filter list containing the system and the user
-		// filters
-		FiltersVector tempFilters = new FiltersVector();
-		for (int t=0; t<filters.size(); t++) {
-			tempFilters.addFilter(filters.get(t),filters.isActive(t));
-		}
-		for (int t=0; t<systemFilters.size(); t++) {
-			tempFilters.addFilter(systemFilters.get(t),systemFilters.isActive(t));
-		}
-		
-		allLogs.loadLogs(filename,tempFilters,visibleLogs,true);
+		allLogs.loadLogs(filename,true);
 		
     } catch (Exception e) {
     	System.err.println("Exception while reading filename: "+e.getMessage());
