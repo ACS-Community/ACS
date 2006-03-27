@@ -41,3 +41,10 @@ offshoot
 alma.acs.component.client.ComponentClient
 StaticMethodLogger
 alma.nctest.FridgeConsumer
+Segmentation fault
+File "./__init__.py", line 805, in __init__
+omniORB: Exception trying to create worker thread.
+Traceback \(most recent call last\)
+TypeError: 'NoneType' object is not callable
+Aborted
+terminate called after throwing an instance of 'omni_thread_fatal'
