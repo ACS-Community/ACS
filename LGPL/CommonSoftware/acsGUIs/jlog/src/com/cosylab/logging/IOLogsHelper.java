@@ -163,6 +163,8 @@ public class IOLogsHelper extends Thread  {
 			Toolkit tk = Toolkit.getDefaultToolkit();
 			Dimension screenDim = tk.getScreenSize();
 			setLocation(screenDim.width/2-this.getWidth()/2,screenDim.height/2-this.getHeight()/2);
+			
+			setVisible(true);
 		}
 		
 		/**
@@ -296,7 +298,7 @@ public class IOLogsHelper extends Thread  {
 			this.logsCache=theCache;
 			this.inFile=inFile;
 			this.engine = theEngine;
-			this.type=LOAD_ACTION;
+			this.type=IOAction.LOAD_ACTION;
 		}
 		
 		/**
@@ -305,7 +307,7 @@ public class IOLogsHelper extends Thread  {
 		 * @param outF The buffered file to save the logs into
 		 */
 		public IOAction(BufferedWriter outF, LogCache theCache) {
-			this.type=SAVE_ACTION;
+			this.type=IOAction.SAVE_ACTION;
 			this.logsCache = theCache;
 			this.outFile=outF;
 		}
@@ -705,7 +707,6 @@ public class IOLogsHelper extends Thread  {
 			throw new IllegalStateException("Unable to execute asynchronous operation");
 		}
 		IOOperationInProgress=true;
-		
 		// Open the output file
 		FileWriter fw = new FileWriter(fileName,false);
 		BufferedWriter outBW = new BufferedWriter(fw);
@@ -736,7 +737,7 @@ public class IOLogsHelper extends Thread  {
 	 *       request asynchronous services 
 	 *
 	 */
-	public void done() {
+	private void done() {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
 			IOAction terminateAction = new IOAction();
@@ -765,6 +766,7 @@ public class IOLogsHelper extends Thread  {
 				switch (action.getActionType()) {
 					case IOAction.LOAD_ACTION: {
 						loadLogsFromDisk(action.getInputFile(),action.getEngine(),action.getLogsCache());
+						break;
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
 						// Terminate the thrread
@@ -772,6 +774,7 @@ public class IOLogsHelper extends Thread  {
 					}
 					case IOAction.SAVE_ACTION: {
 						saveLogsOnDisk(action.getOutputFile(),action.getLogsCache());
+						break;
 					}
 				}
 			} else {
