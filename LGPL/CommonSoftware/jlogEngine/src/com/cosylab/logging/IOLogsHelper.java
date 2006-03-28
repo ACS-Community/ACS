@@ -737,7 +737,7 @@ public class IOLogsHelper extends Thread  {
 	 *       request asynchronous services 
 	 *
 	 */
-	private void done() {
+	public void done() {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
 			IOAction terminateAction = new IOAction();
