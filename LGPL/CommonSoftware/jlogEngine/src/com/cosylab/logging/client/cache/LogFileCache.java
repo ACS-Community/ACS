@@ -45,7 +45,6 @@ import com.cosylab.logging.client.GroupedList;
  * integers for each log entry in the file.
  * The cache is also used when receiving logs from the notification
  * channel.
- * The load and save are performed in parallel by the IOCacheHelper.
  *  
  * @author acaproni
  *
@@ -73,8 +72,7 @@ public class LogFileCache {
 	// They are usually a few so we keep them in memory
 	private HashMap<Integer,ILogEntry> replacedLogs = new HashMap<Integer,ILogEntry>();
 	
-	// Monitor if an async IO operation is in progress
-	private boolean IOOperationInProgress =false;
+	
 	
 	/**
 	 * Build an empty cache
@@ -92,75 +90,6 @@ public class LogFileCache {
 			initCache();
 		} catch (IOException ioe) {
 			throw new LogCacheException("Error initializing the file",ioe);
-		}
-	}
-	
-	/**
-	 * Add to the cache the logs in the given file
-	 * NOTE: this method adds the logs to the cache (i.e. it does not
-	 *       clear the cache and the index before loading)
-	 *       
-	 * @param fileName The XML file of logs to import
-	 * @param filters The vector of the filters
-	 * @param visibleLogs The visible logs
-	 * @param showProgress If true a progress bar is shown
-	 */
-	public void loadLogs(String fileName, boolean showProgress) throws LogCacheException {
-		IOCacheHelper ioHelper = new IOCacheHelper(this);
-		try {
-			IOOperationInProgress=true;
-			ioHelper.loadLogs(fileName,file,index,showProgress);
-		} catch (FileNotFoundException fnfe) {
-			IOOperationInProgress=false;
-			throw new LogCacheException("File "+fileName+"not found",fnfe);
-		} catch (Exception e) {
-			IOOperationInProgress=false;
-			throw new LogCacheException(e);
-		} finally {
-			ioHelper.done();
-		}
-	}
-	
-	/**
-	 * Add to the cache the logs in the given reader
-	 * NOTE: this method adds the logs to the cache (i.e. it does not
-	 *       clear the cache and the index before loading)
-	 *       
-	 * @param reader The buffered reader to read the logs from
-	 * @param filters The vector of the filters
-	 * @param visibleLogs The visible logs
-	 * @param showProgress If true a progress bar is shown
-	 */
-	public void loadLogs(BufferedReader reader, boolean showProgress) throws LogCacheException {
-		IOCacheHelper ioHelper = new IOCacheHelper(this);
-		try {
-			IOOperationInProgress=true;
-			ioHelper.loadLogs(reader,file,index,showProgress);
-		} catch (Exception e) {
-			IOOperationInProgress=false;
-			throw new LogCacheException(e);
-		} finally {
-			ioHelper.done();
-		}
-	}
-	
-	/**
-	 * Save the logs in a file
-	 * 
-	 * @param fileName The name of the file
-	 * @param showProgress If true a progress bar is shown
-	 * @throws IOException
-	 */
-	public void saveLogs(String fileName, boolean showProgress) throws LogCacheException {
-		IOCacheHelper ioHelper = new IOCacheHelper(this);
-		try {
-			IOOperationInProgress=true;
-			ioHelper.saveLogs(fileName,this,showProgress);
-		} catch (Exception e) {
-			IOOperationInProgress=false;
-			throw new LogCacheException(e);
-		} finally {
-			ioHelper.done();
 		}
 	}
 	
@@ -391,20 +320,4 @@ public class LogFileCache {
 		replacedLogs.put(new Integer(position),log);
 	}
 	
-	/**
-	 * 
-	 * @return true if an async load or save operation is in progress
-	 */
-	public boolean isPerformingIO() {
-		return IOOperationInProgress;
-	}
-	
-	/**
-	 * The async thread for I/O uses this method to signal the cache
-	 * that the operation is terminated
-	 *
-	 */
-	public void IOOperationTerminated() {
-		IOOperationInProgress=false;
-	}
 }
