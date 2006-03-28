@@ -230,33 +230,42 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			java.lang.Object[] data = null;
 			try {
 
-			        NVList list =
-				    (NVList) operationListDescriptions.get(opKey);
-
-				if (list == null) {
-				    list = orb.create_operation_list((org.omg.CORBA.Object) odef);
-				    synchronized (operationListDescriptions) {
-					notifier.reportDebug(
-							     "BACIRemoteAccess$CallbackImpl::invoke",
-							     "Added 'NVList' for '"
-							     + callbackID
-							     + "::"
-							     + op
-							     + "()' to cache.");
-					operationListDescriptions.put(opKey, list);
-				    }
+				// NVList list HAS to be synchronized,
+				// since it is a container for values
+				synchronized(operationListDescriptions)
+				{
+					
+				        NVList list =
+					    (NVList) operationListDescriptions.get(opKey);
+	
+					if (list == null) {
+					    list = orb.create_operation_list((org.omg.CORBA.Object) odef);
+					    synchronized (operationListDescriptions) {
+						notifier.reportDebug(
+								     "BACIRemoteAccess$CallbackImpl::invoke",
+								     "Added 'NVList' for '"
+								     + callbackID
+								     + "::"
+								     + op
+								     + "()' to cache.");
+						operationListDescriptions.put(opKey, list);
+					    }
+					}
+	
+					request.arguments(list);
+					int size = list.count();
+					data = new java.lang.Object[size];
+					names = new String[size];
+					for (int i = 0; i < size; i++) {
+						//					if (list.item(i) == null) System.out.println("Null");
+						// NOTE: values is COPIED from list.item(i).value()
+						// and this makes it thread safe
+						data[i] =
+							getIntrospector().extractAny(list.item(i).value());
+						names[i] = list.item(i).name();
+					}
 				}
-
-				request.arguments(list);
-				int size = list.count();
-				data = new java.lang.Object[size];
-				names = new String[size];
-				for (int i = 0; i < size; i++) {
-					//					if (list.item(i) == null) System.out.println("Null");
-					data[i] =
-						getIntrospector().extractAny(list.item(i).value());
-					names[i] = list.item(i).name();
-				}
+				
 			} catch (Bounds b) {
 				getNotifier().reportError(
 					"The callback parameter list returned by the server and the IR data do not agree in length. Skipping.",
