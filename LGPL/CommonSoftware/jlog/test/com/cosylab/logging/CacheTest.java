@@ -1,11 +1,16 @@
 package com.cosylab.logging;
 
 import com.cosylab.logging.client.cache.*;
-import com.cosylab.logging.engine.FiltersVector;
-import com.cosylab.logging.client.GroupedList;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
+import com.cosylab.logging.LCEngine;
+import com.cosylab.logging.IOLogsHelper;
+import com.cosylab.logging.engine.RemoteResponseCallback;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 /**
  * The class to test the LogFileCache and the LogCache
@@ -15,7 +20,14 @@ import com.cosylab.logging.engine.ACS.ACSLogParser;
  * @see junit.framework.TestCase
  */
 public class CacheTest extends junit.framework.TestCase {
+	
+	// The cahce to stress
+
 	LogCache cache;
+	
+	// Number of logs generated dynamically
+	// Its value is returned by the fillCache methods
+	long logsGenerated; 
 
 	public CacheTest(String str) {
 		super(str);
@@ -29,6 +41,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 */ 
 	protected void setUp() throws Exception
 	{ 
+		
 		try {
 			cache = new LogCache();
 		} catch (Exception e) {
@@ -36,7 +49,7 @@ public class CacheTest extends junit.framework.TestCase {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		load();
+		logsGenerated=fillCache();
 	}
 
 	/** 
@@ -50,26 +63,28 @@ public class CacheTest extends junit.framework.TestCase {
 	}
 	
 	/**
-	 * Load a cache with the read
+	 * Fill the cache with dinamically generated logs
+	 * The number of logs inserted in the list is gretare than the 
+	 * memory cache size to stress the disk cache also.
+	 * 
+	 * @return The number of logs inserted in the cache
+	 * 
 	 * @throws Exception
 	 */
-	private void load() throws Exception {
-		FiltersVector filters = new FiltersVector();
-		filters.clear();
-		GroupedList list = new GroupedList(cache);
-		list.clear();
-		cache.loadLogs("test.xml",filters,list,false);
-		// The load is asynchronous
-		// We need to poll to be sure that the load is terminated
-		while (true) {
-			if (!cache.isPerformingIO()) {
-				// Ok, the load has finished
-				break;
-			}
-			try {
-				Thread.sleep(250);
-			} catch (InterruptedException ie) {}
+	private long fillCache() throws Exception {
+		ACSLogParser parser = new ACSLogParser();
+		String logMsg = "Test log nr. ";
+		
+		
+		cache.clear();
+		long logToInsert = 2*cache.CACHESIZE; 
+		for (int t=0; t<logToInsert; t++) {
+			String newLogMsg=logMsg+"t";
+			String logStr = "<Info TimeStamp=\"2005-11-29T15:33:09.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+newLogMsg+"]]></Info>";
+			LogEntryXML newLog = parser.parse(logStr);
+			cache.add(newLog);
 		}
+		return logToInsert;
 	}
 	
 	/** 
@@ -78,7 +93,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	public void testSize() throws Exception {
-		assertEquals("Error loading logs",(long)cache.getSize(),300L);
+		assertEquals("Error loading logs",logsGenerated,(long)cache.getSize());
 	}
 	
 	/**
@@ -102,12 +117,12 @@ public class CacheTest extends junit.framework.TestCase {
 		ACSLogParser parser = new ACSLogParser();
 		int oldSize = cache.getSize();
 		String logMsg = "Test log";
-		String logStr = "<Info TimeStamp=\"2005-11-29T15:33:09.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
+		String logStr = "<Info TimeStamp=\"2005-11-29T15:33:10.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
 		LogEntryXML newLog = parser.parse(logStr);
 		cache.add(newLog);
 		assertEquals("Error adding a log",cache.getSize(),oldSize+1);
 		ILogEntry log = cache.getLog(cache.getSize()-1);
-		String msg = (String)log.getField(LogEntryXML.FIELD_LOGMESSAGE);
+		String msg = (String)log.getField(ILogEntry.FIELD_LOGMESSAGE);
 		assertEquals("Error adding a log",logMsg,msg);
 	}
 	
@@ -122,14 +137,14 @@ public class CacheTest extends junit.framework.TestCase {
 		LogEntryXML newLog = parser.parse(logStr);
 		// Replace the first log
 		cache.replaceLog(0,newLog);
-		assertEquals("Error replacing log "+0,logMsg,(String)cache.getLog(0).getField(LogEntryXML.FIELD_LOGMESSAGE));
+		assertEquals("Error replacing log "+0,logMsg,(String)cache.getLog(0).getField(ILogEntry.FIELD_LOGMESSAGE));
 		// Replace the last log
 		cache.replaceLog(cache.getSize()-1,newLog);
-		assertEquals("Error replacing log "+(cache.getSize()-1),logMsg,(String)cache.getLog(cache.getSize()-1).getField(LogEntryXML.FIELD_LOGMESSAGE));
+		assertEquals("Error replacing log "+(cache.getSize()-1),logMsg,(String)cache.getLog(cache.getSize()-1).getField(ILogEntry.FIELD_LOGMESSAGE));
 		// Replace a log in the middle
 		int pos = cache.getSize()/2;
 		cache.replaceLog(pos,newLog);
-		assertEquals("Error replacing log "+pos,logMsg,(String)cache.getLog(pos).getField(LogEntryXML.FIELD_LOGMESSAGE));
+		assertEquals("Error replacing log "+pos,logMsg,(String)cache.getLog(pos).getField(ILogEntry.FIELD_LOGMESSAGE));
 	}
 	
 	/**
@@ -146,28 +161,28 @@ public class CacheTest extends junit.framework.TestCase {
 	 * It is deifficult to test LogCache...
 	 * This is better then nothing
 	 * 
-	 * I scan the list and for every log I read three logs are read again and checked
-	 * These three logs should always be in memory but I cannot check nothing but
-	 * they they are always the same!
+	 * The test is done by reading all the cache sequentially.
+	 * The first, middle and last logs acquired in the beginning are 
+	 * compared with those retrieved with the sequential scan.
 	 *
 	 */
 	public void testMemoryCache() throws Exception {
 		int first = 0;
-		String firstMsg = (String)cache.getLog(first).getField(LogEntryXML.FIELD_LOGMESSAGE);
+		String firstMsg = (String)cache.getLog(first).getField(ILogEntry.FIELD_LOGMESSAGE);
 		int last = cache.getSize()-1;
-		String lastMsg = (String)cache.getLog(last).getField(LogEntryXML.FIELD_LOGMESSAGE);
+		String lastMsg = (String)cache.getLog(last).getField(ILogEntry.FIELD_LOGMESSAGE);
 		int pos = cache.getSize()/2;
-		String posMsg = (String)cache.getLog(pos).getField(LogEntryXML.FIELD_LOGMESSAGE);
+		String posMsg = (String)cache.getLog(pos).getField(ILogEntry.FIELD_LOGMESSAGE);
 		
 		// Scans the list
 		for (int t=0; t<last; t++) {
 			cache.getLog(t);
 			ILogEntry firstLog = cache.getLog(first);
-			assertEquals("Error in mem cache pos "+first,firstMsg, firstLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
+			assertEquals("Error in mem cache pos "+first,firstMsg, firstLog.getField(ILogEntry.FIELD_LOGMESSAGE));
 			ILogEntry lastLog = cache.getLog(last);
-			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
+			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(ILogEntry.FIELD_LOGMESSAGE));
 			ILogEntry posLog = cache.getLog(pos);
-			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(LogEntryXML.FIELD_LOGMESSAGE));
+			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(ILogEntry.FIELD_LOGMESSAGE));
 		}
 	}
 }
