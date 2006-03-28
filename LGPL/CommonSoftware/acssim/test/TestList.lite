@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.13 2006/03/21 20:30:14 dfugate Exp $"
+# "@(#) $Id: TestList.lite,v 1.14 2006/03/28 15:55:59 dfugate Exp $"
 #
 # TestList
 #
@@ -32,31 +32,31 @@ SOURCE acssimTATEnvironment
 PROLOGUE acssimTATPrologue
 
 #Test Acssim.Corba.Utilities
-0 Utilities "acssimUtilities"
+0 Utilities "acsutilTATTestRunner acssimUtilities"
 
 #Test Acssim.Corba.DynamicImplementation
-1 DynamicImplementation "acssimDynamicImplementation"
+1 DynamicImplementation "acsutilTATTestRunner acssimDynamicImplementation"
 
 #Test Acssim.Servants.Goodies
-2 Goodies "acssimGoodies"
+2 Goodies "acsutilTATTestRunner acssimGoodies"
 
 #Test Acssim.Servants.Representations.
-3 BaseRepresentation "acssimBaseRepresentation"
+3 BaseRepresentation "acsutilTATTestRunner acssimBaseRepresentation"
 
 #Test Acssim.Servants.Representations.
-4 API "acssimAPI"
+4 API "acsutilTATTestRunner acssimAPI"
 
 #Test Acssim.Servants.Representations.
-5 GUI "acssimGUI"
+5 GUI "acsutilTATTestRunner acssimGUI"
 
 #Test Acssim.Servants.Representations.
-6 CDB "acssimCDB"
+6 CDB "acsutilTATTestRunner acssimCDB"
 
 #Test Acssim.Servants.Representations.
-7 Dynamic "acssimDynamic"
+7 Dynamic "acsutilTATTestRunner acssimDynamic"
 
 #Test Acssim.Servants.Representations.
-8 BehaviorProxy "acssimBehaviorProxy"
+8 BehaviorProxy "acsutilTATTestRunner acssimBehaviorProxy"
 
 #First test to ensure that pseudo inheritance from Acspy.Servants.CharacteristicComponent actually works
 11 T1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 _get_name()"
