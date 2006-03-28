@@ -43,7 +43,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 public class LogCache extends LogFileCache {
 
 	// The (fixed) size of the cache
-	private final int CACHESIZE = 128;
+	public final int CACHESIZE = 128;
 	
 	/**
 	 * The logs are stored into an HashMap.
