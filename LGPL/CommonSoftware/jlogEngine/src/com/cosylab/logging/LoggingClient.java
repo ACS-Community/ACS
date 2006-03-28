@@ -242,7 +242,7 @@ public class LoggingClient extends JFrame
             } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
             	loadLogsFromURL(e);
             } else if (e.getSource() == LoggingClient.this.getSaveFileMenuItem()) {
-                connSaveFile2(e);
+                saveLogs(e);
             } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem()) {
 				connClearAll(e);
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
@@ -1101,7 +1101,7 @@ public class LoggingClient extends JFrame
 	{
 		try
 		{
-			getLCModel1().loadFromFile();
+			getLCModel1().loadFromFile(null);
 
 			if (getLCModel1().getSuspended() == false) //if cancelled, e.g. has not been suspended
 				getJToggleButton1().doClick(10);
@@ -1144,7 +1144,7 @@ public class LoggingClient extends JFrame
 	 * @param arg1 java.awt.event.ActionEvent
 	 */
 
-	private void connSaveFile2(java.awt.event.ActionEvent arg1)
+	private void saveLogs(java.awt.event.ActionEvent arg1)
 	{
 		try
 		{

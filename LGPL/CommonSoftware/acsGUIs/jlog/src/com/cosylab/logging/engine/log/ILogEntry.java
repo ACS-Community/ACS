@@ -3,17 +3,22 @@ package com.cosylab.logging.engine.log;
 import java.util.Date;
 import java.util.Vector;
 
+import java.io.Serializable;
+
 /**
  * The interface for all the log entry.
  * There are two kinds of log entries, one holding an XML node
  * and another one lighter that has to be used whenever a Node
  * is not required.
- * The interface contains the common methods of each log entry class. 
+ * The interface contains the common methods of each log entry class.
+ * 
+ *  The interface extends the Serializable whose methods are used 
+ *  to read/write the logs from the cache
  * 
  * @author acaproni
  *
  */
-public interface ILogEntry {
+public interface ILogEntry extends Serializable {
 	
 	/**
 	 * Each additional data is a couple <name,value>
