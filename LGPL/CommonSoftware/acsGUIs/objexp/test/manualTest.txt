@@ -1,0 +1,12 @@
+FAST MONITORS TEST
+------------------
+
+1. Start ACS and CPP Container "bilboContainer".
+2. Set power supply PBEND_B_01.current to 100.0.
+3. Create monitor for PBEND_B_01.readback.
+4. Create monitor for PBUMP_B_01.readback.
+5. Set both monitors set_time_trigger() to 100000 (10ms).
+6. Observer both monitors values (using Trend chart).
+   PBEND_B_01.readback should be always 100.0 and
+   PBUMP_B_01.readback should be always   0.0.
+    
