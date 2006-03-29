@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.28 2006/03/22 21:06:17 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.29 2006/03/29 15:57:47 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.28 2006/03/22 21:06:17 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.29 2006/03/29 15:57:47 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -135,16 +135,25 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #add myself to the global lis
         addComponent(self._get_name(), self)
 
-        if _DEBUG == 1:
-            print "****************"
-            print dir(self)
-            print self.__class__.__bases__
-            print "****************"
+        #possible for developers to configure an initialize method
+        #for the simulated component.
+        _execute(self._get_name(),
+                 "initialize",
+                 [],
+                 getCompLocalNS(self._get_name()))
+            
     #------------------------------------------------------------------------------
     def cleanUp(self):
         '''
         Overriden from baseclass.
         '''
+        #possible for developers to configure cleanUp method
+        #for the simulated component.
+        _execute(self._get_name(),
+                 "cleanUp",
+                 [],
+                 getCompLocalNS(self._get_name()))
+        
         ComponentLifecycle.cleanUp(self)
         removeComponent(self._get_name())
     #------------------------------------------------------------------------------

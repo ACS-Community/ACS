@@ -63,6 +63,31 @@ class Dynamic(BaseRepresentation):
         
         self.__logger = getLogger(str(Dynamic) + "(" + compname + ")")
 
+        #---------------------------------------------------------------------
+        def __initialize():
+            '''
+            Fake lifecycle method.
+            '''
+            self.__logger.logDebug("Simulated lifecyle method")
+            return
+    
+        def __cleanUp():
+            '''
+            Fake lifecycle method.
+            '''
+            self.__logger.logDebug("Simulated lifecyle method")
+            return
+        
+        self.setMethod('initialize',
+                        {'Timeout' : 0.0,
+                          'Value' : __initialize}
+                       )
+        
+        self.setMethod('cleanUp',
+                        {'Timeout' : 0.0,
+                          'Value' : __cleanUp}
+                       )
+
         #save the IDL type
         self.comp_type = comptype
 
@@ -145,6 +170,9 @@ class Dynamic(BaseRepresentation):
         '''
         #sanity check
         self._BaseRepresentation__checkCompRef()
+        if BaseRepresentation.getMethod(self,
+                                         method_name)!=None:
+            return BaseRepresentation.getMethod(self, method_name)
         
         #list of return values
         return_list = []

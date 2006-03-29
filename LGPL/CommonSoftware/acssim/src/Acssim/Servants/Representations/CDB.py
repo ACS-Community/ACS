@@ -36,6 +36,7 @@ the ACS CDB.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 from operator import isSequenceType
+from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
@@ -120,6 +121,9 @@ class CDB(BaseRepresentation):
             #get the corba attributes
             self.getCorbaAttributes(xml_obj)
             
+            #setup the lifecycle methods
+            self.setupLifecyleMethods(xml_obj)
+            
             #allow inheritance?
             ret_val = xml_obj.SimulatedComponent.getAttribute('AllowInheritance')
             
@@ -187,6 +191,45 @@ class CDB(BaseRepresentation):
             
             #save the dictionary
             self.setMethod(methname, temp_dict)
+    #--------------------------------------------------------------------------
+    def setupLifecyleMethods(self, xml_obj):
+        '''
+        Sets the lifecyle methods of the object.
+        '''
+        try:
+            dom = xml_obj.SimulatedComponent.initialize
+            methname = "initialize"
+            temp_dict = {}
+            temp_dict['Timeout'] = 0.0
+            
+            #get the code to be executed yielding a return value
+            temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
+            temp_dict['Value'] = getCompLocalNSList(self.compname) + temp_dict['Value']
+            temp_dict['Value'] = listToFunction(temp_dict['Value'], {})
+
+            #save the dictionary
+            self.setMethod(methname, temp_dict)
+
+        except:
+            pass
+        
+        
+        try:
+            dom = xml_obj.SimulatedComponent.cleanUp
+            temp_dict = {}
+            methname = "cleanUp"
+            temp_dict['Timeout'] = 0.0
+            
+            #get the code to be executed yielding a return value
+            temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
+            temp_dict['Value'] = getCompLocalNSList(self.compname) + temp_dict['Value']
+            temp_dict['Value'] = listToFunction(temp_dict['Value'], {})
+
+            #save the dictionary
+            self.setMethod(methname, temp_dict)
+
+        except:
+            pass
     #--------------------------------------------------------------------------
     def getCorbaAttributes(self, xml_obj):
         '''

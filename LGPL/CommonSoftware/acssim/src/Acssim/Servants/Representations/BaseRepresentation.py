@@ -32,7 +32,7 @@ Contains base class definition for simulated entries.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 from copy    import copy
-
+from inspect import isfunction
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
@@ -69,6 +69,7 @@ class BaseRepresentation:
         
         #reference to the component
         self.comp_ref = None
+        
     #--------------------------------------------------------------------------
     def getMethod(self, method_name):
         '''
@@ -88,7 +89,12 @@ class BaseRepresentation:
         '''
         Associates a method with a Python dictionary describing it.
         '''
-        self.methods[method_name] = copy(in_dict)
+        if not isfunction(in_dict):
+            code = copy(in_dict)
+        else:
+            code = in_dict
+        
+        self.methods[method_name] = code
     #--------------------------------------------------------------------------
     def __checkCompRef(self):
         '''

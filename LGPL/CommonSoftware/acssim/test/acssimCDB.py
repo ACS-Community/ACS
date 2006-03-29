@@ -40,7 +40,7 @@ if __name__=="__main__":
     print "--TEST_RPS_1--"
     cdb = CDB("TEST_RPS_1", if_list)
     #from RampedPowerSupply
-    print "cdb.getMethod('startRamping'):",  cdb.getMethod('startRamping')                
+    print "cdb.getMethod('startRamping'):",  cdb.getMethod('startRamping')['Timeout']             
     #from PowerSuppy
     print "cdb.getMethod('_get_readback'):",  cdb.getMethod('_get_readback')
     print
@@ -48,7 +48,7 @@ if __name__=="__main__":
     print "--HELLOWORLD1--"
     cdb = CDB("HELLOWORLD1", ["IDL:alma/acsexmplHelloWorld/HelloWorld:1.0",
                               "IDL:alma/ACS/ACSComponent:1.0"])
-    print "cdb.getMethod('displayMessage'):",  cdb.getMethod('displayMessage')           
+    print "cdb.getMethod('displayMessage'):",  cdb.getMethod('displayMessage')['Timeout']          
     print "cdb.getMethod('nonexistentMethod'):",  cdb.getMethod('nonexistentMethod')
     print
     

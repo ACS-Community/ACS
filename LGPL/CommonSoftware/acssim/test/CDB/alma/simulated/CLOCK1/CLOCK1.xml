@@ -4,6 +4,14 @@
         <pythonImports>
 from acstime import Duration
         </pythonImports>
+        <initialize>
+print 'CLOCK1 initialize from the CDB'
+return 123
+        </initialize>
+        <cleanUp>
+print 'CLOCK1 cleanUp from the CDB'
+return
+        </cleanUp>
         <_corbaMethod Name="getTimeInterval" Timeout="0" Random="false">
 print 'Params passed to getTimeInterval', parameters
 return Duration(34L)

@@ -181,7 +181,6 @@ return "this string value for the following IDL - readonly attribute string stuf
 		</xs:attribute>
 	</xs:complexType>
 	<!--#########################################################################-->
-	<xs:complexType mixed="true" name="lifeCycleMethod"/>
 	<xs:complexType mixed="true" name="nativeMethod">
 		<xs:annotation>
 			<xs:documentation>
@@ -203,6 +202,8 @@ x
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+    <xs:complexType mixed="true" name="lifeCycleMethod"/>
+    
 	<!--#########################################################################-->
 	<xs:complexType mixed="true" name="corbaMethod">
 		<xs:annotation>
