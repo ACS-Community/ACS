@@ -1,4 +1,4 @@
-# @(#) $Id: Supplier.py,v 1.15 2005/10/24 11:40:56 dfugate Exp $
+# @(#) $Id: Supplier.py,v 1.16 2006/03/29 18:42:07 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Supplier.py,v 1.15 2005/10/24 11:40:56 dfugate Exp $"
+__revision__ = "$Id: Supplier.py,v 1.16 2006/03/29 18:42:07 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -215,7 +215,8 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
                       simple_data=None,
                       type_name=None,
                       event_name="",
-                      se=None):
+                      se=None,
+                      supplier_name=None):
         '''
         publishEvent is the one method developers have to use.
 
@@ -234,6 +235,8 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         all other parameters will be completely ignored. A check is made to ensure
         that this object is really what it claims to be. This parameter is
         reserved for ACS internal usage.
+        - suppier_name is the name of the supplier publishing the event. This
+        parameter is reserved for ACS internal usage.
 
         Returns: Nothing
 
@@ -309,10 +312,14 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
 
         #Create the event dscription
         #get the component/client's name
-        try:
-            component_name = self.component._get_name()
-        except Exception, e:
-            component_name = "Unknown"
+        if supplier_name==None:
+            try:
+                component_name = self.component._get_name()
+            except Exception, e:
+                component_name = "Unknown"
+        else:
+            component_name = supplier_name
+                
         #get the time the event is being sent
         time_stamp = getTimeStamp()
         
