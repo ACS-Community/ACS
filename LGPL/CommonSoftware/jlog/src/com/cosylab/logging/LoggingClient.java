@@ -29,6 +29,9 @@ import java.awt.event.ComponentListener;
 import java.awt.Toolkit;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import java.io.File;
 import java.io.IOException;
@@ -286,7 +289,7 @@ public class LoggingClient extends JFrame
 		public void itemStateChanged(java.awt.event.ItemEvent e)
 		{
 
-			if (e.getSource() == LoggingClient.this.getJToggleButton1()) {
+			if (e.getSource() == LoggingClient.this.getSuspendToggleBtn()) {
 				connSuspend();
             }
 		};
@@ -771,7 +774,7 @@ public class LoggingClient extends JFrame
 		loadFiltersMenuItem.addActionListener(eventHandler); // Load Filters
 		saveFiltersMenuItem.addActionListener(eventHandler); // Save Filters
 		saveAsFiltersMenuItem.addActionListener(eventHandler); // Save Filters
-		getJToggleButton1().addItemListener(eventHandler); // Suspend toggle button
+		getSuspendToggleBtn().addItemListener(eventHandler); // Suspend toggle button
 		getScrollPaneTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
 		this.addWindowListener(eventHandler); // Logging Client
 
@@ -907,14 +910,10 @@ public class LoggingClient extends JFrame
         userPanel.add(searchBtn);
         searchBtn.addActionListener(eventHandler);
         
-        // progressPanel contains the progress bar shown while long
-        // operations are in progress
-        JPanel progressPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        progressPanel.add(progressBar);
-        progressBar.setVisible(false);
+    
         
         toolBarPanel.add(userPanel,BorderLayout.WEST);
-        toolBarPanel.add(progressPanel,BorderLayout.EAST);
+        
         
         toolBar.add(toolBarPanel);
     }
@@ -1104,7 +1103,7 @@ public class LoggingClient extends JFrame
 			getLCModel1().loadFromFile(null);
 
 			if (getLCModel1().getSuspended() == false) //if cancelled, e.g. has not been suspended
-				getJToggleButton1().doClick(10);
+				getSuspendToggleBtn().doClick(10);
 
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -1125,7 +1124,7 @@ public class LoggingClient extends JFrame
 			getLCModel1().loadFromURL();
 
 			if (getLCModel1().getSuspended() == false) //if cancelled, e.g. has not been suspended
-				getJToggleButton1().doClick(10);
+				getSuspendToggleBtn().doClick(10);
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -1152,7 +1151,7 @@ public class LoggingClient extends JFrame
 			getLCModel1().saveFile();
 
 			if (getLCModel1().getSuspended() == false) //if cancelled, e.g. has not been suspended
-				getJToggleButton1().doClick(10);
+				getSuspendToggleBtn().doClick(10);
 
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -1170,9 +1169,9 @@ public class LoggingClient extends JFrame
 		try
 		{
 			// releases the button if selected
-			if (getJToggleButton1().isSelected() == true)
+			if (getSuspendToggleBtn().isSelected() == true)
 			{
-				getJToggleButton1().doClick();
+				getSuspendToggleBtn().doClick();
 			}
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -1359,7 +1358,7 @@ public class LoggingClient extends JFrame
 		/* Set the target from the source */
 		try
 		{
-			getLCEngine().setSuspended(getJToggleButton1().isSelected());
+			getLCEngine().setSuspended(getSuspendToggleBtn().isSelected());
 
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -1604,21 +1603,27 @@ public class LoggingClient extends JFrame
 				ivjJPanel4.setName("JPanel4");
 				ivjJPanel4.setLayout(new java.awt.GridBagLayout());
 
-				java.awt.GridBagConstraints constraintsFilterStatus = new java.awt.GridBagConstraints();
+				GridBagConstraints constraintsFilterStatus = new GridBagConstraints();
 				constraintsFilterStatus.gridx = 0;
 				constraintsFilterStatus.gridy = 0;
-				constraintsFilterStatus.fill = java.awt.GridBagConstraints.BOTH;
-				constraintsFilterStatus.anchor = java.awt.GridBagConstraints.WEST;
+				constraintsFilterStatus.fill = GridBagConstraints.BOTH;
+				constraintsFilterStatus.anchor = GridBagConstraints.WEST;
 				constraintsFilterStatus.weightx = 1.0;
-				constraintsFilterStatus.insets = new java.awt.Insets(1, 1, 1, 1);
+				constraintsFilterStatus.insets = new Insets(1, 1, 1, 1);
 				ivjJPanel4.add(getFilterStatus(), constraintsFilterStatus);
 
-				java.awt.GridBagConstraints constraintsJToggleButton1 = new java.awt.GridBagConstraints();
-				constraintsJToggleButton1.gridx = 1;
+				GridBagConstraints constraintsProgressBar = new GridBagConstraints();
+		        constraintsProgressBar.gridx=1;
+		        constraintsProgressBar.gridy=0;
+		        constraintsProgressBar.insets = new Insets(2,2,2,2);
+		        progressBar.setVisible(true);
+		        ivjJPanel4.add(progressBar,constraintsProgressBar);
+				
+				GridBagConstraints constraintsJToggleButton1 = new GridBagConstraints();
+				constraintsJToggleButton1.gridx = 2;
 				constraintsJToggleButton1.gridy = 0;
-				constraintsJToggleButton1.insets = new java.awt.Insets(4, 4, 4, 4);
-				ivjJPanel4.add(getJToggleButton1(), constraintsJToggleButton1);
-
+				constraintsJToggleButton1.insets = new Insets(4, 4, 4, 4);
+				ivjJPanel4.add(getSuspendToggleBtn(), constraintsJToggleButton1);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -1738,7 +1743,7 @@ public class LoggingClient extends JFrame
 	 * @return javax.swing.JToggleButton
 	 */
 
-	javax.swing.JToggleButton getJToggleButton1()
+	javax.swing.JToggleButton getSuspendToggleBtn()
 	{
 		if (suspendToggleButton == null)
 		{
@@ -2034,28 +2039,34 @@ public class LoggingClient extends JFrame
      *@param text The text to show in the toolbar
      *            If it is null or empty then no text will be displayed
      */
-    public void showProgressBar(String text) {
-    	progressBar.setStringPainted(false);
-    	if (text!=null) {
-    		if (text.length()>0) {
+    public void animateProgressBar(String text) {
+    	System.out.println("Animating");
+    	if (text!=null && text.length()>0) {
     			progressBar.setString(text);
     			progressBar.setStringPainted(true);
-    		}
-    		progressBar.setToolTipText(text);
+    			progressBar.setToolTipText(text);
     	} else {
+    		progressBar.setStringPainted(false);
     		progressBar.setToolTipText("Wait please");
     	}
     	progressBar.setIndeterminate(true);
     	progressBar.setVisible(true);
-    	progressBar.setSize(logLevelCB.getSize());
+    	
     }
     
     /**
      * Hide the progress bar (i.e. a long operation
      * has terminated)
      */
-    public void hideProgressBar() {
-    	progressBar.setVisible(false);
+    public void freezeProgressBar() {
+    	System.out.println("freezing");
+    	progressBar.setIndeterminate(false);
+    	progressBar.setMinimum(0);
+    	progressBar.setMaximum(100);
+    	progressBar.setValue(0);
+    	progressBar.setStringPainted(false);
+    	progressBar.setToolTipText(null);
+    	progressBar.setVisible(true);
     }
     
     /**
