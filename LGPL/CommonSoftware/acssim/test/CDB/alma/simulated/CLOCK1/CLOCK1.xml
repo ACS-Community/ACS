@@ -12,12 +12,12 @@ return 123
 print 'CLOCK1 cleanUp from the CDB'
 return
         </cleanUp>
-        <_corbaMethod Name="getTimeInterval" Timeout="0" Random="false">
+        <_corbaMethod Name="getTimeInterval" Timeout="0">
 print 'Params passed to getTimeInterval', parameters
 return Duration(34L)
         </_corbaMethod>
 	
-        <_corbaMethod Name="toISO8601" Timeout="0" Random="false">
+        <_corbaMethod Name="toISO8601" Timeout="0">
 print 'Params passed to toISO8601', parameters
 return 'simple return value'
         </_corbaMethod>

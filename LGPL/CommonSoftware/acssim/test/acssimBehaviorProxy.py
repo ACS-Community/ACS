@@ -41,13 +41,6 @@ if __name__=="__main__":
     print "dir(TEST_RPS_1):", dir(bp)
     print
     
-    try:
-        print "bp.getMethod('on'):", bp.getMethod('on')
-        print "Bad!"
-    except:
-        print "Good...cannot get 'on' method before a MockComponent has been created"
-    print
-    
     addComponent("TEST_RPS_1", MockComponent("TEST_RPS_1"))
     try:
         print "bp.getMethod('on'):", bp.getMethod('on')

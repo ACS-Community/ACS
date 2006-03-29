@@ -156,4 +156,15 @@ def listToFunction(code_list, locals_dict):
     code_obj = compile(code_string, "sim_file", "exec")
     #exec code_obj in globals(), locals_dict
     return code_obj
+#--------------------------------------------------------------------
+def getTypeCode(ifr_id):
+    '''
+    Returns a typecode object using the ifr_id.
+    '''
+    #use the ifr to lookup the ID
+    lid = IFR.lookup_id(ifr_id)
+    #return the typecode from that
+    type_code = lid._get_type()
+    
+    return type_code
     

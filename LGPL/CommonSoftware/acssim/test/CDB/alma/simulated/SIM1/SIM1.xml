@@ -4,11 +4,11 @@
 <pythonImports>
 import CORBA
 </pythonImports>
-	<_corbaMethod Name="method1" Timeout="2" Random="false">
+	<_corbaMethod Name="method1" Timeout="2">
 CORBA.TRUE
         </_corbaMethod>
 
-	<_corbaMethod Name="method2" Timeout="5" Random="false">
+	<_corbaMethod Name="method2" Timeout="5">
 None
         </_corbaMethod>
 

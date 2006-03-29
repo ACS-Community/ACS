@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.10 2006/03/24 15:57:05 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.11 2006/03/29 19:33:58 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows: 
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.10 2006/03/24 15:57:05 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.11 2006/03/29 19:33:58 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -42,8 +42,11 @@ from Acspy.Common.CDBAccess    import CDBaccess
 from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
+from Acspy.Nc.Supplier import Supplier
+from Acssim.Corba.Generator import getRandomValue
+from Acssim.Corba.Utilities import getTypeCode
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id: Goodies.py,v 1.10 2006/03/24 15:57:05 dfugate Exp $"
+__revision__="@(#) $Id: Goodies.py,v 1.11 2006/03/29 19:33:58 dfugate Exp $"
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
@@ -82,6 +85,9 @@ _COMP_REFS = {}
 #first get access to the CDB
 CDB_ACCESS = CDBaccess()
 
+#each key in this dictionary consists of the stingified channel and the value
+#is a supplier object for said channel.
+_SUPPLIERS_DICT = {}
 #------------------------------------------------------------------------------
 def addComponent(comp_name, comp_ref):
     '''
@@ -123,6 +129,10 @@ def getComponent(comp_name):
 
     Returns: reference to a simulated component.
     '''
+    #sanity check
+    if _COMP_REFS.has_key(comp_name) == False:
+        return None
+    
     return _COMP_REFS[comp_name]
 #---------------------------------------------------------------------
 def getSimProxy(comp_name):
@@ -460,3 +470,49 @@ def setComponentMethod(comp_name,
     
     #store it globally
     getSimProxy(comp_name).api_handler.setMethod(meth_name, temp_dict)
+#----------------------------------------------------------------------------
+def supplyEventByType(component_name, channel_name, ifr_id):
+    '''
+    Supplies an event to a notification channel by the event's IFR ID type.
+    
+    Parameters:
+        - component_name - name of the component publisihing the event
+        - channel_name - name of the channel the event should be published
+        on
+        - ifr_id - the interface repository ID of the IDL structure that 
+        should be dynamically created and sent as an event
+        
+    Returns: Nothing
+    
+    Raises: ???
+    '''
+    #create an instance of the IDL struct
+    #get the type code first
+    type_code = getTypeCode(ifr_id)
+    event_instance = getRandomValue(type_code, 
+                                    getComponent(component_name))
+                                    
+    #now just delegate to another function
+    supplyEventByInstance(component_name, channel_name, event_instance)
+
+def supplyEventByInstance(component_name, channel_name, event_instance):
+    '''
+    Supplies an event to a notification channel.
+    
+    Parameters:
+        - component_name - name of the component publisihing the event
+        - channel_name - name of the channel the event should be published
+        on
+        - event_instance - an instance of the IDL struct to publish
+        
+    Returns: Nothing
+    
+    Raises: ???
+    '''
+    #sanity check
+    if _SUPPLIERS_DICT.has_key(channel_name)==False:
+        _SUPPLIERS_DICT[channel_name] = Supplier(channel_name,
+                                                 getComponent(component_name))
+    
+    _SUPPLIERS_DICT[channel_name].publishEvent(simple_data = event_instance,
+                                               supplier_name = component_name)         

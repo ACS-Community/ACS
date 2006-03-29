@@ -4,12 +4,13 @@
         <pythonImports>
 import ACSErrTypeCommonImpl
         </pythonImports>
-	<_corbaMethod Name="displayMessage" Timeout="3" Random="false">
+        
+	<_corbaMethod Name="displayMessage" Timeout="3">
 print 'Simulated Hello World!'
 return None
         </_corbaMethod>
 
-	<_corbaMethod Name="badMethod" Timeout="4" Random="false">
+	<_corbaMethod Name="badMethod" Timeout="4">
 raise ACSErrTypeCommonImpl.UnknownExImpl()
         </_corbaMethod>
 </SimulatedComponent>

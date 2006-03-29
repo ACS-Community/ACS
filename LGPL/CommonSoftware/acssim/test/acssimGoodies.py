@@ -33,15 +33,9 @@ from Acssim.Servants.Goodies import *
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
     print "--Testing----------------------------------------------------------"
-
-    try:
-        getComponent("dkfjkdf")
-        print "Should not see this!"
-    except:
-        print "Good."
+    print "getComponent('dkfjkdf'):", getComponent('dkfjkdf')
     
     addComponent("my", 7)
-
     print "Good:", getComponent("my")
 
     removeComponent("my")
@@ -49,7 +43,7 @@ if __name__ == "__main__":
         removeComponent("dfdfd")
         print "Should not see this!"
     except:
-        print "Good."    
+        print "Good."
              
     print "Done."
     print
