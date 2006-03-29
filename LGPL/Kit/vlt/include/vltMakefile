@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakefile,v 1.2 2004/09/17 13:32:46 mpasquat Exp $" 
+# "@(#) $Id: vltMakefile,v 1.3 2006/03/29 15:22:43 gchiozzi Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1157,6 +1157,29 @@ endif
 AUXILIARY_LIB = $(foreach dir, $(DIR_LIST), -L$(dir)$(VW)/$(LIBDIR))
 
 DIRLIST = $(subst :, , $(INTLIST))
+
+#
+# if ACSROOT is defined, override or complete the search paths:
+# This allows to build and use the module also in an environment
+# where ACS is installed on top of VLT.
+#
+ifdef ACSROOT
+    VLTINC := -I$(ACSROOT)/include $(AUXILIARY_INC) $(VLTINC)
+    ifdef MAKE_VXWORKS
+        VLTINC := -I$(ACSROOT)$(VW)/include $(VLTINC)
+    endif
+    VLTLIB := -L$(ACSROOT)$(VW)/$(LIBDIR) $(AUXILIARY_LIB) $(VLTLIB)
+    VLTTOP  = $(ACSROOT)$(VW)
+    INSTALL_ROOT = $(ACSROOT)
+    ALARMS  = $(ACSROOT)/ALARMS
+    ERRORS  = $(ACSROOT)/ERRORS
+    LOGS    = $(ACSROOT)/LOGS
+    CIT_DIR = $(ACSROOT)/vw/CIT
+    CDT_DIR = $(ACSROOT)/CDT
+    DBL     = $(ACSROOT)/dbl
+    VLTTOP_LOG = $(ACSROOT)
+    VLTIDL := -I$(ACSROOT)/idl $(VLTIDL)
+endif
 
 #
 # if INTLIST is defined, override or complete the search paths:
