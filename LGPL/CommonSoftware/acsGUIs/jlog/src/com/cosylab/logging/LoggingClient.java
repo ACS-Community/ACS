@@ -163,7 +163,10 @@ public class LoggingClient extends JFrame
 	private JPanel ivjJPanel1 = null;
 	private JPanel ivjJPanel2 = null;
 	private JPanel ivjJPanel3 = null;
-	private JPanel ivjJPanel4 = null;
+	
+	// The panel with the suspend btn, the filter string...
+	// It is immediately under the table of logs
+	private JPanel filterStatusPnl = null;
 
 	private JScrollPane ivjJScrollPane1 = null;
 	private JScrollPane ivjJScrollPane2 = null;
@@ -820,8 +823,6 @@ public class LoggingClient extends JFrame
         viewMenu.add(getFieldsMenuItem());
         viewMenu.add(setFiltersMenuItem());
         viewMenu.addSeparator();
-        viewMenu.add(getScrollPaneTable().getSortMenu());
-        viewMenu.add(getScrollPaneTable().getGroupMenu());
         loggingClientJMenuBar.add(viewMenu);
         
         // Add the Search Menu
@@ -1539,7 +1540,7 @@ public class LoggingClient extends JFrame
 				ivjJPanel2 = new javax.swing.JPanel();
 				ivjJPanel2.setName("JPanel2");
 				ivjJPanel2.setLayout(new java.awt.BorderLayout());
-				ivjJPanel2.add(getJPanel4(), "South");
+				ivjJPanel2.add(getFilterStatusPnl(), "South");
 				ivjJPanel2.add(getJSplitPane2(), "Center");
 
 			}
@@ -1593,15 +1594,15 @@ public class LoggingClient extends JFrame
 	 * Returns the JPanel4 property value.
 	 * @return javax.swing.JPanel
 	 */
-	private javax.swing.JPanel getJPanel4()
+	private javax.swing.JPanel getFilterStatusPnl()
 	{
-		if (ivjJPanel4 == null)
+		if (filterStatusPnl == null)
 		{
 			try
 			{
-				ivjJPanel4 = new javax.swing.JPanel();
-				ivjJPanel4.setName("JPanel4");
-				ivjJPanel4.setLayout(new java.awt.GridBagLayout());
+				filterStatusPnl = new javax.swing.JPanel();
+				filterStatusPnl.setName("JPanel4");
+				filterStatusPnl.setLayout(new java.awt.GridBagLayout());
 
 				GridBagConstraints constraintsFilterStatus = new GridBagConstraints();
 				constraintsFilterStatus.gridx = 0;
@@ -1610,20 +1611,20 @@ public class LoggingClient extends JFrame
 				constraintsFilterStatus.anchor = GridBagConstraints.WEST;
 				constraintsFilterStatus.weightx = 1.0;
 				constraintsFilterStatus.insets = new Insets(1, 1, 1, 1);
-				ivjJPanel4.add(getFilterStatus(), constraintsFilterStatus);
+				filterStatusPnl.add(getFilterStatus(), constraintsFilterStatus);
 
 				GridBagConstraints constraintsProgressBar = new GridBagConstraints();
 		        constraintsProgressBar.gridx=1;
 		        constraintsProgressBar.gridy=0;
 		        constraintsProgressBar.insets = new Insets(2,2,2,2);
 		        progressBar.setVisible(true);
-		        ivjJPanel4.add(progressBar,constraintsProgressBar);
+		        filterStatusPnl.add(progressBar,constraintsProgressBar);
 				
 				GridBagConstraints constraintsJToggleButton1 = new GridBagConstraints();
 				constraintsJToggleButton1.gridx = 2;
 				constraintsJToggleButton1.gridy = 0;
 				constraintsJToggleButton1.insets = new Insets(4, 4, 4, 4);
-				ivjJPanel4.add(getSuspendToggleBtn(), constraintsJToggleButton1);
+				filterStatusPnl.add(getSuspendToggleBtn(), constraintsJToggleButton1);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -1631,7 +1632,7 @@ public class LoggingClient extends JFrame
 				handleException(ivjExc);
 			}
 		}
-		return ivjJPanel4;
+		return filterStatusPnl;
 	}
 
 	/**
