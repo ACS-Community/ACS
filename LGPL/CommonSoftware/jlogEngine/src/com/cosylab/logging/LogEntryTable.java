@@ -80,9 +80,6 @@ public class LogEntryTable extends javax.swing.JTable
 	private FieldChooserDialog fieldChooser = new FieldChooserDialog();
 	private ColumnMenu popupMenu = new ColumnMenu();
 
-	private SortMenu sortMenu;
-	private GroupMenu groupMenu;
-	
 	private LoggingClient loggingClient;
 	
 	public TextTransfer textTransfer;
@@ -319,124 +316,6 @@ public class LogEntryTable extends javax.swing.JTable
 				}
 			} else {
 				// Unknown source ==> does nothing
-			}
-		}
-	}
-
-	private class GroupMenu extends javax.swing.JMenu implements ActionListener
-	{
-		private ButtonGroup groupGroup = new ButtonGroup();
-		private int columnCount = 0;
-		private JMyMenuItem newItem(String s, ButtonGroup bg, int index)
-		{
-			JMyMenuItem rb = new JMyMenuItem();
-			rb.setText(s);
-			rb.columnIndex = index;
-			bg.add(rb);
-			add(rb);
-			rb.addActionListener(this);
-			return rb;
-		}
-		public void rebuild()
-		{
-			setText("Group By");
-			/*removeAll();
-			columnCount = 0;
-			LogEntryTable let = LogEntryTable.this;
-			JMyMenuItem rb = null;
-			int n = let.columnsList.length;
-			int s = let.getGroupIndex() + 1;
-			for (int i = 2; i < n; i++)
-			{
-				if (let.visibleColumns[i])
-				{
-					rb = newItem(ILogEntry.fieldNames[i - 2], groupGroup, i - 1);
-					columnCount++;
-					if (i == s)
-						rb.setSelected(true);
-				}
-			}
-			add(new JSeparator());
-			rb = newItem("Ungroup", groupGroup, -2);
-			if (!let.isGrouped())
-				rb.setSelected(true);*/
-		}
-		
-		public void actionPerformed(ActionEvent e)
-		{
-			if (e.getSource() instanceof JMyMenuItem)
-			{
-				LogEntryTable let = LogEntryTable.this;
-				JMyMenuItem mmi = (JMyMenuItem) (e.getSource());
-				int columnIndex = mmi.columnIndex;
-
-				if (columnIndex > -1) 
-					; //let.setGroupIndex(columnIndex);
-
-				if (columnIndex == -2)
-					; //let.setGroupIndex(-1);
-			}
-		}
-	}
-
-	private class SortMenu extends javax.swing.JMenu implements ActionListener
-	{
-		private ButtonGroup sortGroup = new ButtonGroup();
-		private ButtonGroup orderGroup = new ButtonGroup();
-		private int columnCount = 0;
-		private JMyMenuItem newItem(String s, ButtonGroup bg, int index)
-		{
-			JMyMenuItem rb = new JMyMenuItem();
-			rb.setText(s);
-			rb.columnIndex = index;
-			bg.add(rb);
-			add(rb);
-			rb.addActionListener(this);
-			return rb;
-		}
-		public void rebuild()
-		{
-			setText("Sort By");
-			removeAll();
-			columnCount = 0;
-			LogEntryTable let = LogEntryTable.this;
-			JMyMenuItem rb = null;
-			int n = let.columnsList.length;
-			int s = let.getSortIndex() + 1;
-			for (int i = 2; i < n; i++)
-			{
-				if (let.visibleColumns[i])
-				{
-					rb = newItem(ILogEntry.fieldNames[i - 2], sortGroup, i - 1);
-					columnCount++;
-					if (i == s)
-						rb.setSelected(true);
-				}
-			}
-			add(new JSeparator());
-			rb = newItem("Ascending", orderGroup, -2);
-			if (let.isSortAscending())
-				rb.setSelected(true);
-			rb = newItem("Descending", orderGroup, -3);
-			if (!let.isSortAscending())
-				rb.setSelected(true);
-		}
-		public void actionPerformed(ActionEvent e)
-		{
-			if (e.getSource() instanceof JMyMenuItem)
-			{
-				LogEntryTable let = LogEntryTable.this;
-				JMyMenuItem mmi = (JMyMenuItem) (e.getSource());
-				int columnIndex = mmi.columnIndex;
-
-				if (columnIndex > 0)
-					let.setSortIndex(columnIndex);
-
-				if (columnIndex == -2)
-					let.setSortOrder(true);
-
-				if (columnIndex == -3)
-					let.setSortOrder(true);
 			}
 		}
 	}
@@ -713,20 +592,6 @@ public class LogEntryTable extends javax.swing.JTable
 	}
 
 	/**
-	 * Insert the method's description here.
-	 * Creation date: (2/6/02 10:36:43 AM)
-	 * @return javax.swing.JMenu
-	 */
-	public JMenu getGroupMenu()
-	{
-		if (groupMenu == null)
-		{
-			groupMenu = new GroupMenu();
-			groupMenu.rebuild();
-		}
-		return groupMenu;
-	}
-	/**
 	 * Returns the LogTableDataModel. This is a convinience method that returns propertly
 	 * case data model.
 	 * Creation date: (11/24/2001 18:44:41)
@@ -747,17 +612,7 @@ public class LogEntryTable extends javax.swing.JTable
 		return getLCModel().getFieldSortNumber();
 	}
 	
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (2/6/02 9:29:27 AM)
-	 * @return javax.swing.JMenu
-	 */
-	public javax.swing.JMenu getSortMenu()
-	{
-		if (sortMenu == null)
-			sortMenu = new SortMenu();
-		return sortMenu;
-	}
+
 	/**
 	 * Hides a table column specified by index.
 	 * Creation date: (12/4/2001 22:57:58)
@@ -770,8 +625,6 @@ public class LogEntryTable extends javax.swing.JTable
 			getColumnModel().removeColumn(columnsList[columnIndex]);
 			visibleColumns[columnIndex] = false;
 		}
-		if (sortMenu != null)
-			sortMenu.rebuild();
 	}
 
 	/**
@@ -955,9 +808,6 @@ public class LogEntryTable extends javax.swing.JTable
         hideColumn(ILogEntry.FIELD_FILE+2);
         hideColumn(ILogEntry.FIELD_STACKLEVEL+2);
 
-		sortMenu = new SortMenu();
-		sortMenu.rebuild();
-		
 		// Build and set the slection model
 		selectionModel = new DefaultListSelectionModel();
 		selectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -1041,8 +891,6 @@ public class LogEntryTable extends javax.swing.JTable
 			(columnsList[0]).setWidth(w + 1);
 			(columnsList[0]).setWidth(w);
 		}
-		if (sortMenu != null)
-			sortMenu.rebuild();
 	}
 	/**
 	 * Displays the field chooser dialog.
