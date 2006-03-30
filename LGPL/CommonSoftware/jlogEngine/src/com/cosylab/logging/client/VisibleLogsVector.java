@@ -209,7 +209,7 @@ public class VisibleLogsVector {
 			tableModel.fireTableRowsInserted(index,index);
 			// Find the position where the log has to be inserted
 		} else {
-			int pos = findPos2(log);
+			int pos = findPosLogarithmic(log);
 			visibleLogs.insertElementAt(index,pos);
 			tableModel.fireTableRowsInserted(pos,pos);
 		}
@@ -223,7 +223,7 @@ public class VisibleLogsVector {
 	 * @param log The log to insert in the visible logs
 	 * @return The position where the log has to be inserted
 	 */
-	private int findPos(ILogEntry log) {
+	private int findPosLinear(ILogEntry log) {
 		int t=0;
 		for (t=0; t<visibleLogs.size(); t++) {
 			if (comparator.isSortAscending() && comparator.compare(log,visibleLogs.get(t))>0) {
@@ -243,7 +243,7 @@ public class VisibleLogsVector {
 	 * @param log The log to insert in the visible logs
 	 * @return The position where the log has to be inserted
 	 */
-	private int findPos2(ILogEntry log) {
+	private int findPosLogarithmic(ILogEntry log) {
 		if (visibleLogs.size()==0) {
 			return 0;
 		}
@@ -325,6 +325,7 @@ public class VisibleLogsVector {
 	 */
 	public void clear() {
 		visibleLogs.clear();
+		tableModel.fireTableDataChanged(); 
 	}
 	
 	/**
@@ -334,7 +335,6 @@ public class VisibleLogsVector {
 	 * @param ascending true for ascending order
 	 */
 	public void setLogsOrder(int field, boolean ascending) {
-		System.out.println("Set sortting to ["+field+","+ascending+"]");
 		int prevField = comparator.getSortField();
 		comparator.setComparingParams(field,ascending);
 		// Do we have to update the vector?
