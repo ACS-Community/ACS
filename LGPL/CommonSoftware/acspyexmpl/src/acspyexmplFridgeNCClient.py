@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: acspyexmplFridgeNCClient.py,v 1.20 2006/03/30 16:58:36 dfugate Exp $
+# @(#) $Id: acspyexmplFridgeNCClient.py,v 1.21 2006/03/30 17:45:14 dfugate Exp $
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     while(count<5):
         sleep(1)
 
-    simpleClient.getLogger().logInfo(print "Events all done . . . exiting")
+    simpleClient.getLogger().logInfo("Events all done . . . exiting")
     g.disconnect()
 
     #Turn the C++ Fridge device off.

@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.6 2005/04/23 16:00:46 dfugate Exp $"
+# "@(#) $Id: TestList.lite,v 1.7 2006/03/30 17:45:14 dfugate Exp $"
 #
 # TestList
 #
@@ -35,4 +35,7 @@ PROLOGUE acspyexmplTATPrologue
 3  HelloWorldError  "acsutilTATTestRunner acspyexmplHelloWorldError"
 4  PythonComp       "acsutilTATTestRunner acsStartContainer -py pyContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplTestPyContainer" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer pyContainer"  "@SLEEP 15"
 5  FridgeChannel  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplFridgeNCSupplier"
+6  HelloWorldDynamic "acsutilTATTestRunner acspyexmplDynamicHelloWorld TestContainer"
+7  FridgeNCClient "acsutilTATTestRunner acspyexmplFridgeNCClient"
+8  TimeoutHandler "acsutilTATTestRunner acspyexmplTimeoutHandler"
 EPILOGUE acsutilTATEpilogue

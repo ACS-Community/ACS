@@ -1,0 +1,11 @@
+1 - Making sure there is a fridge available...
+1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
+1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
+1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
+1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
+1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
+1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
+1 - ----------T--:--:--.--- Python Client Main - Creating FridgeConsumer
+1 - ----------T--:--:--.--- Python Client Main - Waiting for events . . .
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- Python Client Main - Events all done . . . exiting
