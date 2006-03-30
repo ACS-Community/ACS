@@ -51,6 +51,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JProgressBar;
 import javax.swing.JOptionPane;
+import javax.swing.JCheckBox;
 
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
@@ -95,7 +96,15 @@ public class IOLogsHelper extends Thread  {
 		// The progress bar
 		private JProgressBar progressBar=new JProgressBar(JProgressBar.HORIZONTAL);
 		
+		// True if the user requested to abort the IO
 		private boolean abortRequested=false;
+		
+		// The checkbox to perform a fast IO
+		// It is done by hiding the table of logs
+		private JCheckBox fastCB = null;
+		
+		// The button to stop IO
+		private JButton abortBtn;
 		
 		/**
 		 * Build a progress dialog with a progress bar
@@ -129,8 +138,6 @@ public class IOLogsHelper extends Thread  {
 		
 		/** 
 		 * Init the GUI
-		 * 
-		 * @param progressBar If true a progress bar is added
 		 */
 		private void initGUI() {
 			addWindowListener(this);
@@ -150,12 +157,23 @@ public class IOLogsHelper extends Thread  {
 			add(new JLabel("Status:"),BorderLayout.WEST);
 			add(statusLbl,BorderLayout.CENTER);
 			
+			// Bottom panel contains the checkbox to hide/show the logs
+			// and the abort button
+			JPanel bottomPanel = new JPanel(new BorderLayout());
+			boolean checked=!LoggingClient.getInstance().getScrollPaneTable().isVisible();
+			fastCB = new JCheckBox("Fast IO (hide logs)",checked);
+			fastCB.addActionListener(this);
+			bottomPanel.add(fastCB,BorderLayout.NORTH);
+			
 			// Add the abort button
 			JPanel buttonPanel = new JPanel(new FlowLayout());
-			JButton abortBtn = new JButton("Abort");
+			abortBtn = new JButton("Abort");
 			abortBtn.addActionListener(this);
 			buttonPanel.add(abortBtn);
-			add(buttonPanel,BorderLayout.SOUTH);
+			bottomPanel.add(buttonPanel,BorderLayout.SOUTH);
+			
+			
+			add(bottomPanel,BorderLayout.SOUTH);
 			
 			pack();
 			toFront();
@@ -209,8 +227,12 @@ public class IOLogsHelper extends Thread  {
 		 * @see java.awt.event.ActionListener
 		 */
 		public void actionPerformed(ActionEvent evt) {
-			// There is only one possible action
-			abortRequested=true;
+			if (evt.getSource()==fastCB) {
+				LoggingClient.getInstance().getScrollPaneTable().setVisible(
+						!fastCB.isSelected());
+			} else if (evt.getSource()==abortBtn) {
+				abortRequested=true;
+			}
 		}
 		
 		/**
@@ -535,7 +557,6 @@ public class IOLogsHelper extends Thread  {
 	 * @param br The the file to read
 	 */
 	private void loadLogsFromDisk(BufferedReader br,LCEngine engine, LogCache cache) {
-		
 		if (br==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
@@ -625,6 +646,11 @@ public class IOLogsHelper extends Thread  {
 		}
 		
 		IOOperationInProgress=true;
+		
+		// Hide the table with the logs
+		// It reduces the access to the cache to redraw the logs 
+		// speeding up the loading
+		LoggingClient.getInstance().getScrollPaneTable().setVisible(false);
 		
 		// No progress bar because we don't know the length of this kind of file
 		if (showProgress) {
@@ -856,6 +882,7 @@ public class IOLogsHelper extends Thread  {
 	 *
 	 */
 	public void IOOperationTerminated() {
+		LoggingClient.getInstance().getScrollPaneTable().setVisible(true);
 		IOOperationInProgress=false;
 	}
 	
