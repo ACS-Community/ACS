@@ -32,6 +32,7 @@
 #include "bulkDataSender.h"
 #include "bulkDataReceiver.h"
 
+#include <acsQoS.h>
 
 /** @file bulkDataDistributer.h  
  */
@@ -62,12 +63,28 @@ namespace AcsBulkdata
 
     template<class TReceiverCallback, class TSenderCallback>
     class BulkDataDistributer
-    {
+    { 
+
+	enum Flow_Status
+	{
+	    FLOW_AVAILABLE,
+	    FLOW_NOT_AVAILABLE
+	};
 
 	typedef ACE_Hash_Map_Manager <ACE_CString, BulkDataSender<TSenderCallback> *,ACE_Null_Mutex>  Sender_Map;
 	typedef ACE_Hash_Map_Entry <ACE_CString, BulkDataSender<TSenderCallback> * > Sender_Map_Entry;
 	typedef ACE_Hash_Map_Iterator <ACE_CString, BulkDataSender<TSenderCallback> * ,ACE_Null_Mutex>  Sender_Map_Iterator;
-	
+
+	typedef ACE_Hash_Map_Manager <CORBA::ULong, Flow_Status, ACE_Null_Mutex> Flows_Status_Map;
+	typedef ACE_Hash_Map_Entry <CORBA::ULong, Flow_Status> Flows_Status_Map_Entry;
+	typedef ACE_Hash_Map_Iterator <CORBA::ULong, Flow_Status, ACE_Null_Mutex> Flows_Status_Map_Iterator;
+
+	typedef ACE_Hash_Map_Manager <ACE_CString, CORBA::ULong, ACE_Null_Mutex> Recv_Status_Map;
+	typedef ACE_Hash_Map_Entry <ACE_CString, CORBA::ULong> Recv_Status_Map_Entry;
+	typedef ACE_Hash_Map_Iterator <ACE_CString, CORBA::ULong, ACE_Null_Mutex> Recv_Status_Map_Iterator;
+
+
+
       public:
       
 	/**
@@ -98,21 +115,42 @@ namespace AcsBulkdata
 	virtual bool isRecvConnected (const ACE_CString& receiverName);
 
 
-	virtual void distSendStart (ACE_CString& flowName);
+	virtual void distSendStart (ACE_CString& flowName, CORBA::ULong flowNumber);
 
-	virtual int distSendData (ACE_CString& flowName, ACE_Message_Block * frame_p);
+	virtual int distSendDataHsk (ACE_CString& flowName, ACE_Message_Block * frame_p, CORBA::ULong flowNumber);
 
-	virtual void distSendStop (ACE_CString& flowName);
+	virtual int distSendData (ACE_CString& flowName, ACE_Message_Block * frame_p, CORBA::ULong flowNumber);
 
+	virtual CORBA::Boolean distSendStopTimeout (ACE_CString& flowName, CORBA::ULong flowNumber);
+
+	virtual void distSendStop (ACE_CString& flowName, CORBA::ULong flowNumber);
+
+	void setTimeout (CORBA::ULong user_timeout) 
+	    { timeout_m = user_timeout; }
+
+	void setContSvc (ContainerServices * services_p)
+	    {  contSvc_p = services_p; }  
 
       private:
 
+	CORBA::Boolean getFlowReceiverStatus(const ACE_CString& receiverName, CORBA::ULong flowNumber);
+
+	CORBA::Boolean isFlowReceiverAvailable(const ACE_CString& receiverName, CORBA::ULong flowNumber);
 
 	BulkDataSender<TSenderCallback> *sender_p;
 	
 	BulkDataReceiver<TReceiverCallback> receiver_m;
 
 	Sender_Map senderMap_m;
+
+	Recv_Status_Map recvStatusMap_m;
+	Flows_Status_Map flowsStatusMap_m;
+
+	CORBA::ULong timeout_m;
+	CORBA::ULong numberOfFlows;
+	CORBA::ULong offset;
+
+	ContainerServices * contSvc_p;
 
     };
 }

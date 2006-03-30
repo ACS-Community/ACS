@@ -13,7 +13,7 @@
 #include "orbsvcs/AV/Policy.h"
 
 #include <baci.h>
-#include <acsQoS.h>
+//#include <acsQoS.h>
 
 #include "ACSBulkDataError.h"
 
@@ -68,6 +68,8 @@ class BulkDataDistributerCb : public TAO_AV_Callback
     virtual int cbFwdReceive(ACE_Message_Block * frame_p);
 
     virtual int cbFwdStop();
+
+    virtual int cbFwdUserStop();
 
     virtual int cbHandshake(ACE_Message_Block * frame_p);
 

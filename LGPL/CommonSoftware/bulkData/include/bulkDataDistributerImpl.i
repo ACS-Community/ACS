@@ -4,7 +4,7 @@ BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::BulkDataDistributer
 {
     ACS_TRACE("BulkDataDistributerImpl<>::BulkDataDistributerImpl");
 
-    containerServices_p=containerServices;
+    containerServices_p = containerServices;
 
     dal_p = containerServices_p->getCDB();
     if (CORBA::is_nil (dal_p))
@@ -13,6 +13,9 @@ BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::BulkDataDistributer
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
 	throw err.getAVStreamEndpointErrorEx();
 	}
+
+    distributer.setContSvc(containerServices_p);
+
 }
 
 
@@ -57,13 +60,16 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 
     char buf[BUFSIZ];
 
+    CORBA::ULong timeout = 0; 
+    CDB::DAO_ptr dao_p = 0;
+
     try
 	{
 
 	ACE_CString CDBpath="alma/";
 	CDBpath += name();
 
-	CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
+	dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
 	if (CORBA::is_nil (dao_p))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect dao_p nil"));
@@ -72,6 +78,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	    }
 
 	ACE_OS::strcpy(buf,dao_p->get_string("sender_protocols"));
+
 	}
     catch(...)
 	{
@@ -80,6 +87,15 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	throw err.getAVConnectErrorEx();
 	}
 
+    try
+	{
+	timeout = (CORBA::ULong) dao_p->get_long("distr_timeout");
+	}
+    catch(...)
+	{
+	timeout = 0;
+	}
+    
     try
 	{
 
@@ -95,6 +111,9 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	ACE_CString recvName = receiverObj_p->name();
 
 	distributer.multiConnect(receiverConfig,buf,recvName);
+
+	distributer.setTimeout(timeout);
+
 	}
 
     catch (AVInitErrorExImpl & ex)

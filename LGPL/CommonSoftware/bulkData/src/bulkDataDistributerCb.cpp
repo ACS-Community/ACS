@@ -38,6 +38,7 @@ int BulkDataDistributerCb::handle_start(void)
     //ACS_TRACE("BulkDataDistributerCb::handle_start");
     
     //cout << "BulkDataDistributerCb::handle_start - state_m: " << state_m << endl;
+    cout << "BulkDataDistributerCb::handle_start entering..." << endl;
     
     timeout_m = false;
     
@@ -53,6 +54,7 @@ int BulkDataDistributerCb::handle_start(void)
 int BulkDataDistributerCb::handle_stop (void)
 {
     //ACS_TRACE("BulkDataDistributerCb::handle_stop");
+    cout << "BulkDataDistributerCb::handle_stop entering..." << endl;
 
     int locLoop;
 
@@ -67,7 +69,7 @@ int BulkDataDistributerCb::handle_stop (void)
 
     if(state_m == CB_UNS)
 	{ 
-	int res = cbFwdStop();
+	int res = cbFwdUserStop();
 	return res;
 	}
 
@@ -125,6 +127,7 @@ int BulkDataDistributerCb::handle_destroy (void)
 int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &)
 {
     //ACS_TRACE("BulkDataDistributerCb::receive_frame");
+    cout << "BulkDataDistributerCb::receive_frame entering..." << endl;
 
     working_m = true;
 
@@ -253,11 +256,12 @@ BulkDataDistributerCb::cbHandshake(ACE_Message_Block * info_p)
 
     try
 	{
-	distr_m->getDistributer()->distSendStart(flowname_m);
+
+	distr_m->getDistributer()->distSendStart(flowname_m, flowNumber_m);
 	
-	distr_m->getDistributer()->distSendData(flowname_m,info_p);
+	distr_m->getDistributer()->distSendDataHsk(flowname_m, info_p, flowNumber_m);
 	
-	distr_m->getDistributer()->distSendStop(flowname_m);
+	distr_m->getDistributer()->distSendStop(flowname_m, flowNumber_m);
 	}
     catch(...)
 	{
@@ -307,7 +311,7 @@ BulkDataDistributerCb::cbFwdStart(ACE_Message_Block * userParam_p)
 
     try
 	{
-	distr_m->getDistributer()->distSendData(flowname_m,userParam_p);
+	distr_m->getDistributer()->distSendData(flowname_m,userParam_p, flowNumber_m);
 	}
     catch(...)
 	{
@@ -333,7 +337,7 @@ BulkDataDistributerCb::cbFwdReceive(ACE_Message_Block * frame_p)
 
     try
 	{
-	distr_m->getDistributer()->distSendData(flowname_m, frame_p);
+	distr_m->getDistributer()->distSendData(flowname_m, frame_p, flowNumber_m);
 	}
     catch(...)
 	{
@@ -362,17 +366,7 @@ BulkDataDistributerCb::cbFwdStop()
 
     try
 	{
-	//unsigned long timeout = 2000;
-
-	//acsQoS::Timeout tim(timeout);
-
-	distr_m->getDistributer()->distSendStop(flowname_m);
-	}
-    catch(CORBA::TIMEOUT & tim)
-	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStop CORBA::TIMEOUT exception catched!"));
-
-	timeout_m = true;
+	timeout_m = distr_m->getDistributer()->distSendStopTimeout(flowname_m, flowNumber_m);
 	}
     catch(...)
 	{
@@ -381,6 +375,27 @@ BulkDataDistributerCb::cbFwdStop()
 
     return 0;
 }
+
+
+
+int
+BulkDataDistributerCb::cbFwdUserStop()
+{
+    //ACS_TRACE("BulkDataDistributerCb::cbFwdUserStop"); 
+
+    try
+	{
+	distr_m->getDistributer()->distSendStop(flowname_m, flowNumber_m);
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStop exception catched!"));
+	}
+
+    return 0;
+}
+
+
 
 
 void BulkDataDistributerCb::setDistributerImpl(BulkDataDistributerImpl<BulkDataDistributerCb> *distr_p)
