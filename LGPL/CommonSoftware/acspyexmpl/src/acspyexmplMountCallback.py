@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyexmplMountCallback.py,v 1.9 2005/06/20 21:13:30 dfugate Exp $
+# @(#) $Id: acspyexmplMountCallback.py,v 1.10 2006/03/30 16:58:36 dfugate Exp $
 #------------------------------------------------------------------------------
 '''
 DESCRIPTION
@@ -106,7 +106,7 @@ class MyMonitor(ACS__POA.CBdouble):
 simpleClient = PySimpleClient()
 
 # Do something on a device.
-print "We can directly manipulate a device once we get it, which is easy!!"
+simpleClient.getLogger().logInfo("We can directly manipulate a device once we get it, which is easy!!")
 
 # Get the standard MOUNT1 Mount device
 mount = simpleClient.getComponent("MOUNT1")

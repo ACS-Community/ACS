@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyexmplDynamicHelloWorld.py,v 1.9 2005/05/06 22:43:44 dfugate Exp $
+# @(#) $Id: acspyexmplDynamicHelloWorld.py,v 1.10 2006/03/30 16:58:36 dfugate Exp $
 
 
 '''
@@ -60,12 +60,12 @@ hwRef = simpleClient.getDynamicComponent(None,
                                          str(argv[1]))
 
 if hwRef != None:
-    print "Retrieved valid reference from manager."
+    simpleClient.getLogger().logInfo("Retrieved valid reference from manager.")
     #Do something useful with the reference.
     hwRef.displayMessage()
-    print "Method of dynamic component successfully invoked. Have a nice day!"
+    simpleClient.getLogger().logInfo("Method of dynamic component successfully invoked. Have a nice day!")
 else:
-    print "Bad reference retrieved from manager"
+    simpleClient.getLogger().logAlert("Bad reference retrieved from manager")
 
 simpleClient.disconnect()
 print "The end __oOo__"

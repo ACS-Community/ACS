@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyexmplHelloWorldError.py,v 1.9 2005/02/08 01:41:31 dfugate Exp $
+# @(#) $Id: acspyexmplHelloWorldError.py,v 1.10 2006/03/30 16:58:36 dfugate Exp $
 #------------------------------------------------------------------------------
 
 '''
@@ -57,11 +57,11 @@ simpleClient = PySimpleClient()
 try:
     # Get the standard HelloWorld device
     hw = simpleClient.getComponent("HELLOWORLD1")
-    print "Trying to invoke bad method"
+    simpleClient.getLogger().logInfo("Trying to invoke bad method")
     hw.badMethod()
     
 except ACSErrTypeCommon.UnknownEx, e:
-    print "Caught an ACSException...don't worry because this SHOULD happen."
+    simpleClient.getLogger().logCritical("Caught an ACSException...don't worry because this SHOULD happen.")
     helperException = ACSErrTypeCommonImpl.UnknownExImpl(exception=e)
     helperException.Print()
     helperException.log()
@@ -69,8 +69,8 @@ except ACSErrTypeCommon.UnknownEx, e:
     simpleClient.releaseComponent("HELLOWORLD1")
 
 except Exception, e:
-    print "Caught the wrong type of exception!!!"
-    print "The exception was:", e
+    simpleClient.getLogger().logAlert("Caught the wrong type of exception!!!")
+    simpleClient.getLogger().logDebug("The exception was:" + str(e))
 
 simpleClient.disconnect()
 print "The end __oOo__"

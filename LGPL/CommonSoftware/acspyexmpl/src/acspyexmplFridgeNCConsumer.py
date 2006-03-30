@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: acspyexmplFridgeNCConsumer.py,v 1.12 2005/02/25 23:42:32 dfugate Exp $
+# @(#) $Id: acspyexmplFridgeNCConsumer.py,v 1.13 2006/03/30 16:58:36 dfugate Exp $
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002 
@@ -43,11 +43,13 @@ from time import sleep
 import FRIDGE
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Nc.Consumer          import Consumer
+from Acspy.Common.Log           import getLogger
 #--GLOBALS---------------------------------------------------------------------
 #count is a global integer used to make sure we don't print more than five
 #events to standard out.  really this is done just to make this module's modular
 # test happy.
 count = 0
+LOGGER = getLogger("FridgeNCConsumer")
 #------------------------------------------------------------------------------
 def fridgeDataHandler(someParam):
     '''
@@ -70,7 +72,7 @@ def fridgeDataHandler(someParam):
     if count < 5:
         tempDiff   = someParam.absoluteDiff
         tempStatus = someParam.status
-        print 'The temperature difference is', tempDiff
+        LOGGER.logInfo('The temperature difference is ' + str(tempDiff))
         count = count + 1
         
     return
@@ -78,7 +80,7 @@ def fridgeDataHandler(someParam):
 if __name__ == "__main__":
 
     #Create a FridgeConsumer
-    print 'Creating FridgeConsumer'
+    LOGGER.logInfo('Creating FridgeConsumer')
     g = Consumer(FRIDGE.CHANNELNAME_FRIDGE)
 
     #Subscribe to temperatureDataBlockEvent events (see acsexmplFridge.idl) and register
@@ -89,11 +91,11 @@ if __name__ == "__main__":
     g.consumerReady()
 
     #After five events have been received, disconnect from the channel
-    print "Waiting for events . . ."
+    LOGGER.logInfo("Waiting for events . . .")
     while(count<5):
         sleep(1)
 
-    print "Events all done . . . exiting"
+    LOGGER.logInfo("Events all done . . . exiting")
     g.disconnect()
 #------------------------------------------------------------------------------
 

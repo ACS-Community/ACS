@@ -1,6 +1,8 @@
-1 - Trying to invoke bad method
-1 - Caught an ACSException...don't worry because this SHOULD happen.
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- Python Client Main - Caught an ACSException...don't worry because this SHOULD happen.
+1 - ----------T--:--:--.--- Python Client Main - Trying to invoke bad method
 1 - ErrorTrace (TimeStamp=xxxx,
+1 - The end __oOo__
 1 -             File=xxx
 1 -             Line=xxx
 1 -             Routine=?,
@@ -22,5 +24,3 @@
 1 -             Code=3,
 1 -             Data: )
 1 - 
-1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
-1 - The end __oOo__

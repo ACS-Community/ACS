@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: acspyexmplFridgeNCSupplier.py,v 1.10 2005/02/25 23:42:32 dfugate Exp $
+# @(#) $Id: acspyexmplFridgeNCSupplier.py,v 1.11 2006/03/30 16:58:36 dfugate Exp $
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002 
@@ -42,26 +42,27 @@ from time import sleep
 import FRIDGE
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Nc.Supplier      import Supplier
+from Acspy.Common.Log       import getLogger
 #--GLOBALS---------------------------------------------------------------------
-
+LOGGER = getLogger("FridgeNCSupplier")
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
 
     #Create a supplier
-    print 'Creating an instance of Supplier'
+    LOGGER.logInfo('Creating an instance of Supplier')
     g = Supplier(FRIDGE.CHANNELNAME_FRIDGE)
 
     #Create an instance of our user-defined IDL structure
     h = FRIDGE.temperatureDataBlockEvent(3.7, FRIDGE.ATREF)
 
     #Send 50 events
-    print "Ready to send NC events..."
+    LOGGER.logInfo("Ready to send NC events...")
     for i in range(50):
         g.publishEvent(simple_data=h)
         #Really just used for testing purposes
         sleep(1)
     
-    print "Events all done . . . exiting"
+    LOGGER.logInfo("Events all done . . . exiting")
     #cleanly disconnect from the channel
     g.disconnect()
 #------------------------------------------------------------------------------

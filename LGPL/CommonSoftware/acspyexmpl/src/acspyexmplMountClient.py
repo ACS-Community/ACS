@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyexmplMountClient.py,v 1.10 2005/02/08 01:41:31 dfugate Exp $
+# @(#) $Id: acspyexmplMountClient.py,v 1.11 2006/03/30 16:58:36 dfugate Exp $
 #------------------------------------------------------------------------------
 '''
 DESCRIPTION
@@ -48,15 +48,14 @@ from Acspy.Clients.SimpleClient import PySimpleClient
 simpleClient = PySimpleClient()
 
 # Print information about the available COBs
-print "COBs available are: "
 components = simpleClient.availableComponents()
 
+simpleClient.getLogger().logInfo("COBs available are: ")
 for cob in components:
-    print cob.name, " of type ", cob.type
+    simpleClient.getLogger().logInfo(cob.name + " of type " + cob.type)
 
 # Do something on a device.
-print
-print "We can directly manipulate a device once we get it, which is easy."
+simpleClient.getLogger().logInfo("We can directly manipulate a device once we get it, which is easy.")
 try:
     # Get the standard MOUNT1 Mount device
     mount = simpleClient.getComponent("MOUNT1")
@@ -66,26 +65,14 @@ try:
 
     # Ask the current value of the property
     (azm, compl) = actAzProperty.get_sync()
-    print "MOUNT1 actual azimuth: ", azm
+    simpleClient.getLogger().logInfo("MOUNT1 actual azimuth: " + str(azm))
 
     # Release it
     simpleClient.releaseComponent("MOUNT1")
     
 except Exception, e:
-    print "Sorry, I expected there to be a Mount in the system and"
-    print "there isn't."
-    print "The exception was:", e
+    simpleClient.getLogger().logCritical("Sorry, I expected there to be a Mount in the system and there isn't.")
+    simpleClient.getLogger().logDebug("The exception was:" + str(e))
 
 simpleClient.disconnect()
 print "The end __oOo__"
-
-
-
-
-
-
-
-
-
-
-

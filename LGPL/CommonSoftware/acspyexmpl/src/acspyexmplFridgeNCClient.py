@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: acspyexmplFridgeNCClient.py,v 1.19 2005/02/25 23:42:32 dfugate Exp $
+# @(#) $Id: acspyexmplFridgeNCClient.py,v 1.20 2006/03/30 16:58:36 dfugate Exp $
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002 
@@ -50,11 +50,15 @@ from ACS import CBDescIn
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Nc.Consumer          import Consumer
 from Acspy.Clients.SimpleClient import PySimpleClient
+from Acspy.Common.Log           import getLogger
 #--GLOBALS---------------------------------------------------------------------
 #count is a global integer used to make sure we don't print more than five
 #events to standard out.  really this is done just to make this module's modular
 # test happy.
 count = 0
+
+LOGGER = getLogger("FridgeNCClient")
+
 #------------------------------------------------------------------------------
 def fridgeDataHandler(someParam):
     '''
@@ -76,7 +80,7 @@ def fridgeDataHandler(someParam):
     
     if count < 5:
         count = count + 1
-        print 'The temperature difference is', someParam.absoluteDiff
+        LOGGER.logInfo('The temperature difference is ' + str(someParam.absoluteDiff))
         
     return
 #------------------------------------------------------------------------------
@@ -90,7 +94,7 @@ if __name__ == "__main__":
     aFridge.on()
 
     #Create a FridgeConsumer
-    print 'Creating FridgeConsumer'
+    simpleClient.getLogger().logInfo('Creating FridgeConsumer')
     g = Consumer(FRIDGE.CHANNELNAME_FRIDGE)
 
     #Subscribe to temperatureDataBlockEvent events and register this handler to process
@@ -101,11 +105,11 @@ if __name__ == "__main__":
     g.consumerReady()
 
     #After five events have been received, disconnect from the channel
-    print "Waiting for events . . ."
+    simpleClient.getLogger().logInfo("Waiting for events . . .")
     while(count<5):
         sleep(1)
 
-    print "Events all done . . . exiting"
+    simpleClient.getLogger().logInfo(print "Events all done . . . exiting")
     g.disconnect()
 
     #Turn the C++ Fridge device off.
