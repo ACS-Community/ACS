@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.59 2006/02/08 16:23:16 dfugate Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.60 2006/03/30 07:59:00 gchiozzi Exp $"
 #
 #
 #
@@ -51,7 +51,28 @@
 ######
 # ACS specific configuration
 #
-# ACSROOT     # ACS installation directory
+# ALMASW_ROOTDIR # Parent directory for the installation
+#             # of any ACS version.
+#             # Normally /alma, should be touched
+#             # only when it is not possible to build
+#             # an ACS installation in the standard
+#             # tree
+# ALMASW_RELEASE # Parent directory for a specific
+#             # ACS version, appended to ALMASW_ROOTDIR
+#             # to build the absolute path of the installation.
+#             # Normally ACS-x.y is tipically changed outside this
+#             # profile only when building test installations
+#             # including new tools
+#             # ACS external products (ACS/ExtProd) are built 
+#             # and installed here.
+# ACSROOT     # ACS installation directory below ALMASW_RELEASE
+#             # Changing this variable allows to have different
+#             # ACS installations using the same set of external product.
+#             # Since the external product have to be the same
+#             # for all patches ACS-x.y.z of the same ACS-x.y version
+#             # this allows to keep and switch between patches
+#             # and it is therefore quite useful for application
+#             # developers.
 # INTROOT     # Developer integration area
 # INTLIST     # A list of intermediate installation directories
 #             # between ACSROOT and INTROOT 
@@ -108,12 +129,6 @@
 # MATPLOTLIBDATA # matplotlib Python package location
 #######################################################
 
-
-# Default location for the ACS software and tools:
-ALMASW_ROOTDIR=/alma
-ALMASW_RELEASE=ACS-5.0
-ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
-
 #
 # Checks RETAIN mode
 #
@@ -121,6 +136,21 @@ if [ "$1" = "-r" ]
 then
    ACS_RETAIN=1
 fi
+
+#
+# Default location for the ACS software and tools:
+#
+if [ X"$ALMASW_ROOTDIR" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ALMASW_ROOTDIR=/alma
+fi
+if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ALMASW_RELEASE=ACS-5.0
+fi
+# Combined absolute path where ACS software and tools are installed.
+ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+
 
 #########################################################
 # Here is the OS detection Subroutines
