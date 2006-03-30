@@ -340,7 +340,7 @@ public class LogEntryTable extends javax.swing.JTable
 		public void rebuild()
 		{
 			setText("Group By");
-			removeAll();
+			/*removeAll();
 			columnCount = 0;
 			LogEntryTable let = LogEntryTable.this;
 			JMyMenuItem rb = null;
@@ -359,7 +359,7 @@ public class LogEntryTable extends javax.swing.JTable
 			add(new JSeparator());
 			rb = newItem("Ungroup", groupGroup, -2);
 			if (!let.isGrouped())
-				rb.setSelected(true);
+				rb.setSelected(true);*/
 		}
 		
 		public void actionPerformed(ActionEvent e)
@@ -370,11 +370,11 @@ public class LogEntryTable extends javax.swing.JTable
 				JMyMenuItem mmi = (JMyMenuItem) (e.getSource());
 				int columnIndex = mmi.columnIndex;
 
-				if (columnIndex > -1)
-					let.setGroupIndex(columnIndex);
+				if (columnIndex > -1) 
+					; //let.setGroupIndex(columnIndex);
 
 				if (columnIndex == -2)
-					let.setGroupIndex(-1);
+					; //let.setGroupIndex(-1);
 			}
 		}
 	}
@@ -483,12 +483,10 @@ public class LogEntryTable extends javax.swing.JTable
 					case -1 :
 						break;
 					case 0 :
-						let.setSortIndex(menu.getColumnIndex());
-						let.setSortOrder(true);
+						let.setOrdering(menu.getColumnIndex(),true);
 						break;
 					case 1 :
-						let.setSortIndex(menu.getColumnIndex());
-						let.setSortOrder(false);
+						let.setOrdering(menu.getColumnIndex(),false);
 						break;
 					case 3 :
 						let.hideColumn(menu.getColumnIndex() + 1);
@@ -497,10 +495,10 @@ public class LogEntryTable extends javax.swing.JTable
 						let.showFieldChooser();
 						break;
 					case 6 :
-						let.setGroupIndex(menu.getColumnIndex());
+						//let.setGroupIndex(menu.getColumnIndex());
 						break;
 					case 7 :
-						let.setGroupIndex(-1);
+						//let.setGroupIndex(-1);
 				}
 			}
 		}
@@ -631,13 +629,13 @@ public class LogEntryTable extends javax.swing.JTable
 			if (e.getButton()==MouseEvent.BUTTON1)
 			{
 				// Left mouse button
-				if ((owner.isGrouped()) && (owner.convertColumnIndexToModel(col)== 0))
+				/*if ((owner.isGrouped()) && (owner.convertColumnIndexToModel(col)== 0))
 				{
 					owner.clearSelection();
 					owner.getLCModel().toggleExpand(row);
 					e.consume();
 					return;
-				}
+				}*/
 				owner.updateExtraInfo();
 			} else if (e.isPopupTrigger()) {
 				// The mouse button is the pop up trigger so we show the menu
@@ -713,19 +711,7 @@ public class LogEntryTable extends javax.swing.JTable
 	{
 		return getLCModel().getFilters().getFilterString();
 	}
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (2/6/02 10:34:56 AM)
-	 * @return int
-	 */
-	public int getGroupIndex()
-	{
-		if (isGrouped())
-		{
-			return getLCModel().getGroupComparator().getFieldIndex();
-		}
-		return -1;
-	}
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (2/6/02 10:36:43 AM)
@@ -751,23 +737,16 @@ public class LogEntryTable extends javax.swing.JTable
 		return (LogTableDataModel) getModel();
 	}
 	/**
-	 * Sets the index of the column the table should be sorted by. If the table is
-	 * currently unsorted, the result is -1.
-	 * Creation date: (1/24/02 10:43:26 AM)
+	 * Sets the index of the column the table should be sorted by.
+	 * If the table is currently unsorted, the result is -1.
+	 * 
 	 * @return int
 	 */
 	public int getSortIndex()
 	{
-		LogEntryComparator comparator = getLCModel().getSortComparator();
-
-		int result = -1;
-		if (comparator != null)
-			result = comparator.getFieldIndex();
-
-		repaint();
-
-		return result;
+		return getLCModel().getFieldSortNumber();
 	}
+	
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (2/6/02 9:29:27 AM)
@@ -987,15 +966,7 @@ public class LogEntryTable extends javax.swing.JTable
 		//	firePropertyChange("filterString", "", getFilterString());
 
 	}
-	/**
-	 * Returns true if the table entries are currently grouped.
-	 * Creation date: (1/24/02 11:02:49 AM)
-	 * @return boolean
-	 */
-	public boolean isGrouped()
-	{
-		return (getLCModel().getGroupComparator() != null);
-	}
+
 	/**
 	 * Returns true if the elements are sorted in ascending order and false if in descending.
 	 * If the table is not sorted, this parameter has no meaning.
@@ -1004,69 +975,51 @@ public class LogEntryTable extends javax.swing.JTable
 	 */
 	public boolean isSortAscending()
 	{
-		LogEntryComparator comparator = getLCModel().getSortComparator();
-		if (comparator == null)
-			return false;
-		else
-			return comparator.isAscending();
-
+		return getLCModel().sortedAscending();
 	}
+	
 	/**
-	 * Sets the index of the column the elements of this table will be grouped by. This
-	 * index can be same as sort index. Setting to a negative value will ungroup the table.
-	 * Creation date: (1/22/02 6:25:06 PM)
-	 * @param index int
-	 */
-	public void setGroupIndex(int index)
-	{
-		if (index > -1)
-		{
-			// showColumn(0);
-			getLCModel().setGroupComparator(new LogEntryComparator((short) index, true));
-			int i = convertColumnIndexToView(index + 1);
-			if (i > -1)
-				getColumnModel().moveColumn(i, 1);
-
-			if (groupMenu != null)
-				groupMenu.rebuild();
-		}
-		else
-		{
-			//	    hideColumn(0);
-			getLCModel().setGroupComparator(null);
-			if (groupMenu != null)
-				groupMenu.rebuild();
-		}
-	}
-	/**
-	 * Sets the column the elements in this table should be sorted by. This value can be the
-	 * same as the group index. Setting it to negative value means the table is not sorted.
-	 * Creation date: (1/22/02 6:24:52 PM)
+	 * Sets the column the elements in this table should be sorted by. 
+	 * Setting it to -1 means the table is not sorted.
+	 * 
+	 * To change both the index and the order, it is better
+	 * to execute setOrdering
+	 * 
 	 * @param index int
 	 */
 	public void setSortIndex(int index)
 	{
 		LogTableDataModel ltdm = getLCModel();
-
-		if (index < 0)
-		{
-			ltdm.setSortComparator(null);
-		}
-		else
-		{
-			ltdm.setSortComparator(new LogEntryComparator((short) index, isSortAscending()));
-		}
-
+		ltdm.setSortComparator(index,ltdm.sortedAscending());
 	}
+
 	/**
-	 * Changes the order in which the elements are sorted. Set true for ascending and false
-	 * for descending. If the table is currently not sorted, this method does nothing.
-	 * Creation date: (1/22/02 6:29:52 PM)
-	 * @param ascending boolean
+	 * Changes the order in which the elements are sorted. 
+	 * Set true for ascending and false for descending.
+	 * 
+	 * To change both the index and the order, it is better
+	 * to execute setOrdering
+	 * 
+	 * @param ascending The order for the table
 	 */
 	public void setSortOrder(boolean ascending)
 	{
-		getLCModel().setSortComparator(new LogEntryComparator((short) getSortIndex(), ascending));
+		LogTableDataModel ltdm = getLCModel();
+		ltdm.setSortComparator(ltdm.getFieldSortNumber(),ascending);
+	}
+	
+	/** 
+	 * Set the order and the field for ordering at once.
+	 * Calling this method is faster the calling the setSortIndex 
+	 * and setSortOrder
+	 * 
+	 * @param field The field of the logs for ordering
+	 *              -1 disable the ordering
+	 * @param ascending The order ascending(true)/descending (false)
+	 * 
+	 */
+	public void setOrdering(int field, boolean ascending) {
+		getLCModel().setSortComparator(field,ascending);
 	}
 
 	/**

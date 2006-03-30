@@ -43,7 +43,7 @@ public final class GroupedList {
 	// The cache with all the logs
 	// In this implementation we keep the indexes of the position
 	// in the cache of the visible log entries insted of a copy of the
-	// LogEntryXML themself.
+	// LogEntry itself.
 	private LogFileCache cache;
 	
 	private final List<GroupedListItem> elements = new ArrayList<GroupedListItem>();
@@ -1003,9 +1003,9 @@ public final class GroupedList {
 	protected synchronized void reSort() {
 		if (sortComparator != null) {
 			LoggingClient mainWin = LoggingClient.getInstance();
-			Cursor cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-			Cursor originalCursor = mainWin.getCursor();
+			Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
 			mainWin.setCursor(cursor);
+			mainWin.animateProgressBar("Sorting");
 			
 		    beginUpdate();
 		    
@@ -1019,7 +1019,8 @@ public final class GroupedList {
 	
 		    endUpdate();
 		    
-		    mainWin.setCursor(originalCursor);
+		    mainWin.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		    mainWin.freezeProgressBar();
 		}
 	}
 	

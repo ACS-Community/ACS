@@ -31,7 +31,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import com.cosylab.logging.client.GroupedList;
+import com.cosylab.logging.client.VisibleLogsVector;
 import com.cosylab.logging.client.GroupedListCallback;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.FiltersVector;
@@ -51,9 +51,6 @@ import com.cosylab.logging.client.cache.LogCacheException;
  * Creation date: (11/11/2001 13:46:06)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-
-
-
 public class LogTableDataModel extends AbstractTableModel 
 	implements GroupedListCallback 
 {
@@ -68,7 +65,7 @@ public class LogTableDataModel extends AbstractTableModel
 	// Stores the references to visible logs after the filters are applied
 	// If no filters are defined or the filters do not hide any items,
 	// allLogs provides the items and filteredLogs is not valid.
-	private final GroupedList visibleLogs;
+	private final VisibleLogsVector visibleLogs;
 	
 	// Data model maintains the list of all the available filters
 	private final FiltersVector filters = new FiltersVector();
@@ -140,11 +137,7 @@ public class LogTableDataModel extends AbstractTableModel
 	 */
 	public Object getValueAt(int row, int column) {
 		if (column == 0) {
-			if (visibleLogs.isExpandable(row)) {
-				if (visibleLogs.isExpanded(row))
-					return new Integer(2);
-				else return new Integer(1);
-			} else return new Integer(0);
+			return new Integer(0);
 		} else if (column==1) {
 				ILogEntry log = getVisibleLogEntry(row);
 				return new Boolean(log.hasDatas());
@@ -223,8 +216,8 @@ public class LogTableDataModel extends AbstractTableModel
 			// The program exit because it can't store the logs!
 			System.exit(-1);
 		} 
-		visibleLogs = new GroupedList(allLogs);
-		visibleLogs.setChangeCallback(this);
+		visibleLogs = new VisibleLogsVector(allLogs,this);
+		//visibleLogs.setChangeCallback(this);
 	} 
 	
 	
@@ -251,7 +244,7 @@ public class LogTableDataModel extends AbstractTableModel
 	 * @param index int
 	 */
 	public final void collapse(int index) {
-		visibleLogs.collapse(index);
+		//visibleLogs.collapse(index);
 	}
 	
 	/**
@@ -260,7 +253,7 @@ public class LogTableDataModel extends AbstractTableModel
 	 * @param index int
 	 */
 	public final void expand(int index) {
-		visibleLogs.expand(index);
+		//visibleLogs.expand(index);
 	}
 	
 	/**
@@ -303,34 +296,17 @@ public class LogTableDataModel extends AbstractTableModel
 					BLANK_STRING;
 	}
 	
-	/**
-	 * Allows for a grouping comparator to be returned.
-	 * Creation date: (1/24/02 10:59:48 AM)
-	 * @return com.cosylab.logging.client.LogEntryComparator
+	/** 
+	 * 
+	 * @return The number of the field of the logs used to order the table
+	 *         -1 means no ordering for field
 	 */
-	public LogEntryComparator getGroupComparator() {
-		return (LogEntryComparator)visibleLogs.getGroupComparator();
-	}
-	/**
-	 * Returns the index of the group.
-	 * Creation date: (12/5/2001 00:03:39)
-	 * @return int
-	 */
-	public int getGroupIndex() {
-		LogEntryComparator lec = (LogEntryComparator)visibleLogs.getGroupComparator();
-		if (lec == null)
-			return -1;
-		else
-			return lec.getFieldIndex();
+	public int getFieldSortNumber() {
+		return visibleLogs.getFieldNumForOrdering();
 	}
 	
-	/**
-	 * Allows for a sorting comparator to be returned.
-	 * Creation date: (1/24/02 10:44:56 AM)
-	 * @return com.cosylab.logging.client.LogEntryComparator
-	 */
-	public LogEntryComparator getSortComparator() {
-		return (LogEntryComparator)visibleLogs.getSortComparator();
+	public boolean sortedAscending() {
+		return visibleLogs.isSortAscending();
 	}
 
 	/**
@@ -525,17 +501,12 @@ public class LogTableDataModel extends AbstractTableModel
 	* Creation date: (11/16/2001 11:26:32)
 	*/
 	public final void invalidateVisibleLogs() {
-		visibleLogs.beginUpdate();
 	
-		try {
-			visibleLogs.clear();
+		visibleLogs.clear();
 	
-			for (int i = 0; i < allLogs.getSize(); i++) {
-				visibleLogInsert(allLogs.getLog(i),i);
-			}
-		} finally {
-			visibleLogs.endUpdate();
-		}	
+		for (int i = 0; i < allLogs.getSize(); i++) {
+			visibleLogInsert(allLogs.getLog(i),i);
+		}
 	}
 	
 	/**
@@ -545,10 +516,10 @@ public class LogTableDataModel extends AbstractTableModel
 	 * @param index int
 	 */
 	public void toggleExpand(int index) {
-		if (visibleLogs.isExpanded(index)) 
+		/*if (visibleLogs.isExpanded(index)) 
 			visibleLogs.collapse(index);
 		else
-			visibleLogs.expand(index);
+			visibleLogs.expand(index);*/
 	}
 	/**
 	 * If the log is not filtered then it is inserted
@@ -560,7 +531,7 @@ public class LogTableDataModel extends AbstractTableModel
 	 */
 	public void visibleLogInsert(ILogEntry log, int pos) {
 		if (filters.applyFilters(log) && systemFilters.applyFilters(log)) {
-			visibleLogs.add(pos);
+			visibleLogs.add(pos,log);
 		}
 	}
 	
@@ -596,21 +567,11 @@ public class LogTableDataModel extends AbstractTableModel
 	
 	/**
 	 * Insert the method's description here.
-	 * Creation date: (1/24/02 11:01:33 AM)
-	 * @param comparator com.cosylab.logging.client.LogEntryComparator
-	 */
-	public void setGroupComparator(LogEntryComparator comparator) {
-		visibleLogs.setGroupComparator(comparator);
-		invalidateVisibleLogs();
-	}
-	
-	/**
-	 * Insert the method's description here.
 	 * Creation date: (1/24/02 10:48:29 AM)
 	 * @param comparator com.cosylab.logging.client.LogEntryComparator
 	 */
-	public void setSortComparator(LogEntryComparator comparator) {
-		visibleLogs.setSortComparator(comparator);
+	public void setSortComparator(int logField, boolean ascending) {
+		visibleLogs.setLogsOrder(logField,ascending);
 	}
 	
 	/**
