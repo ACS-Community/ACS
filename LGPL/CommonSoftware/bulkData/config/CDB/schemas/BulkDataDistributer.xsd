@@ -20,6 +20,7 @@
     </xs:sequence>
     <xs:attribute name="sender_protocols" type="xs:string" use="optional"/>
     <xs:attribute name="recv_protocols" type="xs:string" use="optional"/>
+    <xs:attribute name="distr_timeout" type="xs:long" use="optional" default="0"/>
   </xs:complexType>
   <xs:element name="BulkDataDistributer" type="BulkDataDistributer"/>
 </xs:schema>
