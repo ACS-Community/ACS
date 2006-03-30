@@ -38,7 +38,6 @@ int BulkDataDistributerCb::handle_start(void)
     //ACS_TRACE("BulkDataDistributerCb::handle_start");
     
     //cout << "BulkDataDistributerCb::handle_start - state_m: " << state_m << endl;
-    cout << "BulkDataDistributerCb::handle_start entering..." << endl;
     
     timeout_m = false;
     
@@ -54,7 +53,6 @@ int BulkDataDistributerCb::handle_start(void)
 int BulkDataDistributerCb::handle_stop (void)
 {
     //ACS_TRACE("BulkDataDistributerCb::handle_stop");
-    cout << "BulkDataDistributerCb::handle_stop entering..." << endl;
 
     int locLoop;
 
@@ -127,7 +125,6 @@ int BulkDataDistributerCb::handle_destroy (void)
 int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &)
 {
     //ACS_TRACE("BulkDataDistributerCb::receive_frame");
-    cout << "BulkDataDistributerCb::receive_frame entering..." << endl;
 
     working_m = true;
 
@@ -217,7 +214,7 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 void BulkDataDistributerCb::setFlowname (const char * flowname_p)
 {
     ACS_TRACE("BulkDataDistributerCb::setFlowname");
-    //ACS_SHORT_LOG((LM_INFO,"RRRRRRRRRRRRRRRRR BulkDataDistributerCb::flowname for flow %s", flow_name));
+
     flowname_m = flowname_p;
 
     string flwName(flowname_p);

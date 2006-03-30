@@ -52,9 +52,6 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 
 
     recvStatusMap_m.bind(receiverName,offset);
-    //cout << "MMMMMMMMMMMMMMMMMCCCCCCCCCCCCC111111111111111 init" << endl;
-    //cout << "receiverName: " << receiverName << " - offset: " << offset << endl;
-    //cout << "MMMMMMMMMMMMMMMMMCCCCCCCCCCCCC111111111111111 endl" << endl;
 
     vector<string> flowNames = sender_p->getFlowNames();
 
@@ -63,17 +60,12 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
     vector<string>::size_type flwIdx;
     for (flwIdx = 0; flwIdx < flowNames.size(); ++flwIdx)
 	{
-	//CORBA::ULong currVal = (CORBA::ULong)flwIdx + 100; //!!!!!!!!!!! +offset+1, non +100!!
-	CORBA::ULong currVal = (CORBA::ULong)flwIdx + offset + 1; //!!!!!!!!!!! +offset+1, non +100!!
+	CORBA::ULong currVal = (CORBA::ULong)flwIdx + offset + 1;
 
 	flowsStatusMap_m.bind(currVal,FLOW_AVAILABLE);
-	//cout << "MMMMMMMMMMMMMMMMMCCCCCCCCCCCCC222222222222222 init" << endl;
-	//cout << "currVal: " << currVal << endl;
-	//cout << "MMMMMMMMMMMMMMMMMCCCCCCCCCCCCC222222222222222 endl" << endl;
 	}
 
     offset += 100;
-
 }
 
 
@@ -114,7 +106,7 @@ template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendStart(ACE_CString& flowName, CORBA::ULong flowNumber)
 {
     // ACS_TRACE("BulkDataDistributer<>::distSendStart");
-    cout << "BulkDataDistributer<>::distSendStart entering..." << endl;
+
     // call start on all the receivers.
     Sender_Map_Iterator iterator (senderMap_m);
     Sender_Map_Entry *entry = 0;
@@ -143,7 +135,6 @@ template<class TReceiverCallback, class TSenderCallback>
 int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendDataHsk(ACE_CString& flowName,ACE_Message_Block * frame_p,CORBA::ULong flowNumber)
 {
 //    ACS_TRACE("BulkDataDistributer<>::distSendDataHsk");
-    cout << "BulkDataDistributer<>::distSendDataHsk entering..." << endl;
 
     int res = -1;
 
@@ -165,12 +156,8 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	    if(res < 0)
 		{
 		ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendDataHsk send frame error"));
-		//ACE_CString recvName = entry->ext_id_;
-		//getFlowReceiverStatus(recvName,flowNumber);
 		}
 	    }
-	//else
-	//getFlowReceiverStatus(recvName, flowNumber);
 	
 	}
     
@@ -182,7 +169,6 @@ template<class TReceiverCallback, class TSenderCallback>
 int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendData(ACE_CString& flowName,ACE_Message_Block * frame_p, CORBA::ULong flowNumber)
 {
 //    ACS_TRACE("BulkDataDistributer<>::distSendData");
-    cout << "BulkDataDistributer<>::distSendData entering..." << endl;
 
     int res = -1;
 
@@ -197,14 +183,6 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	TAO_AV_Protocol_Object *dp_p = 0;
 	entry->int_id_->getFlowProtocol(flowName, dp_p);
 	
-	//ACE_CString recvName = entry->ext_id_;
-	
-	//CORBA::Boolean avail = getFlowReceiverStatus(recvName,flowNumber);
-	
-	/*if (avail)
-	  {
-	  cout << "BulkDataDistributer<>::distSendData - AAAAAAAAAAAAAAAAA " << recvTmp << endl;*/
-
 	ACE_CString recvName = entry->ext_id_;
 	CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
 	if(avail)
@@ -216,16 +194,8 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		getFlowReceiverStatus(recvName,flowNumber);
 		}
 	    }
-	//else
-	//getFlowReceiverStatus(recvName, flowNumber);	    
 	
 	}
-    /*else
-      {
-      cout << "BulkDataDistributer<>::distSendData - NNNNNNNNNNNNNNNNNNAAAAAAAAAAAAAAAAA " << recvTmp << endl;
- 
-      ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData DATA NOT SENT to receiver %s",recvTmp.c_str()));
-      }*/
     
     return res;
 }
@@ -236,7 +206,6 @@ template<class TReceiverCallback, class TSenderCallback>
 CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendStopTimeout(ACE_CString& flowName, CORBA::ULong flowNumber)
 {
 // ACS_TRACE("BulkDataDistributer<>::distSendStopTimeout");
-    cout << "BulkDataDistributer<>::distSendStopTimeout entering..." << endl;
 
 // call stop on all the receivers.
 
@@ -268,8 +237,6 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		timeout = false;
 		}
 	    }
-	//else
-	//getFlowReceiverStatus(recvName, flowNumber);	    
    
 	}
 
@@ -281,7 +248,6 @@ template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendStop(ACE_CString& flowName, CORBA::ULong flowNumber)
 {
     // ACS_TRACE("BulkDataDistributer<>::distSendStop");
-    cout << "BulkDataDistributer<>::distSendStop entering..." << endl;
 
     // call stop on all the receivers.
 
@@ -301,8 +267,6 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	    locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
 	    entry->int_id_->getStreamCtrl()->stop(locSpec);
 	    }
-	//else
-	//getFlowReceiverStatus(recvName, flowNumber);	    
 
 	}
 
@@ -313,20 +277,18 @@ template<class TReceiverCallback, class TSenderCallback>
 CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::getFlowReceiverStatus(const ACE_CString& receiverName, CORBA::ULong flowNumber)
 {
     // ACS_TRACE("BulkDataDistributer<>::getFlowReceiverStatus");
-    cout << "BulkDataDistributer<>::getFlowReceiverStatus entering... - " << receiverName << " - " << flowNumber << endl;
 
     CORBA::ULong currRecvNo, currFlowPos;
 
     if ( recvStatusMap_m.find(receiverName,currRecvNo) != 0 )
-	return true; //??????????????????
+	return true;
 
     Flow_Status currStatus;
 
     currFlowPos = currRecvNo + flowNumber;
-    //cout << "BulkDataDistributer<>::getFlowReceiverStatus - currFlowPos: " << currFlowPos << endl; 
 
     if ( flowsStatusMap_m.find(currFlowPos,currStatus) != 0 )
-	return true; //????????????????
+	return true;
 	
     bulkdata::BulkDataReceiver_var receiver = contSvc_p->getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
     if(!CORBA::is_nil(receiver.in()))
@@ -337,13 +299,11 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	     (comp.getCode() == ACSBulkDataStatus::AVCbWorking) )
 	    {
 	    flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
-	    cout << "BulkDataDistributer<>::getFlowReceiverStatus set FLOW_NOT_AVAILABLE" << endl;
 	    return false;
 	    }
 	else
 	    {
 	    flowsStatusMap_m.rebind(currFlowPos,FLOW_AVAILABLE);
-	    cout << "BulkDataDistributer<>::getFlowReceiverStatus set FLOW_AVAILABLE" << endl;
 	    return true;
 	    }
 	}
@@ -357,7 +317,7 @@ template<class TReceiverCallback, class TSenderCallback>
 CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::isFlowReceiverAvailable(const ACE_CString& receiverName, CORBA::ULong flowNumber)
 {
     // ACS_TRACE("BulkDataDistributer<>::isFlowReceiverAvailable");
-    cout << "BulkDataDistributer<>::isFlowReceiverAvailable entering..." << receiverName << " - " << flowNumber << endl;
+
     CORBA::ULong currRecvNo, currFlowPos;
 
     if ( recvStatusMap_m.find(receiverName,currRecvNo) != 0 )
@@ -366,19 +326,16 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
     Flow_Status currStatus;
 
     currFlowPos = currRecvNo + flowNumber;
-    //cout << "BulkDataDistributer<>::isFlowReceiverAvailable - currFlowPos: " << currFlowPos << endl; 
 
     if ( flowsStatusMap_m.find(currFlowPos,currStatus) != 0 )
-	return true; //????????????????
+	return true;
 
     if (currStatus == FLOW_AVAILABLE)
 	{
-	cout << "BulkDataDistributer<>::isFlowReceiverAvailable - FLOW_AVAILABLE" << endl;
 	return true;
 	}
     else
 	{
-	cout << "BulkDataDistributer<>::isFlowReceiverAvailable - FLOW_NOT_AVAILABLE" << endl;
 	return false;
 	}
 }
