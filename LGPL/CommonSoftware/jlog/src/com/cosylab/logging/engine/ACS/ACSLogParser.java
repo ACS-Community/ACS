@@ -106,10 +106,11 @@ public synchronized LogEntryXML parse(String string)
 		document = null;
 		String newLogString = cleanLogString(string);
 		try {
+			
 			document = builder.parse(new InputSource(new StringReader(newLogString)));
-			System.out.println("\nWarning: original log entry changed!");
-			System.out.println("Original log entry: "+string);
-			System.out.println("Cleaned log entry: "+newLogString+"\n");
+			System.out.println("Fatal error recovered:");
+			System.out.println("\tOriginal log entry: "+string);
+			System.out.println("\tCleaned log entry: "+newLogString+"\n");
 		}	catch (IOException ioe) {
 			// cannot get here	
 			System.err.println("Exception parsing "+ioe.getMessage());
