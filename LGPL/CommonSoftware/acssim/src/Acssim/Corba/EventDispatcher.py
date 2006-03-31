@@ -359,7 +359,7 @@ class EventDispatcher:
                             
         id = SCHEDULER.scheduleTimeout(supplyEventByType,
                                        0L,
-                                       frequency * 1000000L,
+                                       frequency * 10000000.0,
                                        (self.comp_name, channel_name, ifr_id))
         
         self.timeout_ids.append(id)
@@ -376,7 +376,7 @@ class EventDispatcher:
                             "' per second.")
         id = SCHEDULER.scheduleTimeout(supplyEventByType,
                                        0L,
-                                       frequency * 1000000L,
+                                       frequency * 10000000.0,
                                        (self.comp_name, channel_name, event_instance)) 
 
         self.timeout_ids.append(id)

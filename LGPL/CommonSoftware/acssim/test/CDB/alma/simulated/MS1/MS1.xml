@@ -11,11 +11,11 @@ MasterCompDevIO()
         </_corbaAttribute>
         <_almaEvent Channel="ALMA_EVENT_CHANNEL" 
                     ID="IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"
-                    Frequency="3.5"/>
+                    Frequency="3.0"/>
         
         <_almaEvent Channel="ALMA_EVENT_CHANNEL" 
                     ID="IDL:alma/xmlentity/XmlEntityStruct:1.0"
-                    Frequency="5.0">
+                    Frequency="10.0">
 print 'Code defined within this element gets executed only once.'
 my_xml_event = xmlentity.XmlEntityStruct('xml_stuff',
                                          'urn:schemas-cosylab-com:Stuff:1.0',

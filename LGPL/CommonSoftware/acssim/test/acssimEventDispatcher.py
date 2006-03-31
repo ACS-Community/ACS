@@ -82,16 +82,16 @@ if __name__=="__main__":
     else:
         print "Bad...not enough temperatureDataBlockEvent's"
     
-    if EVENT_COUNTER["IDL:alma/xmlentity/XmlEntityStruct:1.0"] > 10:
+    if EVENT_COUNTER["IDL:alma/xmlentity/XmlEntityStruct:1.0"] > 4:
         print "Good...enough XmlEntityStruct's"
     else:
         print "Bad...not enough XmlEntityStruct's"
         
-    if EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] > 10 and EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] < EVENT_COUNTER["IDL:alma/xmlentity/XmlEntityStruct:1.0"]:
+    if EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] > 5 and EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] < EVENT_COUNTER["IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"]:
         print "Good...enough Durations have been received"
     else:
         print "Bad...the wrong number of Durations were received"
     
     #print EVENT_COUNTER
-    sleep(20) 
+    #sleep(20) 
     
