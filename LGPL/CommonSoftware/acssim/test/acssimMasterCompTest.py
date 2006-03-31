@@ -21,25 +21,24 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acssimMasterCompTest.py,v 1.3 2005/11/23 18:40:03 dfugate Exp $
+# @(#) $Id: acssimMasterCompTest.py,v 1.4 2006/03/31 21:32:31 dfugate Exp $
 #------------------------------------------------------------------------------
 
 '''
 Master component test.
 '''
 from sys import argv
+from time import sleep
 import ACS
 from Acspy.Clients.SimpleClient import PySimpleClient
 
 compName = "MS1"
-compMethod = "_get_currentStateHierarchy().get_sync()[0]"
-
 
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
 comp = simpleClient.getComponent(compName)
 
-joe = eval("comp." + compMethod)
+joe = comp._get_currentStateHierarchy().get_sync()[0]
 try:
     joe = joe[len(joe)-1]
 except:
@@ -47,6 +46,6 @@ except:
 
 print "Value is:", joe
 
-    
+sleep(5)
 simpleClient.releaseComponent(compName)
 simpleClient.disconnect()

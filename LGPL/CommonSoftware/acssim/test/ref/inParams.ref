@@ -4,6 +4,7 @@
 1 - ----------T--:--:--.--- CLOCK1 __init__ - Some problem occurred when attempting to retrieve data from the ACS CDB for: alma/CLOCK1/array2TAI
 1 - ----------T--:--:--.--- CLOCK1 __init__ - Some problem occurred when attempting to retrieve data from the ACS CDB for: alma/CLOCK1/now
 1 - ----------T--:--:--.--- CLOCK1 __init__ - Some problem occurred when attempting to retrieve data from the ACS CDB for: alma/CLOCK1/TAI2UTC
+1 - ----------T--:--:--.--- EventDispatcher (CLOCK1) setupEventDispatching - Setting up event dispatching.
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: CLOCK1
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: CLOCK1
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

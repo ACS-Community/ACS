@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.29 2006/03/29 15:57:47 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.30 2006/03/31 21:32:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.29 2006/03/29 15:57:47 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.30 2006/03/31 21:32:31 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -59,6 +59,7 @@ from Acssim.Servants.Goodies               import removeComponent
 from Acssim.Servants.Goodies               import getCompLocalNS
 from Acssim.Corba.Utilities                import getSuperIDs
 from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
+from Acssim.Corba.EventDispatcher import EventDispatcher
 #--GLOBALS---------------------------------------------------------------------
 _DEBUG = 0
 #------------------------------------------------------------------------------
@@ -141,12 +142,17 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
                  "initialize",
                  [],
                  getCompLocalNS(self._get_name()))
-            
+        
+        #create the object used to dispatch events automatically         
+        self.event_dispatcher = EventDispatcher(self)
+        
     #------------------------------------------------------------------------------
     def cleanUp(self):
         '''
         Overriden from baseclass.
         '''
+        self.event_dispatcher.destroy()
+        
         #possible for developers to configure cleanUp method
         #for the simulated component.
         _execute(self._get_name(),

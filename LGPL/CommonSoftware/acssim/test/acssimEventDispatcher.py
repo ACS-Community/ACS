@@ -28,6 +28,7 @@ __revision__ = "@(#) $Id$"
 Tests EventDispatcher
 '''
 from Acssim.Corba.EventDispatcher import EventDispatcher
+from Acspy.Nc.Consumer import Consumer
 from time import sleep
 
 class MockComponent:
@@ -35,16 +36,62 @@ class MockComponent:
     def _get_name(self): return self.name
     def activateOffShoot(self, os): return os
     
-fake_ms = MockComponent("MS1")
+FAKE_MS = MockComponent("MS1")
+
+
+EVENT_COUNTER = {}
+
+def eventHandler(event):
+    '''
+    Consumer event handler
+    '''
+    ifr_id = event._NP_RepositoryId
+    
+    #sanity check
+    if not EVENT_COUNTER.has_key(ifr_id):
+        EVENT_COUNTER[ifr_id] = 0
+    
+    #increment
+    EVENT_COUNTER[ifr_id] = EVENT_COUNTER[ifr_id] + 1
 
 
 if __name__=="__main__":
     
+    ec_cons = Consumer("ALMA_EVENT_CHANNEL")
+    ec_cons.addSubscription("temperatureDataBlockEvent", eventHandler)
+    ec_cons.addSubscription("XmlEntityStruct", eventHandler)
+    ec_cons.consumerReady()
+    
+    erc_cons = Consumer("ALMA_EVENT_RESPONSE_CHANNEL")
+    erc_cons.addSubscription("Duration", eventHandler)
+    erc_cons.consumerReady()
+    
     #create the event dispatcher
-    ed = EventDispatcher(fake_ms)
+    ed = EventDispatcher(FAKE_MS)
     
     #sleep for awhile giving consumers a chance to process a few 
     #events
-    sleep(5)
+    sleep(60)
     
+    ec_cons.disconnect()
+    erc_cons.disconnect()
+    ed.destroy()
+    
+    if EVENT_COUNTER["IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"] > 10:
+        print "Good...enough temperatureDataBlockEvent's"
+    else:
+        print "Bad...not enough temperatureDataBlockEvent's"
+    
+    if EVENT_COUNTER["IDL:alma/xmlentity/XmlEntityStruct:1.0"] > 10:
+        print "Good...enough XmlEntityStruct's"
+    else:
+        print "Bad...not enough XmlEntityStruct's"
+        
+    if EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] > 10 and EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] < EVENT_COUNTER["IDL:alma/xmlentity/XmlEntityStruct:1.0"]:
+        print "Good...enough Durations have been received"
+    else:
+        print "Bad...the wrong number of Durations were received"
+    
+    #print EVENT_COUNTER
+    sleep(20) 
     

@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.11 2006/03/29 19:33:58 dfugate Exp $
+# @(#) $Id: Goodies.py,v 1.12 2006/03/31 21:32:31 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows: 
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.11 2006/03/29 19:33:58 dfugate Exp $"
+# "@(#) $Id: Goodies.py,v 1.12 2006/03/31 21:32:31 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -34,6 +34,7 @@ simulated component behavior from interactive Python container sessions.
 #--REGULAR IMPORTS-------------------------------------------------------------
 from inspect import isfunction
 from copy    import copy
+from atexit    import register
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
@@ -45,8 +46,9 @@ from Acssim.Corba.Utilities import getSuperIDs
 from Acspy.Nc.Supplier import Supplier
 from Acssim.Corba.Generator import getRandomValue
 from Acssim.Corba.Utilities import getTypeCode
+
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id: Goodies.py,v 1.11 2006/03/29 19:33:58 dfugate Exp $"
+__revision__="@(#) $Id: Goodies.py,v 1.12 2006/03/31 21:32:31 dfugate Exp $"
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'
@@ -515,4 +517,16 @@ def supplyEventByInstance(component_name, channel_name, event_instance):
                                                  getComponent(component_name))
     
     _SUPPLIERS_DICT[channel_name].publishEvent(simple_data = event_instance,
-                                               supplier_name = component_name)         
+                                               supplier_name = component_name)    
+#----------------------------------------------------------------------------
+def __cleanUp():
+    '''
+    This function cleans up static objects from this module just before the 
+    interpreter exits.
+    '''
+    #disconnect all suppliers
+    for sup in _SUPPLIERS_DICT.values():
+        sup.disconnect()
+
+#ensure all static module objects are cleaned up properly before exiting
+register(__cleanUp)
