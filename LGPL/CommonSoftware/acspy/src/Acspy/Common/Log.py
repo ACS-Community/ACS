@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.15 2005/10/17 15:52:11 dfugate Exp $
+# @(#) $Id: Log.py,v 1.16 2006/03/31 19:20:00 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.15 2005/10/17 15:52:11 dfugate Exp $"
+__revision__ = "$Id: Log.py,v 1.16 2006/03/31 19:20:00 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -95,6 +95,7 @@ SEVERITIES = { 0x0002 : ACSLog.ACS_LOG_TRACE,
                0x1000 : ACSLog.ACS_LOG_ALERT,
                0x2000 : ACSLog.ACS_LOG_EMERGENCY
                }
+               
 #------------------------------------------------------------------------------
 def getSeverity(sevNumber):
     '''
@@ -112,8 +113,52 @@ def getSeverity(sevNumber):
         #or equal
         if sevNumber <= num:
             return num
-    
+#------------------------------------------------------------------------------           
+#create a stdout handler
+STDOUTHANDLER = logging.StreamHandler(sys.stdout)
 
+#create our own formatter
+ACSFORMATTER = ACSFormatter()
+
+#register the formatter with stdouthandler
+STDOUTHANDLER.setFormatter(ACSFORMATTER)
+    
+#determine ACS_LOG_STDOUT
+if environ.has_key('ACS_LOG_STDOUT'):
+    ACS_LOG_STDOUT = max(0, int(environ['ACS_LOG_STDOUT']))
+else:
+    ACS_LOG_STDOUT = 0x0010
+
+#set the filtering level for the stdout handler
+STDOUTHANDLER.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
+        
+#create a file handler
+if environ.has_key('ACS_LOG_FILE'):
+    LOG_FILE_NAME = environ['ACS_LOG_FILE']
+else:
+    if environ.has_key('ACS_TMP'):
+        LOG_FILE_NAME = path.join(environ['ACS_TMP'], 'acs_local_log')
+    else:
+        LOG_FILE_NAME = path.join(environ['ACSDATA'], 'tmp/acs_local_log')
+            
+LOG_FILE_NAME = LOG_FILE_NAME + "_" +  path.basename(sys.argv[0]) + "_" + str(getpid())
+FILEHANDLER = logging.FileHandler(LOG_FILE_NAME)
+FILEHANDLER.setLevel(logging.ERROR)
+FILEHANDLER.setFormatter(ACSFORMATTER)
+
+#create an ACS log svc handler
+ACSHANDLER = ACSHandler(0)
+
+    
+def acsPrintExcDebug():
+    '''
+    Basically identical to traceback.print_exc() only one small exception -
+    exception information is only printed to stdout of the ACS logging level
+    is set to DEBUG or lower.
+    '''
+    lvl = LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]]
+    if lvl < logging.INFO:
+        print_exc()
 #------------------------------------------------------------------------------
 class Logger(logging.Logger):
     '''
@@ -122,42 +167,7 @@ class Logger(logging.Logger):
     of this class though as the getLogger() function returns a singled logger.
     '''
     
-    #create a stdout handler
-    __STDOUTHANDLER = logging.StreamHandler(sys.stdout)
-
-    #create our own formatter
-    __ACSFORMATTER = ACSFormatter()
-
-    #register the formatter with stdouthandler
-    __STDOUTHANDLER.setFormatter(__ACSFORMATTER)
     
-    #determine ACS_LOG_STDOUT
-    if environ.has_key('ACS_LOG_STDOUT'):
-        __acsLogStdout = max(0, int(environ['ACS_LOG_STDOUT']))
-    else:
-        __acsLogStdout = 0x0010
-
-    #set the filtering level for the stdout handler
-    __STDOUTHANDLER.setLevel(LEVELS[SEVERITIES[getSeverity(__acsLogStdout)]])
-    
-    
-    
-    #create a file handler
-    if environ.has_key('ACS_LOG_FILE'):
-        __logFileName = environ['ACS_LOG_FILE']
-    else:
-        if environ.has_key('ACS_TMP'):
-            __logFileName = path.join(environ['ACS_TMP'], 'acs_local_log')
-        else:
-            __logFileName = path.join(environ['ACSDATA'], 'tmp/acs_local_log')
-            
-    __logFileName = __logFileName + "_" +  path.basename(sys.argv[0]) + "_" + str(getpid())
-    __FILEHANDLER = logging.FileHandler(__logFileName)
-    __FILEHANDLER.setLevel(logging.ERROR)
-    __FILEHANDLER.setFormatter(__ACSFORMATTER)
-
-    #create an ACS log svc handler
-    __ACSHANDLER = ACSHandler(0)
     
     #------------------------------------------------------------------------
     def __init__(self, name):
@@ -176,9 +186,9 @@ class Logger(logging.Logger):
         logging.Logger.__init__(self, name, logging.NOTSET)
 
         #add handlers
-        self.addHandler(self.__STDOUTHANDLER)
-        self.addHandler(self.__FILEHANDLER)
-        self.addHandler(self.__ACSHANDLER)
+        self.addHandler(STDOUTHANDLER)
+        self.addHandler(FILEHANDLER)
+        self.addHandler(ACSHANDLER)
     #------------------------------------------------------------------------
     def logAlert(self, msg = '', component=None):
         '''
@@ -391,12 +401,12 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         #ok to send it directly
-        if self.__ACSHANDLER.logSvc!=None:
-            self.__ACSHANDLER.logSvc.logError(errortrace)
+        if ACSHANDLER.logSvc!=None:
+            ACSHANDLER.logSvc.logError(errortrace)
 
             #could have old errors cached up
             for et in self.errorTraceList:
-                self.__ACSHANDLER.logSvc.logError(et)
+                ACSHANDLER.logSvc.logError(et)
 
             #zero the list
             self.errorTraceList = []
