@@ -585,5 +585,13 @@ public class LogTableDataModel extends AbstractTableModel
 		}
 		return ioHelper;
 	}
+	
+	/**
+	 * 
+	 * @return The number of logs in cache
+	 */
+	public long totalLogNumber() {
+		return allLogs.getSize();
+	}
 
 }

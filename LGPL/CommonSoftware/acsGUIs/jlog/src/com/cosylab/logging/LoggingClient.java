@@ -67,6 +67,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
+import com.cosylab.logging.stats.StatsDlg;
 
 import com.cosylab.logging.search.SearchDialog;
 
@@ -117,7 +118,7 @@ public class LoggingClient extends JFrame
 	private JMenuItem saveFileMenuItem = null; // Save File As
 	private JMenuItem clearAllMenuItem = null; // Clear All
 	private JMenuItem exitMenuItem = null; // Exit
-
+	
 	/**
 	 * The menu item to load filters
 	 */
@@ -127,6 +128,11 @@ public class LoggingClient extends JFrame
 	 * The menu item to save the filters
 	 */
 	private JMenuItem saveFiltersMenuItem = null;
+	
+	/**
+	 * The menu item to show the statistics dialog
+	 */
+	private JMenuItem statisticsMenuItem = null;
 	
 	/**
 	 * The menu item to save the filters with a new name
@@ -286,6 +292,9 @@ public class LoggingClient extends JFrame
             } else if (e.getSource()==LoggingClient.this.viewToolbarMenuItem) {
                 // Hide/Show the toolbar
                 toolBar.setVisible(viewToolbarMenuItem.getState());
+            } else if (e.getSource()==LoggingClient.this.statisticsMenuItem) {
+            	// Show the statistics dialog
+            	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
             }
 		};
 
@@ -823,6 +832,9 @@ public class LoggingClient extends JFrame
         viewMenu.add(getFieldsMenuItem());
         viewMenu.add(setFiltersMenuItem());
         viewMenu.addSeparator();
+        statisticsMenuItem = new JMenuItem("Statistics");
+        statisticsMenuItem.addActionListener(eventHandler);
+        viewMenu.add(statisticsMenuItem);
         loggingClientJMenuBar.add(viewMenu);
         
         // Add the Search Menu
