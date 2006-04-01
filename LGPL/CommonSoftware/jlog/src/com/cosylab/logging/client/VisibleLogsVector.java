@@ -16,11 +16,16 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * The logs filtered out are not present in this object (while they are 
  * in the list of logs, LogCache).
  * This class manage the ordering/sorting of logs.
+ * Long lasting operations are executed asynchronously. 
+ * While long operations are in progress, each new log to be inserted will be  
+ * cached (into the buffer Vector) and added asynchronously by the thread.
+ * If a log arrives and no async operation is in progress the log is added 
+ * directly to the GUI.
  *  
  * @author acaproni
  *
  */
-public class VisibleLogsVector {
+public class VisibleLogsVector extends Thread {
 	
 	/**
 	 * The comparator.
@@ -160,12 +165,95 @@ public class VisibleLogsVector {
 	}
 	
 	/**
+	 * The request for an async operation
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class LogOperationRequest {
+		public static final int TERMINATE =0; // Stops the thread
+		public static final int SETORDER = 1; // Reverse/reorder the logs
+		
+		private int opType;
+		private int field;
+		private boolean ascending;
+		
+		/**
+		 * Build an a termination request
+		 */
+		public LogOperationRequest() {
+			opType=TERMINATE;
+		}
+		
+		public LogOperationRequest(int fld, boolean direction) {
+			opType= SETORDER;
+			this.field=fld;
+			this.ascending = direction;
+		}
+		
+		/**
+		 * Getter method 
+		 * 
+		 * @return The type of operation to perform 
+		 */
+		public int getType() {
+			return opType;
+		}
+		
+		/**
+		 * Getter method 
+		 * 
+		 * @return The field for ordering 
+		 */
+		public int getOrderingField() {
+			return field;
+		}
+		
+		/**
+		 * Getter method 
+		 * @return The direction (true means ascending) 
+		 */
+		public boolean orderDirection() {
+			return ascending;
+		}
+	}
+	
+	/**
+	 * An entry in the buffer of the logs to add asynchronously
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class AddLogItem {
+		public int index;
+		public ILogEntry log;
+		
+		public AddLogItem(int idx, ILogEntry logEntry) {
+			this.log=logEntry;
+			this.index=idx;
+		}
+	}
+	
+	/**
 	 * The vector of visible logs (i.e. the logs shown in the table)
 	 * The elements are odered.
 	 * 
 	 * The vector contains the index of each log in the LogCache.
 	 */
 	private Vector<Integer> visibleLogs;
+	
+	/**
+	 * Usually new logs are directly added in the GUI.
+	 * They are cached if a long lasting async operation is in progress.
+	 * The thread will check if there are logs to add when it terminates
+	 * other operations
+	 */
+	private Vector<AddLogItem> buffer = new Vector<AddLogItem>(16);
+	
+	// The vector with the request for async operations.
+	// If it is empty then each new log can be immediately added
+	// in the GUI, otherwise it has to be caches in the buffer
+	private Vector<LogOperationRequest> asyncOps = new Vector<LogOperationRequest>();
 	
 	/**
 	 * The cache with all the logs
@@ -195,6 +283,8 @@ public class VisibleLogsVector {
 		this.comparator.setComparingParams(ILogEntry.FIELD_ENTRYTYPE,false);
 		this.tableModel=model;
 		visibleLogs = new Vector<Integer>(256,32);
+		// Start the thread for async operations
+		start();
 	}
 
 	/**
@@ -203,7 +293,21 @@ public class VisibleLogsVector {
 	 * @param index The index of the log to add
 	 * @param log The log to add
 	 */
-	public void add(Integer index, ILogEntry log) {
+	public synchronized void add(Integer index, ILogEntry log) {
+		synchronized (asyncOps) {
+			if (asyncOps.size()==0) {
+				addLogToVector(index, log);
+			} else {
+				buffer.add(new AddLogItem(index,log));
+			}
+		}
+	}
+	
+	/**
+	 * Add the log to the vector of visible logs
+	 *
+	 */
+	private void addLogToVector(Integer index, ILogEntry log) {
 		if (!comparator.sortEnabled()) {
 			visibleLogs.add(index);
 			tableModel.fireTableRowsInserted(index,index);
@@ -311,7 +415,7 @@ public class VisibleLogsVector {
 	 *            
 	 * @return The ILogEntry in the given row/pos
 	 */
-	public ILogEntry get(int pos) {
+	public synchronized ILogEntry get(int pos) {
 		if (pos<0 || pos>=visibleLogs.size()) {
 			throw new IndexOutOfBoundsException("Index out of bounds: "+pos);
 		} else {
@@ -323,18 +427,32 @@ public class VisibleLogsVector {
 	 * Empty the vector of visible logs
 	 *
 	 */
-	public void clear() {
+	public synchronized void clear() {
 		visibleLogs.clear();
+		buffer.clear();
 		tableModel.fireTableDataChanged(); 
 	}
 	
 	/**
-	 * Set the comparison field and order
+	 * Set the comparison field and order.
+	 * It creates an action for the thread that will end 
+	 * in a call to the sort method
 	 * 
 	 * @param field The ILogENtry field to compare
 	 * @param ascending true for ascending order
+	 * 
+	 * @see VisibleLogsVector.sort
 	 */
-	public void setLogsOrder(int field, boolean ascending) {
+	public synchronized void setLogsOrder(int field, boolean ascending) {
+		synchronized (asyncOps) {
+			asyncOps.add(new LogOperationRequest(field,ascending));
+		}
+		synchronized(this) {
+			notifyAll();
+		}
+	}
+	
+	private void sort(int field, boolean ascending) {
 		int prevField = comparator.getSortField();
 		comparator.setComparingParams(field,ascending);
 		// Do we have to update the vector?
@@ -365,4 +483,51 @@ public class VisibleLogsVector {
 	public int getFieldNumForOrdering() {
 		return comparator.getSortField();
 	}
+	
+	/**
+	 * The thread for async long lasting op.
+	 * At the end of each operation, it check if there are
+	 * new logs to add in the buffer Vector
+	 *
+	 */
+	public void run() {
+		LogOperationRequest request = null;
+		while (true) {
+			synchronized (asyncOps) {
+				if (asyncOps.size()>0) {
+					// The request will be removed later to avoid a critical
+					// race in add 
+					request = asyncOps.get(0);
+				} else {
+					request = null;
+				}
+			}
+			if (request!=null) {
+				if (request.getType()==LogOperationRequest.TERMINATE) {
+					return;
+				} else {
+					sort(request.getOrderingField(),request.orderDirection());
+				}
+			}
+			// There are new logs to add?
+			synchronized(buffer) {
+				while (buffer.size()>0) {
+					AddLogItem item = buffer.remove(0);
+					addLogToVector(item.index,item.log);
+				}
+			}
+			if (request!=null) {
+				synchronized (asyncOps) {
+					asyncOps.remove(0);
+				}
+			} else {
+				synchronized(this) {
+					try {
+						wait();
+					} catch (InterruptedException e) {}
+				}
+			}
+		}
+	}
+	
 }
