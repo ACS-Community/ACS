@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.16 2006/03/31 19:20:00 dfugate Exp $
+# @(#) $Id: Log.py,v 1.17 2006/04/01 00:33:32 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,12 +42,10 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.16 2006/03/31 19:20:00 dfugate Exp $"
+__revision__ = "$Id: Log.py,v 1.17 2006/04/01 00:33:32 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
-from os        import path
-from os        import getpid
 from inspect   import stack
 import sys
 import logging
@@ -131,20 +129,6 @@ else:
 
 #set the filtering level for the stdout handler
 STDOUTHANDLER.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
-        
-#create a file handler
-if environ.has_key('ACS_LOG_FILE'):
-    LOG_FILE_NAME = environ['ACS_LOG_FILE']
-else:
-    if environ.has_key('ACS_TMP'):
-        LOG_FILE_NAME = path.join(environ['ACS_TMP'], 'acs_local_log')
-    else:
-        LOG_FILE_NAME = path.join(environ['ACSDATA'], 'tmp/acs_local_log')
-            
-LOG_FILE_NAME = LOG_FILE_NAME + "_" +  path.basename(sys.argv[0]) + "_" + str(getpid())
-FILEHANDLER = logging.FileHandler(LOG_FILE_NAME)
-FILEHANDLER.setLevel(logging.ERROR)
-FILEHANDLER.setFormatter(ACSFORMATTER)
 
 #create an ACS log svc handler
 ACSHANDLER = ACSHandler(0)
@@ -166,9 +150,6 @@ class Logger(logging.Logger):
     messages to the ACS Logging System. Developers need not create an instance
     of this class though as the getLogger() function returns a singled logger.
     '''
-    
-    
-    
     #------------------------------------------------------------------------
     def __init__(self, name):
         '''
@@ -187,7 +168,6 @@ class Logger(logging.Logger):
 
         #add handlers
         self.addHandler(STDOUTHANDLER)
-        self.addHandler(FILEHANDLER)
         self.addHandler(ACSHANDLER)
     #------------------------------------------------------------------------
     def logAlert(self, msg = '', component=None):

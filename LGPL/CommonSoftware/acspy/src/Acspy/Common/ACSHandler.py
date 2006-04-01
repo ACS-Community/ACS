@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.2 2005/06/13 18:04:24 dfugate Exp $
+# @(#) $Id: ACSHandler.py,v 1.3 2006/04/01 00:33:32 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,14 +27,17 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.2 2005/06/13 18:04:24 dfugate Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.3 2006/04/01 00:33:32 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
 from time      import gmtime
 import logging
 import logging.handlers
-from traceback import print_exc
+from os        import getpid
+from os        import path
+from os        import environ
+import sys
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
@@ -42,11 +45,10 @@ from Acspy.Common.TimeHelper import TimeUtil
 import ACSLog
 #--GLOBALS---------------------------------------------------------------------
 #default logging cache size
-_DEFAULT_CAPACITY = 0
+DEFAULT_RECORD_CAPACITY = 20
 
-tempStuff = None
 #------------------------------------------------------------------------------
-_levels = { 'CRITICAL' : ACSLog.ACS_LOG_CRITICAL,
+LEVELS = { 'CRITICAL' : ACSLog.ACS_LOG_CRITICAL,
             'ERROR' : ACSLog.ACS_LOG_ERROR,
             'WARN' : ACSLog.ACS_LOG_WARNING,
             'WARNING' : ACSLog.ACS_LOG_WARNING,
@@ -54,6 +56,17 @@ _levels = { 'CRITICAL' : ACSLog.ACS_LOG_CRITICAL,
             'DEBUG' : ACSLog.ACS_LOG_DEBUG,
             'NOTSET' : ACSLog.ACS_LOG_TRACE
             }
+
+#create a file handler
+if environ.has_key('ACS_LOG_FILE'):
+    LOG_FILE_NAME = environ['ACS_LOG_FILE']
+else:
+    if environ.has_key('ACS_TMP'):
+        LOG_FILE_NAME = path.join(environ['ACS_TMP'], 'acs_local_log')
+    else:
+        LOG_FILE_NAME = path.join(environ['ACSDATA'], 'tmp/acs_local_log')
+
+LOG_FILE_NAME = LOG_FILE_NAME + "_" +  path.basename(sys.argv[0]) + "_" + str(getpid())
 #------------------------------------------------------------------------------
 class ACSFormatter(logging.Formatter):
     '''
@@ -89,7 +102,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
 
     Parameters: capcity - the size of the log cache.
     '''
-    def __init__(self, capacity=_DEFAULT_CAPACITY):
+    def __init__(self, capacity=DEFAULT_RECORD_CAPACITY):
         '''
         '''
         #ACS CORBA Logging Service Reference
@@ -97,6 +110,12 @@ class ACSHandler(logging.handlers.BufferingHandler):
         
         #call super's constructor
         logging.handlers.BufferingHandler.__init__(self, capacity)
+        
+        #setup a file handle to handle the extremely bad case that the 
+        #CORBA logging service is down
+        self.file_handler = logging.FileHandler(LOG_FILE_NAME)
+        self.file_handler.setLevel(logging.ERROR)
+        self.file_handler.setFormatter(ACSFormatter())
     #--------------------------------------------------------------------------
     def shouldFlush(self, record):
         '''
@@ -112,10 +131,15 @@ class ACSHandler(logging.handlers.BufferingHandler):
             #and also check to ensure the real logging service is up and running
             if self.getCORBALogger() != None:
                 return 1
+            
             #well it is possible that this cache will use up too much resources
             #and there's a chance the CORBA logger will never be available.
-            #due to this fact, the buffer is cleared.
+            #due to this fact, the buffer is sent to a file handler instead!
             else:
+                
+                for record in self.buffer():
+                    self.file_handler.handle(record)
+                
                 self.buffer = []
                 #OK to return true because the buffer is now empty
                 return 1
@@ -137,9 +161,6 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
         Method which sends logs to the real ACS logging service.
         '''
-        global tempStuff
-        tempStuff = record
-        
         # Create an RTContext object
         rt_context = ACSLog.RTContext(str(record.thread).replace("<", "").replace(">", ""),
                                       str(record.process).replace("<", "").replace(">", ""),
@@ -232,7 +253,6 @@ class ACSHandler(logging.handlers.BufferingHandler):
             return self.logSvc
         #CORBA logging service wasn't up yet. let's see if it's available now
         else:
-            from Acspy.Util.ACSCorba import acsLogSvc
             try:
                 # Get log service ref via acsCORBA
                 obj = acsLogSvc()
