@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.3 2006/04/01 00:33:32 dfugate Exp $
+# @(#) $Id: ACSHandler.py,v 1.4 2006/04/01 00:34:48 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.3 2006/04/01 00:33:32 dfugate Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.4 2006/04/01 00:34:48 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -114,7 +114,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
         #setup a file handle to handle the extremely bad case that the 
         #CORBA logging service is down
         self.file_handler = logging.FileHandler(LOG_FILE_NAME)
-        self.file_handler.setLevel(logging.ERROR)
+        self.file_handler.setLevel(logging.NOTSET)
         self.file_handler.setFormatter(ACSFormatter())
     #--------------------------------------------------------------------------
     def shouldFlush(self, record):
