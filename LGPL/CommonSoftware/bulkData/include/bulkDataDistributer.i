@@ -290,7 +290,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
     if ( flowsStatusMap_m.find(currFlowPos,currStatus) != 0 )
 	return true;
 	
-    bulkdata::BulkDataReceiver_var receiver = contSvc_p->getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
+    bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
     if(!CORBA::is_nil(receiver.in()))
 	{
 	CompletionImpl comp = receiver->getCbStatus(flowNumber);
