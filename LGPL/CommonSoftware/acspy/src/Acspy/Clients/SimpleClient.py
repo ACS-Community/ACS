@@ -1,4 +1,4 @@
-# @(#) $Id: SimpleClient.py,v 1.10 2005/06/13 18:04:24 dfugate Exp $
+# @(#) $Id: SimpleClient.py,v 1.11 2006/04/03 18:06:13 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimpleClient.py,v 1.10 2005/06/13 18:04:24 dfugate Exp $"
+# "@(#) $Id: SimpleClient.py,v 1.11 2006/04/03 18:06:13 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -39,12 +39,12 @@ TODO:
 - integrate with the ACS Error System
 '''
 
-__revision__ = "$Id: SimpleClient.py,v 1.10 2005/06/13 18:04:24 dfugate Exp $"
+__revision__ = "$Id: SimpleClient.py,v 1.11 2006/04/03 18:06:13 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
-
+import ACS
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Clients.BaseClient         import BaseClient
 from Acspy.Servants.ContainerServices import ContainerServices
