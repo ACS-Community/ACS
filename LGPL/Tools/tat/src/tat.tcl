@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.94 2006/02/17 17:54:25 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.95 2006/04/03 14:23:45 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1461,9 +1461,15 @@ proc runTest { testList generate rep } {
 # SPR 20040140: the outputFile is saved in .orig before being processed with sed and grep
 	catch {file copy -force $outputFile $outputFile.orig}
 
-	egrepFilter $outputFile
+	egrepFilterx $file $testid
 
-	sedFilter $outputFile
+	sedFilterx $file $testid
+
+	# Copy the file in the definitive place
+	catch {file copy -force $file ./tatlogs/run$PID/$testid.out}
+
+	# Cleanup the files not used any more
+	catch {eval file delete -force -- $file }
 
         # if the option was run
 	if {$generate == 0} {
@@ -2282,6 +2288,14 @@ global PID
 #    if full CCS or if TestList.NOCCS or TestList.lite is missing: TestList
 #    TESTLIST is maintained, after the merge with eccsTestDriver
 #
+
+if { $gv(commandLineTestLists) == 1 } {
+    set gv(testListFileName) $gv(testListFiles)
+    if {![file exists "$gv(testListFiles)"]} {
+	puts "$gv(testListFiles) does not exist!"
+	exit 1
+    }
+} else {
 if {[ catch { set gv(NOCCS) $env(NOCCS) } ] || ("$env(VLTSW_CCSTYPE)" != "no" && "$env(VLTSW_CCSTYPE)" != "noccs") } {
     set gv(NOCCS) 0
     if {[ catch { set gv(withRtap) $env(RTAPROOT) } ]} {
@@ -2326,6 +2340,7 @@ if {[ catch { set gv(NOCCS) $env(NOCCS) } ] || ("$env(VLTSW_CCSTYPE)" != "no" &&
         puts "TestList or TestList.NOCCS does not exist!"
         exit 1
     }
+}
 }
 
 #
@@ -2528,6 +2543,8 @@ global PID
 set PID [ pid ]
 set UnknownOption 0
 set loop 0
+set multipleTestLists 0
+set gv(commandLineTestLists) 0
 set verbose 0 
 set trace 0
 set gv(generate) 0
@@ -2597,6 +2614,7 @@ if {[catch {set gv(LOGNAME) $env(LOGNAME)}]} {
 }
 
 set gv(testList) {}
+set gv(testListFiles) {}
 set ALL_FLAG 0
 
 #
@@ -2616,6 +2634,12 @@ while {! [lempty $argv]} {
 				 set gv(moduleList) $ml
 			     }
                            }
+		-f 	   { set gv(commandLineTestLists) 1;
+			     set gv(testListFiles) [lvarpop argv] 
+			     if {[llength $gv(testListFiles)] > 1} {
+				set multipleTestLists 1
+			      }
+			    }
 	        -v         { set verbose 1 }
 	        -t         { set trace 1 }
                 -run        { set gv(generate) 0 }
