@@ -15,11 +15,13 @@
 #include <baci.h>
 
 #include "ACSBulkDataError.h"
+#include "ACSBulkDataStatus.h"
 
 #include <iostream>
 
 using namespace std;
 using namespace ACSBulkDataError;
+using namespace ACSBulkDataStatus;
 
 const CORBA::ULong maxErrorRepetition = 3;
 
@@ -61,8 +63,8 @@ class BulkDataCallback : public TAO_AV_Callback
     virtual void setSafeTimeout(CORBA::ULong locLoop);
 
     virtual CORBA::Boolean isTimeout();
-
     virtual CORBA::Boolean isWorking();
+    virtual CORBA::Boolean isError();
 
     /********************* methods to be implemented by the user *****************/
 
@@ -98,8 +100,10 @@ class BulkDataCallback : public TAO_AV_Callback
     ACE_Message_Block *bufParam_p;
 
     CORBA::Boolean timeout_m;
-
     CORBA::Boolean working_m;
+    CORBA::Boolean error_m;
+
+//    AVCbErrorCompletion *erComp_p;
 };
 
 

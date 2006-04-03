@@ -20,8 +20,10 @@ BulkDataCallback::BulkDataCallback()
     bufParam_p = 0;
 
     timeout_m = false;
-
     working_m = false;
+    error_m = false;
+
+//    erComp_p = 0;
 }
 
 
@@ -41,7 +43,8 @@ int BulkDataCallback::handle_start(void)
     //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_start - timeout_m == true !!!"));
 
     timeout_m = false;
-    
+    error_m = false;    
+
     state_m = CB_UNS;
     substate_m = CB_SUB_UNS;
     
@@ -145,6 +148,10 @@ int BulkDataCallback::handle_stop (void)
 	    errorCounter = 0;
 	    //return 0;
 	    }
+
+	//erComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "ulkDataCallback::handle_stop"); 
+
+	error_m = true;
 	}
     catch(CORBA::Exception &ex)
 	{
@@ -158,6 +165,7 @@ int BulkDataCallback::handle_stop (void)
 	    errorCounter = 0;
 	    //return 0;
 	    }
+	error_m = true;
 	}
     catch(...)
 	{
@@ -171,6 +179,7 @@ int BulkDataCallback::handle_stop (void)
 	    errorCounter = 0;
 	    //return 0;
 	    }
+	error_m = true;
 	}
 
     return 0;
@@ -293,7 +302,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    errorCounter = 0;
 	    //return 0;
 	    }
-
+	error_m = true;
 	}
     catch(CORBA::Exception &ex)
 	{
@@ -307,6 +316,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    errorCounter = 0;
 	    //return 0;
 	    }
+	error_m = true;
 	}
     catch(...)
 	{
@@ -320,6 +330,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    errorCounter = 0;
 	    //return 0;
 	    }
+	error_m = true;
 	}
 
     working_m = false;
@@ -369,4 +380,11 @@ CORBA::Boolean BulkDataCallback::isWorking()
     ACS_TRACE("BulkDataCallback::isWorking");
 
     return working_m;
+}
+
+CORBA::Boolean BulkDataCallback::isError()
+{
+    ACS_TRACE("BulkDataCallback::isError");
+
+    return error_m;
 }
