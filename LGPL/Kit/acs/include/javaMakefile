@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: javaMakefile,v 1.75 2006/02/15 06:37:15 mzampare Exp $"
+# "@(#) $Id: javaMakefile,v 1.76 2006/04/03 12:05:24 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -212,10 +212,12 @@ endif
 do_components_check:
 	$(AT) for member in $(foreach name, $(COMPONENTS_JARFILES), $(name) ); \
 		do \
-		if [ "`echo $(JARFILES) | grep $${member}`" != "" ]; then \
-		echo "== Component $${member} specification clashes with jarfile"; \
-		/bin/false ;\
-		fi \
+		for jarfile in $(JARFILES); do \
+			if [ "$${jarfile}" == "$${member}" ]; then \
+			echo "== Component $${member} specification clashes with jarfile $${jarfile}"; \
+			/bin/false ;\
+			fi \
+		done; \
 		done; 
 
 # modify vltMakeJavaClasspath
