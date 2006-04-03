@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.17 2006/04/01 00:33:32 dfugate Exp $
+# @(#) $Id: Log.py,v 1.18 2006/04/03 16:32:31 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.17 2006/04/01 00:33:32 dfugate Exp $"
+__revision__ = "$Id: Log.py,v 1.18 2006/04/03 16:32:31 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -131,7 +131,7 @@ else:
 STDOUTHANDLER.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
 
 #create an ACS log svc handler
-ACSHANDLER = ACSHandler(0)
+ACSHANDLER = ACSHandler()
 
     
 def acsPrintExcDebug():

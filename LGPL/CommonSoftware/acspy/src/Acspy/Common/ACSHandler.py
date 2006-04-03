@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.4 2006/04/01 00:34:48 dfugate Exp $
+# @(#) $Id: ACSHandler.py,v 1.5 2006/04/03 16:32:31 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.4 2006/04/01 00:34:48 dfugate Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.5 2006/04/03 16:32:31 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -38,14 +38,16 @@ from os        import getpid
 from os        import path
 from os        import environ
 import sys
+from atexit    import register
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
+import CORBA
 #--GLOBALS---------------------------------------------------------------------
 #default logging cache size
-DEFAULT_RECORD_CAPACITY = 20
+DEFAULT_RECORD_CAPACITY = 10
 
 #------------------------------------------------------------------------------
 LEVELS = { 'CRITICAL' : ACSLog.ACS_LOG_CRITICAL,
@@ -111,11 +113,27 @@ class ACSHandler(logging.handlers.BufferingHandler):
         #call super's constructor
         logging.handlers.BufferingHandler.__init__(self, capacity)
         
-        #setup a file handle to handle the extremely bad case that the 
+        
+        #setup a file handler to handle the extremely bad case that the 
         #CORBA logging service is down
+        self.file_handler = None
+        
+        #try to get the corba logger now
+        self.getCORBALogger()
+        
+        #we want to make sure the buffer is flushed
+        #before exiting the Python interpreter
+        register(self.flush)
+        
+    #--------------------------------------------------------------------------
+    def initFileHandler(self):
+        '''
+        Helper method initializes the file handler
+        '''
         self.file_handler = logging.FileHandler(LOG_FILE_NAME)
         self.file_handler.setLevel(logging.NOTSET)
         self.file_handler.setFormatter(ACSFormatter())
+        
     #--------------------------------------------------------------------------
     def shouldFlush(self, record):
         '''
@@ -136,6 +154,11 @@ class ACSHandler(logging.handlers.BufferingHandler):
             #and there's a chance the CORBA logger will never be available.
             #due to this fact, the buffer is sent to a file handler instead!
             else:
+                
+                #sanity check
+                if self.file_handler == None:
+                    #create the file handler on demand only
+                    self.initFileHandler()
                 
                 for record in self.buffer():
                     self.file_handler.handle(record)
