@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.14 2006/03/24 15:57:05 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.15 2006/04/03 19:44:14 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.14 2006/03/24 15:57:05 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.15 2006/04/03 19:44:14 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -41,12 +41,12 @@ import types
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 
-from Acssim.Servants.Goodies           import getSimProxy
+from Acssim.Goodies           import getSimProxy
 from Acssim.Corba.Generator            import *
 
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Servants.Executor")
-__revision__ = "@(#) $Id: Executor.py,v 1.14 2006/03/24 15:57:05 dfugate Exp $"
+__revision__ = "@(#) $Id: Executor.py,v 1.15 2006/04/03 19:44:14 dfugate Exp $"
 #------------------------------------------------------------------------------
 def _execute(comp_name, meth_name, args, local_ns):
     '''

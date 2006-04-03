@@ -42,8 +42,8 @@ from traceback import print_exc
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 from Acssim.Corba.Utilities import listToFunction
-from Acssim.Servants.Goodies import getComponentXMLObj
-from Acssim.Servants.Goodies import getCompLocalNSList
+from Acssim.Goodies import getComponentXMLObj
+from Acssim.Goodies import getCompLocalNSList
 from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
 #--GLOBALS---------------------------------------------------------------------
 __revision__ = "@(#) $Id$"

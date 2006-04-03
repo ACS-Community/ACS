@@ -25,9 +25,9 @@
 #------------------------------------------------------------------------------
 __revision__ = "@(#) $Id$"
 '''
-Tests Acssim.Servants.Goodies
+Tests Acssim.Goodies
 '''
-from Acssim.Servants.Goodies import *
+from Acssim.Goodies import *
 #------------------------------------------------------------------------------
 #--Main defined only for generic testing---------------------------------------
 #------------------------------------------------------------------------------

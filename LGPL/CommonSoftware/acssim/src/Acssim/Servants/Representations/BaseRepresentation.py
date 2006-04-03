@@ -37,7 +37,7 @@ from inspect import isfunction
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log                  import getLogger
-from Acssim.Servants.Goodies import getComponent
+from Acssim.Goodies import getComponent
 #--GLOBALS---------------------------------------------------------------------
 __revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------

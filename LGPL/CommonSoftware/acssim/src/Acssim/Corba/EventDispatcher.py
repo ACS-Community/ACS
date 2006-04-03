@@ -45,10 +45,10 @@ from time import sleep
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
-from Acssim.Servants.Goodies import supplyEventByType, supplyEventByInstance
+from Acssim.Goodies import supplyEventByType, supplyEventByInstance
 from Acspy.Util.Scheduler    import Scheduler
-from Acssim.Servants.Goodies import getComponentXMLObj
-from Acssim.Servants.Goodies import getCompLocalNSList
+from Acssim.Goodies import getComponentXMLObj
+from Acssim.Goodies import getCompLocalNSList
 from Acssim.Corba.Utilities  import  listToFunction
 from Acspy.Common.Log        import getLogger
 from Acspy.Common.Log        import acsPrintExcDebug

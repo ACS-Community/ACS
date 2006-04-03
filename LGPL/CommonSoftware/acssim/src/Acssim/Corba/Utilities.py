@@ -31,7 +31,7 @@
 Contains various utility methods of general use to the simulator.
 Eventually some of these should be moved to Acspy.Util.*
 These are NOT to be considered simulator API functions - for this see
-Acssim.Servants.Goodies
+Acssim.Goodies
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 import omniORB

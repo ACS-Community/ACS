@@ -1,4 +1,4 @@
-# @(#) $Id: Goodies.py,v 1.12 2006/03/31 21:32:31 dfugate Exp $
+# @(#) $Id$
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows: 
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Goodies.py,v 1.12 2006/03/31 21:32:31 dfugate Exp $"
+# "@(#) $Id$"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -48,7 +48,7 @@ from Acssim.Corba.Generator import getRandomValue
 from Acssim.Corba.Utilities import getTypeCode
 
 #--GLOBALS---------------------------------------------------------------------
-__revision__="@(#) $Id: Goodies.py,v 1.12 2006/03/31 21:32:31 dfugate Exp $"
+__revision__="@(#) $Id$"
 API = 'API'
 CDB = 'CDB'
 GEN = 'GEN'

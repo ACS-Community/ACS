@@ -45,8 +45,8 @@ from Acssim.Servants.Representations.BaseRepresentation         import BaseRepre
 from Acssim.Corba.Generator         import getRandomValue
 #--GLOBALS---------------------------------------------------------------------
 __revision__ = "@(#) $Id$"
-from Acssim.Servants.Goodies import IR
-from Acssim.Servants.Goodies import getStandardTimeout
+from Acssim.Goodies import IR
+from Acssim.Goodies import getStandardTimeout
 #------------------------------------------------------------------------------
 class Dynamic(BaseRepresentation):
     '''

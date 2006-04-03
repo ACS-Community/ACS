@@ -28,7 +28,7 @@ __revision__ = "@(#) $Id$"
 Tests BehaviorProxy
 '''
 from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
-from Acssim.Servants.Goodies import addComponent
+from Acssim.Goodies import addComponent
 import CORBA
 
 class MockComponent:

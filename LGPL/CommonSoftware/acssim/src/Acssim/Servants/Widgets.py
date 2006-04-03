@@ -39,9 +39,9 @@ import CORBA
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 
-from Acssim.Servants.Goodies           import *
+from Acssim.Goodies           import *
 from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
-from Acssim.Servants.Goodies import getSimProxy
+from Acssim.Goodies import getSimProxy
 
 from thread     import start_new_thread
 from os         import environ

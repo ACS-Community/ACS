@@ -29,7 +29,7 @@ Tests Dynamic
 '''
 import CORBA
 from Acssim.Servants.Representations.Dynamic import Dynamic
-from Acssim.Servants.Goodies import addComponent
+from Acssim.Goodies import addComponent
 
 class MockComponent:
     def __init__(self, name): self.name = name

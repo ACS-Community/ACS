@@ -43,7 +43,7 @@ import ACS
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 from Acspy.Common.TimeHelper import getTimeStamp
-from Acssim.Servants.Goodies           import *
+from Acssim.Goodies           import *
 from Acssim.Corba.KnownAcsTypes import getKnownBaciType
 from Acssim.Corba.KnownAcsTypes import tryCallbackParams
 from Acssim.Corba.Utilities import getDefinition

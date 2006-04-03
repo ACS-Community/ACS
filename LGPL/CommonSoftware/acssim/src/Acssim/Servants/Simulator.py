@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.30 2006/03/31 21:32:31 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.31 2006/04/03 19:44:14 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.30 2006/03/31 21:32:31 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.31 2006/04/03 19:44:14 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -50,13 +50,13 @@ from Acspy.Util.ACSCorba     import interfaceRepository
 
 from Acssim.Corba.DynamicImplementation    import DynamicImplementation
 from Acssim.Servants.Executor              import _execute
-from Acssim.Servants.Goodies               import getSimProxy
+from Acssim.Goodies               import getSimProxy
 from Acssim.Servants.Executor              import _executeDict
 from Acssim.Corba.Generator             import tryCallbackParams
 from Acssim.Corba.Generator             import getRandomEnum
-from Acssim.Servants.Goodies               import addComponent
-from Acssim.Servants.Goodies               import removeComponent
-from Acssim.Servants.Goodies               import getCompLocalNS
+from Acssim.Goodies               import addComponent
+from Acssim.Goodies               import removeComponent
+from Acssim.Goodies               import getCompLocalNS
 from Acssim.Corba.Utilities                import getSuperIDs
 from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
 from Acssim.Corba.EventDispatcher import EventDispatcher
