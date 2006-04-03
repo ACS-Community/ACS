@@ -6,4 +6,5 @@
 	<Code name="AVCbTimeout" shortDescription="Receiver callback timeout status" description=""/>
 	<Code name="AVCbWorkingTimeout" shortDescription="Receiver callback timeout and working status" description=""/>
 	<Code name="AVCbNotAvailable" shortDescription="Receiver callback not available" description=""/>
+        <ErrorCode name="AVCbError" shortDescription="Receiver callback error" description=""/>
 </Type>
