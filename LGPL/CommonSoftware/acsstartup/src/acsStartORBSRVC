@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.58 2006/03/24 23:59:40 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.59 2006/04/04 20:09:55 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -407,7 +407,7 @@ ACS_LOG_INFO "Starting Notify Service"
 # in order to get the correct svc.conf service configuration file.
 STARTUP_DIR=$PWD
 cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS &> $NOTIFY_OUT &
+$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS -Boot &> $NOTIFY_OUT &
 cd $STARTUP_DIR
 
 NOTIFY_SERVICE_PID=$!
@@ -433,7 +433,7 @@ ACS_LOG_INFO "Starting Logging Notify Service"
 # in order to get the correct svc.conf service configuration file.
 STARTUP_DIR=$PWD
 cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$LOGGING_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $LOGGING_NOTIFY_IOR $ORBOPTS -Factory LoggingNotifyEventChannelFactory &> $LOG_NOTIFY_OUT &
+$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$LOGGING_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $LOGGING_NOTIFY_IOR $ORBOPTS -Factory LoggingNotifyEventChannelFactory -Boot &> $LOG_NOTIFY_OUT &
 cd $STARTUP_DIR
 
 LOGGING_NOTIFY_SERVICE_PID=$!
@@ -459,7 +459,7 @@ ACS_LOG_INFO "Starting Archive Notify Service"
 # in order to get the correct svc.conf service configuration file.
 STARTUP_DIR=$PWD
 cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$ARCHIVE_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $ARCHIVE_NOTIFY_IOR $ORBOPTS -Factory ArchiveNotifyEventChannelFactory -Channel -ChannelName ArchivingChannel &> $ARCHIVE_NOTIFY_OUT &
+$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$ARCHIVE_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $ARCHIVE_NOTIFY_IOR $ORBOPTS -Factory ArchiveNotifyEventChannelFactory -Channel -ChannelName ArchivingChannel -Boot &> $ARCHIVE_NOTIFY_OUT &
 cd $STARTUP_DIR
 
 ARCHIVE_NOTIFY_SERVICE_PID=$!
