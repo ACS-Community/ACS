@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.95 2006/04/03 14:23:45 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.96 2006/04/04 12:33:03 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1461,12 +1461,9 @@ proc runTest { testList generate rep } {
 # SPR 20040140: the outputFile is saved in .orig before being processed with sed and grep
 	catch {file copy -force $outputFile $outputFile.orig}
 
-	egrepFilterx $file $testid
+        egrepFilter $outputFile $testid
 
-	sedFilterx $file $testid
-
-	# Copy the file in the definitive place
-	catch {file copy -force $file ./tatlogs/run$PID/$testid.out}
+        sedFilter $outputFile $testid
 
 	# Cleanup the files not used any more
 	catch {eval file delete -force -- $file }
@@ -1682,9 +1679,11 @@ proc runTest { testList generate rep } {
 # $grepFile (if it exist)
 ############################################################################## 
 
-proc egrepFilter {fileName} {
+proc egrepFilter {fileName testName} {
 
     global gv
+    set userId [id user]
+    set tmpGrep /tmp/${userId}_test[pid]
 
     # process tat .TestList.grep (for VxWorks tests only)
 
@@ -1693,11 +1692,26 @@ proc egrepFilter {fileName} {
 	mvFiles $fileName.tmp $fileName
     } 
 
-    # process user TestList.grep
+    # process user TestList.grep or testName.grep
 
-    if {[file exists $gv(grepFile)] && [file size $gv(grepFile)] != 0} {
-	catch {exec egrep -v -f $gv(grepFile) $fileName > $fileName.tmp}
+    if {[file exists $testName.grep] && [file exists $gv(grepFile)]} {
+        printLogVerbose "Cleaning with $gv(grepFile) and $testName.grep: $fileName"
+        catch {exec cat $gv(grepFile) $testName.grep > $tmpGrep$gv(grepFile).tmp }
+    } elseif {[file exists $testName.grep]} {
+        printLogVerbose "Cleaning with $testName.grep: $fileName"
+        catch {file copy -force $testName.grep $tmpGrep$gv(grepFile).tmp }
+    } elseif {[file exists $gv(grepFile)]} {
+        printLogVerbose "Cleaning with $gv(grepFile): $fileName"
+        catch {file copy -force $gv(grepFile) $tmpGrep$gv(grepFile).tmp}
+    }
+
+
+    if {[file exists $tmpGrep$gv(grepFile).tmp]} {
+	catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}
 	mvFiles $fileName.tmp $fileName
+        catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
+    } else {
+        printLogVerbose "No filter applied: grepFile does not exist"
     } 
 
     return 0
@@ -1748,9 +1762,11 @@ proc egrepFilterx {fileName testName} {
 #
 ############################################################################## 
 
-proc sedFilter {fileName} {
+proc sedFilter {fileName testName} {
 
     global gv
+    set userId [id user]
+    set tmpSed /tmp/${userId}_test[pid]
 
 #   process tat allocated environment names
 
@@ -1759,11 +1775,26 @@ proc sedFilter {fileName} {
 	mvFiles $fileName.tmp $fileName
     }
 
-#   process user TestList.sed
+    # process user TestList.sed or testName.sed
 
-    if {[file exists $gv(sedFile)] && [file size $gv(sedFile) ] != 0} {
-	catch {exec sed -f $gv(sedFile) $fileName > $fileName.tmp}
+    if {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
+        printLogVerbose "Cleaning with $gv(sedFile) and $testName.sed: $fileName"
+        catch {exec cat $gv(sedFile) $testName.sed > $tmpSed$gv(sedFile).tmp }
+    } elseif {[file exists $testName.sed]} {
+        printLogVerbose "Cleaning with $testName.sed: $fileName"
+        catch {file copy -force $testName.sed $tmpSed$gv(sedFile).tmp }
+    } elseif {[file exists $gv(sedFile)]} {
+        printLogVerbose "Cleaning with $gv(sedFile): $fileName"
+        catch {file copy -force $gv(sedFile) $tmpSed$gv(sedFile).tmp}
+    }
+
+
+    if {[file exists $tmpSed$gv(sedFile).tmp]} {
+	catch {exec sed -f  $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp}
 	mvFiles $fileName.tmp $fileName
+        catch {file delete -force -- $tmpSed$gv(sedFile).tmp}
+    } else {
+        printLogVerbose "No filter applied: sedFile does not exist"
     } 
 
     return 0
