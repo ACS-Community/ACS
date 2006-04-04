@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.17 2006/04/04 16:51:06 dfugate Exp $
+# @(#) $Id: ACSCorba.py,v 1.18 2006/04/04 22:18:32 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -23,17 +23,11 @@
 '''
 Python CORBA module for ACS.
 
-Takes care of initializing ORB and setting initial reference to MACI
+Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
-
-TODO:
-- this module is not very safe! The first time it is imported the CORBA services
-and manager must be up and running. If not, nothing will ever work. This should
-be changed so that manager can go offline and a later invocation of this modules
-methods should return new references to manager!
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.17 2006/04/04 16:51:06 dfugate Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.18 2006/04/04 22:18:32 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -46,16 +40,28 @@ from omniORB import CORBA
 from omniORB import importIRStubs
 import maci__POA
 from maci import Manager
+import CosNotifyChannelAdmin
+import CDB
+import ACSLog
+import CosNaming
+
+#This only needs to be done once for omniORB
+importIRStubs()
 #--ACS Imports-----------------------------------------------------------------
-from AcsutilPy.ACSPorts          import getManagerPort, getLogPort
 from AcsutilPy.ACSPorts          import getIP
+from AcsutilPy.ACSPorts          import getManagerPort
+from AcsutilPy.ACSPorts          import getLogPort
+from AcsutilPy.ACSPorts          import getNamingServicePort
+from AcsutilPy.ACSPorts          import getCDBPort
+from AcsutilPy.ACSPorts          import getIRPort
+from AcsutilPy.ACSPorts          import getNotifyServicePort
 #--GLOBALS---------------------------------------------------------------------
-_orb = None
-_poaRoot = None
-_poaManager = None
-_mgrRef = None
-_manager = None
-_client = None
+ORB = None
+POA_ROOT = None 
+POA_MANAGER = None
+MGR_CORBALOC = None
+MGR_REF = None
+SINGLETON_CLIENT = None
 #----------------------------------------------------------------------------
 #--Most developers will not find the following functions very interesting as 
 #--they just provide public access to general CORBA objects.
@@ -71,148 +77,146 @@ def getManagerCorbaloc(new_corbaloc=None):
     
     Raises: Nothing.
     '''
-    global _mgrRef
+    global MGR_CORBALOC
 
     if new_corbaloc != None:
         #Developer is trying to manually set the singled reference.
-        _mgrRef = str(new_corbaloc)
+        MGR_CORBALOC = str(new_corbaloc)
   
-    elif _mgrRef == None:
+    elif MGR_CORBALOC == None:
         #If this function has never been called before...
         #Check command-line args for the corbaloc
         for i in range(0, len(argv) - 1):
             if argv[i] == '-managerReference' or argv[i] == '-m':
                 #Found it!  OK to set now.
-                _mgrRef = argv[i + 1]
+                MGR_CORBALOC = argv[i + 1]
                 break
         
-        if _mgrRef == None:
+        if MGR_CORBALOC == None:
             #Not in the command-line so check an environment variable reference
             if environ.has_key('MANAGER_REFERENCE'):
                 #Found it!  OK to set now.
-                _mgrRef = environ['MANAGER_REFERENCE']
+                MGR_CORBALOC = environ['MANAGER_REFERENCE']
             else:
                 #Assume manager is running under the local machine
-                _mgrRef = 'corbaloc::' + str(getIP()) + ':' + getManagerPort() + '/Manager'
+                MGR_CORBALOC = 'corbaloc::' + str(getIP()) + ':' + getManagerPort() + '/Manager'
 
-    return _mgrRef
+    return MGR_CORBALOC
 #----------------------------------------------------------------------------
-def getORB(new_orb=None):
+def getManagerHost():
     '''
-    Returns a reference to the singled ORB or sets it.
+    Returns the hostname manager is running on.
+    '''
+    #use another helper function to get manager's corbaloc
+    mgr_corbaloc = getManagerCorbaloc()
     
-    Params: If the developer specifies a value other than None for new_orb,
-    the singled value is set to this.
+    #parse it to get the hostname
+    return mgr_corbaloc.split("corbaloc::")[1].split(":")[0]
+#----------------------------------------------------------------------------
+def getORB():
+    '''
+    Returns a reference to the singled ORB.
+    
+    Params: None
     
     Returns: a reference to the ORB (or None if there are network problems).
     
     Raises: Nothing.
     '''
-    global _orb
+    global ORB
 
-    if new_orb != None:
-        #Developer is trying to manually set the singled reference.
-        _orb = new_orb
-    elif _orb == None:
+    if ORB == None:
         #If this function has never been called before...
         try:
-            _orb = CORBA.ORB_init(argv)
+            ORB = CORBA.ORB_init(argv)
+            #so we can start receiving requests as well
+            getPOAManager()
+        
         except Exception, e:
-            _orb = None
+            ORB = None
             print_exc()
 
-    return _orb
+    return ORB
 #----------------------------------------------------------------------------
-def getPOARoot(new_poaroot=None):
+def getPOARoot():
     '''
-    Returns a reference to the singled root POA (or sets it).
+    Returns a reference to the singled root POA.
     
-    Params: If the developer specifies a value other than None for new_poaroot, the
-    singled value is set to this.
+    Params: None
     
     Returns: a reference to the root POA (or None if there are network problems).
     
     Raises: Nothing.
     '''
-    global _poaRoot
+    global POA_ROOT
     
-    if new_poaroot != None:
-        #Developer is trying to manually set the singled reference.
-        _poaRoot = new_poaroot
-    elif _poaRoot == None:
+    if POA_ROOT == None:
         #If this function has never been called before...
         try:
-            _poaRoot = getORB().resolve_initial_references("RootPOA")
+            POA_ROOT = getORB().resolve_initial_references("RootPOA")
         except Exception, e:
-            _poaRoot = None
+            POA_ROOT = None
             print_exc()
   
-    return _poaRoot
+    return POA_ROOT
 #----------------------------------------------------------------------------
-def getPOAManager(new_poamanager=None):
+def getPOAManager():
     '''
-    Returns a reference to the singled POA manager (or sets it).
+    Returns a reference to the singled POA manager and activates it so 
+    incoming requests can be processed.
     
-    Params: If the developer specifies a value other than None for
-    new_poamanager, the singled value is set to this.
+    Params: None
     
     Returns: a reference to the POA manager (or None if there are network
     problems).
     
     Raises: Nothing.
     '''
-    global _poaManager
+    global POA_MANAGER
     
-    if new_poamanager != None:
-        #Developer is trying to manually set the singled reference.
-        _poaManager = new_poamanager
-    elif _poaManager == None:
+    if POA_MANAGER == None:
         #If this function has never been called before...
         try:
             #Cannot do much without the POA manager
-            _poaManager = getPOARoot()._get_the_POAManager()
+            POA_MANAGER = getPOARoot()._get_the_POAManager()
             #In truth, it's pretty dangerous to start processing requests this
             #early but since this module is singled.
-            _poaManager.activate()
+            POA_MANAGER.activate()
         except Exception, e:
-            _poaManager = None
+            POA_MANAGER = None
             print_exc()
   
-    return _poaManager
+    return POA_MANAGER
 #----------------------------------------------------------------------------
-def getManager(new_manager=None):
+def getManager():
     '''
-    Returns a reference to the singled Manager (or sets it).
+    Returns a reference to the Manager.
     
-    Params: If the developer specifies a value other than None for new_manager,
-    the singled value is set to this.
+    Params: None
     
     Returns: a reference to the Manager (or None if there are network problems).
     
     Raises: Nothing.
     '''
-    global _manager
+    global MGR_REF
 
-    if new_manager != None:
-        #Developer is trying to manually set the singled reference.
-        _manager = new_manager
-    elif _manager == None:
+    if MGR_REF == None:
         #If this function has never been called before...
         try:
-            _manager = getORB().string_to_object(getManagerCorbaloc())
-            if _manager!=None and (not CORBA.is_nil(_manager)):
+            MGR_REF = getORB().string_to_object(getManagerCorbaloc())
+            if MGR_REF!=None and (not CORBA.is_nil(MGR_REF)):
                 try:
-                    _manager._non_existent()
-                    _manager = _manager._narrow(Manager)
+                    MGR_REF._non_existent()
+                    MGR_REF = MGR_REF._narrow(Manager)
                 except:
-                    _manager = None
+                    MGR_REF = None
             else:
-                _manager = None
+                MGR_REF = None
         except Exception, e:
-            _manager = None
+            MGR_REF = None
             print_exc()
   
-    return _manager
+    return MGR_REF
 #----------------------------------------------------------------------------
 class _Client (maci__POA.Client):
     '''
@@ -222,11 +226,9 @@ class _Client (maci__POA.Client):
     #--------------------------------------------------------------------------
     def __init__(self):
         '''
+        Constructor
         '''
         
-        #This only needs to be done once for omniORB
-        importIRStubs()
-    
         #Even though we do nothing with the POA manager, the reference must be
         #retreived so Python clients can begin sending/receiving CORBA requests
         getPOAManager()
@@ -238,7 +240,7 @@ class _Client (maci__POA.Client):
             print "Acspy.Util.ACSCorba._Client.__init__ - manager is not available."
             print "      This method will block until manager comes online!"
 
-        if argv[0].split('/').pop()!="pydoc":
+        if argv[0].split('/').pop() != "pydoc":
             while getManager()==None:
                 sleep(1)
         else:
@@ -265,12 +267,11 @@ class _Client (maci__POA.Client):
         '''
         Implementation of IDL method.
         '''
-        global _client
-        global _orb
-        global _poaRoot
-        global _poaManager 
-        global _mgrRef 
-        global _manager
+        global SINGLETON_CLIENT
+        global ORB
+        global POA_ROOT
+        global POA_MANAGER
+        global MGR_REF
         
         self.mgr.logout(self.token.h)
         
@@ -293,12 +294,11 @@ class _Client (maci__POA.Client):
         getORB().shutdown(CORBA.FALSE)
         #getORB().destroy()
     
-        _orb = None
-        _poaRoot = None
-        _poaManager = None
-        _mgrRef = None
-        _manager = None
-        _client = None
+        ORB = None
+        POA_ROOT = None
+        POA_MANAGER = None
+        MGR_REF = None
+        SINGLETON_CLIENT = None
 
         return
     #--CLIENT IDL--------------------------------------------------------------
@@ -306,18 +306,12 @@ class _Client (maci__POA.Client):
         '''
         Implementation of IDL method.
         '''
-        #to make the NRI happy
-        question = None
         return "CacsCORBA Client"
     #--CLIENT IDL--------------------------------------------------------------
     def message(self, message_type, message):
         '''
         Implementation of IDL method.
         '''
-        #to make the NRI happy
-        message_type = None
-        message = None
-        
         return
     #--CLIENT IDL--------------------------------------------------------------
     def ping(self):
@@ -330,16 +324,12 @@ class _Client (maci__POA.Client):
         '''
         Implementation of IDL method.
         '''
-        #to make the NRI happy
-        components = None
         return
     #--CLIENT IDL--------------------------------------------------------------
     def components_unavailable(self, components):
         '''
         Implementation of IDL method.
         '''
-        #to make the NRI happy
-        components = None
         return
     #--------------------------------------------------------------------------
     def getService(self, curl, activate = 1):
@@ -359,44 +349,36 @@ class _Client (maci__POA.Client):
         result = None
         if self.mgr is not None:
             (component, status) = self.mgr.get_service(self.token.h, curl, activate)
-            #to make the NRI happy
-            status = None
       
         if component is not None:
             result = component
         return result
 #----------------------------------------------------------------------------
-
-#----------------------------------------------------------------------------
-def getClient(new_client=None):
+def getClient():
     '''
-    Returns a reference to the singled client or sets it.
+    Returns a reference to the singled client.
     
-    Params: If the developer specifies a value other than None for new_client,
-    the singled value is set to this.
+    Params: None
     
     Returns: a reference to the client (or None if there are network problems).
     
-    Raises: Nothing.
+    Raises: Nothing
     '''
-    global _client
+    global SINGLETON_CLIENT
     
-    if new_client != None:
-        #Developer is trying to manually set the singled reference.
-        _client = new_client
-    elif _client == None:
+    if SINGLETON_CLIENT == None:
         #If this function has never been called before...
         try:
-            _client = _Client()
+            SINGLETON_CLIENT = _Client()
         except Exception, e:
-            _client = None
+            SINGLETON_CLIENT = None
             print_exc()
 
-    return _client
+    return SINGLETON_CLIENT
 #----------------------------------------------------------------------------
 def log():
     '''
-    Log service reference.
+    Returns log service reference.
     
     Params: None
     
@@ -408,7 +390,7 @@ def log():
 #----------------------------------------------------------------------------
 def logFactory():
     '''
-    Log factory reference
+    Returns log factory reference
     
     Params: None
     
@@ -420,7 +402,7 @@ def logFactory():
 #----------------------------------------------------------------------------
 def notifyEventChannelFactory():
     '''
-    Notification Event Channel factory reference
+    Returns Notification Event Channel factory reference
     
     Params: None
     
@@ -428,12 +410,14 @@ def notifyEventChannelFactory():
     
     Raises: ???
     '''
-    import CosNotifyChannelAdmin
-    return getClient().getService('NotifyEventChannelFactory')
+    necf_corbaloc = "corbaloc::" + getManagerHost() + ":" + getNotifyServicePort() + "/NotifyEventChannelFactory"
+    necf = getORB().string_to_object(necf_corbaloc)
+    
+    return necf._narrow(CosNotifyChannelAdmin.EventChannelFactory)
 #----------------------------------------------------------------------------
 def archivingChannel():
     '''
-    Archiving channel reference
+    Returns archiving channel reference
     
     Params: None
     
@@ -441,12 +425,11 @@ def archivingChannel():
     
     Raises: ???
     '''
-    import CosNotifyChannelAdmin
     return getClient().getService('ArchivingChannel')
 #----------------------------------------------------------------------------
 def loggingChannel():
     '''
-    Logging channel reference
+    Returns logging channel reference
     
     Params: None
     
@@ -454,12 +437,11 @@ def loggingChannel():
     
     Raises: ???
     '''
-    import CosNotifyChannelAdmin
     return getClient().getService('LoggingChannel')
 #----------------------------------------------------------------------------
 def interfaceRepository():
     '''
-    Interface repository reference
+    Returns interface repository reference
     
     Params: None
     
@@ -467,12 +449,14 @@ def interfaceRepository():
     
     Raises: ???
     '''
-    ifr = getClient().getService('InterfaceRepository')
+    ifr_corbaloc = "corbaloc::" + getManagerHost() + ":" + getIRPort() + "/InterfaceRepository"
+    ifr = getORB().string_to_object(ifr_corbaloc)
+    
     return ifr._narrow(CORBA.Repository)
 #----------------------------------------------------------------------------
 def cdb():
     '''
-    Configuration database reference
+    Returns configuration database reference
     
     Params: None
     
@@ -480,12 +464,14 @@ def cdb():
     
     Raises: ???
     '''
-    import CDB
-    return getClient().getService('CDB')._narrow(CDB.DAL)
+    cdb_corbaloc = "corbaloc::" + getManagerHost() + ":" + getCDBPort() + "/CDB"
+    cdb_obj = getORB().string_to_object(cdb_corbaloc)
+    
+    return cdb_obj._narrow(CDB.DAL)
 #----------------------------------------------------------------------------
 def acsLogSvc():
     '''
-    ACS Log Service reference
+    Returns ACS Log Service reference
     
     Params: None
     
@@ -493,24 +479,24 @@ def acsLogSvc():
     
     Raises: ???
     '''
-    import ACSLog
-    
-    als_corbaloc = "corbaloc::" + getIP() + ":" + getLogPort() + "/ACSLogSvc"
+    als_corbaloc = "corbaloc::" + getManagerHost() + ":" + getLogPort() + "/ACSLogSvc"
     als = getORB().string_to_object(als_corbaloc)
     
     return als._narrow(ACSLog.LogSvc)
 #----------------------------------------------------------------------------
 def nameService():
     '''
-    Naming service reference
+    Returns name service reference
     
     Params: None
     
-    Returns: Naming service reference
+    Returns: Name service reference
     
     Raises: ???
     '''
-    import CosNaming
-    return getClient().getService('NameService')._narrow(CosNaming.NamingContext)
+    ns_corbaloc = "corbaloc::" + getManagerHost() + ":" + getNamingServicePort() + "/NameService"
+    ns = getORB().string_to_object(ns_corbaloc)
+    
+    return ns._narrow(CosNaming.NamingContext)
 #----------------------------------------------------------------------------
 

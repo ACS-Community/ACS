@@ -6,10 +6,10 @@
 1 - Client: <Acspy.Util.ACSCorba._Client instance at 0xXXXX>
 1 - Log: <omniORB.CORBA.Object instance at 0xXXXX>
 1 - LogFactory: <omniORB.CORBA.Object instance at 0xXXXX>
-1 - NotifyEventChannelFactory: <omniORB.CORBA.Object instance at 0xXXXX>
+1 - NotifyEventChannelFactory: <CosNotifyChannelAdmin._objref_EventChannelFactory instance at 0xXXXX>
 1 - ArchivingChannel: <CosNotifyChannelAdmin._objref_EventChannel instance at 0xXXXX>
 1 - LoggingChannel: <CosNotifyChannelAdmin._objref_EventChannel instance at 0xXXXX>
 1 - InterfaceRepository: <CORBA._objref_Repository instance at 0xXXXX>
-1 - CDB: <CDB._objref_WJDAL instance at 0xXXXX>
+1 - CDB: <CDB._objref_DAL instance at 0xXXXX>
 1 - ACSLogSvc: <ACSLog._objref_LogSvc instance at 0xXXXX>
 1 - NameService: <CosNaming._objref_NamingContext instance at 0xXXXX>
