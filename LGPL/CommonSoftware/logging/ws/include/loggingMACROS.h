@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.13 2006/01/25 15:39:12 dfugate Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.14 2006/04/04 19:01:07 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,8 +63,9 @@ else \
  * @param logLine  Line number from where the log was published (__LINE__)
  * @param logRoutine  Name of the routine from where the log was published (string)
  * @param logTime  Time the log was published (ACS::Time)
+ * @param logSource Source of the log (i.e., container name, component name, etc)
  */
-#define LOG_RECORD(logPriority, logMessage, logFile, logLine, logRoutine, logTime) \
+#define LOG_RECORD(logPriority, logMessage, logFile, logLine, logRoutine, logTime, logSource) \
 if (getLogger()!=0) \
 { \
     Logging::BaseLog::LogRecord lr; \
@@ -74,7 +75,7 @@ if (getLogger()!=0) \
     lr.line      = logLine; \
     lr.method    = logRoutine; \
     lr.timeStamp = logTime; \
-    getLogger()->log(lr); \
+    getNamedLogger(logSource)->log(lr); \
 } \
 else \
 { \

@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.14 2006/01/09 18:27:56 dfugate Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.15 2006/04/04 19:01:07 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.14 2006/01/09 18:27:56 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.15 2006/04/04 19:01:07 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
@@ -42,7 +42,7 @@ void ACSLogImpl::logTrace (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_TRACE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_TRACE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logDebug (acscommon::TimeStamp time,
@@ -56,7 +56,7 @@ void ACSLogImpl::logDebug (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_DEBUG, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_DEBUG, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }    
 
 void ACSLogImpl::logInfo (acscommon::TimeStamp time,
@@ -70,7 +70,7 @@ void ACSLogImpl::logInfo (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_INFO, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_INFO, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logNotice (acscommon::TimeStamp time,
@@ -84,7 +84,7 @@ void ACSLogImpl::logNotice (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_NOTICE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_NOTICE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logWarning (acscommon::TimeStamp time,
@@ -98,7 +98,7 @@ void ACSLogImpl::logWarning (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_WARNING, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_WARNING, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logError (const ACSErr::ErrorTrace & et) 
@@ -118,7 +118,7 @@ void ACSLogImpl::logCritical (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_CRITICAL, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_CRITICAL, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logAlert (acscommon::TimeStamp time,
@@ -132,7 +132,7 @@ void ACSLogImpl::logAlert (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_ALERT, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_ALERT, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logEmergency (acscommon::TimeStamp time,
@@ -146,7 +146,7 @@ void ACSLogImpl::logEmergency (acscommon::TimeStamp time,
   PriortyFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
-  LOG_RECORD(Logging::BaseLog::LM_EMERGENCY, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time);
+  LOG_RECORD(Logging::BaseLog::LM_EMERGENCY, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logXML (const char * xml

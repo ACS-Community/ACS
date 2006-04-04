@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.71 2006/02/14 01:35:37 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.72 2006/04/04 19:01:07 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <iomanip>
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.71 2006/02/14 01:35:37 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.72 2006/04/04 19:01:07 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /******************************************************************************
@@ -215,7 +215,8 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level){
 	     c->file.in(), 
 	     c->lineNum, 
 	     c->routine.in(), 
-	     c->timeStamp);
+	     c->timeStamp,
+	     getLogger()->getName());
 }
 
 void ErrorTraceHelper::log()

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACEMACROS.h,v 1.6 2006/01/09 16:02:06 dfugate Exp $"
+* "@(#) $Id: loggingACEMACROS.h,v 1.7 2006/04/04 19:01:07 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -237,7 +237,7 @@ STATIC_LOG(Logging::ace2acsPriority(LM_TRACE), routine, Logging::BaseLog::FIELD_
     LoggingProxy::Flags(flags); \
     Logging::LogSvcHandler::DeprecatedLogInfo tStruct; \
     tStruct = Logging::LogSvcHandler::unformatted2formatted _log; \
-    LOG_RECORD(tStruct.priority, tStruct.message, __FILE__, __LINE__, routine, tStamp); \
+    LOG_RECORD(tStruct.priority, tStruct.message, __FILE__, __LINE__, routine, tStamp, getLogger()->getName()); \
 }
 
 /**
