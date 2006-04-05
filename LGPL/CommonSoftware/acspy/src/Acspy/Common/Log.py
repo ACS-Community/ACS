@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.18 2006/04/03 16:32:31 dfugate Exp $
+# @(#) $Id: Log.py,v 1.19 2006/04/05 21:26:39 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.18 2006/04/03 16:32:31 dfugate Exp $"
+__revision__ = "$Id: Log.py,v 1.19 2006/04/05 21:26:39 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -95,21 +95,21 @@ SEVERITIES = { 0x0002 : ACSLog.ACS_LOG_TRACE,
                }
                
 #------------------------------------------------------------------------------
-def getSeverity(sevNumber):
+def getSeverity(severity_number):
     '''
     Helper function returns the nearest severity which is greater than or equal
     to the parameter.
     '''
     #get a list of the severities
-    sevList = SEVERITIES.keys()
+    severity_list = SEVERITIES.keys()
     #sort it in place
-    sevList.sort()
+    severity_list.sort()
 
     #traverse the list...
-    for num in sevList:
+    for num in severity_list:
         #until we find the first occurence where the input param is less than
         #or equal
-        if sevNumber <= num:
+        if severity_number <= num:
             return num
 #------------------------------------------------------------------------------           
 #create a stdout handler
@@ -161,7 +161,7 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        self.errorTraceList = []
+        self.error_trace_list = []
         
         #pass it on to baseclass. by default all logs are sent to the handlers
         logging.Logger.__init__(self, name, logging.NOTSET)
@@ -169,190 +169,154 @@ class Logger(logging.Logger):
         #add handlers
         self.addHandler(STDOUTHANDLER)
         self.addHandler(ACSHANDLER)
+    #------------------------------------------------------------------------    
+    def __getCallerName(self):
+        '''
+        Helper function returns the name of the calling function or method.
+        '''
+        try:
+            func_name = stack()[3][3]
+        except IndexError, ex:
+            func_name = "Indeterminable Name"
+
+        func_name = func_name.replace('?', 'Main')
+        
+        return func_name
     #------------------------------------------------------------------------
-    def logAlert(self, msg = '', component=None):
+    def __formatMessage(self, msg):
+        '''
+        Helper function formats the message.
+        '''
+        func_name = self.__getCallerName()
+        msg = func_name + " - " + msg
+        
+        return msg
+    #------------------------------------------------------------------------
+    def logAlert(self, msg):
         '''
         Log an alert message.
 
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is a deprecated keyword param.
 
         Returns: Nothing
 
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_ALERT], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
-    def logCritical(self, msg = '', component=None):
+    def logCritical(self, msg):
         '''
         Log a critical message.
 
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is the component which is publishing the message
+        
         
         Returns: Nothing
 
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_CRITICAL], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
-    def logDebug(self, msg = '', component=None):
+    def logDebug(self, msg):
         '''
         Log a debug message.
 
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is the component which is publishing the message
+        
 
         Returns: Nothing
 
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_DEBUG], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
-    def logEmergency(self, msg = '', component=None):
+    def logEmergency(self, msg):
         '''
         Log an emergency message.
 
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is the component which is publishing the message
+        
         
         Returns: Nothing
 
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_EMERGENCY], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
-    def logInfo(self, msg = '', component=None):
+    def logInfo(self, msg):
         '''
         Log an informational message.
 
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is the component which is publishing the message
+        
         
         Returns: Nothing
 
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_INFO], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
-    def logNotice(self, msg = '', component=None):
+    def logNotice(self, msg):
         '''
         Log a notice message.
 
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is the component which is publishing the message
+        
         
         Returns: Nothing
 
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_NOTICE], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
-    def logTrace(self, msg = '', component=None):
+    def logTrace(self, msg):
         '''
         Log a trace message.
         
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is the component which is publishing the message
+        
         
         Returns: Nothing
         
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_TRACE], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
-    def logWarning(self, msg = '', component=None):
+    def logWarning(self, msg):
         '''
         Log a warning message.
 
         Parameters:
         - msg is a string to be sent to the logging system
-        - component is the component which is publishing the message
 
         Returns: Nothing
 
         Raises: Nothing
         '''
-        try:
-            funcName = stack()[1][3]
-        except Exception, e:
-            funcName = "Indeterminable Name"
-
-        funcName = funcName.replace('?', 'Main')
-        msg = funcName + " - " + msg
-        
+        msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_WARNING], msg)
-        self.__checkDeprecated(component)
+        
     #------------------------------------------------------------------------
     def logXML(self, xml):
         '''
@@ -385,22 +349,15 @@ class Logger(logging.Logger):
             ACSHANDLER.logSvc.logError(errortrace)
 
             #could have old errors cached up
-            for et in self.errorTraceList:
+            for et in self.error_trace_list:
                 ACSHANDLER.logSvc.logError(et)
 
             #zero the list
-            self.errorTraceList = []
+            self.error_trace_list = []
                 
         else:
             #save it to be processes later
-            self.errorTraceList.append(errortrace)
-    #------------------------------------------------------------------------
-    def __checkDeprecated(self, obj):
-        '''
-        '''
-        if obj!=None:
-            print "DEPRECATED: passing a component instance as the last parameter"
-            print "            parameter of logXyz methods is no longer used."
+            self.error_trace_list.append(errortrace)
 #----------------------------------------------------------------------------
 logging.setLoggerClass(Logger)
 
@@ -420,14 +377,3 @@ def getLogger(name=None):
     '''
     return Logger(str(name))
 #----------------------------------------------------------------------------
-def setLogger(obj):
-    '''
-    Deprecated.
-    '''
-    print "DEPRECATED: passing an object to setLogger has no effect"
-    return
-#----------------------------------------------------------------------------
-if __name__=="__main__":
-    myLogger = logging.getLogger("TESTLOGGER")
-    for i in range(5):
-        myLogger.warning("a warning")
