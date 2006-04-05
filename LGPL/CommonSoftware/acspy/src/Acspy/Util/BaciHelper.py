@@ -1,4 +1,4 @@
-# @(#) $Id: BaciHelper.py,v 1.7 2005/11/23 21:07:17 dfugate Exp $
+# @(#) $Id: BaciHelper.py,v 1.8 2006/04/05 16:55:08 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaciHelper.py,v 1.7 2005/11/23 21:07:17 dfugate Exp $"
+# "@(#) $Id: BaciHelper.py,v 1.8 2006/04/05 16:55:08 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -35,12 +35,9 @@ to ease the pain of working with BACI.
 TODO:
 - addProperty does not create persistent CORBA objects at the moment. Needs
 to be changed.
-- better exception handling
-- documentation
-- testing
 '''
 
-__revision__ = "$Id: BaciHelper.py,v 1.7 2005/11/23 21:07:17 dfugate Exp $"
+__revision__ = "$Id: BaciHelper.py,v 1.8 2006/04/05 16:55:08 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from new import instancemethod
@@ -60,6 +57,11 @@ from ACSImpl.String       import ROstring, RWstring
 from ACSImpl.StringSeq    import ROstringSeq
 from ACSImpl.Enum         import getEnumClass
 #--GLOBALS---------------------------------------------------------------------
+IFR = interfaceRepository()
+
+#a dictionary mapping IFR IDs to interface descriptions. this is in place to
+#save time (IFR operations are slow)
+INTERFACE_DICT = {}
 #------------------------------------------------------------------------------
 def addProperty(comp_ref,
                 prop_name,
@@ -67,24 +69,31 @@ def addProperty(comp_ref,
                 cdb_location=None,
                 prop_type=""):
     '''
-    This function automatically adds a BACI property implementations to a
-    component and it is designed to be used from the initialize lifecyle method
-    of components. If the IFR is not working correctly, this function will NOT
-    work at all as it is dependent upon the IFR to obtain the propertys type.
+    This function automatically adds a BACI property implementation to a
+    component and it is designed to be used from the initialize lifecyle
+    method of components. If the IFR is not working correctly, this function 
+    will NOT work at all as it is dependent upon the IFR to obtain the 
+    property type.
 
-    For those who want to know the nitty gritty details of this helper function:
-    1. It determines the correct CDB location for the property using the IR ID
-    of the component (i.e., IDL name of the component) concatenated with the
-    name of the property
+    For those who want to know the nitty gritty details of this helper 
+    function:
+    
+    1. It determines the correct CDB location for the property using the IFR 
+    ID of the component (i.e., IDL name of the component) concatenated with 
+    the name of the property
+    
     2. It determines the proper ACS implementation of BACI property to use by
     looking it up in the IFR.
+    
     3. It automatically adds the Python object (i.e., BACI property) to
     comp_ref. This member is named "__" + prop_name + "Object"
+    
     4. It automatically adds the CORBA object property to comp_ref as well.
     This member is named "__" + prop_name + "CORBAObject"
+    
     5. Finally, it automatically creates the "_get_" + prop_name method of
     comp_ref which returns 4.
-
+    
     
     Parameters:
     - comp_ref is a reference to the component that will have the BACI
@@ -98,37 +107,39 @@ def addProperty(comp_ref,
     "Mount:voltage". Please pay close attention to the fact this name has
     absolutely nothing to do with comp_refs instance name! It is not
     recommended to override this default parameter, but you can if the schema
-    defining your component is not following the unofficial standards set by
-    the examples throughout ACS. Please be aware of the fact this parameter
-    may become deprecated in the near future also!
+    defining your component is following something other than the unofficial 
+    standards set by the examples throughout ACS. Please be aware of the fact 
+    this parameter may become deprecated in the near future also!
     - prop_type is unncessary to override IFF the IFR is working correctly.
     If this is not the case, the user can specify the propertys type
     directly here. An example could be "ROdouble"
-
+    
     Returns: Nothing
-
+    
     Raises: ???
     '''
+    #string of the form 'IDL:alma/someModule/someInterface:1.0'
+    comp_type = comp_ref._NP_RepositoryId
+    
     #------------------------------------------------------------------------------
     #determine the name of the property within the ACS CDB
     if cdb_location == None:
-        cdb_name = comp_ref._NP_RepositoryId.split(':')[1].split('/').pop() + "/"
+        cdb_name = comp_type.split(':')[1].split('/').pop() + "/"
         cdb_name = cdb_name + prop_name
     else:
         cdb_name = cdb_location
     #------------------------------------------------------------------------------
     #determine the real type of the BACI property using the IFR
-    ifr = interfaceRepository()
-
-    #string of the form 'IDL:alma/someModule/someInterface:1.0'
-    comp_type = comp_ref._NP_RepositoryId
-
     #look up the component's description in the IFR
-    interf = ifr.lookup_id(comp_type)
-    interf = interf._narrow(CORBA.InterfaceDef)
-    interf = interf.describe_interface()
+    if INTERFACE_DICT.has_key(comp_type) == False:
+        interf = IFR.lookup_id(comp_type)
+        interf = interf._narrow(CORBA.InterfaceDef)
+        interf = interf.describe_interface()
+        INTERFACE_DICT[comp_type] = interf
+    else:
+        interf = INTERFACE_DICT[comp_type]
 
-    #if developer has not specified the property's type because of IFR problems..
+    #if developer has not specified the property's type
     if prop_type == "":
         #iterate through all the component's attributes until the attribute
         #we're looking for is found.
@@ -140,106 +151,80 @@ def addProperty(comp_ref,
                 break
     #------------------------------------------------------------------------------
     #create the BACI property object and set it as a member of the component
+    prop_py_name = "__" + prop_name + "Object"
+    prop_corba_name = "__" + prop_name + "CORBAObject"
+    
+    #get the class implementation for the BACI property
     if prop_type == "ROstringSeq":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROstringSeq(cdb_name,
-                                                                     comp_ref,
-                                                                     devio_ref)
+        prop_class = ROstringSeq
 
     elif prop_type == "ROdouble":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROdouble(cdb_name,
-                                                                  comp_ref,
-                                                                  devio_ref)
+        prop_class = ROdouble
 
     elif prop_type == "RWdouble":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWdouble(cdb_name,
-                                                                  comp_ref,
-                                                                  devio_ref)
+        prop_class = RWdouble
 
     elif prop_type == "ROdoubleSeq":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROdoubleSeq(cdb_name,
-                                                                     comp_ref,
-                                                                     devio_ref)
+        prop_class = ROdoubleSeq
 
     elif prop_type == "RWdoubleSeq":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWdoubleSeq(cdb_name,
-                                                                     comp_ref,
-                                                                     devio_ref)
+        prop_class = RWdoubleSeq
 
     elif prop_type == "ROlong":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROlong(cdb_name,
-                                                                comp_ref,
-                                                                devio_ref)
+        prop_class = ROlong
 
     elif prop_type == "RWlong":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWlong(cdb_name,
-                                                                comp_ref,
-                                                                devio_ref)
+        prop_class = RWlong
 
     elif prop_type == "ROlongSeq":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROlongSeq(cdb_name,
-                                                                   comp_ref,
-                                                                   devio_ref)
+        prop_class = ROlongSeq
 
     elif prop_type == "RWlongSeq":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWlongSeq(cdb_name,
-                                                                   comp_ref,
-                                                                   devio_ref)
+        prop_class = RWlongSeq
 
     elif prop_type == "ROlongLong":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROlongLong(cdb_name,
-                                                                    comp_ref,
-                                                                    devio_ref)
+        prop_class = ROlongLong
 
     elif prop_type == "RWlongLong":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWlongLong(cdb_name,
-                                                                    comp_ref,
-                                                                    devio_ref)
+        prop_class = RWlongLong
         
     elif prop_type == "ROuLongLong":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROuLongLong(cdb_name,
-                                                                     comp_ref,
-                                                                     devio_ref)
+        prop_class = ROuLongLong
 
     elif prop_type == "RWuLongLong":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWuLongLong(cdb_name,
-                                                                     comp_ref,
-                                                                     devio_ref)
+        prop_class = RWuLongLong
 
     elif prop_type == "ROpattern":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROpattern(cdb_name,
-                                                                   comp_ref,
-                                                                   devio_ref)
+        prop_class = ROpattern
 
     elif prop_type == "RWpattern":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWpattern(cdb_name,
-                                                                   comp_ref,
-                                                                   devio_ref)
+        prop_class = RWpattern
 
     elif prop_type == "ROstring":
-        comp_ref.__dict__["__" + prop_name + "Object"] = ROstring(cdb_name,
-                                                                  comp_ref,
-                                                                  devio_ref)
+        prop_class = ROstring
 
     elif prop_type == "RWstring":
-        comp_ref.__dict__["__" + prop_name + "Object"] = RWstring(cdb_name,
-                                                                  comp_ref,
-                                                                  devio_ref)
-
-    #DWF-fix me later! (e.g., really search for an enum first!)
-    elif prop_type.startswith("RO") or prop_type.startswith("RW"):
-        enum_class = getEnumClass(prop_ifr_name)
-        comp_ref.__dict__["__" + prop_name + "Object"] = enum_class(cdb_name,
-                                                                    comp_ref,
-                                                                    devio_ref)
+        prop_class = RWstring
         
+    #must handle user defined enums as well
+    elif prop_type.startswith("RO") or prop_type.startswith("RW"):
+        prop_class = getEnumClass(prop_ifr_name)
+                
     else:
-        print "DWF, need to come up with a better exception", str(prop_type), str(comp_type), str(cdb_name), str(prop_name)
-        raise "need to come up with a better exception for this prototype"
-    #------------------------------------------------------------------------------
-    #create the CORBA reference and set it as a member of the component
-    corba_ref = comp_ref.__dict__["__" + prop_name + "Object"]._this()
+        msg = "The '" + str(prop_name) + "' property of type '" 
+        msg = msg + str(prop_type) + "' from the the '" + str(comp_type)
+        msg = msg + "' component type cannot be found within the IFR!"
+        raise msg
     
-    comp_ref.__dict__["__" + prop_name + "CORBAObject"] = corba_ref
+    #create the pure python property object
+    prop_obj = prop_class(cdb_name, comp_ref, devio_ref)
+    #add the property object to the component
+    comp_ref.__dict__[prop_py_name] = prop_obj
+    
+    #create the CORBA reference and set it as a member of the component
+    corba_ref = prop_obj._this()
+    comp_ref.__dict__[prop_corba_name] = corba_ref
+    
     #------------------------------------------------------------------------------
     #create the function to return the property
     def genericFunction(*args, **moreargs):
@@ -255,7 +240,7 @@ def addProperty(comp_ref,
         Raises: Nothing
         '''
         
-        return comp_ref.__dict__["__" + prop_name + "CORBAObject"]
+        return comp_ref.__dict__[prop_corba_name]
     #------------------------------------------------------------------------------
     #register the generic function with the component
     comp_ref.__dict__["_get_" + prop_name] = instancemethod(genericFunction,
