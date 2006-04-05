@@ -63,6 +63,9 @@ public class ACSLogParserTest extends TestCase {
 
 	
 	/**
+	 * Parses one log record from XML and verifies a few fields, 
+	 * including the exception details that are attached as additional data.
+	 * 
 	 * @throws Exception
 	 */
 	public void testParseLogRecord() throws Exception {
@@ -83,7 +86,7 @@ public class ACSLogParserTest extends TestCase {
 	
 	
 	/**
-	 * This methods checks whether identical strings for a certain field of two log messages 
+	 * This method checks whether identical strings for a certain field of two log messages 
 	 * result in one reused String in memory, or in two redundant strings.
 	 * Field names are highly repetitive, which can be seen by the huge compression rate achievable for real life log files.
 	 * <p>
@@ -99,7 +102,7 @@ public class ACSLogParserTest extends TestCase {
 		String routineName1 = (String) record1.getField(LogEntryXML.FIELD_ROUTINE);
 		String routineName2 = (String) record2.getField(LogEntryXML.FIELD_ROUTINE);
 		// strings must be equal by design of this test, but are they also the same String in memory?
-		assertTrue("Wrong junit test! The two parsed records should have identical routine names.", routineName1.equals(routineName2));		
-		assertTrue("Bad jlog implementation: Recurring strings must be reused from a pool to minimize memory consumption!", routineName1 == routineName2);
+		assertTrue("Bad junit test: The two parsed records should have identical routine names.", routineName1.equals(routineName2));		
+		assertTrue("Bad jlog implementation: Recurring strings should be reused from a pool to minimize memory consumption!", routineName1 == routineName2);
 	}
 }
