@@ -920,8 +920,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (type=10, code=1),Error Number=1
+1 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created
 1 - ----------T--:--:--.--- [GlobalLogger - ACSError::~ACSError] ACSError object deleted
 1 - ----------T--:--:--.--- [GlobalLogger - ACSError::ACSError] ACSError created with previous ErrorTrace
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] *OLD* Out of Bounds (type=10, code=1),Error Number=1
@@ -978,6 +978,9 @@
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI1...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI1::actionThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI1::actionThread
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] Properties destroyed
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
@@ -1189,6 +1192,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
 1 - ----------T--:--:--.--- [BACI1 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] Component 'BACI1' destroyed.
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
@@ -1198,14 +1203,19 @@
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [BACI1 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Destroying "BACI2"
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI2...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::stop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI2::actionThread
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] Properties destroyed
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::~RWcontImpl] 
@@ -1416,6 +1426,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
 1 - ----------T--:--:--.--- [BACI2 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] Component 'BACI2' destroyed.
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::~DAOProxy] 
@@ -1425,8 +1437,12 @@
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [BACI2 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Closing CORBA.
 1 - 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
@@ -1486,74 +1502,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Input Output Error (type: 10, code: 2, errorStack: 1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::offAction] *OLD* Input Output Error (stackLevel=0, type=10, code=2)
-2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::set_sync] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::setValueAction] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl&lt;&gt;::invokeAction] *OLD* Out of Bounds (stackLevel=2, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Out of Bounds (stackLevel=3, type=10, code=1)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Input Output Error (type: 10, code: 2, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::offAction] *OLD* Input Output Error (stackLevel=0, type=10, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::set_sync] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::setValueAction] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl&lt;&gt;::invokeAction] *OLD* Out of Bounds (stackLevel=2, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Out of Bounds (stackLevel=3, type=10, code=1)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Input Output Error (type: 10, code: 2, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::offAction] *OLD* Input Output Error (stackLevel=0, type=10, code=2)
-2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
@@ -1638,43 +1588,10 @@
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::setValueAction] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl&lt;&gt;::invokeAction] *OLD* Out of Bounds (stackLevel=2, type=10, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Out of Bounds (stackLevel=3, type=10, code=1)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Input Output Error (type: 10, code: 2, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::offAction] *OLD* Input Output Error (stackLevel=0, type=10, code=2)
-2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::set_sync] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
-2 - 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::setValueAction] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Out of Bounds (stackLevel=3, type=10, code=1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl&lt;&gt;::invokeAction] *OLD* Out of Bounds (stackLevel=2, type=10, code=1)
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
 2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
@@ -1786,6 +1703,105 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::set_sync] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::setValueAction] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl&lt;&gt;::invokeAction] *OLD* Out of Bounds (stackLevel=2, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Out of Bounds (stackLevel=3, type=10, code=1)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Input Output Error (type: 10, code: 2, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::offAction] *OLD* Input Output Error (stackLevel=0, type=10, code=2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::set_sync] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::setValueAction] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl&lt;&gt;::invokeAction] *OLD* Out of Bounds (stackLevel=2, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Out of Bounds (stackLevel=3, type=10, code=1)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Input Output Error (type: 10, code: 2, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::offAction] *OLD* Input Output Error (stackLevel=0, type=10, code=2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::set_sync] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Out of Bounds (type: 10, code: 1, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl<ACS_RW_TL>::setValue] *OLD* Out of Bounds (stackLevel=0, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcommonImpl_T.i:xxx in baci::RWcommonImpl&lt;&gt;::setValueAction] *OLD* Out of Bounds (stackLevel=1, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][../../ws/include/baciRWcontImpl_T.i:xxx in baci::RWcontImpl&lt;&gt;::invokeAction] *OLD* Out of Bounds (stackLevel=2, type=10, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Out of Bounds (stackLevel=3, type=10, code=1)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* OK (type: 0, code: 0, errorStack: 0)
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---] *OLD* Input Output Error (type: 10, code: 2, errorStack: 1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::offAction] *OLD* Input Output Error (stackLevel=0, type=10, code=2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] 	Reason = Simulation error
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciTestClassImpl.cpp:xxx in ::BaciTestClassImpl::invokeAction] *OLD* Input Output Error (stackLevel=1, type=10, code=2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] [----------T--:--:--.---][PID: ----, ID: ---- @ -----][baciBACIComponent.cpp:xxx in baci::actionThreadWorker] *OLD* Input Output Error (stackLevel=2, type=10, code=2)
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Leaving working thread
 2 - ----------T--:--:--.--- [GlobalLogger - ] (baciTestErrSys main thread) Shutting down...

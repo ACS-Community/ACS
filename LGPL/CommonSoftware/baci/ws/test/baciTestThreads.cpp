@@ -68,12 +68,15 @@ int main(int argc, char* argv[])
 
     g_logger = m_logger;
 
+//    printf("b4: setInitializers\n");
     BACIThread::setInitializers(initThread, doneThread);
 
+// printf("b4: threadManager\n");
     BACIThreadManager * threadManager_p = new BACIThreadManager();
 
     ACS_SHORT_LOG((LM_INFO, "Spawning threads..."));
 
+// printf("b4: threadManager create\n");
     BACIThread * thread = threadManager_p->create("Test thread", 
 						  (void*)worker, (void*)0);
     thread->resume();

@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: baciTest.tcl,v 1.91 2004/05/18 09:04:35 bjeram Exp $"
+# "@(#) $Id: baciTest.tcl,v 1.92 2006/04/05 13:54:52 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -68,6 +68,7 @@ if { $argc == 2 } {
 send "sp $Proc \r"
 }
 
+after 1000
 expect -gl "*->"
 
 expect {
