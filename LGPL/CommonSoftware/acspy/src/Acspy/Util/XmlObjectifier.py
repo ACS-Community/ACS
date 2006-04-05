@@ -142,10 +142,11 @@ import xml.dom.minidom as minidom
 from traceback import print_exc
 
 class _XmlObject:
-
-    '''This class definition is used for the additional "elementName_obj"
-objects in the hierarchy that allow to access child nodes via the __call__
-method.'''
+    '''
+    This class definition is used for the additional "elementName_obj"
+    objects in the hierarchy that allow to access child nodes via the __call__
+    method.
+    '''
 
     def __init__(self, elementsList):
         self.elementsList = elementsList
@@ -200,8 +201,10 @@ method.'''
 
 def _createLists(xmlObject, mapNameSpaces, nameSpaceMapping, skipChars):
 
-    '''Generate lists of elements if one kind of element exists several times on the
-same level. Otherwise map it into a scalar.'''
+    '''
+    Generate lists of elements if one kind of element exists several times on the
+    same level. Otherwise map it into a scalar.
+    '''
 
     if xmlObject.hasChildNodes():
         items = []
@@ -274,15 +277,16 @@ def castType(value):
 
 class XmlObject(minidom.Document):
 
-    '''Creates an object representing the XML document wich is to be objectified.
-The XML string passed to the constructor is preferred over any specified XML
-file.
+    '''
+    Creates an object representing the XML document wich is to be objectified.
+    The XML string passed to the constructor is preferred over any specified 
+    XML file.
 
-Optionally the name space mapping can be turned on by passing mapNameSpaces = 1.
+    Optionally the name space mapping can be turned on by passing mapNameSpaces = 1.
 
-Leading characters in the name space definitions can be skipped in the mapping
-by passing the optional "skipChars" argument.
-'''
+    Leading characters in the name space definitions can be skipped in the mapping
+    by passing the optional "skipChars" argument.
+    '''
 
     def __init__(self, xmlString = None, fileName = None, skipChars = '',
         mapNameSpaces = 0):

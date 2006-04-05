@@ -16,52 +16,45 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Visualizer.py,v 1.2 2005/11/02 21:52:22 dfugate Exp $"
+# "@(#) $Id: Visualizer.py,v 1.3 2006/04/05 21:47:04 dfugate Exp $"
 #
 # who       when      what
-# --------  --------  ----------------------------------------------
+# --------  --------  -------------------------------------------------------
 # dfugate  2005-11-01  created
 #
-
-#************************************************************************
-#   NAME
-# 
-#   SYNOPSIS
-# 
-#   DESCRIPTION
-#
-#   FILES
-#
-#   ENVIRONMENT
-#
-#   RETURN VALUES
-#
-#   CAUTIONS
-#
-#   EXAMPLES
-#
-#   SEE ALSO
-#
-#   BUGS     
-#
-#------------------------------------------------------------------------
-#
+'''
+Provides functions used to visually represent CORBA-based objects.
+'''
+#----------------------------------------------------------------------------
 import omniORB
 import types
-#--------------------------------------------------------------------------------------------
-ignore_list = ['_NP_RepositoryId', '__doc__', '__init__', '__module__', '_members', '_values']
-std_spaces  = "  "
-#--------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#list of object members that should not be printed out
+IGNORE_LIST = ['_NP_RepositoryId', '__doc__', '__init__', '__module__', 
+               '_members', '_values']
+#standard amount of whitespace used by getTextRepresentation function
+STD_WHITESPACE  = "  "
+#----------------------------------------------------------------------------
 def getTextRepresentation(some_obj):
     '''
-    Returns a textual representation of the some_obj.
+    Returns a textual representation of the some_obj. Preferably some_obj 
+    is an instance of some CORBA stub class, but this does not necessarily
+    have to be the case. 
+    
+    Params: some_obj - an instance of a Python object.
+    
+    Returns: a list of strings which represent some_obj
+    
+    Raises: ???
     '''
+    #initialize the return value
     ret_val = []
 
     #beginning is always the IFR ID of the object
     try:
         ret_val.append(some_obj._NP_RepositoryId)
     except:
+        #if it's a pure Python object just throw in the Python type
         ret_val.append(str(type(some_obj)))
 
     #get a list of all the simple attributes
@@ -77,47 +70,30 @@ def getTextRepresentation(some_obj):
         
         for attrib in dir(some_obj):
             #skip over things that should be ignored
-            if ignore_list.count(attrib)!=0:
+            if IGNORE_LIST.count(attrib) != 0:
                 continue
             #get this far and it's OK to include it
             attrib_list.append(attrib)
-
+    
+    #get the individual values for each attribute
     for entry_name in attrib_list:
 
         #get the real value
         entry = some_obj.__dict__[entry_name]
 
         #interesting...a complex struct is defined within it...
-        if (type(entry)==types.InstanceType) and (entry.__class__.__name__=="UnknownStruct"):
+        class_name = entry.__class__.__name__
+        if (type(entry)==types.InstanceType) and (class_name=="UnknownStruct"):
             #use recursion
-            ret_val.append(std_spaces + entry_name + ":")
-            ret_val = ret_val + map(lambda x: std_spaces + x, getTextRepresentation(entry))
+            ret_val.append(STD_WHITESPACE + entry_name + ":")
+            ret_val = ret_val + map(lambda x: STD_WHITESPACE + x, 
+                                     getTextRepresentation(entry))
             continue
         
-
         #must be some simple type...good.
-        ret_val.append(std_spaces +
+        ret_val.append(STD_WHITESPACE +
                        entry_name +
                        "=" +
                        str(entry))
             
     return ret_val
-    
-
-
-#
-# ___oOo___
-#----------------------------------------------------
-#from Acspy.Nc.Consumer          import Consumer
-
-#last = None
-#def fridgeDataHandler(someParam):
-#    global last
-#    last = someParam
-#    print getTextRepresentation(someParam)
-#
-#g = Consumer("fridge")
-#g.addSubscription("temperatureDataBlockEvent", fridgeDataHandler)
-#g.addSubscription("garbage", fridgeDataHandler)
-#g.addSubscription("complexStruct", fridgeDataHandler)
-#g.consumerReady()

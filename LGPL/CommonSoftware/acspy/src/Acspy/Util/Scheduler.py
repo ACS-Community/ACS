@@ -1,4 +1,4 @@
-# @(#) $Id: Scheduler.py,v 1.10 2006/01/12 16:15:49 dfugate Exp $
+# @(#) $Id: Scheduler.py,v 1.11 2006/04/05 21:47:04 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -22,11 +22,12 @@
 '''
 This module provides the implementation of an event/timeout scheduler which is
 quite similar to the ACS Timer component. Its main use is as a utility class
-which is particlarly useful with an implementation of BACI. Unfortunately,
-the native sched.scheduler class did not include enough functionality to be used
-instead.
+which is particlarly useful with the implementation of BACI. Unfortunately,
+the native sched.scheduler class did not include enough functionality to be 
+used on its own.
 '''
-__revision__ = "$Id: Scheduler.py,v 1.10 2006/01/12 16:15:49 dfugate Exp $"
+__revision__ = "$Id: Scheduler.py,v 1.11 2006/04/05 21:47:04 dfugate Exp $"
+
 #--REGULAR IMPORTS-------------------------------------------------------------
 import time
 from threading import RLock
@@ -34,18 +35,24 @@ from threading import Thread
 from copy      import deepcopy
 from traceback import print_exc
 from atexit    import register
+
 #--CORBA STUBS-----------------------------------------------------------------
+
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.TimeHelper import getTimeStamp as getEpochTimeStamp
 from Acspy.Common.Log         import getLogger
+
 #--GLOBALS---------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
 def ACSSleep(hundredNanoUnits):
     '''
     A function designed to sleep for an amount of time defined in CORBA units
     of time (i.e., 100 nanoseconds).
 
-    Parameters: hundredNanoUnits - integer unit of time which is in hundreds
-    of nanosecond units as its name implies.
+    Parameters: 
+        hundredNanoUnits - integer unit of time which is in hundreds
+        of nanosecond units as its name implies.
 
     Returns: Nothing
 
@@ -56,8 +63,8 @@ def ACSSleep(hundredNanoUnits):
 class Scheduler:
     '''
     A class designed to schedule/cancel "one shot" and continuous timeouts.
-    It was created because the native Python scheduler class (found in the sched
-    package) is unsuitable for ACS purposes.
+    It was created because the native Python scheduler class (found in the 
+    sched package) is unsuitable for ACS purposes.
     '''
     #--------------------------------------------------------------------------
     def __init__(self, minimum_sleep=1000L):
@@ -69,14 +76,17 @@ class Scheduler:
         should sleep after looking over the list of timeouts that need to be
         executed. This is in ACS::Time units (i.e., 100ns).
         '''
+        
         #mutex used to lock member variables that can be changed from one
         #of the threads spawned by this class
         self.lock = RLock()
+        
         #unique identifier for each thread is also the total number of threads
         #that have been created by this object so far
         self.timeout_counter = 0
+        
         #list of timeouts created by this class 
-        self.timeoutDict = {}
+        self.timeout_dict = {}
 
         #elementary amount of time to sleep (in ACS units)
         self.minimum_sleep = minimum_sleep
@@ -87,18 +97,17 @@ class Scheduler:
         self.alive = 1
 
         #create the thread which has the responsibility of executing timeouts
-        self.executor_thread = Thread(target=self.timeoutExecutor,
-                                      name="Scheduler.timeoutExecutor")
+        self.executor_thread = Thread(target=self.__timeoutExecutor,
+                                      name="Scheduler.__timeoutExecutor")
         self.executor_thread.setDaemon(1)
-        
         #start the thread
         self.executor_thread.start()
-
-        register(self.destroy)
+        
+        register(self.__destroy)
     #--------------------------------------------------------------------------
-    def destroy(self):
+    def __destroy(self):
         '''
-        The scheduler must be destroyed as it spawns a threads. This need not
+        The scheduler must be destroyed as it spawns a thread. This need not
         be exeucted by developers as the Python atexit module takes care of it.
         '''
         if self.alive:
@@ -108,82 +117,93 @@ class Scheduler:
             self.executor_thread.join()
     #--------------------------------------------------------------------------
     def scheduleTimeout(self,
-                        timeoutFunc,
-                        timeToOccur=0,
-                        frequency=0,
-                        argTuple=(),
-                        argDict={}):
+                        timeout_func,
+                        time_to_occur = 0,
+                        frequency = 0,
+                        arg_tuple = None,
+                        arg_dict = None):
         '''
         Method used to schedule timeouts.
 
         Parameters:
-        - timeoutFunc: a function specified by the developer to be invoked
+        - timeout_func: a function specified by the developer to be invoked
         when each timeout occurs. 
-        - timeToOccur: the time (relative to this invocation) in which the first
-        invocation of timeoutFunc will occur. This is in 100ns units and must be
-        a postive integer value.
-        - frequency: the frequency at which timeoutFunc will be invoked. This is
-        in 100ns units and must be a postive integer value. A value of 0 implies
-        the timeout is a "one shot" deal.
-        - argTuple: tuple of values supplied to timeoutFunc
-        - argDict: dictionary of values supplied to timeoutFunc
+        - time_to_occur: the time (relative to this invocation) in which the
+        first invocation of timeout_func will occur. This is in 100ns units and
+        must be a postive integer value. A value of 0 denotes that timeout_func
+        shoud be invoked immediately.
+        - frequency: the frequency at which timeout_func will be invoked. This
+        is in 100ns units and must be a postive integer value. A value of 0 
+        implies the timeout is a "one shot" deal.
+        - arg_tuple: tuple of values supplied to timeout_func. A deepcopy of
+        this tuple is made
+        - arg_dict: dictionary of values supplied to timeout_func. A deepcopy
+        of this dictionary is made
 
         Returns: ID of the newly created timeout
 
         Raises: ???
         '''
+        
         #increment the timeout ID to be returned by this method to guarantee
         #it's uniqueness
         self.timeout_counter += 1
+        timeout_id = self.timeout_counter
         
         #determine the first real execution date by adding the relative time
         #to the real current time.
-        timeToOccur += getEpochTimeStamp().value
+        time_to_occur += getEpochTimeStamp().value
+        
+        #setup some parameters
+        if arg_tuple == None:
+            arg_tuple = ()
+        if arg_dict == None:
+            arg_dict = {}
         
         #add the ID to the list
         self.lock.acquire()
-        self.timeoutDict[self.timeout_counter] = { 'timeToOccur':long(timeToOccur),
-                                                   'frequency': long(frequency),
-                                                   'timeoutFunc':timeoutFunc,
-                                                   'isSuspended':0,
-                                                   'argTuple':deepcopy(argTuple),
-                                                   'argDict':deepcopy(argDict)}
+        self.timeout_dict[timeout_id] = {'time_to_occur':long(time_to_occur),
+                                         'frequency': long(frequency),
+                                         'timeout_func':timeout_func,
+                                         'is_suspended':0,
+                                         'arg_tuple':deepcopy(arg_tuple),
+                                         'arg_dict':deepcopy(arg_dict)}
         self.lock.release()
 
-        self.logger.logDebug("Timeout scheduled to occur:" + str(self.timeoutDict[self.timeout_counter]))
+        self.logger.logDebug("Timeout scheduled to occur:" + str(self.timeout_dict[timeout_id]))
         
-        return self.timeout_counter
+        return timeout_id
     #--------------------------------------------------------------------------
-    def changeTimeoutFrequency(self, timeoutID, newFrequency):
+    def changeTimeoutFrequency(self, timeout_id, new_frequency):
         '''
         Changes the frequency at which a specified timeout occurs.
 
         Parameters:
-        - timeoutID is the ID of the timeout
-        - newFrequency is the new frequency at which timeout invocations will
-        occur
+        - timeout_id is the ID of the timeout
+        - new_frequency is the new frequency at which timeout invocations will
+        occur. This value of course should be in 100ns units
 
         Returns: Nothing
 
         Raises: ???
         '''
         self.lock.acquire()
-        self.timeoutDict[timeoutID]['frequency'] = newFrequency
+        self.timeout_dict[timeout_id]['frequency'] = long(new_frequency)
         self.lock.release()
     #--------------------------------------------------------------------------
-    def getTimeout(self, timeoutID):
+    def getTimeout(self, timeout_id):
         '''
         Returns a dictionary containing information relating to a particular
         timeout.
 
-        Parameters: timeoutID is the ID for the timeout returned by the
+        Parameters: timeout_id is the ID for the timeout returned by the
         scheduleTimeout method of this class.
 
         Returns: timeout dictionary
 
         Raises: Nothing
         '''
-        return self.timeoutDict[timeoutID]
+        return self.timeout_dict[timeout_id]
     #--------------------------------------------------------------------------
     def cancelAllTimeouts(self):
         '''
@@ -197,15 +217,15 @@ class Scheduler:
         '''
         #just empty the dictionary
         self.lock.acquire()
-        self.timeoutDict = {}
+        self.timeout_dict = {}
         self.lock.release()
         return
     #--------------------------------------------------------------------------
-    def cancelTimeout(self, timeoutID):
+    def cancelTimeout(self, timeout_id):
         '''
         Cancels the timeout using the specified ID.
         
-        Parameters: timeoutID - ID of the timeout to be cancelled
+        Parameters: timeout_id - ID of the timeout to be cancelled
         
         Returns: Nothing
         
@@ -214,17 +234,17 @@ class Scheduler:
         self.lock.acquire()
         try:
             #simply remove it from the dict
-            del self.timeoutDict[timeoutID]
+            del self.timeout_dict[timeout_id]
         except:
             pass
         self.lock.release()
         return
     #--------------------------------------------------------------------------
-    def suspendTimeout(self, timeoutID):
+    def suspendTimeout(self, timeout_id):
         '''
         Suspends the timeout using the specified ID.
 
-        Parameters: timeoutID - ID of the timeout to be suspended
+        Parameters: timeout_id - ID of the timeout to be suspended
 
         Returns: Nothing
 
@@ -232,17 +252,17 @@ class Scheduler:
         '''
         self.lock.acquire()
         try:
-            self.timeoutDict[timeoutID]['isSuspended'] = 1
+            self.timeout_dict[timeout_id]['is_suspended'] = 1
         except:
             pass
         self.lock.release()
         return
     #--------------------------------------------------------------------------
-    def resumeTimeout(self, timeoutID):
+    def resumeTimeout(self, timeout_id):
         '''
         Resumes the timeout using the specified ID.
 
-        Parameters: timeoutID - ID of the timeout to be resumeed
+        Parameters: timeout_id - ID of the timeout to be resumed
 
         Returns: Nothing
 
@@ -250,13 +270,13 @@ class Scheduler:
         '''
         self.lock.acquire()
         try:
-            self.timeoutDict[timeoutID]['isSuspended'] = 0
+            self.timeout_dict[timeout_id]['is_suspended'] = 0
         except:
             pass
         self.lock.release()
         return
     #--------------------------------------------------------------------------
-    def timeoutExecutor(self):
+    def __timeoutExecutor(self):
         '''
         Utility function executed by a thread and actually calls timeouts.
         User code should never invoke this directly.
@@ -269,18 +289,18 @@ class Scheduler:
             ACSSleep(self.minimum_sleep)
             
             #iterate through the entire list
-            for timeoutID in self.timeoutDict.keys():
+            for timeout_id in self.timeout_dict.keys():
                 
                 #use the lock to obtain all the info we can about the
                 #timeout
                 self.lock.acquire()
                 try:
-                    timeToOccur = self.timeoutDict[timeoutID]['timeToOccur']
-                    frequency = self.timeoutDict[timeoutID]['frequency']
-                    timeoutFunc = self.timeoutDict[timeoutID]['timeoutFunc']
-                    argTuple = self.timeoutDict[timeoutID]['argTuple']
-                    argDict = self.timeoutDict[timeoutID]['argDict']
-                    isSuspended = self.timeoutDict[timeoutID]['isSuspended']
+                    time_to_occur = self.timeout_dict[timeout_id]['time_to_occur']
+                    frequency = self.timeout_dict[timeout_id]['frequency']
+                    timeout_func = self.timeout_dict[timeout_id]['timeout_func']
+                    arg_tuple = self.timeout_dict[timeout_id]['arg_tuple']
+                    arg_dict = self.timeout_dict[timeout_id]['arg_dict']
+                    is_suspended = self.timeout_dict[timeout_id]['is_suspended']
                     self.lock.release()
                     
                 except:
@@ -292,34 +312,37 @@ class Scheduler:
                 
                 #check to see if the deadline has not passed and will not pass
                 #before the next round
-                current_time = getEpochTimeStamp().value
-                if (timeToOccur>current_time)and(timeToOccur > (current_time+self.minimum_sleep)):
+                now = getEpochTimeStamp().value
+                if (time_to_occur>now)and(time_to_occur > (now+self.minimum_sleep)):
                     #OK to skip this timeout until the next round
                     continue
                 
-                #if it's suspended, we just move on to the next
-                if isSuspended:
+                #if it's suspended, we just move on to the next timeout
+                if is_suspended:
                     continue
                 
                 #if we've gotten this far, it's OK to execute the timeout
                 try:
-                    timeoutFunc(*argTuple, **argDict)
+                    timeout_func(*arg_tuple, **arg_dict)
                 except:
+                    self.logger.logCritical("Failed to invoke function denoted by ID:" + 
+                                             str(timeout_id))
                     print_exc()
                 
                 #check to see if it was a one-time ordeal
-                if long(frequency)==0L:
+                if frequency == 0L:
                     #need to delete this timeout ID
-                    self.cancelTimeout(timeoutID)
+                    self.cancelTimeout(timeout_id)
 
                 #figure out when the next invocation will be
                 else:
+                    next_time = getEpochTimeStamp().value + frequency
                     self.lock.acquire()
                     try:
-                        self.timeoutDict[timeoutID]['timeToOccur'] = getEpochTimeStamp().value + frequency
+                        self.timeout_dict[timeout_id]['time_to_occur'] = next_time
                     except:
                         #it's possible that the user ran Scheduler.cancelAllTimeouts()
-                        #and the timeoutID no longer exists. as a result
+                        #and the timeout_id no longer exists. as a result
                         #sometimes it might be necessary to ignore this error
                         pass
                     
@@ -332,16 +355,15 @@ if __name__ == "__main__":
     h = Scheduler()
     h.scheduleTimeout(joe, 1E7, 0, (88, None))
     time.sleep(3)
-    id = h.scheduleTimeout(joe, 1E7, 1E7, (1, None))
+    temp_id = h.scheduleTimeout(joe, 1E7, 1E7, (1, None))
     time.sleep(3)
-    h.changeTimeoutFrequency(id, 1E6)
+    h.changeTimeoutFrequency(temp_id, 1E6)
     
     #h.scheduleTimeout(joe, 3E7, 2E7, (2, None))
     #time.sleep(3)
     #h.scheduleTimeout(joe, 6E7, 3E7, (3, None))
     print "DWF2"
     time.sleep(7)
-    h.changeTimeoutFrequency(id, 3E7)
+    h.changeTimeoutFrequency(temp_id, 3E7)
     time.sleep(7)
     h.cancelAllTimeouts()
-    h.destroy()
