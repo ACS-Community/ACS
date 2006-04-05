@@ -64,26 +64,8 @@ private void initialize() throws ParserConfigurationException {
 		return;
 	}*/
 }
-/**
- * Used for testing purposes only.
- * @param args an array of command-line arguments
- */
-public static void main(java.lang.String[] args) {
-	// Insert code to start the application here.
-	ACSLogParser parser = null;
-	try {
-		parser = new ACSLogParser();
-	} catch (Exception e) {};
-	LogEntryXML log = null;
-	try {
-		// log = parser.parse("<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logsger.</Info>");
-		log = parser.parse("<Log><Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" /><Info TimeStamp=\"2002-11-07T15:13:20.641\">Error</Info></Log>");
-		// log = parser.parse("<Info TimeStamp=\"2002-07-01T13:15:42.455\">	Error = 0.000000 < -1.000000 < 1000.000000</Info>");
-	} catch (Exception e) {
-		System.out.println("Exception in ACSLogParser::main(): " + e);
-	}
-	System.out.println(log);
-}
+
+
 /**
  * Parses the xmlLog. This method must be synchronized to ensure that the
  * parses parses only one log at a time.
