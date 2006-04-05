@@ -1,5 +1,4 @@
- 
-# @(#) $Id: Profiler.py,v 1.9 2005/02/23 00:04:55 dfugate Exp $
+# @(#) $Id: Profiler.py,v 1.10 2006/04/05 22:16:17 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -22,19 +21,22 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
 '''
+Provides profiling tools to benchmark functions/methods.
 
 TODO:
-- calculate meaningful data like standard deviation???
+- calculate meaningful data like standard deviation
 '''
-__revision__ = "$Id: Profiler.py,v 1.9 2005/02/23 00:04:55 dfugate Exp $"
+__revision__ = "$Id: Profiler.py,v 1.10 2006/04/05 22:16:17 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 import time
+
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.TimeHelper import getTimeStamp
 from AcsutilPy.ACSPorts      import getIP
+
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -47,96 +49,132 @@ class Profiler:
         '''
         Constructor.
         '''
+        #last time start was invoked
+        self.last_start_time = None
+        
+        #total time that has passed between all start/stops
+        self.total_time = None
+        
+        #total number of times start/stop has been invoked
+        self.total_num_starts = None
+
+        #the smallest amount of time that has passed between a start/stop
+        self.min = None
+        
+        #the largest amount of time that has passed between a start/stop
+        self.max = None
+
+        #user added data
+        self.extra_descrip = None
+        
         self.reset()
-        return
+        
     #--------------------------------------------------------------------------
     def reset(self):
         '''
         Resets this objects values.
+        
+        Params: None
+        
+        Returns: Nothing
+        
+        Raises: Nothing
         '''
-        
-        #last time start was invoked
-        self.lastStart=0L
-        
-        #total time that has passed between all start/stops
-        self.totalTime=0L
-        #total number of times start/stop has been invoked
-        self.totalNumStarts=0L
-
-        #the smallest amount of time that has passed between a start/stop
-        self.minDuration=long(0x1FFFFFFF)
-        #the largest amount of time that has passed between a start/stop
-        self.maxDuration=0L
-
-        #user added data
-        self.extraDescrip = ""
+        self.last_start_time = 0L
+        self.total_time = 0L
+        self.total_num_starts = 0L
+        self.min = long(0x1FFFFFFF)
+        self.max = 0L
+        self.extra_descrip = ""
         return
     #--------------------------------------------------------------------------
     def start(self):
         '''
         Starts a timing operation.
+        
+        Params: None
+        
+        Returns: Nothing
+        
+        Raises: ???
         '''
         
-        if self.lastStart==0:
-            self.totalNumStarts=self.totalNumStarts+1
+        if self.last_start_time==0:
+            self.total_num_starts=self.total_num_starts+1
         else:
             print "Looks like Profiler::start was called twice in a row without invoking Profiler::stop"
 
-        self.lastStart=getTimeStamp().value
+        self.last_start_time=getTimeStamp().value
         return
     #--------------------------------------------------------------------------
     def stop(self):
         '''
         Stops a timing operation. Can only be called after a start invocation.
+        
+        Params: None
+        
+        Returns: the duration of time that has passed since start was
+        called in ms units
         '''
-        if self.lastStart==0:
+        if self.last_start_time == 0:
             print "Looks like Profiler::stop was called twice in a row without invoking Profiler::start"
             return 0
-    
-        timeDiff = (getTimeStamp().value - self.lastStart) / 10000.0
-
-        if timeDiff>self.maxDuration:
-            self.maxDuration=timeDiff
-	
-        if timeDiff<self.minDuration:
-            self.minDuration=timeDiff
-	
-        self.lastStart=0
-        self.totalTime = self.totalTime + timeDiff
-    
+        
+        #get the time difference in millisecond units
+        timeDiff = (getTimeStamp().value - self.last_start_time)/10000.0
+        
+        #check to see if we have new records for the min or max
+        #durations
+        if timeDiff > self.max:
+            self.max = timeDiff
+	    
+        if timeDiff < self.min:
+            self.min=timeDiff
+	    
+        self.last_start_time=0
+        self.total_time = self.total_time + timeDiff
+        
         return timeDiff
     #--------------------------------------------------------------------------
     def fullDescription(self, msg):
         '''
         Prints out a full description of all times that were saved along with
         other relevant statistical data.
-
+        
         Params: message to be printed out
         
-        Returns: Nothing
+        Returns: the full description printed to stdout
         
         Raises: Nothing
         '''
-        if self.lastStart!=0:
+        #sanity check to see if the timer has stopped
+        if self.last_start_time != 0:
             self.stop()
             
-        if self.totalNumStarts==0:
+        if self.total_num_starts == 0:
             print "ACS PROFILER: No start invocations - ", msg
             return
 
-        averageTime = self.totalTime / self.totalNumStarts
-        date=time.strftime("%Y-%m-%dT%H:%M:%S",time.gmtime())+str(".000")
+        avg_time = self.total_time / self.total_num_starts
+        date = time.strftime("%Y-%m-%dT%H:%M:%S",time.gmtime())+str(".000")
 
-        retVal =  "#ACS PROFILER# msg=%s, avg=%f, runs=%d, mindur=%f, maxdur=%f, cpu=Unknown, mem=Unknown, date=%s, ip=%s, lang=py, units=ms %s" % (msg, averageTime, self.totalNumStarts, self.minDuration, self.maxDuration, date, str(getIP()), self.extraDescrip)
+        retVal =  "#ACS PROFILER# msg=%s, avg=%f, runs=%d, mindur=%f, maxdur=%f, cpu=Unknown, mem=Unknown, date=%s, ip=%s, lang=py, units=ms %s" % (msg, avg_time, self.total_num_starts, self.min, self.max, date, str(getIP()), self.extra_descrip)
 
         print retVal
+        
         return retVal
     #--------------------------------------------------------------------------
     def addData(self, key, value):
         '''
-        Adds extra data to description
+        Adds extra data to the description.
+        
+        Params: 
+            key - a keyword descriptor
+            value - value 
+        
         '''
-        self.extraDescrip = self.extraDescrip + ", " + key + "=" + value
+        formatted_descrip = ", " + str(key) + "=" + str(value)
+        self.extra_descrip = self.extra_descrip + formatted_descrip
 
 #------------------------------------------------------------------------------
 if __name__=="__main__":
