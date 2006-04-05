@@ -111,7 +111,6 @@ public class VisibleLogsVector extends Thread {
 				case 2 : returnValue = 1; break;
 				case 3 : returnValue = 0; break;
 			}
-			
 			return (sortAscending ? returnValue : -returnValue);
 		}
 		
@@ -173,10 +172,11 @@ public class VisibleLogsVector extends Thread {
 	public class LogOperationRequest {
 		public static final int TERMINATE =0; // Stops the thread
 		public static final int SETORDER = 1; // Reverse/reorder the logs
+		public static final int ADDLOG = 2; // Add a log
 		
 		private int opType;
-		private int field;
-		private boolean ascending;
+		private int field; // Field for ordering
+		private boolean ascending; // Direction of ordering
 		
 		/**
 		 * Build an a termination request
@@ -185,6 +185,12 @@ public class VisibleLogsVector extends Thread {
 			opType=TERMINATE;
 		}
 		
+		/**
+		 * Build an ordering/sorting  request
+		 * 
+		 * @param fld The field for ordering/sorting
+		 * @param direction The ascending/descending way to order
+		 */
 		public LogOperationRequest(int fld, boolean direction) {
 			opType= SETORDER;
 			this.field=fld;
@@ -288,7 +294,10 @@ public class VisibleLogsVector extends Thread {
 	}
 
 	/**
-	 * Add the log in the vector of the visible logs
+	 * Add the log in the vector of the visible logs.
+	 * If there asynchronous operation in progress (ordering/sorting of logs)
+	 * then the log is in buffer and will be added by the thread when the
+	 * ordering terminates.
 	 * 
 	 * @param index The index of the log to add
 	 * @param log The log to add
@@ -297,10 +306,13 @@ public class VisibleLogsVector extends Thread {
 		synchronized (asyncOps) {
 			if (asyncOps.size()==0) {
 				addLogToVector(index, log);
-			} else {
-				buffer.add(new AddLogItem(index,log));
-			}
+				return;
+			} 
+		} 
+		synchronized(buffer) {
+			buffer.add(new AddLogItem(index,log));
 		}
+
 	}
 	
 	/**
@@ -357,6 +369,7 @@ public class VisibleLogsVector extends Thread {
 		int middle=0;
 		ILogEntry maxLog=null;
 		ILogEntry minLog=null;
+		int iter =0;
 		do {
 			maxLog = cache.getLog(visibleLogs.get(maxInter));
 			if (maxInter==minInter) {
@@ -385,18 +398,15 @@ public class VisibleLogsVector extends Thread {
 			}
 			
 			middle = minInter+(maxInter - minInter)/2;
-			switch (comparator.compare(log,visibleLogs.get(middle))) {
-				case +1: {
+			int middleCmp = comparator.compare(log,visibleLogs.get(middle)); 
+			if (middleCmp>0) {
 					minInter = middle;
 					continue;
-				}
-				case -1: {
+			} else if (middleCmp<0) {
 					maxInter = middle;
 					continue;
-				}
-				case 0: {
+			} else  { // middleCmp==0
 					return middle;
-				}
 			}
 		} while (true);
 	}
@@ -487,11 +497,14 @@ public class VisibleLogsVector extends Thread {
 	/**
 	 * The thread for async long lasting op.
 	 * At the end of each operation, it check if there are
-	 * new logs to add in the buffer Vector
+	 * new logs to add in the buffer Vector.
+	 * The ordering of logs is not performed in mutual exclusion i.e.
+	 * other methods like add and setLogOrder will not hang.
 	 *
 	 */
 	public void run() {
 		LogOperationRequest request = null;
+		AddLogItem item = null;
 		while (true) {
 			synchronized (asyncOps) {
 				if (asyncOps.size()>0) {
@@ -504,7 +517,7 @@ public class VisibleLogsVector extends Thread {
 			}
 			if (request!=null) {
 				if (request.getType()==LogOperationRequest.TERMINATE) {
-					return;
+							return;
 				} else {
 					sort(request.getOrderingField(),request.orderDirection());
 				}
@@ -512,7 +525,7 @@ public class VisibleLogsVector extends Thread {
 			// There are new logs to add?
 			synchronized(buffer) {
 				while (buffer.size()>0) {
-					AddLogItem item = buffer.remove(0);
+					item = buffer.remove(0);
 					addLogToVector(item.index,item.log);
 				}
 			}
@@ -520,8 +533,9 @@ public class VisibleLogsVector extends Thread {
 				synchronized (asyncOps) {
 					asyncOps.remove(0);
 				}
-			} else {
-				synchronized(this) {
+			} 
+			synchronized(this) {
+				if (asyncOps.size()==0 && buffer.size()==0) {
 					try {
 						wait();
 					} catch (InterruptedException e) {}
