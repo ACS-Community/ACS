@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.20 2005/01/31 19:46:14 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.21 2006/04/05 14:34:41 hsommer Exp $"
 #
 # Makefile of Java Logging Client
 #
@@ -45,10 +45,9 @@
 #
 # Java code
 # ------------------------------
+DEBUG = on
 JARFILES = lc
-# reverted to previous acs Makefile
-# following line to be used in the future
-lc_DIRS = com
+lc_DIRS = com 
 
 #
 # Scripts (public and local)
