@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.22 2005/12/01 16:22:32 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.23 2006/04/05 15:15:40 hsommer Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -52,7 +52,7 @@ lcTest_DIRS = com
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = jlogTest1 jlogLogEntryTest jlogTestCache
+SCRIPTS_L       = jlogTest1 jlogLogEntryTest jlogTestCache jlogTestXMLParser
 
 #>>>>> END OF standard rules
   
