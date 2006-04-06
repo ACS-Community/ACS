@@ -913,7 +913,7 @@ public class LoggingClient extends JFrame
         
         scrollLockTB = new JToggleButton("Scroll lock");
         scrollLockTB.setSelected(false);
-        tbLevelPanel.add(scrollLockTB);
+        //tbLevelPanel.add(scrollLockTB);
         
         
         userPanel.add(tbLevelPanel);
