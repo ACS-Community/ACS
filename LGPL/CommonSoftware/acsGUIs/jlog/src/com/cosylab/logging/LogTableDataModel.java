@@ -329,7 +329,7 @@ public class LogTableDataModel extends AbstractTableModel
 				
 				if (urlStr != null && urlStr.trim().length()>0) {
 					URL url = new URL(urlStr);
-					in = new java.io.BufferedReader(new java.io.InputStreamReader(url.openStream()));
+					in = new java.io.BufferedReader(new java.io.InputStreamReader(url.openStream()),16384);
 					
 					isSuspended = true;
 					clearAll();
@@ -380,7 +380,7 @@ public class LogTableDataModel extends AbstractTableModel
 		}
 		BufferedReader br=null;
 		try {
-			br = new BufferedReader(new FileReader(fileName));
+			br = new BufferedReader(new FileReader(fileName),32768);
 		} catch (FileNotFoundException fnfe) {
 			System.err.println("File not found: "+fileName);
 			return;
