@@ -43,13 +43,13 @@ import com.cosylab.logging.engine.log.ILogEntry;
 public class LogCache extends LogFileCache {
 
 	// The (fixed) size of the cache
-	public final int CACHESIZE = 128;
+	public final int CACHESIZE = 1024;
 	
 	/**
 	 * The logs are stored into an HashMap.
 	 * The key is the index of the log
 	 */
-	private HashMap<Integer,ILogEntry> cache = new HashMap<Integer,ILogEntry>(CACHESIZE);
+	private HashMap<Integer,ILogEntry> cache;
 	
 	/**
 	 * The following list used to keep ordered the indexes
@@ -75,6 +75,23 @@ public class LogCache extends LogFileCache {
 	 */
 	public LogCache() throws LogCacheException {
 		super();
+		cache = new HashMap<Integer,ILogEntry>(CACHESIZE);
+		clear();
+	}
+
+	/**
+	 * Build a logCache object of the given size
+	 * 
+	 * @param size The size of the cache
+	 * 
+	 * @throws LogCacheException
+	 */
+	public LogCache(int size) throws LogCacheException {
+		super();
+		if (size<=0) {
+			throw new LogCacheException("Invalid initial size: "+size);
+		}
+		cache = new HashMap<Integer,ILogEntry>(size);
 		clear();
 	}
 	
