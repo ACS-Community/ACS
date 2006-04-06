@@ -32,6 +32,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Cursor;
 
 import java.io.File;
 import java.io.IOException;
@@ -2053,7 +2054,8 @@ public class LoggingClient extends JFrame
      *            If it is null or empty then no text will be displayed
      */
     public void animateProgressBar(String text) {
-    	System.out.println("Animating");
+    	Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
+    	setCursor(hourglassCursor);
     	if (text!=null && text.length()>0) {
     			progressBar.setString(text);
     			progressBar.setStringPainted(true);
@@ -2072,7 +2074,6 @@ public class LoggingClient extends JFrame
      * has terminated)
      */
     public void freezeProgressBar() {
-    	System.out.println("freezing");
     	progressBar.setIndeterminate(false);
     	progressBar.setMinimum(0);
     	progressBar.setMaximum(100);
@@ -2080,6 +2081,8 @@ public class LoggingClient extends JFrame
     	progressBar.setStringPainted(false);
     	progressBar.setToolTipText(null);
     	progressBar.setVisible(true);
+    	Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+    	setCursor(normalCursor);
     }
     
     /**
