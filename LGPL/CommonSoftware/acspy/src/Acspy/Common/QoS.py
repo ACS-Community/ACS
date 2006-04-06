@@ -21,153 +21,148 @@
 #    License along with this library; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: QoS.py,v 1.7 2006/02/17 06:48:09 sharring Exp $"
+# "@(#) $Id: QoS.py,v 1.8 2006/04/06 22:39:20 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # bjeram  2004-08-31  created
 #
-
-
 '''
 Python ACS QoS class(es) and functions: Timeout
 '''
-
-__revision__ = "$Id: QoS.py,v 1.7 2006/02/17 06:48:09 sharring Exp $"
-
+__revision__ = "$Id: QoS.py,v 1.8 2006/04/06 22:39:20 dfugate Exp $"
 #------------------------------------------------------------------------------
-import omniORB
-from Acspy.Util.ACSCorba  import getORB   
-
+from omniORB import setClientCallTimeout, setClientThreadCallTimeout
 #------------------------------------------------------------------------------
 def setObjectTimeout(objref, timeout):
-   '''
-   Sets timeout (in milliseconds) on the given CORBA object. Future calls on the CORBA object
-	will have this timeout, receiving an exception if the call takes longer than the timeout value.
-   '''
-   omniORB.setClientCallTimeout(objref, timeout)
-   return
+    '''
+    Sets timeout (in milliseconds) on the given CORBA object. Future calls on 
+    the CORBA object will have this timeout, receiving an exception if the call
+    takes longer than the timeout value.
+    '''
+    setClientCallTimeout(objref, timeout)
+    return
 
 #------------------------------------------------------------------------------
 def resetObjectTimeout(objref):
-   '''
-   Resets the timeout (to zero) for calls to the given CORBA object (sets to no timeout).
-   '''
-   omniORB.setClientCallTimeout(objref, 0)
-   return
+    '''
+    Resets the timeout (to zero) for calls to the given CORBA object (sets to
+    no timeout).
+    '''
+    setClientCallTimeout(objref, 0)
+    return
 
 #------------------------------------------------------------------------------
 def setORBTimeout(timeout):
-   '''
-   Sets the timeout (in milliseconds) at the ORB level, affecting all method invocations within the ORB.
-   '''
-   omniORB.setClientCallTimeout(timeout)  
-   return
+    '''
+    Sets the timeout (in milliseconds) at the ORB level, affecting all method 
+    invocations within the ORB.
+    '''
+    setClientCallTimeout(timeout)  
+    return
 
 #------------------------------------------------------------------------------
 def resetORBTimeout():
-   '''
-   Resets (to zero) the ORB timeout, affecting all method invocations within the ORB (sets to no timeout).
-   '''
-   omniORB.setClientCallTimeout(0)  
-   return
+    '''
+    Resets (to zero) the ORB timeout, affecting all method invocations within 
+    the ORB (sets to no timeout).
+    '''
+    setClientCallTimeout(0)  
+    return
 
 #------------------------------------------------------------------------------
 class Timeout:
-   '''
-   Timeout is nearly identical to the C++ Timeout class (acsQoS module). However,
-   it does not work properly at the present time, because there is not proper support 
-	from the python orb (OmniORB). For example, setting a timeout with the Timeout object 
-	will (re)set the timeout of the ORB, which also affects method calls in other threads 
-	(undesirable side effect). For this reason, it is currently recommanded to use (re)setObjectTimeout 
+    '''
+    Timeout is nearly identical to the C++ Timeout class (acsQoS module). 
+    However, it does not work properly at the present time, because there is 
+    not proper support from the python orb (OmniORB). For example, setting a 
+    timeout with the Timeout object will (re)set the timeout of the ORB, which
+    also affects method calls in other threads (undesirable side effect). For 
+    this reason, it is currently recommanded to use (re)setObjectTimeout 
 	which sets a timeout that affects calls to just that one CORBA object.
-   '''
+    '''
+    #--------------------------------------------------------------------------
+    def __init__ (self, timeout):
+        '''
+        The constructor for the Timeout object, which sets the timeout.
+        
+        Parameters:
+        - timeout the timeout in milliseconds (a long).
+        
+        Returns: Nothing
+        
+        Raises: Nothing
+        '''
+        self.timeout = None
+        self.set(timeout)
 
-   #----------------------------------------------------------------------------
-   def __init__ (self, timeout):
-      '''
-      The constructor for the Timeout object, which sets the timeout.
-      
-      Parameters:
-      - timeout the timeout in milliseconds (a long).
-      
-      Returns: Nothing
-      
-      Raises: Nothing
-      '''
-      self.timeout = None
-      
-      self.set(timeout)
-      return
-
-   #----------------------------------------------------------------------------
-   def __del__(self):
-      '''
+    #--------------------------------------------------------------------------
+    def __del__(self):
+        '''
 		The destructor for the Timeout object.
-      '''
-      self.reset()
-      return
+        '''
+        self.reset()
 
-   #----------------------------------------------------------------------------
-   def get(self):
-      '''
-      Returns the timeout value (expressed in milliseconds).
+    #--------------------------------------------------------------------------
+    def get(self):
+        '''
+        Returns the timeout value (expressed in milliseconds).
+        
+        Parameters: None
+        
+        Returns: timeout, the timeout value expressed in milliseconds.
       
-      Parameters: None
-      
-      Returns: timeout, the timeout value expressed in milliseconds.
-      
-      Raises: Nothing
-      '''
-      return self.timeout
+        Raises: Nothing
+        '''
+        return self.timeout
 
-   #----------------------------------------------------------------------------
-   def set(self, timeout=0):
-      '''
-      Sets the timeout value.
-      
-      Parameters:
-      - timeout the timeout to be set (a long), expressed in milliseconds.
-      
-      Returns: Nothing
-      
-      Raises: Nothing
-      '''
-      self.timeout = timeout
-      omniORB.setClientCallTimeout(self.timeout)
-      return
+    #--------------------------------------------------------------------------
+    def set(self, timeout=0):
+        '''
+        Sets the timeout value.
+        
+        Parameters:
+        - timeout the timeout to be set (a long), expressed in milliseconds.
+        
+        Returns: Nothing
+        
+        Raises: Nothing
+        '''
+        self.timeout = timeout
+        setClientCallTimeout(self.timeout)
+        return
 
-   #----------------------------------------------------------------------------
-   def reset(self):
-      '''
-      Resets the timeout (presently forces it to zero). 
-      It should work in such a way that it resets the timeout 
-      to the previous value, but the orb implementation does 
-      not support functionality to retrieve the previously set timeout.
-      So it sets timeout to 0 which means no timeout.
+    #--------------------------------------------------------------------------
+    def reset(self):
+        '''
+        Resets the timeout (presently forces it to zero). 
+        It should work in such a way that it resets the timeout 
+        to the previous value, but the orb implementation does 
+        not support functionality to retrieve the previously set timeout.
+        So it sets timeout to 0 which means no timeout.
+        
+        Parameters: Nothing
+        
+        Returns: Nothing
       
-      Parameters: Nothing
-      
-      Returns: Nothing
-      
-      Raises: Nothing
-      '''
-      omniORB.setClientCallTimeout(0)
-      return
+        Raises: Nothing
+        '''
+        setClientCallTimeout(0)
+        return
 
-   #----------------------------------------------------------------------------
-   def sset(self):
-      '''
-      Sets object\'s timeout
-      
-      Parameters: Nothing
-      
-      Returns: Nothing
-      
-      Raises: Nothing
-      '''
-      getORB.setClientThreadCallTimeout(self.timeout)
-      return
+    #--------------------------------------------------------------------------
+    def sset(self):
+        '''
+        Sets object\'s timeout
+        
+        Parameters: Nothing
+        
+        Returns: Nothing
+        
+        Raises: Nothing
+        '''
+        setClientThreadCallTimeout(self.timeout)
+        return
    
 #------------------------------------------------------------------------------
 #
