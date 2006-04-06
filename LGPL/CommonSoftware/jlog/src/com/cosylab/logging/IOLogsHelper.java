@@ -21,17 +21,12 @@
  */
 package com.cosylab.logging;
 
-import java.util.Vector;
 import java.util.LinkedList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.RandomAccessFile;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.File;
 
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
