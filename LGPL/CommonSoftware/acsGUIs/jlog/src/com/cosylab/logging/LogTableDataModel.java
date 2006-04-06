@@ -32,7 +32,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import com.cosylab.logging.client.VisibleLogsVector;
-import com.cosylab.logging.client.GroupedListCallback;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.LoggingClient;
@@ -52,7 +51,6 @@ import com.cosylab.logging.client.cache.LogCacheException;
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
 public class LogTableDataModel extends AbstractTableModel 
-	implements GroupedListCallback 
 {
 	private static final String BLANK_STRING = "";
 
@@ -309,41 +307,6 @@ public class LogTableDataModel extends AbstractTableModel
 		return visibleLogs.isSortAscending();
 	}
 
-	/**
-	 * The callback for thw implemented interface 
-	 * 
-	 * Creation date: (11/30/2001 22:36:16)
-	 * @param changeType int
-	 * @param param1 int
-	 * @param param2 int
-	 */
-	public void groupedListChanged(int changeType, int param1, int param2) {
-		// System.out.println("callback: "+changeType+", "+param1+", "+param2);
-		switch (changeType) {
-			case GL_COLLAPSE :
-			case GL_DELETE :
-				invalidateRowCache();
-				fireTableRowsDeleted(param1, param2);
-				break;
-			case GL_EXPAND :
-			case GL_INSERT :
-				LoggingClient logging = LoggingClient.getInstance();
-				if (logging!=null && !logging.scrollLock()) {
-					LogEntryTable logTable = logging.getScrollPaneTable();
-					if (logTable!=null) {
-						logTable.showRow(param2);
-					}
-				}
-				invalidateRowCache();
-				fireTableRowsInserted(param1, param2);
-				break;
-			case GL_UPDATED :
-				fireTableRowsUpdated(param1, param2);
-				break;
-	
-		}
-	}
-	
 	/**
 	 * Empties the row cache.
 	 * Creation date: (11/16/2001 11:22:24)
