@@ -1630,7 +1630,7 @@ public class LoggingClient extends JFrame
 		        constraintsProgressBar.gridx=1;
 		        constraintsProgressBar.gridy=0;
 		        constraintsProgressBar.insets = new Insets(2,2,2,2);
-		        progressBar.setVisible(true);
+		        progressBar.setVisible(false);
 		        filterStatusPnl.add(progressBar,constraintsProgressBar);
 				
 				GridBagConstraints constraintsJToggleButton1 = new GridBagConstraints();
@@ -2066,7 +2066,6 @@ public class LoggingClient extends JFrame
     	}
     	progressBar.setIndeterminate(true);
     	progressBar.setVisible(true);
-    	
     }
     
     /**
@@ -2080,7 +2079,7 @@ public class LoggingClient extends JFrame
     	progressBar.setValue(0);
     	progressBar.setStringPainted(false);
     	progressBar.setToolTipText(null);
-    	progressBar.setVisible(true);
+    	progressBar.setVisible(false);
     	Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     	setCursor(normalCursor);
     }
