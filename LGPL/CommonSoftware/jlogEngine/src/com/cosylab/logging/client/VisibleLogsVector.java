@@ -11,6 +11,8 @@ import com.cosylab.logging.client.cache.LogCache;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
+import com.cosylab.logging.LoggingClient;
+
 /**
  * The array of visible logs (i.e. all and only the logs shown in the table)
  * The logs filtered out are not present in this object (while they are 
@@ -463,6 +465,7 @@ public class VisibleLogsVector extends Thread {
 	}
 	
 	private void sort(int field, boolean ascending) {
+		LoggingClient.getInstance().animateProgressBar("Sorting");
 		int prevField = comparator.getSortField();
 		comparator.setComparingParams(field,ascending);
 		// Do we have to update the vector?
@@ -476,6 +479,7 @@ public class VisibleLogsVector extends Thread {
 			}
 			tableModel.fireTableDataChanged();
 		}
+		LoggingClient.getInstance().freezeProgressBar();
 	}
 	
 	/**
