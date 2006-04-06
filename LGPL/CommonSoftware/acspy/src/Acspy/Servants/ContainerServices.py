@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.14 2005/06/20 17:49:40 dfugate Exp $
+# @(#) $Id: ContainerServices.py,v 1.15 2006/04/06 21:44:58 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.14 2005/06/20 17:49:40 dfugate Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.15 2006/04/06 21:44:58 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -34,9 +34,6 @@ components, etc. It does not provide direct access to the container in any way,
 shape, or form.
 
 TODO:
-- Use the Python way of hiding member variables and setAll method.
-- Provide XML helper methods.
-- Double-check that no methods can raise exceptions!!!
 - getComponent does NOT return the nasty IDL struct for dynamic/default
 components but instead returns the narrowed component reference. The side
 effect here is that nameless components cannot be released properly by the
@@ -44,26 +41,25 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.14 2005/06/20 17:49:40 dfugate Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.15 2006/04/06 21:44:58 dfugate Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 import threading
-from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
 import CORBA
 import maci
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba      import getORB, getManager
 from Acspy.Common.Log         import getLogger
+from Acspy.Common.Log         import acsPrintExcDebug
 from Acspy.Common.CDBAccess   import CDBaccess
 #------------------------------------------------------------------------------
 class ContainerServices:
     '''
     Class ContainerServices provides components and PySimpleClients
-    with ACS and CORBA services. Its based primarily on the Java class of the
-    same name although XML support is quite limited here.
+    with ACS and CORBA services.
     '''
     #--------------------------------------------------------------------------
     def __init__(self):
@@ -76,15 +72,15 @@ class ContainerServices:
         Raises: Nothing
         '''
         #Name of this component if applicable
-        self.name = None
+        self.__name = None
         #Token given to us by manager
-        self.token = None
+        self.__token = None
         #Handle give to us by manager
-        self.handle = None
+        self.__handle = None
         #Provides access to the ACS CDB
-        self.cdbAccess = CDBaccess()
+        self.__cdb_access = CDBaccess()
         #Standard ACS Python logger
-        self.logger = None
+        self.__logger = None
 
         #The real container/client method(s) invoked by this classes methods.
         #In doing this, we can hide the container/client completely as long
@@ -97,11 +93,11 @@ class ContainerServices:
 
         Parameters: None
 
-        Return: name of the component derived from ContainerServices.
+        Return: name of the component or client derived from ContainerServices.
 
         Raises: Nothing
         '''
-        return self.name
+        return self.__name
     #--------------------------------------------------------------------------
     def getCDBRecord(self, record_name):
         '''
@@ -112,14 +108,12 @@ class ContainerServices:
         - record_name is the full name of an XML record in the CDB.  An
         example would be "alma/MOUNT1".
 
-        Return: the stringified XML record or None on failure.
-
-        Raises: Nothing
+        Return: the stringified XML record 
+        
+        Raises: ???
         '''
-        try:
-            return self.cdbAccess.getField(record_name)
-        except Exception, e:
-            return None
+        return self.__cdb_access.getField(record_name)
+    
     #--------------------------------------------------------------------------
     def getCDBElement(self, record_name, ele_name):
         '''
@@ -127,17 +121,15 @@ class ContainerServices:
         for a given XML element within an XML file.
         
         Parameters:
-        - record_name is the name of the XML file (e.g., "alma:MOUNT1")
-        - ele_name is the name of the element (e.g, "MOUNT:actAz")
+        - record_name is the name of the XML file (e.g., "alma/MOUNT1")
+        - ele_name is the name of the element (e.g, "MOUNT/actAz")
 
-        Return: a dictionary or None on failure.
+        Return: a dictionary
 
-        Raises: Nothing
+        Raises: ???
         '''
-        try:
-            return self.cdbAccess.getElement(record_name, ele_name)
-        except Exception, e:
-            return None
+        return self.__cdb_access.getElement(record_name, ele_name)
+        
     #--------------------------------------------------------------------------
     def getLogger(self):
         '''
@@ -149,19 +141,22 @@ class ContainerServices:
 
         Raises: Nothing
         '''
-        if self.logger==None:
-            self.logger = getLogger(self.getName())
-        return self.logger
+        if self.__logger == None:
+            self.__logger = getLogger(self.getName())
+        
+        return self.__logger
     #--------------------------------------------------------------------------
     def getComponent(self,
-                     comp_name = None,  #name of a component
-                     activate = CORBA.TRUE, #whether comp should be activated 
-                     comp_idl_type = None,    #IR IDL location
-                     comp_code = None,       #shared library implementing comp
-                     container_name = None,  #container to activate component
-                     is_dynamic = 0  #0 & comp_name==None really implies default comp 
-                     ):
+                     comp_name = None,  
+                     activate = CORBA.TRUE, 
+                     comp_idl_type = None, 
+                     comp_code = None,    
+                     container_name = None, 
+                     is_dynamic = 0):
         '''
+        NOTE: all keyword parameters with the exception of comp_name are
+        deprecated!
+        
         Get a component reference from the Manager.
 
         This seemingly simple method is actually quite complicated. First, its
@@ -203,16 +198,53 @@ class ContainerServices:
 
         Raises: ??? if the dynamic component parameters are messed-up
         '''
-
-        #Import the correct Python CORBA stub for the developer.
+        #if the user is trying to get a "normal" static component
+        if (comp_name != None)and(comp_idl_type == None)and(comp_code == None)and(container_name == None)and(is_dynamic == 0):
+            
+            #Import the correct Python CORBA stub for the developer.
+            comp_class = self.__importComponentStubs(comp_name, comp_idl_type)
+            
+            #get the component from manager
+            corba_obj = getManager().get_component(self.__handle,
+                                                   comp_name,
+                                                   activate)[0]
+            
+            #return the narrowed reference
+            return self.__narrowComponentReference(corba_obj, comp_class)
+            
+        #if the user is trying to get a static default component
+        elif (comp_idl_type != None)and(comp_name == None)and(comp_code == None)and(container_name == None)and(is_dynamic == 0):
+            return self.getDefaultComponent(str(comp_idl_type))
+            
+        #user must be trying to get a dynamic component
+        else:
+            return self.getDynamicComponent(comp_name,
+                                            comp_idl_type, 
+                                            comp_code, 
+                                            container_name)
+                                            
+    #--------------------------------------------------------------------------
+    def __importComponentStubs(self, 
+                               comp_name=None, 
+                               comp_type=None):
+        '''
+        Helper method tries to automatically import the CORBA stubs for a 
+        developer. In the event that this fails, a critical message is logged.
+        
+        Parameters:
+            comp_name - name of the component
+            comp_type - IFR type of the component
+        
+        Notes: at least one of the parameters above has be a string
+        
+        Returns: the component class CORBA stub
+        
+        Raises: Nothing
+        '''
         try:
-            if (comp_name != None) and (comp_idl_type == None):
+            if (comp_name != None) and (comp_type == None):
                 #Get a list of all components
-                components = getManager().get_component_info(self.handle,
-                                                             [],
-                                                             "*",
-                                                             "*",
-                                                             0)
+                components = self.availableComponents()
                 
                 #search each Component
                 for component in components:
@@ -223,7 +255,7 @@ class ContainerServices:
                         t_idl_type = component.type  
                         break
             else:
-                t_idl_type = comp_idl_type
+                t_idl_type = comp_type
                 
             #extract the proper Python module from the type string.
             #("alma", "PS", "PowerSupply")
@@ -240,69 +272,54 @@ class ContainerServices:
                                      [comp_class]) #import it
             #get class reference
             comp_class = comp_module.__dict__.get(comp_class) 
+        
         except Exception, e:
             #for some reason or another, the module could not be imported.
             #this is not a total failure so it's just logged.
-            self.logger.logWarning("Unable to import '" + str(comp_name) +
+            self.__logger.logWarning("Unable to import '" + str(comp_name) +
                                    "' component's module: " + str(e))
-            print_exc()
-
-        #if the user is trying to get a "normal" static component
-        if (comp_name != None)and(comp_idl_type == None)and(comp_code == None)and(container_name == None)and(is_dynamic == 0):
-            corba_obj, status = getManager().get_component(self.handle,
-                                                           comp_name,
-                                                           activate)
-            #to make the NRI happy
-            status = 0
-        #if the user is trying to get a static default component
-        elif (comp_idl_type != None)and(comp_name == None)and(comp_code == None)and(container_name == None)and(is_dynamic == 0):
-            comp_info = getManager().get_default_component(self.handle,
-                                                           str(comp_idl_type))
-            corba_obj = comp_info.reference
-        #user must be trying to get a dynamic component
-        else:
-            #convert the default values into something manager can handle
-            if comp_name == None:
-                comp_name = maci.COMPONENT_SPEC_ANY
-            if comp_idl_type == None:
-                comp_idl_type=maci.COMPONENT_SPEC_ANY
-            if comp_code == None:
-                comp_code = maci.COMPONENT_SPEC_ANY
-            if container_name == None:
-                container_name = maci.COMPONENT_SPEC_ANY
-            comp_spec = maci.ComponentSpec(str(comp_name),
-                                           str(comp_idl_type),
-                                           str(comp_code),
-                                           str(container_name))
-            comp_info = getManager().get_dynamic_component(self.handle,
-                                                           comp_spec,
-                                                           0)
-            corba_obj = comp_info.reference
-
+            acsPrintExcDebug()
+            comp_class = None
+            
+        return comp_class
+    #--------------------------------------------------------------------------
+    def __narrowComponentReference(self, corba_obj, comp_class):
+        '''
+        Helper method which narrows the component reference to the correct type
+        for the developer.
+        
+        Parameters:
+            corba_obj - reference to the component
+            comp_class - CORBA stub class for the component
+            
+        Returns: 
+            the narrowed component reference
+            
+        Raises: Nothing
+        '''
         #try to narrow the object...if this fails for any reason, just return
         #the unnarrowed object
         try:
             narrowed_ref = corba_obj._narrow(comp_class)
             return narrowed_ref
+        
         except Exception, e:
             
             if corba_obj==None:
-                self.logger.logCritical("Unable to obtain reference to '" +
-                                        str(comp_name) + "' component: " + str(e))
+                self.__logger.logCritical("Unable to obtain reference to component: " + str(e))
             else:
-                self.logger.logWarning("Unable to narrow '" + str(comp_name) +
-                                       "' component: " + str(e))
-                print_exc()
+                self.__logger.logWarning("Unable to narrow component: " + str(e))
+                acsPrintExcDebug()
                 
             return corba_obj
     #--------------------------------------------------------------------------
-    def getDefaultComponent(self, type):
+    def getDefaultComponent(self, comp_type):
         '''
         Gets the default component specified by the component type.
-        The type is the IDL type, such as "IDL:alma/PS/PowerSupply:1.0</code>"
+        The type is the IDL type, such as "IDL:alma/PS/PowerSupply:1.0"
 
         Parameters:
-        - type is the interface repository IDL location of the
+        - comp_type is the interface repository IDL location of the
         component.
         
         Returns: a narrowed reference to the component or None if
@@ -310,11 +327,18 @@ class ContainerServices:
 
         Raises: ??? 
         '''
-        return self.getComponent(comp_idl_type=type)
+        #Import the correct Python CORBA stub for the developer.
+        comp_class = self.__importComponentStubs(None, comp_type)
+        
+        comp_info = getManager().get_default_component(self.__handle,
+                                                       str(comp_type))
+        corba_obj = comp_info.reference
+        
+        return self.__narrowComponentReference(corba_obj, comp_class)
     #--------------------------------------------------------------------------
     def getDynamicComponent(self,
                             name,       #name of the component    
-                            type,       #IR IDL location
+                            comp_type,       #IR IDL location
                             code,       #shared library implementing comp
                             container,  #container to activate component
                             ):
@@ -324,7 +348,7 @@ class ContainerServices:
         
         Parameters:
         - name is the components name in string format
-        - type is the interface repository IDL location of the component
+        - comp_type is the interface repository IDL location of the component
         - code is a shared library implementing component
         - container is the name of the container to activate component.
         
@@ -333,11 +357,33 @@ class ContainerServices:
         
         Raises: ??? 
         '''
-        return self.getComponent(comp_name = name,  #name of a component
-                                 comp_idl_type = type,    #IR IDL location
-                                 comp_code = code,       #shared library implementing comp
-                                 container_name = container,  #container to activate component
-                                 is_dynamic = 1)
+        #Import the correct Python CORBA stub for the developer.
+        comp_class = self.__importComponentStubs(None, comp_type)
+        
+        #convert the default values into something manager can handle
+        if name == None:
+            name = maci.COMPONENT_SPEC_ANY
+                
+        if comp_type == None:
+            comp_type=maci.COMPONENT_SPEC_ANY
+                
+        if code == None:
+            code = maci.COMPONENT_SPEC_ANY
+                
+        if container == None:
+            container = maci.COMPONENT_SPEC_ANY
+            
+        comp_spec = maci.ComponentSpec(str(name),
+                                       str(comp_type),
+                                       str(code),
+                                       str(container))
+                                           
+        comp_info = getManager().get_dynamic_component(self.__handle,
+                                                       comp_spec,
+                                                       0)
+        corba_obj = comp_info.reference
+            
+        return self.__narrowComponentReference(corba_obj, comp_class)
     #--------------------------------------------------------------------------
     def releaseComponent(self, comp_name):
         '''
@@ -349,48 +395,39 @@ class ContainerServices:
 
         Raises: Nothing
         '''
-        try:
-            return getManager().release_component(self.handle, comp_name)
-        except Exception, e:
-            self.logger.logWarning("Unable to release component..." + str(e))
-            print_exc()
-            return None
+        return getManager().release_component(self.__handle, comp_name)
+    
     #--------------------------------------------------------------------------
-    def validate(self, xml_string, schema_name):
+    def forceReleaseComponent(self, comp_name):
         '''
-        NOT IMPLEMENTED!!!
-        Validates an XML file against its schema.
+        Forcefully releases the component defined by comp_name.
+
+        Parameter: comp_name is the name of the component to be released.
+
+        Returns: The number of objects still attached to the released component
+
+        Raises: Nothing
+        '''
+        return getManager().force_release_component(self.__handle, 
+                                                    comp_name)
+    
+    #--------------------------------------------------------------------------
+    def findComponents(self, 
+                       curl_wildcard="*", 
+                       type_wildcard="*",
+                       activated=CORBA.FALSE):
+        '''
+        Finds components by their instance name and/or by their type.
+
+	    Wildcards can be used for the curl and type.
+	    This method returns a possibly empty array of component curls; 
+	    for each curl, you may use getComponent to obtain the reference.
 
         Parameters:
-        - xml_string is an entire XML file in the form of a string.
-        - schema_name is the name of the schema xml_string will be validated
-        against. It should either be the complete location of the schema (i.e.,
-        "/tmp/mySchema.xsd") or just the name of the schema
-        (i.e., "mySchema.xsd") where this schema is located in one of the
-        directories the $IDL_PATH environment variable defines.
-
-        Return: 1 if the schema can be validated and 0 if not.
-        '''
-        #to make pychecker happy
-        xml_string = None
-
-        #to make pychecker happy
-        schema_name = None
-        
-        print "ContainerServices.validate(...) not implemented"
-        return 0
-    #--------------------------------------------------------------------------
-    def findComponents(self, curl_wildcard = None, type_wildcard = None):
-        '''
-        Finds components by their instance name (curl) and/or by their type.
-
-	Wildcards can be used for the curl and type.
-	This method returns a possibly empty array of component curls; 
-	for each curl, you may use getComponent to obtain the reference.
-
-        Parameters:
-        - nameWildcard (None is understood as "*")
+        - name_wildcard (None is understood as "*")
         - type_wildcard (None is understood as "*")
+        - activated is a boolean value which specifies whether the search 
+        should be limited to components which have already been activated.
 
         Return: the curls of the component(s) that match the search.
 
@@ -401,22 +438,24 @@ class ContainerServices:
             curl_wildcard = "*"
         else:
             curl_wildcard = str(curl_wildcard)
+        
         if type_wildcard == None:
             type_wildcard = "*"
         else:
             type_wildcard = str(type_wildcard)
 
         #Get all Component info
-        comp_info_list = getManager().get_component_info(self.handle,
+        comp_info_list = getManager().get_component_info(self.__handle,
                                                          [],
                                                          curl_wildcard,
                                                          type_wildcard,
-                                                         CORBA.FALSE)
+                                                         activated)
         ret_string_list = []
 
         #Take only the component names and return that
         for comp_info in comp_info_list:
             ret_string_list.append(comp_info.name)
+            
         return ret_string_list
     #--------------------------------------------------------------------------
     def availableComponents(self,
@@ -424,35 +463,31 @@ class ContainerServices:
                             type_wildcard="*",
                             activated=0):
         '''
-        Returns a list of ComponentInfos about all Components known to manager.
+        Returns a list of ComponentInfos consisting of all Components known 
+        to manager.
 
         Parameters:
-        - name_wildcard is a wildcard that the components name must match in order
-        for its information to be returned
+        - name_wildcard is a wildcard that the components name must match in 
+        order for its information to be returned
         - type_wildcard is a wildcard that the components type must match in
         order for its information to be returned.
-        - activated is a boolean value which specifies whether the search should
-        be limited to components which have already been activated.
+        - activated is a boolean value which specifies whether the search 
+        should be limited to components which have already been activated.
 
         Returns: a list consisting of ComponentInfo structures for every
-        component manager knows of or [] if this method fails.
+        component manager knows of
 
-        Raises: Nothing
+        Raises: ???
         '''
-        try:
-            #using these cryptic parameters we find out exactly which
-            #components are available
-            components = getManager().get_component_info(self.handle,
-                                                         [],
-                                                         name_wildcard,
-                                                         type_wildcard,
-                                                         activated)
-            return components
-
-        except Exception, e:
-            self.logger.logWarning("Unable to find components..." + str(e))
-            print_exc()
-            return []
+        #using these cryptic parameters we find out exactly which
+        #components are available
+        components = getManager().get_component_info(self.__handle,
+                                                     [],
+                                                     name_wildcard,
+                                                     type_wildcard,
+                                                     activated)
+        return components
+    
     #--------------------------------------------------------------------------
     def activateOffShoot(self, py_obj):
         '''
@@ -467,7 +502,7 @@ class ContainerServices:
 
         Raises: ???
         '''
-        return self.activateOffShootMethod(self.name, py_obj)
+        return self.activateOffShootMethod(self.__name, py_obj)
     #--------------------------------------------------------------------------
     def corbaObjectToString(self, comp_ref):
         '''
@@ -481,25 +516,25 @@ class ContainerServices:
         '''
         return getORB().object_to_string(comp_ref)
     #--------------------------------------------------------------------------
-    def corbaObjectFromString(self, comp_name):
+    def corbaObjectFromString(self, obj_uri):
         '''
         Converts a string to a CORBA object reference.
         
         Parameters:
-        - comp_name is the name of the CORBA object.
+        - obj_uri is the address to the CORBA object
 
-        Return: a CORBA reference to comp_name.
+        Return: a CORBA reference to obj_uri
 
         Raises: ???
         '''
-        return getORB().string_to_object(comp_name)
+        return getORB().string_to_object(obj_uri)
 
     #--------------------------------------------------------------------------
     def getThread(self,
-                  target=None,
-                  name=None,
-                  args=(),
-                  kwargs={}):
+                  target,
+                  name,
+                  args=None,
+                  kwargs=None):
         '''
         This method returns a Python threading.Thread object.
         
@@ -514,11 +549,21 @@ class ContainerServices:
         
         Raises: ???
         '''
-        return threading.Thread(None,
-                                target,
-                                name,
-                                args,
-                                kwargs)
+        #setup keyword parameters to their correct mutable types
+        if args == None:
+            args = ()
+        if kwargs == None:
+            kwargs = {}
+        
+        #create the thread
+        new_thread = threading.Thread(None,
+                                      target,
+                                      str(name),
+                                      args,
+                                      kwargs)
+        new_thread.setDaemon(1)
+        
+        return new_thread
     #--------------------------------------------------------------------------
     def setAll(self,
                name,  #string-name of component
@@ -531,9 +576,9 @@ class ContainerServices:
         component with all container services. DO NOT INVOKE FROM YOUR CODE!!!
         '''
         #Set member variables first
-        self.name = name
-        self.token = token
-        self.handle = handle
+        self.__name = name
+        self.__token = token
+        self.__handle = handle
         
         #Set method variables next
         self.activateOffShootMethod = activate_offshoot_method

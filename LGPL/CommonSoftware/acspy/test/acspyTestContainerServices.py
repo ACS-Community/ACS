@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestContainerServices.py,v 1.6 2005/05/09 23:09:15 dfugate Exp $
+# @(#) $Id: acspyTestContainerServices.py,v 1.7 2006/04/06 21:44:58 dfugate Exp $
 ###############################################################################
 '''
 Tests the Container Services.
@@ -43,5 +43,5 @@ if __name__=="__main__":
              )
     print g.__dict__
     print
-    print "Thread: ", g.getThread()
+    print "Thread: ", g.getThread(dummie, "dummie thread")
     print "Done..."
