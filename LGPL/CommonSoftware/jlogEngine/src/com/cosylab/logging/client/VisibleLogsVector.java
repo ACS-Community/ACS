@@ -288,7 +288,7 @@ public class VisibleLogsVector extends Thread {
 		super();
 		this.cache=theCache;
 		this.comparator = new VisibleLogsComparator();
-		this.comparator.setComparingParams(ILogEntry.FIELD_ENTRYTYPE,false);
+		this.comparator.setComparingParams(ILogEntry.FIELD_TIMESTAMP,false);
 		this.tableModel=model;
 		visibleLogs = new Vector<Integer>(256,32);
 		// Start the thread for async operations
