@@ -37,6 +37,7 @@ import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.LCEngine;
 
@@ -681,7 +682,7 @@ public class IOLogsHelper extends Thread  {
 		try {
 			ACSLogParser parser = new ACSLogParser();
 			//System.out.println("Parsing "+logStr);
-			log=parser.parse(logStr);
+			log=new LogEntry(parser.parse(logStr));
 		} catch (Exception e) {
 			System.err.println("Exception parsing a log: "+e.getMessage());
 			System.out.println("Log Str: ["+logStr+"]");

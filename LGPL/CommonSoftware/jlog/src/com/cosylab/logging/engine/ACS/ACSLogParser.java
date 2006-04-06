@@ -33,6 +33,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.LogEntryXML;
 
 /**
@@ -64,7 +66,6 @@ private void initialize() throws ParserConfigurationException {
 		return;
 	}*/
 }
-
 
 /**
  * Parses the xmlLog. This method must be synchronized to ensure that the

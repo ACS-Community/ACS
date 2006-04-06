@@ -33,7 +33,8 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 
 
 
-import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogEntry;
 
 /**
  * ACSStructuredPushConsumer gets an XML log from the Engine 
@@ -48,12 +49,12 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 		public void run()
 		{
 			String log = null;
-			LogEntryXML logEntry = null;
+			ILogEntry logEntry = null;
 			while (true) {
 				try {
 					if (!xmlLogs.isEmpty()) {
 						log = (String) xmlLogs.remove(0);
-						logEntry = parser.parse(log);
+						logEntry = new LogEntry(parser.parse(log));
 						acsra.getEngine().pushStructuredEvent(logEntry);
 						//System.out.println("An XML string that was parsed: " + log);
 					} else

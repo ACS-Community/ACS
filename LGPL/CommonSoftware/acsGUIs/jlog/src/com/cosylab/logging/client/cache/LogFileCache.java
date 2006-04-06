@@ -28,15 +28,12 @@ import java.util.HashMap;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.BufferedReader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.FiltersVector;
-import com.cosylab.logging.client.GroupedList;
+import com.cosylab.logging.engine.log.LogEntry;
 
 /**
  * This class implements the cache in order to be able to manage
@@ -278,7 +275,7 @@ public class LogFileCache {
 		String logStr = getLogAsString(pos).trim();
 		try {
 			
-			return parser.parse(logStr);
+			return new LogEntry(parser.parse(logStr));
 		} catch (Exception e) {
 			System.err.println("Exception "+e.getMessage());
 			return null;
