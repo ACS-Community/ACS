@@ -2,7 +2,7 @@
 #******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: userScript,v 1.91 2005/12/30 09:29:27 bjeram Exp $"
+# "@(#) $Id: userScript,v 1.92 2006/04/06 10:09:26 bjeram Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -50,6 +50,9 @@ lcubootAutoLoad 1,"acsContainerServices"
 lcubootAutoLoad 1,"acsErrTypeLifeCycle"
 lcubootAutoLoad 1,"acsErrTypeComponent"
 lcubootAutoLoad 1,"acscomponent"
+lcubootAutoLoad 1,"baciStubs"
+lcubootAutoLoad 1,"acsncStubs"
+lcubootAutoLoad 1,"basenc"
 lcubootAutoLoad 1,"archiveevents"
 lcubootAutoLoad 1,"expat"
 lcubootAutoLoad 1,"cdbDALStubs"
