@@ -37,13 +37,13 @@ public class XmlNormalizerTest extends TestCase {
     }
 
     public void testNormalizeXMLString() {
-        String xml = "<elem foo=\"bar&\"></elem>";
+        String xml = "<elem foo=\"bar&\">abc&\"def\"ghijk</elem>";
         
         String normalized1 = XmlNormalizer.normalize(xml);
-        assertEquals("&lt;elem foo=&quot;bar&amp;&quot;&gt;&lt;/elem&gt;", normalized1);
+        assertEquals("&lt;elem foo=&quot;bar&amp;&quot;&gt;abc&amp;&quot;def&quot;ghijk&lt;/elem&gt;", normalized1);
         
-        String normalized2 = XmlNormalizer.normalizeInsideQuotes(xml);
-        assertEquals("<elem foo=\"bar&amp;\"></elem>", normalized2);
+        String normalized2 = XmlNormalizer.normalizeXMLEmbeddedTextOnly(xml);
+        assertEquals("<elem foo=\"bar&amp;\">abc&amp;\"def\"ghijk</elem>", normalized2);
     }
 
 }
