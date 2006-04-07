@@ -33,144 +33,71 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.LogEntryXML;
 
+import alma.acs.util.XmlNormalizer;
+
 /**
- * ACSLogParser is used for parsing an xml string (starting with like <Info>,<Debug> and so on) 
- * to produce a valid LogEntryXML. It gets the string  
- * from inside the ACSStructuredPushConsumer class where the logs get accumulated from the 
- * CORBA Logging Service. 
- * Creation date: (11/8/2001 6:22:53 PM)
- * @author: 
+ * ACSLogParser is used for parsing an xml string (representing an XML element such as &lt;Info&gt;,&lt;Debug&gt; and so on) 
+ * to produce a valid LogEntryXML.
+ * <p> 
+ * It will typically get the string from the ACSStructuredPushConsumer class where the logs get delivered 
+ * from the CORBA Logging Service. 
  */
 public class ACSLogParser {
 //	private DocumentBuilderFactory factory = null;
 	private DocumentBuilder builder = null;
-/**
- * ACSLogParser constructor comment.
- */
-public ACSLogParser() throws ParserConfigurationException {
-	super();
-	initialize();
-}
-
-private void initialize() throws ParserConfigurationException {
-	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//	try {
-		builder = factory.newDocumentBuilder();
-/*	} catch (Throwable pce) {
-		
-		System.out.println("Exception in ACSLogParser::parse(): " + pce);
-		return;
-	}*/
-}
-
-/**
- * Parses the xmlLog. This method must be synchronized to ensure that the
- * parses parses only one log at a time.
- */
-public synchronized LogEntryXML parse(String string) 
-	throws SAXException, DOMException, IOException {
-	Document document = null;
 	
-	try {
-		document = builder.parse(new InputSource(new StringReader(string)));
-	} catch (IOException ioe) {
-		// cannot get here	
-		System.err.println("Exception parsing "+ioe.getMessage());
-		ioe.printStackTrace(System.err);
-		throw ioe;
-	} catch (Exception e) {
-		/* There was an exception parsing the log but before gaving up 
-		 * I can try to fix some errors...
-		 */
-		document = null;
-		String newLogString = cleanLogString(string);
+	
+	/**
+	 * ACSLogParser constructor comment.
+	 */
+	public ACSLogParser() throws ParserConfigurationException {
+		initialize();
+	}
+	
+	private void initialize() throws ParserConfigurationException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		builder = factory.newDocumentBuilder();
+	}
+
+	
+	/**
+	 * Parses the xmlLog. This method must be synchronized to ensure that the
+	 * parser parses only one log at a time.
+	 */
+	public synchronized LogEntryXML parse(String string) 
+	throws SAXException, DOMException, IOException {
+		Document document = null;
+		
 		try {
-			
-			document = builder.parse(new InputSource(new StringReader(newLogString)));
-			System.out.println("Fatal error recovered:");
-			System.out.println("\tOriginal log entry: "+string);
-			System.out.println("\tCleaned log entry: "+newLogString+"\n");
-		}	catch (IOException ioe) {
+			document = builder.parse(new InputSource(new StringReader(string)));
+		} catch (IOException ioe) {
 			// cannot get here	
 			System.err.println("Exception parsing "+ioe.getMessage());
 			ioe.printStackTrace(System.err);
 			throw ioe;
-		}
-	}
-	return new LogEntryXML(document.getFirstChild());
-}
-
-/**
- * Try to clean the log string by replacing chars like > with &gt; 
- * and so on 
- * 
- * @param logStr The log string
- * @return A new possybly cleaned string representing the log
- * 
- */
-private String cleanLogString(String logStr) {
-	System.out.println("cleaning");
-	StringBuffer sb = new StringBuffer();
-	// It is true if the char we are reading is into a queote "..."
-	boolean intoQuote = false;
-	// It is true if the char we are reading is into a CDATA section
-	boolean intoCDATA =false;
-	for (int t=0; t<logStr.length(); t++) {
-		char c = logStr.charAt(t);
-		if (c=='\"') {
-			intoQuote=!intoQuote;
-			sb.append(c);
-			continue;
-		}
-		
-		if (c=='>') {
-			if (intoQuote) {
-				sb.append("&gt;");
-				continue;
-			} else {
-				sb.append(c);
-				continue;
+		} catch (Exception e) {
+			/* There was an exception parsing the log, but before giving up 
+			 * we try to fix markup issues inside the text that is contained in the XML */
+			document = null;
+			String newLogString = XmlNormalizer.normalizeXMLEmbeddedTextOnly(string);
+			try {
+				
+				document = builder.parse(new InputSource(new StringReader(newLogString)));
+				System.out.println("Fatal error recovered:");
+				System.out.println("\tOriginal log entry: "+string);
+				System.out.println("\tCleaned log entry: "+newLogString+"\n");
+			} catch (SAXException ex2) {
+				System.err.println("Failed to parse the following log entry:");
+				System.err.println(string);
+				System.err.println("with parser exception ");
+				ex2.printStackTrace();
+				throw ex2;
 			}
 		}
-		
-		if (c=='<') {
-			if (intoQuote) {
-				sb.append("&lt;");
-				continue;
-			} else {
-				sb.append(c);
-				continue;
-			}
-		}
-		
-		if (c=='\'') {
-			if (intoQuote) {
-				sb.append("&apos;");
-				continue;
-			} else {
-				sb.append(c);
-				continue;
-			}
-		}
-		
-		if (c=='&') {
-			if (intoQuote) {
-				sb.append("&amp;");
-				continue;
-			} else {
-				sb.append(c);
-				continue;
-			}
-		}
-		sb.append(c);
-	}
-	return sb.toString();
-}
-
-
+		return new LogEntryXML(document.getFirstChild());
+	}	
 }
 
