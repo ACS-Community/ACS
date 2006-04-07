@@ -73,10 +73,11 @@ class BehaviorProxy:
         self.cdb_handler = None
         self.api_handler = None
         self.gui_handler = None
+        self.handlers = []
         
-        self.setupCases()
+        self.__setupCases()
     #--------------------------------------------------------------------------
-    def setupCases(self):
+    def __setupCases(self):
         '''
         Helper method which creates entries objects
         '''
@@ -89,38 +90,42 @@ class BehaviorProxy:
         
         #create a dynamic handler object
         self.dynamic_handler = Dynamic(self.compname, comp_type)
+        self.attachNewHandler(self.dynamic_handler)
         
         #create a CDB handler object
         self.cdb_handler = CDB(self.compname, if_list)
+        self.attachNewHandler(self.cdb_handler)
         
         #create an API handler object
         self.api_handler = API(self.compname)
+        self.attachNewHandler(self.api_handler)
         
         #create a GUI handler object
         self.gui_handler = GUI(self.compname)
+        self.attachNewHandler(self.gui_handler)
     #--------------------------------------------------------------------------
     def getMethod(self, meth_name):
         '''
         Returns a Python dictionary describing the given method or None if it
         does not exist.
         '''
-        if self.gui_handler.getMethod(meth_name) != None:
-            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
-                                 self.compname + "' simulated component using the GUI.")
-            return self.gui_handler.getMethod(meth_name)
+        #cycle through all the handlers looking for a method implementation
+        for handler in self.handlers:
+            
+            meth_obj = handler.getMethod(meth_name)
+            
+            #found a match
+            if meth_obj != None:
+                return meth_obj
+    #----------------------------------------------------------------------
+    def attachNewHandler(self, handler_obj):
+        '''
+        Attach a user implementation of BaseRepresentation to an internal
+        list which determines component behavior.
         
-        if self.api_handler.getMethod(meth_name) != None:
-            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
-                                 self.compname + "' simulated component using the API.")
-            return self.api_handler.getMethod(meth_name)
-        
-        elif self.cdb_handler.getMethod(meth_name) != None:
-            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
-                             self.compname + "' simulated component using the CDB.")
-            return self.cdb_handler.getMethod(meth_name)
-        
-        else:
-            self.logger.logDebug("Executing the '" + meth_name + "' method of the '" +
-                             self.compname + "' simulated component on the fly.")
-            return self.dynamic_handler.getMethod(meth_name)
-        
+        In plain English, this means someone using the API could come
+        up with a completely new way to simulate a component's behavior and 
+        add it to this proxy to override ACS's simulator representations
+        entirely.
+        '''
+        self.handlers.insert(0, handler_obj)
