@@ -21,17 +21,23 @@
  */
 package com.cosylab.logging.engine.log;
 
-import java.util.Random;
-
-import org.w3c.dom.*;
-
-import java.util.Date;
-import java.util.Vector;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Vector;
 
-import com.cosylab.logging.engine.VectorNodeList;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
 import com.cosylab.logging.engine.DataNode;
+import com.cosylab.logging.engine.VectorNodeList;
 
 /**
  * This is the container class for generic Log Entries.
@@ -40,9 +46,21 @@ import com.cosylab.logging.engine.DataNode;
  * can be obtained via accessor and mutator methods. This 
  * class is used when parsing nodes. The class is used when 
  * a file is read or a node is received by the push consumer.
+ * <p>
+ * Note on reuse of equal Strings, Integers etc:
+ * The XML parser currently produces separate instances of the same Strings, 
+ * so that a lot of memory would be used up unnecessarily.
+ * This class reuses String objects for its field values, 
+ * but does not exchange the String instances that are referenced by the <code>log Node</code>.
+ * That current design will only yield a memory advantage if the <code>LogEntryXML</code>
+ * instance is not kept permanently in the application, but instead its fields are read
+ * and the values transfered (without the DOM Node) to an object of another class. 
+ * Ale: please check if there are other Srings that could be reused based on <code>stringPool</code>,
+ * and if we should use also a pool for Integers, at least for log levels since they are always the same few. 
  */
 public final class LogEntryXML implements ILogEntry
 {
+	private static final HashMap<String, String> stringPool = new HashMap<String, String>(1000);
     
 	private VectorNodeList datas = null;
 	public VectorNodeList complexLogEntryMessage = null;
@@ -143,6 +161,29 @@ public final class LogEntryXML implements ILogEntry
 	}
 	
 	/**
+	 * Checks if a String equal to <code>s</code> is already in the string pool.
+	 * If so, it will be returned for reuse, otherwise it will be added and returned.
+	 *  
+	 * @param s a String
+	 * @return the same or a different Sting object, which is equal to <code>s</code>.
+	 */
+	private static String fromStringPool(String s) {
+		if (s == null) {
+			return null;
+		}
+		
+		String equalString = stringPool.get(s);
+		if (equalString != null) {
+			return equalString;
+		}
+		else {
+			stringPool.put(s, s);
+			return s;
+		}
+	}
+	
+	
+	/**
 	 * Check if the log entry has datas
 	 * 
 	 * @return ture datas is not null
@@ -221,7 +262,7 @@ public final class LogEntryXML implements ILogEntry
 				"TimeStamp attribute is missing in " + getField(FIELD_ENTRYTYPE));
 		SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
 
-        // The time styamp is required!
+        // The time stamp is required!
 		try
 		{
 			setField(FIELD_TIMESTAMP, df.parse(attr.getNodeValue()));
@@ -232,10 +273,10 @@ public final class LogEntryXML implements ILogEntry
 		}
 
         // Search for the others fields (they are not required so nothing will
-        // happen is some of them is missing)
+        // happen is some of them are missing)
 		attr = nnm.getNamedItem(tagAttributes[FIELD_FILE]);
 		if (attr != null)
-			setField(FIELD_FILE, attr.getNodeValue());
+			setField(FIELD_FILE, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_LINE]);
 		if (attr != null)
@@ -243,27 +284,27 @@ public final class LogEntryXML implements ILogEntry
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_ROUTINE]);
 		if (attr != null)
-			setField(FIELD_ROUTINE, attr.getNodeValue());
+			setField(FIELD_ROUTINE, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_HOST]);
 		if (attr != null)
-			setField(FIELD_HOST, attr.getNodeValue());
+			setField(FIELD_HOST, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_PROCESS]);
 		if (attr != null)
-			setField(FIELD_PROCESS, attr.getNodeValue());
+			setField(FIELD_PROCESS, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_CONTEXT]);
 		if (attr != null)
-			setField(FIELD_CONTEXT, attr.getNodeValue());
+			setField(FIELD_CONTEXT, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_THREAD]);
 		if (attr != null)
-			setField(FIELD_THREAD, attr.getNodeValue());
+			setField(FIELD_THREAD, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_STACKID]);
 		if (attr != null)
-			setField(FIELD_STACKID, attr.getNodeValue());
+			setField(FIELD_STACKID, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_STACKLEVEL]);
 		if (attr != null)
@@ -271,7 +312,7 @@ public final class LogEntryXML implements ILogEntry
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_LOGID]);
 		if (attr != null)
-			setField(FIELD_LOGID, attr.getNodeValue());
+			setField(FIELD_LOGID, fromStringPool(attr.getNodeValue()));
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_PRIORITY]);
 		if (attr != null)
@@ -279,11 +320,11 @@ public final class LogEntryXML implements ILogEntry
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_URI]);
 		if (attr != null)
-			setField(FIELD_URI, attr.getNodeValue());
+			setField(FIELD_URI, fromStringPool(attr.getNodeValue()));
         
         attr = nnm.getNamedItem(tagAttributes[FIELD_SOURCEOBJECT]);
         if (attr != null) {
-            setField(FIELD_SOURCEOBJECT, attr.getNodeValue());
+            setField(FIELD_SOURCEOBJECT, fromStringPool(attr.getNodeValue()));
         }
 	}
     
@@ -310,8 +351,8 @@ public final class LogEntryXML implements ILogEntry
 				}
 				if (isLogEntrySimple)
 				{
-					//                simpleLogEntryMessage = node.getNodeValue();
-					setField(FIELD_LOGMESSAGE, node.getNodeValue());
+					// simpleLogEntryMessage = node.getNodeValue();
+					setField(FIELD_LOGMESSAGE, fromStringPool(node.getNodeValue()));
 				}
 				else
 				{
@@ -337,6 +378,7 @@ public final class LogEntryXML implements ILogEntry
 		if (logEntryType == null)
 			throw new DOMException(DOMException.SYNTAX_ERR, "logEntryType is null.");
 		
+		// todo: reuse Integer objects
         setField(FIELD_ENTRYTYPE,LogTypeHelper.parseLogTypeDescription(logEntryType));
 
         if (getField(FIELD_ENTRYTYPE) == null)
