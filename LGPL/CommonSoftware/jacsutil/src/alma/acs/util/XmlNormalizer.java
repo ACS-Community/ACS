@@ -33,16 +33,29 @@ public class XmlNormalizer {
      * Only allocates memory if the string <code>s</code> does contain such markup.
      * Otherwise <code>s</code> is returned.
      */
-    public static String normalize(String s) {
+    private static String normalize(String s, boolean normalizeOnlyInsideQuotes) {
         if (s == null)
             return s;
 
         StringBuffer str = null;
         int begin = 0;
+        boolean currentlyInsideQuotes = false;
+        
         for (int i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
+        	String trans = null;
+        	
+            if (ch == '\"') {
+            	currentlyInsideQuotes = !currentlyInsideQuotes;
+            	// don't translate the quote char if we expect entire XML including valid markup
+            	if (!normalizeOnlyInsideQuotes) {
+    	            trans = translate(ch);
+            	}
+            }
+            else if (!normalizeOnlyInsideQuotes || currentlyInsideQuotes){
+                trans = translate(ch);
+            }            
 
-            String trans = translate(ch);
             if (trans != null) {
                 // we found a special char
                 if (str == null) {
@@ -63,7 +76,38 @@ public class XmlNormalizer {
         return s;
     }
 
-    private static String translate(char ch) {
+    /**
+     * Normalizes a string to not conflict with XML markup characters. 
+     * Only allocates memory if the string <code>s</code> does contain such markup.
+     * Otherwise <code>s</code> is returned.
+     */
+    public static String normalize(String s) {
+    	return normalize(s, false);
+    }
+    
+    
+    /**
+     * Normalizes any text in between quotes ("text") inside <code>xmlString</code>
+     * but leaves other text untouched. 
+     * This method can be used to fix illegal text in an unparsable XML document, 
+     * without destroying the XML markup itself.
+     * 
+     * @param xmlString 
+     * @return
+     */
+    public static String normalizeInsideQuotes(String xmlString) {
+    	return normalize(xmlString, true);
+    }
+    
+    
+    /**
+     * Translates the given character <code>ch</code> to its masked XML representation
+     * if this character is one of { &lt;, &gt;, &amp;, ", ' }.
+     * Otherwise returns <code>null</code>.
+     * @param ch
+     * @return The corresponding XML representation such as "&amp;lt;" for a '&lt;'.
+     */
+    public static String translate(char ch) {
         switch (ch) {
         case '<':
             return "&lt;";
