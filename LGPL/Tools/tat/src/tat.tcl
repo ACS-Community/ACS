@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.96 2006/04/04 12:33:03 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.97 2006/04/07 11:48:24 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -36,6 +36,7 @@
 # psivera  2006-02-15 ALMASW200$075 implemented: test lines in TestList(.lite) can be 
 #                     splitted across multiple lines
 # psivera  2006-02-17 SPR ALMASW2003069: removed the "child process" message from the diff file
+# psivera  2006-04-07 SPR ALMASW2006015: implemented option -f NewTestList
 #
 #
 #************************************************************************
@@ -44,7 +45,7 @@
 # 
 #   SYNOPSIS
 #   tat [-v ] [-nc] [-g[enerate]] [-run] [-log] [-noorder] [-order] 
-#      [-r num] [-w secs] 
+#      [-r num] [-w secs] [-f filename]
 #      [all | ALL | makeEnv | cleanEnv | [ <testName> ...] | [<testNum> ...] ]
 # 
 #   DESCRIPTION
@@ -309,6 +310,13 @@
 #
 #   -v: verbose mode. Displays allocate environment and detailed
 #   steps of environment creation and deletion.
+#
+#   -f filename: when one does not want to use the default TestList(.lite)
+#   file, one can pass whatever filename (which has to be in the format of 
+#   a TestList, with SOURCE, PROLOGUE, testid, EPILOGUE). At the same 
+#   time, one can use as well filename.grep and filename.sed to filter 
+#   the output files. If filename.grep and filename.sed are not found, 
+#   the default ones are used. 
 #
 #   -g[enerate]: generates the test reference in ./ref/<test>.ref. 
 #   A former reference file is overwritten. 
@@ -1694,7 +1702,10 @@ proc egrepFilter {fileName testName} {
 
     # process user TestList.grep or testName.grep
 
-    if {[file exists $testName.grep] && [file exists $gv(grepFile)]} {
+    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).grep]) } {
+	printLogVerbose "Cleaning with $gv(testListFiles).grep: $fileName"
+	catch {file copy -force  $gv(testListFiles).grep $tmpGrep$gv(grepFile).tmp }
+    } elseif {[file exists $testName.grep] && [file exists $gv(grepFile)]} {
         printLogVerbose "Cleaning with $gv(grepFile) and $testName.grep: $fileName"
         catch {exec cat $gv(grepFile) $testName.grep > $tmpGrep$gv(grepFile).tmp }
     } elseif {[file exists $testName.grep]} {
@@ -1730,7 +1741,10 @@ proc egrepFilterx {fileName testName} {
     set userId [id user]
     set tmpGrep /tmp/${userId}_test[pid]
 
-    if {[file exists $testName.grep] && [file exists $gv(grepFile)]} {
+    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).grep]) } {
+        printLogVerbose "Cleaning with $gv(testListFiles).grep: $fileName"
+        catch {file copy -force  $gv(testListFiles).grep $tmpGrep$gv(grepFile).tmp }
+    } elseif {[file exists $testName.grep] && [file exists $gv(grepFile)]} {
         printLogVerbose "Cleaning with $gv(grepFile) and $testName.grep: $fileName"
         catch {exec cat $gv(grepFile) $testName.grep > $tmpGrep$gv(grepFile).tmp }
     } elseif {[file exists $testName.grep]} {
@@ -1777,7 +1791,10 @@ proc sedFilter {fileName testName} {
 
     # process user TestList.sed or testName.sed
 
-    if {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
+    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).sed]) } {
+        printLogVerbose "Cleaning with $gv(testListFiles).sed: $fileName"
+        catch {file copy -force  $gv(testListFiles).sed $tmpSed$gv(sedFile).tmp }
+    } elseif {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
         printLogVerbose "Cleaning with $gv(sedFile) and $testName.sed: $fileName"
         catch {exec cat $gv(sedFile) $testName.sed > $tmpSed$gv(sedFile).tmp }
     } elseif {[file exists $testName.sed]} {
@@ -1812,7 +1829,10 @@ proc sedFilterx {fileName testName} {
     set userId [id user]
     set tmpSed /tmp/${userId}_test[pid]
 
-    if {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
+    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).sed]) } {
+        printLogVerbose "Cleaning with $gv(testListFiles).sed: $fileName"
+        catch {file copy -force  $gv(testListFiles).sed $tmpSed$gv(sedFile).tmp }
+    } elseif {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
         printLogVerbose "Cleaning with $gv(sedFile) and $testName.sed: $fileName"
         catch {exec cat $gv(sedFile) $testName.sed > $tmpSed$gv(sedFile).tmp}
     } elseif {[file exists $testName.sed]} {
@@ -2321,11 +2341,11 @@ global PID
 #
 
 if { $gv(commandLineTestLists) == 1 } {
-    set gv(testListFileName) $gv(testListFiles)
     if {![file exists "$gv(testListFiles)"]} {
 	puts "$gv(testListFiles) does not exist!"
 	exit 1
     }
+    set gv(testListFileName) $gv(testListFiles)
 } else {
 if {[ catch { set gv(NOCCS) $env(NOCCS) } ] || ("$env(VLTSW_CCSTYPE)" != "no" && "$env(VLTSW_CCSTYPE)" != "noccs") } {
     set gv(NOCCS) 0
