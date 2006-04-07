@@ -46,5 +46,14 @@ if __name__ == "__main__":
     i = DynamicImplementation("IDL:alma/RampedPS/RampedPowerSupply:1.0")
     print "PowerSupply dict:", dir(i)
     print "-----------------------------------------------------------------"
-
+    try:
+        j =  DynamicImplementation("IDL:alma/doesnt/Exist:1.0")
+    except ImportError, ex:
+        print "Good...ImportError when trying to create 'DL:alma/doesnt/Exist:1.0'"
+    
+    try:
+        k =  DynamicImplementation("puregarbage")
+    except IndexError, ex:
+        print "Good...ImportError when trying to create 'DL:alma/doesnt/Exist:1.0'"
+    print "-----------------------------------------------------------------"
     print "Done..."

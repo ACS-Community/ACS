@@ -44,7 +44,6 @@ from Acspy.Util.XmlObjectifier import XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
 from Acspy.Nc.Supplier import Supplier
-from Acssim.Corba.Generator import getRandomValue
 from Acssim.Corba.Utilities import getTypeCode
 
 #--GLOBALS---------------------------------------------------------------------
@@ -488,6 +487,8 @@ def supplyEventByType(component_name, channel_name, ifr_id):
     
     Raises: ???
     '''
+    from Acssim.Corba.Generator import getRandomValue
+    
     #create an instance of the IDL struct
     #get the type code first
     type_code = getTypeCode(ifr_id)

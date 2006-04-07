@@ -115,7 +115,7 @@ def getSuperIDs(ir_id):
     return ret_val
 
 #------------------------------------------------------------------------------
-def getDefinition(irLabel):
+def getDefinition(ir_label):
     '''
     Helper function returns the interface definition of some IDL type given
     its complete interface repository location.
@@ -128,7 +128,7 @@ def getDefinition(irLabel):
 
     Raises: ???
     '''
-    interf = IFR.lookup_id(irLabel)
+    interf = IFR.lookup_id(ir_label)
     return interf
 #-----------------------------------------------------------------------------
 def listToFunction(code_list, locals_dict):
@@ -162,9 +162,56 @@ def getTypeCode(ifr_id):
     Returns a typecode object using the ifr_id.
     '''
     #use the ifr to lookup the ID
-    lid = IFR.lookup_id(ifr_id)
+    lid = getDefinition(ifr_id)
+    
     #return the typecode from that
-    type_code = lid._get_type()
+    if (lid != None) and (isinstance(lid, CORBA._objref_Contained) == True):
+        try:
+            #dealing with an IDL interface most likely
+            ifr_lid = lid._narrow(CORBA.InterfaceDef)
+            
+            #get the full description of the IDL interface
+            full_descript = ifr_lid.describe_interface()
+            
+            #next take the type code
+            type_code = full_descript.type
+
+        except:
+            type_code = lid._get_type()
+        
+    #ok...handle the simple types
+    elif ifr_id == "IDL:omg.org/CORBA/Boolean:1.0": 
+        type_code = CORBA.TC_boolean
+    elif ifr_id == "IDL:omg.org/CORBA/Char:1.0": 
+        type_code = CORBA.TC_char
+    elif ifr_id == "IDL:omg.org/CORBA/Octet:1.0": 
+        type_code = CORBA.TC_octet
+    elif ifr_id == "IDL:omg.org/CORBA/Short:1.0": 
+        type_code = CORBA.TC_short
+    elif ifr_id == "IDL:omg.org/CORBA/UShort:1.0": 
+        type_code = CORBA.TC_ushort
+    elif ifr_id == "IDL:omg.org/CORBA/Long:1.0": 
+        type_code = CORBA.TC_long
+    elif ifr_id == "IDL:omg.org/CORBA/ULong:1.0": 
+        type_code = CORBA.TC_ulong
+    elif ifr_id == "IDL:omg.org/CORBA/LongLong:1.0": 
+        type_code = CORBA.TC_longlong
+    elif ifr_id == "IDL:omg.org/CORBA/ULongLong:1.0": 
+        type_code = CORBA.TC_ulonglong
+    elif ifr_id == "IDL:omg.org/CORBA/Float:1.0": 
+        type_code = CORBA.TC_float
+    elif ifr_id == "IDL:omg.org/CORBA/Double:1.0": 
+        type_code = CORBA.TC_double
+    elif ifr_id == "IDL:omg.org/CORBA/LongDouble:1.0": 
+        type_code = CORBA.TC_longdouble
+    elif ifr_id == "IDL:omg.org/CORBA/String:1.0": 
+        type_code = CORBA.TC_string
+    elif ifr_id == "IDL:omg.org/CORBA/Void:1.0": 
+        type_code = CORBA.TC_void
+    elif ifr_id == "IDL:omg.org/CORBA/Null:1.0": 
+        type_code = CORBA.TC_null
+    else:
+        type_code = None
     
     return type_code
     

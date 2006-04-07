@@ -36,6 +36,7 @@ TODO LIST:
 from random  import randrange
 from random  import choice
 from new     import instance
+from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
 import CORBA
 import ACSErr
@@ -211,28 +212,31 @@ def getRandomSimpleValue(valType):
     
     elif valType == CORBA.tk_octet:
         #returns 0-255
-        retVal = randrange(0,256)
+        retVal = int(randrange(0,256))
     
     elif valType == CORBA.tk_short:
         #returns a random short
-        retVal = randrange(-(2**15), (2**15) - 1)
+        retVal = int(randrange(-(2**15), (2**15) - 1))
+        
     elif valType == CORBA.tk_ushort:
         #returns a random unsigned short
-        retVal = randrange(0, (2**16) - 1)
+        retVal = int(randrange(0, (2**16) - 1))
     
     elif valType == CORBA.tk_long:
         #returns a random long
-        retVal = randrange(-(2**31), (2**31) - 1)
+        retVal = int(randrange(-(2**31), (2**31) - 1))
+        
     elif valType == CORBA.tk_ulong:
         #returns a random unsigned long
-        retVal = randrange(0, (2**32) - 1)
+        retVal = long(randrange(0, (2**32) - 1))
 
     elif valType == CORBA.tk_longlong:
         #returns a random long long
-        retVal = randrange(-(2**63), (2**63) - 1)
+        retVal = long(randrange(-(2**63), (2**63) - 1))
+        
     elif valType == CORBA.tk_ulonglong:
         #returns a random unsigned long long
-        retVal = randrange(0, (2**64) - 1)
+        retVal = long(randrange(0, (2**64) - 1))
     
     elif valType == CORBA.tk_float:
         #DWF-make this really go through a float's entire range of values
@@ -255,8 +259,10 @@ def getRandomSimpleValue(valType):
 
     elif valType == CORBA.tk_void:
         retVal = None
+        
     elif valType == CORBA.tk_null:
         retVal = None
+        
     else:
         raise CORBA.NO_IMPLEMENT()
 

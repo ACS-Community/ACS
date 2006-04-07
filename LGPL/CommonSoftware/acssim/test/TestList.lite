@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.15 2006/03/31 21:32:31 dfugate Exp $"
+# "@(#) $Id: TestList.lite,v 1.16 2006/04/07 22:45:35 dfugate Exp $"
 #
 # TestList
 #
@@ -60,6 +60,9 @@ PROLOGUE acssimTATPrologue
 
 #Test Acssim.Corba.EventDispatcher
 9 EventDispatcher "acsutilTATTestRunner acssimEventDispatcher"
+
+#Test Acssim.Corba.Generator
+10 Generator "acsutilTATTestRunner acssimGenerator"
 
 #First test to ensure that pseudo inheritance from Acspy.Servants.CharacteristicComponent actually works
 11 T1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 _get_name()"
