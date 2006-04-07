@@ -148,10 +148,11 @@ public class LogFileCache {
 			name=acsdata+f.getName();
 		} catch (IOException ioe) {
 			// Another error :-O
+			String homeDir = System.getProperty("user.dir");
 			do {
 				// Try to create the file in the home diretory
 				int random = new Random().nextInt();
-				name = "~/jlog"+random+".jlog";
+				name = homeDir + "/jlog"+random+".jlog";
 				f = new File(name);
 			} while (f.exists());
 		}
