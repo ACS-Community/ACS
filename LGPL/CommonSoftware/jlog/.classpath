@@ -113,7 +113,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/j2ssh-core-0.2.6.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jacstime.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jakarta-oro-2.0.5.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jakarta-regexp-1.2.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaOnlyAcsConfig.jar"/>
@@ -144,7 +144,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/openorb13Debug.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/prevayler-1.02.001.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/resolver-20030708.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/rtlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/saxpath.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/servlet.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/subsystem_master.jar"/>
