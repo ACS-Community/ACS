@@ -33,26 +33,38 @@ public class XmlNormalizer {
      * Only allocates memory if the string <code>s</code> does contain such markup.
      * Otherwise <code>s</code> is returned.
      */
-    private static String normalize(String s, boolean normalizeOnlyInsideQuotes) {
+    private static String normalize(String s, boolean normalizeXMLEmbeddedTextOnly) {
         if (s == null)
             return s;
 
         StringBuffer str = null;
         int begin = 0;
-        boolean currentlyInsideQuotes = false;
+        boolean currentlyInsideText = false;
+        boolean currentlyInsideCharacterContent = false;
         
         for (int i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
         	String trans = null;
+
+        	if (normalizeXMLEmbeddedTextOnly && !currentlyInsideText) {
+	            if (ch == '<') {
+	            	currentlyInsideCharacterContent = false;
+	            	continue;
+	            }
+	            else if (ch == '>') {
+	            	currentlyInsideCharacterContent = true;
+	            	continue;
+	            }
+        	}
         	
             if (ch == '\"') {
-            	currentlyInsideQuotes = !currentlyInsideQuotes;
+            	currentlyInsideText = !currentlyInsideText;
             	// don't translate the quote char if we expect entire XML including valid markup
-            	if (!normalizeOnlyInsideQuotes) {
+            	if (!normalizeXMLEmbeddedTextOnly) {
     	            trans = translate(ch);
             	}
             }
-            else if (!normalizeOnlyInsideQuotes || currentlyInsideQuotes){
+            else if (!normalizeXMLEmbeddedTextOnly || currentlyInsideText || currentlyInsideCharacterContent) {
                 trans = translate(ch);
             }            
 
@@ -87,15 +99,19 @@ public class XmlNormalizer {
     
     
     /**
-     * Normalizes any text in between quotes ("text") inside <code>xmlString</code>
-     * but leaves other text untouched. 
+     * Normalizes any text in between quotes ("text") or text given as character data of mixed-content elements, 
+     * all inside <code>xmlString</code>. Other text is left untouched. 
      * This method can be used to fix illegal text in an unparsable XML document, 
      * without destroying the XML markup itself.
+     * <p>
+     * Note that some rather simple parsing is used, and that there may be cases in which the result 
+     * is undesirable. Thus this method should only be used as a fallback solution when the XML string can not be parsed with a 
+     * regular XML parser. 
      * 
      * @param xmlString 
      * @return
      */
-    public static String normalizeInsideQuotes(String xmlString) {
+    public static String normalizeXMLEmbeddedTextOnly(String xmlString) {
     	return normalize(xmlString, true);
     }
     
