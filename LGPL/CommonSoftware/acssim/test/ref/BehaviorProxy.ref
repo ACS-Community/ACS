@@ -1,4 +1,4 @@
-1 - dir(TEST_RPS_1): ['__doc__', '__init__', '__module__', 'api_handler', 'cdb_handler', 'compname', 'dynamic_handler', 'getMethod', 'gui_handler', 'logger', 'setupCases']
+1 - dir(TEST_RPS_1): ['_BehaviorProxy__setupCases', '__doc__', '__init__', '__module__', 'api_handler', 'attachNewHandler', 'cdb_handler', 'compname', 'dynamic_handler', 'getMethod', 'gui_handler', 'handlers', 'logger']
 1 - 
 1 - bp.getMethod('on'): {'Timeout': 0.20000000000000001, 'Value': [None]}
 1 - Good!
