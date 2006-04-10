@@ -695,12 +695,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentSpec != null)
 			{
 				cdbActivation = new ComponentSpec(componentSpec);
-				new MessageLogEntry(this, "Using CDB component specification: '" + cdbActivation + "'.", LoggingLevel.INFO).dispatch();
+				new MessageLogEntry(this, "initialize", "Using CDB component specification: '" + cdbActivation + "'.", LoggingLevel.INFO).dispatch();
 			}
 		}
 		catch (Throwable t)
 		{
-			new MessageLogEntry(this, "Failed to parse '" + NAME_CDB_COMPONENTSPEC + "' variable, " + t.getMessage(), t, LoggingLevel.WARNING).dispatch();
+			new MessageLogEntry(this, "initialize", "Failed to parse '" + NAME_CDB_COMPONENTSPEC + "' variable, " + t.getMessage(), t, LoggingLevel.WARNING).dispatch();
 		}
 		
 		// check load balancing strategy
@@ -795,12 +795,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					throw new IllegalArgumentException("Class '" + strategyClass.getName() + "' does not implement '" + LoadBalancingStrategy.class.getName() + "' interface.");
 				loadBalancingStrategy = (LoadBalancingStrategy)strategyObject;
 		
-				new MessageLogEntry(this, "Using load balancing strategy: '" + strategyClass.getName() + "'.", LoggingLevel.INFO).dispatch();
+				new MessageLogEntry(this, "checkLoadBalancingStrategy", "Using load balancing strategy: '" + strategyClass.getName() + "'.", LoggingLevel.INFO).dispatch();
 			}
 		}
 		catch (Throwable t)
 		{
-			new MessageLogEntry(this, "Failed to register '" + NAME_LOAD_BALANCING_STRATEGY + "' load balancing strategy: " + t.getMessage(), t, LoggingLevel.WARNING).dispatch();
+			new MessageLogEntry(this, "checkLoadBalancingStrategy", "Failed to register '" + NAME_LOAD_BALANCING_STRATEGY + "' load balancing strategy: " + t.getMessage(), t, LoggingLevel.WARNING).dispatch();
 		}
 	}
 
@@ -1329,7 +1329,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						CoreException ce = new CoreException(this, "Failed to obtain component data from the CDB.", ex);
 						ce.caughtIn(this, "getComponentInfo");
 						// exception service will handle this
-						// new MessageLogEntry(this, ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+						// new MessageLogEntry(this, "getComponentInfo", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
 					}
 
 				}	
@@ -5469,7 +5469,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				componentInfo.getDynamicContainerName() == null)
 			{
 				// failed
-				new MessageLogEntry(this, "Failed to reactivate dynamic component '"+componentInfo+"'.", LoggingLevel.ERROR).dispatch();
+				new MessageLogEntry(this, "internalNoSyncRequestComponent", "Failed to reactivate dynamic component '"+componentInfo+"'.", LoggingLevel.ERROR).dispatch();
 				status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
 				return null; 
 			}
@@ -5697,7 +5697,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//
 
 			// log info
-			new MessageLogEntry(this, "Activating component '"+name+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();
+			new MessageLogEntry(this, "internalNoSyncRequestComponent", "Activating component '"+name+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();
 		    
 			try
 			{
@@ -5728,7 +5728,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// failed to activate
 		if (componentInfo == null || componentInfo.getHandle() == 0 || componentInfo.getComponent() == null)
 		{
-			new MessageLogEntry(this, "Failed to activate component '"+name+"'.", LoggingLevel.ERROR).dispatch();
+			new MessageLogEntry(this, "internalNoSyncRequestComponent", "Failed to activate component '"+name+"'.", LoggingLevel.ERROR).dispatch();
 			
 			synchronized (components)
 			{
@@ -5743,7 +5743,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}		
 
 		// log info
-		new MessageLogEntry(this, "Component '"+name+"' activated successfully.", LoggingLevel.INFO).dispatch();
+		new MessageLogEntry(this, "internalNoSyncRequestComponent", "Component '"+name+"' activated successfully.", LoggingLevel.INFO).dispatch();
 
 		//
 		// check type consistency
@@ -5751,7 +5751,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (!isOtherDomainComponent && !componentInfo.getComponent().doesImplement(type))
 		{
 			// just output SEVERE message
-			new MessageLogEntry(this, "Activated component '" + name + "' does not implement specified type '" + type + "'.", LoggingLevel.SEVERE).dispatch();
+			new MessageLogEntry(this, "internalNoSyncRequestComponent", "Activated component '" + name + "' does not implement specified type '" + type + "'.", LoggingLevel.SEVERE).dispatch();
 		}
 		
 		// TODO MF do the component handle mapping here (remember map and fix componentInfo),
@@ -6340,7 +6340,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 		
 						// log info
-						new MessageLogEntry(this, "Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();			
+						new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();			
 
 						// destruct
 						try
@@ -6389,7 +6389,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			
 			// log info
-			new MessageLogEntry(this, "Component '"+componentInfo.getName()+"' deactivated.", LoggingLevel.INFO).dispatch();			
+			new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Component '"+componentInfo.getName()+"' deactivated.", LoggingLevel.INFO).dispatch();			
 
 			// release all subcomponents (just like client logoff)
 			// component should have already done this by itself, but take care of clean cleanup
@@ -6428,7 +6428,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		notifyComponentReleased(new int[] { owner }, new int[] { h });
 
 		if (isDebug())
-			new MessageLogEntry(this, "Component '"+componentInfo.getName()+"' released.", LoggingLevel.DEBUG).dispatch();			
+			new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Component '"+componentInfo.getName()+"' released.", LoggingLevel.DEBUG).dispatch();			
 		
 		if (isDebug())
 			new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Exiting.", Level.FINEST).dispatch();
@@ -6678,7 +6678,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		if (isDebug())
-			new MessageLogEntry(this, "Component '"+componentInfo.getName()+"' restarted.", LoggingLevel.DEBUG).dispatch();			
+			new MessageLogEntry(this, "internalNoSyncRestartComponent", "Component '"+componentInfo.getName()+"' restarted.", LoggingLevel.DEBUG).dispatch();			
 		
 		if (isDebug())
 			new MessageLogEntry(this, "internalNoSyncRestartComponent", "Exiting.", Level.FINEST).dispatch();
@@ -6808,7 +6808,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					CoreException ce = new CoreException(this, "Failed to obtain component data from the CDB.", ex);
 					ce.caughtIn(this, "internalRequestDefaultComponent");
 					// exception service will handle this
-					// new MessageLogEntry(this, ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+					// new MessageLogEntry(this, "internalRequestDefaultComponent", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
 				}
 			}
 		}	
