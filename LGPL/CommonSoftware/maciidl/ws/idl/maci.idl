@@ -540,8 +540,8 @@ Calling this function does not affect the internal state of the Manager.
 			in ComponentSpecSeq components	///< Components to be obtained.
 			);
 		
-		/** Activation of co-deployed component. */
-		ComponentInfo get_co_deployed_component(
+		/** Activation of a component so that it runs in the same process as another given component. */
+		ComponentInfo get_collocated_component(
 			in Handle client,	///< Identification of the caller.
 			in ComponentSpec c,	///< Component to be obtained.
 			in boolean mark_as_default,	///< Mark component as default component of its type.
