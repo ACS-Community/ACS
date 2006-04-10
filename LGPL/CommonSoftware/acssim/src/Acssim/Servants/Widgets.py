@@ -45,6 +45,7 @@ from Acssim.Goodies import getSimProxy
 
 from thread     import start_new_thread
 from os         import environ
+from code import InteractiveConsole, interact
 
 import Tkinter
 import Pmw
@@ -90,7 +91,7 @@ class MethodInfo:
         #Create the top level widget which is completely separate from
         #the parent (e.g., MainWindow) widget
         megaTopLevel = Pmw.MegaToplevel(parent, title = self.compName + ": " + self.compMethod)
-	self.tl = megaTopLevel.interior()
+        self.tl = megaTopLevel.interior()
         ############################################################
         #Scrolled test window for end-user to enter arbitrary Python
         #code to be executed.
@@ -165,6 +166,7 @@ class MethodInfo:
         self.sleepCounter.setvalue(getStandardTimeout())
         #clear the scroll text box for code entry
         self.st.clear()
+
 #----------------------------------------------------------------------------------
 class MainWindow:
     '''
@@ -195,14 +197,39 @@ class MainWindow:
         #Current operation type selected (e.g, method or attribute)
         self.opType = ""
         ############################################################
+        componentsGroup = Pmw.Group(self.parent)
+        componentsGroup.pack(fill='x',
+                             expand='1',
+                             side = 'left',
+                             padx = 5,
+                             pady = 3)
+        ############################################################
         #create the global options group
-        optionsGroup = Pmw.Group(self.parent,
-                                 tag_text='Global Options')
-	optionsGroup.pack(fill='x',
+        optionsGroup = Pmw.Group(componentsGroup.interior(), tag_text='Global Options')
+        optionsGroup.pack(fill='x',
                           expand='1',
                           side = 'top',
                           padx = 5,
                           pady = 3)
+                          
+        ############################################################
+        #create the global options group
+        interpreterGroup = Pmw.Group(self.parent, tag_text='Simulator Interpreter')
+        interpreterGroup.pack(fill='y',
+                          expand='1',
+                          side = 'right',
+                          padx =5,
+                          pady =3)
+                                         
+        self.st = Tkinter.Text(interpreterGroup.interior(), insertontime=200,
+                         insertofftime=150,bg="white", 
+                         height = 40,
+                         width = 80)
+        
+        self.st.pack(padx = 5, pady = 5, fill = 'both', expand = 1)
+        
+        self.console = InteractiveConsole()
+        self.st.bind("<Return>", self.cb_return)
         ############################################################
         #panel for setting characters
         def stringToList():
@@ -261,9 +288,9 @@ class MainWindow:
         self.globalMaxSeqSizePanel.pack(fill='x', expand=1, padx=10, pady=5)
         ############################################################
         #create the main components group
-        compGroup = Pmw.Group(self.parent,
+        compGroup = Pmw.Group(componentsGroup.interior(),
                               tag_text='Available Simulated Components')
-	compGroup.pack(fill='x',
+        compGroup.pack(fill='x',
                        expand='1',
                        side = 'top',
                        padx = 5,
@@ -298,11 +325,11 @@ class MainWindow:
                                             label_text = 'Operation Selection',
                                             frame_borderwidth = 2,
                                             frame_relief = 'ridge')
-	self.methAttrRbox.pack(fill = 'x',
+        self.methAttrRbox.pack(fill = 'x',
                                padx = 10,
                                pady = 10)
         
-	# Add the appropriate buttons to the radio select
+	    # Add the appropriate buttons to the radio select
         self.methAttrRbox.add('Methods')
         self.methAttrRbox.add('Attributes')
         ############################################################
@@ -314,13 +341,23 @@ class MainWindow:
                                               vscrollmode = 'dynamic',
                                               items = ())
         #make it big
-	self.methodsSLB.pack(side = 'left',
+        self.methodsSLB.pack(side = 'left',
                              fill = 'both',
                              expand = 1,
                              padx = 8,
                              pady = 8)
         ############################################################
         #final setup stuff
+    #--------------------------------------------------------------------------
+    def cb_return(self, event):
+        '''
+        '''
+        #get the current cursor position
+        cursor = self.st.index("insert")
+        [line, pos] = map(int, cursor.split("."))
+        command = self.st.get("%d.0" % line, "%d.end" % line)
+        print "DWF:", command, event
+        self.console.push(command)
     #--------------------------------------------------------------------------
     def compNameUpdate(self, selection):
         '''
@@ -413,3 +450,5 @@ if environ.has_key('DISPLAY'):
     
     #run the widget until the end-user clicks the Exit button
     start_new_thread(root.mainloop, ())
+    #root.mainloop()
+    
