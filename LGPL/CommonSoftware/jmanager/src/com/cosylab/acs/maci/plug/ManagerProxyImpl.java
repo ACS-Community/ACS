@@ -1697,7 +1697,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param	target_component	target co-deployed component.
 	 * @return	<code>ComponentInfo</code> of requested co-deployed component.
 	 */
-	public ComponentInfo get_co_deployed_component(int id, si.ijs.maci.ComponentSpec c,
+	public ComponentInfo get_collocated_component(int id, si.ijs.maci.ComponentSpec c,
 			boolean mark_as_default, String target_component)
 		throws IncompleteComponentSpec,	InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent
 	{
@@ -1709,7 +1709,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		try
 		{
 			if (isDebug())
-				new MessageLogEntry(this, "get_co_deployed_component", new java.lang.Object[] { new Integer(id), c, new Boolean(mark_as_default), target_component } ).dispatch();
+				new MessageLogEntry(this, "get_collocated_component", new java.lang.Object[] { new Integer(id), c, new Boolean(mark_as_default), target_component } ).dispatch();
 
 			// returned value
 			ComponentInfo retVal = null;
@@ -1755,7 +1755,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 				retVal = invalidInfo;
 
 			if (isDebug())
-				new MessageLogEntry(this, "get_co_deployed_component", "Exiting.", Level.FINEST).dispatch();
+				new MessageLogEntry(this, "get_collocated_component", "Exiting.", Level.FINEST).dispatch();
 
 			return retVal;
 
@@ -1763,7 +1763,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (URISyntaxException usi)
 		{
 			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "get_co_deployed_component");
+			hbpe.caughtIn(this, "get_collocated_component");
 			hbpe.putValue("target_component", target_component);
 			// exception service will handle this
 			reportException(hbpe);
@@ -1774,7 +1774,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (IncompleteComponentSpecException icse)
 		{
 			IncompleteComponentSpecException hicse = new IncompleteComponentSpecException(this, icse.getMessage(), icse, icse.getIncompleteSpec());
-			hicse.caughtIn(this, "get_co_deployed_component");
+			hicse.caughtIn(this, "get_collocated_component");
 			// exception service will handle this
 			reportException(hicse);
 
@@ -1790,7 +1790,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (InvalidComponentSpecException incse)
 		{
 			InvalidComponentSpecException hincse = new InvalidComponentSpecException(this, incse.getMessage(), incse, incse.getInvalidSpec());
-			hincse.caughtIn(this, "get_co_deployed_component");
+			hincse.caughtIn(this, "get_collocated_component");
 			// exception service will handle this
 			reportException(hincse);
 			
@@ -1799,7 +1799,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
 		{
 			ComponentSpecIncompatibleWithActiveComponentException hciace = new ComponentSpecIncompatibleWithActiveComponentException(this, ciace.getMessage(), ciace, ciace.getActiveComponentSpec());
-			hciace.caughtIn(this, "get_co_deployed_component");
+			hciace.caughtIn(this, "get_collocated_component");
 			// exception service will handle this
 			reportException(hciace);
 
@@ -1816,7 +1816,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (BadParametersException bpe)
 		{
 			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_co_deployed_component");
+			hbpe.caughtIn(this, "get_collocated_component");
 			// exception service will handle this
 			reportException(hbpe);
 
@@ -1826,7 +1826,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (NoPermissionException npe)
 		{
 			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_co_deployed_component");
+			hnpe.caughtIn(this, "get_collocated_component");
 			// exception service will handle this
 			reportException(hnpe);
 
@@ -1836,7 +1836,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_co_deployed_component");
+			hnre.caughtIn(this, "get_collocated_component");
 			// exception service will handle this
 			reportException(hnre);
 
@@ -1846,7 +1846,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		catch (Throwable ex)
 		{
 			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_co_deployed_component");
+			hce.caughtIn(this, "get_collocated_component");
 			// exception service will handle this
 			reportException(hce);
 
