@@ -96,13 +96,13 @@ class BehaviorProxy:
         self.cdb_handler = CDB(self.compname, if_list)
         self.attachNewHandler(self.cdb_handler)
         
-        #create an API handler object
-        self.api_handler = API(self.compname)
-        self.attachNewHandler(self.api_handler)
-        
         #create a GUI handler object
         self.gui_handler = GUI(self.compname)
         self.attachNewHandler(self.gui_handler)
+        
+        #create an API handler object
+        self.api_handler = API(self.compname)
+        self.attachNewHandler(self.api_handler)
     #--------------------------------------------------------------------------
     def getMethod(self, meth_name):
         '''

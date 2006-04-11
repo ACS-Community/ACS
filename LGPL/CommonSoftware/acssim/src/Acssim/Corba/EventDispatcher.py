@@ -49,7 +49,7 @@ from Acssim.Goodies import supplyEventByType, supplyEventByInstance
 from Acspy.Util.Scheduler    import Scheduler
 from Acssim.Goodies import getComponentXMLObj
 from Acssim.Goodies import getCompLocalNSList
-from Acssim.Corba.Utilities  import  listToFunction
+from Acssim.Corba.Utilities  import  listToCodeObj
 from Acspy.Common.Log        import getLogger
 from Acspy.Common.Log        import acsPrintExcDebug
 from Acspy.Nc.Consumer       import Consumer
@@ -259,7 +259,7 @@ class EventDispatcher:
                 #attach all imports to the function definition
                 value = getCompLocalNSList(self.comp_name) + value
                 #make the code list a function in the _locals namespace
-                value = listToFunction(value, _locals)
+                value = listToCodeObj(value, _locals)
                 #create the function
                 exec value in globals(), _locals
                 #execute the function as well to get the event instance
@@ -374,7 +374,7 @@ class EventDispatcher:
                             "' events on the '" + channel_name + "' channel" +
                             " at a rate of '" + str(frequency) + 
                             "' per second.")
-        id = SCHEDULER.scheduleTimeout(supplyEventByType,
+        id = SCHEDULER.scheduleTimeout(supplyEventByInstance,
                                        0L,
                                        frequency * 10000000.0,
                                        (self.comp_name, channel_name, event_instance)) 

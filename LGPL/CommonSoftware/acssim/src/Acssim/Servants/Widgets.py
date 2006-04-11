@@ -108,6 +108,6 @@ if environ.has_key('DISPLAY'):
     main_window = MainWindow(root)
     
     #run the widget until the end-user clicks the Exit button
-    #start_new_thread(root.mainloop, ())
-    root.mainloop()
+    start_new_thread(root.mainloop, ())
+    #root.mainloop()
     

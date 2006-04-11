@@ -36,7 +36,8 @@ Acssim.Goodies
 #--REGULAR IMPORTS-------------------------------------------------------------
 import omniORB
 import CORBA
-from compiler import compile
+#from compiler import compile
+from code import compile_command
 
 #--CORBA STUBS-----------------------------------------------------------------
 from Acspy.Util.ACSCorba        import interfaceRepository
@@ -131,7 +132,7 @@ def getDefinition(ir_label):
     interf = IFR.lookup_id(ir_label)
     return interf
 #-----------------------------------------------------------------------------
-def listToFunction(code_list, locals_dict):
+def listToCodeObj(code_list, locals_dict):
     '''
     Converts code_list, a list of Python strings, into a function object.
     code_list should only rely on one parameter, "parameters", which consists
@@ -153,7 +154,7 @@ def listToFunction(code_list, locals_dict):
         code_string = code_string + line + '\n'
         
     #finally ok to compile it
-    code_obj = compile(code_string, "sim_file", "exec")
+    code_obj = compile_command(code_string, "sim_file") #, "exec")
     #exec code_obj in globals(), locals_dict
     return code_obj
 #--------------------------------------------------------------------

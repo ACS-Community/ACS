@@ -41,7 +41,7 @@ from traceback import print_exc
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
-from Acssim.Corba.Utilities import listToFunction
+from Acssim.Corba.Utilities import listToCodeObj
 from Acssim.Goodies import getComponentXMLObj
 from Acssim.Goodies import getCompLocalNSList
 from Acssim.Servants.Representations.BaseRepresentation import BaseRepresentation
@@ -187,7 +187,7 @@ class CDB(BaseRepresentation):
             #get the code to be executed yielding a return value
             temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
             temp_dict['Value'] = getCompLocalNSList(self.compname) + temp_dict['Value']
-            temp_dict['Value'] = listToFunction(temp_dict['Value'], {})
+            temp_dict['Value'] = listToCodeObj(temp_dict['Value'], {})
             
             #save the dictionary
             self.setMethod(methname, temp_dict)
@@ -205,7 +205,7 @@ class CDB(BaseRepresentation):
             #get the code to be executed yielding a return value
             temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
             temp_dict['Value'] = getCompLocalNSList(self.compname) + temp_dict['Value']
-            temp_dict['Value'] = listToFunction(temp_dict['Value'], {})
+            temp_dict['Value'] = listToCodeObj(temp_dict['Value'], {})
 
             #save the dictionary
             self.setMethod(methname, temp_dict)
@@ -223,7 +223,7 @@ class CDB(BaseRepresentation):
             #get the code to be executed yielding a return value
             temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
             temp_dict['Value'] = getCompLocalNSList(self.compname) + temp_dict['Value']
-            temp_dict['Value'] = listToFunction(temp_dict['Value'], {})
+            temp_dict['Value'] = listToCodeObj(temp_dict['Value'], {})
 
             #save the dictionary
             self.setMethod(methname, temp_dict)
@@ -247,18 +247,20 @@ class CDB(BaseRepresentation):
 
         #for each method in the list
         for dom in attributes:
-            #dictionary defining the attribute
+            #dictionary defining the method
             temp_dict = {}
 
-            #extract the attribute name
-            attrname = dom.getAttribute('Name')
+            #extract the method name
+            attrname= dom.getAttribute('Name')
 
             #set the timeout
             temp_dict['Timeout'] = float(dom.getAttribute('Timeout'))
 
             #get the code to be executed yielding a return value
             temp_dict['Value'] = dom.getValue().rstrip().lstrip().split('\n')
-        
+            temp_dict['Value'] = getCompLocalNSList(self.compname) + temp_dict['Value']
+            temp_dict['Value'] = listToCodeObj(temp_dict['Value'], {})
+            
             #save the dictionary
             self.setMethod(attrname, temp_dict)
     #--------------------------------------------------------------------------
