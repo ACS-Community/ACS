@@ -6,6 +6,6 @@ from interfaceInheritance import ReadbackDevIO
         </pythonImports>
 
 	<_corbaAttribute Name="readback" Timeout="0">
-ReadbackDevIO()
+return ReadbackDevIO()
         </_corbaAttribute>
 </SimulatedComponent>

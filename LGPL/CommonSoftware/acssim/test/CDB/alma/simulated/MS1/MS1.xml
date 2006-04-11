@@ -7,12 +7,11 @@ import xmlentity
 from mastercompsim import MasterCompDevIO
         </pythonImports>
 	<_corbaAttribute Name="currentStateHierarchy" Timeout="0">
-MasterCompDevIO()
+return MasterCompDevIO()
         </_corbaAttribute>
         <_almaEvent Channel="ALMA_EVENT_CHANNEL" 
                     ID="IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"
                     Frequency="3.0"/>
-        
         <_almaEvent Channel="ALMA_EVENT_CHANNEL" 
                     ID="IDL:alma/xmlentity/XmlEntityStruct:1.0"
                     Frequency="10.0">
