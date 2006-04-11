@@ -38,13 +38,13 @@ from atexit    import register
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
-from Acspy.Util.ACSCorba        import interfaceRepository
 from Acspy.Common.CDBAccess    import CDBaccess
-from Acspy.Util.XmlObjectifier import XmlObject
+from Acspy.Util.ACSCorba        import interfaceRepository
+from Acspy.Util.XmlObjectifier import  XmlObject
 from Acssim.Corba.Utilities import getCompIfrID
 from Acssim.Corba.Utilities import getSuperIDs
-from Acspy.Nc.Supplier import Supplier
 from Acssim.Corba.Utilities import getTypeCode
+from Acspy.Nc.Supplier import Supplier
 
 #--GLOBALS---------------------------------------------------------------------
 __revision__="@(#) $Id$"
