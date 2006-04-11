@@ -39,9 +39,10 @@ import Pmw
 import CORBA
 
 #--ACS Imports-----------------------------------------------------------------
-from Acssim.Goodies           import *
-from Acssim.Goodies import getSimProxy
-
+from Acssim.Goodies         import *
+from Acssim.Goodies         import getSimProxy
+from Acssim.Corba.Utilities import listToCodeObj
+from Acssim.Goodies         import getCompLocalNSList
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -140,8 +141,16 @@ class Method:
             method_name = "_get_" + method_name
         
         #create the temporary dictionary
-        temp_dict = { 'Value': self.st.getvalue().strip().split('\n'),
+        temp_dict = { 'Value': None,
                       'Timeout': float(self.sleepCounter.getvalue())}
+        
+        #get the code to be executed yielding a return value
+        temp_dict['Value'] = self.st.getvalue().strip().split('\n')
+        temp_dict['Value'] = getCompLocalNSList(self.comp_name) + temp_dict['Value']
+        temp_dict['Value'] = listToCodeObj(temp_dict['Value'], 
+                                           {})
+        
+        
         
         #store it globally
         getSimProxy(self.comp_name).gui_handler.setMethod(method_name, 
