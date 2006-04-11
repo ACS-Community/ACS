@@ -74,7 +74,8 @@ public class IOLogsHelper extends Thread  {
 	
 	// Monitor if an async IO operation is in progress
 	private boolean IOOperationInProgress =false;
-	
+	private ACSLogParser parser;
+
 	/**
 	 * The dialog to show the progress of time consuming 
 	 * operations (load and save for example)
@@ -569,6 +570,8 @@ public class IOLogsHelper extends Thread  {
 		// Count the bytes read for updating the progressbar
 		int bytesRead=0;
 		
+//		int logRecordsRead = 0;
+		
 		boolean lookForOpenTag =true;
 		
 		try {
@@ -576,32 +579,38 @@ public class IOLogsHelper extends Thread  {
 			while ((chRead=br.read())!=-1) {
 				bytesRead++;
 				buffer.append((char)chRead);
-				if (lookForOpenTag) {
-					tag = buffer.getOpeningTag();
-					if (tag.length()>0) {
-						//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
-						lookForOpenTag=false;
-						buffer.trim(tag);
-					}
-				} else {
-					if (buffer.hasClosingTag(tag)) {
-						//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
-						lookForOpenTag=true;
-						injectLog(buffer.toString(),engine);
-						buffer.clear();
-						if (progressDialog!=null) {
-							if (cache!=null) {
-								progressDialog.updateStatus(""+cache.getSize()+" logs loaded");
-							} 
-							progressDialog.updateProgressBar(bytesRead);
-							// Check if the user pressed the abort button
-							if (progressDialog.wantsToAbort()) {
-								break;
+				if (chRead == '>') {
+					if (lookForOpenTag) {
+						tag = buffer.getOpeningTag();
+						if (tag.length()>0) {
+							//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
+							lookForOpenTag=false;
+							buffer.trim(tag);
+						}
+					} else {
+						if (buffer.hasClosingTag(tag)) {
+							//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
+							lookForOpenTag=true;
+							injectLog(buffer.toString(),engine);
+							buffer.clear();
+//							if (++logRecordsRead % 100 == 0) {
+//								System.out.println("Number of log records read: " + logRecordsRead);
+//							}
+							if (progressDialog!=null) {
+								if (cache!=null) {
+									progressDialog.updateStatus(""+cache.getSize()+" logs loaded");
+								} 
+								progressDialog.updateProgressBar(bytesRead);
+								// Check if the user pressed the abort button
+								if (progressDialog.wantsToAbort()) {
+									break;
+								}
 							}
 						}
 					}
 				}
 			}
+//			System.out.println("Done with XML log record import. Read " + logRecordsRead + " records.");
 		} catch (IOException ioe) {
 			System.err.println("Exception loading the logs: "+ioe.getMessage());
 			ioe.printStackTrace(System.err);
@@ -675,9 +684,11 @@ public class IOLogsHelper extends Thread  {
 	private void injectLog(String logStr, LCEngine engine) {
 		ILogEntry log=null;
 		try {
-			ACSLogParser parser = new ACSLogParser();
+			if (parser == null) {
+				parser = new ACSLogParser();
+			}
 			//System.out.println("Parsing "+logStr);
-			log=new LogEntry(parser.parse(logStr));
+			log = new LogEntry(parser.parse(logStr));
 		} catch (Exception e) {
 			System.err.println("Exception parsing a log: "+e.getMessage());
 			System.out.println("Log Str: ["+logStr+"]");
