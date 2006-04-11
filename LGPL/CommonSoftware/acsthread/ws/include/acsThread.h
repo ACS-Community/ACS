@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.24 2006/03/24 12:12:49 vwang Exp $"
+* "@(#) $Id: acsThread.h,v 1.25 2006/04/11 16:13:14 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,7 +81,8 @@ namespace ACS
            the pointer after thread execution is started, because the object could be
            deleted at any time.<br>
 	   A ThreadManager always creates a thread with new (on a heap) !!!
-
+           It is not possible to call restart() on auto delete threads,
+           because the thread object would be deleted when the thread is stopped.
 	   @attention all of thread will be  
            suspended.<br>
            This has been done to protect the code from creation concurrency problems.<br>
