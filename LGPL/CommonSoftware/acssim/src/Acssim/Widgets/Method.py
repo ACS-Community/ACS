@@ -60,13 +60,13 @@ class Method:
         - gui_ref is a reference to an MainWindow object
         '''
         #name of the component
-        self.comp_name = gui_ref.compNamesPanel.getvalue()
+        self.comp_name = gui_ref.comp_names_panel.getvalue()
 
         #method or attribute
         self.operation_type = gui_ref.operation_type
         
         #name of the method
-        self.comp_method = gui_ref.methodsSLB.getvalue()[0]
+        self.comp_method = gui_ref.opsSLB.getvalue()[0]
         
         #Create the top level widget which is completely separate from
         #the parent (e.g., MainWindow) widget

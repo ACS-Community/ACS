@@ -28,7 +28,8 @@
 # dfugate   2003/12/09  Created.
 #------------------------------------------------------------------------------
 '''
-TODO LIST:
+Includes the implementation of a widget which displays all simulated
+components and their methods.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 import Pmw
@@ -45,17 +46,23 @@ from Acssim.Widgets.Method  import Method
 #------------------------------------------------------------------------------
 class AvailableComponents(Pmw.Group):
     '''
+    Widget which shows all simulated components and their methods/
+    attributes.
     '''
     def __init__(self, parent=None):
         '''
+        Constructor
+        
+        Parameters: parent - parent widget
         '''
+        
         self.parent = parent
         
         #List of simulated components
         self.comp_names = []
         
         #Component currently being manipulated
-        self.currComp = ""
+        self.current_comp_name = ""
         
         #Current operation type selected (e.g, method or attribute)
         self.operation_type = ""
@@ -65,62 +72,102 @@ class AvailableComponents(Pmw.Group):
                            parent,
                            tag_text='Available Simulated Components')
         self.pack(fill='x',
-                       expand='1',
-                       side = 'top',
-                       padx = 5,
-                       pady = 3)
+                  expand='1',
+                  side = 'top',
+                  padx = 5,
+                  pady = 3)
         
-        #create an options panel for the simulated component's name
+        #setup the panel which lists the names of all the different
+        #simulated components
+        self.__setupNamesPanel()
+        
+        #setup the panel which chooses either CORBA attributes or
+        #CORBA methods to display
+        self.__setupOpTypeSelection()
+        
+        #setup the panel which displays a components methods/attributes
+        self.__setupOpSelect()
+        
+    #--------------------------------------------------------------------------    
+    def __setupNamesPanel(self):
+        '''
+        Helper method sets up the panel displaying the names of all
+        components that can be simulated.
+        '''
         #get a list from manager of all known components
         #note that this will NOT work with dynamic components!
-        compInfoList = getManager().get_component_info(getClient().token.h, [], "*", "*", 0)
-        compInfoList = compInfoList + getManager().get_component_info(getClient().token.h, [], "*", "*", 1)
+        comp_info_list = getManager().get_component_info(getClient().token.h, 
+                                                         [], 
+                                                         "*", 
+                                                         "*", 
+                                                         0)
+        #must add active components to this list as well
+        comp_info_list = comp_info_list + getManager().get_component_info(getClient().token.h, 
+                                                                          [],
+                                                                          "*", 
+                                                                          "*", 
+                                                                          1)
+                                                                          
         #add all components to the list iff they are actually simulator objects
-        for compInfo in compInfoList:
-            if compInfo.code == "Acssim.Servants.Simulator" and self.comp_names.count(compInfo.name)==0:
-                self.comp_names.append(compInfo.name)
-
-        #sort the list in place alphabetically
+        for comp_info in comp_info_list:
+            if comp_info.code == "Acssim.Servants.Simulator" and self.comp_names.count(comp_info.name)==0:
+                self.comp_names.append(comp_info.name)
+        #tidy up the list
         self.comp_names.sort()
-        self.compNamesPanel = Pmw.OptionMenu(self.interior(),
+        
+        #now add the widget
+        self.comp_names_panel = Pmw.OptionMenu(self.interior(),
                                              command = self.compNameUpdate,
                                              labelpos = 'w',
                                              label_text = 'Component Name:',
                                              items = self.comp_names,
                                              menubutton_width = 20)
-        self.compNamesPanel.pack(anchor = 'w',
+        self.comp_names_panel.pack(anchor = 'w',
                                  padx = 10,
                                  pady = 10)
-        ############################################################
+                                 
+    #--------------------------------------------------------------------------
+    def __setupOpTypeSelection(self):
+        '''
+        Helper method creates a radio box to let the developer select
+        whether they want to deal with CORBA attributes or CORBA methods
+        of components.
+        '''
         #radio box for selecting methods or attributes
-        self.methAttrRbox = Pmw.RadioSelect(self.interior(),
+        self.op_select_rbox = Pmw.RadioSelect(self.interior(),
                                             labelpos = 'w',
                                             command = self.methAttrCommand,
                                             label_text = 'Operation Selection',
                                             frame_borderwidth = 2,
                                             frame_relief = 'ridge')
-        self.methAttrRbox.pack(fill = 'x',
+        self.op_select_rbox.pack(fill = 'x',
                                padx = 10,
                                pady = 10)
         
         # Add the appropriate buttons to the radio select
-        self.methAttrRbox.add('Methods')
-        self.methAttrRbox.add('Attributes')
-        ############################################################
+        self.op_select_rbox.add('Methods')
+        self.op_select_rbox.add('Attributes')
+        
+    #--------------------------------------------------------------------------
+    def __setupOpSelect(self):
+        '''
+        Helper method creates a widget displaying a given component's
+        methods and attributes
+        '''
+        
         #list of component methods or attributes available for the
         #given component
-        self.methodsSLB = Pmw.ScrolledListBox(self.interior(),
-                                              selectioncommand = self.methodSelection,
-                                              hscrollmode = 'dynamic',
-                                              vscrollmode = 'dynamic',
-                                              items = ())
-        #make it big
-        self.methodsSLB.pack(side = 'left',
+        self.opsSLB = Pmw.ScrolledListBox(self.interior(),
+                                          selectioncommand = self.methodSelection,
+                                          hscrollmode = 'dynamic',
+                                          vscrollmode = 'dynamic',
+                                          items = ())
+        self.opsSLB.pack(side = 'left',
                              fill = 'both',
                              expand = 1,
                              padx = 8,
                              pady = 8)
-        ############################################################
+                             
     #--------------------------------------------------------------------------
     def compNameUpdate(self, selection):
         '''
@@ -131,9 +178,10 @@ class AvailableComponents(Pmw.Group):
         - selection name of the component
         '''
         #Save the name
-        self.currComp = selection
+        self.current_comp_name = selection
         #Update methods
-        self.methAttrRbox.invoke('Methods')
+        self.op_select_rbox.invoke('Methods')
+        
     #--------------------------------------------------------------------------
     def methAttrCommand(self, selection):
         '''
@@ -143,9 +191,9 @@ class AvailableComponents(Pmw.Group):
         - selection ("Methods" or "Attributes")
         '''
         #update the component first
-        self.currComp = self.compNamesPanel.getvalue()
+        self.current_comp_name = self.comp_names_panel.getvalue()
         #reset the list of available methods/attributes
-        self.methodsSLB.setlist(self.updateMethods(selection))
+        self.opsSLB.setlist(self.updateMethods(selection))
 
         self.operation_type=selection
     #--------------------------------------------------------------------------
@@ -167,7 +215,7 @@ class AvailableComponents(Pmw.Group):
         retList = []
         
         #component name
-        compName = self.currComp
+        compName = self.current_comp_name
 
         #retrieve comp IDL type from manager
         compInfoList = []
