@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.133 2005/07/21 13:03:28 vwang Exp $" 
+# "@(#) $Id: Makefile,v 1.134 2006/04/12 16:32:03 gchiozzi Exp $" 
 #
 # Makefile of ........
 #
@@ -95,7 +95,8 @@ EXECUTABLES     = $(PROG) \
                   acsexmplClientFridgeCmd acsexmplClientFridge \
 		  acsexmplClientAmsSeq \
 		  acsexmplClientHelloWorld \
-		  acsexmplClientFridgeNC 
+		  acsexmplClientFridgeNC \
+                  acsexmplClientErrorComponent
 
 EXECUTABLES_L   = 
 
@@ -140,6 +141,9 @@ acsexmplClientFridgeNC_LIBS        = acsnc acsexmplFridgeStubs ACSErrTypeCommon
 acsexmplClientDynamicComponent_OBJECTS = acsexmplClientDynamicComponent
 acsexmplClientDynamicComponent_LIBS    = acsexmplHelloWorldStubs ACSErrTypeCommon
 
+acsexmplClientErrorComponent_OBJECTS   = acsexmplClientErrorComponent
+acsexmplClientErrorComponent_LIBS      = acsexmplErrorComponentStubs ACSErrTypeCommon
+
 acsexmplCDB_OBJECTS = acsexmplCDB
 acsexmplCDB_LIBS = 
 
@@ -166,7 +170,8 @@ INCLUDES =	acsexmplMountImpl.h \
 		acsexmplCallbacks.h \
 		acsexmplAsyncCallbacks.h \
 		acsexmplSlowMountImpl.h \
-		acsexmplFilterWheelImpl.h
+		acsexmplFilterWheelImpl.h \
+		acsexmplErrorComponentImpl.h
 
 INCLUDES_L      = 
 #
@@ -185,7 +190,8 @@ LIBRARIES =	acsexmplCallbacksImpl \
 		acsexmplCalendarImpl \
 		acsexmplSlowMountImpl \
 		acsexmplLampWheelImpl \
-		acsexmplFilterWheelImpl
+		acsexmplFilterWheelImpl \
+		acsexmplErrorComponentImpl
 
 LIBRARIES_L     =
 
@@ -231,6 +237,9 @@ acsexmplLampWheelImpl_LIBS	= acsexmplLampWheelStubs expat
 
 acsexmplFilterWheelImpl_OBJECTS = acsexmplFilterWheelImpl
 acsexmplFilterWheelImpl_LIBS = acsexmplFilterWheelStubs 
+
+acsexmplErrorComponentImpl_OBJECTS 	= acsexmplErrorComponentImpl
+acsexmplErrorComponentImpl_LIBS	= acsexmplErrorComponentStubs ACSErrTypeCommon
 
 #
 # Scripts (public and local)
@@ -309,7 +318,8 @@ IDL_FILES = 	acsexmplPowerSupply \
 		acsexmplCalendar \
 		acsexmplHelloWorld \
 		acsexmplLampWheel \
-		acsexmplFilterWheel
+		acsexmplFilterWheel \
+                acsexmplErrorComponent
 USER_IDL = 
 
 
