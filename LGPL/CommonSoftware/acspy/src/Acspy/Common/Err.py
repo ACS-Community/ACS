@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.10 2006/01/10 20:00:48 dfugate Exp $
+# @(#) $Id: Err.py,v 1.11 2006/04/12 21:05:36 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.10 2006/01/10 20:00:48 dfugate Exp $"
+__revision__ = "$Id: Err.py,v 1.11 2006/04/12 21:05:36 dfugate Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
@@ -58,7 +58,7 @@ class ACSError:
                   error_code,
                   exception = None,
                   description = "None", 
-                  nvSeq = [],
+                  nvSeq = None,
                   create = 1): #create means we create a new error.
         '''
         The constructor basically allows the developer to specify any number of
@@ -78,6 +78,8 @@ class ACSError:
         
         Raises: Nothing
         '''
+        if nvSeq==None:
+            nvSeq = []
         
         # Get a Logger instance
         self.logger = getLogger("Acspy.Common.Err.ACSError")
