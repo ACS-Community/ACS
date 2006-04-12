@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.11 2006/04/12 21:05:36 dfugate Exp $
+# @(#) $Id: Err.py,v 1.12 2006/04/12 23:22:31 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.11 2006/04/12 21:05:36 dfugate Exp $"
+__revision__ = "$Id: Err.py,v 1.12 2006/04/12 23:22:31 dfugate Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
@@ -223,11 +223,12 @@ def addErrorTraceHelperMethods(et_obj, obj_for_methods=None):
     obj_for_methods.__dict__['log'] = _log
 
     #--------------------------------------------------------------------------
-    def _errorTraceToString(error_trace):
+    def _errorTraceToString(error_trace, ws):
         '''
         Converts an error trace to a human-readable string.
         
         Parameters: error_trace is an errortrace
+        ws is whitespace
 
         Returns: Nothing
 
@@ -241,6 +242,9 @@ def addErrorTraceHelperMethods(et_obj, obj_for_methods=None):
         epoch = asctime(epoch)  #convert to nice string format
         
         nice_space = "            "
+        for i in range(0, len(ws)/4):
+            nice_space = nice_space + "    "
+
         message = "ErrorTrace ("
         message = message + "TimeStamp=" + epoch + "," + linesep
         message = message + nice_space    + "File="      + str(error_trace.file)      + "," + linesep
@@ -251,6 +255,7 @@ def addErrorTraceHelperMethods(et_obj, obj_for_methods=None):
         message = message + nice_space    + "Thread="    + str(error_trace.thread)    + "," + linesep
         message = message + nice_space    + "Type="      + str(error_trace.errorType) + "," + linesep
         message = message + nice_space    + "Code="      + str(error_trace.errorCode) + "," + linesep
+        message = message + nice_space    + "ShortDescrip="      + str(error_trace.shortDescription) + "," + linesep
         message = message + nice_space    + "Data: "
         for i in error_trace.data:
             message = message + "Name=" + str(i.name) + ", Value=" + str(i.value) + "; "
@@ -261,17 +266,18 @@ def addErrorTraceHelperMethods(et_obj, obj_for_methods=None):
     obj_for_methods.__dict__['errorTraceToString'] = _errorTraceToString
     
     #--------------------------------------------------------------------------
-    def _printET(error_trace):
+    def _printET(error_trace, ws):
         '''
         Prints one error trace to standard out.
         
         Parameters: et is an errortrace
-
+        ws is whitespace
+        
         Returns: Nothing
 
         Raises: Nothing
         '''
-        print obj_for_methods.errorTraceToString(error_trace)
+        print ws + obj_for_methods.errorTraceToString(error_trace, ws)
 
     obj_for_methods.__dict__['printET'] = _printET
     #--------------------------------------------------------------------------
@@ -287,10 +293,13 @@ def addErrorTraceHelperMethods(et_obj, obj_for_methods=None):
         '''
         joe = et_obj
         
+        ws = ""
+        
         while len(joe.previousError) != 0:
-            obj_for_methods.printET(joe)
+            obj_for_methods.printET(joe, ws)
             joe = joe.previousError[0]
-        obj_for_methods.printET(joe)
+            ws = ws + "    "
+        obj_for_methods.printET(joe, ws)
 
     obj_for_methods.__dict__['Print'] = _Print
     #--------------------------------------------------------------------------
@@ -636,7 +645,7 @@ def createErrorTrace(error_type,
                      error_code,
                      exception = None,
                      description = "None", 
-                     nvSeq = [],
+                     nvSeq = None,
                      level = 3):
     '''
     Utility method used to create a new error trace.
@@ -656,6 +665,9 @@ def createErrorTrace(error_type,
     Raises: ???
     '''        
     call_frame = stack()[level]
+    
+    if nvSeq == None:
+        nvSeq = []
     
     #Get the file name
     filename = str(call_frame[1])
