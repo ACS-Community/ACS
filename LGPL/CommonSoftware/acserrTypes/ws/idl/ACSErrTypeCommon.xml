@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeCommon" type="10" _prefix="alma">
-	<ErrorCode name="FileNotFound" shortDescription="File couldn't
-	be found" description="File couldn't be found">
-	<Member name="FileName" type="string" description="File name"/>
+	<ErrorCode name="FileNotFound" 
+	           shortDescription="File couldn't be found" 
+                   description="File couldn't be found">
+	           <Member name="FileName" type="string" description="File name"/>
 	</ErrorCode>
 	<ErrorCode name="OutOfBounds" shortDescription="Out of bounds" description="Out of bounds"/>
 	<ErrorCode name="IOError" shortDescription="Input Output Error" description="Input Output Error"/>
@@ -23,7 +24,17 @@
                    description="The specified feature is not
 		   implemented. If none is specified, the whole method
 		   is not implemented.">
-	<Member name="Feature" type="string" 
- 	        description="Feature not implemented. Whole method is not specified"/>
+ 	           <Member name="Feature" 
+                           type="string" 
+ 	                   description="Feature not implemented. Whole method is not specified"/>
+	</ErrorCode>
+	<ErrorCode name="GenericError" 
+                   shortDescription="An error occurred, see ErrorDesc member" 
+                   description="An error occurred and no specific
+		   error code exists. A description of the error is
+		   given in the ErrorDesc member.">
+	           <Member name="ErrorDesc" 
+                           type="string" 
+ 	                   description="String describing the error condition"/>
 	</ErrorCode>
 </Type>
