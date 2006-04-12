@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.65 2006/02/15 20:19:34 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.66 2006/04/12 19:23:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -80,6 +80,12 @@ class ErrorTraceHelper
 		      const char* file, int line, const char* routine, const char* sd, 
 		      ACSErr::Severity severity,
 		      ACSErr::ErrorTrace &errortrace);
+
+    /**
+     * assigning ACSErr::ErrorTrace directly
+     */
+    ErrorTraceHelper& operator=(ACSErr::ErrorTrace& eth);
+
   public:
 
     void log();
@@ -457,9 +463,14 @@ class CompletionImpl : public CompletionInit
 	{}
 
 //wrapping remote (CORBA) Completion
-    CompletionImpl(ACSErr::Completion* c) :
+    /**
+     * Wrapper constructor for remote (CORBA) completions (#ACSErr::Completion).
+     * @param c remote CORBA completion
+     * @parm del flag which indiactes if the completion should be deleted. Its default value is true, so the remote completion is deleted.
+     */
+    CompletionImpl(ACSErr::Completion* c, bool del=true) :
 	CompletionInit(*c), m_errorTraceHelper(previousError[0], previousError.length())
-	{}
+	{ if (del) delete c; }
 
     CompletionImpl (const ACSErr::Completion &c) :
 	CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length()) 
@@ -470,7 +481,7 @@ class CompletionImpl : public CompletionInit
   /**
    * Returns copy of completion structure (and delete CompletionImpl object)
    * @param deletion flag indicates if ACSError has to be deleted. Default value is true what means that ACSError object will be deleted.
-   * @return pointer to the errortrace structure
+   * @return pointer to the CORBA completion structure.
    */
   ACSErr::Completion* returnCompletion (bool deletion=true)
 	{
@@ -507,6 +518,12 @@ class CompletionImpl : public CompletionInit
 	}
 
     CompletionImpl& operator=(CompletionImpl&);
+
+    /**
+     * assigment for remote (CORBA) completions.
+     * @param c pointer to the remote (CORBA) completion
+     */
+    CompletionImpl& operator=(Completion* c);
 
   protected:
     ErrorTraceHelper m_errorTraceHelper;
