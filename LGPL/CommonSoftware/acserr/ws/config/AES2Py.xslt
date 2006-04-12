@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.11 2006/01/06 23:25:19 dfugate Exp $
+# @(#) $Id: AES2Py.xslt,v 1.12 2006/04/12 21:06:09 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -59,12 +59,14 @@ import </xsl:text>
                  ec=</xsl:text>
                  <xsl:number value="position()-1"/>
                  <xsl:text>,
-                 nvSeq = [],
+                 nvSeq = None,
                  exception = None,
                  create = 1):
         '''
         Some form of custom documentation goes here...
         '''
+        if nvSeq == None:
+            nvSeq = []
         self.shortDescription = "</xsl:text>
         <xsl:value-of select="@shortDescription"/>
         <xsl:text>"
@@ -103,12 +105,14 @@ import </xsl:text>
                  ec=</xsl:text>
                  <xsl:number value="position()-1"/>
                  <xsl:text>,
-                 nvSeq = [],
+                 nvSeq = None,
                  exception = None,
                  create = 1):
         '''
         Some form of custom documentation goes here...
         '''
+        if nvSeq == None:
+            nvSeq = []
         self.shortDescription = "</xsl:text>
         <xsl:value-of select="@shortDescription"/>
         <xsl:text>"
