@@ -10,6 +10,7 @@
 1 -             Thread=MainThread,
 1 -             Type=10,
 1 -             Code=3,
+1 -             ShortDescrip=Unknown Error,
 1 -             Data: )
 1 - 
 1 - --fakeCORBAMethod2-------------------------------------------------
@@ -21,17 +22,19 @@
 1 -             Thread=MainThread,
 1 -             Type=10,
 1 -             Code=3,
+1 -             ShortDescrip=Unknown Error,
 1 -             Data: )
 1 - 
-1 - ErrorTrace (TimeStamp=xxxx,
-1 -             Line=xxx
-1 -             Routine=fakeCORBAMethod,
-1 -             Host=xxxx,
-1 -             Process=xxx,
-1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             Data: )
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeCORBAMethod,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=10,
+1 -                 Code=3,
+1 -                 ShortDescrip=Unknown Error,
+1 -                 Data: )
 1 - 
 1 - --fakeClientFunction2-------------------------------------------------
 1 - ErrorTrace (TimeStamp=xxxx,
@@ -42,27 +45,30 @@
 1 -             Thread=MainThread,
 1 -             Type=10,
 1 -             Code=3,
+1 -             ShortDescrip=Unknown Error,
 1 -             Data: )
 1 - 
-1 - ErrorTrace (TimeStamp=xxxx,
-1 -             Line=xxx
-1 -             Routine=fakeCORBAMethod,
-1 -             Host=xxxx,
-1 -             Process=xxx,
-1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             Data: )
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeCORBAMethod,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=10,
+1 -                 Code=3,
+1 -                 ShortDescrip=Unknown Error,
+1 -                 Data: )
 1 - 
-1 - ErrorTrace (TimeStamp=xxxx,
-1 -             Line=xxx
-1 -             Routine=fakeCORBAMethod,
-1 -             Host=xxxx,
-1 -             Process=xxx,
-1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             Data: )
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -                     Line=xxx
+1 -                     Routine=fakeCORBAMethod,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                     Thread=MainThread,
+1 -                     Type=10,
+1 -                     Code=3,
+1 -                     ShortDescrip=Unknown Error,
+1 -                     Data: )
 1 - 
 1 - --main2-------------------------------------------------
 1 - ErrorTrace (TimeStamp=xxxx,
@@ -73,37 +79,41 @@
 1 -             Thread=MainThread,
 1 -             Type=10,
 1 -             Code=3,
+1 -             ShortDescrip=Unknown Error,
 1 -             Data: )
 1 - 
-1 - ErrorTrace (TimeStamp=xxxx,
-1 -             Line=xxx
-1 -             Routine=fakeClientFunction,
-1 -             Host=xxxx,
-1 -             Process=xxx,
-1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             Data: )
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeClientFunction,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=10,
+1 -                 Code=3,
+1 -                 ShortDescrip=Unknown Error,
+1 -                 Data: )
 1 - 
-1 - ErrorTrace (TimeStamp=xxxx,
-1 -             Line=xxx
-1 -             Routine=fakeCORBAMethod,
-1 -             Host=xxxx,
-1 -             Process=xxx,
-1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             Data: )
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -                     Line=xxx
+1 -                     Routine=fakeCORBAMethod,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                     Thread=MainThread,
+1 -                     Type=10,
+1 -                     Code=3,
+1 -                     ShortDescrip=Unknown Error,
+1 -                     Data: )
 1 - 
-1 - ErrorTrace (TimeStamp=xxxx,
-1 -             Line=xxx
-1 -             Routine=fakeCORBAMethod,
-1 -             Host=xxxx,
-1 -             Process=xxx,
-1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             Data: )
+1 -             ErrorTrace (TimeStamp=xxxx,
+1 -                         Line=xxx
+1 -                         Routine=fakeCORBAMethod,
+1 -                         Host=xxxx,
+1 -                         Process=xxx,
+1 -                         Thread=MainThread,
+1 -                         Type=10,
+1 -                         Code=3,
+1 -                         ShortDescrip=Unknown Error,
+1 -                         Data: )
 1 - 
 1 - --main2-------------------------------------------------
 1 - Testing all public methods
