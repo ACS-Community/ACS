@@ -126,10 +126,10 @@ public class TATJUnitRunner
 		// try static method suite()
 		try
 		{
-			Method suiteMethod = testClass.getMethod("suite", null);
+			Method suiteMethod = testClass.getMethod("suite", (Class[]) null);
 			if (Modifier.isStatic(suiteMethod.getModifiers()))
 			{
-				suite = (Test) suiteMethod.invoke(null, null);
+				suite = (Test) suiteMethod.invoke(null, (Object[]) null);
 			}
 		}
 		catch (Exception e)
