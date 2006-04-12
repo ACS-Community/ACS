@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/jACSUtil.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/jACSUtil.jar" kind="var" path="INTROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
@@ -14,5 +14,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
 	<classpathentry kind="lib" path="src/lc.jar.extras"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
