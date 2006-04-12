@@ -1,0 +1,250 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2005
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+
+package alma.acs.config.validators;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import com.cosylab.util.FileHelper;
+
+import alma.acs.testsupport.TestLogger;
+import alma.acs.util.CmdLineArgs;
+import alma.acs.util.CmdLineRegisteredOption;
+
+/**
+ * @author hsommer
+ *
+ */
+public class ConfigFileFinder {
+
+	/** directory under which we look for config files */
+	private File baseDir;
+	
+	/** optional target dir to which suspected config files are copied */
+	private File targetDir;
+
+	/** endings of files to consider, e.g. {"xml", "properties"} */
+	private Set<String> fileEndings = new HashSet<String>();
+
+	/** should files be copied to targetDir flat, i.e. w/o subdir structure? */
+	private boolean targetFilesFlat;
+
+	private Logger logger;
+	
+	private List<ConfigFileRedeemer> filters = new ArrayList<ConfigFileRedeemer>();
+	
+	
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	public ConfigFileFinder() throws Exception {
+		targetFilesFlat = false;
+		logger = TestLogger.getLogger(getClass().getName());
+
+		// hardwired file endings 
+		addFileEndings(new String[] {".properties", ".config"});
+		// here we add specialized config file redeemers
+		addFileFilter(new ConfigFileRedeemerXml());		
+	}
+
+	public void addFileFilter(ConfigFileRedeemer filter) {
+		filters.add(filter);
+		addFileEndings(filter.getFileEndings());
+	}
+	
+	public void configureFromArgs(String[] args) {
+		CmdLineArgs cmdArgs = new CmdLineArgs();
+		
+		CmdLineRegisteredOption optBaseDir = new CmdLineRegisteredOption("-baseDir", 1);
+		cmdArgs.registerOption(optBaseDir);
+
+		CmdLineRegisteredOption optTargetDir = new CmdLineRegisteredOption("-targetDir", 1);
+		cmdArgs.registerOption(optTargetDir);
+		
+		CmdLineRegisteredOption optTargetFilesFlat = new CmdLineRegisteredOption("-targetFilesFlat", 0);
+		cmdArgs.registerOption(optTargetFilesFlat);
+
+		CmdLineRegisteredOption optFileEndings = new CmdLineRegisteredOption("-fileEndings", 1);
+		cmdArgs.registerOption(optFileEndings);
+		
+		cmdArgs.parseArgs(args);
+		
+		if (cmdArgs.isSpecified(optBaseDir)) {
+			String baseDirName = cmdArgs.getValues(optBaseDir)[0].trim();
+			setBaseDir(new File(baseDirName));
+		}
+		
+		if (cmdArgs.isSpecified(optTargetDir)) {
+			String targetDirName = cmdArgs.getValues(optTargetDir)[0].trim();
+			setTargetDir(new File(targetDirName));
+		}
+
+		targetFilesFlat = cmdArgs.isSpecified(optTargetFilesFlat);
+
+		if (cmdArgs.isSpecified(optFileEndings)) {
+			addFileEndings(cmdArgs.getValues(optFileEndings));
+		}
+
+	}
+
+	public void checkConfiguration() throws IllegalStateException {
+		String err = "";
+		String warn = "";
+		
+		if (baseDir == null || !baseDir.exists()) {
+			err += "baseDir '" + baseDir + "' does not exist. ";
+		}
+		if (targetDir == null || !targetDir.exists()) {
+			warn += "targetDir does not exist. No files will be copied. ";
+		}
+		if (fileEndings.isEmpty()) {
+			// should never happen thanks to default endings 
+			err += "no files can be selected. Specify option \"-fileEndings\". ";
+		}
+		if (err.length() > 0) {
+			throw new IllegalStateException("Bad configuration: " + err);
+		}
+		if (warn.length() > 0) {
+			System.err.println("Configuration warning: " + warn);
+		}
+	}
+
+	/**
+	 * Gets all Files under {@link #baseDir} whose name ends with any of the Strings given in {@link #fileEndings},
+	 * and runs them through the filter chain to suppress files of known and safe content.
+	 * @return
+	 */
+	private void run() {
+		FileFilter fileFilter = new FileFilter() {
+			public boolean accept(File pathname) {
+				if (pathname.isDirectory()) {
+					return true;
+				}
+				String name = pathname.getName();
+				for (Iterator iter = fileEndings.iterator(); iter.hasNext();) {
+					String fnEnding = (String) iter.next();
+					if (name.endsWith(fnEnding)) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+		};
+		runRecursive(baseDir, fileFilter);
+	}
+	
+
+	private void runRecursive(File currentDir, FileFilter fileFilter) {
+		if (currentDir == null || !currentDir.exists() || !currentDir.isDirectory() ) {
+			return;
+		}
+		if (!currentDir.canRead()) {
+			logger.warning("failed to read from directory " + currentDir.getAbsolutePath());
+			return;
+		}
+		
+		// get files and subdirs from the current directory
+		File[] allFiles = currentDir.listFiles(fileFilter);
+
+		for (int i = 0; i < allFiles.length; i++) {
+			if (allFiles[i].isFile()) {
+				// check if the current file is known to be not a config file 
+				boolean redeemed = false;
+				for (Iterator<ConfigFileRedeemer> iter = filters.iterator(); iter.hasNext();) {
+					ConfigFileRedeemer filter = iter.next();
+					if (filter.isNotAConfigFile(allFiles[i])) {
+						redeemed = true;
+						break;
+					}
+				}
+				if (!redeemed) {
+					handleConfigFile(allFiles[i]);
+				}
+			}
+			else if (allFiles[i].isDirectory()) {
+				runRecursive(allFiles[i], fileFilter);
+			}
+		}		
+	}
+
+	private void handleConfigFile(File configFile) {
+		if (targetDir != null) {
+			try {
+				if (targetFilesFlat) {
+					File targetFile = new File(targetDir, configFile.getName());
+					FileHelper.copy(configFile, targetFile);
+				}
+				else {
+					// todo
+					logger.info("copy to target dir not yet implemented!" );
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Potential config file: " + configFile.getAbsolutePath());
+	}
+	
+	protected void setBaseDir(File baseDir) {
+		this.baseDir = baseDir;
+	}
+
+	protected void setTargetDir(File targetDir) {
+		this.targetDir = targetDir;
+	}
+
+	protected void addFileEndings(String[] moreFileEndings) {
+		for (int i = 0; i < moreFileEndings.length; i++) {
+			if (moreFileEndings[i] == null || moreFileEndings[i].trim().length() == 0) {
+				throw new IllegalArgumentException("illegal empty file ending.");
+			}
+			this.fileEndings.add(moreFileEndings[i].trim());
+		}
+	}
+
+
+	
+	public static void main(String[] args) {
+		try {
+			ConfigFileFinder configFinder = new ConfigFileFinder();
+			configFinder.configureFromArgs(args);
+			configFinder.checkConfiguration();
+			
+			configFinder.run();
+			
+			System.out.println("done.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
