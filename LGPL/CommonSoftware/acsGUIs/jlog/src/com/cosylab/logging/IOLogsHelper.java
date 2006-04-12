@@ -33,8 +33,11 @@ import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
+import com.cosylab.logging.stats.ResourceChecker;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.LCEngine;
+
+import alma.acs.util.StopWatch;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -570,12 +573,13 @@ public class IOLogsHelper extends Thread  {
 		// Count the bytes read for updating the progressbar
 		int bytesRead=0;
 		
-//		int logRecordsRead = 0;
+		int logRecordsRead = 0;
 		
 		boolean lookForOpenTag =true;
 		
 		try {
-		
+			StopWatch stopWatch = new StopWatch();
+			
 			while ((chRead=br.read())!=-1) {
 				bytesRead++;
 				buffer.append((char)chRead);
@@ -593,7 +597,8 @@ public class IOLogsHelper extends Thread  {
 							lookForOpenTag=true;
 							injectLog(buffer.toString(),engine);
 							buffer.clear();
-//							if (++logRecordsRead % 100 == 0) {
+							logRecordsRead++;
+//							if (logRecordsRead % 100 == 0) {
 //								System.out.println("Number of log records read: " + logRecordsRead);
 //							}
 							if (progressDialog!=null) {
@@ -610,7 +615,9 @@ public class IOLogsHelper extends Thread  {
 					}
 				}
 			}
-//			System.out.println("Done with XML log record import. Read " + logRecordsRead + " records.");
+			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
+						stopWatch.getLapTimeMillis()/1000 + " seconds.");
+			System.out.println(ResourceChecker.getMemoryStatusMessage());
 		} catch (IOException ioe) {
 			System.err.println("Exception loading the logs: "+ioe.getMessage());
 			ioe.printStackTrace(System.err);
