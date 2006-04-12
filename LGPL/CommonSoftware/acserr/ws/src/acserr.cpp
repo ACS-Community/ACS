@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.72 2006/04/04 19:01:07 dfugate Exp $"
+* "@(#) $Id: acserr.cpp,v 1.73 2006/04/12 15:08:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <iomanip>
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.72 2006/04/04 19:01:07 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.73 2006/04/12 15:08:45 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /******************************************************************************
@@ -148,6 +148,30 @@ ErrorTraceHelper::ErrorTraceHelper (const ACSErr::ErrorTrace &pet,
     
 //	ACSErr::ErrorTrace::_tao_seq_ACSErr_ErrorTrace__1 (1, const_cast<ACSErr::ErrorTrace*>(&pet), 0);
 }
+
+ErrorTraceHelper& ErrorTraceHelper::operator=(ACSErr::ErrorTrace& et)
+{
+    m_errorTraceRef = et;
+
+    const ACSErr::ErrorTrace *c = &m_errorTraceRef;
+    if (c) 
+	{ 
+	m_depth=1;
+	while (c->previousError.length()!=0)
+	    {
+	    m_depth ++;
+	    c = &c->previousError[0];
+	    }//while
+	m_current = &m_errorTraceRef;
+	}
+    else 
+	{    
+    	m_current = 0;
+  	m_depth = 0;	
+	}//if-else
+    
+    return *this;
+}// operator=
 
 void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr::Severity severity,
 		   const char* file, int line, const char* routine, const char* sd) 
@@ -418,13 +442,40 @@ void CompletionImpl::log()
 CompletionImpl & 
 CompletionImpl::operator=(CompletionImpl& c) 
 {
-  type = c.getType();
-  code = c.getCode();
-  timeStamp = c.getTimeStamp();
+  if (this != &c )
+	{
+	type = c.getType();
+	code = c.getCode();
+	timeStamp = c.getTimeStamp();
 
-  previousError = c.previousError;
+	previousError = c.previousError;
+	m_errorTraceHelper = c.previousError[0];
+
+	}
   return *this;
 }
+
+CompletionImpl&
+CompletionImpl::operator=(Completion* c) 
+{
+    if (c != NULL )
+	{
+	type = c->type;;
+	code = c->code;
+	timeStamp = c->timeStamp;
+
+	previousError = c->previousError;
+	m_errorTraceHelper = c->previousError[0];
+	}
+    else
+	{
+	// TBD: improved
+	printf("WARNING a NULL ACSErr completion can not be assigned to CompletionImpl: CompletionImpl::operator=(Completion* c)!!\n");
+	}
+
+  return *this;
+}
+
 
 /*
  * Exception Manager
