@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.12 2005/05/04 09:35:25 mschilli Exp $"
+# "@(#) $Id: Makefile,v 1.13 2006/04/12 17:45:15 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -36,7 +36,6 @@ DEBUG = on
 
 JARFILES = jACSUtil
 jACSUtil_DIRS = com alma
-USER_JFLAGS=-source 1.4
 
 #
 # Scripts (public and local)
