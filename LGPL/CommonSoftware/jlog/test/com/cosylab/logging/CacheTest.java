@@ -77,7 +77,7 @@ public class CacheTest extends junit.framework.TestCase {
 		
 		
 		cache.clear();
-		long logToInsert = 2*cache.CACHESIZE; 
+		long logToInsert = 2*cache.getCacheSize(); 
 		for (int t=0; t<logToInsert; t++) {
 			String newLogMsg=logMsg+"t";
 			String logStr = "<Info TimeStamp=\"2005-11-29T15:33:09.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+newLogMsg+"]]></Info>";
