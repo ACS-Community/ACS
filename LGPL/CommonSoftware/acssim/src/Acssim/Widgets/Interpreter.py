@@ -39,9 +39,52 @@ import Pmw
 
 #--ACS Imports-----------------------------------------------------------------
 from Acssim.Goodies           import *
-
+from Acspy.Util.Console import Console
 #--GLOBALS---------------------------------------------------------------------
 
+#--------------------------------------------------------------------------
+class ACSConsole(InteractiveConsole):
+    '''
+    '''
+    def __init__(self, intr_widget):
+        '''
+        Constructor
+        
+        Parameters:
+            intr_widget - interpreter widget
+        '''
+        self.intr_widget = intr_widget
+        
+        InteractiveConsole.__init__(self)
+        
+    def write(self, data):
+        '''
+        Overridden.
+        '''
+        #strip out all whitespace from data
+        formatted_data = '\n' + data.strip()
+        
+        #change the text color of the text shell
+        
+        self.intr_widget.text_shell.insert(Tkinter.END,
+                                           formatted_data,
+                                           ("ERROR"))
+        
+#--------------------------------------------------------------------------
+class OldInterpreter(Console):
+    '''
+    '''
+    def __init__(self, parent=None):
+        '''
+        '''
+        Console.__init__(self, 
+                         parent=parent, 
+                         local_dict={})
+                         
+        self.dict["console"] = self
+        self.pack(fill=Tkinter.BOTH, 
+                  expand=1)
+        self.master.title("ACS Python Console")
 #--------------------------------------------------------------------------
 class Interpreter(Pmw.Group):
     '''
@@ -55,7 +98,9 @@ class Interpreter(Pmw.Group):
         '''
         
         #create a console for ourselves
-        self.console = InteractiveConsole()
+        self.console = ACSConsole(self)
+        
+        
         
         
         Pmw.Group.__init__(self,
@@ -79,6 +124,8 @@ class Interpreter(Pmw.Group):
                              fill = 'both', 
                              expand = 1)
         
+        self.text_shell.tag_config("ERROR", 
+                                    background="white", foreground="red")
         
         #bind enter key presses to a handler function
         self.text_shell.bind("<Return>", self.handle_return)
