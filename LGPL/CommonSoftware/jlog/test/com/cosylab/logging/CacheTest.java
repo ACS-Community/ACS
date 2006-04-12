@@ -1,16 +1,9 @@
 package com.cosylab.logging;
 
-import com.cosylab.logging.client.cache.*;
-import com.cosylab.logging.engine.log.LogEntryXML;
-import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.LCEngine;
-import com.cosylab.logging.IOLogsHelper;
-import com.cosylab.logging.engine.RemoteResponseCallback;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
 
 /**
  * The class to test the LogFileCache and the LogCache
@@ -46,8 +39,7 @@ public class CacheTest extends junit.framework.TestCase {
 			cache = new LogCache();
 		} catch (Exception e) {
 			System.out.println("Error creating the cache "+e.getMessage());
-			e.printStackTrace();
-			System.exit(0);
+			throw e;
 		}
 		logsGenerated=fillCache();
 	}
@@ -63,8 +55,8 @@ public class CacheTest extends junit.framework.TestCase {
 	}
 	
 	/**
-	 * Fill the cache with dinamically generated logs
-	 * The number of logs inserted in the list is gretare than the 
+	 * Fill the cache with dynamically generated logs
+	 * The number of logs inserted in the list is greater than the 
 	 * memory cache size to stress the disk cache also.
 	 * 
 	 * @return The number of logs inserted in the cache
