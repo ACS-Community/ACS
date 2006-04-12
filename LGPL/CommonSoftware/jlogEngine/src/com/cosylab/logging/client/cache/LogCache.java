@@ -42,8 +42,10 @@ import com.cosylab.logging.engine.log.ILogEntry;
  */
 public class LogCache extends LogFileCache {
 
-	// The (fixed) size of the cache
-	public final int CACHESIZE = 1024;
+	public static final String CACHESIZE_PROPERTY_NAME = "jlog.cache.size";
+	public static final int DEFAULT_CACHESIZE = 16384;
+
+	private int actualCacheSize;
 	
 	/**
 	 * The logs are stored into an HashMap.
@@ -74,16 +76,14 @@ public class LogCache extends LogFileCache {
 	 *                     is not able to create the cache on a file
 	 */
 	public LogCache() throws LogCacheException {
-		super();
-		cache = new HashMap<Integer,ILogEntry>(CACHESIZE);
-		clear();
+		this(getDefaultCacheSize()); 
 	}
 
+	
 	/**
 	 * Build a logCache object of the given size
 	 * 
 	 * @param size The size of the cache
-	 * 
 	 * @throws LogCacheException
 	 */
 	public LogCache(int size) throws LogCacheException {
@@ -91,8 +91,27 @@ public class LogCache extends LogFileCache {
 		if (size<=0) {
 			throw new LogCacheException("Invalid initial size: "+size);
 		}
-		cache = new HashMap<Integer,ILogEntry>(size);
+		actualCacheSize = size;
+		System.out.println("Jlog will use cache for " + actualCacheSize + " log records.");		
+		cache = new HashMap<Integer,ILogEntry>(actualCacheSize);
 		clear();
+	}
+	
+	/**
+	 * Gets the default cache size, which comes either from the system property
+	 * <code>jlog.cache.size</code> (see {@link #CACHESIZE_PROPERTY_NAME}) 
+	 * or, if this property is undefined or invalid, from the fixed size given by 
+	 * {@link #DEFAULT_CACHESIZE}. 
+	 * @return the default cache size to be used if none is given in the constructor
+	 */
+	private static int getDefaultCacheSize() {
+		Integer cacheSizeFromProperty = Integer.getInteger(CACHESIZE_PROPERTY_NAME);
+		if (cacheSizeFromProperty != null) {
+			return cacheSizeFromProperty.intValue();
+		}
+		else {
+			return DEFAULT_CACHESIZE;
+		}
 	}
 	
 	/**
@@ -140,7 +159,7 @@ public class LogCache extends LogFileCache {
 		ILogEntry log = super.getLog(index);
 		
 		// There is enough room in the lists?
-		if (cache.size()==CACHESIZE) {
+		if (cache.size()==actualCacheSize) {
 			// We need to create a room for the new element
 			Integer itemToRemove = manager.removeFirst();
 			cache.remove(itemToRemove);
@@ -193,5 +212,14 @@ public class LogCache extends LogFileCache {
 		cache.clear();
 		manager.clear();
 		super.clear();
+	}
+	
+	/**
+	 * Gets the actual cache size, which may come from {@link #getDefaultCacheSize()} or
+	 * may be given in the constructor.
+	 * @return
+	 */
+	public int getCacheSize() {
+		return actualCacheSize;
 	}
 }
