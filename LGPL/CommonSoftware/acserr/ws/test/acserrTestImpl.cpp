@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestImpl.cpp,v 1.52 2005/09/21 08:53:00 vwang Exp $"
+* "@(#) $Id: acserrTestImpl.cpp,v 1.53 2006/04/13 18:13:44 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
 
-static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.52 2005/09/21 08:53:00 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.53 2006/04/13 18:13:44 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestImpl.h"
@@ -64,7 +64,7 @@ ACSErr::Completion * acserrTestImpl::test ( CORBA::Long depth, CORBA::Boolean er
   
   CompletionImpl *e = f1 (depth-1, err);
 
-  ACSErrTest0Completion *comp= new ACSErrTest0Completion(*e, __FILE__, __LINE__, "acserrTestImpl::test", ACSErr::Alert);
+  ACSErrTest0Completion *comp= new ACSErrTest0Completion(e, __FILE__, __LINE__, "acserrTestImpl::test", ACSErr::Alert);
   comp->log();
   
   return comp->returnCompletion();
@@ -80,7 +80,7 @@ CompletionImpl*  acserrTestImpl::f1 (int depth, bool iserr){
       sprintf (routine, "acserrTestImpl::f1 (%d)", depth);
       sprintf (errString, "error %d", depth);
       er = f1 (--depth, iserr) ;
-      res = new ACSErrTest2Completion(*er, __FILE__, __LINE__, routine); 
+      res = new ACSErrTest2Completion(er, __FILE__, __LINE__, routine); 
 
       res->addData ("depth", depth);
       res->addData ("isErr", iserr ? "true" : "false");
