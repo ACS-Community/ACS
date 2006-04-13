@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.cosylab.util.FileHelper;
@@ -39,11 +40,22 @@ import alma.acs.util.CmdLineArgs;
 import alma.acs.util.CmdLineRegisteredOption;
 
 /**
+ * Tool that scans modules (or all of ALMA software) for files that may be configuration files
+ * and therefore should be considered for moving to a different location.
+ * <p>
+ * All files in and below the directory given by the option <code>-baseDir</code> are scanned.
+ * Those files with certain endings are suspected of being configuration files, but then some of these files get cleared
+ * if they are recognized by one of the filters which check all suspicious files.  
+ * For example, a filter specialized in xml files will recognize those files used for ACS error definitions.
+ * All files that are still suspect after filtering will be reported, either by printing their pathname to stdout, 
+ * or by copying them to a target directory if the <code>-targetDir</code> option is given.
+ *  
  * @author hsommer
- *
  */
 public class ConfigFileFinder {
 
+	private Logger logger;
+	
 	/** directory under which we look for config files */
 	private File baseDir;
 	
@@ -56,27 +68,28 @@ public class ConfigFileFinder {
 	/** should files be copied to targetDir flat, i.e. w/o subdir structure? */
 	private boolean targetFilesFlat;
 
-	private Logger logger;
-	
-	private List<ConfigFileRedeemer> filters = new ArrayList<ConfigFileRedeemer>();
+	/** classes that can recognize specific suspect files and state that they are actually not config files */ 
+	private List<ConfigFileRedeemer> redeemers = new ArrayList<ConfigFileRedeemer>();
 	
 	
 	/**
 	 * @throws Exception 
-	 * 
 	 */
 	public ConfigFileFinder() throws Exception {
 		targetFilesFlat = false;
 		logger = TestLogger.getLogger(getClass().getName());
 
-		// hardwired file endings 
+		// hardwired file endings that don't need to be supplied by any filters 
 		addFileEndings(new String[] {".properties", ".config"});
+		
 		// here we add specialized config file redeemers
-		addFileFilter(new ConfigFileRedeemerXml());		
+		addFileFilter(new ConfigFileRedeemerXml());
+		
+		// todo: perhaps allow user-supplied redeemers to be added, based on a command line parameter (classname) 
 	}
 
 	public void addFileFilter(ConfigFileRedeemer filter) {
-		filters.add(filter);
+		redeemers.add(filter);
 		addFileEndings(filter.getFileEndings());
 	}
 	
@@ -143,6 +156,33 @@ public class ConfigFileFinder {
 	 * @return
 	 */
 	private void run() {
+		String msg = "Tool " + getClass().getSimpleName() + " will search for configuration files in '" + baseDir + 
+					"' and below, suspecting all files ending with ";
+		for (Iterator<String> iter = fileEndings.iterator(); iter.hasNext();) {
+			msg += "'" + iter.next() + "'";
+			if (iter.hasNext()) {
+				msg += ", ";
+			}
+		}
+		msg += " and will then prune those files recognized by any of the filters ";
+		for (Iterator<ConfigFileRedeemer> iter = redeemers.iterator(); iter.hasNext();) {
+			msg += iter.next().getName();
+			if (iter.hasNext()) {
+				msg += ", ";
+			}
+		}
+		msg += ". ";
+		if (targetDir != null) {
+			msg += "The remaining potential config files are copied to '" + targetDir + "' with their original directory structure ";
+			if (targetFilesFlat) {
+				msg += "flattened.";
+			}
+			else {
+				msg += "maintained.";
+			}
+		}
+		logger.info(msg);
+		
 		FileFilter fileFilter = new FileFilter() {
 			public boolean accept(File pathname) {
 				if (pathname.isDirectory()) {
@@ -157,8 +197,8 @@ public class ConfigFileFinder {
 				}
 				return false;
 			}
-
 		};
+
 		runRecursive(baseDir, fileFilter);
 	}
 	
@@ -179,7 +219,7 @@ public class ConfigFileFinder {
 			if (allFiles[i].isFile()) {
 				// check if the current file is known to be not a config file 
 				boolean redeemed = false;
-				for (Iterator<ConfigFileRedeemer> iter = filters.iterator(); iter.hasNext();) {
+				for (Iterator<ConfigFileRedeemer> iter = redeemers.iterator(); iter.hasNext();) {
 					ConfigFileRedeemer filter = iter.next();
 					if (filter.isNotAConfigFile(allFiles[i])) {
 						redeemed = true;
@@ -196,23 +236,34 @@ public class ConfigFileFinder {
 		}		
 	}
 
-	private void handleConfigFile(File configFile) {
-		if (targetDir != null) {
-			try {
-				if (targetFilesFlat) {
-					File targetFile = new File(targetDir, configFile.getName());
-					FileHelper.copy(configFile, targetFile);
+	protected void handleConfigFile(File configFile) {
+		try {
+			if (targetDir != null) {
+				try {
+					if (targetFilesFlat) {
+						File targetFile = new File(targetDir, configFile.getName());
+						FileHelper.copy(configFile, targetFile, true);
+					}
+					else {
+						String relPathName = configFile.getAbsolutePath().substring(baseDir.getAbsolutePath().length());
+						if (!relPathName.startsWith(File.separator)) {
+							relPathName = File.separator + relPathName;
+						}
+						File targetFile = new File(targetDir, relPathName);
+//						System.err.println("will create " + targetFile.getAbsolutePath());
+						FileHelper.copy(configFile, targetFile, true);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				else {
-					// todo
-					logger.info("copy to target dir not yet implemented!" );
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+			System.out.println("Potential config file: " + configFile.getAbsolutePath());
 		}
-		System.out.println("Potential config file: " + configFile.getAbsolutePath());
+		catch (Throwable thr) {
+			logger.log(Level.SEVERE, "Failed to handle file " + configFile.getAbsolutePath(), thr);
+		}
 	}
+	
 	
 	protected void setBaseDir(File baseDir) {
 		this.baseDir = baseDir;
