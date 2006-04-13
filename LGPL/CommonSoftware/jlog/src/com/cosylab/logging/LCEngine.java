@@ -71,14 +71,14 @@ public class LCEngine implements Runnable {
 			reportStatus("Connecting to " + accessType + " remote access...");
 			try {
 				
-				Object[] parameters = { LCEngine.this };
+				Object[] parameters = { };
 				String raName = accessType;
 				if (accessType.indexOf(".") == -1)
 					raName = "com.cosylab.logging.engine."
 							+ accessType
 							+ "."
 							+ accessType
-							+ "RemoteAccess";
+							+ "RemoteAccess"; // com.cosylab.logging.engine.ACS.ACSRemoteAccess
 				//RemoteAccess ra = 
 				//	(RemoteAccess) Class.forName(raName).getConstructors()[0].newInstance(
 				//		parameters);
@@ -227,7 +227,7 @@ public class LCEngine implements Runnable {
 	/**
 	 * reportStatus method comment.
 	 */
-	public void reportStatus(java.lang.String status) {
+	public void reportStatus(String status) {
 		remoteResponseCallback.reportStatus(status);
 	}
 	
