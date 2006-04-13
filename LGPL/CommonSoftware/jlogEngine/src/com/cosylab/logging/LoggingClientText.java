@@ -46,9 +46,9 @@ public LoggingClientText(String accessType) {
  * Creation date: (11/2/2001 10:43:03 AM)
  */
 private void initialize(String accessType) {
-	lct = new LCEngine();
+	
 	rrct = new RemoteResponseCallbackText();
-	lct.setRemoteResponseCallback(rrct);
+	lct = new LCEngine(rrct);
 
 	lct.setAccessType("ACS");
 	lct.connect();

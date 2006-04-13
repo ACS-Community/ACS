@@ -22,7 +22,8 @@
 package com.cosylab.logging.engine.ACS;
 
 import com.cosylab.logging.engine.RemoteAccess;
-import com.cosylab.logging.LCEngine;
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.log.ILogEntry;
 
 // for POA initialization
 import org.omg.PortableServer.POA;
@@ -34,6 +35,8 @@ import org.omg.CosNaming.NameComponent;
 import org.omg.CosNotifyChannelAdmin.*;
 import org.omg.CosNotifyFilter.*;
 import org.omg.CosNaming.NamingContext;
+
+import java.util.Vector;
 
 /**
  * This class implements methods for declaring the naming service 
@@ -48,255 +51,324 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	public static final String NAME_SERVICE = "NameService";
 	public static final String LOGGING_CHANNEL = "LoggingChannel";
 	
+	private Vector<IACSLogRemoteConnection> listeners = new Vector<IACSLogRemoteConnection>();
+	
 	private boolean isInitialized = false;
-	private LCEngine engine = null;
 	private ORB orb = null;
 	private POA rootPOA = null;
-//	private NamingContext namingContext = null;
 	private EventChannel eventChannel = null;
 	private ConsumerAdmin consumerAdmin = null;
 	private ACSStructuredPushConsumer acsSPS = null;
 	
 	private Thread orbThread = null;
-/**
- * ACSRemoteAccss constructor comment.
- */
-public ACSRemoteAccess(LCEngine engine) {
-	this.engine = engine;
-}
-/**
- * This method can not be used in the current implementation of ACS logging
- * But it will be useful for archiving.
- */
-private ConstraintExp[] createConstraints() {
-	final int numConstraints = 2;
-	String[] constraintStrings = {
-		"$upper == 'A'",
-		"$lower == 'a'"
-	};
-	// ... and so on
-	// Orbacus Notify book, page 64 (programming example).
-	return null;
-}
-private boolean createConsumerAdmin() {
-	engine.reportStatus("Creating Consumer Admin...");
-	try {
-		//consumerAdmin = eventChannel.default_consumer_admin();
-
-		// msekoran
-		InterFilterGroupOperator ifgo = org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator.OR_OP;
-		org.omg.CORBA.IntHolder adminID = new org.omg.CORBA.IntHolder();
-		
-		consumerAdmin = eventChannel.new_for_consumers(ifgo, adminID);
-	} catch (Exception e) {
-		engine.reportStatus("Exception occurred when creating Consumer Admin.");
-		System.out.println("Exception in ACSRemoteAccess::createConsumerAdmin(): " + e);
-		return false;
-	}
-	engine.reportStatus("Consumer Admin created.");
-	return true;
-}
-/**
- * This method can not be used in the current implementation of ACS logging
- * But it will be useful for archiving.
- */
-private void createFilter() {
-	// create filter
-	if (eventChannel == null) return;
-	FilterFactory filterFactory = eventChannel.default_filter_factory();
-
-	Filter filter = null;
-	try {
-		filter = filterFactory.create_filter("EXTENDED_TCL");
-	}
-	catch (InvalidGrammar e) {
-		System.out.println("Invalid grammar in ACSRemoteAccess::createFilter(): " + e);
+	
+	/**
+	 * ACSRemoteAccss constructor comment.
+	 */
+	public ACSRemoteAccess() {
 	}
 	
-	// create constaints
-	try {
-		ConstraintInfo[] info = filter.add_constraints(createConstraints());
-	} catch (InvalidConstraint e) {
-		System.out.println("Invalid constraint in ACSRemoteAccess::createFilter(): " + e);
-	}
-
-	// add constraints to filter
-}
-private boolean createStructuredPushConsumer() {
-	engine.reportStatus("Initializing Structured Push Consumer...");
-	acsSPS = new ACSStructuredPushConsumer(this);
-	if (!acsSPS.isInitialized) return false;
-
-	acsSPS.connect();
-	if (!acsSPS.isConnected) return false;
-	
-	acsSPS.setupEvents();
-	if (!acsSPS.isEventSetup) return false;
-	
-	engine.reportStatus("Structured Push Consumer initialized.");
-	return true;
-}
-/**
- * destroy method comment. Not implemented yet.
- */
-public void destroy() {
-//	System.out.println(">>> Before destroy.");
-	acsSPS.destroy();
-//	consumerAdmin.destroy();
-	getORB().shutdown(false);
-//	System.out.println(">>> After destroy.");
-}
-public ConsumerAdmin getConsumerAdmin() {
-	return consumerAdmin;
-}
-/**
- * Returns the LCEngine.
- * Creation date: (11/2/2001 4:07:16 PM)
- * @return cosylab.logging.LCEngine
- */
-public LCEngine getEngine() {
-	return engine;
-}
-public ORB getORB() {
-	return orb;
-}
-public POA getPOA() {
-	return rootPOA;
-}
-/**
- * initialize method comment.
- */
-public void initialize() {
-	// System.out.println("Manger system property: " + System.getProperty("ACS.manager"));
-	// CORBA stanza
-
-	engine.reportStatus("Initializing CORBA...");
-
-	// ORB stanza
-	java.util.Properties orbprops = java.lang.System.getProperties();
-
-	// to make code completely independed, properties have to be set using JVM -D mechanism
-	
-	// ORBacus
-	//orbprops.put("org.omg.CORBA.ORBClass", "com.ooc.CORBA.ORB");
-	//orbprops.put("org.omg.CORBA.ORBSingletonClass", "com.ooc.CORBA.ORBSingleton");
-	
-	// JacORB
-	//orbprops.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
-	//orbprops.put("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
-	
-	// Java JDK
-	// none
-	
-	orb = org.omg.CORBA.ORB.init(new String[0], orbprops);
-
-	// POA stanza -- use RootPOA
-	rootPOA = null;
-	try
-	{
-		rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
-
-	} catch (org.omg.CORBA.ORBPackage.InvalidName in)
-	{
-		throw new IllegalStateException("Cannot resolve RootPOA: " + in);
-	}
-	POAManager manager = rootPOA.the_POAManager();
-	try
-	{
-		manager.activate();
-		orbThread = new Thread();
-		orbThread.setDaemon(true);
-		orbThread.start();
-	} catch (Exception e)
-	{
-		throw new IllegalStateException("POAManager activation failed." + e);
-	}
-
-	// end of CORBA stanza
-	engine.reportStatus("CORBA initialized.");
-	
-	si.ijs.maci.Manager maciManager = resolveManagerReference();
-	if (maciManager == null) return;
-
-	NamingContext namingContext = resolveNamingServiceContext(maciManager);
-	if (namingContext == null) return;
-	
-	boolean isNotifyResolved = resolveNotifyChannel(LOGGING_CHANNEL, namingContext);
-	if (!isNotifyResolved) return;
-		
-	boolean isConsumerAdminCreated = createConsumerAdmin();
-	if (!isConsumerAdminCreated) return;
-	
-	isInitialized = createStructuredPushConsumer();
-}
-/**
- * isInitialized method comment.
- */
-public boolean isInitialized() {
-	return isInitialized;
-}
-private si.ijs.maci.Manager resolveManagerReference() {
-	engine.reportStatus("Resolving " + MANAGER_PROPERTY + " manager reference...");
-	org.omg.CORBA.Object obj = null;
-	si.ijs.maci.Manager manager;
-	try {
-		if (MANAGER_PROPERTY == null) throw new IllegalStateException("Manager system property ACS.manager is null.");
-		obj = orb.string_to_object(MANAGER_PROPERTY);
-		//if (obj == null) throw new IllegalStateException("Could not resolve Manager reference from the ACS.manager system property (" + MANAGER_PROPERTY + ").");
-		manager = si.ijs.maci.ManagerHelper.narrow(obj);
-	} catch (Exception e) {
-		engine.reportStatus("Exception occurred when resolving manager reference.");
-		System.out.println("Exception in ACSRemoteAccess::resolveManagerReference(): " + e);
+	/**
+	 * This method can not be used in the current implementation of ACS logging
+	 * But it will be useful for archiving.
+	 */
+	private ConstraintExp[] createConstraints() {
+		final int numConstraints = 2;
+		String[] constraintStrings = {
+			"$upper == 'A'",
+			"$lower == 'a'"
+		};
+		// ... and so on
+		// Orbacus Notify book, page 64 (programming example).
 		return null;
 	}
 	
-	engine.reportStatus("Manager reference resolved.");
+	private boolean createConsumerAdmin() {
+		publishReport("Creating Consumer Admin...");
+		try {
+			//consumerAdmin = eventChannel.default_consumer_admin();
 	
-	return manager;
-}
-private NamingContext resolveNamingServiceContext(si.ijs.maci.Manager manager) {
-	engine.reportStatus("Resolving Naming Service...");
-	org.omg.CORBA.IntHolder holder = new org.omg.CORBA.IntHolder();
-		
-	org.omg.CORBA.Object nameService = manager.get_service(0, NAME_SERVICE, false, holder);
-	if (nameService == null) throw new IllegalStateException("NameService obtained from the manager is null.");
-
-	NamingContext namingContext = null;
-	try {
-		namingContext = org.omg.CosNaming.NamingContextHelper.narrow(nameService);
-	} catch (Exception e) {
-		engine.reportStatus("Exception occurred when narrowing Naming Service Context from the Naming Service.");
-		System.out.println("Exception in resloveNamingServiceContext(): " + e);
-		return null;
+			// msekoran
+			InterFilterGroupOperator ifgo = org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator.OR_OP;
+			org.omg.CORBA.IntHolder adminID = new org.omg.CORBA.IntHolder();
+			
+			consumerAdmin = eventChannel.new_for_consumers(ifgo, adminID);
+		} catch (Exception e) {
+			publishReport("Exception occurred when creating Consumer Admin.");
+			System.out.println("Exception in ACSRemoteAccess::createConsumerAdmin(): " + e);
+			return false;
+		}
+		publishReport("Consumer Admin created.");
+		return true;
 	}
 	
-	engine.reportStatus("Naming Service resolved.");
-	return namingContext;
-}
-private boolean resolveNotifyChannel(String channelName, NamingContext namingContext) {
-	engine.reportStatus("Resolving channel \"" + channelName + "\" from Notify Service...");
-	try {
-		NameComponent[] nc = new NameComponent[1];
-		nc[0] = new NameComponent(channelName, "");
+	/**
+	 * This method can not be used in the current implementation of ACS logging
+	 * But it will be useful for archiving.
+	 */
+	private void createFilter() {
+		// create filter
+		if (eventChannel == null) return;
+		FilterFactory filterFactory = eventChannel.default_filter_factory();
+	
+		Filter filter = null;
+		try {
+			filter = filterFactory.create_filter("EXTENDED_TCL");
+		}
+		catch (InvalidGrammar e) {
+			System.out.println("Invalid grammar in ACSRemoteAccess::createFilter(): " + e);
+		}
 		
-		org.omg.CORBA.Object obj = namingContext.resolve(nc);
-
-		eventChannel = org.omg.CosNotifyChannelAdmin.EventChannelHelper.narrow(obj);
+		// create constaints
+		try {
+			ConstraintInfo[] info = filter.add_constraints(createConstraints());
+		} catch (InvalidConstraint e) {
+			System.out.println("Invalid constraint in ACSRemoteAccess::createFilter(): " + e);
+		}
+	
+		// add constraints to filter
+	}
+	
+	private boolean createStructuredPushConsumer() {
+		publishReport("Initializing Structured Push Consumer...");
+		acsSPS = new ACSStructuredPushConsumer(this);
+		if (!acsSPS.isInitialized) return false;
+	
+		acsSPS.connect();
+		if (!acsSPS.isConnected) return false;
 		
-	} catch (Exception e) {
-		engine.reportStatus("Exception occurred when obtaining channel \"" + channelName + "\" from the Notify Service.");
-		System.out.println("ACSRemoteAccess::Exception in resolveNotifyChannel(): " + e);
-		return false;
+		acsSPS.setupEvents();
+		if (!acsSPS.isEventSetup) return false;
+		
+		publishReport("Structured Push Consumer initialized.");
+		return true;
 	}
-	engine.reportStatus("Channel \"" + channelName + "\" resolved.");
-	return true;
-}
+	
+	/**
+	 * destroy method comment. Not implemented yet.
+	 */
+	public void destroy() {
+	//	System.out.println(">>> Before destroy.");
+		acsSPS.destroy();
+	//	consumerAdmin.destroy();
+		getORB().shutdown(false);
+	//	System.out.println(">>> After destroy.");
+	}
+	
+	public ConsumerAdmin getConsumerAdmin() {
+		return consumerAdmin;
+	}
+	
+	public ORB getORB() {
+		return orb;
+	}
+	
+	public POA getPOA() {
+		return rootPOA;
+	}
+	
+	/**
+	 * initialize method comment.
+	 */
+	public void initialize() {
+		// System.out.println("Manger system property: " + System.getProperty("ACS.manager"));
+		// CORBA stanza
+	
+		publishReport("Initializing CORBA...");
+	
+		// ORB stanza
+		java.util.Properties orbprops = java.lang.System.getProperties();
+	
+		// to make code completely independed, properties have to be set using JVM -D mechanism
+		
+		// ORBacus
+		//orbprops.put("org.omg.CORBA.ORBClass", "com.ooc.CORBA.ORB");
+		//orbprops.put("org.omg.CORBA.ORBSingletonClass", "com.ooc.CORBA.ORBSingleton");
+		
+		// JacORB
+		//orbprops.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
+		//orbprops.put("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
+		
+		// Java JDK
+		// none
+		
+		orb = org.omg.CORBA.ORB.init(new String[0], orbprops);
+	
+		// POA stanza -- use RootPOA
+		rootPOA = null;
+		try
+		{
+			rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
+	
+		} catch (org.omg.CORBA.ORBPackage.InvalidName in)
+		{
+			throw new IllegalStateException("Cannot resolve RootPOA: " + in);
+		}
+		POAManager manager = rootPOA.the_POAManager();
+		try
+		{
+			manager.activate();
+			orbThread = new Thread();
+			orbThread.setDaemon(true);
+			orbThread.start();
+		} catch (Exception e)
+		{
+			throw new IllegalStateException("POAManager activation failed." + e);
+		}
+	
+		// end of CORBA stanza
+		publishReport("CORBA initialized.");
+		
+		si.ijs.maci.Manager maciManager = resolveManagerReference();
+		if (maciManager == null) return;
+	
+		NamingContext namingContext = resolveNamingServiceContext(maciManager);
+		if (namingContext == null) return;
+		
+		boolean isNotifyResolved = resolveNotifyChannel(LOGGING_CHANNEL, namingContext);
+		if (!isNotifyResolved) return;
+			
+		boolean isConsumerAdminCreated = createConsumerAdmin();
+		if (!isConsumerAdminCreated) return;
+		
+		isInitialized = createStructuredPushConsumer();
+	}
+	
+	/**
+	 * isInitialized method comment.
+	 */
+	public boolean isInitialized() {
+		return isInitialized;
+	}
+	
+	private si.ijs.maci.Manager resolveManagerReference() {
+		publishReport("Resolving " + MANAGER_PROPERTY + " manager reference...");
+		org.omg.CORBA.Object obj = null;
+		si.ijs.maci.Manager manager;
+		try {
+			if (MANAGER_PROPERTY == null) throw new IllegalStateException("Manager system property ACS.manager is null.");
+			obj = orb.string_to_object(MANAGER_PROPERTY);
+			//if (obj == null) throw new IllegalStateException("Could not resolve Manager reference from the ACS.manager system property (" + MANAGER_PROPERTY + ").");
+			manager = si.ijs.maci.ManagerHelper.narrow(obj);
+		} catch (Exception e) {
+			publishReport("Exception occurred when resolving manager reference.");
+			System.out.println("Exception in ACSRemoteAccess::resolveManagerReference(): " + e);
+			return null;
+		}
+		
+		publishReport("Manager reference resolved.");
+		
+		return manager;
+	}
+	
+	private NamingContext resolveNamingServiceContext(si.ijs.maci.Manager manager) {
+		publishReport("Resolving Naming Service...");
+		org.omg.CORBA.IntHolder holder = new org.omg.CORBA.IntHolder();
+			
+		org.omg.CORBA.Object nameService = manager.get_service(0, NAME_SERVICE, false, holder);
+		if (nameService == null) throw new IllegalStateException("NameService obtained from the manager is null.");
+	
+		NamingContext namingContext = null;
+		try {
+			namingContext = org.omg.CosNaming.NamingContextHelper.narrow(nameService);
+		} catch (Exception e) {
+			publishReport("Exception occurred when narrowing Naming Service Context from the Naming Service.");
+			System.out.println("Exception in resloveNamingServiceContext(): " + e);
+			return null;
+		}
+		
+		publishReport("Naming Service resolved.");
+		return namingContext;
+	}
+	
+	private boolean resolveNotifyChannel(String channelName, NamingContext namingContext) {
+		publishReport("Resolving channel \"" + channelName + "\" from Notify Service...");
+		try {
+			NameComponent[] nc = new NameComponent[1];
+			nc[0] = new NameComponent(channelName, "");
+			
+			org.omg.CORBA.Object obj = namingContext.resolve(nc);
+	
+			eventChannel = org.omg.CosNotifyChannelAdmin.EventChannelHelper.narrow(obj);
+			
+		} catch (Exception e) {
+			publishReport("Exception occurred when obtaining channel \"" + channelName + "\" from the Notify Service.");
+			System.out.println("ACSRemoteAccess::Exception in resolveNotifyChannel(): " + e);
+			return false;
+		}
+		publishReport("Channel \"" + channelName + "\" resolved.");
+		return true;
+	}
 
-public boolean isConnected() {
-	if (acsSPS==null) {
-		return false;
+	public boolean isConnected() {
+		if (acsSPS==null) {
+			return false;
+		}
+		return acsSPS.isConnected();
 	}
-	return acsSPS.isConnected();
-}
+	
+	/**
+	 * Add a connection status listener
+	 * 
+	 * @param listener The listener to add
+	 */
+	public void addLogRemoteConnListener(IACSLogRemoteConnection listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null listener");
+		}
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Remove a connection status listener
+	 * 
+	 * @param listener The listener to remove
+	 * @return true if the listener is effectively removed
+	 * 
+	 */
+	public boolean removeLogRemoteConnListener(IACSLogRemoteConnection listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null listener");
+		}
+		return listeners.remove(listener);
+	}
+	
+	/**
+	 * Publish a report string to the listeners (if any)
+	 * 
+	 * @param message The message to publish
+	 */
+	public void publishReport(String message){
+		if (listeners==null) {
+			return;
+		}
+		synchronized(listeners) {
+			for (int t=0; t<listeners.size(); t++) {
+				IACSLogRemoteConnection listener = listeners.get(t);
+				if (listener!=null) {
+					listener.reportStatus(message);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Publish a log to the listeners (if any)
+	 * 
+	 * @param newLog The log to send to the listeners
+	 */
+	public void publishLog(ILogEntry newLog) {
+		if (listeners==null) {
+			return;
+		}
+		synchronized(listeners) {
+			for (int t=0; t<listeners.size(); t++) {
+				IACSLogRemoteConnection listener = listeners.get(t);
+				if (listener!=null) {
+					listener.logEntryReceived(newLog);
+				}
+			}
+		}
+	}
 
 }

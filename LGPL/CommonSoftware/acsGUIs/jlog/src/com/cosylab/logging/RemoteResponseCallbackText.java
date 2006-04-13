@@ -21,32 +21,21 @@
  */
 package com.cosylab.logging;
 
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.RemoteResponseCallback;
 
 /**
- * This class implements RemoteResponseCallback and its methods logEntryReceived and reportStatus.
+ * This class implements IACSLogRemoteConnection and its methods logEntryReceived and reportStatus.
  * Creation date: (11/2/2001 3:21:42 PM)
  * @author: 
  */
-public class RemoteResponseCallbackText implements RemoteResponseCallback {
+public class RemoteResponseCallbackText implements IACSLogRemoteConnection {
 /**
  * RemoteResponeCallbackText constructor comment.
  */
 public RemoteResponseCallbackText() {
 	super();
 }
-/**
- * A message identifying the destruction of the remote process
- * that delivers the responses for the given invocation.
- * This message is delivered, if: 1. server single-sidedly
- * closes the data delivery and reports this to the client, 2.
- * if the client destroys the data delivery and server does ACK,
- * 3. if server does not support ACKs, the engine must send this
- * when it determines that the data delivery is broken or timeouts.
- *
- */
-public void invocationDestroyed() {}
 /**
  */
 public void logEntryReceived(ILogEntry logEntry) {

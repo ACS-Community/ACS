@@ -21,17 +21,17 @@
  */
 package com.cosylab.logging;
 
-import com.cosylab.logging.engine.RemoteResponseCallback;
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * This class implements RemoteResponseCallback as a bean and its methods logEntryReceived 
+ * This class implements IACSLogRemoteConnection as a bean and its methods logEntryReceived 
  * and reportStatus. It support custom callbacks for receiving entries submitted to 
  * the logging mechanism. Used in LoggingClient. 
  * Creation date: (1/22/02 10:22:42 AM)
  * @author: 
  */
-public class LCRemoteResponseCallbackBean implements RemoteResponseCallback {
+public class LCRemoteResponseCallbackBean implements IACSLogRemoteConnection {
 //	private javax.swing.JTextArea textArea = null;
 //	private LogTableDataModel ltdm = null;
 	private javax.swing.JTextArea textArea = null;
@@ -64,16 +64,6 @@ public LogEntryTable getLogEntryTable() {
 public javax.swing.JTextArea getTextArea() {
 	return textArea;
 }
-/**
- * A message identifying the destruction of the remote process
- * that delivers the responses for the given invocation.
- * This message is delivered, if: 
- * 1. server single-sidedly closes the data delivery and reports this to the client, 
- * 2. if the client destroys the data delivery and server does ACK,
- * 3. if server does not support ACKs, the engine must send this
- * when it determines that the data delivery is broken or timeouts.
- *
- */
 public void invocationDestroyed() {}
 /**
  */

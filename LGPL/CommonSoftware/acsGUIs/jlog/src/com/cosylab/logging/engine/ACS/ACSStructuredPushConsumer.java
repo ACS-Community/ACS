@@ -30,6 +30,7 @@ import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
+import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
 
 
@@ -42,7 +43,7 @@ import com.cosylab.logging.engine.log.LogEntry;
  * Creation date: (10/24/2001 12:27:34 PM)
  * @author: 
  */
-public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.StructuredPushConsumerPOA
+public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 {
 	private class Dispatcher extends Thread
 	{
@@ -55,7 +56,7 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 					if (!xmlLogs.isEmpty()) {
 						log = (String) xmlLogs.remove(0);
 						logEntry = new LogEntry(parser.parse(log));
-						acsra.getEngine().pushStructuredEvent(logEntry);
+						acsra.publishLog(logEntry);
 						//System.out.println("An XML string that was parsed: " + log);
 					} else
 						synchronized (xmlLogs)
@@ -67,7 +68,7 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 					System.err.println("InterruptedException occurred.");
 				}
 				catch (Exception e) {
-					acsra.getEngine().reportStatus("Exception occurred while dispatching the XML log.");
+					acsra.publishReport("Exception occurred while dispatching the XML log.");
 					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e);
 					System.err.println("An XML string that could not be parsed: " + log);
 				}
@@ -114,7 +115,7 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 		}
 		catch (Exception e)
 		{
-			acsra.getEngine().reportStatus("Exception occurred when connecting to structured push consumer.");
+			acsra.publishReport("Exception occurred when connecting to structured push consumer.");
 			System.out.println("Exception in ACSStructuredPushConsumer::connect(): " + e);
 			return;
 		}
@@ -152,7 +153,7 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 		}
 		catch (javax.xml.parsers.ParserConfigurationException pce)
 		{
-			acsra.getEngine().reportStatus("Exception occurred when initializing the XML parser.");
+			acsra.publishReport("Exception occurred when initializing the XML parser.");
 			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
 			return;
 		}
@@ -166,7 +167,7 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 		}
 		catch (Exception e)
 		{
-			acsra.getEngine().reportStatus("Exception occurred when obtaining notification push supplier.");
+			acsra.publishReport("Exception occurred when obtaining notification push supplier.");
 			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + e);
 			return;
 		}
@@ -272,7 +273,7 @@ public final class ACSStructuredPushConsumer extends org.omg.CosNotifyComm.Struc
 		}
 		catch (Exception e)
 		{
-			acsra.getEngine().reportStatus("Exception occurred when changing subscription on Consumer Admin.");
+			acsra.publishReport("Exception occurred when changing subscription on Consumer Admin.");
 			System.out.println("Exception in ACSStructuredPushConsumer::setupEvents(): " + e);
 			return;
 		}

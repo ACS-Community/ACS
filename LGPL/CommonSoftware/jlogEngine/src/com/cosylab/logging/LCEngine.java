@@ -25,10 +25,10 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.RemoteAccess;
-import com.cosylab.logging.engine.RemoteResponseCallback;
 
 /**
  * LCEngine defines output messages to the status panel whenever 
@@ -50,7 +50,7 @@ public class LCEngine implements Runnable {
 	private boolean wasConnected=false;
 	
 	private RemoteAccess remoteAccess = null;
-	private RemoteResponseCallback remoteResponseCallback = null;
+	private IACSLogRemoteConnection remoteResponseCallback = null;
 
 	private Vector filters = null;
 	
@@ -106,9 +106,13 @@ public class LCEngine implements Runnable {
 	
 	/**
 	 * LCEngine constructor comment.
+	 * @param logEventListener The lister for log events
 	 */
-	public LCEngine() {
-		//System.out.println(">>>New LC engine created.");
+	public LCEngine(IACSLogRemoteConnection logEventListener) {
+		if (logEventListener==null) {
+			throw new IllegalArgumentException("Invalid null listener in constructor");
+		}
+		remoteResponseCallback=logEventListener;
 		filters = new Vector();
 		Thread thread = new Thread(this);
 		thread.start();
@@ -234,14 +238,6 @@ public class LCEngine implements Runnable {
 	 */
 	public void setAccessType(String newAccessType) {
 		accessType = newAccessType;
-	}
-	
-	/**
-	 * Set a sink for remote logs.
-	 * @param newRemoteResponseCallback cosylab.logging.engine.RemoteResponseCallback
-	 */
-	public void setRemoteResponseCallback(RemoteResponseCallback newRemoteResponseCallback) {
-		remoteResponseCallback = newRemoteResponseCallback;
 	}
 	
 	/**

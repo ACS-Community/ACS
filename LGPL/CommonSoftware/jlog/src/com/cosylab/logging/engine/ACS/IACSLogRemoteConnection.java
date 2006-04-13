@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging.engine;
+package com.cosylab.logging.engine.ACS;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
@@ -28,20 +28,18 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * that support custom callbacks for receiving entries 
  * submitted to the logging mechanism and for processing them.
  */
-public interface RemoteResponseCallback {
-/**
- * A message identifying the destruction of the remote process
- * that delivers the responses for the given invocation.
- * This message is delivered, if: 1. server single-sidedly
- * closes the data delivery and reports this to the client, 2.
- * if the client destroys the data delivery and server does ACK,
- * 3. if server does not support ACKs, the engine must send this
- * when it determines that the data delivery is broken or timeouts.
- *
- */
-void invocationDestroyed();
-/**
- */
-void logEntryReceived(ILogEntry logEntry);
+public interface IACSLogRemoteConnection {
+	/**
+	 * The method is executed when a new log arrives from the NC
+	 * 
+	 * @param logEntry The new log just read from the NC
+	 */
+	void logEntryReceived(ILogEntry logEntry);
+	
+	/**
+	 * Send a report string with the current status of the connection
+	 * 
+	 * @param status The status string
+	 */
 	public void reportStatus(String status);
 }

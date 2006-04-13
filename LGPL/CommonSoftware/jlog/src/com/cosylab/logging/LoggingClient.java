@@ -30,7 +30,6 @@ import java.awt.Toolkit;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Cursor;
 
@@ -67,6 +66,9 @@ import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
+
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.LCEngine;
 
 import com.cosylab.logging.stats.StatsDlg;
 
@@ -105,7 +107,7 @@ import com.cosylab.logging.search.SearchDialog;
  * One solution is replacing the character with the appropriate html substitute &lt;.
  * Another solution is keeping it in a CDATA section: <[!CDATA[the log entry message]]>.
  */
-public class LoggingClient extends JFrame
+public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 {
 	// The loggingClient is a singleton
 	private static LoggingClient singleton=null;
@@ -232,7 +234,6 @@ public class LoggingClient extends JFrame
 
 	private LCEngine ivjLCEngine = null;
 	private LogTableDataModel tableModel = null;
-	private LCRemoteResponseCallbackBean ivjLCRemoteResponseCallback = null;
 
 	class EventHandler
 		implements
@@ -791,9 +792,6 @@ public class LoggingClient extends JFrame
 		getScrollPaneTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
 		this.addWindowListener(eventHandler); // Logging Client
 
-		connPtoP1SetTarget();
-		connPtoP3SetTarget();
-		connPtoP2SetTarget();
 		connSuspend();
 		connLCMod();
 	}
@@ -1309,59 +1307,6 @@ public class LoggingClient extends JFrame
 			handleException(ivjExc);
 		}
 	}
-	/**
-	 * Allows remote response callback.
-	 */
-
-	private void connPtoP1SetTarget()
-	{
-
-		try
-		{
-			getLCEngine().setRemoteResponseCallback(getLCRemoteResponseCallback());
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
-	/**
-	 * Allows remote response callbacks to be visualized on the text area.
-	 */
-
-	private void connPtoP2SetTarget()
-	{
-
-		try
-		{
-			getLCRemoteResponseCallback().setTextArea(getStatusArea());
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
-	/**
-	 * Allows logs to be scrolled (?).
-	 */
-	private void connPtoP3SetTarget()
-	{
-
-		try
-		{
-			getLCRemoteResponseCallback().setLogEntryTable(getScrollPaneTable());
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
 
 	/**
 	 * Allows manipulating of the JToggleButton.
@@ -1786,7 +1731,7 @@ public class LoggingClient extends JFrame
 		{
 			try
 			{
-				ivjLCEngine = new com.cosylab.logging.LCEngine();
+				ivjLCEngine = new LCEngine(this);
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1805,27 +1750,6 @@ public class LoggingClient extends JFrame
 	{
 
 		return tableModel;
-	}
-	/**
-	 * Returns the LCRemoteResponseCallback property value.
-	 * @return com.cosylab.logging.LCRemoteResponseCallbackBean
-	 */
-	private LCRemoteResponseCallbackBean getLCRemoteResponseCallback()
-	{
-		if (ivjLCRemoteResponseCallback == null)
-		{
-			try
-			{
-				ivjLCRemoteResponseCallback = new com.cosylab.logging.LCRemoteResponseCallbackBean();
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return ivjLCRemoteResponseCallback;
 	}
 
 	/**
@@ -2119,6 +2043,20 @@ public class LoggingClient extends JFrame
      */
     public int getDiscardLevel() {
     	return discardLevelCB.getSelectedIndex();
+    }
+    
+    /**
+     * @see com.cosylab.logging.engine.ACS.IACSLogRemoteConnection
+     */
+    public void logEntryReceived(ILogEntry logEntry) {
+    	getScrollPaneTable().getLCModel().appendLog(logEntry);
+    }
+    
+    /**
+     * @see com.cosylab.logging.engine.ACS.IACSLogRemoteConnection
+     */
+    public void reportStatus(String status) {
+    	getStatusArea().append(status+"\n");
     }
 }
 
