@@ -25,13 +25,16 @@ package alma.acs.config.validators;
 import java.io.File;
 
 /**
- * Class that 
+ * 
  */
 public abstract class ConfigFileRedeemer {
 
 	/**
 	 * Checks whether the given file is known to be not a config file,
 	 * but to serve a more respectable purpose.
+	 * <p>
+	 * Note that the selection is negative: from all files that are suspected based on their file ending,
+	 * we prune those which are known to be not config files.
 	 */
 	public final boolean isNotAConfigFile(File file) {
 		String[] supportedFileEndings = getFileEndings();
@@ -44,7 +47,16 @@ public abstract class ConfigFileRedeemer {
 		return false;
 	}
 
+	/**
+	 * Called by {@link #isNotAConfigFile(File)} only if the file ending matches
+	 * one of the endings in {@link #getFileEndings()}. 
+	 */
 	protected abstract boolean _isNotAConfigFile(File file);
 
 	public abstract String[] getFileEndings();
+	
+	public String getName() {
+		return getClass().getSimpleName();
+	}
+
 }
