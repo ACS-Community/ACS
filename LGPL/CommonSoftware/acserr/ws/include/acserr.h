@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.66 2006/04/12 19:23:32 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.67 2006/04/13 18:13:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -446,13 +446,28 @@ class CompletionImpl : public CompletionInit
 	m_errorTraceHelper(t, c, file, line, routine, sd, severity, previousError[0])
 	{}
 
-// adding previous (remote or local)
+// adding previous (remote or local) with reference 
     CompletionImpl (const ACSErr::Completion &pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
 		      const char* file, int line, const char* routine, const char* sd,
 		      ACSErr::Severity severity) :
 	CompletionInit(t, c),
 	m_errorTraceHelper(pc.previousError[0], t, c, file, line, routine, sd, severity, previousError[0])
 	{}
+// adding previous remote completion as pointer
+    CompletionImpl (ACSErr::Completion *pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
+		      const char* file, int line, const char* routine, const char* sd,
+		      ACSErr::Severity severity) :
+	CompletionInit(t, c),
+	m_errorTraceHelper(pc->previousError[0], t, c, file, line, routine, sd, severity, previousError[0])
+	{ delete pc; }
+
+// adding previous completion as pointer
+    CompletionImpl (CompletionImpl *pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
+		      const char* file, int line, const char* routine, const char* sd,
+		      ACSErr::Severity severity) :
+	CompletionInit(t, c),
+	m_errorTraceHelper(pc->previousError[0], t, c, file, line, routine, sd, severity, previousError[0])
+	{ delete pc; }
 
 // adding error trace
     CompletionImpl (const ACSErr::ErrorTrace &et, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
