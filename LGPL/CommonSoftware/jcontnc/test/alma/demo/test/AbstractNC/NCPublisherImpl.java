@@ -76,7 +76,7 @@ public class NCPublisherImpl
     }
 
     public void publish(String name) {
-        EventDescription event = new EventDescription(name, 32, 64);
+        EventDescription event = new EventDescription(name, 32L, 64L);
         nc.publish(event);
     }
 

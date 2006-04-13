@@ -52,7 +52,7 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
       try
       {
          //first send out some number of events.
-         EventDescription t_block = new EventDescription("no name", 32, 64);
+         EventDescription t_block = new EventDescription("no name", 32L, 64L);
          for(short i=0; i<param; i++)
          {
             m_supplier.publishEvent(t_block);

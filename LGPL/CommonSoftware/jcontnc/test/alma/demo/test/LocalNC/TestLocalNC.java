@@ -63,7 +63,7 @@ public class TestLocalNC {
             try{
                 Thread.sleep(2000);
             }catch(Exception e){}
-            test.publishEvent(new EventDescription("local event", 32, 64));
+            test.publishEvent(new EventDescription("local event", 32L, 64L));
        } 
     } 
 }
