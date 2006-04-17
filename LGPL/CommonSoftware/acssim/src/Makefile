@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2004/09/16 07:49:54 mpasquat Exp $"
+# "@(#) $Id: Makefile,v 1.5 2006/04/17 18:11:15 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -207,7 +207,7 @@ clean : clean_all
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
-	$(RM) ../bin ../doc ../idl ../include ../lib ../object
+	$(RM) ../bin ../doc ../include ../lib ../object
 	@echo " . . . clean_dist done"
 
 man   : do_man
