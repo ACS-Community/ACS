@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.67 2006/04/13 18:13:17 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.68 2006/04/18 10:34:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,6 +48,9 @@
 
 #include "acserrLegacy.h"
 #include <sstream>
+
+namespace ACSErr
+{
 
 /**
  * Helper class for CORBA error trace (#ACSErr::ErrorTrace)
@@ -563,5 +566,12 @@ T ErrorTraceHelper::getMemberValue (const char* name)
     istr >> value;
     return value;
 }//getMemberValue
+
+}
+
+// these two lines are just for backward compatibility and should be removed
+// ... with next release
+typedef ACSErr::CompletionImpl CompletionImpl;
+typedef ACSErr::ErrorTraceHelper ErrorTraceHelper;
 
 #endif
