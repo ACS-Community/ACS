@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.73 2006/04/12 15:08:45 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.74 2006/04/18 13:39:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <iomanip>
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.73 2006/04/12 15:08:45 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.74 2006/04/18 13:39:17 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /******************************************************************************
@@ -134,9 +134,9 @@ ErrorTraceHelper::ErrorTraceHelper (const ACSErr::ErrorTrace &pet,
     }
     else 
     { 
-      fill(ACSErr::ErrorSystemErrType, ErrorSystemErrType::ErrorTraceOverFlow, 
-           ACSErr::Alert, "", 0,  "", 
-            ErrorSystemErrType::ErrorTraceOverFlowExImpl::getShortDescription()); 
+    fill(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::ErrorTraceOverFlow, 
+	 ACSErr::Alert, "", 0,  "", 
+	 ::ErrorSystemErrType::ErrorTraceOverFlowExImpl::getShortDescription()); 
       
       m_errorTraceRef.previousError.length(1);
       m_errorTraceRef.previousError[0] = pet; 
@@ -420,9 +420,9 @@ void ErrorTraceHelper::setProcessName (const char *pn){
  *
  ****************************************************************************************/
 CompletionImpl::CompletionImpl() :
-        CompletionInit(ACSErr::ErrorSystemErrType, ErrorSystemErrType::EmptyError),
-        m_errorTraceHelper(ACSErr::ErrorSystemErrType, ErrorSystemErrType::EmptyError,
-                           "",0,"",ErrorSystemErrType::EmptyErrorExImpl::getShortDescription(),
+        CompletionInit(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::EmptyError),
+        m_errorTraceHelper(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::EmptyError,
+                           "",0,"", ::ErrorSystemErrType::EmptyErrorExImpl::getShortDescription(),
                            DEFAULT_SEVERITY, previousError[0] )
 {}
 
