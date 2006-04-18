@@ -83,14 +83,15 @@ public class ConfigFileFinder {
 		addFileEndings(new String[] {".properties", ".config"});
 		
 		// here we add specialized config file redeemers
-		addFileFilter(new ConfigFileRedeemerXml());
+		addRedeemer(new ConfigFileRedeemerTestDir());
+		addRedeemer(new ConfigFileRedeemerXml());
 		
 		// todo: perhaps allow user-supplied redeemers to be added, based on a command line parameter (classname) 
 	}
 
-	public void addFileFilter(ConfigFileRedeemer filter) {
-		redeemers.add(filter);
-		addFileEndings(filter.getFileEndings());
+	public void addRedeemer(ConfigFileRedeemer redeemer) {
+		redeemers.add(redeemer);
+		addFileEndings(redeemer.getFileEndings());
 	}
 	
 	public void configureFromArgs(String[] args) {
@@ -274,11 +275,13 @@ public class ConfigFileFinder {
 	}
 
 	protected void addFileEndings(String[] moreFileEndings) {
-		for (int i = 0; i < moreFileEndings.length; i++) {
-			if (moreFileEndings[i] == null || moreFileEndings[i].trim().length() == 0) {
-				throw new IllegalArgumentException("illegal empty file ending.");
+		if (moreFileEndings != null) {
+			for (int i = 0; i < moreFileEndings.length; i++) {
+				if (moreFileEndings[i] == null || moreFileEndings[i].trim().length() == 0) {
+					throw new IllegalArgumentException("illegal empty file ending.");
+				}
+				this.fileEndings.add(moreFileEndings[i].trim());
 			}
-			this.fileEndings.add(moreFileEndings[i].trim());
 		}
 	}
 
