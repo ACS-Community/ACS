@@ -127,6 +127,9 @@ class Interpreter(Pmw.Group):
         self.text_shell.tag_config("ERROR", 
                                     background="white", foreground="red")
         
+        #auto import some things for them
+        self.console.push("from Acssim.Goodies import *")
+        
         #bind enter key presses to a handler function
         self.text_shell.bind("<Return>", self.handle_return)
         

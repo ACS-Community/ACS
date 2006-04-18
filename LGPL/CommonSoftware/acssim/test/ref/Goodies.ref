@@ -11,10 +11,10 @@
 1 - getComponentXMLObj('HELLOWORLD1'): <Acspy.Util.XmlObjectifier.XmlObject instance at 0xXXXX>
 1 - getComponentXMLObj(''): None
 1 - 
-1 - addGlobalData('stuff',1L): None
-1 - getGlobalData(): {'stuff': 1L, 'addGlobalData': <function addGlobalData at 0xXXXX>, 'removeGlobalData': <function removeGlobalData at 0xXXXX>}
+1 - setGlobalData('stuff',1L): None
+1 - getGlobalData(): 1
 1 - removeGlobalData('stuff'): None
-1 - getGlobalData(): {'addGlobalData': <function addGlobalData at 0xXXXX>, 'removeGlobalData': <function removeGlobalData at 0xXXXX>}
+1 - getGlobalData(): None
 1 - 
 1 - getCompLocalNS('TEST_PS_1'): {'ReadbackDevIO': <class interfaceInheritance.ReadbackDevIO at 0xXXXX>}
 1 - getCompLocalNS('HELLOWORLD1'): {'ACSErrTypeCommonImpl': <module 'ACSErrTypeCommonImpl' from 'xxx'>}

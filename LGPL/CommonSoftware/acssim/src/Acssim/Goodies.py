@@ -34,17 +34,17 @@ simulated component behavior from interactive Python container sessions.
 #--REGULAR IMPORTS-------------------------------------------------------------
 from inspect import isfunction
 from copy    import copy
-from atexit    import register
+from atexit  import register
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
-from Acspy.Common.CDBAccess    import CDBaccess
+from Acspy.Common.CDBAccess     import CDBaccess
 from Acspy.Util.ACSCorba        import interfaceRepository
-from Acspy.Util.XmlObjectifier import  XmlObject
-from Acssim.Corba.Utilities import getCompIfrID
-from Acssim.Corba.Utilities import getSuperIDs
-from Acssim.Corba.Utilities import getTypeCode
-from Acspy.Nc.Supplier import Supplier
+from Acspy.Util.XmlObjectifier  import  XmlObject
+from Acssim.Corba.Utilities     import getCompIfrID
+from Acssim.Corba.Utilities     import getSuperIDs
+from Acssim.Corba.Utilities     import getTypeCode
+from Acspy.Nc.Supplier          import Supplier
 
 #--GLOBALS---------------------------------------------------------------------
 __revision__="@(#) $Id$"
@@ -93,10 +93,12 @@ _SUPPLIERS_DICT = {}
 def addComponent(comp_name, comp_ref):
     '''
     Adds a component to the singled dictionary contained within this module.
+    This is in place to be called by the simulator framework and probably
+    isn't of much use to end-users.
 
     Parameters:
-    compName - name of the component in string format
-    compRef - reference to the component.
+        comp_name - name of the component in string format
+        comp_ref - reference to the component.
 
     Raises: Nothing
 
@@ -108,9 +110,11 @@ def addComponent(comp_name, comp_ref):
 def removeComponent(comp_name):
     '''
     Removes a component from the singled dictionary contained within this module.
-
+    This is in place to be called by the simulator framework and probably
+    isn't of much use to end-users.
+    
     Parameters:
-    compName - name of the component in string format
+        comp_name - name of the component in string format
 
     Raises: ???
 
@@ -124,11 +128,11 @@ def getComponent(comp_name):
     Returns a reference to a simulated component which has been activated.
 
     Parameters:
-    compName - name of the component in string format
+        comp_name - name of the component in string format
 
-    Raises: ???
+    Raises: Nothing
 
-    Returns: reference to a simulated component.
+    Returns: Reference to a simulated component.
     '''
     #sanity check
     if _COMP_REFS.has_key(comp_name) == False:
@@ -138,7 +142,25 @@ def getComponent(comp_name):
 #---------------------------------------------------------------------
 def getSimProxy(comp_name):
     '''
-    Returns a proxy object for this particular component.
+    Returns a proxy object for this particular component. The proxy object
+    is what actually determines how a simulated component behaves. That is,
+    it chooses whether to use info found in the ACS CDB, the Python
+    console, GUI, etc for any given method.
+    
+    Parameters:
+        comp_name is the name of the component in string format
+        
+    Returns:
+        An instance of Acssim.Servants.Representations.BehaviorProxy
+        which is the principal object that determines what kind of 
+        behavior simulated components have. This is primarily useful
+        if you have implemented 
+        Acssim.Servants.Representations.BaseRepresenation on your own
+        and wish to "register" this representation ahead of the 
+        representations that ACS provides. See the attachNewHandler
+        method of BehaviorProxy for more info.
+        
+    Raises: ???
     '''
     #sanity check
     if not _COMP_PROXIES.has_key(comp_name):
@@ -151,7 +173,18 @@ def getComponentXMLObj(comp_name):
     '''
     Returns an XMLObjectifier for the given component name provided
     it exists within the ACS CDB. If this is not the case, simply 
-    returns None
+    returns None. Probably not of much use outside the simulator
+    framework.
+    
+    Params:
+        comp_name - name of the component
+        
+    Returns:
+        An Acspy.Util.XMLObjectifier.XmlObject if there's a description
+        of the component found in $ACS_CDB/CDB/alma/simulated/*. If
+        this is not the case, None is returned.
+	
+	Raises: Nothing
     '''
     try:
         #make sure the entry exists first of all...
@@ -165,28 +198,28 @@ def getComponentXMLObj(comp_name):
     
     return xml_obj
 #---------------------------------------------------------------------
-def addGlobalData(name, value):
+def setGlobalData(name, value):
     '''
     This function is used to add global data that will be accessible
     between simulated components. If for example you wanted
     to create a variable named "x" with the value 3.14, you would
     call:
-      addGlobalData("x", 3.14)
+      setGlobalData("x", 3.14)
     Please be careful as this function does NOT perform a deep copy
     on value!
 
     Parameters:
-    name - the name of your variable in string format
-    value - an object of your choice
+    	name - the name of your variable in string format
+    	value - an object of your choice
 
     Returns: Nothing
 
     Raises: ???
     '''
-    if name != "addGlobalData" and name != "removeGlobalData":
+    if name != "setGlobalData" and name != "removeGlobalData":
         _GLOBALS[str(name)] = value
     else:
-        raise "Cannot add 'addGlobalData' or 'removeGlobalData'"
+        raise "Cannot add 'setGlobalData' or 'removeGlobalData'"
     return
 
 def removeGlobalData(name):
@@ -197,48 +230,77 @@ def removeGlobalData(name):
       removeGlobalData("x")
 
     Parameters:
-    name - the name of your variable in string format
+    	name - the name of your variable in string format
 
     Returns: Nothing
 
     Raises: ???
     '''
-    if name != "addGlobalData" and name != "removeGlobalData":
+    if name != "setGlobalData" and name != "removeGlobalData":
         del _GLOBALS[str(name)]
     else:
-        raise "Cannot remove 'addGlobalData' or 'removeGlobalData'"  
+        raise "Cannot remove 'setGlobalData' or 'removeGlobalData'"  
     return
 
-def getGlobalData():
+def getGlobalData(name):
     '''
-    Returns the global data dictionary shared between all simulated
+    Returns the global data object defined by name shared between all simulated
     components.
 
-    Parameters: None
+    Parameters:
+    	name - the name of your variable in string format
 
-    Returns: the global data dictionary shared between all simulated
-    components
+    Returns: the global data defined by name or None if it does not
+    exist
     
     Raises: Nothing
     '''
-    return _GLOBALS
+    if _GLOBALS.has_key(name)==0:
+        return None
+    else:
+        return _GLOBALS[name]
 
 #add the functions to _GLOBALS
-_GLOBALS[addGlobalData.__name__] = addGlobalData
+_GLOBALS[setGlobalData.__name__] = setGlobalData
 _GLOBALS[removeGlobalData.__name__] = removeGlobalData
 #------------------------------------------------------------------------------
 def getCompLocalNSList(comp_name):
     '''
-    '''
-    getCompLocalNS(comp_name)
-    return COMPONENTS_NS_LIST[comp_name]
+    Returns a list of all imports added to CDB method/attribute 
+    implementations. This is needed as the Python compile module 
+	does not seem to recognize imports from locals() when compiling
+	custom code.
 
+	Parameters:
+		comp_name is the name of the component
+
+	Return: a list of strings where each string represents a single
+	Python import statement
+
+	Raises: ???
+    '''
+	#make sure we have namespace for the component
+    getCompLocalNS(comp_name)
+
+	#everything deemed to be of general use to end-users
+	#is defined here
+    extra_funcs = [ "from Acssim.Goodies import getComponent", 
+                    "from Acssim.Goodies import supplyEventByType",
+                    "from Acssim.Goodies import supplyEventByInstance",
+                    "from Acssim.Goodies import setComponentMethod",
+                    "from Acssim.Goodies import getGlobalData",
+                    "from Acssim.Goodies import setGlobalData",
+                    "from Acssim.Goodies import removeGlobalData"
+                  ]
+	                  
+    return extra_funcs + COMPONENTS_NS_LIST[comp_name]
+#------------------------------------------------------------------------------
 def getCompLocalNS(comp_name):
     '''
     Gets the local namespace dictionary for a component.
     
     Parameters:
-    comp_name - name of the component
+    	comp_name - name of the component
     
     Returns: A dictionary conforming to the return value of the native 
     "locals()" function.
@@ -298,20 +360,21 @@ def getCompLocalNS(comp_name):
 #------------------------------------------------------------------------------
 def setCHARS(new_char_list):
     '''
-    This API function allows developers to make methods and attributes returning a
-    single character "less random" on a global level. In other words, by providing a new list of
-    characters to setCHARS the developer can exclude certain character values
-    from being returned by simulated CORBA objects. Sample usage could be something
-    similar to:
+    This API function allows developers to make methods and attributes 
+	returning a single character "less random" on a global level. In other 
+	words, by providing a new list of characters to setCHARS the developer 
+	can exclude certain character values from being returned by simulated 
+	CORBA objects. Sample usage could be something similar to:
     
        setCHARS(["a", "b", "d"])
     
-    Please note that the probability of a specific character being used can also be
-    increased by including it multiple times in this list.
+    Please note that the probability of a specific character being used 
+	can also be increased by including it multiple times in this list.
 
-    Parameters: newCharList is a list of characters. Each time a call to a
-    simulated component which returns a character is made, a random character
-    from newCharList will be returned.
+    Parameters: 
+		newCharList is a list of characters. Each time a call to a
+    	simulated component which returns a character is made, a random 
+		character from newCharList will be returned.
 
     Returns: Nothing
 
@@ -324,7 +387,8 @@ def setCHARS(new_char_list):
 def getCHARS():
     '''
     Returns the list set by setCHARS method. See description there for more
-    info.
+    info. Most likely of little use to end-users (i.e., just in place to give
+	the framework access)
 
     Parameters: None
 
@@ -336,9 +400,9 @@ def getCHARS():
 #------------------------------------------------------------------------------
 def setStandardTimeout(new_timeout):
     '''
-    This API function allows developers to set the time simulated method/attribute
-    invocations wait before returning control on a global level. Sample usage could
-    be:
+    This API function allows developers to set the time simulated 
+	method/attribute invocations wait before returning control on a global 
+	level. Sample usage could be:
     
        setStandardTimeout(3.2)
     
@@ -354,8 +418,9 @@ def setStandardTimeout(new_timeout):
 #------------------------------------------------------------------------------
 def getStandardTimeout():
     '''
-    Returns the timeout set by getStandardTimeout. See description there for 
-    more info.
+    Returns the timeout set by setStandardTimeout. See description there for 
+    more info. Most likely of little use to end-users (i.e., just in place to 
+	give the framework access)
     
     Parameters: None
     
@@ -369,8 +434,8 @@ def setExceptProb(new_prob):
     '''
     NOT CURRENTLY USED!
 
-    Parameters: the new probability (a float) of an exception occuring on any given
-    simulated attribute/method invocation.
+    Parameters: the new probability (a float) of an exception occuring on any 
+	given simulated attribute/method invocation.
 
     Returns: Nothing
 
@@ -387,8 +452,8 @@ def getExceptProb():
 
     Parameters: None
 
-    Returns: the new probability (a float) of an exception occuring on any given
-    simulated attribute/method invocation.
+    Returns: the new probability (a float) of an exception occuring on any 
+	given simulated attribute/method invocation.
 
     Raises: Nothing
     '''
@@ -396,13 +461,13 @@ def getExceptProb():
 #------------------------------------------------------------------------------
 def setMaxSeqSize(new_seq_size):
     '''
-    This API function allows developers to set the maximum sequence size for simulated
-    methods/attributes on a global level. Sample usage could be:
+    This API function allows developers to set the maximum sequence size for 
+	simulated methods/attributes on a global level. Sample usage could be:
 
        setMaxSeqSize(200)
 
-    Parameters: the new maximum length of sequences that will be returned on any given
-    simulated attribute/method invocation.
+    Parameters: the new maximum length of sequences that will be returned 
+	on any given simulated attribute/method invocation.
 
     Returns: Nothing
 
@@ -415,12 +480,13 @@ def setMaxSeqSize(new_seq_size):
 def getMaxSeqSize():
     '''
     Returns the maximum sequence size for simulated
-    methods/attributes on a global level.
+    methods/attributes on a global level. Most likely of little use 
+	to end-users (i.e., just in place to give the framework access)
 
     Parameters: None
 
-    Returns: the new maximum length of sequences that will be returned on any given
-    simulated attribute/method invocation.    
+    Returns: the maximum length of sequences that will be returned 
+	on any given simulated attribute/method invocation.    
 
     Raises: Nothing
     '''
@@ -428,11 +494,9 @@ def getMaxSeqSize():
 #-----------------------------------------------------------------
 def setComponentMethod(comp_name,
                        meth_name,
-                       code_list,
+                       code,
                        timeout=getStandardTimeout()):
     '''
-    This is an ACS Component Simulator API method and developers are encouraged
-    to invoke it from their own code or from the Python interpreter at any time.
     setComponentMethod is used to do exactly what its name implies - setup a
     simulated component method to behave in a certain manner. Using this method,
     one can:
@@ -442,32 +506,28 @@ def setComponentMethod(comp_name,
     control
 
     Paramters:
-    - compName is the components name in string format. "FRIDGESIM1" for example.
-    - methName is the name of the IDL method in string format that is being simulated.
-    "open" for example.
-    - code is a list of Python code in string format to be executed each time the
-    simulated method is invoked. The last string of this list should either
-    contain a "raise ..." statement where the exception being thrown is derived
-    from an IDL exception OR the last string should represent some return value
-    to be evaluated by the Python "eval" statement. A sample value for code
-    could be [ "import CORBA", "CORBA.TRUE" ] or [ "import ACSExceptionCommon",
-    "raise ACSExceptionCommon.CommonExImpl()" ]. It is important to note that
-    this list must not be empty!
-    - timeout is the amount of time that should pass before the method/attribute
-    returns control
+    	comp_name is the components name in string format. "FRIDGESIM1" 
+		for example.
+    	
+		meth_name is the name of the IDL method in string format that is 
+		being simulated. "open" for example.
+    
+		code is a Python function or method to be executed 
+		each time the simulated method is invoked. Whatever value this
+		function returns is the same value the simulated method will 
+		return. Likewise, if this function throws an exception; it will
+		be as if the component method threw the exception
+    
+		timeout is the amount of time that should pass before the 
+		method/attribute returns control
 
     Returns: Nothing
 
     Raises: Nothing
     '''
-    if not isfunction(code_list):
-        code = copy(code_list)
-    else:
-        code = code_list
-    
     #create the temporary dictionary
-    temp_dict = { 'Value':code,
-             'Timeout': float(timeout)}
+    temp_dict = { 'Value':   code,
+                  'Timeout': float(timeout)}
     
     #store it globally
     getSimProxy(comp_name).api_handler.setMethod(meth_name, temp_dict)
@@ -477,10 +537,10 @@ def supplyEventByType(component_name, channel_name, ifr_id):
     Supplies an event to a notification channel by the event's IFR ID type.
     
     Parameters:
-        - component_name - name of the component publisihing the event
-        - channel_name - name of the channel the event should be published
+        component_name - name of the component publisihing the event
+        channel_name - name of the channel the event should be published
         on
-        - ifr_id - the interface repository ID of the IDL structure that 
+        ifr_id - the interface repository ID of the IDL structure that 
         should be dynamically created and sent as an event
         
     Returns: Nothing
@@ -497,16 +557,16 @@ def supplyEventByType(component_name, channel_name, ifr_id):
                                     
     #now just delegate to another function
     supplyEventByInstance(component_name, channel_name, event_instance)
-
+#----------------------------------------------------------------------------
 def supplyEventByInstance(component_name, channel_name, event_instance):
     '''
     Supplies an event to a notification channel.
     
     Parameters:
-        - component_name - name of the component publisihing the event
-        - channel_name - name of the channel the event should be published
+        component_name - name of the component publisihing the event
+        channel_name - name of the channel the event should be published
         on
-        - event_instance - an instance of the IDL struct to publish
+        event_instance - an instance of the IDL struct to publish
         
     Returns: Nothing
     
@@ -523,7 +583,7 @@ def supplyEventByInstance(component_name, channel_name, event_instance):
 def __cleanUp():
     '''
     This function cleans up static objects from this module just before the 
-    interpreter exits.
+    interpreter exits. Should never be called from developer code!
     '''
     #disconnect all suppliers
     for sup in _SUPPLIERS_DICT.values():

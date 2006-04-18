@@ -56,10 +56,10 @@ if __name__ == "__main__":
     print "getComponentXMLObj('HELLOWORLD1'):", getComponentXMLObj('HELLOWORLD1')
     print "getComponentXMLObj(''):", getComponentXMLObj('')
     print
-    print "addGlobalData('stuff',1L):", addGlobalData('stuff', 1L)
-    print "getGlobalData():", getGlobalData()
+    print "setGlobalData('stuff',1L):", setGlobalData('stuff', 1L)
+    print "getGlobalData():", getGlobalData('stuff')
     print "removeGlobalData('stuff'):", removeGlobalData('stuff')
-    print "getGlobalData():", getGlobalData()
+    print "getGlobalData():", getGlobalData('stuff')
     print
     print "getCompLocalNS('TEST_PS_1'):", getCompLocalNS('TEST_PS_1')
     print "getCompLocalNS('HELLOWORLD1'):", getCompLocalNS('HELLOWORLD1')
