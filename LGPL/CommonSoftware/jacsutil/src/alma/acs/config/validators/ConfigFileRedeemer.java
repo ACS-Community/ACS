@@ -38,9 +38,15 @@ public abstract class ConfigFileRedeemer {
 	 */
 	public final boolean isNotAConfigFile(File file) {
 		String[] supportedFileEndings = getFileEndings();
-		for (int i = 0; i < supportedFileEndings.length; i++) {
-			if (file.getName().endsWith(supportedFileEndings[i])) {
-				return _isNotAConfigFile(file);
+		if (supportedFileEndings == null) {
+			// any file
+			return _isNotAConfigFile(file);
+		}
+		else {			
+			for (int i = 0; i < supportedFileEndings.length; i++) {
+				if (file.getName().endsWith(supportedFileEndings[i])) {
+					return _isNotAConfigFile(file);
+				}
 			}
 		}
 		// we don't know, some other redeemer should tell.
@@ -53,6 +59,13 @@ public abstract class ConfigFileRedeemer {
 	 */
 	protected abstract boolean _isNotAConfigFile(File file);
 
+	/**
+	 * Subclasses supply the endings of files that they can possibly redeem.
+	 * <p>
+	 * Note that in order to match, the file name must end with one of the given strings,
+	 * see {@link String#endsWith(java.lang.String)}. The ending may therefore contain more than one '.'.   
+	 * @return
+	 */
 	public abstract String[] getFileEndings();
 	
 	public String getName() {
