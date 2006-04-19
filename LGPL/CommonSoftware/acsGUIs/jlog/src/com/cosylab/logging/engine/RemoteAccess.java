@@ -21,6 +21,8 @@
  */
 package com.cosylab.logging.engine;
 
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+
 /**
  * Interface implemented by ACSRemoteAccess and simulatorRemoteAccess. 
  * Its methods serve the basic purpose of creating, using and destroying 
@@ -29,8 +31,9 @@ package com.cosylab.logging.engine;
  * @author: 
  */
 public interface RemoteAccess {
-public void destroy();
-public void initialize();
-public boolean isInitialized();
-public boolean isConnected();
+	public void destroy();
+	public void initialize();
+	public boolean isInitialized();
+	public boolean isConnected();
+	public void addLogRemoteConnListener(IACSLogRemoteConnection listener);
 }
