@@ -220,10 +220,9 @@ public class LogTableDataModel extends AbstractTableModel
 	
 	
 	/**
-	 * Adds the log to the list. Logs are always appended to the end of the list.
-	 * Resolves log groups by stackID and adjusts the lookup table accordingly.
-	 * Creation date: (11/11/2001 14:35:01)
-	 * @param log com.cosylab.logging.engine.LogEntryXML
+	 * Adds the log to the list. Logs are always appended at the end of the list.
+	 * 
+	 * @param log The log to add
 	 */
 	public void appendLog(ILogEntry log) {
 		try {
@@ -336,7 +335,7 @@ public class LogTableDataModel extends AbstractTableModel
 			
 					getIOHelper().loadLogs(
 							in,
-							LoggingClient.getInstance().getLCEngine(),
+							LoggingClient.getInstance(),
 							allLogs,
 							true);
 				}
@@ -387,7 +386,7 @@ public class LogTableDataModel extends AbstractTableModel
 		}
 		getIOHelper().loadLogs(
 				br,
-				LoggingClient.getInstance().getLCEngine(),
+				LoggingClient.getInstance(),
 				allLogs,
 				true);
 		
