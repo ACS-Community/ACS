@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.27 2005/08/18 09:21:02 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.28 2006/04/19 19:57:27 bjeram Exp $"
 *
 */
 
@@ -161,7 +161,7 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
      * @return void
      */
     virtual void __execute()
-        throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl);
+        throw (ACSErr::ACSbaseExImpl);
     
     /**
      * The function stops the threads before calling  aboutToAbort()

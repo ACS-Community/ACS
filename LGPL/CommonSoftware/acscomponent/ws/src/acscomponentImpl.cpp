@@ -1,7 +1,7 @@
 /*************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acscomponentImpl.cpp,v 1.34 2005/08/23 12:26:18 bjeram Exp $"
+* "@(#) $Id: acscomponentImpl.cpp,v 1.35 2006/04/19 19:57:13 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    --------------------------------------------------
@@ -73,12 +73,12 @@ ACSComponentImpl::componentState ()
 
 /********************** LifeCycle methods ***********************/
 
-void ACSComponentImpl::initialize() throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
+void ACSComponentImpl::initialize() throw (ACSErr::ACSbaseExImpl)
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::initialize");
 }
 
-void ACSComponentImpl::execute() throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
+void ACSComponentImpl::execute() throw (ACSErr::ACSbaseExImpl)
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::execute");
 }
@@ -93,20 +93,20 @@ void ACSComponentImpl::aboutToAbort()
   ACS_TRACE("acscomponent::ACSComponentImpl::cleanUp");
 }
 
-void ACSComponentImpl::__initialize() throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
+void ACSComponentImpl::__initialize() throw (ACSErr::ACSbaseExImpl)
 {   
    ACS_TRACE("acscomponent::ACSComponentImpl::__initialize");
     try
     {
         initialize();
     }
-    catch (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl &ex)
+    catch (ACSErr::ACSbaseExImpl &ex)
     {
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex, __FILE__,__LINE__,"ACSComponentImpl::__initialize");
     }
 }
 
-void ACSComponentImpl::__execute() throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
+void ACSComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::__execute");
 /*
@@ -121,7 +121,7 @@ so that all threads are just created in suspend mode and than startAllThreads wo
     {
         execute();
     }
-    catch (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl &ex)
+    catch (ACSErr::ACSbaseExImpl &ex)
     {
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex,__FILE__,__LINE__,"ACSComponentImpl::__execute");
     }
@@ -139,7 +139,7 @@ void ACSComponentImpl::__aboutToAbort()
     {
         aboutToAbort();
     }
-    catch (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl &ex)
+    catch (ACSErr::ACSbaseExImpl &ex)
     {
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex,__FILE__,__LINE__,"ACSComponentImpl::__aboutToAbort");
     }
@@ -152,10 +152,6 @@ void ACSComponentImpl::__cleanUp()
   try
       {
       cleanUp();
-      }
-  catch (acsErrTypeLifeCycle::LifeCycleExImpl ex)
-      {
-      throw acsErrTypeLifeCycle::LifeCycleExImpl(ex,__FILE__,__LINE__,"ACSComponentImpl::__cleanUp");
       }
   catch(ACSErr::ACSbaseExImpl &ex)
       {

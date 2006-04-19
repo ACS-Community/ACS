@@ -4,7 +4,7 @@
 /************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acscomponentImpl.h,v 1.28 2005/06/27 08:05:15 bjeram Exp $"
+* "@(#) $Id: acscomponentImpl.h,v 1.29 2006/04/19 19:57:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  -------------------------------------------------
@@ -114,7 +114,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
    * @endhtmlonly
    */
     virtual void initialize()
-      throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl);
+      throw (ACSErr::ACSbaseExImpl);
 
     /**
      * Called after {@link #initialize} to tell the 
@@ -129,7 +129,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
      * @endhtmlonly
      */
     virtual void execute()
-      throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl);
+      throw (ACSErr::ACSbaseExImpl);
     
     /**
      * Called after the last functional call to the component has finished.
@@ -168,7 +168,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
      * @return void
      */
     virtual void __execute()
-        throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl);
+        throw (ACSErr::ACSbaseExImpl);
     
     /**
      * The function stops the threads before calling  aboutToAbort()
@@ -191,7 +191,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
      * @return void
      */
     virtual void __initialize()
-        throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl);
+        throw (ACSErr::ACSbaseExImpl);
 
     /**
      * Get a pointer to the services provided by the container which

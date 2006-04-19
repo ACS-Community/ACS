@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.37 2005/12/20 07:46:56 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.38 2006/04/19 19:57:27 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.37 2005/12/20 07:46:56 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.38 2006/04/19 19:57:27 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -86,7 +86,7 @@ CharacteristicComponentImpl::~CharacteristicComponentImpl()
 /* --------------------- [ LifeCycle functions ] ------------------*/
 /* ----------------------------------------------------------------*/
 
-void CharacteristicComponentImpl::__execute() throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
+void CharacteristicComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
 {
   ACS_TRACE("baci::CharacteristicComponentImpl::__execute");
     // Start the threads actually created and started
