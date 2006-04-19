@@ -46,5 +46,5 @@ else
    fi
 fi
 
-java -cp $ACSROOT/lib/xalan.jar org.apache.xalan.xslt.Process -XSL $CPP_XSLT -IN $1 -OUT $2
-java -cp $ACSROOT/lib/xalan.jar org.apache.xalan.xslt.Process -XSL $H_XSLT -IN $1 -OUT $3
+java -cp $ACSROOT/lib/xalan.jar:$ACSROOT/lib/xalan_serializer.jar org.apache.xalan.xslt.Process -XSL $CPP_XSLT -IN $1 -OUT $2
+java -cp $ACSROOT/lib/xalan.jar:$ACSROOT/lib/xalan_serializer.jar org.apache.xalan.xslt.Process -XSL $H_XSLT -IN $1 -OUT $3

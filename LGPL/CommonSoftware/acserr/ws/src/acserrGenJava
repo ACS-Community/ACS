@@ -38,5 +38,5 @@ then
  mkdir $2
 fi
 
-java -cp $ACSROOT/lib/xalan.jar org.apache.xalan.xslt.Process -XSL $JAVA_XSLT -IN $1 -OUT $2/tmp
+java -cp $ACSROOT/lib/xalan.jar:$ACSROOT/lib/xalan_serializer.jar org.apache.xalan.xslt.Process -XSL $JAVA_XSLT -IN $1 -OUT $2/tmp
 rm -f $2/tmp
