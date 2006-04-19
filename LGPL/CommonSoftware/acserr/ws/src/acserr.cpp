@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.74 2006/04/18 13:39:17 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.75 2006/04/19 14:30:49 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <iomanip>
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.74 2006/04/18 13:39:17 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.75 2006/04/19 14:30:49 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /******************************************************************************
@@ -435,7 +435,8 @@ void CompletionImpl::log()
     else
 	{
 	ACS_LOG_TIME (0, timeStamp, Logging::BaseLog::FIELD_UNAVAILABLE,
-		      (LM_NOTICE, "Error-Free Completion (type=%d, code=%d)", getType(), getCode()));
+		      (LM_INFO, "Completion (type=%d, code=%d) does not contain any error", 
+		       getType(), getCode()));
 	}
 }
 
