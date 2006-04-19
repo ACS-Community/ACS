@@ -52,8 +52,6 @@ public class LCEngine implements Runnable {
 	private RemoteAccess remoteAccess = null;
 	private IACSLogRemoteConnection remoteResponseCallback = null;
 
-	private Vector filters = null;
-	
 	/** 
 	 * A thread used to set and initialize RemoteAccess
 	 *
@@ -68,7 +66,7 @@ public class LCEngine implements Runnable {
 
 		public void run() {
 			disconnect();
-			reportStatus("Connecting to " + accessType + " remote access...");
+			remoteResponseCallback.reportStatus("Connecting to " + accessType + " remote access...");
 			try {
 				
 				Object[] parameters = { };
@@ -86,13 +84,14 @@ public class LCEngine implements Runnable {
 				//if (remoteAccess == null)
 				//	System.out.println("RemoteAccess == null");
 				remoteAccess.initialize();
+				remoteAccess.addLogRemoteConnListener(remoteResponseCallback);
 			} catch (Throwable e) {
-				reportStatus("Exception occurred when initializing " + accessType + " remote access.");
+				remoteResponseCallback.reportStatus("Exception occurred when initializing " + accessType + " remote access.");
 				System.out.println("Exception in LCEngine$AccessSetter::run(): " + e);
 				return;
 			}
 			if (remoteAccess.isInitialized()) {
-				reportStatus("Connected to " + accessType + " remote access.");
+				remoteResponseCallback.reportStatus("Connected to " + accessType + " remote access.");
 				LCEngine.this.wasConnected=true;
 			}
 			LoggingClient.getInstance().setConnectionStatus(remoteAccess.isInitialized());
@@ -100,9 +99,6 @@ public class LCEngine implements Runnable {
 	}
 
 	private java.lang.String accessType = "ACS";
-	private boolean suspended = false;
-	
-	private int discardLevel;
 	
 	/**
 	 * LCEngine constructor comment.
@@ -113,7 +109,6 @@ public class LCEngine implements Runnable {
 			throw new IllegalArgumentException("Invalid null listener in constructor");
 		}
 		remoteResponseCallback=logEventListener;
-		filters = new Vector();
 		Thread thread = new Thread(this);
 		thread.start();
 	}
@@ -126,13 +121,14 @@ public class LCEngine implements Runnable {
 	public void connect() {
 		new AccessSetter().start();
 	}
+	
 	/**
 	 * LCEngine starts an attempt to connect to the remote system.
 	 * Connection is handled in a separate Thread
 	 * @see LCEngine$AccessSetter
 	 */
-	public void connect(String accessType) {
-		this.accessType = accessType;
+	public void connect(String accessTyp) {
+		this.accessType = accessTyp;
 		connect();
 	}
 	
@@ -144,13 +140,13 @@ public class LCEngine implements Runnable {
 	public void disconnect() {
 		if (remoteAccess != null && remoteAccess.isInitialized()) {
 			try {
-				reportStatus("Disconnecting from " + accessType + " remote access...");
+				remoteResponseCallback.reportStatus("Disconnecting from " + accessType + " remote access...");
 				remoteAccess.destroy();
 			} catch (Exception e) {
-				reportStatus("Exception occurred when destroying " + accessType + " remote access.");
+				remoteResponseCallback.reportStatus("Exception occurred when destroying " + accessType + " remote access.");
 				System.out.println("Exception in LCEngine$AccessDestroyer::run(): " + e);
 			}
-			reportStatus("Disonnected from " + accessType + " remote access.");
+			remoteResponseCallback.reportStatus("Disonnected from " + accessType + " remote access.");
 	//		System.out.println("Disonnected from " + accessType + " remote access.");
 		}
 		remoteAccess = null;
@@ -168,22 +164,6 @@ public class LCEngine implements Runnable {
 	}
 	
 	/**
-	 * This method filters out events on the engine level - logs that
-	 * are filtered out here, can never reach the GUI part of the application.
-	 *
-	 * This method takes a logEntry and applies all the filters to it.
-	 * If all filters return pass, it returns true, false otherwise.
-	 */
-	private boolean filter(ILogEntry logEntry) {
-		for (int i = 0; i < filters.size(); i++) {
-			Filter filter = (Filter)filters.elementAt(i);
-			boolean result = filter.applyTo(logEntry, true);
-			if (!result) return false;
-		}
-		return true;
-	}
-	
-	/**
 	 * Insert the method's description here.
 	 * Creation date: (2/18/2002 9:58:30 AM)
 	 * @return java.lang.String
@@ -194,59 +174,11 @@ public class LCEngine implements Runnable {
 	
 	/**
 	 * Insert the method's description here.
-	 * Creation date: (2/18/2002 10:37:41 AM)
-	 * @return boolean
-	 */
-	public boolean isSuspended() {
-		return suspended;
-	}
-	
-	/**
-	 * Set the discard level: all the log with a level (type) lower or equal
-	 * to discard level are filtered out in the filter method.
-	 * 
-	 * @param level The discard level plus one i.e. LOGENTRYTYPE_<type>+1;
-	 *              0 means that all the logs are accepted
-	 * 
-	 * @see LCEngine.filter
-	 */
-	public synchronized void setDiscardLevel(int level) {
-		discardLevel = level; 
-	}
-	
-	/**
-	 * This method is called by the remote event supplier.
-	 */
-	public void pushStructuredEvent(ILogEntry logEntry) {
-		int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
-		if (filter(logEntry) && !suspended && logLevel>=discardLevel) {
-			remoteResponseCallback.logEntryReceived(logEntry);
-		} 
-	}
-	
-	/**
-	 * reportStatus method comment.
-	 */
-	public void reportStatus(String status) {
-		remoteResponseCallback.reportStatus(status);
-	}
-	
-	/**
-	 * Insert the method's description here.
 	 * Creation date: (2/18/2002 9:58:30 AM)
 	 * @param newAccessType java.lang.String
 	 */
 	public void setAccessType(String newAccessType) {
 		accessType = newAccessType;
-	}
-	
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (2/18/2002 10:37:41 AM)
-	 * @param newSuspended boolean
-	 */
-	public void setSuspended(boolean newSuspended) {
-		suspended = newSuspended;
 	}
 	
 	/**
@@ -284,7 +216,7 @@ public class LCEngine implements Runnable {
 			boolean connected = isConnected();
 			LoggingClient.getInstance().setConnectionStatus(connected);
 			if (wasConnected && !connected) {
-				reportStatus("Connection lost");
+				remoteResponseCallback.reportStatus("Connection lost");
 				wasConnected=false;
 				// Better otherwise it tries to reconnect every time
 				disconnect();
