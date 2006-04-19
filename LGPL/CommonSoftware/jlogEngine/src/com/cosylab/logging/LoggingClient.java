@@ -232,13 +232,12 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 
 	private com.cosylab.logging.client.DomTree ivjDomTree = null;
 
-	private LCEngine ivjLCEngine = null;
+	private LCEngine engine = null;
 	private LogTableDataModel tableModel = null;
 
 	class EventHandler
 		implements
 			java.awt.event.ActionListener,
-			java.awt.event.ItemListener,
 			java.awt.event.WindowListener,
 			java.beans.PropertyChangeListener,
 			javax.swing.event.MenuListener
@@ -275,8 +274,6 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 				saveAsFilters();
 			} else if (e.getSource()==LoggingClient.this.logLevelCB) {
                 setLogLevel(logLevelCB.getSelectedIndex());
-            } else if (e.getSource()==LoggingClient.this.discardLevelCB) {
-                setDiscardLevel(discardLevelCB.getSelectedIndex());
             } else if (e.getSource()==LoggingClient.this.searchBtn ||
                     e.getSource()==searchMenuItem) {
                 if (searchDialog==null) {
@@ -297,14 +294,6 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
             } else if (e.getSource()==LoggingClient.this.statisticsMenuItem) {
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
-            }
-		};
-
-		public void itemStateChanged(java.awt.event.ItemEvent e)
-		{
-
-			if (e.getSource() == LoggingClient.this.getSuspendToggleBtn()) {
-				connSuspend();
             }
 		};
 
@@ -363,7 +352,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 			// Some menus are disabled when loading/saving
 			boolean enableMenu = !getLCModel1().IOInProgress();
 			clearAllMenuItem.setEnabled(enableMenu);
-			if (getLCEngine().isConnected()) {
+			if (getEngine().isConnected()) {
 				connectMenuItem.setText("Disconnect");
 			} else {
 				connectMenuItem.setText("Connect");
@@ -432,7 +421,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 	{
 		try
 		{
-			getLCEngine().connect("ACS");
+			getEngine().connect("ACS");
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -441,7 +430,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 	}
 	
 	private void disconnect() {
-		getLCEngine().disconnect();
+		getEngine().disconnect();
 	}
 
     /**
@@ -788,11 +777,9 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 		loadFiltersMenuItem.addActionListener(eventHandler); // Load Filters
 		saveFiltersMenuItem.addActionListener(eventHandler); // Save Filters
 		saveAsFiltersMenuItem.addActionListener(eventHandler); // Save Filters
-		getSuspendToggleBtn().addItemListener(eventHandler); // Suspend toggle button
 		getScrollPaneTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
 		this.addWindowListener(eventHandler); // Logging Client
 
-		connSuspend();
 		connLCMod();
 	}
     
@@ -906,7 +893,6 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
         discardLevelCB.setEditable(false);
         discardLevelCB.setRenderer(discardRendererCB);
         discardLevelCB.addActionListener(eventHandler);
-        setDiscardLevel(DEFAULT_DISCARDLEVEL+1);
         tbLevelPanel.add(discardLevelCB);
         
         scrollLockTB = new JToggleButton("Scroll lock");
@@ -1214,7 +1200,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 		try
 		{
 
-			getLCEngine().exit();
+			getEngine().exit();
 
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -1298,7 +1284,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 		try
 		{
 
-			getLCEngine().disconnect();
+			getEngine().disconnect();
 
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -1308,24 +1294,6 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 		}
 	}
 
-	/**
-	 * Allows manipulating of the JToggleButton.
-	 */
-
-	private void connSuspend()
-	{
-		/* Set the target from the source */
-		try
-		{
-			getLCEngine().setSuspended(getSuspendToggleBtn().isSelected());
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
 	/**
 	 * Sets the LCModel.
 	 */
@@ -1721,17 +1689,18 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 		}
 		return suspendToggleButton;
 	}
+	
 	/**
 	 * Returns the LCEngine property value.
 	 * @return com.cosylab.logging.LCEngine
 	 */
-	public LCEngine getLCEngine()
+	public LCEngine getEngine()
 	{
-		if (ivjLCEngine == null)
+		if (engine == null)
 		{
 			try
 			{
-				ivjLCEngine = new LCEngine(this);
+				engine = new LCEngine(this);
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1740,8 +1709,9 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
 				handleException(ivjExc);
 			}
 		}
-		return ivjLCEngine;
+		return engine;
 	}
+	
 	/**
 	 * Returns the LCModel1 property value.
 	 * @return com.cosylab.logging.LogTableDataModel
@@ -1948,17 +1918,6 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
         tableModel.invalidateVisibleLogs();
     }
     
-    /**
-     * Set the discard level i.e. all the logs with a log level (type)
-     * equal or less then the discard level will be discarded when received
-     * from the NC)
-     * 
-     * @param level The desired level inserted by the user
-     *              in the combo box of the GUI
-     */
-    private void setDiscardLevel(int level) {
-    	getLCEngine().setDiscardLevel(level);
-    }
 	
     /**
      * Enable or disable the Search next menu item
@@ -2013,7 +1972,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
      *
      */
     public boolean isConnected() {
-    	return getLCEngine().isConnected();
+    	return getEngine().isConnected();
     }
     
     /**
@@ -2049,7 +2008,11 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
      * @see com.cosylab.logging.engine.ACS.IACSLogRemoteConnection
      */
     public void logEntryReceived(ILogEntry logEntry) {
-    	getScrollPaneTable().getLCModel().appendLog(logEntry);
+    	int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
+    	if (!suspendToggleButton.isSelected() && logLevel>=discardLevelCB.getSelectedIndex()) {
+			getScrollPaneTable().getLCModel().appendLog(logEntry);
+		} 
+    	
     }
     
     /**
