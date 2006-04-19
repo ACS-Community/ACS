@@ -32,8 +32,6 @@ Module consists of user-friendly functions to be used for configuring
 simulated component behavior from interactive Python container sessions.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
-from inspect import isfunction
-from copy    import copy
 from atexit  import register
 #--CORBA STUBS-----------------------------------------------------------------
 
@@ -268,16 +266,16 @@ def getCompLocalNSList(comp_name):
     '''
     Returns a list of all imports added to CDB method/attribute 
     implementations. This is needed as the Python compile module 
-	does not seem to recognize imports from locals() when compiling
-	custom code.
-
-	Parameters:
-		comp_name is the name of the component
-
-	Return: a list of strings where each string represents a single
-	Python import statement
-
-	Raises: ???
+    does not seem to recognize imports from locals() when compiling
+    custom code.
+    
+    Parameters:
+        comp_name is the name of the component
+    
+    Return: a list of strings where each string represents a single
+    Python import statement
+    
+    Raises: ???
     '''
 	#make sure we have namespace for the component
     getCompLocalNS(comp_name)
@@ -361,23 +359,23 @@ def getCompLocalNS(comp_name):
 def setCHARS(new_char_list):
     '''
     This API function allows developers to make methods and attributes 
-	returning a single character "less random" on a global level. In other 
-	words, by providing a new list of characters to setCHARS the developer 
-	can exclude certain character values from being returned by simulated 
-	CORBA objects. Sample usage could be something similar to:
+    returning a single character "less random" on a global level. In other 
+    words, by providing a new list of characters to setCHARS the developer 
+    can exclude certain character values from being returned by simulated 
+    CORBA objects. Sample usage could be something similar to:
     
        setCHARS(["a", "b", "d"])
     
     Please note that the probability of a specific character being used 
-	can also be increased by including it multiple times in this list.
-
+    can also be increased by including it multiple times in this list.
+    
     Parameters: 
-		newCharList is a list of characters. Each time a call to a
-    	simulated component which returns a character is made, a random 
-		character from newCharList will be returned.
-
+        newCharList is a list of characters. Each time a call to a
+        simulated component which returns a character is made, a random 
+        character from newCharList will be returned.
+    
     Returns: Nothing
-
+    
     Raises: Nothing
     '''
     global CHARS
@@ -388,12 +386,12 @@ def getCHARS():
     '''
     Returns the list set by setCHARS method. See description there for more
     info. Most likely of little use to end-users (i.e., just in place to give
-	the framework access)
-
+    the framework access)
+    
     Parameters: None
-
+    
     Returns: a list of characters. e.g., ['a', 'b', ...]
-
+    
     Raises: Nothing
     '''
     return CHARS
@@ -401,15 +399,14 @@ def getCHARS():
 def setStandardTimeout(new_timeout):
     '''
     This API function allows developers to set the time simulated 
-	method/attribute invocations wait before returning control on a global 
-	level. Sample usage could be:
-    
+    method/attribute invocations wait before returning control on a global 
+    level. Sample usage could be:
        setStandardTimeout(3.2)
     
     Parameters: an integer or decimal number of seconds 
-
+    
     Returns: Nothing
-
+    
     Raises: Nothing
     '''
     global STD_TIMEOUT
@@ -420,7 +417,7 @@ def getStandardTimeout():
     '''
     Returns the timeout set by setStandardTimeout. See description there for 
     more info. Most likely of little use to end-users (i.e., just in place to 
-	give the framework access)
+    give the framework access)
     
     Parameters: None
     
@@ -462,15 +459,15 @@ def getExceptProb():
 def setMaxSeqSize(new_seq_size):
     '''
     This API function allows developers to set the maximum sequence size for 
-	simulated methods/attributes on a global level. Sample usage could be:
-
+    simulated methods/attributes on a global level. Sample usage could be:
+    
        setMaxSeqSize(200)
-
+    
     Parameters: the new maximum length of sequences that will be returned 
-	on any given simulated attribute/method invocation.
-
+    on any given simulated attribute/method invocation.
+    
     Returns: Nothing
-
+    
     Raises: Nothing
     '''
     global MAX_SEQUENCE_SIZE
@@ -481,13 +478,13 @@ def getMaxSeqSize():
     '''
     Returns the maximum sequence size for simulated
     methods/attributes on a global level. Most likely of little use 
-	to end-users (i.e., just in place to give the framework access)
-
+    to end-users (i.e., just in place to give the framework access)
+    
     Parameters: None
-
+    
     Returns: the maximum length of sequences that will be returned 
-	on any given simulated attribute/method invocation.    
-
+    on any given simulated attribute/method invocation.    
+    
     Raises: Nothing
     '''
     return MAX_SEQUENCE_SIZE
@@ -504,25 +501,25 @@ def setComponentMethod(comp_name,
     - make a simulated method throw an exception
     - make a simulated method sleep for a desired amount of time before returning
     control
-
+    
     Paramters:
-    	comp_name is the components name in string format. "FRIDGESIM1" 
-		for example.
-    	
-		meth_name is the name of the IDL method in string format that is 
-		being simulated. "open" for example.
-    
-		code is a Python function or method to be executed 
-		each time the simulated method is invoked. Whatever value this
-		function returns is the same value the simulated method will 
-		return. Likewise, if this function throws an exception; it will
-		be as if the component method threw the exception
-    
-		timeout is the amount of time that should pass before the 
-		method/attribute returns control
-
+        comp_name is the components name in string format. "FRIDGESIM1" 
+        for example.
+        
+        meth_name is the name of the IDL method in string format that is 
+        being simulated. "open" for example.
+        
+        code is a Python function or method to be executed 
+        each time the simulated method is invoked. Whatever value this
+        function returns is the same value the simulated method will 
+        return. Likewise, if this function throws an exception; it will
+        be as if the component method threw the exception
+        
+        timeout is the amount of time that should pass before the 
+        method/attribute returns control
+        
     Returns: Nothing
-
+    
     Raises: Nothing
     '''
     #create the temporary dictionary
