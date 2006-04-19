@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.152 2006/01/24 16:24:27 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.153 2006/04/19 22:21:18 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -232,13 +232,13 @@ man_schema:
 	@cp $(VLTTOP)/config/CDB/schemas/*.xsd $(VLTTOP)/idl/*.xsd $(VLTTOP)/man/schemas/src
 	@cp ../config/xsddocSchemaAntBuild.xml $(VLTTOP)/man/schemas/build.xml
 	@cd $(VLTTOP)/man/schemas; \
-         export CLASSPATH=`searchFile lib/xsddoc.jar`/lib/xsddoc.jar:$(ACSROOT)/lib/xalan.jar:$(CLASSPATH) ;\
+         export CLASSPATH=`searchFile lib/xsddoc.jar`/lib/xsddoc.jar:$(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/xalan_serializer.jar:$(CLASSPATH) ;\
          ant
 man_python:
 	@echo "Generating global Python API documentation index file"
 	@mkdir -p $(VLTTOP)/man/py
 	@acsGenGlobalPythonIndex $(VLTTOP)/man/py > $(VLTTOP)/man/py/index.html
-	
+
 man_errors:
 	@echo "Generating errors documentation"
 	@mkdir -p $(VLTTOP)/man/errors

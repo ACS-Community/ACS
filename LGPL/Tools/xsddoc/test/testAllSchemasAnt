@@ -31,7 +31,7 @@ then
 fi
 
 echo "=== Processing"
-export CLASSPATH=$XSDDOC_JAR:$ACSROOT/lib/xalan.jar:$CLASSPATH
+export CLASSPATH=$XSDDOC_JAR:$ACSROOT/lib/xalan.jar:$ACSROOT/lib/xalan_serializer.jar:$CLASSPATH
 ant 
 echo "=== Generated documentation listing"
 ls -R doc2
