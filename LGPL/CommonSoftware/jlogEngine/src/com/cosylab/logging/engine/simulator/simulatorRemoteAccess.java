@@ -22,7 +22,7 @@
 package com.cosylab.logging.engine.simulator;
 
 import com.cosylab.logging.engine.log.LogEntryXML;
-import com.cosylab.logging.LCEngine;
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
 
 import java.util.Random;
 /**
@@ -32,64 +32,56 @@ import java.util.Random;
  */
 public class simulatorRemoteAccess extends Thread implements com.cosylab.logging.engine.RemoteAccess {
 	private boolean isInitalized = false;
-	private LCEngine engine;
+	private IACSLogRemoteConnection logListener;
 	private Random random;
-/**
- * simulatorRemoteAccess constructor comment.
- */
-public simulatorRemoteAccess(LCEngine engine) {
-	this.engine = engine;
-	random = new Random();
-}
-/**
- * destroy method comment.
- */
-public void destroy() {
-	isInitalized = false;
-}
-/**
- * initialize method comment.
- */
-public void initialize() {
-/*
-	try {
-//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, new Short(LogEntryXML.ENTRYTYPE_EMERGENCY)));
-
-//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, 
-//		new Short(LogEntryXML.ENTRYTYPE_INFO),new Short(LogEntryXML.ENTRYTYPE_ERROR)));
-
-	engine.addFilter(new Filter(LogEntryXML.FIELD_STACKID, true, "Ex*rmi*t?r*"));
-
-//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, new Short(LogEntryXML.ENTRYTYPE_ERROR), null));
-
-//	engine.addFilter(new Filter(LogEntryXML.FIELD_ENTRYTYPE, true, null, new Short(LogEntryXML.ENTRYTYPE_ERROR)));
 	
-	} catch (InvalidFilterConstraintException ifce) {
-		System.out.println("Exception in simulatorRemoteAccess::initialize(): " + ifce);
-	}
-*/
-	isInitalized = true;
-	start();
-}
-
-public boolean isConnected() {
-	return true;
-}
 /**
- * isInitialized method comment.
- */
-public boolean isInitialized() {
-	return isInitalized;
-}
-public void run() {
-	try {
-//		sleep(5000);
-		while (isInitalized) {
-//			System.out.println(">sim< A Random Log is being sent.");
-			engine.pushStructuredEvent(LogEntryXML.generateRandomLog(random));
-			sleep(300*(random.nextInt(5)));
-		}
-	} catch (InterruptedException e) {
+	 * simulatorRemoteAccess constructor comment.
+	 */
+	public simulatorRemoteAccess(IACSLogRemoteConnection listener) {
+		this.logListener = listener;
+		random = new Random();
 	}
-}
+	
+	public void addLogRemoteConnListener(IACSLogRemoteConnection listener) {
+		this.logListener=listener;
+	}
+	
+	/**
+	 * destroy method comment.
+	 */
+	public void destroy() {
+		isInitalized = false;
+	}
+	
+	/**
+	 * initialize method comment.
+	 */
+	public void initialize() {
+		isInitalized = true;
+		start();
+	}
+	
+	public boolean isConnected() {
+		return true;
+	}
+	
+	/**
+	 * isInitialized method comment.
+	 */
+	public boolean isInitialized() {
+		return isInitalized;
+	}
+	
+	public void run() {
+		try {
+	//		sleep(5000);
+			while (isInitalized) {
+	//			System.out.println(">sim< A Random Log is being sent.");
+				this.logListener.logEntryReceived(LogEntryXML.generateRandomLog(random));
+				sleep(300*(random.nextInt(5)));
+			}
+		} catch (InterruptedException e) {
+		}
+	}
 }
