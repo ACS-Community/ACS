@@ -29,13 +29,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.cosylab.logging.client.cache.LogCache;
+
 import com.cosylab.logging.engine.ACS.ACSLogParser;
+import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.stats.ResourceChecker;
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.LCEngine;
 
 import alma.acs.util.StopWatch;
 
@@ -78,7 +79,7 @@ public class IOLogsHelper extends Thread  {
 	// Monitor if an async IO operation is in progress
 	private boolean IOOperationInProgress =false;
 	private ACSLogParser parser;
-
+	
 	/**
 	 * The dialog to show the progress of time consuming 
 	 * operations (load and save for example)
@@ -304,9 +305,9 @@ public class IOLogsHelper extends Thread  {
 		private LogCache logsCache; 
 		
 		/**
-		 * The engine to push the loaded logs in 
+		 * The listener i.e. the callback to push the loaded logs in 
 		 */
-		private LCEngine engine;
+		private IACSLogRemoteConnection logListener;
 		
 		/**
 		 * Build an action for asynchronous load operations
@@ -316,10 +317,10 @@ public class IOLogsHelper extends Thread  {
 		 * @param theCache The cache of logs (used to shown values in the 
 		 *                 progress dialog)
 		 */
-		public IOAction(BufferedReader inFile, LCEngine theEngine, LogCache theCache) {
+		public IOAction(BufferedReader inFile, IACSLogRemoteConnection listener, LogCache theCache) {
 			this.logsCache=theCache;
 			this.inFile=inFile;
-			this.engine = theEngine;
+			this.logListener=listener;
 			this.type=IOAction.LOAD_ACTION;
 		}
 		
@@ -372,10 +373,10 @@ public class IOLogsHelper extends Thread  {
 		/**
 		 * Getter method
 		 *  
-		 * @return The engine to push loaded logs in
+		 * @return The listener to push loaded logs in
 		 */
-		public LCEngine getEngine() {
-			return engine;
+		public IACSLogRemoteConnection getLogListener() {
+			return logListener;
 		}
 		
 		/**
@@ -555,8 +556,10 @@ public class IOLogsHelper extends Thread  {
 	 * The load is performed in a thread as it might be very slow
 	 * 
 	 * @param br The the file to read
+	 * @param logListener The callback for each new log read from the IO
+	 * @param cache The cache of logs
 	 */
-	private void loadLogsFromDisk(BufferedReader br,LCEngine engine, LogCache cache) {
+	private void loadLogsFromDisk(BufferedReader br,IACSLogRemoteConnection logListener, LogCache cache) {
 		if (br==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
@@ -579,41 +582,41 @@ public class IOLogsHelper extends Thread  {
 		
 		try {
 			StopWatch stopWatch = new StopWatch();
-			
+		
 			while ((chRead=br.read())!=-1) {
 				bytesRead++;
 				buffer.append((char)chRead);
 				if (chRead == '>') {
-					if (lookForOpenTag) {
-						tag = buffer.getOpeningTag();
-						if (tag.length()>0) {
-							//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
-							lookForOpenTag=false;
-							buffer.trim(tag);
-						}
-					} else {
-						if (buffer.hasClosingTag(tag)) {
-							//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
-							lookForOpenTag=true;
-							injectLog(buffer.toString(),engine);
-							buffer.clear();
+				if (lookForOpenTag) {
+					tag = buffer.getOpeningTag();
+					if (tag.length()>0) {
+						//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
+						lookForOpenTag=false;
+						buffer.trim(tag);
+					}
+				} else {
+					if (buffer.hasClosingTag(tag)) {
+						//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
+						lookForOpenTag=true;
+						injectLog(buffer.toString(),logListener);
+						buffer.clear();
 							logRecordsRead++;
 //							if (logRecordsRead % 100 == 0) {
 //								System.out.println("Number of log records read: " + logRecordsRead);
 //							}
-							if (progressDialog!=null) {
-								if (cache!=null) {
-									progressDialog.updateStatus(""+cache.getSize()+" logs loaded");
-								} 
-								progressDialog.updateProgressBar(bytesRead);
-								// Check if the user pressed the abort button
-								if (progressDialog.wantsToAbort()) {
-									break;
-								}
+						if (progressDialog!=null) {
+							if (cache!=null) {
+								progressDialog.updateStatus(""+cache.getSize()+" logs loaded");
+							} 
+							progressDialog.updateProgressBar(bytesRead);
+							// Check if the user pressed the abort button
+							if (progressDialog.wantsToAbort()) {
+								break;
 							}
 						}
 					}
 				}
+			}
 			}
 			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
 						stopWatch.getLapTimeMillis()/1000 + " seconds.");
@@ -645,7 +648,7 @@ public class IOLogsHelper extends Thread  {
 	 */
 	public void loadLogs (
 			BufferedReader reader,
-			LCEngine engine,
+			IACSLogRemoteConnection listener,
 			LogCache cache,
 			boolean showProgress) {
 		// Check if the thread is alive
@@ -653,7 +656,7 @@ public class IOLogsHelper extends Thread  {
 			throw new IllegalStateException("Unable to execute asynchronous operation");
 		}
 		// Check the params
-		if (engine==null || reader==null) {
+		if (listener==null || reader==null) {
 			throw new IllegalArgumentException("Engine and Reader can't be null");
 		}
 		
@@ -672,7 +675,7 @@ public class IOLogsHelper extends Thread  {
 		}
 		
 		// Add an action in the queue
-		IOAction action = new IOAction(reader,engine,cache);
+		IOAction action = new IOAction(reader,listener,cache);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -687,22 +690,23 @@ public class IOLogsHelper extends Thread  {
 	 * Inject the log into the engine 
 	 * 
 	 * @param logStr The string representation of the log
+	 * @param logListener The listener i.e. the callback for each new log to add
 	 */
-	private void injectLog(String logStr, LCEngine engine) {
+	private void injectLog(String logStr, IACSLogRemoteConnection logListener) {
 		ILogEntry log=null;
 		try {
 			if (parser == null) {
 				parser = new ACSLogParser();
 			}
 			//System.out.println("Parsing "+logStr);
-			log = new LogEntry(parser.parse(logStr));
+			log=new LogEntry(parser.parse(logStr));
 		} catch (Exception e) {
 			System.err.println("Exception parsing a log: "+e.getMessage());
 			System.out.println("Log Str: ["+logStr+"]");
 			JOptionPane.showMessageDialog(null, formatErrorMsg(e.getMessage(),logStr),"Error parsing a log!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		engine.pushStructuredEvent(log);
+		logListener.logEntryReceived(log);
 	}
 	
 	/**
@@ -805,7 +809,7 @@ public class IOLogsHelper extends Thread  {
 				}
 				switch (action.getActionType()) {
 					case IOAction.LOAD_ACTION: {
-						loadLogsFromDisk(action.getInputFile(),action.getEngine(),action.getLogsCache());
+						loadLogsFromDisk(action.getInputFile(),action.getLogListener(),action.getLogsCache());
 						break;
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
