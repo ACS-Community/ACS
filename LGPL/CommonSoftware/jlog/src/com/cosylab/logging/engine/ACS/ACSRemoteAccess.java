@@ -316,7 +316,9 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener");
 		}
-		listeners.add(listener);
+		synchronized(listeners) {
+			listeners.add(listener);
+		}
 	}
 	
 	/**
