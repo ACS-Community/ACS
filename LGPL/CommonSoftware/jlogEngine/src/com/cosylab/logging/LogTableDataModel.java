@@ -24,6 +24,7 @@ package com.cosylab.logging;
 import java.net.URL;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 
@@ -337,7 +338,8 @@ public class LogTableDataModel extends AbstractTableModel
 							in,
 							LoggingClient.getInstance(),
 							allLogs,
-							true);
+							true,
+							0);
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -378,8 +380,11 @@ public class LogTableDataModel extends AbstractTableModel
 			}
 		}
 		BufferedReader br=null;
+		int len=0;
 		try {
-			br = new BufferedReader(new FileReader(fileName),32768);
+			File f = new File(fileName);
+			len = (int)f.length();
+			br = new BufferedReader(new FileReader(f),32768);
 		} catch (FileNotFoundException fnfe) {
 			System.err.println("File not found: "+fileName);
 			return;
@@ -388,7 +393,8 @@ public class LogTableDataModel extends AbstractTableModel
 				br,
 				LoggingClient.getInstance(),
 				allLogs,
-				true);
+				true,
+				len);
 		
 	}
 
