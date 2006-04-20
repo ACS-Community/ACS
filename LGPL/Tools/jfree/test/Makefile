@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2005/11/15 23:34:49 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.5 2006/04/20 09:02:07 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -27,7 +27,6 @@ JUNIT_JAR = ../lib/junit.jar
 SERVLET_JAR = ../lib/servlet.jar
 GNU_JAXP_JAR = ../lib/gnujaxp.jar
 JCOMMON_JAR = ../lib/jcommon-$(JCOMMON_VER).jar
-CLASSPATH = $(JUNIT_JAR):$(SERVLET_JAR):$(GNU_JAXP_JAR):$(JCOMMON_JAR)
 
 #
 # Scripts (public and local)

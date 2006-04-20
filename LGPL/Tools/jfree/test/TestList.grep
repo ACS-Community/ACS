@@ -14,4 +14,4 @@ Time:
 1 - exported ACS_ABEANS_CONFIG=*
 1 - exported ACS_TMP=*
 1 -  --addToClasspath 
-1 -  --noDirectory -j
+1 -  --noDirectory
