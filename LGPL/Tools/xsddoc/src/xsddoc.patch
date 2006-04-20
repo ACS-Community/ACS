@@ -1,20 +1,8 @@
 diff -Naur tmp_unpack/net/sf/xframe/xsddoc/Task.java net/sf/xframe/xsddoc/Task.java
 --- tmp_unpack/net/sf/xframe/xsddoc/Task.java	2005-09-30 18:30:14.000000000 +0000
-+++ net/sf/xframe/xsddoc/Task.java	2006-04-20 15:51:33.652931000 +0000
-@@ -302,16 +302,26 @@
-         String namespace = null;
-         namespace = getNamespace(base, schemaLocation);
-         if (namespace == null) {
--            if (debug) {
--                System.out.println("Seems not to be a schema, ignoring " + schemaLocation);
-+            if (verbose) {
-+                System.out.println("found file   " + schemaLocation + " does not seem a schema. Ignoring");
-             }
-             return;
-         }
-         if (verbose) {
--            System.out.println("found schema " + schemaLocation);
-+            System.out.println("found schema " + schemaLocation + " (namespace is: " + namespace + ")");
++++ net/sf/xframe/xsddoc/Task.java	2006-04-20 16:11:55.605711000 +0000
+@@ -311,7 +311,17 @@
+             System.out.println("found schema " + schemaLocation);
          }
          final Element importNode = mediatorSchema.createElementNS(SCHEMA_NS, "import");
 -        final String schemaLoc = (new File(base, schemaLocation)).getAbsolutePath();
