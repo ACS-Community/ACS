@@ -11,7 +11,7 @@ import java.util.Date;
 import java.lang.reflect.*;
 
 public class DataFormatter {
-  public static int MAX_RECURSION_LEVEL=5;
+  public static int MAX_RECURSION_LEVEL = 25;
   private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
 
 /**
@@ -298,25 +298,30 @@ public static String unpackReturnValue(Object value, String start, int level,boo
 										result.append(unpackReturnValue(curField.get(value), start + " ", level + 1, expand));
 								}
 							}
-							java.lang.reflect.Method[] methods = type.getMethods();
-							for (int j = 0; j < methods.length; j++) {
-								if (java.lang.reflect.Modifier.isPublic(methods[j].getModifiers())) {
-									java.lang.reflect.Method curMet = methods[j];
-									if ((curMet.getParameterTypes().length == 0)
-										&& ((curMet.getReturnType().isPrimitive()) || (level < 1))
-										&& (!curMet.getReturnType().toString().equals("void"))
-										&& (!curMet.getName().startsWith("_"))
-										&& (!curMet.getName().equals("hashCode"))
-										&& (!curMet.getName().equals("clone"))
-										&& (!curMet.getName().equals("getClass"))
-										&& (!curMet.getName().equals("toString")))
-										result.append(
-											"\n"
-												+ start
-												+ "  |"
-												+ curMet.getName()
-												+ ": "
-												+ unpackReturnValue(curMet.invoke(value, null), start + "  |", level + 1, expand));
+							
+							// do not show Java Throwable method (e.g. getStackTrace)
+							boolean isThrowable = value instanceof Throwable;
+							if (!isThrowable) {
+								java.lang.reflect.Method[] methods = type.getMethods();
+								for (int j = 0; j < methods.length; j++) {
+									if (java.lang.reflect.Modifier.isPublic(methods[j].getModifiers())) {
+										java.lang.reflect.Method curMet = methods[j];
+										if ((curMet.getParameterTypes().length == 0)
+											&& ((curMet.getReturnType().isPrimitive()) || (level < 1))
+											&& (!curMet.getReturnType().toString().equals("void"))
+											&& (!curMet.getName().startsWith("_"))
+											&& (!curMet.getName().equals("hashCode"))
+											&& (!curMet.getName().equals("clone"))
+											&& (!curMet.getName().equals("getClass"))
+											&& (!curMet.getName().equals("toString")))
+											result.append(
+												"\n"
+													+ start
+													+ "  |"
+													+ curMet.getName()
+													+ ": "
+													+ unpackReturnValue(curMet.invoke(value, null), start + "  |", level + 1, expand));
+									}
 								}
 							}
 						}
