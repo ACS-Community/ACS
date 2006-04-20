@@ -560,7 +560,7 @@ public class IOLogsHelper extends Thread  {
 	 * @param cache The cache of logs
 	 */
 	private void loadLogsFromDisk(BufferedReader br,IACSLogRemoteConnection logListener, LogCache cache) {
-		if (br==null) {
+		if (br==null || logListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
 		
@@ -578,8 +578,6 @@ public class IOLogsHelper extends Thread  {
 		
 		int logRecordsRead = 0;
 		
-		boolean lookForOpenTag =true;
-		
 		try {
 			StopWatch stopWatch = new StopWatch();
 		
@@ -587,20 +585,16 @@ public class IOLogsHelper extends Thread  {
 				bytesRead++;
 				buffer.append((char)chRead);
 				if (chRead == '>') {
-				if (lookForOpenTag) {
 					tag = buffer.getOpeningTag();
 					if (tag.length()>0) {
 						//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
-						lookForOpenTag=false;
 						buffer.trim(tag);
 					}
-				} else {
 					if (buffer.hasClosingTag(tag)) {
 						//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
-						lookForOpenTag=true;
 						injectLog(buffer.toString(),logListener);
 						buffer.clear();
-							logRecordsRead++;
+						logRecordsRead++;
 //							if (logRecordsRead % 100 == 0) {
 //								System.out.println("Number of log records read: " + logRecordsRead);
 //							}
@@ -616,7 +610,6 @@ public class IOLogsHelper extends Thread  {
 						}
 					}
 				}
-			}
 			}
 			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
 						stopWatch.getLapTimeMillis()/1000 + " seconds.");
@@ -640,9 +633,12 @@ public class IOLogsHelper extends Thread  {
 	 * Load the logs from a buffered reader
 	 * 
 	 * @param reader The buffered reader containing the logs
-	 * @param engine The LCEngine to inject logs in the GUI
+	 * @param listener The listener to add logs in
 	 * @param cache The cache To show info in the dialog (can be null)
 	 * @param showProgress If true a progress bar is shown
+	 * @param progressRange An integer to make the progress bar showing the real 
+	 *                      state of the operation (determinate)
+	 *                      If it is <=0 then the progress bar is indeterminate
 	 * 
 	 * @see loadLogs
 	 */
@@ -650,7 +646,8 @@ public class IOLogsHelper extends Thread  {
 			BufferedReader reader,
 			IACSLogRemoteConnection listener,
 			LogCache cache,
-			boolean showProgress) {
+			boolean showProgress,
+			int progressRange) {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
 			throw new IllegalStateException("Unable to execute asynchronous operation");
@@ -669,7 +666,11 @@ public class IOLogsHelper extends Thread  {
 		
 		// No progress bar because we don't know the length of this kind of file
 		if (showProgress) {
-			progressDialog = new ProgressDialog("Loading logs...");
+			if (progressRange<=0) {
+				progressDialog = new ProgressDialog("Loading logs...");
+			} else {
+				progressDialog = new ProgressDialog("Loading logs...",0,progressRange);
+			}
 		} else {
 			progressDialog=null;
 		}
