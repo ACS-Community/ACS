@@ -123,7 +123,8 @@ int BulkDataCallback::handle_stop (void)
 	    if(state_m == CB_SEND_PARAM)
 		{		
 		//res ignored by reactor
-		res = cbStart(bufParam_p);
+		if (dim_m != 0)
+		    res = cbStart(bufParam_p);
 
 		if(bufParam_p)
 		    bufParam_p->release();
