@@ -23,12 +23,19 @@
 package alma.acs.config.validators;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * 
  */
 public abstract class ConfigFileRedeemer {
 
+	protected Logger logger;
+	
+	public ConfigFileRedeemer(Logger logger) {
+		this.logger = logger;
+	}
+	
 	/**
 	 * Checks whether the given file is known to be not a config file,
 	 * but to serve a more respectable purpose.

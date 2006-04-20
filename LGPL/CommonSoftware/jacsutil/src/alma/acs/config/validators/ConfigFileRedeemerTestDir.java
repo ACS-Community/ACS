@@ -23,6 +23,7 @@
 package alma.acs.config.validators;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * Redeems all files that are located underneath a module's test directorie(s).
@@ -37,6 +38,10 @@ public class ConfigFileRedeemerTestDir extends ConfigFileRedeemer {
 	public static final String testDirName = File.separator + "test" + File.separator;
 	public static final String srcDirName = File.separator + "src" + File.separator;
 	
+	public ConfigFileRedeemerTestDir(Logger logger) {
+		super(logger);
+	}
+
 	protected boolean _isNotAConfigFile(File file) {
 		String name = file.getAbsolutePath();
 		int testDirPos = name.lastIndexOf(testDirName);
