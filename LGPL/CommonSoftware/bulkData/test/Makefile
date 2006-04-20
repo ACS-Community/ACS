@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.21 2006/04/20 12:38:47 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.22 2006/04/20 13:31:44 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -117,6 +117,7 @@ LIBRARIES       = bulkDataReceiverLibEx1 \
 			bulkDataSenderLibEx1 \
 			bulkDataSenderLibEx2 \
 			bulkDataSenderLibPerf \
+			bulkDataReceiver1LibPerf \
 			bulkDataSendRecvLib \
 			bulkDataSenderDistrLib \
 			bulkDataReceiverDistr1Lib \
@@ -141,6 +142,10 @@ bulkDataSenderLibEx2_LIBS      = bulkDataSenderEx2Stubs bulkDataSenderStubs bulk
 
 bulkDataSenderLibPerf_OBJECTS   = bulkDataSenderPerfImpl
 bulkDataSenderLibPerf_LIBS      = bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+
+bulkDataReceiver1LibPerf_OBJECTS   = bulkDataReceiver1PerfCb
+bulkDataReceiver1LibPerf_LIBS      = bulkDataReceiverStubs bulkDataReceiver1PerfStubs bulkDataStubs \
+				   bulkDataCallback ACSBulkDataError
 
 bulkDataSendRecvLib_OBJECTS   = bulkDataSendRecvCb
 bulkDataSendRecvLib_LIBS      = bulkDataSendRecvStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs \
@@ -216,7 +221,7 @@ CDB_SCHEMAS = BulkDataReceiverEx2 BulkDataSenderEx2 BulkDataSendRecv \
 # 
 IDL_FILES = bulkDataSenderEx1 bulkDataReceiverEx2 bulkDataSenderEx2 bulkDataSendRecv \
 		bulkDataSenderDistr bulkDataReceiverDistr1 bulkDataReceiverDistr2 \
-		bulkDataSenderPerf
+		bulkDataSenderPerf bulkDataReceiver1Perf
 IDL_TAO_FLAGS =
 USER_IDL =
 #
