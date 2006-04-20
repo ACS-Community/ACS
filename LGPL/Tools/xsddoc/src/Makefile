@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.2 2005/04/06 13:32:03 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/04/20 15:58:26 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -19,7 +19,7 @@
 
 SHELL=/bin/bash
 PLATFORM := $(shell uname)
-XSDDOC_VER = 0.7-beta
+XSDDOC_VER = 1.0
 
 #
 # Jarfiles and their directories
@@ -89,7 +89,7 @@ install : install_all
 unpack : last_unpacked
 .PHONY : unpack
 
-last_unpacked: xsddoc-0.7-beta.tar.gz
+last_unpacked: xsddoc-$(XSDDOC_VER).tar.gz
 	@echo "== Extracting sources from the tar file"
 	@gtar -xzf xsddoc-$(XSDDOC_VER).tar.gz xsddoc-$(XSDDOC_VER)/src/net xsddoc-$(XSDDOC_VER)/LICENSE.txt
 	@mv xsddoc-$(XSDDOC_VER)/src/net xsddoc-$(XSDDOC_VER)/LICENSE.txt .
