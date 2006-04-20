@@ -1,5 +1,5 @@
 1 - === Processing
-1 -  --noDirectory -- net.sf.xframe.xsddoc.Main -o ../doc -verbose testLAMP.xsd
+1 -  --noDirectory -- net.sf.xframe.xsddoc.Main -o ../doc -t title -b bottom -verbose testLAMP.xsd
 1 - xsddoc starting.
 1 - process complexType {urn:schemas-cosylab-com:CDB:1.0}ArrayElement from file testCDB.xsd
 1 - process complexType {urn:schemas-cosylab-com:CDB:1.0}Array from file testCDB.xsd
@@ -70,30 +70,30 @@
 1 - ../doc/urn_schemas-cosylab-com_BACI_1.0/complexType:
 1 - CharacteristicComponent.html
 1 - CharacteristicModel.html
-1 - PEnum.html
-1 - PEnum_.html
-1 - Pdouble.html
-1 - PdoubleSeq.html
-1 - PdoubleSeq_.html
 1 - Pdouble_.html
-1 - Plong.html
-1 - PlongLong.html
-1 - PlongLong_.html
-1 - PlongSeq.html
-1 - PlongSeq_.html
+1 - Pdouble.html
+1 - PdoubleSeq_.html
+1 - PdoubleSeq.html
+1 - PEnum_.html
+1 - PEnum.html
 1 - Plong_.html
-1 - Ppattern.html
+1 - Plong.html
+1 - PlongLong_.html
+1 - PlongLong.html
+1 - PlongSeq_.html
+1 - PlongSeq.html
 1 - Ppattern_.html
+1 - Ppattern.html
 1 - Property.html
-1 - Pstring.html
-1 - PstringSeq.html
-1 - PstringSeq_.html
 1 - Pstring_.html
-1 - PuLongLong.html
+1 - Pstring.html
+1 - PstringSeq_.html
+1 - PstringSeq.html
 1 - PuLongLong_.html
-1 - ROEnum.html
+1 - PuLongLong.html
 1 - ROdouble.html
 1 - ROdoubleSeq.html
+1 - ROEnum.html
 1 - ROlong.html
 1 - ROlongLong.html
 1 - ROlongSeq.html
@@ -101,9 +101,9 @@
 1 - ROstring.html
 1 - ROstringSeq.html
 1 - ROuLongLong.html
-1 - RWEnum.html
 1 - RWdouble.html
 1 - RWdoubleSeq.html
+1 - RWEnum.html
 1 - RWlong.html
 1 - RWlongLong.html
 1 - RWlongSeq.html
@@ -118,8 +118,8 @@
 1 - overview-namespace.html
 1 - 
 1 - ../doc/urn_schemas-cosylab-com_CDB_1.0/complexType:
-1 - Array.html
 1 - ArrayElement.html
+1 - Array.html
 1 - 
 1 - ../doc/urn_schemas-cosylab-com_LAMP_1.0:
 1 - complexType
