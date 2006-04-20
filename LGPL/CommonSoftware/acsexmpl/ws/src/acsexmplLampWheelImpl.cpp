@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.16 2005/04/19 08:36:34 acaproni Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.17 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
  */
 const static int MOVE_ACTION  = 0;
 
-ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.16 2005/04/19 08:36:34 acaproni Exp $")
+ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.17 2006/04/20 08:47:59 bjeram Exp $")
 
 using namespace baci;
 
@@ -275,7 +275,7 @@ void LampWheel::char_hndl(void *data, const XML_Char *s, int len)
 /* --------------------- [ Life cycle methods ] -------------------- */
 
  void LampWheel::initialize()
-      throw (acsErrTypeLifeCycle::LifeCycleExImpl)
+      throw (ACSErr::ACSbaseExImpl)
 {
     ACS_TRACE("::LampWheel::initialize");
 
@@ -340,7 +340,7 @@ void LampWheel::char_hndl(void *data, const XML_Char *s, int len)
 
 }
 
- void LampWheel::execute() throw (acsErrTypeLifeCycle::LifeCycleExImpl)
+ void LampWheel::execute() throw (ACSErr::ACSbaseExImpl)
 {
     ACS_TRACE("::LampWheel::execute");
     // Read the actual configuration from the CDB

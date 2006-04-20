@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplBuildingImpl.h,v 1.103 2005/04/19 08:36:34 acaproni Exp $"
+* "@(#) $Id: acsexmplBuildingImpl.h,v 1.104 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -104,7 +104,7 @@ version of the C++ Building implementation currently used.
  *  Since this device has only synchronous methods, we do not inherit 
  *  from the ActionImplementator class and we do not implement the 
  *  invokeAction method.
- *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.103 2005/04/19 08:36:34 acaproni Exp $"
+ *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.104 2006/04/20 08:47:59 bjeram Exp $"
  */
 class Building: public CharacteristicComponentImpl,     //Standard component superclass
 	        public virtual POA_acsexmplBuilding::Building    //CORBA servant stub
@@ -177,7 +177,7 @@ class Building: public CharacteristicComponentImpl,     //Standard component sup
        @endhtmlonly
      */
     virtual void execute()
-	throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+	throw (ACSErr::ACSbaseExImpl);
 
     /**
      * Called after the last functional call to the component has finished.

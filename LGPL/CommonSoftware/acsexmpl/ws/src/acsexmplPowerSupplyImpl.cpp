@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.110 2005/04/19 14:36:46 acaproni Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.111 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 
 #include <acsexmplPowerSupplyImpl.h>
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.110 2005/04/19 14:36:46 acaproni Exp $")
+ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.111 2006/04/20 08:47:59 bjeram Exp $")
 
 using namespace baci;
 
@@ -72,7 +72,7 @@ PowerSupply::PowerSupply(
 
 void
 PowerSupply::execute()
-    throw (acsErrTypeLifeCycle::LifeCycleExImpl)
+    throw (ACSErr::ACSbaseExImpl)
 {
     ACS_SHORT_LOG((LM_INFO,"PowerSupply::execute"));
     

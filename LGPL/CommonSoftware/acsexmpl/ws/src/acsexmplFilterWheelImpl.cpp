@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.4 2005/09/29 07:44:44 msekoran Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.5 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ const static int MOVEFILTER_ACTION   = 0;
 const static int MOVESLOT_ACTION   = 1;
 const static int ADJUST_ACTION = 2;
 
-ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.4 2005/09/29 07:44:44 msekoran Exp $")
+ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.5 2006/04/20 08:47:59 bjeram Exp $")
 
 using namespace baci;
 
@@ -212,7 +212,7 @@ void FilterWheel::updateWheel(int slot, int step)
 /* --------------------- [ Life cycle methods ] -------------------- */
 
  void FilterWheel::initialize()
-      throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
+      throw (ACSErr::ACSbaseExImpl)
 {
     ACS_TRACE("::FilterWheel::initialize");
 
@@ -300,7 +300,7 @@ void FilterWheel::updateWheel(int slot, int step)
 	}
 }
 
- void FilterWheel::execute() throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
+ void FilterWheel::execute() throw (ACSErr::ACSbaseExImpl)
 {
     ACS_TRACE("::FilterWheel::execute");
 

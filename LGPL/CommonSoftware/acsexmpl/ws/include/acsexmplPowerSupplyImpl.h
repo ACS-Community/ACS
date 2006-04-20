@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.101 2005/04/29 14:08:41 acaproni Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.102 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -125,7 +125,7 @@ power supply's actual current) at the same time.
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.101 2005/04/29 14:08:41 acaproni Exp $"
+ * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.102 2006/04/20 08:47:59 bjeram Exp $"
  */
 class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Standard component superclass
 				   public virtual POA_PS::PowerSupply,    //CORBA servant stub
@@ -372,7 +372,7 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
        @endhtmlonly
      */
     virtual void execute()
-      throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+	throw (ACSErr::ACSbaseExImpl);
     
   protected:
     /**

@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplAmsSeqImpl.cpp,v 1.108 2005/04/19 14:36:46 acaproni Exp $"
+* "@(#) $Id: acsexmplAmsSeqImpl.cpp,v 1.109 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <acsexmplAmsSeqImpl.h>
 #include <ACSErrTypeOK.h>
 
-ACE_RCSID(acsexmpl, acsexmplAmsSeqImpl, "$Id: acsexmplAmsSeqImpl.cpp,v 1.108 2005/04/19 14:36:46 acaproni Exp $")
+ACE_RCSID(acsexmpl, acsexmplAmsSeqImpl, "$Id: acsexmplAmsSeqImpl.cpp,v 1.109 2006/04/20 08:47:59 bjeram Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -62,7 +62,7 @@ AmsTestSeq::AmsTestSeq(
 /////////////////////////////////////////////////
 void
 AmsTestSeq::execute()
-    throw (acsErrTypeLifeCycle::LifeCycleExImpl)
+    throw (ACSErr::ACSbaseExImpl)
 {
     unsigned long long timestamp;
     

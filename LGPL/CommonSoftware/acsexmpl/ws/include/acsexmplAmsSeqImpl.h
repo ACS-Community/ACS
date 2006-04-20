@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.98 2005/04/19 08:36:34 acaproni Exp $"
+* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.99 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -103,7 +103,7 @@ using namespace baci;
  *  pointing model term.  An important thing to note is this example shows usage of property
  *  sequence types (i.e., ROdoubleSeq and RWdoubleSeq).
  *
- *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.98 2005/04/19 08:36:34 acaproni Exp $"
+ *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.99 2006/04/20 08:47:59 bjeram Exp $"
  */
 class AmsTestSeq: public CharacteristicComponentImpl,     //Standard component superclass
 		  public virtual POA_AMSSEQ::AmsTestSeq    //CORBA servant stub
@@ -172,7 +172,7 @@ class AmsTestSeq: public CharacteristicComponentImpl,     //Standard component s
        @endhtmlonly
      */
     virtual void execute()
-	throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+	throw (ACSErr::ACSbaseExImpl);
     
   private:    
     /**

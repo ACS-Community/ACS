@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplBuildingImpl.cpp,v 1.123 2005/08/19 11:41:24 intusr Exp $"
+* "@(#) $Id: acsexmplBuildingImpl.cpp,v 1.124 2006/04/20 08:47:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@
  *  Implementation file for Building example.
  */
 
-ACE_RCSID(acsexmpl, acsexmplBuildingImpl, "$Id: acsexmplBuildingImpl.cpp,v 1.123 2005/08/19 11:41:24 intusr Exp $")
+ACE_RCSID(acsexmpl, acsexmplBuildingImpl, "$Id: acsexmplBuildingImpl.cpp,v 1.124 2006/04/20 08:47:59 bjeram Exp $")
 
 using namespace baci;
 using namespace maci;
@@ -68,7 +68,7 @@ Building::Building(
 
 void
 Building::execute()
-    throw (acsErrTypeLifeCycle::LifeCycleExImpl)
+    throw (ACSErr::ACSbaseExImpl)
 {
     ACS_SHORT_LOG((LM_INFO,"Building::execute"));
     
