@@ -23,6 +23,6 @@ rm -rf doc
 mkdir -p doc
 cd schemas
 echo "=== Processing"
-xsddoc -o ../doc -verbose testLAMP.xsd
+xsddoc -o ../doc -t "title" -b "bottom" -verbose testLAMP.xsd
 echo "=== Generated documentation listing"
 ls -R ../doc
