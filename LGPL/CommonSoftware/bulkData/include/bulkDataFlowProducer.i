@@ -53,7 +53,7 @@ int AcsBulkdata::BulkDataFlowProducer<TSenderCallback>::set_protocol_object(cons
 template<class TSenderCallback>
 TAO_AV_Protocol_Object * AcsBulkdata::BulkDataFlowProducer<TSenderCallback>::getProtocolObject()
 {
-  ACS_TRACE("BulkDataFlowProducer<>::getProtocolObject");
+//  ACS_TRACE("BulkDataFlowProducer<>::getProtocolObject");
 
   return protObj_p;
 }

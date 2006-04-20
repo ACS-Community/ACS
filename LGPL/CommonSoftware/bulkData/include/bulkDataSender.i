@@ -164,7 +164,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::connectToPeer(bulkdata::BulkD
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::getFlowProtocol(ACE_CString &flowname, TAO_AV_Protocol_Object *&currentProtocol_p)
 {
-    ACS_TRACE("BulkDataSender<>::getFlowProtocol");   
+//    ACS_TRACE("BulkDataSender<>::getFlowProtocol");   
 
     BulkDataFlowProducer<TSenderCallback> *fep_p = 0;
     fepMap_m.find(flowname, fep_p);
