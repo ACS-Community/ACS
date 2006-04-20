@@ -24,6 +24,7 @@ package alma.acs.config.validators;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -82,17 +83,22 @@ public class ConfigFileFinder {
 		// hardwired file endings that don't need to be supplied by any filters 
 		addFileEndings(new String[] {".properties", ".config"});
 		
-		// here we add specialized config file redeemers
-		addRedeemer(new ConfigFileRedeemerTestDir());
-		addRedeemer(new ConfigFileRedeemerXml());
-		
-		// todo: perhaps allow user-supplied redeemers to be added, based on a command line parameter (classname) 
 	}
 
+	public void configureRedeemers() throws Exception {
+		addRedeemer(new ConfigFileRedeemerFilepath(logger, baseDir));
+		addRedeemer(new ConfigFileRedeemerTestDir(logger));
+		addRedeemer(new ConfigFileRedeemerXml(logger));
+		
+		// todo: perhaps allow user-supplied redeemers to be added, based on a command line parameter (classname) 			
+	}
+
+	
 	public void addRedeemer(ConfigFileRedeemer redeemer) {
 		redeemers.add(redeemer);
 		addFileEndings(redeemer.getFileEndings());
 	}
+	
 	
 	public void configureFromArgs(String[] args) {
 		CmdLineArgs cmdArgs = new CmdLineArgs();
@@ -136,8 +142,8 @@ public class ConfigFileFinder {
 		if (baseDir == null || !baseDir.exists()) {
 			err += "baseDir '" + baseDir + "' does not exist. ";
 		}
-		if (targetDir == null || !targetDir.exists()) {
-			warn += "targetDir does not exist. No files will be copied. ";
+		if (targetDir == null) {
+			warn += "targetDir not specified. No files will be copied. ";
 		}
 		if (fileEndings.isEmpty()) {
 			// should never happen thanks to default endings 
@@ -217,15 +223,20 @@ public class ConfigFileFinder {
 		File[] allFiles = currentDir.listFiles(fileFilter);
 
 		for (int i = 0; i < allFiles.length; i++) {
-			if (allFiles[i].isFile()) {
+			if (allFiles[i].isFile()) {				
 				// check if the current file is known to be not a config file 
 				boolean redeemed = false;
-				for (Iterator<ConfigFileRedeemer> iter = redeemers.iterator(); iter.hasNext();) {
-					ConfigFileRedeemer filter = iter.next();
-					if (filter.isNotAConfigFile(allFiles[i])) {
-						redeemed = true;
-						break;
+				if (allFiles[i].canRead()) {
+					for (Iterator<ConfigFileRedeemer> iter = redeemers.iterator(); iter.hasNext();) {
+						ConfigFileRedeemer filter = iter.next();
+						if (filter.isNotAConfigFile(allFiles[i])) {
+							redeemed = true;
+							break;
+						}
 					}
+				}
+				else {
+					logger.severe("Failed to read file " + allFiles[i]);
 				}
 				if (!redeemed) {
 					handleConfigFile(allFiles[i]);
@@ -291,6 +302,7 @@ public class ConfigFileFinder {
 		try {
 			ConfigFileFinder configFinder = new ConfigFileFinder();
 			configFinder.configureFromArgs(args);
+			configFinder.configureRedeemers();
 			configFinder.checkConfiguration();
 			
 			configFinder.run();
@@ -300,5 +312,6 @@ public class ConfigFileFinder {
 			e.printStackTrace();
 		}
 	}
+
 
 }
