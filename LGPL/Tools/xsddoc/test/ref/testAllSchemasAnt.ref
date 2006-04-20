@@ -2,9 +2,9 @@
 1 - Buildfile: build.xml
 1 - 
 1 - xsddoc:
-1 -    [xsddoc] found schema testBACI.xsd (namespace is: urn:schemas-cosylab-com:BACI:1.0)
-1 -    [xsddoc] found schema testCDB.xsd (namespace is: urn:schemas-cosylab-com:CDB:1.0)
-1 -    [xsddoc] found schema testLAMP.xsd (namespace is: urn:schemas-cosylab-com:LAMP:1.0)
+1 -    [xsddoc] found schema testBACI.xsd
+1 -    [xsddoc] found schema testCDB.xsd
+1 -    [xsddoc] found schema testLAMP.xsd
 1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:CDB:1.0}ArrayElement from file .../schemas/testCDB.xsd
 1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:CDB:1.0}Array from file .../schemas/testCDB.xsd
 1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}CharacteristicModel from file .../schemas/testBACI.xsd
@@ -78,8 +78,8 @@
 1 - overview-namespace.html
 1 - 
 1 - doc2/urn_schemas-cosylab-com_BACI_1.0/complexType:
-1 - CharacteristicModel.html
 1 - CharacteristicComponent.html
+1 - CharacteristicModel.html
 1 - Pdouble_.html
 1 - Pdouble.html
 1 - PdoubleSeq_.html
