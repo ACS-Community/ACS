@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.19 2006/04/05 21:26:39 dfugate Exp $
+# @(#) $Id: Log.py,v 1.20 2006/04/21 20:55:38 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.19 2006/04/05 21:26:39 dfugate Exp $"
+__revision__ = "$Id: Log.py,v 1.20 2006/04/21 20:55:38 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -133,6 +133,17 @@ STDOUTHANDLER.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
 #create an ACS log svc handler
 ACSHANDLER = ACSHandler()
 
+
+def stdoutOk(log_priority):
+    '''
+    Helper method returns true if log_priority is greater than $ACS_LOG_STDOUT.
+    '''
+    lvl = LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]]
+
+    if lvl < log_priority:
+        return 1
+    else:
+        return 0
     
 def acsPrintExcDebug():
     '''
@@ -140,8 +151,7 @@ def acsPrintExcDebug():
     exception information is only printed to stdout of the ACS logging level
     is set to DEBUG or lower.
     '''
-    lvl = LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]]
-    if lvl < logging.INFO:
+    if stdoutOk(logging.INFO):
         print_exc()
 #------------------------------------------------------------------------------
 class Logger(logging.Logger):
