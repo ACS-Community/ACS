@@ -67,13 +67,11 @@ LIBRARIES_L     =
 
 xmlentity_OBJECTS           = xmlentityC xmlentityS
 archive_xmlstore_if_OBJECTS = archive_xmlstore_ifC
-
+archive_xmlstore_if_EXTRAS = -C ../idl/IdentifierRange.xsd
 
 #
 # Jarfiles and their directories
 #
-
-
 
 #>>>>> END OF standard rules
 
@@ -92,6 +90,7 @@ endif
 # -------
 
 all:	do_all
+	@jar -uf ../lib/archive_xmlstore_if.jar -C ../idl IdentifierRange.xsd
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
