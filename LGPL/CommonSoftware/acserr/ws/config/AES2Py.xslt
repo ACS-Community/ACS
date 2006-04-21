@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.13 2006/04/13 17:32:45 dfugate Exp $
+# @(#) $Id: AES2Py.xslt,v 1.14 2006/04/21 20:55:54 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -55,7 +55,8 @@ import </xsl:text>
     def __init__(self,
                  nvSeq = None,
                  exception = None,
-                 create = 1):
+                 create = 1,
+                 severity = None):
         '''
         Constructor
         
@@ -72,7 +73,7 @@ import </xsl:text>
             
             __init__(exception=someOldException)
               Specifying a previous ACS Error System exception or 
-              ACSErr.Completion without changing the value of create 
+              without changing the value of create 
               creates a new exception which does in fact include 
               previous error traces from someOldException.
 
@@ -88,12 +89,17 @@ import </xsl:text>
               time you can use it is when the create keyword parameter
               has the value of 1
 
+            severity default keyword parameter
+              This CORBA type corresponds to ACSErr.Severity. The
+              only time you can use it is when the create keyword parameter
+              has the value of 1
+
         Parameters:
         - nvSeq is a sequence of ACSErr.NameValue pairs used to add
         additional information about the exception. Only used when
         create has a value of 1/True
-        - exception is an ACS Error System based CORBA exception or 
-        ACSErr.Completion. Provide this to extract previous error trace 
+        - exception is an ACS Error System based CORBA exception
+        Provide this to extract previous error trace 
         information and put this into the new object being constructed
         - create is a boolean value which defines whether or not traceback
         information should be extracted from the call to create this exception
@@ -101,6 +107,8 @@ import </xsl:text>
         a remote CORBA exception locally and figure out what went wrong
         most likely you want create to have a value of 0. However, if you
         intend on rethrowing the exception a value of 1 makes more sense.
+        - severity is used to set the severity of exception. Only used when
+        create has a value of 1/True
         '''
         if nvSeq == None:
             nvSeq = []
@@ -118,7 +126,8 @@ import </xsl:text>
                           exception,
                           description,
                           nvSeq,                          
-                          create)
+                          create,
+                          severity)
         </xsl:text>
         <xsl:value-of select="../@name"/>
         <xsl:text>.</xsl:text>
@@ -142,7 +151,8 @@ import </xsl:text>
     def __init__(self,
                  nvSeq = None,
                  exception = None,
-                 create = 1):
+                 create = 1,
+                 severity = None):
         '''
         Constructor
         
@@ -156,14 +166,14 @@ import </xsl:text>
               Using the default values creates a new Completion which 
               does not include any previous error traces
             
-            __init__(exception=someOldCompletion)
-              Specifying a previous Completion without
+            __init__(exception=acsException)
+              Specifying a previous ACS Error System exception without
               changing the value of create creates a new Completion which
               does in fact include previous error traces from
-              someOldCompletion.
+              acsException.
             
-            __init__(exception=someOldCompletion, create=0)
-              Used to reconstruct someOldCompletion without adding any
+            __init__(exception=acsException, create=0)
+              Used to reconstruct acsException without adding any
               new error trace information.
 
             nvSeq default keyword parameter
@@ -172,20 +182,27 @@ import </xsl:text>
               time you can use it is when the create keyword parameter
               has the value of 1
 
+            severity default keyword parameter
+              This CORBA type corresponds to ACSErr.Severity. The
+              only time you can use it is when the create keyword parameter
+              has the value of 1
+
         Parameters:
         - nvSeq is a sequence of ACSErr.NameValue pairs used to add
         additional information about the Completion. Only used when
         create has a value of 1
-        - exception is an ACS Error System based CORBA exception or ACSErr.Completion. 
+        - exception is an ACS Error System based CORBA exception. 
 	Provide this to extract previous error trace information and put this into
         the new object being constructed
         - create is a boolean value which defines whether or not traceback
         information should be extracted from the call to create this Completion
         and added to it's error trace. If you're simply trying to recreate
-        a remote ACSErr.Completion or CORBA exception locally and figure out 
+        a remote CORBA exception locally and figure out 
         what went wrong most likely you want create to have a value of 0. 
         However, if you intend on returning the Completion a value of 1 makes 
         more sense.
+        - severity is used to set the severity of the completion. Only used when
+        create has a value of 1/True
         '''
         if nvSeq == None:
             nvSeq = []
@@ -203,7 +220,8 @@ import </xsl:text>
                           exception,
                           description,
                           nvSeq,
-                          create)
+                          create,
+                          severity)
 
         #Create the CORBA object
         ACSErr.Completion.__init__(self,
