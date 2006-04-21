@@ -1,30 +1,19 @@
 #include "bulkDataSenderPerfImpl.h"
 
-template<class TSenderCallback>
-BulkDataSenderPerfImpl<TSenderCallback>::BulkDataSenderPerfImpl(const ACE_CString& name,ContainerServices* containerServices) :
-    BulkDataSenderImpl<TSenderCallback>(name,containerServices)
+BulkDataSenderPerfImpl::BulkDataSenderPerfImpl(const ACE_CString& name,ContainerServices* containerServices) :
+    BulkDataSenderDefaultImpl(name,containerServices)
 {
 //    ACS_TRACE("BulkDataSenderPerfImpl::BulkDataSenderPerfImpl");
 }
 
 
-template<class TSenderCallback>
-BulkDataSenderPerfImpl<TSenderCallback>::~BulkDataSenderPerfImpl()
+BulkDataSenderPerfImpl::~BulkDataSenderPerfImpl()
 {
 //    ACS_TRACE("BulkDataSenderPerfImpl::~BulkDataSenderPerfImpl");
 }
 
-/*
-template<class TSenderCallback>
-void BulkDataSenderPerfImpl<TSenderCallback>::cleanUp()
-{
-//    ACS_TRACE("BulkDataSenderPerfImpl::cleanUp");
-}
-*/
 
-
-template<class TSenderCallback>
-void BulkDataSenderPerfImpl<TSenderCallback>::startSend()
+void BulkDataSenderPerfImpl::startSend()
     throw (CORBA::SystemException, AVStartSendErrorEx)
 {
     //   ACS_TRACE("BulkDataSenderPerfImpl::startSend");
@@ -88,8 +77,7 @@ void BulkDataSenderPerfImpl<TSenderCallback>::startSend()
 }
 
 
-template<class TSenderCallback>
-void BulkDataSenderPerfImpl<TSenderCallback>::paceData()
+void BulkDataSenderPerfImpl::paceData()
     throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
     //ACS_TRACE("BulkDataSenderPerfImpl::paceData");
@@ -142,8 +130,7 @@ void BulkDataSenderPerfImpl<TSenderCallback>::paceData()
 }
 
 
-template<class TSenderCallback>
-void BulkDataSenderPerfImpl<TSenderCallback>::stopSend()
+void BulkDataSenderPerfImpl::stopSend()
     throw (CORBA::SystemException, AVStopSendErrorEx)
 {
     //ACS_TRACE("BulkDataSenderPerfImpl::stopSend");
@@ -175,5 +162,5 @@ void BulkDataSenderPerfImpl<TSenderCallback>::stopSend()
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
-MACI_DLL_SUPPORT_FUNCTIONS(BulkDataSenderPerfImpl<BulkDataSenderDefaultCallback>)
+MACI_DLL_SUPPORT_FUNCTIONS(BulkDataSenderPerfImpl)
 /* ----------------------------------------------------------------*/

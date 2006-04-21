@@ -1,5 +1,5 @@
-#ifndef _BULKDATA_SENDER_PERF_H
-#define _BULKDATA_SENDER_PERF_H
+#ifndef _BULKDATA_SENDER_PERF_IMPL_H
+#define _BULKDATA_SENDER_PERF_IMPL_H
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -29,11 +29,8 @@
  * oat       20/04/06  created 
  */
 
-
-
 #include "bulkDataSenderPerfS.h"
 #include "bulkDataSenderImpl.h"
-#include "bulkDataSenderDefaultCb.h"
 
 /** @defgroup BULKDATASENDERPERFIMPLDOC Bulk Data Sender Perf Impl
  *  @{
@@ -53,17 +50,14 @@
  * @}
  */
 
-template<class TSenderCallback>
-class BulkDataSenderPerfImpl : public virtual BulkDataSenderImpl<TSenderCallback>,
-		   public virtual POA_bulkdata::BulkDataSenderPerf
+class BulkDataSenderPerfImpl : public virtual BulkDataSenderDefaultImpl,
+			       public virtual POA_bulkdata::BulkDataSenderPerf
 {    
   public:
     BulkDataSenderPerfImpl(const ACE_CString& name,ContainerServices* containerServices);
   
     virtual ~BulkDataSenderPerfImpl();
   
-    void cleanUp();
-
     virtual void startSend()
 	throw (CORBA::SystemException, AVStartSendErrorEx);
 

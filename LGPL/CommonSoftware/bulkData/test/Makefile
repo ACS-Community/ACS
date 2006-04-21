@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.23 2006/04/21 10:02:54 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.24 2006/04/21 11:58:43 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -151,7 +151,7 @@ bulkDataSenderLibEx2_OBJECTS   = bulkDataSenderEx2Impl
 bulkDataSenderLibEx2_LIBS      = bulkDataSenderEx2Stubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
 
 bulkDataSenderLibPerf_OBJECTS   = bulkDataSenderPerfImpl
-bulkDataSenderLibPerf_LIBS      = bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibPerf_LIBS      = bulkDataReceiverStubs bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
 
 bulkDataReceiver1LibPerf_OBJECTS   = bulkDataReceiver1PerfCb
 bulkDataReceiver1LibPerf_LIBS      = bulkDataReceiverStubs bulkDataReceiver1PerfStubs bulkDataStubs \
@@ -224,7 +224,7 @@ tttlll_OBJECTS  =
 # ----------------------------
 CDB_SCHEMAS = BulkDataReceiverEx2 BulkDataSenderEx2 BulkDataSendRecv \
 		BulkDataSenderDistr BulkDataReceiverDistr1 BulkDataReceiverDistr2 \
-		BulkDataSenderEx1
+		BulkDataSenderEx1 BulkDataSenderPerf BulkDataReceiver1Perf
 
 # 
 # IDL Files and flags

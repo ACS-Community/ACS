@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataPerf.cpp,v 1.1 2006/04/21 10:02:54 rcirami Exp $"
+ * "@(#) $Id: bulkDataPerf.cpp,v 1.2 2006/04/21 11:58:43 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -64,14 +64,14 @@ int main(int argc, char *argv[])
     try
 	{
 	// Get the specific component we have requested on the command-line
-	bulkdata::BulkDataReceiver1Perf_var receiver1 = client.get_object<bulkdata::BulkDataReceiver1Perf>("BulkDataReceiver", 0, true);
+	bulkdata::BulkDataReceiver1Perf_var receiver1 = client.get_object<bulkdata::BulkDataReceiver1Perf>("BulkDataReceiver1Perf", 0, true);
 	if (CORBA::is_nil (receiver1.in ()))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataReceiver1Perf Component."));
 	    return -1;
 	    }
 
-	bulkdata::BulkDataSenderPerf_var sender = client.get_object<bulkdata::BulkDataSenderPerf>("BulkDataSenderEx1", 0, true);
+	bulkdata::BulkDataSenderPerf_var sender = client.get_object<bulkdata::BulkDataSenderPerf>("BulkDataSenderPerf", 0, true);
 	if (CORBA::is_nil (sender.in ()))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataSenderPerf Component."));
