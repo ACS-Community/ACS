@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataPerf.cpp,v 1.2 2006/04/21 11:58:43 rcirami Exp $"
+ * "@(#) $Id: bulkDataPerf.cpp,v 1.3 2006/04/21 12:40:34 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -135,12 +135,12 @@ int main(int argc, char *argv[])
 	}
     
     //We release our component and logout from manager
-    client.manager()->release_component(client.handle(), "BulkDataSenderEx1");
+    client.manager()->release_component(client.handle(), "BulkDataSenderPerf");
 
     ACS_SHORT_LOG((LM_INFO,"Sleeping 3 sec to allow everything to cleanup and stabilize"));    
     ACE_OS::sleep(3);
 
-    client.manager()->release_component(client.handle(), "BulkDataReceiver");
+    client.manager()->release_component(client.handle(), "BulkDataReceiver1Perf");
     
     client.logout();
 

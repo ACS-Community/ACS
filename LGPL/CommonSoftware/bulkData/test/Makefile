@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.24 2006/04/21 11:58:43 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.25 2006/04/21 12:40:34 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -61,7 +61,8 @@ EXECUTABLES     = bulkDataEx1 \
 		  bulkDataEx2 \
 		  bulkDataSendRecvEx \
 		  bulkDataDistributerEx \
-		  bulkDataPerf
+		  bulkDataPerf \
+		  bulkDataDistrPerf
 EXECUTABLES_L   = 
 
 #
@@ -109,6 +110,16 @@ bulkDataPerf_LIBS      = bulkDataReceiverStubs \
 			bulkDataStubs \
 			bulkDataCallback \
 			ACSBulkDataError
+
+bulkDataDistrPerf_OBJECTS   = bulkDataDistrPerf	
+bulkDataDistrPerf_LIBS      = bulkDataReceiverStubs \
+			      bulkDataReceiver1PerfStubs \
+			      bulkDataSenderStubs \
+			      bulkDataSenderPerfStubs \
+			      bulkDataDistributerStubs \
+			      bulkDataStubs \
+			      bulkDataCallback \
+			      ACSBulkDataError
 
 #
 # special compilation flags for single c sources
