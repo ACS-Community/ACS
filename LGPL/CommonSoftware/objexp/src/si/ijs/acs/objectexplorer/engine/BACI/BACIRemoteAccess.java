@@ -5,9 +5,13 @@ import si.ijs.acs.objectexplorer.OETreeNode;
 import si.ijs.acs.objectexplorer.TreeHandlerBean;
 import si.ijs.acs.objectexplorer.NotificationBean;
 
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.logging.Logger;
+
 import org.omg.PortableServer.*;
 import org.omg.CORBA.*;
+
 import si.ijs.acs.objectexplorer.engine.*;
 import si.ijs.maci.*;
 import javax.swing.*;
@@ -1611,21 +1615,65 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					}
 				}
 
-				if (req.env().exception() != null)
+				Exception exceptionThrown = req.env().exception();
+				if (exceptionThrown != null)
 				{
-		
-					if (req.env().exception() instanceof org.omg.CORBA.UnknownUserException)
+					if (exceptionThrown instanceof org.omg.CORBA.UnknownUserException)
 					{
 		
 						// without ID int the CDROutputStream (value field)
-						Any exceptionValue = ((org.omg.CORBA.UnknownUserException)req.env().exception()).except;
-		
+						Any exceptionValue = ((org.omg.CORBA.UnknownUserException)exceptionThrown).except;
 						java.lang.Object userException = baciIntrospector.extractAny(exceptionValue);
-						throw (org.omg.CORBA.UserException) userException;
-		
+						
+						exceptionThrown = (org.omg.CORBA.UserException) userException;
 					}
-					else
-						throw req.env().exception();
+					
+					/* all user exception is expected to be using ACS Error System */
+					if (exceptionThrown instanceof org.omg.CORBA.UserException)
+					{
+						// generate wrapper class name
+						String wrapperName = exceptionThrown.getClass().getName();
+						int lastDotPos = wrapperName.lastIndexOf(".");
+						String onlyClassName;
+						if (lastDotPos < 0)
+						{
+							onlyClassName = wrapperName;
+							wrapperName = "wrappers." + wrapperName;
+						}
+						else
+						{
+							onlyClassName = wrapperName.substring(lastDotPos + 1);
+							wrapperName = wrapperName.substring(0, lastDotPos + 1) + "wrappers.AcsJ" + onlyClassName;
+						}
+						
+						// get Java exception wrapper and call log
+						// call <exceptionWrapperClass>.from<exceptionClassName>(caughException)
+						// and on given instance log
+						Class wrapperClass = null;
+						try
+						{
+							wrapperClass = Class.forName(wrapperName);
+							
+							Method fromMethod = wrapperClass.getMethod("from" + onlyClassName, new Class[] { exceptionThrown.getClass() });
+							java.lang.Object newInstance = fromMethod.invoke(null, new java.lang.Object[] { exceptionThrown });
+	
+							Method logMethod = wrapperClass.getMethod("log", new Class[] { Logger.class });
+							java.lang.Object retVal = logMethod.invoke(newInstance, new java.lang.Object[] { BACILogger.getLogger() });
+							
+						} catch (Throwable th)
+						{
+							notifier.reportDebug(
+									"BACIRemoteAccess::internalInvokeTrivial",
+									"Failed to wrap user exception into native ACS Error System exception: "
+										+ th.getMessage()
+										+ " for '"
+										+ exceptionThrown.getClass().getName()
+										+ "'.");
+						}
+
+					}
+					
+					throw exceptionThrown;
 				}
 
 				notifier.reportDebug(
