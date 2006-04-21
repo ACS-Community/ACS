@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.22 2006/04/20 13:31:44 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.23 2006/04/21 10:02:54 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -60,7 +60,8 @@ USER_LIB = 	-lACE \
 EXECUTABLES     = bulkDataEx1 \
 		  bulkDataEx2 \
 		  bulkDataSendRecvEx \
-		  bulkDataDistributerEx
+		  bulkDataDistributerEx \
+		  bulkDataPerf
 EXECUTABLES_L   = 
 
 #
@@ -99,6 +100,15 @@ bulkDataDistributerEx_LIBS      = bulkDataDistributerStubs \
 					bulkDataStubs \
 					bulkDataCallback \
 					ACSBulkDataError
+
+bulkDataPerf_OBJECTS   = bulkDataPerf	
+bulkDataPerf_LIBS      = bulkDataReceiverStubs \
+			bulkDataReceiver1PerfStubs \
+			bulkDataSenderStubs \
+			bulkDataSenderPerfStubs \
+			bulkDataStubs \
+			bulkDataCallback \
+			ACSBulkDataError
 
 #
 # special compilation flags for single c sources
@@ -145,7 +155,7 @@ bulkDataSenderLibPerf_LIBS      = bulkDataSenderPerfStubs bulkDataSenderStubs bu
 
 bulkDataReceiver1LibPerf_OBJECTS   = bulkDataReceiver1PerfCb
 bulkDataReceiver1LibPerf_LIBS      = bulkDataReceiverStubs bulkDataReceiver1PerfStubs bulkDataStubs \
-				   bulkDataCallback ACSBulkDataError
+				     bulkDataCallback ACSBulkDataError
 
 bulkDataSendRecvLib_OBJECTS   = bulkDataSendRecvCb
 bulkDataSendRecvLib_LIBS      = bulkDataSendRecvStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs \

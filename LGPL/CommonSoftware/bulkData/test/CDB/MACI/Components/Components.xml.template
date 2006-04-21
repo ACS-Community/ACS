@@ -58,4 +58,11 @@
                                        Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr2:1.0"
                                        Container="ContainerDistr"/>
 
+
+      <_ Name="BulkDataSenderPerf"    Code="bulkDataSenderLibPerf"	
+                                      Type="IDL:alma/bulkdata/BulkDataSenderPerf:1.0"
+                                      Container="Container1"/>
+      <_ Name="BulkDataReceiver1Perf"  Code="bulkDataReceiver1LibPerf"	
+                                       Type="IDL:alma/bulkdata/BulkDataReceiver1Perf:1.0"
+                                       Container="Container2"/>
 </Components>		     
