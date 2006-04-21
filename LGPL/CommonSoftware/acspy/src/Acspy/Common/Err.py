@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.13 2006/04/17 17:36:22 dfugate Exp $
+# @(#) $Id: Err.py,v 1.14 2006/04/21 20:56:37 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.13 2006/04/17 17:36:22 dfugate Exp $"
+__revision__ = "$Id: Err.py,v 1.14 2006/04/21 20:56:37 dfugate Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
@@ -51,7 +51,8 @@ class ACSError(ErrorTraceHelper):
                   exception = None,
                   description = "None", 
                   nvSeq = None,
-                  create = 1): #create means we create a new error.
+                  create = 1,
+                  severity = None):
         '''
         The constructor basically allows the developer to specify any number of
         parameters for an error trace, but requires none.  Python is flexible enough
@@ -65,6 +66,7 @@ class ACSError(ErrorTraceHelper):
         - nvSeq is a name-value sequence describing the error condition. Each value
         should be of the type ACSErr.NameValue
         - create with a value of 1 implies error information will be added to the stack
+        - severity is the ACSErr severity of the error
         
         Returns: Nothing
         
@@ -76,7 +78,6 @@ class ACSError(ErrorTraceHelper):
         # Get a Logger instance
         self.logger = getLogger("Acspy.Common.Err.ACSError")
         self.timehelper = TimeUtil()
-        self.logger.logTrace('Creating a new ACSError')
         
         #If create has not been changed by the developer we create a new error trace
         #appending the old one if it exists
@@ -86,7 +87,8 @@ class ACSError(ErrorTraceHelper):
                                          exception,
                                          description, 
                                          nvSeq,
-                                         3)
+                                         3,
+                                         severity)
             
         #Someone has caught a CORBA exception and is trying to convert it into
         #this helper class.

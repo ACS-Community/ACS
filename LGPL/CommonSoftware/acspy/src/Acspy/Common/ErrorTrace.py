@@ -31,6 +31,7 @@ import ACSErr
 import acstime
 
 from Acspy.Common.Log        import getLogger
+from Acspy.Common.Log        import stdoutOk
 from Acspy.Common.TimeHelper import getTimeStamp, TimeUtil
 
 from os        import linesep, getpid
@@ -38,6 +39,7 @@ from threading import currentThread
 from inspect   import stack
 from time      import gmtime, asctime
 from socket    import gethostname
+import logging
 #--------------------------------------------------------------------------
 class ErrorTraceHelper:
     '''
@@ -92,6 +94,14 @@ class ErrorTraceHelper:
 
         Raises: Nothing
         '''
+        #DWF- yes I know I should take the severity from the error trace,
+        #but does this honestly make sense given the fact that each error trace
+        #has it's own severity defined. this is a limitation of the system
+        #and unless there are complaints, we'll just use logging.ERROR for
+        #now
+        if stdoutOk(logging.ERROR):
+            self.Print()
+            
         getLogger("Acspy.Common.Err.ErrorTraceHelper").logErrorTrace(self.getErrorTrace())
         
     #--------------------------------------------------------------------------
@@ -128,6 +138,7 @@ class ErrorTraceHelper:
         message = message + nice_space    + "Type="      + str(error_trace.errorType) + "," + linesep
         message = message + nice_space    + "Code="      + str(error_trace.errorCode) + "," + linesep
         message = message + nice_space    + "ShortDescrip="      + str(error_trace.shortDescription) + "," + linesep
+        message = message + nice_space    + "Severity="      + str(error_trace.severity) + "," + linesep
         message = message + nice_space    + "Data: "
         for i in error_trace.data:
             message = message + "Name=" + str(i.name) + ", Value=" + str(i.value) + "; "
@@ -407,7 +418,8 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
                  exception = None,
                  description = "None", 
                  nvSeq = None,
-                 level = 3):
+                 level = 3,
+                 severity = None):
         '''
         Parameters:
         - error_type is the error type (a long)
@@ -418,6 +430,7 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
         should be of the type ACSErr.NameValue
         - create with a value of 1 implies error information will be added to the stack
         - offset from stack()
+        - severity is the severity of the error
         '''
         call_frame = stack()[level]
         
@@ -449,7 +462,8 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
         time = getTimeStamp().value
             
         #Set the severity
-        severity = ACSErr.Error
+        if severity == None:
+            severity = ACSErr.Error
             
         try:
             #If the previous exception is an ACS Error System Exception
