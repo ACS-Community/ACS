@@ -181,7 +181,8 @@ public class ContainerSealant implements InvocationHandler
 								? "checked exception " 
 								: "unchecked user exception (should have been declared in IDL!) " );
 				msg += "was thrown in functional method '" + qualMethodName + "':";
-				m_logger.log(Level.WARNING, msg, realThr);
+				Level logLevel = ( declared ? AcsLogLevel.DEBUG : Level.WARNING );
+				m_logger.log(logLevel, msg, realThr);
 				throw realThr;				
 			} 
 //			// TODO perhaps support ACS error handling  
@@ -198,7 +199,7 @@ public class ContainerSealant implements InvocationHandler
 			}
 			else
 			{
-				m_logger.log(Level.SEVERE, "unexpected exception was thrown in functional method '" + 
+				m_logger.log(Level.WARNING, "unexpected exception was thrown in functional method '" + 
 					qualMethodName + "': ", realThr);
 				throw realThr;				
 			}
