@@ -196,20 +196,35 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		}
 
 
-		// <Data> elements: logged exception and log parameters
+		// <Data> elements: logged exception or error trace, and log parameters
 		
-		Throwable loggedThrowable = logRecord.getThrown();
-		if (loggedThrowable != null) {
-		    StringWriter exWriter = new StringWriter();
-		    loggedThrowable.printStackTrace(new PrintWriter(exWriter));
-		    sb.append("<Data Name=\"LoggedException\">" + maskMessage(exWriter.toString()) + "</Data>");
+		try {
+			// logged exception
+			Throwable loggedThrowable = logRecord.getThrown();
+			if (loggedThrowable != null) {
+			    StringWriter exWriter = new StringWriter();
+			    loggedThrowable.printStackTrace(new PrintWriter(exWriter));
+			    sb.append("<Data Name=\"LoggedException\">" + maskMessage(exWriter.toString()) + "</Data>");
+			}
+			// error trace free-format properties from AcsJException#log (see module acserr)
+			Map errorTraceProperties = logParamExtractor.extractMapProperty("ErrorTraceProperties", null);
+			if (errorTraceProperties != null) {
+				for (Iterator iter = errorTraceProperties.keySet().iterator(); iter.hasNext();) {
+					String key = (String) iter.next();
+					String value = (String) errorTraceProperties.get(key);
+				    sb.append("<Data Name=\"" + key + "\">" + maskMessage(value) + "</Data>");
+				}
+			}
+			// other
+			Object[] params = logParamExtractor.getNonPropertiesMapParameters();
+			for (int i = 0; i < params.length; i++) {
+			    sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(params[i].toString()) + "</Data>");
+			}
 		}
-
-		
-		Object[] params = logParamExtractor.getNonPropertiesMapParameters();
-		for (int i = 0; i < params.length; i++) {
-		    sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(params[i].toString()) + "</Data>");
-        }		
+		catch (Exception e) {
+			// expected not to happen often at all, thus no try blocks inside every loop, so we may lose some <Data>
+			sb.append("<Data Name=\"DataConstructionError\">" + maskMessage(e.toString()) + "</Data>");
+		}		
 		
 		// end tag of XML record
 		sb.append("</" + levelName + ">");
