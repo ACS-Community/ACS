@@ -76,7 +76,7 @@ public class LogParameterExtractor {
 		
         Object[] parameters = logRecord.getParameters();
 		if (parameters != null) {
-			for (int i = 0; i < parameters.length && properties == null; i++) {
+			for (int i = 0; i < parameters.length; i++) {
 				if (parameters[i] instanceof Map) {
 					properties = (Map) parameters[i];
 				}
@@ -111,7 +111,7 @@ public class LogParameterExtractor {
 		if (properties != null)
 		{
 			Object lv = properties.get(name);
-			if (lv instanceof Long)
+			if (lv != null && lv instanceof Long)
 				retVal = ((Long) lv).longValue();
 		}
 
@@ -152,7 +152,7 @@ public class LogParameterExtractor {
 		if (properties != null)
 		{
 			Object mv = properties.get(name);
-			if (mv != null)
+			if (mv != null && mv instanceof Map)
 				retVal = (Map) mv;
 		}
 
