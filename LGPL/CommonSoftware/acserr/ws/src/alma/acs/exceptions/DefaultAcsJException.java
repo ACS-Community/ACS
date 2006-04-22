@@ -41,11 +41,11 @@ import alma.ACSErr.ErrorTrace;
  * 		<code>ErrorTrace</code> or <code>AcsJException</code>, we reconstruct
  * 		the non-ACS exception as a <code>DefaultAcsJException</code>,
  * 		stating the original exception class in the message string.
- * </ul> 
+ * </ul>  
  * 
  * @author hsommer Jun 20, 2003 5:47:52 PM
  */
-class DefaultAcsJException extends AcsJException
+public class DefaultAcsJException extends AcsJException
 {
 	/**
 	 * @param message
