@@ -41,6 +41,11 @@ import alma.ACSErr.NameValue;
 public class ErrorTraceManipulator
 {
 
+	/**
+	 * Returns all properties that are stored in <code>et.data</code>.
+	 * @param et
+	 * @return the <code>NameValue</code> pairs in a new <code>Properties</code> map. 
+	 */
 	public static Properties getProperties(ErrorTrace et)
 	{
 		Properties props = new Properties();
