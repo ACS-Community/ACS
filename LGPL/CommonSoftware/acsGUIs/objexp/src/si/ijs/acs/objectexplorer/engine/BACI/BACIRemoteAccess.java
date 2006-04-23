@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import org.omg.PortableServer.*;
 import org.omg.CORBA.*;
 
+import alma.acs.exceptions.AcsJCompletion;
+
 import si.ijs.acs.objectexplorer.engine.*;
 import si.ijs.maci.*;
 import javax.swing.*;
@@ -1628,50 +1630,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						exceptionThrown = (org.omg.CORBA.UserException) userException;
 					}
 					
-					/* all user exception is expected to be using ACS Error System */
-					if (exceptionThrown instanceof org.omg.CORBA.UserException)
-					{
-						// generate wrapper class name
-						String wrapperName = exceptionThrown.getClass().getName();
-						int lastDotPos = wrapperName.lastIndexOf(".");
-						String onlyClassName;
-						if (lastDotPos < 0)
-						{
-							onlyClassName = wrapperName;
-							wrapperName = "wrappers." + wrapperName;
-						}
-						else
-						{
-							onlyClassName = wrapperName.substring(lastDotPos + 1);
-							wrapperName = wrapperName.substring(0, lastDotPos + 1) + "wrappers.AcsJ" + onlyClassName;
-						}
-						
-						// get Java exception wrapper and call log
-						// call <exceptionWrapperClass>.from<exceptionClassName>(caughException)
-						// and on given instance log
-						Class wrapperClass = null;
-						try
-						{
-							wrapperClass = Class.forName(wrapperName);
-							
-							Method fromMethod = wrapperClass.getMethod("from" + onlyClassName, new Class[] { exceptionThrown.getClass() });
-							java.lang.Object newInstance = fromMethod.invoke(null, new java.lang.Object[] { exceptionThrown });
-	
-							Method logMethod = wrapperClass.getMethod("log", new Class[] { Logger.class });
-							java.lang.Object retVal = logMethod.invoke(newInstance, new java.lang.Object[] { BACILogger.getLogger() });
-							
-						} catch (Throwable th)
-						{
-							notifier.reportDebug(
-									"BACIRemoteAccess::internalInvokeTrivial",
-									"Failed to wrap user exception into native ACS Error System exception: "
-										+ th.getMessage()
-										+ " for '"
-										+ exceptionThrown.getClass().getName()
-										+ "'.");
-						}
-
-					}
+					// log ACS exception
+					logACSException(exceptionThrown);
 					
 					throw exceptionThrown;
 				}
@@ -1690,6 +1650,13 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					oRet = baciIntrospector.extractAny(anyRet);
 				java.lang.Object[] outs =
 					baciIntrospector.extractOuts(req, desc);
+
+				// check for error-type ACSCompletion-s
+				checkFromACSCompletion(oRet);
+				for (int i = 0; i < outs.length; i++)
+					checkFromACSCompletion(outs[i]);
+				
+				
 				if (target instanceof Invocation
 					&& baciIntrospector.isInvocationDestroyMethod(op.getName()))
 					new CBTimer((BACIInvocation) target).start();
@@ -1720,6 +1687,79 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		/* end DII stanza */
 
 	}
+	
+	/**
+	 * Logs ACSException.
+	 * @param exceptionThrown
+	 */
+	private void logACSException(Exception exceptionThrown) {
+
+		/* all user exception is expected to be using ACS Error System */
+		if (exceptionThrown instanceof org.omg.CORBA.UserException)
+		{
+			// generate wrapper class name
+			String wrapperName = exceptionThrown.getClass().getName();
+			int lastDotPos = wrapperName.lastIndexOf(".");
+			String onlyClassName;
+			if (lastDotPos < 0)
+			{
+				onlyClassName = wrapperName;
+				wrapperName = "wrappers." + wrapperName;
+			}
+			else
+			{
+				onlyClassName = wrapperName.substring(lastDotPos + 1);
+				wrapperName = wrapperName.substring(0, lastDotPos + 1) + "wrappers.AcsJ" + onlyClassName;
+			}
+			
+			// get Java exception wrapper and call log
+			// call <exceptionWrapperClass>.from<exceptionClassName>(caughException)
+			// and on given instance log
+			Class wrapperClass = null;
+			try
+			{
+				wrapperClass = Class.forName(wrapperName);
+				
+				Method fromMethod = wrapperClass.getMethod("from" + onlyClassName, new Class[] { exceptionThrown.getClass() });
+				java.lang.Object newInstance = fromMethod.invoke(null, new java.lang.Object[] { exceptionThrown });
+
+				Method logMethod = wrapperClass.getMethod("log", new Class[] { Logger.class });
+				java.lang.Object retVal = logMethod.invoke(newInstance, new java.lang.Object[] { BACILogger.getLogger() });
+				
+			} catch (Throwable th)
+			{
+				notifier.reportDebug(
+						"BACIRemoteAccess::internalInvokeTrivial",
+						"Failed to wrap user exception into native ACS Error System exception: "
+							+ th.getMessage()
+							+ " for '"
+							+ exceptionThrown.getClass().getName()
+							+ "'.");
+			}
+
+		}
+	}
+	
+	/**
+	 * Check if returned (out) parameter is type of ACSCompletion and
+	 * if error log it
+	 * @param param
+	 */
+	private void checkFromACSCompletion(java.lang.Object param) {
+		// check if retVal is a completion
+		if (param instanceof alma.ACSErr.Completion)
+		{
+			alma.ACSErr.Completion completion = (alma.ACSErr.Completion)param;
+			// error completion
+			if (completion.type != 0)
+			{
+				AcsJCompletion jcompletion = AcsJCompletion.fromCorbaCompletion(completion);
+				if (jcompletion.getAcsJException() != null)
+					jcompletion.getAcsJException().log(BACILogger.getLogger());
+			}
+		}
+	}
+	
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (2.11.2000 0:34:52)
