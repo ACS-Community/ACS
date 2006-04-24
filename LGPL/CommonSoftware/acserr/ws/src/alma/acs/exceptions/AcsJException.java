@@ -21,7 +21,6 @@
  */
 package alma.acs.exceptions;
 
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -76,25 +75,26 @@ public abstract class AcsJException extends Exception
 
 
 	// host and process (possibly converted from remote process!)
-	String m_host;
-	String m_process;
+	protected String m_host;
+	protected String m_process;
 
 	// location data (needed if converted back from ErrorTrace,
 	// in which case we don't have VM StackTrace available)
-	int m_line;
-	String m_method;
-	String m_file;
+	protected int m_line;
+	protected String m_method;
+	protected String m_file;
 		
 	// thread name or its ID
-	String m_threadName;
+	protected String m_threadName;
 	
-	Severity m_severity;
+	protected Severity m_severity;
 	
 	// additional name-value pairs
-	Properties m_properties;
+	protected Properties m_properties;
 
-	long m_timeMilli;
+	protected long m_timeMilli;
 
+	
 	private boolean m_initialized = false;
 	
 
@@ -591,4 +591,46 @@ public abstract class AcsJException extends Exception
         return depth;
     }
     
+	/**
+	 * @return Returns the m_file.
+	 */
+	public String getFile()
+	{
+		return m_file;
+	}
+	/**
+	 * @return Returns the m_host.
+	 */
+	public String getHost()
+	{
+		return m_host;
+	}
+	/**
+	 * @return Returns the m_line.
+	 */
+	public int getLine()
+	{
+		return m_line;
+	}
+	/**
+	 * @return Returns the m_method.
+	 */
+	public String getMethod()
+	{
+		return m_method;
+	}
+	/**
+	 * @return Returns the m_process.
+	 */
+	public String getProcess()
+	{
+		return m_process;
+	}
+	/**
+	 * @return Returns the m_threadName.
+	 */
+	public String getThreadName()
+	{
+		return m_threadName;
+	}
 }
