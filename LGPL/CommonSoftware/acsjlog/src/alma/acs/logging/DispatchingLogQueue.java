@@ -24,17 +24,16 @@ package alma.acs.logging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
-import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
-import edu.emory.mathcs.backport.java.util.concurrent.Callable;
-import edu.emory.mathcs.backport.java.util.concurrent.Future;
-import edu.emory.mathcs.backport.java.util.concurrent.PriorityBlockingQueue;
-import edu.emory.mathcs.backport.java.util.concurrent.ScheduledFuture;
-import edu.emory.mathcs.backport.java.util.concurrent.ScheduledThreadPoolExecutor;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
-import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantLock;
 
 import alma.acs.concurrent.DaemonThreadFactory;
 
@@ -61,7 +60,7 @@ import alma.acs.concurrent.DaemonThreadFactory;
  */
 public class DispatchingLogQueue {
 
-    private volatile PriorityBlockingQueue queue;
+    private volatile PriorityBlockingQueue<LogRecord> queue;
     
     // 
     private final ReentrantLock flushLock;
@@ -94,7 +93,7 @@ public class DispatchingLogQueue {
         preOverflowFlushPeriod = 0;
         currentFlushPeriod = 0;
         flushLock = new ReentrantLock();
-        queue = new PriorityBlockingQueue(100, new LogRecordComparator());        
+        queue = new PriorityBlockingQueue<LogRecord>(100, new LogRecordComparator());        
         executor = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("LogDispatcher"));
         executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
     }
@@ -189,10 +188,10 @@ public class DispatchingLogQueue {
         boolean flushSuccess = true; // not yet used
         
         while (realQueueSize() > 0) {
-            Future future = flush();
+            Future<Boolean> future = flush();
             try {
                 // the future.get call blocks until the flush thread has completed
-                flushSuccess = ((Boolean)future.get()).booleanValue();
+                flushSuccess = future.get().booleanValue();
             } catch (Exception e) {
                 flushSuccess = false;
                 if (DEBUG) {
@@ -220,17 +219,17 @@ public class DispatchingLogQueue {
      * The returned future object can be used to wait for termination of the log flush and get the result, or to cancel the flush. 
      * The result is a <code>Boolean</code> which is true if all or at least 1 log record could be taken off the log queue.
      */
-    Future flush() {
+    Future<Boolean> flush() {
         if (DEBUG) {
             System.out.println("DispatchingLogQueue#flush() called in thread " + Thread.currentThread().getName());
         }
         // run in dispatch thread  
-        Callable cmd = new Callable() {
-            public Object call() throws Exception {
+        Callable<Boolean> cmd = new Callable<Boolean>() {
+            public Boolean call() throws Exception {
                 return new Boolean(flush(false));
             }
         };
-        Future future = executor.schedule(cmd, 0, TimeUnit.NANOSECONDS);
+        Future<Boolean> future = executor.schedule(cmd, 0, TimeUnit.NANOSECONDS);
         if (DEBUG) {
             System.out.println("Pending log flushes: " + pendingFlushes());
         }
@@ -293,7 +292,7 @@ public class DispatchingLogQueue {
         else {
             flushLock.lock();
             try {
-                List logRecordList = new ArrayList();
+                List<LogRecord> logRecordList = new ArrayList<LogRecord>();
                 queue.drainTo(logRecordList, remoteLogDispatcher.getBufferSize());
                 
                 if (!logRecordList.isEmpty()) {
