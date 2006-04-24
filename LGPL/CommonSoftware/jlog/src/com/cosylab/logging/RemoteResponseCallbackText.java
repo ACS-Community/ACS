@@ -21,15 +21,15 @@
  */
 package com.cosylab.logging;
 
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * This class implements IACSLogRemoteConnection and its methods logEntryReceived and reportStatus.
+ * This class implements ACSRemoteLogListener and its methods logEntryReceived and reportStatus.
  * Creation date: (11/2/2001 3:21:42 PM)
  * @author: 
  */
-public class RemoteResponseCallbackText implements IACSLogRemoteConnection {
+public class RemoteResponseCallbackText implements ACSRemoteLogListener {
 /**
  * RemoteResponeCallbackText constructor comment.
  */

@@ -21,17 +21,17 @@
  */
 package com.cosylab.logging;
 
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * This class implements IACSLogRemoteConnection as a bean and its methods logEntryReceived 
+ * This class implements ACSRemoteLogListener as a bean and its methods logEntryReceived 
  * and reportStatus. It support custom callbacks for receiving entries submitted to 
  * the logging mechanism. Used in LoggingClient. 
  * Creation date: (1/22/02 10:22:42 AM)
  * @author: 
  */
-public class LCRemoteResponseCallbackBean implements IACSLogRemoteConnection {
+public class LCRemoteResponseCallbackBean implements ACSRemoteLogListener {
 //	private javax.swing.JTextArea textArea = null;
 //	private LogTableDataModel ltdm = null;
 	private javax.swing.JTextArea textArea = null;

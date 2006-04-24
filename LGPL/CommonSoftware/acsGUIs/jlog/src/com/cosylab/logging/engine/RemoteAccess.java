@@ -21,7 +21,7 @@
  */
 package com.cosylab.logging.engine;
 
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 
 /**
  * Interface implemented by ACSRemoteAccess and simulatorRemoteAccess. 
@@ -35,5 +35,5 @@ public interface RemoteAccess {
 	public void initialize();
 	public boolean isInitialized();
 	public boolean isConnected();
-	public void addLogRemoteConnListener(IACSLogRemoteConnection listener);
+	public void addLogRemoteConnListener(ACSRemoteLogListener listener);
 }

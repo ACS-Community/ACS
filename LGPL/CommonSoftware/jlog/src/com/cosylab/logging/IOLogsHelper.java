@@ -31,7 +31,7 @@ import java.io.IOException;
 import com.cosylab.logging.client.cache.LogCache;
 
 import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
@@ -307,7 +307,7 @@ public class IOLogsHelper extends Thread  {
 		/**
 		 * The listener i.e. the callback to push the loaded logs in 
 		 */
-		private IACSLogRemoteConnection logListener;
+		private ACSRemoteLogListener logListener;
 		
 		/**
 		 * Build an action for asynchronous load operations
@@ -317,7 +317,7 @@ public class IOLogsHelper extends Thread  {
 		 * @param theCache The cache of logs (used to shown values in the 
 		 *                 progress dialog)
 		 */
-		public IOAction(BufferedReader inFile, IACSLogRemoteConnection listener, LogCache theCache) {
+		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, LogCache theCache) {
 			this.logsCache=theCache;
 			this.inFile=inFile;
 			this.logListener=listener;
@@ -375,7 +375,7 @@ public class IOLogsHelper extends Thread  {
 		 *  
 		 * @return The listener to push loaded logs in
 		 */
-		public IACSLogRemoteConnection getLogListener() {
+		public ACSRemoteLogListener getLogListener() {
 			return logListener;
 		}
 		
@@ -559,7 +559,7 @@ public class IOLogsHelper extends Thread  {
 	 * @param logListener The callback for each new log read from the IO
 	 * @param cache The cache of logs
 	 */
-	private void loadLogsFromDisk(BufferedReader br,IACSLogRemoteConnection logListener, LogCache cache) {
+	private void loadLogsFromDisk(BufferedReader br,ACSRemoteLogListener logListener, LogCache cache) {
 		if (br==null || logListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
@@ -644,7 +644,7 @@ public class IOLogsHelper extends Thread  {
 	 */
 	public void loadLogs (
 			BufferedReader reader,
-			IACSLogRemoteConnection listener,
+			ACSRemoteLogListener listener,
 			LogCache cache,
 			boolean showProgress,
 			int progressRange) {
@@ -693,7 +693,7 @@ public class IOLogsHelper extends Thread  {
 	 * @param logStr The string representation of the log
 	 * @param logListener The listener i.e. the callback for each new log to add
 	 */
-	private void injectLog(String logStr, IACSLogRemoteConnection logListener) {
+	private void injectLog(String logStr, ACSRemoteLogListener logListener) {
 		ILogEntry log=null;
 		try {
 			if (parser == null) {

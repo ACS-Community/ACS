@@ -67,7 +67,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.LCEngine;
 
 import com.cosylab.logging.stats.StatsDlg;
@@ -107,7 +107,7 @@ import com.cosylab.logging.search.SearchDialog;
  * One solution is replacing the character with the appropriate html substitute &lt;.
  * Another solution is keeping it in a CDATA section: <[!CDATA[the log entry message]]>.
  */
-public class LoggingClient extends JFrame implements IACSLogRemoteConnection
+public class LoggingClient extends JFrame implements ACSRemoteLogListener
 {
 	// The loggingClient is a singleton
 	private static LoggingClient singleton=null;
@@ -2005,7 +2005,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
     }
     
     /**
-     * @see com.cosylab.logging.engine.ACS.IACSLogRemoteConnection
+     * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void logEntryReceived(ILogEntry logEntry) {
     	int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
@@ -2016,7 +2016,7 @@ public class LoggingClient extends JFrame implements IACSLogRemoteConnection
     }
     
     /**
-     * @see com.cosylab.logging.engine.ACS.IACSLogRemoteConnection
+     * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void reportStatus(String status) {
     	getStatusArea().append(status+"\n");

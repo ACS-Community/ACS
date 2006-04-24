@@ -22,7 +22,7 @@
 package com.cosylab.logging.engine.simulator;
 
 import com.cosylab.logging.engine.log.LogEntryXML;
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 
 import java.util.Random;
 /**
@@ -32,18 +32,18 @@ import java.util.Random;
  */
 public class simulatorRemoteAccess extends Thread implements com.cosylab.logging.engine.RemoteAccess {
 	private boolean isInitalized = false;
-	private IACSLogRemoteConnection logListener;
+	private ACSRemoteLogListener logListener;
 	private Random random;
 	
 /**
 	 * simulatorRemoteAccess constructor comment.
 	 */
-	public simulatorRemoteAccess(IACSLogRemoteConnection listener) {
+	public simulatorRemoteAccess(ACSRemoteLogListener listener) {
 		this.logListener = listener;
 		random = new Random();
 	}
 	
-	public void addLogRemoteConnListener(IACSLogRemoteConnection listener) {
+	public void addLogRemoteConnListener(ACSRemoteLogListener listener) {
 		this.logListener=listener;
 	}
 	

@@ -22,7 +22,7 @@
 package com.cosylab.logging.engine.ACS;
 
 import com.cosylab.logging.engine.RemoteAccess;
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 // for POA initialization
@@ -51,7 +51,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	public static final String NAME_SERVICE = "NameService";
 	public static final String LOGGING_CHANNEL = "LoggingChannel";
 	
-	private Vector<IACSLogRemoteConnection> listeners = new Vector<IACSLogRemoteConnection>();
+	private Vector<ACSRemoteLogListener> listeners = new Vector<ACSRemoteLogListener>();
 	
 	private boolean isInitialized = false;
 	private ORB orb = null;
@@ -312,7 +312,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	 * 
 	 * @param listener The listener to add
 	 */
-	public void addLogRemoteConnListener(IACSLogRemoteConnection listener) {
+	public void addLogRemoteConnListener(ACSRemoteLogListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener");
 		}
@@ -328,7 +328,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	 * @return true if the listener is effectively removed
 	 * 
 	 */
-	public boolean removeLogRemoteConnListener(IACSLogRemoteConnection listener) {
+	public boolean removeLogRemoteConnListener(ACSRemoteLogListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener");
 		}
@@ -346,7 +346,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		}
 		synchronized(listeners) {
 			for (int t=0; t<listeners.size(); t++) {
-				IACSLogRemoteConnection listener = listeners.get(t);
+				ACSRemoteLogListener listener = listeners.get(t);
 				if (listener!=null) {
 					listener.reportStatus(message);
 				}
@@ -365,7 +365,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		}
 		synchronized(listeners) {
 			for (int t=0; t<listeners.size(); t++) {
-				IACSLogRemoteConnection listener = listeners.get(t);
+				ACSRemoteLogListener listener = listeners.get(t);
 				if (listener!=null) {
 					listener.logEntryReceived(newLog);
 				}

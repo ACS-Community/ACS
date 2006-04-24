@@ -28,7 +28,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * that support custom callbacks for receiving entries 
  * submitted to the logging mechanism and for processing them.
  */
-public interface IACSLogRemoteConnection {
+public interface ACSRemoteLogListener {
 	/**
 	 * The method is executed when a new log arrives from the NC
 	 * 

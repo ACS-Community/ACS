@@ -21,13 +21,9 @@
  */
 package com.cosylab.logging;
 
-import java.util.Vector;
-
 import javax.swing.JOptionPane;
 
-import com.cosylab.logging.engine.ACS.IACSLogRemoteConnection;
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.RemoteAccess;
 
 /**
@@ -50,7 +46,7 @@ public class LCEngine implements Runnable {
 	private boolean wasConnected=false;
 	
 	private RemoteAccess remoteAccess = null;
-	private IACSLogRemoteConnection remoteResponseCallback = null;
+	private ACSRemoteLogListener remoteResponseCallback = null;
 
 	/** 
 	 * A thread used to set and initialize RemoteAccess
@@ -104,7 +100,7 @@ public class LCEngine implements Runnable {
 	 * LCEngine constructor comment.
 	 * @param logEventListener The lister for log events
 	 */
-	public LCEngine(IACSLogRemoteConnection logEventListener) {
+	public LCEngine(ACSRemoteLogListener logEventListener) {
 		if (logEventListener==null) {
 			throw new IllegalArgumentException("Invalid null listener in constructor");
 		}
