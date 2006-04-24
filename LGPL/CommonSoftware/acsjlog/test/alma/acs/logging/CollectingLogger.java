@@ -21,13 +21,7 @@
  */
 package alma.acs.logging;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 
 import alma.acs.testsupport.LogRecordCollectingLogger;
 
@@ -40,30 +34,16 @@ import alma.acs.testsupport.LogRecordCollectingLogger;
  */
 public class CollectingLogger extends LogRecordCollectingLogger {
 
-    private List logRecordList = Collections.synchronizedList(new ArrayList());
-    private boolean suppressLogs = false;
     
     /**
-     * @see java.util.logging.Logger#getLogger(java.lang.String)
+     * Don't use this ctor directly!
+     * Instead, use {@link LogRecordCollectingLogger#getCollectingLogger(java.lang.String, java.lang.Class)},
+     * passing <code>CollectingLogger.class</code> as the second argument.
+     * (This is some experiment, so don't ask why...)
+     * @param name
+     * @param resourceBundleName
      */
-    public static synchronized CollectingLogger getTestLogger(String name) {
-        LogManager manager = LogManager.getLogManager();
-        CollectingLogger result = (CollectingLogger) manager.getLogger(name);
-        if (result == null) {
-            result = new CollectingLogger(name, null);
-            manager.addLogger(result);
-            result = (CollectingLogger) manager.getLogger(name);
-        }
-        result.setLevel(Level.FINEST);
-        result.setUseParentHandlers(false);
-        Handler logHandler = new ConsoleHandler();
-        logHandler.setLevel(Level.FINEST);
-        result.addHandler(logHandler);      
-
-        return result;
-    }
-
-    protected CollectingLogger(String name, String resourceBundleName) {
+    public CollectingLogger(String name, String resourceBundleName) {
         super(name, resourceBundleName);
     }
 
