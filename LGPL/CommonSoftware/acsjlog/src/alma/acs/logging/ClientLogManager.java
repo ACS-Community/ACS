@@ -24,6 +24,8 @@ package alma.acs.logging;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -34,9 +36,6 @@ import org.omg.DsLogAdmin.Log;
 import org.omg.DsLogAdmin.LogHelper;
 
 import si.ijs.maci.Manager;
-
-import edu.emory.mathcs.backport.java.util.concurrent.Future;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
@@ -551,7 +550,7 @@ public class ClientLogManager
             else {
                 // trigger one last flush, which may itself attempt to trigger more flushes, 
                 // but only until shutDown prohibits further scheduling.
-                Future flushFuture = logQueue.flush();
+                Future<Boolean> flushFuture = logQueue.flush();
                 // wait at most 200 milliseconds, to give the flush a chance to reach the central log service.
                 // we don't care about the result.
                 try {
