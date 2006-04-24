@@ -18,23 +18,23 @@ import java.util.*;
 public class TopologicalSort
 {
 	// the graph as a List of Vertex objects
-	private Collection m_vertices;
+	private Collection<Vertex> m_vertices;
 
 	// the sorted graph as a List of Vertex objects
-	private LinkedList m_sortedVertices;
+	private LinkedList<Vertex> m_sortedVertices;
 
 	// Map [key = Vertex, Value = List of Vertex objects that form a back edge in the graph]
-	private Map m_cyclicVertices;
+	private Map<Vertex, List<Vertex>> m_cyclicVertices;
 
 
 	/**
 	 * Constructor that takes the nodes, which we hope form a directed acyclic graph
 	 * @param vertices
 	 */
-	public TopologicalSort(Collection vertices)
+	public TopologicalSort(Collection<Vertex> vertices)
 	{
 		m_vertices = vertices;
-		m_sortedVertices = new LinkedList();
+		m_sortedVertices = new LinkedList<Vertex>();
 	}
 
 	/** 
@@ -45,16 +45,15 @@ public class TopologicalSort
 	public List sort()
 	{
 		// init
-		for (Iterator iter = m_vertices.iterator(); iter.hasNext(); )
+		for (Iterator<Vertex> iter = m_vertices.iterator(); iter.hasNext(); )
 		{
-			Vertex vertex = (Vertex) iter.next();
-			vertex.setColor(Vertex.WHITE);
+			iter.next().setColor(Vertex.WHITE);
 		}
 
 		// depth-first-search
-		for (Iterator iter = m_vertices.iterator(); iter.hasNext(); )
+		for (Iterator<Vertex> iter = m_vertices.iterator(); iter.hasNext(); )
 		{
-			Vertex vertex = (Vertex) iter.next();
+			Vertex vertex = iter.next();
 			if (vertex.getColor() == Vertex.WHITE)
 			{
 				dfsVisit(vertex);
@@ -68,9 +67,9 @@ public class TopologicalSort
 	private void dfsVisit(Vertex vertex)
 	{
 		vertex.setColor(Vertex.GRAY);
-		for (Iterator iter = vertex.getAdjacencyList().iterator(); iter.hasNext(); )
+		for (Iterator<Vertex> iter = vertex.getAdjacencyList().iterator(); iter.hasNext(); )
 		{
-			Vertex descendant = (Vertex) iter.next();
+			Vertex descendant = iter.next();
 			if (descendant.getColor() == Vertex.WHITE)
 			{
 				///descendant.setPredecessor(vertex);
@@ -81,13 +80,13 @@ public class TopologicalSort
 				// we found a "back edge", which means a cycle in the graph
 				if (m_cyclicVertices == null)
 				{
-					m_cyclicVertices = new HashMap();
+					m_cyclicVertices = new HashMap<Vertex, List<Vertex>>();
 				}
 				if (m_cyclicVertices.get(vertex) == null)
 				{
-					m_cyclicVertices.put(vertex, new ArrayList());
+					m_cyclicVertices.put(vertex, new ArrayList<Vertex>());
 				}
-				((List) m_cyclicVertices.get(vertex)).add(descendant);
+				m_cyclicVertices.get(vertex).add(descendant);
 			}
 		}
 

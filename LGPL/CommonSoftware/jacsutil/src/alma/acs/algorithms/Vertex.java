@@ -15,7 +15,7 @@ public class Vertex
 
 	// members for the sorting algorithm
 	private int    m_color;
-	private List   m_adjacencyList;
+	private List<Vertex>   m_adjacencyList;
 
 	// user object (the real entity on whose behalf the Vertex gets sorted)
 	private Object m_userObject;
@@ -33,7 +33,7 @@ public class Vertex
 	public Vertex(Object userObject)
 	{
 		m_userObject = userObject;
-		m_adjacencyList = new ArrayList();
+		m_adjacencyList = new ArrayList<Vertex>();
 	}
 
 
@@ -73,7 +73,7 @@ public class Vertex
 		return m_color;
 	}
 
-	List getAdjacencyList()
+	List<Vertex> getAdjacencyList()
 	{
 		return m_adjacencyList;
 	}
