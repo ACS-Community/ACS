@@ -2436,7 +2436,7 @@ public class ManagerImplTest extends TestCase
 	}
 
 	/**
-	 * Test getDefaultComponent.
+	 * Test getDynamicComponent.
 	 */
 	public void testGetDynamicComponent()
 	{
@@ -2876,6 +2876,189 @@ public class ManagerImplTest extends TestCase
 			System.out.println("This is OK: "+icse.getMessage());
 		}
 
+	}
+
+	/**
+	 * Test getCollocatedComponent.
+	 */
+	public void testGetCollocatedComponent()
+	{
+		URI mountURI = null;
+		try {
+			mountURI = new URI("MOUNT1");
+		} catch (URISyntaxException e) {
+			fail();
+		}
+		
+		try
+		{
+			manager.getCollocatedComponent(0, null, false, null);
+			fail();
+		}
+		catch (BadParametersException bpe)
+		{
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK: "+bpe.getMessage());
+		}
+	
+		final ComponentSpec allAsterixCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
+																   ComponentSpec.COMPSPEC_ANY,
+																   ComponentSpec.COMPSPEC_ANY, 
+																   ComponentSpec.COMPSPEC_ANY);
+	
+		try
+		{
+			manager.getCollocatedComponent(Integer.MAX_VALUE, allAsterixCompSpec, true, dummyURI);
+			fail();
+		}
+		catch (NoPermissionException npe)
+		{
+			new ExceptionIgnorer(npe);
+			System.out.println("This is OK: "+npe.getMessage());
+		}
+	
+		try
+		{
+			manager.getCollocatedComponent(dummyHandle, allAsterixCompSpec, false, dummyURI);
+			fail();
+		}
+		catch (NoPermissionException npe)
+		{
+			new ExceptionIgnorer(npe);
+			System.out.println("This is OK: "+npe.getMessage());
+		}
+	
+	
+		TestClient client = new TestClient(clientName);
+		ClientInfo info = manager.login(client);
+	
+		assertTrue(info.getHandle() != 0);
+	
+		try
+		{
+			manager.getCollocatedComponent(info.getHandle(), null, true, dummyURI);
+			fail();
+		}
+		catch (BadParametersException bpe)
+		{
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK: "+bpe.getMessage());
+		}
+	
+		try
+		{
+			manager.getCollocatedComponent(info.getHandle(), allAsterixCompSpec, true, null);
+			fail();
+		}
+		catch (BadParametersException bpe)
+		{
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK: "+bpe.getMessage());
+		}
+
+		try
+		{
+			manager.getCollocatedComponent(info.getHandle(), new ComponentSpec(null, null, null, null), false, mountURI);
+			fail();
+		}
+		catch (BadParametersException ndce)
+		{
+			new ExceptionIgnorer(ndce);
+			System.out.println("This is OK: "+ndce.getMessage());
+		}
+
+		
+		final ComponentSpec specifiedContainerCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
+				   ComponentSpec.COMPSPEC_ANY,
+				   ComponentSpec.COMPSPEC_ANY, 
+				   "someContainer");
+
+		try
+		{
+			manager.getCollocatedComponent(info.getHandle(), specifiedContainerCompSpec, false, mountURI);
+			fail();
+		}
+		catch (BadParametersException ndce)
+		{
+			new ExceptionIgnorer(ndce);
+			System.out.println("This is OK: "+ndce.getMessage());
+		}
+
+		
+		// containers
+		TestContainer container = new TestContainer("Container");
+		Map supportedComponents = new HashMap();
+		TestComponent mount1COB = new TestComponent("MOUNT1");
+		supportedComponents.put("MOUNT1", mount1COB);
+		TestComponent mountCollCOB = new TestComponent("MOUNT_COLLOCATED");
+		supportedComponents.put("MOUNT_COLLOCATED", mountCollCOB);
+		TestComponent mountColl2COB = new TestComponent("MOUNT_COLLOCATED2");
+		supportedComponents.put("MOUNT_COLLOCATED2", mountCollCOB);
+		container.setSupportedComponents(supportedComponents);
+	
+		ClientInfo containerInfo = manager.login(container);
+	
+		
+		TestContainer dynContainer = new TestDynamicContainer("DynContainer");
+	
+		/*ClientInfo dynContainerInfo =*/ manager.login(dynContainer);
+	
+		// wait containers to startup
+		try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
+
+		// standard case
+		try
+		{
+			ComponentInfo componentInfo = manager.getCollocatedComponent(info.getHandle(),
+												new ComponentSpec("MOUNT_COLLOCATED", "java.lang.Object",
+																  "java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, mountURI);
+			assertTrue(componentInfo != null);
+			assertTrue(componentInfo.getName().equals("MOUNT_COLLOCATED"));
+			assertEquals(containerInfo.getHandle(), componentInfo.getContainer());
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+	
+		// from CDB
+		try
+		{
+			URI mount2URI = new URI("MOUNT2");
+			
+			ComponentInfo componentInfo = manager.getCollocatedComponent(info.getHandle(),
+												new ComponentSpec("MOUNT_COLLOCATED2", "java.lang.Object",
+																  "java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, mount2URI);
+			assertTrue(componentInfo != null);
+			assertTrue(componentInfo.getName().equals("MOUNT_COLLOCATED2"));
+			assertEquals(containerInfo.getHandle(), componentInfo.getContainer());
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+
+		// from CDB, but there is not entry...
+		try
+		{
+			URI noEntryURI = new URI("noEntry");
+			
+			ComponentInfo componentInfo = manager.getCollocatedComponent(info.getHandle(),
+												new ComponentSpec("MOUNT_COLLOCATED3", "java.lang.Object",
+																  "java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, noEntryURI);
+			fail();
+		}
+		catch (IncompleteComponentSpecException icse)
+		{
+			new ExceptionIgnorer(icse);
+			System.out.println("This is OK: "+icse.getMessage());
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			fail();
+		}
+		
 	}
 
 	public void testReleaseComponent()

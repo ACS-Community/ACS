@@ -6920,7 +6920,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// not found
-		NoDefaultComponentException ndce = new NoDefaultComponentException(this, "No default default component for type '" + type + "' found.");
+		NoDefaultComponentException ndce = new NoDefaultComponentException(this, "No default component for type '" + type + "' found.");
 		ndce.caughtIn(this, "internalRequestDefaultComponent");
 		ndce.putValue("type", type);
 		throw ndce; 
@@ -7054,23 +7054,23 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Manager#getCoDeployedComponent(int, com.cosylab.acs.maci.ComponentSpec, boolean, URI)
+	 * @see com.cosylab.acs.maci.Manager#getCollocatedComponent(int, com.cosylab.acs.maci.ComponentSpec, boolean, URI)
 	 */
 	// TODO MF not supported
-	public ComponentInfo getCoDeployedComponent(int id, ComponentSpec componentSpec,
+	public ComponentInfo getCollocatedComponent(int id, ComponentSpec componentSpec,
 			boolean markAsDefault, URI targetComponentURI)
 		throws NoPermissionException, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException
 	{
 		if (isDebug())
-			new MessageLogEntry(this, "getCoDeployedComponent", new Object[] { new Integer(id), componentSpec, new Boolean(markAsDefault), targetComponentURI }).dispatch(); 
+			new MessageLogEntry(this, "getCollocatedComponent", new Object[] { new Integer(id), componentSpec, new Boolean(markAsDefault), targetComponentURI }).dispatch(); 
 
 		// check if null
 		if (componentSpec == null) 
 		{
 			// BAD_PARAM
 			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' expected.");
-			af.caughtIn(this, "getCoDeployedComponent");
+			af.caughtIn(this, "getCollocatedComponent");
 			af.putValue("componentSpec", componentSpec);
 			throw af;
 		}
@@ -7081,7 +7081,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// BAD_PARAM
 			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' fields expected.");
-			af.caughtIn(this, "getCoDeployedComponent");
+			af.caughtIn(this, "getCollocatedComponent");
 			af.putValue("componentSpec", componentSpec);
 			throw af;
 		}
@@ -7091,7 +7091,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// BAD_PARAM
 			BadParametersException af = new BadParametersException(this, "Non-empty 'componentSpec.name' field expected.");
-			af.caughtIn(this, "getCoDeployedComponent");
+			af.caughtIn(this, "getCollocatedComponent");
 			af.putValue("componentSpec", componentSpec);
 			throw af;
 		}
@@ -7101,8 +7101,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// BAD_PARAM
 			BadParametersException af = new BadParametersException(this, "Non-null 'targetComponentURI' expected.");
-			af.caughtIn(this, "getCoDeployedComponent");
+			af.caughtIn(this, "getCollocatedComponent");
 			af.putValue("targetComponentURI", targetComponentURI);
+			throw af;
+		}
+
+		if (!componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY))
+		{
+			// BAD_PARAM
+			BadParametersException af = new BadParametersException(this, "'" + ComponentSpec.COMPSPEC_ANY + "' value for 'componentSpec.container' field expected.");
+			af.caughtIn(this, "getCollocatedComponent");
+			af.putValue("componentSpec", componentSpec);
 			throw af;
 		}
 
@@ -7134,25 +7143,29 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// if not found, check the CDB
 		if (targetComponentInfo == null)
 		{
-			throw new NoPermissionException("not implemented yet");
+			DAOProxy componentsDAO = getComponentsDAOProxy();
+			if (componentsDAO != null)
+			{
+				// read container name
+				String containerName = readStringCharacteristics(componentsDAO, name+"/Container", true);
+				if (containerName != null)
+					componentSpec.setContainer(containerName);
+			}
 		}
+		else
+			componentSpec.setContainer(targetComponentInfo.getContainerName());
 		
-		if (componentSpec.getContainer() != null && targetComponentInfo.getContainerName() != null &&
-			!componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY) &&
-			!componentSpec.getContainer().equals(targetComponentInfo.getContainerName()))
+		// failed to detemine a target container
+		if (componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY))
 		{
-			InvalidComponentSpecException icse = new InvalidComponentSpecException(this, 
-					"ComponentSpec.container_name and targetComponent component container differ.",
-					componentSpec);
-			icse.caughtIn(this, "getCoDeployedComponent");
-			icse.putValue("componentSpec", componentSpec);
-			icse.putValue("targetComponentInfo.getContainerName()", targetComponentInfo.getContainerName());
+			IncompleteComponentSpecException icse = new IncompleteComponentSpecException(this, 
+					"Failed to detemine a target container (determined by component '" + name + "').", componentSpec);
+			icse.caughtIn(this, "internalRequestDynamicComponent");
+			icse.putValue("getCollocatedComponent", componentSpec);
 			throw icse;
-			
 		}
-		
-		componentSpec.setContainer(targetComponentInfo.getContainerName());
-		
+			
+		// request for component
 		ComponentInfo componentInfo = internalRequestDynamicComponent(id, componentSpec);
 
 		// update default components table
@@ -7165,14 +7178,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//defaultComponents.put(componentInfo.getType(), componentInfo.getName());
 			}
 
-			new MessageLogEntry(this, "getCoDeployedComponent", "'" + componentInfo.getName() +"' has been marked as a default component of type '" +
+			new MessageLogEntry(this, "getCollocatedComponent", "'" + componentInfo.getName() +"' has been marked as a default component of type '" +
 																      componentInfo.getType() +"'.", LoggingLevel.INFO).dispatch();
 		}
 
 		/****************************************************************/
 
 		if (isDebug())
-			new MessageLogEntry(this, "getCoDeployedComponent", "Exiting.", Level.FINEST).dispatch();
+			new MessageLogEntry(this, "getCollocatedComponent", "Exiting.", Level.FINEST).dispatch();
 			
 		return componentInfo;
 	}

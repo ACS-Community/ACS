@@ -82,6 +82,14 @@
 1 - This is OK: Requested ComponentSpec does not match any entry in the CDB.
 1 - This is OK: Requested ComponentSpec does not match any entry in the CDB.
 1 - This is OK: Requested ComponentSpec does not match any entry in the CDB.
+1 - This is OK: Non-null 'componentSpec' expected.
+1 - This is OK: Invalid handle.
+1 - This is OK: Invalid handle.
+1 - This is OK: Non-null 'componentSpec' expected.
+1 - This is OK: Non-null 'targetComponentURI' expected.
+1 - This is OK: Non-null 'componentSpec' fields expected.
+1 - This is OK: '*' value for 'componentSpec.container' field expected.
+1 - This is OK: Failed to detemine a target container (determined by component 'noEntry').
 1 - This is OK: Non-null CURL expected.
 1 - This is OK: Non-null CURL expected.
 1 - This is OK: Invalid handle.
@@ -96,7 +104,7 @@
 1 - This is OK: Restarting component that client does not own.
 1 - 
 1 - 
-1 - OK (34 tests)
+1 - OK (35 tests)
 1 - 
 1 -  Stopping the services
 1 - ..

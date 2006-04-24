@@ -284,7 +284,7 @@ public interface Manager
 	 * 			If <code>componentSpec</code> if found to be incomplete <code>IncompleteComponentSpecException</code> exception is thrown.
 	 * 			If requested component collides with already activated component with the same name <code>ComponentSpecIncompatibleWithActiveComponentException</code> exception is thrown.
 	 */
-	public ComponentInfo getCoDeployedComponent(int id, ComponentSpec componentSpec,
+	public ComponentInfo getCollocatedComponent(int id, ComponentSpec componentSpec,
 			boolean markAsDefault, URI targetComponentURI)
 		throws NoPermissionException, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;

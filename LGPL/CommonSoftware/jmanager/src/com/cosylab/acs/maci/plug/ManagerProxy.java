@@ -250,9 +250,9 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     }
     
     /**
-     * @see com.cosylab.acs.maci.Manager#getCoDeployedComponent(int, com.cosylab.acs.maci.ComponentSpec, boolean, URI)
+     * @see com.cosylab.acs.maci.Manager#getCollocatedComponent(int, com.cosylab.acs.maci.ComponentSpec, boolean, URI)
      */
-    public ComponentInfo getCoDeployedComponent(int id,
+    public ComponentInfo getCollocatedComponent(int id,
             ComponentSpec componentSpec, boolean markAsDefault, URI targetComponentURI)
             throws NoPermissionException, IncompleteComponentSpecException,
             InvalidComponentSpecException,

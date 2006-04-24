@@ -1726,7 +1726,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
 			ComponentSpec componentSpec = new ComponentSpec(c.component_name, c.component_type, c.component_code, c.container_name);
-			com.cosylab.acs.maci.ComponentInfo info = manager.getCoDeployedComponent(id, componentSpec, mark_as_default, targetComponentURI);
+			com.cosylab.acs.maci.ComponentInfo info = manager.getCollocatedComponent(id, componentSpec, mark_as_default, targetComponentURI);
 
 			// transform to CORBA specific
 			if (info != null)
