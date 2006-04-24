@@ -21,6 +21,7 @@
  */
 package alma.acs.testsupport;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
  */
 public class LogRecordCollectingLogger extends Logger {
 
-    private List logRecordList = Collections.synchronizedList(new ArrayList());
+    private List<LogRecord> logRecordList = Collections.synchronizedList(new ArrayList<LogRecord>());
     
     private boolean suppressLogs = false;
     private Logger delegate;
@@ -49,20 +50,34 @@ public class LogRecordCollectingLogger extends Logger {
      * @see java.util.logging.Logger#getLogger(java.lang.String)
      */
     public static synchronized LogRecordCollectingLogger getCollectingLogger(String name) {
+    	return getCollectingLogger(name, LogRecordCollectingLogger.class);
+    }
+
+    public static synchronized LogRecordCollectingLogger getCollectingLogger(String name, Class<? extends LogRecordCollectingLogger> loggerClass) {
         LogManager manager = LogManager.getLogManager();
-        LogRecordCollectingLogger result = (LogRecordCollectingLogger) manager.getLogger(name);
-        if (result == null) {
-            result = new LogRecordCollectingLogger(name, null);
-            manager.addLogger(result);
-            result = (LogRecordCollectingLogger) manager.getLogger(name);
+        Logger logger = manager.getLogger(name);
+        if (logger != null && !loggerClass.isInstance(logger)) {
+        	throw new ClassCastException("Logger '" + name + "' is already used and is of wrong type " + logger.getClass().getName());
         }
-        result.setLevel(Level.FINEST);
-        result.setUseParentHandlers(false);
+        LogRecordCollectingLogger myLogger = (LogRecordCollectingLogger) logger;
+        if (myLogger == null) {
+        	try {
+				Constructor<? extends LogRecordCollectingLogger> ctor = loggerClass.getConstructor(String.class, String.class);
+				myLogger = ctor.newInstance(name, null);
+				manager.addLogger(myLogger);
+				myLogger = (LogRecordCollectingLogger) manager.getLogger(name);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        myLogger.setLevel(Level.FINEST);
+        myLogger.setUseParentHandlers(false);
         Handler logHandler = new ConsoleHandler();
         logHandler.setLevel(Level.FINEST);
-        result.addHandler(logHandler);      
+        myLogger.addHandler(logHandler);      
 
-        return result;
+        return myLogger;
     }
 
     protected LogRecordCollectingLogger(String name, String resourceBundleName) {
@@ -86,7 +101,7 @@ public class LogRecordCollectingLogger extends Logger {
 
     
     public LogRecord[] getCollectedLogRecords() {
-        return (LogRecord[]) logRecordList.toArray(new LogRecord[logRecordList.size()]);
+        return logRecordList.toArray(new LogRecord[logRecordList.size()]);
     }
 
     public void clearLogRecords() {
