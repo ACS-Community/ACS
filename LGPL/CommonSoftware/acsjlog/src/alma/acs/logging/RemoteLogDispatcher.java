@@ -89,7 +89,7 @@ class RemoteLogDispatcher {
      */
     public void setBufferSize(int newBuffSize) {
         if (newBuffSize >= 1) {
-            bufferSize = newBuffSize;            
+            bufferSize = newBuffSize;
         }
         else {
             System.err.println("RemoteLogDispatcher#setBufferSize: ignoring illegal value " + newBuffSize);
@@ -119,10 +119,10 @@ class RemoteLogDispatcher {
         FailedLogRecords failures = new FailedLogRecords();
         
         // used for feeding back these LogRecords if the sending fails
-        List candidateLogRecords = new ArrayList(); 
+        List<LogRecord> candidateLogRecords = new ArrayList<LogRecord>(); 
         
         // create CORBA Anys containing XML String representations of log records
-        List anyLogRecords = new ArrayList();
+        List<Any> anyLogRecords = new ArrayList<Any>();
         for (int i = 0; i < logRecords.length; i++) {
             if (i < getBufferSize()) {
                 try {
@@ -176,24 +176,24 @@ class RemoteLogDispatcher {
 
 
     static class FailedLogRecords {
-        private List serializeFailures;
-        private List sendFailures;
+        private List<LogRecord> serializeFailures;
+        private List<LogRecord> sendFailures;
         
         void addSerializationFailure(LogRecord logRecord) { 
             if (serializeFailures == null) {
-                serializeFailures = new ArrayList();
+                serializeFailures = new ArrayList<LogRecord>();
             }
             serializeFailures.add(logRecord);
         }
         void addSendFailure(LogRecord logRecord) {
             if (sendFailures == null) {
-                sendFailures = new ArrayList();
+                sendFailures = new ArrayList<LogRecord>();
             }
             sendFailures.add(logRecord);
         }
-        void addSendFailures(List logRecords) {
+        void addSendFailures(List<LogRecord> logRecords) {
             if (sendFailures == null) {
-                sendFailures = new ArrayList();
+                sendFailures = new ArrayList<LogRecord>();
             }
             sendFailures.addAll(logRecords);
         }

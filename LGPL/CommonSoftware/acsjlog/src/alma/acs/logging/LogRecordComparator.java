@@ -15,7 +15,7 @@ import edu.emory.mathcs.backport.java.util.PriorityQueue;
  * @author hsommer
  * created Apr 19, 2005 2:02:34 PM
  */
-public class LogRecordComparator implements Comparator {
+public class LogRecordComparator implements Comparator<LogRecord> {
     private boolean timeOnly;
     LogRecordComparator() {
         this(false);
@@ -23,10 +23,8 @@ public class LogRecordComparator implements Comparator {
     LogRecordComparator(boolean timeOnly) {
         this.timeOnly = timeOnly;
     }
-    public int compare(Object o1, Object o2) {
-        if (o1 == o2) return 0;            
-        LogRecord lr1 = (LogRecord) o1;
-        LogRecord lr2 = (LogRecord) o2;
+    public int compare(LogRecord lr1, LogRecord lr2) {
+        if (lr1 == lr2) return 0;            
         if (!timeOnly) {
             int lev1 = lr1.getLevel().intValue();
             int lev2 = lr2.getLevel().intValue();               

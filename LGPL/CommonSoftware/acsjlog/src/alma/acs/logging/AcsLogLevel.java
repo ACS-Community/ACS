@@ -23,6 +23,8 @@ package alma.acs.logging;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
@@ -47,12 +49,12 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	/**
 	 * List of all ACS levels.
 	 */
-	private static TreeSet known = new TreeSet();
+	private static Set<AcsLogLevel> known = new TreeSet<AcsLogLevel>();
 
 	/**
 	 * Fast lookup table mapping.
 	 */
-	private static HashMap lookup = new HashMap();
+	private static Map<Level, AcsLogLevel> lookup = new HashMap<Level, AcsLogLevel>();
 
 	/******************** Java API ACS Levels ********************/
 
@@ -144,8 +146,8 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 
 	static AcsLogLevel fromAcsCoreLevel(int acsCoreLevel) {
 		AcsLogLevel ret = null;
-		for (Iterator iter = known.iterator(); iter.hasNext();) {
-			AcsLogLevel acsLevel = (AcsLogLevel) iter.next();
+		for (Iterator<AcsLogLevel> iter = known.iterator(); iter.hasNext();) {
+			AcsLogLevel acsLevel = iter.next();
 			if (acsLevel.getAcsLevel() == acsCoreLevel) {
 				ret = acsLevel;
 				break;
@@ -221,8 +223,8 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 		// search through iterator and find the most appropriate
 		synchronized (known)
 		{
-			Iterator iter = known.iterator();
-			AcsLogLevel nativeLevel = (AcsLogLevel) iter.next();
+			Iterator<AcsLogLevel> iter = known.iterator();
+			AcsLogLevel nativeLevel = iter.next();
 			while (level.intValue() > nativeLevel.intValue() && iter.hasNext())
 				nativeLevel = (AcsLogLevel) iter.next();
 

@@ -75,7 +75,7 @@ public class AcsLogger extends Logger {
                 
         if (threadName == null) {
             // todo: centralize this log parameter coding/decoding in one class similar to LogParameterExtractor
-            Map logProperties = new HashMap();
+            Map<String, Object> logProperties = new HashMap<String, Object>();
             record.setParameters(new Object[] {logProperties} );
             
             threadName = Thread.currentThread().getName();
