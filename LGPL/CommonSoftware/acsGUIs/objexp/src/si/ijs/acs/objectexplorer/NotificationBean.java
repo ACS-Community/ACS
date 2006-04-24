@@ -1,8 +1,13 @@
 package si.ijs.acs.objectexplorer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.JFrame;
 
 import si.ijs.acs.objectexplorer.engine.Introspectable;
+
+import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.gui.components.r2.SmartTextPane;
 /**
@@ -11,12 +16,6 @@ import com.cosylab.gui.components.r2.SmartTextPane;
  *
  * Creation date: (2.11.2000 0:51:02)
  * @author: Miha Kadunc
- *
- *   edited:  �     by:     �  for the reason of:
- *_________________________________________________________________________________
- * 29.04.2001 � Miha Kadunc � fixing reportError not to print null exceptions
- * 06.05.2001 �             � implementing reportStructuralAccess, removed oldLocation, added title to reportError
- *
  */
 public class NotificationBean {
   SmartTextPane textArea=null;
@@ -25,11 +24,15 @@ public class NotificationBean {
   AccessDestroyWindow accessDestroyWindow=null;
   ErrorDialog errorDialog=null;
   private static boolean debugToConsole = true;
-/**
+  private Logger consoleLogger;
+ /**
  * NotificationBean constructor comment.
  */
 public NotificationBean() {
 	super();
+
+	/* console only logger */
+	consoleLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("objexp-console", false);
 }
 /**
  * Insert the method's description here.
@@ -61,7 +64,7 @@ public boolean isDebugToConsole() {
  * @param message java.lang.String
  */
 public void reportDebug(String location, String message) {
- if (debugToConsole) System.out.println(location + "()    " + message);
+ if (debugToConsole) consoleLogger.finer(message);
 }
 /**
  * Insert the method's description here.
@@ -99,11 +102,17 @@ public void reportError(String message, Throwable t, boolean dialog, boolean sta
    textArea.append("Error: " + message);
    if (stackTrace) textArea.append(" (See console for exception stack trace.)");
    textArea.append("\n");
-   System.out.println("Error: "+message);
+
    if (t != null) {
-	   if (stackTrace) t.printStackTrace();
+   		if (stackTrace)
+   			consoleLogger.log(Level.WARNING, message, t);
+   		else
+   			consoleLogger.warning(message);
 	   message=message+"\n"+t;
    }
+   else
+   	consoleLogger.warning(message);
+   
    if (dialog && showError) {
 	   if (errorDialog==null) {
 		   errorDialog=new ErrorDialog(parent,parent.getTitle()+" error",message);
