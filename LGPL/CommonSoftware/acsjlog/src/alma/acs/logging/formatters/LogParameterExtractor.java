@@ -48,7 +48,7 @@ public class LogParameterExtractor {
      */ 
     private Map properties;
     
-    private List otherParameters;
+    private List<Object> otherParameters;
 
 
     public LogParameterExtractor() {
@@ -72,12 +72,13 @@ public class LogParameterExtractor {
         currentLogRecord = logRecord;
         
 		properties = null;
-		otherParameters = new ArrayList();
+		otherParameters = new ArrayList<Object>();
 		
         Object[] parameters = logRecord.getParameters();
 		if (parameters != null) {
-			for (int i = 0; i < parameters.length; i++) {
-				if (parameters[i] instanceof Map) {
+			for (int i = 0; i < parameters.length; i++) {				
+				// // arbitrary rule to pick first Map as the special properties Map; in practice there should not be any other Map.
+				if (parameters[i] instanceof Map && properties == null) { 
 					properties = (Map) parameters[i];
 				}
 				else {
