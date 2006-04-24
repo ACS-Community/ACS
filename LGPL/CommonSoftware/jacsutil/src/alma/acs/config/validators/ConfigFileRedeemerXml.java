@@ -23,7 +23,6 @@
 package alma.acs.config.validators;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,14 +32,12 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParser;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.helpers.DefaultHandler;
 
 
 /**
@@ -50,8 +47,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ConfigFileRedeemerXml extends ConfigFileRedeemer {
 
-	protected SAXParser parser;
-	protected DefaultHandler saxHandler;
 	protected List<XPathMatchSetup> xpathMatchSetupList;
 	
 	public static final String XSD_NS = "http://www.w3.org/2001/XMLSchema";
@@ -91,7 +86,7 @@ public class ConfigFileRedeemerXml extends ConfigFileRedeemer {
 
 		// OAW mappings
 		addXPathMatch(new XPathMatchSetup("/MetaMap", null, null, XPathConstants.NODE));
-		addXPathMatch(new XPathMatchSetup("/MetaModel", null, null, XPathConstants.NODE));		
+		addXPathMatch(new XPathMatchSetup("/MetaModel", null, null, XPathConstants.NODE));
 		
 		addXPathMatch(new XPathMatchSetup("/bla:AcsCommandCenterProject", "bla", "Alma/Acs/AcsCommandCenterProject", XPathConstants.NODE));		
 		addXPathMatch(new XPathMatchSetup("/bla:AcsCommandCenterTools", "bla", "Alma/Acs/AcsCommandCenterTools", XPathConstants.NODE));		
