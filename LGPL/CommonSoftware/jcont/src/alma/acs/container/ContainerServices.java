@@ -153,6 +153,9 @@ public interface ContainerServices
 			throws ContainerException;
 	
 
+	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws ContainerException;
+	
+	
 	/**
 	 * Gets a component whose instance is not registered in the CDB 
 	 * at deployment time.
