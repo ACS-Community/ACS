@@ -604,9 +604,8 @@ public class AcsManagerProxy
 	 * 				Thrown if the resulting structure is incompatible with a component of the same name 
 	 * 				already active.
 	 */
-	public ComponentInfo get_dynamic_component(int clientHandle, ComponentSpec c,
-			boolean mark_as_default) throws IncompleteComponentSpec,
-			InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent 
+	public ComponentInfo get_dynamic_component(int clientHandle, ComponentSpec c, boolean mark_as_default) 
+		throws IncompleteComponentSpec, InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent 
 	{
 		try {
 			return m_manager.get_dynamic_component(clientHandle, c, mark_as_default);
@@ -616,6 +615,30 @@ public class AcsManagerProxy
 			throw exc;
 		}
 	}
+
+	/**
+	 * Encapsulates {@link si.ijs.maci.ManagerOperations#get_collocated_component(int, si.ijs.maci.ComponentSpec, boolean, java.lang.String)}.
+	 * 
+	 * @param clientHandle  handle of requesting component or other kind of client
+	 * @param c dynamic version of deployment info, may be incomplete, see ACS documentation
+	 * @param mark_as_default  if true, make the new component instance the default for its type
+	 * @param target_component_url
+	 * @return ComponentInfo struct 
+	 * @throws IncompleteComponentSpec
+	 * @throws InvalidComponentSpec
+	 * @throws ComponentSpecIncompatibleWithActiveComponent
+	 */
+	public ComponentInfo get_collocated_component(int clientHandle, ComponentSpec c, boolean mark_as_default, String target_component_url) 
+		throws IncompleteComponentSpec, InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent 
+{
+	try {
+		return m_manager.get_collocated_component(clientHandle, c, mark_as_default, target_component_url);
+		
+	} catch (RuntimeException exc) {
+		handleException(exc);
+		throw exc;
+	}
+}
 
 
 	/**
