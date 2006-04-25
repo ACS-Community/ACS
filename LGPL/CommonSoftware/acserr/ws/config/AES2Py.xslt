@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.14 2006/04/21 20:55:54 dfugate Exp $
+# @(#) $Id: AES2Py.xslt,v 1.15 2006/04/25 17:50:46 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -36,7 +36,7 @@ import </xsl:text>
 <xsl:text>
 ######################################################################
 </xsl:text>
-<!--  ******************************************** ErrorCode *************************************************************************************************************************** -->
+<!--  *** ErrorCode ********************************************** -->
         <xsl:for-each select="ErrorCode[not(@_suppressExceptionGeneration)]">
         <xsl:variable name="ClassName">
                                         <xsl:value-of select="@name"/><xsl:text>ExImpl</xsl:text>
@@ -134,7 +134,14 @@ import </xsl:text>
         <xsl:value-of select="@name"/>
         <xsl:text>Ex.__init__(self, self.errorTrace)
         return
+    #--------------------------------------------------------------------------        
+    def get</xsl:text><xsl:value-of select="../@name"/><xsl:text>Ex(self):
+        '''
+        Returns this exception converted into an </xsl:text><xsl:value-of select="../@name"/><xsl:text>Ex
+        '''    
+        return </xsl:text><xsl:value-of select="../@name"/><xsl:text>.</xsl:text><xsl:value-of select="../@name"/><xsl:text>Ex(self.getErrorTrace())
 ######################################################################
+
 </xsl:text>
 </xsl:for-each>
 
