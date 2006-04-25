@@ -21,6 +21,8 @@
  */
 package com.cosylab.logging;
 
+import com.cosylab.logging.engine.ACS.LCEngine;
+
 /**
  * This class is not used for testing. It sets access type "ACS" to the LCEngine.
  * Creation date: (11/2/2001 10:42:40 AM)

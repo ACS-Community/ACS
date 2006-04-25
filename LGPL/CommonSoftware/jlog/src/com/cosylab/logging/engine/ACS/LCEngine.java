@@ -19,11 +19,11 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging;
+package com.cosylab.logging.engine.ACS;
 
 import javax.swing.JOptionPane;
 
-import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.RemoteAccess;
 
 import org.omg.CORBA.ORB;

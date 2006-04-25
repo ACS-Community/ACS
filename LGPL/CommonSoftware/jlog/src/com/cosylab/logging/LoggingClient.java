@@ -68,7 +68,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-import com.cosylab.logging.LCEngine;
+import com.cosylab.logging.engine.ACS.LCEngine;
 
 import com.cosylab.logging.stats.StatsDlg;
 
