@@ -69,7 +69,7 @@
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: Invalid handle.
 1 - This is OK: Non-null 'type' expected.
-1 - This is OK: No default default component for type 'invalid' found.
+1 - This is OK: No default component for type 'invalid' found.
 1 - This is OK: Non-null 'componentSpec' expected.
 1 - This is OK: Invalid handle.
 1 - This is OK: Invalid handle.
