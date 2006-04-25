@@ -396,6 +396,34 @@ public class ContainerServicesImpl implements ContainerServices
 	}
 
 
+	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws ContainerException {
+		ComponentQueryDescriptor cqd = new ComponentQueryDescriptor(compUrl, null);		
+		ComponentSpec cspec = cqd.toComponentSpec();
+		ComponentInfo cInfo = null;
+		
+		try {
+			// the call
+			cInfo = m_acsManagerProxy.get_collocated_component(m_clientHandle, cspec, false, targetCompUrl);
+		}
+		catch (Throwable thr) {
+			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
+			m_logger.log(Level.FINE, msg, thr); // it's serious, but the caller is supposed to log this. Container only logs just in case.
+			throw new ContainerException(msg, thr);
+		}
+
+		if (cInfo.reference == null) {
+			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
+			m_logger.log(Level.FINE, msg); // it's serious, but the caller is supposed to log this. Container only logs just in case.
+			throw new ContainerException(msg);
+		}
+		
+		m_usedComponentsMap.put(cInfo.name, cInfo.reference);
+		m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
+
+		return cInfo.reference;
+	}
+	
+	
 	/**
 	 * {@inheritDoc}
 	 * 
