@@ -550,7 +550,14 @@ public abstract class AcsJException extends Exception
 
     LogRecord createSingleErrorTraceLogRecord(ErrorTrace et, String stackID, int stackLevel) {
         Level logLevel = ErrorTraceLogLevels.mapErrorLevelToLogLevel(et.severity);
-        String message = ErrorTraceManipulator.getProperty(et, CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_MESSAGE);
+        String message = et.shortDescription.trim();
+        if (message.length() > 0) {
+            message += " :: ";
+        }            
+        String usermessage = ErrorTraceManipulator.getProperty(et, CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_MESSAGE);
+        if (usermessage != null && usermessage.trim().length() > 0) {
+            message += usermessage.trim();
+        }            
         // need to explicitly construct a log record with the historical data (normal Logger methods would not allow setting these fields) 
         LogRecord logRec = new LogRecord(logLevel, message);
         logRec.setMillis(UTCUtility.utcOmgToJava(et.timeStamp));
