@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.15 2006/04/25 17:50:46 dfugate Exp $
+# @(#) $Id: AES2Py.xslt,v 1.16 2006/04/25 21:24:45 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -31,11 +31,24 @@ Some form of custom documentation goes here...
 ######################################################################
 from   Acspy.Common.Err import ACSError
 import ACSErr
-import </xsl:text>
-<xsl:value-of select="@name"/>
+import </xsl:text><xsl:value-of select="@name"/>
 <xsl:text>
 ######################################################################
 </xsl:text>
+<xsl:if test="count(//ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
+<xsl:text>
+class BaseException:
+    '''
+    Class serves as a base exception for all error type/code exception
+    pairs defined within this module. The reason this is provided is so 
+    that one can generically catch ACS Error System based Python 
+    exceptions using a single Python "except BaseException, e:" type
+    statement.
+    '''
+    pass
+######################################################################
+</xsl:text>
+</xsl:if>
 <!--  *** ErrorCode ********************************************** -->
         <xsl:for-each select="ErrorCode[not(@_suppressExceptionGeneration)]">
         <xsl:variable name="ClassName">
@@ -47,7 +60,7 @@ import </xsl:text>
                                 <xsl:value-of select="../@name"/>
                                 <xsl:text>.</xsl:text>
                                 <xsl:value-of select="@name"/>
-                                <xsl:text>Ex, ACSError):
+                                <xsl:text>Ex, ACSError, BaseException):
     '''
     Some form of custom documentation goes here...
     '''
