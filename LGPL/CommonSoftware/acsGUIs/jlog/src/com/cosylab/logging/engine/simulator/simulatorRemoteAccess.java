@@ -24,7 +24,12 @@ package com.cosylab.logging.engine.simulator;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 
+import org.omg.CORBA.ORB;
+
+import si.ijs.maci.Manager;
+
 import java.util.Random;
+
 /**
  * Simulator for remote access that initializes, runs and destroys the engine.
  * Creation date: (11/22/2001 2:13:12 PM)
@@ -35,7 +40,7 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	private ACSRemoteLogListener logListener;
 	private Random random;
 	
-/**
+	/**
 	 * simulatorRemoteAccess constructor comment.
 	 */
 	public simulatorRemoteAccess(ACSRemoteLogListener listener) {
@@ -57,7 +62,7 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	/**
 	 * initialize method comment.
 	 */
-	public void initialize() {
+	public void initialize(ORB theORB, Manager manager) {
 		isInitalized = true;
 		start();
 	}

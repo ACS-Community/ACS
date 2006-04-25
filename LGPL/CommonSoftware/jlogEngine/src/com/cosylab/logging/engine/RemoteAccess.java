@@ -23,6 +23,10 @@ package com.cosylab.logging.engine;
 
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 
+import org.omg.CORBA.ORB;
+
+import si.ijs.maci.Manager;
+
 /**
  * Interface implemented by ACSRemoteAccess and simulatorRemoteAccess. 
  * Its methods serve the basic purpose of creating, using and destroying 
@@ -32,7 +36,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
  */
 public interface RemoteAccess {
 	public void destroy();
-	public void initialize();
+	public void initialize(ORB theORB, Manager manager);
 	public boolean isInitialized();
 	public boolean isConnected();
 	public void addLogRemoteConnListener(ACSRemoteLogListener listener);

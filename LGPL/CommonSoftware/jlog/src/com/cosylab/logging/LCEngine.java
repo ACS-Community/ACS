@@ -26,6 +26,10 @@ import javax.swing.JOptionPane;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.RemoteAccess;
 
+import org.omg.CORBA.ORB;
+
+import si.ijs.maci.Manager;
+
 /**
  * LCEngine defines output messages to the status panel whenever 
  * any of the control system components reports a message or an error occurs. 
@@ -59,13 +63,13 @@ public class LCEngine implements Runnable {
 	 * e.g. com.cosylab.logging.engine.ACS.ACSRemoteAccess
 	 */
 	private class AccessSetter extends Thread {
-
+		
 		public void run() {
 			disconnect();
 			remoteResponseCallback.reportStatus("Connecting to " + accessType + " remote access...");
 			try {
 				
-				Object[] parameters = { };
+				Class[] parameters = {};
 				String raName = accessType;
 				if (accessType.indexOf(".") == -1)
 					raName = "com.cosylab.logging.engine."
@@ -73,13 +77,11 @@ public class LCEngine implements Runnable {
 							+ "."
 							+ accessType
 							+ "RemoteAccess"; // com.cosylab.logging.engine.ACS.ACSRemoteAccess
-				//RemoteAccess ra = 
-				//	(RemoteAccess) Class.forName(raName).getConstructors()[0].newInstance(
-				//		parameters);
-				remoteAccess = (RemoteAccess) Class.forName(raName).getConstructors()[0].newInstance(parameters);
+				//remoteAccess = (RemoteAccess) Class.forName(raName).getConstructors()[0].newInstance(parameters);
+				remoteAccess = (RemoteAccess) Class.forName(raName).getConstructor(parameters).newInstance();
 				//if (remoteAccess == null)
 				//	System.out.println("RemoteAccess == null");
-				remoteAccess.initialize();
+				remoteAccess.initialize(orb,manager);
 				remoteAccess.addLogRemoteConnListener(remoteResponseCallback);
 			} catch (Throwable e) {
 				remoteResponseCallback.reportStatus("Exception occurred when initializing " + accessType + " remote access.");
@@ -94,10 +96,18 @@ public class LCEngine implements Runnable {
 		}
 	}
 
-	private java.lang.String accessType = "ACS";
+	/** accessType, orb and manager are used to connect to
+	 * the logging channel
+	 * 
+	 * @see AccessSetter.run
+	 */ 
+	private String accessType = "ACS";
+	private ORB orb = null; // Can be null
+	private Manager manager = null; // Can be null
 	
 	/**
 	 * LCEngine constructor comment.
+	 * 
 	 * @param logEventListener The lister for log events
 	 */
 	public LCEngine(ACSRemoteLogListener logEventListener) {
@@ -118,13 +128,31 @@ public class LCEngine implements Runnable {
 		new AccessSetter().start();
 	}
 	
+	
 	/**
 	 * LCEngine starts an attempt to connect to the remote system.
 	 * Connection is handled in a separate Thread
+	 * 
+	 * @param accessTyp The access type
+	 * 
 	 * @see LCEngine$AccessSetter
 	 */
-	public void connect(String accessTyp) {
-		this.accessType = accessTyp;
+	public void connect(String newAccessType) {
+		setAccessType(newAccessType);
+		connect();
+	}
+	
+	/**
+	 * LCEngine starts an attempt to connect to the remote system.
+	 * Connection is handled in a separate Thread
+	 * 
+	 * @param theORB The ORB (can be null) 
+	 * @param mgr The reference to the manager (can be null)
+	 * 
+	 * @see LCEngine$AccessSetter
+	 */
+	public void connect(ORB theORB, Manager mgr) {
+		setConnectionParams(theORB,mgr);
 		connect();
 	}
 	
@@ -178,6 +206,18 @@ public class LCEngine implements Runnable {
 	}
 	
 	/**
+	 * Set the connection params fro this
+	 * 
+	 * @param theORB The ORB. It can't be null if the manager is not null
+	 * @param mgr The reference to the Manager 
+	 */
+	public void setConnectionParams(ORB theORB, Manager mgr) {
+		orb = theORB;
+		manager = mgr;
+	}
+	
+	
+	/**
 	 * 
 	 * @return ture if the engine is connected to the notification channel
 	 */
@@ -188,6 +228,7 @@ public class LCEngine implements Runnable {
 			return remoteAccess.isConnected();
 		}
 	}
+	
 	
 	/**
 	 * The thread that monitors the status of the connection

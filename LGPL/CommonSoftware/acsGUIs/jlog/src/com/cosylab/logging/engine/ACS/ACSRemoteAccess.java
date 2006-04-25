@@ -36,6 +36,8 @@ import org.omg.CosNotifyChannelAdmin.*;
 import org.omg.CosNotifyFilter.*;
 import org.omg.CosNaming.NamingContext;
 
+import si.ijs.maci.Manager;
+
 import java.util.Vector;
 
 /**
@@ -55,7 +57,6 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	
 	private boolean isInitialized = false;
 	private ORB orb = null;
-	private POA rootPOA = null;
 	private EventChannel eventChannel = null;
 	private ConsumerAdmin consumerAdmin = null;
 	private ACSStructuredPushConsumer acsSPS = null;
@@ -163,73 +164,74 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		return orb;
 	}
 	
-	public POA getPOA() {
-		return rootPOA;
-	}
-	
 	/**
-	 * initialize method comment.
+	 * Initialize the connection.
+	 * 
+	 * @param theORB The ORB. 
+	 *               If it is null then a new CORBA connection is initialized.
+	 * @param manager A reference to the Manager
+	 *                If it is null a reference is built by reading the properties.
 	 */
-	public void initialize() {
-		// System.out.println("Manger system property: " + System.getProperty("ACS.manager"));
-		// CORBA stanza
-	
-		publishReport("Initializing CORBA...");
-	
-		// ORB stanza
-		java.util.Properties orbprops = java.lang.System.getProperties();
-	
-		// to make code completely independed, properties have to be set using JVM -D mechanism
+	public void initialize(ORB theORB, Manager manager) {
+		this.orb=theORB;
+
+		if (orb==null) { 
+			publishReport("Initializing CORBA...");
 		
-		// ORBacus
-		//orbprops.put("org.omg.CORBA.ORBClass", "com.ooc.CORBA.ORB");
-		//orbprops.put("org.omg.CORBA.ORBSingletonClass", "com.ooc.CORBA.ORBSingleton");
+			// ORB stanza
+			java.util.Properties orbprops = java.lang.System.getProperties();
 		
-		// JacORB
-		//orbprops.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
-		//orbprops.put("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
+			orb = ORB.init(new String[0], orbprops);
 		
-		// Java JDK
-		// none
+			// POA stanza -- use RootPOA
+			POA rootPOA = null;
+			try
+			{
+				rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 		
-		orb = org.omg.CORBA.ORB.init(new String[0], orbprops);
-	
-		// POA stanza -- use RootPOA
-		rootPOA = null;
-		try
-		{
-			rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
-	
-		} catch (org.omg.CORBA.ORBPackage.InvalidName in)
-		{
-			throw new IllegalStateException("Cannot resolve RootPOA: " + in);
+			} catch (org.omg.CORBA.ORBPackage.InvalidName in)
+			{
+				throw new IllegalStateException("Cannot resolve RootPOA: " + in);
+			}
+			POAManager poaManager = rootPOA.the_POAManager();
+			try
+			{
+				poaManager.activate();
+				orbThread = new Thread();
+				orbThread.setDaemon(true);
+				orbThread.start();
+			} catch (Exception e)
+			{
+				throw new IllegalStateException("POAManager activation failed." + e);
+			}
+		
+			// end of CORBA stanza
+			publishReport("CORBA initialized.");
 		}
-		POAManager manager = rootPOA.the_POAManager();
-		try
-		{
-			manager.activate();
-			orbThread = new Thread();
-			orbThread.setDaemon(true);
-			orbThread.start();
-		} catch (Exception e)
-		{
-			throw new IllegalStateException("POAManager activation failed." + e);
-		}
-	
-		// end of CORBA stanza
-		publishReport("CORBA initialized.");
 		
-		si.ijs.maci.Manager maciManager = resolveManagerReference();
-		if (maciManager == null) return;
+		Manager maciManager=manager;
+		
+		if (maciManager==null) {
+			maciManager = resolveManagerReference();
+			if (maciManager == null) {
+				return;
+			}
+		} 
 	
 		NamingContext namingContext = resolveNamingServiceContext(maciManager);
-		if (namingContext == null) return;
+		if (namingContext == null) {
+			return;
+		}
 		
 		boolean isNotifyResolved = resolveNotifyChannel(LOGGING_CHANNEL, namingContext);
-		if (!isNotifyResolved) return;
+		if (!isNotifyResolved) {
+			return;
+		}
 			
 		boolean isConsumerAdminCreated = createConsumerAdmin();
-		if (!isConsumerAdminCreated) return;
+		if (!isConsumerAdminCreated) {
+			return;
+		}
 		
 		isInitialized = createStructuredPushConsumer();
 	}
