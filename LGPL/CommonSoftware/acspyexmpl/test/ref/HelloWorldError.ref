@@ -12,6 +12,7 @@
 1 -             Type=10,
 1 -             Code=3,
 1 -             ShortDescrip=Unknown Error,
+1 -             Severity=Error,
 1 -             Data: )
 1 - 
 1 -     ErrorTrace (TimeStamp=xxxx,
@@ -24,5 +25,32 @@
 1 -                 Type=10,
 1 -                 Code=3,
 1 -                 ShortDescrip=Unknown Error,
+1 -                 Severity=Error,
+1 -                 Data: )
+1 - 
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -             File=xxx
+1 -             Line=xxx
+1 -             Routine=?,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=10,
+1 -             Code=3,
+1 -             ShortDescrip=Unknown Error,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 File=xxx
+1 -                 Line=xxx
+1 -                 Routine=HelloWorld::badMethod,
+1 -                 Host=xxxx,
+1 -                 Process=xxxPID: xxx,
+1 -                 Thread=ID: xxx,
+1 -                 Type=10,
+1 -                 Code=3,
+1 -                 ShortDescrip=Unknown Error,
+1 -                 Severity=Error,
 1 -                 Data: )
 1 - 
