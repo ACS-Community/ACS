@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="src"/>
-    <classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
-    <classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="INTROOT/lib/maci.jar"/>
-    <classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-    <classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
-    <classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
-    <classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
-    <classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry sourcepath="INTROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
