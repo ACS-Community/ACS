@@ -25,34 +25,44 @@ import java.util.Map;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import junit.framework.TestCase;
+
 import alma.ACSErr.ACSErrTypeTest;
 import alma.ACSErr.Completion;
 import alma.ACSErr.ErrorTrace;
 import alma.ACSErr.Severity;
+import alma.ACSErrTypeTest.ACSErrTestOK;
+import alma.ACSErrTypeTest.wrappers.ACSErrTest1AcsJCompletion;
+import alma.ACSErrTypeTest.wrappers.ACSErrTest2AcsJCompletion;
+import alma.ACSErrTypeTest.wrappers.ACSErrTest3AcsJCompletion;
 import alma.ACSErrTypeTest.wrappers.ACSErrTestOKAcsJCompletion;
 import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest0Ex;
-import alma.ACSErrTypeTest.ACSErrTest0Ex;
-import alma.ACSErrTypeTest.ACSErrTestOK;
+import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest1Ex;
+import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest2Ex;
+import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest3Ex;
 import alma.acs.testsupport.TestLogger;
 import alma.acs.util.UTCUtility;
 
-import junit.framework.TestCase;
 
 /**
- * Tests for {@link AcsJException} and example subclasses 
+ * Tests for {@link AcsJException}, {@link alma.acs.exceptions.AcsJCompletion} 
+ * and the generated example subclasses. 
  * 
  * @author hsommer Jun 18, 2003 3:54:40 PM
  */
 public class AcsJExceptionTest extends TestCase
 {
+    private ClientServerExceptionExample exSystem;
+    
 	public AcsJExceptionTest()
 	{
 		super("AcsJExceptionTest");
+        exSystem = new ClientServerExceptionExample();
 	}
 
 	
 	/**
-	 * Uses {@link #throwOriginalAcsJACSErrTest0Ex} to verify the output 
+	 * Uses {@link ClientServerExceptionExample#throwOriginalAcsJACSErrTest0Ex} to verify the output 
 	 * of the method {@link AcsJException#getErrorTrace}.
 	 * Thus what gets tested is the conversion from the AcsJ- to the CORBA world.
 	 * <P>
@@ -63,7 +73,7 @@ public class AcsJExceptionTest extends TestCase
 	{
 		try
 		{
-			throwOriginalAcsJACSErrTest0Ex();
+			exSystem.throwOriginalAcsJACSErrTest0Ex();
 		}
 		catch (AcsJException e)
 		{
@@ -87,8 +97,8 @@ public class AcsJExceptionTest extends TestCase
 	 * to {@link ErrorTrace} and back, first by wrapping and later by directly
 	 * converting a CORBA exception with/to a native Java exception.
 	 * <p>
-	 * Calls {@link #throwWrapperAcsJACSErrTest0Ex} and 
-	 * {@link #throwConvertedAcsJACSErrTest0Ex} to get the 
+	 * Calls {@link ClientServerExceptionExample#throwWrapperAcsJACSErrTest0Ex} and 
+	 * {@link ClientServerExceptionExample#throwConvertedAcsJACSErrTest0Ex} to get the 
 	 * three linked exceptions
 	 * <ul>
 	 * <li> <code>AcsJACSErrTest0Ex</code> thrown locally ("client side"),
@@ -96,7 +106,7 @@ public class AcsJExceptionTest extends TestCase
 	 * <li> <code>AcsJException</code> caused by a 
 	 * 		<code>NullPointerException</code>, both thrown "remotely"
 	 * 		in the implementation of the "server side" method 
-	 * 		{@link #throwACSErrTest0Ex}
+	 * 		{@link ClientServerExceptionExample#throwACSErrTest0Ex}
 	 * 		and translated back and forth from an <code>ErrorTrace</code>
 	 * </ul>
 	 * Checks that the exceptions are correctly chained up
@@ -107,13 +117,13 @@ public class AcsJExceptionTest extends TestCase
 		// first the variant with a new exception created on the client side
 		try
 		{
-			throwWrapperAcsJACSErrTest0Ex();
+			exSystem.throwWrapperAcsJACSErrTest0Ex();
 		}
 		catch (AcsJException e)
 		{
 			assertTrue(e instanceof AcsJACSErrTest0Ex);
 			assertEquals("remote call failed", e.getMessage());
-			assertEquals("AcsJExceptionTest.java", e.getFile());
+			assertEquals("ClientServerExceptionExample.java", e.getFile());
 			assertEquals(3, e.getTraceDepth());
 			String host = e.getHost();
 			assertNotNull(host);
@@ -131,11 +141,11 @@ public class AcsJExceptionTest extends TestCase
 			assertTrue(cause1 instanceof AcsJACSErrTest0Ex && cause1 != e);
 			assertEquals("low level ex", cause1.getMessage());
 			AcsJACSErrTest0Ex acsJCause1 = (AcsJACSErrTest0Ex) cause1;
-			assertEquals("AcsJExceptionTest.java", acsJCause1.getFile());
+			assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
 			assertEquals("Poverty", acsJCause1.getProperty("MyStupidProperty"));
 			assertEquals(2, acsJCause1.getTraceDepth());
 			long timeCause1 = acsJCause1.getTimestampMillis();
-			assertEquals("AcsJExceptionTest.java", acsJCause1.getFile());
+			assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
 			assertEquals(host, acsJCause1.getHost());
 			assertEquals(threadName, acsJCause1.getThreadName());
 			assertTrue(acsJCause1.getLine() > 0);
@@ -146,9 +156,9 @@ public class AcsJExceptionTest extends TestCase
 			Throwable cause2 = cause1.getCause();
 			assertNotNull(cause2);
 			assertTrue(cause2 instanceof DefaultAcsJException);
-			assertEquals("original type java.lang.NullPointerException: mean NPE", cause2.getMessage());
+			assertEquals("mean NPE (original type java.lang.NullPointerException)", cause2.getMessage());
 			DefaultAcsJException acsJCause2 = (DefaultAcsJException) cause2;
-			assertEquals("AcsJExceptionTest.java", acsJCause2.getFile());
+			assertEquals("ClientServerExceptionExample.java", acsJCause2.getFile());
 			assertEquals(timeCause1 - 1, acsJCause2.getTimestampMillis());
 			assertEquals(1, acsJCause2.getTraceDepth());
 			assertEquals(host, acsJCause2.getHost());
@@ -162,7 +172,7 @@ public class AcsJExceptionTest extends TestCase
 		// next we try the client-side conversion instead of wrapping
 		try
 		{
-			throwConvertedAcsJACSErrTest0Ex();
+			exSystem.throwConvertedAcsJACSErrTest0Ex();
 		}
 		catch (AcsJException e)
 		{
@@ -174,7 +184,7 @@ public class AcsJExceptionTest extends TestCase
 			Throwable cause1 = e.getCause();
 			assertNotNull(cause1);
 			assertTrue(cause1 instanceof DefaultAcsJException);
-			assertEquals("original type java.lang.NullPointerException: mean NPE", cause1.getMessage());
+			assertEquals("mean NPE (original type java.lang.NullPointerException)", cause1.getMessage());
 			DefaultAcsJException acsJCause1 = (DefaultAcsJException) cause1;
 			assertEquals(1, acsJCause1.getTraceDepth());
 		}
@@ -182,30 +192,74 @@ public class AcsJExceptionTest extends TestCase
 	}
 	
 	
+	/**
+	 * Creates Completion objects from scratch, from other completion objects,
+     * with and without associated exception, and checks the values.
+	 */
 	public void testJCompletion()
 	{
-		// a completion without associated error
+		// a completion without associated exception
 		AcsJCompletion jcompl1 = new ACSErrTestOKAcsJCompletion();
 		assertEquals(ACSErrTypeTest.value, jcompl1.getType());
 		assertEquals(ACSErrTestOK.value, jcompl1.getCode());
 		assertFalse(jcompl1.isError());
 		assertTrue(jcompl1.getTimeStamp() > 0);
 		Completion corbacompl = jcompl1.toCorbaCompletion();
+        assertEquals(ACSErrTypeTest.value, corbacompl.type);
+        assertEquals(ACSErrTestOK.value, corbacompl.code);
 		assertTrue(corbacompl.previousError.length == 0);
 		assertEquals(UTCUtility.utcJavaToOmg(jcompl1.getTimeStamp()), corbacompl.timeStamp);
 		
-		// completion with associated error
-		// TODO: here we get an NPE because jcompl1 has no exception!
-		AcsJCompletion jcompl2a = new ExampleWithErrAcsJCompletion(jcompl1);
-		assertTrue(jcompl2a.isError());
-		AcsJException acsjex2a = jcompl2a.getAcsJException();
-		assertTrue(acsjex2a instanceof AcsJACSErrTest0Ex);
-		assertNull(acsjex2a.getCause());
-		
-		AcsJCompletion jcompl2b = new ExampleWithErrAcsJCompletion(corbacompl);
+        long timeMillisBeforeExceptionCreation = System.currentTimeMillis();
+        
+		// completion with associated exception, 
+        // trying to wrap the previous completion (which has no exception that could be wrapped)
+		AcsJCompletion jcompl2 = new ACSErrTest1AcsJCompletion(jcompl1);
+		assertTrue(jcompl2.isError());
+		AcsJException acsjex2 = jcompl2.getAcsJException();
+		assertTrue(acsjex2 instanceof AcsJACSErrTest1Ex);
+		assertNull(acsjex2.getCause());
+
+        // completion with associated exception, 
+        // but this time trying to wrap the plain CORBA completion instead of its AcsJ-equivalent.
+		AcsJCompletion jcompl2b = new ACSErrTest2AcsJCompletion(corbacompl);
 		assertTrue(jcompl2b.isError());
+        AcsJException acsjex2b = jcompl2b.getAcsJException();
+        assertTrue(acsjex2b instanceof AcsJACSErrTest2Ex);
+        assertNull(acsjex2b.getCause());
 		
-		AcsJCompletion jcompl3 = new ExampleWithErrAcsJCompletion(jcompl2b);
+        // now wrapping a completion with exception with another completion with exception
+		AcsJCompletion jcompl3 = new ACSErrTest3AcsJCompletion(jcompl2);
+        assertTrue(jcompl3.isError());
+        AcsJException acsjex3 = jcompl3.getAcsJException();
+        assertTrue(acsjex3 instanceof AcsJACSErrTest3Ex);
+        Throwable acsjex_cause = acsjex3.getCause();
+        assertNotNull(acsjex_cause);
+        Throwable acsjex_cause2 = acsjex_cause.getCause();
+        assertNull(acsjex_cause2);
+        Completion corbacomp3 = jcompl3.toCorbaCompletion();
+        assertEquals(12, corbacomp3.type);
+        assertEquals(4, corbacomp3.code);
+        assertNotNull(corbacomp3.previousError);
+        assertEquals(1, corbacomp3.previousError.length);
+        ErrorTrace trace_3_1 = corbacomp3.previousError[0];
+        assertNotNull(trace_3_1);
+        ErrorTrace trace_3_0 = trace_3_1.previousError[0];
+        assertNotNull(trace_3_0);
+        assertEquals(0, trace_3_0.previousError.length);
+
+        // check the various timestamps
+        long timeMillisAfterExceptionCreation = System.currentTimeMillis();
+        assertTrue(timeMillisBeforeExceptionCreation <= acsjex2.getTimestampMillis());
+        assertTrue(timeMillisAfterExceptionCreation >= acsjex2.getTimestampMillis());
+        assertTrue(timeMillisBeforeExceptionCreation <= acsjex2b.getTimestampMillis());
+        assertTrue(timeMillisAfterExceptionCreation >= acsjex2b.getTimestampMillis());
+        long corbacomp3_millis = UTCUtility.utcOmgToJava(corbacomp3.timeStamp);
+        assertTrue(timeMillisBeforeExceptionCreation <= corbacomp3_millis);
+        assertTrue(timeMillisAfterExceptionCreation >= corbacomp3_millis);
+        long trace_3_0_millis = UTCUtility.utcOmgToJava(trace_3_0.timeStamp);
+        assertTrue(timeMillisBeforeExceptionCreation <= trace_3_0_millis);
+        assertTrue(timeMillisAfterExceptionCreation >= trace_3_0_millis);
 	}
 	
     
@@ -217,7 +271,7 @@ public class AcsJExceptionTest extends TestCase
         Logger logger = TestLogger.getLogger("AcsJExceptionTest#testLogAcsJException");
 
         try {
-            throwOriginalAcsJACSErrTest0Ex();
+            exSystem.throwOriginalAcsJACSErrTest0Ex();
         } catch (AcsJException e) {
             assertEquals(2, e.getTraceDepth());
             logger.info("Will log exception coming from throwOriginalAcsJACSErrTest0Ex:");
@@ -226,7 +280,7 @@ public class AcsJExceptionTest extends TestCase
 
         
         try {
-            throwWrapperAcsJACSErrTest0Ex();
+            exSystem.throwWrapperAcsJACSErrTest0Ex();
         } catch (AcsJException e) {
             assertEquals(3, e.getTraceDepth());
             logger.info("Will log exception coming from throwWrapperAcsJACSErrTest0Ex:");
@@ -246,115 +300,6 @@ public class AcsJExceptionTest extends TestCase
 	/////////////////////////////////////////////////////////////////////////////////
 	// Methods that simulate the various layers and boundaries of a real application
 	/////////////////////////////////////////////////////////////////////////////////
-    
-	/**
-	 * Represents an implementation method that does not rely on
-	 * any other remote method (lowest level). 
-	 * Therefore, the thrown <code>AcsJACSErrTest0Ex</code> is the VM original, 
-	 * i.e. not converted from an <code>ErrorTrace</code>.
-	 * 
-	 * @throws AcsJACSErrTest0Ex (always), caused by a NPE with message "mean NPE".
-	 */
-	private void throwOriginalAcsJACSErrTest0Ex() throws AcsJACSErrTest0Ex
-	{
-		Throwable causedByEx = new NullPointerException("mean NPE");
-		AcsJACSErrTest0Ex ex = new AcsJACSErrTest0Ex("low level ex", causedByEx);
-		ex.setProperty("MyStupidProperty", "Poverty");
-		throw ex;
-	}
-
-
-	/**
-	 * This method can be seen as an example for a CORBA/remote method,
-	 * such as the implementation of a method from a Java component's interface
-	 * for which in IDL the exception <code>ACSErrTest0Ex</code> is declared.
-	 * <p>
-	 * The AcsJ-style exception is converted to its CORBA-equivalent,
-	 * but no new exception is added to the chain (ErrorTrace). 
-	 *  
-	 * @throws ACSErrTest0Ex always, internally converted 
-	 * 			from <code>AcsJACSErrTest0Ex</code>
-	 * @see #throwOriginalAcsJACSErrTest0Ex()
-	 */
-	private void throwACSErrTest0Ex() throws ACSErrTest0Ex
-	{
-		// top-level try-catch block in the interface implementation
-		try
-		{
-			// the interface impl internally works with AcsJExceptions...
-			throwOriginalAcsJACSErrTest0Ex();
-		}
-		catch (AcsJACSErrTest0Ex e)
-		{
-			// but to the outside we must convert it to be CORBA compliant
-			throw e.toACSErrTest0Ex();
-		}
-	}
-
-	
-	/**
-	 * Represents an implementation method of some client application that calls 
-	 * a remote method, here {@link #throwACSErrTest0Ex()}.
-	 * <p>
-	 * The <code>AcsJACSErrTest0Ex</code> that will be thrown by this "client" method 
-	 * is caused by an exception in the "remote" method.
-	 * That remote exception is in general not the VM original, but has been 
-	 * converted from an <code>ACSErrTest0Ex</code>/<code>ErrorTrace</code>
-	 * which is the format the exception took on to travel over the CORBA wire.
-	 * <p>
-	 * Once caught on the client side, the remote exception is wrapped
-	 * by a new <code>AcsJACSErrTest0Ex</code> exception whose message is "remote call failed".
-	 * Thus unlike in method {@link #throwConvertedAcsJACSErrTest0Ex()} here we actually 
-	 * add a new exception to the top of the chain (or ErrorTrace in the CORBA picture).
-	 *  
-	 * @throws AcsJACSErrTest0Ex (always)
-	 * @see #throwACSErrTest0Ex()
-	 */
-	private void throwWrapperAcsJACSErrTest0Ex() throws AcsJACSErrTest0Ex
-	{
-		try
-		{
-			// make (=fake) a remote call
-			throwACSErrTest0Ex();
-		}
-		catch (ACSErrTest0Ex e)
-		{
-			AcsJACSErrTest0Ex acsJACSErrTest0Ex = new AcsJACSErrTest0Ex("remote call failed", e.errorTrace);
-			throw acsJACSErrTest0Ex;
-		}
-	}
-
-	/**
-	 * Represents an implementation method of some client application that calls 
-	 * a remote method, here {@link #throwACSErrTest0Ex()}.
-	 * <p>
-	 * The <code>AcsJACSErrTest0Ex</code> that will be thrown by this "client" method 
-	 * is caused by an exception in the "remote" method.
-	 * That remote exception is in general not the VM original, but has been 
-	 * converted from an <code>ACSErrTest0Ex</code>/<code>ErrorTrace</code>
-	 * which is the format the exception took on to travel over the CORBA wire.
-	 * <p>
-	 * Once caught on the client side, the remote exception is converted to 
-	 * an <code>AcsJACSErrTest0Ex</code> exception which does not have an independent text message.
-	 * Thus unlike in method {@link #throwWrapperAcsJACSErrTest0Ex()} here we do not  
-	 * add a new exception to the top of the chain (or ErrorTrace in the CORBA picture).
-	 *  
-	 * @throws AcsJACSErrTest0Ex (always)
-	 * @see #throwACSErrTest0Ex()
-	 */
-	private void throwConvertedAcsJACSErrTest0Ex() throws AcsJACSErrTest0Ex
-	{
-		try
-		{
-			// make a remote call
-			throwACSErrTest0Ex();
-		}
-		catch (ACSErrTest0Ex e)
-		{
-			throw AcsJACSErrTest0Ex.fromACSErrTest0Ex(e);
-		}
-	}
-
 
 	public static void main(String[] args)
 	{
