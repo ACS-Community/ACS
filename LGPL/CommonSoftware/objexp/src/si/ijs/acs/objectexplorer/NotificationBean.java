@@ -64,7 +64,7 @@ public boolean isDebugToConsole() {
  * @param message java.lang.String
  */
 public void reportDebug(String location, String message) {
- if (debugToConsole) consoleLogger.finer(message);
+ if (debugToConsole) consoleLogger.info(message);
 }
 /**
  * Insert the method's description here.

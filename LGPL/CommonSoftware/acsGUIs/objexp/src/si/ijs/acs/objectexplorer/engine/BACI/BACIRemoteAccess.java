@@ -13,6 +13,7 @@ import org.omg.PortableServer.*;
 import org.omg.CORBA.*;
 
 import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.logging.ClientLogManager;
 
 import si.ijs.acs.objectexplorer.engine.*;
 import si.ijs.maci.*;
@@ -2116,6 +2117,19 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		} catch (Exception e1) {
 			throw new RemoteException("Cannot login to the manager: " + e1);
 		}
+		
+		new Thread(new Runnable() {
+			public void run()
+			{
+				notifier.reportDebug(
+						"BACIRemoteAccess::resolveManager",
+						"Initializing remote logging...");
+				ClientLogManager.getAcsLogManager().initRemoteLogging(orb, manager, handle, true);
+				notifier.reportDebug(
+						"BACIRemoteAccess::resolveManager",
+						"Remote logging initialized.");
+			}
+		}, "InitRemoteLogging").start();
 	}
 	/**
 	 * When an object implementing interface <code>Runnable</code> is used 
