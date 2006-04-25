@@ -76,8 +76,8 @@ public class SearchDialog extends JDialog {
 	
 	/**
 	 * Override the Component setVisible method.
-	 * This is needed because thedialog is built only once
-	 * but the field to show in the advande panel can be changed
+	 * This is needed because the dialog is built only once
+	 * but the field to show in the advanced panel can be changed
 	 * so we need to refresh them before displaying the panel.
 	 * 
 	 * @see Component.setVisible(boolean)
@@ -503,12 +503,41 @@ public class SearchDialog extends JDialog {
             loggingClient.getScrollPaneTable().changeSelection(row,1,false,false);
             loggingClient.getScrollPaneTable().showColumn(row);
         } else {
+        	String msg = "<html>No log matching \"<I>"+findTF.getText()+"</I>\" found<BR>Search from ";
+        	if (forwardRB.isSelected()) {
+        		msg += "beginning";
+        	} else {
+        		msg += "end";
+        	}
+        	msg+="?";
             // Now log found: shows a message
-            JOptionPane.showMessageDialog(
+            int ret = JOptionPane.showConfirmDialog(
                 this,
-                "No log matching "+findTF.getText()+" has been found",
+                msg,
                 "No log found",
-                JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.YES_NO_CANCEL_OPTION);
+            switch (ret) {
+	            case JOptionPane.YES_OPTION: {
+	            	if (forwardRB.isSelected()) {
+	            		row = 0;
+	            	} else {
+	            		row = loggingClient.getScrollPaneTable().getRowCount()-1;
+	            	}
+	            	loggingClient.getScrollPaneTable().changeSelection(row,1,false,false);
+	            	search();
+	            	return;
+	            }
+	            case JOptionPane.NO_OPTION: {
+	            	return;
+	            }
+	            case JOptionPane.CANCEL_OPTION: {
+	            	setVisible(false);
+	            	return;
+	            }
+            	default: {
+            		return;
+            	}
+            }
         }
     }
 }
