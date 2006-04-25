@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.75 2006/04/19 14:30:49 gchiozzi Exp $"
+* "@(#) $Id: acserr.cpp,v 1.76 2006/04/25 08:16:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,8 +32,9 @@
 #include <time.h>
 #include <stdio.h>
 #include <iomanip>
+#include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.75 2006/04/19 14:30:49 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.76 2006/04/25 08:16:59 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /******************************************************************************
@@ -210,14 +211,12 @@ void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr
     m_current = &m_errorTraceRef;
 }
 
-void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level){
-  unsigned int j;
- 
-  ACE_Time_Value tv = ACE_OS::gettimeofday();
-  char timeBuf[25];
-  sprintf(timeBuf, "%ld", tv.sec());
-  LoggingProxy::StackId (timeBuf); // unique stack ID = current time
-  LoggingProxy::StackLevel (level);
+void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level, char* stackId)
+{
+    unsigned int j;
+
+    LoggingProxy::StackLevel (level);
+    LoggingProxy::StackId (stackId);
 
   for (j=0; j<c->data.length(); j++) 
       LoggingProxy::AddData (c->data[j].name.in(), c->data[j].value.in());
@@ -247,16 +246,21 @@ void ErrorTraceHelper::log()
 {  
   unsigned int i=0;
   ACSErr::ErrorTrace *c = &m_errorTraceRef;
+  char uuidBuf[40];
+  ACE_Utils::UUID* uuid = ACE_Utils::UUID_GENERATOR::instance ()->generateUUID ();
+ 
+  snprintf(uuidBuf, 40, "%s", uuid->to_string()->c_str());
+  delete uuid;
 
   if (!m_depth) return;
 
   while (c->previousError.length()!=0){
     i++;
-    log (c, m_depth-i);
+    log (c, m_depth-i, uuidBuf);
     c = &c->previousError[0];
   }
   i++;
-  log (c, m_depth-i);
+  log (c, m_depth-i, uuidBuf);
 }
 
 void ErrorTraceHelper::toString (ACSErr::ErrorTrace * c, int level, std::ostringstream &oss){

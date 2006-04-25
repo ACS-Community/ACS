@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.cpp,v 1.13 2005/12/15 00:01:40 dfugate Exp $"
+* "@(#) $Id: acserrLegacy.cpp,v 1.14 2006/04/25 08:16:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,8 +52,9 @@
 #include "acserrOldDescriptions.h"
 #include "acserrACSbaseExImpl.h"
 #include "acserrHandlers.h"
+#include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.13 2005/12/15 00:01:40 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.14 2006/04/25 08:16:59 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -546,6 +547,9 @@ char* ACSError::getDescription (ACSErr::ACSErrType et, ACSErr::ErrorCode ec)
 bool ACSError::init ()
 {
     orb = CORBA::ORB::_nil();
+
+    ACE_Utils::UUID_GENERATOR::instance ()->init ();
+    
     m_oldUnexpected = std::set_unexpected(acserrUnspecifiedExHandler);
     m_oldTerminate = std::set_terminate(acserrUncaughtExHandler);
     

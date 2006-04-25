@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.68 2006/04/18 10:34:58 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.69 2006/04/25 08:16:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -369,7 +369,7 @@ class ErrorTraceHelper
     void fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr::Severity severity,
 	       const char* file, int line, const char* routine, const char* sd);
 
-    void log (ACSErr::ErrorTrace * c, int level);
+    void log (ACSErr::ErrorTrace * c, int level, char *stackId);
     void toString (ACSErr::ErrorTrace * c, int level, std::ostringstream& oss);
 
     ACSErr::ErrorTrace& m_errorTraceRef;
