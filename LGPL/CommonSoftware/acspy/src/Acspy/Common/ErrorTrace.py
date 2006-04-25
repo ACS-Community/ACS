@@ -209,6 +209,27 @@ class ErrorTraceHelper:
         self.getErrorTrace().data.append(ACSErr.NameValue(str(name), 
                                                           str(value)))
     #--------------------------------------------------------------------------
+    def getData(self, name):
+        '''
+        Gets previously set data from the ErrorTrace.
+        
+        Parameters: name of the data as defined by the addData method
+        
+        Returns: a list of previously set data (stringified) with the matching
+        name. This list can be empty if there are no matches
+        
+        Raises: Nothing
+        '''
+        ret_val = []
+
+        #cycle through the list of of name value pairs...
+        for name_value in self.getErrorTrace().data:
+            #looking for matching names
+            if name_value.name == name:
+                ret_val.append(name_value.value)
+            
+        return ret_val
+    #--------------------------------------------------------------------------
     def getDescription(self):
         '''
         Returns copy of description of current error. 
