@@ -64,7 +64,7 @@ public class LogRecordCollectingLogger extends Logger {
         	try {
 				Constructor<? extends LogRecordCollectingLogger> ctor = loggerClass.getConstructor(String.class, String.class);
 				myLogger = ctor.newInstance(name, null);
-				manager.addLogger(myLogger);
+				manager.addLogger(myLogger); 
 				myLogger = (LogRecordCollectingLogger) manager.getLogger(name);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -77,10 +77,10 @@ public class LogRecordCollectingLogger extends Logger {
         logHandler.setLevel(Level.FINEST);
         myLogger.addHandler(logHandler);      
 
-        return myLogger;
+        return myLogger; 
     }
 
-    protected LogRecordCollectingLogger(String name, String resourceBundleName) {
+    public LogRecordCollectingLogger(String name, String resourceBundleName) {
         super(name, resourceBundleName);
     }
 
