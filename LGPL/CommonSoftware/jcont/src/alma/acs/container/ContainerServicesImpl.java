@@ -78,37 +78,37 @@ import alma.entities.commonentity.EntityT;
  */
 public class ContainerServicesImpl implements ContainerServices
 {
-    private volatile AdvancedContainerServicesImpl advancedContainerServices;
+    private AdvancedContainerServicesImpl advancedContainerServices;
     
 	private volatile ArchiveProxy m_archiveProxy;
 
-	protected AcsManagerProxy m_acsManagerProxy;
+	protected final AcsManagerProxy m_acsManagerProxy;
 
     // logger used by this class
-	protected Logger m_logger;
+	protected final Logger m_logger;
     
     // logger given to component
     private volatile Logger componentLogger;
 
 	// sync'd map, key=curl, value=corbaStub
-	private Map m_usedComponentsMap;
+	private final Map m_usedComponentsMap;
 
 	// sync'd map, key=curl, value=ComponentDescriptor
-	private Map m_componentDescriptorMap;
+	private final Map m_componentDescriptorMap;
 	
 	// the handle that the manager has assigned to the component to whom this ContainerServices object belongs
-	private int m_clientHandle;
+	private final int m_clientHandle;
     
     // the component name. "Client" refers to the component acting as a client to the manager 
-	private String m_clientName;
+	private final String m_clientName;
 
-	private AcsCorba acsCorba; 
+	private final AcsCorba acsCorba; 
 	
 	
-	private POA m_clientPOA;
+	private final POA m_clientPOA;
 
-	private ComponentStateManager m_componentStateManager;
-    private ThreadFactory m_threadFactory;
+	private final ComponentStateManager m_componentStateManager;
+    private final ThreadFactory m_threadFactory;
 
     private volatile String[] methodsExcludedFromInvocationLogging;
 
@@ -132,29 +132,22 @@ public class ContainerServicesImpl implements ContainerServices
 									ComponentStateManager componentStateManager,
                                     ThreadFactory threadFactory)
 	{
-		// sync block to ensure that fields will be copied to main thread memory.
-		// An error reported by Lindsey on 2006-03-13 suggests that on her (multiprocessor?)
-		// machine, method "getName()" returned null in the component's ORB thread,
-		// even though it was set here in the container thread.
-		// The fields below are immutable, which means that we don't have to synchronize later access.
-		// All component threads will receive an up-to-date copy from main memory 
-		// the first time they access this ContainerServices object.
-		synchronized (this) {			
-			m_acsManagerProxy = acsManagerProxy;
-			m_clientPOA = componentPOA;
-			this.acsCorba = acsCorba;
-			m_logger = logger;
-			m_clientHandle = clientHandle;
-			m_clientName = clientCurl;
-			
-			m_componentStateManager = componentStateManager;
-			 
-			// should do for thread-safety as long as we don't iterate over it
-			m_usedComponentsMap = Collections.synchronizedMap(new HashMap());
-			m_componentDescriptorMap = Collections.synchronizedMap(new HashMap());
-	        
-	        m_threadFactory = threadFactory;        
-		}
+		// The following fields are final. This guarantees that they will be copied to main thread memory,
+		// and thus be seen by other threads after this ctor has terminated.
+		m_acsManagerProxy = acsManagerProxy;
+		m_clientPOA = componentPOA;
+		this.acsCorba = acsCorba;
+		m_logger = logger;
+		m_clientHandle = clientHandle;
+		m_clientName = clientCurl;
+		
+		m_componentStateManager = componentStateManager;
+		 
+		// should do for thread-safety as long as we don't iterate over it
+		m_usedComponentsMap = Collections.synchronizedMap(new HashMap());
+		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap());
+        
+        m_threadFactory = threadFactory;        
 	}
 
 
@@ -678,7 +671,7 @@ public class ContainerServicesImpl implements ContainerServices
     /**
      * @see alma.acs.container.ContainerServices#getAdvancedContainerServices()
      */
-    public AdvancedContainerServices getAdvancedContainerServices() {
+    public synchronized AdvancedContainerServices getAdvancedContainerServices() {
         if (advancedContainerServices == null) {
             advancedContainerServices = new AdvancedContainerServicesImpl(this, m_logger);
             // todo: once the legitimate cases of calling this method are settled, remove the log message.
