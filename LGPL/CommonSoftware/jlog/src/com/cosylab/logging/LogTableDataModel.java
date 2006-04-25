@@ -320,7 +320,7 @@ public class LogTableDataModel extends AbstractTableModel
 			java.io.BufferedReader in = null;
 			String urlStr=null;
 			try {
-				urlStr = "http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/all_logs.xml";
+				urlStr = "http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml";
 				
 				urlStr = (String) JOptionPane.showInputDialog(
 	                    null,
