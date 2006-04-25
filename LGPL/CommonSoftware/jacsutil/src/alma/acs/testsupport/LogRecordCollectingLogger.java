@@ -53,19 +53,19 @@ public class LogRecordCollectingLogger extends Logger {
     	return getCollectingLogger(name, LogRecordCollectingLogger.class);
     }
 
-    public static synchronized LogRecordCollectingLogger getCollectingLogger(String name, Class<? extends LogRecordCollectingLogger> loggerClass) {
+    public static synchronized <T extends LogRecordCollectingLogger> T getCollectingLogger(String name, Class<T> loggerClass) {
         LogManager manager = LogManager.getLogManager();
         Logger logger = manager.getLogger(name);
         if (logger != null && !loggerClass.isInstance(logger)) {
         	throw new ClassCastException("Logger '" + name + "' is already used and is of wrong type " + logger.getClass().getName());
         }
-        LogRecordCollectingLogger myLogger = (LogRecordCollectingLogger) logger;
+        T myLogger = (T) logger;
         if (myLogger == null) {
         	try {
-				Constructor<? extends LogRecordCollectingLogger> ctor = loggerClass.getConstructor(String.class, String.class);
+				Constructor<T> ctor = loggerClass.getDeclaredConstructor(String.class, String.class);
 				myLogger = ctor.newInstance(name, null);
 				manager.addLogger(myLogger); 
-				myLogger = (LogRecordCollectingLogger) manager.getLogger(name);
+				myLogger = (T) manager.getLogger(name);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -80,7 +80,7 @@ public class LogRecordCollectingLogger extends Logger {
         return myLogger; 
     }
 
-    public LogRecordCollectingLogger(String name, String resourceBundleName) {
+    protected LogRecordCollectingLogger(String name, String resourceBundleName) {
         super(name, resourceBundleName);
     }
 
