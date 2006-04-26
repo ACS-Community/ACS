@@ -20,6 +20,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-echo "=== Running all ACS-independent JUnit tests of module jcont"
+echo "=== Running all ACS-independent JUnit tests of module acserr"
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.acs.exceptions.AcsJExceptionTest
-echo "=== Done running independent jcont JUnit tests"
+echo "=== Done running independent acserr JUnit tests"
