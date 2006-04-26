@@ -21,9 +21,9 @@
  */
 package alma.acs.exceptions;
 
+import java.net.InetAddress;
 import java.util.Map;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -41,7 +41,7 @@ import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest0Ex;
 import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest1Ex;
 import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest2Ex;
 import alma.ACSErrTypeTest.wrappers.AcsJACSErrTest3Ex;
-import alma.acs.testsupport.TestLogger;
+import alma.acs.testsupport.LogRecordCollectingLogger;
 import alma.acs.util.UTCUtility;
 
 
@@ -54,11 +54,13 @@ import alma.acs.util.UTCUtility;
 public class AcsJExceptionTest extends TestCase
 {
     private ClientServerExceptionExample exSystem;
+    private String hostName;
     
-	public AcsJExceptionTest()
+	public AcsJExceptionTest() throws Exception
 	{
 		super("AcsJExceptionTest");
         exSystem = new ClientServerExceptionExample();
+        hostName = InetAddress.getLocalHost().getHostName();
 	}
 
 	
@@ -115,61 +117,24 @@ public class AcsJExceptionTest extends TestCase
 	 */
 	public void testErrorTraceToAcsJExConversion()
 	{
-		// first the variant with a new exception created on the client side
-		try
-		{
-			exSystem.throwWrapperAcsJACSErrTest0Ex();
+		// first the variant with a new exception created on the client side,
+        // and with explicit extraction of the ErrorTrace object from the CORBA exception
+		try {
+			exSystem.throwWrapperAcsJACSErrTest0Ex(false);
 		}
-		catch (AcsJException e)
-		{
-			assertTrue(e instanceof AcsJACSErrTest0Ex);
-			assertEquals("remote call failed", e.getMessage());
-			assertEquals("ClientServerExceptionExample.java", e.getFile());
-			assertEquals(3, e.getTraceDepth());
-			String host = e.getHost();
-			assertNotNull(host);
-			assertTrue(host.trim().length() > 0);
-			String threadName = e.getThreadName();
-			assertNotNull(threadName);
-			assertTrue(threadName.trim().length() > 0);
-			assertTrue(e.getLine() > 0);
-			assertNotNull(e.getMethod());
-			assertTrue(e.getMethod().trim().length() > 0);
-			assertEquals(Severity.Error, e.getSeverity());
-
-			Throwable cause1 = e.getCause();
-			assertNotNull(cause1);
-			assertTrue(cause1 instanceof AcsJACSErrTest0Ex && cause1 != e);
-			assertEquals("low level ex", cause1.getMessage());
-			AcsJACSErrTest0Ex acsJCause1 = (AcsJACSErrTest0Ex) cause1;
-			assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
-			assertEquals("Poverty", acsJCause1.getProperty("MyStupidProperty"));
-			assertEquals(2, acsJCause1.getTraceDepth());
-			long timeCause1 = acsJCause1.getTimestampMillis();
-			assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
-			assertEquals(host, acsJCause1.getHost());
-			assertEquals(threadName, acsJCause1.getThreadName());
-			assertTrue(acsJCause1.getLine() > 0);
-			assertNotNull(acsJCause1.getMethod());
-			assertTrue(acsJCause1.getMethod().trim().length() > 0);			
-			assertEquals(Severity.Error, acsJCause1.getSeverity());
-			
-			Throwable cause2 = cause1.getCause();
-			assertNotNull(cause2);
-			assertTrue(cause2 instanceof DefaultAcsJException);
-			assertEquals("mean NPE (original type java.lang.NullPointerException)", cause2.getMessage());
-			DefaultAcsJException acsJCause2 = (DefaultAcsJException) cause2;
-			assertEquals("ClientServerExceptionExample.java", acsJCause2.getFile());
-			assertEquals(timeCause1 - 1, acsJCause2.getTimestampMillis());
-			assertEquals(1, acsJCause2.getTraceDepth());
-			assertEquals(host, acsJCause2.getHost());
-			assertEquals("NA", acsJCause2.getThreadName()); // NPE did not carry thread name info
-			assertTrue(acsJCause2.getLine() > 0);
-			assertNotNull(acsJCause2.getMethod());
-			assertTrue(acsJCause2.getMethod().trim().length() > 0);			
-			assertEquals(Severity.Error, acsJCause2.getSeverity());
+		catch (AcsJACSErrTest0Ex ex1) {
+			checkWrapperAcsJEx(ex1);
 		}
 		
+        // same as above, but with the variation of 
+        // automatic extraction of the ErrorTrace object from the CORBA exception
+        try {
+            exSystem.throwWrapperAcsJACSErrTest0Ex(true);
+        }
+        catch (AcsJACSErrTest0Ex ex2) {
+            checkWrapperAcsJEx(ex2);
+        }
+        
 		// next we try the client-side conversion instead of wrapping
 		try
 		{
@@ -188,9 +153,58 @@ public class AcsJExceptionTest extends TestCase
 			assertEquals("mean NPE (original type java.lang.NullPointerException)", cause1.getMessage());
 			DefaultAcsJException acsJCause1 = (DefaultAcsJException) cause1;
 			assertEquals(1, acsJCause1.getTraceDepth());
-		}
-		
+		}		
 	}
+
+
+    /**
+     * Checks the structure and values of the exception obtained from 
+     * {@link ClientServerExceptionExample#throwWrapperAcsJACSErrTest0Ex(boolean)}. 
+     * @param ex 
+     */
+    private void checkWrapperAcsJEx(AcsJACSErrTest0Ex ex) {
+        assertEquals("remote call failed", ex.getMessage());
+        assertEquals("ClientServerExceptionExample.java", ex.getFile());
+        assertEquals(3, ex.getTraceDepth());
+        assertEquals(hostName, ex.getHost());
+        String threadName = ex.getThreadName();
+        assertNotNull(threadName);
+        assertTrue(threadName.trim().length() > 0);
+        assertTrue(ex.getLine() > 0);
+        assertNotNull(ex.getMethod());
+        assertTrue(ex.getMethod().trim().length() > 0);
+        assertEquals(Severity.Error, ex.getSeverity());
+        Throwable cause1 = ex.getCause();
+        assertNotNull(cause1);
+        assertTrue(cause1 instanceof AcsJACSErrTest0Ex && cause1 != ex);
+        assertEquals("low level ex", cause1.getMessage());
+        AcsJACSErrTest0Ex acsJCause1 = (AcsJACSErrTest0Ex) cause1;
+        assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
+        assertEquals("Poverty", acsJCause1.getProperty("MyStupidProperty"));
+        assertEquals(2, acsJCause1.getTraceDepth());
+        long timeCause1 = acsJCause1.getTimestampMillis();
+        assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
+        assertEquals(hostName, acsJCause1.getHost());
+        assertEquals(threadName, acsJCause1.getThreadName());
+        assertTrue(acsJCause1.getLine() > 0);
+        assertNotNull(acsJCause1.getMethod());
+        assertTrue(acsJCause1.getMethod().trim().length() > 0);
+        assertEquals(Severity.Error, acsJCause1.getSeverity());
+        Throwable cause2 = cause1.getCause();
+        assertNotNull(cause2);
+        assertTrue(cause2 instanceof DefaultAcsJException);
+        assertEquals("mean NPE (original type java.lang.NullPointerException)", cause2.getMessage());
+        DefaultAcsJException acsJCause2 = (DefaultAcsJException) cause2;
+        assertEquals("ClientServerExceptionExample.java", acsJCause2.getFile());
+        assertEquals(timeCause1 - 1, acsJCause2.getTimestampMillis());
+        assertEquals(1, acsJCause2.getTraceDepth());
+        assertEquals(hostName, acsJCause2.getHost());
+        assertEquals("NA", acsJCause2.getThreadName()); // NPE did not carry thread name info
+        assertTrue(acsJCause2.getLine() > 0);
+        assertNotNull(acsJCause2.getMethod());
+        assertTrue(acsJCause2.getMethod().trim().length() > 0);
+        assertEquals(Severity.Error, acsJCause2.getSeverity());
+    }
 	
 	
 	/**
@@ -269,42 +283,71 @@ public class AcsJExceptionTest extends TestCase
      * See also <code>alma.demo.client.XmlComponentClient#testException()</code> in module jcontexmpl.
 	 */
 	public void testLogAcsJException() {
-        Logger logger = TestLogger.getLogger("AcsJExceptionTest#testLogAcsJException");
+        LogRecordCollectingLogger logger = LogRecordCollectingLogger.getCollectingLogger("AcsJExceptionTest-Logger");
 
+        long timeBefore = System.currentTimeMillis();
         try {
-            exSystem.throwOriginalAcsJACSErrTest0Ex();
-        } catch (AcsJException e) {
-            assertEquals(2, e.getTraceDepth());
-            logger.info("Will log exception coming from throwOriginalAcsJACSErrTest0Ex:");
-            e.log(logger);
-        }        
-
-        
-        try {
-            exSystem.throwWrapperAcsJACSErrTest0Ex();
-        } catch (AcsJException e) {
+            exSystem.throwWrapperAcsJACSErrTest0Ex(true);
+        } catch (AcsJACSErrTest0Ex e) {
+            long timeAfter = System.currentTimeMillis();
             assertEquals(3, e.getTraceDepth());
-            logger.info("Will log exception coming from throwWrapperAcsJACSErrTest0Ex:");
-            e.log(logger);
+            String firstLogMsg = "Will log exception coming from throwWrapperAcsJACSErrTest0Ex";
+            logger.info(firstLogMsg);
+            e.log(logger);            
+            LogRecord[] logRecords = logger.getCollectedLogRecords();
             
-            // now check some values of a log record (which only shop up in the log when AcsXMLLogFormatter is used, e.g. in the Java container)
-            long defaultTimeStamp = e.getTimestampMillis();
-            LogRecord logRec = e.createSingleErrorTraceLogRecord(AcsJException.createSingleErrorTrace(e, defaultTimeStamp), "myTestStackID", 123);
-            assertEquals("throwWrapperAcsJACSErrTest0Ex", logRec.getSourceMethodName());            
-            Map properties = (Map) logRec.getParameters()[0];
-            assertEquals("myTestStackID", properties.get("StackId"));
-            assertEquals(123, ((Long)properties.get("StackLevel")).intValue());
-        }        
-    }
-	
-	
-	/////////////////////////////////////////////////////////////////////////////////
-	// Methods that simulate the various layers and boundaries of a real application
-	/////////////////////////////////////////////////////////////////////////////////
+            assertNotNull(logRecords);
+            assertEquals(4, logRecords.length);
+            assertEquals(firstLogMsg, logRecords[0].getMessage());            
+            
+            // The top-level exception is logged first, with stack level = 2
+            LogRecord lr2 = logRecords[1];
+            assertEquals(" (type=12, code=1) :: remote call failed", lr2.getMessage());
+            assertTrue(lr2.getMillis() >= timeBefore);
+            assertTrue(lr2.getMillis() <= timeAfter);
+            Map logProperties = (Map) lr2.getParameters()[0];
+            assertTrue(logProperties.containsKey("Line"));
+            assertTrue(logProperties.containsKey("ThreadName"));
+            assertEquals(hostName, logProperties.get("HostName"));
+            assertEquals("throwWrapperAcsJACSErrTest0Ex", lr2.getSourceMethodName());
+            final String stackId = (String) logProperties.get("StackId");
+            assertNotNull(stackId);
+            assertEquals(2, ((Long)logProperties.get("StackLevel")).intValue());
+            Map userProps2 = (Map) logProperties.get("ErrorTraceProperties");
+            assertEquals(0, userProps2.size());
+            
+            // The causing exception is logged next, with stack level = 1
+            LogRecord lr1 = logRecords[2];
+            String msg1 = lr1.getMessage();
+            assertEquals(" (type=12, code=1) :: low level ex", msg1);
+            assertTrue(lr1.getMillis() >= timeBefore);
+            assertTrue(lr1.getMillis() <= timeAfter);
+            logProperties = (Map) lr1.getParameters()[0];
+            assertTrue(logProperties.containsKey("Line"));
+            assertTrue(logProperties.containsKey("ThreadName"));
+            assertEquals(hostName, logProperties.get("HostName"));
+            assertEquals("throwOriginalAcsJACSErrTest0Ex", lr1.getSourceMethodName());
+            assertEquals(stackId, logProperties.get("StackId"));
+            assertEquals(1, ((Long)logProperties.get("StackLevel")).intValue());
+            Map userProps1 = (Map) logProperties.get("ErrorTraceProperties");
+            assertEquals(1, userProps1.size());
+            assertEquals("Poverty", userProps1.get("MyStupidProperty"));
 
-	public static void main(String[] args)
-	{
-		alma.acs.testsupport.tat.TATJUnitRunner.run(AcsJExceptionTest.class);
-	}
+            // last comes the wrapped NullPointerException, with stack level = 0
+            LogRecord lr0 = logRecords[3];
+            String msg0 = lr0.getMessage();
+            assertEquals(" (type=0, code=0) :: mean NPE (original type java.lang.NullPointerException)", msg0);
+            logProperties = (Map) lr0.getParameters()[0];
+            assertTrue(logProperties.containsKey("Line"));
+            assertTrue(logProperties.containsKey("ThreadName"));
+            assertEquals(hostName, logProperties.get("HostName"));
+            assertEquals("throwOriginalAcsJACSErrTest0Ex", lr0.getSourceMethodName());
+            assertEquals(stackId, logProperties.get("StackId"));
+            assertEquals(0, ((Long)logProperties.get("StackLevel")).intValue());
+            Map userProps0 = (Map) logProperties.get("ErrorTraceProperties");
+            assertEquals(0, userProps0.size());
+            
+        }        
+    }	
 
 }
