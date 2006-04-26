@@ -68,7 +68,7 @@ public class CorbaExceptionConverter
         // the right AcsJ-style exception from the error trace even if 
         // the ErrorTrace was originally not produced in Java.
         // An alternative solution would be a map that goes from (type, code) 
-        // to the matching exception class. This seems diffícult to maintain across modules though.
+        // to the matching exception class. This seems difficult to maintain across modules though.
 		if (classname != null)
 		{
 			// try if that class is available to be reconstructed
@@ -100,7 +100,7 @@ public class CorbaExceptionConverter
 		{
 			// default ex represents ErrorTrace that comes from other languages than Java,
             // or when reconstruction of the same Java exception failed for whatever reason. 
-			thr = new DefaultAcsJException(message);
+			thr = new DefaultAcsJException(message, et.errorType, et.errorCode);
 		}
 		
 		resurrectThrowable(thr, et);
@@ -138,6 +138,8 @@ public class CorbaExceptionConverter
 			acsJEx.m_threadName = et.thread;
 			acsJEx.m_timeMilli = UTCUtility.utcOmgToJava(et.timeStamp);
 			acsJEx.m_properties = ErrorTraceManipulator.getProperties(et);
+			
+			acsJEx.setShortDesc(et.shortDescription);
 		}
 
 		if (et.previousError != null && et.previousError.length > 0 && 
@@ -188,7 +190,7 @@ public class CorbaExceptionConverter
 				thr = recursiveGetThrowable(etCause);		
 			}
 			catch (Exception ex) {
-				// ignore: we assume that cause is not an ACS-style exception
+				// ignore: we assume that thr is not an ACS-style exception
 			} 
 		}
 		return thr;

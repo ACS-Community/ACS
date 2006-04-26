@@ -73,6 +73,8 @@ public abstract class AcsJException extends Exception
 	// process name or PID, container name if applicable
 	private static String s_thisProcess;
 
+	// TODO: remove this field once the code generator puts in the description into subclasses (method getShortDesc()) 
+	protected String shortDescription; 
 
 	// host and process (possibly converted from remote process!)
 	protected String m_host;
@@ -375,9 +377,9 @@ public abstract class AcsJException extends Exception
 	 */
 	public ErrorTrace getErrorTrace()
 	{
-		if (!m_initialized)
-		{
-			// todo message that subclass ctor did not call any of the super ctors; 
+		if (!m_initialized) {
+			throw new IllegalStateException("This exception has not been initialized. " + 
+					"Probably a (generated) exception subclass did not call the superclass constructors!");
 		}
 		
 		ErrorTrace et = recursiveGetErrorTrace(this, m_timeMilli);
@@ -437,6 +439,7 @@ public abstract class AcsJException extends Exception
         et.thread = m_threadName;
         et.timeStamp = UTCUtility.utcJavaToOmg(m_timeMilli);
         et.data = getNameValueArray();
+        et.shortDescription = getShortDesc();
         addExceptionProperties(this, et);
         return et;
     }
@@ -444,7 +447,7 @@ public abstract class AcsJException extends Exception
 
 
     /**
-     * Converts a Throwable that is not an AcsJException to an <code>ErrorTrace</code>.
+     * Converts a Throwable that may not be an AcsJException to an <code>ErrorTrace</code>.
      * <p>
      * For example, <code>thr</code> could be a <code>NullPointerException</code> thrown in the same process and thus not yet converted 
      * to <code>DefaultAcsJException</code>, but wrapped by some subclass of AcsJException which contains the NPE as its cause.
@@ -548,15 +551,24 @@ public abstract class AcsJException extends Exception
         }
 	}
 
+    /**
+     * Creates a {@link LogRecord} with the data from the given {@link ErrorTrace} object.
+     * Some data such as thread name, line of code, user-defined properties etc which do not correspond to any 
+     * field of <code>LogRecord</code> are stored inside a <code>Map</code> that is set as a parameter of the <code>LogRecord</code>.
+     * Later when the ACS logging system will process this <code>LogRecord</code>, it will recognize the special data
+     * and turn them into the XML attributes of elements like &lt;Debug&gt;
+     * @param et the ErrorTrace input object
+     * @param stackID  the stackID that must be the same for all linked <code>ErrorTrace</code> objects.
+     * @param stackLevel  0-based index for LogRecords from an ErrorTrace chain.
+     * @return
+     */
     LogRecord createSingleErrorTraceLogRecord(ErrorTrace et, String stackID, int stackLevel) {
         Level logLevel = ErrorTraceLogLevels.mapErrorLevelToLogLevel(et.severity);
         String message = et.shortDescription.trim();
-        if (message.length() > 0) {
-            message += " :: ";
-        }            
+        message += " (type=" + et.errorType + ", code=" + et.errorCode + ")";
         String usermessage = ErrorTraceManipulator.getProperty(et, CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_MESSAGE);
         if (usermessage != null && usermessage.trim().length() > 0) {
-            message += usermessage.trim();
+            message += " :: " + usermessage.trim();
         }            
         // need to explicitly construct a log record with the historical data (normal Logger methods would not allow setting these fields) 
         LogRecord logRec = new LogRecord(logLevel, message);
@@ -639,5 +651,24 @@ public abstract class AcsJException extends Exception
 	public String getThreadName()
 	{
 		return m_threadName;
+	}
+	
+	/**
+	 * TODO: make this method abstract and generate subclasses to return the fixed m
+	 * @return
+	 */
+	public String getShortDesc() {
+		return (shortDescription == null ? "" : shortDescription);
+	}
+	
+	/**
+	 * TODO: remove this method as soon as the shortDescription message gets generated into the AcsJ-Subclasses
+	 * by the code generator. For now we may receive it from an ErrorTrace that was constructed in C++. 
+	 * @param desc
+	 */
+	void setShortDesc(String desc) {
+		if ((shortDescription == null || shortDescription.trim().length() == 0) && desc != null && desc.trim().length() > 0) {
+			shortDescription = desc.trim();
+		}
 	}
 }
