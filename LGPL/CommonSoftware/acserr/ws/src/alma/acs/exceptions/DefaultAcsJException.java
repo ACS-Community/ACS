@@ -47,6 +47,9 @@ import alma.ACSErr.ErrorTrace;
  */
 public class DefaultAcsJException extends AcsJException
 {
+	int errType = 0;
+	int errCode = 0;
+	
 	/**
 	 * @param message
 	 */
@@ -55,6 +58,13 @@ public class DefaultAcsJException extends AcsJException
 		super(message);
 	}
 
+	public DefaultAcsJException(String message, int errType, int errCode) {
+		super(message);
+		this.errType = errType;
+		this.errCode = errCode;
+	}
+
+	
 	/**
 	 * @param etCause
 	 */
@@ -80,8 +90,7 @@ public class DefaultAcsJException extends AcsJException
 	 */
 	protected int getErrorType()
 	{
-		// todo or null or some better type...?
-		return 0;
+		return errType;
 	}
 
 	/* (non-Javadoc)
@@ -89,7 +98,7 @@ public class DefaultAcsJException extends AcsJException
 	 */
 	protected int getErrorCode()
 	{
-		return 0;
+		return errCode;
 	}
 
 }
