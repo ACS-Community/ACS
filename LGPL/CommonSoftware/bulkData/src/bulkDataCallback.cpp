@@ -235,7 +235,10 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 		state_m = CB_SEND_PARAM;
 		substate_m = CB_SUB_INIT;
 
-		bufParam_p = new ACE_Message_Block(val2);
+		if(val2 != 0)
+		    bufParam_p = new ACE_Message_Block(val2);
+		else
+		    bufParam_p = 0;
 		}
 	    else if(val1 == 2)
 		{
