@@ -31,6 +31,7 @@ import alma.ACSErr.ACSErrTypeTest;
 import alma.ACSErr.Completion;
 import alma.ACSErr.ErrorTrace;
 import alma.ACSErr.Severity;
+import alma.ACSErrTypeTest.ACSErrTest3;
 import alma.ACSErrTypeTest.ACSErrTestOK;
 import alma.ACSErrTypeTest.wrappers.ACSErrTest1AcsJCompletion;
 import alma.ACSErrTypeTest.wrappers.ACSErrTest2AcsJCompletion;
@@ -238,8 +239,8 @@ public class AcsJExceptionTest extends TestCase
         Throwable acsjex_cause2 = acsjex_cause.getCause();
         assertNull(acsjex_cause2);
         Completion corbacomp3 = jcompl3.toCorbaCompletion();
-        assertEquals(12, corbacomp3.type);
-        assertEquals(4, corbacomp3.code);
+        assertEquals(ACSErrTypeTest.value, corbacomp3.type);
+        assertEquals(ACSErrTest3.value, corbacomp3.code);
         assertNotNull(corbacomp3.previousError);
         assertEquals(1, corbacomp3.previousError.length);
         ErrorTrace trace_3_1 = corbacomp3.previousError[0];
