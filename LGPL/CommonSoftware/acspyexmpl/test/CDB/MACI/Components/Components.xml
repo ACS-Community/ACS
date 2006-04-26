@@ -24,4 +24,8 @@
 	<_ Name="LAMPCB2" Code="demoImpl.LampCallback" Type="IDL:alma/demo/LampCallback:1.0" Container="pyContainer" />
 	<_ Name="ES1" Code="demoImpl.ErrorSystem" Type="IDL:alma/demo/ErrorSystem:1.0" Container="pyContainer" />
 	<_ Name="ES2" Code="demoImpl.ErrorSystem" Type="IDL:alma/demo/ErrorSystem:1.0" Container="pyContainer" />
+        <_ Name="ERRORCOMP1" 	    
+         Code="acsexmplErrorComponentImpl.ErrorComponent" 
+         Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
+	 Container="pyContainer"/>
 </Components>

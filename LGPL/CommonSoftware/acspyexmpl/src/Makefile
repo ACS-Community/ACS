@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.9 2005/11/23 06:02:13 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.10 2006/04/26 22:49:17 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -91,7 +91,7 @@ PY_SCRIPTS_L       =
 PY_MODULES         =
 PY_MODULES_L       =
 
-PY_PACKAGES        = demoImpl acsexmplLampImpl
+PY_PACKAGES        = demoImpl acsexmplLampImpl acsexmplErrorComponentImpl
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
