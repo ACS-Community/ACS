@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.65 2005/06/17 08:23:36 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.66 2006/04/26 15:32:40 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -125,7 +125,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L	= acserrTestRun.sh startAcserrTest.sh
+SCRIPTS_L	= acserrTestRun.sh startAcserrTest.sh testJUnitACSERRnoRuntime
 SCRIPTS		= 
 
 #
