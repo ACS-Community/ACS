@@ -205,6 +205,14 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 {
     working_m = true;
 
+/*
+    if(error_m == true)
+	{
+	cleanRecvBuffer();
+	return 0;
+	}
+*/
+
     //ACS_TRACE("BulkDataCallback::receive_frame");
     //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::receive_frame for flow %s", flowname_m.c_str()));
     
@@ -269,7 +277,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 		res = cbStart();
 		errorCounter = 0;
 		working_m = false;
-		return res;
+		return 0;
 		}
 
 	    bufParam_p->copy(frame->rd_ptr(),frame->length());
@@ -291,7 +299,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    count_m += frame->length();
 	    errorCounter = 0;
 	    working_m = false;
-	    return res;
+	    return 0;
 	    }
 
 	}
@@ -407,4 +415,19 @@ AVCbErrorCompletion *BulkDataCallback::getErrorCompletion()
     error_m = false;
 
     return errComp_p;
+}
+
+
+void BulkDataCallback::cleanRecvBuffer()
+{
+    ACE_Svc_Handler<ACE_SOCK_STREAM,ACE_NULL_SYNCH> *svch = dynamic_cast<ACE_Svc_Handler<ACE_SOCK_STREAM,ACE_NULL_SYNCH> *>(handler_);   
+	
+    char buf[BUFSIZ];
+    int bufSize = sizeof(buf);
+    int nn = 1;
+    while(nn > 0)
+	{
+	nn = svch->peer().recv(buf,bufSize);
+	}
+    
 }

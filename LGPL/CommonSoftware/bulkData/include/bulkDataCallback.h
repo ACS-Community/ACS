@@ -84,6 +84,8 @@ class BulkDataCallback : public TAO_AV_Callback
 
   private:
 
+    void cleanRecvBuffer();
+
     ACE_Time_Value waitPeriod_m;
 
     CORBA::ULong loop_m;
