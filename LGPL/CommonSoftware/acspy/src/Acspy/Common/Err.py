@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.15 2006/04/26 20:39:52 dfugate Exp $
+# @(#) $Id: Err.py,v 1.16 2006/04/26 22:48:30 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.15 2006/04/26 20:39:52 dfugate Exp $"
+__revision__ = "$Id: Err.py,v 1.16 2006/04/26 22:48:30 dfugate Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
@@ -93,15 +93,17 @@ class ACSError(ErrorTraceHelper):
         #Someone has caught a CORBA exception and is trying to convert it into
         #this helper class.
         elif exception != None:
-            try:
-                #If the previous exception is an ACS Error System Exception
-                if isinstance(exception.errorTrace, ACSErr.ErrorTrace):
-                    #We can use an error stack...
-                    self.errorTrace = exception.errorTrace
-            except Exception, e:
-                self.logger.logWarning('Wrong usage of the ACS Error System Python Helper Class')
-                print_exc()
-                raise Exception("Wrong usage of the ACS Error System Python Helper Class")
+            
+            #If the previous exception is an ACS Error System Exception
+            if hasattr(exception, "errorTrace"):
+                #We can use an error stack...
+                self.errorTrace = exception.errorTrace
+
+            #if the previous exception was actually an ACSErr.Completion with a
+            #non-empty error trace
+            elif hasattr(exception, "previousError") and (len(exception.previousError)==1):
+                self.errorTrace = exception.previousError[0]
+            
     #--------------------------------------------------------------------------
     def getErrorTrace(self):
         '''
