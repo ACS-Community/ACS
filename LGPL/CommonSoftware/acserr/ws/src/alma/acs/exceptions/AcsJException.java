@@ -560,7 +560,7 @@ public abstract class AcsJException extends Exception
      * @param et the ErrorTrace input object
      * @param stackID  the stackID that must be the same for all linked <code>ErrorTrace</code> objects.
      * @param stackLevel  0-based index for LogRecords from an ErrorTrace chain.
-     * @return
+     * @return the LogRecord that contains the data from the input parameters.
      */
     LogRecord createSingleErrorTraceLogRecord(ErrorTrace et, String stackID, int stackLevel) {
         Level logLevel = ErrorTraceLogLevels.mapErrorLevelToLogLevel(et.severity);
@@ -655,7 +655,7 @@ public abstract class AcsJException extends Exception
 	
 	/**
 	 * TODO: make this method abstract and generate subclasses to return the fixed m
-	 * @return
+	 * @return short description particular for the (type, code)
 	 */
 	public String getShortDesc() {
 		return (shortDescription == null ? "" : shortDescription);
