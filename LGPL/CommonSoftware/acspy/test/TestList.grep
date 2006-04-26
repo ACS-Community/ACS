@@ -20,3 +20,4 @@ TypeError: 'NoneType' object is not callable
 Aborted
 terminate called after throwing an instance of 'omni_thread_fatal'
 got duplicate tcp line
+line 51, in fakeCORBAMethod

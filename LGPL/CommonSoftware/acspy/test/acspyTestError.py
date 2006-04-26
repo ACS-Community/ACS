@@ -21,15 +21,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestError.py,v 1.17 2005/02/23 00:04:55 dfugate Exp $
+# @(#) $Id: acspyTestError.py,v 1.18 2006/04/26 20:39:52 dfugate Exp $
 ###############################################################################
 """
 Tests the Python Error system.
 """
 ###############################################################################
-import ACSErrTypeCommon
-import ACSErrTypeCommonImpl
+import ACSErrTypePythonNative
+import ACSErrTypePythonNativeImpl
 import ACSErr
+from Acspy.Common.Err import pyExceptionToCORBA
+
 ###############################################################################
 def fakeCORBAMethod():
     '''
@@ -45,13 +47,16 @@ def fakeCORBAMethod():
     '''
     print "--fakeCORBAMethod1-------------------------------------------------"
     try:
-        #raise a local ACS exception
-        print "Raising the local exception..."
-        raise ACSErrTypeCommonImpl.UnknownExImpl()
+        try:
+            raise Exception("fake python exception")
+        except Exception, ex:
+            print "Raising the local exception..."
+            raise pyExceptionToCORBA(ex)
+        
     #make sure we can catch the real CORBA exception
-    except ACSErrTypeCommon.UnknownEx, e:
+    except ACSErrTypePythonNative.PythonEx, e:
         #convert it back into the helper class w/o adding error information
-        helperException = ACSErrTypeCommonImpl.UnknownExImpl(exception=e, create=0)
+        helperException = ACSErrTypePythonNativeImpl.PythonExImpl(exception=e, create=0)
         #print to stdout...only one error trace should be seen
         helperException.Print()
     
@@ -59,9 +64,9 @@ def fakeCORBAMethod():
     try:
         #reraise a local ACS exception
         raise helperException
-    except ACSErrTypeCommon.UnknownEx, e:
+    except ACSErrTypePythonNative.PythonEx, e:
         #make sure we can catch the real CORBA exception
-        helperException = ACSErrTypeCommonImpl.UnknownExImpl(exception=e)
+        helperException = ACSErrTypePythonNativeImpl.PythonExImpl(exception=e)
         #Printing to stdout AGAIN...should see TWO errorTraces this time around
         helperException.Print()
 
@@ -81,9 +86,9 @@ def fakeClientFunction():
     print "--fakeClientFunction1-------------------------------------------------"
     try:
         fakeCORBAMethod()
-    except ACSErrTypeCommon.UnknownEx, e:
+    except ACSErrTypePythonNative.PythonEx, e:
         print "--fakeClientFunction2-------------------------------------------------"
-        helperException = ACSErrTypeCommonImpl.UnknownExImpl(exception=e)
+        helperException = ACSErrTypePythonNativeImpl.PythonExImpl(exception=e)
         #Printing to stdout...should see three errorTraces
         helperException.Print()
     raise helperException
@@ -93,9 +98,9 @@ if __name__ == "__main__":
     print "--main1-------------------------------------------------"
     try:
         fakeClientFunction()
-    except ACSErrTypeCommon.UnknownEx, e:
+    except ACSErrTypePythonNative.PythonEx, e:
         print "--main2-------------------------------------------------"
-        helperException = ACSErrTypeCommonImpl.UnknownExImpl(exception=e)
+        helperException = ACSErrTypePythonNativeImpl.PythonExImpl(exception=e)
         #should be four error traces at this point
         helperException.Print()
     
@@ -107,6 +112,8 @@ if __name__ == "__main__":
     helperException.log()
     print "Grep me out", helperException.isOK()
     helperException.addData("name", "value")
+    print "getData('no data set'):", helperException.getData("no data set")
+    print "getData('name'):", helperException.getData("name")
     print "Grep me out", helperException.getDescription()
     print "Grep me out", helperException.getFileName()
     print "Grep me out", helperException.getLineNumber()

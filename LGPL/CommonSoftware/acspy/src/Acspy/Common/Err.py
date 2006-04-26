@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.14 2006/04/21 20:56:37 dfugate Exp $
+# @(#) $Id: Err.py,v 1.15 2006/04/26 20:39:52 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.14 2006/04/21 20:56:37 dfugate Exp $"
+__revision__ = "$Id: Err.py,v 1.15 2006/04/26 20:39:52 dfugate Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
@@ -200,4 +200,53 @@ def addComplHelperMethods(compl_obj):
 
     compl_obj.__dict__['addData'] = _addData
     
+#--------------------------------------------------------------------------
+def pyExceptionToCORBA(native_ex):
+    '''
+    Useful function which converts a native Python function to an ACS Error
+    System CORBA exception. This is only to be used in situations
+    immediately after the native Python exception has can been caught.
+    Such an example is:
+        try:
+            print joe
+        except NameError, ex:
+            corba_ex = pyExceptionToCORBA(ex)
+            raise corba_ex
+
+    Parameters:
+    - native_ex is a native Python exception. This should not be derived
+    from any CORBA class.
+
+    Returns: native_ex converted to a
+    ACSErrTypePythonNativeImpl.ACSErrTypePythonNativeExImpl
+
+    Raises: ???
+    '''
+    from traceback import format_exc
+    from Acspy.Common.ErrorTrace import ErrorTrace
+    from ACSErrTypePythonNativeImpl import PythonExImpl
     
+    #first let's get the traceback in string format
+    string_tb = format_exc()
+
+    #next get the type of native_ex. this will be used as the short
+    #description
+    descript = native_ex.__doc__
+
+    #create the new exception
+    new_except = PythonExImpl()
+
+    #redo the error trace so that the level is one lower
+    new_et = ErrorTrace(new_except.getErrorType(),
+                        new_except.getErrorCode(),
+                        description = new_except.getDescription(),
+                        level = 2)
+    new_except.setErrorTrace(new_et)
+
+    #time to add the real description
+    new_except.addData("Real Description", descript)
+
+    #add the real traceback
+    new_except.addData("Traceback", string_tb)
+
+    return new_except

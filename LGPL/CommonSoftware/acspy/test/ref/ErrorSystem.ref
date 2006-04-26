@@ -8,11 +8,13 @@
 1 -             Host=xxxx,
 1 -             Process=xxx,
 1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             ShortDescrip=Unknown Error,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
 1 -             Severity=Error,
-1 -             Data: )
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
 1 - 
 1 - --fakeCORBAMethod2-------------------------------------------------
 1 - ErrorTrace (TimeStamp=xxxx,
@@ -21,9 +23,9 @@
 1 -             Host=xxxx,
 1 -             Process=xxx,
 1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             ShortDescrip=Unknown Error,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
 1 -             Severity=Error,
 1 -             Data: )
 1 - 
@@ -33,11 +35,13 @@
 1 -                 Host=xxxx,
 1 -                 Process=xxx,
 1 -                 Thread=MainThread,
-1 -                 Type=10,
-1 -                 Code=3,
-1 -                 ShortDescrip=Unknown Error,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
 1 -                 Severity=Error,
-1 -                 Data: )
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
 1 - 
 1 - --fakeClientFunction2-------------------------------------------------
 1 - ErrorTrace (TimeStamp=xxxx,
@@ -46,9 +50,9 @@
 1 -             Host=xxxx,
 1 -             Process=xxx,
 1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             ShortDescrip=Unknown Error,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
 1 -             Severity=Error,
 1 -             Data: )
 1 - 
@@ -58,9 +62,9 @@
 1 -                 Host=xxxx,
 1 -                 Process=xxx,
 1 -                 Thread=MainThread,
-1 -                 Type=10,
-1 -                 Code=3,
-1 -                 ShortDescrip=Unknown Error,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
 1 -                 Severity=Error,
 1 -                 Data: )
 1 - 
@@ -70,11 +74,13 @@
 1 -                     Host=xxxx,
 1 -                     Process=xxx,
 1 -                     Thread=MainThread,
-1 -                     Type=10,
-1 -                     Code=3,
-1 -                     ShortDescrip=Unknown Error,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
 1 -                     Severity=Error,
-1 -                     Data: )
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
 1 - 
 1 - --main2-------------------------------------------------
 1 - ErrorTrace (TimeStamp=xxxx,
@@ -83,9 +89,9 @@
 1 -             Host=xxxx,
 1 -             Process=xxx,
 1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             ShortDescrip=Unknown Error,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
 1 -             Severity=Error,
 1 -             Data: )
 1 - 
@@ -95,9 +101,9 @@
 1 -                 Host=xxxx,
 1 -                 Process=xxx,
 1 -                 Thread=MainThread,
-1 -                 Type=10,
-1 -                 Code=3,
-1 -                 ShortDescrip=Unknown Error,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
 1 -                 Severity=Error,
 1 -                 Data: )
 1 - 
@@ -107,9 +113,9 @@
 1 -                     Host=xxxx,
 1 -                     Process=xxx,
 1 -                     Thread=MainThread,
-1 -                     Type=10,
-1 -                     Code=3,
-1 -                     ShortDescrip=Unknown Error,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
 1 -                     Severity=Error,
 1 -                     Data: )
 1 - 
@@ -119,11 +125,13 @@
 1 -                         Host=xxxx,
 1 -                         Process=xxx,
 1 -                         Thread=MainThread,
-1 -                         Type=10,
-1 -                         Code=3,
-1 -                         ShortDescrip=Unknown Error,
+1 -                         Type=7,
+1 -                         Code=0,
+1 -                         ShortDescrip=A Python exception,
 1 -                         Severity=Error,
-1 -                         Data: )
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
 1 - 
 1 - --main2-------------------------------------------------
 1 - Testing all public methods
@@ -134,9 +142,9 @@
 1 -             Host=xxxx,
 1 -             Process=xxx,
 1 -             Thread=MainThread,
-1 -             Type=10,
-1 -             Code=3,
-1 -             ShortDescrip=Unknown Error,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
 1 -             Severity=Error,
 1 -             Data: )
 1 - 
@@ -146,9 +154,9 @@
 1 -                 Host=xxxx,
 1 -                 Process=xxx,
 1 -                 Thread=MainThread,
-1 -                 Type=10,
-1 -                 Code=3,
-1 -                 ShortDescrip=Unknown Error,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
 1 -                 Severity=Error,
 1 -                 Data: )
 1 - 
@@ -158,9 +166,9 @@
 1 -                     Host=xxxx,
 1 -                     Process=xxx,
 1 -                     Thread=MainThread,
-1 -                     Type=10,
-1 -                     Code=3,
-1 -                     ShortDescrip=Unknown Error,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
 1 -                     Severity=Error,
 1 -                     Data: )
 1 - 
@@ -170,11 +178,13 @@
 1 -                         Host=xxxx,
 1 -                         Process=xxx,
 1 -                         Thread=MainThread,
-1 -                         Type=10,
-1 -                         Code=3,
-1 -                         ShortDescrip=Unknown Error,
+1 -                         Type=7,
+1 -                         Code=0,
+1 -                         ShortDescrip=A Python exception,
 1 -                         Severity=Error,
-1 -                         Data: )
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
 1 - 
 1 - getData('no data set'): []
 1 - getData('name'): ['value']
