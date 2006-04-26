@@ -127,8 +127,7 @@ public interface ILogEntry extends Serializable {
 		"StackLevel",
 		""} ; // Place holeder: not an attribute in the XML
 	    
-	// private static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'hh':'mm':'ss'.'SSSS";
-	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSS";
+	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
 	
 	public static final short NUMBER_OF_FIELDS = 16;
 	
