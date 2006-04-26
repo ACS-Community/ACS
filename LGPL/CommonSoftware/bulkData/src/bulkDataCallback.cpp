@@ -150,7 +150,8 @@ int BulkDataCallback::handle_stop (void)
 	    //return 0;
 	    }
 
-	//erComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "ulkDataCallback::handle_stop"); 
+	// comment to be removed
+	// errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
 
 	error_m = true;
 	}
@@ -386,9 +387,24 @@ CORBA::Boolean BulkDataCallback::isWorking()
     return working_m;
 }
 
+
 CORBA::Boolean BulkDataCallback::isError()
 {
     ACS_TRACE("BulkDataCallback::isError");
 
+    // to be removed after discussing with Bogdan
+    error_m = false;
+
     return error_m;
+}
+
+
+AVCbErrorCompletion *BulkDataCallback::getErrorCompletion()
+{
+    ACS_TRACE("BulkDataCallback::getErrorCompletion");
+
+    // error resetting
+    error_m = false;
+
+    return errComp_p;
 }

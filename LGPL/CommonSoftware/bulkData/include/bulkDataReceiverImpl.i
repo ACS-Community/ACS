@@ -153,6 +153,12 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 	throw ex.getAVInvalidFlowNumberEx();
 	}
 
+    if(cb->isError())
+	{
+	AVCbErrorCompletion *comp = cb->getErrorCompletion();
+	//comp->log();
+	return comp->returnCompletion();
+	}	
     if(cb->isTimeout() && cb->isWorking())
 	{
 	AVCbWorkingTimeoutCompletion *comp = new AVCbWorkingTimeoutCompletion();
