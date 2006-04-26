@@ -80,25 +80,35 @@ public class ClientServerExceptionExample {
      * The <code>AcsJACSErrTest0Ex</code> that will be thrown by this "client"
      * method is caused by an exception in the "remote" method. That remote
      * exception is in general not the VM original, but has been converted from
-     * an <code>ACSErrTest0Ex</code>/<code>ErrorTrace</code> which is the
+     * an <code>ACSErrTest0Ex</code> with an <code>ErrorTrace</code> which is the
      * format the exception took on to travel over the CORBA wire.
      * <p>
      * Once caught on the client side, the remote exception is wrapped by a new
      * <code>AcsJACSErrTest0Ex</code> exception whose message is "remote call
      * failed". Thus unlike in method {@link #throwConvertedAcsJACSErrTest0Ex()}
-     * here we actually add a new exception to the top of the chain (or
+     * here we actually add a new exception to the top of the chain (and thus add an 
      * ErrorTrace in the CORBA picture).
      * 
+     * @param extractErrorTraceAutomatically if true, uses the constructor from a Throwable
+     *        which internally finds out that it got indeed an ACS exception,
+     *        and then extracts the ErrorTrace automatically;
+     *        if false, explicitly gets the ErrorTrace, and uses the respective constructor.
      * @throws AcsJACSErrTest0Ex (always)
      * @see #throwACSErrTest0Ex()
      */
-    public void throwWrapperAcsJACSErrTest0Ex() throws AcsJACSErrTest0Ex {
+    public void throwWrapperAcsJACSErrTest0Ex(boolean extractErrorTraceAutomatically) throws AcsJACSErrTest0Ex {
         try {
             // make (=fake) a remote call
             throwACSErrTest0Ex();
-        } catch (ACSErrTest0Ex e) {
-            AcsJACSErrTest0Ex acsJACSErrTest0Ex = new AcsJACSErrTest0Ex(
-                    "remote call failed", e.errorTrace);
+        } catch (ACSErrTest0Ex e) {            
+            AcsJACSErrTest0Ex acsJACSErrTest0Ex = null;
+            if (extractErrorTraceAutomatically) {
+                acsJACSErrTest0Ex = new AcsJACSErrTest0Ex("remote call failed", e);
+            }
+            else {
+                acsJACSErrTest0Ex = new AcsJACSErrTest0Ex("remote call failed", e.errorTrace);
+            }
+            
             throw acsJACSErrTest0Ex;
         }
     }
@@ -116,7 +126,7 @@ public class ClientServerExceptionExample {
      * Once caught on the client side, the remote exception is converted to an
      * <code>AcsJACSErrTest0Ex</code> exception which does not have an
      * independent text message. Thus unlike in method
-     * {@link #throwWrapperAcsJACSErrTest0Ex()}here we do not add a new
+     * {@link #throwWrapperAcsJACSErrTest0Ex(boolean)} here we do not add a new
      * exception to the top of the chain (or ErrorTrace in the CORBA picture).
      * 
      * @throws AcsJACSErrTest0Ex (always)
