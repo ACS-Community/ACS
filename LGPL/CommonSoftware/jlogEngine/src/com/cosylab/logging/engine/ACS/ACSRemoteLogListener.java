@@ -24,11 +24,28 @@ package com.cosylab.logging.engine.ACS;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * This class defines the interface for classes (LCEngine, LCRemoteResponseCallbackBean) 
+ * This class defines the interface for classes (LCEngine) 
  * that support custom callbacks for receiving entries 
  * submitted to the logging mechanism and for processing them.
  */
 public interface ACSRemoteLogListener {
+	/** 
+	 * Notify that the connection with ACS NC has been established
+	 */
+	public void acsLogConnEstablished();
+	
+	/**
+	 * Notify that the connection with ACS NC has been lost
+	 *
+	 */
+	public void acsLogConnLost();
+	
+	/**
+	 * Notify that an attempt to connect to ACS NC is in progress
+	 *
+	 */
+	public void acsLogConnConnecting();
+	
 	/**
 	 * The method is executed when a new log arrives from the NC
 	 * 

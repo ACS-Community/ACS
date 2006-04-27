@@ -53,7 +53,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	public static final String NAME_SERVICE = "NameService";
 	public static final String LOGGING_CHANNEL = "LoggingChannel";
 	
-	private Vector<ACSRemoteLogListener> listeners = new Vector<ACSRemoteLogListener>();
+	
 	
 	private boolean isInitialized = false;
 	private ORB orb = null;
@@ -61,12 +61,20 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	private ConsumerAdmin consumerAdmin = null;
 	private ACSStructuredPushConsumer acsSPS = null;
 	
+	private LCEngine engine = null;
+	
 	private Thread orbThread = null;
 	
 	/**
 	 * ACSRemoteAccss constructor comment.
+	 * 
+	 * @param TheLCEngine
 	 */
-	public ACSRemoteAccess() {
+	public ACSRemoteAccess(LCEngine theEngine) {
+		if (theEngine==null) {
+			throw new IllegalArgumentException("The LCEngine can't be null");
+		}
+		this.engine=theEngine;
 	}
 	
 	/**
@@ -85,7 +93,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	private boolean createConsumerAdmin() {
-		publishReport("Creating Consumer Admin...");
+		engine.publishReport("Creating Consumer Admin...");
 		try {
 			//consumerAdmin = eventChannel.default_consumer_admin();
 	
@@ -95,11 +103,11 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			
 			consumerAdmin = eventChannel.new_for_consumers(ifgo, adminID);
 		} catch (Exception e) {
-			publishReport("Exception occurred when creating Consumer Admin.");
+			engine.publishReport("Exception occurred when creating Consumer Admin.");
 			System.out.println("Exception in ACSRemoteAccess::createConsumerAdmin(): " + e);
 			return false;
 		}
-		publishReport("Consumer Admin created.");
+		engine.publishReport("Consumer Admin created.");
 		return true;
 	}
 	
@@ -131,8 +139,8 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	private boolean createStructuredPushConsumer() {
-		publishReport("Initializing Structured Push Consumer...");
-		acsSPS = new ACSStructuredPushConsumer(this);
+		engine.publishReport("Initializing Structured Push Consumer...");
+		acsSPS = new ACSStructuredPushConsumer(this,engine);
 		if (!acsSPS.isInitialized) return false;
 	
 		acsSPS.connect();
@@ -141,7 +149,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		acsSPS.setupEvents();
 		if (!acsSPS.isEventSetup) return false;
 		
-		publishReport("Structured Push Consumer initialized.");
+		engine.publishReport("Structured Push Consumer initialized.");
 		return true;
 	}
 	
@@ -176,7 +184,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		this.orb=theORB;
 
 		if (orb==null) { 
-			publishReport("Initializing CORBA...");
+			engine.publishReport("Initializing CORBA...");
 		
 			// ORB stanza
 			java.util.Properties orbprops = java.lang.System.getProperties();
@@ -206,7 +214,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			}
 		
 			// end of CORBA stanza
-			publishReport("CORBA initialized.");
+			engine.publishReport("CORBA initialized.");
 		}
 		
 		Manager maciManager=manager;
@@ -244,7 +252,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	private si.ijs.maci.Manager resolveManagerReference() {
-		publishReport("Resolving " + MANAGER_PROPERTY + " manager reference...");
+		engine.publishReport("Resolving " + MANAGER_PROPERTY + " manager reference...");
 		org.omg.CORBA.Object obj = null;
 		si.ijs.maci.Manager manager;
 		try {
@@ -253,18 +261,18 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			//if (obj == null) throw new IllegalStateException("Could not resolve Manager reference from the ACS.manager system property (" + MANAGER_PROPERTY + ").");
 			manager = si.ijs.maci.ManagerHelper.narrow(obj);
 		} catch (Exception e) {
-			publishReport("Exception occurred when resolving manager reference.");
+			engine.publishReport("Exception occurred when resolving manager reference.");
 			System.out.println("Exception in ACSRemoteAccess::resolveManagerReference(): " + e);
 			return null;
 		}
 		
-		publishReport("Manager reference resolved.");
+		engine.publishReport("Manager reference resolved.");
 		
 		return manager;
 	}
 	
 	private NamingContext resolveNamingServiceContext(si.ijs.maci.Manager manager) {
-		publishReport("Resolving Naming Service...");
+		engine.publishReport("Resolving Naming Service...");
 		org.omg.CORBA.IntHolder holder = new org.omg.CORBA.IntHolder();
 			
 		org.omg.CORBA.Object nameService = manager.get_service(0, NAME_SERVICE, false, holder);
@@ -274,17 +282,17 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		try {
 			namingContext = org.omg.CosNaming.NamingContextHelper.narrow(nameService);
 		} catch (Exception e) {
-			publishReport("Exception occurred when narrowing Naming Service Context from the Naming Service.");
+			engine.publishReport("Exception occurred when narrowing Naming Service Context from the Naming Service.");
 			System.out.println("Exception in resloveNamingServiceContext(): " + e);
 			return null;
 		}
 		
-		publishReport("Naming Service resolved.");
+		engine.publishReport("Naming Service resolved.");
 		return namingContext;
 	}
 	
 	private boolean resolveNotifyChannel(String channelName, NamingContext namingContext) {
-		publishReport("Resolving channel \"" + channelName + "\" from Notify Service...");
+		engine.publishReport("Resolving channel \"" + channelName + "\" from Notify Service...");
 		try {
 			NameComponent[] nc = new NameComponent[1];
 			nc[0] = new NameComponent(channelName, "");
@@ -294,11 +302,11 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			eventChannel = org.omg.CosNotifyChannelAdmin.EventChannelHelper.narrow(obj);
 			
 		} catch (Exception e) {
-			publishReport("Exception occurred when obtaining channel \"" + channelName + "\" from the Notify Service.");
+			engine.publishReport("Exception occurred when obtaining channel \"" + channelName + "\" from the Notify Service.");
 			System.out.println("ACSRemoteAccess::Exception in resolveNotifyChannel(): " + e);
 			return false;
 		}
-		publishReport("Channel \"" + channelName + "\" resolved.");
+		engine.publishReport("Channel \"" + channelName + "\" resolved.");
 		return true;
 	}
 
@@ -307,72 +315,6 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			return false;
 		}
 		return acsSPS.isConnected();
-	}
-	
-	/**
-	 * Add a connection status listener
-	 * 
-	 * @param listener The listener to add
-	 */
-	public void addLogRemoteConnListener(ACSRemoteLogListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		synchronized(listeners) {
-			listeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Remove a connection status listener
-	 * 
-	 * @param listener The listener to remove
-	 * @return true if the listener is effectively removed
-	 * 
-	 */
-	public boolean removeLogRemoteConnListener(ACSRemoteLogListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		return listeners.remove(listener);
-	}
-	
-	/**
-	 * Publish a report string to the listeners (if any)
-	 * 
-	 * @param message The message to publish
-	 */
-	public void publishReport(String message){
-		if (listeners==null) {
-			return;
-		}
-		synchronized(listeners) {
-			for (int t=0; t<listeners.size(); t++) {
-				ACSRemoteLogListener listener = listeners.get(t);
-				if (listener!=null) {
-					listener.reportStatus(message);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Publish a log to the listeners (if any)
-	 * 
-	 * @param newLog The log to send to the listeners
-	 */
-	public void publishLog(ILogEntry newLog) {
-		if (listeners==null) {
-			return;
-		}
-		synchronized(listeners) {
-			for (int t=0; t<listeners.size(); t++) {
-				ACSRemoteLogListener listener = listeners.get(t);
-				if (listener!=null) {
-					listener.logEntryReceived(newLog);
-				}
-			}
-		}
 	}
 
 }
