@@ -171,13 +171,13 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 
 	private JPanel ivjJPanel1 = null;
 	private JPanel ivjJPanel2 = null;
-	private JPanel ivjJPanel3 = null;
+	private JPanel detailedInfoPanel = null;
 	
 	// The panel with the suspend btn, the filter string...
 	// It is immediately under the table of logs
 	private JPanel filterStatusPnl = null;
 
-	private JScrollPane ivjJScrollPane1 = null;
+	private JScrollPane statusAreaPanel = null; // The bottom scrolling panel with the status messages
 	private JScrollPane ivjJScrollPane2 = null;
 
 	private JSplitPane ivjJSplitPane1 = null;
@@ -198,7 +198,17 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     /**
      * The menu item to show/hide the toolbar
      */
-    private JCheckBoxMenuItem viewToolbarMenuItem;
+    private JCheckBoxMenuItem viewToolbarMI;
+    
+    /**
+     * The menu item to show/hide the Detailed log info panel
+     */
+    private JCheckBoxMenuItem viewDetailedInfoMI;
+    
+    /**
+     * The menu item to show/hide the Detailed log info panel
+     */
+    private JCheckBoxMenuItem viewStatusAreaMI;
     
     // The ComboBox in the toolbar and its default value (i.e. the log level
     // at startup
@@ -288,13 +298,28 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
                 } else {
                     searchNextMenuItem.setEnabled(false);
                 }
-            } else if (e.getSource()==LoggingClient.this.viewToolbarMenuItem) {
+            } else if (e.getSource()==LoggingClient.this.viewToolbarMI) {
                 // Hide/Show the toolbar
-                toolBar.setVisible(viewToolbarMenuItem.getState());
+                toolBar.setVisible(viewToolbarMI.getState());
             } else if (e.getSource()==LoggingClient.this.statisticsMenuItem) {
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
-            }
+            } else if (e.getSource()==LoggingClient.this.viewStatusAreaMI) {
+            	getStatusAreaPanel().setVisible(viewStatusAreaMI.getState());
+            	if (viewStatusAreaMI.getState()) {
+            		getJSplitPane1().setDividerLocation(getHeight() - 150);
+            	} else {
+            		getJSplitPane1().setDividerLocation(getHeight());
+            	}
+            } else if (e.getSource()==LoggingClient.this.viewDetailedInfoMI) {
+            	getDeatailedInfoPanel().setVisible(viewDetailedInfoMI.getState());
+            	if (viewDetailedInfoMI.getState()) {
+            		int w = getLogTable().getWidth();
+            		getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth() - w/3);
+            	} else {
+            		getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth());
+            	}
+            } 
 		};
 
 		public void propertyChange(java.beans.PropertyChangeEvent evt)
@@ -811,9 +836,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         viewMenu.setName("ViewMenu");
         viewMenu.setText("View");
         viewMenu.addMenuListener(eventHandler);
-        viewToolbarMenuItem = new JCheckBoxMenuItem("Toolbar",true);
-        viewToolbarMenuItem.addActionListener(eventHandler);
-        viewMenu.add(viewToolbarMenuItem);
+        viewToolbarMI = new JCheckBoxMenuItem("Toolbar",true);
+        viewToolbarMI.addActionListener(eventHandler);
+        viewMenu.add(viewToolbarMI);
+        viewDetailedInfoMI = new JCheckBoxMenuItem("Detailed log info",true);
+        viewDetailedInfoMI.addActionListener(eventHandler);
+        viewMenu.add(viewDetailedInfoMI);
+        viewStatusAreaMI = new JCheckBoxMenuItem("Status area",true);
+        viewStatusAreaMI.addActionListener(eventHandler);
+        viewMenu.add(viewStatusAreaMI);
         viewMenu.addSeparator();
         viewMenu.add(getFieldsMenuItem());
         viewMenu.add(setFiltersMenuItem());
@@ -1482,22 +1513,22 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 * Returns the JPanel3 property value.
 	 * @return javax.swing.JPanel
 	 */
-	private javax.swing.JPanel getJPanel3()
+	private javax.swing.JPanel getDeatailedInfoPanel()
 	{
-		if (ivjJPanel3 == null)
+		if (detailedInfoPanel == null)
 		{
 			try
 			{
-				ivjJPanel3 = new javax.swing.JPanel();
-				ivjJPanel3.setName("JPanel3");
-				ivjJPanel3.setLayout(new java.awt.GridBagLayout());
+				detailedInfoPanel = new javax.swing.JPanel();
+				detailedInfoPanel.setName("JPanel3");
+				detailedInfoPanel.setLayout(new java.awt.GridBagLayout());
 
 				java.awt.GridBagConstraints constraintsJLabel1 = new java.awt.GridBagConstraints();
 				constraintsJLabel1.gridx = 0;
 				constraintsJLabel1.gridy = 0;
 				constraintsJLabel1.anchor = java.awt.GridBagConstraints.WEST;
 				constraintsJLabel1.insets = new java.awt.Insets(4, 4, 4, 4);
-				ivjJPanel3.add(getInfoStatus(), constraintsJLabel1);
+				detailedInfoPanel.add(getInfoStatus(), constraintsJLabel1);
 
 				java.awt.GridBagConstraints constraintsJScrollPane2 = new java.awt.GridBagConstraints();
 				constraintsJScrollPane2.gridx = 0;
@@ -1505,7 +1536,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 				constraintsJScrollPane2.fill = java.awt.GridBagConstraints.BOTH;
 				constraintsJScrollPane2.weightx = 1.0;
 				constraintsJScrollPane2.weighty = 1.0;
-				ivjJPanel3.add(getJScrollPane2(), constraintsJScrollPane2);
+				detailedInfoPanel.add(getJScrollPane2(), constraintsJScrollPane2);
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1514,7 +1545,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 				handleException(ivjExc);
 			}
 		}
-		return ivjJPanel3;
+		return detailedInfoPanel;
 	}
 	/**
 	 * Returns the JPanel4 property value.
@@ -1565,18 +1596,18 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 * Returns the JScrollPane1 property value.
 	 * @return javax.swing.JScrollPane
 	 */
-	private javax.swing.JScrollPane getJScrollPane1()
+	private javax.swing.JScrollPane getStatusAreaPanel()
 	{
-		if (ivjJScrollPane1 == null)
+		if (statusAreaPanel == null)
 		{
 			try
 			{
-				ivjJScrollPane1 = new javax.swing.JScrollPane();
-				ivjJScrollPane1.setName("JScrollPane1");
-				ivjJScrollPane1.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-				ivjJScrollPane1.setPreferredSize(new java.awt.Dimension(50, 50));
-				ivjJScrollPane1.setMinimumSize(new java.awt.Dimension(50, 50));
-				getJScrollPane1().setViewportView(getStatusArea());
+				statusAreaPanel = new javax.swing.JScrollPane();
+				statusAreaPanel.setName("JScrollPane1");
+				statusAreaPanel.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				statusAreaPanel.setPreferredSize(new java.awt.Dimension(50, 50));
+				statusAreaPanel.setMinimumSize(new java.awt.Dimension(50, 50));
+				statusAreaPanel.setViewportView(getStatusArea());
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1585,7 +1616,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 				handleException(ivjExc);
 			}
 		}
-		return ivjJScrollPane1;
+		return statusAreaPanel;
 	}
 	/**
 	 * Returns the JScrollPane2 property value.
@@ -1624,7 +1655,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 				ivjJSplitPane1.setName("JSplitPane1");
 				ivjJSplitPane1.setLastDividerLocation(350);
 				ivjJSplitPane1.setDividerLocation(350);
-				ivjJSplitPane1.add(getJScrollPane1(), "bottom");
+				ivjJSplitPane1.add(getStatusAreaPanel(), "bottom");
 				ivjJSplitPane1.add(getJPanel2(), "top");
 
 			}
@@ -1654,7 +1685,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 				ivjJSplitPane2.setContinuousLayout(true);
 				//ivjJSplitPane2.setDividerLocation(501);
 				ivjJSplitPane2.add(getJPanel1(), "left");
-				ivjJSplitPane2.add(getJPanel3(), "right");
+				ivjJSplitPane2.add(getDeatailedInfoPanel(), "right");
 
 			}
 			catch (java.lang.Throwable ivjExc)
