@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: ErrorComponent.py,v 1.1 2006/04/27 16:00:24 dfugate Exp $"
+# "@(#) $Id: ErrorComponent.py,v 1.2 2006/04/27 16:58:43 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -26,18 +26,40 @@
 #----------------------------------------------------------------------------
 '''
 This module implements the IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
-component specification.
+component specification. It clearly and concisely demonstrates some of the ACS
+Error System features available to Python developers.
 '''
 #--CORBA STUBS-----------------------------------------------------------------
+
+#import the CORBA servant stubs for the ErrorComponent IDL interface
 import acsexmplErrorComponent__POA
+
+#import the ACS-generated implementations of IDL exceptions defined
+#by ACSErrTypeCommon. The classes defined within this module add quite a bit
+#of extra functionality to the pure IDL exceptions such as:
+# - visual respresentations of ACSErr.ErrorTrace's common to all 
+#   ACS-generated exceptions
+# - logging of exceptions
+# - exception member getter/setter methods
 import ACSErrTypeCommonImpl
+
+#import the ACS-generated implementations of IDL exceptions defined
+#by ACSErrTypeOK.xml. See description above.
 import ACSErrTypeOKImpl
+
 #--ACS Imports-----------------------------------------------------------------
+
+#standard imports needed to implement a component
 from Acspy.Servants.ACSComponent       import ACSComponent
 from Acspy.Servants.ContainerServices  import ContainerServices
 from Acspy.Servants.ComponentLifecycle import ComponentLifecycle
 
-from Acspy.Common.Log import acsPrintExcDebug
+#here we import a special method from the Log module. acsPrintExcDebug
+#is a quite useful method which prints the same data as the native
+#stack.print_exc function with one stipulation - the $ACS_LOG_STDOUT
+#environment variable must be set at the DEBUG level or lower for
+#this to occur.
+from Acspy.Common.Log                  import acsPrintExcDebug
 #------------------------------------------------------------------------------
 class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
                      ACSComponent,
@@ -49,7 +71,7 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
     #------------------------------------------------------------------------------
     def __init__(self):
         '''
-        Just call superclass constructors here.
+        Just call superclass constructors here and get a member logger.
         '''
         ACSComponent.__init__(self)
         ContainerServices.__init__(self)
@@ -58,14 +80,22 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
     #------------------------------------------------------------------------------
     def displayMessage(self):
         '''
-        void displayMessage();
+        Implementation of IDL method:
+            void displayMessage();
+        
+        For details on what this method does, please see the IDL Doxygen
+        documentation.
         '''
         print "Hello World"
 
     #------------------------------------------------------------------------------
     def badMethod(self, depth):
         '''
-        void badMethod(in short depth) raises (ACSErrTypeCommon::GenericErrorEx);
+        Implementation of IDL method:
+            void badMethod(in short depth) raises (ACSErrTypeCommon::GenericErrorEx);
+        
+        For details on what this method does, please see the IDL Doxygen
+        documentation.
         '''
         self.logger.logTrace("ErrorComponent.badMethod")
 
@@ -80,6 +110,9 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
             raise ex2
 
         except:
+            #never expect this code to be executed but just in case
+            #there was some unknown problem generating the ACS-based
+            #exception
             acsPrintExcDebug()
             ex2 = ACSErrTypeCommonImpl.GenericErrorExImpl()
             ex2.addData("ErrorDesc", "Got unexpected exception")
@@ -92,11 +125,19 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
     #------------------------------------------------------------------------------
     def returnCompletion(self, depth):
         '''
-        ACSErr::Completion returnCompletion(in short depth);
+        Implementation of IDL method:
+            ACSErr::Completion returnCompletion(in short depth);
+        
+        For details on what this method does, please see the IDL Doxygen
+        documentation.
         '''
+        #if the depth is <=0, a completion is returned signifying
+        #there was no error
         if depth <= 0:
             er = ACSErrTypeOKImpl.ACSErrOKCompletionImpl()
 
+        #otherwise we must generate an exception of the requested
+        #depth and then convert that into an error completion
         else:
             
             try:
@@ -116,28 +157,34 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
     #------------------------------------------------------------------------------
     def __errorTrace(self, depth):
         '''
-        This method simply throw an exception containing
-        an error trace with the requested depth, if > 0
+        This method simply throws an exception containing
+        an error trace with the requested depth if > 0.
         Otherwise just returns.
         
-        Notice that this method throws a LOCAL exception xxxExImpl 
-        and not a remote exception xxx
+        Note that this method throws a LOCAL exception xxxExImpl 
+        and not a remote exception xxx.
         
         Parameters: depth is the depth of the error trace
+        
+        Returns: Nothing
+        
+        Raises: a ACSErrTypeCommonImpl.GenericErrorExImpl/
+        ACSErrTypeCommon.GenericErrorEx exceptions of the requested
+        depth.
         '''
         self.logger.logTrace("ErrorComponent.errorTrace")
 
         # If depth is 1, we are at the bottom and 
-        # we just have to throw an exception.
+        # just have to throw an exception.
         # Going up the recursive chain this will be
-        # atteched to all other exceptions
+        # attached to all other exceptions
         if depth == 1:
             ex = ACSErrTypeCommonImpl.GenericErrorExImpl()
             ex.addData("ErrorDesc", "Bottom of error trace")
             raise ex
 
         # If depth > 1, make a recursive call.
-        # We will have to get back an exception with a trace with
+        # We will have to get back an exception with a trace containing
         # a depth shorter by 1 element.
         elif depth > 1:
 
@@ -156,5 +203,5 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
                 raise ex2
             
         # We should get here only if depth <= 0,
-        # I.e. if there is not exception to throw.
+        # I.e. if there is no exception to throw.
         return
