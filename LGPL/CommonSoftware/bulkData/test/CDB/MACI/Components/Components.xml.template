@@ -65,4 +65,14 @@
       <_ Name="BulkDataReceiver1Perf"  Code="bulkDataReceiver1LibPerf"	
                                        Type="IDL:alma/bulkdata/BulkDataReceiver1Perf:1.0"
                                        Container="Container2"/>
+
+
+
+      <_ Name="BulkDataReceiverEx3"  Code="bulkDataReceiverLibEx3"	
+                                     Type="IDL:alma/bulkdata/BulkDataReceiverEx3:1.0"
+                                     Container="Container2"/>
+      <_ Name="BulkDataSenderEx3"    Code="bulkDataSenderLibEx3"	
+                                     Type="IDL:alma/bulkdata/BulkDataSenderEx3:1.0"
+                                     Container="Container1"/>
+
 </Components>		     

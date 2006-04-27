@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.25 2006/04/21 12:40:34 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.26 2006/04/27 07:43:41 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -59,6 +59,7 @@ USER_LIB = 	-lACE \
 # -----------------------------
 EXECUTABLES     = bulkDataEx1 \
 		  bulkDataEx2 \
+		  bulkDataEx3 \
 		  bulkDataSendRecvEx \
 		  bulkDataDistributerEx \
 		  bulkDataPerf \
@@ -82,6 +83,16 @@ bulkDataEx2_LIBS      = bulkDataReceiverStubs \
 			bulkDataStubs \
 			bulkDataCallback \
 			ACSBulkDataError
+
+bulkDataEx3_OBJECTS   = bulkDataEx3	
+bulkDataEx3_LIBS      = bulkDataReceiverStubs \
+			bulkDataReceiverEx3Stubs \
+			bulkDataSenderStubs \
+			bulkDataSenderEx3Stubs \
+			bulkDataStubs \
+			bulkDataCallback \
+			ACSBulkDataError \
+			ACSBulkDataStatus
 
 bulkDataSendRecvEx_OBJECTS   = bulkDataSendRecvEx	
 bulkDataSendRecvEx_LIBS      = bulkDataSendRecvStubs \
@@ -134,15 +145,17 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       = bulkDataReceiverLibEx1 \
-			bulkDataReceiverLibEx2 \
-			bulkDataSenderLibEx1 \
-			bulkDataSenderLibEx2 \
-			bulkDataSenderLibPerf \
-			bulkDataReceiver1LibPerf \
-			bulkDataSendRecvLib \
-			bulkDataSenderDistrLib \
-			bulkDataReceiverDistr1Lib \
-			bulkDataReceiverDistr2Lib
+		  bulkDataReceiverLibEx2 \
+		  bulkDataReceiverLibEx3 \
+		  bulkDataSenderLibEx1 \
+		  bulkDataSenderLibEx2 \
+	 	  bulkDataSenderLibEx3 \
+		  bulkDataSenderLibPerf \
+		  bulkDataReceiver1LibPerf \
+		  bulkDataSendRecvLib \
+		  bulkDataSenderDistrLib \
+		  bulkDataReceiverDistr1Lib \
+		  bulkDataReceiverDistr2Lib
 LIBRARIES_L     =
 
 #
@@ -155,11 +168,18 @@ bulkDataReceiverLibEx2_OBJECTS   = bulkDataReceiverCbEx2
 bulkDataReceiverLibEx2_LIBS      = bulkDataReceiverStubs bulkDataReceiverEx2Stubs bulkDataStubs \
 				   bulkDataCallback ACSBulkDataError
 
+bulkDataReceiverLibEx3_OBJECTS   = bulkDataReceiverCbEx3
+bulkDataReceiverLibEx3_LIBS      = bulkDataReceiverStubs bulkDataReceiverEx3Stubs bulkDataStubs \
+				   bulkDataCallback ACSBulkDataError ACSBulkDataStatus
+
 bulkDataSenderLibEx1_OBJECTS   = bulkDataSenderEx1Impl
 bulkDataSenderLibEx1_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError bulkDataSenderEx1Stubs
 
 bulkDataSenderLibEx2_OBJECTS   = bulkDataSenderEx2Impl
 bulkDataSenderLibEx2_LIBS      = bulkDataSenderEx2Stubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+
+bulkDataSenderLibEx3_OBJECTS   = bulkDataSenderEx3Impl
+bulkDataSenderLibEx3_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError bulkDataSenderEx3Stubs
 
 bulkDataSenderLibPerf_OBJECTS   = bulkDataSenderPerfImpl
 bulkDataSenderLibPerf_LIBS      = bulkDataReceiverStubs bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
@@ -234,15 +254,17 @@ tttlll_OBJECTS  =
 # Configuration Database Files
 # ----------------------------
 CDB_SCHEMAS = BulkDataReceiverEx2 BulkDataSenderEx2 BulkDataSendRecv \
-		BulkDataSenderDistr BulkDataReceiverDistr1 BulkDataReceiverDistr2 \
-		BulkDataSenderEx1 BulkDataSenderPerf BulkDataReceiver1Perf
+	      BulkDataSenderDistr BulkDataReceiverDistr1 BulkDataReceiverDistr2 \
+	      BulkDataSenderEx1 BulkDataSenderPerf BulkDataReceiver1Perf \
+	      BulkDataReceiverEx3 BulkDataSenderEx3
 
 # 
 # IDL Files and flags
 # 
-IDL_FILES = bulkDataSenderEx1 bulkDataReceiverEx2 bulkDataSenderEx2 bulkDataSendRecv \
-		bulkDataSenderDistr bulkDataReceiverDistr1 bulkDataReceiverDistr2 \
-		bulkDataSenderPerf bulkDataReceiver1Perf
+IDL_FILES = bulkDataSenderEx1 bulkDataReceiverEx2 bulkDataSenderEx2 \
+	    bulkDataSenderEx3 bulkDataReceiverEx3 bulkDataSendRecv \
+	    bulkDataSenderDistr bulkDataReceiverDistr1 bulkDataReceiverDistr2 \
+	    bulkDataSenderPerf bulkDataReceiver1Perf
 IDL_TAO_FLAGS =
 USER_IDL =
 #
