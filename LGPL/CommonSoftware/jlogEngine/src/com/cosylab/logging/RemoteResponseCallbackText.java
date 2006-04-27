@@ -31,20 +31,46 @@ import com.cosylab.logging.engine.log.ILogEntry;
  */
 public class RemoteResponseCallbackText implements ACSRemoteLogListener {
 /**
- * RemoteResponeCallbackText constructor comment.
- */
-public RemoteResponseCallbackText() {
-	super();
-}
-/**
- */
-public void logEntryReceived(ILogEntry logEntry) {
-	System.out.println(logEntry);
-}
-/**
- * reportStatus method comment.
- */
-public void reportStatus(java.lang.String status) {
-	System.out.println("Status report: " + status);
-}
+	 * RemoteResponeCallbackText constructor comment.
+	 */
+	public RemoteResponseCallbackText() {
+		super();
+	}
+	
+	/**
+	 */
+	public void logEntryReceived(ILogEntry logEntry) {
+		System.out.println(logEntry);
+	}
+	
+	/**
+	 * reportStatus method comment.
+	 */
+	public void reportStatus(java.lang.String status) {
+		System.out.println("Status report: " + status);
+	}
+	
+	/*
+	 *  (non-Javadoc)
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener#acsLogConnEstablished()
+	 */
+	public void acsLogConnEstablished() {
+		System.out.println("Connection established");
+	}
+	
+	/*
+	 *  (non-Javadoc)
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener#acsLogConnLost()
+	 */
+	public void acsLogConnLost() {
+		System.out.println("Connection lost");
+	}
+	
+	/*
+	 *  (non-Javadoc)
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener#acsLogConnConnecting()
+	 */
+	public void acsLogConnConnecting() {
+		System.out.println("Connecting");
+	}
 }

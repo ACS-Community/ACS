@@ -1976,18 +1976,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     }
     
     /**
-     * This method notify the GUI about the status of the connection
-     * 
-     * @param connected
-     */
-    public void setConnectionStatus(boolean connected) {
-    	setTitle("LoggingClient");
-    	if (!connected) {
-    		setTitle(getTitle()+" - Offline");
-    	}
-    }
-    
-    /**
      * 
      * @return true if the scrool lock is enabled
      */
@@ -2021,5 +2009,29 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     public void reportStatus(String status) {
     	getStatusArea().append(status+"\n");
     }
+    
+   /*
+    * Notify that the connection with ACS NC has been established
+    * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 */
+	public void acsLogConnEstablished() {
+		setTitle("LoggingClient");
+	}
+	
+	/**
+	 * Notify that the connection with ACS NC has been lost
+	 *@see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 */
+	public void acsLogConnLost() {
+		setTitle("LoggingClient - Offline");
+	}
+	
+	/**
+	 * Notify that an attempt to connect to ACS NC is in progress
+	 *@see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 */
+	public void acsLogConnConnecting() {
+		setTitle("LoggingClient - Connecting");
+	}
 }
 
