@@ -130,7 +130,6 @@ int BulkDataCallback::handle_stop (void)
 		    nn = svch->peer().recv(buf,bufSize);
 		    //cout << "nnnnnnn: " << nn << endl;
 		    }
-
 		//return -1;
 		}
 
@@ -226,13 +225,13 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 {
     working_m = true;
 
-/*
     if(error_m == true)
 	{
 	cleanRecvBuffer();
+	working_m = false;
 	return 0;
 	}
-*/
+
 
     //ACS_TRACE("BulkDataCallback::receive_frame");
     //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::receive_frame for flow %s", flowname_m.c_str()));
@@ -336,6 +335,10 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    errorCounter_m = 0;
 	    //return 0;
 	    }
+
+	// add to the completion
+	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
+
 	error_m = true;
 	}
     catch(CORBA::Exception &ex)
@@ -351,9 +354,6 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    //return 0;
 	    }
 
-	// add to the completion
-	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
-	
 	error_m = true;
 	}
     catch(...)
