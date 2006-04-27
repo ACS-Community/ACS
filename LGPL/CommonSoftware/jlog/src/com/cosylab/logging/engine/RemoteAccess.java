@@ -39,5 +39,4 @@ public interface RemoteAccess {
 	public void initialize(ORB theORB, Manager manager);
 	public boolean isInitialized();
 	public boolean isConnected();
-	public void addLogRemoteConnListener(ACSRemoteLogListener listener);
 }
