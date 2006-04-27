@@ -155,7 +155,7 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 
     if(cb->isError())
 	{
-	AVCbErrorCompletion *comp = cb->getErrorCompletion();
+	CompletionImpl *comp = cb->getErrorCompletion();
 	//comp->log();
 	return comp->returnCompletion();
 	}	

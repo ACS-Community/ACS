@@ -15,21 +15,27 @@ BulkDataCallback::BulkDataCallback()
 
     frameCount_m = 0;
 
-    errorCounter = 0;
-
     bufParam_p = 0;
 
     timeout_m = false;
     working_m = false;
     error_m = false;
 
-//    erComp_p = 0;
+    errorCounter_m = 0;
+    errComp_p = 0;
 }
 
 
 BulkDataCallback::~BulkDataCallback()
 {
     ACS_TRACE("BulkDataCallback::~BulkDataCallback"); 
+
+    if (error_m == true)
+	{
+	if (errComp_p != 0)
+	    delete errComp_p;
+	}
+
 }
 
 
@@ -43,6 +49,14 @@ int BulkDataCallback::handle_start(void)
     //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_start - timeout_m == true !!!"));
 
     timeout_m = false;
+
+    if (error_m == true)
+	{
+	if (errComp_p != 0)
+	    delete errComp_p;
+	}
+
+    // error is cleared
     error_m = false;    
 
     state_m = CB_UNS;
@@ -77,7 +91,7 @@ int BulkDataCallback::handle_stop (void)
 	    { 
 
 	    int res = cbStop();
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    return res;
 	    }
 
@@ -143,15 +157,15 @@ int BulkDataCallback::handle_stop (void)
 	err.log();
 
 	/* TBD what do to after several attempts ? */
-	errorCounter++;
-	if(errorCounter == maxErrorRepetition)
+	errorCounter_m++;
+	if(errorCounter_m == maxErrorRepetition)
 	    {
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    //return 0;
 	    }
 
-	// comment to be removed
-	// errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
+	// add to the completion
+	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
 
 	error_m = true;
 	}
@@ -161,10 +175,10 @@ int BulkDataCallback::handle_stop (void)
 	err.addData("CORBA::Exception", ex._info());
 	err.log();
 
-	errorCounter++;
-	if(errorCounter == maxErrorRepetition)
+	errorCounter_m++;
+	if(errorCounter_m == maxErrorRepetition)
 	    {
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    //return 0;
 	    }
 	error_m = true;
@@ -175,10 +189,10 @@ int BulkDataCallback::handle_stop (void)
 	err.addData("UNKNOWN Exception", "Unknown ex in BulkDataCallback::handle_stop");
 	err.log();
 
-	errorCounter++;
-	if(errorCounter == maxErrorRepetition)
+	errorCounter_m++;
+	if(errorCounter_m == maxErrorRepetition)
 	    {
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    //return 0;
 	    }
 	error_m = true;
@@ -193,6 +207,13 @@ int BulkDataCallback::handle_destroy (void)
     //ACS_TRACE("BulkDataCallback::handle_destroy");
 
     //cout << "BulkDataCallback::handle_destroy" << endl;
+
+    if (error_m == true)
+	{
+	if (errComp_p != 0)
+	    delete errComp_p;
+	}
+    error_m = false;
 
     delete this;
       
@@ -275,7 +296,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    if ( dim_m == 0 )
 		{
 		res = cbStart();
-		errorCounter = 0;
+		errorCounter_m = 0;
 		working_m = false;
 		return 0;
 		}
@@ -283,7 +304,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    bufParam_p->copy(frame->rd_ptr(),frame->length());
 
 	    count_m += frame->length();
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    working_m = false;
 	    return 0;
 	    }
@@ -297,7 +318,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 //		timeout_m = false;
 //		}
 	    count_m += frame->length();
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    working_m = false;
 	    return 0;
 	    }
@@ -309,10 +330,10 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	err.log();
 
 	/* TBD what do to after several attempts ? */
-	errorCounter++;
-	if(errorCounter == maxErrorRepetition)
+	errorCounter_m++;
+	if(errorCounter_m == maxErrorRepetition)
 	    {
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    //return 0;
 	    }
 	error_m = true;
@@ -323,12 +344,16 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	err.addData("CORBA::Exception", ex._info());
 	err.log();
 
-	errorCounter++;
-	if(errorCounter == maxErrorRepetition)
+	errorCounter_m++;
+	if(errorCounter_m == maxErrorRepetition)
 	    {
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    //return 0;
 	    }
+
+	// add to the completion
+	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
+	
 	error_m = true;
 	}
     catch(...)
@@ -337,10 +362,10 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	err.addData("UNKNOWN Exception", "Unknown ex in BulkDataCallback::receive_frame");
 	err.log();
 
-	errorCounter++;
-	if(errorCounter == maxErrorRepetition)
+	errorCounter_m++;
+	if(errorCounter_m == maxErrorRepetition)
 	    {
-	    errorCounter = 0;
+	    errorCounter_m = 0;
 	    //return 0;
 	    }
 	error_m = true;
@@ -398,20 +423,17 @@ CORBA::Boolean BulkDataCallback::isWorking()
 
 CORBA::Boolean BulkDataCallback::isError()
 {
-    ACS_TRACE("BulkDataCallback::isError");
-
-    // to be removed after discussing with Bogdan
-    error_m = false;
+//    ACS_TRACE("BulkDataCallback::isError");
 
     return error_m;
 }
 
 
-AVCbErrorCompletion *BulkDataCallback::getErrorCompletion()
+CompletionImpl *BulkDataCallback::getErrorCompletion()
 {
     ACS_TRACE("BulkDataCallback::getErrorCompletion");
 
-    // error resetting
+    // error is cleared; completion cannot be retrieved two times
     error_m = false;
 
     return errComp_p;

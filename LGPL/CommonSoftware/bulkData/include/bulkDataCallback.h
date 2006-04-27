@@ -66,7 +66,7 @@ class BulkDataCallback : public TAO_AV_Callback
     virtual CORBA::Boolean isWorking();
     virtual CORBA::Boolean isError();
 
-    virtual AVCbErrorCompletion *getErrorCompletion();
+    virtual CompletionImpl *getErrorCompletion();
 
     /********************* methods to be implemented by the user *****************/
 
@@ -99,7 +99,7 @@ class BulkDataCallback : public TAO_AV_Callback
 
     CORBA::Long frameCount_m;
 
-    CORBA::ULong errorCounter;
+    CORBA::ULong errorCounter_m;
 
     ACE_Message_Block *bufParam_p;
 
