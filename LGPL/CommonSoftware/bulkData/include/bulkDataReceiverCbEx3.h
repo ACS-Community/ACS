@@ -25,6 +25,8 @@ class BulkDataReceiverCbEx3 : public BulkDataCallback
   private:
         
     CORBA::ULong count1_m;
+
+    CORBA::Boolean timeout_m;
 };
 
 #endif /*!_BULKDATA_RECEIVER_CB_EX3_H*/

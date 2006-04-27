@@ -54,7 +54,13 @@ module bulkdata
   void startSendErr()
       raises (ACSBulkDataError::AVStartSendErrorEx);
 
+  void startSendTimeout()
+      raises (ACSBulkDataError::AVStartSendErrorEx);
+
   void paceDataErr()
+      raises (ACSBulkDataError::AVPaceDataErrorEx);
+
+  void paceDataTimeout(in unsigned long timeout)
       raises (ACSBulkDataError::AVPaceDataErrorEx);
   };
   

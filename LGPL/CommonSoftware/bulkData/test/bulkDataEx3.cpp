@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataEx3.cpp,v 1.3 2006/04/27 07:43:41 rcirami Exp $"
+ * "@(#) $Id: bulkDataEx3.cpp,v 1.4 2006/04/27 10:29:04 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -84,13 +84,27 @@ int main(int argc, char *argv[])
 
 	//Error simulation in start send
 	sender->startSendErr();
-	receiver->getCbStatus(1);
+	CompletionImpl comp = receiver->getCbStatus(1);
+	if(comp.getCode() == ACSBulkDataStatus::AVCbError)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"retrieving parameter error completion from the receiver"));
+	    comp.log();
+	    }
+
 
 	//No error in start send
 	sender->startSend();
 
-	//Error simulation in pace data
 	sender->paceDataErr();
+	CompletionImpl comp1 = receiver->getCbStatus(1);
+	if(comp1.getCode() == ACSBulkDataStatus::AVCbError)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"retrieving data error completion from the receiver"));
+	    comp1.log();
+	    }
+
+	//Error simulation in pace data
+	sender->startSend();
 
 	//sender->stopSend();
 

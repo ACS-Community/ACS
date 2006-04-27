@@ -1,6 +1,6 @@
 #include "bulkDataReceiverCbEx3.h"
 
-BulkDataReceiverCbEx3::BulkDataReceiverCbEx3() : count1_m(0)
+BulkDataReceiverCbEx3::BulkDataReceiverCbEx3() : count1_m(0), timeout_m(false)
 {
     ACS_TRACE("BulkDataReceiverCbEx3::BulkDataReceiverCbEx3"); 
 
@@ -19,6 +19,7 @@ BulkDataReceiverCbEx3::cbStart(ACE_Message_Block * userParam_p)
     //ACS_TRACE("BulkDataReceiverCbEx3::cbStart");
 
     count1_m = 0;
+    timeout_m = false;
 
     char message[256];
     ACE_OS::strcpy(message, userParam_p->rd_ptr());
@@ -29,6 +30,11 @@ BulkDataReceiverCbEx3::cbStart(ACE_Message_Block * userParam_p)
 	//We simulate that we cannot open a file
 	AVCouldNotOpenFileExImpl err = AVCouldNotOpenFileExImpl(__FILE__,__LINE__,"BulkDataReceiverCbEx3::cbStart");
 	throw err;
+	}
+
+    if(ACE_OS::strcmp(message,"TIMEOUT") == 0)
+	{
+	timeout_m = true;
 	}
 
     if(ACE_OS::strcmp(message,"OK") == 0)
@@ -45,6 +51,13 @@ BulkDataReceiverCbEx3::cbReceive(ACE_Message_Block * frame_p)
     count1_m += frame_p->length();
 
     cout << "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN: "<< count1_m << endl;
+
+    if(timeout_m == true)
+	{
+	ACE_OS::sleep(20);
+	return 0;
+	}
+
 
     if(count1_m > 25000)
 	{
