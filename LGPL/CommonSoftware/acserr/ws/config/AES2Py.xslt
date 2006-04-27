@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.16 2006/04/25 21:24:45 dfugate Exp $
+# @(#) $Id: AES2Py.xslt,v 1.17 2006/04/27 23:26:19 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -151,10 +151,49 @@ class BaseException:
     def get</xsl:text><xsl:value-of select="../@name"/><xsl:text>Ex(self):
         '''
         Returns this exception converted into an </xsl:text><xsl:value-of select="../@name"/><xsl:text>Ex
-        '''    
+        '''
         return </xsl:text><xsl:value-of select="../@name"/><xsl:text>.</xsl:text><xsl:value-of select="../@name"/><xsl:text>Ex(self.getErrorTrace())
-######################################################################
 
+</xsl:text>
+
+<xsl:for-each select="Member">
+<xsl:variable name="MemberType">
+    <xsl:choose>
+	<xsl:when test='@type="string"'>
+	<xsl:text>str</xsl:text>
+	</xsl:when>
+	<xsl:when test='@type="long"'>
+	<xsl:text>long</xsl:text>
+	</xsl:when>
+	<xsl:when test='@type="double"'>
+	<xsl:text>float</xsl:text>
+	</xsl:when>
+	<xsl:otherwise>
+	<xsl:value-of select="@type"/>
+	</xsl:otherwise>
+    </xsl:choose>
+</xsl:variable>
+<xsl:text>    
+    #--------------------------------------------------------------------------
+    def set</xsl:text><xsl:value-of select="@name"/><xsl:text>(self, value):
+        '''
+        Member setter method.
+        '''
+        self.setData("</xsl:text><xsl:value-of select="@name"/><xsl:text>", value)
+        return
+        
+    def get</xsl:text><xsl:value-of select="@name"/><xsl:text>(self):
+        '''
+        Member getter method.
+        '''
+        ret_val = self.getData("</xsl:text><xsl:value-of select="@name"/><xsl:text>")[0]
+        ret_val = </xsl:text><xsl:value-of select="$MemberType"/><xsl:text>(ret_val)
+        return ret_val
+
+</xsl:text>
+</xsl:for-each>
+<xsl:text>
+######################################################################
 </xsl:text>
 </xsl:for-each>
 
@@ -250,10 +289,48 @@ class BaseException:
                                    self.getErrorCode(),
                                    [self.errorTrace])
         return
+
+</xsl:text>
+<xsl:for-each select="Member">
+<xsl:variable name="MemberType">
+    <xsl:choose>
+	<xsl:when test='@type="string"'>
+	<xsl:text>str</xsl:text>
+	</xsl:when>
+	<xsl:when test='@type="long"'>
+	<xsl:text>long</xsl:text>
+	</xsl:when>
+	<xsl:when test='@type="double"'>
+	<xsl:text>float</xsl:text>
+	</xsl:when>
+	<xsl:otherwise>
+	<xsl:value-of select="@type"/>
+	</xsl:otherwise>
+    </xsl:choose>
+</xsl:variable>
+<xsl:text>    
+    #--------------------------------------------------------------------------
+    def set</xsl:text><xsl:value-of select="@name"/><xsl:text>(self, value):
+        '''
+        Member setter method.
+        '''
+        self.setData("</xsl:text><xsl:value-of select="@name"/><xsl:text>", value)
+        return
+        
+    def get</xsl:text><xsl:value-of select="@name"/><xsl:text>(self):
+        '''
+        Member getter method.
+        '''
+        ret_val = self.getData("</xsl:text><xsl:value-of select="@name"/><xsl:text>")[0]
+        ret_val = </xsl:text><xsl:value-of select="$MemberType"/><xsl:text>(ret_val)
+        return ret_val
+
+</xsl:text>
+</xsl:for-each>
+<xsl:text>
 ######################################################################
 </xsl:text>
 </xsl:for-each>
-
 
 <!--  ******************************************** Custom Python Testing ********************************************************************** -->
 <xsl:text>if __name__ == "__main__":
