@@ -502,8 +502,12 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::disconnectPeer()
 {
     ACS_TRACE("BulkDataSender<>::disconnectPeer");
 
+    //cout << "BulkDataSender<>::disconnectPeer" << endl;
+
     deleteConnector();
+    //cout << "BulkDataSender<>::disconnectPeer after deleteConnector" << endl;
     deleteHandler();
+    //cout << "BulkDataSender<>::disconnectPeer after deleteHandler" << endl;
 
     ACE_OS::sleep(1);  // seems necessary to give time to remove the reactor
 

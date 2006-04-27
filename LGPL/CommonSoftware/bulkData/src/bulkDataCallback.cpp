@@ -451,5 +451,6 @@ void BulkDataCallback::cleanRecvBuffer()
 	{
 	nn = svch->peer().recv(buf,bufSize);
 	}
-    
+
+//    svch->peer().close();    
 }
