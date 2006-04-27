@@ -25,13 +25,12 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.engine.RemoteAccess;
-import com.cosylab.logging.engine.log.ILogEntry;
-
 import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;
+
+import com.cosylab.logging.engine.RemoteAccess;
+import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
  * LCEngine defines output messages to the status panel whenever 
@@ -53,7 +52,6 @@ public class LCEngine implements Runnable {
 	private boolean wasConnected=false;
 	
 	private RemoteAccess remoteAccess = null;
-	private ACSRemoteLogListener remoteResponseCallback = null;
 	
 	/**
 	 * The listeners for this connection
@@ -124,7 +122,6 @@ public class LCEngine implements Runnable {
 	 */
 	public LCEngine(ACSRemoteLogListener logEventListener) {
 		addLogRemoteConnListener(logEventListener);
-		remoteResponseCallback=logEventListener;
 		Thread thread = new Thread(this);
 		thread.start();
 	}
