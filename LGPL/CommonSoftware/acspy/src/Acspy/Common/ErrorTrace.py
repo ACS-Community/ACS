@@ -230,6 +230,34 @@ class ErrorTraceHelper:
             
         return ret_val
     #--------------------------------------------------------------------------
+    def setData(self, name, value):
+        '''
+        Sets data within the ErrorTrace, adding it if it has not been
+        previously set.
+        
+        Parameters: name and value will both be converted to strings.
+        
+        Returns: Nothing
+        
+        Raises: Nothing
+        '''
+        #sanity check
+        name = str(name)
+        value = str(value)
+        
+        #cycle through the list of of name value pairs...
+        for name_value in self.getErrorTrace().data:
+            #looking for matching names
+            if name_value.name == name:
+                #good found a match, now just set the value and return
+                name_value.value = value
+                return
+            
+        #if we've gotten this far, the data has not been added
+        #before. fine - add it.
+        self.addData(name, value)
+        
+    #--------------------------------------------------------------------------
     def getDescription(self):
         '''
         Returns copy of description of current error. 
