@@ -53,7 +53,7 @@ Please read the documentation in "AcsCommandCenterTools.xml" first. The differen
         </tool>
        <tool>
             <caption>Acs_startRemote</caption>
-            <command>if [ ? ] ; then export ACS_CDB=? ; fi ; accStarter2 3 - acsStart -b ? -v</command>
+            <command>if [ ? ] ; then export ACS_CDB=? ; fi ; accStarter2 3 - acsStart -b ?</command>
             <insertion source="model">ServicesLocalJavaRoot</insertion>
             <insertion source="model">ServicesLocalJavaRoot</insertion>
             <insertion source="model">ScriptBase</insertion>
@@ -125,7 +125,7 @@ Please read the documentation in "AcsCommandCenterTools.xml" first. The differen
 
       <tool>
             <caption> Container_startRemote_java</caption>
-            <command>accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager ?</command>
+            <command>nohup accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager ?</command>
             <insertion source="model">ContainerName</insertion>
             <insertion source="model">ContainerType</insertion>
             <insertion source="model">ContainerScriptBase</insertion>
