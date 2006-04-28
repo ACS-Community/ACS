@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.21 2006/04/05 14:34:41 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.22 2006/04/28 11:32:03 hsommer Exp $"
 #
 # Makefile of Java Logging Client
 #
@@ -47,7 +47,7 @@
 # ------------------------------
 DEBUG = on
 JARFILES = lc
-lc_DIRS = com 
+lc_DIRS = com alma
 
 #
 # Scripts (public and local)
