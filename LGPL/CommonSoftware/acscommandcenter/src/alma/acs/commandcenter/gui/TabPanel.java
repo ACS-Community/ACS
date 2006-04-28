@@ -467,11 +467,9 @@ public class TabPanel extends JPanel {
 		// freeze the size of the scrollpane to 3 containerlines
 		ContainerLine filler = new ContainerLine();
 		scp.validate();
-		int scrollbarWidth = 25; // can't find out this value
-										 // before scrollpane is visible on screen
-		scp.freezeSize(filler.getPreferredSize().width + scrollbarWidth, filler.getPreferredSize().height * 3 + 4 * 2 + 2); // <--
-																																									// don't
-																																									// ask...
+		int scrollbarWidth = 25; // can't find out this value before scrollpane is visible on screen
+		scp.freezeSize(filler.getPreferredSize().width + scrollbarWidth,
+				         filler.getPreferredSize().height * 3 + 4 * 2 + 2); // <-- don't ask...
 
 
 		btnMoreContainers.setToolTipText("More Containers");
@@ -571,10 +569,8 @@ public class TabPanel extends JPanel {
 		}
 
 		public void freezeSize (int width, int height) {
-			int barWidth = getVerticalScrollBar().getWidth(); // note: these values
-			// will be 0 if
-			int barHeight = getVerticalScrollBar().getWidth(); // scrollpane is not
-			// visible on screen
+			int barWidth = getVerticalScrollBar().getWidth();  // note: these values will be 0 if the
+			int barHeight = getVerticalScrollBar().getWidth(); // scrollpane is not visible on screen
 			Insets ins = getInsets();
 			d = new Dimension(ins.left + width + barWidth + ins.right, ins.top + height + barHeight + ins.bottom);
 		}
@@ -616,8 +612,7 @@ public class TabPanel extends JPanel {
 	
 	protected class FlowDialog extends JDialog implements FlowListener {
 
-		DefaultChecklistPanel currentFlowUI; // the flow-ui currently held by this
-		// dialog
+		DefaultChecklistPanel currentFlowUI; // the flow-ui currently held by this dialog
 		JButton flowDialogOk;
 
 		protected FlowDialog(JFrame parent, String title) {
@@ -648,11 +643,9 @@ public class TabPanel extends JPanel {
 			this.validate();
 			this.pack();
 
-			// the dialog must listen on the flow to be able
-			// to close when the flow has completed.
+			// the dialog must listen on the flow to be able to close when the flow has completed.
 			// to be able to undo this in close(), the flow must be stored.
-			// this dialog can hold any JComponent,
-			// thus we need to distinguish whether that jcomponent is a flow-UI
+			// this dialog can hold any JComponent, thus we need to distinguish whether that jcomponent is a flow-UI
 			if (content instanceof DefaultChecklistPanel) {
 				currentFlowUI = (DefaultChecklistPanel) content;
 				currentFlowUI.getFlow().addListener(this);
@@ -679,8 +672,7 @@ public class TabPanel extends JPanel {
 		
 		protected void cleanUp() {
 
-			// undoes the listener registration that may have been done in
-			// prepareShow()
+			// undoes the listener registration that may have been done in prepareShow()
 			if (currentFlowUI != null)
 				currentFlowUI.getFlow().removeListener(this);
 
@@ -953,8 +945,7 @@ public class TabPanel extends JPanel {
 		 */
 		public void setEnabled (boolean b) {
 			if (this.invariablyDisabled)
-				return; // the other method must be used to revoke the
-			// disabled-status
+				return; // the other method must be used to revoke the disabled-status
 			super.setEnabled(b);
 		}
 
@@ -980,9 +971,7 @@ public class TabPanel extends JPanel {
 		}
 
 		protected void respond (JButton active, JButton passive) {
-			// would be neater to save the original color, but too little time for
-			// fancy
-			// things now
+			// would be neater to save the original color, but too little time for fancy things now
 			active.setBackground(CommandCenterGui.COLOR_ActiveButton);
 			passive.setBackground(CommandCenterGui.COLOR_PassiveButton);
 		}
@@ -1011,8 +1000,7 @@ public class TabPanel extends JPanel {
 			respondToIsSelected(e.getStateChange() == ItemEvent.SELECTED);
 		}
 
-		// needed since doClick() doesn't trigger the itemStateChange event
-		// handler
+		// needed since doClick() doesn't trigger the itemStateChange event handler
 		public void setSelected (boolean b) {
 			respondToIsSelected(b);
 			super.setSelected(b);
@@ -1506,10 +1494,7 @@ public class TabPanel extends JPanel {
 					master.controller.executeAcs.killRemote(master.giveComplexListener("Acs"));
 					break;
 				case ModeType.JAVA_TYPE :
-					// Should we exit the vm (that would
-					// guarantee all delegates die) or what?
-					/* 
-					 */
+					// Should we exit the vm (that would guarantee all delegates die), or what?
 					break;
 			}
 		}
