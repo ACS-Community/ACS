@@ -261,13 +261,13 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 					disconnect();
 				}
             } else if (e.getSource() == LoggingClient.this.getLoadMenuItem()) {
-				loadLogs(e);
+				getLCModel1().loadFromFile(null);
             } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
-            	loadLogsFromURL(e);
+            	getLCModel1().loadFromURL();
             } else if (e.getSource() == LoggingClient.this.getSaveFileMenuItem()) {
-                saveLogs(e);
+                getLCModel1().saveFile();
             } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem()) {
-				connClearAll(e);
+				getLCModel1().clearAll();
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
 				connExit(e);
             }else if (e.getSource() == LoggingClient.this.getFieldsMenuItem()) {
@@ -399,6 +399,12 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			} else {
 				saveFiltersMenuItem.setEnabled(true);
 			}
+			
+			// Ensure the status of the item shown in the main panel
+			// is consistent with the menuite in View
+			viewStatusAreaMI.setSelected(getStatusAreaPanel().isVisible());
+			viewDetailedInfoMI.setSelected(getDeatailedInfoPanel().isVisible());
+			viewToolbarMI.setSelected(toolBar.isVisible());
 		}
 		
 		public void menuDeselected(MenuEvent menuE) {
@@ -1122,106 +1128,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	}
 
 	/**
-	 * Loads from file.
-	 * @param arg1 java.awt.event.ActionEvent
-	 */
-	private void loadLogs(java.awt.event.ActionEvent arg1)
-	{
-		try
-		{
-			getLCModel1().loadFromFile(null);
-
-			if (getLCModel1().getSuspended() == false) //if cancelled, e.g. has not been suspended
-				getSuspendToggleBtn().doClick(10);
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
-	
-	/**
-	 * Loads from URL.
-	 * @param arg1 java.awt.event.ActionEvent
-	 */
-	private void loadLogsFromURL(java.awt.event.ActionEvent arg1)
-	{
-		try
-		{
-			getLCModel1().loadFromURL();
-
-			if (getLCModel1().getSuspended() == false) //if cancelled, e.g. has not been suspended
-				getSuspendToggleBtn().doClick(10);
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-			handleException(ivjExc);
-		}
-	}
-	
-	
-	/**
-	 * Indicates saving by pushing the JToggleButton.
-	 * @param arg1 java.awt.event.ActionEvent
-	 */
-
-	/**
-	 * Saves into file appending header and footer in case they are missing.
-	 * @param arg1 java.awt.event.ActionEvent
-	 */
-
-	private void saveLogs(java.awt.event.ActionEvent arg1)
-	{
-		try
-		{
-
-			getLCModel1().saveFile();
-
-			if (getLCModel1().getSuspended() == false) //if cancelled, e.g. has not been suspended
-				getSuspendToggleBtn().doClick(10);
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
-	/**
-	 * Indicates clearing.
-	 * @param arg1 java.awt.event.ActionEvent
-	 */
-	private void connClearAll(java.awt.event.ActionEvent arg1)
-	{
-		try
-		{
-			// releases the button if selected
-			if (getSuspendToggleBtn().isSelected() == true)
-			{
-				getSuspendToggleBtn().doClick();
-			}
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-		try
-		{
-
-			getLCModel1().clearAll();
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
-
-	/**
 	 * Exits by calling the LCEngine.
 	 * @param arg1 java.awt.event.ActionEvent
 	 */
@@ -1551,7 +1457,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 * Returns the JPanel4 property value.
 	 * @return javax.swing.JPanel
 	 */
-	private javax.swing.JPanel getFilterStatusPnl()
+	private JPanel getFilterStatusPnl()
 	{
 		if (filterStatusPnl == null)
 		{
@@ -1701,7 +1607,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 * @return javax.swing.JToggleButton
 	 */
 
-	javax.swing.JToggleButton getSuspendToggleBtn()
+	private JToggleButton getSuspendToggleBtn()
 	{
 		if (suspendToggleButton == null)
 		{
