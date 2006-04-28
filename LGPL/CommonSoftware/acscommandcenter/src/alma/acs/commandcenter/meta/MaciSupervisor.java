@@ -174,7 +174,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 		   myManagerReference().logout(myOwnMaciHandle());
 		
 		} catch (NotConnectedToManagerException exc) {
-		   log.info("couldn't log out from manager: " + exc);
+			// msc (2006-04-28): lowered loglevel (certain users felt confused)
+		   log.finer("couldn't log out from manager: " + exc);
 		   
 		} catch (Exception exc) { // PENDING: really swallow the possible exceptions when logging out?
 			log.info("couldn't log out from manager: " + exc);
