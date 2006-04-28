@@ -31,6 +31,7 @@ import alma.ACSErr.ACSErrTypeTest;
 import alma.ACSErr.Completion;
 import alma.ACSErr.ErrorTrace;
 import alma.ACSErr.Severity;
+import alma.ACSErrTypeTest.ACSErrTest0;
 import alma.ACSErrTypeTest.ACSErrTest3;
 import alma.ACSErrTypeTest.ACSErrTestOK;
 import alma.ACSErrTypeTest.wrappers.ACSErrTest1AcsJCompletion;
@@ -302,7 +303,7 @@ public class AcsJExceptionTest extends TestCase
             
             // The top-level exception is logged first, with stack level = 2
             LogRecord lr2 = logRecords[1];
-            assertEquals(" (type=12, code=1) :: remote call failed", lr2.getMessage());
+            assertEquals(" (type=" + ACSErrTypeTest.value + ", code=" + ACSErrTest0.value + ") :: remote call failed", lr2.getMessage());
             assertTrue(lr2.getMillis() >= timeBefore);
             assertTrue(lr2.getMillis() <= timeAfter);
             Map logProperties = (Map) lr2.getParameters()[0];
@@ -319,7 +320,7 @@ public class AcsJExceptionTest extends TestCase
             // The causing exception is logged next, with stack level = 1
             LogRecord lr1 = logRecords[2];
             String msg1 = lr1.getMessage();
-            assertEquals(" (type=12, code=1) :: low level ex", msg1);
+            assertEquals(" (type=" + ACSErrTypeTest.value + ", code=" + ACSErrTest0.value + ") :: low level ex", msg1);
             assertTrue(lr1.getMillis() >= timeBefore);
             assertTrue(lr1.getMillis() <= timeAfter);
             logProperties = (Map) lr1.getParameters()[0];
