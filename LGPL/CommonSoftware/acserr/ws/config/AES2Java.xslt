@@ -5,6 +5,8 @@
 <xsl:variable name="NumCodes">
 			<xsl:number value="count(//Code)"/>
 </xsl:variable>
+<!-- we generate type exception just in case if ther is some error code -->
+<xsl:if test="count(//ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
 <xsl:variable name="ClassName">
 		<xsl:text>AcsJ</xsl:text><xsl:value-of select="@name"/><xsl:text>Ex</xsl:text>
 	</xsl:variable>
@@ -167,6 +169,8 @@ public abstract class </xsl:text>
 
 
 </redirect:write>
+</xsl:if>
+
 
 <!-- **************************************************************************************************************-->
 <!-- ***************************************** Code generation for each code in a separate file   ******************-->
