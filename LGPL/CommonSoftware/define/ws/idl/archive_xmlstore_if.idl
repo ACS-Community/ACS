@@ -308,6 +308,13 @@ module xmlstore
 		 */			
 		URISeq queryUIDs( in string query, in string schema)
 			raises (ArchiveInternalError);
+
+		/** Returns UIDs of all documents belonging to specified schema 
+		 *  which are newer (latest version) then timestamp.
+		 *  Entities flagged as dirty are not returned.  
+		 */			
+		URISeq queryRecent( in string schemaname, in string timestamp)
+			raises (ArchiveInternalError);
 		
 		/** Same as queryUIDs, but entities flagged dirty are returned, too. */
 		URISeq queryUIDsDirty( in string query, in string schema)
