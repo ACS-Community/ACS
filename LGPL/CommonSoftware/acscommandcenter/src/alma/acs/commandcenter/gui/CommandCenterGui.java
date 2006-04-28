@@ -120,6 +120,8 @@ public class CommandCenterGui {
 	protected BasicDialog managerLocationDialog2;
 	protected ManagerLocationPanel.ForContainers pnlManagerLocationForContainers;
 	
+	protected JSplitPane split1;
+	protected JSplitPane split2;
 	
 
 	public CommandCenterGui(CommandCenterLogic controller) {
@@ -157,7 +159,7 @@ public class CommandCenterGui {
 			writeModelToFrontPanel();
 
 			// Splitter between tree and the rest
-			JSplitPane split1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+			split1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			split1.setOneTouchExpandable(true);
 			JPanel p2 = new JPanel(new BorderLayout());
 			p2.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -279,20 +281,28 @@ public class CommandCenterGui {
 			dlgContainerLocation = new EditContainerSettingsDialog(this, "Choose where to run this Container",
 					"Choose where to run this container:                                      ", "Set");
 
-			JSplitPane split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, split1, feedbackTabs);
+			split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, split1, feedbackTabs);
 			split2.setOneTouchExpandable(true);
 			frame.getContentPane().add(split2, BorderLayout.CENTER);
 
-			// frame.getContentPane().add(feedbackArea, BorderLayout.SOUTH);
+		/* frame.getContentPane().add(feedbackArea, BorderLayout.SOUTH); */
 			doFrameTitle();
 			frame.pack();
 			if (controller.startupOptions.geometry != null) {
 				frame.setBounds(controller.startupOptions.geometry);
 			}
-			// --- fix/enforce locations of the dividers
-			// split2.setDividerLocation(0.5D);
-			split2.validate();
-			split1.setDividerLocation((int) (frame.getWidth() - deploymentInfoPanel.getPreferredSize().width * 1.1));
+			
+			if (controller.startupOptions.manager != null) {
+				deployTree.addManager(controller.startupOptions.manager);
+				//	fix/enforce locations of the dividers
+				split1.setDividerLocation(10);
+				split2.setDividerLocation(split2.getMaximumDividerLocation());
+			} else {
+				// fix/enforce locations of the dividers
+			/* split2.setDividerLocation(0.5D); */
+				split2.validate();
+				split1.setDividerLocation((int) (frame.getWidth() - deploymentInfoPanel.getPreferredSize().width * 1.1));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -353,6 +363,7 @@ public class CommandCenterGui {
 		}
 	}
 
+	
 
 	public void setCurrentProjectFile (File f) {
 		this.currentProjectFile = f;

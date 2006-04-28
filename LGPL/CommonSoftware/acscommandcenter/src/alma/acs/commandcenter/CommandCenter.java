@@ -19,6 +19,8 @@ import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.app.CommandCenterLogic.StartupOptions;
 import alma.acs.commandcenter.engine.Executor;
 import alma.acs.commandcenter.util.MiscUtils;
+import alma.acs.util.ACSPorts;
+import alma.acs.util.AcsLocations;
 
 /**
  * Launches AcsCommandCenter.
@@ -73,13 +75,24 @@ public class CommandCenter {
 				}
 
 				// msc (Oct 24, 2005): stand-alone argument should be considered a project name
-				startupOptions.project = new File(args[i]);
+				// msc (Apr 28, 2006): alternatively it could be a manager location
+				String standalone = args[i];
+				
+				if (standalone.startsWith("corbaloc")) {
+					startupOptions.manager = standalone;
+					continue;
+				}
+				String mgrArg = parseAsManagerArgument(standalone);
+				if (mgrArg != null) {
+					startupOptions.manager = mgrArg;
+					continue;
+				}
+				startupOptions.project = new File(standalone);
+
 				
       	} catch (Exception exc) { // ArrayIndexOutOfBounds, NumberFormat, ...
-				// since we don't see what exactly failed,
-				// we ignore the complete command line 
       		startupOptions = new StartupOptions();
-            log.warning("command line argument(s) invalid, all arguments will be ignored: "+Arrays.asList(args));
+            log.warning("command line argument(s) invalid, some arguments may be ignored: "+Arrays.asList(args));
             printUsage(System.err);
 	      }
       }
@@ -106,7 +119,7 @@ public class CommandCenter {
       if (startupOptions.project != null) {
          commandCenterLogic.loadProject(startupOptions.project);
       }
-
+      
       commandCenterLogic.go();
 
       // B) something else... ;)
@@ -136,6 +149,17 @@ public class CommandCenter {
       s.println(msg);
    }
 	
+   private static String parseAsManagerArgument (String manager) {
+		try {
+			String[] ss = manager.split(":");
+			if (ss.length != 2) return null;      // only one colon in string
+			if (ss[1].length() != 1) return null; // only one digit after colon
+			String mgrPort = ACSPorts.globalInstance(Integer.parseInt(ss[1])).giveManagerPort();
+			return AcsLocations.convertToManagerLocation(ss[0], mgrPort);
+		} catch (Exception exc) {
+			return null;
+		}
+   }
 
 	/**
 	 * System.exit() can be prevented by setting the boolean flag to false through

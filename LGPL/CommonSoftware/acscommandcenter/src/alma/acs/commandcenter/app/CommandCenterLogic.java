@@ -599,12 +599,13 @@ public class CommandCenterLogic {
 	public static class StartupOptions {
 		public Rectangle geometry;
 		public File project;
+		public String manager;
 		public boolean doExitOnClose = true;
 		public boolean useNativeSSH = false;
 		public boolean killNativeSSH = false;
 	}	
-	
 
+	
 	
 	//
 	//  ======= RunModel implementation ==========
