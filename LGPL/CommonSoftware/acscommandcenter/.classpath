@@ -1,136 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="test">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="src">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Prg/JavaSSH/dt" kind="lib" path="lib/jta.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jManagerConfig.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jnlp.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="/INTROOT/lib/jcont.jar" kind="var" path="INTROOT/lib/jcont.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="/INTROOT/lib/AcsCommandCenterEntities.jar" kind="var" path="INTROOT/lib/AcsCommandCenterEntities.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xmlParserAPIs.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/concurrent.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/activation.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/prevayler-1.02.001.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/maci.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/junit.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="JACORB_HOME/lib/idl.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jfcunit.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/castor.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/backport-util-concurrent.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
+	<classpathentry excluding="README" kind="src" path="test"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/jta.jar"/>
+	<classpathentry kind="lib" path="lib/jManagerConfig.jar"/>
+	<classpathentry kind="lib" path="lib/jnlp.jar"/>
+	<classpathentry kind="lib" path="lib/jfcunit.jar"/>
+	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar"/>
+	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/AcsCommandCenterEntities.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xmlParserAPIs.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/concurrent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/activation.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/prevayler-1.02.001.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/backport-util-concurrent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar" sourcepath="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/idl.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.5.0"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
