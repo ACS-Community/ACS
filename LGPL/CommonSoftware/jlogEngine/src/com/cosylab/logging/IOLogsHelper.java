@@ -559,7 +559,7 @@ public class IOLogsHelper extends Thread  {
 	 * @param logListener The callback for each new log read from the IO
 	 * @param cache The cache of logs
 	 */
-	private void loadLogsFromDisk(BufferedReader br,ACSRemoteLogListener logListener, LogCache cache) {
+	private void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, LogCache cache) {
 		if (br==null || logListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
@@ -810,7 +810,7 @@ public class IOLogsHelper extends Thread  {
 				}
 				switch (action.getActionType()) {
 					case IOAction.LOAD_ACTION: {
-						loadLogsFromDisk(action.getInputFile(),action.getLogListener(),action.getLogsCache());
+						loadLogs(action.getInputFile(),action.getLogListener(),action.getLogsCache());
 						break;
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
@@ -818,7 +818,7 @@ public class IOLogsHelper extends Thread  {
 						return;
 					}
 					case IOAction.SAVE_ACTION: {
-						saveLogsOnDisk(action.getOutputFile(),action.getLogsCache());
+						saveLogs(action.getOutputFile(),action.getLogsCache());
 						break;
 					}
 				}
@@ -838,7 +838,7 @@ public class IOLogsHelper extends Thread  {
 	 * @param outBW The buffered writer where the logs have to be stored
 	 * @param logs The cahce with all the logs
 	 */
-	private void saveLogsOnDisk(BufferedWriter outBW, LogCache cache) {
+	private void saveLogs(BufferedWriter outBW, LogCache cache) {
 		if (outBW==null || cache==null) {
 			throw new IllegalArgumentException("BufferedWriter and LogCache can't be null");
 		}
