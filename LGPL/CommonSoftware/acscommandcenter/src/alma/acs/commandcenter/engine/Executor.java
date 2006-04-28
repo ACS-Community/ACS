@@ -279,7 +279,8 @@ public class Executor {
       // --- set up task
 
       // ssh-command can be changed at any time through a system property if necessary
-      String sshPatternDefault = "ssh -t -l ? ? /bin/bash --login -c \"?\"";
+      // msc (2006-04-28): added "-X" for X-forwarding, as done for OMC in Socorro in Jan'06
+      String sshPatternDefault = "ssh -X -t -l ? ? /bin/bash --login -c \"?\"";
       String sshPattern = System.getProperty(SYSPROP_COMMAND_NATIVE_SSH, sshPatternDefault);
       PreparedString prep = new PreparedString(sshPattern);
       String sshCommand = prep.toString(new String[]{username, host, command});
