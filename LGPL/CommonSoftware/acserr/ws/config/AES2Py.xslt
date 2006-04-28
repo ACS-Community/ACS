@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.17 2006/04/27 23:26:19 dfugate Exp $
+# @(#) $Id: AES2Py.xslt,v 1.18 2006/04/28 17:24:45 bjeram Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -134,7 +134,9 @@ class BaseException:
                           <xsl:value-of select="../@name"/>
                           <xsl:text>,
                           </xsl:text>
-                          <xsl:number value="position()-1"/>
+                          <xsl:value-of select="../@name"/>
+                           <xsl:text>.</xsl:text>
+                           <xsl:value-of select="@name"/>
                           <xsl:text>,
                           exception,
                           description,
@@ -274,7 +276,9 @@ class BaseException:
                           <xsl:value-of select="../@name"/>
                           <xsl:text>,
                           </xsl:text>
-                          <xsl:number value="position()-1"/>
+                           <xsl:value-of select="../@name"/>
+                           <xsl:text>.</xsl:text>
+                           <xsl:value-of select="@name"/>
                           <xsl:text>,
                           exception,
                           description,
