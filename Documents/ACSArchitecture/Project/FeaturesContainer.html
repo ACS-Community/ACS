@@ -63,7 +63,7 @@
     when not needed any more. </li>
   <li class="MsoNormal" style="     "> <b>System startup and shutdown.</b> <br>
     At system startup all needed Components are created and initialized in the 
-    proper order. <b>(Partially implemented)</b></li>
+    proper order.</li>
   <li class="MsoNormal" style="     "> <b>Location of Components in the system</b>. 
     <br>
     A client does not need to know where a Component resides and objects can be 
@@ -117,33 +117,22 @@
   has to be managed. Components can be instantiated in three different ways:</h4>
 
 <ul type=disc>
-
   <li class="MsoNormal" style="     "> <b>regular Components</b> are instantiated 
-
     on demand when they are first requested, and released when they are no longer 
-
-    needed.</li>
-
+    needed, i.e. when there are no more clients referencing them.</li>
   <li class="MsoNormal" style="     "> <b>startup Components</b> are instantiated 
-
     when the system is brought online. They cannot be shut down, unless the entire 
-
     system is shut down.</li>
-
   <li class="MsoNormal" style="     "> <b>immortal Components</b> are instantiated 
     when they are needed for the first time, but cannot be shut down afterwards. 
     They are similar to startup Components, but being activated only when needed 
-    they allow shortening the time required starting the system.<b> (<i>Not implemented 
-    yet. To be implemented as a future extension, if needed.</i>)</b> </li>
-
+    they allow shortening the time required to startup the system.<b> (<i>Partially 
+    implemented</i>)</b> </li>
 </ul>
 
-<h4> A Component implements the functionality that allows the interaction between 
-
+<h4>A Component implements the functionality that allows the interaction between 
   the MACI infrastructure and an underlying object. The underlying object can 
-
   be a Java Component, a C++ Component or other type of objects, for example CORBA 
-
   services, which have to be managed by MACI.</h4>
 
 <h4> Every Component has a unique designation. Well-formed Component designations 
@@ -170,8 +159,27 @@ Courier'>CURL&nbsp;</span>might be&nbsp;<span style='font-family:Courier'>curl:/
 
   to the client</h4>
 
-<h3> <span style='font-family:Courier'>Manager&nbsp;</span>is the central point 
-
+<h4>Regular components are kept active if and only if there are clients referencing 
+  them. The Manager keeps track of all references and periodically verifies that 
+  the clients are still alive and deactivates unreferenced components.</h4>
+<h4>The Manager provides an API to forcefully deactivate Components even if they 
+  are still referenced. This is used when shutting down parts of the system or 
+  when replacing at run time the implementation of a Component with anew one.</h4>
+<h4>It is possible to have &quot;weak clients&quot;, whose reference to used components 
+  is not accounted by the Manager when deciding if a Component needs to be activated/deactivated. 
+  This is used, for example, for passive GUIs that monitor Components or interact 
+  with them only if the are already active for other reasons. Such &quot;weak 
+  clients&quot; do not force the activation of a component if it is not already 
+  active when they request the reference from the Manager. In this way starting/stopping 
+  a GUI is unrelated with the status of Components and subsystems can be started 
+  up and shutdown independently from the GUIs (not implemented yet).</h4>
+<h4>It is possible to define a timeout before a regular Component not referenced 
+  any more is deactivated. This is useful when there are multiple clients intermittently 
+  accessing a component for a long period of time and we do not want the server 
+  component to be all the time activated and deactivated. Notice that an immortal 
+  Component is essentially a component with infinite timeout for deactivation 
+  (not implemented yet)</h4>
+<h3><span style='font-family:Courier'>Manager&nbsp;</span>is the central point 
   of interaction between the Components and the clients requesting&nbsp;<span style='font-family:
 
 TimesNewRomanPSMT'>their services.&nbsp;</span></h3>
@@ -243,27 +251,17 @@ TimesNewRomanPSMT'>their services.&nbsp;</span></h3>
   Naming Service.</h4>
 
 <h4> Manager will provide also process control of Containers and CORBA services, 
-
   i.e. it will be able to start/stop containers and CORBA services upon request. 
+</h4>
+<h4>A demon process runs on every host where Containers or services can be started. 
+  The Manager interacts with this demon to instruct it to start Containers. The 
+  demon provides also other services (in part still TBD) like collection of statistical 
+  data such as CPU , memory and disk <b>load or availability (Partially implemented).</b></h4>
 
-  The CORBA Implementation Repository will be investigated to implement such features 
-
-  in the Manager (but the Implementation Repository specifications are not interoperable 
-
-  between CORBA vendors and programming languages). <b>(Not implemented yet)</b></h4>
-
-The Pipeline/Offline teams requires higher flexibility for process management, 
-
-like redistribution of processes/containers for load balancing, dynamic allocation 
-
-of components to container or redundancy and replication of components. They will 
-
-provide additional requirements and the ACS team will evaluate them. Packages 
-
-providing equivalent progess management features already available will be analyzed 
-
-in order to collect requirements and for eventual reuse. <b>(Not implemented yet)</b> 
-
+The Pipeline/Offline teams define the requirements for process management by the 
+Manager and described above, like redistribution of processes/containers for load 
+balancing, dynamic allocation of components to container or redundancy and replication 
+of components. 
 <h3> A Container serves as an agent of MACI that is installed on every computer 
 
   in the control system.</h3>
@@ -475,26 +473,16 @@ in order to collect requirements and for eventual reuse. <b>(Not implemented yet
     DLL is unloaded. </li>
 
   <li class="MsoNormal"> Java Container<br>
-
     A Java Container is a &quot;tight&quot; Container. The Java Class for a Component 
-
     is dynamically loaded on request by the Container and unloaded when not needed 
-
-    any more <b>(Not implemented yet)</b>. The &quot;tight&quot;implementation 
-
-    allows the transparent implementation of the (de)-serialization of entity 
-
-    (data) objects that appear in the parameter lists of operations. This functionality 
-
-    is very important for high-level Java applications. This means that a Java 
-
-    “binding class” which is a typesafe representation of XML data is transported 
-
-    across processes in the form of an XML string, even though the client and 
-
-    server component only see the real Java classes. This is also true for sequences 
-
-    of entity objects, or structures that contain entity objects. <br>
+    any more. The &quot;tight&quot;implementation allows the transparent implementation 
+    of the (de)-serialization of entity (data) objects that appear in the parameter 
+    lists of operations. This functionality is very important for high-level Java 
+    applications. This means that a Java “binding class” which is a typesafe representation 
+    of XML data is transported across processes in the form of an XML string, 
+    even though the client and server component only see the real Java classes. 
+    This is also true for sequences of entity objects, or structures that contain 
+    entity objects. <br>
 
     There will be one JVM for each Java Container. In each Container we will have 
 

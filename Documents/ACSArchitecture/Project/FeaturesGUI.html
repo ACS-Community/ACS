@@ -57,18 +57,71 @@
   be developed using ACS standard GUI libraries <a href="ReferenceDocuments.html#RD01">[RD01 
   - 12.1.5 ACS GUIs]</a>. Tools, prototype and engineering GUIs can be implemented 
   in Python.</h3>
-<h3> GUIs do not implement any control logic<a href="ReferenceDocuments.html#RD01">[RD01 
-  - 12.1.4 Modularity]</a>. They are dummy applications that simply send commands 
-  to Components and access Properties of Characteristic Components for display 
-  and update. Any action performed through a GUI can be also performed using command 
-  line commands, script or simple programs and no GUI is strictly required to 
-  drive the system.</h3>
-<h3> Integration with the Web through the usage of an HTML/XML Browser provides 
-  access to online documentation.</h3>
-<h3> The Java Web Start<a href="ReferenceDocuments.html#RD36">[RD40]</a> technology 
+GUIs do not implement any control logic<a href="ReferenceDocuments.html#RD01">[RD01 
+- 12.1.4 Modularity]</a>. They are dummy applications that simply send commands 
+to Components and access Properties of Characteristic Components for display and 
+update. Any action performed through a GUI can be also performed using command 
+line commands, script or simple programs and no GUI is strictly required to drive 
+the system. 
+<h3> Online documentation and help</h3>
+<h4>Integration with the Web through the usage of an HTML/XML Browser provides 
+  access to online documentation <a href="ReferenceDocuments.html#RD45">[RD45 
+  - EVLA Engineering Software Requirements, 5 Documentation and Help]</a><a href="ReferenceDocuments.html#RD46">[RD46 
+  - EVLA Array Operations Software Requirments, 1.4 Online Help]</a>.</h4>
+<h4>Java help<br>
+  Online help systems, for example for graphical user interfaces, shall use he 
+  the JavaHelp extension (http://java.sun.com/products/javahelp/index.jsp): help 
+  pages are written in html and they are rendered inside the application by the 
+  help browser that it pard of the Java Development Kit (jhall-2.0_02.jar). This 
+  allows to deploy help pages locally or throught the web and, the other way around, 
+  to reference and access web pages from the application's help browser. </h4>
+<blockquote> 
+  <ul>
+    <ul>
+      <li>help location: an application passes the html resources to the help 
+        browser when it creates it. A webserver would be used if no help resources 
+        exists locally</li>
+      <li> context sensitive help: GUI widgets providing context help shall be 
+        named using setName(&quot;abc&quot;) to allow identifying the proper help 
+        topic for them dynamically<br>
+      </li>
+    </ul>
+  </ul>
+</blockquote>
+<h4>Printed help and documentation<br>
+  If the same document shall provide both online help and printed documentation, 
+  it is often convenient to write it in a higher level, more printing friendly, 
+  format than plain html, as long as a good conversion to PDF for printing and 
+  HTML for online usage are available and can be made automatic through Makefile. 
+</h4>
+<h4>A good and proven solution is Latex (currently used to produce OT documentation):</h4>
+<h4>ot help pages are written in latex. before each OT user test, alan generates 
+  a pdf file from them which is good to download and printout.</h4>
+<ul>
+  <ul>
+    <li>all help pages are kept together with the source code in the UserDoc directory</li>
+    <li>the makefile take care of processing them to produce documentation: 
+      <ul>
+        <li>it runs latex2html</li>
+        <li> it converts the postscript pictures to jpg</li>
+        <li> it creates the meta-information needed for the Java Help Library 
+          (TOC, etc.) dynamically<br>
+          the rest is just the same as in the commandcenter</li>
+        <li> packs them together in a jar file xxxHelp.jar</li>
+      </ul>
+    </li>
+  </ul>
+</ul>
+<p></p>
+<h4>The Java Web Start<a href="ReferenceDocuments.html#RD36">[RD40]</a> technology 
   is used to deploy and update GUIs and more in general Java applications on remote 
   sites without requiring installation of specific and heavy software packages. 
   Using this technology, GUIs do not run inside the Web Browser but as stand-alone 
-  applications.</h3>
+  applications.</h4>
+<h4> LabView<a href="ReferenceDocuments.html#RD13">[RD13]</a> can be integrated 
+  with ACS and be used, for example, as a platform to develop engineering GUIs. 
+  It is possible to implement ACS functions in LabView applications via Code Interface 
+  Nodes (CIN). In this way LabVIEW GUIs can control and interact with standard 
+  ACS Components.</h4>
 </body>
 </html>

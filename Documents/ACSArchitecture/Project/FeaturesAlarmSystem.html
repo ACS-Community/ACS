@@ -61,13 +61,8 @@ class=GramE>. For more details on the Laser system and for a very good Alarm Sys
   the property. <span class=SpellE>Hysteresis</span> is provided for the alarm 
   limits <b>(<i>Not implemented yet</i>)</b>.</h3>
 
-<h3>Alarms are events published on an Alarm Notification Channel handled by the 
-
-  Logging System <i>(Note: the current prototype is based on callbacks, but is 
-
-  being re-implemented)</i>. Notification is done when the alarm is set and when 
-
-  it is cleared.</h3>
+<h3>Alarms are events published on an Alarm Notification Channel. Notification 
+  is done when the alarm is set and when it is cleared.</h3>
 
 <h3>Whenever an alarm is set or cleared, the event is logged in the Logging System 
 
@@ -97,17 +92,16 @@ class=GramE>. For more details on the Laser system and for a very good Alarm Sys
 
 </ul>
 
-<h3>An Alarm Server application keeps track of all active alarms <b>(<i>Not implemented 
-  yet</i>)</b>.</h3>
+<h3>An Alarm Server application keeps track of all active alarms.</h3>
 
 <h3>Hierarchical alarms can be constructed by the Alarm Server that behaves as 
   client on top of the available alarm system and re-publish <span class=SpellE>hierachical</span> 
-  alarms <b>(<i>Not implemented yet</i>)</b>. </h3>
+  alarms. </h3>
 
 <h3>The Alarm Server is also responsible to maintain State Alarms. These are alarms 
   that maintain an internal state. In this case the alarm will be incarnated by 
   an Alarm Object whose life cycle is controlled by the Alarm Server. They will 
-  have the following additional properties <b>(<i>Not implemented yet</i>)</b>:</h3>
+  have the following additional properties <b>(<i>Partially implemented</i>)</b>:</h3>
 
 <ul type=disc>
 
@@ -129,14 +123,14 @@ class=GramE>. For more details on the Laser system and for a very good Alarm Sys
 
 <h3>It is possible to define actions that have to be started on the occurrence 
   of a given alarm condition <a href="ReferenceDocuments.html#RD01">[RD01 - 6.4.8. 
-  <span class=GramE>Binding]</span></a><span class=GramE>.</span> An API is provided 
-  for applications, so that they can request a notification to be sent via Notification 
-  Channel for the occurrence of specific alarms <b>(<i>Not implemented yet</i>)</b>.</h3>
+  <span class=GramE>Binding]</span></a><span class=GramE>.</span> Applications 
+  can use normal Notification Channel techniques to request a notification to 
+  be sent for the occurrence of specific alarms.</h3>
 
 <h3>An <span class=SpellE>alarmDisplay</span> GUI provides an operator user interface 
   to the alarms. Using this application the operator can browse through the currently 
   active alarms, request for detailed information and help about a specific alarm, 
-  acknowledge alarms when this is required <b>(<i>Not implemented ye</i>t)</b>.</h3>
+  acknowledge alarms when this is required.</h3>
 
 <p><img border=0 width=640
 

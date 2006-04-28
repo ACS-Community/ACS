@@ -255,11 +255,13 @@ in performances will take place <a href="ReferenceDocuments.html#RD01">[RD01 -
 <p>All packages in the lower ACS layers are available for developing code both 
   for the Linux<a href="ReferenceDocuments.html#RD01">[RD01 - 10.5.4 OS]</a> and 
   the VxWorks<a href="ReferenceDocuments.html#RD01">[RD01 - 10.5.3 RTOS]</a> platforms. 
-  The usage of the ACE C++ toolkit allows writing portable code that can migrate 
-  from Linux to VxWorks and vice versa according to development and run-time needs. 
-<p>Real Time Linux is replacing VxWorks as the real time development platform. 
-  In this configuration, only hard real time tasks will run in the real time kernel, 
-  while every other task will run in the normal Linux kernel. ACS provides &quot;bridge 
+  The usage of the ACE C++ toolkit allows writing portable code that can migrate, 
+  for example, from Linux to VxWorks and vice versa according to development and 
+  run-time needs. 
+<p>Real Time Linux has replaced VxWorks as the real time development platform 
+  in ALMA, but limited support is maintained to support other projects. In this 
+  configuration, only hard real time tasks will run in the real time kernel, while 
+  every other task will run in the normal Linux kernel. ACS provides &quot;bridge 
   modules&quot; that allow the real time tasks to communicate with non real time 
   tasks is a standard way. For example, a logging &quot;bridge module&quot; allows 
   to generate logs on the real time side and propagate them on the non real time 
@@ -341,36 +343,6 @@ class=MsoHyperlink> Scripting language].</span>
     a real time Linux kernel.</li>
   <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
 
-     none;text-underline:none'>VxWorks real-time computer</span> <span 
-
-     style='color:windowtext;font-weight:normal;text-decoration:none;
-
-     text-underline:none'> <br>
-    VxWorks computers are used only as run time platforms and as cross-development 
-    computer is necessary to develop code. <br>
-    ACS will deploy on VxWorks only run time libraries, which are downloaded from 
-    a file server at boot time or when needed.<br>
-    VxWorks computers will be phased out from ALMA and replaced by Linux real 
-    time computers.&nbsp;</span> </li>
-  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
-
-     none;text-underline:none'>Sun/Linux VxWorks cross-development workstation</span> 
-    <span 
-
-     style='color:windowtext;font-weight:normal;text-decoration:none;
-
-     text-underline:none'> <br>
-    The VxWorks cross development environment is installed on a UNIX (Sun or Linux) 
-    workstation. This includes all development tools and ACS components. Typically 
-    the same development workstation should be used for Linux and VxWorks development. 
-    We are currently constrained on Sun by the fact that WindRiver does not support 
-    Linux as a VxWorks cross-development environment. We have now a cross development 
-    environment for Linux, but we cannot run Wind River debugging and development 
-    tools there. Therefore we use normally Linux for </span>cross-development, 
-    but we keep available Sun workstations when we need to run Wind River develop;ment 
-    tools. Sun will be phased out together with VxWorks.</li>
-  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
-
      none;text-underline:none'>Linux run-time workstation</span> <span 
 
      style='color:windowtext;font-weight:normal;text-decoration:none;
@@ -395,6 +367,37 @@ class=MsoHyperlink> Scripting language].</span>
     supporting a Java Virtual Machine (officially supported and tested Java Virtual 
     Machines will be defined at each ACS and specific application release) or 
     a Python interpreter.</span> </li>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>VxWorks real-time computer</span> <span 
+
+     style='color:windowtext;font-weight:normal;text-decoration:none;
+
+     text-underline:none'> <br>
+    VxWorks computers are used only as run time platforms and as cross-development 
+    computer is necessary to develop code. <br>
+    ACS will deploy on VxWorks only run time libraries, which are downloaded from 
+    a file server at boot time or when needed.<br>
+    VxWorks computers have been phased out from ALMA and replaced by Linux real 
+    time computers.&nbsp;</span> </li>
+  <li class="MsoNormal"> <span style='color:windowtext;text-decoration:
+
+     none;text-underline:none'>Linux VxWorks cross-development workstation</span> 
+    <span 
+
+     style='color:windowtext;font-weight:normal;text-decoration:none;
+
+     text-underline:none'> <br>
+    The VxWorks cross development environment is installed on a Linux workstation. 
+    This includes all development tools and ACS components. Typically the same 
+    development workstation should be used for Linux and VxWorks development. 
+    We are constrained by the fact that WindRiver does not support Linux as a 
+    VxWorks cross-development environment for the version of VxWorks we support 
+    in ACS. We have now a cross development environment for Linux, but we cannot 
+    run Wind River debugging and development tools there. Therefore we use normally 
+    Linux for </span>cross-development, but it might be convenient to keep available 
+    Sun workstations when we need to run Wind River develop;ment tools. Sun has 
+    been phased out from ALMA together with VxWorks.</li>
 </ul>
 <div class="MsoNormal"><span class=MsoHyperlink><span 
 
