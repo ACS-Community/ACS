@@ -21,10 +21,8 @@ logfile_dir=$logfile_basedir/`dirname $cont_name`
 
 if [ $cont_name == "-" ] ; then
    logfile_purename=$logfile_dir/${proc_name}
-   run_bg=true
 else 
    logfile_purename=$logfile_dir/${proc_name}_`basename $cont_name`
-	run_bg=
 fi
 
 
@@ -56,12 +54,10 @@ echo Writing log to file: $logfile_name
 
 ## --- execute the command ---
 
-if [ $run_bg ] ; then
-   ($command > $logfile_name &)
-else
-   $command | tee $logfile_name
-fi
+$command > $logfile_name 2>&1 &
+command_pid=$!
 
-tail -f $logfile_name
+# stay tuned as long as the command is running
+tail -f --pid=$command_pid $logfile_name
 
 
