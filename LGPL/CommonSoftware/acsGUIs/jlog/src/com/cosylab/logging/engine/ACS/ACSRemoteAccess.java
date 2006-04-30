@@ -21,24 +21,25 @@
  */
 package com.cosylab.logging.engine.ACS;
 
-import com.cosylab.logging.engine.RemoteAccess;
-import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-import com.cosylab.logging.engine.log.ILogEntry;
-
-// for POA initialization
+import org.omg.CORBA.ORB;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
+import org.omg.CosNotifyChannelAdmin.EventChannel;
+import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
+import org.omg.CosNotifyFilter.ConstraintExp;
+import org.omg.CosNotifyFilter.ConstraintInfo;
+import org.omg.CosNotifyFilter.Filter;
+import org.omg.CosNotifyFilter.FilterFactory;
+import org.omg.CosNotifyFilter.InvalidConstraint;
+import org.omg.CosNotifyFilter.InvalidGrammar;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManager;
 
-import org.omg.CORBA.ORB;
-import org.omg.CosNaming.NameComponent;
-import org.omg.CosNotifyChannelAdmin.*;
-import org.omg.CosNotifyFilter.*;
-import org.omg.CosNaming.NamingContext;
-
 import si.ijs.maci.Manager;
 
-import java.util.Vector;
+import com.cosylab.logging.engine.RemoteAccess;
 
 /**
  * This class implements methods for declaring the naming service 
@@ -56,7 +57,8 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	
 	
 	private boolean isInitialized = false;
-	private ORB orb = null;
+	private ORB orb;
+    private boolean isExternalORB;
 	private EventChannel eventChannel = null;
 	private ConsumerAdmin consumerAdmin = null;
 	private ACSStructuredPushConsumer acsSPS = null;
@@ -68,7 +70,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	/**
 	 * ACSRemoteAccss constructor comment.
 	 * 
-	 * @param TheLCEngine
+	 * @param theEngine
 	 */
 	public ACSRemoteAccess(LCEngine theEngine) {
 		if (theEngine==null) {
@@ -160,7 +162,9 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	//	System.out.println(">>> Before destroy.");
 		acsSPS.destroy();
 	//	consumerAdmin.destroy();
-		getORB().shutdown(false);
+        if (!isExternalORB) {
+            getORB().shutdown(false);
+        }
 	//	System.out.println(">>> After destroy.");
 	}
 	
@@ -181,6 +185,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	 *                If it is null a reference is built by reading the properties.
 	 */
 	public void initialize(ORB theORB, Manager manager) {
+        isExternalORB = (theORB != null);        
 		this.orb=theORB;
 
 		if (orb==null) { 
@@ -222,7 +227,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		if (maciManager==null) {
 			maciManager = resolveManagerReference();
 			if (maciManager == null) {
-				return;
+				return;  // HSO: Ale, should this not throw an exception?
 			}
 		} 
 	
