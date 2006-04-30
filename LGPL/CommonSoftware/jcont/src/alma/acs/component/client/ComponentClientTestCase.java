@@ -33,10 +33,12 @@ import junit.framework.TestCase;
 
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.CleaningDaemonThreadFactory;
+import alma.acs.container.ContainerException;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.engine.LogReceiver;
 import alma.acs.util.ACSPorts;
 
 /**
@@ -57,6 +59,7 @@ public class ComponentClientTestCase extends TestCase
 	private AcsManagerProxy m_acsManagerProxy;
 	
 	protected Logger m_logger;
+	private LogReceiver logReceiver;
 
 	/** from property ACS.manager, or defaults to localhost */
 	protected String m_managerLoc;
@@ -77,7 +80,6 @@ public class ComponentClientTestCase extends TestCase
 		super(name);
 		m_namePrefix = name;
 	}
-	
 	
 	/**
 	 * Starts CORBA in the client process and connects to the manager and logger.
@@ -195,7 +197,9 @@ public class ComponentClientTestCase extends TestCase
 	{
 		try {
 			m_containerServices.releaseAllComponents();
-						
+			if (logReceiver != null && logReceiver.isInitialized()) {
+                logReceiver.stop();
+            }
 			m_acsManagerProxy.logoutFromManager();
 			
             ClientLogManager.getAcsLogManager().shutdown(true);
@@ -242,4 +246,21 @@ public class ComponentClientTestCase extends TestCase
         }
     }
 	
+    
+    /**
+     * Gets a {@link LogReceiver} which can be used 
+     * to verify log messages from both local and remote processes.
+     * The returned <code>LogReceiver</code> is already initialized.
+     * <p>
+     * To receive logs from the log service, use either 
+     * {@link LogReceiver#getLogQueue()} or {@link LogReceiver#startCaptureLogs(java.io.PrintWriter)}. 
+     * @throws ContainerException
+     */
+    protected LogReceiver getLogReceiver() throws ContainerException {
+        if (logReceiver == null) {
+            logReceiver = new LogReceiver();
+            logReceiver.initialize(acsCorba.getORB(), m_acsManagerProxy.getManager());
+        }
+        return logReceiver;
+    }
 }
