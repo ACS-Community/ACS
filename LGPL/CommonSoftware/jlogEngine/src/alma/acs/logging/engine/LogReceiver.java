@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ThreadFactory;
@@ -77,7 +78,7 @@ public class LogReceiver {
 	private ArrayList<String> statusReports;
 	
 	private volatile boolean listenForLogs;
-    private final int sortingDelayMillis = 20000;
+    private long sortingDelayMillis = 20000;
 
 	
 	public LogReceiver() {
@@ -117,16 +118,30 @@ public class LogReceiver {
 		statusReports = new ArrayList<String>();
 		
 		rrc = new MyRemoteResponseCallback(logDelayQueue, statusReports);
-		rrc.setVerbose(verbose);
+        rrc.setVerbose(verbose);
+        rrc.setDelayMillis(sortingDelayMillis);
 
         lct = new LCEngine(rrc);
 
 		lct.setAccessType("ACS");
 		lct.connect(theORB, manager);
+        
+        try {
+            rrc.awaitConnection(10, TimeUnit.SECONDS);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
 	}
 	
     public boolean isInitialized() {
         return lct.isConnected();
+    }
+    
+    public void setDelayMillis(long newDelayMillis) {
+        this.sortingDelayMillis = newDelayMillis;
+        if (rrc != null) {
+            rrc.setDelayMillis(newDelayMillis);
+        }
     }
     
 	/**
@@ -168,23 +183,45 @@ public class LogReceiver {
 		
 		private ArrayList<String> statusReports;
 		private DelayQueue<DelayedLogEntry> logDelayQueue;
+        private long delayMillis = 20000;
+        
+        private volatile boolean isConnected = false;
+        private volatile CountDownLatch connectSync;
 		
 		MyRemoteResponseCallback(DelayQueue<DelayedLogEntry> logDelayQueue, ArrayList<String> statusReports) {
 			this.logDelayQueue = logDelayQueue;
 			this.statusReports = statusReports;
 		}
 		
+        void awaitConnection(long timeout, TimeUnit unit) throws InterruptedException {
+            synchronized(this) {
+                if (isConnected) {
+                    return;
+                }
+                if (connectSync == null) {
+                    connectSync = new CountDownLatch(1);
+                }
+            }
+            connectSync.await(timeout, unit);
+        }
+        
         public void acsLogConnConnecting() {
             if (verbose) {
                 System.out.println("LogReceiver#acsLogConnConnecting()");             
             }
         }
-        public void acsLogConnEstablished() {
+        public synchronized void acsLogConnEstablished() {
+            isConnected = true;
+            if (connectSync != null) {
+                connectSync.countDown();
+                connectSync = null;
+            }
             if (verbose) {
                 System.out.println("LogReceiver#acsLogConnEstablished()");             
             }
         }
-        public void acsLogConnLost() {
+        public synchronized void acsLogConnLost() {
+            isConnected = false;
             if (verbose) {
                 System.out.println("LogReceiver#acsLogConnLost()");             
             }
@@ -206,7 +243,7 @@ public class LogReceiver {
 			if (verbose) {
 				System.out.println("*** received ILogEntry");
 			}
-			DelayedLogEntry delayedLogEntry = new DelayedLogEntry(logEntry);
+			DelayedLogEntry delayedLogEntry = new DelayedLogEntry(logEntry, delayMillis);
 			// add the record to the queue
 			logDelayQueue.offer(delayedLogEntry);
 		}
@@ -218,6 +255,15 @@ public class LogReceiver {
 		void setVerbose(boolean verbose) {
 			this.verbose = verbose;
 		}
+        
+        /**
+         * Sets the delay for log entries in the queue.
+         * @param newDelayMillis
+         * @see DelayedLogEntry#DelayedLogEntry(ILogEntry, long)
+         */
+        void setDelayMillis(long newDelayMillis) {
+            delayMillis = newDelayMillis;
+        }
 		
 // TODO: these are normal status messages which should be ignored,
 // while other messages should raise an error. Currently all messages are ignored.		
@@ -243,16 +289,16 @@ public class LogReceiver {
 	/**
 	 * Wraps an {@link ILogEntry} for storage in a {@link java.util.concurrent.DelayQueue}.
 	 * <p>
-	 * Method {@link #setDelayTimeMillis(long)} sets the buffer time during which log entries
+	 * Method {@link #setDelayMillis(long)} sets the buffer time during which log entries
 	 * are not yet available for the consumer, so that late arriving records get a chance
 	 * to be sorted in according to timestamp.
 	 * 
 	 * @author hsommer
 	 */
-	static class DelayedLogEntry implements Delayed {
+	public static class DelayedLogEntry implements Delayed {
 
-		/** default delay for sorting by timestamp */
-		private static long delayTimeMillis = 20000;
+		/** delay for sorting by timestamp */
+		private long delayTimeMillis;
 		
 		private static final AtomicInteger logRecordCounter = new AtomicInteger();
 
@@ -260,9 +306,10 @@ public class LogReceiver {
 		ILogEntry logEntry;
 		long triggerTimeMillis;
 
-		DelayedLogEntry(ILogEntry logEntry) {
+		DelayedLogEntry(ILogEntry logEntry, long delayTimeMillis) {
 			logRecordIndex = logRecordCounter.incrementAndGet();
 			this.logEntry = logEntry;
+            this.delayTimeMillis = delayTimeMillis;
 			Date logDate = (Date) logEntry.getField(LogEntry.FIELD_TIMESTAMP);
 			triggerTimeMillis = logDate.getTime() + delayTimeMillis;
 		}
@@ -319,14 +366,9 @@ public class LogReceiver {
 					otherDelayedLogEntry.logRecordIndex == logRecordIndex );
 		}
 
-		static long getDelayTimeMillis() {
+		long getDelayTimeMillis() {
 			return delayTimeMillis;
 		}
-
-		static void setDelayTimeMillis(long delayTimeMillis) {
-			DelayedLogEntry.delayTimeMillis = delayTimeMillis;
-		}
-
 	}
 
     /**
@@ -363,7 +405,6 @@ public class LogReceiver {
 
             public void run() {
 				try {
-					DelayedLogEntry.setDelayTimeMillis(sortingDelayMillis); // delay 20 sec for sorting incoming log records by timestamp
 					BlockingQueue logQueue = getLogQueue();
 					
 					listenForLogs = true;
