@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.10 2006/04/26 22:49:17 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.11 2006/05/01 23:25:00 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -85,7 +85,8 @@ PY_SCRIPTS         = acspyexmplFridgeNCClient \
 		     acspyexmplMountCallback \
 		     acspyexmplMountClient \
 		     acspyexmplDynamicHelloWorld \
-		     acspyexmplTimeoutHandler
+		     acspyexmplTimeoutHandler \
+		     acspyexmplClientErrorComponent
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
