@@ -137,13 +137,22 @@ public class LogReceiver {
         return lct.isConnected();
     }
     
+    /**
+     * Sets the delay that a log record's timestamp must have with respect to the current system time
+     * in order to be allowed to leave the sorting queue.
+     * @param newDelayMillis the delay time in milliseconds.
+     */
     public void setDelayMillis(long newDelayMillis) {
         this.sortingDelayMillis = newDelayMillis;
         if (rrc != null) {
             rrc.setDelayMillis(newDelayMillis);
         }
     }
-    
+
+    public long getDelayMillis() {
+        return this.sortingDelayMillis;
+    }
+
 	/**
 	 * Gets access to the log record queue, from which the time-sorted log records should be fetched.
 	 * <p>
@@ -171,6 +180,7 @@ public class LogReceiver {
 			System.out.println("Attempting to destroy LogConnect...");
 		}
 		lct.disconnect();
+		listenForLogs = false;
 	}
 		
 	
@@ -289,7 +299,7 @@ public class LogReceiver {
 	/**
 	 * Wraps an {@link ILogEntry} for storage in a {@link java.util.concurrent.DelayQueue}.
 	 * <p>
-	 * Method {@link #setDelayMillis(long)} sets the buffer time during which log entries
+	 * The <code>delayTimeMillis</code> parameter in the constructor sets the buffer time during which log entries
 	 * are not yet available for the consumer, so that late arriving records get a chance
 	 * to be sorted in according to timestamp.
 	 * 
@@ -299,12 +309,13 @@ public class LogReceiver {
 
 		/** delay for sorting by timestamp */
 		private long delayTimeMillis;
+		private boolean isQueuePoison = false;
 		
 		private static final AtomicInteger logRecordCounter = new AtomicInteger();
 
-		int logRecordIndex;
-		ILogEntry logEntry;
-		long triggerTimeMillis;
+		private int logRecordIndex;
+		private ILogEntry logEntry;
+		private long triggerTimeMillis;
 
 		DelayedLogEntry(ILogEntry logEntry, long delayTimeMillis) {
 			logRecordIndex = logRecordCounter.incrementAndGet();
@@ -314,6 +325,32 @@ public class LogReceiver {
 			triggerTimeMillis = logDate.getTime() + delayTimeMillis;
 		}
 
+		/**
+		 * Ctor used for special queue poison instance
+		 * @param delayTimeMillis
+		 */
+		private DelayedLogEntry(long delayTimeMillis) {
+			logRecordIndex = logRecordCounter.incrementAndGet();
+            this.delayTimeMillis = delayTimeMillis;
+			triggerTimeMillis = System.currentTimeMillis() + delayTimeMillis;
+		}
+		
+		public static DelayedLogEntry createQueuePoison(long delayTimeMillis) {
+			DelayedLogEntry dle = new DelayedLogEntry(delayTimeMillis);
+			dle.isQueuePoison = true;
+			return dle;
+		}
+		
+		/**
+		 * True if this entry designates the end of the queue.
+		 * According to {@link BlockingQueue}, this element is called the "poison".
+		 * @return true if this is the end-of-queue marker.
+		 * @see #createQueuePoison(long)
+		 */
+		public boolean isQueuePoison() {
+			return isQueuePoison;
+		}
+		
 		/**
 		 * Returns the <code>ILogEntry</code> class that was wrapped for sorting inside the queue.
 		 * That class represents the log record as it was received from the logging service.
@@ -381,7 +418,24 @@ public class LogReceiver {
      * @throws IOException
      */
     public void startCaptureLogs(final PrintWriter logWriter) throws IOException {
-        startCaptureLogs(logWriter, null);
+        startCaptureLogs(logWriter, (ThreadFactory) null);
+    }
+    
+    /**
+     * Version with pre-JDK 1.5 version of ThreadFactory.
+     * @param logWriter
+     * @param threadFactory
+     * @deprecated Will be removed as soon as <code>ContainerServices#getThreadFactory</code> has changed from  
+     * 				edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory to java.util.concurrent.ThreadFactory
+     */
+    public void startCaptureLogs(final PrintWriter logWriter, final edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory oldstyleThreadFactory) 
+    	throws IOException {
+    	ThreadFactory threadFacAdapter = new ThreadFactory() {
+			public Thread newThread(Runnable r) {
+				return oldstyleThreadFactory.newThread(r);
+			}    		
+    	};
+    	startCaptureLogs(logWriter, threadFacAdapter);
     }
     
 	/**
@@ -404,24 +458,29 @@ public class LogReceiver {
 		Runnable logRetriever = new Runnable() {
 
             public void run() {
+//            	System.out.println("logRetriever.run called...");
 				try {
 					BlockingQueue logQueue = getLogQueue();
 					
 					listenForLogs = true;
-					// loop until stopCaptureLogs changes 'listenForLogs' flag
-					while (listenForLogs == true) {
+					// loop until "queue poison" entry is found
+					while (true) {						
 						try {
 							// extract logs from queue
-							DelayedLogEntry delayedLogEntry = (DelayedLogEntry) logQueue.poll(1L, TimeUnit.SECONDS);
-							if (delayedLogEntry != null) {
-								ILogEntry logEntry = delayedLogEntry.getLogEntry();
-								String xmlLog = logEntry.toXMLString();
-								logWriter.println(xmlLog);
+							DelayedLogEntry delayedLogEntry = (DelayedLogEntry) logQueue.take();
+							if (delayedLogEntry.isQueuePoison()) {
+								if (verbose) {
+									System.out.println("got queue poison, will terminate method 'startCaptureLogs'.");
+								}
+								break;
 							}
 							else {
-//								System.out.println("timed out waiting for log records. Will check termination status and try again...");
+								ILogEntry logEntry = delayedLogEntry.getLogEntry();
+								String xmlLog = logEntry.toXMLString();
+//								System.out.println("Yeah, got a log record: " + xmlLog);
+								logWriter.println(xmlLog);
 							}
-						} catch (InterruptedException e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
@@ -438,9 +497,9 @@ public class LogReceiver {
 					logWriter.println("Log receiver failed with exception " + thr.toString());
 				} finally {
 					logWriter.close();
-                    // we only call stop now, because this way late arriving records will still be added 
+                    // we only call stop now, so that late arriving records could still be added 
                     // to the queue during the whole waiting time.
-					stop();
+					stop();					
 				}
 			}
 		};
@@ -449,19 +508,21 @@ public class LogReceiver {
             t = threadFactory.newThread(logRetriever);
         }
         else {
-            t = new Thread();
+            t = new Thread(logRetriever);
             t.setDaemon(true);
         }        
 		t.start();
 	}
 	
 	/**
-     * Stops capturing logs into the PrintWriter that was provided to {@link #startCaptureLogs(PrintWriter)}.
+     * Stops capturing logs into the PrintWriter that was provided to {@link #startCaptureLogs(PrintWriter)}
+     * or any of the related methods.
      * Even though the call to this method returns immediately, all log records that are  
      * currently residing inside the queue will still be written out, waiting the due time to allow sorting them.
 	 */
 	public void stopCaptureLogs() {
-		listenForLogs = false; // will terminate while loop in startCaptureLogs
+		DelayedLogEntry queuePoison = DelayedLogEntry.createQueuePoison(getDelayMillis());
+		logDelayQueue.offer(queuePoison);
 	}	
 }
 
