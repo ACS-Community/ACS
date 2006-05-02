@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsBUILDAfterBuildMod.sh,v 1.124 2004/10/26 14:22:08 gchiozzi Exp $"
+# "@(#) $Id: acsBUILDAfterBuildMod.sh,v 1.125 2006/05/02 10:25:17 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -15,7 +15,8 @@ if [ "X$INTROOT" != X  -a  "X$ACSROOT" != X  -a  "$INTROOT" = "$ACSROOT" ]
 then
     echo "         \$INTROOT = \$ACSROOT = $INTROOT => the file are by default writable by the group."
     echo "         Now, we change the default permissions in $ACSROOT. "
-    echo "         => $INTROOT will be writable by almamgr only. "
+    echo "         => $INTROOT will be writable by $ID only. "
+    START_DIR=$PWD
     cd $ACSROOT
     if [ $? != 0 ]
     then
@@ -24,7 +25,7 @@ then
     else
 	chmod -R go-w .
     fi
-
+    cd $START_DIR
 else
     echo "	acsBUILDAfterBuildMod.sh: no chmod to do"
 fi
