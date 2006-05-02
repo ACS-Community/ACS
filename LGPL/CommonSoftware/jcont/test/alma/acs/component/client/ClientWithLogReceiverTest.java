@@ -21,13 +21,16 @@
  */
 package alma.acs.component.client;
 
+import java.io.PrintWriter;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.engine.LogReceiver.DelayedLogEntry;
 
@@ -56,9 +59,14 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
         assertTrue(logReceiver.isInitialized());
     }
     
+    /**
+     * Logs a single record and waits for it to come back from the Log service 
+     * and to pass the queue (which is set to zero delay).
+     * Then the record is verified, and the same test is repeated a couple of times with different log records. 
+     * @throws Exception
+     */
     public void testLogQueueNoDelay() throws Exception {
         logReceiver.setDelayMillis(0);
-//        PrintWriter logWriter = new PrintWriter(System.out); //new BufferedWriter(new FileWriter(logFile)));
         BlockingQueue<DelayedLogEntry> queue = logReceiver.getLogQueue();
         
         final int numLogs = 5;
@@ -66,6 +74,10 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
         Random random = new Random(System.currentTimeMillis());
         for (int i=0; i<numLogs; i++) {
             Level level = levels[random.nextInt(levels.length)];
+            String acsLevelName = AcsLogLevel.getNativeLevel(level).getEntryName();
+            // it's pretty odd that jlog uses its own set of log type integers 
+            int jlogLevelIndex = LogTypeHelper.parseLogTypeDescription(acsLevelName).intValue();
+            
             String logMessage = "This is log number " + i;
             m_logger.log(level, logMessage);
             
@@ -77,12 +89,28 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
             if (delayedLogEntry != null) {
                 ILogEntry logEntry = delayedLogEntry.getLogEntry();
                 assertEquals(logMessage, logEntry.getField(ILogEntry.FIELD_LOGMESSAGE));
-                System.out.print(logEntry.getField(ILogEntry.FIELD_ENTRYTYPE));
-                System.out.println(" Received back log record #" + i);
+                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue());
+                System.out.println("Received back log record #" + i);
             }
             else {
                 fail("Did not receive the expected log record #" + i + " within " + timeoutSec + " seconds.");
             }
         }
+        logReceiver.stop();
+    }
+    
+    public void testLogCapture() throws Exception {
+    	PrintWriter logWriter = new PrintWriter(System.out, true); //new BufferedWriter(new FileWriter(logFile)));
+    	logReceiver.startCaptureLogs(logWriter, getContainerServices().getThreadFactory());
+
+        final int numLogs = 20;
+        for (int i=0; i<numLogs; i++) {
+            String logMessage = "This is log number " + i;
+            m_logger.log(Level.INFO, logMessage);
+            Thread.sleep(50); // to get hopefully distinct timestamps in the log records
+        }
+        Thread.sleep(11000); // to make sure the log records were sent off to the Log service
+    	logReceiver.stopCaptureLogs();
+    	Thread.sleep(logReceiver.getDelayMillis()); // to make sure the queue has drained
     }
 }
