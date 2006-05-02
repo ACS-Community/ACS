@@ -164,7 +164,7 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 		while(loop)
 		    {
 		    CompletionImpl comp = receiverObj_m->getCbStatus(i+1);
-
+/*
 		    if(comp.getCode() == ACSBulkDataStatus::AVCbReady)
 			cout << "ACSBulkDataStatus::AVCbReady" << endl;
 		    if(comp.getCode() == ACSBulkDataStatus::AVCbTimeout)
@@ -177,7 +177,7 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 			cout << "ACSBulkDataStatus::AVCbWorkingTimeout" << endl;
 		    if(comp.getCode() == ACSBulkDataStatus::AVCbNotAvailable)
 			cout << "ACSBulkDataStatus::AVCbNotAvailable" << endl;
-		   
+*/		   
 		    if ((comp.getCode() == ACSBulkDataStatus::AVCbReady) || 
 			(comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
 			{

@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataEx3.cpp,v 1.4 2006/04/27 10:29:04 rcirami Exp $"
+ * "@(#) $Id: bulkDataEx3.cpp,v 1.5 2006/05/02 12:28:12 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -80,34 +80,114 @@ int main(int argc, char *argv[])
 	    return -1;
 	    }
 
+
 	sender->connect(receiver.in());
 
-	//Error simulation in start send
-	sender->startSendErr();
-	CompletionImpl comp = receiver->getCbStatus(1);
-	if(comp.getCode() == ACSBulkDataStatus::AVCbError)
+// we simulate several causes of errors:
+//
+// 1a. user throws exception in the receiver cbStart
+// 1b. the exception is catched, the error is retrieved and logged
+//
+// 2a. user throws exception in the receiver cbReceive
+// 2b. the exception is catched, the error is retrieved and logged
+//
+// 3a. a timeout is triggered on the sender side 
+// 3b. the status of the callback is retrieved
+// 3c. the disconnection does not occur until the cbReceive is busy
+
+
+	ACS_SHORT_LOG((LM_INFO, "###### SIMULATING ERROR WHEN SENDING PARAMETER ######"));
+	try
 	    {
-	    ACS_SHORT_LOG((LM_INFO,"retrieving parameter error completion from the receiver"));
-	    comp.log();
+	    //Error simulation in start send (1.a)
+	    sender->startSendErr();
+	    }
+	catch (AVStartSendErrorEx & ex)
+	    {   
+	    ACS_SHORT_LOG((LM_INFO, "### Start Send Exception catched !"));
+
+	    // exception catched (1.b)
+	    AVStartSendErrorExImpl ex1(ex);
+	    ex1.log();
+
+	    // error retrieved (1.b)
+	    CompletionImpl comp = receiver->getCbStatus(1);
+	    if(comp.getCode() == ACSBulkDataStatus::AVCbError)
+		{
+		ACS_SHORT_LOG((LM_INFO,"### Retrieving the cause of error from the receiver:"));
+		comp.log();
+		}
+
+	    }
+	ACS_SHORT_LOG((LM_INFO, "################################################"));
+
+
+
+
+
+
+
+
+	ACS_SHORT_LOG((LM_INFO, "****** SIMULATING ERROR WHEN SENDING DATA ******"));
+	
+	try
+	    {
+	    //No error in start send
+	    sender->startSend();
+
+	    //Error simulation in pace data (2.a)
+	    sender->paceDataErr();
+	    }
+	catch (AVPaceDataErrorEx & ex)
+	    {   
+	    ACS_SHORT_LOG((LM_INFO, "*** Pace data Exception catched !"));
+	    // exception catched (2.a)
+	    AVPaceDataErrorExImpl ex1(ex);
+	    ex1.log();
+
+	    // error retrieved (2.b)
+	    CompletionImpl comp1 = receiver->getCbStatus(1);
+	    if(comp1.getCode() == ACSBulkDataStatus::AVCbError)
+		{
+
+		ACS_SHORT_LOG((LM_INFO,"*** Retrieving the cause of error from the receiver:"));
+		comp1.log();
+		}
+
 	    }
 
+	ACS_SHORT_LOG((LM_INFO, "************************************************"));
 
-	//No error in start send
-	sender->startSend();
 
-	sender->paceDataErr();
-	CompletionImpl comp1 = receiver->getCbStatus(1);
-	if(comp1.getCode() == ACSBulkDataStatus::AVCbError)
+
+	ACS_SHORT_LOG((LM_INFO, "@@@@@@ SIMULATING TIMEOUT ON SENDER SIDE @@@@@@"));
+	try
 	    {
-	    ACS_SHORT_LOG((LM_INFO,"retrieving data error completion from the receiver"));
+	    //Timeout simulation (3.a)
+	    sender->startSendTimeout();
+
+	    // a timeout of 10 s is set on the sender
+	    sender->paceDataTimeout(10000);
+	    }
+	catch (AVPaceDataErrorEx & ex)
+	    { 
+	    ACS_SHORT_LOG((LM_INFO, "@@@@ Pace data Exception catched !"));
+
+	    AVPaceDataErrorExImpl ex1(ex);
+	    ex1.log();
+
+	    // status retrieved (3.b)
+	    ACS_SHORT_LOG((LM_INFO,"@@@@ Retrieving the status of the receiver:"));
+	    CompletionImpl comp1 = receiver->getCbStatus(1);
 	    comp1.log();
+	    
 	    }
 
-	//Error simulation in pace data
-	sender->startSend();
-
+	ACS_SHORT_LOG((LM_INFO, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"));
+	
 	//sender->stopSend();
 
+	// disconnect does not occur until the cbReceive has returned (3.c)
 	sender->disconnect();
 
 	receiver->closeReceiver();
@@ -117,24 +197,6 @@ int main(int argc, char *argv[])
 	{   
 	ACS_SHORT_LOG((LM_INFO, "AVConnectErrorEx exception catched !"));
 	AVConnectErrorExImpl ex1(ex);
-	ex1.log();
-	}
-    catch (AVStartSendErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVStartSendErrorEx exception catched !"));
-	AVStartSendErrorExImpl ex1(ex);
-	ex1.log();
-	}
-    catch (AVPaceDataErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVPaceDataErrorEx exception catched !"));
-	AVPaceDataErrorExImpl ex1(ex);
-	ex1.log();
-	}
-    catch (AVStopSendErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVStopSendErrorEx exception catched !"));
-	AVStopSendErrorExImpl ex1(ex);
 	ex1.log();
 	}
     catch (AVDisconnectErrorEx & ex)

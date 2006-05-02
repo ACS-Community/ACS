@@ -4,6 +4,12 @@ BulkDataReceiverCbEx3::BulkDataReceiverCbEx3() : count1_m(0), timeout_m(false)
 {
     ACS_TRACE("BulkDataReceiverCbEx3::BulkDataReceiverCbEx3"); 
 
+    // internal timeout for this callback: 12 loops for 1 sec = 12 sec
+    ACE_Time_Value waitPeriod_m;
+    waitPeriod_m.set(1L, 0L);
+    setSleepTime(waitPeriod_m);
+    setSafeTimeout(12);
+
 }
 
 
@@ -16,7 +22,6 @@ BulkDataReceiverCbEx3::~BulkDataReceiverCbEx3()
 int
 BulkDataReceiverCbEx3::cbStart(ACE_Message_Block * userParam_p)
 {
-    //ACS_TRACE("BulkDataReceiverCbEx3::cbStart");
 
     count1_m = 0;
     timeout_m = false;
@@ -34,6 +39,7 @@ BulkDataReceiverCbEx3::cbStart(ACE_Message_Block * userParam_p)
 
     if(ACE_OS::strcmp(message,"TIMEOUT") == 0)
 	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverCbEx3::cbStart - timeout simulation!"));
 	timeout_m = true;
 	}
 
@@ -46,14 +52,13 @@ BulkDataReceiverCbEx3::cbStart(ACE_Message_Block * userParam_p)
 int
 BulkDataReceiverCbEx3::cbReceive(ACE_Message_Block * frame_p)
 {
-    //ACS_TRACE("BulkDataReceiverCbEx3::cbReceive");
 
     count1_m += frame_p->length();
 
-    cout << "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN: "<< count1_m << endl;
-
     if(timeout_m == true)
 	{
+//	cout << "KKKKKKKKKKKKKKKKKKK " << count1_m << endl;
+	// simulate a very very slow data ingestion
 	ACE_OS::sleep(20);
 	return 0;
 	}
@@ -61,8 +66,8 @@ BulkDataReceiverCbEx3::cbReceive(ACE_Message_Block * frame_p)
 
     if(count1_m > 25000)
 	{
-	//We simulate an error
-	AVCouldNotOpenFileExImpl err = AVCouldNotOpenFileExImpl(__FILE__,__LINE__,"BulkDataReceiverCbEx3::cbReceive");
+	//We simulate a generic error after having received certain amount of data
+	AVInitErrorExImpl err = AVInitErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverCbEx3::cbReceive");
 	throw err;
 	}
 	
@@ -74,7 +79,6 @@ BulkDataReceiverCbEx3::cbReceive(ACE_Message_Block * frame_p)
 int
 BulkDataReceiverCbEx3::cbStop()
 {
-    //ACS_TRACE("BulkDataReceiverCbEx3::cbStop");
 
     ACS_SHORT_LOG((LM_INFO, "flow 1 total length: %d", count1_m)); 
 

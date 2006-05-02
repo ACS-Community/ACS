@@ -366,7 +366,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 
 	streamctrl_p->stop(locSpec);
 
-	//cout << "TTTTTTTTTT: lenbuf: " << buffer_p->length() << endl;
+//	cout << "TTTTTTTTTT: lenbuf: " << buffer_p->length() << endl;
 	res = dp_p->send_frame(buffer_p);
 	if(res < 0)
 	    {
@@ -392,7 +392,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
-    
+
     // elapsed_timer.stop ();
     // ACE_Time_Value elapsed_time;
     // elapsed_timer.elapsed_time (elapsed_time);

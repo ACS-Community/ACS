@@ -16,10 +16,7 @@ BulkDataSenderEx3Impl::~BulkDataSenderEx3Impl()
 void BulkDataSenderEx3Impl::startSend()
     throw (CORBA::SystemException, AVStartSendErrorEx)
 {
-    
-    ACS_TRACE("BulkDataSenderEx3Impl::startSend");
-    
-
+  
     char message[] = "OK";
 
     try
@@ -33,45 +30,23 @@ void BulkDataSenderEx3Impl::startSend()
 	ACS_SHORT_LOG ((LM_INFO,"flow 1 length start parameter sent = %d", mb1.length()));
 	}
 
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend AVInvalidFlowNumberExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVSendFrameErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend AVSendFrameErrorExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVFlowEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend  AVFlowEndpointErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVProtocolErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend  AVProtocolErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::startSend");
 	throw err.getAVStartSendErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend UNKNOWN exception"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderEx3Impl::startSend UNKNOWN exception");
 	throw err.getAVStartSendErrorEx();
 	}
+
 }
 
 
 void BulkDataSenderEx3Impl::startSendErr()
     throw (CORBA::SystemException, AVStartSendErrorEx)
-{
-    
-    ACS_TRACE("BulkDataSenderEx3Impl::startSendErr");
-    
+{  
 
     char message[] = "ERROR";
 
@@ -85,35 +60,14 @@ void BulkDataSenderEx3Impl::startSendErr()
 
 	ACS_SHORT_LOG ((LM_INFO,"flow 1 length start parameter sent = %d", mb1.length()));
 	}
-
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend AVInvalidFlowNumberExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVSendFrameErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend AVSendFrameErrorExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVFlowEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend  AVFlowEndpointErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVProtocolErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend  AVProtocolErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::startSendErr");
 	throw err.getAVStartSendErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend UNKNOWN exception"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderEx3Impl::startSendErr UNKNOWN exception");
 	throw err.getAVStartSendErrorEx();
 	}
 }
@@ -123,9 +77,6 @@ void BulkDataSenderEx3Impl::startSendTimeout()
     throw (CORBA::SystemException, AVStartSendErrorEx)
 {
     
-    ACS_TRACE("BulkDataSenderEx3Impl::startSendTimeout");
-    
-
     char message[] = "TIMEOUT";
 
     try
@@ -138,35 +89,14 @@ void BulkDataSenderEx3Impl::startSendTimeout()
 
 	ACS_SHORT_LOG ((LM_INFO,"flow 1 length start parameter sent = %d", mb1.length()));
 	}
-
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend AVInvalidFlowNumberExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVSendFrameErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend AVSendFrameErrorExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVFlowEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend  AVFlowEndpointErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVProtocolErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend  AVProtocolErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::startSendTimeout");
 	throw err.getAVStartSendErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::startSend UNKNOWN exception"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::startSend");
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderEx3Impl::startSendTimeout UNKNOWN exception");
 	throw err.getAVStartSendErrorEx();
 	}
 }
@@ -175,7 +105,6 @@ void BulkDataSenderEx3Impl::startSendTimeout()
 void BulkDataSenderEx3Impl::paceDataErr()
     throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
-    ACS_TRACE("BulkDataSenderEx3Impl::paceDataErr");
 
     try
 	{
@@ -184,7 +113,7 @@ void BulkDataSenderEx3Impl::paceDataErr()
 
 	/******************************** flow 1 *********************************/
 
-	size = 100000;
+	size = 1000000;
 
 	ACE_Message_Block *mb1;
 	mb1 = new ACE_Message_Block(size);
@@ -204,38 +133,23 @@ void BulkDataSenderEx3Impl::paceDataErr()
 
 	mb1->release();
     	}
-
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVInvalidFlowNumberExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (AVSendFrameErrorExImpl & ex)
+    catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVSendFrameErrorExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (AVCouldNotOpenFileExImpl & ex)
-	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVCouldNotOpenFileExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::paceDataErr");
 	throw err.getAVPaceDataErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData UNKNOWN exception"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderEx3Impl::paceDataErr UNKNOWN exception");
 	throw err.getAVPaceDataErrorEx();
 	}
+
 }
 
 
 void BulkDataSenderEx3Impl::paceDataTimeout(CORBA::ULong timeout)
     throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
-    ACS_TRACE("BulkDataSenderEx3Impl::paceDataTimeout");
 
     try
 	{
@@ -258,44 +172,29 @@ void BulkDataSenderEx3Impl::paceDataTimeout(CORBA::ULong timeout)
 	mb1->wr_ptr(sizeof(char));
 
 	flowNumber = 1;
-	getSender()->sendData(flowNumber, mb1);
+	getSender()->sendData(flowNumber, mb1, timeout);
 
-	ACS_SHORT_LOG ((LM_DEBUG,"flow 1 length sent data = %d", mb1->length()));
+	ACS_SHORT_LOG ((LM_INFO,"flow 1 length sent data = %d", mb1->length()));
 
 	mb1->release();
     	}
-
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVInvalidFlowNumberExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (AVSendFrameErrorExImpl & ex)
+    catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVSendFrameErrorExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (AVCouldNotOpenFileExImpl & ex)
-	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVCouldNotOpenFileExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::paceDataTimeout");
 	throw err.getAVPaceDataErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData UNKNOWN exception"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::paceDataTimeout UNKNOWN exception");
 	throw err.getAVPaceDataErrorEx();
 	}
+
 }
 
 
 void BulkDataSenderEx3Impl::paceData()
     throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
-    ACS_TRACE("BulkDataSenderEx3Impl::paceData");
 
     try
 	{
@@ -325,28 +224,14 @@ void BulkDataSenderEx3Impl::paceData()
 	mb1->release();
     	}
 
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVInvalidFlowNumberExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (AVSendFrameErrorExImpl & ex)
+    catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVSendFrameErrorExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (AVCouldNotOpenFileExImpl & ex)
-	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData AVCouldNotOpenFileExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::paceData");
 	throw err.getAVPaceDataErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::paceData UNKNOWN exception"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::paceData");
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderEx3Impl::paceData UNKNOWN exception");
 	throw err.getAVPaceDataErrorEx();
 	}
 }
@@ -356,7 +241,6 @@ void BulkDataSenderEx3Impl::paceData()
 void BulkDataSenderEx3Impl::stopSend()
     throw (CORBA::SystemException, AVStopSendErrorEx)
 {
-    ACS_TRACE("BulkDataSenderEx3Impl::stopSend");
 
     CORBA::ULong flowNumber = 1;
 
@@ -365,16 +249,14 @@ void BulkDataSenderEx3Impl::stopSend()
 	getSender()->stopSend(flowNumber);
 	}
 
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::stopSend AVInvalidFlowNumberExImpl exception catched !"));
-	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::stopSend");
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::stopSend");
 	throw err.getAVStopSendErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::stopSend UNKNOWN exception"));
-	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::stopSend");
+	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(__FILE__,__LINE__,"BulkDataSenderEx3Impl::stopSend UNKNOWN exception");
 	throw err.getAVStopSendErrorEx();
 	}
 }

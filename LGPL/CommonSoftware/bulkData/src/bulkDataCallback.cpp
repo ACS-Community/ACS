@@ -33,7 +33,10 @@ BulkDataCallback::~BulkDataCallback()
     if (error_m == true)
 	{
 	if (errComp_p != 0)
+	    {
 	    delete errComp_p;
+	    errComp_p = 0;
+	    }
 	}
 
 }
@@ -53,7 +56,10 @@ int BulkDataCallback::handle_start(void)
     if (error_m == true)
 	{
 	if (errComp_p != 0)
+	    {
 	    delete errComp_p;
+	    errComp_p = 0;
+	    }
 	}
 
     // error is cleared
@@ -131,6 +137,10 @@ int BulkDataCallback::handle_stop (void)
 		    //cout << "nnnnnnn: " << nn << endl;
 		    }
 		//return -1;
+
+		if (error_m == true)
+		    throw CORBA::TIMEOUT();
+
 		}
 
 	    if(state_m == CB_SEND_PARAM)
@@ -167,6 +177,8 @@ int BulkDataCallback::handle_stop (void)
 	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
 
 	error_m = true;
+
+	throw CORBA::TIMEOUT();
 	}
     catch(CORBA::Exception &ex)
 	{
@@ -181,6 +193,7 @@ int BulkDataCallback::handle_stop (void)
 	    //return 0;
 	    }
 	error_m = true;
+	throw CORBA::TIMEOUT();
 	}
     catch(...)
 	{
@@ -195,6 +208,7 @@ int BulkDataCallback::handle_stop (void)
 	    //return 0;
 	    }
 	error_m = true;
+	throw CORBA::TIMEOUT();
 	}
 
     return 0;
@@ -210,7 +224,10 @@ int BulkDataCallback::handle_destroy (void)
     if (error_m == true)
 	{
 	if (errComp_p != 0)
+	    {
 	    delete errComp_p;
+	    errComp_p = 0;
+	    }
 	}
     error_m = false;
 
