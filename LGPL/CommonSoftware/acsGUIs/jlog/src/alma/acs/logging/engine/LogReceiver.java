@@ -78,7 +78,7 @@ public class LogReceiver {
 	private ArrayList<String> statusReports;
 	
 	private volatile boolean listenForLogs;
-    private long sortingDelayMillis = 20000;
+    private volatile long sortingDelayMillis = 20000;
 
 	
 	public LogReceiver() {
@@ -185,8 +185,8 @@ public class LogReceiver {
 		private DelayQueue<DelayedLogEntry> logDelayQueue;
         private long delayMillis = 20000;
         
-        private volatile boolean isConnected = false;
-        private volatile CountDownLatch connectSync;
+        private boolean isConnected = false;
+        private CountDownLatch connectSync;
 		
 		MyRemoteResponseCallback(DelayQueue<DelayedLogEntry> logDelayQueue, ArrayList<String> statusReports) {
 			this.logDelayQueue = logDelayQueue;
