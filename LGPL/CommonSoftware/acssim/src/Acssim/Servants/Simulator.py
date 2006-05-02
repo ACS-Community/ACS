@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.31 2006/04/03 19:44:14 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.32 2006/05/02 19:27:32 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.31 2006/04/03 19:44:14 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.32 2006/05/02 19:27:32 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -179,7 +179,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         ir = interfaceRepository()
 
         #_executeXyz methods need an argument list
-        args = []
+        args = [self]
 
         #get an interface description for this component
         interf = ir.lookup_id(self._NP_RepositoryId)
