@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.11 2006/05/01 23:25:00 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.12 2006/05/02 22:58:53 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -89,7 +89,7 @@ PY_SCRIPTS         = acspyexmplFridgeNCClient \
 		     acspyexmplClientErrorComponent
 PY_SCRIPTS_L       =
 
-PY_MODULES         =
+PY_MODULES         = acspyexmplSimulatorExtras
 PY_MODULES_L       =
 
 PY_PACKAGES        = demoImpl acsexmplLampImpl acsexmplErrorComponentImpl
