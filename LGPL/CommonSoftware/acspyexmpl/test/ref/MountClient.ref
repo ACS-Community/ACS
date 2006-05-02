@@ -3,6 +3,7 @@
 1 - ----------T--:--:--.--- Python Client Main - ARCHIVE_DATABASE of type IDL:alma/archiveinternal/Database:1.0
 1 - ----------T--:--:--.--- Python Client Main - CLOCK1 of type IDL:alma/acstime/Clock:1.0
 1 - ----------T--:--:--.--- Python Client Main - COBs available are: 
+1 - ----------T--:--:--.--- Python Client Main - ERRORCOMP1 of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
 1 - ----------T--:--:--.--- Python Client Main - ES1 of type IDL:alma/demo/ErrorSystem:1.0
 1 - ----------T--:--:--.--- Python Client Main - ES2 of type IDL:alma/demo/ErrorSystem:1.0
 1 - ----------T--:--:--.--- Python Client Main - FRIDGE1 of type IDL:alma/FRIDGE/FridgeControl:1.0
