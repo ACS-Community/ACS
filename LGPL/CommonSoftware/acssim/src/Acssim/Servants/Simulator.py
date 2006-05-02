@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.32 2006/05/02 19:27:32 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.33 2006/05/02 21:43:30 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.32 2006/05/02 19:27:32 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.33 2006/05/02 21:43:30 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -98,10 +98,24 @@ class BaseSimulator(DynamicImplementation):
 
         #simulate doing something with callbacks...
         tryCallbackParams(args[1:], self)
+        
+        meth_name = args[0]
+
+        if len(args)>1:
+            #create the list of args
+            args = list(args[1:])
+            #append the component reference
+            args.append(self)
+            new_args = args
+            
+        else:
+            new_args = [self]
+            
+        new_args = tuple(new_args)
             
         return _execute(self.__name,
-                        args[0],
-                        args[1:],
+                        meth_name,
+                        new_args,
                         getCompLocalNS(self.__name))
 
 #------------------------------------------------------------------------------
@@ -140,7 +154,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #for the simulated component.
         _execute(self._get_name(),
                  "initialize",
-                 [],
+                 (self),
                  getCompLocalNS(self._get_name()))
         
         #create the object used to dispatch events automatically         
@@ -157,7 +171,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #for the simulated component.
         _execute(self._get_name(),
                  "cleanUp",
-                 [],
+                 (self),
                  getCompLocalNS(self._get_name()))
         
         ComponentLifecycle.cleanUp(self)
@@ -179,7 +193,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         ir = interfaceRepository()
 
         #_executeXyz methods need an argument list
-        args = [self]
+        args = (self)
 
         #get an interface description for this component
         interf = ir.lookup_id(self._NP_RepositoryId)

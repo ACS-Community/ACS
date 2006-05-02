@@ -9,5 +9,5 @@
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: CLOCK1
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 1 - CLOCK1 initialize from the CDB
-1 - Params passed to getTimeInterval (<acstime.Epoch instance at 0xXXXX>,)
-1 - Params passed to toISO8601 (TSArray, <acstime.Epoch instance at 0xXXXX>)
+1 - Params passed to getTimeInterval (<acstime.Epoch instance at 0xXXXX>, <Acssim.Servants.Simulator.Simulator instance at 0xXXXX>)
+1 - Params passed to toISO8601 (TSArray, <acstime.Epoch instance at 0xXXXX>, <Acssim.Servants.Simulator.Simulator instance at 0xXXXX>)
