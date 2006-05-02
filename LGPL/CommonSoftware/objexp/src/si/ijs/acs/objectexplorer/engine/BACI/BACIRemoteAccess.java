@@ -1419,7 +1419,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			// TAO IFR bug workaround
 			if (exceptionsDesc[i].type.kind().value() != TCKind._tk_except)
 			{
-				System.out.println("--> Invalid user exception kind, fixing...");
+			        // System.out.println("--> Invalid user exception kind, fixing...");
 
 				Class c = null;
 				String className = null;
