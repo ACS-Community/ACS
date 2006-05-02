@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.33 2006/05/02 21:43:30 dfugate Exp $
+# @(#) $Id: Simulator.py,v 1.34 2006/05/02 22:55:44 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.33 2006/05/02 21:43:30 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.34 2006/05/02 22:55:44 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -111,8 +111,6 @@ class BaseSimulator(DynamicImplementation):
         else:
             new_args = [self]
             
-        new_args = tuple(new_args)
-            
         return _execute(self.__name,
                         meth_name,
                         new_args,
@@ -154,7 +152,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #for the simulated component.
         _execute(self._get_name(),
                  "initialize",
-                 (self),
+                 [self],
                  getCompLocalNS(self._get_name()))
         
         #create the object used to dispatch events automatically         
@@ -171,7 +169,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #for the simulated component.
         _execute(self._get_name(),
                  "cleanUp",
-                 (self),
+                 [self],
                  getCompLocalNS(self._get_name()))
         
         ComponentLifecycle.cleanUp(self)
@@ -193,7 +191,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         ir = interfaceRepository()
 
         #_executeXyz methods need an argument list
-        args = (self)
+        args = [self]
 
         #get an interface description for this component
         interf = ir.lookup_id(self._NP_RepositoryId)
