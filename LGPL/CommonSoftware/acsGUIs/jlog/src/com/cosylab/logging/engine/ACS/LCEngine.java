@@ -72,7 +72,6 @@ public class LCEngine implements Runnable {
 		
 		public void run() {
 			disconnect();
-			publishConnectionStatus(false);
 			publishConnecting();
 			publishReport("Connecting to " + accessType + " remote access...");
 			try {
@@ -92,16 +91,16 @@ public class LCEngine implements Runnable {
 				remoteAccess.initialize(orb,manager);
 			} catch (Throwable e) {
 				publishReport("Exception occurred when initializing " + accessType + " remote access.");
-				publishConnectionStatus(false);
+				publishConnected(false);
 				System.out.println("Exception in LCEngine$AccessSetter::run(): " + e);
 				return;
 			}
 			if (remoteAccess.isInitialized()) {
 				publishReport("Connected to " + accessType + " remote access.");
-				publishConnectionStatus(true);
+				publishConnected(true);
 				LCEngine.this.wasConnected=true;
 			} else {
-				publishConnectionStatus(false);
+				publishConnected(false);
 			}
 		}
 	}
@@ -181,7 +180,7 @@ public class LCEngine implements Runnable {
 	//		System.out.println("Disonnected from " + accessType + " remote access.");
 		}
 		remoteAccess = null;
-		publishConnectionStatus(false);
+		publishConnected(false);
 		LCEngine.this.wasConnected=false;
 	}
 	
@@ -258,14 +257,14 @@ public class LCEngine implements Runnable {
 			}
 			// Check the connection!
 			boolean connected = isConnected();
-			publishConnectionStatus(connected);
+			publishConnected(connected);
 			if (wasConnected && !connected) {
 				publishReport("Connection lost");
 				wasConnected=false;
 				// Better otherwise it tries to reconnect every time
 				disconnect();
-				JOptionPane.showMessageDialog(null,"Connection lost!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
-			}
+				publishConnectionLost();
+			} 
 		}
 	}
 	
@@ -308,18 +307,34 @@ public class LCEngine implements Runnable {
 	 * 
 	 * @param connected
 	 */
-	public synchronized void publishConnectionStatus(boolean connected) {
+	public synchronized void publishConnected(boolean connected) {
 		if (listeners==null) {
 			return;
 		}
 		for (int t=0; t<listeners.size(); t++) {
 			ACSRemoteLogListener listener = listeners.get(t);
 			if (listener!=null) {
-				if (connected) {
+					if (connected) {
 					listener.acsLogConnEstablished();
-				} else {
+					} else {
+						listener.acsLogConnDisconnected();
+					}
+			}
+		}
+	}
+	
+	/**
+	 * Notify the listeners that the connection has been lost
+	 *
+	 */
+	public synchronized void publishConnectionLost() {
+		if (listeners==null) {
+			return;
+		}
+		for (int t=0; t<listeners.size(); t++) {
+			ACSRemoteLogListener listener = listeners.get(t);
+			if (listener!=null) {
 					listener.acsLogConnLost();
-				}
 			}
 		}
 	}
