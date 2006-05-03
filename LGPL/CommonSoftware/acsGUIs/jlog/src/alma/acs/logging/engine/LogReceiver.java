@@ -175,12 +175,20 @@ public class LogReceiver {
 		return statusReports.toArray(new String[statusReports.size()]); 
 	}
 
+	/**
+	 * Disconnects from the logging channel.
+	 * A special "queue poison" version of DelayedLogEntry will be added to the queue with zero delay,
+	 * so that all clients who fetch log recored of the queue obtained from {@link #getLogQueue()} 
+	 * know that the show is over.
+	 * @see DelayedLogEntry#isQueuePoison()
+	 */
 	public void stop() {
 		if (verbose) {
 			System.out.println("Attempting to destroy LogConnect...");
 		}
 		lct.disconnect();
 		listenForLogs = false;
+		logDelayQueue.offer(DelayedLogEntry.createQueuePoison(0));
 	}
 		
 	
@@ -230,18 +238,21 @@ public class LogReceiver {
                 System.out.println("LogReceiver#acsLogConnEstablished()");             
             }
         }
+		public void acsLogConnDisconnected() {
+            isConnected = false;
+            if (verbose) {
+                System.out.println("LogReceiver#acsLogConnDisconnected()");             
+            }
+		}
         public synchronized void acsLogConnLost() {
             isConnected = false;
             if (verbose) {
                 System.out.println("LogReceiver#acsLogConnLost()");             
             }
+            // the connection loss was unexpected, so we notify the queue consumer
+    		logDelayQueue.offer(DelayedLogEntry.createQueuePoison(delayMillis));
         }
 
-//        public void invocationDestroyed() {
-//			System.out.println("LogReceiver: invocationDestroyed");	
-//			statusReports.add("Log service terminated!");
-//		}
-		
 		public void reportStatus(String status) {
 			if (verbose) {
 				System.out.println("LogReceiver status report: " + status);				
@@ -274,6 +285,7 @@ public class LogReceiver {
         void setDelayMillis(long newDelayMillis) {
             delayMillis = newDelayMillis;
         }
+
 		
 // TODO: these are normal status messages which should be ignored,
 // while other messages should raise an error. Currently all messages are ignored.		
@@ -484,14 +496,6 @@ public class LogReceiver {
 							e.printStackTrace();
 						}
 					}
-					// it's over
-					try {
-						// wait for log records to leave the queue (or reduce DelayedLogEntry.delayTimeMillis to speed this up??)
-                        // or use a "queue poison", i.e. a special record, to trigger the destruction?
-						Thread.sleep(sortingDelayMillis);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 				} catch (Throwable thr) {
 					System.out.println("Log receiver got exception " + thr);
 					logWriter.println("Log receiver failed with exception " + thr.toString());
@@ -522,7 +526,7 @@ public class LogReceiver {
 	 */
 	public void stopCaptureLogs() {
 		DelayedLogEntry queuePoison = DelayedLogEntry.createQueuePoison(getDelayMillis());
-		logDelayQueue.offer(queuePoison);
+		logDelayQueue.offer(queuePoison); // this queue poison will be fetched off the queue by the thread started in 'startCaptureLogs'
 	}	
 }
 
