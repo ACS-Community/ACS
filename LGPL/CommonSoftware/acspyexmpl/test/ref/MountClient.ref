@@ -21,6 +21,7 @@
 1 - ----------T--:--:--.--- Python Client Main - MOUNT1 of type IDL:alma/MOUNT_ACS/Mount:1.0
 1 - ----------T--:--:--.--- Python Client Main - OPERATIONAL_ARCHIVE of type IDL:alma/xmlstore/Operational:1.0
 1 - ----------T--:--:--.--- Python Client Main - PYLAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ----------T--:--:--.--- Python Client Main - TEST_RPS_1 of type IDL:alma/RampedPS/RampedPowerSupply:1.0
 1 - ----------T--:--:--.--- Python Client Main - TIMER1 of type IDL:alma/acstime/Timer:1.0
 1 - ----------T--:--:--.--- Python Client Main - We can directly manipulate a device once we get it, which is easy.
 1 - The end __oOo__
