@@ -35,7 +35,15 @@ public interface ACSRemoteLogListener {
 	public void acsLogConnEstablished();
 	
 	/**
+	 * Notify that the connection with ACS NC has been disconnected
+	 * as a consequence of a commend (i.e. does not means that there
+	 * is an error)
+	 */
+	public void acsLogConnDisconnected();
+	
+	/**
 	 * Notify that the connection with ACS NC has been lost
+	 * (it means an error or something abnormal).
 	 *
 	 */
 	public void acsLogConnLost();
