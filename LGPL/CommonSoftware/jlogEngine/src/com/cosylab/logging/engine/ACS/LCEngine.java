@@ -23,8 +23,6 @@ package com.cosylab.logging.engine.ACS;
 
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
 import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;
@@ -115,12 +113,55 @@ public class LCEngine implements Runnable {
 	private Manager manager = null; // Can be null
 	
 	/**
-	 * LCEngine constructor comment.
+	 * If true the engine tries to reconnect automatically
+	 */
+	private boolean autoReconnect = false;
+	
+	/**
+	 * LCEngine constructor.
 	 * 
-	 * @param logEventListener The lister for log events
+	 * @param logEventListener The listener for log events
 	 */
 	public LCEngine(ACSRemoteLogListener logEventListener) {
 		addLogRemoteConnListener(logEventListener);
+		initEngine();
+	}
+	
+	/**
+	 * LCEngine constructor.
+	 * 
+	 * @param logEventListener The listener for log events
+	 * @param autoReconn If true the engine automatically reconnects
+	 */
+	public LCEngine(ACSRemoteLogListener logEventListener, boolean autoReconn) {
+		autoReconnect=autoReconn;
+		addLogRemoteConnListener(logEventListener);
+		initEngine();
+	}
+	
+	/**
+	 * LCEngine constructor.
+	 *
+	 */
+	public LCEngine() {
+		initEngine();
+	}
+	
+	/**
+	 * LCEngine constructor.
+	 *
+	 * @param autoReconn If true the engine automatically reconnects
+	 */
+	public LCEngine(boolean autoReconn) {
+		autoReconnect=autoReconn;
+		initEngine();
+	}
+	
+	/**
+	 * Perfoem initial operation to init the Engine
+	 *
+	 */
+	private void initEngine() {
 		Thread thread = new Thread(this);
 		thread.start();
 	}
@@ -264,7 +305,10 @@ public class LCEngine implements Runnable {
 				// Better otherwise it tries to reconnect every time
 				disconnect();
 				publishConnectionLost();
-			} 
+			}
+			if (autoReconnect) {
+				connect();
+			}
 		}
 	}
 	
@@ -385,5 +429,14 @@ public class LCEngine implements Runnable {
 			throw new IllegalArgumentException("Invalid null listener");
 		}
 		return listeners.remove(listener);
+	}
+	
+	/**
+	 * Enable/disable the auto reconnection
+	 * 
+	 * @param autoRec If true the engine tries to reconnect automatically
+	 */
+	public void enableAutoReconnection(boolean autoRec) {
+		autoReconnect=autoRec;
 	}
 }
