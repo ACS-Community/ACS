@@ -201,6 +201,11 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     private JCheckBoxMenuItem viewToolbarMI;
     
     /**
+     * The menu item to show/hide the toolbar
+     */
+    private JCheckBoxMenuItem autoReconnectMI;
+    
+    /**
      * The menu item to show/hide the Detailed log info panel
      */
     private JCheckBoxMenuItem viewDetailedInfoMI;
@@ -258,6 +263,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 				if (connectMenuItem.getText().compareTo("Connect")==0) {
 					connect();
 				} else {
+					LoggingClient.this.autoReconnectMI.setState(false);
+					LoggingClient.this.engine.enableAutoReconnection(false);
 					disconnect();
 				}
             } else if (e.getSource() == LoggingClient.this.getLoadMenuItem()) {
@@ -319,7 +326,11 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
             	} else {
             		getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth());
             	}
-            } 
+            } else if (e.getSource()==LoggingClient.this.autoReconnectMI) {
+            	if (LoggingClient.this.engine!=null) {
+            		LoggingClient.this.engine.enableAutoReconnection(LoggingClient.this.autoReconnectMI.getState());
+            	}
+            }
 		};
 
 		public void propertyChange(java.beans.PropertyChangeEvent evt)
@@ -828,6 +839,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         fileMenu.setText("File");
         fileMenu.addMenuListener(eventHandler);
         fileMenu.add(getConnectMenuItem());
+        autoReconnectMI = new JCheckBoxMenuItem("Auto reconnect",false);
+        autoReconnectMI.addActionListener(eventHandler);
+        fileMenu.add(autoReconnectMI);
         fileMenu.addSeparator();
         fileMenu.add(getLoadMenuItem());
         fileMenu.add(getLoadURLMenuItem());
