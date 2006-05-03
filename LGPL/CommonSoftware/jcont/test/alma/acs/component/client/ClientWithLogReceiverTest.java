@@ -85,22 +85,29 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
             // to compensate travel delay when sending log records to Log service,
             // and then getting them back over the network.
             long timeoutSec = 15L;
-            DelayedLogEntry delayedLogEntry = queue.poll(timeoutSec, TimeUnit.SECONDS);
-            if (delayedLogEntry != null) {
-                ILogEntry logEntry = delayedLogEntry.getLogEntry();
-                String sourceObjectName = (String) logEntry.getField(ILogEntry.FIELD_SOURCEOBJECT);
-                if (sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
-	                assertEquals(logMessage, logEntry.getField(ILogEntry.FIELD_LOGMESSAGE));
-	                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue());
-	                System.out.println("Received back log record #" + i);
-                }
-                else {
-                	// was some other stray log, perhaps from a previously running ACS component
-                	System.out.println("Ignoring log from SourceObject=" + sourceObjectName);
-                }
-            }
-            else {
-                fail("Did not receive the expected log record #" + i + " within " + timeoutSec + " seconds.");
+            while (true) {
+	            DelayedLogEntry delayedLogEntry = queue.poll(timeoutSec, TimeUnit.SECONDS);            
+	            if (delayedLogEntry != null) {
+	            	if (delayedLogEntry.isQueuePoison()) {
+	            		fail("Unexpected end of log queue.");
+	            	}
+	                ILogEntry logEntry = delayedLogEntry.getLogEntry();
+	                String sourceObjectName = (String) logEntry.getField(ILogEntry.FIELD_SOURCEOBJECT);
+	                if (sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
+		                assertEquals(logMessage, logEntry.getField(ILogEntry.FIELD_LOGMESSAGE));
+		                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue());
+		                System.out.println("Received back log record #" + i);
+		                break; // and continue outer loop with next log record
+	                }
+	                else {
+	                	// was some other stray log, perhaps from a previously running ACS component
+	                	System.out.println("Ignoring log from SourceObject=" + sourceObjectName);
+	                }
+	            }
+	            else {
+	            	// todo: change this timeout to be not circumvented by stray log messages from other clients.
+	                fail("Did not receive the expected log record #" + i + " within " + timeoutSec + " seconds.");
+	            }
             }
         }
         logReceiver.stop();
