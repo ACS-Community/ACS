@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataDistrPerf.cpp,v 1.1 2006/04/21 13:26:40 rcirami Exp $"
+ * "@(#) $Id: bulkDataDistrPerf.cpp,v 1.2 2006/05/03 10:12:09 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
     
     //We release our component and logout from manager
     client.manager()->release_component(client.handle(), "BulkDataSenderPerf");
-    client.manager()->release_component(client.handle(), "DISTRIBUTER");
+    client.manager()->release_component(client.handle(), "BulkDataDistributer");
     client.manager()->release_component(client.handle(), "BulkDataReceiver1Perf");
     
     client.logout();
