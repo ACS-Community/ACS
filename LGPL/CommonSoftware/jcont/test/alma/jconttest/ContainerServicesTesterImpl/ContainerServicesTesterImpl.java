@@ -30,6 +30,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentQueryDescriptor;
@@ -160,4 +161,9 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
         
         return ret;
     }
+
+	public void testGetCollocatedComponent(String curl, String targetCurl) throws CouldntPerformActionEx {
+		// TODO Auto-generated method stub		
+	}    
+    
 }
