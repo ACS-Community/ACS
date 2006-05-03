@@ -88,9 +88,16 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
             DelayedLogEntry delayedLogEntry = queue.poll(timeoutSec, TimeUnit.SECONDS);
             if (delayedLogEntry != null) {
                 ILogEntry logEntry = delayedLogEntry.getLogEntry();
-                assertEquals(logMessage, logEntry.getField(ILogEntry.FIELD_LOGMESSAGE));
-                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue());
-                System.out.println("Received back log record #" + i);
+                String sourceObjectName = (String) logEntry.getField(ILogEntry.FIELD_SOURCEOBJECT);
+                if (sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
+	                assertEquals(logMessage, logEntry.getField(ILogEntry.FIELD_LOGMESSAGE));
+	                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue());
+	                System.out.println("Received back log record #" + i);
+                }
+                else {
+                	// was some other stray log, perhaps from a previously running ACS component
+                	System.out.println("Ignoring log from SourceObject=" + sourceObjectName);
+                }
             }
             else {
                 fail("Did not receive the expected log record #" + i + " within " + timeoutSec + " seconds.");
