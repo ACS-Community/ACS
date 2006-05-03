@@ -1322,7 +1322,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			{
 				ivjInfoStatus = new javax.swing.JLabel();
 				ivjInfoStatus.setName("InfoStatus");
-				ivjInfoStatus.setText("Additional info");
+				ivjInfoStatus.setText("Detailed info");
 
 			}
 			catch (java.lang.Throwable ivjExc)
