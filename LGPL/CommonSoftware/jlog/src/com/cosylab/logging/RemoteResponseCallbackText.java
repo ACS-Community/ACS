@@ -73,4 +73,8 @@ public class RemoteResponseCallbackText implements ACSRemoteLogListener {
 	public void acsLogConnConnecting() {
 		System.out.println("Connecting");
 	}
+	
+	public void acsLogConnDisconnected() {
+		System.out.println("Disconnected");
+	}
 }
