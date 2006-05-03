@@ -1955,12 +1955,17 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		setTitle("LoggingClient");
 	}
 	
+	
+	public void acsLogConnDisconnected() {
+		setTitle("LoggingClient - Offline");
+	}
+	
 	/**
 	 * Notify that the connection with ACS NC has been lost
 	 *@see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void acsLogConnLost() {
-		setTitle("LoggingClient - Offline");
+		JOptionPane.showMessageDialog(null,"Connection lost!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
 	}
 	
 	/**
