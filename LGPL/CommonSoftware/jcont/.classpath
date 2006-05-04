@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry excluding="org/" kind="src" path="src"/>
+	<classpathentry sourcepath="JACORB_HOME/src" kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
-	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/endorsed/xercesImpl.jar" kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/acsjlog.jar" kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/xmlentity.jar" kind="var" path="ACSROOT/lib/xmlentity.jar"/>
-	<classpathentry sourcepath="JACORB_HOME/src" kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsTestEntities.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/jManager.jar"/>
@@ -23,5 +23,9 @@
 	<classpathentry sourcepath="/ACSROOT/lib/backport-util-concurrent.jar" kind="var" path="ACSROOT/lib/backport-util-concurrent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
 	<classpathentry sourcepath="/ACSROOT/lib/jcontnc.jar" kind="var" path="ACSROOT/lib/jcontnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar" kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
