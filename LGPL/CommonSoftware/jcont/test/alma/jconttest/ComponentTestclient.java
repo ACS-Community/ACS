@@ -23,6 +23,8 @@ package alma.jconttest;
 
 import org.omg.CORBA.StringHolder;
 
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClientTestCase;
 
 /**
@@ -73,6 +75,20 @@ public class ComponentTestclient extends ComponentClientTestCase
     public void testGetThreadFactory() {
         boolean ret = m_contSrvTesterComp.testGetThreadFactory(40, 100000, true);
         assertTrue("test execution successful on the server component", ret);
+    }
+    
+    public void testGetCollocatedComponent() throws CouldntPerformActionEx {
+    	try {
+    		// a new component in the same container as our main test component
+			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy1", CONTSRVCOMP_INSTANCE);
+			
+			// now we check whether a non-activated target component also works
+			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy2", "MyCollocationTargetDummy");
+			
+		} catch (CouldntPerformActionEx e) {
+			AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(e).log(m_logger);
+			throw e; // will make this test fail
+		}
     }
 
 }
