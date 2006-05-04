@@ -31,10 +31,12 @@ import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
+import alma.acs.container.ContainerException;
 import alma.jconttest.ContainerServicesTesterOperations;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentImpl.DummyComponentHelper;
@@ -143,7 +145,7 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
                     }
                     m_logger.fine("Test thread '" + Thread.currentThread().getName() + "' done.");
                 }        
-            };
+            }
             // run up to maxThreadNumber new threads
             numThreads = randomize ? random.nextInt(numThreads) + 1 : numThreads;
             m_logger.fine("Will use the thread factory to run " + numThreads + " threads.");
@@ -161,9 +163,20 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
         
         return ret;
     }
+    
 
 	public void testGetCollocatedComponent(String curl, String targetCurl) throws CouldntPerformActionEx {
-		// TODO Auto-generated method stub		
+		String msg = "component '" + curl + "' collocated with '" + targetCurl + "'";
+		m_logger.info("Received call to testGetCollocatedComponent for " + msg);
+		try {
+			org.omg.CORBA.Object compObj = m_containerServices.getCollocatedComponent(curl, targetCurl);
+			if (compObj == null) {
+				throw new NullPointerException("Got null reference for " + msg);
+			}
+			m_containerServices.releaseComponent(curl);
+		} catch (Throwable thr) {
+			throw (new AcsJCouldntPerformActionEx("testGetCollocatedComponent failed for " + msg, thr)).toCouldntPerformActionEx();
+		}		
 	}    
     
 }
