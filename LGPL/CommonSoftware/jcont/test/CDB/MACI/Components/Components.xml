@@ -20,5 +20,15 @@
 		Type="IDL:alma/jconttest/DummyComponent:1.0" 
 		Container="*"
 		/>
+	<_ Name="MyCollocationTargetDummy"
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="frodoContainer"
+		/>
+	<_ Name="MyCollocatedDummy2"
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="*"
+		/>
 	
 </Components>
