@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?> 
 <!-- This XML file provides the partial implementation -->
 <!-- of the IDL:alma/PS/PowerSupply:1.0 interface.     -->
 <!-- Because of this XML's location within the ACS CDB -->
@@ -7,7 +7,7 @@
 <!-- and does not tie into any specific component.     -->
 <!-- This makes it useful for defining the behavior of -->
 <!-- simulated dynamic components. Also, it is very    -->
-<!-- useful when one wants to define a component's     -->
+<!-- useful when one wants to define a component(s)    -->
 <!-- method only once for all occurences of the        -->
 <!-- component's type.                                 -->
 <!--                                                   -->
@@ -51,6 +51,14 @@ cbdo  = ACS.CBDescOut(0L, 0L)
 #invoke the callback's working method 3 times. under normal
 #circumstances this should be done via a separate thread.
 for i in xrange(3):
+    #take special note that this comment has been indented
+    #using 4 spaces instead of a tab! you must take into 
+    #consideration Python's whitespace rules when using
+    #non-trivial Python constructs. most often developers
+    #are accustomed to editors which automatically convert
+    #a tab into four spaces for them if the file has the
+    #.py extension. this is not the case for XML files!
+
     #IDL in/inout parameters are accessible via a Python
     #tuple named quite appropriately, "parameters". this 
     #tuple presents the parameters in the order they were
@@ -74,17 +82,20 @@ return None
 	<_corbaAttribute Name="current" Timeout="0">
 #since this import statement will only be called once
 #at simulated component initialization, it's OK to put
-#it here
+#it here rather than inside the pythonImports XML
+#element
 from acspyexmplSimulatorExtras import CurrentDevIO
 
-#the return value of this XML element should always be
+#the return value of this function should always be
 #a DevIO derived object fit for use with the BACI property
 #being implemented.
 #
 #one very important item to take note of here is that
-#for the specific case of BACI properties, parameters[0],
-#contains a reference to the component in which the property
-#will reside in
+#parameters[0] contains a reference to the component 
+#in which the property will reside in. the final object
+#within parameters will always be a reference to the 
+#simulated component for all methods that can be 
+#defined within the CDB
 return CurrentDevIO(parameters[0])
         </_corbaAttribute>
 

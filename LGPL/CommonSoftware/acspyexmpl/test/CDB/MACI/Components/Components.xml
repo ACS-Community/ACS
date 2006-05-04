@@ -8,6 +8,7 @@
 	<_ Name="TIMER1" Code="acstimer" Type="IDL:alma/acstime/Timer:1.0" Container="TestContainer" Default="true" />
 	<_ Name="MOUNT1" Code="acsexmplMountImpl" Type="IDL:alma/MOUNT_ACS/Mount:1.0" Container="TestContainer" />
 	<_ Name="FRIDGE1" Code="acsexmplFridgeImpl" Type="IDL:alma/FRIDGE/FridgeControl:1.0" Container="TestContainer" />
+    <_ Name="TEST_PS_1" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="TestContainer" />
 	<_ Name="HELLOWORLD1" Code="acsexmplHelloWorldImpl" Type="IDL:alma/acsexmplHelloWorld/HelloWorld:1.0" Container="TestContainer" />
 	<_ Name="LAMP1" Code="acsexmplLampImpl" Type="IDL:alma/acsexmplLamp/Lamp:1.0" Container="TestContainer" />
         <_ Name="HOUSE1/PYLAMP1" Code="acsexmplLampImpl.Lamp" Type="IDL:alma/acsexmplLamp/Lamp:1.0" Container="pyContainer" />

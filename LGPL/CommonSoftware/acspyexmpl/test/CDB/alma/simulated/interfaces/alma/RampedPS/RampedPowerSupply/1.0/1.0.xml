@@ -8,7 +8,7 @@
 <!-- and does not tie into any specific component.     -->
 <!-- This makes it useful for defining the behavior of -->
 <!-- simulated dynamic components. Also, it is very    -->
-<!-- useful when one wants to define a component's     -->
+<!-- useful when one wants to define a component(s)    -->
 <!-- method only once for all occurences of the        -->
 <!-- component's type.                                 -->
 <!--                                                   -->
@@ -28,6 +28,10 @@
 <!--      applicable. In this specific case, see       -->
 <!--      $ACS_CDB/CDB/alma/simulated/interfaces/alma/ -->
 <!--      PS/PowerSupply/1.0                           -->
+<!--   4. With respect to 3., one should also note that-->
+<!--      it's perfectly acceptable to override methods-->
+<!--      defined within $ACS_CDB/CDB/alma/simulated/  -->
+<!--      PS/PowerSupply/1.0                           -->
 
 <!-- All simulated components should be derived from   -->
 <!-- the SimulatedComponent XML element                -->
@@ -37,32 +41,6 @@
 import ACSErr
 import ACS
         </pythonImports>
-        
-<!-- Here we override a lifecycle method. This is being-->
-<!-- done so that we only have to create a Completion  -->
-<!-- and Callback descriptor a single time rather than -->
-<!-- with each invocation of the startRamping method   -->
-<!-- to invoke the "done" method of the Callback param -->
-		<initialize>
-#the lifecycle and component methods defined within IDL
-#are not actual instance methods of the simulated component.
-#instead, they are actually proxy functions which get indirectly
-#called by the simulated component. because of this, the 
-#simulator framework provides a reference to the raw component
-#as the final param within the parameters list. using this 
-#gives us access to the container services!!!
-logger = parameters[0].getLogger()
-logger.logInfo("logging directly from XML using a nice trick!!!")
-
-#create both of the objects
-compl = ACSErr.Completion(0L, 0L, 0L, ())
-cbdo  = ACS.CBDescOut(0L, 0L)
-
-#now use some special API functions to store these local
-#objects globally
-setGlobalData("compl", compl)
-setGlobalData("cbdo", cbdo)
-        </initialize>
 
 	<_corbaMethod Name="startRamping" Timeout="0">
 print "Simulated startRamping (alma/simulated/interfaces CDB section):"
