@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.15 2006/04/06 21:44:58 dfugate Exp $
+# @(#) $Id: ContainerServices.py,v 1.16 2006/05/04 17:06:18 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.15 2006/04/06 21:44:58 dfugate Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.16 2006/05/04 17:06:18 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.15 2006/04/06 21:44:58 dfugate Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.16 2006/05/04 17:06:18 dfugate Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -242,6 +242,8 @@ class ContainerServices:
         Raises: Nothing
         '''
         try:
+            t_idl_type = comp_type
+            
             if (comp_name != None) and (comp_type == None):
                 #Get a list of all components
                 components = self.availableComponents()
@@ -254,9 +256,12 @@ class ContainerServices:
                         #e.g., "IDL:alma/PS/PowerSupply:1.0"
                         t_idl_type = component.type  
                         break
-            else:
-                t_idl_type = comp_type
                 
+            if t_idl_type==None:
+                #getting this far means the component was not
+                #found
+                raise Exception("Component type unavailable!")
+            
             #extract the proper Python module from the type string.
             #("alma", "PS", "PowerSupply")
             temp = t_idl_type.split(':')[1].split('/')  
@@ -582,6 +587,9 @@ class ContainerServices:
         
         #Set method variables next
         self.activateOffShootMethod = activate_offshoot_method
+        
+        #initialize logging
+        self.getLogger()
         
         return
     #--------------------------------------------------------------------------
