@@ -7,14 +7,12 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.client.cache.LogCache;
 
 /**
  * Shows statistics from loaded logs
@@ -26,6 +24,8 @@ public class StatsDlg extends JDialog
 	implements ActionListener {
 	
 	private JLabel totNumOfLogsLbl = new JLabel("N/A");
+	private JLabel availMemLbl = new JLabel("N/A");
+	private JLabel usedMemLbl = new JLabel("N/A");
 	
 	private JButton closeBtn = new JButton("Close");
 	private JButton refreshBtn = new JButton("Refresh");
@@ -56,13 +56,29 @@ public class StatsDlg extends JDialog
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Statistics");
 		this.setBounds(50, 35, 100, 100);
-		JPanel pnl = new JPanel(new BorderLayout());
+		JPanel mainPnl = new JPanel(new BorderLayout());
 		
-		// Add the labels
-		JPanel labelPanel = new JPanel(new FlowLayout());
-		labelPanel.add(new JLabel("Total logs: "));
-		labelPanel.add(totNumOfLogsLbl);
-		pnl.add(labelPanel,BorderLayout.NORTH);
+		JPanel valuesPnl = new JPanel(new GridLayout(3,1));
+		
+		// Add the num of logs
+		JPanel numOfLogsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		numOfLogsPnl.add(new JLabel("Total logs: "));
+		numOfLogsPnl.add(totNumOfLogsLbl);
+		valuesPnl.add(numOfLogsPnl);
+		
+		// Add the available memory
+		JPanel availMemPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		availMemPnl.add(new JLabel("Memory available: "));
+		availMemPnl.add(availMemLbl);
+		valuesPnl.add(availMemPnl);
+		
+		// Add the used memory
+		JPanel usedMemPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		usedMemPnl.add(new JLabel("Used memory: "));
+		usedMemPnl.add(usedMemLbl);
+		valuesPnl.add(usedMemPnl);
+		
+		mainPnl.add(valuesPnl,BorderLayout.CENTER);
 		
 		// Add the refresh and the close buttons
 		JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -70,9 +86,9 @@ public class StatsDlg extends JDialog
 		buttonPanel.add(refreshBtn);
 		closeBtn.addActionListener(this);
 		buttonPanel.add(closeBtn);
-		pnl.add(buttonPanel,BorderLayout.SOUTH);
+		mainPnl.add(buttonPanel,BorderLayout.SOUTH);
 		
-		setContentPane(pnl);
+		setContentPane(mainPnl);
 	}
 	
 	/**
@@ -81,6 +97,12 @@ public class StatsDlg extends JDialog
 	 */
 	private void refreshGUI() {
 		totNumOfLogsLbl.setText(""+logging.getScrollPaneTable().getLCModel().totalLogNumber());
+		Runtime rt = Runtime.getRuntime();
+		long freeMem = rt.freeMemory();
+		long totMem = rt.totalMemory();
+		availMemLbl.setText(""+(freeMem/1024)+"Kb");
+        usedMemLbl.setText(""+((totMem-freeMem)/1024)+"Kb");
+        pack();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
