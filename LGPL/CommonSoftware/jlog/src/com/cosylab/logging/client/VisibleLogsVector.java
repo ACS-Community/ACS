@@ -63,7 +63,14 @@ public class VisibleLogsVector extends Thread {
 		 * @see java.util.Comparable
 		 */
 		public final int compare(Integer firtsItem, Integer secondItem) {
-			ILogEntry log1 = VisibleLogsVector.this.cache.getLog(firtsItem);
+			ILogEntry log1 = null;
+			try {
+				VisibleLogsVector.this.cache.getLog(firtsItem);
+			} catch (Exception e) {
+				System.err.println("Exception caught: "+e.getMessage());
+				e.printStackTrace(System.err);
+			}
+			
 			return compare(log1,secondItem);
 		}
 		
@@ -78,8 +85,13 @@ public class VisibleLogsVector extends Thread {
 		 * @see java.util.Comparable
 		 */
 		public final int compare(ILogEntry log, Integer secondItem) {
-			ILogEntry log2 = VisibleLogsVector.this.cache.getLog(secondItem);
-			
+			ILogEntry log2 = null;
+			try {
+				VisibleLogsVector.this.cache.getLog(secondItem);
+			} catch (Exception e) {
+				System.err.println("Exception caught: "+e.getMessage());
+				e.printStackTrace(System.err);
+			}
 			
 			return compareLogs(log, log2);
 		}
@@ -373,7 +385,13 @@ public class VisibleLogsVector extends Thread {
 		ILogEntry minLog=null;
 		int iter =0;
 		do {
-			maxLog = cache.getLog(visibleLogs.get(maxInter));
+			maxLog=null;
+			try {
+				maxLog = cache.getLog(visibleLogs.get(maxInter));
+			}  catch (Exception e) {
+				System.err.println("Exception caught: "+e.getMessage());
+				e.printStackTrace(System.err);
+			}
 			if (maxInter==minInter) {
 				if (comparator.compareLogs(log,maxLog)>=0) {
 					return minInter+1;
@@ -381,7 +399,13 @@ public class VisibleLogsVector extends Thread {
 					return minInter;
 				}
 			}
-			minLog = cache.getLog(visibleLogs.get(minInter));
+			minLog=null;
+			try {
+				minLog = cache.getLog(visibleLogs.get(minInter));
+			}  catch (Exception e) {
+				System.err.println("Exception caught: "+e.getMessage());
+				e.printStackTrace(System.err);
+			}
 			if (maxInter-minInter==1) {
 				if (comparator.compareLogs(log,minLog)<0) {
 					return minInter;
@@ -431,7 +455,14 @@ public class VisibleLogsVector extends Thread {
 		if (pos<0 || pos>=visibleLogs.size()) {
 			throw new IndexOutOfBoundsException("Index out of bounds: "+pos);
 		} else {
-			return cache.getLog(visibleLogs.get(pos));
+			ILogEntry log=null;
+			try {
+				log=cache.getLog(visibleLogs.get(pos));
+			} catch (Exception e) {
+				System.err.println("Exception caught: "+e.getMessage());
+				e.printStackTrace(System.err);
+			}
+			return log;
 		}
 	}
 	
