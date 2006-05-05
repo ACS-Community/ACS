@@ -42,6 +42,10 @@ import com.cosylab.logging.engine.log.LogEntry;
  * integers for each log entry in the file.
  * The cache is also used when receiving logs from the notification
  * channel.
+ * 
+ * It uses a WriteBuffer to store the logs to write on disk. 
+ * The purpose of this class is to write several logs at once reducing
+ * the write operations on disk.
  *  
  * @author acaproni
  *
@@ -69,7 +73,149 @@ public class LogFileCache {
 	// They are usually a few so we keep them in memory
 	private HashMap<Integer,ILogEntry> replacedLogs = new HashMap<Integer,ILogEntry>();
 	
+	/**
+	 * The buffer of logs to write on disk
+	 */
+	private WriteBuffer wBuffer;
 	
+	/**
+	 * The size of the buffer of logs to be written in the cache
+	 */
+	private final int WRITEBUFFERSIZE=8192;
+	
+	/** 
+	 * Buffers the logs to write block of logs at once
+	 * 
+	 * The buffer conatins an HashMap of logs with their indexes as keys
+	 * (the same as replaced logs)
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class WriteBuffer {
+		/**
+		 * The max number of logs in the buffer
+		 */
+		private int writeBufferSize;
+		/**
+		 * The map of buffered logs 
+		 */
+		private HashMap<Integer,ILogEntry> writeBuffer;
+		
+		/**
+		 * The position of each XML in the buffer. These values will be added
+		 * to the LogFileCache.index vector.
+		 * 
+		 * (it is zero base i.e. these numbers must be updated when they are flushed)
+		 */
+		private Vector<Long> bufferIndex;
+		
+		private StringBuffer charBuffer = new StringBuffer();
+		
+		/**
+		 * The file of logs 
+		 * @see LogFileCache.file
+		 */
+		private RandomAccessFile fileOfLogs;
+		
+		/**
+		 * The vectors with the positions of the logs in cache
+		 * @see LogFileCache.index
+		 */
+		private Vector<Long> indexes;
+		
+		/**
+		 * Constructor 
+		 * 
+		 * @param sz The max num of logs in the buffer (the size of the buffer)
+		 */
+		public WriteBuffer(RandomAccessFile theFile, Vector<Long> theIndex, int sz) {
+			if (theFile==null || theIndex==null || sz<=0) {
+				throw new IllegalArgumentException("Illegal argument in constructor");
+			}
+			writeBufferSize=sz;
+			fileOfLogs=theFile;
+			indexes=theIndex;
+			writeBuffer = new HashMap<Integer,ILogEntry>(writeBufferSize);
+			bufferIndex = new Vector<Long>(writeBufferSize);
+		}
+		
+		/**
+		 * Add a log in the buffer
+		 * If the buffer is full then it is flushed on disk
+		 * @param log
+		 */
+		public synchronized int addLog(ILogEntry log) throws LogCacheException {
+			// Add the log in the buffer
+			bufferIndex.add((long)charBuffer.length());
+			charBuffer.append(log.toXMLString());
+			writeBuffer.put(bufferIndex.size()-1,log);
+			if (writeBuffer.size()>=writeBufferSize) {
+				flushBuffer();
+			}
+			return indexes.size()+bufferIndex.size()-1;
+		}
+		
+		/**
+		 * Flush the buffer on disk
+		 *
+		 */
+		private void flushBuffer() throws LogCacheException {
+			// Get all the logs
+			String logsStr=charBuffer.toString();
+			// The length of the file
+			long pos;
+			// Write the charBuffer on disk
+			synchronized(fileOfLogs) {
+				try {
+					pos=fileOfLogs.length();
+					fileOfLogs.seek(fileOfLogs.length());
+					fileOfLogs.writeBytes(logsStr);
+				} catch (IOException ioe) {
+					throw new LogCacheException("Error flushing the buffer of logs",ioe);
+				}
+			}
+			// Add the indexes in the vector 
+			synchronized(index) {
+				for (int t=0; t<bufferIndex.size(); t++) {
+					index.add(pos+bufferIndex.get(t));
+				}
+			}
+			// Clean up the buffer
+			charBuffer.delete(0,charBuffer.length());
+			bufferIndex.clear();
+			writeBuffer.clear();
+		}
+		
+		/**
+		 * Return a log in the buffer
+		 * 
+		 * @param pos The position of the log
+		 * @return The log
+		 */
+		public synchronized ILogEntry getLog(int pos)  throws LogCacheException {
+			// Check if the log is in the buffer
+			int lastLog = indexes.size()-1;
+			if (pos<=lastLog) {
+				throw  new LogCacheException("The log is not in the buffer!");
+			}
+			int posInBuffer = pos-lastLog-1;
+			ILogEntry log = writeBuffer.get(posInBuffer);
+			if (log==null) {
+				throw new LogCacheException("The log is in the buffer but is null!");
+			}
+			return log;
+		}
+		
+		/**
+		 * Return the number of logs in buffer
+		 * 
+		 * @return the number of logs in buffer
+		 */
+		public synchronized int getSize() {
+			return writeBuffer.size();
+		}
+	}
 	
 	/**
 	 * Build an empty cache
@@ -88,6 +234,7 @@ public class LogFileCache {
 		} catch (IOException ioe) {
 			throw new LogCacheException("Error initializing the file",ioe);
 		}
+		wBuffer = new WriteBuffer(file,index,WRITEBUFFERSIZE);
 	}
 	
 	/**
@@ -99,7 +246,7 @@ public class LogFileCache {
 		synchronized(index) {
 			size=index.size();
 		}
-		return size;
+		return size+wBuffer.getSize();
 	}
 	
 	/**
@@ -268,18 +415,20 @@ public class LogFileCache {
 	 * @param pos The position of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public ILogEntry getLog(int pos) {
+	public ILogEntry getLog(int pos) throws LogCacheException {
 		// Check if the log is present in the list of the replaced logs
 		if (replacedLogs.containsKey(new Integer(pos))) {
 			return replacedLogs.get(new Integer(pos));
 		}
+		if (pos>=index.size()) {
+			return wBuffer.getLog(pos);
+		}
 		String logStr = getLogAsString(pos).trim();
 		try {
-			
 			return new LogEntry(parser.parse(logStr));
 		} catch (Exception e) {
 			System.err.println("Exception "+e.getMessage());
-			return null;
+			throw new LogCacheException("Exception parsing a log",e);
 		}
 	}
 	
@@ -290,21 +439,7 @@ public class LogFileCache {
 	 * @return The position in the cache of the added log
 	 */
 	public int add(ILogEntry log) throws LogCacheException {
-		String xml=log.toXMLString();
-		long pos;
-		synchronized(file) {
-			try {
-				pos=file.length();
-				file.seek(file.length());
-				file.writeBytes(xml);
-			} catch (IOException ioe) {
-				throw new LogCacheException("Error adding a log",ioe);
-			}
-		}
-		synchronized(index) {
-			index.add(pos);
-		}
-		return index.size()-1;
+		return wBuffer.addLog(log);
 	}
 
 	/**
