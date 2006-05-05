@@ -138,13 +138,13 @@ public class LogTableDataModel extends AbstractTableModel
 		if (column == 0) {
 			return new Integer(0);
 		} else if (column==1) {
-				ILogEntry log = getVisibleLogEntry(row);
+				ILogEntry log = getValueCache(row);
 				return new Boolean(log.hasDatas());
 		} else {
 	
 			column=column-2;
 			
-			ILogEntry log = getVisibleLogEntry(row);
+			ILogEntry log = getValueCache(row);
 		
 			if (log != null) {
 				return log.getField(column);
@@ -155,7 +155,6 @@ public class LogTableDataModel extends AbstractTableModel
 		}
 	
 	}
-	
 	
 	/**
 	 * Returns the LogEntryXML at specified row. The value is based on current visibility
@@ -178,17 +177,10 @@ public class LogTableDataModel extends AbstractTableModel
 	 * @param row int
 	 */
 	private final ILogEntry getValueCache(int row) {
-	/*
-		if ((cacheHits+cacheMisses)%500 == 0) {
-		    System.out.println("LogEntryDataModel: Hits: "+cacheHits+", Misses: "+cacheMisses+", H/M ratio = "+(100*cacheHits/(cacheHits+cacheMisses+1)));
-		}
-	*/   
 		if (row == rowCacheIndex) {
-	//    	cacheHits++;
 			return rowCacheLogEntry;
 		} else {
 			if ((row >= 0) && (row < visibleLogs.size())) {
-	//	        cacheMisses++;
 				ILogEntry log = visibleLogs.get(row);
 				rowCacheIndex = row;
 				rowCacheLogEntry = log;
@@ -473,7 +465,12 @@ public class LogTableDataModel extends AbstractTableModel
 		visibleLogs.clear();
 	
 		for (int i = 0; i < allLogs.getSize(); i++) {
-			visibleLogInsert(allLogs.getLog(i),i);
+			try {
+				visibleLogInsert(allLogs.getLog(i),i);
+			} catch (Exception e) {
+				System.err.println("Exception "+e.getMessage());
+				e.printStackTrace(System.err);
+			}
 		}
 	}
 	
