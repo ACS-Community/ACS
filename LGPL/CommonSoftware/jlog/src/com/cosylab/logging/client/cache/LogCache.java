@@ -208,7 +208,7 @@ public class LogCache extends LogFileCache {
 	 * Empty the cache
 	 * 
 	 */
-	public synchronized void clear() {
+	public synchronized void clear() throws LogCacheException {
 		cache.clear();
 		manager.clear();
 		super.clear();
