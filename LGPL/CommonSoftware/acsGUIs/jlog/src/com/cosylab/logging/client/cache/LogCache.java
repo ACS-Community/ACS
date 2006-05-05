@@ -126,7 +126,7 @@ public class LogCache extends LogFileCache {
 	 * @param pos The position of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public synchronized ILogEntry getLog(int pos) {
+	public synchronized ILogEntry getLog(int pos) throws LogCacheException {
 		Integer position = new Integer(pos);
 		ILogEntry log = cache.get(position);
 		if (log!=null) {
@@ -146,13 +146,13 @@ public class LogCache extends LogFileCache {
 	 * @param index The position of the log
 	 * @return The log read from the cache on disk
 	 */
-	private synchronized ILogEntry loadNewLog(Integer index) {
+	private synchronized ILogEntry loadNewLog(Integer index) throws LogCacheException {
 		// A little check: each index must appear only once in the list
 		//
 		// This check can cause a scansion of the list
 		// so it is probably better to remove after debugging
 		if (manager.contains(index)) {
-			throw new IllegalArgumentException(""+index+" is already in the list!");
+			throw new LogCacheException (""+index+" is already in the list!");
 		}
 		
 		// Read the new log from the cache on disk
