@@ -442,14 +442,19 @@ public class LogTableDataModel extends AbstractTableModel
 			getIOHelper().saveLogs(fileName,allLogs,true);
 	 	} catch (Exception e) {
 	 		JOptionPane.showMessageDialog(null, "Exception saving the file: "+e.getMessage(),"Error saving "+fileName,JOptionPane.ERROR_MESSAGE);
-	 		
 	 	};
 	}
 	
 	// clears all	
 	public void clearAll() {
 			    if (allLogs != null) {
-					allLogs.clear();
+			    	try {
+			    		allLogs.clear();
+			    	} catch (LogCacheException e) {
+			    		System.err.println("Error clearing the cache: "+e.getMessage());
+			    		e.printStackTrace(System.err);
+			    		JOptionPane.showMessageDialog(null, "Exception clearing the cache: "+e.getMessage(),"Error clearing the cache",JOptionPane.ERROR_MESSAGE);
+			    	}
 			    }
 			    if (visibleLogs != null) {
 					visibleLogs.clear();
