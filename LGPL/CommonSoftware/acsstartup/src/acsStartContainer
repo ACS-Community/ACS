@@ -234,7 +234,7 @@ then
     if [ "$LOCAL_CNAME" == "$CONTAINERNAME" ] && [ "X$JOE" != "X" ] && [ "$JOE" != "$ACS_CONTAINER_PORT" ]
     then
 	ACS_LOG_ERROR "You're trying to change the TCP port for this container to '$ACS_CONTAINER_PORT' after the container has already"
-	ACS_LOG_ERROR "              been started under a differt TCP port, '$JOE', before. This is unacceptable as the system will no longer be"
+	ACS_LOG_ERROR "              been started under a different TCP port, '$JOE', before. This is unacceptable as the system will no longer be"
 	ACS_LOG_ERROR "              persistent!"
     fi
     unset JOE
@@ -338,8 +338,7 @@ export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=$component
 CONTAINER_PID=$$
 PID_STRING="_PID"
 CONTAINER_PID_FILE="`echo $CONTAINERNAME | sed s/"\/"/:/g`$PID_STRING"
-echo $CONTAINER_PID >> `getInstanceDirName $ACS_INSTANCE`/$CONTAINER_PID_FILE
-
+echo $CONTAINER_PID >> `getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/$CONTAINER_PID_FILE
 
 #
 # Now run the container
@@ -360,8 +359,7 @@ INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 
 
 #if the PID file exists for the container
-if [ -e $INSTANCE_DIR/$CONTAINER_PID_FILE ]
+if [ -e $INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE ]
 then
-    rm $INSTANCE_DIR/$CONTAINER_PID_FILE
+    rm $INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE
 fi
-

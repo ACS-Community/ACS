@@ -147,7 +147,7 @@ acsutilBlock -t 15 -k maciContainerShutdown $@
 
 #------------------------------------------------------------------
 #finally we check to see if the container itself has really gone
-CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/`echo $1 | sed s/"\/"/:/g`_PID
+CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/`echo $1 | sed s/"\/"/:/g`_PID
 if [ -e $CONTAINER_PID_FILE ]
     then
     #get the PID
