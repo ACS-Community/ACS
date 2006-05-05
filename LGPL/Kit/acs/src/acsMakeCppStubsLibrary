@@ -2,13 +2,13 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeCppStubsLibrary,v 1.5 2004/01/19 13:49:08 mzampare Exp $" 
+# "@(#) $Id: acsMakeCppStubsLibrary,v 1.6 2006/05/05 12:19:13 mzampare Exp $" 
 #
 idlName=$1
 makeDir=$2
 vxWorks=$3
 
-FILE=/tmp/IdlCppStubsGeneration$$
+FILE=/tmp/IdlCppStubsGeneration$$_$USER
 FILE2=/tmp/IdlCppStubsSubMake$$
 libName="${idlName}Stubs"
 if [ -f ../object/${idlName}C.cpp -a  -f ../object/${idlName}S.cpp ]
