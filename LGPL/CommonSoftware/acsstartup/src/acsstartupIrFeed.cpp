@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.1 2006/03/24 23:24:53 dfugate Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.2 2006/05/05 21:04:50 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.1 2006/03/24 23:24:53 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.2 2006/05/05 21:04:50 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -110,10 +110,7 @@ void addIdlFiles(std::string dirName,
 int main(int argc, char *argv[])
 {
     list<string> idlFiles;
-
-    std::string managerHost = ACSPorts::getIP();
-    std::string ifrPort     = ACSPorts::getIRPort();
-    std::string ifrCorbaloc = "corbaloc::" + managerHost + ":" + ifrPort + "/DefaultRepository";
+    
     std::string aceRoot     = getenv("ACE_ROOT");
     std::string idlPath     = getenv("IDL_PATH");
     std::string outFile     = argv[1];
