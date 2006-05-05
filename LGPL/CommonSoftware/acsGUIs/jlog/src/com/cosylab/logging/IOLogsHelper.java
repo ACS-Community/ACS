@@ -29,6 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.cosylab.logging.client.cache.LogCache;
+import com.cosylab.logging.client.cache.LogCacheException;
 
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
@@ -578,10 +579,41 @@ public class IOLogsHelper extends Thread  {
 		
 		int logRecordsRead = 0;
 		
+		/**
+		 * The size of the buffer
+		 */
+		final int size=16384;
+		
+		/** 
+		 * The buffer of data read from the file
+		 */
+		char[] buf =new char[size];
+		
+		/**
+		 * The cursor to scan the buffer (circular)
+		 */
+		int actualPos=-1;
+		
+		/**
+		 * When it is 0, then we have to read another block from the file
+		 */
+		int bytesInBuffer=0;
+		
 		try {
 			StopWatch stopWatch = new StopWatch();
 		
-			while ((chRead=br.read())!=-1) {
+			while (true) {
+				// Read ablock from the file if the buffer is empty
+				if (bytesInBuffer==0) {
+					bytesInBuffer = br.read(buf,0,size);
+				}
+				if (bytesInBuffer<=0) { // EOF
+					break;
+				}
+				bytesInBuffer--;
+				actualPos=(actualPos+1)%size;
+				chRead=buf[actualPos];
+				
 				bytesRead++;
 				buffer.append((char)chRead);
 				if (chRead == '>') {
@@ -852,13 +884,18 @@ public class IOLogsHelper extends Thread  {
 			e.printStackTrace(System.err);
 		}
 		for (int count =0; count<cache.getSize(); count++) {
-			ILogEntry log = cache.getLog(count);
 			try {
+				ILogEntry log = cache.getLog(count);
 				outBW.write((log.toXMLString()+"\n").toCharArray());
 			} catch (IOException ioe) {
 				System.err.println("Exception while saving logs: "+ioe.getMessage());
 				ioe.printStackTrace(System.err);
 				JOptionPane.showMessageDialog(null, "Exception saving "+ioe.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+				break;
+			} catch (LogCacheException lce) {
+				System.err.println("Exception getting a log from the cache: "+lce.getMessage());
+				lce.printStackTrace(System.err);
+				JOptionPane.showMessageDialog(null, "Exception saving "+lce.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
 				break;
 			}
 			if (progressDialog!=null) {
