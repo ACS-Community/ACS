@@ -215,6 +215,27 @@ public class LogFileCache {
 		public synchronized int getSize() {
 			return writeBuffer.size();
 		}
+		
+		/**
+		 * Clear the buffer maintaining the same file and cache
+		 *
+		 */
+		public synchronized void clear() {
+			bufferIndex.clear();
+			writeBuffer.clear();
+			charBuffer.delete(0,charBuffer.length());
+		}
+		
+		/**
+		 * Clear the cache setting a new file and vector index
+		 * @param newFile The new cache file
+		 * @param theIndex The new vector of positions
+		 */
+		public synchronized void clear(RandomAccessFile newFile, Vector<Long> newIndex) {
+			fileOfLogs=newFile;
+			indexes=newIndex;
+			clear();
+		}
 	}
 	
 	/**
@@ -317,11 +338,16 @@ public class LogFileCache {
 	 * Empty the cache reausing the same file
 	 *
 	 */
-	public void clear() {
+	public void clear() throws LogCacheException {
 		try {
 			clear(false,false);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			System.err.println("Exception caught while clearing "+e.getMessage());
+			e.printStackTrace(System.err);
+			throw new LogCacheException("Exception while clearing the cache",e);
+		}
 	}
+	
 	/**
 	 * Empty the cache 
 	 * 
@@ -351,9 +377,10 @@ public class LogFileCache {
 			try {
 				initCache();
 			} catch (IOException ioe) {
-				throw new LogCacheException("Error initing the cahce",ioe);
+				throw new LogCacheException("Error initing the cache",ioe);
 			}
 		}
+		wBuffer.clear(file,index);
 	}
 	
 	/**
