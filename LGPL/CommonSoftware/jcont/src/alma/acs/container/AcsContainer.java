@@ -28,13 +28,18 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.IntHolder;
 import org.omg.PortableServer.Servant;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 import si.ijs.maci.ClientOperations;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerPOA;
+import si.ijs.maci.ManagerOperations;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ArrayBlockingQueue;
 import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
@@ -49,6 +54,8 @@ import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.classloader.AcsComponentClassLoader;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigException;
 import alma.acs.util.StopWatch;
 
 /**
@@ -80,6 +87,8 @@ public class AcsContainer extends ContainerPOA
     private Logger m_logger;
 
     private ComponentMap m_activeComponentMap;
+
+    private DAL cdb;
 
     /**
      * Use {@link #isShuttingDown()}, {@link #setShuttingDown(boolean)}
@@ -118,12 +127,24 @@ public class AcsContainer extends ContainerPOA
 
             this.isEmbedded = isEmbedded;
 
-            m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
+            ClientLogManager clm = ClientLogManager.getAcsLogManager();
+            m_logger = clm.getLoggerForContainer(containerName);
 
             m_activeComponentMap = new ComponentMap(m_logger);
             m_acsCorba = acsCorba;
 
             registerWithCorba();
+            
+            LogConfig logConfig = clm.getLogConfig(); // todo: turn into member field when we get new logging config notification method in the container interface 
+//            logConfig.setInternalLogger(m_logger);
+            logConfig.setCDBContainerPath("MACI/Containers/" + containerName);
+            logConfig.setCDB(getCDB());
+            try {
+                logConfig.initialize();
+            } catch (LogConfigException ex) {
+                // if the CDB can't be read, we still want to run the container, so we only log the problems
+                m_logger.log(Level.WARNING, "Failed to configure logging. Default values will be used.", ex);
+            }
 
             s_instance = this;
         }
@@ -132,6 +153,35 @@ public class AcsContainer extends ContainerPOA
             throw new ContainerException("illegal attempt to create more than one instance of " +
                                             AcsContainer.class.getName() + " inside one JVM.");
         }
+    }
+
+    
+    /**
+     * Gets a reference to the CDB.
+     * Reuses the previously obtained reference.
+     * Always use this method instead of directly accessing the field {@link #cdb}. 
+     * <p>
+     * TODO: reuse this CDB reference in ContainerServicesImpl for method getCDB()
+     */
+    DAL getCDB() {
+        if (cdb != null) {
+            return cdb;
+        }
+        
+        IntHolder status = new IntHolder();
+        try {
+            // manager's get_service contains get_component, so even if the CDB becomes a real component, we can leave this 
+            org.omg.CORBA.Object dalObj = m_managerProxy.get_service("CDB", true, status);
+            cdb = DALHelper.narrow(dalObj);
+        }
+        catch (Exception e) {
+            m_logger.log(Level.WARNING, "Failed to access the CDB.", e);
+        }
+        if (status.value != ManagerOperations.COMPONENT_ACTIVATED) {
+            m_logger.log(Level.WARNING, "Failed to access the CDB. Status value was " + status.value);
+        }
+        
+        return cdb;
     }
 
 
