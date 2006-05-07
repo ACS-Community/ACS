@@ -37,6 +37,9 @@ import org.omg.DsLogAdmin.LogHelper;
 
 import si.ijs.maci.Manager;
 
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigException;
+import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
 
@@ -59,14 +62,9 @@ import alma.acs.logging.formatters.ConsoleLogFormatter;
  * 
  * @author hsommer, radi
  */
-public class ClientLogManager
+public class ClientLogManager implements LogConfigSubscriber
 {
-	private static final String DEFAULT_CENTRALIZED_LOGGER = "Log";
-
-	/**
-	 * TODO: get the service name from the CDB
-	 */
-	private String loggerContextName = DEFAULT_CENTRALIZED_LOGGER;
+	private String logServiceName;
 
 	/** logger namespace for container classes during operation */
 	public static final String NS_CONTAINER = "alma.acs.container";
@@ -77,14 +75,11 @@ public class ClientLogManager
     /** logger namespace for logger classes from this module */
     private static final String NS_LOGGER = "alma.acs.logger";
 
-	/** property file with default logger settings to be found on the classpath */
-	private static final String DEFAULT_LOG_PROPERTY_FILE = "almalogging.properties";
-
-	/** property whose value is the property file with user settings */
-	private static final String USER_LOG_PROPERTY_FILE_PROPERTY = "java.util.logging.config.file";
-
 	/** instance of a singleton */
 	private volatile static ClientLogManager s_instance;
+    
+    /** The logging configurator shared by various classes of this package */  
+    private LogConfig logConfig;
     
     /** parent of all other remote loggers, so that its log handler gets shared */ 
     private Logger parentRemoteLogger;
@@ -104,7 +99,6 @@ public class ClientLogManager
 	/** for testing */
 	private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
     
-	private LogManager m_logManager;
 
     
 	/**
@@ -124,12 +118,14 @@ public class ClientLogManager
 
 	protected ClientLogManager()
 	{
-        m_logManager = LogManager.getLogManager();
-        // todo: update or throw away the property file base logger configuration. 
-        // currently it comes before the hard coded handler configuration, to not mess up anything. 
-        setDefaultLogConfiguration();
-        setUserLogConfiguration();
-
+        logConfig = new LogConfig();
+        logConfig.addSubscriber(this);
+        try {
+            logConfig.initialize(); // will call configureLogging
+        } catch (LogConfigException ex) {
+            System.err.println("Failed to configure logging: " + ex.toString());
+        }
+        
         // parentRemoteLogger is not removed in method disableRemoteLogging, and thus does not need to be
         // (re-) created in method prepareRemoteLogging (unlike the queue and the handler)
         parentRemoteLogger = Logger.getLogger("AcsRemoteLogger");
@@ -146,6 +142,18 @@ public class ClientLogManager
 	}
 
     /**
+     * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.LogConfig)
+     */
+    public void configureLogging(LogConfig logConfig) {
+        this.logServiceName = logConfig.getLogConfigData().getCentralizedLoggerName();
+    }
+
+    public LogConfig getLogConfig() {
+        return logConfig;
+    }
+    
+    
+    /**
      * If not done already, sets up a remote handler with queue, and adds that handler 
      * to the shared (parent) remote logger.
      */
@@ -155,6 +163,7 @@ public class ClientLogManager
         }
         if (sharedRemoteHandler == null) {
             sharedRemoteHandler = new AcsLoggingHandler(logQueue);
+            logConfig.addSubscriber(sharedRemoteHandler);
         }
         else {
             Handler[] handlers = parentRemoteLogger.getHandlers();
@@ -181,6 +190,7 @@ public class ClientLogManager
      */
     protected void disableRemoteLogging() {
         if (sharedRemoteHandler != null) {
+            logConfig.removeSubscriber(sharedRemoteHandler);
             parentRemoteLogger.removeHandler(sharedRemoteHandler);
             sharedRemoteHandler.close();
             sharedRemoteHandler = null;
@@ -221,21 +231,20 @@ public class ClientLogManager
             LogManager manager = LogManager.getLogManager();
             logger = manager.getLogger(loggerNamespace);
             if (logger == null) {
-                logger = new AcsLogger(loggerNamespace, null);
-                manager.addLogger(logger);
-                logger = manager.getLogger(loggerNamespace);                
+                AcsLogger acsLogger = new AcsLogger(loggerNamespace, null);
+                logConfig.addSubscriber(acsLogger);
+                acsLogger.configureLogging(logConfig);
+                manager.addLogger(acsLogger);
+                logger = manager.getLogger(loggerNamespace);
             
                 logger.setParent(parentRemoteLogger);
                 logger.setUseParentHandlers(true);
         
-                Level loggerLevel = getLoggerLevel(loggerNamespace);
-                logger.setLevel(loggerLevel);
-                
                 // currently all remote loggers should also log locally
                 addLocalHandler(logger);
                 
                 if (DEBUG) {
-                    System.out.println("created remote logger '" + loggerNamespace + "' (level " + loggerLevel + ") and separate local handler.");
+                    System.out.println("created remote logger '" + loggerNamespace + "' (level " + logger.getLevel() + ") and separate local handler.");
                 }
             }
         } catch (Throwable thr) {
@@ -245,40 +254,6 @@ public class ClientLogManager
     }
    
    
-	/**
-	 * Method getLoggerLevel. Needed for setting the level of each logger
-	 * if it has been defined in the properties file.
-	 * @param ns namespace
-	 * @return Level
-	 */
-	public Level getLoggerLevel(String ns)
-	{
-		String lev = m_logManager.getProperty(ns + ".level");
-		if (lev == null)
-		{
-			return Level.ALL;
-		}
-		
-		if (lev.indexOf(".") == -1)
-		{
-			String startName = lev.substring(0, 1);
-			String name = startName + lev.substring(1).toUpperCase();
-			return Level.parse(name);
-		}
-		else if (lev.startsWith("Level."))
-		{
-			int start = lev.indexOf('.');
-			String lvl = lev.substring(start);
-			String name = lvl.substring(1).toUpperCase();
-			return Level.parse(name);
-		}
-		else
-		{
-			System.err.println("Please set the logger's level according to the Java Logging API!");
-			return Level.parse("OFF");
-		}
-	}
-    
     
 	/**
 	 * Creates a logger for this module.
@@ -337,7 +312,7 @@ public class ClientLogManager
             count++;
             holder.value = -1;
             try {
-                logService = LogHelper.narrow(manager.get_service(managerHandle, loggerContextName, true, holder));
+                logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true, holder));
                 if (logService == null) {
                     errMsg = "Failed to obtain central log service: reference 'null'. ";
                 }
@@ -399,53 +374,6 @@ public class ClientLogManager
         logQueue = null;
     }
 
-    
-	/**
-	 * Sets the default logging configuration.
-	 * It is taken from the file almalogging.properties that comes with ACS.
-	 */
-	private void setDefaultLogConfiguration()
-	{
-		InputStream is = null;
-
-		try
-		{
-            // Matej: Here we use getClass().getResourceAsStream() and
-            // NOT  ClassLoader.getSystemResourceAsStream()
-            // This method is not compatible with WebStart
-			// '/' means from the root (e.g. jar file)
-			is = getClass().getResourceAsStream("/"+DEFAULT_LOG_PROPERTY_FILE);
-			m_logManager.readConfiguration(is);
-		}
-		catch (Exception e)
-		{
-				System.err.println("failed to read default log configuration");
-				e.printStackTrace(System.err);
-		}
-	}
-    
-	/**
-	 * Sets the user-specific logging configuration.
-	 */
-	void setUserLogConfiguration()
-	{
-		String userConfigFile = System.getProperty(USER_LOG_PROPERTY_FILE_PROPERTY);
-		if (userConfigFile != null)
-		{
-			try
-			{
-				InputStream in = new FileInputStream(userConfigFile);
-				BufferedInputStream bin = new BufferedInputStream(in);
-				m_logManager.readConfiguration(bin);
-//				System.out.println("configured logging from user-supplied properties file " + userConfigFile);
-			}
-			catch (Exception e)
-			{
-				System.err.println("failed to read user log configuration file '" + userConfigFile + "': ");
-				e.printStackTrace(System.err);
-			}
-		}
-	}
     
 	/**
 	 * Gets a logger to be used by the Java container classes.
@@ -581,4 +509,5 @@ public class ClientLogManager
             logQueue.flushAllAndWait();
         }
     }
+
 }
