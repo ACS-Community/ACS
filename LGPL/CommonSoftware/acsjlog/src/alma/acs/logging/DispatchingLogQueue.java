@@ -296,7 +296,7 @@ public class DispatchingLogQueue {
                 queue.drainTo(logRecordList, remoteLogDispatcher.getBufferSize());
                 
                 if (!logRecordList.isEmpty()) {
-                    final LogRecord[] logRecords = (LogRecord[]) logRecordList.toArray(new LogRecord[logRecordList.size()]);
+                    final LogRecord[] logRecords = logRecordList.toArray(new LogRecord[logRecordList.size()]);
                     
                     flushedSomeRecords = flushLogRecords(logRecords);
                     // if successful, try to schedule another flush to drain the queue further (if it's large enough)

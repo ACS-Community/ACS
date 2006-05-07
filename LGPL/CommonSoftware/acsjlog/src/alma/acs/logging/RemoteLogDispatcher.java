@@ -144,7 +144,7 @@ class RemoteLogDispatcher {
         
         // send the log records over CORBA 
         if (!anyLogRecords.isEmpty()) {
-            Any[] anyLogRecordsArray = (Any[]) anyLogRecords.toArray(new Any[anyLogRecords.size()]);
+            Any[] anyLogRecordsArray = anyLogRecords.toArray(new Any[anyLogRecords.size()]);
             try {
                 writeRecords(anyLogRecordsArray);
             } catch (Throwable thr) {
@@ -206,7 +206,7 @@ class RemoteLogDispatcher {
                 return new LogRecord[0];
             }
             else {
-                return (LogRecord[]) serializeFailures.toArray(new LogRecord[serializeFailures.size()]);
+                return serializeFailures.toArray(new LogRecord[serializeFailures.size()]);
             }
         }
         
@@ -218,7 +218,7 @@ class RemoteLogDispatcher {
                 return new LogRecord[0];
             }
             else {
-                return (LogRecord[]) sendFailures.toArray(new LogRecord[sendFailures.size()]);
+                return sendFailures.toArray(new LogRecord[sendFailures.size()]);
             }
         }
         
