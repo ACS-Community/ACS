@@ -26,120 +26,55 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigSubscriber;
+
 /**
  * The logging handler used by ACS for remote logging.
  * All log records are immediately fed to a {@link alma.acs.logging.DispatchingLogQueue}.
  */
-public class AcsLoggingHandler extends Handler
+public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
 {
 	/**
 	 * The queue that this handler puts all log records in.
 	 */
     private DispatchingLogQueue logQueue;
 
-
 	/**
 	 * Variable to enable messages.
+     * TODO: check if this flag should be integrated with LogConfig classes
 	 */
 	private static boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
 
-//	/**
-//	 * Variable used to set the minimum priority of the log records.
-//	 */
-//	private static final String MIN_CACHE_PRIORITY = "MinCachePriority"; // 0
-//
-//	/**
-//	 * Variable used to set the maximum priority of the log records.
-//	 */
-//	private static final String MAX_CACHE_PRIORITY = "MaxCachePriority"; // 31
-//
 	/**
-	 * Variable used to set the minimum priority of the log records according to
-	 * the logging specifications, e.g. ACSCoreLevel.ACS_LEVEL_UNKNOWN.
+	 * Minimum level of log record to be sent off immediately, regardless of how many
+     * other log records can be shipped together with it. 
 	 */
-	private static final int DEFAULT_MIN_CACHE_PRIORITY = 0;
-
-	/**
-	 * Variable used to set the maximum priority of the log records according to
-	 * the logging specifications, e.g. ACSCoreLevel.ACS_LEVEL_EMERGENCY.
-	 */
-	private static final int DEFAULT_MAX_CACHE_PRIORITY = 11;
-
-	/**
-	 * Variable used to set the maximum priority of the log records according to
-	 * the logging specifications, e.g. ACSCoreLevel.ACS_LEVEL_EMERGENCY.
-	 */
-	private int minCachePriority = DEFAULT_MIN_CACHE_PRIORITY;
-
-	/**
-	 * Variable used to set the maximum priority of the log records according to
-	 * the logging specifications, e.g. ACSCoreLevel.ACS_LEVEL_EMERGENCY.
-	 */
-	private int maxCachePriority = DEFAULT_MAX_CACHE_PRIORITY;
+	private int expeditedDispatchLevel;
 
     private boolean isClosed;
 
+    
+    
 	public AcsLoggingHandler(DispatchingLogQueue logQueue)
 	{
         this.logQueue = logQueue;
-        setLevel(getLevelProp());
-        
-        // todo: replace cache priority stuff with calls to flush() depending on log level.
-        // such calls could be handler-dependent, so even though we have one queue, different kind of handlers could have different thresholds 
 	}
-
-//	/**
-//	 * Sets the variables for every instance of this class.
-//	 */
-//	protected void configure()
-//	{
-//		m_acsRemoteHandler = new AcsRemoteHandler();
-//
-//		setLevel(getLevelProp());
-//
-//		// disables caching if the default priority used is less than
-//		// the minimum to be considered.
-//		if (maxCachePriority < minCachePriority)
-//		{
-//			m_acsRemoteHandler.setCache(false);
-//		}
-//	}
-
-
 
     
-	/**
-	 * Gets the level for this instance of AcsLoggingHandler
-	 * as specified in the logging properties. If null, assumes ALL by default.
-	 * @return Level
-	 */
-	public Level getLevelProp()
-	{
-		String level = LogManager.getLogManager().getProperty(getClass().getName() + ".level");
-		if (level == null)
-		{
-			return AcsLogLevel.parse("ALL");
-		}
-		if (level.indexOf(".") == -1)
-		{
-			String startName = level.substring(0, 1);
-			String name = startName + level.substring(1).toUpperCase();
-			return AcsLogLevel.parse(name);
-		}
-		else if (level.startsWith("Level."))
-		{
-			int start = level.indexOf('.');
-			String lvl = level.substring(start);
-			String name = lvl.substring(1).toUpperCase();
-			return AcsLogLevel.parse(name);
-		}
-		else
-		{
-			System.err.println("Please set a level according to the Java Logging API!");
-			return AcsLogLevel.parse("OFF");
-		}
-	}
+    /**
+     * Called whenever the logging configuration is updated, for example when the CDB is read.
+     * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
+     */
+    public void configureLogging(LogConfig logConfig) {
+        expeditedDispatchLevel = logConfig.getLogConfigData().getExpeditedDispatchLevel();
+        // all remote loggers get their levels configured so that isLoggable() returns correct results.
+        // therefore we don't need to restrict the level here in the handler (="second line of defense")
+        // using logConfig.getLogConfigData().getMinLogLevel(); or similar
+        setLevel(Level.ALL);
+    }
 
+    
 	/**
 	 * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
 	 * Writes a single log into an array of strings.
@@ -167,8 +102,7 @@ public class AcsLoggingHandler extends Handler
         logRecord.getSourceClassName();
 
         logQueue.log(logRecord);
-        // todo: revisit this level stuff
-        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel() > maxCachePriority) {
+        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel() >= expeditedDispatchLevel) {
             if (DEBUG) {
                 System.out.println("flushing log queue because of log record with level " + logRecord.getLevel().getName());
             }
