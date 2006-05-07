@@ -144,7 +144,7 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 		}
 	}
 
-	static AcsLogLevel fromAcsCoreLevel(int acsCoreLevel) {
+	public static AcsLogLevel fromAcsCoreLevel(int acsCoreLevel) {
 		AcsLogLevel ret = null;
 		for (Iterator<AcsLogLevel> iter = known.iterator(); iter.hasNext();) {
 			AcsLogLevel acsLevel = iter.next();
@@ -218,7 +218,7 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 		if (known.size() == 0 || level.intValue() == Level.OFF.intValue())
 			return null;
 		if (level.intValue() == Level.ALL.intValue())
-			return (AcsLogLevel) AcsLogLevel.TRACE;
+			return AcsLogLevel.TRACE;
 
 		// search through iterator and find the most appropriate
 		synchronized (known)
@@ -226,7 +226,7 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 			Iterator<AcsLogLevel> iter = known.iterator();
 			AcsLogLevel nativeLevel = iter.next();
 			while (level.intValue() > nativeLevel.intValue() && iter.hasNext())
-				nativeLevel = (AcsLogLevel) iter.next();
+				nativeLevel = iter.next();
 
 			// save for lookup
 			synchronized (lookup)
