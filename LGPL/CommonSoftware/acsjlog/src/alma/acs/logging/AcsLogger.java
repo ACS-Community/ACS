@@ -26,6 +26,12 @@ import java.util.Map;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import com.cosylab.CDB.RecordDoesNotExist;
+import com.cosylab.CDB.XMLerror;
+
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigException;
+import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.LogParameterExtractor;
 
 /**
@@ -39,7 +45,7 @@ import alma.acs.logging.formatters.LogParameterExtractor;
  * @author hsommer
  * created May 30, 2005 4:09:47 PM
  */
-public class AcsLogger extends Logger {
+public class AcsLogger extends Logger implements LogConfigSubscriber {
     
     public AcsLogger(String name, String resourceBundleName) {
         super(name, resourceBundleName);
@@ -104,5 +110,18 @@ public class AcsLogger extends Logger {
         
         super.log(record);
     }
-        
+
+    /**
+     * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
+     */
+    public void configureLogging(LogConfig logConfig) {
+        int minLogLevelACS; // small integer level
+        try {
+            minLogLevelACS = logConfig.getLogConfigData(getName()).getMinLogLevel();
+            AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style 
+            setLevel(minLogLevelJDK);
+        } catch (Exception ex) {
+            info("Failed to configure logger.");
+        }
+    }        
 }
