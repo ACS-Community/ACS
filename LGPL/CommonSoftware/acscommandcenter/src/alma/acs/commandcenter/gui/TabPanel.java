@@ -149,6 +149,10 @@ public class TabPanel extends JPanel {
 		chkRemoteScript.setToolTipText("Connect to a host via ssh and run the Acs scripts there");
 		chkLocalJava.setToolTipText("Run a pure Java Acs on your local machine");
 
+		chkLocalScript.setName("chk_Local");
+		chkRemoteScript.setName("chk_Remote");
+		chkLocalJava.setName("chk_Java");
+		
 		chkLocalScript.setMnemonic(KeyEvent.VK_L);
 		chkRemoteScript.setMnemonic(KeyEvent.VK_R);
 		chkLocalJava.setMnemonic(KeyEvent.VK_J);
@@ -226,6 +230,9 @@ public class TabPanel extends JPanel {
 		tabbedPane1LeftContent.add(generalTab);
 		tabbedPane1LeftContent.add(Box.createVerticalStrut(1));
 
+		acsinstanceF.setName("txt_AcsInstance");
+		
+		
 		// -------------------------------------------------------------------
 		// local script settings
 		// -------------------------------------------------------------------
@@ -270,6 +277,9 @@ public class TabPanel extends JPanel {
 		tabbedPane1LeftContent.add(localJavaTab);
 		tabbedPane1LeftContent.add(Box.createVerticalStrut(1));
 
+		cdbrootF.setName("txt_CdbRoot");
+		btnShowCdbChooser.setName("btn_Show_Cdb_Chooser");
+		
 		// -------------------------------------------------------------------
 		// remote settings
 		// -------------------------------------------------------------------
@@ -306,6 +316,11 @@ public class TabPanel extends JPanel {
 		tabbedPane1LeftContent.add(remoteTab);
 		tabbedPane1LeftContent.add(Box.createVerticalGlue());
 
+		
+		hostF.setName("txt_RemoteHost");
+		accountF.setName("txt_RemoteUser");
+		passwordF.setName("txt_RemotePassword");
+		
 		// -------------------------------------------------------------------
 		// buttons / actions
 		// -------------------------------------------------------------------
@@ -332,7 +347,17 @@ public class TabPanel extends JPanel {
 		btnStopAcs.setToolTipText("Stop Services and Manager AND Containers");
 		btnKillAcs.setToolTipText("Terminate Everything related to Acs");
 		btnStartAcs.setToolTipText("Start Services and Manager with the specified Common Settings");
+		btnShowAdvanced.setToolTipText("Enable/Disable Advanced Controls");
 
+		btnStartServices.setName("btn_Start_Services");
+		btnStopServices.setName("btn_Stop_Services");
+		btnStartManager.setName("btn_Start_Manager");
+		btnStopManager.setName("btn_Stop_Manager");
+		btnStopAcs.setName("btn_Stop_Acs");
+		btnKillAcs.setName("btn_Kill_Acs");
+		btnStartAcs.setName("btn_Start_Acs");
+		btnShowAdvanced.setName("btn_Show_Advanced");
+		
 		btnStartAcs.setMnemonic(KeyEvent.VK_A);
 		btnStopAcs.setMnemonic(KeyEvent.VK_S);
 		btnKillAcs.setMnemonic(KeyEvent.VK_K);
@@ -480,6 +505,14 @@ public class TabPanel extends JPanel {
 		btnStartAllContainers.setToolTipText("Start all Containers");
 		btnStopAllContainers.setToolTipText("Stop all Containers");
 
+		btnMoreContainers.setName("btn_More_Containers");
+		btnLessContainers.setName("btn_Less_Containers");
+		btnContainersAgainstManager.setName("btn_Containers_Against_Manager");
+		btnMoveContainerUp.setName("btn_Move_Container_Up");
+		btnMoveContainerDown.setName("btn_Move_Container_Down");
+		btnStartAllContainers.setName("btn_Start_All_Containers");
+		btnStopAllContainers.setName("btn_Stop_All_Containers");
+		
 		btnMoreContainers.setMnemonic(KeyEvent.VK_DOWN);
 		btnLessContainers.setMnemonic(KeyEvent.VK_UP);
 		btnContainersAgainstManager.setMnemonic(KeyEvent.VK_C);
@@ -633,6 +666,9 @@ public class TabPanel extends JPanel {
 					cleanUp();
 				}
 			});
+			
+			
+			flowDialogOk.setName("btn_Close_FlowDialog");
 		}
 
 		protected void prepareShow (String title, JComponent content) {
@@ -1063,6 +1099,13 @@ public class TabPanel extends JPanel {
 
 			this.add(btnData = new Button(master.icons.getConfigIcon(), this));
 			btnData.setToolTipText("Choose where to run this container");
+			
+			
+			btnStart.setName("btn_Start_Container");
+			btnStop.setName("btn_Stop_Container");
+			btnData.setName("btn_Edit_Container");
+			nameF.setName("txt_ContainerName");
+			typeF.setName("txt_ContainerType");
 		}
 
 		public void actionPerformed (ActionEvent e) {

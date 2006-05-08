@@ -62,6 +62,14 @@ abstract class ManagerLocationPanel extends JPanel {
 		btnLatest.setSelected(true);
 		
 		this.add(center, BorderLayout.CENTER);
+		
+		
+		btnLatest.setName("btn_Latest");
+		btnCustom.setName("btn_Custom");
+		defaultHostF.setName("txt_DefaultHost");
+		defaultPortF.setName("txt_DefaultPort");
+		customHostF.setName("txt_CustomHost");
+		customPortF.setName("txt_CustomPort");
 	}
 
 
@@ -91,6 +99,12 @@ abstract class ManagerLocationPanel extends JPanel {
 			center.add(customIntRepF = new JTextField(""));
 			
 			SpringUtilities.makeCompactGrid(center, 0, 2);
+			
+			
+			defaultCdbF.setName("txt_DefaultCdb");
+			defaultIntRepF.setName("txt_DefaultIntRep");
+			customCdbF.setName("txt_CustomCdb");
+			customIntRepF.setName("txt_CustomIntRep");
 		}
 	}
 
@@ -120,6 +134,12 @@ abstract class ManagerLocationPanel extends JPanel {
 			center.add(customNameServiceF = new JTextField());
 
 			SpringUtilities.makeCompactGrid(center, 0, 2);
+			
+			
+			defaultIntRepF.setName("txt_DefaultIntRep");
+			defaultNameServiceF.setName("txt_DefaultNameService");
+			customIntRepF.setName("txt_CustomIntRep");
+			customNameServiceF.setName("txt_CustomNameService");
 		}
 	}
 

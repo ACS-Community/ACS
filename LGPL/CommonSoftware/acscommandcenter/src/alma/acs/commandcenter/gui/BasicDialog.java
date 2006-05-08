@@ -40,6 +40,8 @@ class BasicDialog extends JDialog implements ActionListener {
 		
 		this.getContentPane().add(south, BorderLayout.SOUTH);
 		this.pack();
+		
+		btnOk.setName("btn_Ok");
 	}
 
 	public void actionPerformed (ActionEvent evt) {

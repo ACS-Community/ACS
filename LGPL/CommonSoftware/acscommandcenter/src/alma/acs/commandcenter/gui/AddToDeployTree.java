@@ -66,6 +66,10 @@ class AddToDeployTree extends JPanel {
 		btnAdd.setToolTipText("Add specified Manager to Deployment Info");
 		btnRefresh.setToolTipText("Refresh all Managers in Deployment Info");
 
+		btnAdd.setName("btn_Add_To_DeployTree");
+		btnRefresh.setName("btn_Refresh_DeployTree");
+		hostF.setName("txt_Add_Mgr_Host");
+		portF.setName("txt_Add_Mgr_Port");
 	}
 
 	/**

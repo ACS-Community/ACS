@@ -174,6 +174,15 @@ public class FeedbackArea extends JPanel {
 		// --- post config
 		txtSize.setSelectedIndex(1);
 		maxLength = chars[1];
+		
+		
+		outputArea.setName("txt_Output");
+		txtSize.setName("txt_BufferSize");
+		btnScrollLock.setName("btn_ScrollLock");
+		btnSave.setName("btn_Save");
+		btnClear.setName("btn_Clear");
+		btnRemove.setName("btn_Remove");
+		btnClearAll.setName("btn_ClearAll");
 	}
 
 	protected void clear() {

@@ -37,6 +37,8 @@ class EditCommandsPanel extends JPanel implements ActionListener {
         btnSave.setBorder(new BevelBorder(BevelBorder.RAISED));
         this.add(new JPanel());
         this.add(btnSave);
+        
+        btnSave.setName("btn_Save");
     }
 
     public void actionPerformed(ActionEvent evt) {

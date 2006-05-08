@@ -95,6 +95,18 @@ class EditContainerSettingsDialog extends JDialog implements
         root.add(controls, BorderLayout.SOUTH);
         this.getContentPane().add(root);
         this.pack();
+        
+        btnGlobal.setName("rdb_Global");
+        btnCustom.setName("rdb_Custom");
+        defaultScriptBaseF.setName("txt_DefaultInstance");
+        defaultHostF.setName("txt_DefaultHost");
+        defaultAccountF.setName("txt_DefaultUser");
+        defaultPasswordF.setName("txt_DefaultPassword");
+        customScriptBaseF.setName("txt_CustomInstance");
+        customHostF.setName("txt_CustomHost");
+        customAccountF.setName("txt_CustomUser");
+        customPasswordF.setName("txt_CustomPassword");
+        btnOk.setName("btn_Ok");
     }
 
     public void bringUp() {
