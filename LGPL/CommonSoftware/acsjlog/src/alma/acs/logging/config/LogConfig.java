@@ -31,14 +31,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALOperations;
 import com.cosylab.CDB.RecordDoesNotExist;
 import com.cosylab.CDB.XMLerror;
 
-import alma.acs.logging.AcsLoggingHandler;
-
+/**
+ * Class that encapsulates all configuration sources (defaults, properties, CDB) for Java logging,
+ * and supports runtime updates of logging configuration based on these sources.
+ * 
+ * @author hsommer
+ */
 public class LogConfig {
 
     /** property file with default logger settings to be found on the classpath */
@@ -58,7 +61,7 @@ public class LogConfig {
     /**
      * The ACS CDB. This value is null unless it gets set in {@link #setCDB(DAL)}.
      */
-    private DAL cdb;
+    private DALOperations cdb;
     
     /** 
      * Path in the CDB to the container logging configuration, 
@@ -106,7 +109,7 @@ public class LogConfig {
      * for this, call {@link #initialize()}.
      * @param cdb a reference to the CDB. Will be ignored if == null.
      */
-    public void setCDB(DAL cdb) {
+    public void setCDB(DALOperations cdb) {
         if (cdb != null) {
             this.cdb = cdb;
         }
