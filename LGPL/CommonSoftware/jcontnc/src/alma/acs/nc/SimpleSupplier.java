@@ -74,6 +74,7 @@ public class SimpleSupplier extends OSPushSupplierPOA implements CommonNC {
     */
    public SimpleSupplier(String cName, ContainerServices services)
          throws AcsJException {
+      
       m_channelName = cName;
 
       m_logger = services.getLogger();
@@ -92,8 +93,10 @@ public class SimpleSupplier extends OSPushSupplierPOA implements CommonNC {
       m_helper = new Helper(services);
 
       // get the Supplier admin object
-      m_supplierAdmin = getNotificationChannel(cName).new_for_suppliers(IFGOP,
-            new IntHolder());
+      EventChannel ec = getNotificationChannel(cName);
+      IntHolder ih = new IntHolder();
+      m_supplierAdmin = ec.new_for_suppliers(IFGOP, ih);
+      
       // sanity check
       if (m_supplierAdmin == null) {
          String reason = "Null reference obtained for the Supplier Admin!";
@@ -102,15 +105,16 @@ public class SimpleSupplier extends OSPushSupplierPOA implements CommonNC {
 
       // get the Consumer proxy
       try {
-         org.omg.CORBA.Object tempCorbaObj = m_supplierAdmin
-               .obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT,
-                     new IntHolder());
+         IntHolder cp_ih = new IntHolder();
+         org.omg.CORBA.Object tempCorbaObj = null;
+         
+         tempCorbaObj = m_supplierAdmin.obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT, 
+                                                                          cp_ih);
          if (tempCorbaObj == null) {
             String reason = "Null reference obtained for the Proxy Push Consumer!";
             throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
          }
-         m_proxyConsumer = StructuredProxyPushConsumerHelper
-               .narrow(tempCorbaObj);
+         m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(tempCorbaObj);
       }
       catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
          // convert it into an exception developers care about
@@ -121,15 +125,17 @@ public class SimpleSupplier extends OSPushSupplierPOA implements CommonNC {
       // Need Java container to provide access to it's rootPOA and/or ORB
       // to get around this.
       try {
-         alma.ACS.OffShoot myOS = getHelper().getContainerServices()
-               .activateOffShoot(this);
+         ContainerServices cs = m_helper.getContainerServices();
+         alma.ACS.OffShoot myOS = null;
+         myOS = cs.activateOffShoot(this);
 
          // must connect the to the proxy consumer or events would never be
          // sent anywhere.
          m_corbaRef = OSPushSupplierHelper.narrow(myOS);
 
-         org.omg.CosNotifyComm.StructuredPushSupplier mySps = org.omg.CosNotifyComm.StructuredPushSupplierHelper
-               .narrow(m_corbaRef);
+         org.omg.CosNotifyComm.StructuredPushSupplier mySps = null;
+         mySps = org.omg.CosNotifyComm.StructuredPushSupplierHelper.narrow(m_corbaRef);
+         
          m_proxyConsumer.connect_structured_push_supplier(mySps);
       }
       catch (alma.acs.container.ContainerException e) {
@@ -138,13 +144,12 @@ public class SimpleSupplier extends OSPushSupplierPOA implements CommonNC {
       }
       catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
          // Think there is virtually no chance of this every happening but...
-         throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
-               .getMessage());
+         throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
       }
 
-      if (m_helper.getChannelProperties().getIntegrationLogs(m_channelName) == true) {
-         m_integrationLogs = true;
-      }
+      //set integration logs
+      ChannelProperties channelProps = m_helper.getChannelProperties();
+      m_integrationLogs = channelProps.getIntegrationLogs(m_channelName);
    }
 
    // //////////////////////////////////////////////////////////////////////////
