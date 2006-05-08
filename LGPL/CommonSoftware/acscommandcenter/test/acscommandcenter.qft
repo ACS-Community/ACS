@@ -53,7 +53,7 @@
     <Test catch="true" id="_y" name="CheckBoxes, RadioButtons and Containers">
       <BasicSequence id="_2e"
                      name="CheckBox &#34;advanced&#34; - Services, Manager">
-        <ProcedureCall id="_2i"
+        <ProcedureCall id="_2i" postdelay="2000"
                        procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.swing.checkbox.set">
           <variable name="id">checkAdvanced</variable>
           <variable name="client">$(Client)</variable>
@@ -71,7 +71,7 @@
         <CheckEnabledStep client="$(Client)"
                           component="buttonTipStop_the_specified_Manager"
                           id="_3S" raise="true"/>
-        <ProcedureCall id="_2m"
+        <ProcedureCall id="_2m" postdelay="2000"
                        procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.swing.checkbox.set">
           <variable name="id">checkAdvanced</variable>
           <variable name="client">$(Client)</variable>
@@ -158,65 +158,45 @@
       </BasicSequence>
       <BasicSequence id="_4+" name="Containers text area">
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipMore_Containers"
-                        event="MOUSE_MPRC" id="_4k" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9V" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipMore_Containers2"
-                        event="MOUSE_MPRC" id="_4l" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9W" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipMore_Containers3"
-                        event="MOUSE_MPRC" id="_4m" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9X" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipMore_Containers4"
-                        event="MOUSE_MPRC" id="_4n" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9Y" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipMore_Containers5"
-                        event="MOUSE_MPRC" id="_4o" modifiers="16" x="1"
-                        y="1"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="splitLeft.comLeft.scrollbarVertical"
-                        event="MOUSE_MOVED" id="_4p" modifiers="0" x="9"
-                        y="24"/>
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9Z" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="splitLeft.comLeft.scrollbarVertical"
-                        event="MOUSE_PRESSED" id="_4q" modifiers="16" x="9"
-                        y="24"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="splitLeft.comLeft.buttonDown"
-                        event="MOUSE_DRAGGED" id="_4r" modifiers="16" x="1"
-                        y="0"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="splitLeft.comLeft.buttonDown"
-                        event="MOUSE_RELEASED" id="_4s" modifiers="16" x="1"
-                        y="0"/>
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9a" modifiers="16" x="1" y="1"/>
         <CheckStringStep client="$(Client)" component="label6" id="_4t"
                          raise="true">
           <text>6</text>
         </CheckStringStep>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipLess_Containers"
-                        event="MOUSE_MPRC" id="_4u" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9b" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipLess_Containers2"
-                        event="MOUSE_MPRC" id="_4v" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9c" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipLess_Containers3"
-                        event="MOUSE_MPRC" id="_4w" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9d" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipLess_Containers4"
-                        event="MOUSE_MPRC" id="_4x" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9e" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipLess_Containers5"
-                        event="MOUSE_MPRC" id="_4y" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9f" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9h" modifiers="16" x="1" y="1"/>
         <CheckStringStep client="$(Client)" component="label1" id="_4z"
                          raise="true">
           <text>1</text>
@@ -862,6 +842,17 @@ If not call the cleanup node</comment>
             <ComponentStep class="javax.swing.JButton" classcount="22"
                            classindex="0" feature="Start" height="26"
                            id="buttonStart2" width="83" x="437" y="45"/>
+            <ComponentStep class="javax.swing.JButton" classcount="22"
+                           classindex="15" feature="ToolTip: More Containers"
+                           height="24" id="btn_More_Containers"
+                           name="btn_More_Containers" width="22" x="263"
+                           y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="46"
+                           classindex="40"
+                           feature="ToolTip: Less Containers (removes Last from List)"
+                           height="24" id="btn_Less_Containers"
+                           name="btn_Less_Containers" width="22" x="290"
+                           y="284"/>
           </ComponentStep>
           <ComponentStep class="javax.swing.JPanel" classcount="36"
                          classindex="30" feature="Split: Right"
