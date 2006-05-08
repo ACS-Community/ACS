@@ -50,7 +50,12 @@ public class CacheTest extends junit.framework.TestCase {
 	 */
 	protected void tearDown()
 	{
-		cache.clear();
+		try {
+			cache.clear();
+		} catch (Exception e) {
+			System.out.println("Exception while clearing the cache"+e.getMessage());
+			e.printStackTrace();
+		}
 		cache=null;
 	}
 	
