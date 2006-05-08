@@ -1,5 +1,17 @@
 #! /bin/bash
-export CLASSPATH=`vltMakeJavaClasspath`
-export IP=`host $HOST | awk '{print $4}'`
-qftestJUI -batch  -report.copyicons -report.depth 10 -report.html %b.html -systemcfg $HOME/qftestJUI.cfg -variable IP=$IP -variable HOST=$HOST -variable HOME=$HOME -libpath $HOME -runlog %b.qrz acscommandcenter.qft
+CLASSPATH=`vltMakeJavaClasspath`
+IP=`host $HOST | awk '{print $4}'`
+
+std_options="-variable IP=$IP -variable HOST=$HOST -variable HOME=. -systemcfg ./qftestJUI.cfg "
+moreno_options="-variable HOME=$HOME -systemcfg $HOME/qftestJUI.cfg -libpath $HOME"
+batch_options="-batch -report.copyicons -report.depth 10 -report.html %b.html -runlog %b.qrz"
+
+options=
+if [ x$1 = xmanual ] ; then
+   options=$std_options
+else
+   options=$std_options $moreno_options $batch_options
+fi
+
+qftestJUI $options acscommandcenter.qft
 echo $?
