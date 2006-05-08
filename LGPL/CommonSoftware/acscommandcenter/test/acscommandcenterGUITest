@@ -8,6 +8,7 @@ batch_options="-batch -report.copyicons -report.depth 10 -report.html %b.html -r
 
 options=
 if [ x$1 = xmanual ] ; then
+   mkdir -p tmp
    options=$std_options
 else
    options=$std_options $moreno_options $batch_options
