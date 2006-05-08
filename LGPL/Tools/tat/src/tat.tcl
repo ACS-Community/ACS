@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.98 2006/05/08 13:56:53 gchiozzi Exp $"
+# "@(#) $Id: tat.tcl,v 1.99 2006/05/08 13:59:57 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -959,9 +959,7 @@ proc execMakeAllDir { noClean TAT_MAKE_ARGS  } {
 	return
     }
 
-    set user $env(USER)
-    set mlog /tmp/make.log.[pid].$user
-    puts "================= $mlog"
+    set mlog /tmp/make.log.[pid].$env(USER)
     file delete -force -- $mlog
 
     # N.B.: 
