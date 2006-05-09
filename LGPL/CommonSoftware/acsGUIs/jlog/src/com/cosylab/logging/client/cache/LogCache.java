@@ -40,7 +40,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * @author acaproni
  *
  */
-public class LogCache extends LogFileCache {
+public class LogCache extends LogBufferedFileCache {
 
 	public static final String CACHESIZE_PROPERTY_NAME = "jlog.cache.size";
 	public static final int DEFAULT_CACHESIZE = 16384;
