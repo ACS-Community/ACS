@@ -22,9 +22,11 @@
 package alma.acs.logging;
 
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
+
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigSubscriber;
 
 /**
  * Copied over from <code>ConsoleHandler</code>, but using <code>System.out</code> instead of <code>System.err</code>.
@@ -35,46 +37,39 @@ import java.util.logging.StreamHandler;
  * @author hsommer
  * created Jun 1, 2005 5:52:36 PM
  */
-public class StdOutConsoleHandler extends StreamHandler {
-
-	public final static String PROPERTYNAME_ACS_LOG_STDOUT = "ACS.logstdout";
+public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubscriber {
 	
-    private void configure() {
-    	// hardcoded default
-    	Level minLogLevel = Level.FINER;
-    	
-    	// try logging properties
-        LogManager manager = LogManager.getLogManager();        
-        String val = manager.getProperty(getClass().getName() + ".level");
-    	if (val != null) {
-    		minLogLevel = Level.parse(val);
-//    		System.out.println("StdOutConsoleHandler will use log level " + minLogLevel.getName());
-    	}
-        // todo: configure also from CDB. Or from env var ACS_LOG_STOUT (see Logging_and_Archiving.doc)
-
-    	// check if env variable ACS_LOG_STDOUT was set. Then this overwrites any other setting.
-    	Integer ACS_LOG_STDOUT = Integer.getInteger(PROPERTYNAME_ACS_LOG_STDOUT);
-    	if (ACS_LOG_STDOUT != null) {
-	    	AcsLogLevel Level_ACS_LOG_STDOUT = AcsLogLevel.fromAcsCoreLevel(ACS_LOG_STDOUT.intValue());
-	    	if (Level_ACS_LOG_STDOUT != null) {
-	    		minLogLevel = Level_ACS_LOG_STDOUT;
-	    	}
-    	}
-    	
-        setLevel(minLogLevel);
-    }
-
     /**
      * Create a <tt>ConsoleHandler</tt> for <tt>System.err</tt>.
      * <p>
      * The <tt>ConsoleHandler</tt> is configured based on <tt>LogManager</tt>
      * properties (or their default values).
      */
-    public StdOutConsoleHandler() {
-    	configure();
+    public StdOutConsoleHandler(LogConfig logConfig) {
         setOutputStream(System.out);
+        logConfig.addSubscriber(this);
+        configureLogging(logConfig);
     }
 
+    /**
+     * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
+     */
+    public void configureLogging(LogConfig logConfig) {
+        try {
+            int minLogLevelACS = logConfig.getLogConfigData().getMinLogLevelLocal();
+            AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
+            if (minLogLevelJDK != null) {
+            	setLevel(minLogLevelJDK);
+            }
+            else {
+            	throw new NullPointerException("No JDK log level found for ACS log level " + minLogLevelACS);
+            }
+        } catch (Exception ex) {
+        	publish(new LogRecord(Level.WARNING, "Failed to configure stdout log handler: " + ex.toString()));
+        }
+    }        
+    
+    
     /**
      * Publish a <tt>LogRecord</tt>.
      * <p>
