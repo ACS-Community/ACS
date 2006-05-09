@@ -26,11 +26,8 @@ import java.util.Map;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import com.cosylab.CDB.RecordDoesNotExist;
-import com.cosylab.CDB.XMLerror;
-
 import alma.acs.logging.config.LogConfig;
-import alma.acs.logging.config.LogConfigException;
+import alma.acs.logging.config.LogConfigData;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.LogParameterExtractor;
 
@@ -47,12 +44,15 @@ import alma.acs.logging.formatters.LogParameterExtractor;
  */
 public class AcsLogger extends Logger implements LogConfigSubscriber {
     
-    public AcsLogger(String name, String resourceBundleName) {
+    private final String thisClassName;
+
+    public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
         super(name, resourceBundleName);
         thisClassName = getClass().getName();
+        logConfig.addSubscriber(this);
+        configureLogging(logConfig);
     }
 
-    private final String thisClassName;
     
     /**
      * Logs the given <code>LogRecord</code>.
@@ -117,7 +117,9 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     public void configureLogging(LogConfig logConfig) {
         int minLogLevelACS; // small integer level
         try {
-            minLogLevelACS = logConfig.getLogConfigData(getName()).getMinLogLevel();
+        	LogConfigData configData = logConfig.getLogConfigData(getName());
+        	// the logger must let through the lowest log level required for either local or remote logging.
+            minLogLevelACS = Math.min(configData.getMinLogLevel(), configData.getMinLogLevelLocal());
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style 
             setLevel(minLogLevelJDK);
         } catch (Exception ex) {
