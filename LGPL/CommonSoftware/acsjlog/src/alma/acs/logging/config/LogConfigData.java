@@ -36,9 +36,9 @@ import alma.acs.logging.ACSCoreLevel;
  * Represents a full set of logging config data,
  * to be used either as default (per container), or (once specified) per component.
  * <p>
- * The singleton {@link alma.acs.logging.config.LogConfig} 
+ * One instance of {@link alma.acs.logging.config.LogConfig} 
  * can hold several instances of this class, 
- * as config data for different loggers.
+ * to represent config data for different loggers.
  * Methods {@link #takeCdbContainerXml(String)} and {@link #takeCdbComponentXml(String)}
  * can parse the XML configuration for logging as it comes from the CDB.
  * Any other functionality such as CDB access and updates etc should be kept outside of this class. 
@@ -47,26 +47,50 @@ import alma.acs.logging.ACSCoreLevel;
  * created 06.05.2006 17:23:45
  */
 public class LogConfigData {
-    
-    private String centralizedLoggerName; // CDB: CentralizedLogger
+	
+    // names of CDB attributes for logger config 
+	public static final String CDBNAME_CENTRALIZED_LOGGER = "CentralizedLogger";
+	public static final String CDBNAME_MIN_LOG_LEVEL_LOCAL = "MinLogLevelLocal"; // not official yet
+	public static final String CDBNAME_MIN_LOG_LEVEL = "MinCachePriority";
+	public static final String CDBNAME_EXPEDITED_DISPATCH_LEVEL = "MaxCachePriority";
+	public static final String CDBNAME_DISPATCH_PACKETSIZE = "CacheSize";
+	public static final String CDBNAME_FLUSHPERIOD_SECONDS = "FlushPeriodSeconds";
+	
+	public final static String PROPERTYNAME_ACS_LOG_STDOUT = "ACS.logstdout";
+
+	private String centralizedLoggerName; // CDB: CentralizedLogger
     private int dispatchPacketSize; // CDB: CacheSize
     private int minLogLevel; // CDB: MinCachePriority
     private int minLogLevelLocal; 
     private int expeditedDispatchLevel; // CDB: MaxCachePriority
+	private int flushPeriodSeconds;
 
     private DocumentBuilder domBuilder;
 
     
     LogConfigData() {
         setDefaultValues();
-    };
+    }
 
+    /**
+     * Sets the default values for the various fields.
+     * The values can later be changed, e.g. using methods {@link #takeCdbContainerXml(String)} or {@link #takeCdbComponentXml(String)}. 
+     */
     void setDefaultValues() {
         centralizedLoggerName = "Log";
         dispatchPacketSize = 30;
-        minLogLevel = ACSCoreLevel.ACS_LEVEL_UNKNOWN;
-        minLogLevelLocal = ACSCoreLevel.ACS_LEVEL_DEBUG;
+        minLogLevel = ACSCoreLevel.ACS_LEVEL_DEBUG;
         expeditedDispatchLevel = ACSCoreLevel.ACS_LEVEL_ALERT;
+        flushPeriodSeconds = 10;
+        
+        // local min level: env variable ACS_LOG_STDOUT (mapped to property ACS.logstdout by start scripts) overrides the hardcoded default
+    	Integer ACS_LOG_STDOUT = Integer.getInteger(PROPERTYNAME_ACS_LOG_STDOUT);
+    	if (ACS_LOG_STDOUT != null) {
+    		minLogLevelLocal = ACS_LOG_STDOUT.intValue();
+    	}
+    	else {
+            minLogLevelLocal = ACSCoreLevel.ACS_LEVEL_DEBUG;
+    	}
     }
     
     /**
@@ -78,8 +102,28 @@ public class LogConfigData {
         this.minLogLevel = other.minLogLevel;
         this.minLogLevelLocal = other.minLogLevelLocal;
         this.expeditedDispatchLevel = other.expeditedDispatchLevel;
+        this.flushPeriodSeconds = other.flushPeriodSeconds;
     }
 
+    public boolean equals(Object obj) {
+    	if (obj == null) return false;
+    	if (this == obj) return true;
+    	try {
+    		LogConfigData other = (LogConfigData) obj;
+    		return (
+    				this.centralizedLoggerName.equals(other.centralizedLoggerName) &&
+    				this.dispatchPacketSize == other.dispatchPacketSize &&
+    				this.minLogLevel == other.minLogLevel &&
+    				this.minLogLevelLocal == other.minLogLevelLocal &&
+    				this.expeditedDispatchLevel == other.expeditedDispatchLevel && 
+    				this.flushPeriodSeconds == other.flushPeriodSeconds
+    				);
+    	}
+    	catch (ClassCastException ex) {
+    		return false;
+    	}
+    }
+    
     /**
      * Gets the name of the central log service to which logs will be sent.
      */
@@ -118,6 +162,10 @@ public class LogConfigData {
         return expeditedDispatchLevel;
     }
     
+	public int getFlushPeriodSeconds() {
+		return flushPeriodSeconds;
+	}
+
     /**
      * Parses the provided XML string, which should be a &lt;Container&gt; element from the CDB.
      * @param xml
@@ -150,9 +198,12 @@ public class LogConfigData {
         if (cdbCentralizedLogger != null && cdbCentralizedLogger.trim().length() > 0) {
             centralizedLoggerName = cdbCentralizedLogger.trim();
         }
-        dispatchPacketSize = getIntAttribute(rootElement, "CacheSize", errMsg, dispatchPacketSize);
-        minLogLevel = getIntAttribute(rootElement, "MinCachePriority", errMsg, minLogLevel);
-        expeditedDispatchLevel = getIntAttribute(rootElement, "MaxCachePriority", errMsg, expeditedDispatchLevel);
+        dispatchPacketSize = getIntAttribute(rootElement, CDBNAME_DISPATCH_PACKETSIZE, errMsg, dispatchPacketSize);
+        minLogLevel = getIntAttribute(rootElement, CDBNAME_MIN_LOG_LEVEL, errMsg, minLogLevel);
+        minLogLevelLocal = getIntAttribute(rootElement, CDBNAME_MIN_LOG_LEVEL_LOCAL, errMsg, minLogLevelLocal);
+        expeditedDispatchLevel = getIntAttribute(rootElement, CDBNAME_EXPEDITED_DISPATCH_LEVEL, errMsg, expeditedDispatchLevel);
+        flushPeriodSeconds = getIntAttribute(rootElement, CDBNAME_FLUSHPERIOD_SECONDS, errMsg, flushPeriodSeconds);        
+        
         if (errMsg.length() > 0) {
             throw new LogConfigException("Problems during configuration: " + errMsg.toString());
         }
@@ -182,7 +233,7 @@ public class LogConfigData {
     private int getIntAttribute(Element domElem, String attrName, StringBuffer errMsg, int defaultRet) { 
         int ret = defaultRet;
         String cdbAttr = domElem.getAttribute(attrName);
-        if (cdbAttr != null) {
+        if (cdbAttr != null && cdbAttr.trim().length() > 0) {
             try {
                 ret = Integer.parseInt(cdbAttr);
             } catch (NumberFormatException ex) {
@@ -191,4 +242,5 @@ public class LogConfigData {
         }
         return ret;
     }
+
 }
