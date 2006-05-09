@@ -30,15 +30,11 @@ import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.JViewport;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -59,7 +55,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -185,7 +180,6 @@ public class LogEntryTable extends javax.swing.JTable
 		private String textToCopy;
 		// The row and column under the mouse pointer
 		private int row;
-		private int col;
 		
 		/**
 		 * The constructor builds the menu
@@ -195,7 +189,6 @@ public class LogEntryTable extends javax.swing.JTable
 		{
 			// Copy the parameter to local variables
 			this.row=row;
-			this.col=col;
 			// A make a copy of the original string 
 			this.textToCopy=new String(text);
 			// Add the Label
@@ -500,9 +493,8 @@ public class LogEntryTable extends javax.swing.JTable
 		{
 			// Get the index of the row and the column below
 			// the mouse pointer
-			LogEntryTable owner = LogEntryTable.this;
 			int col = getColumnModel().getColumnIndexAtX(e.getX());
-			int row = owner.rowAtPoint(e.getPoint());
+			int row = LogEntryTable.this.rowAtPoint(e.getPoint());
 			
 			// Handle the specific event for each mouse button
 			if (e.getButton()==MouseEvent.BUTTON1)
@@ -515,7 +507,7 @@ public class LogEntryTable extends javax.swing.JTable
 					e.consume();
 					return;
 				}*/
-				owner.updateExtraInfo();
+				firePropertyChange("extraInfo", null, null);
 			} else if (e.isPopupTrigger()) {
 				// The mouse button is the pop up trigger so we show the menu
 				// but only if the user selectd at least one row
@@ -964,15 +956,6 @@ public class LogEntryTable extends javax.swing.JTable
 			firePropertyChange("filterString", "", getFilterString());
 			ltdm.invalidateVisibleLogs();
 		}
-	}
-	/**
-	 * Insert the method's description here.
-	 * <p>
-	 * Creation date: (2/13/2002 20:45:11)
-	 */
-	protected void updateExtraInfo()
-	{
-		firePropertyChange("extraInfo", null, null);
 	}
 	
 	/**
