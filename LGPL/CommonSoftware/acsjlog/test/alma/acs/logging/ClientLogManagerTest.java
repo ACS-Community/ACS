@@ -63,6 +63,7 @@ public class ClientLogManagerTest extends junit.framework.TestCase
         assertNotNull(containerLogger);
         Logger acsRemoteLogger = containerLogger.getParent();
         assertNotNull(acsRemoteLogger);
+        assertFalse(acsRemoteLogger.getUseParentHandlers());
         Logger rootLogger = acsRemoteLogger.getParent();
         assertNotNull(rootLogger);
         assertNull(rootLogger.getParent());
@@ -79,11 +80,12 @@ public class ClientLogManagerTest extends junit.framework.TestCase
         Handler parentHandler = parentHandlers[0];
         assertTrue(parentHandler instanceof AcsLoggingHandler);        
         AcsLoggingHandler remoteHandler = (AcsLoggingHandler) parentHandler;
-        System.out.println(remoteHandler.getLevel().getName());
+        assertEquals(AcsLogLevel.DEBUG, remoteHandler.getLevel());
         
         containerLogger.info("I'm a good pedigree logger.");
     }
 
+    
     public void testShutdown() {
         Logger containerLogger = clientLogManager.getLoggerForContainer("test");
         containerLogger.info("---------- testShutdown -----------");
@@ -150,23 +152,23 @@ public class ClientLogManagerTest extends junit.framework.TestCase
         }
     }
 
-    
-    /**
-     * Assumes that the file acsjlog/test/test_userdef_logging.properties exists and defines the expected properties.
-     */
-    public void testUserdefinedLoglevels() {
-    	String propertyFileName = "test_userdef_logging.properties";
-    	System.setProperty("java.util.logging.config.file", propertyFileName);
-    	
-    	clientLogManager.setUserLogConfiguration();
-    	
-    	Level stdoutLevel = clientLogManager.getLoggerLevel("alma.acs.logging.StdOutConsoleHandler");
-    	assertEquals(Level.FINE, stdoutLevel);
-    	
-    	Level containerLevel = clientLogManager.getLoggerLevel("alma.acs.container.frodoContainer");
-    	assertEquals(Level.INFO, containerLevel);
-    	
-    	System.setProperty("java.util.logging.config.file", "");
-    }    
+// For the time being we do not support logging configuration from properties, because values can be read from the CDB now.    
+//    /**
+//     * Assumes that the file acsjlog/test/test_userdef_logging.properties exists and defines the expected properties.
+//     */
+//    public void testUserdefinedLoglevels() {
+//    	String propertyFileName = "test_userdef_logging.properties";
+//    	System.setProperty("java.util.logging.config.file", propertyFileName);
+//    	
+//    	clientLogManager.setUserLogConfiguration();
+//    	
+//    	Level stdoutLevel = clientLogManager.getLoggerLevel("alma.acs.logging.StdOutConsoleHandler");
+//    	assertEquals(Level.FINE, stdoutLevel);
+//    	
+//    	Level containerLevel = clientLogManager.getLoggerLevel("alma.acs.container.frodoContainer");
+//    	assertEquals(Level.INFO, containerLevel);
+//    	
+//    	System.setProperty("java.util.logging.config.file", "");
+//    }    
 	
 }
