@@ -96,7 +96,7 @@ public class StatsDlg extends JDialog
 	 *
 	 */
 	private void refreshGUI() {
-		totNumOfLogsLbl.setText(""+logging.getScrollPaneTable().getLCModel().totalLogNumber());
+		totNumOfLogsLbl.setText(""+logging.getLogEntryTable().getLCModel().totalLogNumber());
 		Runtime rt = Runtime.getRuntime();
 		long freeMem = rt.freeMemory();
 		long totMem = rt.totalMemory();

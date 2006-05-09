@@ -162,7 +162,7 @@ public class IOLogsHelper extends Thread  {
 			// Bottom panel contains the checkbox to hide/show the logs
 			// and the abort button
 			JPanel bottomPanel = new JPanel(new BorderLayout());
-			boolean checked=!LoggingClient.getInstance().getScrollPaneTable().isVisible();
+			boolean checked=!LoggingClient.getInstance().getLogEntryTable().isVisible();
 			fastCB = new JCheckBox("Fast IO (hide logs)",checked);
 			fastCB.addActionListener(this);
 			bottomPanel.add(fastCB,BorderLayout.NORTH);
@@ -230,7 +230,7 @@ public class IOLogsHelper extends Thread  {
 		 */
 		public void actionPerformed(ActionEvent evt) {
 			if (evt.getSource()==fastCB) {
-				LoggingClient.getInstance().getScrollPaneTable().setVisible(
+				LoggingClient.getInstance().getLogEntryTable().setVisible(
 						!fastCB.isSelected());
 			} else if (evt.getSource()==abortBtn) {
 				abortRequested=true;
@@ -694,7 +694,7 @@ public class IOLogsHelper extends Thread  {
 		// Hide the table with the logs
 		// It reduces the access to the cache to redraw the logs 
 		// speeding up the loading
-		LoggingClient.getInstance().getScrollPaneTable().setVisible(false);
+		LoggingClient.getInstance().getLogEntryTable().setVisible(false);
 		
 		// No progress bar because we don't know the length of this kind of file
 		if (showProgress) {
@@ -938,7 +938,7 @@ public class IOLogsHelper extends Thread  {
 	 *
 	 */
 	public void IOOperationTerminated() {
-		LoggingClient.getInstance().getScrollPaneTable().setVisible(true);
+		LoggingClient.getInstance().getLogEntryTable().setVisible(true);
 		IOOperationInProgress=false;
 	}
 	

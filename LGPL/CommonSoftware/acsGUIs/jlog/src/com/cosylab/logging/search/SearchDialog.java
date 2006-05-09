@@ -71,7 +71,7 @@ public class SearchDialog extends JDialog {
 		initialize();
         pack();
         // Build the search engine
-        searchEngine = new SearchEngine(mainWin.getScrollPaneTable());
+        searchEngine = new SearchEngine(mainWin.getLogEntryTable());
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class SearchDialog extends JDialog {
     	if (!(advancedPanel.getLayout() instanceof GridLayout)) {
     		advancedPanel.setLayout(new GridLayout(ILogEntry.NUMBER_OF_FIELDS,1,5,3));
     	}
-        boolean visibeColsInMainWindow[]=loggingClient.getScrollPaneTable().getVisibleColumns(true);
+        boolean visibeColsInMainWindow[]=loggingClient.getLogEntryTable().getVisibleColumns(true);
         for (int t=0; t<ILogEntry.NUMBER_OF_FIELDS; t++) {
         	if (coulmnToSearchIn[t]==null) {
         		coulmnToSearchIn[t]=new JCheckBox(ILogEntry.fieldNames[t]);
@@ -455,7 +455,7 @@ public class SearchDialog extends JDialog {
     public void search() {
         // Check if there is something to look for before starting 
         // the engine
-        if (loggingClient.getScrollPaneTable().getRowCount()<=0 || findTF.getText().length()<=0) {
+        if (loggingClient.getLogEntryTable().getRowCount()<=0 || findTF.getText().length()<=0) {
             JOptionPane.showMessageDialog(
                     this,
                     "Invalid search parameters or no logs in the main window",
@@ -500,8 +500,8 @@ public class SearchDialog extends JDialog {
             }
         }
         if (row>-1) {
-            loggingClient.getScrollPaneTable().changeSelection(row,1,false,false);
-            loggingClient.getScrollPaneTable().showColumn(row);
+            loggingClient.getLogEntryTable().changeSelection(row,1,false,false);
+            loggingClient.getLogEntryTable().showColumn(row);
         } else {
         	String msg = "<html>No log matching \"<I>"+findTF.getText()+"</I>\" found<BR>Search from ";
         	if (forwardRB.isSelected()) {
@@ -521,9 +521,9 @@ public class SearchDialog extends JDialog {
 	            	if (forwardRB.isSelected()) {
 	            		row = 0;
 	            	} else {
-	            		row = loggingClient.getScrollPaneTable().getRowCount()-1;
+	            		row = loggingClient.getLogEntryTable().getRowCount()-1;
 	            	}
-	            	loggingClient.getScrollPaneTable().changeSelection(row,1,false,false);
+	            	loggingClient.getLogEntryTable().changeSelection(row,1,false,false);
 	            	search();
 	            	return;
 	            }

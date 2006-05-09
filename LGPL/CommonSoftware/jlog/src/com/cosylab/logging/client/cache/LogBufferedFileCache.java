@@ -197,6 +197,7 @@ public class LogBufferedFileCache extends LogFileCache {
 		while (true) {
 			try {
 				wBuffer = new WriteBuffer(file,index,writeBufferSize);
+				System.out.println("The WriteBuffer stores "+writeBufferSize+" logs");
 				break;
 			} catch (OutOfMemoryError e) {
 				writeBufferSize=writeBufferSize/2;
