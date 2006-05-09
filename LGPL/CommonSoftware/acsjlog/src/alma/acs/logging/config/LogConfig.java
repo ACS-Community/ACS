@@ -21,17 +21,14 @@
  */
 package alma.acs.logging.config;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
+//import java.util.logging.LogManager;
 
+import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALOperations;
 import com.cosylab.CDB.RecordDoesNotExist;
 import com.cosylab.CDB.XMLerror;
@@ -44,11 +41,11 @@ import com.cosylab.CDB.XMLerror;
  */
 public class LogConfig {
 
-    /** property file with default logger settings to be found on the classpath */
-    private static final String DEFAULT_LOG_PROPERTY_FILE = "almalogging.properties";
-
-    /** property whose value is the property file with user settings */
-    private static final String USER_LOG_PROPERTY_FILE_PROPERTY = "java.util.logging.config.file";
+//    /** property file with default logger settings to be found on the classpath */
+//    private static final String DEFAULT_LOG_PROPERTY_FILE = "almalogging.properties";
+//
+//    /** property whose value is the property file with user settings */
+//    private static final String USER_LOG_PROPERTY_FILE_PROPERTY = "java.util.logging.config.file";
 
     
 //    /**
@@ -56,7 +53,7 @@ public class LogConfig {
 //     */
 //    private Logger logger;
 
-    private LogManager m_logManager;
+//    private LogManager m_logManager;
     
     /**
      * The ACS CDB. This value is null unless it gets set in {@link #setCDB(DAL)}.
@@ -76,12 +73,13 @@ public class LogConfig {
     
     private LogConfigData defaultLogConfigData;
 
-    /** 
+	/** 
      * key = component logger name, value = LogConfigData for the named logger 
      */
     private Map<String, LogConfigData> namedLogConfigData;
     
     private List<LogConfigSubscriber> subscriberList;
+
 
 	
 	public LogConfig() {
@@ -89,7 +87,7 @@ public class LogConfig {
         namedLogConfigData = new HashMap<String, LogConfigData>();
 		subscriberList = new ArrayList<LogConfigSubscriber>();
         defaultLogConfigData = new LogConfigData();
-        m_logManager = LogManager.getLogManager();
+//        m_logManager = LogManager.getLogManager();
 	}
 
 //    /**
@@ -150,8 +148,8 @@ public class LogConfig {
 	public void initialize() throws LogConfigException {
         StringBuffer errMsg = new StringBuffer();
         
-        setDefaultLogConfiguration();
-        setUserLogConfiguration();        
+//        setDefaultLogConfiguration();
+//        setUserLogConfiguration();        
         
         if (cdb != null) {
             if (cdbContainerPath != null) {
@@ -161,7 +159,7 @@ public class LogConfig {
                 } catch (LogConfigException ex) {
                     errMsg.append(ex.getMessage());
                 } catch (Throwable thr) { // XMLerror, RecordDoesNotExist, etc
-                    errMsg.append("Failed to read node " + cdbContainerPath + " from the CDB (" + thr.getMessage() + "). ");
+                    errMsg.append("Failed to read node " + cdbContainerPath + " from the CDB (msg='" + thr.getMessage() + "'). ");
                 }
             }
             else {
@@ -177,7 +175,7 @@ public class LogConfig {
                 } catch (LogConfigException ex) {
                     errMsg.append(ex.getMessage());
                 } catch (Throwable thr) { // XMLerror, RecordDoesNotExist, etc
-                    errMsg.append("Failed to read config for logger " + loggerName + " from the CDB (" + thr.getMessage() + "). ");
+                    errMsg.append("Failed to read config for logger " + loggerName + " from the CDB (msg='" + thr.getMessage() + "'). ");
                 }
             }
         }
@@ -185,7 +183,7 @@ public class LogConfig {
         notifySubscribers();
         
         if (errMsg.length() > 0) {
-            throw new LogConfigException("Log config initialization at least partially failed: " + errMsg.toString());
+            throw new LogConfigException("Log config initialization at least partially failed. " + errMsg.toString());
         }        
 	}
 	
@@ -233,87 +231,87 @@ public class LogConfig {
     // configuration based on JDK logging property files
     /////////////////////////////////////////////////////////////////////
     
-    /**
-     * Sets the default logging configuration.
-     * It is taken from the file almalogging.properties that comes with ACS.
-     */
-    private void setDefaultLogConfiguration()
-    {
-        InputStream is = null;
-
-        try
-        {
-            // Matej: Here we use getClass().getResourceAsStream() and
-            // NOT  ClassLoader.getSystemResourceAsStream()
-            // This method is not compatible with WebStart
-            // '/' means from the root (e.g. jar file)
-            is = getClass().getResourceAsStream("/"+DEFAULT_LOG_PROPERTY_FILE);
-            m_logManager.readConfiguration(is);
-        }
-        catch (Exception e)
-        {
-                System.err.println("failed to read default log configuration");
-                e.printStackTrace(System.err);
-        }
-    }
-    
-    /**
-     * Sets the user-specific logging configuration.
-     */
-    void setUserLogConfiguration()
-    {
-        String userConfigFile = System.getProperty(USER_LOG_PROPERTY_FILE_PROPERTY);
-        if (userConfigFile != null)
-        {
-            try
-            {
-                InputStream in = new FileInputStream(userConfigFile);
-                BufferedInputStream bin = new BufferedInputStream(in);
-                m_logManager.readConfiguration(bin);
-//              System.out.println("configured logging from user-supplied properties file " + userConfigFile);
-            }
-            catch (Exception e)
-            {
-                System.err.println("failed to read user log configuration file '" + userConfigFile + "': ");
-                e.printStackTrace(System.err);
-            }
-        }
-    }
-    
-    /**
-     * Method getLoggerLevel. Needed for setting the level of each logger
-     * if it has been defined in the properties file.
-     * @param ns namespace
-     * @return Level
-     */
-    public Level getLoggerLevel(String ns)
-    {
-        String lev = m_logManager.getProperty(ns + ".level");
-        if (lev == null)
-        {
-            return Level.ALL;
-        }
-        
-        if (lev.indexOf(".") == -1)
-        {
-            String startName = lev.substring(0, 1);
-            String name = startName + lev.substring(1).toUpperCase();
-            return Level.parse(name);
-        }
-        else if (lev.startsWith("Level."))
-        {
-            int start = lev.indexOf('.');
-            String lvl = lev.substring(start);
-            String name = lvl.substring(1).toUpperCase();
-            return Level.parse(name);
-        }
-        else
-        {
-            System.err.println("Please set the logger's level according to the Java Logging API!");
-            return Level.parse("OFF");
-        }
-    }
-    
+//    /**
+//     * Sets the default logging configuration.
+//     * It is taken from the file almalogging.properties that comes with ACS.
+//     */
+//    private void setDefaultLogConfiguration()
+//    {
+//        InputStream is = null;
+//
+//        try
+//        {
+//            // Matej: Here we use getClass().getResourceAsStream() and
+//            // NOT  ClassLoader.getSystemResourceAsStream()
+//            // This method is not compatible with WebStart
+//            // '/' means from the root (e.g. jar file)
+//            is = getClass().getResourceAsStream("/"+DEFAULT_LOG_PROPERTY_FILE);
+//            m_logManager.readConfiguration(is);
+//        }
+//        catch (Exception e)
+//        {
+//                System.err.println("failed to read default log configuration");
+//                e.printStackTrace(System.err);
+//        }
+//    }
+//    
+//    /**
+//     * Sets the user-specific logging configuration.
+//     */
+//    void setUserLogConfiguration()
+//    {
+//        String userConfigFile = System.getProperty(USER_LOG_PROPERTY_FILE_PROPERTY);
+//        if (userConfigFile != null)
+//        {
+//            try
+//            {
+//                InputStream in = new FileInputStream(userConfigFile);
+//                BufferedInputStream bin = new BufferedInputStream(in);
+//                m_logManager.readConfiguration(bin);
+////              System.out.println("configured logging from user-supplied properties file " + userConfigFile);
+//            }
+//            catch (Exception e)
+//            {
+//                System.err.println("failed to read user log configuration file '" + userConfigFile + "': ");
+//                e.printStackTrace(System.err);
+//            }
+//        }
+//    }
+//    
+//    /**
+//     * Method getLoggerLevel. Needed for setting the level of each logger
+//     * if it has been defined in the properties file.
+//     * @param ns namespace
+//     * @return Level
+//     */
+//    public Level getLoggerLevel(String ns)
+//    {
+//        String lev = m_logManager.getProperty(ns + ".level");
+//        if (lev == null)
+//        {
+//            return Level.ALL;
+//        }
+//        
+//        if (lev.indexOf(".") == -1)
+//        {
+//            String startName = lev.substring(0, 1);
+//            String name = startName + lev.substring(1).toUpperCase();
+//            return Level.parse(name);
+//        }
+//        else if (lev.startsWith("Level."))
+//        {
+//            int start = lev.indexOf('.');
+//            String lvl = lev.substring(start);
+//            String name = lvl.substring(1).toUpperCase();
+//            return Level.parse(name);
+//        }
+//        else
+//        {
+//            System.err.println("Please set the logger's level according to the Java Logging API!");
+//            return Level.parse("OFF");
+//        }
+//    }
+//    
     
     
     /////////////////////////////////////////////////////////////////////
