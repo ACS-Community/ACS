@@ -58,6 +58,7 @@ public class MyTest extends junit.framework.TestCase
 
 	protected void tearDown()
 	{
+		ltdm.clearAll();
 		ltdm = null;
 		curDir = null;
 		reader = null;
