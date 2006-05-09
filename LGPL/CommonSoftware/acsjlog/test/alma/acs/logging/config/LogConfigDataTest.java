@@ -47,7 +47,7 @@ public class LogConfigDataTest extends TestCase {
     public void testParseContainerXml() throws LogConfigException {
         assertEquals("Log", logConfigData.getCentralizedLoggerName());
         assertEquals(0, logConfigData.getMinLogLevel());
-        assertEquals(9, logConfigData.getExpeditedDispatchLevel());
+        assertEquals(10, logConfigData.getExpeditedDispatchLevel());
 
         String bilboContainerXml = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +  
@@ -60,7 +60,7 @@ public class LogConfigDataTest extends TestCase {
                                "UseIFR=\"1\" " + 
                                "ManagerRetry=\"10\" " + 
                                "ManagerReference=\"\" " + 
-                               "CacheSize=\"1\" " + 
+                               "CacheSize=\"11\" " + 
                                "MinCachePriority=\"3\" " + 
                                "MaxCachePriority=\"5\" " + 
                                "CentralizedLogger=\"LogBilbo\"> " + 
@@ -71,6 +71,7 @@ public class LogConfigDataTest extends TestCase {
         logConfigData.takeCdbContainerXml(bilboContainerXml);
         
         assertEquals("LogBilbo", logConfigData.getCentralizedLoggerName());
+        assertEquals(11, logConfigData.getDispatchPacketSize());
         assertEquals(3, logConfigData.getMinLogLevel());
         assertEquals(5, logConfigData.getExpeditedDispatchLevel());
     }
