@@ -60,7 +60,7 @@ import javax.swing.KeyStroke;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
 
-import com.cosylab.logging.client.DomTable;
+import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -336,17 +336,17 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		public void propertyChange(java.beans.PropertyChangeEvent evt)
 		{
 
-			if (evt.getSource() == LoggingClient.this.getScrollPaneTable()
-				&& (evt.getPropertyName().equals("filterString")))
+			if (evt.getSource() == LoggingClient.this.getScrollPaneTable() 
+					&& (evt.getPropertyName().equals("filterString"))) {
 				connFilter(evt);
-
-			if (evt.getSource() == LoggingClient.this.getScrollPaneTable()
-				&& (evt.getPropertyName().equals("extraInfo")))
-				connDomInfo(evt);
-
-			if (evt.getSource() == LoggingClient.this.getScrollPaneTable()
-				&& (evt.getPropertyName().equals("LCModel")))
+			} else if (evt.getSource() == LoggingClient.this.getScrollPaneTable() 
+					&& (evt.getPropertyName().equals("extraInfo"))) {
+				showDetailedLogInfo();
+			} else if (evt.getSource() == LoggingClient.this.getScrollPaneTable() 
+					&& (evt.getPropertyName().equals("LCModel"))) {
 				connLCMod();
+			}
+				
 		};
 		
 		public void windowActivated(java.awt.event.WindowEvent e)
@@ -1182,11 +1182,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	}
 
 	/**
-	 * Allows dom representation of logs. If a row is selected and it has "data" name-value
-	 * elements, then they are displayed in a table.
-	 * @param arg1 java.beans.PropertyChangeEvent
+	 * Show a detailed view of the selected log in the right panel
 	 */
-	private void connDomInfo(java.beans.PropertyChangeEvent arg1)
+	private void showDetailedLogInfo()
 	{
 		try {
 			LogEntryTable jt = getScrollPaneTable();
@@ -1213,12 +1211,13 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 */
 	public Component getDataTable(ILogEntry log)
 	{
-		DomTable table = null;
-		// Try to build a DomTable
+		DetailedLogTable table = null;
+		// Try to build a DetailedLogTable
 		try {
-			table = new DomTable(log);
+			table = new DetailedLogTable(log);
 		} catch (Exception e) {
-			// DomTable returns an error if there are no datas in the log entry
+			e.printStackTrace();
+			// DetailedLogTable returns an error if there are no datas in the log entry
 			// In this case we return a DomTree
 			return getDomTree();
 		}
