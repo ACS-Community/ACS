@@ -168,7 +168,6 @@ public class LogBufferedFileCache extends LogFileCache {
 			bufferIndex.clear();
 			writeBuffer.clear();
 			charBuffer.delete(0,charBuffer.length());
-			System.out.println("All cleared");
 		}
 		
 		/**
@@ -185,23 +184,24 @@ public class LogBufferedFileCache extends LogFileCache {
 	
 	/**
 	 * Build a LogBufferedFileCache with the given size for the cache and the
-	 * write buffer
+	 * write buffer.
+	 * If there isn't enough memory for the cache, tries with a smmaller
+	 * size.
 	 * 
 	 * @param cacheSize The size of the cache
 	 * @param writeBufferSize The size of the write buffer
-	 * @throws LogCacheException
+	 * @throws LogCacheException If there is'nt enough memory for a buffer of at least 32 logs
 	 * 
 	 */
 	public LogBufferedFileCache(int writeBufferSize) throws LogCacheException {
 		while (true) {
 			try {
 				wBuffer = new WriteBuffer(file,index,writeBufferSize);
-				System.out.println("Caching "+writeBufferSize+" logs for writing ops");
 				break;
 			} catch (OutOfMemoryError e) {
 				writeBufferSize=writeBufferSize/2;
 				if (writeBufferSize<32) {
-					throw e;
+					throw new LogCacheException("Out of memory creating the buffer for writing ops",e);
 				}
 			}
 		}
@@ -283,5 +283,14 @@ public class LogBufferedFileCache extends LogFileCache {
 		else {
 			return DEFAULT_WRITEBUFFERSIZE;
 		}
+	}
+	
+	/**
+	 *  Return the number of logs in ache
+	 *  
+	 *  @return The number of logs in cache
+	 */
+	public int getSize() {
+		return super.getSize()+wBuffer.getSize();
 	}
 }
