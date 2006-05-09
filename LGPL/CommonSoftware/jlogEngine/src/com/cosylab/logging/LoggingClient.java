@@ -79,8 +79,8 @@ import com.cosylab.logging.search.SearchDialog;
  * 
  * Defines a JFrame Application LoggingClient for displaying event logs 
  * received through the CORBA protocol for the purpose of monitoring and 
- * reviewing of the logs. It contains of a JScrollPane ivjLogTable for the 
- * logs and a LogEntryTable ivjScrollPaneTable for displaying the status 
+ * reviewing of the logs. It contains of a JScrollPane scrollLogTable for the 
+ * logs and a LogEntryTable logEntryTable for displaying the status 
  * as well as a JPanel ivjJFrameContentPane. Multiple listeners handle 
  * user's input. 
  * Based on the current code and our understanding of it one could describe
@@ -183,8 +183,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	private JSplitPane ivjJSplitPane1 = null;
 	private JSplitPane ivjJSplitPane2 = null;
 
-	private JScrollPane ivjLogTable = null;
-	private LogEntryTable ivjScrollPaneTable = null;
+	private JScrollPane scrollLogTable = null;
+	private LogEntryTable logEntryTable = null;
 
 	private SmartTextArea ivjStatusArea = null;
 
@@ -214,6 +214,14 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
      * The menu item to show/hide the Detailed log info panel
      */
     private JCheckBoxMenuItem viewStatusAreaMI;
+    
+    /**
+     * The menu item to select the format of the date column in the table of logs
+     * If it is true, the date appear as hh:mm:ss otherwise it's shown with a complet
+     * longest format
+     * shortDateViewMI defaults to true
+     */
+    private JCheckBoxMenuItem shortDateViewMI;
     
     // The ComboBox in the toolbar and its default value (i.e. the log level
     // at startup
@@ -330,19 +338,21 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
             	if (LoggingClient.this.engine!=null) {
             		LoggingClient.this.engine.enableAutoReconnection(LoggingClient.this.autoReconnectMI.getState());
             	}
+            } else if (e.getSource()==LoggingClient.this.shortDateViewMI) {
+            	logEntryTable.setShortDateFormat(LoggingClient.this.shortDateViewMI.getState());
             }
 		};
 
 		public void propertyChange(java.beans.PropertyChangeEvent evt)
 		{
 
-			if (evt.getSource() == LoggingClient.this.getScrollPaneTable() 
+			if (evt.getSource() == LoggingClient.this.getLogEntryTable() 
 					&& (evt.getPropertyName().equals("filterString"))) {
 				connFilter(evt);
-			} else if (evt.getSource() == LoggingClient.this.getScrollPaneTable() 
+			} else if (evt.getSource() == LoggingClient.this.getLogEntryTable() 
 					&& (evt.getPropertyName().equals("extraInfo"))) {
 				showDetailedLogInfo();
-			} else if (evt.getSource() == LoggingClient.this.getScrollPaneTable() 
+			} else if (evt.getSource() == LoggingClient.this.getLogEntryTable() 
 					&& (evt.getPropertyName().equals("LCModel"))) {
 				connLCMod();
 			}
@@ -486,7 +496,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		try
 		{
 
-			getScrollPaneTable().showFieldChooser();
+			getLogEntryTable().showFieldChooser();
 
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -505,7 +515,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	{
 		try
 		{
-			getScrollPaneTable().showFilterChooser();
+			getLogEntryTable().showFilterChooser();
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -669,7 +679,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 
 	/**
 	 * CustomColumnListener implements componentResized() of a ComponentListener. 
-	 * It has been added to JScrollPane ivjLogTable to increase the width of 
+	 * It has been added to JScrollPane scrollLogTable to increase the width of 
 	 * the Log Message column as soon as the space is available.
 	 */
 	private class CustomColumnListener implements ComponentListener
@@ -697,16 +707,16 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			int tableWidthTobe = c.getSize().width;
 
 			// sets a preferred size to JScrollPane
-			getScrollPaneTable().setPreferredScrollableViewportSize(new Dimension(tableWidthTobe, c.getSize().height));
+			getLogEntryTable().setPreferredScrollableViewportSize(new Dimension(tableWidthTobe, c.getSize().height));
 
 			// gets the number of columns in JTable LogEntryTable
-			int numCols = getScrollPaneTable().getColumnModel().getColumnCount();
+			int numCols = getLogEntryTable().getColumnModel().getColumnCount();
 
 			// computes the width of the table taking into consideration all visible columns
-			int columnWidth = getScrollPaneTable().getColumnWidth(numCols);
+			int columnWidth = getLogEntryTable().getColumnWidth(numCols);
 
 			// adds width to the Log Message column
-			getScrollPaneTable().setAdditionalWidth(numCols, tableWidthTobe - columnWidth);
+			getLogEntryTable().setAdditionalWidth(numCols, tableWidthTobe - columnWidth);
 		}
 	}
 
@@ -717,28 +727,28 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 
 	public javax.swing.JScrollPane getLogTable()
 	{
-		if (ivjLogTable == null)
+		if (scrollLogTable == null)
 		{
 			try
 			{
-				ivjLogTable = new javax.swing.JScrollPane();
-				ivjLogTable.setName("LogTable");
-				ivjLogTable.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-				ivjLogTable.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				ivjLogTable.setBackground(new java.awt.Color(204, 204, 204));
-				ivjLogTable.setFont(new java.awt.Font("Arial", 1, 12));
-				ivjLogTable.setMinimumSize(new java.awt.Dimension(100, 50));
-				ivjLogTable.addComponentListener(new CustomColumnListener());
-				ivjLogTable.setColumnHeaderView(getScrollPaneTable().getTableHeader());
-				ivjLogTable.setViewportView(getScrollPaneTable());
-				ivjLogTable.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
+				scrollLogTable = new javax.swing.JScrollPane();
+				scrollLogTable.setName("LogTable");
+				scrollLogTable.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+				scrollLogTable.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				scrollLogTable.setBackground(new java.awt.Color(204, 204, 204));
+				scrollLogTable.setFont(new java.awt.Font("Arial", 1, 12));
+				scrollLogTable.setMinimumSize(new java.awt.Dimension(100, 50));
+				scrollLogTable.addComponentListener(new CustomColumnListener());
+				scrollLogTable.setColumnHeaderView(getLogEntryTable().getTableHeader());
+				scrollLogTable.setViewportView(getLogEntryTable());
+				scrollLogTable.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
 				handleException(ivjExc);
 			}
 		}
-		return ivjLogTable;
+		return scrollLogTable;
 	}
 
 	/**
@@ -771,15 +781,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 * @return com.cosylab.logging.client.LogEntryTable
 	 */
 
-	public LogEntryTable getScrollPaneTable()
+	public LogEntryTable getLogEntryTable()
 	{
-		if (ivjScrollPaneTable == null)
+		if (logEntryTable == null)
 		{
 			try
 			{
-				ivjScrollPaneTable = new com.cosylab.logging.LogEntryTable(this);
-				ivjScrollPaneTable.setName("ScrollPaneTable");
-				ivjScrollPaneTable.setBounds(0, 0, 200, 200);
+				logEntryTable = new com.cosylab.logging.LogEntryTable(this,shortDateViewMI.isSelected());
+				logEntryTable.setName("ScrollPaneTable");
+				logEntryTable.setBounds(0, 0, 200, 200);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -787,7 +797,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 				handleException(ivjExc);
 			}
 		}
-		return ivjScrollPaneTable;
+		return logEntryTable;
 	}
 
 	/**
@@ -819,7 +829,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		loadFiltersMenuItem.addActionListener(eventHandler); // Load Filters
 		saveFiltersMenuItem.addActionListener(eventHandler); // Save Filters
 		saveAsFiltersMenuItem.addActionListener(eventHandler); // Save Filters
-		getScrollPaneTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
+		getLogEntryTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
 		this.addWindowListener(eventHandler); // Logging Client
 
 		connLCMod();
@@ -867,6 +877,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         viewMenu.add(viewStatusAreaMI);
         viewMenu.addSeparator();
         viewMenu.add(getFieldsMenuItem());
+        shortDateViewMI = new JCheckBoxMenuItem("Short date format",true);
+        shortDateViewMI.addActionListener(eventHandler);
+        viewMenu.add(shortDateViewMI);
+        viewMenu.addSeparator();
         viewMenu.add(setFiltersMenuItem());
         viewMenu.addSeparator();
         statisticsMenuItem = new JMenuItem("Statistics");
@@ -1171,7 +1185,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		try
 		{
 
-			getFilterStatus().setText(String.valueOf(getScrollPaneTable().getFilterString()));
+			getFilterStatus().setText(String.valueOf(getLogEntryTable().getFilterString()));
 
 		}
 		catch (java.lang.Throwable ivjExc)
@@ -1187,7 +1201,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	private void showDetailedLogInfo()
 	{
 		try {
-			LogEntryTable jt = getScrollPaneTable();
+			LogEntryTable jt = getLogEntryTable();
 			//getDomTree().setRootNode(jt.getExtraInfo());
 			int selectedRow = jt.getSelectedRow();
 			// Check whether a row has been selected
@@ -1257,7 +1271,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			{
 
 				ivjConnPtoLCMod = true;
-				setLCModel1(getScrollPaneTable().getLCModel());
+				setLCModel1(getLogEntryTable().getLCModel());
 
 				ivjConnPtoLCMod = false;
 			}
@@ -1948,7 +1962,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     public void logEntryReceived(ILogEntry logEntry) {
     	int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
     	if (!suspendToggleButton.isSelected() && logLevel>=discardLevelCB.getSelectedIndex()) {
-			getScrollPaneTable().getLCModel().appendLog(logEntry);
+			getLogEntryTable().getLCModel().appendLog(logEntry);
 		} 
     	
     }
