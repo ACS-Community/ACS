@@ -21,13 +21,9 @@
  */
 package alma.acs.logging;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -38,6 +34,7 @@ import org.omg.DsLogAdmin.LogHelper;
 import si.ijs.maci.Manager;
 
 import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigData;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
@@ -55,17 +52,11 @@ import alma.acs.logging.formatters.ConsoleLogFormatter;
  * at some point later, and all log messages that are meant for remote logging will be stored in
  * a queue. <code>suppressRemoteLogging</code> will throw away this queue, while <code>initRemoteLogging</code>
  * will send all queued log records to the remote logger.
- * <p>
- * Each logger has a property .level (see almalogging.properties) used to select
- * from among the incoming log messages only the ones of interest to the user.
- * Additionally, there is a global property .level.
  * 
- * @author hsommer, radi
+ * @author hsommer
  */
 public class ClientLogManager implements LogConfigSubscriber
 {
-	private String logServiceName;
-
 	/** logger namespace for container classes during operation */
 	public static final String NS_CONTAINER = "alma.acs.container";
 
@@ -77,10 +68,18 @@ public class ClientLogManager implements LogConfigSubscriber
 
 	/** instance of a singleton */
 	private volatile static ClientLogManager s_instance;
-    
+
+	
     /** The logging configurator shared by various classes of this package */  
-    private LogConfig logConfig;
+    private final LogConfig logConfig;
     
+	/** The (CORBA-) name of the remote logging service to which logs will be sent */
+	private volatile String logServiceName;
+
+	/** The time in seconds between the periodic log queue flushings */
+	private volatile int flushPeriodSeconds;
+
+
     /** parent of all other remote loggers, so that its log handler gets shared */ 
     private Logger parentRemoteLogger;
     
@@ -94,10 +93,11 @@ public class ClientLogManager implements LogConfigSubscriber
     private StdOutConsoleHandler sharedLocalHandler;
 
     /** logger used by the classes in this logging package */
-	private Logger m_internalLogger;
+	private final Logger m_internalLogger;
 
 	/** for testing */
 	private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
+
     
 
     
@@ -121,7 +121,7 @@ public class ClientLogManager implements LogConfigSubscriber
         logConfig = new LogConfig();
         logConfig.addSubscriber(this);
         try {
-            logConfig.initialize(); // will call configureLogging
+            logConfig.initialize(); // will call configureLogging, using default values
         } catch (LogConfigException ex) {
             System.err.println("Failed to configure logging: " + ex.toString());
         }
@@ -129,9 +129,10 @@ public class ClientLogManager implements LogConfigSubscriber
         // parentRemoteLogger is not removed in method disableRemoteLogging, and thus does not need to be
         // (re-) created in method prepareRemoteLogging (unlike the queue and the handler)
         parentRemoteLogger = Logger.getLogger("AcsRemoteLogger");
+        parentRemoteLogger.setUseParentHandlers(false); // otherwise the default log handler on the root logger will dump all logs to stderr
         prepareRemoteLogging();
 
-        sharedLocalHandler = new StdOutConsoleHandler();
+        sharedLocalHandler = new StdOutConsoleHandler(logConfig);
         
         sharedLocalHandler.setFormatter(new ConsoleLogFormatter());
         
@@ -145,13 +146,28 @@ public class ClientLogManager implements LogConfigSubscriber
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
-        this.logServiceName = logConfig.getLogConfigData().getCentralizedLoggerName();
+    	LogConfigData confData = logConfig.getLogConfigData();
+        if (!confData.getCentralizedLoggerName().equals(logServiceName)) {
+        	if (logServiceName == null) {
+        		logServiceName = confData.getCentralizedLoggerName();
+        	}
+        	else {
+        		m_internalLogger.warning("Dynamic switching of Log service not yet supported!");
+        		// TODO: switch connection to new log service
+        	}
+        }
+        
+        if (confData.getFlushPeriodSeconds() != flushPeriodSeconds) {
+        	flushPeriodSeconds = confData.getFlushPeriodSeconds();
+        	if (logQueue != null) {
+        		logQueue.setPeriodicFlushing(confData.getFlushPeriodSeconds());
+        	}
+        }
     }
 
     public LogConfig getLogConfig() {
         return logConfig;
     }
-    
     
     /**
      * If not done already, sets up a remote handler with queue, and adds that handler 
@@ -162,8 +178,7 @@ public class ClientLogManager implements LogConfigSubscriber
             logQueue = new DispatchingLogQueue();
         }
         if (sharedRemoteHandler == null) {
-            sharedRemoteHandler = new AcsLoggingHandler(logQueue);
-            logConfig.addSubscriber(sharedRemoteHandler);
+            sharedRemoteHandler = new AcsLoggingHandler(logQueue, logConfig);
         }
         else {
             Handler[] handlers = parentRemoteLogger.getHandlers();
@@ -179,6 +194,7 @@ public class ClientLogManager implements LogConfigSubscriber
         parentRemoteLogger.addHandler(sharedRemoteHandler);
     }
 
+    
     /**
      * Removes, closes, and nulls the remote handler,
      * so that no more records are put into the queue, and both queue and handler can be garbage collected.
@@ -231,10 +247,11 @@ public class ClientLogManager implements LogConfigSubscriber
             LogManager manager = LogManager.getLogManager();
             logger = manager.getLogger(loggerNamespace);
             if (logger == null) {
-                AcsLogger acsLogger = new AcsLogger(loggerNamespace, null);
-                logConfig.addSubscriber(acsLogger);
-                acsLogger.configureLogging(logConfig);
+            	// not yet in cache, so we create the logger
+                AcsLogger acsLogger = new AcsLogger(loggerNamespace, null, logConfig);
                 manager.addLogger(acsLogger);
+                
+                // get it from the cache
                 logger = manager.getLogger(loggerNamespace);
             
                 logger.setParent(parentRemoteLogger);
@@ -314,7 +331,7 @@ public class ClientLogManager implements LogConfigSubscriber
             try {
                 logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true, holder));
                 if (logService == null) {
-                    errMsg = "Failed to obtain central log service: reference 'null'. ";
+                    errMsg = "Failed to obtain central log service '" + logServiceName + "': reference is 'null'. ";
                 }
                 else if (holder.value != 0) {
                     errMsg = "Obtained central log service, but with error code '" + holder.value + "'. ";
@@ -328,7 +345,7 @@ public class ClientLogManager implements LogConfigSubscriber
                     logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsXMLLogFormatter());
                     logQueue.setRemoteLogDispatcher(logDispatcher);
                     logQueue.flushAllAndWait();
-                    logQueue.setPeriodicFlushing(10000);                    
+                    logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000);
                 }
             }
             catch (Throwable thr) {                
