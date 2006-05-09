@@ -62,6 +62,8 @@ import java.io.IOException;
 
 import com.cosylab.logging.settings.UserInfoDlg;
 
+import com.cosylab.logging.client.DateRenderer;
+
 /**
  * Subclasses JTable allowing grouping and sorting depending on user's input. 
  * Creation date: (11/11/2001 13:45:22)
@@ -80,6 +82,11 @@ public class LogEntryTable extends javax.swing.JTable
 	public TextTransfer textTransfer;
 	
 	private DefaultListSelectionModel selectionModel;
+	
+	/**
+	 * The renderer to show the date (short or complet format)
+	 */
+	private DateRenderer dateRenderer;
 
 	protected class JMyMenuItem extends JRadioButtonMenuItem
 	{
@@ -522,12 +529,15 @@ public class LogEntryTable extends javax.swing.JTable
 	}
 	
 	/**
-	 * LCLogTable constructor comment.
+	 * LogEntryTable constructor.
+	 * 
+	 * @param logClient The LoggingClient that owns this table
+	 * @param initialDateFormat The format to show the date (true means short)
 	 */
-	public LogEntryTable(LoggingClient logClient)
+	public LogEntryTable(LoggingClient logClient,boolean initialDateFormat)
 	{
 		super();
-		initialize();
+		initialize(initialDateFormat);
 		// Create the object for the clipboard
 		textTransfer = new TextTransfer();
 		loggingClient=logClient;
@@ -734,8 +744,10 @@ public class LogEntryTable extends javax.swing.JTable
 
 	/**
 	 * Setup the table
+	 * 
+	 * @param The format to show the date (if true is short, otherwise complete)
 	 */
-	private void initialize()
+	private void initialize(boolean shortDateFormat)
 	{
 		createDefaultColumnsFromModel();
 		setShowHorizontalLines(false);
@@ -759,7 +771,8 @@ public class LogEntryTable extends javax.swing.JTable
 		tc.setCellRenderer(new EntryTypeRenderer(LogTypeHelper.getAllIcons()));
 
 		tc = tcm.getColumn(ILogEntry.FIELD_TIMESTAMP + 2);
-		tc.setCellRenderer(new com.cosylab.logging.client.DateRenderer());
+		dateRenderer = new DateRenderer(shortDateFormat);
+		tc.setCellRenderer(dateRenderer);
 
 		SortableHeaderRenderer shr = new SortableHeaderRenderer();
 
@@ -996,6 +1009,16 @@ public class LogEntryTable extends javax.swing.JTable
 			System.out.println("Scrolling from "+visible.toString()+" to "+dest.toString());
 			scrollPane.scrollRectToVisible(dest);
 		}*/
+	}
+	
+	/**
+	 * Set the format used to show the timestamp in the date column
+	 * 
+	 * @param shortFormat The format of the date (true means short, false means complete)
+	 */
+	public void setShortDateFormat(boolean shortFormat) {
+		dateRenderer.setShortDateFormat(shortFormat);
+		this.repaint();
 	}
 	
 }
