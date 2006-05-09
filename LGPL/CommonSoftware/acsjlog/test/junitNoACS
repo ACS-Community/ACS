@@ -1,9 +1,6 @@
 export ACS_TMP=../test
 
-# the following line is introduced temporarily to see whether spurious thread sync failures with JDK 1.5 on RedHat Enterprise go away
-echo "old LD_ASSUME_KERNEL: $LD_ASSUME_KERNEL" >> envdebug.log
-export LD_ASSUME_KERNEL=2.4.19
-echo "current LD_ASSUME_KERNEL: $LD_ASSUME_KERNEL" >> envdebug.log
-
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.RemoteLogDispatcherTest
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.ClientLogManagerTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.config.LogConfigDataTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.config.LogConfigTest
