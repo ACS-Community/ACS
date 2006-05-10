@@ -1,5 +1,6 @@
 export ACS_TMP=../test
 
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.AcsLogLevelTest
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.RemoteLogDispatcherTest
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.ClientLogManagerTest
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.config.LogConfigDataTest
