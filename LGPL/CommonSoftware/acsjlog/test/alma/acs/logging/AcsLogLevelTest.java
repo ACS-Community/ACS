@@ -127,15 +127,18 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		
 		// ACS-core-level to ACS-Level
 		assertSame(AcsLogLevel.ALL, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ALL));
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(1)); // undefined core level, should round up
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_TRACE));
 		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_DEBUG));
 		assertSame(AcsLogLevel.INFO, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_INFO));
 		assertSame(AcsLogLevel.NOTICE, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_NOTICE));
 		assertSame(AcsLogLevel.WARNING, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_WARNING));
+		assertSame(AcsLogLevel.ERROR, AcsLogLevel.fromAcsCoreLevel(7)); // undefined core level, should round up
 		assertSame(AcsLogLevel.ERROR, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ERROR));
 		assertSame(AcsLogLevel.CRITICAL, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_CRITICAL));
 		assertSame(AcsLogLevel.ALERT, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ALERT));
-		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_EMERGENCY));		
+		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_EMERGENCY));
+		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_EMERGENCY + 10)); // undefined core level, should round down
 	}
 	
 	public void testPrintMappings() {
