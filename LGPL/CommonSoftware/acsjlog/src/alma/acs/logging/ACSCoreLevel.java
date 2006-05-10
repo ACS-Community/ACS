@@ -23,17 +23,17 @@
 package alma.acs.logging;
 
 /**
- * Contains constants for ACS Core Levels.
+ * Contains constants for ACS Core Levels,
+ * as defined by the ACS logging system.
  * 
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
- * @version	@@VERSION@@
  */
 public interface ACSCoreLevel
 {
     /**
-     * Unknown (ACS level).
+     * ACS_LEVEL_ALL used to be ACS_LEVEL_UNKNOWN, but got reinterpreted in May 2006 with help from BJE.
      */
-	public final int ACS_LEVEL_UNKNOWN = 0;
+	public final int ACS_LEVEL_ALL = 0;
 	
 	/**
 	 * Messages indicating function-calling sequence (ACS level).
