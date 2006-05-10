@@ -48,7 +48,7 @@ public class CleaningDaemonThreadFactory implements ThreadFactory {
     private LoggingThreadGroup group;
     
     // we keep track of our threads outside of the thread group
-    private List threadList = new ArrayList();
+    private List<Thread> threadList = new ArrayList<Thread>();
     
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     
@@ -112,9 +112,9 @@ public class CleaningDaemonThreadFactory implements ThreadFactory {
         }
         group.setShuttingDown();
         Thread t = null;
-        for (Iterator iter = threadList.iterator(); iter.hasNext();) {
+        for (Iterator<Thread> iter = threadList.iterator(); iter.hasNext();) {
             try {
-                t = (Thread) iter.next();
+                t = iter.next();
                 if (t.isAlive()) {
                     logger.warning("forcefully terminating surviving thread " + t.getName());
                 }

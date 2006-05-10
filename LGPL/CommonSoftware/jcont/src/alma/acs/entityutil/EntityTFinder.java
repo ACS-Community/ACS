@@ -109,7 +109,7 @@ public class EntityTFinder
 		EntityT entityT = null;
 		try
 		{
-			entityT = (EntityT) entityTMethod.invoke(entityObj, null);
+			entityT = (EntityT) entityTMethod.invoke(entityObj, (Object[]) null);
 		}
 		catch (Exception e)
 		{

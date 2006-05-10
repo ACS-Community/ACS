@@ -69,7 +69,7 @@ public class EntityRefFinder
 	public EntityRefT[] findEntityReferences(Object rootEntityObject)
 		throws EntityException 
 	{
-		ArrayList entityRefs = new ArrayList();
+		ArrayList<EntityRefT> entityRefs = new ArrayList<EntityRefT>();
 		
 		StopWatch stopw = new StopWatch(null);
 				
@@ -80,11 +80,11 @@ public class EntityRefFinder
 			System.out.println("findEntityReferences took " + stopw.getLapTimeMillis() + " ms.");
 		}
 				
-		return ( (EntityRefT[]) entityRefs.toArray(new EntityRefT[0]) );
+		return ( entityRefs.toArray(new EntityRefT[0]) );
 	}
 	
 	
-	private void recursiveFindEntityReferences(Object obj, ArrayList entityRefs)
+	private void recursiveFindEntityReferences(Object obj, ArrayList<EntityRefT> entityRefs)
 		throws EntityException
 	{
 		try
@@ -110,7 +110,7 @@ public class EntityRefFinder
 			// the good recursion stopper case
 			if (obj instanceof EntityRefT)
 			{
-				entityRefs.add(obj);
+				entityRefs.add((EntityRefT)obj);
 				return;
 			}
 			
@@ -122,7 +122,7 @@ public class EntityRefFinder
 				if (methods[i].getName().startsWith("get") &&
 				    methods[i].getParameterTypes().length == 0)
 				{
-					Object retObj = methods[i].invoke(obj, null);
+					Object retObj = methods[i].invoke(obj, (Object[]) null);
 					recursiveFindEntityReferences(retObj, entityRefs);
 				}
 				else if (methods[i].getName().startsWith("enumerate") &&
@@ -131,7 +131,7 @@ public class EntityRefFinder
 				          !Modifier.isStatic(methods[i].getModifiers())  // Castor enum classes have a static enumerate() method...
 				        )
 				{
-					Enumeration retObjEnum = (Enumeration) methods[i].invoke(obj, null);
+					Enumeration retObjEnum = (Enumeration) methods[i].invoke(obj, (Object[]) null);
 					while (retObjEnum.hasMoreElements())
 					{
 						Object retObj = retObjEnum.nextElement();

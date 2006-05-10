@@ -91,10 +91,10 @@ public class ContainerServicesImpl implements ContainerServices
     private volatile Logger componentLogger;
 
 	// sync'd map, key=curl, value=corbaStub
-	private final Map m_usedComponentsMap;
+	private final Map<String, org.omg.CORBA.Object> m_usedComponentsMap;
 
 	// sync'd map, key=curl, value=ComponentDescriptor
-	private final Map m_componentDescriptorMap;
+	private final Map<String, ComponentDescriptor> m_componentDescriptorMap;
 	
 	// the handle that the manager has assigned to the component to whom this ContainerServices object belongs
 	private final int m_clientHandle;
@@ -144,8 +144,8 @@ public class ContainerServicesImpl implements ContainerServices
 		m_componentStateManager = componentStateManager;
 		 
 		// should do for thread-safety as long as we don't iterate over it
-		m_usedComponentsMap = Collections.synchronizedMap(new HashMap());
-		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap());
+		m_usedComponentsMap = Collections.synchronizedMap(new HashMap<String, org.omg.CORBA.Object>());
+		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
         
         m_threadFactory = threadFactory;        
 	}
@@ -156,6 +156,10 @@ public class ContainerServicesImpl implements ContainerServices
 	// Implementation of ContainerServices
 	/////////////////////////////////////////////////////////////
 
+	/**
+	 * Gets the component name (which the component does not know statically)
+	 * @see alma.acs.container.ContainerServices#getName()
+	 */
 	public String getName() {
 		return m_clientName;
 	}
@@ -255,7 +259,7 @@ public class ContainerServicesImpl implements ContainerServices
 		ComponentInfo[] components = m_acsManagerProxy.get_component_info(
 			new int[0], curlWildcard, typeWildcard, false );
 			
-		ArrayList curls = new ArrayList();
+		ArrayList<String> curls = new ArrayList<String>();
 		
 		if (components != null)
 		{
@@ -267,7 +271,7 @@ public class ContainerServicesImpl implements ContainerServices
 		
 		m_logger.finer("received " + curls.size() + " curls from get_component_info.");
 		
-		return (String[]) curls.toArray(new String[curls.size()]);
+		return curls.toArray(new String[curls.size()]);
 	}
 
 
@@ -624,10 +628,10 @@ public class ContainerServicesImpl implements ContainerServices
 		if (servantName.endsWith("POATie")) {
 			try {
 				// the _delegate getter method is mandated by the IDL-to-Java mapping spec
-				Method implGetter = servant.getClass().getMethod("_delegate", null);
+				Method implGetter = servant.getClass().getMethod("_delegate", (Class[]) null);
 				isTie = true;
 				Class operationsIF = implGetter.getReturnType();
-				Object offshootImpl = implGetter.invoke(servant, null);
+				Object offshootImpl = implGetter.invoke(servant, (Object[]) null);
 				// now we insert the interceptor between the tie skeleton and the impl.
 				// Offshoots have no name, so we construct one from the component name and the offshoot interface name
 				// 
@@ -755,11 +759,11 @@ public class ContainerServicesImpl implements ContainerServices
 	{
 		// copy curls first to avoid deleting from m_usedComponentsMap
 		// while iterating over it (fail-fast iterator throws ConcurrentModificationException)
-		List curls = new ArrayList(m_usedComponentsMap.keySet());
+		List<String> curls = new ArrayList<String>(m_usedComponentsMap.keySet());
 		
-		for (Iterator iter = curls.iterator(); iter.hasNext();)
+		for (Iterator<String> iter = curls.iterator(); iter.hasNext();)
 		{
-			String curl = (String) iter.next();
+			String curl = iter.next();
 			releaseComponent(curl);
 		}
 	}
