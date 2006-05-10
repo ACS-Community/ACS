@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
@@ -49,9 +48,9 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	private final static String ACS_BUNDLE_NAME = AcsLogLevel.class.getPackage().getName();
 
 	/**
-	 * List of all ACS levels.
+	 * List of all ACS levels, sorted automatically with lowest log level first.
 	 */
-	private static Set<AcsLogLevel> known = new TreeSet<AcsLogLevel>();
+	private static TreeSet<AcsLogLevel> known = new TreeSet<AcsLogLevel>();
 
 	/**
 	 * Fast lookup table mapping.
@@ -157,15 +156,29 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 		}
 	}
 
+	/**
+	 * Converts an ACS core log level (as defined in ACS, Unix or similar) 
+	 * to the best fitting AcsLogLevel. 
+	 * If no AcsLogLevel directly corresponds to the given core level, then the AcsLogLevel
+	 * whose associated acsCoreLevel is >= the given core level is chosen.
+	 * Only if <code>acsCoreLevel</code> is larger than EMERGENCY's core level,
+	 * we "round down" to EMERGENCY.
+	 * @param acsCoreLevel
+	 * @return
+	 */
 	public static AcsLogLevel fromAcsCoreLevel(int acsCoreLevel) {
 		AcsLogLevel ret = null;
-		for (Iterator<AcsLogLevel> iter = known.iterator(); iter.hasNext();) {
-			AcsLogLevel acsLevel = iter.next();
-			if (acsLevel.getAcsLevel() == acsCoreLevel) {
-				ret = acsLevel;
-				break;
-			}
+		if (acsCoreLevel >= EMERGENCY.getAcsLevel()) {
+			ret = EMERGENCY;
 		}
+		else {
+			for (Iterator<AcsLogLevel> iter = known.iterator(); iter.hasNext();) {
+				ret = iter.next();
+				if (ret.getAcsLevel() >= acsCoreLevel) {
+					break;
+				}
+			}
+		}		
 		return ret;
 	}
 	
@@ -221,19 +234,14 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 		if (luLevel != null)
 			return (AcsLogLevel) luLevel;
 
-		// this is not needed anymore since we have goot fast lookups ;)
-		// if this already native level
-		//if (ACS_BUNDLE_NAME.equals(level.getResourceBundleName()))
-		//	return (AcsLogLevel)level;
-
 		// check if there is any native level
 		// of OFF
 		if (known.size() == 0 || level.intValue() == Level.OFF.intValue())
 			return null;
 		if (level.intValue() == Level.ALL.intValue())
-			return AcsLogLevel.TRACE;
+			return AcsLogLevel.ALL;
 
-		// search through iterator and find the most appropriate
+		// search through iterator and find the most appropriate. Relies on "known" being a sorted set with low levels first.
 		synchronized (known)
 		{
 			Iterator<AcsLogLevel> iter = known.iterator();
@@ -257,12 +265,9 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	 * @param ps The PrintStream to print to, e.g. System.out
 	 */
 	static void printMappings(PrintStream ps) {
-		AcsLogLevel[] allLevels = known.toArray(new AcsLogLevel[known.size()]);
-		Arrays.sort(allLevels);
-		
 		final String delim = "\t";
-		for (int i = 0; i < allLevels.length; i++) {
-			AcsLogLevel level = allLevels[i];
+		for (Iterator<AcsLogLevel> iter = known.iterator(); iter.hasNext();) {
+			AcsLogLevel level = iter.next();
 			String acsLevelName = level.getEntryName();
 			int levelValue = level.intValue();
 			int coreLevelValue = level.getAcsLevel();
