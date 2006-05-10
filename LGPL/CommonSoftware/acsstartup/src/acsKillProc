@@ -2,6 +2,7 @@
 . acsstartupAcsPorts
 . acsstartupLogging.sh
 . acsstartupConstants
+. acsstartupProcesses
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002 
@@ -24,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsKillProc,v 1.15 2006/03/13 16:55:43 dfugate Exp $"
+# "@(#) $Id: acsKillProc,v 1.16 2006/05/10 23:00:41 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -99,20 +100,16 @@ if [ "$CL_HELP" ] ; then
    printUsage
 fi
 
+
+
 ########################################################################################
 #User wants to kill all commands of a certain type.
 if [ "$CL_COMMAND" ]
 then
 
-    #Get a list containing all the process IDs of the command
-    list=`ps --no-headers -C $CL_COMMAND | awk '{print $1}'`
-      
-    #kill every known instance of the command
-    for processID in $list
-    do
-      acsKillProc $processID
-    done
+    killCommand $CL_COMMAND
     exit $EC_OK
+
 elif [ "$CL_PID" ]
 then
     #Save the PID
@@ -142,33 +139,4 @@ then
     fi
 fi
 
-#At this point $TEMP_PID should be a process ID. However, we should first check 
-#to ensure this process is really running.
-tempInfo=`ps h --pid $TEMP_PID 2> /dev/null`
-if [ ! "$tempInfo" ]
-    then
-    exit $EC_BADARGS
-#Because we have to allow killACS to be run from commandcenter, we unfortunately have to 
-#double-check that the process to be killed is not a killACS or acsKillProc process
-elif [ "`echo $tempInfo | awk '{print $5}'`" == "killACS" ]
-    then
-    exit $EC_OK
-elif [ "`echo $tempInfo | awk '{print $5}'`" == "acsKillProc" ]
-    then
-    exit $EC_OK
-fi
-
-
-#Recursively process all child processes
-for CHILD_PID in `pgrep -P $TEMP_PID`
-do
-  acsKillProc $CHILD_PID
-done
-
-tempInfo=`ps h --pid $TEMP_PID 2> /dev/null`
-if [ ! "$tempInfo" ]
-    then
-    exit $EC_OK
-fi
-
-kill -9 $TEMP_PID 2> /dev/null
+killProc $TEMP_PID
