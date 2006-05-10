@@ -56,16 +56,15 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 	 */
 	public String format(LogRecord logRecord)
 	{
-		// get level name
+		// log level 
 		Level level = logRecord.getLevel();
-
-		String levelName = AcsLogLevel.getNativeLevel(level).getEntryName(); // Info
-		if (levelName == null) // for Level.OFF
+		AcsLogLevel acsLevel = AcsLogLevel.getNativeLevel(level);
+		if (level.equals(Level.OFF) || acsLevel == null) {
 			return "";
+		}		
+		final int acsCoreLevel = acsLevel.getAcsLevel();
+		final String levelName = acsLevel.getEntryName();
 
-//		String Priority = "" + AcsLogLevel.getNativeLevel(level).getAcsLevel();
-
-		int acsLevel = AcsLogLevel.getNativeLevel(level).getAcsLevel();
 
 		// get date
 		Date date = new Date(logRecord.getMillis());
@@ -86,7 +85,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		String file = logRecord.getSourceClassName();
 		if (file == null)
 		{
-			if (acsLevel == ACS_LEVEL_DEBUG)
+			if (acsCoreLevel == ACS_LEVEL_DEBUG)
 				sb.append("File=\"unknown\" ");
 		}
 		else
@@ -95,7 +94,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		long line = logParamExtractor.extractLongProperty(LogParameterExtractor.PARAM_LINE, -1);
 		if (line < 0)
 		{
-			if (acsLevel == ACS_LEVEL_TRACE || acsLevel == ACS_LEVEL_DEBUG)
+			if (acsCoreLevel == ACS_LEVEL_TRACE || acsCoreLevel == ACS_LEVEL_DEBUG)
 				sb.append("Line=\"0\" ");
 		}
 		else
@@ -104,7 +103,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		String Routine = logRecord.getSourceMethodName();
 		if (Routine == null)
 		{
-			if (acsLevel == ACS_LEVEL_TRACE)
+			if (acsCoreLevel == ACS_LEVEL_TRACE)
 				sb.append("Routine=\"unknown\" ");
 		}
 		else {
@@ -141,7 +140,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 			sb.append("Context=\"" + context + "\" ");
 
 		// add stack info
-		if (acsLevel >= ACS_LEVEL_WARNING)
+		if (acsCoreLevel >= ACS_LEVEL_WARNING)
 		{
 			// add stack id
 			String stackId = logParamExtractor.extractStringProperty("StackId", null);
@@ -170,8 +169,8 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 
 		// add priority
 		// to be written only different as entry priority		
-		long priority = logParamExtractor.extractLongProperty("Priority", acsLevel);
-		if (priority != acsLevel)
+		long priority = logParamExtractor.extractLongProperty("Priority", acsCoreLevel);
+		if (priority != acsCoreLevel)
 			sb.append("Priority=\"" + priority + "\" ");
 
 		// add additional attributes here
