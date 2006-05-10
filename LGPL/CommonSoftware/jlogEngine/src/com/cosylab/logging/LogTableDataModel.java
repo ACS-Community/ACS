@@ -51,7 +51,7 @@ import com.cosylab.logging.client.CustomFileChooser;
  * Creation date: (11/11/2001 13:46:06)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class LogTableDataModel extends AbstractTableModel 
+public class LogTableDataModel extends AbstractTableModel implements Runnable
 {
 	private static final String BLANK_STRING = "";
 
@@ -90,6 +90,12 @@ public class LogTableDataModel extends AbstractTableModel
 	 * An object to load and save logs
 	 */
 	private IOLogsHelper ioHelper=null;
+	
+	/**
+	 * The thread to invalidate the list of logs
+	 * i.e. to regenerate the list of visible logs 
+	 */
+	Thread invalidateThread = new Thread(this);
 		
 	/**
 	 * Return number of columns in table
@@ -461,20 +467,39 @@ public class LogTableDataModel extends AbstractTableModel
 	}
 	
 	/**
-	* Erases and rebuilds visible logs considering filters.
-	* Creation date: (11/16/2001 11:26:32)
-	*/
-	public final void invalidateVisibleLogs() {
-	
+	 * Erases and rebuilds visible logs considering filters.
+	 */
+	public void run() {
+		LoggingClient logging=LoggingClient.getInstance();
+		int size = allLogs.getSize();
+		logging.animateProgressBar("Regenerating",0,size);
 		visibleLogs.clear();
-	
-		for (int i = 0; i < allLogs.getSize(); i++) {
+		for (int i = 0; i < size; i++) {
 			try {
 				visibleLogInsert(allLogs.getLog(i),i);
 			} catch (Exception e) {
 				System.err.println("Exception "+e.getMessage());
 				e.printStackTrace(System.err);
 			}
+			if (i%25==0) {
+				logging.moveProgressBar(i);
+			}
+		}
+		logging.freezeProgressBar();
+	}
+	
+	/**
+	*	Invalidate the visible logs launching a worker thread 
+	* 
+	*/
+	public final void invalidateVisibleLogs() {
+		if (invalidateThread.isAlive()) {
+			throw new IllegalStateException("Trying to start an already running thread");
+		}
+		if (allLogs.getSize()>1) {
+			System.out.println("New thread");
+			invalidateThread=new Thread(this);
+			invalidateThread.start();
 		}
 	}
 	
