@@ -79,8 +79,16 @@ public class LogConfigTest extends TestCase {
 		LogConfigData defaultLogConfig = logConfig.getLogConfigData();
 		assertEquals("Log", defaultLogConfig.getCentralizedLoggerName());
 		assertEquals(30, defaultLogConfig.getDispatchPacketSize());
-		assertEquals(ACSCoreLevel.ACS_LEVEL_UNKNOWN, defaultLogConfig.getMinLogLevel());
-		assertEquals(ACSCoreLevel.ACS_LEVEL_DEBUG, defaultLogConfig.getMinLogLevelLocal());
+		assertEquals(ACSCoreLevel.ACS_LEVEL_DEBUG, defaultLogConfig.getMinLogLevel());
+
+		int expectedMinLogLevelLocal = ACSCoreLevel.ACS_LEVEL_DEBUG;
+		// TAT defines ACS_LOG_STDOUT, so the test must take this into account
+		Integer ACS_LOG_STDOUT = Integer.getInteger(LogConfigData.PROPERTYNAME_ACS_LOG_STDOUT);
+    	if (ACS_LOG_STDOUT != null) {
+    		expectedMinLogLevelLocal = ACS_LOG_STDOUT.intValue();
+    	}
+		assertEquals(expectedMinLogLevelLocal, defaultLogConfig.getMinLogLevelLocal());
+		
 		assertEquals(ACSCoreLevel.ACS_LEVEL_ALERT, defaultLogConfig.getExpeditedDispatchLevel());
 
 		LogConfigData defaultLogConfig2 = logConfig.getLogConfigData();
