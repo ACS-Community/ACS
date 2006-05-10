@@ -21,6 +21,8 @@
  */
 package alma.acs.logging;
 
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -57,59 +59,70 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	private static Map<Level, AcsLogLevel> lookup = new HashMap<Level, AcsLogLevel>();
 
 	/******************** Java API ACS Levels ********************/
+	
+	/**
+	 * Messages indicating function-calling sequence.
+	 */
+	public static final AcsLogLevel ALL = new AcsLogLevel("ALL", Level.ALL.intValue(), ACS_LEVEL_ALL);
 
 	/**
 	 * Messages indicating function-calling sequence.
 	 */
-	public static final AcsLogLevel TRACE = new AcsLogLevel("TRACE", 300, ACS_LEVEL_TRACE);
+	public static final AcsLogLevel TRACE = new AcsLogLevel("TRACE", Level.FINEST.intValue(), ACS_LEVEL_TRACE);
 
 	/**
 	 * Messages that contain information normally of use only when
 	 * debugging a program.
 	 */
-	public static final AcsLogLevel DEBUG = new AcsLogLevel("DEBUG", 700, ACS_LEVEL_DEBUG);
+	public static final AcsLogLevel DEBUG = new AcsLogLevel("DEBUG", Level.CONFIG.intValue(), ACS_LEVEL_DEBUG);
 
 	/**
 	 * Informational messages.
 	 */
-	public static final AcsLogLevel INFO = new AcsLogLevel("INFO", 800, ACS_LEVEL_INFO);
+	public static final AcsLogLevel INFO = new AcsLogLevel("INFO", Level.INFO.intValue(), ACS_LEVEL_INFO);
 
 	/**
 	 * Conditions that are not error conditions, but that may require
 	 * special handling.
+	 * TODO: use something like 850 instead of 801 to allow other levels between INFO and NOTICE 
 	 */
 	public static final AcsLogLevel NOTICE = new AcsLogLevel("NOTICE", 801, ACS_LEVEL_NOTICE);
 
 	/**
 	 * Warning messages.
 	 */
-	public static final AcsLogLevel WARNING = new AcsLogLevel("WARNING", 900, ACS_LEVEL_WARNING);
+	public static final AcsLogLevel WARNING = new AcsLogLevel("WARNING", Level.WARNING.intValue(), ACS_LEVEL_WARNING);
 
 	/**
 	 * Error messages.
+	 * TODO: use something like 930 instead of 901 to allow other levels between ERROR and WARNING
 	 */
 	public static final AcsLogLevel ERROR = new AcsLogLevel("ERROR", 901, ACS_LEVEL_ERROR);
 
 	/**
 	 * Critical conditions, such as hard device errors.
+	 * TODO: use something like 960 instead of 902 to allow other levels between CRITICAL and ERROR
 	 */
 	public static final AcsLogLevel CRITICAL = new AcsLogLevel("CRITICAL", 902, ACS_LEVEL_CRITICAL);
 
 	/**
 	 * A condition that should be corrected immediately, such as a
 	 * corrupted system database.
+	 * TODO: use something like 980 instead of 903 to allow other levels between ERROR and ALERT
 	 */
 	public static final AcsLogLevel ALERT = new AcsLogLevel("ALERT", 903, ACS_LEVEL_ALERT);
 
 	/**
 	 * A panic condition. This is normally broadcast to all users.
 	 */
-	public static final AcsLogLevel EMERGENCY = new AcsLogLevel("EMERGENCY", 1000, ACS_LEVEL_EMERGENCY);
+	public static final AcsLogLevel EMERGENCY = new AcsLogLevel("EMERGENCY", Level.SEVERE.intValue(), ACS_LEVEL_EMERGENCY);
 
+	
+	
 	/**
-	 * The resource bundle name to be used in localizing ACS level name.
+	 * The ACS error system defined level (small integer) which this JDK-style level maps to
 	 */
-	private int acsLevel = ACS_LEVEL_UNKNOWN;
+	private final int acsCoreLevel;
 
 	/**
 	 * XML Entry name.
@@ -122,14 +135,14 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	 * @param name  the name of the Level, for example "INFO".
 	 * @param value an integer value for the level.
 	 */
-	public AcsLogLevel(String name, int value, int acsLevel)
+	public AcsLogLevel(String name, int value, int acsCoreLevel)
 	{
 		super(name, value, ACS_BUNDLE_NAME);
 
 		// create entry name, so that is computent only once
 		entryName = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 
-		this.acsLevel = acsLevel;		
+		this.acsCoreLevel = acsCoreLevel;		
 
 		// add to tree of known lists
 		synchronized (known)
@@ -164,7 +177,7 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	 */
 	public int getAcsLevel()
 	{
-		return acsLevel;
+		return acsCoreLevel;
 	}
 
 	/**
@@ -235,6 +248,25 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 			}
 
 			return nativeLevel;
+		}
+	}
+	
+	
+	/**
+	 * This method should only be used to generate documentation about the various level mappings in use.
+	 * @param ps The PrintStream to print to, e.g. System.out
+	 */
+	static void printMappings(PrintStream ps) {
+		AcsLogLevel[] allLevels = known.toArray(new AcsLogLevel[known.size()]);
+		Arrays.sort(allLevels);
+		
+		final String delim = "\t";
+		for (int i = 0; i < allLevels.length; i++) {
+			AcsLogLevel level = allLevels[i];
+			String acsLevelName = level.getEntryName();
+			int levelValue = level.intValue();
+			int coreLevelValue = level.getAcsLevel();
+			ps.println(acsLevelName + delim + levelValue + delim + coreLevelValue);
 		}
 	}
 }
