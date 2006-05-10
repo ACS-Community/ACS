@@ -183,3 +183,22 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 
     return comp->returnCompletion();
 }
+
+
+template<class TCallback>
+void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
+    throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+{
+    TCallback *cb = 0;
+
+    try
+	{
+	getReceiver()->getFlowCallback(flowNumber,cb);
+	}
+    catch(AVInvalidFlowNumberExImpl & ex)
+	{
+	throw ex.getAVInvalidFlowNumberEx();
+	}
+
+    cb->setFlowTimeout(timeout);
+}

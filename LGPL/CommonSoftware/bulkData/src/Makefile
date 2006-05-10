@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.24 2006/04/26 13:16:15 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.25 2006/05/10 13:03:55 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@
 # So we set it locally: it works but it is not 100% safe.
 #
 USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV  
-USER_LIB = -lTAO_AV -lacsQoS
+USER_LIB = -lTAO_AV
 
 #
 # MODULE CODE DESCRIPTION:

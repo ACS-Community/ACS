@@ -88,6 +88,15 @@ module bulkdata
 	*/
 	ACSErr::Completion getCbStatus(in unsigned long flowNumber)
 	    raises (ACSBulkDataError::AVInvalidFlowNumberEx);
+	/**
+	 *  Set receiver timeout
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void setTimeout(in unsigned long flowNumber, in unsigned long timeout)
+	    raises (ACSBulkDataError::AVInvalidFlowNumberEx);
 	};
 
     /** @interface BulkDataReceiverDistr

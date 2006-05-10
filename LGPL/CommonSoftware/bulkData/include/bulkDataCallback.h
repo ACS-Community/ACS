@@ -23,8 +23,6 @@ using namespace std;
 using namespace ACSBulkDataError;
 using namespace ACSBulkDataStatus;
 
-const CORBA::ULong maxErrorRepetition = 3;
-
 class BulkDataCallback : public TAO_AV_Callback
 {
 
@@ -68,6 +66,8 @@ class BulkDataCallback : public TAO_AV_Callback
 
     virtual CompletionImpl *getErrorCompletion();
 
+    virtual void setFlowTimeout(CORBA::ULong timeout);
+
     /********************* methods to be implemented by the user *****************/
 
     virtual int cbStart(ACE_Message_Block * userParam_p = 0) = 0;
@@ -86,6 +86,8 @@ class BulkDataCallback : public TAO_AV_Callback
 
     void cleanRecvBuffer();
 
+    void checkFlowTimeout();
+
     ACE_Time_Value waitPeriod_m;
 
     CORBA::ULong loop_m;
@@ -99,8 +101,6 @@ class BulkDataCallback : public TAO_AV_Callback
 
     CORBA::Long frameCount_m;
 
-    CORBA::ULong errorCounter_m;
-
     ACE_Message_Block *bufParam_p;
 
     CORBA::Boolean timeout_m;
@@ -108,6 +108,10 @@ class BulkDataCallback : public TAO_AV_Callback
     CORBA::Boolean error_m;
 
     AVCbErrorCompletion *errComp_p;
+
+    CORBA::ULong flowTimeout_m;
+
+    ACE_Time_Value startTime_m;    
 };
 
 

@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataDistrEx3.cpp,v 1.1 2006/05/03 10:12:09 rcirami Exp $"
+ * "@(#) $Id: bulkDataDistrEx3.cpp,v 1.2 2006/05/10 13:03:59 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------

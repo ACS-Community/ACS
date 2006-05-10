@@ -147,51 +147,6 @@ void BulkDataSenderEx3Impl::paceDataErr()
 }
 
 
-void BulkDataSenderEx3Impl::paceDataTimeout(CORBA::ULong timeout)
-    throw (CORBA::SystemException, AVPaceDataErrorEx)
-{
-
-    try
-	{
-	int size;
-	CORBA::ULong flowNumber;
-
-	/******************************** flow 1 *********************************/
-
-	size = 100000;
-
-	ACE_Message_Block *mb1;
-	mb1 = new ACE_Message_Block(size);
-
-	for (CORBA::Long j = 0; j < (size-1); j++)
-	    {
-	    *mb1->wr_ptr()='d';
-	    mb1->wr_ptr(sizeof(char));
-	    }
-	*mb1->wr_ptr()='\0';
-	mb1->wr_ptr(sizeof(char));
-
-	flowNumber = 1;
-	getSender()->sendData(flowNumber, mb1, timeout);
-
-	ACS_SHORT_LOG ((LM_INFO,"flow 1 length sent data = %d", mb1->length()));
-
-	mb1->release();
-    	}
-    catch(ACSErr::ACSbaseExImpl &ex)
-	{
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderEx3Impl::paceDataTimeout");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (...)
-	{
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::paceDataTimeout UNKNOWN exception");
-	throw err.getAVPaceDataErrorEx();
-	}
-
-}
-
-
 void BulkDataSenderEx3Impl::paceData()
     throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
@@ -203,7 +158,7 @@ void BulkDataSenderEx3Impl::paceData()
 
 	/******************************** flow 1 *********************************/
 
-	size = 14000000;
+	size = 1000000;
 
 	ACE_Message_Block *mb1;
 	mb1 = new ACE_Message_Block(size);
@@ -234,6 +189,7 @@ void BulkDataSenderEx3Impl::paceData()
 	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSenderEx3Impl::paceData UNKNOWN exception");
 	throw err.getAVPaceDataErrorEx();
 	}
+
 }
 
 

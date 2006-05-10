@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataEx3.cpp,v 1.5 2006/05/02 12:28:12 rcirami Exp $"
+ * "@(#) $Id: bulkDataEx3.cpp,v 1.6 2006/05/10 13:03:59 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -96,6 +96,7 @@ int main(int argc, char *argv[])
 // 3c. the disconnection does not occur until the cbReceive is busy
 
 
+
 	ACS_SHORT_LOG((LM_INFO, "###### SIMULATING ERROR WHEN SENDING PARAMETER ######"));
 	try
 	    {
@@ -109,7 +110,7 @@ int main(int argc, char *argv[])
 	    // exception catched (1.b)
 	    AVStartSendErrorExImpl ex1(ex);
 	    ex1.log();
-
+	    
 	    // error retrieved (1.b)
 	    CompletionImpl comp = receiver->getCbStatus(1);
 	    if(comp.getCode() == ACSBulkDataStatus::AVCbError)
@@ -120,8 +121,7 @@ int main(int argc, char *argv[])
 
 	    }
 	ACS_SHORT_LOG((LM_INFO, "################################################"));
-
-
+	
 
 
 
@@ -166,8 +166,10 @@ int main(int argc, char *argv[])
 	    //Timeout simulation (3.a)
 	    sender->startSendTimeout();
 
+	    receiver->setTimeout(1,11000);
+
 	    // a timeout of 10 s is set on the sender
-	    sender->paceDataTimeout(10000);
+	    sender->paceData();
 	    }
 	catch (AVPaceDataErrorEx & ex)
 	    { 
@@ -184,8 +186,8 @@ int main(int argc, char *argv[])
 	    }
 
 	ACS_SHORT_LOG((LM_INFO, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"));
-	
-	//sender->stopSend();
+
+//	sender->stopSend();
 
 	// disconnect does not occur until the cbReceive has returned (3.c)
 	sender->disconnect();

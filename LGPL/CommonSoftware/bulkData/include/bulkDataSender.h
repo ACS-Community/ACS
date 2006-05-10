@@ -45,7 +45,7 @@
 
 // #include "ace/High_Res_Timer.h"
 
-#include <acsQoS.h>
+// #include <acsQoS.h>
 
 /** @file bulkDataSender.h  
  */
@@ -163,13 +163,12 @@ namespace AcsBulkdata
 	 * Calls the Receiver receive_frame() method.
 	 * @param CORBA::ULong flowNumber
 	 * @param ACE_Message_Block 
-	 * @param unsigned long timeout (msec)
 	 * @return void
 	 * @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void sendData(CORBA::ULong flownumber, ACE_Message_Block *buffer, unsigned long timeout = 60000);
+	void sendData(CORBA::ULong flownumber, ACE_Message_Block *buffer);
            
 	/** 
 	 * Calls the Receiver receive_frame() method.
@@ -182,7 +181,7 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void sendData(CORBA::ULong flownumber, const char *buffer, size_t len, unsigned long timeout = 60000);
+	void sendData(CORBA::ULong flownumber, const char *buffer, size_t len);
 
 	/** 
 	 *  Calls the Receiver handle_stop() method.

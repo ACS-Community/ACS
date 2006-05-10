@@ -4,11 +4,11 @@ BulkDataReceiverCbEx3::BulkDataReceiverCbEx3() : count1_m(0), timeout_m(false)
 {
     ACS_TRACE("BulkDataReceiverCbEx3::BulkDataReceiverCbEx3"); 
 
-    // internal timeout for this callback: 12 loops for 1 sec = 12 sec
+    // internal timeout for this callback: 5 loops for 1 sec = 12 sec
     ACE_Time_Value waitPeriod_m;
     waitPeriod_m.set(1L, 0L);
     setSleepTime(waitPeriod_m);
-    setSafeTimeout(12);
+    setSafeTimeout(5);
 
 }
 
@@ -57,9 +57,8 @@ BulkDataReceiverCbEx3::cbReceive(ACE_Message_Block * frame_p)
 
     if(timeout_m == true)
 	{
-//	cout << "KKKKKKKKKKKKKKKKKKK " << count1_m << endl;
 	// simulate a very very slow data ingestion
-	ACE_OS::sleep(20);
+	ACE_OS::sleep(12);
 	return 0;
 	}
 

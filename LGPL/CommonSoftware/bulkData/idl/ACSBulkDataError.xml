@@ -21,4 +21,6 @@
 	<ErrorCode name="AVOpenReceiverError" shortDescription="Receiver openReceiver error" description=""/>
 	<ErrorCode name="AVReceiverConfigError" shortDescription="Receiver getReceiverConfig error" description=""/>
 	<ErrorCode name="AVCloseReceiverError" shortDescription="Receiver closeReceiver error" description=""/>
+	<ErrorCode name="AVCbFlowTimeout" shortDescription="Callback Flow timeout" description=""/>
+
 </Type>

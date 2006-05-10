@@ -327,7 +327,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
 
 
 template<class TSenderCallback>
-void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, ACE_Message_Block *buffer_p, unsigned long timeout)
+void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, ACE_Message_Block *buffer_p)
 {
     ACS_TRACE("BulkDataSender<>::startSend(ACE_Message_Block *)");
 
@@ -377,7 +377,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	// ACE_High_Res_Timer elapsed_timer;
 	// elapsed_timer.start ();
  
-	acsQoS::Timeout tim(timeout);
+	//	acsQoS::Timeout tim(timeout);
 	
 	streamctrl_p->stop(locSpec);
 	}
@@ -401,11 +401,9 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 
 
 template<class TSenderCallback>
-void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, const char *buffer_p, size_t len, unsigned long timeout)
+void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, const char *buffer_p, size_t len)
 {
     ACS_TRACE("BulkDataSender<>::startSend(const char *)");
-
-// timeout
 
     int res = 0;
 
@@ -447,8 +445,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	    AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	    throw err;
 	    }
-	
-	acsQoS::Timeout tim(timeout);
 	
 	streamctrl_p->stop(locSpec);
 	}

@@ -59,9 +59,6 @@ module bulkdata
 
   void paceDataErr()
       raises (ACSBulkDataError::AVPaceDataErrorEx);
-
-  void paceDataTimeout(in unsigned long timeout)
-      raises (ACSBulkDataError::AVPaceDataErrorEx);
   };
   
 };

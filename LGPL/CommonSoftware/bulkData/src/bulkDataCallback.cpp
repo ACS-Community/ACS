@@ -21,8 +21,9 @@ BulkDataCallback::BulkDataCallback()
     working_m = false;
     error_m = false;
 
-    errorCounter_m = 0;
     errComp_p = 0;
+
+    flowTimeout_m = 0;
 }
 
 
@@ -38,16 +39,20 @@ BulkDataCallback::~BulkDataCallback()
 	    errComp_p = 0;
 	    }
 	}
-
+    error_m = false;
+    
+    if(bufParam_p)
+	{
+	bufParam_p->release();
+	bufParam_p = 0;
+	}
 }
 
 
 int BulkDataCallback::handle_start(void)
 {
-    //ACS_TRACE("BulkDataCallback::handle_start");
     
     // cout << "BulkDataCallback::handle_start - state_m: " << state_m << endl;
-
     //if(timeout_m == true)
     //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_start - timeout_m == true !!!"));
 
@@ -61,15 +66,24 @@ int BulkDataCallback::handle_start(void)
 	    errComp_p = 0;
 	    }
 	}
-
     // error is cleared
     error_m = false;    
+
+    // parameter buffer is cleared (just in case) 
+    if(bufParam_p)
+	{
+	bufParam_p->release();
+	bufParam_p = 0;
+	}
 
     state_m = CB_UNS;
     substate_m = CB_SUB_UNS;
     
     frameCount_m = 1; // we need to wait for 1 following frame before doing anything else  
- 
+
+    if (flowTimeout_m != 0)
+	startTime_m = ACE_OS::gettimeofday();
+
     return 0;
 }
 
@@ -95,10 +109,8 @@ int BulkDataCallback::handle_stop (void)
 
 	if(state_m == CB_UNS)
 	    { 
-
-	    int res = cbStop();
-	    errorCounter_m = 0;
-	    return res;
+	    res = cbStop();
+	    return 0;
 	    }
 
 	if((state_m == CB_SEND_PARAM) || (state_m == CB_SEND_DATA))
@@ -110,11 +122,18 @@ int BulkDataCallback::handle_stop (void)
 		return 0;
 		}
 
+	    if (error_m == true)
+		{
+		timeout_m = true;
+		throw CORBA::TIMEOUT();
+		}
+
 	    locLoop = loop_m;
 	    while((count_m != dim_m) && locLoop > 0)
 		{
 		ACE_OS::sleep(waitPeriod_m);
 		locLoop--;
+		checkFlowTimeout();
 		}
 
 	    if ( locLoop == 0 )
@@ -122,25 +141,10 @@ int BulkDataCallback::handle_stop (void)
 		ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout expired, not all data received"));
 
 		timeout_m = true;
-
 		//cleaning the recv buffer
+		cleanRecvBuffer();
 
-		ACE_Svc_Handler<ACE_SOCK_STREAM,ACE_NULL_SYNCH> *svch = dynamic_cast<ACE_Svc_Handler<ACE_SOCK_STREAM,ACE_NULL_SYNCH> *>(handler_);   
-
-		char buf[BUFSIZ];
-		int bufSize = sizeof(buf);
-		//cout << "sssssss: " << bufSize << endl;
-		int nn = 1;
-		while(nn > 0)
-		    {
-		    nn = svch->peer().recv(buf,bufSize);
-		    //cout << "nnnnnnn: " << nn << endl;
-		    }
-		//return -1;
-
-		if (error_m == true)
-		    throw CORBA::TIMEOUT();
-
+		throw CORBA::TIMEOUT();
 		}
 
 	    if(state_m == CB_SEND_PARAM)
@@ -150,7 +154,11 @@ int BulkDataCallback::handle_stop (void)
 		    res = cbStart(bufParam_p);
 
 		if(bufParam_p)
+		    {
 		    bufParam_p->release();
+		    bufParam_p = 0;
+		    }
+		checkFlowTimeout();
 		}
 
 	    state_m = CB_UNS;
@@ -164,20 +172,15 @@ int BulkDataCallback::handle_stop (void)
 	{
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(ex,__FILE__,__LINE__,"BulkDataCallback::handle_stop");
 	err.log();
-
-	/* TBD what do to after several attempts ? */
-	errorCounter_m++;
-	if(errorCounter_m == maxErrorRepetition)
-	    {
-	    errorCounter_m = 0;
-	    //return 0;
-	    }
-
 	// add to the completion
 	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
-
 	error_m = true;
 
+	if(bufParam_p)
+	    {
+	    bufParam_p->release();
+	    bufParam_p = 0;
+	    }
 	throw CORBA::TIMEOUT();
 	}
     catch(CORBA::Exception &ex)
@@ -186,13 +189,19 @@ int BulkDataCallback::handle_stop (void)
 	err.addData("CORBA::Exception", ex._info());
 	err.log();
 
-	errorCounter_m++;
-	if(errorCounter_m == maxErrorRepetition)
+	if (errComp_p == 0)
 	    {
-	    errorCounter_m = 0;
-	    //return 0;
+	    errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
+	    error_m = true;
 	    }
-	error_m = true;
+	
+
+	if(bufParam_p)
+	    {
+	    bufParam_p->release();
+	    bufParam_p = 0;
+	    }
+
 	throw CORBA::TIMEOUT();
 	}
     catch(...)
@@ -200,14 +209,14 @@ int BulkDataCallback::handle_stop (void)
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::handle_stop");
 	err.addData("UNKNOWN Exception", "Unknown ex in BulkDataCallback::handle_stop");
 	err.log();
+//	error_m = true;
 
-	errorCounter_m++;
-	if(errorCounter_m == maxErrorRepetition)
+	if(bufParam_p)
 	    {
-	    errorCounter_m = 0;
-	    //return 0;
+	    bufParam_p->release();
+	    bufParam_p = 0;
 	    }
-	error_m = true;
+
 	throw CORBA::TIMEOUT();
 	}
 
@@ -220,16 +229,6 @@ int BulkDataCallback::handle_destroy (void)
     //ACS_TRACE("BulkDataCallback::handle_destroy");
 
     //cout << "BulkDataCallback::handle_destroy" << endl;
-
-    if (error_m == true)
-	{
-	if (errComp_p != 0)
-	    {
-	    delete errComp_p;
-	    errComp_p = 0;
-	    }
-	}
-    error_m = false;
 
     delete this;
       
@@ -249,14 +248,8 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	return 0;
 	}
 
-
-    //ACS_TRACE("BulkDataCallback::receive_frame");
-    //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::receive_frame for flow %s", flowname_m.c_str()));
-    
+    //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::receive_frame for flow %s", flowname_m.c_str()));  
     // cout << "BulkDataCallback::receive_frame - state_m: " << state_m << endl;
-
-    if(timeout_m == true)
-	ACS_SHORT_LOG((LM_INFO, "BulkDataCallback::receive_frame - timeout_m true !!!"));
 
     try
 	{
@@ -312,15 +305,15 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    if ( dim_m == 0 )
 		{
 		res = cbStart();
-		errorCounter_m = 0;
+
+		checkFlowTimeout();
 		working_m = false;
 		return 0;
 		}
 
 	    bufParam_p->copy(frame->rd_ptr(),frame->length());
-
 	    count_m += frame->length();
-	    errorCounter_m = 0;
+
 	    working_m = false;
 	    return 0;
 	    }
@@ -328,13 +321,9 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	if (state_m == CB_SEND_DATA)
 	    {
 	    res = cbReceive(frame);
-//	    if(timeout_m == true)
-//		{
-//		//cout << "!!!!!!! in receive_frame timeout_m == true after timeout - set it to false" << endl;
-//		timeout_m = false;
-//		}
 	    count_m += frame->length();
-	    errorCounter_m = 0;
+
+	    checkFlowTimeout();
 	    working_m = false;
 	    return 0;
 	    }
@@ -344,18 +333,8 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	{
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(ex,__FILE__,__LINE__,"BulkDataCallback::receive_frame");
 	err.log();
-
-	/* TBD what do to after several attempts ? */
-	errorCounter_m++;
-	if(errorCounter_m == maxErrorRepetition)
-	    {
-	    errorCounter_m = 0;
-	    //return 0;
-	    }
-
 	// add to the completion
 	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
-
 	error_m = true;
 	}
     catch(CORBA::Exception &ex)
@@ -363,14 +342,6 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::receive_frame");
 	err.addData("CORBA::Exception", ex._info());
 	err.log();
-
-	errorCounter_m++;
-	if(errorCounter_m == maxErrorRepetition)
-	    {
-	    errorCounter_m = 0;
-	    //return 0;
-	    }
-
 	error_m = true;
 	}
     catch(...)
@@ -378,13 +349,6 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::receive_frame");
 	err.addData("UNKNOWN Exception", "Unknown ex in BulkDataCallback::receive_frame");
 	err.log();
-
-	errorCounter_m++;
-	if(errorCounter_m == maxErrorRepetition)
-	    {
-	    errorCounter_m = 0;
-	    //return 0;
-	    }
 	error_m = true;
 	}
 
@@ -470,4 +434,27 @@ void BulkDataCallback::cleanRecvBuffer()
 	}
 
 //    svch->peer().close();    
+}
+
+
+void BulkDataCallback::setFlowTimeout(CORBA::ULong timeout)
+{
+    flowTimeout_m = timeout;
+}
+
+
+void BulkDataCallback::checkFlowTimeout()
+{
+    if(flowTimeout_m == 0)
+	return;
+
+    ACE_Time_Value elapsedTime = ACE_OS::gettimeofday() - startTime_m;
+    double dtime = (elapsedTime.sec() * 1000.) + ( elapsedTime.usec() / 1000. );
+    if(dtime > flowTimeout_m)
+	{
+	cleanRecvBuffer();
+	timeout_m = true;
+	AVCbFlowTimeoutExImpl err = AVCbFlowTimeoutExImpl(__FILE__,__LINE__,"BulkDataCallback::checkFlowTimeout");
+	throw err;
+	}
 }

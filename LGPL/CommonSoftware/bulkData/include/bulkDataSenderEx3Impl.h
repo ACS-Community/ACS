@@ -98,9 +98,6 @@ class BulkDataSenderEx3Impl : public virtual BulkDataSenderDefaultImpl,
     virtual void paceDataErr()
         throw (CORBA::SystemException, AVPaceDataErrorEx);
 
-    virtual void paceDataTimeout(CORBA::ULong timeout)
-        throw (CORBA::SystemException, AVPaceDataErrorEx);
-
     virtual void stopSend()
 	throw (CORBA::SystemException, AVStopSendErrorEx);
 

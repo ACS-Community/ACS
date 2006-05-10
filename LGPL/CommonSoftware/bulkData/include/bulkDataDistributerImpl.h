@@ -193,6 +193,12 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
     virtual ACSErr::Completion *getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
 	throw (CORBA::SystemException);
 
+    virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	{
+	    //empty
+	}
+
   private:
 
     ContainerServices *containerServices_p;

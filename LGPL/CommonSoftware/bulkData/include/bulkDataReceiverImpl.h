@@ -122,6 +122,9 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
     virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
 	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
 
+    virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
+
   protected: 
 
     
