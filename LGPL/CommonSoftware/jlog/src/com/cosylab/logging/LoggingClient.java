@@ -1895,7 +1895,43 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     }
     
     /**
-     * Show the progress bar
+     * Show the progres bar as determinate with the given min and max
+     * 
+     * @param textThe text to show in the toolbar
+     *            If it is null or empty then no text will be displayed
+     * @param min The starting position
+     * @param max The final position
+     */
+    public void animateProgressBar(String text, int min, int max) {
+    	if (min>=max) {
+    		throw new IllegalArgumentException("Invalid range: ["+min+","+max+"]");
+    	}
+    	Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
+    	setCursor(hourglassCursor);
+    	if (text!=null && text.length()>0) {
+    			progressBar.setString(text);
+    			progressBar.setStringPainted(true);
+    			progressBar.setToolTipText(text);
+    	} else {
+    		progressBar.setStringPainted(false);
+    		progressBar.setToolTipText("Wait please");
+    	}
+    	progressBar.setMinimum(min);
+    	progressBar.setMaximum(max);
+    	progressBar.setIndeterminate(false);
+    	progressBar.setVisible(true);
+    }
+    
+    /**
+     * Move the progressbar when in determinate mode
+     * @param newPos
+     */
+    public void moveProgressBar(int newPos) {
+    	progressBar.setValue(newPos);
+    }
+    
+    /**
+     * Show the progress bar as indeterminate
      * 
      *@param text The text to show in the toolbar
      *            If it is null or empty then no text will be displayed
