@@ -119,8 +119,20 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p
   ACE_UNUSED_ARG(callbackID);
   ACE_UNUSED_ARG(descIn);
 
-  this->setValue(this->property_mp, value, completion, descOut);
-  ACS_COMPLETION(completion, "baci::RWcommonImpl&lt;&gt;::setValueAction");
+  CompletionImpl co;
+  this->setValue(this->property_mp, value, co/*mpletion*/, descOut);
+
+  if (co.isErrorFree())
+      {
+      completion = co;
+      }
+  else
+      {
+      completion = ACSErrTypeCommon::OutOfBoundsCompletion(co, __FILE__, __LINE__, "RWcommonImpl<ACS_RW_TL>::setValueAction");
+      }
+
+
+ //  ACS_COMPLETION(completion, "baci::RWcommonImpl&lt;&gt;::setValueAction");
   
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout

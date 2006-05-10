@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWcommonImpl_T.h,v 1.22 2005/01/28 16:20:32 dfugate Exp $"
+* "@(#) $Id: baciRWcommonImpl_T.h,v 1.23 2006/05/10 16:29:14 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -37,6 +37,7 @@
 
 #include <baciPcommonImpl_T.h>
 #include <baciErrTypeDevIO.h>
+#include <ACSErrTypeCommon.h>
 #include <baciErrTypeProperty.h>
 
 /**
