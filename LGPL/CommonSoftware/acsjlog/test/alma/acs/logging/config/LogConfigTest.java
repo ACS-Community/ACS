@@ -164,6 +164,7 @@ public class LogConfigTest extends TestCase {
 		testCDB.setThrowException(true);
 		try {
 			logConfig.initialize();
+			fail("LogConfigException was expected.");
 		}
 		catch (LogConfigException ex) {
 			assertEquals("Log config initialization at least partially failed. " + 
