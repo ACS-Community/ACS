@@ -23,8 +23,13 @@ package alma.acs.container;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,20 +46,13 @@ import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ManagerOperations;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ArrayBlockingQueue;
-import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
-import edu.emory.mathcs.backport.java.util.concurrent.RejectedExecutionException;
-import edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
-
 import alma.ACS.ComponentStates;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.classloader.AcsComponentClassLoader;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfig; 
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.util.StopWatch;
 
@@ -143,7 +141,7 @@ public class AcsContainer extends ContainerPOA
                 logConfig.initialize();
             } catch (LogConfigException ex) {
                 // if the CDB can't be read, we still want to run the container, so we only log the problems
-                m_logger.log(Level.WARNING, "Failed to configure logging. Default values will be used.", ex);
+                m_logger.log(Level.FINE, "Failed to configure logging. Default values will be used.", ex);
             }
 
             s_instance = this;
@@ -656,7 +654,7 @@ public class AcsContainer extends ContainerPOA
      */
     private synchronized ComponentAdapter[] markAndFilterForDeactivation(ComponentAdapter[] compAdapters)
     {
-        ArrayList adaptersForDestruction = new ArrayList();
+        ArrayList<ComponentAdapter> adaptersForDestruction = new ArrayList<ComponentAdapter>();
         for (int i = 0; i < compAdapters.length; i++)
         {
             try
@@ -680,7 +678,7 @@ public class AcsContainer extends ContainerPOA
                 m_logger.log(Level.WARNING, "something went wrong while marking components for destruction. Will continue.", thr);
             }
         }
-        return ( (ComponentAdapter[]) adaptersForDestruction.toArray(new ComponentAdapter[adaptersForDestruction.size()]) );
+        return ( adaptersForDestruction.toArray(new ComponentAdapter[adaptersForDestruction.size()]) );
     }
 
 
@@ -839,7 +837,7 @@ public class AcsContainer extends ContainerPOA
         // If tasks frequently block (for example if they are I/O bound), a system may be able to schedule time for more threads than you otherwise allow.
         // Use of small queues generally requires larger pool sizes, which keeps CPUs busier but may encounter unacceptable scheduling overhead,
         // which also decreases throughput.
-        BlockingQueue execQueue = new ArrayBlockingQueue(queueCapacity);
+        BlockingQueue<Runnable> execQueue = new ArrayBlockingQueue<Runnable>(queueCapacity);
 
         ExecutorService executor = new ThreadPoolExecutor(corePoolSize, maxThreadNumber,
                 60L, TimeUnit.SECONDS,
@@ -912,7 +910,7 @@ public class AcsContainer extends ContainerPOA
         logManagerRequest("received call to get_component_info", handles);
 
         // get those ComponentInfos
-        List componentInfolist = new ArrayList();
+        List<ComponentInfo> componentInfolist = new ArrayList<ComponentInfo>();
 
         ComponentAdapter[] adapters = null;
         if (handles != null && handles.length > 0) {
@@ -926,7 +924,7 @@ public class AcsContainer extends ContainerPOA
             ComponentAdapter adapter = adapters[i];
             componentInfolist.add(adapter.getComponentInfo());
         }
-        ComponentInfo[] ret = (ComponentInfo[]) componentInfolist.toArray(new ComponentInfo[0]);
+        ComponentInfo[] ret = componentInfolist.toArray(new ComponentInfo[0]);
 
         return ret;
     }
