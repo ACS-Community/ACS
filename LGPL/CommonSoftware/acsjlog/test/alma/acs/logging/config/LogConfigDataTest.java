@@ -46,7 +46,7 @@ public class LogConfigDataTest extends TestCase {
 
     public void testParseContainerXml() throws LogConfigException {
         assertEquals("Log", logConfigData.getCentralizedLoggerName());
-        assertEquals(0, logConfigData.getMinLogLevel());
+        assertEquals(3, logConfigData.getMinLogLevel());
         assertEquals(10, logConfigData.getExpeditedDispatchLevel());
 
         String bilboContainerXml = 
