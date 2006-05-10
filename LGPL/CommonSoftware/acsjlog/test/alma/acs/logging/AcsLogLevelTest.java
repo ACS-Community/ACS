@@ -32,55 +32,46 @@ import java.util.logging.Level;
 public class AcsLogLevelTest extends junit.framework.TestCase
 {
 
-	public AcsLogLevelTest(String name)
+	public AcsLogLevelTest()
 	{
-		super(name);
+		super("AcsLogLevelTest");
 	}
-
-	// 	Available:
-	//	SEVERE (highest value)  -- EMERGENCY 						1000
-	//	WARNING 				-- WARNING (ERROR CRITICAL ALERT)	 900
-	//	INFO 					-- INFO	(NOTICE)					 800
-	//	CONFIG 					-- DEBUG							 700
-	//	FINE 					-- DEBUG							 500
-	//	FINER 					-- TRACE							 400
-	//	FINEST (lowest value) 	-- TRACE							 300
-	//
-	//  ALL Integer.MIN_VALUE   -- TRACE and above					Integer.MIN_VALUE
-	//  OFF Integer.MAX_VALUE   -- level not set 					Integer.MAX_VALUE
-	//							   (as if no contLogger.setLevel defined)
 
 	/**
 	 * Test AcsLogLevel Mapping of levels.
+	 * {@link AcsLogLevel} stands between the JDK-defined {@link Level} which it inherits from, 
+	 * and the "core" level integer constants defined in the ACS logging system, given in {@link ACSCoreLevel}.
+	 * Conversion from and to core levels is done separately in test {@link #testACSCoreLevels()}. 
 	 */
 	public void testLevelMapping()
 	{
-		// native to native
-		assertEquals(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE));
-		assertEquals(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING));
-		assertTrue(AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING) != AcsLogLevel.TRACE);
+		// ACS-level to ACS-level
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE));
+		assertSame(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING));
+		assertNotSame(AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING), AcsLogLevel.TRACE);
 
-		// Level to native
-		assertEquals(AcsLogLevel.EMERGENCY, AcsLogLevel.getNativeLevel(Level.SEVERE));
-		assertEquals(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(Level.WARNING));
-		assertEquals(AcsLogLevel.INFO, AcsLogLevel.getNativeLevel(Level.INFO));
-		assertEquals(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.CONFIG));
-		assertEquals(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINE));
-		assertEquals(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.FINER));
-		assertEquals(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.FINEST));
-		assertEquals(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.ALL));
-		assertEquals(null, AcsLogLevel.getNativeLevel(Level.OFF));
+		// JDK-Level to ACS-level
+		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.getNativeLevel(Level.SEVERE));
+		assertSame(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(Level.WARNING));
+		assertSame(AcsLogLevel.INFO, AcsLogLevel.getNativeLevel(Level.INFO));
+		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.CONFIG));
+		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINE));
+		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINER));
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.FINEST));
+		assertSame(AcsLogLevel.ALL, AcsLogLevel.getNativeLevel(Level.ALL));
+		assertSame(null, AcsLogLevel.getNativeLevel(Level.OFF));
 
 		// some repetitions to test lookup
-		assertEquals(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE));
-		assertEquals(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING));
-		assertTrue(AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING) != AcsLogLevel.TRACE);
-		assertEquals(AcsLogLevel.EMERGENCY, AcsLogLevel.getNativeLevel(Level.SEVERE));
-		assertEquals(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(Level.WARNING));
-		assertEquals(AcsLogLevel.INFO, AcsLogLevel.getNativeLevel(Level.INFO));
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE));
+		assertSame(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING));
+		assertNotSame(AcsLogLevel.getNativeLevel(AcsLogLevel.WARNING), AcsLogLevel.TRACE);
+		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.getNativeLevel(Level.SEVERE));
+		assertSame(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(Level.WARNING));
+		assertSame(AcsLogLevel.INFO, AcsLogLevel.getNativeLevel(Level.INFO));
 
 		// compare expected and actual levels
-		assertEquals(400, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE).intValue());
+		assertEquals(Integer.MIN_VALUE, AcsLogLevel.getNativeLevel(AcsLogLevel.ALL).intValue());
+		assertEquals(300, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE).intValue());
 		assertEquals(700, AcsLogLevel.getNativeLevel(AcsLogLevel.DEBUG).intValue());
 		assertEquals(800, AcsLogLevel.getNativeLevel(AcsLogLevel.INFO).intValue());
 		assertEquals(801, AcsLogLevel.getNativeLevel(AcsLogLevel.NOTICE).intValue());
@@ -88,8 +79,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertEquals(901, AcsLogLevel.getNativeLevel(AcsLogLevel.ERROR).intValue());
 		assertEquals(902, AcsLogLevel.getNativeLevel(AcsLogLevel.CRITICAL).intValue());
 		assertEquals(903, AcsLogLevel.getNativeLevel(AcsLogLevel.ALERT).intValue());
-		assertEquals(1000, AcsLogLevel.getNativeLevel(AcsLogLevel.EMERGENCY).intValue());
-		assertEquals(400, AcsLogLevel.getNativeLevel(AcsLogLevel.ALL).intValue());
+		assertEquals(1000, AcsLogLevel.getNativeLevel(AcsLogLevel.EMERGENCY).intValue());		
 	}
 
 	/**
@@ -124,7 +114,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 	 */
 	public void testACSCoreLevels()
 	{
-		// test some
+		assertEquals(0, AcsLogLevel.ALL.getAcsLevel());
 		assertEquals(2, AcsLogLevel.TRACE.getAcsLevel());
 		assertEquals(3, AcsLogLevel.DEBUG.getAcsLevel());
 		assertEquals(4, AcsLogLevel.INFO.getAcsLevel());
@@ -134,5 +124,21 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertEquals(9, AcsLogLevel.CRITICAL.getAcsLevel());
 		assertEquals(10, AcsLogLevel.ALERT.getAcsLevel());
 		assertEquals(11, AcsLogLevel.EMERGENCY.getAcsLevel());
+		
+		// ACS-core-level to ACS-Level
+		assertSame(AcsLogLevel.ALL, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ALL));
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_TRACE));
+		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_DEBUG));
+		assertSame(AcsLogLevel.INFO, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_INFO));
+		assertSame(AcsLogLevel.NOTICE, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_NOTICE));
+		assertSame(AcsLogLevel.WARNING, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_WARNING));
+		assertSame(AcsLogLevel.ERROR, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ERROR));
+		assertSame(AcsLogLevel.CRITICAL, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_CRITICAL));
+		assertSame(AcsLogLevel.ALERT, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ALERT));
+		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_EMERGENCY));		
+	}
+	
+	public void testPrintMappings() {
+		AcsLogLevel.printMappings(System.out);
 	}
 }
