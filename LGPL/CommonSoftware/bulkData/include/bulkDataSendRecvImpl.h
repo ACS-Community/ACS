@@ -175,6 +175,11 @@ class BulkDataSendRecvImpl : public virtual CharacteristicComponentImpl,
 	    return comp->returnCompletion();
 	}
 
+    virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	{
+	}
+
   private:
 
     AcsBulkdata::BulkDataSender<TSenderCallback> sender;
