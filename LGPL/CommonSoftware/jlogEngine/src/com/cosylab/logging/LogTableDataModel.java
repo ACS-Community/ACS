@@ -40,7 +40,7 @@ import com.cosylab.logging.IOLogsHelper;
 
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
-
+import com.cosylab.logging.client.CustomFileChooser;
 
 /**
  * Defines a table model that extends the AbstractTableModel class interface and implements 
@@ -82,7 +82,7 @@ public class LogTableDataModel extends AbstractTableModel
 	private ILogEntry rowCacheLogEntry = null;
 	
 	// Stores the current directory which is being accessed.	
-	public java.io.File currentDir = null;
+	public File currentDir = null;
 	
 	private boolean isSuspended = true;
 	
@@ -349,18 +349,17 @@ public class LogTableDataModel extends AbstractTableModel
 	 */
 	public void loadFromFile(String fileName) {
 		if (fileName==null) {
-			JFileChooser fc = new JFileChooser(currentDir);
-			if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			CustomFileChooser fc = new CustomFileChooser(currentDir,"Load");
+			File f = fc.getSelectedFile();
+			if (f!=null) {
 				try {
 					 // Assigns to filename the name of the selected file			
-					fileName = fc.getSelectedFile().getAbsolutePath();
+					fileName = f.getAbsolutePath();
 					
 					// Assigns the current directory which 
 					// the file chooser has accessed for getting the file
 					currentDir = fc.getCurrentDirectory(); // if curDir is declared as File
 					isSuspended	= true;
-		            	
-		            	
 				} catch (Exception e) {
 					System.err.println("Exception while loading: "+e.getMessage());
 					e.printStackTrace(System.err);
