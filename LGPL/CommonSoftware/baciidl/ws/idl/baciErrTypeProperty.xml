@@ -5,21 +5,40 @@ xsi:noNamespaceSchemaLocation="ACSError.xsd" name="baciErrTypeProperty"
 type="20" _prefix="alma">
 <ErrorCode name="PropertyStaticData"
            shortDescription="Error reading static data"
-	   description="Error reading static data"/>
+	   description="Error reading static data"
+/>
 <ErrorCode name="PropertyCreation"
            shortDescription="Error creating property"
-	   description="Error creating the property"/>
+	   description="Error creating the property"
+/>
 <ErrorCode name="PropertyActivation"
            shortDescription="Error activating property"
-	   description="Error activating the property"/>
+	   description="Error activating the property"
+/>
 <ErrorCode name="PropertySetInitValue"
            shortDescription="Error setting initial value"
-	   description="Error setting the intial value of the property"/>
+	   description="Error setting the intial value of the
+	   property"
+/>
 <ErrorCode name="CanNotSetValue" 
            shortDescription="Problem to set value"
-	   description="Problem to set value of the property"/>
+	   description="Problem to set value of the property"
+/>
+<ErrorCode name="CanNotGetValue" 
+           shortDescription="Problem to get value"
+	   description="Problem to get value of the property"
+/>
 <ErrorCode name="InvokeActionError" 
            shortDescription="Error in invokeAction"
 	   description="Error in invokeAction which performs
-	   asynchronous calls"/>	   
+	   asynchronous calls"
+/>
+<ErrorCode name="IncrementError" 
+           shortDescription="Increment value error"
+	   description="Increment value error"
+/>
+<ErrorCode name="DecrementError" 
+           shortDescription="Decrement value error"
+	   description="Decrement value error"
+/>
 </Type>
