@@ -151,11 +151,11 @@ public class SearchEngine {
         					string=tempSB.toString();
         					break;
         				} 
-        				case ILogEntry.FIELD_ENTRYTYPE: 
+        				case ILogEntry.FIELD_ENTRYTYPE:        					
         				case ILogEntry.FIELD_LINE: 
         				case ILogEntry.FIELD_PRIORITY: 
         				case ILogEntry.FIELD_STACKLEVEL: {
-        					string=""+ILogEntry.FIELD_ENTRYTYPE;
+        					string=obj.toString();
         					break;
         				}
         				default: {
