@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.11 2006/03/24 12:44:53 vwang Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.12 2006/05/11 15:01:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,8 +29,13 @@
 #include "baciUtil.h"
 #include "baciError.h"
 #include "logging.h"
+#include <baciErrTypeProperty.h>
+#include <ACSErrTypeCommon.h>
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.11 2006/03/24 12:44:53 vwang Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.12 2006/05/11 15:01:18 bjeram Exp $");
+
+using namespace baciErrTypeProperty;
+using namespace ACSErrTypeCommon;
 
 NAMESPACE_BEGIN(baci);
 
@@ -93,12 +98,24 @@ void actionThreadWorker(void* param) {
 		}
               else
 		{
-		request = action_p->invoke(callback_p->getComponent(), callbackID, 
+		CompletionImpl co;
+		request = action_p->invoke(callback_p->getComponent(), 
+					   callbackID, 
 					   callback_p->getDescIn(), 
-					   action_p->getValueRef(), completion,
+					   action_p->getValueRef(), 
+					   co,
 					   descOut);
-		ACS_COMPLETION(completion, "baci::actionThreadWorker");
-		}
+		if (co.isErrorFree())
+		    {
+		    completion = co;
+		    }
+		else
+		    {
+		    completion = CouldntPerformActionCompletion(co, 
+							  __FILE__, 
+							  __LINE__,
+							  "baci::actionThreadWorker");					    }//if-else
+		}//if-else
 
 	      pushActionBack = false;
 
@@ -246,14 +263,12 @@ void monitorThreadWorker(void* param) {
 		  //timeTriggered = (time-lastPollTime)>=pollInterval;
 		  if (timeTriggered==true)//property_p->hasTriggerOnValueMonitor() || timeTriggered)
 		    {
-		      Completion completion;
+		    CompletionImpl co;
 
 		      property_p->getValue(property_p,
-					 (BACIValue*)&value,
-					 completion,
-					 descOut);
-		      
-		      ACS_COMPLETION(completion, "baci::monitorThreadWorker");
+					   (BACIValue*)&value,
+					   co,
+					   descOut);
 
 		      property_p->setLastValue(value); // !!!
 		      //property_p->setLastCompletion(completion); // !!!
@@ -262,7 +277,18 @@ void monitorThreadWorker(void* param) {
 			  property_p->setLastPollTime(etime); // !!! do not set in case of error
 			  }
 		      //property_p->setLastPollTime(time); // !!! do not set in case of error
-		      property_p->dispatchMonitors(completion, descOut);
+		      if( co.isErrorFree() )
+			  {
+			  property_p->dispatchMonitors(co, descOut);
+			  }
+		      else
+			  {
+			  CanNotGetValueCompletion errComp(co, 
+							  __FILE__, 
+							  __LINE__, 
+							  "baci::monitorThreadWorker");
+			  property_p->dispatchMonitors(errComp, descOut);
+			  }//if-else
 		    }
 		}
 	    }

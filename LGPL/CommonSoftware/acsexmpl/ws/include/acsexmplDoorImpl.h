@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplDoorImpl.h,v 1.103 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplDoorImpl.h,v 1.104 2006/05/11 15:03:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -142,7 +142,7 @@ respectively. &nbsp;This example has four properties and uses an ACS thread.
  *   - xxxAction() performs (asyncronously) the action and invokes the callback when finished.
  *  The Door::invokeAction method is called by the asynchronous dispatcher whenever there is a
  *  xxx pending action and it calls the corresponding xxxAction method.
- * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.103 2006/04/20 08:47:59 bjeram Exp $"
+ * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.104 2006/05/11 15:03:19 bjeram Exp $"
  */
 class Door: public CharacteristicComponentImpl,     //Standard component superclass
             public virtual POA_acsexmplBuilding::Door,    //CORBA servant stub
@@ -383,14 +383,14 @@ class Door: public CharacteristicComponentImpl,     //Standard component supercl
      * Checks for the device's substate. If the device is busy it returns
      * an error.  The purpose of this function is to show how to handle
      * local error information.
-     * @param error error return variable 
+     * @param error completion return variable 
      * @return void
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     virtual void 
-    checkSubstate(ACSError *&error_p);
+    checkSubstate(CompletionImpl *&error_p);
     
     /**
      *  m_ref_position_sp is the position the Door should be in 

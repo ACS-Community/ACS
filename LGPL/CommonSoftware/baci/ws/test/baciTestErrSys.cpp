@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestErrSys.cpp,v 1.100 2005/02/09 14:16:01 bjeram Exp $"
+* "@(#) $Id: baciTestErrSys.cpp,v 1.101 2006/05/11 15:01:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * msekoran 2002-05-19 created
 */
  
-static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.100 2005/02/09 14:16:01 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.101 2006/05/11 15:01:45 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -55,73 +55,14 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 NAMESPACE_USE(baci)
 NAMESPACE_USE(BACI_TEST)
 
-void printCompletion (const ACSErr::ErrorTrace * c, int level)
-{
-  unsigned int j;
-
-  char *descript = ACSError::getDescription (c->errorType, c->errorCode);
-
-  if (c->errorType!=ACSErr::ACSErrTypeOK || c->errorCode!=ACSErr::ACSErrOK || c->lineNum!=0)
-    {
-      ACS_SHORT_LOG ((LM_INFO, "[%s][%s, %s @ %s][%s:%d in %s] %s (stackLevel=%d, type=%d, code=%d)",
-		      getStringifiedUTC(c->timeStamp).c_str(),
-		      c->process.in(), c->thread.in(), c->host.in(),
-		      c->file.in(), c->lineNum, c->routine.in(),
-		      descript, level, c->errorType, c->errorCode));
-
-    }
-  else
-    {
-      ACS_SHORT_LOG ((LM_INFO, "[%s] %s (stackLevel=%d, type=%d, code=%d)",
-		      getStringifiedUTC(c->timeStamp).c_str(), 
-		      descript, level, c->errorType, c->errorCode));
-    }//if-else
-
-  for (j=0; j<c->data.length(); j++)  
-      ACS_SHORT_LOG ((LM_INFO, "\t%s = %s", c->data[j].name.in(), c->data[j].value.in()));
-
-  CORBA::string_free(descript);
-  //delete[] descript;
-}
-
-void printCompletionStack(const ACSErr::ErrorTrace *c, int depth)
-{  
-  depth--;
-  if (depth)
-    {
-      const ACSErr::ErrorTrace *nc = &c->previousError[0];
-      printCompletionStack (nc, depth);
-    }
-  printCompletion (c, depth);
-}
-
-
-void printCompletionStack(const ACSErr::ErrorTrace *c)
-{  
-    int depth = 1; const ACSErr::ErrorTrace *tc = c;
-    while (tc->previousError.length()!=0)
-      {
-	tc = &tc->previousError[0];
-	depth++;
-      }
-    printCompletionStack(c, depth);
-}
-
 void printCompletion(const ACSErr::Completion *c)
 {
-    char *descript = ACSError::getDescription (c->type, c->code);
-    int eslen = c->previousError.length();
 
-    ACS_SHORT_LOG((LM_INFO,"[%s] %s (type: %d, code: %d, errorStack: %d)", 
-		   getStringifiedUTC(c->timeStamp).c_str(), descript, c->type, c->code, eslen));
-    
-    if (eslen)
-	printCompletionStack(&c->previousError[0]);
-
-    //  delete[] descript;
-    CORBA::string_free(descript);
-
-    ACE_OS::printf("\n");
+    CompletionImpl comp(*c);
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    comp.log();
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+    return;
 }
 
 //-------------------------------------------------------------
@@ -367,15 +308,15 @@ int main (int argc, char **argv)
 
 	//---------------------------------------------------------------
 
-        ACS_SHORT_LOG((LM_INFO,"ACSErr::Completion error stack print-out test..."));
-	ACSError * error = new ACS_ERROR(ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::FileNotFound, "main");
-	error = new ACS_ERROR(error, ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::OutOfBounds, "main");
-	error = new ACS_ERROR(error, ACSErr::ACSErrTypeCORBA, ACSErrTypeCommon::Unknown, "main");
-	printCompletionStack(error->returnErrorTrace());
-	
-	error = new ACS_ERROR();
-	printCompletionStack(error->returnErrorTrace());
-        ACS_SHORT_LOG((LM_INFO,"ACSErr::Completion error stack print-out test ended."));
+        ACS_SHORT_LOG((LM_INFO,"ACSErr::CompletionImpl error stack print-out test..."));
+
+	ACSErrTypeCommon::FileNotFoundCompletion c1(__FILE__, __LINE__, "main");
+	ACSErrTypeCommon::OutOfBoundsCompletion c2(c1, __FILE__, __LINE__, "main");
+	ACSErrTypeCommon::UnknownCompletion c3(c2, __FILE__, __LINE__, "main");
+
+	c3.log();
+    
+        ACS_SHORT_LOG((LM_INFO,"ACSErr::CompletionImpl error stack print-out test ended."));
 
 	//---------------------------------------------------------------
 

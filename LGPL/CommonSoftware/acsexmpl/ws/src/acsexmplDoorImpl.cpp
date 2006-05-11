@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.112 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.113 2006/05/11 15:03:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,11 +40,12 @@
 
 #include <baciDB.h>
 #include <acsexmplDoorImpl.h>
+#include <ACSErrTypeCommon.h>
 
 #ifndef MAKE_VXWORKS
-ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.112 2006/04/20 08:47:59 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.113 2006/05/11 15:03:19 bjeram Exp $")
 #else
-static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.112 2006/04/20 08:47:59 bjeram Exp $";
+static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.113 2006/05/11 15:03:19 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #endif
 
@@ -205,7 +206,7 @@ Door::~Door()
 // en error. (Note: the purpose of this function is to show how to handle
 // local error information.)
 void 
-Door::checkSubstate (ACSError *&error_p) 
+Door::checkSubstate (CompletionImpl *&error_p) 
 {
     try 
 	{
@@ -216,7 +217,7 @@ Door::checkSubstate (ACSError *&error_p)
         CORBA::Long substate = m_substate_sp->get_sync(completion.out());
         if ( (substate == DOOR_OPENING) || (substate == DOOR_CLOSING) ) 
 	    {
-            error_p = new ACS_ERROR(ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::FileNotFound, "checkSubstate", ACSErr::Error);
+            error_p = new ACSErrTypeCommon::FileNotFoundCompletion(__FILE__, __LINE__, "checkSubstate", ACSErr::Error);
             return;
 	    }
 	}
@@ -224,7 +225,8 @@ Door::checkSubstate (ACSError *&error_p)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"::Door::checkSubstate"));
 	}
-    error_p = new ACS_ERROR();    // No error
+    
+    error_p = new ACSErrTypeOK::ACSErrOKCompletion();//no error
 }
 
 /* --------------- [ Action implementator interface ] -------------- */
@@ -267,7 +269,8 @@ Door::openAction (BACIComponent *cob_p,
     ACS_DEBUG_PARAM("::Door::openAction", "%s", getComponent()->getName());
     
     unsigned long long timestamp;
-    
+    CompletionImpl *error_p = 0;
+
     DBConnector::writeCommand(getComponent()->getName(), "open", getStringifiedTimeStamp());
     
     // Set new ref_position_p
@@ -276,30 +279,30 @@ Door::openAction (BACIComponent *cob_p,
 	{
 	
         // Check for state
-        ACSError *error_p = 0;
+      
         checkSubstate(error_p);
 	
-        if (error_p->isOK() == true) 
+        if (error_p->isErrorFree() == true) 
 	    {
 	       CORBA::Double minPosition = m_ref_position_sp->min_value();
 	       m_ref_position_sp->getDevIO()->write(minPosition, timestamp);
 	    
             // Set completion for OK
-            completion.timeStamp=getTimeStamp();
-            completion.type=ACSErr::ACSErrTypeOK;
-            completion.code=ACSErrTypeOK::ACSErrOK;
+	       completion = ACSErrTypeOK::ACSErrOKCompletion();
+	       delete error_p; // Memory management: object has to be released.
 	    } 
 	else 
 	    {
-            // Set completion for ERROR
-	    ACS_COMPLETION(completion, *error_p);
+	    //here memory for error_p is deleted automatically
+	    completion = ACSErrTypeCommon::CouldntPerformActionCompletion(error_p, __FILE__, __LINE__, "::Door::closeAction");
 	    }
 
-        delete error_p;    // Memory management: object has to be released.
 	}
     catch(...) 
 	{
+	delete error_p;
         ACS_SHORT_LOG((LM_ERROR, "::Door::openAction"));
+	completion = ACSErrTypeCommon::CouldntPerformActionCompletion(__FILE__, __LINE__, "::Door::closeAction");
 	}
  
     // Note: when finished "return reqInvokeDone", otherwise 
@@ -321,7 +324,8 @@ Door::closeAction (BACIComponent *cob_p,
     ACS_DEBUG_PARAM("::Door::closeAction", "%s", getComponent()->getName());
     
     unsigned long long timestamp;
-    
+    CompletionImpl *error_p = 0;
+
     DBConnector::writeCommand(getComponent()->getName(), "close", getStringifiedTimeStamp());
     
     // Set new ref_position_p
@@ -329,31 +333,32 @@ Door::closeAction (BACIComponent *cob_p,
     try 
 	{
         // Check for state
-        ACSError *error_p = 0;
         checkSubstate(error_p);
 	
-        if (error_p->isOK() == true) 
+        if (error_p->isErrorFree() == true) 
 	    {
             CORBA::Double maxPosition = m_ref_position_sp->max_value();
 	        
             m_ref_position_sp->getDevIO()->write(maxPosition, timestamp);
 	    
             // Set completion for OK
-            completion.timeStamp=getTimeStamp();
-            completion.type=ACSErr::ACSErrTypeOK;
-            completion.code=ACSErrTypeOK::ACSErrOK;
+            completion = ACSErrTypeOK::ACSErrOKCompletion();
+	    delete error_p;
 	    } 
 	else 
 	    {
             // Set completion for ERROR
-	    ACS_COMPLETION(completion, *error_p);
+	    completion = ACSErrTypeCommon::CouldntPerformActionCompletion(error_p,
+									  __FILE__, 
+									  __LINE__,
+									  "::Door::closeAction");
 	    }
-
-        delete error_p;    // Memory management: object has to be released.
 	}
     catch(...)
 	{
+	delete error_p;
         ACS_SHORT_LOG((LM_ERROR,"::Door::closeAction"));
+	completion = ACSErrTypeCommon::CouldntPerformActionCompletion(__FILE__, __LINE__, "::Door::closeAction");
 	}
     
     // Note: when finished "return reqInvokeDone", otherwise 
@@ -388,9 +393,9 @@ Door::move (CORBA::Double pos)
         unsigned long long timestamp;
 	
         // Check for state
-        ACSError *error_p = 0;
+        CompletionImpl *error_p = 0;
         checkSubstate(error_p);
-        if (error_p->isOK() == false) 
+        if (error_p->isErrorFree() == false) 
 	    {
 	    delete error_p;    // Memory management: object has to be released.
             // Throw an exception

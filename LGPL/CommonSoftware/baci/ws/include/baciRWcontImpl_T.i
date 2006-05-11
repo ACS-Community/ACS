@@ -88,25 +88,38 @@ ActionRequest RWcontImpl<ACS_RW_TL>::invokeAction(int function,
 {
   // better implementation with array is possible
   ActionRequest req;
+  CompletionImpl c;
+
   switch (function) 
     {
     case GET_ACTION:
-      req = this->getValueAction(component_p, callbackID, descIn, value, completion, descOut);
+      req = this->getValueAction(component_p, callbackID, descIn, value, c, descOut);
       break;
     case SET_ACTION:
-      req = this->setValueAction(component_p, callbackID, descIn, value, completion, descOut);
+      req = this->setValueAction(component_p, callbackID, descIn, value, c, descOut);
       break;
     case INC_ACTION:
-      req = incrementAction(component_p, callbackID, descIn, value, completion, descOut);
+      req = incrementAction(component_p, callbackID, descIn, value, c, descOut);
       break;
     case DEC_ACTION:
-      req = decrementAction(component_p, callbackID, descIn, value, completion, descOut);
+      req = decrementAction(component_p, callbackID, descIn, value, c, descOut);
       break;
     default:
       return reqDestroy;
-    }
+    }//switch
 
-  ACS_COMPLETION(completion, "baci::RWcontImpl&lt;&gt;::invokeAction");
+  if (c.isErrorFree())
+      {
+      completion = c;
+      }
+  else
+      {
+      completion = InvokeActionErrorCompletion(c,
+					       __FILE__,
+					       __LINE__,
+					       "baci::RWcontImpl&lt;&gt;::invokeAction");
+      }//if
+
   return req;
 }
 
@@ -120,36 +133,31 @@ void RWcontImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
 
+  ACS::Time ts;
   TSM v =  value->getValue(static_cast<TSM*>(0));
 
   if (min_value()>v || max_value()<v)
       { 
       completion.timeStamp=getTimeStamp();
 
-//      char msg[100];
-//      sprintf(msg, "%d < %d < %d", min_value(), value->longValue(), max_value());
-//      ACS_COMPLETION(completion, "baci::RWcontImpl<ACS_RW_TL>::setValue", ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::OutOfBounds, "Error out of bounds");
-
       completion = ACSErrTypeCommon::OutOfBoundsCompletion( __FILE__, __LINE__,
 							   "RWcommonImpl<ACS_RW_TL>::setValueAction");
-
       return;
     } 
 
-  completion.timeStamp = getTimeStamp();
   TM t =  value->getValue(static_cast<TM*>(0));
   try 
       {
-      this->devIO_mp->write(t, completion.timeStamp);
+      this->devIO_mp->write(t, ts);
       }
   catch (ACSErr::ACSbaseExImpl& ex)
       {
       completion = baciErrTypeDevIO::WriteErrorCompletion (ex, __FILE__, __LINE__,"RWcontImpl::setValue(...)");
       return;
       }
-  
-  completion.type = ACSErr::ACSErrTypeOK;		// no error
-  completion.code = ACSErrTypeOK::ACSErrOK;
+
+  completion = ACSErrTypeOK::ACSErrOKCompletion();
+  completion.timeStamp = ts; // update timestamp with value set in DevIO
 }//setVale
 
 /// async. increment value action implementation
@@ -159,21 +167,32 @@ ActionRequest RWcontImpl<ACS_RW_TL>::incrementAction(BACIComponent* component_p,
 			  Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(val);
+  CompletionImpl c;
 
   BACIValue value(0.0);
-  this->getValueAction(component_p, callbackID, descIn, &value, completion, descOut);
+  this->getValueAction(component_p, callbackID, descIn, &value, c, descOut);
   
-  // if there is no error
-  if (completion.type==ACSErr::ACSErrTypeOK)
-  {
-	 TSM newValue = value.getValue(static_cast<TSM*>(0));
-	 newValue += this->min_step();
-	 value.setValue(newValue);
-
-	 this->setValueAction(component_p, callbackID, descIn, &value, completion, descOut);
-  }
-
-  ACS_COMPLETION(completion, "baci::RWcontImpl&lt;&gt;::incrementAction");
+ if (c.isErrorFree()) // if there is no error
+     {
+     // let's try to set the value now
+     TSM newValue = value.getValue(static_cast<TSM*>(0));
+     newValue += this->min_step();
+     value.setValue(newValue);
+     
+     this->setValueAction(component_p, callbackID, descIn, &value, c, descOut);
+     if (c.isErrorFree())
+	 {
+	 completion = c;
+	 // complete action requesting done invokation, 
+	 // otherwise return reqInvokeWorking and set descOut.estimated_timeout
+	 return reqInvokeDone;
+	 }//if
+     }//if
+ // otherwise something went wrong
+  completion = IncrementErrorCompletion(c,
+					__FILE__,
+					__LINE__,
+					"baci::RWcontImpl&lt;&gt;::incrementAction");
 
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
@@ -188,22 +207,34 @@ ActionRequest RWcontImpl<ACS_RW_TL>::decrementAction(BACIComponent* component_p,
 						     Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(val);
-
+  CompletionImpl c;
+  
+  // first we read the value
   BACIValue value(0.0);
-  this->getValueAction(component_p, callbackID, descIn, &value, completion, descOut);
+  this->getValueAction(component_p, callbackID, descIn, &value, c, descOut);
 
-  // if there is no error
-  if (completion.type==ACSErr::ACSErrTypeOK)
-  {
-  	 TSM newValue = value.getValue(static_cast<TSM*>(0));
-	 newValue -= this->min_step();
-	 value.setValue(newValue);
-
-	 this->setValueAction(component_p, callbackID, descIn, &value, completion, descOut);
-  }
-
-  ACS_COMPLETION(completion, "baci::RWcontImpl&lt;&gt;::decrementAction");
-
+  if (c.isErrorFree()) // if there is no error
+      {
+      // let's try to set the value now
+      TSM newValue = value.getValue(static_cast<TSM*>(0));
+      newValue -= this->min_step(); // calculate new value
+      value.setValue(newValue);
+      
+      this->setValueAction(component_p, callbackID, descIn, &value, c, descOut);
+      if (c.isErrorFree())
+	  {
+	  completion = c;
+	  // complete action requesting done invokation, 
+	  // otherwise return reqInvokeWorking and set descOut.estimated_timeout
+	  return reqInvokeDone;
+	  }//if
+      }//if
+  // otherwise something went wrong
+  completion = DecrementErrorCompletion(c,
+					__FILE__,
+					__LINE__,
+					"baci::RWcontImpl&lt;&gt;::decrementAction");
+  
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;

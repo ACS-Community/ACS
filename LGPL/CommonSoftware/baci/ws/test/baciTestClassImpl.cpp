@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.cpp,v 1.110 2005/08/23 15:37:36 vwang Exp $"
+* "@(#) $Id: baciTestClassImpl.cpp,v 1.111 2006/05/11 15:01:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.110 2005/08/23 15:37:36 vwang Exp $"; 
+static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.111 2006/05/11 15:01:45 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -74,7 +74,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciTestUtils.h>
 
-#include <baciError.h>
+
 #include <ACSErrTypeOK.h>
 #include <ACSErrTypeCommon.h>
 
@@ -83,8 +83,10 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #define RESET_ACTION 2
 
 #include <iostream>
-                
-NAMESPACE_USE(baci)
+
+using namespace baciErrTypeProperty;
+using namespace baci;     
+
 
 /////////////////////////////////////////////////
 // BaciTestClassImpl
@@ -159,24 +161,36 @@ BaciTestClassImpl::invokeAction(int function,
 
   // better implementation with array is possible
   ActionRequest req;
+  CompletionImpl co;
+
   switch (function) 
     {
       case ON_ACTION:
-        req = onAction(component_p, callbackID, descIn, value, completion, descOut);
+        req = onAction(component_p, callbackID, descIn, value, co, descOut);
 	break;
       case OFF_ACTION:
-        req = offAction(component_p, callbackID, descIn, value, completion, descOut);
+        req = offAction(component_p, callbackID, descIn, value, co, descOut);
 	break;
       case RESET_ACTION:
-        req = resetAction(component_p, callbackID, descIn, value, completion, descOut);
+        req = resetAction(component_p, callbackID, descIn, value, co, descOut);
 	break;
       default:
         return reqDestroy;
     }
 
-  ACS_COMPLETION(completion, "::BaciTestClassImpl::invokeAction");
-  return req;
+  if (co.isErrorFree())
+      {
+      completion = co;
+      }
+  else
+      {
+      completion = InvokeActionErrorCompletion(co,
+					       __FILE__,
+					       __LINE__,
+					       "::BaciTestClassImpl::invokeAction");
+      }//if-else
 
+    return req;
 }
 
 /* ------------------ [ Action implementations ] ----------------- */

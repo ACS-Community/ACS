@@ -47,8 +47,7 @@ void RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
 
-  completion.timeStamp=getTimeStamp();
-  
+  ACS::Time ts;
   TS minVal = this->min_value();
   TS maxVal = this->max_value();
   TM val = value->getValue(static_cast<TM*>(0));
@@ -56,15 +55,15 @@ void RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
       if (minVal>val[n] || maxVal<val[n])
 	{ 
 	  completion.timeStamp=getTimeStamp();
-//	  char msg[100];
-//	  sprintf(msg, "[%d] %f < %f < %f", n, minVal, val[n], maxVal);
-	  ACS_COMPLETION(completion, "baci::RWSeqCont&lt;&gt;::setValue", ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::OutOfBounds, "Error: out of bounds");
+	  completion = ACSErrTypeCommon::OutOfBoundsCompletion( __FILE__, 
+								__LINE__,
+								"baci::RWSeqCont&lt;&gt;::setValue");
 	  return;
 	} 
 
   try
       {
-      this->devIO_mp->write( val, completion.timeStamp);
+      this->devIO_mp->write( val, ts);
       }
   catch (ACSErr::ACSbaseExImpl& ex)
       {
@@ -72,8 +71,8 @@ void RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
       return;
       }
 
-  completion.type = ACSErr::ACSErrTypeOK;		// no error
-  completion.code = ACSErrTypeOK::ACSErrOK;
+  completion = ACSErrTypeOK::ACSErrOKCompletion();
+  completion.timeStamp = ts; // update timestamp with value set in DevIO
 }//setValue
 
 template <ACS_RW_C> 
@@ -82,27 +81,40 @@ ActionRequest RWSeqContImpl<ACS_RW_TL>::incrementAction(BACIComponent* component
 			  Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(val);
-
+  CompletionImpl c;
   BACIValue value;
-  this->getValueAction(component_p, callbackID, descIn, &value, completion, descOut);
-  
-  // if there is no error
-  if (completion.type==ACSErr::ACSErrTypeOK)
-  {
-        TS dv = this->min_step();
-	TM val = value.getValue(static_cast<TM*>(0));
-	for (CORBA::ULong n = 0UL; n < val.length(); n++)
-	    val[n] = val[n] + dv;
-        value.setValue(val);
-  	this->setValueAction(component_p, callbackID, descIn, &value, completion, descOut);
-  }
 
-  ACS_COMPLETION(completion, "baci::RWSeqContImpl&lt;&gt;::incrementAction");
+  this->getValueAction(component_p, callbackID, descIn, &value, c, descOut);
+  
+  if (c.isErrorFree()) // if there is no error
+      {
+      // let's try to set the values now
+      TS dv = this->min_step();
+      TM val = value.getValue(static_cast<TM*>(0));
+      for (CORBA::ULong n = 0UL; n < val.length(); n++)
+	  val[n] = val[n] + dv;
+      value.setValue(val);
+      this->setValueAction(component_p, callbackID, descIn, &value, c, descOut);
+
+      if (c.isErrorFree())
+	  {
+	  completion = c;
+	  // complete action requesting done invokation, 
+	  // otherwise return reqInvokeWorking and set descOut.estimated_timeout
+	  return reqInvokeDone;
+	  }//if
+      }//if
+
+  // otherwise something went wrong
+  completion = IncrementErrorCompletion(c,
+					__FILE__,
+					__LINE__,
+					"baci::RWSeqContImpl&lt;&gt;::incrementAction");
 
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;
-}
+}//incrementAction
 
 
 
@@ -113,27 +125,39 @@ ActionRequest RWSeqContImpl<ACS_RW_TL>::decrementAction(BACIComponent* component
 			  Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(val);
-
+  CompletionImpl c;
   BACIValue value;
-  this->getValueAction(component_p, callbackID, descIn, &value, completion, descOut);
 
-  // if there is no error
-  if (completion.type==ACSErr::ACSErrTypeOK)
-  {
-        TS dv = this->min_step();
-	TM val = value.getValue(static_cast<TM*>(0));
-	for (CORBA::ULong n = 0UL; n < val.length(); n++)
-	    val[n] = val[n] - dv;
-        value.setValue(val);
-  	this->setValueAction(component_p, callbackID, descIn, &value, completion, descOut);
-  }
+  this->getValueAction(component_p, callbackID, descIn, &value, c, descOut);
 
-  ACS_COMPLETION(completion, "baci::RWSeqContImpl&lt;&gt;::decrementAction");
-
+   if (c.isErrorFree()) // if there is no error
+      {
+      // let's try to set the values now
+      TS dv = this->min_step();
+      TM val = value.getValue(static_cast<TM*>(0));
+      for (CORBA::ULong n = 0UL; n < val.length(); n++)
+	  val[n] = val[n] - dv;
+      value.setValue(val);
+      this->setValueAction(component_p, callbackID, descIn, &value, c, descOut);
+      
+      if (c.isErrorFree())
+	  {
+	  completion = c;
+	  // complete action requesting done invokation, 
+	  // otherwise return reqInvokeWorking and set descOut.estimated_timeout
+	  return reqInvokeDone;
+	  }//if
+      }//if
+   // otherwise something went wrong
+   completion = DecrementErrorCompletion(c,
+					 __FILE__,
+					 __LINE__,
+					 "baci::RWSeqContImpl&lt;&gt;::decrementAction");
+  
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;
-}
+}//decrementAction
 
 
 

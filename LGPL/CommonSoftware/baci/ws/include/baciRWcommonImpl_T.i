@@ -19,6 +19,8 @@
 
 #include "baciRWcommonImpl_T.h"
 
+using namespace baciErrTypeProperty;
+
 template<ACS_RW_C> 
 RWcommonImpl<ACS_RW_TL>::RWcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO) 
@@ -60,10 +62,6 @@ RWcommonImpl<ACS_RW_TL>::RWcommonImpl(const ACE_CString& name, BACIComponent* co
 template<ACS_RW_C> 
 RWcommonImpl<ACS_RW_TL>::RWcommonImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO) 
-/*
-const ACE_CString& name) : 
-    PcommonImpl<ACS_P_TL>(name) 
-*/
 {
   ACS_TRACE("baci::RWcommonImpl&lt;&gt;::RWcommonImpl");
   
@@ -88,21 +86,34 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::invokeAction(int function,
 {
   // better implementation with array is possible
   ActionRequest req;
+  CompletionImpl c;
+
   switch (function) 
     {
     case GET_ACTION:
-      req = this->getValueAction(component_p, callbackID, descIn, value, completion, descOut);
+      req = this->getValueAction(component_p, callbackID, descIn, value, c, descOut);
       break;
     case SET_ACTION:
-      req = setValueAction(component_p, callbackID, descIn, value, completion, descOut);
+      req = setValueAction(component_p, callbackID, descIn, value, c, descOut);
       break;
     default:
       return reqDestroy;
     }
+  
+  if (c.isErrorFree())
+      {
+      completion = c;
+      }
+  else
+      {
+      completion = InvokeActionErrorCompletion(c,
+					       __FILE__,
+					       __LINE__,
+					       "baci::RWcommonImpl&lt;&gt;::invokeAction");
+	}
 
-  ACS_COMPLETION(completion, "baci::RWcommonImpl&lt;&gt;::invokeAction");
   return req;
-}
+}//invokeAction
 
 /* -------------- [ Other interfaces ] -------------- */
 
@@ -120,7 +131,8 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p
   ACE_UNUSED_ARG(descIn);
 
   CompletionImpl co;
-  this->setValue(this->property_mp, value, co/*mpletion*/, descOut);
+
+  this->setValue(this->property_mp, value, co, descOut);
 
   if (co.isErrorFree())
       {
@@ -128,12 +140,12 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p
       }
   else
       {
-      completion = ACSErrTypeCommon::OutOfBoundsCompletion(co, __FILE__, __LINE__, "RWcommonImpl<ACS_RW_TL>::setValueAction");
+      completion = CanNotSetValueCompletion(co, 
+					    __FILE__, 
+					    __LINE__, 
+					    "baci::RWcommonImpl&lt;&gt;::setValueAction");
       }
 
-
- //  ACS_COMPLETION(completion, "baci::RWcommonImpl&lt;&gt;::setValueAction");
-  
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;
@@ -149,11 +161,11 @@ void RWcommonImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
 
-  completion.timeStamp =  getTimeStamp();
+  ACS::Time ts;
   TM v =  value->getValue(static_cast<TM*>(0));
   try
       {
-      this->devIO_mp->write(v, completion.timeStamp);
+      this->devIO_mp->write(v, ts);
       }
   catch (ACSErr::ACSbaseExImpl& ex) 
       {
@@ -161,8 +173,8 @@ void RWcommonImpl<ACS_RW_TL>::setValue(BACIProperty* property,
       return;
       } 
   
-      completion.type = ACSErr::ACSErrTypeOK;		// no error
-      completion.code = ACSErrTypeOK::ACSErrOK;  
+  completion = ACSErrTypeOK::ACSErrOKCompletion();
+  completion.timeStamp = ts; // update timestamp with value set in DevIO
 }//setValue
 
 /* ---------------------- [ CORBA interface ] ---------------------- */
@@ -172,17 +184,24 @@ ACSErr::Completion * RWcommonImpl<ACS_RW_TL>::set_sync (TIN val
 		    )
   throw (CORBA::SystemException)
 {
-
-  ACSErr::Completion_var c = new ACSErr::Completion();
-
+  CompletionImpl co;
   BACIValue value(val);
   ACS::CBDescOut descOut;
 
-  this->setValue(this->property_mp, &value, c.inout(), descOut);
-  ACS_COMPLETION(c.inout(), "baci::RWcommonImpl&lt;&gt;::set_sync");
-
-  return c._retn();
-}
+  this->setValue(this->property_mp, &value, co, descOut);
+  if (co.isErrorFree())
+      {
+      return co.returnCompletion(false);
+      }
+  else
+      {
+      CanNotSetValueCompletion completion(co, 
+					  __FILE__, 
+					  __LINE__, 
+					  "baci::RWcommonImpl&lt;&gt;::set_sync");
+      return completion.returnCompletion(false);
+      }
+}//set_sync
 
 template<ACS_RW_C>
 void RWcommonImpl<ACS_RW_TL>::set_async (TIN value,
@@ -193,20 +212,28 @@ void RWcommonImpl<ACS_RW_TL>::set_async (TIN value,
 {
   this->property_mp->getComponent()->registerAction(BACIValue::type_null, cb, 
 				       desc, this, SET_ACTION, BACIValue(value));
-}
+}//set_async
 
 template<ACS_RW_C>
 void RWcommonImpl<ACS_RW_TL>::set_nonblocking (TIN val
 			   )
   throw (CORBA::SystemException)
 {
-  ACSErr::Completion completion;
+  ACSErr::CompletionImpl c;
   BACIValue value(val);
   ACS::CBDescOut descOut;
 
-  this->setValue(this->property_mp, &value, completion, descOut);
-  ACS_COMPLETION_LOG(completion, "baci::RWcommonImpl&lt;&gt;::set_nonblocking");
-}
+  this->setValue(this->property_mp, &value, c, descOut);
+  
+  if (!c.isErrorFree())
+      {
+      CanNotSetValueCompletion completion(c, 
+				 __FILE__, 
+				 __LINE__, 
+				 "baci::RWcommonImpl&lt;&gt;::set_nonblocking");
+      completion.log();
+      }
+}//set_nonblocking
 
 
 

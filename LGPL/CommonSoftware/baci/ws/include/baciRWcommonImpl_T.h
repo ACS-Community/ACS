@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWcommonImpl_T.h,v 1.23 2006/05/10 16:29:14 bjeram Exp $"
+* "@(#) $Id: baciRWcommonImpl_T.h,v 1.24 2006/05/11 15:01:15 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,9 +36,6 @@
 #endif
 
 #include <baciPcommonImpl_T.h>
-#include <baciErrTypeDevIO.h>
-#include <ACSErrTypeCommon.h>
-#include <baciErrTypeProperty.h>
 
 /**
  * Helper macro for use with template parameters.

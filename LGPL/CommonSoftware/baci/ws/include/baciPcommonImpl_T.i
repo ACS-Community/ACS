@@ -20,6 +20,8 @@
 #include "baciPcommonImpl_T.h"
 #include <sstream>
 
+using namespace baciErrTypeProperty;
+
 template<ACS_P_C> 
 PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
         CharacteristicModelImpl(name, component_p->getCharacteristicModel()), 
@@ -148,11 +150,24 @@ ActionRequest PcommonImpl<ACS_P_TL>::invokeAction(int function,
 						  CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(function);
+  CompletionImpl c;
   // only one action
-  ActionRequest req = getValueAction(component_p, callbackID, descIn, value, completion, descOut);
-  ACS_COMPLETION(completion, "baci::PcommonImpl&lt;&gt;::invokeAction");
+  ActionRequest req = getValueAction(component_p, callbackID, descIn, value, c, descOut);
+  
+  if (c.isErrorFree())
+      {
+      completion = c;
+      }
+  else
+      {
+      completion = InvokeActionErrorCompletion(c,
+					       __FILE__,
+					       __LINE__,
+					       "baci::PcommonImpl&lt;&gt;::invokeAction");
+      }//if-else
+
   return req;
-}
+}//invokeAction
 
 /* -------------- [ Property implementator interface ] -------------- */
 
@@ -164,8 +179,6 @@ void PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
 {
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
-
-  completion.timeStamp = getTimeStamp();
 
   TM nval;
   
@@ -181,9 +194,8 @@ void PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
       // !!! to be done in a loop
   addValueToHistory(completion.timeStamp, nval);
 
-  completion.type = ACSErr::ACSErrTypeOK;		// no error
-  completion.code = ACSErrTypeOK::ACSErrOK;
-}
+  completion = ACSErrTypeOK::ACSErrOKCompletion();
+}//getValue
  
 /* --------------- [ History support ] --------------- */
 
@@ -212,13 +224,26 @@ ActionRequest PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p,
   ACE_UNUSED_ARG(callbackID);
   ACE_UNUSED_ARG(descIn);
 
-  getValue(property_mp, value, completion, descOut);
-  ACS_COMPLETION(completion, "baci::PcommonImpl&lt;&gt;::getValueAction");
+  CompletionImpl co;
+
+  getValue(property_mp, value, co, descOut);
   
+  if (co.isErrorFree())
+      {
+      completion = co;
+      }
+  else
+      {
+      completion = CanNotGetValueCompletion(co, 
+					    __FILE__, 
+					    __LINE__, 
+					    "baci::PcommonImpl&lt;&gt;::getValueAction");
+      }//if-else
+
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;
-}
+}//getValueAction
 
 
 /* ---------------------- [ CORBA interface ] ---------------------- */
@@ -325,19 +350,29 @@ T PcommonImpl<ACS_P_TL>::get_sync (ACSErr::Completion_out c
 		    )
   throw (CORBA::SystemException)
 {
+ CompletionImpl co;
+ ACS::CBDescOut descOut;
+ BACIValue value(0.0);
 
-  c = new ACSErr::Completion();
+ this->getValue(property_mp, &value, co, descOut);
+  
+ if (co.isErrorFree())
+     {
+     c = co.returnCompletion(false);
+     }
+ else
+     {
+     c = CanNotGetValueCompletion(co, 
+				  __FILE__, 
+				  __LINE__, 
+				  "baci::PcommonImpl&lt;&gt;::get_sync").returnCompletion(false);
+     }//if-else
 
-  ACS::CBDescOut descOut;
-  BACIValue value(0.0);
+ // .... or replace with call BACIValue::retn()
+ TM t = value.getValue(static_cast<TM*>(0));
 
-  getValue(property_mp, &value, *c, descOut);
-  ACS_COMPLETION(*c, "baci::PcommonImpl&lt;&gt;::get_sync");
-
-// .... or replace with call BACIValue::retn()
-  TM t = value.getValue(static_cast<TM*>(0));
-  return CORBAMem<T, TM>::retn(t); 
-}
+ return CORBAMem<T, TM>::retn(t); 
+}//get_sync
 
 
 template<ACS_P_C> 
