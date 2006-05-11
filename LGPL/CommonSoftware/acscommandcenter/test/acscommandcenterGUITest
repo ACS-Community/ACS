@@ -2,17 +2,15 @@
 CLASSPATH=`vltMakeJavaClasspath`
 IP=`host $HOST | awk '{print $4}'`
 
-common_options="-variable IP=$IP -variable HOST=$HOST"
-manual_options="-variable HOME=. -systemcfg ./qftestJUI.cfg"
-moreno_options="-variable HOME=$HOME -systemcfg $HOME/qftestJUI.cfg -libpath $HOME -batch -report.copyicons -report.depth 10 -report.html %b.html -runlog %b.qrz"
-
-options=
 if [ x$1 = xmanual ] ; then
    mkdir -p tmp
-   options="$common_options $manual_options"
+   common_options="-variable IP=$IP -variable HOST=$HOST"
+   manual_options="-variable HOME=. -systemcfg ./qftestJUI.cfg"
+   qftestJUI $common_options $manual_options acscommandcenter.qft
+   
 else
-   options="$common_options $moreno_options"
+   qftestJUI -batch  -report.copyicons -report.depth 10 -report.html %b.html -systemcfg $HOME/qftestJUI.cfg -variable IP=$IP -variable HOST=$HOST -variable HOME=$HOME -libpath $HOME -runlog %b.qrz acscommandcenter.qft
+   
 fi
 
-qftestJUI $options acscommandcenter.qft
 echo $?
