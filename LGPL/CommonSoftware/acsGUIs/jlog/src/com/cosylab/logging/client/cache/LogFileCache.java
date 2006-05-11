@@ -292,6 +292,9 @@ public class LogFileCache {
 	 * @return The position in the cache of the added log
 	 */
 	public int add(ILogEntry log) throws LogCacheException {
+		if (log==null) {
+			throw new LogCacheException("Trying to add a null log!");
+		}
 		String xml=log.toXMLString();
 		long pos;
 		synchronized(file) {
