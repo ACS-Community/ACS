@@ -15,10 +15,8 @@ import java.util.regex.Matcher;
 
 import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.LogEntryTable;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * @author acaproni
