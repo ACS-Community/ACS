@@ -1897,8 +1897,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
                 		false);
             filters.addFilter(levelFilter,true);
         } catch (Exception e) {
-            // TODO: use the log instead of this message
-            System.err.println("Error creating the log level filter");
+            System.err.println("Error creating the log level filter:"+e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error creating the log level filter!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
             // We have no log level so we set the combo box
             // to trace
             logLevelCB.setSelectedIndex(0);
@@ -2029,13 +2030,14 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     }
     
     /**
+     * 
      * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void reportStatus(String status) {
     	getStatusArea().append(status+"\n");
     }
     
-   /*
+   /**
     * Notify that the connection with ACS NC has been established
     * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
@@ -2045,7 +2047,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		connectionStatusLbl.setToolTipText("Connected");
 	}
 	
-	
+	/**
+     * 
+     * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+     */
 	public void acsLogConnDisconnected() {
 		setTitle("LoggingClient - Offline");
 		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
