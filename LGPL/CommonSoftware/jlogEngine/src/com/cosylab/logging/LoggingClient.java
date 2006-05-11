@@ -257,6 +257,17 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 
 	private LCEngine engine = null;
 	private LogTableDataModel tableModel = null;
+	
+	/**
+	 * The icons to show the status of the connection
+	 * 
+	 */
+	private final int CONNECTED_ICON =  0;
+	private final int CONNECTING_ICON = 1;
+	private final int DISCONNECTED_ICON=2;
+	private ImageIcon[] connectionStatusIcons; 
+	// The label where icon is shown
+	private JLabel connectionStatusLbl;
 
 	class EventHandler
 		implements
@@ -1490,31 +1501,45 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		{
 			try
 			{
+				// Lad the icons for the status of the connection
+				connectionStatusIcons = new ImageIcon[3];
+				connectionStatusIcons[CONNECTED_ICON]=new ImageIcon(this.getClass().getResource("/console-connected.png"));
+				connectionStatusIcons[CONNECTING_ICON]=new ImageIcon(this.getClass().getResource("/console-connecting.png"));
+				connectionStatusIcons[DISCONNECTED_ICON]=new ImageIcon(this.getClass().getResource("/console-disconnected.png"));
+				System.out.println("Image info "+connectionStatusIcons[CONNECTED_ICON].getIconHeight()+","+connectionStatusIcons[CONNECTED_ICON].getIconWidth());
+				connectionStatusLbl = new JLabel(connectionStatusIcons[CONNECTING_ICON]);
+				
 				filterStatusPnl = new javax.swing.JPanel();
 				filterStatusPnl.setName("JPanel4");
 				filterStatusPnl.setLayout(new java.awt.GridBagLayout());
-
+				
 				GridBagConstraints constraintsFilterStatus = new GridBagConstraints();
 				constraintsFilterStatus.gridx = 0;
 				constraintsFilterStatus.gridy = 0;
 				constraintsFilterStatus.fill = GridBagConstraints.BOTH;
 				constraintsFilterStatus.anchor = GridBagConstraints.WEST;
 				constraintsFilterStatus.weightx = 1.0;
-				constraintsFilterStatus.insets = new Insets(1, 1, 1, 1);
+				constraintsFilterStatus.insets = new Insets(1, 2, 1, 1);
 				filterStatusPnl.add(getFilterStatus(), constraintsFilterStatus);
 
 				GridBagConstraints constraintsProgressBar = new GridBagConstraints();
 		        constraintsProgressBar.gridx=1;
 		        constraintsProgressBar.gridy=0;
-		        constraintsProgressBar.insets = new Insets(2,2,2,2);
+		        constraintsProgressBar.insets = new Insets(1,1,1,1);
 		        progressBar.setVisible(false);
 		        filterStatusPnl.add(progressBar,constraintsProgressBar);
 				
-				GridBagConstraints constraintsJToggleButton1 = new GridBagConstraints();
-				constraintsJToggleButton1.gridx = 2;
-				constraintsJToggleButton1.gridy = 0;
-				constraintsJToggleButton1.insets = new Insets(4, 4, 4, 4);
-				filterStatusPnl.add(getSuspendToggleBtn(), constraintsJToggleButton1);
+				GridBagConstraints constraintsJToggleButton = new GridBagConstraints();
+				constraintsJToggleButton.gridx = 2;
+				constraintsJToggleButton.gridy = 0;
+				constraintsJToggleButton.insets = new Insets(4, 4, 4, 4);
+				filterStatusPnl.add(getSuspendToggleBtn(), constraintsJToggleButton);
+				
+				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
+				constraintsConnectionStatus.gridx = 3;
+				constraintsConnectionStatus.gridy = 0;
+				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
+				filterStatusPnl.add(connectionStatusLbl,constraintsConnectionStatus);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -2016,11 +2041,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 */
 	public void acsLogConnEstablished() {
 		setTitle("LoggingClient");
+		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTED_ICON]);
+		connectionStatusLbl.setToolTipText("Connected");
 	}
 	
 	
 	public void acsLogConnDisconnected() {
 		setTitle("LoggingClient - Offline");
+		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
+		connectionStatusLbl.setToolTipText("Disconnected");
 	}
 	
 	/**
@@ -2029,6 +2058,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 */
 	public void acsLogConnLost() {
 		JOptionPane.showMessageDialog(null,"Connection lost!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
+		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
+		connectionStatusLbl.setToolTipText("Disconnected");
 	}
 	
 	/**
@@ -2037,6 +2068,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 */
 	public void acsLogConnConnecting() {
 		setTitle("LoggingClient - Connecting");
+		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTING_ICON]);
+		connectionStatusLbl.setToolTipText("Connecting");
 	}
 }
 
