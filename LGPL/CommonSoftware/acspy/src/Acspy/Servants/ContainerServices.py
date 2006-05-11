@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.16 2006/05/04 17:06:18 dfugate Exp $
+# @(#) $Id: ContainerServices.py,v 1.17 2006/05/11 20:49:12 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.16 2006/05/04 17:06:18 dfugate Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.17 2006/05/11 20:49:12 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.16 2006/05/04 17:06:18 dfugate Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.17 2006/05/11 20:49:12 dfugate Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -59,7 +59,9 @@ from Acspy.Common.CDBAccess   import CDBaccess
 class ContainerServices:
     '''
     Class ContainerServices provides components and PySimpleClients
-    with ACS and CORBA services.
+    with ACS and CORBA services. Developers should never instantiate this class
+    directly. That is, ContainerServices is a baseclass and is functionally
+    useless until its setAll method has been invoked properly.
     '''
     #--------------------------------------------------------------------------
     def __init__(self):
