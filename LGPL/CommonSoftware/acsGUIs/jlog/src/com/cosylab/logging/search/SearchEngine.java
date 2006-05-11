@@ -6,11 +6,18 @@
  */
 package com.cosylab.logging.search;
 
+import java.text.SimpleDateFormat;
+import java.text.FieldPosition;
+import java.util.Date;
+import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.LogEntryTable;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -109,6 +116,10 @@ public class SearchEngine {
         // Get the starting and the ending row for the search
         int startingRow=getStartingRow(forwardSearch);
         int endRow = (forwardSearch)?logEntryTable.getRowCount()-1:0;
+        // The position where the SimpleDate must be written
+        FieldPosition pos = new java.text.FieldPosition(0);
+        // A temporary buffer
+        StringBuffer tempSB = new StringBuffer();
         // The variable used to browse the rows
         int cursor = startingRow;
         // Order end and start rown in growing order 
@@ -121,24 +132,84 @@ public class SearchEngine {
         int foundRow=-1;
         
         while (cursor>=startingRow && cursor<=endRow && foundRow==-1) {
-            for (int t=0; t<cols.length; t++) {
-                if (cols[t]) {
-                    Object obj = logTableDataModel.getValueAt(cursor,t+2);
-                    if (obj==null) {
-                    	continue;
-                    }
-                    String string = obj.toString();
-                    if (t==1) { // Entry type
-                    	string = LogTypeHelper.getLogTypeDescription((Integer)obj);
-                    }
-                    if (matches(string,regExp,searchString,caseSensitive,wholeWord) ) {
+        	// cols contains one entry for each field of a log entry
+        	// plus one entry for the additional data
+        	ILogEntry log = logTableDataModel.getVisibleLogEntry(cursor);
+        	String string=null; // The value of the field
+        	for (int t=0; t<cols.length-1; t++) {
+        		Object obj = log.getField(t);
+        		if (obj==null) {
+        			continue;
+        		}
+        		if (cols[t]) {
+        			switch (t) {
+        				case ILogEntry.FIELD_TIMESTAMP: {
+        					SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+        					Date dt = (Date)obj;
+        					tempSB.delete(0,tempSB.length());
+        					df.format(dt,tempSB,pos);
+        					string=tempSB.toString();
+        					break;
+        				} 
+        				case ILogEntry.FIELD_ENTRYTYPE: 
+        				case ILogEntry.FIELD_LINE: 
+        				case ILogEntry.FIELD_PRIORITY: 
+        				case ILogEntry.FIELD_STACKLEVEL: {
+        					string=""+ILogEntry.FIELD_ENTRYTYPE;
+        					break;
+        				}
+        				default: {
+        					string = obj.toString();
+        					break;
+        				}
+        			}
+        			if (matches(string,regExp,searchString,caseSensitive,wholeWord) ) {
                         if ((forwardSearch && cursor!=startingRow) || (!forwardSearch && cursor!=endRow)) { 
                             foundRow=cursor;
-                            break;
+                            if (forwardSearch) {
+                                cursor++;
+                            } else {
+                                cursor--;
+                            }
+                            return foundRow;
                         }
                     }
-                }
+        		}
+        	}
+        	// Look into the additional data: here we have to search for each key and value
+        	// (we can't build a big striung with everything inside because it would fail
+        	// searching for regular espressions
+            if (cols[cols.length-1] && log.hasDatas()) {
+            	Vector<ILogEntry.AdditionalData> addData = log.getAdditionalData();
+            	for (int t=0; t<addData.size(); t++) {
+            		ILogEntry.AdditionalData data = addData.elementAt(t);
+            		string = data.getName();
+            		if (matches(string,regExp,searchString,caseSensitive,wholeWord) ) {
+                        if ((forwardSearch && cursor!=startingRow) || (!forwardSearch && cursor!=endRow)) { 
+                            foundRow=cursor;
+                            if (forwardSearch) {
+                                cursor++;
+                            } else {
+                                cursor--;
+                            }
+                            return foundRow;
+                        }
+                    }
+            		string = data.getValue();
+            		if (matches(string,regExp,searchString,caseSensitive,wholeWord) ) {
+                        if ((forwardSearch && cursor!=startingRow) || (!forwardSearch && cursor!=endRow)) { 
+                            foundRow=cursor;
+                            if (forwardSearch) {
+                                cursor++;
+                            } else {
+                                cursor--;
+                            }
+                            return foundRow;
+                        }
+                    }
+            	}
             }
+        	
             if (forwardSearch) {
                 cursor++;
             } else {

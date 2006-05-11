@@ -54,10 +54,21 @@ public class SearchDialog extends JDialog {
 	private JPanel findBtnPanel = null;
 	private JPanel doneBtnPanel = null;
     
-    // The logging client (main window)
+    /**
+     * The logging client (main window)
+     */ 
     private LoggingClient loggingClient;
     
-    private JCheckBox coulmnToSearchIn[]= new JCheckBox[ILogEntry.NUMBER_OF_FIELDS];
+     /**
+      * One CheckBox per each field of a log entry
+      */
+    private JCheckBox columnToSearchIn[]= new JCheckBox[ILogEntry.NUMBER_OF_FIELDS];
+    
+    /**
+     * The checkbox to searc also in the additional data field of the logs
+     */
+    private JCheckBox additionalDataCB;
+    
 	private JCheckBox wholeWordCB = null;
     
     private SearchEngine searchEngine;
@@ -74,18 +85,6 @@ public class SearchDialog extends JDialog {
         searchEngine = new SearchEngine(mainWin.getLogEntryTable());
 	}
 	
-	/**
-	 * Override the Component setVisible method.
-	 * This is needed because the dialog is built only once
-	 * but the field to show in the advanced panel can be changed
-	 * so we need to refresh them before displaying the panel.
-	 * 
-	 * @see Component.setVisible(boolean)
-	 */
-	public void setVisible(boolean b) {
-		initializeAdvancedPanel();
-		super.setVisible(b);
-	}
 	/**
 	 * This method initializes this
 	 * 
@@ -104,26 +103,25 @@ public class SearchDialog extends JDialog {
      * each column of the main window
      * If a column is not visible in the main window then the checkbox
      * is disabled and unchecked
+     * 
      */
     private void initializeAdvancedPanel() {
-    	if (!(advancedPanel.getLayout() instanceof GridLayout)) {
-    		advancedPanel.setLayout(new GridLayout(ILogEntry.NUMBER_OF_FIELDS,1,5,3));
-    	}
+   		advancedPanel.setLayout(new GridLayout(ILogEntry.NUMBER_OF_FIELDS+1,1,5,3));
         boolean visibeColsInMainWindow[]=loggingClient.getLogEntryTable().getVisibleColumns(true);
+        // Add one checkbox for each field of the logs
         for (int t=0; t<ILogEntry.NUMBER_OF_FIELDS; t++) {
-        	if (coulmnToSearchIn[t]==null) {
-        		coulmnToSearchIn[t]=new JCheckBox(ILogEntry.fieldNames[t]);
+        	if (columnToSearchIn[t]==null) {
+        		columnToSearchIn[t]=new JCheckBox(ILogEntry.fieldNames[t]);
         	}
-            advancedPanel.add(coulmnToSearchIn[t]);
-            coulmnToSearchIn[t].setVisible(true);
-            coulmnToSearchIn[t].setEnabled(visibeColsInMainWindow[t]);
-            coulmnToSearchIn[t].setSelected(visibeColsInMainWindow[t]);
-            if (visibeColsInMainWindow[t]) {
-                coulmnToSearchIn[t].setToolTipText("Search in column "+ILogEntry.fieldNames[t]);
-            } else {
-                coulmnToSearchIn[t].setToolTipText("This column is not visible in the main window");
-            }
+            advancedPanel.add(columnToSearchIn[t]);
+            columnToSearchIn[t].setVisible(true);
+            columnToSearchIn[t].setSelected(visibeColsInMainWindow[t]);
+            columnToSearchIn[t].setToolTipText("Search in "+ILogEntry.fieldNames[t]);
         }
+        // Add a checkbox for additional data
+        additionalDataCB = new JCheckBox("Additional data");
+        additionalDataCB.setSelected(true);
+        advancedPanel.add(additionalDataCB);
     }
 	/**
 	 * This method initializes jContentPane
@@ -469,10 +467,15 @@ public class SearchDialog extends JDialog {
         loggingClient.enableSearchNext(true);
         
         // Build the vector of the column where to look into
-        boolean[] cols = new boolean[coulmnToSearchIn.length];
-        for (int t=0; t<coulmnToSearchIn.length; t++) {
-            cols[t]=coulmnToSearchIn[t].isSelected();
+        // There is one entry for each field of a log entry plus one 
+        // for the additional data
+        int size= columnToSearchIn.length+1;
+        boolean[] cols = new boolean[size];
+        for (int t=0; t<size-1; t++) {
+            cols[t]=columnToSearchIn[t].isSelected();
         }
+        cols[size-1]=additionalDataCB.isSelected();
+        
         int row=-1;
         if (!regExpCB.isSelected()) {
             // Standard string search
@@ -502,6 +505,7 @@ public class SearchDialog extends JDialog {
         if (row>-1) {
             loggingClient.getLogEntryTable().changeSelection(row,1,false,false);
             loggingClient.getLogEntryTable().showColumn(row);
+            loggingClient.showDetailedLogInfo();
         } else {
         	String msg = "<html>No log matching \"<I>"+findTF.getText()+"</I>\" found<BR>Search from ";
         	if (forwardRB.isSelected()) {
