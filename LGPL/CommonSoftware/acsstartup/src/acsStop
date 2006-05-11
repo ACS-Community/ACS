@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.15 2006/03/13 16:55:43 dfugate Exp $"
+# "@(#) $Id: acsStop,v 1.16 2006/05/11 20:35:07 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -124,43 +124,42 @@ then
 fi
 
 ACS_LOG_COMMAND
+
 ########################################################################
 #SANITY CHECKS----------------------------------------------------------
 #Cannot shutdown everything if we don't know the process IDs.
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
-    ACS_LOG_INFO "An alternative is to use the 'killACS' command which kills all ACS processes '$USER' owns"
-    exit $EC_CANNOTUSE
-fi
+    ACS_LOG_ERROR "The lock directory '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
+    ACS_LOG_INFO "Will continue trying to shutdown ACS although containers cannot be stopped."
 
 #Cannot shutdown everything if this user does not own the processes.
-if [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
+elif [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
 then
     ACS_LOG_ERROR "Unable to shutdown because the lock directory '`getInstanceDirName $ACS_INSTANCE`' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
+
+#instance directory exists
+else
+    #Lock file specifically for the acsStop script
+    if [ -e `getInstanceDirName $ACS_INSTANCE`/.stoplock ]
+    then
+	ACS_LOG_ERROR "Unable to shutdown because another process is attempting to stop the '$ACS_INSTANCE' instance of ACS!"
+	ACS_LOG_ERROR "    Please be patient (or try removing `getInstanceDirName $ACS_INSTANCE`/.stoplock)."
+	exit $EC_CANNOTUSE
+    else
+	touch `getInstanceDirName $ACS_INSTANCE`/.stoplock
+    fi
 fi
 
-#Lock file specifically for the acsStop script
-if [ -e `getInstanceDirName $ACS_INSTANCE`/.stoplock ]
-then
-    ACS_LOG_ERROR "Unable to shutdown because another process is attempting to stop the '$ACS_INSTANCE' instance of ACS!"
-    ACS_LOG_ERROR "    Please be patient (or try removing `getInstanceDirName $ACS_INSTANCE`/.stoplock)."
-    exit $EC_CANNOTUSE
-else
-    touch `getInstanceDirName $ACS_INSTANCE`/.stoplock
-fi
 
 ACS_LOG_INFO "Stopping all ACS processes using 'ACS_INSTANCE=$ACS_INSTANCE'"
-
-#go to the directory where all process IDs are stored
-cd `getInstanceDirName $ACS_INSTANCE`
 
 ########################################################################
 #SHUTDOWN CONTAINERS----------------------------------------------------
 ACS_LOG_INFO "Shutting down containers..."
 
-file=`cat USED_CONTAINER_PORTS | cut -d' ' -f1`
+file=`getLocalContainerNames`
 
 for line in $file
 do

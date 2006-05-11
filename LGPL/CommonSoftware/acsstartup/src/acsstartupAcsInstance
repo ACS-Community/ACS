@@ -204,3 +204,23 @@ fi
 }
 
 export checkInstanceDir
+
+#--------------------------------------------------------------
+function getLocalContainerNames
+{
+local FILE
+local FILE_NAME
+
+
+FILE_NAME=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
+FILE=`(cat $FILE_NAME | cut -d' ' -f1) 2> /dev/null`
+
+#handle the good case that the ports file contains what we expect
+if [ "$FILE" != "" ]
+then
+    echo "$FILE"
+    return 0
+fi
+
+return 1
+}

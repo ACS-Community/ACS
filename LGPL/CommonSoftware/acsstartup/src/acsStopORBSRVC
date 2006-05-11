@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.32 2006/03/13 16:55:43 dfugate Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.33 2006/05/11 20:35:07 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -131,35 +131,31 @@ ACS_LOG_COMMAND
 ########################################################################
 #SANITY CHECKS-------------------------------------------------------
 
-#Cannot shutdown everything if we don't know the process IDs.
 if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$INSTANCE_DIR' does not exist!"
-    ACS_LOG_ERROR "An alternative is to use the 'killACS' command which kills all ACS processes '$USER' owns"
-    exit $EC_CANNOTUSE
-fi
+    ACS_LOG_DEBUG "Lock directory '$INSTANCE_DIR' does not exist!"
 
-#Cannot shutdown everything if this user does not own the processes.
-if [ ! -w $INSTANCE_DIR ]
+elif [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    ACS_LOG_ERROR "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 fi
 
 ACS_LOG_INFO "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$ACS_INSTANCE'"
 
-#just to be sure...
-chmod -R 777 $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Unable to change permissions on $INSTANCE_DIR")
-#go to the directory where all process IDs are stored
-cd $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Cannot cd to $INSTANCE_DIR"; exit $EC_FAILURE)
 
 ########################################################################
 #SHUTDOWN CDB-----------------------------------------------------------
 #Since the CDB is just a Java process, it must be treated a little differently
 ACS_LOG_INFO "Stopping the CDB"
 ACS_CDB_PORT=`getCDBPort`
+
 #Try the "correct" way of shutting down the CDB
-cdbjDALShutdown -k corbaloc::$HOST:$ACS_CDB_PORT/CDB &> /dev/null || (ACS_LOG_ERROR "Cannot shutdown the CDB using the cdbjDALShutdown command")
+if ! acsutilBlock -t 15 -k cdbjDALShutdown -k corbaloc::$HOST:$ACS_CDB_PORT/CDB &> /dev/null
+then
+    PID=`getCDBPid`
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the CDB")
+fi
 
 ########################################################################
 #SHUTDOWN ORB SERVICES--------------------------------------------------
@@ -223,7 +219,6 @@ then
 fi
 
 ACS_LOG_INFO "Freeing $INSTANCE_DIR"
-cd ..     # just jump one level up that we can delete the instance directory
 rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Cannot remove $INSTANCE_DIR")
 
 
