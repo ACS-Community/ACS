@@ -497,7 +497,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			throw new IllegalStateException("Trying to start an already running thread");
 		}
 		if (allLogs.getSize()>1) {
-			System.out.println("New thread");
 			invalidateThread=new Thread(this);
 			invalidateThread.start();
 		}
