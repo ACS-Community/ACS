@@ -4,7 +4,6 @@ import java.util.Vector;
 import java.util.Collections;
 import java.util.Comparator;
 
-
 import com.cosylab.logging.LogTableDataModel;
 
 import com.cosylab.logging.client.cache.LogCache;
@@ -65,7 +64,7 @@ public class VisibleLogsVector extends Thread {
 		public final int compare(Integer firtsItem, Integer secondItem) {
 			ILogEntry log1 = null;
 			try {
-				VisibleLogsVector.this.cache.getLog(firtsItem);
+				log1=VisibleLogsVector.this.cache.getLog(firtsItem);
 			} catch (Exception e) {
 				System.err.println("Exception caught: "+e.getMessage());
 				e.printStackTrace(System.err);
@@ -87,7 +86,7 @@ public class VisibleLogsVector extends Thread {
 		public final int compare(ILogEntry log, Integer secondItem) {
 			ILogEntry log2 = null;
 			try {
-				VisibleLogsVector.this.cache.getLog(secondItem);
+				log2=VisibleLogsVector.this.cache.getLog(secondItem);
 			} catch (Exception e) {
 				System.err.println("Exception caught: "+e.getMessage());
 				e.printStackTrace(System.err);
