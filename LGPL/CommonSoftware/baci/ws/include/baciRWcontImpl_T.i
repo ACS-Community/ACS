@@ -125,9 +125,14 @@ void RWcontImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   if (min_value()>v || max_value()<v)
       { 
       completion.timeStamp=getTimeStamp();
+
 //      char msg[100];
 //      sprintf(msg, "%d < %d < %d", min_value(), value->longValue(), max_value());
-      ACS_COMPLETION(completion, "baci::RWcontImpl<ACS_RW_TL>::setValue", ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::OutOfBounds, "Error out of bounds");
+//      ACS_COMPLETION(completion, "baci::RWcontImpl<ACS_RW_TL>::setValue", ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::OutOfBounds, "Error out of bounds");
+
+      completion = ACSErrTypeCommon::OutOfBoundsCompletion( __FILE__, __LINE__,
+							   "RWcommonImpl<ACS_RW_TL>::setValueAction");
+
       return;
     } 
 
