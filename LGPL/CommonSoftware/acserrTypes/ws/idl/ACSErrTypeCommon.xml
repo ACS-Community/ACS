@@ -8,13 +8,13 @@
 	<ErrorCode name="OutOfBounds" 
 	           shortDescription="Out of bounds"
 	           description="Out of bounds">
-		   <Member name="minValue" 
+		   <Member name="MinValue" 
                            type="string" 
  	                   description="Min value of the bounds."/>
-	           <Member name="maxValue" 
+	           <Member name="MaxValue" 
 		          type="string" 
  	                  description="Max value of the bounds."/>
-	            <Member name="requestedValue" 
+	            <Member name="RequestedValue" 
 		          type="string" 
  	                  description="Requested value."/>
 	</ErrorCode>
