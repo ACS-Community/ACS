@@ -1209,7 +1209,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	/**
 	 * Show a detailed view of the selected log in the right panel
 	 */
-	private void showDetailedLogInfo()
+	public void showDetailedLogInfo()
 	{
 		try {
 			LogEntryTable jt = getLogEntryTable();
@@ -1929,6 +1929,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
      * @param max The final position
      */
     public void animateProgressBar(String text, int min, int max) {
+    	if (progressBar.isVisible()) {
+    		throw new IllegalStateException("Exception trying to set the Progress Bar");
+    	}
     	if (min>=max) {
     		throw new IllegalArgumentException("Invalid range: ["+min+","+max+"]");
     	}
@@ -1963,6 +1966,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
      *            If it is null or empty then no text will be displayed
      */
     public void animateProgressBar(String text) {
+    	if (progressBar.isVisible()) {
+    		throw new IllegalStateException("Exception trying to set the Progress Bar");
+    	}
     	Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
     	setCursor(hourglassCursor);
     	if (text!=null && text.length()>0) {
