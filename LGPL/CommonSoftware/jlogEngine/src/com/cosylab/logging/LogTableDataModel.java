@@ -76,10 +76,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	// Contains references to the filters that are currently applied to logs.
 	// Actual filters are stored in filters.
 	//private final Vector appliedFilters = new Vector();
-
-	// Internal row cache information. See getValueCache(int).
-	private int rowCacheIndex = -1;
-	private ILogEntry rowCacheLogEntry = null;
 	
 	// Stores the current directory which is being accessed.	
 	public File currentDir = null;
@@ -144,13 +140,13 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		if (column == 0) {
 			return new Integer(0);
 		} else if (column==1) {
-				ILogEntry log = getValueCache(row);
+				ILogEntry log = visibleLogs.get(row);
 				return new Boolean(log.hasDatas());
 		} else {
 	
 			column=column-2;
 			
-			ILogEntry log = getValueCache(row);
+			ILogEntry log = visibleLogs.get(row);
 		
 			if (log != null) {
 				return log.getField(column);
@@ -171,31 +167,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @param row int
 	 */
 	public final ILogEntry getVisibleLogEntry(int row) {
-		return getValueCache(row);	
-	}
-	
-	/**
-	 * Performance method to reduce the number of table lookups during table display.
-	 * Returns <code>LogEntryXML</code> based on last accessed entry. Will always produce
-	 * valid result regardless of actual cached value.
-	 * Creation date: (11/16/2001 10:46:00)
-	 * @return com.cosylab.logging.engine.LogEntryXML
-	 * @param row int
-	 */
-	private final ILogEntry getValueCache(int row) {
-		if (row == rowCacheIndex) {
-			return rowCacheLogEntry;
-		} else {
-			if ((row >= 0) && (row < visibleLogs.size())) {
-				ILogEntry log = visibleLogs.get(row);
-				rowCacheIndex = row;
-				rowCacheLogEntry = log;
-				return log;
-			} else {
-				invalidateRowCache();
-				return null;
-			}
-		}
+		return visibleLogs.get(row);	
 	}
 	
 	/**
@@ -305,16 +277,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		return visibleLogs.isSortAscending();
 	}
 
-	/**
-	 * Empties the row cache.
-	 * Creation date: (11/16/2001 11:22:24)
-	 */
-	protected final void invalidateRowCache() {
-		rowCacheIndex = -1;
-		rowCacheLogEntry = null;
-	}
-	
-		public void loadFromURL() {
+	public void loadFromURL() {
 			java.io.BufferedReader in = null;
 			String urlStr=null;
 			try {
