@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplErrorComponent.idl,v 1.1 2006/04/12 16:35:05 gchiozzi Exp $"
+* "@(#) $Id: acsexmplErrorComponent.idl,v 1.2 2006/05/11 13:13:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,15 +69,66 @@ module acsexmplErrorComponent
 	 */
 	void badMethod(in short depth) raises (ACSErrTypeCommon::GenericErrorEx);
 
+
 	/** 
-	 *  Simple method that returns an ACSErr::Completion.
+	 *  Method that throws an ACSException (ACSErrTypeCommon::GenericErrorEx).
+	 *  The error trace inside the exception is added from a completion.
+	 *  @param depth depth of the error trace
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void exceptionFromCompletion(in short depth) raises (ACSErrTypeCommon::GenericErrorEx);
+
+
+       /** 
+	 *  Method that throws an ACSException on the type level 
+	 * (ACSErrTypeCommon::ACSErrTypeCommonrEx). Since we do not have hierarchy in IDL, 
+         *  we have to specfy here code and type exception.
+	 *  @param depth depth of the error trace
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void typeException(in short depth) raises (ACSErrTypeCommon::GenericErrorEx, 
+						   ACSErrTypeCommon::ACSErrTypeCommonEx);
+
+
+	/** 
+	 *  Simple method that returns an ACSErr::Completion. 
+	 *  The Error Trace in the completion is added from an exception.
 	 *  @param depth depth of the error trace, if <= 0, returns OK completion
 	 *  @return ACSErr::Completion
 	 *  @htmlonly
 	 *  <br><hr>
 	 *  @endhtmlonly
 	 */
-        ACSErr::Completion returnCompletion(in short depth);
+        ACSErr::Completion completionFromException(in short depth);
+
+       /** 
+	 *  Simple method that returns an ACSErr::Completion. 
+	 *  The Error Trace in the completion is added from a completion.
+	 *  @param depth depth of the error trace, if <= 0, returns OK completion
+	 *  @return ACSErr::Completion
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+        ACSErr::Completion completionFromCompletion(in short depth);
+
+
+       /** 
+	 *  Simple method that returns an ACSErr::Completion. 
+	 *  Completion is located on the stack instead on the heap.
+	 *  @param depth depth of the error trace, if <= 0, returns OK completion
+	 *  @return ACSErr::Completion
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+        ACSErr::Completion completionOnStack(in short depth);
 
 	};
 };

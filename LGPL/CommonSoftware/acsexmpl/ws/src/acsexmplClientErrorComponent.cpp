@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.2 2006/04/18 16:49:39 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.3 2006/05/11 13:13:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.2 2006/04/18 16:49:39 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.3 2006/05/11 13:13:19 bjeram Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -124,7 +124,7 @@ class ClientErrorComponent
 
     /**
      * Example 1: Calls a method that throws an exception
-     *            with a stack trace..
+     *            with an error trace..
      * <ul>
      *   <li> Catches the exception, 
      *   <li> Adds context information
@@ -286,22 +286,33 @@ void ClientErrorComponent::TestReceiveRemoteCompletion()
 	}
     try
 	{
+	CompletionImpl comp;
+
 	// OK Completion
 	ACS_SHORT_LOG((LM_INFO, "Example 2a: Calls a method that returns an OK completion."));
-	CompletionImpl comp = foo_m->returnCompletion(0);
+	comp = foo_m->completionFromException(0);
 	comp.log();
 
 	// ERROR completion with an error trace inside.
 	ACS_SHORT_LOG((LM_INFO, "Example 2b: Calls a method that returns an Error completion."));
-	CompletionImpl comp2 = foo_m->returnCompletion(3);
-	comp2.log();
+	comp = foo_m->completionFromException(3);
+	comp.log();
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	// Map......
+	ACSErrTypeCommon::GenericErrorExImpl ex(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::TestReceiveRemoteCompletion");
+	ex.setErrorDesc("completionFromException has thrown a CORBA exception");
+	ex.log();
 	}
     catch(...)
 	{
-	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(__FILE__, __LINE__,
+	ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__,
 							 "ClientErrorComponent::TestReceiveRemoteCompletion");
-	badMethodEx.setErrorDesc("returnCompletion has thrown an UNEXPECTED exception");
-	badMethodEx.log();
+	ex.setErrorDesc("completionFromException has thrown an UNEXPECTED exception");
+	ex.log();
 	}
 }
 
