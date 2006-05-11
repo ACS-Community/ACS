@@ -119,8 +119,7 @@ public class SearchDialog extends JDialog {
             columnToSearchIn[t].setToolTipText("Search in "+ILogEntry.fieldNames[t]);
         }
         // Add a checkbox for additional data
-        additionalDataCB = new JCheckBox("Additional data");
-        additionalDataCB.setSelected(true);
+        additionalDataCB = new JCheckBox("Additional data",false);
         advancedPanel.add(additionalDataCB);
     }
 	/**
