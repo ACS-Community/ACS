@@ -5,7 +5,19 @@
                    description="File couldn't be found">
 	           <Member name="FileName" type="string" description="File name"/>
 	</ErrorCode>
-	<ErrorCode name="OutOfBounds" shortDescription="Out of bounds" description="Out of bounds"/>
+	<ErrorCode name="OutOfBounds" 
+	           shortDescription="Out of bounds"
+	           description="Out of bounds">
+		   <Member name="minValue" 
+                           type="string" 
+ 	                   description="Min value of the bounds."/>
+	           <Member name="maxValue" 
+		          type="string" 
+ 	                  description="Max value of the bounds."/>
+	            <Member name="requestedValue" 
+		          type="string" 
+ 	                  description="Requested value."/>
+	</ErrorCode>
 	<ErrorCode name="IOError" shortDescription="Input Output Error" description="Input Output Error"/>
 	<ErrorCode name="Unknown" shortDescription="Unknown Error" description="Unknown Error"/>
 	<ErrorCode name="NoResources" shortDescription="No Resources" description="No Resources"/>
