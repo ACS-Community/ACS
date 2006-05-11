@@ -143,20 +143,20 @@ public class LogCache extends LogBufferedFileCache {
 	 * Get a log from the cache on disk updating all the 
 	 * internal lists
 	 * 
-	 * @param index The position of the log
+	 * @param idx The position of the log
 	 * @return The log read from the cache on disk
 	 */
-	private synchronized ILogEntry loadNewLog(Integer index) throws LogCacheException {
+	private synchronized ILogEntry loadNewLog(Integer idx) throws LogCacheException {
 		// A little check: each index must appear only once in the list
 		//
 		// This check can cause a scansion of the list
 		// so it is probably better to remove after debugging
-		if (manager.contains(index)) {
-			throw new LogCacheException (""+index+" is already in the list!");
+		if (manager.contains(idx)) {
+			throw new LogCacheException (""+idx+" is already in the list!");
 		}
 		
 		// Read the new log from the cache on disk
-		ILogEntry log = super.getLog(index);
+		ILogEntry log = super.getLog(idx);
 		
 		// There is enough room in the lists?
 		if (cache.size()==actualCacheSize) {
@@ -166,10 +166,10 @@ public class LogCache extends LogBufferedFileCache {
 		}
 		
 		// Add the log in the cache
-		cache.put(index,log);
+		cache.put(idx,log);
 		
 		// Append the index in the manager list
-		manager.add(index);
+		manager.add(idx);
 		
 		return log;
 	}
@@ -182,14 +182,14 @@ public class LogCache extends LogBufferedFileCache {
 	 * 
 	 * The hashMap does not need any maintenance
 	 * 
-	 * @param idx 
+	 * @param idx The position of the log
 	 */
-	private synchronized void hitLog(Integer index) {
+	private synchronized void hitLog(Integer idx) {
 		// Find the position of the item in the manager list
-		int pos = manager.indexOf(index);
+		int pos = manager.indexOf(idx);
 		if (pos==-1) {
 			// Why this element is not here?
-			throw new IllegalArgumentException(""+index+" is not in the list!");
+			throw new IllegalArgumentException(""+idx+" is not in the list!");
 		}
 		
 		// If the element is in the last position then there is nothing
@@ -200,7 +200,7 @@ public class LogCache extends LogBufferedFileCache {
 		}
 		// Move the hitted index one position toward the end of the list
 		Integer temp=manager.get(pos+1);
-		manager.set(pos+1,index);
+		manager.set(pos+1,idx);
 		manager.set(pos,temp);
 	}
 	
