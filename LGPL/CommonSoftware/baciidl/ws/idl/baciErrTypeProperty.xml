@@ -10,5 +10,7 @@ static data" description="Error reading static data"/>
 <ErrorCode name="PropertyActivation" shortDescription="Error activating
 	property" description="Error activating the property"/>
 <ErrorCode name="PropertySetInitValue" shortDescription="Error setting
-initial value" description="Error setting the intial value of the property"/>
+initial value" description="Error setting the intial value of the
+property"/>
+<ErrorCode name="CanNotSetValue" shortDescription="Problem to set value" description="Problem to set value of the property"/>
 </Type>
