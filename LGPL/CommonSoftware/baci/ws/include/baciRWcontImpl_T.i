@@ -138,10 +138,27 @@ void RWcontImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 
   if (min_value()>v || max_value()<v)
       { 
-      completion.timeStamp=getTimeStamp();
+      std::ostringstream ostr;
+      std::string ts;
+      ACSErrTypeCommon::OutOfBoundsCompletion co(__FILE__, 
+						 __LINE__,
+						 "RWcommonImpl<ACS_RW_TL>::setValueAction");
+      
+      ostr << min_value() << std::ends;
+      ts = ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
+      co.setMinValue(ts.c_str());
 
-      completion = ACSErrTypeCommon::OutOfBoundsCompletion( __FILE__, __LINE__,
-							   "RWcommonImpl<ACS_RW_TL>::setValueAction");
+      ostr.str(""); // reset the stream
+      ostr << max_value() << std::ends;
+      ts = ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
+      co.setMaxValue(ts.c_str());
+
+      ostr.str("");
+      ostr << v << std::ends;
+      ts = ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
+      co.setRequestedValue(ts.c_str());
+
+      completion = co;
       return;
     } 
 

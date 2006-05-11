@@ -54,10 +54,27 @@ void RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   for (CORBA::ULong n = 0UL; n < val.length(); n++)
       if (minVal>val[n] || maxVal<val[n])
 	{ 
-	  completion.timeStamp=getTimeStamp();
-	  completion = ACSErrTypeCommon::OutOfBoundsCompletion( __FILE__, 
-								__LINE__,
-								"baci::RWSeqCont&lt;&gt;::setValue");
+	std::ostringstream ostr;
+	std::string ts;
+	ACSErrTypeCommon::OutOfBoundsCompletion co( __FILE__, 
+						    __LINE__,
+						    "baci::RWSeqCont&lt;&gt;::setValue");
+
+	ostr << minVal << std::ends;
+	ts = ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
+	co.setMinValue(ts.c_str());
+	
+	ostr.str(""); // reset the stream
+	ostr << maxVal << std::ends;
+	ts = ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
+	co.setMaxValue(ts.c_str());
+
+	ostr.str(""); // reset the stream
+	ostr << val[n] << std::ends;
+	ts = ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
+	co.setRequestedValue(ts.c_str());
+	
+	completion = co;
 	  return;
 	} 
 
