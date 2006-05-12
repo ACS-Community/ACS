@@ -348,7 +348,6 @@ public class CDBChecker {
 				return false;
 			default:
 			    System.out.println("\n[Error] Unknown flag: \"-"+flag+"\".");
-			    usage();
 			    return false;
 			}
 		    }
