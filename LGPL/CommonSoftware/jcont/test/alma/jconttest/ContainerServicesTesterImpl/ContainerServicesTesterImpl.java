@@ -22,6 +22,7 @@
 package alma.jconttest.ContainerServicesTesterImpl;
 
 import java.util.Random;
+import java.util.logging.Level;
 
 import org.omg.CORBA.StringHolder;
 
@@ -36,7 +37,6 @@ import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
-import alma.acs.container.ContainerException;
 import alma.jconttest.ContainerServicesTesterOperations;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentImpl.DummyComponentHelper;
@@ -156,6 +156,7 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
             try {
                 ret = exec.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
             } catch (InterruptedException e) {
+            	m_logger.log(Level.WARNING, "interrupted", e);
             }
         } catch (Exception e) {
             ret = false;
