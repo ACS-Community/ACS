@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 
-import alma.acs.container.corba.AcsCorba;
 
 /**
  * This class implements the more exotic methods from the container services interface,

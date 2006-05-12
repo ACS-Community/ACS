@@ -24,8 +24,6 @@ package alma.acs.entityutil;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.exolab.castor.xml.Unmarshaller;
-
 import junit.framework.TestCase;
 
 import alma.entities.commonentity.EntityRefT;
