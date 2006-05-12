@@ -36,7 +36,6 @@ import java.util.logging.Logger;
 import org.omg.CORBA.DATA_CONVERSION;
 import org.omg.CORBA.UserException;
 
-import alma.ACS.ACSComponentOperations;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.StopWatch;
@@ -59,11 +58,11 @@ import alma.acs.util.StopWatch;
  */
 public class ContainerSealant implements InvocationHandler
 {
-	private String m_name;
-	private Object m_component;
-	private Logger m_logger;
-	private ClassLoader componentContextCL;    
-	private Set methodNamesExcludedFromInvocationLogging;
+	private final String m_name;
+	private final Object m_component;
+	private final Logger m_logger;
+	private final ClassLoader componentContextCL;    
+	private final Set<String> methodNamesExcludedFromInvocationLogging;
     
 	private ContainerSealant(Object componentImpl, String name, 
 								Logger logger, 
@@ -74,7 +73,7 @@ public class ContainerSealant implements InvocationHandler
 		m_logger = logger;
         this.componentContextCL = componentContextCL; 
         
-        methodNamesExcludedFromInvocationLogging = new HashSet(2);
+        methodNamesExcludedFromInvocationLogging = new HashSet<String>(2);
 	}
 
 
@@ -236,28 +235,6 @@ public class ContainerSealant implements InvocationHandler
 		return realThr;
 	}
 
-	
-	private void logException(String qualMethodName, Throwable ex)
-	{
-		// TODO! use ACS error handling! Perhaps don't rely on CORBA UserException, but introspect declared exceptions 
-		if (ex instanceof UserException)
-		{
-			m_logger.log(Level.WARNING, "checked exception was thrown in functional method '" + 
-				qualMethodName + "':", ex);
-		}
-		else if (ex instanceof DynWrapperException)
-		{
-			m_logger.log(Level.SEVERE, "the dynamic xml entity translator failed with the functional method '" + 
-				qualMethodName + "':", ex);
-		}
-		else
-		{
-			m_logger.log(Level.SEVERE, "unexpected exception was thrown in functional method '" + 
-				qualMethodName + "':", ex);
-		}
-	}
-
-	
 	/**
 	 * Disables automatic invocation logging for certain component or offshoot methods.
 	 * <p>
