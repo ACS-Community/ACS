@@ -83,7 +83,7 @@ public class LogConfigTest extends TestCase {
 
 		int expectedMinLogLevelLocal = ACSCoreLevel.ACS_LEVEL_DEBUG;
 		// TAT defines ACS_LOG_STDOUT, so the test must take this into account
-		Integer ACS_LOG_STDOUT = Integer.getInteger(LogConfigData.PROPERTYNAME_ACS_LOG_STDOUT);
+		Integer ACS_LOG_STDOUT = Integer.getInteger(LogConfigData.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
     	if (ACS_LOG_STDOUT != null) {
     		expectedMinLogLevelLocal = ACS_LOG_STDOUT.intValue();
     	}
