@@ -31,10 +31,15 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.config.LogConfigData;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.engine.LogReceiver.DelayedLogEntry;
 
 /**
+ * Tests the {@link alma.acs.logging.engine.LogReceiver} obtained 
+ * from {@link alma.acs.component.client.ComponentClientTestCase#getLogReceiver()}.
+ * 
  * @author hsommer
  * created 29.04.2006 10:27:51
  */
@@ -47,6 +52,8 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
     }
     
     protected void setUp() throws Exception {
+    	// to not suppress any remote logging (would usually be configured through the CDB)  
+    	System.setProperty("ACS.log.minlevel.remote", "2");
         super.setUp();
         logReceiver = getLogReceiver();
     }
@@ -54,7 +61,11 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-    
+        
+    /**
+     * The log receiver is supposed to be initialized, 
+     * since {@link LogReceiver#initialize(org.omg.CORBA.ORB, si.ijs.maci.Manager)} 
+     */
     public void testInitialized() {
         assertTrue(logReceiver.isInitialized());
     }
@@ -66,6 +77,9 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
      * @throws Exception
      */
     public void testLogQueueNoDelay() throws Exception {
+    	LogConfigData logConfigData = ClientLogManager.getAcsLogManager().getLogConfig().getLogConfigData();
+    	assertTrue("For this test, even low-level logs must be sent off remotely.", logConfigData.getMinLogLevel() >= 2);    	
+    	
         logReceiver.setDelayMillis(0);
         BlockingQueue<DelayedLogEntry> queue = logReceiver.getLogQueue();
         
@@ -84,7 +98,7 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
             // in spite of zero queue sorting delay, we need a long timeout 
             // to compensate travel delay when sending log records to Log service,
             // and then getting them back over the network.
-            long timeoutSec = 15L;
+            long timeoutSec = 10L + logConfigData.getFlushPeriodSeconds();
             while (true) {
 	            DelayedLogEntry delayedLogEntry = queue.poll(timeoutSec, TimeUnit.SECONDS);            
 	            if (delayedLogEntry != null) {
