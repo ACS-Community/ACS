@@ -153,6 +153,13 @@ public interface ContainerServices
 			throws ContainerException;
 	
 
+	/**
+	 * @param compUrl  the component's name (URL)
+	 * @param targetCompUrl  the name (URL) of the target component, in whose container we also want <code>compUrl</code> to run.
+	 * @return  the component reference, which should be cast using the appropriate CORBA narrow operation. Never null.
+	 * @throws ContainerException If the call failed and no component reference could be obtained.
+	 * @since ACS 5.0.3
+	 */
 	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws ContainerException;
 	
 	
