@@ -68,7 +68,7 @@ public class DummyComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	*/
-	protected Class _getPOATieClass()
+	protected Class<DummyComponentPOATie> _getPOATieClass()
 	{
 		return DummyComponentPOATie.class;
 	}
@@ -76,7 +76,7 @@ public class DummyComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	*/
-	protected Class _getOperationsInterface()
+	protected Class<DummyComponentOperations> _getOperationsInterface()
 	{
 		return DummyComponentOperations.class;
 	}
