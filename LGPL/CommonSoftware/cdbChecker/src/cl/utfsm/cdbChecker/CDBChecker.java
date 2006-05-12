@@ -290,6 +290,7 @@ public class CDBChecker {
 		System.out.println("      -v     Verbose output");
 		System.out.println("      -r     Disable the recursively look of .xsd and .xml files feature");
 		System.out.println("      -n     Get required schemas from the network");
+		System.out.println("      -h     Show this help");
 		System.out.println("\n    XMLPath and XSDPath can have multiple paths separated by \":\".");
 		System.out.println("    The paths must be absolute (i.e. starting with '/')");
 		System.out.println("    The checker will search for files recursively inside the given paths.\n");
@@ -343,6 +344,8 @@ public class CDBChecker {
 			    //Disable the recursively search of .xsd and .xml files
 			    this.recursive=false;
 			    break;
+			case 'h':
+				return false;
 			default:
 			    System.out.println("\n[Error] Unknown flag: \"-"+flag+"\".");
 			    usage();
@@ -521,6 +524,8 @@ public class CDBChecker {
 				if(cdbchecker.verbose)System.out.println("*** Validating XML files");						
 				cdbchecker.XMLValidate(XMLFilenames);
 			}
+		} else {
+			usage();
 		}
 		if(cdbchecker.tmpDir!=null){
 			if(cdbchecker.verbose)System.out.println("*** Deleting Temporary files");
