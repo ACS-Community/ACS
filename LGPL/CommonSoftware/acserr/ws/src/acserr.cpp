@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.76 2006/04/25 08:16:59 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.77 2006/05/12 10:22:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.76 2006/04/25 08:16:59 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.77 2006/05/12 10:22:50 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /******************************************************************************
@@ -407,6 +407,10 @@ ACSErr::ErrorTrace* ErrorTraceHelper::getNext(){
 }
 
 char* ErrorTraceHelper::getDescription(){ 
+    return CORBA::string_dup(m_current->shortDescription);
+}
+
+char* ErrorTraceHelper::getShortDescription(){ 
     return CORBA::string_dup(m_current->shortDescription);
 }
 

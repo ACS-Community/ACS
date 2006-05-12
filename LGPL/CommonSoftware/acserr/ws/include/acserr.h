@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.69 2006/04/25 08:16:59 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.70 2006/05/12 10:22:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -210,11 +210,19 @@ class ErrorTraceHelper
     template<typename T>
     T getMemberValue (const char* name);
 
- /**
-   * Returns copy of description of current error. User have to take care of releasing it!
-   * @return pointer to the char (=string)
-   */
-  char* getDescription();
+    /**
+     * Returns copy of short (!) description of current error. User have to take care of releasing it!
+     * @return pointer to the char (=string).
+     * TBD: should return description if it is possible to retreive it. To be changed or removed.
+     * short description should be retreived using #getShortDescription
+     */
+    char* getDescription();
+
+    /**
+     * Returns copy of short description of current error. User have to take care of releasing it!
+     * @return pointer to the char (=string)
+     */
+    char* getShortDescription();
 
   /**
    * Returns file name information of the error
