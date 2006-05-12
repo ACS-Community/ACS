@@ -92,7 +92,7 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 		System.out.println(acsLogFormatter.format(record));
 
 		// test additional properties
-		Map map = new HashMap();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("Line", new Long(1208));
 		map.put("StackId", "Stack ID");
 		map.put("StackLevel", new Long(4));
@@ -100,12 +100,12 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 		map.put("Context", "Testing...");
 		map.put("ThreadName", "MyThread");
 		map.put("Uri", "abeans-CDBDAL://csl01:5001/alma/gizmo/current/units?get");
-		Map nv = new HashMap();
+		Map<String, String> nv = new HashMap<String, String>();
 		nv.put("name1", "value1");
 		nv.put("name2", "value2");
 		map.put("Data", nv);
 
-		Map nv2 = new HashMap();
+		Map<String, String> nv2 = new HashMap<String, String>();
 		nv2.put("attribute1", "value1");
 		nv2.put("attribute2", "value2");
 		map.put("Attributes", nv2);
