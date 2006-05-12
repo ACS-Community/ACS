@@ -133,7 +133,7 @@ void RWcontImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
 
-  ACS::Time ts;
+  ACS::Time ts  = getTimeStamp();
   TSM v =  value->getValue(static_cast<TSM*>(0));
 
   if (min_value()>v || max_value()<v)

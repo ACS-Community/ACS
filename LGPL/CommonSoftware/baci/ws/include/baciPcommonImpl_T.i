@@ -182,8 +182,9 @@ void PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
 
   TM nval;
   
+  ACS::Time ts  = getTimeStamp();
   try {
-	nval = devIO_mp->read(completion.timeStamp);
+	nval = devIO_mp->read(ts);
   } catch (ACSErr::ACSbaseExImpl& ex) {
 	completion = baciErrTypeDevIO::ReadErrorCompletion (ex, __FILE__, __LINE__,"PcommonImpl::getValue(...)");
 	return;
@@ -192,9 +193,10 @@ void PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
   value->setValue( nval );
       // if there is no error add value to history
       // !!! to be done in a loop
-  addValueToHistory(completion.timeStamp, nval);
+  addValueToHistory(ts, nval);
 
   completion = ACSErrTypeOK::ACSErrOKCompletion();
+  completion.timeStamp = ts;
 }//getValue
  
 /* --------------- [ History support ] --------------- */
@@ -223,7 +225,6 @@ ActionRequest PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p,
   ACE_UNUSED_ARG(component_p);
   ACE_UNUSED_ARG(callbackID);
   ACE_UNUSED_ARG(descIn);
-
   CompletionImpl co;
 
   getValue(property_mp, value, co, descOut);

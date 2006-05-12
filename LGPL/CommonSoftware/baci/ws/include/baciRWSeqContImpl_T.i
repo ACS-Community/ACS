@@ -47,7 +47,7 @@ void RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
 
-  ACS::Time ts;
+  ACS::Time ts  = getTimeStamp();
   TS minVal = this->min_value();
   TS maxVal = this->max_value();
   TM val = value->getValue(static_cast<TM*>(0));

@@ -161,7 +161,7 @@ void RWcommonImpl<ACS_RW_TL>::setValue(BACIProperty* property,
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
 
-  ACS::Time ts;
+  ACS::Time ts  = getTimeStamp();
   TM v =  value->getValue(static_cast<TM*>(0));
   try
       {
