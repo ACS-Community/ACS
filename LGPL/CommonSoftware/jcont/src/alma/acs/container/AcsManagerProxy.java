@@ -407,8 +407,7 @@ public class AcsManagerProxy
 			try
 			{
 				// try something to see if the manager responds...
-				ClientInfo[] cinfos = m_manager.get_client_info(m_mgrHandle, 
-										new int[]{m_mgrHandle}, "");
+				m_manager.get_client_info(m_mgrHandle, new int[]{m_mgrHandle}, "");
 				m_responding = true;
 			}
 			catch (Throwable thr)
