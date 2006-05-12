@@ -282,7 +282,7 @@ public class ContainerServicesImpl implements ContainerServices
 	public ComponentDescriptor getComponentDescriptor(String componentUrl)
 		throws ContainerException
 	{
-		ComponentDescriptor desc = (ComponentDescriptor) m_componentDescriptorMap.get(componentUrl);
+		ComponentDescriptor desc = m_componentDescriptorMap.get(componentUrl);
 		
 		if (desc == null)
 		{
@@ -315,7 +315,7 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 		
 		// check if our component has requested the other component before
-		org.omg.CORBA.Object stub = (org.omg.CORBA.Object) m_usedComponentsMap.get(curl);
+		org.omg.CORBA.Object stub = m_usedComponentsMap.get(curl);
 		
 		if (stub != null)
 		{
@@ -595,7 +595,7 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 		else
 		{
-			org.omg.CORBA.Object stub = (org.omg.CORBA.Object) m_usedComponentsMap.get(curl);
+			org.omg.CORBA.Object stub = m_usedComponentsMap.get(curl);
 			
 			m_logger.fine("about to release component " + curl);
 			try {
