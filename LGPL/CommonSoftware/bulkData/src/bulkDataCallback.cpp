@@ -181,6 +181,10 @@ int BulkDataCallback::handle_stop (void)
 	    bufParam_p->release();
 	    bufParam_p = 0;
 	    }
+
+	state_m = CB_UNS;
+	substate_m = CB_SUB_UNS;
+
 	throw CORBA::TIMEOUT();
 	}
     catch(CORBA::Exception &ex)
@@ -202,6 +206,9 @@ int BulkDataCallback::handle_stop (void)
 	    bufParam_p = 0;
 	    }
 
+	state_m = CB_UNS;
+	substate_m = CB_SUB_UNS;
+
 	throw CORBA::TIMEOUT();
 	}
     catch(...)
@@ -217,8 +224,14 @@ int BulkDataCallback::handle_stop (void)
 	    bufParam_p = 0;
 	    }
 
+	state_m = CB_UNS;
+	substate_m = CB_SUB_UNS;
+
 	throw CORBA::TIMEOUT();
 	}
+
+    state_m = CB_UNS;
+    substate_m = CB_SUB_UNS;
 
     return 0;
 }
