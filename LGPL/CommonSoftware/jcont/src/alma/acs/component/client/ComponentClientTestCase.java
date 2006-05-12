@@ -81,6 +81,25 @@ public class ComponentClientTestCase extends TestCase
 		m_namePrefix = name;
 	}
 	
+	
+	/**
+	 * Executes a single test method. 
+	 * Stray exceptions are logged using the test logger, so that they show in system logs.
+	 * @see junit.framework.TestCase#runTest()
+	 * @since ACS 6.0
+	 */
+	protected void runTest() throws Throwable {
+		try {
+			super.runTest();			
+		}
+		catch (Throwable thr) {
+			if (m_logger != null) {
+				m_logger.log(Level.WARNING, "JUnit test error in " + getFullName(), thr);
+			}
+			throw thr;
+		}
+	}
+	
 	/**
 	 * Starts CORBA in the client process and connects to the manager and logger.
      * <p>
@@ -251,15 +270,26 @@ public class ComponentClientTestCase extends TestCase
      * Gets a {@link LogReceiver} which can be used 
      * to verify log messages from both local and remote processes.
      * The returned <code>LogReceiver</code> is already initialized.
+     * If initialization fails, an exception is thrown.
      * <p>
      * To receive logs from the log service, use either 
-     * {@link LogReceiver#getLogQueue()} or {@link LogReceiver#startCaptureLogs(java.io.PrintWriter)}. 
-     * @throws ContainerException
+     * {@link LogReceiver#getLogQueue()} or {@link LogReceiver#startCaptureLogs(java.io.PrintWriter)}.
+     *  
+     * @throws ContainerException if the LogReceiver fails to initialize within 20 seconds.
      */
     protected LogReceiver getLogReceiver() throws ContainerException {
         if (logReceiver == null) {
-            logReceiver = new LogReceiver();
-            logReceiver.initialize(acsCorba.getORB(), m_acsManagerProxy.getManager());
+        	boolean initOk = false;
+        	try {
+	            logReceiver = new LogReceiver();
+	            initOk = logReceiver.initialize(acsCorba.getORB(), m_acsManagerProxy.getManager(), 20);
+        	}
+        	catch (Throwable thr) {
+        		throw new ContainerException("Failed to obtain an initialized LogReceiver.", thr);
+        	}
+            if (!initOk) {
+            	throw new ContainerException("LogReceiver failed to initialize within 20 seconds.");
+            }
         }
         return logReceiver;
     }
