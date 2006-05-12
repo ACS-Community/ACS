@@ -84,6 +84,7 @@ public class ComponentImplBase implements ComponentLifecycle, ACSComponentOperat
 	 */
 	public void cleanUp()
 	{
+		// by default nothing to do
 	}
 
 	/**
