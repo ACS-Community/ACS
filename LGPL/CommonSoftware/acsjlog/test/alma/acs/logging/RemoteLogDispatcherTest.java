@@ -57,7 +57,7 @@ public class RemoteLogDispatcherTest extends TestCase {
         System.out.println("START----------------------------" + getName() + "-------------");
         ORB orb = org.omg.CORBA.ORB.init();
 //        collectingLogger = CollectingLogger.getTestLogger("RemoteLogDispatcherTest");
-        collectingLogger = (CollectingLogger) LogRecordCollectingLogger.getCollectingLogger("RemoteLogDispatcherTest", CollectingLogger.class);
+        collectingLogger = LogRecordCollectingLogger.getCollectingLogger("RemoteLogDispatcherTest", CollectingLogger.class);
         collectingLogger.suppressLogs(true); // only interested in the LogRecords
         collectingLogger.clearLogRecords(); 
         formatter = new TestAcsXMLLogFormatter();
@@ -274,10 +274,10 @@ public class RemoteLogDispatcherTest extends TestCase {
 
 class TestLogDispatcher extends RemoteLogDispatcher {
 
-    private List xmlLogRecordList = new ArrayList();
+    private final List<String> xmlLogRecordList = new ArrayList<String>();
     private boolean verbose = true;
     private double writeFailureChance = 0.0;
-    private Random random = new Random(System.currentTimeMillis());
+    private final Random random = new Random(System.currentTimeMillis());
     
     TestLogDispatcher(ORB orb, Formatter xmlLogFormatter) {
         super(orb, null, xmlLogFormatter);
@@ -308,7 +308,7 @@ class TestLogDispatcher extends RemoteLogDispatcher {
     }
     
     String[] getCollectedXmlLogRecords() {
-        return (String[]) xmlLogRecordList.toArray(new String[xmlLogRecordList.size()]);
+        return xmlLogRecordList.toArray(new String[xmlLogRecordList.size()]);
     }
     
     void clearCollectedXmlLogRecords() {
