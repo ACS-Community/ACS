@@ -74,18 +74,21 @@ public class AcsContainer extends ContainerPOA
      */
     private static AcsContainer s_instance;
 
-    private String m_containerName;
+    private final String m_containerName;
 
-    private AcsManagerProxy m_managerProxy;
+    private final AcsManagerProxy m_managerProxy;
 
-    private AcsCorba m_acsCorba;
+    private final AcsCorba m_acsCorba;
 
-    private boolean isEmbedded;
+    private final boolean isEmbedded;
 
-    private Logger m_logger;
+    private final Logger m_logger;
 
-    private ComponentMap m_activeComponentMap;
+    private final ComponentMap m_activeComponentMap;
 
+    /**
+     * Cache for method {@link #getCDB()}. Don't use this field directly.
+     */
     private DAL cdb;
 
     /**
@@ -141,7 +144,7 @@ public class AcsContainer extends ContainerPOA
                 logConfig.initialize();
             } catch (LogConfigException ex) {
                 // if the CDB can't be read, we still want to run the container, so we only log the problems
-                m_logger.log(Level.FINE, "Failed to configure logging. Default values will be used.", ex);
+                m_logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: " + ex.getMessage());
             }
 
             s_instance = this;
@@ -157,9 +160,11 @@ public class AcsContainer extends ContainerPOA
     /**
      * Gets a reference to the CDB.
      * Reuses the previously obtained reference.
-     * Always use this method instead of directly accessing the field {@link #cdb}. 
+     * Implemented as on-demand remote call, so always use this method 
+     * instead of directly accessing the field {@link #cdb}. 
      * <p>
      * TODO: reuse this CDB reference in ContainerServicesImpl for method getCDB()
+     * @return the CDB reference, or <code>null</code> if it could not be obtained.
      */
     DAL getCDB() {
         if (cdb != null) {
@@ -871,7 +876,9 @@ public class AcsContainer extends ContainerPOA
             // block until all threads are finished or timeout occurs
             doneInTime = executor.awaitTermination(maxWaitTimeMillis, TimeUnit.MILLISECONDS);
         }
-        catch (InterruptedException ie) {}
+        catch (InterruptedException ie) {
+        	// must go on
+        }
 
         if (didAbort) {
             String msg = "done with aborting components ";
