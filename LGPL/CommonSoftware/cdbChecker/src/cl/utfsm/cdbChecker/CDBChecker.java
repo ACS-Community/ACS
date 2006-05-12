@@ -284,7 +284,7 @@ public class CDBChecker {
 	 * Prints usage information.
 	 *
 	 */
-	protected void usage(){
+	protected static void usage(){
 		System.out.println("\n[usage:]\n\n        #java [-flags] cdbChecker.CDBChecker [XMLPath] [XSDPath]");
 		System.out.println("\n\n    Flags:");
 		System.out.println("      -v     Verbose output");
