@@ -31,15 +31,15 @@ import java.util.logging.Logger;
  */
 public class ComponentInvocationHandler implements InvocationHandler
 {
-	private Logger m_logger;
+	private final Logger m_logger;
 	
-	private Object m_delegate;
-	private HashMap m_delegateMethodMap;
+	private final Object m_delegate;
+	private final Map<String, Method> m_delegateMethodMap;
 	
-	private List m_typeMappers;
+	private final List<TypeMapper> m_typeMappers;
 	
 	// key=String(fromClassNameToClassName), value=Mapper that can do it
-	private Map m_mapperMap;
+	private final Map<String, TypeMapper> m_mapperMap;
 
 
 	/**
@@ -76,9 +76,9 @@ public class ComponentInvocationHandler implements InvocationHandler
 	{
 		m_delegate = delegate;
 		m_logger = logger;
-		m_typeMappers = new ArrayList();
-		m_mapperMap = new HashMap();
-		m_delegateMethodMap = new HashMap();
+		m_typeMappers = new ArrayList<TypeMapper>();
+		m_mapperMap = new HashMap<String, TypeMapper>();
+		m_delegateMethodMap = new HashMap<String, Method>();
 
 		// store delegate methods by name in a Map
 		Method[] delegateMethods = delegateIF.getMethods();
@@ -239,7 +239,7 @@ public class ComponentInvocationHandler implements InvocationHandler
 	Method findDelegateMethod(Method method)
 		throws DynWrapperException
 	{
-		Method matchingDelegateMethod = (Method) m_delegateMethodMap.get(method.getName());
+		Method matchingDelegateMethod = m_delegateMethodMap.get(method.getName());
 
 		if (matchingDelegateMethod == null)
 		{
@@ -294,13 +294,13 @@ public class ComponentInvocationHandler implements InvocationHandler
 		
 		// get the right Mapper
 		String mapKey = oldObject.getClass().getName() + newObjectClass.getName();
-		TypeMapper typeMapper = (TypeMapper) m_mapperMap.get(mapKey);
+		TypeMapper typeMapper = m_mapperMap.get(mapKey);
 		
 		// if not found, check them out again; perhaps canTranslate hadn't been called
 		if (typeMapper == null)
 		{
 			canTranslate(oldObject.getClass(), newObjectClass);
-			typeMapper = (TypeMapper) m_mapperMap.get(mapKey);
+			typeMapper = m_mapperMap.get(mapKey);
 		}
 		// now we know that we can't deal with it 
 		if (typeMapper == null)

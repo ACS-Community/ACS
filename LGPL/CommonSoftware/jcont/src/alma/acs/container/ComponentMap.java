@@ -44,13 +44,13 @@ class ComponentMap
 	/**
 	 * The map that backs this class. 
 	 */
-	private LinkedHashMap m_map;
+	private LinkedHashMap<Integer, ComponentAdapter> m_map;
 	
 	private Logger logger;
 	
 	ComponentMap(Logger logger) {
 		this.logger = logger;
-		m_map = new LinkedHashMap();
+		m_map = new LinkedHashMap<Integer, ComponentAdapter>();
 	}
 	
 	
@@ -81,7 +81,7 @@ class ComponentMap
 	 */
 	synchronized ComponentAdapter put(int compHandle, ComponentAdapter compAdapter)
 	{
-		return ( (ComponentAdapter) m_map.put(new Integer(compHandle), compAdapter) );
+		return ( m_map.put(compHandle, compAdapter) );
 	}
 	
 	
@@ -93,7 +93,7 @@ class ComponentMap
 	 * @param sortedHandles
 	 */
 	synchronized void sort(int[] sortedHandles) {
-		Map tmpMap = new LinkedHashMap(m_map.size());
+		Map<Integer, ComponentAdapter> tmpMap = new LinkedHashMap<Integer, ComponentAdapter>(m_map.size());
 		try {
 			for (int i = 0; i < sortedHandles.length; i++) {
 				ComponentAdapter compAdapter = get(sortedHandles[i]);
@@ -132,7 +132,7 @@ class ComponentMap
 	 */
 	synchronized ComponentAdapter remove(int compHandle)
 	{
-		return ( (ComponentAdapter) m_map.remove(new Integer(compHandle)) );
+		return m_map.remove(new Integer(compHandle));
 	}
 
 
@@ -147,7 +147,7 @@ class ComponentMap
 	 */
 	synchronized ComponentAdapter get(int compHandle)
 	{
-		return ( (ComponentAdapter) m_map.get(new Integer(compHandle)) );
+		return m_map.get(new Integer(compHandle));
 	}
 
 	
@@ -167,7 +167,7 @@ class ComponentMap
 	 */
 	synchronized ComponentAdapter[] getComponentAdapters(int[] compHandles)
 	{
-		List adapters = new ArrayList();
+		List<ComponentAdapter> adapters = new ArrayList<ComponentAdapter>();
 		
 		if (compHandles != null)
 		{
@@ -180,8 +180,7 @@ class ComponentMap
 				}			
 			}
 		}
-		ComponentAdapter[] ret = (ComponentAdapter[]) 
-					adapters.toArray(new ComponentAdapter[adapters.size()]);		
+		ComponentAdapter[] ret = adapters.toArray(new ComponentAdapter[adapters.size()]);		
 					
 		return ret;
 	}
@@ -226,14 +225,14 @@ class ComponentMap
 	 */
 	synchronized ComponentAdapter[] getAllComponentAdapters()
 	{
-		List nonNullAdapters = new ArrayList();
+		List<ComponentAdapter> nonNullAdapters = new ArrayList<ComponentAdapter>();
 		for (Iterator iter = m_map.values().iterator(); iter.hasNext();) {
 			ComponentAdapter compAdapter = (ComponentAdapter) iter.next();
 			if (compAdapter != null) {
 				nonNullAdapters.add(compAdapter);
 			}
 		}
-		ComponentAdapter[] ret = (ComponentAdapter[]) nonNullAdapters.toArray(new ComponentAdapter[nonNullAdapters.size()]);		
+		ComponentAdapter[] ret = nonNullAdapters.toArray(new ComponentAdapter[nonNullAdapters.size()]);		
 		return ret;
 	}
 	
