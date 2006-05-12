@@ -55,8 +55,10 @@ public class LogConfigData {
 	public static final String CDBNAME_EXPEDITED_DISPATCH_LEVEL = "MaxCachePriority";
 	public static final String CDBNAME_DISPATCH_PACKETSIZE = "CacheSize";
 	public static final String CDBNAME_FLUSHPERIOD_SECONDS = "FlushPeriodSeconds";
-	
-	public final static String PROPERTYNAME_ACS_LOG_STDOUT = "ACS.logstdout";
+
+	// for the often-used min levels we offer properties, to avoid having an otherwise not needed CDB configuration 
+	public final static String PROPERTYNAME_MIN_LOG_LEVEL_LOCAL = "ACS.logstdout"; // todo: rename to "ACS.log.minlevel.local"
+	public final static String PROPERTYNAME_MIN_LOG_LEVEL = "ACS.log.minlevel.remote";
 
 	private String centralizedLoggerName; // CDB: CentralizedLogger
     private int dispatchPacketSize; // CDB: CacheSize
@@ -79,19 +81,27 @@ public class LogConfigData {
     void setDefaultValues() {
         centralizedLoggerName = "Log";
         dispatchPacketSize = 30;
-        minLogLevel = ACSCoreLevel.ACS_LEVEL_DEBUG;
         expeditedDispatchLevel = ACSCoreLevel.ACS_LEVEL_ALERT;
         flushPeriodSeconds = 10;
         
         // local min level: env variable ACS_LOG_STDOUT (mapped to property ACS.logstdout by start scripts) overrides the hardcoded default
-    	Integer ACS_LOG_STDOUT = Integer.getInteger(PROPERTYNAME_ACS_LOG_STDOUT);
-    	if (ACS_LOG_STDOUT != null) {
-    		minLogLevelLocal = ACS_LOG_STDOUT.intValue();
+    	Integer minLevelLocalValue = Integer.getInteger(PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
+    	if (minLevelLocalValue != null) {
+    		minLogLevelLocal = minLevelLocalValue.intValue();
     	}
     	else {
             minLogLevelLocal = ACSCoreLevel.ACS_LEVEL_DEBUG;
     	}
+        // remote min level: should only be used for tests etc where need low-level logs but don't have a CDB at hand.
+    	Integer minLevelValue = Integer.getInteger(PROPERTYNAME_MIN_LOG_LEVEL);
+    	if (minLevelValue != null) {
+    		minLogLevel = minLevelValue.intValue();
+    	}
+    	else {
+            minLogLevel = ACSCoreLevel.ACS_LEVEL_DEBUG;
+    	}
     }
+    
     
     /**
      * Copy constructor
