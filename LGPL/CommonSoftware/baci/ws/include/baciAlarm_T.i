@@ -483,10 +483,7 @@ void AlarmEventStrategyDisc<T, TPROP, TALARM>::check(BACIValue &val,
       try
 	{
 
-	  Completion c;
-	  c.timeStamp = getTimeStamp();
-	  c.type = ACSErr::ACSErrTypeAlarm;        // alarm
-	  c.code = ACSErrTypeAlarm::ACSErrAlarmCleared;     // clear
+	  Completion c = ACSErrTypeAlarm::ACSErrAlarmClearedCompletion();
 	  
 	  this->callback_mp->alarm_cleared(value, c, desc);
 	  
@@ -548,10 +545,7 @@ void AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
       
       try
 	{ 
-	  Completion c;
-	  c.timeStamp = getTimeStamp();
-	  c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	  c.code = ACSErrTypeAlarm::ACSErrAlarmCleared;     // clear
+	Completion c=ACSErrTypeAlarm::ACSErrAlarmClearedCompletion();
 	  
 	  this->callback_mp->alarm_cleared(value, c, desc);
 	  
@@ -571,10 +565,7 @@ void AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
       try
 	{
 	  
-	  Completion c;
-	  c.timeStamp = getTimeStamp();
-	  c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	  c.code = ACSErrTypeAlarm::ACSErrAlarmLow;     // low
+	Completion c=ACSErrTypeAlarm::ACSErrAlarmLowCompletion();
 	  
 	  this->callback_mp->alarm_raised(value, c, desc);
 	  
@@ -594,11 +585,8 @@ void AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
       try
         {
 	  
-	  Completion c;
-	  c.timeStamp = getTimeStamp();
-	  c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	  c.code = ACSErrTypeAlarm::ACSErrAlarmHigh;     // high
-	  
+	Completion c= ACSErrTypeAlarm::ACSErrAlarmHighCompletion();
+		  
           this->callback_mp->alarm_raised(value, c, desc);
 	  
           this->succeeded();
@@ -654,10 +642,7 @@ void AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
 	  try
 	    {
 	      
-	      Completion c;
-	      c.timeStamp = getTimeStamp();
-	      c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	      c.code = ACSErrTypeAlarm::ACSErrAlarmCleared;  // clear
+	    Completion c = ACSErrTypeAlarm::ACSErrAlarmClearedCompletion();
 	      
 	      this->callback_mp->alarm_cleared(valueSeq[n], c, desc);
 	      
@@ -677,10 +662,7 @@ void AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
 	  try
 	    {
 	      
-	      Completion c;
-	      c.timeStamp = getTimeStamp();
-	      c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	      c.code = ACSErrTypeAlarm::ACSErrAlarmLow;      // low
+	    Completion c = ACSErrTypeAlarm::ACSErrAlarmLowCompletion();
 	      
 	      this->callback_mp->alarm_raised(valueSeq[n], c, desc);
 	      
@@ -700,15 +682,12 @@ void AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
 	  try
 	    {
 	      
-	      Completion c;
-	      c.timeStamp = getTimeStamp();
-	      c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	      c.code = ACSErrTypeAlarm::ACSErrAlarmHigh;     // high
+	    Completion c=ACSErrTypeAlarm::ACSErrAlarmHighCompletion();
 	      
-	      this->callback_mp->alarm_raised(valueSeq[n], c, desc);
+	    this->callback_mp->alarm_raised(valueSeq[n], c, desc);
 	      
-	      this->succeeded();
-	      alarmsRaised_mp[n] = 1;
+	    this->succeeded();
+	    alarmsRaised_mp[n] = 1;
 	    }
 	  catch(...)
 	    {
@@ -759,10 +738,7 @@ void AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::check(BACIValue &val,
 	  try
 	    {
 	      
-	      Completion c;
-	      c.timeStamp = getTimeStamp();
-	      c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	      c.code = ACSErrTypeAlarm::ACSErrAlarmCleared;  // clear
+	    Completion c=ACSErrTypeAlarm::ACSErrAlarmClearedCompletion();
 	      
 	      this->callback_mp->alarm_cleared(valueSeq[n], c, desc);
 	      
@@ -784,10 +760,7 @@ void AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::check(BACIValue &val,
 	  try
 	    {
 	      
-	      Completion c;
-	      c.timeStamp = getTimeStamp();
-	      c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	      c.code = ACSErrTypeAlarm::ACSErrAlarmLow;      // low
+	    Completion c = ACSErrTypeAlarm::ACSErrAlarmLowCompletion();
 	      
 	      this->callback_mp->alarm_raised(valueSeq[n], c, desc);
 	      
@@ -808,16 +781,12 @@ void AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::check(BACIValue &val,
 	  
 	  try
 	    {
+	    Completion c=ACSErrTypeAlarm::ACSErrAlarmHighCompletion();
+	    
+	    this->callback_mp->alarm_raised(valueSeq[n], c, desc);
 	      
-	      Completion c;
-	      c.timeStamp = getTimeStamp();
-	      c.type = ACSErr::ACSErrTypeAlarm;     // alarm
-	      c.code = ACSErrTypeAlarm::ACSErrAlarmHigh;     // high
-	      
-	      this->callback_mp->alarm_raised(valueSeq[n], c, desc);
-	      
-	      this->succeeded();
-	      alarmsRaised_mp[n] = 1;
+	    this->succeeded();
+	    alarmsRaised_mp[n] = 1;
 	    }
 	  catch(...)
 	    {
