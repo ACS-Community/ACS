@@ -38,6 +38,7 @@ public class DummyComponentImpl extends ComponentImplBase implements DummyCompon
 	 */
 	public void dummyComponentsCanDoCloseToNothing()
 	{
+		// or actually nothing
 	}
 
 	public void callThatTakesSomeTime(int timeInMillisec) {
