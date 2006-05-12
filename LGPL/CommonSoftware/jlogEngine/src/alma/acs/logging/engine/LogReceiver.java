@@ -108,18 +108,21 @@ public class LogReceiver {
      * @return true if initialization was successful within at most 10 seconds 
      */
     public boolean initialize() {
-        return initialize(null, null);
+        return initialize(null, null, 10);
     }
     
     /**
      * Variant of {@link #initialize()} which takes an existing ORB and manager reference.
      * <p>
-     * This method attempts to wait for successful initialization for up to 10 seconds.
+     * This method attempts to wait for successful initialization for up to <code>timeoutSeconds</code> seconds.
      * If initialization did not happen within this time, <code>false</code> is returned, otherwise true.
      * 
-     * @return true if initialization was successful within at most 10 seconds 
+     * @param theORB  the fully functional ORB object to reuse, or <code>null</code> if an ORB should be created 
+     * @param manager  reference to the acs manager, or <code>null</code> if this reference should be created
+     * @param timeoutSeconds  timeout for awaiting the successful initialization. 
+     * @return true if initialization was successful within at most <code>timeoutSeconds</code> seconds. 
      */
-	public boolean initialize(ORB theORB, Manager manager) {
+	public boolean initialize(ORB theORB, Manager manager, int timeoutSeconds) {
 		boolean ret = false;
 		if (verbose) {
 			System.out.println("Attempting to connect to Log channel...");
@@ -138,7 +141,7 @@ public class LogReceiver {
 		lct.connect(theORB, manager);
         
         try {
-            ret = rrc.awaitConnection(10, TimeUnit.SECONDS);
+            ret = rrc.awaitConnection(timeoutSeconds, TimeUnit.SECONDS);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
