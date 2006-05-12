@@ -25,12 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
-import org.omg.PortableServer.POAManager;
 import org.omg.PortableServer.Servant;
-import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
-
-import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
 import si.ijs.maci.ComponentInfo;
 
@@ -361,7 +356,6 @@ public class ComponentAdapter
 
                     ClassLoader contCL = Thread.currentThread().getContextClassLoader();
                     Thread.currentThread().setContextClassLoader(m_componentClassLoader);
-                    Throwable thr = null;
                     try {
                         m_component.aboutToAbort();
                     } finally {
