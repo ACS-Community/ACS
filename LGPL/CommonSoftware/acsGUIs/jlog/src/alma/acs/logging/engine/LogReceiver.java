@@ -97,19 +97,30 @@ public class LogReceiver {
      * to log entries getting written to the sorting queue.
      * To reuse an existing ORB and manager reference, use {@link #initialize(ORB, Manager)} instead of this method.
      * <p>
+     * This method attempts to wait for successful initialization for up to 10 seconds.
+     * If initialization did not happen within this time, <code>false</code> is returned, otherwise true.
+     * <p>
      * If you call this method, make sure to subsequently call
      * {@link #getLogQueue()} and drain the queue at your own responsibility,
      * or to call {@link #startCaptureLogs(PrintWriter)} (or {@link #startCaptureLogs(PrintWriter, ThreadFactory)})
      * which will drain the queue automatically.
+     * 
+     * @return true if initialization was successful within at most 10 seconds 
      */
-    public void initialize() {
-        initialize(null, null);
+    public boolean initialize() {
+        return initialize(null, null);
     }
     
     /**
      * Variant of {@link #initialize()} which takes an existing ORB and manager reference.
+     * <p>
+     * This method attempts to wait for successful initialization for up to 10 seconds.
+     * If initialization did not happen within this time, <code>false</code> is returned, otherwise true.
+     * 
+     * @return true if initialization was successful within at most 10 seconds 
      */
-	public void initialize(ORB theORB, Manager manager) {
+	public boolean initialize(ORB theORB, Manager manager) {
+		boolean ret = false;
 		if (verbose) {
 			System.out.println("Attempting to connect to Log channel...");
 		}
@@ -127,10 +138,11 @@ public class LogReceiver {
 		lct.connect(theORB, manager);
         
         try {
-            rrc.awaitConnection(10, TimeUnit.SECONDS);
+            ret = rrc.awaitConnection(10, TimeUnit.SECONDS);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+        return ret;
 	}
 	
     public boolean isInitialized() {
@@ -211,16 +223,16 @@ public class LogReceiver {
 			this.statusReports = statusReports;
 		}
 		
-        void awaitConnection(long timeout, TimeUnit unit) throws InterruptedException {
+        boolean awaitConnection(long timeout, TimeUnit unit) throws InterruptedException {
             synchronized(this) {
                 if (isConnected) {
-                    return;
+                    return true;
                 }
                 if (connectSync == null) {
                     connectSync = new CountDownLatch(1);
                 }
             }
-            connectSync.await(timeout, unit);
+            return connectSync.await(timeout, unit);
         }
         
         public void acsLogConnConnecting() {
