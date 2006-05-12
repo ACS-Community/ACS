@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropRWImpl.i,v 1.49 2005/11/03 21:30:31 dfugate Exp $"
+* "@(#) $Id: enumpropRWImpl.i,v 1.50 2006/05/12 10:43:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -187,23 +187,39 @@ ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
 		       const CBDescIn& descIn, BACIValue* value, 
 		       Completion& completion, CBDescOut& descOut)
 {
+    CompletionImpl c;
+    ActionRequest req;
   // only one action
   // better implementation with array is possible
   switch (function) 
     {
     case GET_ACTION:
-      return getValueAction(cob, callbackID, descIn, value, completion, descOut);
+      req = getValueAction(cob, callbackID, descIn, value, c, descOut);
     case SET_ACTION:
-      return setValueAction(cob, callbackID, descIn, value, completion, descOut);
+      req = setValueAction(cob, callbackID, descIn, value, c, descOut);
 /*   
  case INC_ACTION:
-      return incrementAction(cob, callbackID, descIn, value, completion, descOut);
+      req = incrementAction(cob, callbackID, descIn, value, c, descOut);
     case DEC_ACTION:
-      return decrementAction(cob, callbackID, descIn, value, completion, descOut);
+      req = decrementAction(cob, callbackID, descIn, value, c, descOut);
 */
       default:
       return reqDestroy;
     }
+
+  if (c.isErrorFree())
+      {
+      completion = c;
+      }
+  else
+      {
+      completion = InvokeActionErrorCompletion(c,
+					       __FILE__,
+					       __LINE__,
+					       "RWEnumImpl<>::invokeAction");
+	}
+
+  return req;
 }
 
 /* -------------- [ Property implementator interface ] -------------- */
@@ -219,10 +235,10 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::getValue(BACIProperty* property,
   ACS::pattern nval;
   T realVal;
 
-  completion.timeStamp = getTimeStamp();
+  ACS::Time ts = getTimeStamp();
   try 
       {
-      realVal = devIO_mp->read(completion.timeStamp); 
+      realVal = devIO_mp->read(ts); 
       nval = (ACS::pattern)realVal;
       }
   catch (ACSErr::ACSbaseExImpl& ex) 
@@ -240,8 +256,8 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::getValue(BACIProperty* property,
   // !!! to be done in a loop
   addValueToHistory(completion.timeStamp, nval);
 	
-  completion.type = ACSErr::ACSErrTypeOK;		// no error
-  completion.code = ACSErr::ACSErrOK;
+  completion =  ACSErrTypeOK::ACSErrOKCompletion();
+  completion.timeStamp = ts;
 }
  
 /* --------------- [ History support ] --------------- */
@@ -267,7 +283,7 @@ ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, 
   ACE_UNUSED_ARG(cob);
   ACE_UNUSED_ARG(callbackID);
   ACE_UNUSED_ARG(descIn);
-
+  
   getValue(property_mp, value, completion, descOut);
   
   // complete action requesting done invokation, 
@@ -284,9 +300,21 @@ ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::setValueAction(BACIComponent* cob, 
   ACE_UNUSED_ARG(cob);
   ACE_UNUSED_ARG(callbackID);
   ACE_UNUSED_ARG(descIn);
+  CompletionImpl co;
 
-  setValue(property_mp, value, completion, descOut);
+  setValue(property_mp, value, co, descOut);
   
+  if (co.isErrorFree())
+      {
+      completion = co;
+      }
+  else
+      {
+      completion = CanNotSetValueCompletion(co, 
+					    __FILE__, 
+					    __LINE__, 
+					    "RWEnumImpl<>::setValueAction");
+      }
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;
@@ -302,11 +330,11 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::setValue(BACIProperty* property,
   ACE_UNUSED_ARG(property);
   ACE_UNUSED_ARG(descOut);
 
-  completion.timeStamp = getTimeStamp();
+  ACS::Time ts = getTimeStamp();
   state = (T)(value->patternValue());
   try
       {
-      devIO_mp->write( state, completion.timeStamp );
+      devIO_mp->write( state, ts );
       }
   catch (ACSErr::ACSbaseExImpl& ex) 
       {
@@ -315,8 +343,8 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::setValue(BACIProperty* property,
       } 
 
   ACS_DEBUG_PARAM("RWEnumImpl::setValue", "Set state to: %u\n", state);
-  completion.type = ACSErr::ACSErrTypeOK;		// no error
-  completion.code = ACSErr::ACSErrOK;
+  completion=  ACSErrTypeOK::ACSErrOKCompletion();
+  completion.timeStamp = ts;
 }
 
 /* ---------------------- [ CORBA interface ] ---------------------- */
@@ -444,13 +472,26 @@ T RWEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
 		    )
   throw (CORBA::SystemException)
 {
-  c = new ACSErr::Completion();
+    CompletionImpl co;
 
-  ACS::CBDescOut descOut;
-  BACIValue value(0.0);
+    ACS::CBDescOut descOut;
+    BACIValue value(0.0);
 
-  getValue(property_mp, &value, *c, descOut);
-  return (T)(value.patternValue());
+    getValue(property_mp, &value, co, descOut);
+
+    if (co.isErrorFree())
+	{
+	c = co.returnCompletion(false);
+	}
+    else
+	{
+	c = CanNotGetValueCompletion(co, 
+				     __FILE__, 
+				     __LINE__, 
+				     "RWEnumImpl&lt;&gt;::get_sync").returnCompletion(false);
+     }//if-else
+
+    return (T)(value.patternValue());
 }
 
 template <ACS_ENUM_C>
@@ -624,18 +665,27 @@ TSeq * RWEnumImpl<ACS_ENUM_T(T), SK>::allStates ( )
 template <ACS_ENUM_C>
 ACSErr::Completion *  RWEnumImpl<ACS_ENUM_T(T), SK>::set_sync ( T val )  throw (CORBA::SystemException )
 {
-
-  ACSErr::Completion_var c = new ACSErr::Completion();
-
-  CORBA::Any tAny;
-  tAny <<= val;
+    CompletionImpl co;
+    CORBA::Any tAny;
+    tAny <<= val;
 
   BACIValue value((ACS::pattern)val, tAny);
   ACS::CBDescOut descOut;
 
-  setValue(property_mp, &value, c.inout(), descOut);
+  setValue(property_mp, &value, co, descOut);
 
-  return c._retn();
+  if (co.isErrorFree())
+      {
+      return co.returnCompletion(false);
+      }
+  else
+      {
+      CanNotSetValueCompletion completion(co, 
+					  __FILE__, 
+					  __LINE__, 
+					  "RWEnumImpl&lt;&gt;::set_sync");
+      return completion.returnCompletion(false);
+      }
 }
 	
 template <ACS_ENUM_C>
@@ -652,12 +702,19 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::set_async ( T val, ACS::CBvoid_ptr cb, const
 template <ACS_ENUM_C>
 void RWEnumImpl<ACS_ENUM_T(T), SK>::set_nonblocking ( T val)  throw (CORBA::SystemException )
 {
+    ACSErr::CompletionImpl c;
+    CORBA::Any tAny;
+    tAny <<= val;
+    BACIValue value((ACS::pattern)val, tAny);
+    ACS::CBDescOut descOut;
 
-  ACSErr::Completion completion;
-  CORBA::Any tAny;
-  tAny <<= val;
-  BACIValue value((ACS::pattern)val, tAny);
-  ACS::CBDescOut descOut;
-
-  setValue(property_mp, &value, completion, descOut);
+    this->setValue(property_mp, &value, c, descOut);
+    if (!c.isErrorFree())
+	{
+	CanNotSetValueCompletion completion(c, 
+					    __FILE__, 
+					    __LINE__, 
+					    "RWEnumImpl&lt;&gt;::set_nonblocking");
+	completion.log();
+	}
 }

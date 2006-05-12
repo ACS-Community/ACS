@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.48 2005/11/03 21:30:31 dfugate Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.49 2006/05/12 10:43:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -21,6 +21,8 @@ CBpattern -> CBT
 Monitorpattern -> Monitor(T)
 Alarmpattern
 */
+using namespace baciErrTypeProperty;
+
 template <ACS_ENUM_C>
 ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
@@ -162,8 +164,23 @@ ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
 		       Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(function);
+  CompletionImpl c;
   // only one action
-  return getValueAction(cob, callbackID, descIn, value, completion, descOut);
+  ActionRequest req = getValueAction(cob, callbackID, descIn, value, c, descOut);
+
+  if (c.isErrorFree())
+      {
+      completion = c;
+      }
+  else
+      {
+      completion = InvokeActionErrorCompletion(c,
+					       __FILE__,
+					       __LINE__,
+					       "ROEnumImpl&lt;&gt;::getValue");
+      }//if-else
+
+  return req;
 }
 
 /* -------------- [ Property implementator interface ] -------------- */
@@ -179,12 +196,11 @@ void ROEnumImpl<ACS_ENUM_T(T), SK>::getValue(BACIProperty* property,
 
   ACS::pattern nval;
   T realVal;
-
-  completion.timeStamp = getTimeStamp();
-
+  
+  ACS::Time ts;
   try 
       {
-      realVal = devIO_mp->read(completion.timeStamp); 
+      realVal = devIO_mp->read(ts); 
       nval = (ACS::pattern)realVal;
       } 
   catch (ACSErr::ACSbaseExImpl& ex) 
@@ -201,10 +217,10 @@ void ROEnumImpl<ACS_ENUM_T(T), SK>::getValue(BACIProperty* property,
   // if there is no error add value to history
   // !!! to be done in a loop
   addValueToHistory(completion.timeStamp, nval);
-	
-  completion.type = ACSErr::ACSErrTypeOK;		// no error
-  completion.code = ACSErr::ACSErrOK;
-}
+
+  completion = ACSErrTypeOK::ACSErrOKCompletion();
+  completion.timeStamp = ts;
+}//getValue
  
 /* --------------- [ History support ] --------------- */
 
@@ -229,9 +245,22 @@ ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, 
   ACE_UNUSED_ARG(cob);
   ACE_UNUSED_ARG(callbackID);
   ACE_UNUSED_ARG(descIn);
+  CompletionImpl co;
 
-  getValue(property_mp, value, completion, descOut);
+  getValue(property_mp, value, co, descOut);
   
+  if (co.isErrorFree())
+      {
+      completion = co;
+      }
+  else
+      {
+      completion = CanNotGetValueCompletion(co, 
+					    __FILE__, 
+					    __LINE__, 
+					    "ROEnumImpl<>::getValue");
+      }//if-else
+
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;
@@ -380,13 +409,26 @@ T ROEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
 		    )
   throw (CORBA::SystemException)
 {
-  c = new ACSErr::Completion();
+    CompletionImpl co;
 
-  ACS::CBDescOut descOut;
-  BACIValue value(0.0);
+    ACS::CBDescOut descOut;
+    BACIValue value(0.0);
 
-  getValue(property_mp, &value, *c, descOut);
-  return (T)(value.patternValue());
+    this->getValue(property_mp, &value, co, descOut);
+
+    if (co.isErrorFree())
+	{
+	c = co.returnCompletion(false);
+	}
+    else
+	{
+	c = CanNotGetValueCompletion(co, 
+				     __FILE__, 
+				     __LINE__, 
+				     "ROEnumImpl&lt;&gt;::get_sync").returnCompletion(false);
+     }//if-else
+
+    return (T)(value.patternValue());
 }
 
 template <ACS_ENUM_C>
