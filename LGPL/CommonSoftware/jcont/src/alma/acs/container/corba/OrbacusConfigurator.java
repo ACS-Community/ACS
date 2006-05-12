@@ -58,13 +58,13 @@ public class OrbacusConfigurator extends OrbConfigurator
 	 */
 	protected CmdLineRegisteredOption[] _declareOptions()
 	{
-		ArrayList options = new ArrayList();
+		ArrayList<CmdLineRegisteredOption> options = new ArrayList<CmdLineRegisteredOption>();
 		
 		//something like this		
 		options.add(new CmdLineRegisteredOption("-ORBthreaded", 0));
 		options.add(new CmdLineRegisteredOption("-ORBproperty", 1));
 		
-		return (CmdLineRegisteredOption[]) options.toArray(new CmdLineRegisteredOption[0]);
+		return options.toArray(new CmdLineRegisteredOption[0]);
 	}
 
 	/**

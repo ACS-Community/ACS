@@ -160,7 +160,7 @@ public abstract class OrbConfigurator
 	 */
 	protected void setDefaultOptions()
 	{
-		ArrayList options = new ArrayList();
+		ArrayList<CmdLineRegisteredOption> options = new ArrayList<CmdLineRegisteredOption>();
 		
 		// adapted from maciContainer.cpp
 		CmdLineRegisteredOption orbDottedDecAdr = new CmdLineRegisteredOption("-ORBDottedDecimalAddresses", 1);

@@ -116,7 +116,7 @@ class TestEntityFactory
 	 */
 	EntityRefT[] getReferencesInObsProject(ObsProject proj) 
 	{
-		ArrayList entityRefs = new ArrayList();
+		ArrayList<EntityRefT> entityRefs = new ArrayList<EntityRefT>();
 
 		EntityRefT propRef = proj.getObsProposalRef();
 		entityRefs.add(propRef);
@@ -129,7 +129,7 @@ class TestEntityFactory
 		.getSchedBlockRef()[0];
 		entityRefs.add(sb1Ref);
 
-		return (EntityRefT[]) entityRefs.toArray(new EntityRefT[0]);
+		return entityRefs.toArray(new EntityRefT[0]);
 	}
 
 

@@ -139,7 +139,7 @@ public class AcsComponentClassLoader extends URLClassLoader
      * 
 	 * @see java.lang.ClassLoader#loadClass(java.lang.String, boolean)
 	 */
-	protected synchronized Class loadClass(String name, boolean resolve)
+	protected synchronized Class<?> loadClass(String name, boolean resolve)
 			throws ClassNotFoundException
 	{
 		// First, check if the class has already been loaded by this classloader
@@ -178,7 +178,7 @@ public class AcsComponentClassLoader extends URLClassLoader
 	 * 
 	 * @see java.lang.ClassLoader#findClass(java.lang.String)
 	 */
-	protected Class findClass(String name) throws ClassNotFoundException
+	protected Class<?> findClass(String name) throws ClassNotFoundException
 	{
 		Class clazz = null;
 		try {
