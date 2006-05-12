@@ -122,7 +122,8 @@ public class CleaningThreadFactoryTest extends TestCase {
 //        t3.setPriority(t3.getPriority()-1);
         t3.start();
 
-        Thread t4 = threadFactory.newThread(virginRunnable);
+        // this thread just gets constructed but not started
+        threadFactory.newThread(virginRunnable);
         
         sleep(1000);
         
