@@ -56,7 +56,7 @@ public class CleaningDaemonThreadFactory implements ThreadFactory {
     private String name;
     private ClassLoader newThreadContextCL;
     
-    private boolean DEBUG = true;
+//    private boolean DEBUG = true;
 
     
     /**
@@ -82,8 +82,8 @@ public class CleaningDaemonThreadFactory implements ThreadFactory {
             group.setMaxPriority(Thread.currentThread().getPriority()); //Thread.NORM_PRIORITY
         }
 
-        String name = group.getName() + "-" + threadNumber.getAndIncrement();
-        Thread t = new Thread(group, command, name);
+        String threadName = group.getName() + "-" + threadNumber.getAndIncrement();
+        Thread t = new Thread(group, command, threadName);
         t.setDaemon(true);
         if (newThreadContextCL != null) {
             t.setContextClassLoader(newThreadContextCL);
