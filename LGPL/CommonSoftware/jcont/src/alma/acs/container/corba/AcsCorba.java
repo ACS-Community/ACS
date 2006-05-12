@@ -1028,7 +1028,7 @@ public class AcsCorba
 	 * @param args 
 	 * @throws ContainerException 
 	 */
-	public void prepareOrb(String[] args) throws ContainerException {
+	public void prepareOrb(String[] args) {
 		
 		if (m_orb == null) {
 
