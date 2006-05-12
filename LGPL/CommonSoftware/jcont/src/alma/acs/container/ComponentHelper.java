@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import org.omg.PortableServer.Servant;
 
 import alma.ACS.ACSComponentOperations;
-import alma.acs.component.ComponentException;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
@@ -148,9 +147,9 @@ public abstract class ComponentHelper
 	 * 
 	 * @return the tie class.
 	 */
-	final Class getPOATieClass() throws ContainerException
+	final Class<? extends Servant> getPOATieClass() throws ContainerException
 	{	
-		Class poaTieClass = null;
+		Class<? extends Servant> poaTieClass = null;
 		try {
 			poaTieClass = _getPOATieClass();
 		} 
@@ -162,7 +161,7 @@ public abstract class ComponentHelper
 			throw new ContainerException("received null as the POATie class from the component helper");
 		}
 		
-		// check inheritance stuff
+		// check inheritance stuff (Servant should be checked by compiler under JDK 1.5, but operations IF is unknown at ACS compile time)
 		if (!Servant.class.isAssignableFrom(poaTieClass))
 		{
 			throw new ContainerException("received invalid poaTie that is not a subclass of Servant");
@@ -179,7 +178,7 @@ public abstract class ComponentHelper
 	 * 
 	 * @return Class
 	 */
-	protected abstract Class _getPOATieClass();
+	protected abstract Class<? extends Servant> _getPOATieClass();
 	
 	
 	/**
@@ -188,9 +187,9 @@ public abstract class ComponentHelper
 	 * @return Class
 	 * @throws ContainerException 
 	 */
-	final Class getOperationsInterface() throws ContainerException
+	final Class<? extends ACSComponentOperations> getOperationsInterface() throws ContainerException
 	{
-		Class opIF = null;
+		Class<? extends ACSComponentOperations> opIF = null;
 		try
 		{
 			opIF = _getOperationsInterface();
@@ -210,7 +209,7 @@ public abstract class ComponentHelper
 	 * 
 	 * @return  the <code>Class</code> object associated with the operations interface.
 	 */
-	protected abstract Class _getOperationsInterface();
+	protected abstract Class<? extends ACSComponentOperations> _getOperationsInterface();
 	
 
 	/**
@@ -224,7 +223,7 @@ public abstract class ComponentHelper
 	 * 
 	 * @return Class  the Java Class of the internal interface. 
 	 */
-	protected Class getInternalInterface() throws ContainerException
+	protected Class<?> getInternalInterface() throws ContainerException
 	{
 		return getOperationsInterface();
 	}	
@@ -303,7 +302,6 @@ public abstract class ComponentHelper
 	 * @return  the custom translator, or null if the default translator should be used.
 	 */
 	protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator)
-			throws ComponentException
 	{
 		return null;
 	}
@@ -312,7 +310,7 @@ public abstract class ComponentHelper
     /**
      * @see #_getComponentMethodsExcludedFromInvocationLogging
      */
-    final String[] getComponentMethodsExcludedFromInvocationLogging() throws ContainerException {
+    final String[] getComponentMethodsExcludedFromInvocationLogging() {
     	String[] ret = null;
 		try {
 			ret = _getComponentMethodsExcludedFromInvocationLogging();
