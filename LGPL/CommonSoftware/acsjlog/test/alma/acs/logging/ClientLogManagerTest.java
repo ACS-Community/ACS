@@ -23,14 +23,11 @@ package alma.acs.logging;
 
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CyclicBarrier;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
-
-import si.ijs.maci.Manager;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import alma.acs.logging.formatters.ConsoleLogFormatter;
 
