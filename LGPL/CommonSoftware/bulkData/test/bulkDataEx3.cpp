@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataEx3.cpp,v 1.6 2006/05/10 13:03:59 rcirami Exp $"
+ * "@(#) $Id: bulkDataEx3.cpp,v 1.7 2006/05/12 10:43:12 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 // 3c. the disconnection does not occur until the cbReceive is busy
 
 
-
+	
 	ACS_SHORT_LOG((LM_INFO, "###### SIMULATING ERROR WHEN SENDING PARAMETER ######"));
 	try
 	    {
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
 
 	ACS_SHORT_LOG((LM_INFO, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"));
 
-//	sender->stopSend();
+	sender->stopSend();
 
 	// disconnect does not occur until the cbReceive has returned (3.c)
 	sender->disconnect();
