@@ -1,607 +1,288 @@
-*******************************************
-* ACS CDR-3 - comments on ACS Architecture
-*
-* Official file name: Reply.COMP-70.25.00.00-002-B-DSN.txt
-*
-* Mon May 30 16:02:02 CEST 2005
-*
-* Updated 2005-07-29
-*
-*******************************************
-
----------------------------------------------------------------------------
+Thu May 11 17:24:58 CEST 2006
+---001--------------------------------------------------------------------------
 (BrianGlendenning)
-I generally only looked at the sections with changebars.
+p.x I don't think the operations requirements are accounted for in here?
 
-Reply: OK
----------------------------------------------------------------------------
+REPLY
+May be I do not understand your remark.
+Operations requirements are tracked trough the table in the ACS SW
+Development Plan, where you find the reference to the corresponding 
+sections in the Architecture.
+What is missing?
+
+---002--------------------------------------------------------------------------
 (JoeSchwarz)
-A pdf search found 34 instances of the "Not implemented yet" string in this
-design document. It would be useful to collect these items in one place so that
-they can be globally prioritized. Those that can be done can then be planned and
-the others can be dropped. This will force everyone to make some hard decisions
-about what's really worth doing, and can provide a context for short-term (e.g.,
-Release 5, 5.1 ...) planning.
+p. 11, RD39: Reference should be to www.openarchitectureware.org
 
-Reply:
-I have added the "Not Implemented Yet" in this release of the ACS Architecture, 
-although such information should not be actually part of the Architecture 
-document.
-I did it because I think that this is the more generic and high level 
-introduction to ACS and people should be aware of what is already available
-and what is just planned for the future by reading just this document.
-This same information is already present in the planning documents: 
-compliance matrix, ACS release plans and ACS remaining list.
-I do not think there is the need of an additional place.
+REPLY
+OK. I will change this
 
-Action: Double check that all items listed here as "Not Implemented yet"
-        appear in the planning documents.
-
-Done: Prepared a list if items to be added to the planning document.
-
----------------------------------------------------------------------------
+---003--------------------------------------------------------------------------
 (JoeSchwarz)
-p. 5, 1.1: I don't believe that MS Windows will ever require full ACS support.
-The existing Java-only capabilities are probably sufficient, once they are
-packaged appropriately.
+p. 27, 3.4.10.2.2, complex, scalarTypeSeq and structures are listed as "Not 
+implemented yet." At this late stage in ACS development, is it realistic to
+believe that they ever will be? If they were needed, presumably developers
+have found some workaround; if they're not, why should they ever be 
+implemented at all?
 
-Reply:
-That would be good.
-I would remove Windows from this examples if you all agree at the 
-review meeting.
+REPLY
+This comment triggers a wider discussion.
 
-Action: Check at the review meeting and remove if agreed.
+The features mentioned (and other in following sections) where discussed 
+when designing the ACS architecture and agreed as extensions or things to be
+implemented in the future.
 
-Status: We have agreed to remove Windows as a platform. Done.
+I agree with you that probably by now many would not be used in ALMA, 
+for the reasons you mention.
 
----------------------------------------------------------------------------
+A part from the specific cases, I think we should discuss what should be
+the general policy for ACS and the ACS Architecture document with respect 
+to features that have been discussed, agreed as potentially important
+but not (yet) implemented.
+
+I think it would be in general not advisable to completely remove these 
+features from the document. This because they contribute to give a global 
+and coherent picture of what ACS would be if we would implement all 
+features we have discussed and filled in all "holes".
+
+Most of the "holes" we have are not relevant for the implementation of ALMA
+or we can live with them, balancing cost and benefits.
+
+But if somebody will ask about these issues later on, we should be able to see
+"we have thought about that, they fit here, we did not need them in practice
+in our project, we can implement them if needed".
+
+At CDR-3 I added a generic "not implemented yet" remark to allow quickly 
+identifying what parts of the architecture were not implemented, without
+distinguishing between the possible reasons. I find this useful, 
+keeping it low profile and low detail so that we do not have high costs,
+for example, in keeping the document aligned with the traceability matrix
+
+Maybe it would be better to replace such remarks with finer details.
+I would suggest for example:
+- not/partially implemented: potential extension
+- not/partially implemented: development foreseen for release X.Y
+
+The specific point mentiond here would fit in the "potential extension"
+cathegory.
+
+I would like to get your opinions and discuss this issue at the 
+review phone meeting.
+
+---004--------------------------------------------------------------------------
 (JoeSchwarz)
-p. 32, 3.4.13: Here, as in several other places, there is a real risk that this
-functionality (Characteristic Component state machine) will not have appeared in
-time to be used by subsystems, who will decide to roll their own when they need
-it.
+p. 39, 3.5.11, the "Visual Configuration Tool (CT)" was to be "rediscussed
+after R3" -- is this being folded into the CDB redesign and/or the
+configuration work to be done with HLA? Comment should be updated, at any
+rate. It's too bad that we don't have this tool now.
 
+REPLY
+I agree it is bad not to have the tool available.
+
+As you say, the idea is that the outcome of the CDB redesign and HLA 
+configuration work will effectively replace the tool.
+
+My plan was to re-write this section once we will be more advanced
+with the work of CDB and configuration redesign. I have in mind
+what described here and I always bring these ideas as a contribution
+to the corresponding discussions.
+
+On the other hand, as ACS team I never managed to get resources to work on the
+configuration tool (remember that the plan of ACS is discussed at the release 
+planning meeting, the tool was put in the list of possibilities more than once,
+but the priority always ended up below the threshold of affordability).
+
+---005--------------------------------------------------------------------------
+(JoeSchwarz)
+p. 52, 3.9.4, Shouldn't there be a discussion of the change to 1 nsec units
+that (I thought) was planned for ACS?
+
+REPLY:
+You are right.
+This slipped through.
+I will update this section for the release after the review meeting.
+
+
+---006--------------------------------------------------------------------------
 (BrianGlendenning)
-p.36 3.4.19.8 I would guess at this point people are already
-implementing their state machines how they like and hence this item
-could be deleted. 
+p.54 3.10.5.x: I hear some discussion about dynamic components (and their relation to 
+the CDB). Is there remaining design work to be described somewhere?
 
-Reply:
-Sure. This is a risk.
+REPLY
+There are two issues that did not make it into this version of the document;
+- Colocated components.
+  This is discussed in:
+      http://almasw.hq.eso.org/almasw/bin/view/ACS/DeploymentOfComponentsOnNodesAndStartupOfContainers
+  I thought I had put it in the architecture together with the Container
+  startup from the same page, but I must have forgot.
+- Component CDB retrieved by type and not by instance
+  Also Joe mentioned these issue commenting on the Pipeline documents.
+  This was discussed in Socorro during my mission in February but I
+  frogot about it.
+  I have now created a wiki page:
 
-This item is in the planning proposal for ACS since some releases, but it never
-got approved.
-I think that there is a general tendency in most projects I have been 
-working on in not considering really important to implement subsystems
-extensively using state machines, in particular standardised 
-implementations for state machines.
+     http://almasw.hq.eso.org/almasw/bin/view/ACS/CdbAccessWithSchemaSpecification
 
-The consequence is that the development of standard state machine
-code is always seen as a "nice to have" and not essential: they are used 
-only seldom in very specific situations.
+  and I hope to get soon comments and straight the design.
 
-This could change only if the high level architecture would be based on state
-machines and inpose the usage of state machines in various project areas.
+In both cases I will add a proper description, based on what you can read
+in the twiki, for the official release of the document.
 
-I think that the State Machine generator implemented by Heiko for the 
-Master Component (based on Architectureware) is a very good approach and 
-should be extended to cover the general case.
+Thanks for noticing :-)
 
-At the same time, some state machines I saw long time ago in Control
-were a very good example of how a state should NOT be implemented.
+---007--------------------------------------------------------------------------
+(BrianGlendenning)
+p.70 3.14 Archiving: Presumably it should be noted that this is all subject to revision? Or 
+is this part unchanged, and it's only the clients that have to change?
 
-Action: Discuss at review meeting. Keep in architecture, implement or scrap?
+REPLY
+This part is not affected by the discussions.
+Only control and archive are affected.
 
-Status: We have decided not to implement anything for the time being, 
-        but to leave in architecture as a potential future extension.
-        Added a note in Architecture defining it as "a possible future extension".
----------------------------------------------------------------------------
+---008--------------------------------------------------------------------------
+(BrianGlendenning)
+p.75 3.14.11 I don't think this exact synchronization is actually intended any more?
+
+REPLY
+Well, this synchronization is not used/needed any more, as far as I know.
+But it is implemented and whenever you specify these time periods it is used.
+
+Should I submit and SPR and ask it to be removed?
+This would bring a marginal semplification in the code and remove these very
+special cases.
+
+To be discussed at the meeting.
+
+---009--------------------------------------------------------------------------
+(BrianGlendenning)
+p.83 3.18.2 It seems like this statement could be made more definite now (i.e., are we 
+using IIOP or not?). (In fact, it seems like the whole bulk data section could be rewritten 
+since we have a more definite implementation now).
+
+This section is ment just as a short introduction to the issues discussed below.
+We are using the CORBA AV streaming service and we are indeed NOT using IIOP.
+This is clarified in the architecture and design section 3.18.3.
+
+The AV sections were written earlier in the implementation and therefore
+leave more options open. Although all what is written there is still valid
+I would agree with you that it would be better to re-write the section
+with more firm statemements and more details for the actual 
+design and implementation.
+
+Notice that there are issues about the usage of the distributor that we are
+now analyzing and that we will want to discuss in the short term with the
+users (i.e. Archive and Correlator). We plan to have the AOT people
+in Garching in parallel to the leads-meeting in June to finalyse
+these discussions.
+
+---010--------------------------------------------------------------------------
 (JoeSchwarz)
-p. 33, 3.4.15: If Property simulation isn't available now, when we are just
-about to move to running on hardware a lot of the time, then I wonder if it will
-ever be used.
+p. 85, 3.18.3.3, the discussion about porting A/V to Java & Python seems out
+of date.
 
-Reply:
-This has been discussed in the past and CAN hardware simulation has been 
-favoured to this type of simulation.
+REPLY
+Yes and no.
+The way the text is written might be updated to better reflect the 
+current status of the CPP implementation.
+But the issues are still there and nothing has been really done to allow us 
+to take a final decision.
+Will we need Python and Java implementation? I do not know.
+If we will, the section describes how we can get to it and what 
+are the potential pitfalls.
 
-I am still thinking that having the possibility of simulating properties
-in this way would make testing much easier.
+I would leave the section here and eventually partially re-write it, but nothing
+would change in the substance of what is beeing said.
 
-And we have seen that testing is now highly insufficient and too much 
-connected with hardware.
-In my opinion event having the hardware available, it would be extremely important
-to be able to test as much as possible without having the need to access any hardware.
-
-I think that this level of simulation could be effectively used together with
-the IDL simulator to create good tests independent from the hardware.
-
-Action: Discuss at review meeting. Keep in architecture, implement or scrap?
-
-Status: I have moved property simulation at the end of the section as a 
-        possible future extension, but making clear that currently there are n plans for
-        an implementation.
----------------------------------------------------------------------------
+---011--------------------------------------------------------------------------
 (BrianGlendenning)
-p.35 3.4.19.4 Is there a convenient way of assigning times to TE gated
-monitor points?
+p.86 3.19.2.2 It seems to me that we currently have no firm plan for engineering GUIs, 
+e.g. people seem to be using JFreechart rather than Abeans, role of LabView, etc. I think 
+we need to rethink our strategy here (should perhaps get some R4 time to plan a strategy).
 
-Reply:
-I do not understand what you mean here.
-Could you please provide a more detailed example?
+REPLY
+I think this is an important issue to be discussed at the leads meeting 
+and therefore it did not made much sense to drastically edit the section before 
+that discussion.
+What is written in the section is up to date and correctly describes the current
+status, but the discussions at the leads meeting might change the picture. 
+For this revision I had just added a paragraph about LabView (and about help) 
+but not much more.
 
-Action: To check better.
+Notice that JFreechart and Abeans are not mutually exclusive.
+JFreechart is a plotting library and doe snot provide other GUI wirdgets.
+The plotting widgets in ABeans (that you can see in the object 
+explorer and mount gui) are actually using JFreeChart.
 
-Status: =========> I do not recall a discussions on this point
-                   and I do not have any notes.!!!
-                   Brian: do you remember anything?
- 
----------------------------------------------------------------------------
+LabView instead could have a real alternative role, to be discussed.
+
+---012--------------------------------------------------------------------------
 (BrianGlendenning)
-p.37 3.5.2 + 3.5.8 Are we ever really going to implement the CDB with the
-Archive or is this a theoretical possibility? It seems that there are
-arguments on both sides (avoid dependencies vs. doing things
-consistently), but it's not clear to me we've really decided what to
-do.
+p.86 3.19.6 online help: Even if we use Java help, I imagine there need to be some 
+conventions about directory structure, how to link to external documents, etc. Who is 
+responsible for defining this?
 
+REPLY
+ACS in the flesh and soul of Marcus.
+We will allocate time for this and based on the OT experience he will define
+the standard setup and provide guidelines.
+Discussions with SE and I&T will be probably necessary, in particular when
+we go to installing things on web servers and so on.
+
+
+---013--------------------------------------------------------------------------
 (JoeSchwarz)
-p. 39, 3.5.8: Transparent migration from XML to Archive will be very nice to
-have soon.
+p. 89, 3.22, It's awfully late for a new "application framework," at least as
+far as ALMA is concerned. Do you really plan to do this?
 
-Reply:
-This point will be discussed extensively in the ACS/Control meeting.
-See also my comments to the Control Design document.
+REPLY
+I guess you are talking of section 3.20 and not 3.22.
+Actually parts of the framework are already there, like the master component.
+Soon we will also distribute with ACS the code generator developed by HPT.
+This will be another important step, although I would have preferred a UML based
+generator.
 
-In summary, I agree with Allen that it is essential
-to have the CDB integrated with the Archive.
-In operation, everything must be stored and come from the Archive.
-At the same time it is important to be able to run tests and perform
-engeenering activities without the archive.
-Therefore the underlying CDB implementation must be transparent to 
-the application and be possible both with archive and lighter
-CDB implementation.
- 
-Action: To be discussed in ACS/Control meeting in Halifax
+Unfortunately other important parts are not there, like a complete 
+state machine generator.
 
-Status: CDB was discussed extensively at the ACS/Control meeting,
-        where we have dicussed the proposals from the Control team.
-        We have agreed that we are not going to do anything
-        until after R3.
-        CDB issues will be rediscussed in a specific meeting after R3
-        at the leads meeting in Charlotsville.
----------------------------------------------------------------------------
+But these thing fall in the cathegories of comment 003 above.
+I will re-write the section making clear what is available and is not.
+
+---014--------------------------------------------------------------------------
+(BrianGlendenning)
+p.92 3.25/3.26
+I think we need to be more proactive in finding which third party libraries are used by the subsyste
+ms and ensuring that we have only one copy in the system. Perhaps ACS should do a survey in the R4 c
+ycle?
+
+REPLY
+The subsystems should look into what is available in ACS and ask to integrate
+into ACS adidtional libraries that are not available and that have 
+no equivalent.
+
+Many do it, some do not do it.
+
+I think it is not practical for ACS to go into the application code and look
+for libraries that have been introduced without following the procedures.
+
+May be this could be a task for SE.
+
+
+---015--------------------------------------------------------------------------
 (JoeSchwarz)
-p. 40, 3.5.10.1: Satisfying TICS's requirements -- isn't TICS about to become
-obsolete? How urgent is this if they've lived without it up to now? It would be
-worthwhile verifying that this is still a Control subsystem requirement.
-
-Reply:
-"TICS" should rather be read as "Control"
-I agree that these requirements should be verified because they are very old.
-
-Action: To be discussed at ACS/Control meeting in Halifax
-
-Status: This section has been removed.
-        Eventually these aspects will be re-discussed in the general CDB
-        discussion planned after R3.
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 41, 3.5.11: The CT would be very useful for the ATF. I suggest a review of
-the plans. Note that if you implement it as an Eclipse plugin it will be much
-easier to do in SWT rather than Swing, and this would probably contravene ALMA's
-GUI guidelines.
-
-Reply:
-Until now this item was always considered a "nice to have", but the proposals
-for CDB from Control and this comment from you are putting it in a new perspective.
-
-The very basic starting point would be in my opinion to allow drawing the CDB
-in UML using the same technology of the ASDM, as suggested by Allen.
-On top of that other features can be implemented in steps.
-
-I think that Eclipse plugin technology is very promising for such 
-things and should not be discarded in principle. Cosylab has some experience with 
-these kind of development in particular with the Visual-DCT application
-that is a very succesfull application for many points of view similat to 
-what we describe here that they have implemented for Epics
-
-Action: To be discussed at ACS/Control meeting in Halifax
-
-Status: Also this section will be re-discussed at the CDB meeting after R3.
-        For the time being the section remains as it is in the document, but
-        a note has been added.
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 49, 3.7.17: If we want developers to use ACS error conventions, then tools
-like the Error Editor GUI are needed early.
-
-Reply:
-It would be nice to have them early, but having to choose priorities
-I would rate this much lower than many other things.
-
-For the basic definition of errors, the XML files we have defined until now
-are not bad and offline tools have been or are being implemented by
-Michele to deal with code allocation.
-
-I think that the GUI will become much more important near commissioning 
-when we will have the need to write extensive documentation for errors 
-and so on.
-
-I am saying that based on the experience with the VLT error editor:
-a nice GUI but I never felt in it much added value with respect
-to editing the file by hand.
-
-Status: See ACS 5.0 plannig. We will try to have it developed as an external contribution.
-
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 49, 3.7.18: Browsing the Error trace would be very useful for integration and
-ATF work.
-
-Reply: 
-Agree. This is high priority for ACS 5.0 and should not be much work.
-Priorities will have to be set.
-
-Status: see ACS 5.0 planning
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 51, 3.8.10: Dynamically setting log filter levels is another "should have"
-for the ATF.
-
-Reply:
-Agree. This is in the list for ACS 5.0.
-Priorities will have to be set.
-
-Status: see ACS 5.0 planning
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 52, 3.8.8: Log searching capabilities seem pretty fundamental to me, and
-would be especially useful for I&T.
-
-Reply:
-I agree. This is a very fundamental item.
-It has been introduced with SPR 2005044 and is in the ACS 5.0 
-planning proposal.
-This functionality was not considered initially, because it was assumed
-that logs would have been collected in the Archive and searched from there.
-We still do not have the log sink for the Archive, but this is an 
-important item to be discussed for ACS 5.0.
-
-But nevertheless I believe that basic searching capabilities are very important
-also for the jlog GUI, no matter if the logs are sent also 
-immediately to the archive.
-
-Status: Implemented with ACS 4.1.2
-
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.54 Given that the figure on p.56 is not possible to read, I think that there should be a definitiv
-e bullet lists listing what a parameter/parameter set is.
-
-A parameter set contains
-   * A task name
-   * A documentation string
-   [...]
-   * Zero or more parameters
-
-A parameter contains
-   * A name
-   * A type
-      * Scalar: int, ...
-   [...]
-
-It's especially important to list all the types.
-
-Reply:
-I would rather re-arrange and eventually split the image so that 
-it becomes readable.
-Just for maintenance purpose: the image is generated automatically from 
-the UML model and embedded in the document.
-The bulleted lists would have to be updated by hand.
-
-Action: Steve to rearrange the image
-
-Status: Done. Split into 3 images that should be readable.
-
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.55 I would think the discussion of tasks should go directly after parameters.
-
-Reply:
-I have been thinking hard where to put the two section.
-The current sequence is:
-    Parameters -> Container -> Tasks
-
-Task depends on Parameters and therefore has to follow it.
-Task depends on Containers, 
-because IT IS is a special kind of Container and therefore has 
-to come after it 
-
-Parameters on the other hand are independent from the Container, so 
-I decided to put them before.
-
-The alternative solution would the to switch Container and Parameter:
-
-      Container -> Parameters -> Tasks
-
-Action: Brian, tell me if you prefer the switch and I will do it.
-
-Status: Changed so that the sequence is:
-               Container -> Parameters -> Tasks
-        as agreed at the review.
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 58, Access granting: I thought that the idea was to grant access by 
-*interface* rather than by *component.*
-
-Reply:
-No, the idea was that each *component* has an "access list".
-This provides a finer granularity with respect to *interface*
-and for the Manager this gives no additional trouble since the Manager
-is responsible to grant access to each component individually.
-
-It would be probably convenient to specify default 
-access rights at *interface* level.
-
-If you want I could add this.
-
-In general anyway I think we are still unclear in the requirements.
-
-Action: To be discussed at review meeting?
-
-Status: Removed paragraph on access granting, as agreed at the review.
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.59 Will we ever need/implement immortal components?
-
-Reply: 
-I have in mind some use cases, but I do not think we have any 
-hard need by now.
-
-I think they are a nice concept and should remain in the architecture, 
-but I would not implement them until we have a real use case.
-The implementation is in itself trivial and the biggest thing is to 
-change the XML schema to allow defining them in the CDB.
-
-I would leave things as they are for the time being.
-
-Status: As agreed, immortal component remain in the architecture, but the
-        note now clearly says that this is a possible future extension,
-        to be implemented only if needed.
-
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 65, Java Container: As discussed during the 4.1 (and now the 5.0) planning,
-I think that the ability to hot-swap components is very important. It will also
-stimulate us to understand why things hang or crash from time to time.
-
-Reply:
-I agree.
-We have by now CPP and Python.
-Heiko is working on Java.
-
-Status: see ACS 5.0 planning
-
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 66, 3.11.11, second bullet: "Logging in" to the MACI system should interface
-to the Archive's user repository.
-
-Reply:
-I agree.
-What we have now is simply the API without any engine on the back.
-As part of the Security design work we need to devise how to interface 
-this mechanism with the Archive's user repository.
-My concern is that we have to design this login mechanism as a plug-in, so that
-we do not need the Archive to run ACS unless we want explicitly 
-to do authentication.
-
-Action: I would add a note to the document to explain this aspect.
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.68 3.12 Very important is that the task developer see only a pure
-C++ (e.g., no CORBA) interface. This implies that there is a missing
-level between run/go and the task implementation. Also missing is the
-discussion of a task environment (e.g., containing logging). I have
-written these comments in email several times already, so I will not
-repeat them here.
-
-Reply:
-See also my comments to Offline Design.
-The implementation is being done taking youe emails into account.
-We will update this section adding a few additional details, but without
-going into too many design details, that are available in the Task 
-discussions in the wiki.
-
-Action: Extend the Tasks discussion adding some important details
-
-Status: Agreed and Steve will take care of that in the implementation.
-        This section will be revised.
-
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.70 3.13 Are we now requiring the use of XML for Entity data? I
-thought it was required for the ASDM and APDM, but not necessarily
-elsewhere.
-
-Reply:
-I do not understand this comment.
-We have always talked Entity Data both here and HLA.
-ASDM and APDM are the Entity Data we currently have.
-What other examples of Entity Data that should not be XML do you 
-have in mind?
-
-Status: Clarified.
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.79 IMO our hypotheis should be that we'll reuse the parameter
-mechanism unless/until we have definite reason to do something else.
-
-Reply:
-I agree. This was my proposal as well.
-
-Action: If we all agree, rewrite the section under this viewpoint
-
-Status: Done. Parameters have to be used for command checking.
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.80 3.16 We need to have a non-property interface for triggering
-alarms (e.g., what is the (Java) scheduling subsystem to do if it
-notices something bad happening - shouldn't it be able to alarm?).
-
-Reply:
-Sure. 
-3.16.1 was only ment to say that Properties have a built-in mechanism 
-for that.
-Not to exclude an API to trigger alarms outside of properties.
-
-Action: rephrase the section to make this clear.
-
-Status: Section rephrased to make the concept clear.
-        The whole section will be re-written when we will have the first 
-        working prototype based on the Laser system.
-
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 80, 3.16, Alarm System: This is probably the single most needed new feature
-in ACS. So far, it looks as though there has been no discussion between ACS
-and Exec about this -- although Exec will probably be one of your most important
-clients (see 3.16.10, for example).
-
-Reply:
-Unfortunately for a number of reasons work on the Alarm System has 
-been proceeding much slower than I have foreseen.
-But in the the last months we have speeded up and I will also go to CERN
-on the 7th of June.
-I hope to be able to have very soon the long promised prototype
-based on CERN's Laser system.
-At that point we will be able discuss details with the other subsystems 
-and Exec in particular.
-
-Status: Laser prototype almost but not yet ready.
-        We have agreed to discuss with Exec at the beginning of September.
-
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.86 3.18.3.1 It would be nice to the reader to summarize 1 or 2
-performance numbers.
-
-Reply:
-Accepted
-
-Action: Add performance numbers and add reference to online performance 
-        reports.
-
-Status: Not done yet.
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.87 3.18.3.2.1 bullet 2: video an audio stream -> video and audio
-flow (I think)
-
-Reply:
-Accepted and fixed.
-
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.89 3.20.3 course -> coarse
-
-Reply:
-Accepted and fixed.
-
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 89, 3.19.8: Web Start has not been an unalloyed success for ObsPrep up to
-now; have you considered any alternatives?
-
-Reply:
-I have never been involved in any discussion from ObsPrep about WebStart
-and I have only heard from you that it is not considered a success.
-I would like therefore to have a discussed with the involved people to 
-analyse the reasons for that.
-
-From my point of view I use regularly ACS tools via Web Start and I 
-am very happy with that.
-
-I have also been discussing with Paola and Marcus how to improve the 
-performance of the GUIs used for the integration and with Jorge 
-and Alessandro about the Control GUIs.
-In both cases we have agreed to try to use Web Start for the deployment
-on desktop console machines.
-
-I think that this + a review of the ObsPrep experience will give us
-a better feeling of advantages and disadvantages.
-
-A stand alone installer (that we are by the way using inside Web Start
-installation in any case) would be an alternative solution.
-
-Actions: Review web start experience with ObsPrep and collect 
-         feedback from I&T and Control.
-
-Status: At CDR3 we have agreed that we will have to work together
-        with ObsePrep and I&T to evaluate WebStart, see what are the 
-        problems and if/how they can be fixed.
- 
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.90 3.21 Should any infrastructure be added to make simulating events
-easier?
-
-Reply:
-I agree. This seems a very good idea and we did not consider it before.
-
-Action: Discuss with David, extend this section and evaluate what
-        should be done and the cost.
-        It is probably too late for ACS 5.0 planning.
-
-Status: Not done yet.
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.91 3.23 I expected the RPM mechanism, including a philosophy on how
-the RPMs are to be divided, to be in this section.
-
-Reply:
-I was thinking that RPM mechanism was too much details for this Architecture
-document, but I can rewrite the section in this perspective.
-
-Actions: Re-write the section introducing RPM mechanisms.
----------------------------------------------------------------------------
-(JoeSchwarz)
-p. 91, 3.22.9: Developments in Control suggest that we may have run out of time
-to produce standard state machine components for ALMA.
-
-Reply:
-I still believe that this would be the proper way of doing things
-and that Control should rather try to collaborate in this development
-instead of hardcoding a state machine implementation that would be
-difficult to maintain.
-
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.98 mich worst -> much worse. Why is the performance much worse? Is
-it just remote X performance or is it something on top of that?
-
-Reply:
-Typo fixed.
-
-It is more than X performance.
-It is the way Java uses X.
-Java is tailored to work on the local display with the client-server model
-in mind.
-
-They have therefore implemented the X interface heavily bitmap based, 
-i.e. Java GUIs are not drawn using efficient
-X directives but using bitmaps.
-Bitmaps are efficient on the local display, because modern PC graphic cards 
-are powerful in this respect.
-But sending bitmaps over the network with the X protocol is very inefficient.
-Therefore Java is really very much penalised when run on a remote X display.
-
-But with ACS running the GUIs locally in the client-server spirit is 
-a natural way of doing things and therefore I do not see any problem.
-
-More over we could use Windows desktops, keeping in mind that Java is much 
-better optimised for Windows than for Linux/X
-
-Status: created an FAQ, as agreed: http://almasw.hq.eso.org/almasw/bin/view/ACS/FAQJavaSlowOnX
+p. 94, 4.4, Performance: the web page referred to here seems pretty dated.
+It talks about ACS 4, and there is a long list of proposals/requests that
+may or may not be planned for implementation. I'd like to see something in
+this document that's more recent than a reference to the Kitt Peak test. We
+have learned quite a bit about logging, bulk data, threading and how they
+affect performance, and this would be a good place (and time) to summarize
+them.
+
+REPLY
+Yes, I agree and you have a good point.
+I have since long in the back of my mind to restructure the information that we have
+collected about performance and this has been often an item in the ACS 
+planning discussions.
+But we always had to sacrify it for other things that got higher priority.
+I will try to work on that later this year.
 
                               _____oOo_____

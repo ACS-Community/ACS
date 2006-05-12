@@ -1,121 +1,100 @@
-************************************************
-* ACS CDR-3 - comments on ACS Development Plan
-*
-* Official file name: Reply.COMP-70.25.00.00-001-B-PLA.txt
-*
-* Mon May 30 16:02:02 CEST 2005
-*
-* Updated 2005-07-29
-*
-************************************************
-
----------------------------------------------------------------------------
-(BrianGlendenning)
-I generally only looked at the sections with changebars.
-
-Reply: OK
----------------------------------------------------------------------------
+Thu May 11 17:14:07 CEST 2006
+---001--------------------------------------------------------------------------
 (GianniRaffi)
-(Missing) The Compliance Matrix has been updated in PLA. Please check consistency with the spreadshe
-et provided in EDM (via CDR3 instructions)? This table is importnat to check possible backlogs.
-I guess this must be the work you have done now, in a separate Compliance Matrix spreadsheet. 
-While this is good, it is pretty impossible to use this list as a substitute of 
-the R3 planning, because some key columns are missing (see above).
-I would have understood that further refinement had to come later, 
-provided a first R3 planning would be made available.
+General.
+Thank you for explicitly commenting on CDR3 actions.
 
-Reply:
-I will prepare the spreadsheet in the next days.
-I did not want to prepare it before the ACS 5.0 planning was agreed, because
-this will require changes and I consider it a waste of time.
+Possibly missing: Is there any ACA development work, apart from support?
 
-Action: Fill in Excel table for CDR3/R3
+REPLY
+Not that I am aware of.
 
-Status: Done
-
----------------------------------------------------------------------------
+---002--------------------------------------------------------------------------
 (GianniRaffi)
-In PLA you should consider fully Japanese contribution (0.3 or 0.5 by
-Abe in Japan) and the corresponding work to be done. Check also the
-Trilateral Agreement (via CDR3 instructions) for this please.
+p.9 Version in EDM seems old.
+Please look for the document in the IPT Level Documents under Computing at:
+http://edm.alma.cl/forums/alma/dispatch.cgi/f.iptlevelrel/docProfile/100181/d20050929140520 (2005-09
+-29).  Please indicate if modified (EVLA) detailed requirements have been considered, and in particu
+lar if/where they had an impact at all.
 
-Reply: 
-Accepted, I will add Abe contribution.
+REPLY
+OK, I will retrieve this document and check if there are relevant 
+changes with respect to the version I have been using. 
+EVLA requirements are referenced in the Architecture document, but I have not created any 
+specific table in the planning document.
+Shall I do it?
 
-Action: Add Abe contribution
+---003--------------------------------------------------------------------------
+(GianniRaffi)
+p.11 Under Japan A. Caproni at 50%  is missing
 
-Status: Added Abe contribution as "pure on-site support". No
-        development responsibilities.
-        We will have to see how this actually goes, since Abe is in
-        practice completely outside my control.
-        For example he is not going to participate to the weekly
-        meeting.
+REPLY
+OK. Caproni was reported in the ESO section.
+I will move him under Japan.
 
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.8 and later (e.g., p.22): You make a point of calling out that not all the
-anticipated Socorro machines are available. Is this an actual problem
-- I've been purchasing lots of computers lately?
+---004--------------------------------------------------------------------------
+(KenTatematsu)
+p. 11, 2.2
+K. Abe (0.3 in 2005)
+C. Paredes (0.5 from 2006)
+Do we need to discuss the percentage and job description
+of C. Paredes?
 
-Reply: 
-Steve has sometimes problems in running tests having available just 
-his own Laptop. 
-If I understand it right, it is also difficult for him to get access 
-to other machines.
-With the increase involvement of ACS in RTAI and if we want to be able
-to support TICS we need to have at least 1 additional workstation where Steve
-can install RTAI and VxWorks and run tests when he wants.
+2.3
+K. Abe 2005 only at 30%
+C. Paredes starting 2006 at 50%. 
 
-I think we could leave without the other things initially planned.
-If you agree on buying the additional machine for Steve I would 
-change the plan accordingly.
+REPLY
+This means that Abe will not work any more as Japanese support for ACS
+and that he will be replaced by Paredes at 50%?
+I was not aware of this change.
+I will updated the table.
+Gianni: do you confirm?
 
-Action:
-We have agreed that Brian will buy a development machine for Steve.
+---005--------------------------------------------------------------------------
+(GianniRaffi)
+p.16 Total 23.5 FTE-y (up to mid 2007).
+Given that 29.4 FTE-y are planned for ACS up to 2011, of which 4.5 after mid 2007, there is a small 
+mismatch of 1.4 FTEs here. But also what is the activity foreseen for the remaining period? I would 
+suggest some kind of upgrades, not possible to plan now.
 
-Status: 
-To be done. Brian: let me know when done.
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.25 It seems to me that we can just allocate time for code
-reviews. Pair programming might be harder to implement widely.
+REPLY
+OK, will do in this way.
 
-Reply: 
-Unfortunately this is in my opinion mainly due to the attitude of people
-and not to time allocation.
-For example the missions of Jorge and Alessandro in Socorro/TICS should have been 
-a very good opportunity for pair programming, by they have been
-left essentially alone doing the porting and testing instead of trying to work 
-together with them.
+---006--------------------------------------------------------------------------
+(GianniRaffi)
+p.20 .1 minor releases.
+I would skip them from now on, meaning that ACS should try to introduce big changes once per year. B
+ackw. compatible patches worked well during the R3.1 period and gave time to do re-engineering with 
+Control. Something which could be repeated after ACS6.0
 
-Status: Removed pair programming. Left just a comment saying that we
-        (ACS) think it would be good, but it is impractical for ALMA.
+REPLY
+OK, will do in this way.
 
----------------------------------------------------------------------------
-(BrianGlendenning)
-p.28 Figure: it would be useful to draw a line delineating the
-past/future. Does the figure show planned or actual allocations for
-the past (I assume planned). Does the figure include in-kind contributions?
+---007--------------------------------------------------------------------------
+(GianniRaffi)
+p.21 the dates for RR, PAR etc are wrong. Please check Computing Milestones under CDR4 Issues and co
+rrect.
 
-Reply:
-I will update the picture as you suggest for the final release after CDR.
-Yes, the figure includes in-kind contribution.
+REPLY
+OK, will do in this way.
 
-Action: Update picture
+---008--------------------------------------------------------------------------
+(GianniRaffi)
+p.31 http .. 5.1. Presumably this should become 6.0
+Is this the same as what asked for CDR4, namely to consider use of CORBA trough firewalls, http for 
+use by OT?
 
-Status: Added line with Past/Future.
-        I have no time now, but I would like to rethink a bit this
-        drawing to take properly into account Japanese contribution
-        and the effects of Japan.
-        For the time being it is good enought, but could be better.
+REPLY
+Yes, it is the same.
+OK, will do in this way.
 
----------------------------------------------------------------------------
-(BrianGlendenning)
-Additional point discussed at the CDR3 meeting:
+---009--------------------------------------------------------------------------
+(GianniRaffi)
+p.36-37 Thank you for having created an explicit section with Ops Reqts. All ops. reqs. Have been ad
+dressed.
 
-After R3 we should organize a code revied of Control with ACS and HLA.
-
-Action: G.Chiozzi to organize a code review after R3 contiguous to Leads Meeting
-in November in Charlotsville.
+REPLY
+You are welcome.
 
                               _____oOo_____
