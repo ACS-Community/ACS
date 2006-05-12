@@ -36,21 +36,20 @@ import java.util.logging.LogRecord;
  */
 public class ConsoleLogFormatter extends Formatter
 {
-
 	/**
 	 * Line separator string. 
 	 */
-	private static String lineSeparator = System.getProperty("line.separator");
+	private static final String lineSeparator = System.getProperty("line.separator");
 
 	/**
 	 * ISO 8601 date formatter.
 	 */
-	private SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private final SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	
 	/**
 	 * Date object (used not to recreate it every time).
 	 */
-	private Date date = new Date();
+	private final Date date = new Date();
 
 	/**
 	 * Format the given LogRecord.
@@ -115,7 +114,9 @@ public class ConsoleLogFormatter extends Formatter
 				record.getThrown().printStackTrace(pw);
 				pw.close();
 				sb.append(sw.toString());
-			} catch (Exception ex) {}
+			} catch (Exception ex) {
+				// just ignore it
+			}
 		}
 
 		return new String(sb);
