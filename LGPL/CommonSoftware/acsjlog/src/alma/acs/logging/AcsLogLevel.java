@@ -22,7 +22,6 @@
 package alma.acs.logging;
 
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

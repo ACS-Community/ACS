@@ -26,9 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-//import java.util.logging.LogManager;
 
-import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALOperations;
 import com.cosylab.CDB.RecordDoesNotExist;
 import com.cosylab.CDB.XMLerror;

@@ -3,8 +3,6 @@ package alma.acs.logging;
 import java.util.Comparator;
 import java.util.logging.LogRecord;
 
-import edu.emory.mathcs.backport.java.util.PriorityQueue;
-
 /**
  * Comparator for {@link LogRecord} objects, which uses the log level, timestamp, and log sequence number for comparison.
  * <p>
