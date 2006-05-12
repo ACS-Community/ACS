@@ -60,6 +60,8 @@ module perftest
     interface MethodTestComponent : BasePerfComp
 	{
 	charSeq testReturnSize();
+	
+	void testInParam(in charSeq chars);
 	};
 
     ///Complex interface

@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: MethodTestComponentImpl.java,v 1.3 2004/10/21 16:55:57 dfugate Exp $
+ * @version $Id: MethodTestComponentImpl.java,v 1.4 2006/05/12 20:39:56 dfugate Exp $
  * @since    
  */
 
@@ -62,4 +62,10 @@ public class MethodTestComponentImpl extends BasePerfCompImpl implements MethodT
     {
 	return m_retVal;
     }
+
+    //void testInParam(in charSeq chars);
+    public void testInParam(char [] chars)
+	{
+	    return;
+	}
 }

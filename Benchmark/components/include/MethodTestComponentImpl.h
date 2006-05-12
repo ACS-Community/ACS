@@ -21,6 +21,12 @@ class MethodTestComponent: public virtual BasePerfCompImpl,
     testReturnSize() throw (CORBA::SystemException);
 
     virtual void 
+    testInParam(const perftest::charSeq &chars) throw (CORBA::SystemException)
+	{
+	    return;
+	}
+
+    virtual void 
     setup(CORBA::ULong count, CORBA::ULong size, ACS::TimeInterval waitTime) throw (CORBA::SystemException);
 
   private:

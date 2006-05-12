@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.3 2005/04/21 16:03:37 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/05/12 20:39:56 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         =
+PY_SCRIPTS         = stressMethodParams
 PY_SCRIPTS_L       =
 
 PY_MODULES         =

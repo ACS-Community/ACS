@@ -25,7 +25,7 @@
 TODO:
 - All!!!
 '''
-__version__ = "$Id: MethodTestComponent.py,v 1.3 2004/11/02 00:42:52 dfugate Exp $" 
+__version__ = "$Id: MethodTestComponent.py,v 1.4 2006/05/12 20:39:56 dfugate Exp $" 
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
@@ -60,4 +60,10 @@ class MethodTestComponent(perftest__POA.MethodTestComponent,
         charSeq testReturnSize();
         '''
         return self.retVal
+
+    def testInParam(self, chars):
+        '''
+        void testInParam(in charSeq chars);
+        '''
+        return
     #------------------------------------------------------------------------------
