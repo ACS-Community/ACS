@@ -55,12 +55,13 @@ CL_BASEPORT=
 CL_HELP=
 CL_CDBREF=
 CL_CUSTOMEXEC=
+CL_REMOTEHOST=
 
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,managerReference:,DALReference:,baseport:,java,py,cpp,remoteDebuggable,port:,executable:
+LONGOPTS=help,managerReference:,DALReference:,baseport:,java,py,cpp,remoteDebuggable,port:,executable:,remoteHost:
 SHORTOPTS=hm:d:b:e:
 
 #
@@ -78,6 +79,7 @@ function printUsage {
    echo "   -d | -DALReference           the corbaloc of the Configuration Database"
    echo "   -port PORT                   port number you want the container to use"
    echo "   -e | -executable             custom container executable (command or javaclass) to run"
+   echo "   -remoteHost                  run the container on a host other than \$HOST"
    echo "   -h | -help                   prints this help and exits"
 }
 
@@ -112,6 +114,7 @@ do
 	--baseport)         CL_BASEPORT=$2 ; shift ;;
 	-b)                 CL_BASEPORT=$2 ; shift ;;
 	--executable)       CL_CUSTOMEXEC=$2 ; shift ;;
+	--remoteHost)       CL_REMOTEHOST=$2 ; shift ;;
 	-e)                 CL_CUSTOMEXEC=$2 ; shift ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
@@ -179,7 +182,13 @@ fi
 if [ "$CL_MANAGERREF" ] 
 then
     export MANAGER_REFERENCE="$CL_MANAGERREF"
+
+elif [ "$CL_REMOTEHOST" != "" ]
+then
+    ACS_MANAGER_PORT=`getManagerPort`
+    export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
 fi
+
 if [ "X$MANAGER_REFERENCE" != "X" ]
 then
     ACS_LOG_INFO "This container will run on $HOST."
@@ -339,6 +348,14 @@ CONTAINER_PID=$$
 PID_STRING="_PID"
 CONTAINER_PID_FILE="`echo $CONTAINERNAME | sed s/"\/"/:/g`$PID_STRING"
 echo $CONTAINER_PID >> `getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/$CONTAINER_PID_FILE
+
+
+#see if we have to run this on a remote host
+if [ "$CL_REMOTEHOST" != "" ]
+then
+    export EXECUTABLE="ssh -f $USER@$CL_REMOTEHOST $EXECUTABLE"
+fi
+
 
 #
 # Now run the container
