@@ -77,20 +77,11 @@ SCRIPTS_L       =
 #
 # INCLUDE STANDARDS
 # -----------------
-ifdef ACSROOT
-    MAKEDIR  = $(shell if [ -f $(INTROOT)/include/acsMakefile ];  then \
-                     echo $(INTROOT)/include; \
-	           else \
-	             echo $(ACSROOT)/include; \
-		   fi;)
+
+MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+ifneq ($(MAKEDIRTMP),\#error\#)
+   MAKEDIR := $(MAKEDIRTMP)/include
     include $(MAKEDIR)/acsMakefile
-else
-    MAKEDIR  = $(shell if [ -f $(INTROOT)/include/vltMakefile ];  then \
-                     echo $(INTROOT)/include; \
-	           else \
-	             echo $(VLTROOT)/include; \
-		   fi;)
-    include $(MAKEDIR)/vltMakefile
 endif
 
 #
