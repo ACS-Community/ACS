@@ -75,7 +75,7 @@ public class ObjectExplorer extends JFrame {
 	private SmartPanel ivjResults = null;
 	private boolean ivjConnPtoP4Aligning = false;
 	private boolean ivjConnPtoP5Aligning = false;
-	private SmartTextArea ivjSmartTextArea3 = null;
+	private SmartTextPane ivjSmartTextArea3 = null;
 	private JButton ivjJButton2 = null;
 	private JButton ivjJButton3 = null;
 	private JPanel ivjJDialogContentPane = null;
@@ -1744,10 +1744,10 @@ private SmartTextPane getSmartTextArea2() {
  * @return com.cosylab.gui.components.SmartTextArea
  */
 /* WARNING: THIS METHOD WILL BE REGENERATED. */
-private SmartTextArea getSmartTextArea3() {
+private SmartTextPane getSmartTextArea3() {
 	if (ivjSmartTextArea3 == null) {
 		try {
-			ivjSmartTextArea3 = new SmartTextArea();
+			ivjSmartTextArea3 = new SmartTextPane();
 			ivjSmartTextArea3.setName("SmartTextArea3");
 			ivjSmartTextArea3.setBounds(0, 0, 160, 120);
 			// user code begin {1}

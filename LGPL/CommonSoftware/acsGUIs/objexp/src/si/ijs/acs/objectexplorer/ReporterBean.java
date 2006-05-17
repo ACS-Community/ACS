@@ -9,10 +9,14 @@ import si.ijs.acs.objectexplorer.engine.RemoteCall;
 import si.ijs.acs.objectexplorer.engine.RemoteResponse;
 
 import com.cosylab.gui.components.r2.DataFormatter;
-import com.cosylab.gui.components.r2.SmartTextArea;
+import com.cosylab.gui.components.r2.SmartTextPane;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 
 /**
  * Insert the type's description here.
@@ -23,7 +27,7 @@ import java.util.Date;
 public class ReporterBean {
 
   
-  private SmartTextArea resultArea=null;
+  private SmartTextPane resultArea=null;
   private NotificationBean notifier=null;
   private boolean expand=false;
   private boolean window=true;
@@ -32,6 +36,9 @@ public class ReporterBean {
 
   private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
 
+  private Style redStyle = null;
+  private Style blackStyle = null;
+  
 /**
  * ReporterBean constructor comment.
  */
@@ -59,7 +66,7 @@ public void clearResponseWindows() {
  * Creation date: (11/4/00 3:07:23 PM)
  * @return javax.swing.JTextArea
  */
-public SmartTextArea getResultArea() {
+public SmartTextPane getResultArea() {
 	return resultArea;
 }
 /**
@@ -107,8 +114,26 @@ public void killResponseWindows() {
  * Insert the method's description here.
  * Creation date: (11/10/00 4:13:52 PM)
  */
-public void reportRemoteCall(RemoteCall call) {
-  resultArea.append(toString(call, expand));
+public synchronized void reportRemoteCall(RemoteCall call) {
+	try
+	{
+		boolean exceptionThrown = (call.getThrowable()!=null); 
+		if (exceptionThrown)
+		{
+			// needed since carent does not point always to the end
+			resultArea.setCaretPosition(resultArea.getText().length());
+			resultArea.setLogicalStyle(redStyle);
+		}
+		
+		resultArea.append(toString(call, expand));
+
+		if (exceptionThrown)
+			resultArea.append("\n");
+	}
+	finally
+	{
+	    resultArea.setLogicalStyle(blackStyle);
+	}
 }
 /**
  * Insert the method's description here.
@@ -156,8 +181,15 @@ public void setNotifier(NotificationBean notifier) {
  * Creation date: (11/4/00 3:07:23 PM)
  * @param newResultArea javax.swing.JTextArea
  */
-public void setResultArea(SmartTextArea newResultArea) {
+public void setResultArea(SmartTextPane newResultArea) {
 	resultArea = newResultArea;
+
+	// default style 
+	blackStyle = resultArea.getLogicalStyle();
+	
+	// Makes text red
+    redStyle = resultArea.addStyle("Red", null);
+    StyleConstants.setForeground(redStyle, Color.red);
 }
 /**
  * Insert the method's description here.
@@ -224,7 +256,9 @@ public static String toString(RemoteCall call, boolean expand) {
 
   if (call.getThrowable()!=null) {
 	 result.append(" --> Exception: " + call.getThrowable() + "\n");
-	 result.append(DataFormatter.unpackReturnValue(call.getThrowable(),"/      ",0,expand));
+	 // always expand exception
+	 result.append(DataFormatter.unpackReturnValue(call.getThrowable(),"/      ",0,true));
+	 
   }
 
   if (call.isTimeout()) {
