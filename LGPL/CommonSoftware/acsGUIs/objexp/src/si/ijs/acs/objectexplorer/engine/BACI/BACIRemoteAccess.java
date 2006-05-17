@@ -1586,6 +1586,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
 		} else {
 			int time = 0;
+			boolean errorResponse = false;
 			notifier.reportDebug(
 				"BACIRemoteAccess::internalInvokeTrivial",
 				"Sending deferred request '"
@@ -1653,9 +1654,9 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					baciIntrospector.extractOuts(req, desc);
 
 				// check for error-type ACSCompletion-s
-				checkFromACSCompletion(oRet);
+				errorResponse = checkFromACSCompletion(oRet);
 				for (int i = 0; i < outs.length; i++)
-					checkFromACSCompletion(outs[i]);
+					errorResponse |= checkFromACSCompletion(outs[i]);
 				
 				
 				if (target instanceof Invocation
@@ -1668,12 +1669,16 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						+ "."
 						+ op.getName()
 						+ "()'.");
-				return new BACIRemoteCall(
+				
+				BACIRemoteCall remoteCall = new BACIRemoteCall(
 					target,
 					(BACIOperation) op,
 					params,
 					oRet,
 					outs);
+				remoteCall.setErrorResponse(errorResponse);
+				return remoteCall;
+				
 			} catch (Exception e) {
 				notifier.reportError(
 					"Exception during deferred remote invocation.",
@@ -1746,7 +1751,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	 * if error log it
 	 * @param param
 	 */
-	private void checkFromACSCompletion(java.lang.Object param) {
+	private boolean checkFromACSCompletion(java.lang.Object param) {
 		// check if retVal is a completion
 		if (param instanceof alma.ACSErr.Completion)
 		{
@@ -1756,9 +1761,14 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			{
 				AcsJCompletion jcompletion = AcsJCompletion.fromCorbaCompletion(completion);
 				if (jcompletion.getAcsJException() != null)
+				{
 					jcompletion.getAcsJException().log(BACILogger.getLogger());
+					return true;
+				}
 			}
 		}
+		
+		return false;
 	}
 	
 	/**

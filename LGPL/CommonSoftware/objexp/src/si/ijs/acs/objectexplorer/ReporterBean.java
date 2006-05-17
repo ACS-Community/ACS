@@ -117,17 +117,17 @@ public void killResponseWindows() {
 public synchronized void reportRemoteCall(RemoteCall call) {
 	try
 	{
-		boolean exceptionThrown = (call.getThrowable()!=null); 
-		if (exceptionThrown)
+		boolean errorResponse = call.isErrorResponse(); 
+		if (errorResponse)
 		{
 			// needed since carent does not point always to the end
 			resultArea.setCaretPosition(resultArea.getText().length());
 			resultArea.setLogicalStyle(redStyle);
 		}
 		
-		resultArea.append(toString(call, expand));
+		resultArea.append(toString(call, expand | errorResponse));
 
-		if (exceptionThrown)
+		if (errorResponse)
 			resultArea.append("\n");
 	}
 	finally
@@ -256,8 +256,7 @@ public static String toString(RemoteCall call, boolean expand) {
 
   if (call.getThrowable()!=null) {
 	 result.append(" --> Exception: " + call.getThrowable() + "\n");
-	 // always expand exception
-	 result.append(DataFormatter.unpackReturnValue(call.getThrowable(),"/      ",0,true));
+	 result.append(DataFormatter.unpackReturnValue(call.getThrowable(),"/      ",0,expand));
 	 
   }
 

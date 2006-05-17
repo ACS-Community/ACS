@@ -15,6 +15,7 @@ public class BACIRemoteCall implements RemoteCall {
 	private Throwable exception = null;
 	private int serial = 0;
 	private boolean timeout = false;
+	private boolean error = false;
 	private static volatile int SN = 0;
 	private Attribute att = null;
 /**
@@ -57,6 +58,8 @@ private BACIRemoteCall(BACIRemote node, BACIOperation op, Object[] params, Objec
 	this.retVal = retVal;
 	this.auxRetVal = auxRetVal;
 	this.exception = exception;
+	if (exception != null)
+		this.error = true;
 	this.timeout = timeout;
 	serial = SN;
 	SN++;
@@ -162,5 +165,19 @@ public boolean isAttributeAccess() {
  */
 public boolean isTimeout() {
 	return timeout;
+}
+
+/* (non-Javadoc)
+ * @see si.ijs.acs.objectexplorer.engine.RemoteCall#isErrorResponse()
+ */
+public boolean isErrorResponse() {
+	return error;
+}
+
+/**
+ * @param error The error to set.
+ */
+public void setErrorResponse(boolean error) {
+	this.error = error;
 }
 }

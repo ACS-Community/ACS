@@ -118,4 +118,12 @@ boolean isAttributeAccess();
  *		   timeout condition
  */
 boolean isTimeout();
+/**
+ * Returns <code>true</code> if, during the invocation of this method,
+ * the engine determined that the remote object responded with error completion.
+ * 
+ * @return <code>true</code> if the method invocation was
+ *		   completed with error
+ */
+boolean isErrorResponse();
 }
