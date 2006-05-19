@@ -404,15 +404,13 @@ public class LCEngine implements Runnable {
 	 * @param newLog The log to send to the listeners
 	 */
 	public synchronized void publishLog(ILogEntry newLog) {
-		if (listeners==null) {
-			return;
+		if (newLog==null) {
+			throw new IllegalArgumentException("Exception: trying to publish a null log"); 
 		}
 		synchronized(listeners) {
 			for (int t=0; t<listeners.size(); t++) {
 				ACSRemoteLogListener listener = listeners.get(t);
-				if (listener!=null) {
-					listener.logEntryReceived(newLog);
-				}
+				listener.logEntryReceived(newLog);
 			}
 		}
 	}
