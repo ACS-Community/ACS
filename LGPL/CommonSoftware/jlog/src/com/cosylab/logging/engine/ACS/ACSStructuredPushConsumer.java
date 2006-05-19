@@ -24,7 +24,6 @@ package com.cosylab.logging.engine.ACS;
 import java.util.AbstractList;
 import java.util.ArrayList;
 
-import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
@@ -32,10 +31,10 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
-
-
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * ACSStructuredPushConsumer gets an XML log from the Engine 
@@ -53,25 +52,22 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			ILogEntry logEntry = null;
 			while (true) {
 				try {
-					if (!xmlLogs.isEmpty()) {
-						log = (String) xmlLogs.remove(0);
-						logEntry = new LogEntry(parser.parse(log));
-						engine.publishLog(logEntry);
-						//System.out.println("An XML string that was parsed: " + log);
-					} else
-						synchronized (xmlLogs)
-						{
-							xmlLogs.wait();
-						}
+					log = xmlLogs.take();
+				} catch (InterruptedException ie) {
+					System.out.println("Exception while taking a log out of the queue: "+ie.getMessage());
+					ie.printStackTrace();
+					continue;
 				}
-				catch (InterruptedException e) {
-					System.err.println("InterruptedException occurred.");
-				}
-				catch (Exception e) {
+				try {
+					logEntry = new LogEntry(parser.parse(log));
+				} catch (Exception e) {
 					engine.publishReport("Exception occurred while dispatching the XML log.");
-					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e);
+					engine.publishReport("This log has been lost: "+log);
+					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
 					System.err.println("An XML string that could not be parsed: " + log);
+					continue;
 				}
+				engine.publishLog(logEntry);
 			}
 		}
 	}
@@ -83,7 +79,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 
 	private ACSLogParser parser = null;
 	private ACSRemoteAccess acsra = null;
-	private AbstractList xmlLogs = new ArrayList();
+	private LinkedBlockingQueue<String> xmlLogs = new LinkedBlockingQueue<String>(2048);
 	private Dispatcher dispatcher = new Dispatcher();
 	private LCEngine engine;
 	
@@ -100,18 +96,20 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 		this.acsra = acsra;
 		this.engine=theEngine;
+		dispatcher.setPriority(Thread.MAX_PRIORITY);
 		initialize();
 	}
 
-	public AbstractList getXmlLogs()
+	public LinkedBlockingQueue<String> getXmlLogs()
 	{
-		AbstractList XmlLogs = xmlLogs;
+		LinkedBlockingQueue<String> XmlLogs = xmlLogs;
 		XmlLogs.add(
 			"<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logger.</Info>");
 		XmlLogs.add(
 			"<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logger.</Info>");
 		return XmlLogs;
 	}
+	
 	/**
 	 * Connects the push supplier to the push consumer.
 	 */
@@ -223,23 +221,19 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		/* extract event data */
 		// For logging, only the following is used
 		// check whether eventName is defined at all.
-		String domainName = event.header.fixed_header.event_type.domain_name;
-		String typeName = event.header.fixed_header.event_type.type_name;
-		String eventName = event.header.fixed_header.event_name;
+		//String domainName = event.header.fixed_header.event_type.domain_name;
+		//String typeName = event.header.fixed_header.event_type.type_name;
+		//String eventName = event.header.fixed_header.event_name;
 		/////////////////////////////////////////////////////////
-		Property[] variableHeaders = event.header.variable_header;
-		Property[] filterableFields = event.filterable_data;
+		//Property[] variableHeaders = event.header.variable_header;
+		//Property[] filterableFields = event.filterable_data;
 		/////////////////////////////////////////////////////////
 		String xmlLog = event.remainder_of_body.extract_string();
 
 		//System.out.println("***********Log**********\n" + xmlLog);
 		//System.out.println("************************");
-
-		//	System.out.println("Log added.");
-		synchronized (xmlLogs)
-		{
-			xmlLogs.add(xmlLog);
-			xmlLogs.notifyAll();
+		if (!xmlLogs.offer(xmlLog)) {
+			System.out.println("Queue empty: log discarded\n"+xmlLog);
 		}
 	}
 
