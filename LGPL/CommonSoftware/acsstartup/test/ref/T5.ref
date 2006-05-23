@@ -1,10 +1,10 @@
 10 - INFO - Stopping all ACS processes using 'ACS_INSTANCE=8'
 1 - INFO - Starting CORBA Services
-2 - INFO - Running the container with these arguments: '-endorsed -Dalma.MicroArchive.DbDir=/alma/ACS-x.y/acsdata/config/MicroArchive alma.acs.container.AcsContainerRunner -containerName jCont -OAport 3950 '
+2 - INFO - Running the container with these arguments: 'something'
 3 - INFO - Running the container with these arguments: 'something'
 4 - INFO - Running the container with these arguments: 'something'
 5 - INFO - Starting CORBA Services
-6 - INFO - Running the container with these arguments: '-endorsed -Dalma.MicroArchive.DbDir=/alma/ACS-x.y/acsdata/config/MicroArchive alma.acs.container.AcsContainerRunner -containerName jCont -OAport 3850 '
+6 - INFO - Running the container with these arguments: 'something'
 7 - INFO - Running the container with these arguments: 'something'
 8 - INFO - Running the container with these arguments: 'something'
 9 - INFO - Stopping all ACS processes using 'ACS_INSTANCE=9'
@@ -39,11 +39,11 @@
 5 - INFO - Starting Notify Service
 9 - Max timeout exceeded!
 10 - INFO - acsStopManager: done.
-1 - INFO - Starting Logging Notify Service
+1 - JDAL is ready and waiting
 5 - JDAL is ready and waiting
 9 - INFO - acsStopManager: done.
 10 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=8'
-1 - JDAL is ready and waiting
+1 - INFO - Starting Logging Notify Service
 5 - INFO - Starting Logging Notify Service
 9 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
 10 - INFO - Stopping the CDB
@@ -59,30 +59,30 @@
 5 - INFO - Starting ACS Log service
 9 - INFO - Stopping the CORBA Notification Service
 10 - INFO - Stopping the CORBA Logging Notification Service
-1 - INFO -  of IDL interfaces in Interface Repository completed OK
-5 - INFO -  of IDL interfaces in Interface Repository completed OK
+1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
+5 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
 9 - INFO - Stopping the CORBA Logging Notification Service
 10 - INFO - Stopping the CORBA Archive Notification Service
-1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
-5 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
-9 - INFO - Stopping the CORBA Archive Notification Service
-10 - INFO - Stopping the CORBA Logging Service
 1 - INFO - The acsStartORBSRVC script has now completed!
 5 - INFO - The acsStartORBSRVC script has now completed!
-9 - INFO - Stopping the CORBA Logging Service
-10 - INFO - Stopping the CORBA Interface Repository
+9 - INFO - Stopping the CORBA Archive Notification Service
+10 - INFO - Stopping the CORBA Logging Service
 1 - Manager Application initialized
 5 - Manager Application initialized
-9 - INFO - Stopping the CORBA Interface Repository
-10 - INFO - Stopping the ACS Logging Service
-1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
-5 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
-9 - INFO - Stopping the ACS Logging Service
-10 - INFO - Killing any rogue ACS processes...
-1 - INFO - ACS is up and running
-5 - INFO - ACS is up and running
-9 - INFO - Killing any rogue ACS processes...
-10 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.8
+9 - INFO - Stopping the CORBA Logging Service
+10 - INFO - Stopping the CORBA Interface Repository
 1 - INFO - Manager is up and running
 5 - INFO - Manager is up and running
+9 - INFO - Stopping the CORBA Interface Repository
+10 - INFO - Stopping the ACS Logging Service
+1 - INFO -  of IDL interfaces in Interface Repository completed OK
+5 - INFO -  of IDL interfaces in Interface Repository completed OK
+9 - INFO - Stopping the ACS Logging Service
+10 - INFO - Killing any rogue ACS processes...
+1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
+5 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
+9 - INFO - Killing any rogue ACS processes...
+10 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.8
+1 - INFO - ACS is up and running
+5 - INFO - ACS is up and running
 9 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.9

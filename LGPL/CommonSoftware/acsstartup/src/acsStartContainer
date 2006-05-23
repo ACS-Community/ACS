@@ -22,195 +22,12 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
-#
-if [ "`uname`" = "Linux" ]; then enable -n echo; fi
-#
-# to specify the ACS manager explicitly, define the property ACS.manager, e.g.
-# -DACS.manager=corbaloc::myhost:xxxx/Manager
-#
-# to customize logging, add your own properties file:
-# -Djava.util.logging.config.file=/x/y/mylogging.properties 
-
-THIS=`basename $0`
-
-
-# uncomment to enable debug mode
-#set -x 
-
-
-###
-### ----------- Command Line Parsing ---------------------
-
-#
-# These will contain the parsing results (CL_XXX, CL = command line)
-#
-CL_JAVA=
-CL_PYTHON=
-CL_CPP=
-CL_CONTAINER_PORT=
-CL_CONTAINER_TYPE=
-CL_DEBUGGABLE=
-CL_MANAGERREF=
-CL_BASEPORT=
-CL_HELP=
-CL_CDBREF=
-CL_CUSTOMEXEC=
-CL_REMOTEHOST=
-
-
-#
-# These options can be recognized (longopts comma-separated. colon means argument is required)
-#
-LONGOPTS=help,managerReference:,DALReference:,baseport:,java,py,cpp,remoteDebuggable,port:,executable:,remoteHost:
-SHORTOPTS=hm:d:b:e:
-
-#
-# Usage info. Be nice and keep this up-to-date!
-#
-function printUsage {
-   echo "Starts an Acs container"
-   echo ""
-   echo "Usage: $THIS [OPTIONS]  container_name  [container_args]"
-   echo "Options: "
-   echo "   -java | -py | -cpp           the type of container you want to run (specify only one)"
-   echo "   -remoteDebuggable            makes the java container accessible by a remote debugger"
-   echo "   -m | -managerReference MGR   the corbaloc of your favorite manager"
-   echo "   -b | -baseport INSTANCE      the acs instance (0-9) you want to use"
-   echo "   -d | -DALReference           the corbaloc of the Configuration Database"
-   echo "   -port PORT                   port number you want the container to use"
-   echo "   -e | -executable             custom container executable (command or javaclass) to run"
-   echo "   -remoteHost                  run the container on a host other than \$HOST"
-   echo "   -h | -help                   prints this help and exits"
-}
-
-#
-# Run getopt (posixly_correct needed). We run twice:
-# First run is simply to check the commandline for correctness
-# Second run is the real deal which replaces the command line args with getopt's output
-export POSIXLY_CORRECT=1
-
-getopt -n $THIS -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
-   printUsage
-	exit $EC_BADARGS;
-}
-
-set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
-
-#
-# Iterate over getopt's output and set CL_XXX variables accordingly
-#
-while : 
-do
-	case "$1" in
-	--java)             CL_JAVA=true; CL_CONTAINER_TYPE="-java" ;;
-	--py)               CL_PYTHON=true; CL_CONTAINER_TYPE="-py" ;;
-	--cpp)              CL_CPP=true; CL_CONTAINER_TYPE="-cpp" ;;
-	--port)             CL_CONTAINER_PORT=$2 ; shift;;
-	--remoteDebuggable) CL_DEBUGGABLE=true ;;
-	--managerReference) CL_MANAGERREF=$2 ; shift ;;
-	-m)                 CL_MANAGERREF=$2 ; shift ;;
-	--DALReference)     CL_CDBREF=$2 ; shift ;;
-	-d)                 CL_CDBREF=$2 ; shift ;;
-	--baseport)         CL_BASEPORT=$2 ; shift ;;
-	-b)                 CL_BASEPORT=$2 ; shift ;;
-	--executable)       CL_CUSTOMEXEC=$2 ; shift ;;
-	--remoteHost)       CL_REMOTEHOST=$2 ; shift ;;
-	-e)                 CL_CUSTOMEXEC=$2 ; shift ;;
-	--help)             CL_HELP=true ;; 
-	-h)                 CL_HELP=true ;; 
-	--) break ;;
-	esac
-	shift
-done
-shift
-
-#
-# must be unset! otherwise our custom export() function
-# that is defined below doesn't get used by the shell
-#
-export POSIXLY_CORRECT=
-unset POSIXLY_CORRECT
-
-
-if [ "$CL_HELP" ] ; then
-   printUsage
-   exit $EC_OK
-fi
-
-# some more checking 
-if [ ! "$CL_JAVA" ] && [ ! "$CL_PYTHON" ] && [ ! "$CL_CPP" ] ; then
-   ACS_LOG_ERROR "Please specify the container type"
-   exit $EC_BADARGS
-fi
-
-
-# read containername
-CONTAINERNAME=$1
-
-if [ ! "$CONTAINERNAME" ] ; then
-   ACS_LOG_ERROR "Please specify the container name"
-   exit $EC_BADARGS
-fi
-
-# eat containername so everything that comes after it can easily be
-# passed as commandline arguments to the container command below
-shift
-
-
-#
-# msc 2004-04-20: for backward compatibility with Acs3.0.1,
-#                 we allow "-b x | -baseport x" AFTER the containername
-# msc 2005-04-28: this style no longer works now
-#
-if [ $2 ] ; then
-   if [ x$1 == "x-b" ] || [ x$1 == "x-baseport" ] ; then
-      ACS_LOG_ERROR "Specifying the $1 option AFTER the container name is no longer supported"
-      exit $EC_BADARGS
-   fi
-fi
-
-
-#
-# (Note: Rest of command line now in $@ )
-#
-### ---------- End of Command Line Parsing -------------
-
-
-
-# check whether container runs on a different host than manager
-
-if [ "$CL_MANAGERREF" ] 
-then
-    export MANAGER_REFERENCE="$CL_MANAGERREF"
-
-elif [ "$CL_REMOTEHOST" != "" ]
-then
-    ACS_MANAGER_PORT=`getManagerPort`
-    export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
-fi
-
-if [ "X$MANAGER_REFERENCE" != "X" ]
-then
-    ACS_LOG_INFO "This container will run on $HOST."
-fi    
-
-if [ "$CL_CDBREF" ]
-then
-    ACS_LOG_INFO "This container will use $CL_CDBREF for the CDB."
-    export DAL_REFERENCE=$CL_CDBREF
-fi
-
-
-#Check for baseport option in the standard ACS 3.0 and higher way
-if [ "$CL_BASEPORT" ]
-then
-    export ACS_INSTANCE="$CL_BASEPORT"
-fi
-
 #----------------------------------------------------------------------
 ACS_LOG_COMMAND
 
-#damn, it's been set and does not exist. Fine, create it!
+#----------------------------------------------------------------------
+#--First check out the directory structure
+
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
 then
 
@@ -221,7 +38,6 @@ then
 	exit $EC_CANNOTCREATE
     fi
 
-
 #Stop user A from interfering with user B
 elif [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
 then
@@ -230,95 +46,24 @@ then
     exit $EC_CANNOTUSE
 fi
 
-  
-#Check for container port
-if [ "$CL_CONTAINER_PORT" ]
+#-----------------------------------------------------------------------
+#--Get the correct commandline
+if ! COMMANDLINE=`acsstartupContainerPort $@`
 then
-    export ACS_CONTAINER_PORT="$CL_CONTAINER_PORT"
-
-    #warn the developer when they try to change the port number on subsequent invocations
-    JOE=`grep $CONTAINERNAME $ACS_INSTANCES_DIR/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS | awk '{print $2}'`
-    LOCAL_CNAME=`grep $CONTAINERNAME $ACS_INSTANCES_DIR/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS | awk '{print $1}'`
-
-    if [ "$LOCAL_CNAME" == "$CONTAINERNAME" ] && [ "X$JOE" != "X" ] && [ "$JOE" != "$ACS_CONTAINER_PORT" ]
-    then
-	ACS_LOG_ERROR "You're trying to change the TCP port for this container to '$ACS_CONTAINER_PORT' after the container has already"
-	ACS_LOG_ERROR "              been started under a different TCP port, '$JOE', before. This is unacceptable as the system will no longer be"
-	ACS_LOG_ERROR "              persistent!"
-    fi
-    unset JOE
-    unset LOCAL_CNAME
-
-elif [ "X$ACS_CONTAINER_PORT" == "X" ]
-then 
-    export ACS_CONTAINER_PORT="0"
-fi  
-
-#START THE CONTAINER----------------------------------------------------
-
-EXECUTABLE=
-COMMANDLINE=
-
-if [ "$CL_CUSTOMEXEC" ] ; then
-
-   # for custom-java need to pass classname to the python helper script, see documentation there
-	if [ "$CL_JAVA" ] ; then
-      COMMANDLINE=`acsstartupContainerPort -customjava:$CL_CUSTOMEXEC -port $ACS_CONTAINER_PORT $CONTAINERNAME`"$@"	
-	   EXECUTABLE=acsStartJavaContainer
-
-	else
-      COMMANDLINE=`acsstartupContainerPort $CL_CONTAINER_TYPE -port $ACS_CONTAINER_PORT $CONTAINERNAME`"$@"	
-	   EXECUTABLE=$CL_CUSTOMEXEC
-   fi
-
+    ACS_LOG_ERROR "There was an error when trying to generate the command to start the container!"
+    ACS_LOG_ERROR "Unable to proceed!"
+    exit $EC_CANNOTUSE
 else
-	
-   COMMANDLINE=`acsstartupContainerPort $CL_CONTAINER_TYPE -port $ACS_CONTAINER_PORT $CONTAINERNAME`"$@"	
-	
-	if [ "$CL_JAVA" ] ; then
-	   EXECUTABLE=acsStartJavaContainer
-
-	elif [ "$CL_PYTHON" ] ; then
-	   EXECUTABLE=ACSStartContainerPy
-	
-	elif [ "$CL_CPP" ] ; then
-	    EXECUTABLE=maciContainer
-	
-	fi
-fi
-
-
-
-#Sanitycheck the made-up command-line...
-if [ "X$COMMANDLINE" = "X" ] || [ `echo $COMMANDLINE | egrep -c -e "ERROR"` != 0 ] 
-then
-    ACS_LOG_ERROR "Could not find a TCP port for the container to use...exiting"
-    exit $EC_NOPORT
-else
-    ACS_LOG_INFO "Running the container with these arguments: '$COMMANDLINE '"
+    CONTAINERNAME=`echo $COMMANDLINE | awk '{print $2}'`
 fi
 
 #---------------------------------------------------------------------------------
-#--figure out what TCP port we'll be using
-if [ "$CL_CONTAINER_TYPE" = "-java" ]
-then
-    export CONTAINER_PORT=`echo $COMMANDLINE | sed 's?^.* -OAport ??g'| awk '{print $1}'`
-
-elif [ "$CL_CONTAINER_TYPE" = "-cpp" ]
-then
-    export CONTAINER_PORT=`echo $COMMANDLINE | sed 's?^.* -ORBEndpoint ??g'| awk '{print $1}' | sed 's/:/ /g' | awk '{print $3}'`
-
-elif [ "$CL_CONTAINER_TYPE" = "-py" ]
-then
-    export CONTAINER_PORT=`echo $COMMANDLINE | sed 's?^.* -ORBendPoint ??g'| awk '{print $1}' | sed 's/:/ /g' | awk '{print $4}'`
-else
-    ACS_LOG_ERROR "Unable to determine the TCP port number from '$COMMANDLINE'!"
-    exit $EC_FAILURE
-fi
+#--Get the container TCP port from the command-line
+export CONTAINER_PORT=`echo $COMMANDLINE | awk '{print $4}'`
+export CONTAINER_PORT=${CONTAINER_PORT##*:}
 
 #--------------------------------------------------------------------------------
 #--sanity check to ensure the port is free
-
 if ! checkTCPPort $CONTAINER_PORT
 then
     ACS_LOG_ERROR "The chosen container port, '$CONTAINER_PORT',  is being used by another process!"
@@ -326,54 +71,27 @@ then
     exit $EC_NOPORT
 fi
 
-## (2003-11-06) msc + hso
-## we test whether this script was called with -remoteDebuggable. 
-## if so, we extract the "-OAport" value from the return string of the acsstartupContainerPort script
-## and add 1 and export the necessary jvm options
-## TODO: let the user optionally specify a port after -remoteDebuggable
-if [ "$CL_DEBUGGABLE" ] ; then
-	let CONTAINER_DEBUG_PORT=CONTAINER_PORT+1
-	export JAVA_OPTIONS="$JAVA_OPTIONS -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$CONTAINER_DEBUG_PORT -Djava.compiler=NONE"
-
-   ACS_LOG_INFO "Container will accept remote debuggers on port $CONTAINER_DEBUG_PORT"
-fi
-
-## set the classpath for component-impl jars (to support separate classloaders)
-component_classpath=`vltMakeJavaClasspath -components`
-export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=$component_classpath"
-
-
-#STORE THE PID FOR FORCED KILLS-----------------------------------------
+#-----------------------------------------------------------------------
+#--Save the this script's process ID so the container can be forceably
+#--killed (if needed) later.
 CONTAINER_PID=$$
 PID_STRING="_PID"
 CONTAINER_PID_FILE="`echo $CONTAINERNAME | sed s/"\/"/:/g`$PID_STRING"
 echo $CONTAINER_PID >> `getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/$CONTAINER_PID_FILE
 
-
-#see if we have to run this on a remote host
-if [ "$CL_REMOTEHOST" != "" ]
-then
-    export EXECUTABLE="ssh -f $USER@$CL_REMOTEHOST $EXECUTABLE"
-fi
-
-
-#
+#-----------------------------------------------------------------------
 # Now run the container
-#
+ACS_LOG_INFO "Running the container with these arguments: '$COMMANDLINE'"
+$COMMANDLINE
 
-$EXECUTABLE $COMMANDLINE
-
-
-#
+#-----------------------------------------------------------------------
 # The following section of code was requested by G. Chiozzi and B. Jeram
 # to ensure that when a container segfaults or is Ctrl-C'ed, the proper files
 # normally removed by acsStopContainer are removed as well. It is absolutely
 # critical this piece of code be kept in sync with what acsStopContainer does!
-#
 
 #go to the correct directory
 INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
-
 
 #if the PID file exists for the container
 if [ -e $INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE ]

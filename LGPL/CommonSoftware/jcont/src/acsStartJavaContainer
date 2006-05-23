@@ -1,3 +1,24 @@
 #! /bin/bash
-#just pass everything on to acsStartJava
-acsStartJava $@
+#--------------------------------------------------------------------------------
+#figure out the remote debuggable port
+temp="$@"
+RDB_PORT=${temp##*OAport }
+RDB_PORT=${RDB_PORT%%' '*}
+RDB_PORT=$(( $RDB_PORT + 1 ))
+
+#set the remote debuggable port
+export JAVA_OPTIONS="$JAVA_OPTIONS -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$RDB_PORT -Djava.compiler=NONE"
+echo "Container will accept remote debuggers on port $RDB_PORT"
+
+#--------------------------------------------------------------------------------
+## set the classpath for component-impl jars (to support separate classloaders)
+component_classpath=`vltMakeJavaClasspath -components`
+export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=$component_classpath"
+
+#--------------------------------------------------------------------------------
+CONTAINER_NAME=$1
+shift;
+
+#--------------------------------------------------------------------------------
+#just delegate to acsStartJava
+acsStartJava -endorsed -Dalma.MicroArchive.DbDir=$ACSDATA/config/MicroArchive $@ -containerName $CONTAINER_NAME 

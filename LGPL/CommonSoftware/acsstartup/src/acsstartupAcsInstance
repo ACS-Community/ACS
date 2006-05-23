@@ -155,6 +155,20 @@ else
 	chmod 774 $PORTS_FILENAME
 fi
 
+#create the pids directory
+if [ -e $ACS_INSTANCE_DIR/$ACS_PID_DIR ]
+then
+	ACS_SILENT_LOG "WARNING $ACS_INSTANCE_DIR/$ACS_PID_DIR already exists!"
+
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+	ACS_SILENT_LOG "WARNING cannot create $ACS_INSTANCE_DIR/$ACS_PID_DIR because $ACS_INSTANCE_DIR is not writeable by $USER!"
+
+else
+	mkdir $ACS_INSTANCE_DIR/$ACS_PID_DIR
+	chmod 774 $ACS_INSTANCE_DIR/$ACS_PID_DIR
+fi
+
 }
 export createInstanceDirectory
 

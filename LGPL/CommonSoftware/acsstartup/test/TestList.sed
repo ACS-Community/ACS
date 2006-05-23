@@ -1,3 +1,4 @@
+s/corbaloc::[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:/corbaloc::a.b.c.d:/g
 s/Logging to log file: .*\/acsdata\/tmp\/acs_local_log_\([a-z,A-Z,0-9,_]*\)_[0-9]*/Logging to log file: \/-----\/acsdata\/tmp\/acs_local_log_\1_xxxx/g
 s/MainThread, acspyTestLogging, [a-z,A-Z,0-9,-]*,/MainThread, acspyTestLogging, xxxx,/g 
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]/----------T--:--:--.---/g 
@@ -5,7 +6,6 @@ s/[0-9][0-9][0-9][0-9][\/][0-9][0-9][\/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0
 s/acspyTestLogging.py,v [0-9]*.[0-9]*/acspyTestLogging.py,v x.x/g
 s/acspy.acslog.Logger instance at 0x[0-9,a-z]*/acspy.acslog.Logger instance at 0x--------/g
 s/get local manager from [a-z,A-Z,0-9,-]*/get local manager from xxxx/g
-s/corbaloc::[a-z,A-Z,0-9,-,.]*:/corbaloc::xxxx:/g
 s/$Id: .* Exp/-Id:  acspyTestLogging.py,v x.x ---------- --:--:-- username Exp/g
 s/The temperature difference is [0-9,.]*/The temperature difference is x.x/g
 s/TimeStamp=[0-9]*,/TimeStamp=xxxx,/g
@@ -24,3 +24,5 @@ s/Please see .*$/Please see \/some\/file for debug output/g
 s/'[^',=]*'/'something'/g
 s|/[-,a-z,A-Z,0-9,.,_,/]*/acsdata/|/alma/ACS-x.y/acsdata/|g
 s/ACS-[0-9].[0-9]/ACS-x.y/g
+s/iiop:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:/iiop:\/\/a.b.c.d:/g
+s/giop:tcp:[0-9]*.[0-9]*.[0-9]*.[0-9]*:/giop:tcp:a.b.c.d:/g
