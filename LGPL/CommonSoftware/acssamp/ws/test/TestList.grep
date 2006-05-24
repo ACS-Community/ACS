@@ -29,3 +29,6 @@ This container will run on
 Supplier::subscription_change subscription added for domain: ALMA!
 Running the container with these arguments
 cdbChannelConfigExists
+Manager hostname obtained via command line
+ManagerReference obtained via command line
+Bootstrap ORB
