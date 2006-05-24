@@ -86,15 +86,15 @@
 1 - *Testing remote host*
 1 - ---------
 1 - --Params: -cpp -name cpp2 -remoteHost someRemoteHost
-1 - ssh -f dfugate@someRemoteHost maciContainer cpp2 -ORBEndpoint iiop://someRemoteHost:3062 -m corbaloc::a.b.c.d:3000/Manager
+1 - ssh -f user@someRemoteHost maciContainer cpp2 -ORBEndpoint iiop://someRemoteHost:3062 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -java -name java2 -remoteHost someRemoteHost
-1 - ssh -f dfugate@someRemoteHost acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 3064 -m corbaloc::a.b.c.d:3000/Manager
+1 - ssh -f user@someRemoteHost acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 3064 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name py2 -remoteHost someRemoteHost
-1 - ssh -f dfugate@someRemoteHost ACSStartContainerPy py2 -ORBendPoint giop:tcp:someRemoteHost:3066 -m corbaloc::a.b.c.d:3000/Manager
+1 - ssh -f user@someRemoteHost ACSStartContainerPy py2 -ORBendPoint giop:tcp:someRemoteHost:3066 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - 
 1 - *Testing different baseports
@@ -186,26 +186,26 @@
 1 - New args:[]
 1 - Dealing with a C++ container
 1 - Manager corbaloc is:corbaloc::someManagerHost:3200/Manager
-1 - Executable to be run is:ssh -f dfugate@a_remote_host myMaciContainer
+1 - Executable to be run is:ssh -f user@a_remote_host myMaciContainer
 1 - Remote host to run the container under is:a_remote_host
 1 - Remote debuggable is:0
 1 - -port option was specified:5555
 1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
-1 - ssh -f dfugate@a_remote_host myMaciContainer cpp4 -ORBEndpoint iiop://a_remote_host:5555 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager
+1 - ssh -f user@a_remote_host myMaciContainer cpp4 -ORBEndpoint iiop://a_remote_host:5555 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager
 1 - 
 1 - ---------
 1 - --Params: -cpp -name java4 -port 5555 -remoteHost a_remote_host -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container
 1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
-1 - ssh -f dfugate@a_remote_host myJavaContainer java4 -ORBEndpoint iiop://a_remote_host:3950 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager
+1 - ssh -f user@a_remote_host myJavaContainer java4 -ORBEndpoint iiop://a_remote_host:3950 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager
 1 - 
 1 - ---------
 1 - --Params: -cpp -name cpp4 -port 5555 -remoteHost a_remote_host -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 extra args
 1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
-1 - ssh -f dfugate@a_remote_host myMaciContainer cpp4 -ORBEndpoint iiop://a_remote_host:5555 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
+1 - ssh -f user@a_remote_host myMaciContainer cpp4 -ORBEndpoint iiop://a_remote_host:5555 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
 1 - 
 1 - ---------
 1 - --Params: -cpp -name java4 -port 5555 -remoteHost a_remote_host -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container extra args
 1 - Warning - you'something'java4's port from 3950 to 5555
 1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
-1 - ssh -f dfugate@a_remote_host myJavaContainer java4 -ORBEndpoint iiop://a_remote_host:3950 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
+1 - ssh -f user@a_remote_host myJavaContainer java4 -ORBEndpoint iiop://a_remote_host:3950 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
 1 - 

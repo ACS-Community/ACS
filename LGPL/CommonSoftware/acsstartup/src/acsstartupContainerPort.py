@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.26 2006/05/23 23:45:07 dfugate Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.27 2006/05/24 15:01:41 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -33,7 +33,6 @@ from os      import chmod
 from os      import system
 from os      import access, R_OK, W_OK, X_OK, F_OK
 from os.path import exists
-from os      import getlogin
 from fcntl   import flock
 from fcntl   import LOCK_EX
 from sys import exit
@@ -175,7 +174,7 @@ else:
     cl_executable = options.executable
     
 if cl_remote_host != None:
-    cl_executable = "ssh -f " + getlogin() + "@" + cl_remote_host + " " + cl_executable
+    cl_executable = "ssh -f " + environ['USER'] + "@" + cl_remote_host + " " + cl_executable
     container_host = cl_remote_host
 else:
     container_host = getIP()
