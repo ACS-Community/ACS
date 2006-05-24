@@ -2,12 +2,8 @@
 2 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
 2 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - Bootstrap ORB parms: maciContainer bilboContainer
-2 - Bootstrap ORB parms: maciContainer archiveContainer
 1 - 
 2 - 
-1 - ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
-2 - ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - 
 2 - 
 1 - Resolving reference: 'corbaloc::---:----/Manager'
@@ -24,12 +20,6 @@
 2 - 
 1 - 
 2 - 
-1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/ManagerReference'
-2 - DAO:'MACI' Unable to return field: 'Containers/archiveContainer/ManagerReference'
-1 - Field ':Appl_data:MACI/Containers/bilboContainer.ManagerReference' empty or not set.
-2 - Field ':Appl_data:MACI/Containers/archiveContainer.ManagerReference' empty or not set.
-1 - Manager hostname generated using localhost address: '---'
-2 - Manager hostname generated using localhost address: '---'
 1 - 
 2 - 
 1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1

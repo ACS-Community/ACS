@@ -1,8 +1,6 @@
 1 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - Bootstrap ORB parms: maciContainer bilboContainer
 1 - 
-1 - ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - 
 1 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
@@ -11,12 +9,9 @@
 1 - Starting as dynamic container.
 1 - 
 1 - 
-1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/ManagerReference'
-1 - Field ':Appl_data:MACI/Containers/bilboContainer.ManagerReference' empty or not set.
-1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- [CON1 - ] An exception on addSubscription...OK.
 1 - ----------T--:--:--.--- [GlobalLogger - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
+1 - ----------T--:--:--.--- [CON1 - ] An exception on addSubscription...OK.
 1 - ----------T--:--:--.--- [RTSUP1 - ] Sent an event via RTSupplier.
 1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:101
 1 - ----------T--:--:--.--- [RTSUP1 - ] Sent an event via RTSupplier.
@@ -34,7 +29,7 @@
 1 - ----------T--:--:--.--- [RTSUP1 - ] Sent an event via RTSupplier.
 1 - ----------T--:--:--.--- [CON1 - ] No exception on suspend...OK.
 1 - ----------T--:--:--.--- [CON1 - ] No exception on resume...OK.
-1 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addFilter failed for the 'blar' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
 1 - ----------T--:--:--.--- [CON1 - ] An exception on addFilter...OK.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addFilter failed for the 'blar' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
 1 - /----/libbaci.so
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

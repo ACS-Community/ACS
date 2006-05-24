@@ -1,8 +1,6 @@
 1 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - Bootstrap ORB parms: maciContainer bilboContainer
 1 - 
-1 - ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - 
 1 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
@@ -11,9 +9,6 @@
 1 - Starting as dynamic container.
 1 - 
 1 - 
-1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/ManagerReference'
-1 - Field ':Appl_data:MACI/Containers/bilboContainer.ManagerReference' empty or not set.
-1 - Manager hostname generated using localhost address: '---'
 1 - 
 1 - ----------T--:--:--.--- [GlobalLogger - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
 1 - ----------T--:--:--.--- [IL_CON1 - ] An exception on addSubscription...OK.
@@ -23,8 +18,6 @@
 1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
-1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
@@ -32,11 +25,7 @@
 1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
-1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
-1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
-1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
 1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
@@ -48,9 +37,15 @@
 1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
 1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
