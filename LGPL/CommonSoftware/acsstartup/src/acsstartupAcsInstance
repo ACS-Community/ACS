@@ -172,53 +172,6 @@ fi
 }
 export createInstanceDirectory
 
-#------------------------------------------------------------
-function checkDeadInstance
-{
-local ACS_INSTANCE
-local temp
-
-ACS_INSTANCE=$1
-
-#------------------------------------------------
-#Check manager's port
-#check for the process ID followed by the TCP port
-
-MANAGER_PID=``
-
-if [ ! MANAGER_PORT=`getManagerPort` ] || [ `netstat -l -t --numeric-ports | grep ":$MANAGER_PORT"` = "" ] 
-then
-	echo "The TCP port manager should be using is not being used!"
-fi
-
-if [ ! MANAGER_PID=`getManagerPid` ] || [ `ps h --pid $MANAGER_PID` = "" ] 
-then
-	echo "The manager process does not appear to be up!"
-fi
-
-#------------------------------------------------
-#Check naming service port
-
-#------------------------------------------------
-#Check notify service port
-
-#------------------------------------------------
-#Check logging service port
-
-#------------------------------------------------
-#Check IFR port
-
-#------------------------------------------------
-#Check log port
-
-#------------------------------------------------
-#Check CDB port
-
-#------------------------------------------------
-}
-
-export checkInstanceDir
-
 #--------------------------------------------------------------
 function getLocalContainerNames
 {

@@ -3,6 +3,7 @@
 . acsstartupLogging.sh
 . acsstartupConstants
 . acsstartupAcsInstance
+. acsstartupPids
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002 
@@ -25,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.30 2006/03/24 23:59:40 dfugate Exp $"
+# "@(#) $Id: acsStart,v 1.31 2006/05/24 22:56:52 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -58,6 +59,14 @@
 #------------------------------------------------------------------------
 #
 #
+
+###If there's a corrupted $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE, attempt
+###to fix it
+if ! checkDeadACS
+then
+    ACS_LOG_ERROR "Unable to continue as the ACS_INSTANCE, $ACS_INSTANCE, is currently in use!"
+    exit $EC_FAILURE
+fi
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -231,10 +240,13 @@ then
 	ACS_LOG_ERROR "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
 	ACS_LOG_INFO  "There could be something genuinely wrong here or maybe your machine is just slow."
 	ACS_LOG_INFO  "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
+	kill -9 $IRFEED_PID
     else
 	ACS_LOG_DEBUG "The interface repository has finished loading."
     fi
 fi
+
+rm -f $IRFEED_PIDFILE
 #--------------------------------------------------------------------------------------------------------------------------
 
 ACS_LOG_FORCED "INFO - For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."

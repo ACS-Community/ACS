@@ -10,57 +10,57 @@ echo $ACS_INSTANCE
 #Returns the port manager is running on.
 function getManagerPort
 {
-echo $(( `getBasePort`*100 + 3000 ))
+echo $(( `getBasePort` * 100 + 3000 ))
 }
 #############################################################
 #Returns the port the CORBA Naming Service is running on.
 function getNamingServicePort
 {
-echo $(( `getBasePort`*100 + 3000 + 1 ))
+echo $(( `getBasePort` * 100 + 3000 + 1 ))
 }
 #############################################################
 #Returns the port the CORBA Notification Service is running on.
 function getNotifyServicePort
 {
-echo $(( `getBasePort`*100 + 3000 + 2 ))
+echo $(( `getBasePort` * 100 + 3000 + 2 ))
 }
 #############################################################
 #Returns the port the CORBA Logging Service is running on.
 function getLoggingServicePort
 {
-echo $(( `getBasePort`*100 + 3000 + 3 ))
+echo $(( `getBasePort` * 100 + 3000 + 3 ))
 }
 #############################################################
 #Returns the port the CORBA Interface Repository is running on.
 function getIRPort
 {
-echo $(( `getBasePort`*100 + 3000 + 4 ))
+echo $(( `getBasePort` * 100 + 3000 + 4 ))
 }
 #############################################################
 #Returns the port the CORBA (Logging) Notification Service is running on.
 function getLoggingNotifyServicePort
 {
-echo $(( `getBasePort`*100 + 3000 + 5 ))
+echo $(( `getBasePort` * 100 + 3000 + 5 ))
 }
 
 #############################################################
 #Returns the port the CORBA (BACI archive) Notification Service is running on.
 function getArchiveNotifyServicePort
 {
-echo $(( `getBasePort`*100 + 3000 + 6 ))
+echo $(( `getBasePort` * 100 + 3000 + 6 ))
 }
 
 #############################################################
 #Returns the port the ACS Logging Service is running on.
 function getLogPort
 {
-echo $(( `getBasePort`*100 + 3000 + 11 ))
+echo $(( `getBasePort` * 100 + 3000 + 11 ))
 }
 #############################################################
 #Returns the port the ACS CDB is running on.
 function getCDBPort
 {
-echo $(( `getBasePort`*100 + 3000 + 12 ))
+echo $(( `getBasePort` * 100 + 3000 + 12 ))
 }
 #############################################################
 #Returns the current IP address (or $HOST if an error occurs)
