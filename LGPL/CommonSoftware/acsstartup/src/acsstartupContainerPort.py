@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.27 2006/05/24 15:01:41 dfugate Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.28 2006/05/25 21:41:07 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -40,6 +40,9 @@ from sys import stderr
 from sys import argv
 
 from optparse import OptionParser
+
+import subprocess
+import socket
 
 from AcsutilPy.ACSPorts import getIP
 #-----------------------------------------------------------------------------------------------
@@ -176,8 +179,23 @@ else:
 if cl_remote_host != None:
     cl_executable = "ssh -f " + environ['USER'] + "@" + cl_remote_host + " " + cl_executable
     container_host = cl_remote_host
+
+    #sanity check to ensure this host exists
+    stuff = subprocess.Popen('ping -c 1 ' + container_host,
+                             shell=True,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE).stderr.read()
+
+    if 'unknown host' in stuff or 'request timed out' in stuff:
+        stderr.write("The remote host, " + container_host +
+                     ", is not accessible from this machine!\n")
+        exit(1)
+
+
 else:
     container_host = getIP()
+
+
 
 #--------------------------------------------------------------------
 #--Run through a few sanity checks
@@ -268,6 +286,21 @@ def getPortsFile():
     return ret_val
 
 #-----------------------------------------------------------------------------------------------
+def portIsFree(ip_addr, tcp_port):
+    '''
+    Simple helper function returns true if the TCP port, tcp_port, of the
+    host, ip_addr, is free to use.
+    '''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1)
+    #returns true when the port is open and false if it's not
+    ret_val = s.connect_ex((ip_addr, tcp_port))
+    s.close()
+
+    return ret_val
+
+
+#-----------------------------------------------------------------------------------------------
 def getPortsDict(portsFile):
     '''
     Returns a dictionary where each key is the name of a container and the value is the absolute
@@ -306,20 +339,38 @@ def getExistingPort(container_name, port_dict):
     '''
     
     if port_dict.has_key(container_name):
-        return port_dict[container_name]
-    else:
-        return None
+        
+        port_number = port_dict[container_name]
+
+        if portIsFree(container_host, port_number):
+            return port_number
+
+        else:
+            stderr.write("Port is already in use, " +
+                         str(port_number) + ", by a container, " +
+                         container_name + ", of the same name!\n")
+            stderr.write("This is an unrecoverable error and you must shutdown or kill " +
+                         "the original container to continue!\n")
+            exit(1)
+    
+    return None
 
 #-----------------------------------------------------------------------------------------------
 def portNumberAlreadyUsed(port_number, port_dict):
     '''
     Function returns 1 if the port number is already in use and false otherwise.
-    DWF-this should also check the output of "netstat -l" command.
     '''
     
     #if no other entries are using this port number it's completely safe to use it
     if (port_dict.values().count(port_number)==0):
-        return 0
+        #if the port is actually free
+        if portIsFree(container_host, port_number):
+            return 0
+        else:
+            stderr.write("Port is already in use:" +
+                         str(port_number) + "\n")
+            stderr.write("Kill the process listening on this port and try again!\n")
+            return 1
         
     else:
         if __DEBUG__:

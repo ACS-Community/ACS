@@ -56,9 +56,9 @@ testParams -py   -name py2   -e fakeContainerExe
 echo ""
 
 echo "*Testing remote host*"
-testParams -cpp  -name cpp2  -remoteHost someRemoteHost
-testParams -java -name java2 -remoteHost someRemoteHost
-testParams -py   -name py2   -remoteHost someRemoteHost
+testParams -cpp  -name cpp2  -remoteHost 127.0.0.1
+testParams -java -name java2 -remoteHost 127.0.0.1
+testParams -py   -name py2   -remoteHost 127.0.0.1
 echo ""
 
 echo "*Testing different baseports"
@@ -95,7 +95,7 @@ testParams -py   -name py3   yet more stuff
 echo ""
 
 echo "*Hard tests*"
-testParams -cpp -name cpp4 -port 5555 -remoteHost a_remote_host -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 -debug
-testParams -cpp -name java4 -port 5555 -remoteHost a_remote_host -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container
-testParams -cpp -name cpp4 -port 5555 -remoteHost a_remote_host -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 extra args
-testParams -cpp -name java4 -port 5555 -remoteHost a_remote_host -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container extra args
+testParams -cpp -name cpp4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 -debug
+testParams -cpp -name java4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container
+testParams -cpp -name cpp4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 extra args
+testParams -cpp -name java4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container extra args
