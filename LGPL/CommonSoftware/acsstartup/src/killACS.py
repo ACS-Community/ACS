@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.15 2005/12/07 23:56:18 dfugate Exp $
+# @(#) $Id: killACS.py,v 1.16 2006/05/25 22:07:15 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -29,9 +29,29 @@ run as root as it will shutdown other users CDBs/Managers/etc. too.
 ################################################################################################
 from os import environ, listdir, system
 from sys import argv
+
+from fcntl   import flock
+from fcntl   import LOCK_EX
+from os.path import exists
+
 from optparse import OptionParser
 ################################################################################################
 
+#first thing we do is create a lock so this command cannot be run again until it
+#finishes
+ACS_INSTANCE_DIR = str(environ['ACSDATA']) + '/tmp/'
+#sanity check to ensure the temp directory exists
+if exists(ACS_INSTANCE_DIR):
+    #sanity check to ensure the file exists
+    if not exists(ACS_INSTANCE_DIR + '.killACS.lock'):
+        system('touch ' + ACS_INSTANCE_DIR + '.killACS.lock')
+        system('chmod 774 ' + ACS_INSTANCE_DIR + '.killACS.lock')
+        
+    lock_file = open(ACS_INSTANCE_DIR + '.killACS.lock', 'r')
+    flock(lock_file.fileno(), LOCK_EX)
+    
+else:
+    lock_file = None
 
 parser = OptionParser(usage="This script is used as an alternative to rebooting your machine to regain TCP ports and you should report the exact circumstances that caused you to use it to the alma-sw-common@nrao.edu mailing list! Also, this will 'decapitate' other instances of ACS run by other users of this system!\n\nFor quick performance that kills all Java clients (similar behavior killACS had with older versions of ACS)\nRun:\n     killACS -q -a\nBe forewarned this kills all Java virtual machines though.")
 
@@ -132,4 +152,7 @@ if killJava==1:
     system('acsKillProc -C java')
     print "...done."
 
-
+#release the lock so future invocations can be run
+if lock_file!=None:
+    lock_file.close()
+    
