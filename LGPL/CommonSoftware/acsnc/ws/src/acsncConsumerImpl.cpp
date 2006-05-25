@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.63 2006/03/08 17:50:44 dfugate Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.64 2006/05/25 20:34:06 sharring Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -290,28 +290,34 @@ void
 Consumer::addSubscription(const char* type_name)
     throw (CORBAProblemEx)
 {
-    ACS_TRACE("Consumer::addSubscription");
+	ACS_TRACE("Consumer::addSubscription");
 
-    CosNotification::EventTypeSeq added(1);
-    CosNotification::EventTypeSeq removed(0);
-    added.length(1);
-    removed.length(0);
-    
-    added[0].domain_name = getChannelDomain();
-    added[0].type_name   = CORBA::string_dup(type_name);
-    
-    ACS_SHORT_LOG((LM_INFO, "Consumer::addSubscription subscribing to '%s' events for the '%s' channel!",
-		   static_cast<const char *>(added[0].type_name), channelName_mp));
-    try
+	if(CORBA::is_nil(consumerAdmin_m)) 
 	{
-	consumerAdmin_m->subscription_change(added, removed);
+		ACS_SHORT_LOG((LM_ERROR,"Consumer::addSubscription aborting due to nil consumerAdmin_m - verify that init() method was called."));
+		return;
+	}
+
+	CosNotification::EventTypeSeq added(1);
+	CosNotification::EventTypeSeq removed(0);
+	added.length(1);
+	removed.length(0);
+   
+	added[0].domain_name = getChannelDomain();
+	added[0].type_name   = CORBA::string_dup(type_name);
+   
+	ACS_SHORT_LOG((LM_INFO, "Consumer::addSubscription subscribing to '%s' events for the '%s' channel!",
+	static_cast<const char *>(added[0].type_name), channelName_mp));
+	try
+	{
+		consumerAdmin_m->subscription_change(added, removed);
 	} 
-    catch(...)
+	catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"Consumer::addSubscription failed for the '%s' channel and '%s' event type!",
-		       channelName_mp, type_name));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::addSubscription");
-	throw err.getCORBAProblemEx();
+		ACS_SHORT_LOG((LM_ERROR,"Consumer::addSubscription failed for the '%s' channel and '%s' event type!",
+		channelName_mp, type_name));
+		CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::addSubscription");
+		throw err.getCORBAProblemEx();
 	}
 }
 //-----------------------------------------------------------------------------
