@@ -18,13 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.4 2005/11/18 00:17:58 dfugate Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.5 2006/05/25 16:53:58 dfugate Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
 */
 
 #include "basencSupplier.h"
+#include <iostream>
 
 //-----------------------------------------------------------------------------
 BaseSupplier::BaseSupplier(const char* channelName) :
@@ -112,7 +113,34 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 {
     ACE_ASSERT(!CORBA::is_nil(this->proxyConsumer_m.in()));
     //pass it on to the proxy consumer
-    proxyConsumer_m->push_structured_event(event);
+    try
+	{
+	proxyConsumer_m->push_structured_event(event);
+	}
+    catch(CORBA::COMM_FAILURE ex)
+	{
+	std::cerr << "ERROR (CORBA::COMM_FAILURE): ";
+	std::cerr << "failed to send an event of type '";
+	std::cerr << event.header.fixed_header.event_type.type_name;
+	std::cerr << "' to the '";
+	std::cerr << channelName_mp << "' channel!" << std::endl;
+	}
+    catch(CORBA::TRANSIENT ex)
+	{
+	std::cerr << "ERROR (CORBA::TRANSIENT): ";
+	std::cerr << "failed to send an event of type '";
+	std::cerr << event.header.fixed_header.event_type.type_name;
+	std::cerr << "' to the '";
+	std::cerr << channelName_mp << "' channel!" << std::endl;
+	}
+    catch(...)
+	{
+	std::cerr << "ERROR (Unkwown): ";
+	std::cerr << "failed to send an event of type '";
+	std::cerr << event.header.fixed_header.event_type.type_name;
+	std::cerr << "' to the '";
+	std::cerr << channelName_mp << "' channel!" << std::endl;
+	}
 }
 //-----------------------------------------------------------------------------
 void
