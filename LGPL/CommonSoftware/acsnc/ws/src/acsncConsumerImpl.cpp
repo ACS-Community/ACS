@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.64 2006/05/25 20:34:06 sharring Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.65 2006/05/25 22:26:56 sharring Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -292,12 +292,6 @@ Consumer::addSubscription(const char* type_name)
 {
 	ACS_TRACE("Consumer::addSubscription");
 
-	if(CORBA::is_nil(consumerAdmin_m)) 
-	{
-		ACS_SHORT_LOG((LM_ERROR,"Consumer::addSubscription aborting due to nil consumerAdmin_m - verify that init() method was called."));
-		return;
-	}
-
 	CosNotification::EventTypeSeq added(1);
 	CosNotification::EventTypeSeq removed(0);
 	added.length(1);
@@ -310,6 +304,13 @@ Consumer::addSubscription(const char* type_name)
 	static_cast<const char *>(added[0].type_name), channelName_mp));
 	try
 	{
+		if(CORBA::is_nil(consumerAdmin_m)) 
+		{
+			// log an error, then throw an exception to prevent segfault dereferencing nil consumerAdmin_m 
+			ACS_SHORT_LOG((LM_ERROR,"Consumer::addSubscription failing due to nil consumerAdmin_m - was init() called?"));
+			throw new std::invalid_argument("Consumer::addSubscription failing due to nil consumerAdmin_m");
+		}
+
 		consumerAdmin_m->subscription_change(added, removed);
 	} 
 	catch(...)
