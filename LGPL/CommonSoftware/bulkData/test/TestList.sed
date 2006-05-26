@@ -14,6 +14,7 @@ s/Unable to open recovery file (r) .*/Creating or loading recovery file/g
 s/Reading recovery file .*/Creating or loading recovery file/g
 s/([0-9]*|[0-9]*)/(----|----)/g
 s/Manager hostname generated using localhost address: '.*'/Manager hostname generated using localhost address: '---'/g
+s/Manager hostname obtained via command line: '.*'/Manager hostname obtained via command line: '---'/g
 s/iiop:\/\/[a-z,0-9,.,-]*:[0-9]*/iiop:\/\/---:----/g
 s/corbaloc::[a-z,0-9,.,-]*:[0-9]*/corbaloc::---:----/g
 s/Using DLL path: .*/Using DLL path: ...../g

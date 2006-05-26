@@ -1,15 +1,15 @@
 2 - Running bulkDataEx1
 1 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - Bootstrap ORB parms: maciContainer ContainerEx1
+1 - Bootstrap ORB parms: maciContainer ContainerEx1 -m corbaloc::---:----/Manager
 1 - 
+1 - ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - 
 1 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
 1 - 
 1 - 
-1 - Field ':Appl_data:MACI/Containers/ContainerEx1.ManagerReference' empty or not set.
-1 - Manager hostname generated using localhost address: '---'
+1 - Manager hostname obtained via command line: '---'
 1 - 
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::Container::init] Recovery enabled.
@@ -20,11 +20,12 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibEx1.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataSenderLibEx1.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibEx1.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibEx1.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverLibEx1.so'.
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Container 'ContainerEx1' initialized successfuly
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Logging into the Manager...
@@ -36,17 +37,17 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibEx1.so'
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataReceiver: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataReceiver: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataReceiver: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataReceiver: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataReceiver: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiver' activated.
 1 - ----------T--:--:--.--- [BulkDataReceiver::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataReceiver::actionThread'
 1 - ----------T--:--:--.--- [BulkDataReceiver::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataReceiver::monitorThread'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibEx1.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataSenderEx1: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibEx1.so'
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataSenderEx1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataSenderEx1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataSenderEx1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::activate_component] Component 'BulkDataSenderEx1' activated.
 1 - ----------T--:--:--.--- [BulkDataSenderEx1::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataSenderEx1::actionThread'
 1 - ----------T--:--:--.--- [BulkDataSenderEx1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataSenderEx1::monitorThread'
@@ -62,17 +63,17 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] flow 2 total length: 12000000
 1 - ----------T--:--:--.--- [GlobalLogger - ] flow 4 total length: 37000000
 1 - ----------T--:--:--.--- TAO_AV_TCP_Flow_Handler::handle_input connection closed
+1 - 
+1 - ----------T--:--:--.--- TAO_AV_TCP_Flow_Handler::handle_input connection closed
+1 - ----------T--:--:--.--- TAO_AV_TCP_Flow_Handler::handle_input connection closed
 1 - ----------T--:--:--.--- TAO_AV_TCP_Flow_Handler::handle_input connection closed
 1 - 
 1 - 
-1 - ----------T--:--:--.--- TAO_AV_TCP_Flow_Handler::handle_input connection closed
-1 - 
-1 - ----------T--:--:--.--- TAO_AV_TCP_Flow_Handler::handle_input connection closed
 1 - 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataSenderEx1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component BulkDataSenderEx1: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataSenderEx1' etherealized.
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataSenderEx1' deactivated.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataSenderEx1' etherealized.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping 3 sec to allow everything to cleanup and stabilize
 2 - Shutting down ContainerEx1
 2 - All done!
