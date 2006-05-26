@@ -26,4 +26,4 @@ s|/[-,a-z,A-Z,0-9,.,_,/]*/acsdata/|/alma/ACS-x.y/acsdata/|g
 s/ACS-[0-9].[0-9]/ACS-x.y/g
 s/iiop:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:/iiop:\/\/a.b.c.d:/g
 s/giop:tcp:[0-9]*.[0-9]*.[0-9]*.[0-9]*:/giop:tcp:a.b.c.d:/g
-s/ssh -f [a-z,A-Z]*@/ssh -f user@/g
+s/ssh -f [a-z,A-Z,0-9]*@/ssh -f user@/g
