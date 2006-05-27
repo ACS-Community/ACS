@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount5Impl.h,v 1.3 2005/04/21 23:21:44 sharring Exp $"
+* "@(#) $Id: acscourseMount5Impl.h,v 1.4 2006/05/27 23:08:47 gchiozzi Exp $"
 *
 */
 
@@ -29,7 +29,11 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <acscomponentImpl.h>
+#include <baciCharacteristicComponentImpl.h>
+#include <baciROdouble.h>
+#include <baciRWdouble.h>
+#include <baciSmartPropertyPointer.h>
+
 #include <acscourseMountS.h>
 
 ///In this example, events are published to a channel implying we need this header
@@ -78,9 +82,9 @@ The class Mount5 is identical to Mount1 in nearly all aspects except:
 /** @class Mount5
  * The class Mount5 is identical to Mount1 except that in this case, it supplies/consumes
  * events from an event channel.
- * @version "@(#) $Id: acscourseMount5Impl.h,v 1.3 2005/04/21 23:21:44 sharring Exp $"
+ * @version "@(#) $Id: acscourseMount5Impl.h,v 1.4 2006/05/27 23:08:47 gchiozzi Exp $"
  */
-class Mount5Impl: public virtual ACSComponentImpl,
+class Mount5Impl: public virtual CharacteristicComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount5
 {
   public:
@@ -104,10 +108,7 @@ class Mount5Impl: public virtual ACSComponentImpl,
      * (Pre)sets a new non-moving position for the antenna.
      * The position coordinates are given in azimuth and elevation.
      * The actual az and elev values are written to the properties
-     * cmdAz, cmdEl, actAz and actEl. Nearly identical to the Mount1 C++
-     * class's implementation except that just before this method returns
-     * control, it publishes an event to a particular channel and exception
-     * handling is not used here.
+     * cmdAz, cmdEl, actAz and actEl.
      *
      * @param az        position azimuth (degree)
      * @param elev      position elevation (degree)
@@ -119,7 +120,79 @@ class Mount5Impl: public virtual ACSComponentImpl,
     virtual void 
     objfix (CORBA::Double az,
 	    CORBA::Double elev)
+	throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetOutOfRangeEx);
+
+    /**
+     * Returns a reference to the cmdAz property
+     * Implementation of IDL interface for the property.
+     * @return pointer to read-write double property cmdAz
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */ 
+    virtual ACS::ROdouble_ptr 
+    cmdAz ()
 	throw (CORBA::SystemException);
+    
+    /**
+     * Returns a reference to the cmdEl property
+     * Implementation of IDL interface for the property.
+     * @return pointer to read-only write property cmdEl
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */
+    virtual ACS::ROdouble_ptr 
+    cmdEl ()
+	throw (CORBA::SystemException);
+    
+    /**
+     * Returns a reference to the actAz property
+     * Implementation of IDL interface for the property.
+     * @return pointer to read-only double property actAz
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */   
+    virtual ACS::ROdouble_ptr 
+    actAz ()
+	throw (CORBA::SystemException);
+    
+    /**
+     * Returns a reference to the actEl property
+     * Implementation of IDL interface for the property.
+     * @return pointer to read-only double property actEl
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */    
+    virtual ACS::ROdouble_ptr 
+    actEl ()
+	throw (CORBA::SystemException);
+    
+
+  protected:
+    
+    /**
+     *  m_cmdAz_p is the antenna's commanded azimuth
+     */
+    SmartPropertyPointer<ROdouble> m_cmdAz_sp;
+
+    /**
+     *  m_cmdEl_p is the antenna's commanded elevation
+     */
+    SmartPropertyPointer<ROdouble> m_cmdEl_sp;
+
+    /**
+     *  m_actAz_p is the antenna's actual azimuth
+     */
+    SmartPropertyPointer<ROdouble> m_actAz_sp;
+
+    /**
+     *  m_actEl_p is the antenna's actual elevation
+     */
+    SmartPropertyPointer<ROdouble> m_actEl_sp;
+
 
   private:
 

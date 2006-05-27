@@ -23,7 +23,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount.idl,v 1.7 2005/07/04 17:18:25 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount.idl,v 1.8 2006/05/27 23:08:06 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,10 @@
 /** @file acsexmplMount.idl
  *  IDL specification of Mount object for ACS Course
  *
- *  There are 4 different interfaces that show
+ *  There are 4 different interfaces that show the implementation
+ *  of a Mount component with increasing complexity.
+ *  At every step we add new functionality, aligned with what 
+ *  is demonstrated in the course
  */
 
 module ACSCOURSE_MOUNT 
@@ -48,7 +51,7 @@ module ACSCOURSE_MOUNT
     /********************************************************************/
     /** @interface Mount1
      *  This is a simple Hello World Mount, with a very basic interface
-     *  Just one command to move the mount to a give (alt,az)
+     *  Just one command to move the mount to a given (alt,az)
      */
     interface Mount1 : ACS::ACSComponent
 	{
@@ -134,7 +137,7 @@ module ACSCOURSE_MOUNT
 	 * @endhtmlonly
 	 */
 	void objfix (in double az,
-		     in double elev) raises (ACSErrTypeACSCourse::TargetNotFoundEx);
+		     in double elev) raises (ACSErrTypeACSCourse::TargetOutOfRangeEx);
 	
 	/**
 	 * Current commanded azimuth (degree).
@@ -229,11 +232,14 @@ module ACSCOURSE_MOUNT
      *  publishes/consumes events from an event channel and that exception
      *  handling has been ommitted.
      */
-    interface Mount5 : ACS::ACSComponent
+    interface Mount5 : ACS::CharacteristicComponent
 	{
 	/**
 	 * (Pre)sets a new non-moving position for the antenna.
-	 * The position coordinates are given in azimuth and elevation.
+	 * The position coordinates are given in azimuth and elevation.  A 
+	 * callback is used to inform the caller when the antenna reaches the 
+	 * new position.  If a new position is given before the previous one is 
+	 * reached then the previous callback immediately receives "aborted".
 	 *
 	 * @param az        position azimuth (degree)
 	 * @param elev      position elevation (degree)
@@ -241,8 +247,29 @@ module ACSCOURSE_MOUNT
 	 * <br><hr>
 	 * @endhtmlonly
 	 */
-	void objfix (in double az, in double elev);
-	};
+	void objfix (in double az,
+		     in double elev) raises (ACSErrTypeACSCourse::TargetOutOfRangeEx);
+	
+	/**
+	 * Current commanded azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdAz;
+	
+	/**
+	 * Current commanded elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdEl;
+	
+	/**
+	 * Current actual azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble actAz;
+	
+	/**
+	 * Current actual elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble actEl;	
+	};    
 
     /**
      * The name of the event channel our interface implementation will 
@@ -290,3 +317,4 @@ module ACSCOURSE_MOUNT
 };
 
 #endif
+

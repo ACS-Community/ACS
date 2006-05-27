@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount5Impl.cpp,v 1.6 2005/07/04 17:18:25 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount5Impl.cpp,v 1.7 2006/05/27 23:08:47 gchiozzi Exp $"
 *
 */
  
@@ -44,11 +44,16 @@ using namespace std;
  */
 void myHandlerFunction(ACSCOURSE_MOUNT::MountEventData joe, void *handlerParam)
 {
-    ACS_SHORT_LOG((LM_INFO,"Received objfix command. Az: %f El: %f", joe.Azimuth, joe.Elevation));
+    ACS_SHORT_LOG((LM_INFO,"Handler: Received objfix command. Az: %f El: %f", joe.Azimuth, joe.Elevation));
 }
+
 /* ----------------------------------------------------------------*/
 Mount5Impl::Mount5Impl(const ACE_CString &_name, maci::ContainerServices *containerServices) :
-    ACSComponentImpl(_name, containerServices),
+    CharacteristicComponentImpl(_name, containerServices),
+    m_cmdAz_sp(new ROdouble(_name+":cmdAz", getComponent()),this),
+    m_cmdEl_sp(new ROdouble(_name+":cmdEl", getComponent()),this),
+    m_actAz_sp(new ROdouble(_name+":actAz", getComponent()),this),
+    m_actEl_sp(new ROdouble(_name+":actEl", getComponent()),this),
     m_MountSupplier_p(0),
     m_simpConsumer_p(0)
 {
@@ -96,18 +101,90 @@ Mount5Impl::~Mount5Impl()
 void 
 Mount5Impl::objfix (CORBA::Double az,
 		    CORBA::Double elev)
-    throw (CORBA::SystemException)
+    throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetOutOfRangeEx)
 {
     ACS_TRACE("::Mount5Impl::objfix");
     ACS_SHORT_LOG((LM_INFO,"Received objfix command. Az: %f El: %f", az, elev));
     
-    //Create the data to be published on the event channel
-    ACSCOURSE_MOUNT::MountEventData data;
-    data.Azimuth = az;
-    data.Elevation = elev;
+    unsigned long long timestamp;
     
-    //Publish the data to the event channel
-    m_MountSupplier_p->publishData<ACSCOURSE_MOUNT::MountEventData>(data);
+    try
+	{
+	m_cmdAz_sp->getDevIO()->write(az,   timestamp);
+	m_cmdEl_sp->getDevIO()->write(elev, timestamp);
+
+	m_actAz_sp->getDevIO()->write(az,   timestamp);
+	m_actEl_sp->getDevIO()->write(elev, timestamp);
+
+	//Create the data to be published on the event channel
+	ACSCOURSE_MOUNT::MountEventData data;
+	data.Azimuth = az;
+	data.Elevation = elev;
+	
+	//Publish the data to the event channel
+	m_MountSupplier_p->publishData<ACSCOURSE_MOUNT::MountEventData>(data);
+	}
+    catch (...) 
+	{
+	// Here we have to better handle errors!
+	ACS_SHORT_LOG((LM_ERROR,"Error accessing devIO"));
+	}
+    
+}
+
+ACS::ROdouble_ptr
+Mount5Impl::cmdAz ()
+    throw (CORBA::SystemException)
+{
+    if (m_cmdAz_sp == 0)
+	{
+	return ACS::ROdouble::_nil();
+	}
+
+    ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_cmdAz_sp->getCORBAReference());
+    return prop._retn();
+}
+
+
+ACS::ROdouble_ptr
+Mount5Impl::cmdEl ()
+    throw (CORBA::SystemException)
+{
+    if (m_cmdEl_sp == 0)
+	{
+	return ACS::ROdouble::_nil();
+	}
+
+    ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_cmdEl_sp->getCORBAReference());
+    return prop._retn();
+}
+
+
+ACS::ROdouble_ptr
+Mount5Impl::actAz ()
+    throw (CORBA::SystemException)
+{
+    if (m_actAz_sp == 0)
+	{
+	return ACS::ROdouble::_nil();
+	}
+
+    ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_actAz_sp->getCORBAReference());
+    return prop._retn();
+}
+
+
+ACS::ROdouble_ptr
+Mount5Impl::actEl ()
+    throw (CORBA::SystemException)
+{
+    if (m_actEl_sp == 0)
+	{
+	return ACS::ROdouble::_nil();
+	}
+    
+    ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_actEl_sp->getCORBAReference());
+    return prop._retn();
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
