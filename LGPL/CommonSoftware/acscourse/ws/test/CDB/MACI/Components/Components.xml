@@ -11,7 +11,11 @@
          Code="acscourseMount1Impl"    
          Type="IDL:alma/ACSCOURSE_MOUNT/Mount1:1.0"
          Container="mountContainer"/>
-      <_ Name="MOUNT_PY_1"
+      <_ Name="MOUNT1_J_01"
+         Code="alma.ACSCOURSE_MOUNT.Mount1Impl.Mount1Helper"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount1:1.0"
+         Container="mountJava"   />
+      <_ Name="MOUNT1_PY_01"
          Code="ACSCOURSE_MOUNTImpl.Mount1"
          Type="IDL:alma/ACSCOURSE_MOUNT/Mount1:1.0"
          Container="mountPython"   />
@@ -44,6 +48,10 @@
          Code="acscourseMount5Impl"
          Type="IDL:alma/ACSCOURSE_MOUNT/Mount5:1.0"
          Container="mountContainer"   />
+      <_ Name="MOUNT5_J_01"
+         Code="alma.ACSCOURSE_MOUNT.Mount5Impl.Mount5Helper"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount5:1.0"
+         Container="mountJava"   />
 
       <_ Name="MOUNT6_01"
          Code="alma.ACSCOURSE_MOUNT.Mount6Impl.Mount6Helper"
