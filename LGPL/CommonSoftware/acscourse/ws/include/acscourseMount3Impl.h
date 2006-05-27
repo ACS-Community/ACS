@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount3Impl.h,v 1.1 2005/07/04 17:19:26 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount3Impl.h,v 1.2 2006/05/27 23:08:32 gchiozzi Exp $"
 *
 */
 
@@ -82,7 +82,7 @@ objfix(...). &nbsp;
  * The class Mount3 is a basic example of a component and simulates the behaviour of an antenna interface.
  * It provides one asynchronous methods: objfix.  The methods only writes the data into 
  * virtual properties.
- * @version "@(#) $Id: acscourseMount3Impl.h,v 1.1 2005/07/04 17:19:26 gchiozzi Exp $"
+ * @version "@(#) $Id: acscourseMount3Impl.h,v 1.2 2006/05/27 23:08:32 gchiozzi Exp $"
  */
 class Mount3Impl: public virtual CharacteristicComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount3
@@ -116,7 +116,7 @@ class Mount3Impl: public virtual CharacteristicComponentImpl,
     virtual void 
     objfix (CORBA::Double az,
 	    CORBA::Double elev)
-	throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetNotFoundEx);
+	throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetOutOfRangeEx);
 
     /**
      * Returns a reference to the cmdAz property
@@ -196,3 +196,4 @@ class Mount3Impl: public virtual CharacteristicComponentImpl,
 };
 
 #endif /*!acscourseMount3Impl_H*/
+
