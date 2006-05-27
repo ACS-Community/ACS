@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeACSCourse" type="900906" _prefix="alma">
 	<Code name="Pointing" shortDescription="Pointing" description="Pointing in progress"/>
-	<ErrorCode name="TargetNotFound" shortDescription="Target Not Found" description="Target Coulkdn't be found"/>
+	<ErrorCode name="TargetOutOfRange" shortDescription="Target Not Found" description="Target Coulkdn't be found"/>
 </Type>
+

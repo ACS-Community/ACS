@@ -22,7 +22,7 @@
 package alma.ACSCOURSE_MOUNT.Mount1Impl;
 
 import alma.ACSCOURSE_MOUNT.Mount1Operations;
-import alma.ACSErrTypeACSCourse.TargetNotFoundEx;
+import alma.ACSErrTypeACSCourse.TargetOutOfRangeEx;
 import alma.acs.component.ComponentImplBase;
 
 /**
@@ -43,3 +43,4 @@ public class Mount1Impl extends ComponentImplBase implements Mount1Operations
 	}
 
 }
+
