@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.12 2006/05/11 15:01:18 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.13 2006/05/29 10:51:28 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <baciErrTypeProperty.h>
 #include <ACSErrTypeCommon.h>
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.12 2006/05/11 15:01:18 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.13 2006/05/29 10:51:28 msekoran Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -52,15 +52,15 @@ void actionThreadWorker(void* param) {
   BACIThread* myself_p = baciParameter_p->getBACIThread();
   BACIComponent* component_p = (BACIComponent*)baciParameter_p->getParameter();
 
-  if (BACIThread::InitThread) 
+  if (BACIThread::InitThread)
       {
       BACIThread::InitThread(myself_p->getName().c_str());
       }
 
   ACS_TRACE("baci::actionThreadWorker");
- 
+
   BACIAction* action_p = 0;
-  
+
   bool pushActionBack;
   int callbackID;
   BACICallback* callback_p = 0;
@@ -69,28 +69,28 @@ void actionThreadWorker(void* param) {
 
   ACS_DEBUG_PARAM("baci::actionThreadWorker", "%s", component_p->getName());
 
-  while (myself_p->check()==true && 
-	 component_p->isInDestructionState()==false) 
+  while (myself_p->check()==true &&
+	 component_p->isInDestructionState()==false)
     {
-      if (myself_p->isSuspended()==false && 
+      if (myself_p->isSuspended()==false &&
 	  component_p->isInDestructionState()==false &&
-	  (component_p->getActionCount()>0)) 
+	  (component_p->getActionCount()>0))
 	{
-	  if ( (action_p = component_p->popAction()) != 0 ) 
-	    {	
+	  if ( (action_p = component_p->popAction()) != 0 )
+	    {
 	      Completion completion;
 
 	      callbackID = action_p->getCallbackID();
 	      callback_p = component_p->getCallback(callbackID);
-	      
-	      if (callback_p==0) 
+
+	      if (callback_p==0)
 		{
 		  //ACS_LOG(LM_RUNTIME_CONTEXT, "baci::actionThreadWorker",
 		  //		(LM_CRITICAL, "Callback not found: %s", component_p->getName()));
 		  delete action_p;
 		  continue;
 		}
-	      
+
               if (action_p->isCompleted()==true)
 		{
 		  completion = action_p->getCompletion();
@@ -99,10 +99,10 @@ void actionThreadWorker(void* param) {
               else
 		{
 		CompletionImpl co;
-		request = action_p->invoke(callback_p->getComponent(), 
-					   callbackID, 
-					   callback_p->getDescIn(), 
-					   action_p->getValueRef(), 
+		request = action_p->invoke(callback_p->getComponent(),
+					   callbackID,
+					   callback_p->getDescIn(),
+					   action_p->getValueRef(),
 					   co,
 					   descOut);
 		if (co.isErrorFree())
@@ -111,15 +111,15 @@ void actionThreadWorker(void* param) {
 		    }
 		else
 		    {
-		    completion = CouldntPerformActionCompletion(co, 
-							  __FILE__, 
+		    completion = CouldntPerformActionCompletion(co,
+							  __FILE__,
 							  __LINE__,
 							  "baci::actionThreadWorker");					    }//if-else
 		}//if-else
 
 	      pushActionBack = false;
 
-	      switch (request) 
+	      switch (request)
 		{
 		case reqNone: break;
 		case reqInvokeWorking:
@@ -129,7 +129,7 @@ void actionThreadWorker(void* param) {
 		case reqInvokeDone:
 		  pushActionBack = !component_p->finishCallback(callbackID, action_p->getValue(),
 							descOut, completion);
-		  if (pushActionBack==false) 
+		  if (pushActionBack==false)
 		    {
 		      //component_p->removeCallback(callbackID); /// already removed
 		      delete action_p;
@@ -144,19 +144,19 @@ void actionThreadWorker(void* param) {
 		      //component_p->removeCallback(callbackID);
 		      delete action_p;
 		    }
-		  break;		
+		  break;
 		case reqDestroy:
 		  component_p->removeCallback(callbackID);
 		  delete action_p;
-		default: 
+		default:
 		  // error msg
 		  ACS_LOG(LM_RUNTIME_CONTEXT, "baci::actionThreadWorker",
-			  (LM_ERROR, "Wrong request for action in Component %s! Return value must type of 'enum ActionRequest { reqNone, reqInvokeWorking, reqInvokeDone, reqDestroy }'", 
+			  (LM_ERROR, "Wrong request for action in Component %s! Return value must type of 'enum ActionRequest { reqNone, reqInvokeWorking, reqInvokeDone, reqDestroy }'",
 			   component_p->getName()));
 		  break;
 		}
 
-	      if (pushActionBack==true) 
+	      if (pushActionBack==true)
 		  {
 		  component_p->pushAction(action_p);
 		  }
@@ -167,11 +167,11 @@ void actionThreadWorker(void* param) {
 	  myself_p->sleep();
 	  }
     }
-  
+
   delete baciParameter_p;
   myself_p->setStopped();
 
-  if (BACIThread::DoneThread) 
+  if (BACIThread::DoneThread)
       {
       BACIThread::DoneThread();
       }
@@ -184,7 +184,7 @@ void actionThreadWorker(void* param) {
 
 void monitorThreadWorker(void* param) {
 
-  if (param==0) 
+  if (param==0)
       {
       return;
       }
@@ -192,52 +192,52 @@ void monitorThreadWorker(void* param) {
   BACIThreadParameter* baciParameter_p = static_cast<BACIThreadParameter*>(param);
   BACIThread* myself_p = baciParameter_p->getBACIThread();
   BACIComponent* component_p = (BACIComponent*)baciParameter_p->getParameter();
-  
-  if (BACIThread::InitThread) 
+
+  if (BACIThread::InitThread)
       {
       BACIThread::InitThread(myself_p->getName().c_str());
       }
-  
+
   ACS_TRACE("baci::monitorThreadWorker");
-  
+
   TimeInterval pollInterval, time, lastPollTime;
-  BACIValue value; 
+  BACIValue value;
   bool timeTriggered;
   BACIProperty* property_p=0;
   CBDescOut descOut;
-  
+
   ACS_DEBUG_PARAM("baci::monitorThreadWorker", "%s", component_p->getName());
 
   // already in getPropertAt ?!!!
   //ThreadSyncGuard guard(component_p->&property_mpVectorMutex);
 
-  while (myself_p->check()==true && 
-	 component_p->isInDestructionState()==false) 
+  while (myself_p->check()==true &&
+	 component_p->isInDestructionState()==false)
     {
-      if (myself_p->isSuspended()==false) 
+      if (myself_p->isSuspended()==false)
 	{
 	  // sync. monitors
 	  time = getTimeStamp();
 
 	  //guard.acquire();
-	  for (int n=0; 
-	       component_p->isInDestructionState()==false && n < component_p->getPropertyCount() && myself_p->exitRequested()==false; 
-	       n++) 
+	  for (int n=0;
+	       component_p->isInDestructionState()==false && n < component_p->getPropertyCount() && myself_p->exitRequested()==false;
+	       n++)
 	    {
 	      property_p = component_p->getPropertyAt(n);
-	      if (property_p==0 && property_p->isInDestructionState()==false) 
+	      if (property_p==0 && property_p->isInDestructionState()==false)
 		  {
 		  continue;
 		  }
 	      if ((property_p->getMonitorCount() > 0) &&
 		  ((property_p->getPollInterval() > 0) || property_p->hasTriggerOnValueMonitor()==true)
-		  ) 
+		  )
 		  {
 		  pollInterval = property_p->getPollInterval();
 		  //if we're dealing with a property containing trigger by value monitors AND
 		  //the minimum monitor time is NOT default AND
 		  //it's less than the main polling interval...
-		  if ((property_p->hasTriggerOnValueMonitor()==true) && 
+		  if ((property_p->hasTriggerOnValueMonitor()==true) &&
 		      (property_p->getMonMinTriggerTime()!=0) &&
 		      (property_p->getMonMinTriggerTime()<pollInterval))
 		      {
@@ -247,7 +247,7 @@ void monitorThreadWorker(void* param) {
 
 		  lastPollTime = property_p->getLastPollTime();
 		  //time = getTimeStamp();
-		  
+
 		  // time fix
 		  TimeInterval etime = time;
 		  if (pollInterval!=0)
@@ -265,6 +265,7 @@ void monitorThreadWorker(void* param) {
 		    {
 		    CompletionImpl co;
 
+			  value.reset();
 		      property_p->getValue(property_p,
 					   (BACIValue*)&value,
 					   co,
@@ -283,9 +284,9 @@ void monitorThreadWorker(void* param) {
 			  }
 		      else
 			  {
-			  CanNotGetValueCompletion errComp(co, 
-							  __FILE__, 
-							  __LINE__, 
+			  CanNotGetValueCompletion errComp(co,
+							  __FILE__,
+							  __LINE__,
 							  "baci::monitorThreadWorker");
 			  property_p->dispatchMonitors(errComp, descOut);
 			  }//if-else
@@ -293,18 +294,18 @@ void monitorThreadWorker(void* param) {
 		}
 	    }
 	  //guard.release();
-	  
+
 	}
-      if (myself_p->exitRequested()==false) 
+      if (myself_p->exitRequested()==false)
 	  {
 	  myself_p->sleep();
 	  }
     }
-  
+
   delete baciParameter_p;
   myself_p->setStopped();
 
-  if (BACIThread::DoneThread) 
+  if (BACIThread::DoneThread)
       {
       BACIThread::DoneThread();
       }
@@ -326,17 +327,17 @@ BACIComponent::BACIComponent( ACS::ThreadManager *thrMgr,
 			      const TimeInterval& _actionThreadSleepTime,
 			      const TimeInterval& _monitorThreadResponseTime,
 			      const TimeInterval& _monitorThreadSleepTime) :
-    name_m(_name), 
+    name_m(_name),
     characteristicModel_mp(characteristicModel),
-    actionThread_mp(BACIThread::NullBACIThread), 
+    actionThread_mp(BACIThread::NullBACIThread),
     monitorThread_mp(BACIThread::NullBACIThread),
     threadManager_mp(thrMgr),
     inDestructionState_m(false)
 {
-  
+
   ACS_TRACE("baci::BACIComponent::BACIComponent");
   ACS_DEBUG_PARAM("baci::BACIComponent::BACIComponent", "Creating Component '%s'", name_m.c_str());
- 
+
   // set action thread sleep time
   setRTResponseTime(_actionThreadResponseTime);
   setRTSleepTime(_actionThreadSleepTime);
@@ -346,8 +347,8 @@ BACIComponent::BACIComponent( ACS::ThreadManager *thrMgr,
   setMTSleepTime(_monitorThreadSleepTime);
 }//BACIComponent
 
-BACIComponent::~BACIComponent() 
-{ 
+BACIComponent::~BACIComponent()
+{
   ACS_TRACE("baci::BACIComponent::~BACIComponent");
 
   // set destruction flag
@@ -363,16 +364,16 @@ BACIComponent::~BACIComponent()
   // remove all left actions (in case it was canceled)
   BACIAction *action_p;
   ThreadSyncGuard guard(&actionQueueMutex_m);
-  while (getActionCount() > 0) 
+  while (getActionCount() > 0)
     {
       action_p = popAction();
-      if (action_p) 
+      if (action_p)
 	  {
 	  delete action_p;
 	  }
     }
   guard.release();
-  
+
   // remove all left callbacks
   BACICallback* callback_p;
   ThreadSyncGuard guard1(&callbackTableMutex_m);
@@ -400,15 +401,15 @@ bool BACIComponent::startAllThreads()
   // action thread
   if (actionThread_mp == BACIThread::NullBACIThread)
       {
-      actionThread_mp=threadManager_mp->create(name_m+"::actionThread", 
-					       (void*)actionThreadWorker, (void*)this, 
+      actionThread_mp=threadManager_mp->create(name_m+"::actionThread",
+					       (void*)actionThreadWorker, (void*)this,
 					       getRTResponseTime(), getRTSleepTime());
       }
   if (actionThread_mp == BACIThread::NullBACIThread)
     {
       return false;
     }
-  else 
+  else
     {
       actionThread_mp->resume();
     }
@@ -416,17 +417,17 @@ bool BACIComponent::startAllThreads()
   // monitor thread
   if (monitorThread_mp == BACIThread::NullBACIThread)
       {
-      monitorThread_mp=threadManager_mp->create(name_m+"::monitorThread", 
-						(void*)monitorThreadWorker, (void*)this, 
+      monitorThread_mp=threadManager_mp->create(name_m+"::monitorThread",
+						(void*)monitorThreadWorker, (void*)this,
 						getMTResponseTime(), getMTSleepTime());
       }
   if (monitorThread_mp == BACIThread::NullBACIThread)
     {
-      delete actionThread_mp; 
+      delete actionThread_mp;
       actionThread_mp = BACIThread::NullBACIThread;
       return false;
     }
-  else 
+  else
     {
       monitorThread_mp->resume();
     }
@@ -446,7 +447,7 @@ void BACIComponent::setRTResponseTime(const TimeInterval& _actionThreadResponseT
 {
   ACS_TRACE("baci::BACIComponent::setRTResponseTime");
   actionThreadResponseTime_m=_actionThreadResponseTime;
-  if (actionThread_mp!=BACIThread::NullBACIThread) 
+  if (actionThread_mp!=BACIThread::NullBACIThread)
       {
       actionThread_mp->setResponseTime(actionThreadResponseTime_m);
       }
@@ -456,7 +457,7 @@ void BACIComponent::setRTSleepTime(const TimeInterval& _actionThreadSleepTime)
 {
   ACS_TRACE("baci::BACIComponent::setRTSleepTime");
   actionThreadSleepTime_m=(_actionThreadSleepTime<minRTSleepTime_m) ? (minRTSleepTime_m):(_actionThreadSleepTime);
-  if (actionThread_mp!=BACIThread::NullBACIThread) 
+  if (actionThread_mp!=BACIThread::NullBACIThread)
       {
       actionThread_mp->setSleepTime(actionThreadSleepTime_m);
       }
@@ -484,12 +485,12 @@ void BACIComponent::setMTSleepTime(const TimeInterval& _monitorThreadSleepTime)
 
 
 int BACIComponent::registerCallback(const BACIValue::Type type,
-				    Callback_ptr callback_p, 
-				    const CBDescIn descIn) 
+				    Callback_ptr callback_p,
+				    const CBDescIn descIn)
 {
   ACS_TRACE("baci::BACIComponent::registerCallback");
   ThreadSyncGuard guard(&callbackTableMutex_m);
-  
+
   int callbackID = callbackTable_m.allocate();
   if (callbackID == 0)
     {
@@ -509,7 +510,7 @@ int BACIComponent::registerCallback(const BACIValue::Type type,
 }
 
 int BACIComponent::registerAction(const BACIValue::Type type,
-				  Callback_ptr callback_p, 
+				  Callback_ptr callback_p,
 				  const CBDescIn descIn,
 				  ActionImplementator* actionImplementator_p,
 				  int actionFunction)
@@ -535,7 +536,7 @@ int BACIComponent::registerAction(const BACIValue::Type type,
 }
 
 int BACIComponent::registerAction(const BACIValue::Type type,
-				  Callback_ptr callback_p, 
+				  Callback_ptr callback_p,
 				  const CBDescIn descIn,
 				  ActionImplementator* actionImplementator_p,
 				  int actionFunction,
@@ -559,7 +560,7 @@ int BACIComponent::registerAction(const BACIValue::Type type,
   return callbackID;
 }
 
-BACICallback* BACIComponent::getCallback(int callbackID) 
+BACICallback* BACIComponent::getCallback(int callbackID)
 {
   // ACS_TRACE("baci::BACIComponent::getCallback");
   ThreadSyncGuard guard(&callbackTableMutex_m);
@@ -574,7 +575,7 @@ BACICallback* BACIComponent::getCallback(int callbackID)
 }
 
 
-void BACIComponent::removeCallback(int callbackID) 
+void BACIComponent::removeCallback(int callbackID)
 {
   ACS_TRACE("baci::BACIComponent::removeCallback");
   ThreadSyncGuard guard(&callbackTableMutex_m);
@@ -586,7 +587,7 @@ void BACIComponent::removeCallback(int callbackID)
     }
 }
 
-void BACIComponent::pushAction(BACIAction* action) 
+void BACIComponent::pushAction(BACIAction* action)
 {
   ACS_TRACE("baci::BACIComponent::pushAction");
   ThreadSyncGuard guard(&actionQueueMutex_m);
@@ -594,35 +595,35 @@ void BACIComponent::pushAction(BACIAction* action)
 }
 
 
-BACIAction* BACIComponent::popAction() 
+BACIAction* BACIComponent::popAction()
 {
   ACS_TRACE("baci::BACIComponent::popAction");
   ThreadSyncGuard guard(&actionQueueMutex_m);
   BACIAction* action_p = *actionQueue_m.begin();
-  actionQueue_m.pop_front(); 
+  actionQueue_m.pop_front();
   return action_p;
 }
 
 
-class IsActionEqual {    
+class IsActionEqual {
 private:
-  int callbackID_m;	
-public:    
+  int callbackID_m;
+public:
   IsActionEqual(int _callbackID) : callbackID_m(_callbackID) {}
-  bool operator()(BACIAction* action_p) const { 
+  bool operator()(BACIAction* action_p) const {
     return (action_p->getCallbackID() == callbackID_m);
-  }    
-};   
+  }
+};
 
 
-void BACIComponent::removeAction(int callbackID) 
+void BACIComponent::removeAction(int callbackID)
 {
   ACS_TRACE("baci::BACIComponent::removeAction");
   ThreadSyncGuard guard(&actionQueueMutex_m);
-  
-  BACIActionQueue::iterator i = find_if(actionQueue_m.begin(), actionQueue_m.end(), 
+
+  BACIActionQueue::iterator i = find_if(actionQueue_m.begin(), actionQueue_m.end(),
 					IsActionEqual(callbackID));
-  if (i!=actionQueue_m.end()) 
+  if (i!=actionQueue_m.end())
     {
       BACIAction* action = (BACIAction*)(*i);
       actionQueue_m.erase(i);
@@ -634,11 +635,11 @@ void BACIComponent::removeCallbackAndAction(int callbackID)
 {
   ACS_TRACE("baci::BACIComponent::removeCallbackAndAction");
 
-  removeAction(callbackID);  
+  removeAction(callbackID);
   removeCallback(callbackID);
 }
 
-BACIProperty* BACIComponent::getPropertyAt(int pos) const 
+BACIProperty* BACIComponent::getPropertyAt(int pos) const
 {
   // ACS_TRACE("baci::BACIComponent::getPropertyAt");
   //!!!ThreadSyncGuard guard(&propertyVectorMutex_m);
