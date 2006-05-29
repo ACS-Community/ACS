@@ -12,6 +12,8 @@ public class BACIRemoteResponse implements RemoteResponse {
 	private String opName = null;
 	private int SN = 0;
 	private BACIInvocation invoc = null;
+
+	private boolean error = false;
 	
 	// data for the dispather
 	RemoteResponseCallback cb = null;
@@ -72,5 +74,19 @@ public String getName() {
  */
 public int getSequenceNumber() {
 	return SN;
+}
+
+/* (non-Javadoc)
+ * @see si.ijs.acs.objectexplorer.engine.RemoteCall#isErrorResponse()
+ */
+public boolean isErrorResponse() {
+	return error;
+}
+
+/**
+ * @param error The error to set.
+ */
+public void setErrorResponse(boolean error) {
+	this.error = error;
 }
 }

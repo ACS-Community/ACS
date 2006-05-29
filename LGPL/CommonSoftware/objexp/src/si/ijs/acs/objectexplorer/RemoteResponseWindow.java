@@ -1,5 +1,6 @@
 package si.ijs.acs.objectexplorer;
 
+import java.awt.Color;
 import java.awt.event.InputEvent;
 
 import javax.swing.DefaultListModel;
@@ -13,6 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 
 import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteCall;
@@ -20,7 +23,6 @@ import si.ijs.acs.objectexplorer.engine.RemoteResponse;
 
 import com.cosylab.gui.components.r2.DataFormatter;
 import com.cosylab.gui.components.r2.SmartPanel;
-import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.gui.components.r2.SmartTextPane;
 /**
  * Insert the type's description here.
@@ -121,7 +123,7 @@ public class RemoteResponseWindow extends JFrame implements OperationInvocator, 
 	private JLabel ivjJLabel2 = null;
 	private JScrollPane ivjJScrollPane1 = null;
 	private JLabel ivjmessageField = null;
-	private SmartTextArea ivjReportArea = null;
+	private SmartTextPane ivjReportArea = null;
 	private JLabel ivjJLabel3 = null;
 	IvjEventHandler ivjEventHandler = new IvjEventHandler();
 	private JButton ivjJButton1 = null;
@@ -167,6 +169,12 @@ public class RemoteResponseWindow extends JFrame implements OperationInvocator, 
 	private SmartPanel ivjOperations = null;
 	private SmartPanel ivjTrendPanel = null;
 	private boolean disposeOnDestroy=false;
+
+	private Style redStyle = null;
+	private Style blackStyle = null;
+
+	private Style redStyleOP = null;
+	private Style blackStyleOP = null;
 
 class IvjEventHandler implements java.awt.event.ActionListener, java.awt.event.FocusListener, java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.WindowListener, javax.swing.event.ListSelectionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -1066,7 +1074,15 @@ private SmartTextPane getoperationResultArea() {
 			ivjoperationResultArea.setName("operationResultArea");
 			ivjoperationResultArea.setBounds(0, 0, 11, 6);
 			// user code begin {1}
-			// user code end
+
+			// default style 
+			blackStyleOP = ivjoperationResultArea.getLogicalStyle();
+			
+			// Makes text red
+		    redStyleOP = ivjoperationResultArea.addStyle("Red", null);
+		    StyleConstants.setForeground(redStyleOP, Color.red);
+
+		    // user code end
 		} catch (java.lang.Throwable ivjExc) {
 			// user code begin {2}
 			// user code end
@@ -1140,15 +1156,21 @@ private javax.swing.JList getoperationsList() {
  * @return com.cosylab.gui.components.SmartTextArea
  */
 /* WARNING: THIS METHOD WILL BE REGENERATED. */
-private SmartTextArea getReportArea() {
+private SmartTextPane getReportArea() {
 	if (ivjReportArea == null) {
 		try {
-			ivjReportArea = new SmartTextArea();
+			ivjReportArea = new SmartTextPane();
 			ivjReportArea.setName("ReportArea");
 			ivjReportArea.setMaxLines(1000);
 			ivjReportArea.setLocation(0, 0);
 			ivjReportArea.setEnabled(false);
 			// user code begin {1}
+			// default style 
+			blackStyle = ivjReportArea.getLogicalStyle();
+			
+			// Makes text red
+		    redStyle = ivjReportArea.addStyle("Red", null);
+		    StyleConstants.setForeground(redStyle, Color.red);
 			// user code end
 		} catch (java.lang.Throwable ivjExc) {
 			// user code begin {2}
@@ -1362,7 +1384,27 @@ public void invokeOperation(si.ijs.acs.objectexplorer.engine.Operation op, java.
 			}
 			else {
 			  RemoteCall ret=op.invoke(params);
-			  getoperationResultArea().append(ReporterBean.toString(ret, reporter.isExpand())+"\n");
+			  SmartTextPane resultArea = getoperationResultArea();
+			  try
+				{
+					boolean errorResponse = ret.isErrorResponse(); 
+					if (errorResponse)
+					{
+						// needed since carent does not point always to the end
+						resultArea.setCaretPosition(resultArea.getText().length());
+						resultArea.setLogicalStyle(redStyleOP);
+					}
+					
+					resultArea.append(ReporterBean.toString(ret, reporter.isExpand() | errorResponse)+"\n");
+
+					if (errorResponse)
+						resultArea.append("\n");
+				}
+				finally
+				{
+				    resultArea.setLogicalStyle(blackStyleOP);
+				}
+			  
 			}
 		}
 }
@@ -1565,37 +1607,80 @@ public void remoteResponseWindow_WindowDeiconified(java.awt.event.WindowEvent wi
  *  
  */
 public void reportRemoteResponse(RemoteResponse response) {
-	getJLabel3().setText(response.getSequenceNumber() + "");
+	getJLabel3().setText(String.valueOf(response.getSequenceNumber()));
 	getmessageField().setText(response.getName());
 	if (enabled) {
 		
 	    processChartValues(response);
 		
-		String resultString= processResponse(response, isExpand());
+		boolean errorResponse = response.isErrorResponse(); 
+
+		String resultString = processResponse(response, errorResponse | isExpand());
 
 		if (reportLength==-1) {
 	        reportLength=DataFormatter.getLineCount(resultString);
 			editing=true;
 			jTextField1_ActionPerformed();
 		}
-		
+
 		if (getState() == java.awt.Frame.ICONIFIED) {
 			minimText.append(resultString);
 			if (minimTextReportCount > maxLines) {
 				minimText.delete(0, resultString.length());
 			}
 			else minimTextReportCount++;
-			
-		} else {
-			getReportArea().append(resultString);
+		}
+		else
+		{
+			SmartTextPane resultArea = getReportArea();
+			try
+			{
+				if (errorResponse)
+				{
+					// needed since carent does not point always to the end
+					resultArea.setCaretPosition(resultArea.getText().length());
+					resultArea.setLogicalStyle(redStyle);
+				}
+				
+				getReportArea().append(resultString);
+	
+				if (errorResponse)
+					resultArea.append("\n");
+			}
+			finally
+			{
+			    resultArea.setLogicalStyle(blackStyle);
+			}
 		}
 	}
+		
 }
 /**
  * responseReceived method comment.
  */
 public void responseReceived(si.ijs.acs.objectexplorer.engine.RemoteResponse response) {
-	 getoperationResultArea().append(ReporterBean.toString(response, reporter.isExpand())+"\n");
+	SmartTextPane resultArea = getoperationResultArea();
+
+	try
+	{
+		boolean errorResponse = response.isErrorResponse(); 
+		if (errorResponse)
+		{
+			// needed since carent does not point always to the end
+			resultArea.setCaretPosition(resultArea.getText().length());
+			resultArea.setLogicalStyle(redStyleOP);
+		}
+				
+		resultArea.append(ReporterBean.toString(response, reporter.isExpand() | errorResponse) + "\n");
+
+		if (errorResponse)
+			resultArea.append("\n");
+	}
+	finally
+	{
+	    resultArea.setLogicalStyle(blackStyleOP);
+	}
+
 }
 /**
  * Insert the method's description here.

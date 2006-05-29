@@ -235,6 +235,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				"Unpacking callback arguments...");
 			String[] names = null;
 			java.lang.Object[] data = null;
+			boolean errorResponse = false;
 			try {
 
 				// NVList list HAS to be synchronized,
@@ -271,6 +272,11 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 							getIntrospector().extractAny(list.item(i).value());
 						names[i] = list.item(i).name();
 					}
+					
+					// check for error-type ACSCompletion-s
+					for (int i = 0; i < size; i++)
+						errorResponse |= checkFromACSCompletion(data[i]);
+
 				}
 				
 			} catch (Bounds b) {
@@ -289,6 +295,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			request.set_result(result_any);
 			BACIRemoteResponse response =
 				new BACIRemoteResponse(invoc, op, names, data);
+			response.setErrorResponse(errorResponse);
 			response.cb = cb;
 			if (baciIntrospector.isInvocationDoneMethod(op)) {
 				response.destroy = true;

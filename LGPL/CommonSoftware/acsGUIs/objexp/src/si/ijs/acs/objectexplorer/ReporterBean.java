@@ -154,9 +154,29 @@ public synchronized void reportRemoteResponse(RemoteResponse response) {
 		}
 		if (!rWindow.isDestroyed()) rWindow.reportRemoteResponse(response);
 	} else {
-		resultArea.append(toString(response, expand) + "\n");
-		resultArea.setCaretPosition(resultArea.getText().length() - 1);
-		if (response.getSequenceNumber() == 0) responseWindows.put(windowSerial,response);
+		
+		try
+		{
+			boolean errorResponse = response.isErrorResponse(); 
+			if (errorResponse)
+			{
+				// needed since carent does not point always to the end
+				resultArea.setCaretPosition(resultArea.getText().length());
+				resultArea.setLogicalStyle(redStyle);
+			}
+			
+			resultArea.append(toString(response, expand | errorResponse) + "\n");
+			resultArea.setCaretPosition(resultArea.getText().length() - 1);
+
+			if (response.getSequenceNumber() == 0) responseWindows.put(windowSerial,response);
+
+			if (errorResponse)
+				resultArea.append("\n");
+		}
+		finally
+		{
+		    resultArea.setLogicalStyle(blackStyle);
+		}
 	}
 }
 /**
