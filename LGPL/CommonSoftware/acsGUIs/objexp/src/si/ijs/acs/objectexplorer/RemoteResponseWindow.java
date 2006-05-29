@@ -1166,12 +1166,12 @@ private SmartTextPane getReportArea() {
 			// user code begin {1}
 			// default style 
 			blackStyle = ivjReportArea.getLogicalStyle();
-			
+
 			// Makes text red
 		    redStyle = ivjReportArea.addStyle("Red", null);
 		    StyleConstants.setForeground(redStyle, Color.red);
 
-			ivjReportArea.setEnabled(false);
+			//ivjReportArea.setEnabled(false);
 			// user code end
 		} catch (java.lang.Throwable ivjExc) {
 			// user code begin {2}
@@ -1643,7 +1643,7 @@ public void reportRemoteResponse(RemoteResponse response) {
 					resultArea.setLogicalStyle(redStyle);
 				}
 				
-				getReportArea().append(resultString);
+				resultArea.append(resultString);
 	
 				if (errorResponse)
 					resultArea.append("\n");
