@@ -1163,7 +1163,6 @@ private SmartTextPane getReportArea() {
 			ivjReportArea.setName("ReportArea");
 			ivjReportArea.setMaxLines(1000);
 			ivjReportArea.setLocation(0, 0);
-			ivjReportArea.setEnabled(false);
 			// user code begin {1}
 			// default style 
 			blackStyle = ivjReportArea.getLogicalStyle();
@@ -1171,6 +1170,8 @@ private SmartTextPane getReportArea() {
 			// Makes text red
 		    redStyle = ivjReportArea.addStyle("Red", null);
 		    StyleConstants.setForeground(redStyle, Color.red);
+
+			ivjReportArea.setEnabled(false);
 			// user code end
 		} catch (java.lang.Throwable ivjExc) {
 			// user code begin {2}
