@@ -18,13 +18,13 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.101 2005/09/12 23:04:21 dfugate Exp $"
+* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.102 2006/05/29 10:52:03 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * almamgr 2002-02-05 Removed ## concatenation characters in macros.
-* almamgr 2002-02-05 created 
-* msekoran  2001/03/06  created 
+* almamgr 2002-02-05 created
+* msekoran  2001/03/06  created
 */
 
 #include <baci.h>
@@ -42,9 +42,9 @@
 	    break;                                                                     \
 	  }
 
-bool baci::BACIComponent::dispatchCallback(int callbackID, 
-					   const BACIValue& value, 
-					   CBDescOut& descOut, 
+bool baci::BACIComponent::dispatchCallback(int callbackID,
+					   const BACIValue& value,
+					   CBDescOut& descOut,
 					   const Completion& completion,
 					   const BACIMonitor * archiver)
 {
@@ -58,17 +58,27 @@ bool baci::BACIComponent::dispatchCallback(int callbackID,
   descOut.id_tag = callback_p->getDescIn().id_tag;
 
   Callback_ptr cb_p = callback_p->getCallback();
-  if (CORBA::is_nil(cb_p)==true) 
+  if (CORBA::is_nil(cb_p)==true)
     if (archiver != 0)
       {
-      ACS_ARCHIVE_PRIORITY(this->getName(), 
-			   archiver->getName(), 
-			   value.getArchiveType(), 
-			   value, 
-			   archiver->getPriority());
-	return true;
+		  // error free
+		  if( completion.previousError.length() == 0 )
+		  {
+			ACS_ARCHIVE_PRIORITY(this->getName(),
+				   archiver->getName(),
+				   value.getArchiveType(),
+				   value,
+				   archiver->getPriority());
+			return true;
+		  }
+		  else
+		  {
+			CompletionImpl c((Completion*)&completion, false);
+			c.log();
+			return true;
+		  }//if-else
       }
-    else 
+    else
       {
 	callback_p->failed();
 	return false;
@@ -76,56 +86,56 @@ bool baci::BACIComponent::dispatchCallback(int callbackID,
 
   BACIValue::Type type = callback_p->getType();
 /*
-  ACS_LOG(0, "baci::BACIComponent::dispatchCallback", 
+  ACS_LOG(0, "baci::BACIComponent::dispatchCallback",
     (LM_DEBUG, "Calling working() for id_tag: %d, type: %s", descOut.id_tag, BACIValue::typeName[type].c_str()));
 */
-  
+
 
   try
     {
-      switch (type) 
-	{	
+      switch (type)
+	{
 	case (BACIValue::type_null) :
 	  {
 	    CBvoid_var ccb = CBvoid::_unchecked_narrow(cb_p);
-	    
+
 	    if (ccb.ptr() == CBvoid::_nil())
 		{ callback_p->failed(); return false; }
-	    ccb->working(completion, descOut); 
-	    
+	    ccb->working(completion, descOut);
+
 	    break;
 	  }
-	  
+
 /// User defined
-	  
-WORKING_CALLBACK(double)  
-WORKING_CALLBACK(float)  
-WORKING_CALLBACK(long) 
+
+WORKING_CALLBACK(double)
+WORKING_CALLBACK(float)
+WORKING_CALLBACK(long)
 WORKING_CALLBACK(longLong)
 WORKING_CALLBACK(uLongLong)
-WORKING_CALLBACK(pattern)  
-WORKING_CALLBACK(string)  
-WORKING_CALLBACK(doubleSeq)  
-WORKING_CALLBACK(floatSeq)  
-WORKING_CALLBACK(longSeq)  
+WORKING_CALLBACK(pattern)
+WORKING_CALLBACK(string)
+WORKING_CALLBACK(doubleSeq)
+WORKING_CALLBACK(floatSeq)
+WORKING_CALLBACK(longSeq)
 WORKING_CALLBACK(stringSeq)
-	  
-	default: 
-	  { 
-	    ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIComponent::dispatchCallback", 
+
+	default:
+	  {
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIComponent::dispatchCallback",
 					(LM_ERROR, "Unsupported type %d", type));
             callback_p->failed();
             return false;
 	  }
 	}
-      
+
     }
   catch(...)
     {
       callback_p->failed();
       return false;
     }
-  
+
   callback_p->succeeded();
   return true;
 }
@@ -146,15 +156,15 @@ WORKING_CALLBACK(stringSeq)
 	    break;                                                                     \
 	  }
 
-bool baci::BACIComponent::finishCallback(int callbackID, 
-					 const BACIValue& value, 
-					 CBDescOut& descOut, 
+bool baci::BACIComponent::finishCallback(int callbackID,
+					 const BACIValue& value,
+					 CBDescOut& descOut,
 					 const Completion& completion)
 {
   //ACS_TRACE("baci::BACIComponent::finishCallback");
 
   BACICallback* callback_p = getCallback(callbackID);
-  if (callback_p==0) 
+  if (callback_p==0)
       {
       return false;
       }
@@ -163,7 +173,7 @@ bool baci::BACIComponent::finishCallback(int callbackID,
   descOut.id_tag = callback_p->getDescIn().id_tag;
 
   Callback_ptr cb_p = callback_p->getCallback();
-  if (CORBA::is_nil(cb_p)==true) 
+  if (CORBA::is_nil(cb_p)==true)
     {
       callback_p->failed();
       return false;
@@ -171,56 +181,56 @@ bool baci::BACIComponent::finishCallback(int callbackID,
 
   BACIValue::Type type = callback_p->getType();
 /*
-  ACS_LOG(0, "baci::BACIComponent::finishCallback", 
+  ACS_LOG(0, "baci::BACIComponent::finishCallback",
     (LM_DEBUG, "Calling done() for id_tag: %d, type: %s", descOut.id_tag, BACIValue::typeName[type].c_str()));
 */
-  
+
 
   try
     {
-      switch (type) 
-	{	
+      switch (type)
+	{
 	case (BACIValue::type_null) :
 	  {
 	    CBvoid_var ccb = CBvoid::_unchecked_narrow(cb_p);
-	    
+
 	    if (ccb.ptr() == CBvoid::_nil())
 		{ callback_p->failed(); return false; }
-	    ccb->done(completion, descOut); 
-	    
+	    ccb->done(completion, descOut);
+
 	    break;
 	  }
 
 /// User defined
-	  
-DONE_CALLBACK(double)  
-DONE_CALLBACK(float)  
-DONE_CALLBACK(long)  
-DONE_CALLBACK(pattern) 
+
+DONE_CALLBACK(double)
+DONE_CALLBACK(float)
+DONE_CALLBACK(long)
+DONE_CALLBACK(pattern)
 DONE_CALLBACK(longLong)
 DONE_CALLBACK(uLongLong)
-DONE_CALLBACK(string)  
-DONE_CALLBACK(doubleSeq)  
-DONE_CALLBACK(floatSeq)  
-DONE_CALLBACK(longSeq)  
+DONE_CALLBACK(string)
+DONE_CALLBACK(doubleSeq)
+DONE_CALLBACK(floatSeq)
+DONE_CALLBACK(longSeq)
 DONE_CALLBACK(stringSeq)
-      
-	default: 
-	  { 
-	    ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIComponent::finishCallback", 
+
+	default:
+	  {
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIComponent::finishCallback",
 					(LM_ERROR, "Unsupported type %d", type));
             callback_p->failed();
             return false;
 	  }
 	}
-  
+
     }
   catch(...)
     {
       callback_p->failed();
       return false;
     }
-  
+
   callback_p->succeeded();
   removeCallback(callbackID);
   return true;
