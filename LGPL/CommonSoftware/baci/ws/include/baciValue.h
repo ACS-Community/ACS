@@ -2,7 +2,7 @@
 #define baciValue_H
 /*******************************************************************
  * ALMA - Atacama Large Millimiter Array
- * (c) European Southern Observatory, 2004 
+ * (c) European Southern Observatory, 2004
  *
  *This library is free software; you can redistribute it and/or
  *modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciValue.h,v 1.107 2005/11/03 19:53:15 dfugate Exp $"
+ * "@(#) $Id: baciValue.h,v 1.108 2006/05/29 10:49:51 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -29,8 +29,8 @@
  * msekoran  2001/03/02  created
  */
 
-/** 
- * @file 
+/**
+ * @file
  * Header file for BACI Values.
  */
 
@@ -46,30 +46,30 @@
 NAMESPACE_BEGIN(baci);
 
 /**
- * WhyNull return value definitions 
+ * WhyNull return value definitions
  */
 /// Value is not a null type value
-#define NOT_NULL_VALUE      0   
+#define NOT_NULL_VALUE      0
 /// A null type value
-#define VALUE_NULL          1   
-/// An uninitialized value 
-#define VALUE_UNINITIALIZED 2   
+#define VALUE_NULL          1
+/// An uninitialized value
+#define VALUE_UNINITIALIZED 2
 /// Value type not implemented by BACIValue
-#define VALUE_NONEXISTENT   3   
+#define VALUE_NONEXISTENT   3
 
 /**
  * Generic data type used in BACI
  * Class BACIValue is a data type wrapper for all
  * BACI supported types. It provides several methods
- * needed by BACI (compare operators, abs. diff., etc.) 
+ * needed by BACI (compare operators, abs. diff., etc.)
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
  */
 class baci_EXPORT BACIValue
 {
-    
+
   public:
-    
+
     /**
      * Enumeration of all supported data types. If it's not listed
      * here, it cannot be packed into a #BACIValue.
@@ -78,26 +78,26 @@ class baci_EXPORT BACIValue
     enum Type
     {
 	/// No-value. Can also be used to imply special meaning.
-	type_null=0,      
-	/// Not really a type. This is just a void pointer used to pass any user-defined 
+	type_null=0,
+	/// Not really a type. This is just a void pointer used to pass any user-defined
 	/// structures as a BACI Action parameter. <b>THIS COULD NOT BE USED AS BACI TYPE!</b>
 	type_pointer=1,
 	/// A string.
-	type_string=2,   
+	type_string=2,
 	/// A IEEE 8-byte floating point number.
-	type_double=3,    
+	type_double=3,
 	/// 32-bit signed integer.
-	type_long=4,      
+	type_long=4,
 	/// A bit pattern.
-	type_pattern=5,   
+	type_pattern=5,
 	/// Sequence of double-s.
-	type_doubleSeq=6, 
+	type_doubleSeq=6,
 	/// Sequencs of long-s.
-	type_longSeq=7,   
+	type_longSeq=7,
 	/// 64-bit signed integer.
-	type_longLong=8, 
+	type_longLong=8,
 	/// 64-bit unsigned integer.
-	type_uLongLong=9, 
+	type_uLongLong=9,
 	/// Sequence of string-s.
 	type_stringSeq=10,
 	/// A IEEE 4-byte floating point number.
@@ -105,13 +105,13 @@ class baci_EXPORT BACIValue
 	/// Sequence of float-s.
 	type_floatSeq=12
     };
-    
+
     /**
      * An 8-bit unsigned integer.
      * <br><hr>
      */
     typedef unsigned char octet;
-    
+
     /**
      * Array of strings initialized to contain what are essentially
      * the same values as the #Type enum. Values are:
@@ -121,7 +121,7 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     static const ACE_CString typeName[];
-    
+
     /**
      * Array of strings initialized to contain what are essentially
      * the same values as the #Type enum. Values are:
@@ -132,7 +132,7 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     static const ACE_CString archiveTypeName[];
-    
+
     /**
      * A global predefined null BACIValue.
      * <br><hr>
@@ -145,17 +145,17 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     BACIValue();
-    
+
     /**
      * Constructor with initialized type.
-     * By using this constructor, one can create a #BACIValue object with any 
+     * By using this constructor, one can create a #BACIValue object with any
      * type, although the value is not directly settable.
      * @param type Type of the wrapped value.
      * @param bound bound (for varialble length types)
      * <br><hr>
      */
     BACIValue(const Type type, const unsigned long bound);
-    
+
     /**
      * Copy constructor: construct a value that will store the same data as the specified value.
      * @param value A pre-existing #BACIValue object
@@ -163,89 +163,89 @@ class baci_EXPORT BACIValue
      */
     BACIValue(const BACIValue &value);
 
-    /** Constructor BACIdouble 
-     * @param value A constant reference to a value which will be this #BACIValue 
+    /** Constructor BACIdouble
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIdouble &value);
-    /** Constructor BACIfoat 
-     * @param value A constant reference to a value which will be this #BACIValue 
+    /** Constructor BACIfoat
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIfloat &value);
-    /** Constructor BACIlong 
-     * @param value A constant reference to a value which will be this #BACIValue 
+    /** Constructor BACIlong
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIlong &value);
     /** Constructor BACIpattern
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIpattern &value);
     /** Constructor BACIlongLong
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIlongLong &value);
-    /** Constructor realType 
-     * @param value A constant reference to a value which will be this #BACIValue 
+    /** Constructor realType
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIuLongLong &value);
     /** Constructor ACE_CString
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const ACE_CString &value);
     /** Constructor char*
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const char* value);
     /** Constructor - <b>Special case</b>
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const void* &value);
     /** Constructor - pointer (<b>Special case</b>
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(void * value);
     /** Constructor BACIdoubleSeq
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIdoubleSeq &value);
     /** Constructor BACIfloatSeq
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIfloatSeq &value);
     /** Constructor BACIlongSeq
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIlongSeq &value);
     /** Constructor BACIstringSeq
-     * @param value A constant reference to a value which will be this #BACIValue 
+     * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
      * <br><hr>
-     */ 
+     */
     BACIValue(const BACIstringSeq &value);
 
     /**
@@ -253,6 +253,12 @@ class baci_EXPORT BACIValue
      * Deprecated. Used to support CORBA enums.
      */
     BACIValue(const BACIpattern &value, const CORBA::Any& any);
+
+    /**
+     * Resets value to non-initialized state(VALUE_UNINITIALIZED, type_null type).
+     * <br><hr>
+     */
+    void reset();
 
     // --Operators-----------------------------------------------------------
     /**
@@ -278,7 +284,7 @@ class baci_EXPORT BACIValue
 
     /**
      * Check if absolute difference between values is less than delta value
-     * @param value value 
+     * @param value value
      * @param delta delta value
      * @return true if difference between this object's value and given value is less that delta value
      * <br><hr>
@@ -298,7 +304,7 @@ class baci_EXPORT BACIValue
      * </pre>
      * <br><hr>
      */
-    bool setType(Type type, unsigned long bound = 0); 
+    bool setType(Type type, unsigned long bound = 0);
 
     /**
      * Get value type
@@ -313,14 +319,14 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     const char * getArchiveType() const { return archiveTypeName[type_m].c_str(); }
-    
+
     /**
      * Get value bound (for variable length data types; eg. strings)
      * @return value bound
      * <br><hr>
      */
     unsigned long getBound() const { return ptr_m.bound; };
-  
+
     /**
      * Is value null value (not initialized)
      * @return true if is null, false otherwise
@@ -330,23 +336,23 @@ class baci_EXPORT BACIValue
 
     /**
      * Return the reason why the value was set as null value.
-     * @return A code explaining the reason why the value is set to null. 
-     * If NOT_NULL_VALUE is returned, the value is not null. 
-     * Otherwise, one of these can be expected: 
+     * @return A code explaining the reason why the value is set to null.
+     * If NOT_NULL_VALUE is returned, the value is not null.
+     * Otherwise, one of these can be expected:
      *    VALUE_NULL - The value is null because it is meant to carry a null value.
      *    VALUE_UNINITIALIZED - The value is null because it has not yet been initialized to another value.
      *    VALUE_NONEXISTENT - The value does not exist (data type was not implemented).
      * <br><hr>
      */
     unsigned long whyIsNull() const { return (type_m==type_null)?whyNull_m:NOT_NULL_VALUE; }
-    
+
     /**
      * Check if value equals no change (e.g. for double 0.0, int 0)
      * @return if value equals no change
      * <br><hr>
      */
     bool noDelta() const;
-    
+
     /**
      * Destructor
      * <br><hr>
@@ -484,7 +490,7 @@ class baci_EXPORT BACIValue
      * @return double value of this object or 0 if it's not a double.
      * <br><hr>
      */
-    BACIdouble doubleValue() const; 
+    BACIdouble doubleValue() const;
     /**
      * Returns this object's underlying BACI value as a double.
      * @param v is a BACIdouble *. Invoker should just provide a null reference.
@@ -502,7 +508,7 @@ class baci_EXPORT BACIValue
      * @return double value of this object or 0 if it's not a double.
      * <br><hr>
      */
-    BACIfloat floatValue() const; 
+    BACIfloat floatValue() const;
     /**
      * Returns this object's underlying BACI value as a float.
      * @param v is a BACIfloat *. Invoker should just provide a null reference.
@@ -515,7 +521,7 @@ class baci_EXPORT BACIValue
      * @return long value of this object or 0 if it's not a long.
      * <br><hr>
      */
-    BACIlong longValue() const; 
+    BACIlong longValue() const;
     /**
      * Returns this object's underlying BACI value as a long.
      * @param v is a BACIlong *. Invoker should just provide a null reference.
@@ -528,7 +534,7 @@ class baci_EXPORT BACIValue
      * @return long long value of this object or 0 if it's not a long.
      * <br><hr>
      */
-    BACIlongLong longLongValue() const; 
+    BACIlongLong longLongValue() const;
     /**
      * Returns this object's underlying BACI value as a long long.
      * @param v is a BACIlongLong *. Invoker should just provide a null reference.
@@ -541,7 +547,7 @@ class baci_EXPORT BACIValue
      * @return unsigned long long value of this object or 0 if it's not a unsigned long long.
      * <br><hr>
      */
-    BACIuLongLong uLongLongValue() const; 
+    BACIuLongLong uLongLongValue() const;
     /**
      * Returns this object's underlying BACI value as an unsigned long long.
      * @param v is a BACIuLongLong *. Invoker should just provide a null reference.
@@ -554,14 +560,14 @@ class baci_EXPORT BACIValue
      * @return pattern value of this object or 0 if it's not a pattern.
      * <br><hr>
      */
-    BACIpattern patternValue() const; 
+    BACIpattern patternValue() const;
 
     /**
      * Deprecated.
      * @return enum value of this object encoded into a CORBA any.
      * <br><hr>
      */
-    CORBA::Any enumValue() const; 
+    CORBA::Any enumValue() const;
 
     /**
      * Returns this object's underlying BACI value as a pattern.
@@ -584,7 +590,7 @@ class baci_EXPORT BACIValue
      * @return void pointer value of this object or null if it's not a void pointer.
      * <br><hr>
      */
-    void* pointerValue() const; 
+    void* pointerValue() const;
     /**
      * Returns this object's underlying BACI value as a void pointer.
      * @param v is a void pointer *. Invoker should just provide a null reference.
@@ -597,7 +603,7 @@ class baci_EXPORT BACIValue
      * @return double sequence of this object or 0 if it's not a double sequence.
      * <br><hr>
      */
-    BACIdoubleSeq doubleSeqValue() const; 
+    BACIdoubleSeq doubleSeqValue() const;
     /**
      * Returns this object's underlying BACI value as a double sequence.
      * @param v is a BACIdoubleSeq *. Invoker should just provide a null reference.
@@ -610,7 +616,7 @@ class baci_EXPORT BACIValue
      * @return float sequence of this object or 0 if it's not a float sequence.
      * <br><hr>
      */
-    BACIfloatSeq floatSeqValue() const; 
+    BACIfloatSeq floatSeqValue() const;
     /**
      * Returns this object's underlying BACI value as a float sequence.
      * @param v is a BACIfloatSeq *. Invoker should just provide a null reference.
@@ -623,7 +629,7 @@ class baci_EXPORT BACIValue
      * @return long sequence value of this object or 0 if it's not a long sequence.
      * <br><hr>
      */
-    BACIlongSeq longSeqValue() const; 
+    BACIlongSeq longSeqValue() const;
     /**
      * Returns this object's underlying BACI value as a long sequence.
      * @param v is a BACIlongSeq *. Invoker should just provide a null reference.
@@ -636,7 +642,7 @@ class baci_EXPORT BACIValue
      * @return string sequence value of this object or 0 if it's not a not a string sequence.
      * <br><hr>
      */
-    BACIstringSeq stringSeqValue() const; 
+    BACIstringSeq stringSeqValue() const;
     /**
      * Returns this object's underlying BACI value as a string sequence.
      * @param v is a BACIstringSeq *. Invoker should just provide a null reference.
@@ -760,7 +766,7 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     bool setValue(const BACIpattern &value, const CORBA::Any &anyVal);
-    
+
     /**
      * Mutator
      * @param value Reference to an ACE C string that this object will copy.
@@ -864,7 +870,7 @@ class baci_EXPORT BACIValue
      * stored, the operation has no effect and false is returned.
      * <br><hr>
      */
-    bool setValue(const BACIstringSeq &value); 
+    bool setValue(const BACIstringSeq &value);
     // ------------------------------------------------------------------
     //Conversion helpers
     /**
@@ -877,7 +883,7 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     bool toString(ACE_CString &value, bool specifyType = false) const;
-    
+
     /**
      * Convert from a string into a BACI type and encode it into this object.
      * @param value value represented as string
@@ -889,23 +895,23 @@ class baci_EXPORT BACIValue
      */
     bool fromString(const ACE_CString value, bool specifyType = false);
     // ------------------------------------------------------------------
-    
+
     /**
      * Returns the BACIValue embedded within a CORBA any. Useful
      * with archiving.
-     * @param Any reference in which we will store the underlying 
+     * @param Any reference in which we will store the underlying
      * BACIValue.
      */
     void
     getAny(CORBA::Any &any) const;
 
   protected:
-    
+
     /**
      * Identifies the type of data currently being stored.
      */
     Type type_m;
-    
+
     union
     {
 	/**
@@ -915,8 +921,8 @@ class baci_EXPORT BACIValue
 	 * <br><hr>
 	 */
 	double inlineData_m[2];
-	
-	/** 
+
+	/**
 	 * Other types store a pointer to the actual data and a bound
 	 * on the amount of data that can be stored there (e.g., number of
 	 * characters for strings). A bound of 0 indicates "no limits".
@@ -927,7 +933,7 @@ class baci_EXPORT BACIValue
 	    unsigned long bound;
 	    void *pointer;
 	} ptr_m;
-	
+
 	/**
 	 * Describes why the value has type null
 	 */

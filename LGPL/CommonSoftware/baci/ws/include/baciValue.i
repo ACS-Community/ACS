@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.i,v 1.104 2005/11/03 19:53:15 dfugate Exp $"
+* "@(#) $Id: baciValue.i,v 1.105 2006/05/29 10:49:51 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,6 +56,15 @@ inline BACIValue::BACIValue(const BACIValue &value) :
 
   // Delegate to the copy operator.
   *this = value;
+}
+
+inline void BACIValue::reset()
+{
+  // destroy and reinitialize
+  setType(type_null);
+  whyNull_m = VALUE_UNINITIALIZED;
+  ptr_m.bound = 0;
+  ptr_m.pointer = 0;
 }
 
 /**
