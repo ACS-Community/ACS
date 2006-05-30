@@ -56,9 +56,9 @@ testParams -py   -name py2   -e fakeContainerExe
 echo ""
 
 echo "*Testing remote host*"
-testParams -cpp  -name cpp2  -remoteHost 127.0.0.1
-testParams -java -name java2 -remoteHost 127.0.0.1
-testParams -py   -name py2   -remoteHost 127.0.0.1
+testParams -cpp  -name cppRH  -remoteHost 127.0.0.1
+testParams -java -name javaRH -remoteHost 127.0.0.1
+testParams -py   -name pyRH   -remoteHost 127.0.0.1
 echo ""
 
 echo "*Testing different baseports"

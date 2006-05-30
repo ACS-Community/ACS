@@ -85,16 +85,16 @@
 1 - 
 1 - *Testing remote host*
 1 - ---------
-1 - --Params: -cpp -name cpp2 -remoteHost 127.0.0.1
-1 - ssh -f user@127.0.0.1 maciContainer cpp2 -ORBEndpoint iiop://a.b.c.d:3062 -m corbaloc::a.b.c.d:3000/Manager
+1 - --Params: -cpp -name cppRH -remoteHost 127.0.0.1
+1 - ssh -f user@127.0.0.1 maciContainer cppRH -ORBEndpoint iiop://a.b.c.d:3050 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
-1 - --Params: -java -name java2 -remoteHost 127.0.0.1
-1 - ssh -f user@127.0.0.1 acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 3064 -m corbaloc::a.b.c.d:3000/Manager
+1 - --Params: -java -name javaRH -remoteHost 127.0.0.1
+1 - ssh -f user@127.0.0.1 acsStartJavaContainer javaRH alma.acs.container.AcsContainerRunner -OAport 3052 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
-1 - --Params: -py -name py2 -remoteHost 127.0.0.1
-1 - ssh -f user@127.0.0.1 ACSStartContainerPy py2 -ORBendPoint giop:tcp:a.b.c.d:3066 -m corbaloc::a.b.c.d:3000/Manager
+1 - --Params: -py -name pyRH -remoteHost 127.0.0.1
+1 - ssh -f user@127.0.0.1 ACSStartContainerPy pyRH -ORBendPoint giop:tcp:a.b.c.d:3054 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - 
 1 - *Testing different baseports
@@ -195,17 +195,19 @@
 1 - 
 1 - ---------
 1 - --Params: -cpp -name java4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container
+1 - Port number specified via -port switch, 5555, is already assigned!
 1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
 1 - ssh -f user@127.0.0.1 myJavaContainer java4 -ORBEndpoint iiop://a.b.c.d:3950 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager
 1 - 
 1 - ---------
 1 - --Params: -cpp -name cpp4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 extra args
+1 - Port number specified via -port switch, 5555, is already assigned!
 1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
 1 - ssh -f user@127.0.0.1 myMaciContainer cpp4 -ORBEndpoint iiop://a.b.c.d:5555 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
 1 - 
 1 - ---------
 1 - --Params: -cpp -name java4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container extra args
-1 - Warning - you'something'java4's port from 3950 to 5555
+1 - Port number specified via -port switch, 5555, is already assigned!
 1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
 1 - ssh -f user@127.0.0.1 myJavaContainer java4 -ORBEndpoint iiop://a.b.c.d:3950 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
 1 - 

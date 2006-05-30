@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.28 2006/05/25 21:41:07 dfugate Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.29 2006/05/30 18:12:39 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -21,23 +21,23 @@
 #    You should have received a copy of the GNU Lesser General Public
 #    License along with this library; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-################################################################################################
+###############################################################################
 '''
-This script is designed to pick a free container port for ACS to run on using ALL the arguments
-passed to the container. If theres a free port to run under, it prints that to standard out.
-'''
-################################################################################################
+This script is designed to pick a free container port for ACS to run on using 
+ALL the arguments passed to the container. If theres a free port to run under,
+it prints that to standard out.
+'''  
+###############################################################################
 from os      import environ
 from os      import chdir
-from os      import chmod
 from os      import system
 from os      import access, R_OK, W_OK, X_OK, F_OK
 from os.path import exists
 from fcntl   import flock
 from fcntl   import LOCK_EX
-from sys import exit
-from sys import stderr
-from sys import argv
+from sys     import stderr
+from sys     import argv
+from sys     import exit
 
 from optparse import OptionParser
 
@@ -45,80 +45,148 @@ import subprocess
 import socket
 
 from AcsutilPy.ACSPorts import getIP
-#-----------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+#--Parse the command-line options.
 
-parser = OptionParser(usage="This script is used to generate a command-line to be passed to container startup scripts. It will include such information as the TCP port the container should be run under. Do not call this script from your own code!.")
+usage_msg='''
+This script is used to generate a command-line to be passed to container 
+startup scripts. It will include such information as the TCP port the 
+container should be run under. Do not call this script directly from your own
+code!.
+'''
+parser = OptionParser(usage=usage_msg)
 
+#end-users can specify a specific port number to run under 
+port_help_msg='''
+TCP port to run the container under.
+If this integer value is in the inclusive range of 0-24, it is assumed
+that the intended TCP port is really an offset equivalent to the 
+following:
+    REAL TCP PORT = port*2 + 3050 + $ACS_INSTANCE*100
+If this integer value is greater than 24, the TCP port is used as
+provided. The only stipulation to this is that odd TCP port numbers
+from 3000-4000 are not available.
+'''
 parser.add_option("--port",
                   dest="port",
-                  help="TCP port to run under.")
+                  help=port_help_msg)
 
+#end-users can use this parameter to specify the name of the container
+name_help_msg='''
+Name of the container.
+Users can optionally specify the name of the container directly using
+this command-line switch. If this switch is not used, it is assumed the
+first argument after all command-line switches is the name of the
+container.
+'''
 parser.add_option("--name",
                   dest="name",
-                  help="TCP port to run under.")
+                  help=name_help_msg)
 
+#Java containers
 parser.add_option("--java",
                   action="store_true",
                   dest="java",
                   default=0,
                   help="Specifies the container is Java.")
 
+#Alternative Java container class
 parser.add_option("--custom_java",
                   dest="custom_container",
                   default="alma.acs.container.AcsContainerRunner",
                   help="Alternative Java class to use for the container implementation.")
 
+#C++ containers
 parser.add_option("--cpp",
                   action="store_true",
                   dest="cpp",
                   default=0,
                   help="Specifies the container is C++.")
 
+#Python containers
 parser.add_option("--py",
                   action="store_true",
                   dest="py",
                   default=0,
                   help="Specifies the container is Python.")
 
+#Debug flag
 parser.add_option("--debug",
                   action="store_true",
                   dest="debug",
                   default=0,
-                  help="Prints out special debugging info.")
+                  help="Prints out special debugging info to standard error.")
 
+#Reference to manager.
+mgr_help_msg='''
+Set's manager's reference.
+Tells the container where its manager is.
+E.g., corbaloc::127.0.0.1:3100/Manager
+'''
 parser.add_option("-m", "--managerReference",
                   dest="manager_reference",
-                  help="Sets manager's reference (i.e., corbaloc).")
+                  help=mgr_help_msg)
 
+#Reference to the CDB.
+cdb_help_msg='''
+Sets a reference to the configuration database.
+Tells the container where to find its own configuration data.
+This is currently only applicable to C++ containers.
+E.g., corbaloc::127.0.0.1:3012/DAL
+'''
 parser.add_option("-d", "--DALReference",
                   dest="cdb_ref",
-                  help="Sets a reference to the configuration database (i.e., corbaloc).")
+                  help=cdb_help_msg)
 
+#Custom executable
+exe_help_msg='''
+Sets a custom executable to be run.
+The value given here replaces the standard command to start a 
+container in a particular programming language. E.g., you
+might want to replace the C++ executable, maciContainer, 
+with some specialized container you wrote - myMaciContainer.
+'''
 parser.add_option("-e", "--executable",
                   dest="executable",
-                  help="Sets a custom executable to run for the container.")
+                  help=exe_help_msg)
 
+#Remote host
+remote_help_msg='''
+Sets a remote PC to run the container under.
+When this flag is given, the container is run under the host specified
+from the command-line rather than the localhost. Minimal checks are
+performed to ensure the remote host actually exists and is reachable.
+'''
 parser.add_option("--remoteHost",
                   dest="remote_host",
-                  help="Sets a remote PC to run the container under.")
+                  help=remote_help_msg)
 
+remote_debug_msg='''
+Makes the java container accessible by a remote debugger. 
+Deprecated. The remote debuggable Java container feature is now activated
+by setting $ACS_LOG_SDTOUT less than or equal to the DEBUG log level.
+'''
 parser.add_option("--remoteDebuggable",
                   dest="remote_debuggable",
                   action="store_true",
                   default=0,
-                  help="Makes the java container accessible by a remote debugger. Deprecated.")
+                  help=remote_debug_msg)
 
+#baseport
+baseport_help_msg='''
+ACS baseport (i.e., 0-9).
+Setting this flag overrides the value of $ACS_LOG_STDOUT.
+'''
 parser.add_option("-b", "--baseport",
                   dest="baseport",
-                  help="ACS baseport (i.e., 0-9).",
+                  help=baseport_help_msg,
                   default=None)
 
 #--------------------------------------------------------------------------
 #--Make commands backwards compatible with pre ACS 6.0 usage.
-
-#strictly for debugging purposes...
-if 0:
-    stderr.write("Original argv was:" + str(argv) + "\n")
+#--Basically this means that commands of the form -xy... should still 
+#--be supported. This manual manipulation of argv is necessary as 
+#--optparse only supports switches of the form --xy...
 
 #go through every potential command-line switch
 for i in range(1, len(argv)):
@@ -128,7 +196,7 @@ for i in range(1, len(argv)):
         argv[i] = "-" + argv[i]
 
 #--------------------------------------------------------------------------
-#parse everything
+#--Parse everything and throw the results into global variables
 (options, parsed_argv) = parser.parse_args()
 
 cl_port              = options.port
@@ -143,103 +211,7 @@ cl_cdb_ref           = options.cdb_ref
 cl_baseport          = options.baseport
 __DEBUG__            = options.debug
 
-
-if cl_baseport==None:
-    cl_baseport = int(environ['ACS_INSTANCE'])
-else:
-    cl_baseport=int(cl_baseport)
-
-#set manager reference
-if options.manager_reference==None:
-    if environ.has_key('MANAGER_REFERENCE'):
-        #Found it!  OK to set now.
-        cl_manager = environ['MANAGER_REFERENCE']
-    else:
-        #Assume manager is running under the local machine
-        manager_port = cl_baseport*100 + 3000 + 0
-        cl_manager = 'corbaloc::' + str(getIP()) + ':' + str(manager_port) + '/Manager'
-else:
-    cl_manager = options.manager_reference
-
-manager_port = cl_manager.split(":")[3].split("/")[0]
-
-#set the custom executable
-if options.executable==None:
-    if cl_java:
-        cl_executable = "acsStartJavaContainer"
-    elif cl_cpp:
-        cl_executable = "maciContainer"
-    elif cl_py:
-        cl_executable = "ACSStartContainerPy"
-    else:
-        stderr.write("Unable to continue. No container type specified!\n")
-else:
-    cl_executable = options.executable
-    
-if cl_remote_host != None:
-    cl_executable = "ssh -f " + environ['USER'] + "@" + cl_remote_host + " " + cl_executable
-    container_host = cl_remote_host
-
-    #sanity check to ensure this host exists
-    stuff = subprocess.Popen('ping -c 1 ' + container_host,
-                             shell=True,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE).stderr.read()
-
-    if 'unknown host' in stuff or 'request timed out' in stuff:
-        stderr.write("The remote host, " + container_host +
-                     ", is not accessible from this machine!\n")
-        exit(1)
-
-
-else:
-    container_host = getIP()
-
-
-
-#--------------------------------------------------------------------
-#--Run through a few sanity checks
-if (cl_java and cl_cpp) or (cl_java and cl_py) or (cl_cpp and cl_py):
-    stderr.write("Too many -java/-cpp/-py options supplied!\n")
-    stderr.write("Choose only one and try again!\n")
-    exit(1)
-
-elif not(cl_java or cl_cpp or cl_py):
-    stderr.write("You must choose some container type using one of the -java/-cpp/-py options!\n")
-    exit(1)
-
-if cl_name==None:
-    
-    if len(parsed_argv)==0:
-        stderr.write("Must specificy a container name using the -name option!\n")
-        exit(1)
-    else:
-        cl_name = parsed_argv.pop(0)
-        
-if __DEBUG__:
-    stderr.write("Command-line TCP port:" + str(cl_port) + "\n")
-    stderr.write("Command-line container name:" + str(cl_name) + "\n")
-    stderr.write("New args:" + str(parsed_argv) + "\n")
-
-    if cl_java:
-        stderr.write("Dealing with a Java container\n")
-        stderr.write("Container implementation class:" + str(cl_java_container) + "\n")
-    elif cl_cpp:
-        stderr.write("Dealing with a C++ container\n")
-    elif cl_py:
-        stderr.write("Dealing with a Python container\n")
-    else:
-        stderr.write("Unknown container type. This is very bad!\n")
-
-    stderr.write("Manager corbaloc is:" + str(cl_manager) + "\n")
-    stderr.write("Executable to be run is:" + str(cl_executable) + "\n")
-    stderr.write("Remote host to run the container under is:" + str(cl_remote_host) + "\n")
-    stderr.write("Remote debuggable is:" + str(cl_remote_debuggable) + "\n")
-
-#--------------------------------------------------------------------
-
-
-#-----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 #--Functions
 def getPortsFile():
     '''
@@ -249,7 +221,8 @@ def getPortsFile():
     #initialize the return value
     ret_val = None
     
-    #directory where all the process IDs of this particular instance of ACS are stored
+    #directory where all the process IDs of this particular instance of 
+    #ACS are stored
     ACS_INSTANCE_DIR = str(environ['ACSDATA']) + '/tmp/ACS_INSTANCE.' + str(cl_baseport)
 
     #make sure the acs instance directory exists
@@ -257,12 +230,12 @@ def getPortsFile():
         #assume everything is running remotely
         ACS_INSTANCE_DIR = str(environ['ACSDATA']) + '/tmp'
         if not exists(ACS_INSTANCE_DIR):
-            stderr.write("ERROR ==> $ACSDATA/tmp does not exist!\n")
+            stderr.write("$ACSDATA/tmp does not exist!\n")
             exit(1)
             
     #make sure the user actually has write access to this ACS instance
     elif not access(ACS_INSTANCE_DIR, R_OK & W_OK & X_OK & F_OK):
-        stderr.write("ERROR ==> The ACS instance in '" +
+        stderr.write("The ACS instance in '" +
                      str(ACS_INSTANCE_DIR) +
                      "' is not accessible by this user!\n")
         exit(1)
@@ -285,7 +258,7 @@ def getPortsFile():
     
     return ret_val
 
-#-----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 def portIsFree(ip_addr, tcp_port):
     '''
     Simple helper function returns true if the TCP port, tcp_port, of the
@@ -296,98 +269,111 @@ def portIsFree(ip_addr, tcp_port):
     #returns true when the port is open and false if it's not
     ret_val = s.connect_ex((ip_addr, tcp_port))
     s.close()
-
     return ret_val
 
-
-#-----------------------------------------------------------------------------------------------
-def getPortsDict(portsFile):
+#-----------------------------------------------------------------------------
+def getContainerDict(portsFile):
     '''
-    Returns a dictionary where each key is the name of a container and the value is the absolute
-    TCP port number it should use.
+    Returns a dictionary where each key is the name of a container and the 
+    value is the absolute TCP port number it should use.
 
     Params:
-    - portsFile A file which contains "someContainerName 1234" on each line where 1234 is a TCP
-    port number.
+    - portsFile A file which contains "someContainerName 1234" on each line 
+    where 1234 is a TCP port number.
 
-    Returns: a dictionary where each key is the name of a container and the value is the absolute
-    TCP port number it should use
+    Returns: a dictionary where each key is the name of a container and the 
+    value is the absolute TCP port number it should use
     '''
     #return value
-    ret_val = {}
+    ret_val_ports = {}
+    ret_val_hosts = {}
     
     #build up the list of ports that have already been used
     lines = portsFile.readlines()
     
     #make sure we don't end up with an empty list
     if lines == []:
-        lines.append('xxx 0')
+        lines.append('xxx 0 yyy')
         
     for line in lines:  #line = 'someContainerName portnumber'
-        container_name = line.split(' ')[0]
+        line = line.strip()
+        cont_name = line.split(' ')[0]
+        host      = line.split(' ')[2]
         port_number    = int(line.split(' ')[1])
         
-        ret_val[container_name] = port_number
+        ret_val_ports[cont_name] = port_number
+        ret_val_hosts[cont_name] = host
 
-    return ret_val
+    return (ret_val_ports, ret_val_hosts)
 
-#-----------------------------------------------------------------------------------------------
-def getExistingPort(container_name, port_dict):
+
+#-----------------------------------------------------------------------------
+def getExistingPort(cont_name, port_dict, host_dict):
     '''
-    If the port dictionary already has an entry stating that this container should be using some
-    port, returns that port. If not, returns None.
+    If the port dictionary already has an entry stating that this container 
+    should be using some port, returns that port. If not, returns None.
     '''
     
-    if port_dict.has_key(container_name):
+    if port_dict.has_key(cont_name):
         
-        port_number = port_dict[container_name]
+        #get the TCP port and hostname
+        port_number = port_dict[cont_name]
+        host_name   = host_dict[cont_name]
 
-        if portIsFree(container_host, port_number):
-            return port_number
+        #if it's free to use just return that
+        if portIsFree(host_name, port_number):
+            return (port_number, host_name)
 
         else:
-            stderr.write("Port is already in use, " +
-                         str(port_number) + ", by a container, " +
-                         container_name + ", of the same name!\n")
+            stderr.write("Port '" + str(port_number) + 
+                         "' is already in use on " + host_name +
+                         "!\n")
             stderr.write("This is an unrecoverable error and you must shutdown or kill " +
                          "the original container to continue!\n")
             exit(1)
     
-    return None
+    return (None, None)
 
-#-----------------------------------------------------------------------------------------------
-def portNumberAlreadyUsed(port_number, port_dict):
+#-----------------------------------------------------------------------------
+def portNumberAlreadyUsed(port_number, host, 
+                          port_dict, host_dict):
     '''
-    Function returns 1 if the port number is already in use and false otherwise.
+    Function returns 1 if the port number is already in use and false
+     otherwise.
     '''
     
-    #if no other entries are using this port number it's completely safe to use it
-    if (port_dict.values().count(port_number)==0):
-        #if the port is actually free
-        if portIsFree(container_host, port_number):
-            return 0
-        else:
-            stderr.write("Port is already in use:" +
-                         str(port_number) + "\n")
-            stderr.write("Kill the process listening on this port and try again!\n")
+    #cycle through all the container names...
+    for cont_name in port_dict.keys():
+        #looking for a container such that it's TCP port matches what we want
+        #to use and so does its hostname
+        if port_dict[cont_name]==port_number and host_dict[cont_name]==host:
+            if __DEBUG__:
+                stderr.write("Port for -port option is already being used:" +
+                             str(port_number) + "\n")
             return 1
-        
+    
+    #now a real check to see if the port is physcially free
+    if portIsFree(host, port_number):
+        return 0
     else:
-        if __DEBUG__:
-            stderr.write("Port for -port option is already being used:" +
-                         str(port_number) + "\n")
+        stderr.write("Port is already in use:" +
+                     str(port_number) + "\n")
+        stderr.write("Kill the process listening on this port and try again!\n")
         return 1
 
-#-----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 def coercePortNumber(port_number):
     '''
-    This helper function takes a port number which can be in string or integer format and converts
-    it to an integer. In the event of any failure, it returns None. Also, in the case that the
-    port number is set to be an offset from the ACS_INSTANCE, this method handles that as well.
+    This helper function takes a port number which can be in string or integer
+    format and converts it to an integer. In the event of any failure, it 
+    returns None. Also, in the case that the port number is set to be an offset
+    from the ACS_INSTANCE, this method handles that as well.
     
-    Params: port_number port number. Can be absolute (i.e., "3075") or dynamic (i.e., "0"-"24").
+    Params: port_number port number. Can be absolute (i.e., "3075") or dynamic 
+    (i.e., "0"-"24").
     
-    Returns: the port number in integer format or None if there was some sort of failure
+    Returns: the port number in integer format or None if there was some sort
+    of failure
     '''
     
     #make sure it's really a number
@@ -413,36 +399,9 @@ def coercePortNumber(port_number):
 
 
     return port_number
-#-----------------------------------------------------------------------------------------------
-def getPortFromArgv(ports_dict, cl_port):
-    '''
-    Returns a port value extracted from the command-line if provided and valid.
-    '''
-    
-    retVal = None
-    
-    #sanity check
-    if cl_port == None:
-        return retVal
-    
-    elif __DEBUG__:
-        stderr.write("-port option was specified:" + str(cl_port) + "\n")
 
-    #try to coerce the cl_port number into a proper TCP port number
-    retVal = coercePortNumber(cl_port)
-    #if what's above fails, just return None
-    if retVal == None:
-        return retVal
-    
-    #cycle through all the used ports to ensure developer
-    #hasn't picked something that's already being used
-    if portNumberAlreadyUsed(retVal, ports_dict):
-        retVal = None
-        
-    return retVal
-
-#-----------------------------------------------------------------------------------------------
-def getNextAvailablePort(ports_dict):
+#-----------------------------------------------------------------------------
+def getNextAvailablePort(host, ports_dict, hosts_dict):
     '''
     Returns the next available port
     '''
@@ -455,70 +414,205 @@ def getNextAvailablePort(ports_dict):
                    2):
         
         #found a port that can be used
-        if portNumberAlreadyUsed(i, ports_dict) == 0:
+        if portNumberAlreadyUsed(i, host,
+                                 ports_dict, hosts_dict) == 0:
             ret_val = i
             break
 
     return ret_val
 
-#-----------------------------------------------------------------------------------------------
-#--GLOBALS
 
+#--------------------------------------------------------------------------
+#--Go through the command-line arguments:
+#--  creating a few global variables based on them
+#--  do a little preprocessing on their values
+
+#--determine the ACS_INSTANCE
+if cl_baseport==None:
+    cl_baseport = int(environ['ACS_INSTANCE'])
+else:
+    cl_baseport=int(cl_baseport)
+
+#--set manager's reference
+if options.manager_reference==None:
+    if environ.has_key('MANAGER_REFERENCE'):
+        #Found it!  OK to set now.
+        cl_manager = environ['MANAGER_REFERENCE']
+    else:
+        #Assume manager is running under the local machine
+        manager_port = cl_baseport*100 + 3000 + 0
+        cl_manager = 'corbaloc::' + str(getIP()) + ':' + str(manager_port) + '/Manager'
+else:
+    cl_manager = options.manager_reference
+
+#--set the custom executable
+if options.executable==None:
+    if cl_java:
+        cl_executable = "acsStartJavaContainer"
+    elif cl_cpp:
+        cl_executable = "maciContainer"
+    elif cl_py:
+        cl_executable = "ACSStartContainerPy"
+    else:
+        stderr.write("Unable to continue. No container type specified!\n")
+        exit(1)
+else:
+    cl_executable = options.executable
+   
+#--if the remote host is set, setup the command to reflect this
+if cl_remote_host != None:
+    container_host = cl_remote_host
+    cl_executable = "ssh -f " + environ['USER'] + "@" + cl_remote_host + " " + cl_executable
+    
+    #sanity check to ensure this host exists
+    stuff = subprocess.Popen('ping -c 1 ' + container_host,
+                             shell=True,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE).stderr.read()
+
+    if ('unknown host' in stuff) or ('request timed out' in stuff):
+        stderr.write("The remote host, " + container_host +
+                     ", is not accessible from this machine!\n")
+        exit(1)
+
+#just use the local address
+else:
+    container_host = getIP()
+
+#no container name specified
+if cl_name==None:
+    if len(parsed_argv)==0:
+        stderr.write("Must specificy a container name using the -name option!\n")
+        exit(1)
+    #error is recoverable - container name specified as a general argument
+    else:
+        cl_name = parsed_argv.pop(0)
+
+#--------------------------------------------------------------------
+#--GLOBALS-----------------------------------------------------------
+
+#get the file which shows us which ports are currently taken up
+container_file = getPortsFile()
+
+#get dictionaries mapping container names to TCP port numbers and hosts
+container_ports, container_hosts = getContainerDict(container_file)
+
+#--------------------------------------------------------------------
+#--SANITY CHECKS-----------------------------------------------------
+
+#recorded host is different from commanded host
+if container_hosts.has_key(cl_name) and container_hosts[cl_name]!=container_host:
+    stderr.write("Trying to run the '" + cl_name + "' container on '" +
+                  container_host + "' instead of '" + container_hosts[cl_name] +
+                  "' impossible!\n")
+    stderr.write("Changing hosts after a container is restarted is not permitted!\n")
+    exit(1)
+
+#multiple container types specified
+if (cl_java and cl_cpp) or (cl_java and cl_py) or (cl_cpp and cl_py):
+    stderr.write("Too many -java/-cpp/-py options supplied!\n")
+    stderr.write("Choose only one and try again!\n")
+    exit(1)
+
+#no container type specified
+if not(cl_java or cl_cpp or cl_py):
+    stderr.write("You must choose some container type using one of the -java/-cpp/-py options!\n")
+    exit(1)
+
+#debugging purposes only!        
+if __DEBUG__:
+    stderr.write("Command-line TCP port:" + str(cl_port) + "\n")
+    stderr.write("Command-line container name:" + str(cl_name) + "\n")
+    stderr.write("New args:" + str(parsed_argv) + "\n")
+
+    if cl_java:
+        stderr.write("Dealing with a Java container\n")
+        stderr.write("Container implementation class:" + 
+                      str(cl_java_container) + "\n")
+    elif cl_cpp:
+        stderr.write("Dealing with a C++ container\n")
+    elif cl_py:
+        stderr.write("Dealing with a Python container\n")
+    else:
+        stderr.write("Unknown container type. This is very bad!\n")
+
+    stderr.write("Manager corbaloc is:" + str(cl_manager) + "\n")
+    stderr.write("Executable to be run is:" + str(cl_executable) + "\n")
+    stderr.write("Remote host to run the container under is:" + 
+                  str(cl_remote_host) + "\n")
+    stderr.write("Remote debuggable is:" + str(cl_remote_debuggable) + "\n")
+
+#-----------------------------------------------------------------------------
+#--MAIN-----------------------------------------------------------------------
+
+#try to set the TCP port from the command-line
 try:
+    #coerce it into an integer
     newPort = int(cl_port)
+    
+    #got this far without an exception meaning newPort is indeed
+    #an integer
+    if __DEBUG__:
+        stderr.write("-port option was specified:" + 
+                      str(newPort) + "\n")
+
+    #try to coerce the port number into a proper TCP port number
+    newPort = coercePortNumber(newPort)
+    
+    #ensure developer hasn't picked something that's already being used
+    if newPort!=None and portNumberAlreadyUsed(newPort, container_host,
+                                               container_ports, container_hosts):
+        stderr.write("Port number specified via -port switch, " + 
+                      str(newPort) + 
+                      ", is already assigned!\n")
+        newPort = None
+            
 except:
     newPort = None
 
-containerName = cl_name
-
-#get the file which shows us which ports are currently taken up
-usedPortsFile = getPortsFile()
-
-#get a dictionary mapping container names to TCP port numbers
-usedContainerPortsDict = getPortsDict(usedPortsFile)
-
-
 #see if it's been set before...
-temp_port = getExistingPort(containerName, usedContainerPortsDict)
+temp_port, temp_host = getExistingPort(cl_name, container_ports, container_hosts)
 
 if temp_port != None:
     #overwrite any value the user may have tried to specify using
     #the port switch. if it's been set before, it must remain the same.
-    if newPort!=None and newPort != temp_port:
+    if newPort!=None and newPort!=temp_port:
         stderr.write("Warning - you're trying to change '" +
-                     str(containerName) + "'s port from " +
+                     str(cl_name) + "'s port from " +
                      str(temp_port) +
                      " to " + str(newPort) + "\n")
         
-    newPort = getExistingPort(containerName, usedContainerPortsDict)
-    usedPortsFile.close()
-    
-#try to set it from argv
-elif newPort!=None:
-    newPort = getPortFromArgv(usedContainerPortsDict, newPort)
+    newPort, container_host = getExistingPort(cl_name, 
+                                              container_ports, 
+                                              container_hosts)
+    container_file.close()
 
 #if this container is being run for the first time and
 #the user doesn't care which port it runs on
 if newPort==None:
     #just get the next available TCP port. This will always
     #work unless there are 25+ containers
-    newPort = getNextAvailablePort(usedContainerPortsDict)
+    newPort = getNextAvailablePort(container_host,
+                                   container_ports, container_hosts)
 
 #at this point we should have found a free port number.
-#we can now close up the usedPortsFile so that other containers
+#we can now close up the container_file so that other containers
 #can be started immediately.
 if newPort==None:
     #could not find a free port. no point in going on.
-    stderr.write("ERROR ==> All ports are taken!\n")
-    usedPortsFile.close()
+    stderr.write("All ports are taken!\n")
+    container_file.close()
     exit(1)
     
-if getExistingPort(containerName, usedContainerPortsDict)==None:
+if getExistingPort(cl_name, 
+                   container_ports, container_hosts)[0]==None:
     #close up the file so other containers can be started.
     #no need to write anything to disk because we're using
     #a predefined port number
-    usedPortsFile.writelines([containerName + ' ' + str(newPort) + '\n'])
-    usedPortsFile.close()
+    container_file.writelines([cl_name + ' ' + 
+                              str(newPort) + ' ' +
+                              str(container_host) + '\n'])
+    container_file.close()
 
 ################################################################
 #generate a new commandline argument
@@ -530,7 +624,7 @@ parsed_argv.insert(i, cl_executable)
 i = i + 1
 
 #name of the container
-parsed_argv.insert(i, containerName)
+parsed_argv.insert(i, cl_name)
 i = i + 1
 
 #figure out the correct language first
