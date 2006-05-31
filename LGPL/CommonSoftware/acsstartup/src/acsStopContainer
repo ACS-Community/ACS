@@ -2,6 +2,7 @@
 . acsstartupLogging.sh
 . acsstartupConstants
 . acsstartupAcsInstance
+. acsstartupAcsPorts
 #*************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
@@ -145,6 +146,9 @@ MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 #sufficient for this oneway command to run
 acsutilBlock -t 15 -k maciContainerShutdown $@
 
+
+
+
 #------------------------------------------------------------------
 #finally we check to see if the container itself has really gone
 CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/`echo $1 | sed s/"\/"/:/g`_PID
@@ -159,4 +163,34 @@ if [ -e $CONTAINER_PID_FILE ]
     #or it times out. in the event of a timeout, let
     #acsutilBlock kill the container
     acsutilBlock -p $ACS_CONTAINER_PID -t $MAX_TIMEOUT -k
+
+else
+    #------------------------------------------------------------------
+    CONTAINER_TCP_FILE=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
+    LINE=`cat $CONTAINER_TCP_FILE | grep "$1 " 2> /dev/null`
+
+    #sanity check
+    if [ "$LINE" = "" ]
+	then
+	ACS_LOG_DEBUG "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
+	ACS_LOG_DEBUG "As a result, no attempt to forcefully shutdown this container will be made."
+	exit 1
+    fi
+
+    CONTAINER_TCP=`echo $LINE | awk '{print $2}'`
+    CONTAINER_HOST=`echo $LINE | awk '{print $3}'`
+    THIS_HOST=`getIP`
+    #command used to kill the container
+    COMMAND="acsKillProc --port $CONTAINER_TCP"
+
+    if [ "$THIS_HOST" != "$CONTAINER_HOST" ] 
+    then    
+	COMMAND="ssh $USER@$CONTAINER_HOST $COMMAND"
+    fi
+    
+    #sleep $MAX_TIMEOUT
+    if $COMMAND
+    then
+	ACS_LOG_ERROR "The container, $1, hung and had to be killed!"
+    fi
 fi

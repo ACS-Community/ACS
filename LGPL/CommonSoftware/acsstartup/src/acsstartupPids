@@ -28,7 +28,7 @@ PID=`netstat -t -p -e -e -l 2> /dev/null| grep ":$TCP " | awk '{printf("%s", $9)
 #sanity check
 if [ "$PID" = "" ]
 then
-    ACS_SILENT_LOG "DEBUGUnable to find the process ID for a program using the '$1' TCP port"
+    ACS_SILENT_LOG "DEBUG Unable to find the process ID for a program using the '$1' TCP port"
     exit $EC_FAILURE
 fi
 
