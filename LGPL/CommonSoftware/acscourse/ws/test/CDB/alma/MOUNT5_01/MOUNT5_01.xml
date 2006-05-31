@@ -49,6 +49,8 @@
 	graph_min="-120"
 	graph_max="360"
 	min_step="0.01526"
+	archive_min_int    =	"0.1"
+        archive_max_int    =	"2.0"
 	/>
   <actEl
 	description="Actual El"
@@ -62,5 +64,7 @@
 	graph_min="-0"
 	graph_max="110"
 	min_step="0.01526"
+	archive_min_int    =	"0.1"
+        archive_max_int    =	"2.0"
 	/>
 </ACSCourseMount>
