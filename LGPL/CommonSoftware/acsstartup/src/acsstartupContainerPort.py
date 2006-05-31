@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.29 2006/05/30 18:12:39 dfugate Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.30 2006/05/31 15:42:42 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -61,11 +61,11 @@ port_help_msg='''
 TCP port to run the container under.
 If this integer value is in the inclusive range of 0-24, it is assumed
 that the intended TCP port is really an offset equivalent to the 
-following:
-    REAL TCP PORT = port*2 + 3050 + $ACS_INSTANCE*100
+following:   REAL TCP PORT = port*2 + 3050 + $ACS_INSTANCE*100.
 If this integer value is greater than 24, the TCP port is used as
 provided. The only stipulation to this is that odd TCP port numbers
-from 3000-4000 are not available.
+from 3000-4000 are not available. These are reserved exclusively for
+so-called remote debuggable containers (Java-only).
 '''
 parser.add_option("--port",
                   dest="port",
@@ -156,13 +156,16 @@ Sets a remote PC to run the container under.
 When this flag is given, the container is run under the host specified
 from the command-line rather than the localhost. Minimal checks are
 performed to ensure the remote host actually exists and is reachable.
+For this to work, it is necessary that SSH be configured in such a way
+that $USER can ssh into the remote host without being asked for a 
+password.
 '''
 parser.add_option("--remoteHost",
                   dest="remote_host",
                   help=remote_help_msg)
 
 remote_debug_msg='''
-Makes the java container accessible by a remote debugger. 
+Makes the Java container accessible by a remote debugger. 
 Deprecated. The remote debuggable Java container feature is now activated
 by setting $ACS_LOG_SDTOUT less than or equal to the DEBUG log level.
 '''
@@ -488,6 +491,21 @@ if cl_name==None:
     else:
         cl_name = parsed_argv.pop(0)
 
+#turn the TCP port into the real TCP port
+if cl_port!=None:
+    
+    if __DEBUG__:
+        stderr.write("-port option was specified:" + 
+                      str(cl_port) + "\n")
+    
+    #string to int
+    newPort = int(cl_port)
+    
+    #try to coerce the port number into a proper TCP port number
+    newPort = coercePortNumber(newPort)
+else:
+    newPort=None
+
 #--------------------------------------------------------------------
 #--GLOBALS-----------------------------------------------------------
 
@@ -500,14 +518,6 @@ container_ports, container_hosts = getContainerDict(container_file)
 #--------------------------------------------------------------------
 #--SANITY CHECKS-----------------------------------------------------
 
-#recorded host is different from commanded host
-if container_hosts.has_key(cl_name) and container_hosts[cl_name]!=container_host:
-    stderr.write("Trying to run the '" + cl_name + "' container on '" +
-                  container_host + "' instead of '" + container_hosts[cl_name] +
-                  "' impossible!\n")
-    stderr.write("Changing hosts after a container is restarted is not permitted!\n")
-    exit(1)
-
 #multiple container types specified
 if (cl_java and cl_cpp) or (cl_java and cl_py) or (cl_cpp and cl_py):
     stderr.write("Too many -java/-cpp/-py options supplied!\n")
@@ -519,6 +529,38 @@ if not(cl_java or cl_cpp or cl_py):
     stderr.write("You must choose some container type using one of the -java/-cpp/-py options!\n")
     exit(1)
 
+#recorded host is different from commanded host
+if container_hosts.has_key(cl_name) and container_hosts[cl_name]!=container_host:
+    stderr.write("Trying to run the '" + cl_name + "' container on '" +
+                  container_host + "' instead of '" + container_hosts[cl_name] +
+                  "' impossible!\n")
+    stderr.write("Changing hosts after a container is restarted is not permitted!\n")
+    exit(1)
+    
+#recorded TCP port requested is different from commanded TCP port
+if newPort!=None and container_ports.has_key(cl_name) and container_ports[cl_name]!=newPort:
+    stderr.write("Trying to change the '" + cl_name + "' container's TCP port from '" +
+                  str(container_ports[cl_name]) + "' to '" + str(newPort) +
+                  "' is impossible!\n")
+    stderr.write("Changing TCP ports after a container is restarted is not permitted!\n")
+    exit(1)
+    
+#ensure developer hasn't picked something that's already being used
+elif newPort!=None and (not container_ports.has_key(cl_name)) and portNumberAlreadyUsed(newPort, container_host,
+                                                                                        container_ports, container_hosts):
+    stderr.write("Port number specified via -port switch, " + 
+                 str(newPort) + 
+                 ", is already assigned!\n")
+    exit(1)
+
+#the desired TCP port is in use by some other process
+if newPort!=None and not portIsFree(container_host, newPort):
+    stderr.write("Cannot use the '" + str(newPort) + 
+                  "' TCP port as it's being tied up by some other process!\n")
+    stderr.write("Use the netstat command to find the offending process!\n")
+    exit(1)
+    
+#-----------------------------------------------------------------------------
 #debugging purposes only!        
 if __DEBUG__:
     stderr.write("Command-line TCP port:" + str(cl_port) + "\n")
@@ -545,55 +587,34 @@ if __DEBUG__:
 #-----------------------------------------------------------------------------
 #--MAIN-----------------------------------------------------------------------
 
-#try to set the TCP port from the command-line
-try:
-    #coerce it into an integer
-    newPort = int(cl_port)
-    
-    #got this far without an exception meaning newPort is indeed
-    #an integer
-    if __DEBUG__:
-        stderr.write("-port option was specified:" + 
-                      str(newPort) + "\n")
-
-    #try to coerce the port number into a proper TCP port number
-    newPort = coercePortNumber(newPort)
-    
-    #ensure developer hasn't picked something that's already being used
-    if newPort!=None and portNumberAlreadyUsed(newPort, container_host,
-                                               container_ports, container_hosts):
-        stderr.write("Port number specified via -port switch, " + 
-                      str(newPort) + 
-                      ", is already assigned!\n")
-        newPort = None
-            
-except:
-    newPort = None
-
 #see if it's been set before...
-temp_port, temp_host = getExistingPort(cl_name, container_ports, container_hosts)
+temp_port, temp_host = getExistingPort(cl_name, 
+                                       container_ports, 
+                                       container_hosts)
 
+#container already had a port assigned to it. fine.
 if temp_port != None:
     #overwrite any value the user may have tried to specify using
-    #the port switch. if it's been set before, it must remain the same.
-    if newPort!=None and newPort!=temp_port:
-        stderr.write("Warning - you're trying to change '" +
-                     str(cl_name) + "'s port from " +
-                     str(temp_port) +
-                     " to " + str(newPort) + "\n")
-        
-    newPort, container_host = getExistingPort(cl_name, 
-                                              container_ports, 
-                                              container_hosts)
-    container_file.close()
-
+    #the port switch. if it's been set before, it must remain the same.    
+    newPort = temp_port
+    container_host = temp_host
+    
 #if this container is being run for the first time and
 #the user doesn't care which port it runs on
-if newPort==None:
+elif newPort==None:
     #just get the next available TCP port. This will always
     #work unless there are 25+ containers
     newPort = getNextAvailablePort(container_host,
                                    container_ports, container_hosts)
+   
+#container does not already have a port assigned to it and the 
+#new port is not nil...
+if temp_port==None and newPort!=None:
+    container_file.writelines([cl_name + ' ' + 
+                              str(newPort) + ' ' +
+                              str(container_host) + '\n'])
+
+container_file.close()
 
 #at this point we should have found a free port number.
 #we can now close up the container_file so that other containers
@@ -601,18 +622,7 @@ if newPort==None:
 if newPort==None:
     #could not find a free port. no point in going on.
     stderr.write("All ports are taken!\n")
-    container_file.close()
     exit(1)
-    
-if getExistingPort(cl_name, 
-                   container_ports, container_hosts)[0]==None:
-    #close up the file so other containers can be started.
-    #no need to write anything to disk because we're using
-    #a predefined port number
-    container_file.writelines([cl_name + ' ' + 
-                              str(newPort) + ' ' +
-                              str(container_host) + '\n'])
-    container_file.close()
 
 ################################################################
 #generate a new commandline argument

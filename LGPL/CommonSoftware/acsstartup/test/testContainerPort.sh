@@ -96,6 +96,7 @@ echo ""
 
 echo "*Hard tests*"
 testParams -cpp -name cpp4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 -debug
-testParams -cpp -name java4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container
+testParams -cpp -name java4 -port 5556 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container
+
 testParams -cpp -name cpp4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 extra args
-testParams -cpp -name java4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container extra args
+testParams -cpp -name java4 -port 5556 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container extra args
