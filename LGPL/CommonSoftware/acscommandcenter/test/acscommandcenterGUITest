@@ -1,6 +1,6 @@
 #! /bin/bash
-CLASSPATH=`vltMakeJavaClasspath`
-IP=`host $HOST | awk '{print $4}'`
+export CLASSPATH=`vltMakeJavaClasspath`
+export IP=`host $HOST | awk '{print $4}'`
 
 if [ x$1 = xmanual ] ; then
    mkdir -p tmp
