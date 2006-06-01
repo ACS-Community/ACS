@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropRWImpl.i,v 1.50 2006/05/12 10:43:12 bjeram Exp $"
+* "@(#) $Id: enumpropRWImpl.i,v 1.51 2006/06/01 18:58:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -191,12 +191,15 @@ ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
     ActionRequest req;
   // only one action
   // better implementation with array is possible
+
   switch (function) 
     {
     case GET_ACTION:
-      req = getValueAction(cob, callbackID, descIn, value, c, descOut);
+	req = this->getValueAction(cob, callbackID, descIn, value, c, descOut);
+	break;
     case SET_ACTION:
-      req = setValueAction(cob, callbackID, descIn, value, c, descOut);
+	req = this->setValueAction(cob, callbackID, descIn, value, c, descOut);
+	break;
 /*   
  case INC_ACTION:
       req = incrementAction(cob, callbackID, descIn, value, c, descOut);
@@ -283,9 +286,21 @@ ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, 
   ACE_UNUSED_ARG(cob);
   ACE_UNUSED_ARG(callbackID);
   ACE_UNUSED_ARG(descIn);
+  CompletionImpl co;
+
+  getValue(property_mp, value, co/*mpletion*/, descOut);
   
-  getValue(property_mp, value, completion, descOut);
-  
+  if (co.isErrorFree())
+      {
+      completion = co;
+      }
+  else
+      {
+      completion = CanNotGetValueCompletion(co, 
+					    __FILE__, 
+					    __LINE__, 
+					    "RWEnumImpl<>::getValue");
+      }//if-else
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
   return reqInvokeDone;
