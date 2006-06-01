@@ -21,10 +21,14 @@ import java.util.Vector;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.SAXException;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
+
 public class CDBChecker {
 	
-        public  String XMLPath = "";
-        public  String XSDPath = "";
+	public  String XMLPath = null;
+	public  String XSDPath = null;
+
 	private File tmpDir;
 	private SAXParser SP;
 	private Properties props = new Properties();
@@ -34,7 +38,7 @@ public class CDBChecker {
 	private static String targetNamespace;
 	public  static Vector reqSchemas;
 
-        /**
+  /**
 	 * This errorFlag is used to signal from the parser
 	 * callbacks that something failed int the validation
 	 * of one specific file.
@@ -42,8 +46,8 @@ public class CDBChecker {
 	 */
 	public  static boolean errorFlag       = false;
 
-        /**
-         * This globalErrorFlag is used to keep memory of any failure.
+	/**
+	 * This globalErrorFlag is used to keep memory of any failure.
 	 * It is never reset and it is set to true whenever there is a failure.
 	 * If at the end of all validations it is true, it means that something
 	 * failed and therefore we have to return with a failure
@@ -121,6 +125,7 @@ public class CDBChecker {
 	 * @param filename name with absolute path of the XSD file to validate.
 	 */
 	protected void XSDValidate(Vector filename){
+		System.out.println("*** Will verify XSD files in directory: " + this.XSDPath);
 		for(int i=0;i<filename.size();i++){
 			if(verbose){
 				System.out.print("    "+(String)filename.get(i));
@@ -150,6 +155,7 @@ public class CDBChecker {
 	 * @param filename name with absolute path of the XML file to validate.
 	 */	
 	protected void XMLValidate(Vector filename){
+		System.out.println("*** Will verify XML files in directory: " + this.XMLPath);
 		for(int i=0;i<filename.size();i++){
 			if(verbose){
 				System.out.print("    "+(String)filename.get(i));
@@ -267,38 +273,51 @@ public class CDBChecker {
 		}		
 	}
 	
+	public void cleanUp()
+	{
+		if(tmpDir!=null) {
+			if(verbose) { System.out.println("*** Deleting Temporary files"); }
+			deleteTmp();
+		}
+	}
+
 	/**
 	 * Calls CDBChecker.getFile() to download files usually needed by XSD schema files.
 	 * @param reqSchemas Vector that contains the required schemas, to be downloaded.
 	 */
 	public void downloadSchemas(Vector reqSchemas){
-		System.out.print("Downloading remote schemas");
-		for(int i=0;i<reqSchemas.size();i++){
-			getFile((String)reqSchemas.get(i));
-			System.out.print(".");
+		System.out.print("*** Downloading remote schemas");
+		if(verbose) {
+			System.out.print("\n*** Storing schemas in: " + schemaFolder);
 		}
-		System.out.println("\nRemote schemas succesfully downloaded");
+		for(int i=0;i<reqSchemas.size();i++){
+			String fileToGet = (String) reqSchemas.get(i);
+			getFile(fileToGet);
+			if(verbose) {
+				System.out.print("\n\tDownloaded file: " + fileToGet);
+			}
+		}
+		System.out.println("\n*** Remote schemas succesfully downloaded");
 	}
 	
 	/**
 	 * Prints usage information.
 	 *
 	 */
-	protected static void usage(){
-		System.out.println("\n[usage:]\n\n        #java [-flags] cdbChecker.CDBChecker [XMLPath] [XSDPath]");
+	protected static void printUsage(){
+		System.out.println("\n[usage:]\n\n        #cdbChecker [-flags] [XMLPath] [XSDPath]");
 		System.out.println("\n\n    Flags:");
-		System.out.println("      -v     Verbose output");
-		System.out.println("      -r     Disable the recursively look of .xsd and .xml files feature");
-		System.out.println("      -n     Get required schemas from the network");
-		System.out.println("      -h     Show this help");
+		System.out.println("      -v | --verbose    Verbose output");
+		System.out.println("      -r | --recursive  Disable the recursively look of .xsd and .xml files feature");
+		System.out.println("      -n | --network    Get required schemas from the network");
+		System.out.println("      -h | --help       Show this help");
 		System.out.println("\n    XMLPath and XSDPath can have multiple paths separated by \":\".");
 		System.out.println("    The paths must be absolute (i.e. starting with '/')");
 		System.out.println("    The checker will search for files recursively inside the given paths.\n");
-		System.out.println("    What eventually passed int XSDPath will be pre-pended to the");
-		System.out.println("    values coming with the ACS.cdbPath property.\n");
-		
+		System.out.println("    NOTE: the value passed in as the XSDPath will be pre-pended to the");
+		System.out.println("    value from the ACS.cdbPath property.\n");
 	}
-	
+
 	/**
 	 * Checks the command line arguments given to the program and capture the given flags.
 	 * @param args command line arguments
@@ -306,94 +325,101 @@ public class CDBChecker {
 	 */
 	protected boolean checkArgs(String[] args)
 	{
-	    /*
-	     * GCH
-	     * Command line arguments parsing should be rewritten int
-	     * a more standard way.
-	     * As it is now, it is very sensitive to little changes
-	     */
+		boolean retVal = true;
+		int c;
+		String arg;
+		LongOpt[] longopts = new LongOpt[4];
+		longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
+		longopts[1] = new LongOpt("network", LongOpt.NO_ARGUMENT, null, 'n'); 
+		longopts[2] = new LongOpt("verbose", LongOpt.NO_ARGUMENT, null, 'v');
+		longopts[3] = new LongOpt("recursive", LongOpt.NO_ARGUMENT, null, 'r');
 
-	    /*
-	     * Counts what is the next command line
-	     * argument to be parsed.
-	     * The args array starts with element 0
-	     */
-	    int argsCounter=0;
+		Getopt myGetOpt = new Getopt("cdbChecker", args, "rhnvW;", longopts);
+		myGetOpt.setOpterr(false); // We'll do our own error handling
 
-	    /*
-	     * Parses options, if any, that have to be given
-	     * as first command line argument
-	     */
-	    if((args.length > 0) && args[argsCounter].startsWith("-"))
-		{
-		char flag;
-		for(int i=1;i<args[argsCounter].length();i++)
-		    {
-		    flag = args[argsCounter].charAt(i);
-		    switch(flag)
-			{
-			case 'v':
-			    //Verbose		
-			    this.verbose=true;
-			    break;
-			case 'n':
-			    //Download schemas from the internet
-			    this.network=true;
-			    break;
-			case 'r':
-			    //Disable the recursively search of .xsd and .xml files
-			    this.recursive=false;
-			    break;
-			case 'h':
-				return false;
-			default:
-			    System.out.println("\n[Error] Unknown flag: \"-"+flag+"\".");
-			    return false;
+		while ((c = myGetOpt.getopt()) != -1) {
+			switch (c) {
+				case 'n':
+					this.network = true;
+					break;
+				case 'r':
+					this.recursive = false;
+					break;
+				case 'v':
+					this.verbose = true;
+					break;
+				case 'h':
+					retVal = false;
+					break;
+				case 'W':
+					System.out.println("[Error] : you tried a -W with an incorrect long option name");
+					globalErrorFlag = true;
+					retVal = false;
+					break;
+				case '?':
+					if(0 == myGetOpt.getOptopt()) {
+						System.out.println("[Error] : the long option '" + args[myGetOpt.getOptind() - 1] + "' is not valid");
+					}
+					else {
+						System.out.println("[Error] : the option '" + (char)myGetOpt.getOptopt() + "' is not valid");
+					}
+					globalErrorFlag = true;
+					retVal = false;
+					break;
+				default:
+					globalErrorFlag = true;
+					retVal = false;
+					break;
 			}
-		    }
-		argsCounter++;
 		}
 
-		/* 
-		 * Following argument, if exists, is the list of XML
-		 * files or directories, given as abolute path names
-		 */
-		if(args.length > argsCounter) 
-		    {
-		    if(args[argsCounter].startsWith("/"))
-			{
-			this.XMLPath=args[argsCounter];
-			argsCounter++;
-			}/* list of XML files */
-		    else
-			{
-			System.out.println("\n[Error] Wrong list of XML files");
-			usage();
-			return false;
+		// do the following only if we aren't already needing to print a usage statement (i.e. retVal is not false)
+		if(retVal) {
+			// check for the additional (optional) command line arguments, XMLPath and XSDPath
+			for (int i = myGetOpt.getOptind(); i < args.length ; i++) {
+				if(myGetOpt.getOptind() == i) {
+					if(args[i].startsWith("/")) {
+						this.XMLPath = args[i];
+					}
+					else {
+						System.out.println("[Error] : XMLPath must start with '/'");
+						globalErrorFlag = true;
+						retVal = false;
+					}
+				}
+				else {
+					if(args[i].startsWith("/")) {
+						this.XSDPath = args[i];
+					}
+					else {
+						System.out.println("[Error] : XSDPath must start with '/'");
+						globalErrorFlag = true;
+						retVal = false;
+					}
+					break;
+				}
 			}
-		    }
-		/* 
-		 * Following argument, if exists, is the list of XSD
-		 * files or directories, given as abolute path names.
-		 */
-		if(args.length > argsCounter)
-		    {
-		    if(args[argsCounter].startsWith("/"))
-			{
-			this.XSDPath=args[argsCounter];
-			argsCounter++;
-			}/* list of XSD files */
-		    else
-			{
-			System.out.println("\n[Error] Wrong list of XML files");
-			usage();
-			globalErrorFlag=true;
-			return false;
+
+			// finally, if XMLPath wasn't specified, use a sensible default
+			if(retVal && null == this.XMLPath) {
+      		String acsCdbPath = System.getenv("ACS_CDB");
+				if(null != acsCdbPath)
+				{
+					acsCdbPath += "/CDB";
+					System.out.println("*** XML path not specified; defaulting to $ACS_CDB/CDB: " + acsCdbPath);
+					XMLPath = acsCdbPath;
+				}
+				else
+				{
+					System.out.println("\n[Error] XML path not specified and $ACS_CDB environment variable not set; no default possible.");
+					globalErrorFlag = true;
+					retVal = false;
+				}
 			}
-		    }
-		return true;
+		}	
+
+		return retVal;
 	}
-	
 	
    private boolean configLoader(){
       String config_path;
@@ -408,7 +434,9 @@ public class CDBChecker {
       tmp_path = System.getProperty("ACS.tmp");
       // else use the systems default
       if (tmp_path == null)
-	 tmp_path = File.separatorChar+"tmp";
+		{
+			tmp_path = File.separatorChar+"tmp";
+		}
       
       
       SP.setContentHandler(new ConfigurationCH());
@@ -478,8 +506,8 @@ public class CDBChecker {
 		 * and sets accordiningly member variables.
 		 * These non explicit side effects should be avoided.
 		 */
-                 if(cdbchecker.checkArgs(args)){
-
+       
+       if(cdbchecker.checkArgs(args)) {
 			//Creating the parser
 			cdbchecker.SP=new SAXParser();
 			cdbchecker.xsd_targetns=new Hashtable();
@@ -523,24 +551,20 @@ public class CDBChecker {
 				if(cdbchecker.verbose)System.out.println("*** Validating XML files");						
 				cdbchecker.XMLValidate(XMLFilenames);
 			}
-		} else {
-			usage();
+		} 
+      else {
+			printUsage();
 		}
-		if(cdbchecker.tmpDir!=null){
-			if(cdbchecker.verbose)System.out.println("*** Deleting Temporary files");
-			cdbchecker.deleteTmp();
-		}
-		if(globalErrorFlag==true)
-		    {
+
+		cdbchecker.cleanUp();
+		if(globalErrorFlag==true) {
 		    System.out.println("[Error] CDBChecker exiting. Errors were found");
 		    System.exit(1);
-		    }
-		else
-		    {
+		}
+		else {
 		    System.out.println("CDBChecker exiting. No errors found");
 		    System.exit(0);
-		    }
-		    
+		}
 	}
-	
+
 }

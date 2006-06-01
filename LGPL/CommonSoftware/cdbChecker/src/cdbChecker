@@ -2,7 +2,7 @@
 #*******************************************************************************
 # cdbChecker
 #
-# "@(#) $Id: cdbChecker,v 1.4 2005/11/28 12:55:59 gchiozzi Exp $"
+# "@(#) $Id: cdbChecker,v 1.5 2006/06/01 01:07:09 sharring Exp $"
 #
 
 #************************************************************************
@@ -88,6 +88,13 @@ if [ "X$intlist_list" != "X" ]; then
    SCHEMA_PATH=$intlist_list:$ACSROOT/$SUB
 fi
 
+# configure tmp path
+if [ "X$ACSDATA" != "X" ]; then  
+   TMP_PATH=$ACSDATA/tmp
+else
+   TMP_PATH="/tmp"
+fi
+
 # INTROOT path, if exists.
 if [ "X$INTROOT" != "X" ]; then  
    SCHEMA_PATH=$INTROOT/$SUB:$SCHEMA_PATH
@@ -106,7 +113,7 @@ echo Searching for schema files in: $SCHEMA_PATH
 config_path=$(searchFile config/reqSchemas.xml)
 if [ "$config_path" != "#error#" ]
 then
-   acsStartJava --noDirectory -endorsed -DACS.config_path=$config_path -DACS.cdbpath=$SCHEMA_PATH cl.utfsm.cdbChecker.CDBChecker $1 $2
+   acsStartJava --noDirectory -endorsed -DACS.tmp=$TMP_PATH -DACS.config_path=$config_path -DACS.cdbpath=$SCHEMA_PATH cl.utfsm.cdbChecker.CDBChecker $1 $2 $3 $4 $5 $6 $7 $8 $9 
    returnCode=$?
 else
    echo "[Error] The configuration files are missing... Do a 'make install'"	   

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2005/07/15 12:47:56 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/06/01 01:07:09 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -77,7 +77,7 @@ XSDBIND=
 #
 XSDBIND_INCLUDE=
 
-INSTALL_FILES= 	../config/reqSchemas.xml \
+INSTALL_FILES= 	../lib/java-getopt-1.0.12.jar ../config/reqSchemas.xml \
 		../config/reqSchemas.xsd
 
 
