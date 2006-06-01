@@ -305,17 +305,20 @@ public class CDBChecker {
 	 *
 	 */
 	protected static void printUsage(){
-		System.out.println("\n[usage:]\n\n        #cdbChecker [-flags] [XMLPath] [XSDPath]");
-		System.out.println("\n\n    Flags:");
+		System.out.println("\n[usage:]\n\n    cdbChecker [-flags] [XMLPath] [XSDPath]");
+		System.out.println("\n\n    Flags:\n");
 		System.out.println("      -v | --verbose    Verbose output");
-		System.out.println("      -r | --recursive  Disable the recursively look of .xsd and .xml files feature");
+		System.out.println("      -r | --recursive  Disable recursive traversal of XMLPath and XSDPath");
+		System.out.println("                        when searching for .xml/.xsd files");
 		System.out.println("      -n | --network    Get required schemas from the network");
 		System.out.println("      -h | --help       Show this help");
-		System.out.println("\n    XMLPath and XSDPath can have multiple paths separated by \":\".");
-		System.out.println("    The paths must be absolute (i.e. starting with '/')");
-		System.out.println("    The checker will search for files recursively inside the given paths.\n");
-		System.out.println("    NOTE: the value passed in as the XSDPath will be pre-pended to the");
-		System.out.println("    value from the ACS.cdbPath property.\n");
+		System.out.println("\n    The XMLPath and XSDPath can have multiple paths separated by \":\".");
+		System.out.println("    The paths must be absolute (i.e. they should start with '/')");
+		System.out.println("    The checker will search for files recursively inside the given paths,");
+		System.out.println("    unless the -r flag is specified.\n");
+		System.out.println("    NOTE: 1) the value passed in as the XSDPath will be pre-pended to the");
+		System.out.println("    value from the ACS.cdbPath property; 2) if not specified, the XMLPath");
+		System.out.println("    will default to $ACS_CDB/CDB (if ACS_CDB environment variable is set).\n");
 	}
 
 	/**
@@ -558,11 +561,11 @@ public class CDBChecker {
 
 		cdbchecker.cleanUp();
 		if(globalErrorFlag==true) {
-		    System.out.println("[Error] CDBChecker exiting. Errors were found");
+		    System.out.println("\n[Error] CDBChecker exiting. Errors were found\n");
 		    System.exit(1);
 		}
 		else {
-		    System.out.println("CDBChecker exiting. No errors found");
+		    System.out.println("\nCDBChecker exiting. No errors found\n");
 		    System.exit(0);
 		}
 	}
