@@ -26,7 +26,21 @@
 ACS_LOG_COMMAND
 
 #----------------------------------------------------------------------
-#--First check out the directory structure
+#--Little hack to pickup $ACS_INSTANCE
+if [ "`echo $@ | grep \"\-b \"`" != "" ]
+then
+    ACS_INSTANCE=$@
+    ACS_INSTANCE=${ACS_INSTANCE#*-b }
+    export ACS_INSTANCE=${ACS_INSTANCE%% *}
+
+elif [ "`echo $@ | grep \"\-baseport \"`" != "" ]
+then
+    ACS_INSTANCE=$@
+    ACS_INSTANCE=${ACS_INSTANCE#*-baseport }
+    export ACS_INSTANCE=${ACS_INSTANCE%% *}
+fi
+
+#--Check out the directory structure
 
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
 then
