@@ -141,7 +141,7 @@ public class LogBufferedFileCache extends LogFileCache {
 			// Check if the log is in the buffer
 			int lastLog = indexes.size()-1;
 			if (pos<=lastLog) {
-				throw  new LogCacheException("The log is not in the buffer!");
+				throw  new LogCacheException("The log (pos = " + pos + ") is not in the buffer!");
 			}
 			int posInBuffer = pos-lastLog-1;
 			ILogEntry log = writeBuffer.get(posInBuffer);

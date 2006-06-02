@@ -22,9 +22,8 @@
 package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
-
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
@@ -67,8 +66,8 @@ public class LogCache extends LogBufferedFileCache {
 	 *    The moving operation is performed swapping the accessed elements
 	 *    with its neighbor 
 	 */
-	private LinkedList<Integer> manager = new LinkedList<Integer>();
-	
+	private ArrayBlockingQueue<Integer> manager = null;
+		
 	/**
 	 * Build a LogCache object
 	 * 
@@ -94,6 +93,7 @@ public class LogCache extends LogBufferedFileCache {
 		actualCacheSize = size;
 		System.out.println("Jlog will use cache for " + actualCacheSize + " log records.");		
 		cache = new HashMap<Integer,ILogEntry>(actualCacheSize);
+		manager = new ArrayBlockingQueue(actualCacheSize, true);
 		clear();
 	}
 	
@@ -131,10 +131,9 @@ public class LogCache extends LogBufferedFileCache {
 		ILogEntry log = cache.get(position);
 		if (log!=null) {
 			// Hit! The log is in the cache
-			hitLog(position);
 			return log;
 		} else {
-			// Ops we need to read a log from disk!
+			// Oops we need to read a log from disk!
 			return loadNewLog(position);
 		}
 	}
@@ -147,22 +146,19 @@ public class LogCache extends LogBufferedFileCache {
 	 * @return The log read from the cache on disk
 	 */
 	private synchronized ILogEntry loadNewLog(Integer idx) throws LogCacheException {
-		// A little check: each index must appear only once in the list
-		//
-		// This check can cause a scansion of the list
-		// so it is probably better to remove after debugging
-		if (manager.contains(idx)) {
-			throw new LogCacheException (""+idx+" is already in the list!");
-		}
-		
 		// Read the new log from the cache on disk
 		ILogEntry log = super.getLog(idx);
 		
 		// There is enough room in the lists?
 		if (cache.size()==actualCacheSize) {
 			// We need to create a room for the new element
-			Integer itemToRemove = manager.removeFirst();
-			cache.remove(itemToRemove);
+			try {
+				Integer itemToRemove = manager.take();
+				cache.remove(itemToRemove);
+			}
+			catch(InterruptedException ex) {
+				throw new LogCacheException ("Interrupted while waiting to take from the Queue!");
+			}
 		}
 		
 		// Add the log in the cache
@@ -174,35 +170,6 @@ public class LogCache extends LogBufferedFileCache {
 		return log;
 	}
 	
-	/**
-	 * Update the lists when a log has been read from the cache
-	 * The key of the hitted log must be moved toward the end of the 
-	 * manager list (as the Indexes are removd from the head of the
-	 * list, the probability to remove the most accessed logs is reduced)
-	 * 
-	 * The hashMap does not need any maintenance
-	 * 
-	 * @param idx The position of the log
-	 */
-	private synchronized void hitLog(Integer idx) {
-		// Find the position of the item in the manager list
-		int pos = manager.indexOf(idx);
-		if (pos==-1) {
-			// Why this element is not here?
-			throw new IllegalArgumentException(""+idx+" is not in the list!");
-		}
-		
-		// If the element is in the last position then there is nothing
-		// to do because it can't do anything better then that!
-		// Remember: we remove the items from the head, the first position.
-		if (pos==manager.size()-1) {
-			return;
-		}
-		// Move the hitted index one position toward the end of the list
-		Integer temp=manager.get(pos+1);
-		manager.set(pos+1,idx);
-		manager.set(pos,temp);
-	}
 	
 	/**
 	 * Empty the cache
