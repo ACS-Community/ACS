@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.31 2006/05/24 22:56:52 dfugate Exp $"
+# "@(#) $Id: acsStart,v 1.32 2006/06/02 21:07:27 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -60,13 +60,6 @@
 #
 #
 
-###If there's a corrupted $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE, attempt
-###to fix it
-if ! checkDeadACS
-then
-    ACS_LOG_ERROR "Unable to continue as the ACS_INSTANCE, $ACS_INSTANCE, is currently in use!"
-    exit $EC_FAILURE
-fi
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -150,7 +143,6 @@ fi
 #
 ### ---------- End of Command Line Parsing -------------
 
-
 #warn them if they're using the typical NRAO /etc/hosts file
 if [ `getIP` = "127.0.0.1" ]
 then
@@ -167,6 +159,20 @@ then
     sleep 5
 fi
 
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+    export ACS_INSTANCE=$CL_BASEPORT
+fi
+
+###If there's a corrupted $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE, attempt
+###to fix it
+if ! checkDeadACS
+then
+    ACS_LOG_ERROR "Unable to continue as the ACS_INSTANCE, $ACS_INSTANCE, is currently in use!"
+    exit $EC_FAILURE
+fi
 
 #start the ORB services
 if [ "$CL_VERBOSE" ] ; then
@@ -190,12 +196,6 @@ MAX_TIMEOUT=$(( 36 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 
 #...except acsIrFeed. This requires more time
 MAX_IRFEED_TIMEOUT=$(( $MAX_TIMEOUT * 5 ))
-
-#Check command-line args for baseport option
-if [ "$CL_BASEPORT" ]
-then
-    export ACS_INSTANCE=$CL_BASEPORT
-fi
 
 #output from the orb services is stored here to figure out which ACS
 #instance to use.
