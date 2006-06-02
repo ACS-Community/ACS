@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupProcesses,v 1.1 2006/05/10 23:00:41 dfugate Exp $"
+# "@(#) $Id: acsstartupProcesses,v 1.2 2006/06/02 22:19:13 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -169,7 +169,7 @@ done
 #immediately kill the parent
 kill -9 $PARENT_PID 2> /dev/null
 
-return 0
+return $?
 }
 export killProc
 
@@ -195,3 +195,34 @@ done
 
 return 0
 }
+
+export killCommand
+
+#--------------------------------------------------------
+function killPort
+{
+local PORT
+local PID
+
+PORT=$1
+PID=`netstat -t -p -e -e -a 2> /dev/null| grep ":$PORT "`
+
+if [ "$PID" = "" ]
+then
+    #unable to kill a process using the port...error condition
+    return 1
+else
+    PID=`echo $PID | awk '{printf("%s", $9)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
+fi
+
+if [ "$PID" != "" ] && [ "$PID" != "-" ]
+then
+    killProc $PID
+    return 0
+
+else
+    return 1
+fi
+}
+
+export killPort

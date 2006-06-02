@@ -69,8 +69,8 @@ then
 
 elif [ "$compressedAI" = "$TCP_PORT" ] 
 then
-  ACS_LOG_ERROR "The TCP_PORT to use, '$TCP_PORT', is taken already!"
-  ACS_LOG_ERROR "`netstat -t -p -e -e -l | grep $TCP_PORT | awk '{printf("%s %s %s", $4, $7, $9)}'`"
+  ACS_LOG_ERROR "The TCP_PORT to use, '$TCP_PORT', is taken already - $compressedAI !"
+  ACS_LOG_ERROR "`netstat -t -p -e -e -l 2> /dev/null | grep $TCP_PORT | awk '{printf("%s %s %s", $4, $7, $9)}'`"
   return $EC_BADARGS
 fi
 

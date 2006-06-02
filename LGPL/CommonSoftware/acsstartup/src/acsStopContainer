@@ -146,14 +146,13 @@ MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 #sufficient for this oneway command to run
 acsutilBlock -t 15 -k maciContainerShutdown $@
 
-
-
-
 #------------------------------------------------------------------
 #finally we check to see if the container itself has really gone
 CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/`echo $1 | sed s/"\/"/:/g`_PID
+
 if [ -e $CONTAINER_PID_FILE ]
-    then
+then
+
     #get the PID
     ACS_CONTAINER_PID=`cat $CONTAINER_PID_FILE`
     #remove the file containing the PID
@@ -180,17 +179,18 @@ else
     CONTAINER_TCP=`echo $LINE | awk '{print $2}'`
     CONTAINER_HOST=`echo $LINE | awk '{print $3}'`
     THIS_HOST=`getIP`
+
     #command used to kill the container
     COMMAND="acsKillProc --port $CONTAINER_TCP"
 
     if [ "$THIS_HOST" != "$CONTAINER_HOST" ] 
-    then    
+    then
 	COMMAND="ssh $USER@$CONTAINER_HOST $COMMAND"
     fi
     
     #sleep $MAX_TIMEOUT
     if $COMMAND
     then
-	ACS_LOG_ERROR "The container, $1, hung and had to be killed!"
+	ACS_LOG_ERROR "The container, $1, hung and had to be killed. Please investigate!"
     fi
 fi

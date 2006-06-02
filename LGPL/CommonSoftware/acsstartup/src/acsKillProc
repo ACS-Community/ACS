@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsKillProc,v 1.17 2006/05/31 22:13:36 dfugate Exp $"
+# "@(#) $Id: acsKillProc,v 1.18 2006/06/02 22:19:13 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -103,15 +103,12 @@ if [ "$CL_HELP" ] ; then
    printUsage
 fi
 
-
-
 ########################################################################################
 #User wants to kill all commands of a certain type.
 if [ "$CL_COMMAND" ]
 then
-
     killCommand $CL_COMMAND
-    exit $EC_OK
+    exit 0
 
 elif [ "$CL_PID" ]
 then
@@ -120,11 +117,8 @@ then
 
 elif [ "$CL_PORT" ]
 then
-    #get the process ID from the port
-    if ! TEMP_PID=`getPidFromTCP $CL_PORT`
-    then
-	exit $EC_NOPORT
-    fi
+    killPort $CL_PORT
+    exit $?
 
 elif [ "$1" ]
 then
