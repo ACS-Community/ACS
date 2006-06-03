@@ -28,6 +28,41 @@ import com.cosylab.logging.LoggingClient;
  */
 public class VisibleLogsVector extends Thread {
 	
+	public class NewLogGUIRefresher extends Thread {
+		private int min;
+		private int max;
+		
+		public NewLogGUIRefresher() {
+			clear();
+			start();
+		}
+		
+		public synchronized void clear() {
+			min=max=-1;
+		}
+		
+		public synchronized void update(int pos) {
+			if (min==-1 || min>pos) {
+				min=pos;
+			}
+			if (max==-1 || pos>max) {
+				max=pos;
+			}
+		}
+		
+		public void run() {
+			while (true) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException ie) {}
+				if (min>=0 && max>=0) {
+					tableModel.fireTableRowsInserted(min,max);
+					min=max=-1;
+				}
+			}
+		}
+	}
+	
 	/**
 	 * The comparator.
 	 * It compares two logs starting from their indexes in the LogCache
@@ -261,6 +296,8 @@ public class VisibleLogsVector extends Thread {
 	 */
 	private Vector<Integer> visibleLogs;
 	
+	private NewLogGUIRefresher guiRefresher;
+	
 	/**
 	 * Usually new logs are directly added in the GUI.
 	 * They are cached if a long lasting async operation is in progress.
@@ -273,6 +310,7 @@ public class VisibleLogsVector extends Thread {
 	// If it is empty then each new log can be immediately added
 	// in the GUI, otherwise it has to be caches in the buffer
 	private Vector<LogOperationRequest> asyncOps = new Vector<LogOperationRequest>();
+	
 	
 	/**
 	 * The cache with all the logs
@@ -304,6 +342,8 @@ public class VisibleLogsVector extends Thread {
 		visibleLogs = new Vector<Integer>(256,32);
 		// Start the thread for async operations
 		start();
+		// Instantiate and start the refresher
+		guiRefresher=new NewLogGUIRefresher();
 	}
 
 	/**
@@ -335,12 +375,12 @@ public class VisibleLogsVector extends Thread {
 	private void addLogToVector(Integer index, ILogEntry log) {
 		if (!comparator.sortEnabled()) {
 			visibleLogs.add(index);
-			tableModel.fireTableRowsInserted(index,index);
+			guiRefresher.update(index);
 			// Find the position where the log has to be inserted
 		} else {
 			int pos = findPosLogarithmic(log);
 			visibleLogs.insertElementAt(index,pos);
-			tableModel.fireTableRowsInserted(pos,pos);
+			guiRefresher.update(pos);
 		}
 	}
 	
