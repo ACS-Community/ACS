@@ -46,7 +46,7 @@ public class DateRenderer extends javax.swing.JLabel implements javax.swing.tabl
 	private Color fColor;
 	
 	private final SimpleDateFormat longDateFormat = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
-	private final SimpleDateFormat shortDateFormat = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat shortDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 	
 	// If it is true the date is shown as HH:mm:ss
 	private boolean shortDate;
