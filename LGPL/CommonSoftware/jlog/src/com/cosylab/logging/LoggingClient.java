@@ -1140,8 +1140,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		
 		try
 		{
-			/* Set native look and feel */
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			/* Create the frame */
 			LoggingClient aLoggingClient;
 			aLoggingClient = getInstance(); // build the singleton
