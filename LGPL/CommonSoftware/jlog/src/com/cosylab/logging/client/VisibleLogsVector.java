@@ -28,19 +28,62 @@ import com.cosylab.logging.LoggingClient;
  */
 public class VisibleLogsVector extends Thread {
 	
+	/**
+	 * NewLogGUIRefresher keep traks of the logs inserted and
+	 * shows all the logs at once in a separate thread by firinig
+	 * the event to the table
+	 */
 	public class NewLogGUIRefresher extends Thread {
+		private final int REFRESH_INTERVAL=1000;
+		/**
+		 * The minimum index of the logs inserted
+		 */
 		private int min;
+		/**
+		 * The minimum index of the logs inserted
+		 */
 		private int max;
 		
+		/**
+		 * Indicate if the GUI has to be refreshed
+		 * @see setSupended()
+		 */
+		private boolean isSuspended=false;
+		
+		/**
+		 * Constructor
+		 *
+		 */
 		public NewLogGUIRefresher() {
 			clear();
 			start();
 		}
 		
+		/**
+		 * Avoid updating the GUI
+		 *
+		 */
 		public synchronized void clear() {
 			min=max=-1;
 		}
 		
+		/**
+		 * Suspend or reactivate the refresh
+		 * When is suspended, the object keeps track of the logs inserted
+		 * and will refresh the contetnt of the table only when it will be
+		 * reactivated
+		 * 
+		 * @param suspended If true suspend the refresh
+		 */
+		public synchronized void setSuspended(boolean suspended) {
+			isSuspended=suspended;
+		}
+		
+		/**
+		 * Notify about the insertion of the new log in the given position
+		 * 
+		 * @param pos The position where the new log has been inserted
+		 */
 		public synchronized void update(int pos) {
 			if (min==-1 || min>pos) {
 				min=pos;
@@ -50,12 +93,17 @@ public class VisibleLogsVector extends Thread {
 			}
 		}
 		
+		/**
+		 * The thread to notify the GUI about new insertion of logs.
+		 * It is a loop that notifies the table about all the changes that
+		 * happened in the REFRESH_INTERVAL time.
+		 */
 		public void run() {
 			while (true) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(REFRESH_INTERVAL);
 				} catch (InterruptedException ie) {}
-				if (min>=0 && max>=0) {
+				if (min>=0 && max>=0 && !isSuspended) {
 					tableModel.fireTableRowsInserted(min,max);
 					min=max=-1;
 				}
@@ -618,4 +666,16 @@ public class VisibleLogsVector extends Thread {
 		}
 	}
 	
+	/**
+	 * If true the notification of the changes in the table is not
+	 * sent to the table: all the logs that arrive when suspended
+	 * are stored in the vector but not shown in the table until
+	 * the suspenction is deactivated. In that moment, all the new
+	 * logs will be displayed.
+	 * 
+	 * @param suspend If true the new logs received are not shown in the table
+	 */
+	public void suspendRefresh(boolean suspend) {
+		guiRefresher.setSuspended(suspend);
+	}
 }

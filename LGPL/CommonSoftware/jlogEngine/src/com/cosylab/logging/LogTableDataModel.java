@@ -549,5 +549,15 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	public long totalLogNumber() {
 		return allLogs.getSize();
 	}
-
+	
+	/**
+	 * Do not scroll the table when new logs arrive
+	 * (this is done by delaying the insertion of new logs in the table
+	 * until the scroll lock is disabled)
+	 * 
+	 * @param lock If true the table does not scroll 
+	 */
+	public void scrollLock(boolean lock) {
+		visibleLogs.suspendRefresh(lock);
+	}
 }
