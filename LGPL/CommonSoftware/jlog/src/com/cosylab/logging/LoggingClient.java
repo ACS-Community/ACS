@@ -161,11 +161,12 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	private JMenu fileMenu; // File
 	private JMenu viewMenu; // View
     private JMenu searchMenu; // Search
+    private JMenu expertMenu; // Expert
+    
+    private JMenuItem suspendMI;
 
 	private JLabel ivjFilterStatus = null; // Not filtered
 	private JLabel ivjInfoStatus = null; // Additional info
-
-	private JToggleButton suspendToggleButton = null; // Suspend
 
 	private JMenuBar loggingClientJMenuBar = null;
 
@@ -351,6 +352,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
             	}
             } else if (e.getSource()==LoggingClient.this.shortDateViewMI) {
             	logEntryTable.setShortDateFormat(LoggingClient.this.shortDateViewMI.getState());
+            } else if (e.getSource()==LoggingClient.this.scrollLockTB) {
+            	tableModel.scrollLock(scrollLockTB.isSelected());
             }
 		};
 
@@ -900,7 +903,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         loggingClientJMenuBar.add(viewMenu);
         
         // Add the Search Menu
-        searchMenu = new javax.swing.JMenu();
+        searchMenu = new JMenu();
         searchMenu.setName("SearchMenu");
         searchMenu.setText("Search");
         searchMenu.addMenuListener(eventHandler);
@@ -914,6 +917,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         searchNextMenuItem.setEnabled(false);
         searchMenu.add(searchNextMenuItem);
         loggingClientJMenuBar.add(searchMenu);
+        
+        // Add the expert menu
+        expertMenu = new JMenu();
+        expertMenu.setName("ExpertMenu");
+        expertMenu.setText("Expert");
+        suspendMI = new JCheckBoxMenuItem("Suspend",false);
+        suspendMI.addActionListener(eventHandler);
+        expertMenu.add(suspendMI);
+        loggingClientJMenuBar.add(expertMenu);
     }
     
     /** 
@@ -973,7 +985,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         
         scrollLockTB = new JToggleButton("Scroll lock");
         scrollLockTB.setSelected(false);
-        //tbLevelPanel.add(scrollLockTB);
+        scrollLockTB.addActionListener(eventHandler);
+        tbLevelPanel.add(scrollLockTB);
         
         
         userPanel.add(tbLevelPanel);
@@ -1527,14 +1540,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		        progressBar.setVisible(false);
 		        filterStatusPnl.add(progressBar,constraintsProgressBar);
 				
-				GridBagConstraints constraintsJToggleButton = new GridBagConstraints();
-				constraintsJToggleButton.gridx = 2;
-				constraintsJToggleButton.gridy = 0;
-				constraintsJToggleButton.insets = new Insets(4, 4, 4, 4);
-				filterStatusPnl.add(getSuspendToggleBtn(), constraintsJToggleButton);
-				
 				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
-				constraintsConnectionStatus.gridx = 3;
+				constraintsConnectionStatus.gridx = 2;
 				constraintsConnectionStatus.gridy = 0;
 				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
 				filterStatusPnl.add(connectionStatusLbl,constraintsConnectionStatus);
@@ -1651,30 +1658,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			}
 		}
 		return ivjJSplitPane2;
-	}
-	/**
-	 * Returns the JToggleButton1 property value.
-	 * @return javax.swing.JToggleButton
-	 */
-
-	private JToggleButton getSuspendToggleBtn()
-	{
-		if (suspendToggleButton == null)
-		{
-			try
-			{
-				suspendToggleButton = new javax.swing.JToggleButton();
-				suspendToggleButton.setName("JToggleButton1");
-				suspendToggleButton.setText("Suspend");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return suspendToggleButton;
 	}
 	
 	/**
@@ -2007,14 +1990,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     
     /**
      * 
-     * @return true if the scrool lock is enabled
-     */
-    public boolean scrollLock() {
-    	return scrollLockTB.isSelected();
-    }
-    
-    /**
-     * 
      * @return The discard log level
      * @see LoggingClient.discardLevelCB
      */
@@ -2027,7 +2002,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
      */
     public void logEntryReceived(ILogEntry logEntry) {
     	int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
-    	if (!suspendToggleButton.isSelected() && logLevel>=discardLevelCB.getSelectedIndex()) {
+    	if (!suspendMI.isSelected() && logLevel>=discardLevelCB.getSelectedIndex()) {
 			getLogEntryTable().getLCModel().appendLog(logEntry);
 		} 
     	
