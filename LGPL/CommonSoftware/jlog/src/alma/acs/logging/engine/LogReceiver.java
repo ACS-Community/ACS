@@ -283,6 +283,14 @@ public class LogReceiver {
 			// add the record to the queue
 			logDelayQueue.offer(delayedLogEntry);
 		}
+		
+		public void acsLogConnSuspended() {
+			
+		}
+		
+		public void acsLogDiscarding() {
+			
+		}
 
 		boolean isVerbose() {
 			return verbose;
