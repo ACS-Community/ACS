@@ -354,6 +354,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
             	logEntryTable.setShortDateFormat(LoggingClient.this.shortDateViewMI.getState());
             } else if (e.getSource()==LoggingClient.this.scrollLockTB) {
             	tableModel.scrollLock(scrollLockTB.isSelected());
+            } else if (e.getSource()==LoggingClient.this.suspendMI) {
+            	getEngine().setSupended(suspendMI.isSelected());
             }
 		};
 
@@ -923,6 +925,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         expertMenu.setName("ExpertMenu");
         expertMenu.setText("Expert");
         suspendMI = new JCheckBoxMenuItem("Suspend",false);
+        suspendMI.addActionListener(eventHandler);
         suspendMI.addActionListener(eventHandler);
         expertMenu.add(suspendMI);
         loggingClientJMenuBar.add(expertMenu);
@@ -2002,7 +2005,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
      */
     public void logEntryReceived(ILogEntry logEntry) {
     	int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
-    	if (!suspendMI.isSelected() && logLevel>=discardLevelCB.getSelectedIndex()) {
+    	if (logLevel>=discardLevelCB.getSelectedIndex()) {
 			getLogEntryTable().getLCModel().appendLog(logEntry);
 		} 
     	
@@ -2048,12 +2051,25 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	
 	/**
 	 * Notify that an attempt to connect to ACS NC is in progress
-	 *@see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void acsLogConnConnecting() {
 		setTitle("LoggingClient - Connecting");
 		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTING_ICON]);
 		connectionStatusLbl.setToolTipText("Connecting");
 	}
+	
+	/**
+	 * Notify that the service is supended 
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 */
+	public void acsLogConnSuspended() {}
+	
+	/**
+	 * Notify that for some internal reason the service is not able
+	 * to follow the flow of the incoming logs
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 */
+	public void acsLogDiscarding() {}
 }
 
