@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.1 2006/06/03 23:09:53 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.2 2006/06/03 23:29:53 acaproni Exp $
  * @since    
  */
 
@@ -166,7 +166,6 @@ public class ACSLogRetrieval extends Thread {
 	 * The thread to read and notify the logs from the file to the listeners
 	 */
 	public void run() {
-		System.out.println("Thread started");
 		while (true) {
 			// Get from the queue the final position of the next log to read
 			long endPos;
