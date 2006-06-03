@@ -288,7 +288,7 @@ public class LogReceiver {
 			
 		}
 		
-		public void acsLogDiscarding() {
+		public void acsLogsDelay() {
 			
 		}
 

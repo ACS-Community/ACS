@@ -446,7 +446,7 @@ public class LCEngine implements Runnable {
 		for (int t=0; t<listeners.size(); t++) {
 			ACSRemoteLogListener listener = listeners.get(t);
 			if (listener!=null) {
-				listener.acsLogDiscarding();
+				listener.acsLogsDelay();
 			}
 		}
 	}

@@ -66,15 +66,16 @@ public interface ACSRemoteLogListener {
 	
 	/**
 	 * Notify that for some internal reason the service is not able
-	 * to follow the flow of the incoming logs and is discarding
-	 * the messages
+	 * to follow the flow of the incoming logs and is queueing
+	 * the messages to be inserted later, when flow will decrease and 
+	 * enough CPU time is availbale 
 	 * 
-	 * This method is not executed each time a log is discarded but
-	 * once when starting do discards messages.
+	 * This method is not executed each time a log is queued but
+	 * once when the situation begins.
 	 * When the temporary problem has been fixed, the status will revert
 	 * to connected
 	 */
-	public void acsLogDiscarding();
+	public void acsLogsDelay();
 	
 	/**
 	 * The method is executed when a new log arrives from the NC

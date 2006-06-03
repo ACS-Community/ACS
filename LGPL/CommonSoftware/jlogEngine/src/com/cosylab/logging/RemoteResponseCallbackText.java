@@ -82,7 +82,7 @@ public class RemoteResponseCallbackText implements ACSRemoteLogListener {
 		System.out.println("Suspended");
 	}
 	
-	public void acsLogDiscarding() {
+	public void acsLogsDelay() {
 		System.out.println("Discarding");
 	}
 }

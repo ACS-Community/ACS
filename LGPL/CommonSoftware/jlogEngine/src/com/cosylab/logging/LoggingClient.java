@@ -2070,6 +2070,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 * to follow the flow of the incoming logs
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
-	public void acsLogDiscarding() {}
+	public void acsLogsDelay() {}
 }
 
