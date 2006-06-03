@@ -99,6 +99,8 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	private Dispatcher dispatcher = new Dispatcher();
 	private LCEngine engine;
 	
+	private ACSLogRetrieval logRetrieval;
+	
 	/**
 	 * StructuredPushConsumer constructor comment.
 	 * 
@@ -113,6 +115,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		this.acsra = acsra;
 		this.engine=theEngine;
 		dispatcher.setPriority(Thread.MAX_PRIORITY);
+		logRetrieval = new ACSLogRetrieval(engine);
 		initialize();
 	}
 
@@ -255,10 +258,10 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		//System.out.println("************************");
 		if (!xmlLogs.offer(xmlLog)) {
 			if (!discarding) {
-				System.out.println("Queue empty: log discarded\n"+xmlLog);
 				discarding=true;
 				engine.publishDiscarding();
 			} 
+			logRetrieval.addLog(xmlLog);
 		} else if (discarding) {
 			discarding=false;
 			engine.publishConnected(true);
