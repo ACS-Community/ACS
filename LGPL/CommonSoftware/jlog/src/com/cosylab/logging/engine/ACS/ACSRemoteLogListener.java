@@ -55,6 +55,28 @@ public interface ACSRemoteLogListener {
 	public void acsLogConnConnecting();
 	
 	/**
+	 * Notify that the service is supended 
+	 * (i.e. it is connected to the NC and receiving logs
+	 * but the logs are discarded instead of being sent to the 
+	 * listeners)
+	 * Note: the suspension of the service is not a malfunctioning
+	 *       but a status requested by the user
+	 */
+	public void acsLogConnSuspended();
+	
+	/**
+	 * Notify that for some internal reason the service is not able
+	 * to follow the flow of the incoming logs and is discarding
+	 * the messages
+	 * 
+	 * This method is not executed each time a log is discarded but
+	 * once when starting do discards messages.
+	 * When the temporary problem has been fixed, the status will revert
+	 * to connected
+	 */
+	public void acsLogDiscarding();
+	
+	/**
 	 * The method is executed when a new log arrives from the NC
 	 * 
 	 * @param logEntry The new log just read from the NC

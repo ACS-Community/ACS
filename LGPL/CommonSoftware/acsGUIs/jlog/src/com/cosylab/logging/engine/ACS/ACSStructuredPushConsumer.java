@@ -79,7 +79,23 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 
 	private ACSLogParser parser = null;
 	private ACSRemoteAccess acsra = null;
+	
+	/**
+	 * true if the consumer is discarding logs because is not able
+	 * to follow the flow of the incoming messages
+	 */
+	private boolean discarding=false;
+	
+	/**
+	 * If it is supended then the incoming messages are discarded
+	 * instead of being notified to the listeners
+	 */
+	private boolean suspended=false;
+	
+	// The queue where the logs read from the NC are pushed
+	// The dispatcher pos up and injects the logs in the GUI
 	private LinkedBlockingQueue<String> xmlLogs = new LinkedBlockingQueue<String>(2048);
+	
 	private Dispatcher dispatcher = new Dispatcher();
 	private LCEngine engine;
 	
@@ -216,6 +232,11 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	public void push_structured_event(StructuredEvent event) throws org.omg.CosEventComm.Disconnected
 	{
+		if (suspended) {
+			// In suspended mode, the incoming messages ar read from the NC but
+			// nt notified to the listeners
+			return;
+		}
 		//System.out.println("Pushed...: "  + event.remainder_of_body.toString());
 
 		/* extract event data */
@@ -233,7 +254,14 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		//System.out.println("***********Log**********\n" + xmlLog);
 		//System.out.println("************************");
 		if (!xmlLogs.offer(xmlLog)) {
-			System.out.println("Queue empty: log discarded\n"+xmlLog);
+			if (!discarding) {
+				System.out.println("Queue empty: log discarded\n"+xmlLog);
+				discarding=true;
+				engine.publishDiscarding();
+			} 
+		} else if (discarding) {
+			discarding=false;
+			engine.publishConnected(true);
 		}
 	}
 
@@ -305,6 +333,16 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		// No exceptions so the pusher reconneted
 		isConnected=true;
 		return true;
+	}
+	
+	/**
+	 * Suspend the notification of the incoming logs
+	 * @see LCEngine
+	 * @param suspend If true suspend the notification of new logs
+	 */
+	public void setSupended(boolean suspended) {
+		this.suspended=suspended;
+		engine.publishSuspended();
 	}
 }
 

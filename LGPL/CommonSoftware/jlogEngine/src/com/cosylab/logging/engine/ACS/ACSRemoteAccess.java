@@ -322,4 +322,12 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		return acsSPS.isConnected();
 	}
 
+	/**
+	 * Suspend the notification of the incoming logs
+	 * @see LCEngine
+	 * @param suspended If true suspend the notification of new logs
+	 */
+	public void setSuspended(boolean suspended) {
+		acsSPS.setSupended(suspended);
+	}
 }

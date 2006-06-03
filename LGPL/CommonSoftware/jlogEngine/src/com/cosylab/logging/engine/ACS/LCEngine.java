@@ -313,6 +313,18 @@ public class LCEngine implements Runnable {
 	}
 	
 	/**
+	 * Suspend resume the notification of logs
+	 * NOTE: When suspended the log discarded are lost forever
+	 * 
+	 * @param suspended If true suspend the notification of the logs
+	 */
+	public void setSupended(boolean suspended) {
+		if (remoteAccess instanceof ACSRemoteAccess) {
+			((ACSRemoteAccess)remoteAccess).setSuspended(suspended);
+		}
+	}
+	
+	/**
 	 * Add a connection status listener
 	 * 
 	 * @param listener The listener to add
@@ -411,6 +423,30 @@ public class LCEngine implements Runnable {
 			for (int t=0; t<listeners.size(); t++) {
 				ACSRemoteLogListener listener = listeners.get(t);
 				listener.logEntryReceived(newLog);
+			}
+		}
+	}
+	
+	public synchronized void publishSuspended() {
+		if (listeners==null) {
+			return;
+		}
+		for (int t=0; t<listeners.size(); t++) {
+			ACSRemoteLogListener listener = listeners.get(t);
+			if (listener!=null) {
+				listener.acsLogConnSuspended();
+			}
+		}
+	}
+	
+	public synchronized void publishDiscarding() {
+		if (listeners==null) {
+			return;
+		}
+		for (int t=0; t<listeners.size(); t++) {
+			ACSRemoteLogListener listener = listeners.get(t);
+			if (listener!=null) {
+				listener.acsLogDiscarding();
 			}
 		}
 	}
