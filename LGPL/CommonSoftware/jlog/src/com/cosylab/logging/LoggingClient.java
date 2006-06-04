@@ -235,8 +235,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     private JComboBox discardLevelCB;
     private final int DEFAULT_DISCARDLEVEL = LogTypeHelper.ENTRYTYPE_DEBUG;
     
-    // The radio button to enable/disable the scroll lock
-    private JToggleButton scrollLockTB;
+    // The radio button to enable/disable (pause) the scroll lock
+    private JToggleButton pauseTB;
+    private ImageIcon pauseGreenIcon;
+    private ImageIcon pauseRedIcon;
     
     // The search button in the toolbar
     private JButton searchBtn;
@@ -354,8 +356,13 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
             	}
             } else if (e.getSource()==LoggingClient.this.shortDateViewMI) {
             	logEntryTable.setShortDateFormat(LoggingClient.this.shortDateViewMI.getState());
-            } else if (e.getSource()==LoggingClient.this.scrollLockTB) {
-            	tableModel.scrollLock(scrollLockTB.isSelected());
+            } else if (e.getSource()==LoggingClient.this.pauseTB) {
+            	tableModel.scrollLock(pauseTB.isSelected());
+            	if (pauseTB.isSelected()) {
+            		pauseTB.setIcon(pauseRedIcon);
+            	} else {
+            		pauseTB.setIcon(pauseGreenIcon);
+            	}
             } else if (e.getSource()==LoggingClient.this.suspendMI) {
             	getEngine().setSupended(suspendMI.isSelected());
             }
@@ -988,10 +995,12 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         discardLevelCB.addActionListener(eventHandler);
         tbLevelPanel.add(discardLevelCB);
         
-        scrollLockTB = new JToggleButton("Scroll lock");
-        scrollLockTB.setSelected(false);
-        scrollLockTB.addActionListener(eventHandler);
-        tbLevelPanel.add(scrollLockTB);
+        pauseGreenIcon=new ImageIcon(LogTypeHelper.class.getResource("/pauseGreen.png"));
+        pauseRedIcon=new ImageIcon(LogTypeHelper.class.getResource("/pauseRed.png"));
+        pauseTB = new JToggleButton("Pause",pauseGreenIcon,false);
+        pauseTB.setSelected(false);
+        pauseTB.addActionListener(eventHandler);
+        tbLevelPanel.add(pauseTB);
         
         
         userPanel.add(tbLevelPanel);
