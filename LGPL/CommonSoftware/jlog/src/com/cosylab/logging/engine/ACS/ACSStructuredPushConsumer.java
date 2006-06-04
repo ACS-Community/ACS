@@ -345,7 +345,11 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	public void setSupended(boolean suspended) {
 		this.suspended=suspended;
-		engine.publishSuspended();
+		if (suspended) {
+			engine.publishSuspended();
+		} else {
+			engine.publishConnected(true);
+		}
 	}
 }
 
