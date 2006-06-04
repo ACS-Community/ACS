@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.2 2006/06/03 23:29:53 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.3 2006/06/04 20:54:06 acaproni Exp $
  * @since    
  */
 
@@ -186,16 +186,18 @@ public class ACSLogRetrieval extends Thread {
 					readCursor=endPos;
 				}
 			}
-			String tempStr = new String(buffer);
-			ILogEntry log;
-			try {
-				log = new LogEntry(parser.parse(tempStr));
-			} catch (Exception e) {
-				System.err.println("error parsing a log "+e.getMessage());
-				e.printStackTrace();
-				continue;
+			String tempStr = new String(buffer).trim();
+			if (tempStr.length()>0) {
+				ILogEntry log;
+				try {
+					log = new LogEntry(parser.parse(tempStr));
+				} catch (Exception e) {
+					System.err.println("error parsing a log "+e.getMessage());
+					e.printStackTrace();
+					continue;
+				}
+				engine.publishLog(log);
 			}
-			engine.publishLog(log);
 		}
 	}
 	
