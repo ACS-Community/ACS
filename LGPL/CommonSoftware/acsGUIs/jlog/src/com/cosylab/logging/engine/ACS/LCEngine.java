@@ -298,7 +298,7 @@ public class LCEngine implements Runnable {
 			}
 			// Check the connection!
 			boolean connected = isConnected();
-			publishConnected(connected);
+			//publishConnected(connected);
 			if (wasConnected && !connected) {
 				publishReport("Connection lost");
 				wasConnected=false;
