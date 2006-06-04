@@ -104,7 +104,7 @@ public class LogBufferedFileCache extends LogFileCache {
 		 * Flush the buffer on disk
 		 *
 		 */
-		private void flushBuffer() throws LogCacheException {
+		private synchronized void flushBuffer() throws LogCacheException {
 			// Get all the logs
 			String logsStr=charBuffer.toString();
 			// The length of the file
@@ -224,7 +224,7 @@ public class LogBufferedFileCache extends LogFileCache {
 	 * Empty the cache.
 	 * 
 	 */
-	public void clear() throws LogCacheException {
+	public synchronized void clear() throws LogCacheException {
 		super.clear();
 		wBuffer.clear(file,index);
 	}
@@ -237,7 +237,7 @@ public class LogBufferedFileCache extends LogFileCache {
 	 * 
 	 * @throws IOException
 	 */
-	public void clear(boolean newFile, boolean keepOldFile) throws LogCacheException {
+	public synchronized void clear(boolean newFile, boolean keepOldFile) throws LogCacheException {
 		super.clear(newFile,keepOldFile);
 		wBuffer.clear(file,index);
 	}
@@ -248,7 +248,7 @@ public class LogBufferedFileCache extends LogFileCache {
 	 * @param pos The position of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public ILogEntry getLog(int pos) throws LogCacheException {
+	public synchronized ILogEntry getLog(int pos) throws LogCacheException {
 		// Check if the log is present in the list of the replaced logs
 		if (replacedLogs.containsKey(new Integer(pos))) {
 			return replacedLogs.get(new Integer(pos));
@@ -264,7 +264,7 @@ public class LogBufferedFileCache extends LogFileCache {
 	 * @param log The log to append in the cache
 	 * @return The position in the cache of the added log
 	 */
-	public int add(ILogEntry log) throws LogCacheException {
+	public synchronized int add(ILogEntry log) throws LogCacheException {
 		return wBuffer.addLog(log);
 	}
 	
