@@ -266,6 +266,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	private final int CONNECTED_ICON =  0;
 	private final int CONNECTING_ICON = 1;
 	private final int DISCONNECTED_ICON=2;
+	private final int SUSPENDED_ICON = 3;
+	private final int DELAY_ICON = 4;
 	private ImageIcon[] connectionStatusIcons; 
 	// The label where icon is shown
 	private JLabel connectionStatusLbl;
@@ -1516,11 +1518,12 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			try
 			{
 				// Lad the icons for the status of the connection
-				connectionStatusIcons = new ImageIcon[3];
+				connectionStatusIcons = new ImageIcon[5];
 				connectionStatusIcons[CONNECTED_ICON]=new ImageIcon(this.getClass().getResource("/console-connected.png"));
 				connectionStatusIcons[CONNECTING_ICON]=new ImageIcon(this.getClass().getResource("/console-connecting.png"));
 				connectionStatusIcons[DISCONNECTED_ICON]=new ImageIcon(this.getClass().getResource("/console-disconnected.png"));
-				System.out.println("Image info "+connectionStatusIcons[CONNECTED_ICON].getIconHeight()+","+connectionStatusIcons[CONNECTED_ICON].getIconWidth());
+				connectionStatusIcons[SUSPENDED_ICON]=new ImageIcon(this.getClass().getResource("/console-suspended.png"));
+				connectionStatusIcons[DELAY_ICON]=new ImageIcon(this.getClass().getResource("/console-delay.png"));
 				connectionStatusLbl = new JLabel(connectionStatusIcons[CONNECTING_ICON]);
 				
 				filterStatusPnl = new javax.swing.JPanel();
@@ -2063,13 +2066,20 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 * Notify that the service is supended 
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
-	public void acsLogConnSuspended() {}
+	public void acsLogConnSuspended() {
+		setTitle("LoggingClient - Suspended");
+		connectionStatusLbl.setIcon(connectionStatusIcons[SUSPENDED_ICON]);
+		connectionStatusLbl.setToolTipText("Suspended");
+	}
 	
 	/**
 	 * Notify that for some internal reason the service is not able
 	 * to follow the flow of the incoming logs
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
-	public void acsLogsDelay() {}
+	public void acsLogsDelay() {
+		connectionStatusLbl.setIcon(connectionStatusIcons[DELAY_ICON]);
+		connectionStatusLbl.setToolTipText("Delay");
+	}
 }
 
