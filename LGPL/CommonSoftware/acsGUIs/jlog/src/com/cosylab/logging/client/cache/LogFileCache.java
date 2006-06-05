@@ -24,6 +24,7 @@ package com.cosylab.logging.client.cache;
 import java.util.Vector;
 import java.util.Random;
 import java.util.HashMap;
+import java.util.Date;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -34,6 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 
 /**
  * This class implements the cache in order to be able to manage
@@ -64,6 +66,9 @@ public class LogFileCache {
 	
 	// The parser
 	private ACSLogParser parser; 
+	
+	private StringBuffer sb=new StringBuffer();
+	private final String SEPARATOR = new String (""+((char)0));
 	
 	// The logs replaced (for example the logs with some info added)
 	// They are usually a few so we keep them in memory
@@ -276,9 +281,9 @@ public class LogFileCache {
 		if (replacedLogs.containsKey(new Integer(pos))) {
 			return replacedLogs.get(new Integer(pos));
 		}
-		String logStr = getLogAsString(pos).trim();
+		String logStr = getLogAsString(pos); 
 		try {
-			return new LogEntry(parser.parse(logStr));
+			return fromCacheString(logStr); 
 		} catch (Exception e) {
 			System.err.println("Exception "+e.getMessage());
 			throw new LogCacheException("Exception parsing a log",e);
@@ -295,7 +300,7 @@ public class LogFileCache {
 		if (log==null) {
 			throw new LogCacheException("Trying to add a null log!");
 		}
-		String xml=log.toXMLString();
+		String xml=toCacheString(log); 
 		long pos;
 		synchronized(file) {
 			try {
@@ -323,4 +328,117 @@ public class LogFileCache {
 		replacedLogs.put(new Integer(position),log);
 	}
 	
+	protected String toCacheString(ILogEntry log) {
+		sb.delete(0,sb.length());
+		for (int t=0; t<ILogEntry.NUMBER_OF_FIELDS; t++) {
+			Object obj = log.getField(t);
+			if (obj!=null) {
+				if (obj instanceof Date) {
+					sb.append(((Date)obj).getTime());
+				} else {
+					sb.append(obj.toString());
+				}
+			}
+			sb.append((char)0);
+		}
+		if (log.hasDatas()) {
+			Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
+			for (int t=0; t<datas.size(); t++) {
+				ILogEntry.AdditionalData data = datas.get(t);
+				sb.append(data.getName());
+				sb.append(SEPARATOR);
+				sb.append(data.getValue());
+				sb.append(SEPARATOR);
+			}
+		}
+		return sb.toString();
+	}
+	
+	private ILogEntry fromCacheString(String str) {
+		String[] strs = str.split(SEPARATOR);
+		Long millis = Long.parseLong(strs[0]);
+		Integer entrytype = Integer.parseInt(strs[1]);
+		String srcObject = null;
+		if (strs.length>2) {
+			srcObject=strs[2];
+		}
+		String fileNM = null;
+		if (strs.length>3) {
+			fileNM=strs[3];
+		}
+		Integer line = null;
+		if (strs.length>4 && strs[4].length()!=0) {
+			line = Integer.parseInt(strs[4]);
+		}
+		String routine = null;
+		if (strs.length>5) {
+			routine=strs[5];
+		}
+		String host = null;
+		if (strs.length>6) {
+			host=strs[6];
+		}
+		String process = null;
+		if (strs.length>7) {
+			process=strs[7];
+		}
+		String context = null;
+		if (strs.length>8) {
+			context=strs[8];
+		}
+		String thread = null;
+		if (strs.length>9) {
+			thread=strs[9];
+		}
+		String logid = null;
+		if (strs.length>10) {
+			logid=strs[10];
+		}
+		Integer priority = null;
+		if (strs.length>11 && strs[11].length()>0) {
+			priority=Integer.parseInt(strs[11]);
+		}
+		String uri = null;
+		if (strs.length>12) {
+			uri=strs[12];
+		}
+		String stackid = null;
+		if (strs.length>13) {
+			stackid=strs[13]; 
+		}
+		Integer stacklevel = null;
+		if (strs.length>14 && strs[14].length()>0) {
+			Integer.parseInt(strs[14]);
+		}
+		String logmessage = null;
+		if (strs.length>15) {
+			logmessage=strs[15];
+		}
+        
+        Vector<ILogEntry.AdditionalData> addDatas = null;
+        if (strs.length>ILogEntry.NUMBER_OF_FIELDS) {
+        	addDatas = new Vector<ILogEntry.AdditionalData>();
+        	for (int t=ILogEntry.NUMBER_OF_FIELDS; t<strs.length; t+=2) {
+        		addDatas.add(new AdditionalData(strs[t],strs[t+1]));
+        	}
+        }
+        return new LogEntry(
+        		millis,
+        		entrytype,
+        		fileNM,
+        		line,
+        		routine,
+        		host,
+        		process,
+        		context,
+        		thread,
+        		logid,
+        		priority,
+        		uri,
+        		stackid,
+        		stacklevel,
+        		logmessage,
+        		srcObject,
+        		addDatas);
+	}
 }

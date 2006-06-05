@@ -92,7 +92,7 @@ public class LogBufferedFileCache extends LogFileCache {
 		public synchronized int addLog(ILogEntry log) throws LogCacheException {
 			// Add the log in the buffer
 			bufferIndex.add((long)charBuffer.length());
-			charBuffer.append(log.toXMLString());
+			charBuffer.append(toCacheString(log));
 			writeBuffer.put(bufferIndex.size()-1,log);
 			if (writeBuffer.size()>=writeBufferSize) {
 				flushBuffer();
