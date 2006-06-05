@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.32 2006/06/02 21:07:27 dfugate Exp $"
+# "@(#) $Id: acsStart,v 1.33 2006/06/05 22:54:11 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -72,11 +72,12 @@ CL_HELP=
 CL_TIMEOUT=
 CL_VERBOSE=
 CL_WAITIFR=true
+CL_LOG=true
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:,verbose,nowaitifr
+LONGOPTS=help,baseport:,timeout:,verbose,nowaitifr,nolog
 SHORTOPTS=hb:t:v
 
 #
@@ -90,6 +91,8 @@ function printUsage {
    echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
    echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
    echo "        -nowaitifr                does not wait for the CORBA Interface Repository to load before returning"
+   echo "        -nolog                    does not automatically start a loggingClient process writing XML logs to"
+   echo "                                  \$ACSDATA/tmp/ACS_INSTANCE.\$ACS_INSTANCE/"
    echo "   -v | -verbose                  print subprocess output to console (additionally to regular logfile)"
    echo "   -h | -help                     prints this help and exits"
 }
@@ -118,6 +121,7 @@ do
 	--timeout)          CL_TIMEOUT=$2 ; shift ;;
 	-t)                 CL_TIMEOUT=$2 ; shift ;;
 	--nowaitifr)        CL_WAITIFR=false ;;
+	--nolog)            CL_LOG=false ;;
 	--verbose)          CL_VERBOSE=true ;;
 	-v)                 CL_VERBOSE=true ;;
 	--help)             CL_HELP=true ;; 
@@ -247,8 +251,20 @@ then
 fi
 
 rm -f $IRFEED_PIDFILE
-#--------------------------------------------------------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------------------------------------------------------
+#--Starts up the logging client
+if [ "$CL_LOG" = "true" ]
+then
+    export LOGFILE=$INSTANCE_DIR/$ACS_LOGFILE
+    export LC_PIDFILE=$INSTANCE_DIR/$ACS_LOGCLIENT_PIDFILE
+    ACS_LOG_INFO  "Sending all future CORBA-based logs to $LOGFILE."
+    loggingClient LoggingChannel > $LOGFILE 2>1  &
+    echo $! > $LC_PIDFILE
+fi
+
+#--------------------------------------------------------------------------------------------------------------------------
 ACS_LOG_FORCED "INFO - For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
 ACS_LOG_FORCED "INFO - ACS is up and running"
 rm $ACSSTARTLOG
+

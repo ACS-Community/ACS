@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.16 2006/05/11 20:35:07 dfugate Exp $"
+# "@(#) $Id: acsStop,v 1.17 2006/06/05 22:54:11 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -125,30 +125,32 @@ fi
 
 ACS_LOG_COMMAND
 
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
 ########################################################################
 #SANITY CHECKS----------------------------------------------------------
 #Cannot shutdown everything if we don't know the process IDs.
-if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
+if [ ! -d $INSTANCE_DIR ]
 then
     ACS_LOG_ERROR "The lock directory '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
     ACS_LOG_INFO "Will continue trying to shutdown ACS although containers cannot be stopped."
 
 #Cannot shutdown everything if this user does not own the processes.
-elif [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
+elif [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '`getInstanceDirName $ACS_INSTANCE`' is not owned by '$USER'!"
+    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 
 #instance directory exists
 else
     #Lock file specifically for the acsStop script
-    if [ -e `getInstanceDirName $ACS_INSTANCE`/.stoplock ]
+    if [ -e $INSTANCE_DIR/.stoplock ]
     then
 	ACS_LOG_ERROR "Unable to shutdown because another process is attempting to stop the '$ACS_INSTANCE' instance of ACS!"
-	ACS_LOG_ERROR "    Please be patient (or try removing `getInstanceDirName $ACS_INSTANCE`/.stoplock)."
+	ACS_LOG_ERROR "    Please be patient (or try removing $INSTANCE_DIR/.stoplock)."
 	exit $EC_CANNOTUSE
     else
-	touch `getInstanceDirName $ACS_INSTANCE`/.stoplock
+	touch $INSTANCE_DIR/.stoplock
     fi
 fi
 
@@ -166,6 +168,16 @@ do
   ACS_LOG_INFO "Shutting down $line container"
   acsStopContainer $line &> /dev/null
 done
+
+#-----------------------------------------------------------------------
+#--Stops the logging client
+export LC_PIDFILE=$INSTANCE_DIR/$ACS_LOGCLIENT_PIDFILE
+if [ -e $LC_PIDFILE ]
+then
+    export LC_PID=`cat $LC_PIDFILE`
+    ACS_LOG_INFO  "Stopping file-based logging client."
+    acsKillProc $LC_PID &> /dev/null
+fi
 
 ########################################################################
 #SHUTDOWN MANAGER-------------------------------------------------------

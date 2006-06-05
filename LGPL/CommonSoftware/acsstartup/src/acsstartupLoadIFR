@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.1 2006/03/24 23:24:53 dfugate Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.2 2006/06/05 22:54:11 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -114,9 +114,9 @@ rm $ACS_IDL_IRFEED_FILE
 # One final check
 if [ "$RET_CODE" = "0" ]
 then
-    ACS_LOG_INFO "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
+    ACS_LOG_INFO "Loading of IDL interfaces in Interface Repository completed OK"
 else
-    ACS_LOG_ERROR "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
+    ACS_LOG_ERROR "Loading of IDL interfaces in Interface Repository FAILED"
 fi
 
 exit $RET_CODE
