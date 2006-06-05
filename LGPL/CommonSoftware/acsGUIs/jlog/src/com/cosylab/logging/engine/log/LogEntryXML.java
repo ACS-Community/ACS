@@ -60,8 +60,6 @@ import com.cosylab.logging.engine.VectorNodeList;
  */
 public final class LogEntryXML implements ILogEntry
 {
-	private static final HashMap<String, String> stringPool = new HashMap<String, String>(1000);
-    
 	private VectorNodeList datas = null;
 	public VectorNodeList complexLogEntryMessage = null;
 
@@ -70,6 +68,9 @@ public final class LogEntryXML implements ILogEntry
 
 	private Node log = null;
 	private boolean isLogEntrySimple = true;
+	
+	// The simple date format used to write and read dates from a string
+	private SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
 
 	// Should be set through FIELD_LOGMESSAGE
 	// public String simpleLogEntryMessage = null;
@@ -161,29 +162,6 @@ public final class LogEntryXML implements ILogEntry
 	}
 	
 	/**
-	 * Checks if a String equal to <code>s</code> is already in the string pool.
-	 * If so, it will be returned for reuse, otherwise it will be added and returned.
-	 *  
-	 * @param s a String
-	 * @return the same or a different Sting object, which is equal to <code>s</code>.
-	 */
-	private static String fromStringPool(String s) {
-		if (s == null) {
-			return null;
-		}
-		
-		String equalString = stringPool.get(s);
-		if (equalString != null) {
-			return equalString;
-		}
-		else {
-			stringPool.put(s, s);
-			return s;
-		}
-	}
-	
-	
-	/**
 	 * Check if the log entry has datas
 	 * 
 	 * @return ture datas is not null
@@ -260,12 +238,11 @@ public final class LogEntryXML implements ILogEntry
 			throw new DOMException(
 				DOMException.NOT_FOUND_ERR,
 				"TimeStamp attribute is missing in " + getField(FIELD_ENTRYTYPE));
-		SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
 
         // The time stamp is required!
 		try
 		{
-			setField(FIELD_TIMESTAMP, df.parse(attr.getNodeValue()));
+			setField(FIELD_TIMESTAMP, dateFormat.parse(attr.getNodeValue()));
 		}
 		catch (ParseException pe)
 		{
@@ -276,7 +253,7 @@ public final class LogEntryXML implements ILogEntry
         // happen is some of them are missing)
 		attr = nnm.getNamedItem(tagAttributes[FIELD_FILE]);
 		if (attr != null)
-			setField(FIELD_FILE, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_FILE, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_LINE]);
 		if (attr != null)
@@ -284,27 +261,27 @@ public final class LogEntryXML implements ILogEntry
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_ROUTINE]);
 		if (attr != null)
-			setField(FIELD_ROUTINE, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_ROUTINE, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_HOST]);
 		if (attr != null)
-			setField(FIELD_HOST, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_HOST, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_PROCESS]);
 		if (attr != null)
-			setField(FIELD_PROCESS, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_PROCESS, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_CONTEXT]);
 		if (attr != null)
-			setField(FIELD_CONTEXT, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_CONTEXT, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_THREAD]);
 		if (attr != null)
-			setField(FIELD_THREAD, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_THREAD, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_STACKID]);
 		if (attr != null)
-			setField(FIELD_STACKID, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_STACKID, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_STACKLEVEL]);
 		if (attr != null)
@@ -312,7 +289,7 @@ public final class LogEntryXML implements ILogEntry
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_LOGID]);
 		if (attr != null)
-			setField(FIELD_LOGID, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_LOGID, attr.getNodeValue());
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_PRIORITY]);
 		if (attr != null)
@@ -320,11 +297,11 @@ public final class LogEntryXML implements ILogEntry
 
 		attr = nnm.getNamedItem(tagAttributes[FIELD_URI]);
 		if (attr != null)
-			setField(FIELD_URI, fromStringPool(attr.getNodeValue()));
+			setField(FIELD_URI, attr.getNodeValue());
         
         attr = nnm.getNamedItem(tagAttributes[FIELD_SOURCEOBJECT]);
         if (attr != null) {
-            setField(FIELD_SOURCEOBJECT, fromStringPool(attr.getNodeValue()));
+            setField(FIELD_SOURCEOBJECT, attr.getNodeValue());
         }
 	}
     
@@ -352,7 +329,7 @@ public final class LogEntryXML implements ILogEntry
 				if (isLogEntrySimple)
 				{
 					// simpleLogEntryMessage = node.getNodeValue();
-					setField(FIELD_LOGMESSAGE, fromStringPool(node.getNodeValue()));
+					setField(FIELD_LOGMESSAGE, node.getNodeValue());
 				}
 				else
 				{
@@ -509,11 +486,10 @@ public final class LogEntryXML implements ILogEntry
 			Object attrValue = getField(t);
 			if (attrValue!=null) {
 				if (Date.class.isInstance(attrValue)) {
-					SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
 					Date dt = (Date)attrValue;
 					StringBuffer dateSB = new StringBuffer();
 					java.text.FieldPosition pos = new java.text.FieldPosition(0);
-					df.format(dt,dateSB,pos);
+					dateFormat.format(dt,dateSB,pos);
 					attrValue=dateSB.toString();
 				}
 				String attrValStr = attrValue.toString();
