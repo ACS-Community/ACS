@@ -65,37 +65,37 @@ public class LogEntry implements ILogEntry {
 	 * @see ILogEntry
 	 */
 	public LogEntry(
-			long milliseconds,
-			int entrytype,
+			Long milliseconds,
+			Integer entrytype,
 			String file,
-			int line,
+			Integer line,
 			String routine,
 			String host,
 			String process,
 			String context,
 			String thread,
 			String logid,
-			int priority,
+			Integer priority,
 			String uri,
 			String stackid,
-			int stacklevel,
+			Integer stacklevel,
 			String logmessage,
 	        String srcObject,
 	        Vector<AdditionalData> addDatas) {
 		this.date=new Date(milliseconds);
-		this.type=new Integer(entrytype);
+		this.type=entrytype;
 		this.file=file;
-		this.line=new Integer(line);
+		this.line=line;
 		this.routine=routine;
 		this.host=host;
 		this.process=process;
 		this.context=context;
 		this.thread=thread;
 		this.logId=logid;
-		this.priority=new Integer(priority);
+		this.priority=priority;
 		this.uri=uri;
 		this.stackId=stackid;
-		this.stackLevel=new Integer(stacklevel);
+		this.stackLevel=stacklevel;
 		this.logMessage=logmessage;
 		this.sourceObject=srcObject;
 		// Add the additional datas, if any
