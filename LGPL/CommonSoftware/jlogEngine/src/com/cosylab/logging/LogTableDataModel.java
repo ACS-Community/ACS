@@ -55,29 +55,6 @@ import com.cosylab.logging.client.CustomFileChooser;
  */
 public class LogTableDataModel extends AbstractTableModel implements Runnable
 {
-	/**
-	 * The class to change the log level
-	 * 
-	 * Insert a Class/Interface comment.
-	 *
-	 */
-	private class LogLevelManager extends Thread {
-		// The new level
-		private int level;
-		
-		public LogLevelManager(int level) {
-			this.level = level;
-		}
-		
-		/**
-		 * Regenerate the vector of the visible logs with the given log level
-		 */
-		public void run() {
-			
-		}
-		
-	}
-	
 	private static final String BLANK_STRING = "";
 
 	//private final LogEntryComparator sortComparator = new LogEntryComparator(LogEntryXML.FIELD_STACKID, true);
