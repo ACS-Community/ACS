@@ -64,9 +64,6 @@ public class LogFileCache {
 	// position of each log entry in the logFile
 	protected Vector<Long> index = new Vector<Long>(256,16);
 	
-	// The parser
-	private ACSLogParser parser; 
-	
 	private StringBuffer sb=new StringBuffer();
 	private final String SEPARATOR = new String (""+((char)0));
 	
@@ -80,12 +77,7 @@ public class LogFileCache {
 	 * @param filters The user defined filters
 	 * @param systemFilters The system filters
 	 */
-	public LogFileCache() throws LogCacheException {
-		try {
-			parser = new ACSLogParser();
-		} catch (ParserConfigurationException pce) {
-			throw new LogCacheException("Error instantiating the parser",pce);
-		} 
+	public LogFileCache() throws LogCacheException { 
 		try {
 			initCache();
 		} catch (IOException ioe) {
