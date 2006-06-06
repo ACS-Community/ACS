@@ -23,14 +23,14 @@ package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
-
-
 /**
- * The class extends the cache on file implemented in LogFileCache
+ * The class extends the cache on file implemented in LogBufferedFileCache
  * keeping a cache of logs in memory to avoid to access the file
  * for the most frequently accessed logs
  * 
@@ -67,6 +67,12 @@ public class LogCache extends LogBufferedFileCache {
 	 *    with its neighbor 
 	 */
 	private ArrayBlockingQueue<Integer> manager = null;
+	
+	/** 
+	 * The aray with the level of each log in the cache
+	 * (useful for the log level)
+	 */
+	private ArrayList<Integer> logTypes = new ArrayList<Integer>(256);
 		
 	/**
 	 * Build a LogCache object
@@ -77,7 +83,38 @@ public class LogCache extends LogBufferedFileCache {
 	public LogCache() throws LogCacheException {
 		this(getDefaultCacheSize()); 
 	}
+	
+	/** 
+	 * Adds a log in the cache.
+	 * It does nothing because the adding is done by its parent class.
+	 * What it does is to store the level of the log in the array
+	 * 
+	 * @param log The log to add in the cache
+	 * @return The position of the added log in the cache
+	 * @throws LogCacheException If an error happened while adding the log
+	 */
+	public int add(ILogEntry log) throws LogCacheException {
+		int pos = super.add(log);
+		if (pos!=logTypes.size()) {
+			throw new LogCacheException("Inconsistent state of the logLevels array");
+		}
+		synchronized (logTypes) {
+			logTypes.add((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
+		}
+		return pos;
+	}
 
+	/** 
+	 * 
+	 * @param pos The position of the log
+	 * @return The type of the log in the given position
+	 */
+	public int getLogType(int pos) {
+		if (pos<0 || pos>=logTypes.size()) {
+			throw new IndexOutOfBoundsException(""+pos+" is not in the array ["+0+","+logTypes.size()+"]");
+		}
+		return logTypes.get(pos);
+	}
 	
 	/**
 	 * Build a logCache object of the given size
@@ -93,7 +130,7 @@ public class LogCache extends LogBufferedFileCache {
 		actualCacheSize = size;
 		System.out.println("Jlog will use cache for " + actualCacheSize + " log records.");		
 		cache = new HashMap<Integer,ILogEntry>(actualCacheSize);
-		manager = new ArrayBlockingQueue(actualCacheSize, true);
+		manager = new ArrayBlockingQueue<Integer>(actualCacheSize, true);
 		clear();
 	}
 	
@@ -178,6 +215,7 @@ public class LogCache extends LogBufferedFileCache {
 	public synchronized void clear() throws LogCacheException {
 		cache.clear();
 		manager.clear();
+		logTypes.clear();
 		super.clear();
 	}
 	
