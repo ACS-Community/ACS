@@ -470,12 +470,13 @@ public class LogEntryTable extends javax.swing.JTable
 			{
 				e.consume();
 			}
-
+			getTableHeader().setEnabled(false);
 			if (col == owner.getSortIndex()) {
 				setSortOrder(!isSortAscending());
 			} else {
 				setSortIndex(col);
 			}
+			//super.mouseClicked(e);
 		}
 
 		public void mouseReleased(MouseEvent e)
