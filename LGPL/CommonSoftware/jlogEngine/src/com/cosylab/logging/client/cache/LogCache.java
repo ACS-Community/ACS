@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -70,9 +71,15 @@ public class LogCache extends LogBufferedFileCache {
 	
 	/** 
 	 * The aray with the level of each log in the cache
-	 * (useful for the log level)
+	 * (useful for setting the log level)
 	 */
 	private ArrayList<Integer> logTypes = new ArrayList<Integer>(256);
+	
+	/**
+	 * The array with the timestamp of each log in the cache
+	 * (useful for sorting)
+	 */
+	private ArrayList<Long> logTimes = new ArrayList<Long>(256);
 		
 	/**
 	 * Build a LogCache object
@@ -101,6 +108,9 @@ public class LogCache extends LogBufferedFileCache {
 		synchronized (logTypes) {
 			logTypes.add((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
 		}
+		synchronized (logTimes) {
+			logTimes.add(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime());
+		}
 		return pos;
 	}
 
@@ -114,6 +124,18 @@ public class LogCache extends LogBufferedFileCache {
 			throw new IndexOutOfBoundsException(""+pos+" is not in the array ["+0+","+logTypes.size()+"]");
 		}
 		return logTypes.get(pos);
+	}
+	
+	/** 
+	 * 
+	 * @param pos The position of the log
+	 * @return The timestamp of the log in the given position
+	 */
+	public long getLogTimestamp(int pos) {
+		if (pos<0 || pos>=logTypes.size()) {
+			throw new IndexOutOfBoundsException(""+pos+" is not in the array ["+0+","+logTypes.size()+"]");
+		}
+		return logTimes.get(pos);
 	}
 	
 	/**
@@ -216,6 +238,7 @@ public class LogCache extends LogBufferedFileCache {
 		cache.clear();
 		manager.clear();
 		logTypes.clear();
+		logTimes.clear();
 		super.clear();
 	}
 	
