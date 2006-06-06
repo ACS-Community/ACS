@@ -64,7 +64,7 @@ public class LogFileCache {
 	// position of each log entry in the logFile
 	protected Vector<Long> index = new Vector<Long>(256,16);
 	
-	private StringBuffer sb=new StringBuffer();
+	private StringBuilder sb=new StringBuilder();
 	private final String SEPARATOR = new String (""+((char)0));
 	
 	// The logs replaced (for example the logs with some info added)
