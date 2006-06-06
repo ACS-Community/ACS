@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.33 2006/06/05 22:54:11 dfugate Exp $"
+# "@(#) $Id: acsStart,v 1.34 2006/06/06 17:02:46 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -72,13 +72,13 @@ CL_HELP=
 CL_TIMEOUT=
 CL_VERBOSE=
 CL_WAITIFR=true
-CL_LOG=true
+CL_LOG=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:,verbose,nowaitifr,nolog
-SHORTOPTS=hb:t:v
+LONGOPTS=help,baseport:,timeout:,verbose,nowaitifr,log
+SHORTOPTS=hb:t:vl
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -91,7 +91,7 @@ function printUsage {
    echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
    echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
    echo "        -nowaitifr                does not wait for the CORBA Interface Repository to load before returning"
-   echo "        -nolog                    does not automatically start a loggingClient process writing XML logs to"
+   echo "  -l  | -log                      automatically starts a loggingClient process writing XML logs to"
    echo "                                  \$ACSDATA/tmp/ACS_INSTANCE.\$ACS_INSTANCE/"
    echo "   -v | -verbose                  print subprocess output to console (additionally to regular logfile)"
    echo "   -h | -help                     prints this help and exits"
@@ -121,7 +121,8 @@ do
 	--timeout)          CL_TIMEOUT=$2 ; shift ;;
 	-t)                 CL_TIMEOUT=$2 ; shift ;;
 	--nowaitifr)        CL_WAITIFR=false ;;
-	--nolog)            CL_LOG=false ;;
+	--log)              CL_LOG=true ;;
+	-l)                 CL_LOG=true ;;
 	--verbose)          CL_VERBOSE=true ;;
 	-v)                 CL_VERBOSE=true ;;
 	--help)             CL_HELP=true ;; 
