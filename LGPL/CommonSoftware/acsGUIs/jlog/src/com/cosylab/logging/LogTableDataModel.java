@@ -38,6 +38,8 @@ import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.IOLogsHelper;
 
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.client.CustomFileChooser;
@@ -53,6 +55,29 @@ import com.cosylab.logging.client.CustomFileChooser;
  */
 public class LogTableDataModel extends AbstractTableModel implements Runnable
 {
+	/**
+	 * The class to change the log level
+	 * 
+	 * Insert a Class/Interface comment.
+	 *
+	 */
+	private class LogLevelManager extends Thread {
+		// The new level
+		private int level;
+		
+		public LogLevelManager(int level) {
+			this.level = level;
+		}
+		
+		/**
+		 * Regenerate the vector of the visible logs with the given log level
+		 */
+		public void run() {
+			
+		}
+		
+	}
+	
 	private static final String BLANK_STRING = "";
 
 	//private final LogEntryComparator sortComparator = new LogEntryComparator(LogEntryXML.FIELD_STACKID, true);
@@ -69,9 +94,10 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	// Data model maintains the list of all the available filters
 	private final FiltersVector filters = new FiltersVector();
     
-    // The list of the filters not defined by the user as for example the log level
-    // defined in the toolbar
-    private final FiltersVector systemFilters = new FiltersVector();
+	/**
+	 * The level of the log to show in the table
+	 */
+    private int logLevel;
     
 	// Contains references to the filters that are currently applied to logs.
 	// Actual filters are stored in filters.
@@ -439,7 +465,11 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		visibleLogs.clear();
 		for (int i = 0; i < size; i++) {
 			try {
-				visibleLogInsert(allLogs.getLog(i),i);
+				// Check here the log level so we can avoid getting a log
+				// if it has the wrong log level
+				if (allLogs.getLogType(i)>=logLevel) {
+					visibleLogInsert(allLogs.getLog(i),i);
+				}
 			} catch (Exception e) {
 				System.err.println("Exception "+e.getMessage());
 				e.printStackTrace(System.err);
@@ -477,6 +507,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		else
 			visibleLogs.expand(index);*/
 	}
+	
 	/**
 	 * If the log is not filtered then it is inserted
 	 * in the list of the visible logs (i.e. the logs that
@@ -486,7 +517,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @param pos The position of this log in the cache
 	 */
 	public void visibleLogInsert(ILogEntry log, int pos) {
-		if (filters.applyFilters(log) && systemFilters.applyFilters(log)) {
+		if (allLogs.getLogType(pos)>=logLevel && filters.applyFilters(log)) {
 			visibleLogs.add(pos,log);
 		}
 	}
@@ -498,15 +529,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public FiltersVector getFilters() {
 		return filters;
-	}
-	
-	/** 
-	 * Return the filters defined by the system (for example the log level in the toolbar)
-	 * 
-	 * @return The system filters
-	 */
-	public FiltersVector getSystemFilters() {
-	    return systemFilters;
 	}
 	
 	/**
@@ -559,5 +581,12 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public void scrollLock(boolean lock) {
 		visibleLogs.suspendRefresh(lock);
+	}
+	
+	public void setLogLevel(int newLevel) {
+		if (newLevel<0 || newLevel>LogTypeHelper.ENTRYTYPE_EMERGENCY) {
+			throw new IllegalArgumentException(""+newLevel+" is not valid");
+		}
+		logLevel=newLevel;
 	}
 }
