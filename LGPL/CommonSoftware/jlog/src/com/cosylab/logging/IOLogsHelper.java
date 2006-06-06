@@ -21,43 +21,38 @@
  */
 package com.cosylab.logging;
 
-import java.util.LinkedList;
-
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
 
-import com.cosylab.logging.client.cache.LogCache;
-import com.cosylab.logging.client.cache.LogCacheException;
-
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntry;
-import com.cosylab.logging.stats.ResourceChecker;
-import com.cosylab.logging.LoggingClient;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
 import alma.acs.util.StopWatch;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import java.awt.Toolkit;
-
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JProgressBar;
-import javax.swing.JOptionPane;
-import javax.swing.JCheckBox;
-
-import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
+import com.cosylab.logging.client.cache.LogCache;
+import com.cosylab.logging.client.cache.LogCacheException;
+import com.cosylab.logging.engine.ACS.ACSLogParser;
+import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.stats.ResourceChecker;
 
 
 /**
@@ -729,10 +724,9 @@ public class IOLogsHelper extends Thread  {
 		ILogEntry log=null;
 		try {
 			if (parser == null) {
-				parser = new ACSLogParser();
+				parser = new ACSLogParserVTD();
 			}
-			//System.out.println("Parsing "+logStr);
-			log=new LogEntry(parser.parse(logStr));
+			log = parser.parse(logStr.trim());
 		} catch (Exception e) {
 			System.err.println("Exception parsing a log: "+e.getMessage());
 			System.out.println("Log Str: ["+logStr+"]");

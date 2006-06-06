@@ -21,8 +21,6 @@
  */
 package com.cosylab.logging.engine;
 
-import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-
 import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;

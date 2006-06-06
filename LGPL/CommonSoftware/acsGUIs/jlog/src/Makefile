@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.22 2006/04/28 11:32:03 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.23 2006/06/06 23:57:11 sharring Exp $"
 #
 # Makefile of Java Logging Client
 #
@@ -59,7 +59,7 @@ SCRIPTS_L       =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+INSTALL_FILES = ../lib/vtd-xml.jar
 
 #
 # list of all possible C-sources (used to create automatic dependencies)

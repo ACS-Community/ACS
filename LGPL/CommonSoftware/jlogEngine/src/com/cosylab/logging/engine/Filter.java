@@ -21,14 +21,14 @@
  */
 package com.cosylab.logging.engine;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.Date;
-import java.util.regex.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import javax.swing.JOptionPane;
 
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 
 /**

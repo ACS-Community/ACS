@@ -21,8 +21,7 @@
  */
 package com.cosylab.logging.engine.ACS;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
@@ -32,9 +31,6 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntry;
-
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * ACSStructuredPushConsumer gets an XML log from the Engine 
@@ -59,12 +55,13 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 					continue;
 				}
 				try {
-					logEntry = new LogEntry(parser.parse(log));
+					logEntry = parser.parse(log);
 				} catch (Exception e) {
 					engine.publishReport("Exception occurred while dispatching the XML log.");
 					engine.publishReport("This log has been lost: "+log);
 					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
 					System.err.println("An XML string that could not be parsed: " + log);
+					e.printStackTrace(System.err);
 					continue;
 				}
 				engine.publishLog(logEntry);
@@ -173,16 +170,16 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	private void initialize()
 	{
-		try
-		{
-			parser = new ACSLogParser();
-		}
-		catch (javax.xml.parsers.ParserConfigurationException pce)
-		{
-			engine.publishReport("Exception occurred when initializing the XML parser.");
-			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
-			return;
-		}
+		/*try
+		{*/
+			parser = new ACSLogParserVTD();
+		//}
+//		catch (javax.xml.parsers.ParserConfigurationException pce)
+//		{
+//			engine.publishReport("Exception occurred when initializing the XML parser.");
+//			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
+//			return;
+//		}
 		org.omg.CORBA.IntHolder proxyId = new org.omg.CORBA.IntHolder();
 
 		ProxySupplier proxySupplier = null;

@@ -24,7 +24,6 @@ package com.cosylab.logging.engine.log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 

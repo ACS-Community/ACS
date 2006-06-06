@@ -27,13 +27,12 @@ import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.JOptionPane;
 
 import com.cosylab.gui.components.r2.CheckListModel;
 import com.cosylab.gui.components.r2.JCheckList;
-import com.cosylab.gui.components.r2.JIntegerTextField;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
 

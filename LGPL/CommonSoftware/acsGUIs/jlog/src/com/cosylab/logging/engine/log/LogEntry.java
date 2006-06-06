@@ -82,7 +82,12 @@ public class LogEntry implements ILogEntry {
 			String logmessage,
 	        String srcObject,
 	        Vector<AdditionalData> addDatas) {
-		this.date=new Date(milliseconds);
+		if(null != milliseconds) {
+			this.date=new Date(milliseconds);
+		}
+		else {
+			this.date = null;
+		}
 		this.type=entrytype;
 		this.file=file;
 		this.line=line;

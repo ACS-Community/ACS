@@ -21,18 +21,14 @@
  */
 package com.cosylab.logging.client.cache;
 
-import java.util.Vector;
-import java.util.Random;
-import java.util.HashMap;
-import java.util.Date;
-
 import java.io.File;
-import java.io.RandomAccessFile;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Vector;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
@@ -77,7 +73,7 @@ public class LogFileCache {
 	 * @param filters The user defined filters
 	 * @param systemFilters The system filters
 	 */
-	public LogFileCache() throws LogCacheException { 
+	public LogFileCache() throws LogCacheException {
 		try {
 			initCache();
 		} catch (IOException ioe) {

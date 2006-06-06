@@ -70,9 +70,14 @@ public interface ILogEntry extends Serializable {
 	public static final short FIELD_STACKLEVEL = 14;
 	public static final short FIELD_LOGMESSAGE = 15;
 	
+	public static final String DATA_ELEMENT_TAG_NAME = "Data";
+	public static final String HEADER_ELEMENT_TAG_NAME = "Header";
+	public static final String LOG_ELEMENT_TAG_NAME = "Log";
+	public static final String NAME_ATTRIBUTE_NAME = "Name";
+	
 	public static final String[] fieldNames =
 	{
-		"Timestamp",
+		"TimeStamp",
 		"Entry Type",
         "Source Object",
 		"File",

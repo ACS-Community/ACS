@@ -5,23 +5,16 @@
 package com.cosylab.logging.settings;
 
 import java.awt.GridBagLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JList;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.ListCellRenderer;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
-import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**

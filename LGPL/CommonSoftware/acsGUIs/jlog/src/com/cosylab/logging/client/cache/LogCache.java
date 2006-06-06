@@ -22,9 +22,9 @@
 package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 

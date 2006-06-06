@@ -19,24 +19,20 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.3 2006/06/04 20:54:06 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.4 2006/06/06 23:57:11 sharring Exp $
  * @since    
  */
 
 package com.cosylab.logging.engine.ACS;
 
 import java.io.File;
-import java.io.RandomAccessFile;
-import java.io.IOException;
 import java.io.FileNotFoundException;
-
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntry;
 
 /**
  * ACSLogRetireval stores the XML string representing logs on a file
@@ -83,11 +79,11 @@ public class ACSLogRetrieval extends Thread {
 		} catch (FileNotFoundException fne) {
 			rOutF=null;
 		}
-		try {
-			parser = new ACSLogParser();
-		} catch (ParserConfigurationException pce) {
+		//try {
+			parser = new ACSLogParserVTD();
+		/*} catch (ParserConfigurationException pce) {
 			parser=null;
-		}
+		}*/
 		if (rOutF!=null && parser!=null) {
 			this.setPriority(Thread.MIN_PRIORITY);
 			this.start();
@@ -190,7 +186,7 @@ public class ACSLogRetrieval extends Thread {
 			if (tempStr.length()>0) {
 				ILogEntry log;
 				try {
-					log = new LogEntry(parser.parse(tempStr));
+					log = parser.parse(tempStr);
 				} catch (Exception e) {
 					System.err.println("error parsing a log "+e.getMessage());
 					e.printStackTrace();
