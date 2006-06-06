@@ -137,6 +137,11 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 */
 	private JMenuItem statisticsMenuItem = null;
 	
+	/** 
+	 * The filters menu
+	 */
+	private JMenu filtersMenu;
+	
 	/**
 	 * The menu item to save the filters with a new name
 	 */
@@ -647,7 +652,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	 */
 	private javax.swing.JMenu setFiltersMenuItem()
 	{
-		JMenu filtersMenu = new JMenu("Filters");
+		filtersMenu = new JMenu("Filters");
 		filtersMenu.addMenuListener(eventHandler);
 		loadFiltersMenuItem = new JMenuItem("Load");
 		filtersMenu.add(loadFiltersMenuItem);
@@ -2051,6 +2056,26 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 	public void acsLogsDelay() {
 		connectionStatusLbl.setIcon(connectionStatusIcons[DELAY_ICON]);
 		connectionStatusLbl.setToolTipText("Delay");
+	}
+	
+	/**
+	 * Enable/Disbale all the control in tha GUI than can cause
+	 * the invalidation of the logs
+	 * 
+	 * @param enabled If true the controls are enabled
+	 */
+	public void setEnabledGUIControls(boolean enabled) {
+		logLevelCB.setEnabled(enabled);
+		filtersMenu.setEnabled(enabled);
+		searchMenu.setEnabled(enabled);
+		searchBtn.setEnabled(enabled);
+		fieldsMenuItem.setEnabled(enabled);
+		loadMenuItem.setEnabled(enabled);
+		loadURLMenuItem.setEnabled(enabled);
+		clearAllMenuItem.setEnabled(enabled);
+		saveFileMenuItem.setEnabled(enabled);
+		connectMenuItem.setEnabled(enabled);
+		autoReconnectMI.setEnabled(enabled);
 	}
 }
 

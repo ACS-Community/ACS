@@ -807,6 +807,8 @@ public class VisibleLogsVector extends Thread {
 							return;
 				} else {
 					sort(request.getOrderingField(),request.orderDirection());
+					LoggingClient.getInstance().getLogEntryTable().getTableHeader().setEnabled(true);
+					LoggingClient.getInstance().getLogEntryTable().getTableHeader().resizeAndRepaint();
 				}
 			}
 			// There are new logs to add?
