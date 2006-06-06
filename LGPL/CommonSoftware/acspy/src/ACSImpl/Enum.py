@@ -1,4 +1,4 @@
-# @(#) $Id: Enum.py,v 1.4 2005/06/13 18:04:24 dfugate Exp $
+# @(#) $Id: Enum.py,v 1.5 2006/06/06 20:38:29 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Enum.py,v 1.4 2005/06/13 18:04:24 dfugate Exp $"
+# "@(#) $Id: Enum.py,v 1.5 2006/06/06 20:38:29 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -32,7 +32,7 @@
 This module provides an implementation of the Penum IDL interface:
 '''
 
-__version__ = "$Id: Enum.py,v 1.4 2005/06/13 18:04:24 dfugate Exp $"
+__version__ = "$Id: Enum.py,v 1.5 2006/06/06 20:38:29 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -115,7 +115,9 @@ class Penum(GenericProperty):
         
         try:
             #coerce into an enum type
-            return eval(self.enumName + "." + value, self.tGlobals, self.tLocals) 
+            return eval(self.enumName + "._items[" + value + "]",
+                        self.tGlobals,
+                        self.tLocals) 
         except:
             #warn them about CDB access
             self.getLogger().logAlert("Unble to coerce '" + str(value) + "' into the correct type!")
