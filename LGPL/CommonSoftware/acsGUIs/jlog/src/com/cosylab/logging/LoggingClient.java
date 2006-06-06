@@ -314,7 +314,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			} else if (e.getSource() == LoggingClient.this.saveAsFiltersMenuItem) {
 				saveAsFilters();
 			} else if (e.getSource()==LoggingClient.this.logLevelCB) {
-                setLogLevel(logLevelCB.getSelectedIndex());
+				getLCModel1().setLogLevel(logLevelCB.getSelectedIndex());
+				getLCModel1().invalidateVisibleLogs();
             } else if (e.getSource()==LoggingClient.this.searchBtn ||
                     e.getSource()==searchMenuItem) {
                 if (searchDialog==null) {
@@ -971,7 +972,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         LogTypeRenderer rendererCB = new LogTypeRenderer();
         
         logLevelCB.setSelectedIndex(DEFAULT_LOGLEVEL);
-        setLogLevel(DEFAULT_LOGLEVEL);
+        getLCModel1().setLogLevel(DEFAULT_LOGLEVEL);
         logLevelCB.setEditable(false);
         logLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
         logLevelCB.setRenderer(rendererCB);
@@ -1865,45 +1866,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 			}
 		}
 	}
-
-    /** Change the system filter to set the log level to the value the
-     * user selected in the Combobox 
-     * 
-     * @param level The level requested
-     */
-    private void setLogLevel(int level) {
-        // Get the system filters
-        FiltersVector filters = getLCModel1().getSystemFilters();
-        for (int t=0; t<filters.size(); t++) {
-            Filter f = filters.get(t);
-            if (f.getField()==ILogEntry.FIELD_ENTRYTYPE) {
-                // We have found the LogLevel filter: we remove it in order to
-                // replace with the new filter
-                filters.remove(t);
-            } 
-        }
-        // Build the new filter
-        try {
-            Filter levelFilter =
-                new Filter(
-                		ILogEntry.FIELD_ENTRYTYPE,
-                		false,
-                		new Integer(level),
-                		new Integer(LogTypeHelper.ENTRYTYPE_EMERGENCY),
-                		false);
-            filters.addFilter(levelFilter,true);
-        } catch (Exception e) {
-            System.err.println("Error creating the log level filter:"+e.getMessage());
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null,"Error creating the log level filter!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
-            // We have no log level so we set the combo box
-            // to trace
-            logLevelCB.setSelectedIndex(0);
-        }
-        // Invalidate the logs (the changes will appear in the GUI)
-        tableModel.invalidateVisibleLogs();
-    }
-    
 	
     /**
      * Enable or disable the Search next menu item
