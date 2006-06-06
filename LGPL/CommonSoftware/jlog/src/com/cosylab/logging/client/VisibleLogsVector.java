@@ -3,6 +3,7 @@ package com.cosylab.logging.client;
 import java.util.Vector;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 
 import com.cosylab.logging.LogTableDataModel;
 
@@ -133,6 +134,36 @@ public class VisibleLogsVector extends Thread {
 
 		public VisibleLogsComparator() {
 		}
+		
+		/**
+		 * Compare the entries with the given position in the cache
+		 * It works only for TIMESTAMP and ENTRYTYPE because the cache has
+		 * two arrays and there is no need to load the log
+		 * 
+		 * @param fisrt The index of the first item to compare
+		 * @param second The index of the second item to compare
+		 * @return 
+		 */
+		private int fastCompare(int first, int second) {
+			long firstVal;
+			long secondVal;
+			if (fieldIndex==ILogEntry.FIELD_TIMESTAMP) {
+				firstVal=(Long)cache.getLogTimestamp(first);
+				secondVal=(Long)cache.getLogTimestamp(second);
+			} else {
+				firstVal=(Integer)cache.getLogType(first);
+				secondVal=(Integer)cache.getLogType(second);
+			}
+			if (firstVal==secondVal) {
+				return 0;
+			}
+			int ret=(secondVal>firstVal)?1:1;
+			if (sortAscending) {
+				return -1*ret;
+			} else {
+				return ret;
+			}
+		}
 
 		/**
 		 * Compare two log entries by their index in the cache
@@ -145,6 +176,9 @@ public class VisibleLogsVector extends Thread {
 		 * @see java.util.Comparable
 		 */
 		public final int compare(Integer firtsItem, Integer secondItem) {
+			if (fieldIndex==ILogEntry.FIELD_TIMESTAMP || fieldIndex==ILogEntry.FIELD_ENTRYTYPE) {
+				return fastCompare(firtsItem,secondItem);
+			}
 			ILogEntry log1 = null;
 			try {
 				log1=VisibleLogsVector.this.cache.getLog(firtsItem);
@@ -464,13 +498,18 @@ public class VisibleLogsVector extends Thread {
 		if (visibleLogs.size()==0) {
 			return 0;
 		}
+		if (comparator.getSortField()==ILogEntry.FIELD_TIMESTAMP) {
+			return findPosLogarthmicDate(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime());
+		}
+		if (comparator.getSortField()==ILogEntry.FIELD_ENTRYTYPE) {
+			return findPosLogarthmicType((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
+		}
 		//int ret=-1;
 		int minInter = 0;
 		int maxInter = visibleLogs.size()-1;
 		int middle=0;
 		ILogEntry maxLog=null;
 		ILogEntry minLog=null;
-		int iter =0;
 		do {
 			maxLog=null;
 			try {
@@ -520,6 +559,132 @@ public class VisibleLogsVector extends Thread {
 					continue;
 			} else  { // middleCmp==0
 					return middle;
+			}
+		} while (true);
+	}
+	
+	/**
+	 * When the logs are ordered by timestamp, it finds the position
+	 *  in the ordered list where the log has to be inserted.
+	 * The algoritm has logaritmic complexity
+	 * 
+	 * param The timestamp of the log to be inserted
+	 * @return The position log to insert in the visible logs
+	 */
+	private int findPosLogarthmicDate(long date) {
+		int minInter = 0;
+		int maxInter = visibleLogs.size()-1;
+		int middle=0;
+		long maxDate=-1;
+		long minDate=-1;
+		boolean sortAscending = comparator.isSortAscending();
+		do {
+			maxDate = cache.getLogTimestamp(maxInter);
+			minDate = cache.getLogTimestamp(minInter);
+
+			if (maxInter-minInter<=1) {
+				if (sortAscending) {
+					if (date>maxDate) {
+						return maxInter+1;
+					} else if (date<minDate) {
+						return minInter;
+					} else {
+						return maxInter;
+					}
+				} else {
+					if (date>minDate) {
+						return minInter;
+					} else if (date<maxDate) {
+						return maxInter+1;
+					} else {
+						return maxInter;
+					}
+				}
+			}
+			
+			middle = minInter+(maxInter - minInter)/2;
+			long dateShift = date-cache.getLogTimestamp(middle);
+			if (sortAscending) {
+				if (dateShift>=0) {
+						minInter = middle;
+						continue;
+				} else if (dateShift<0) {
+						maxInter = middle;
+						continue;
+				} 
+			} else {
+				if (dateShift>=0) {
+					maxInter = middle;
+					continue;
+			} else if (dateShift<0) {
+					minInter = middle;
+					continue;
+			}
+			}
+		} while (true);
+	}
+	
+	/**
+	 * When the logs are ordered by entry type, it finds the position
+	 *  in the ordered list where the log has to be inserted.
+	 * The algoritm has logaritmic complexity
+	 * 
+	 * @param The entry type of the log to be inserted
+	 * @return The position log to insert in the visible logs
+	 */
+	private int findPosLogarthmicType(int type) {
+		int minInter = 0;
+		int maxInter = visibleLogs.size()-1;
+		int middle=0;
+		int maxType;
+		int minType;
+		boolean sortAscending = comparator.isSortAscending();
+		do {
+			maxType = cache.getLogType(maxInter);
+			minType = cache.getLogType(minInter);
+
+			if (maxInter-minInter<=1) {
+				if (sortAscending) {
+					if (type>maxType) {
+						return maxInter+1;
+					} else if (type<minType) {
+						return minInter;
+					} else {
+						return maxInter;
+					}
+				} else {
+					if (type>minType) {
+						return minInter;
+					} else if (type<maxType) {
+						return maxInter+1;
+					} else {
+						return maxInter;
+					}
+				}
+			}
+			
+			middle = minInter+(maxInter - minInter)/2;
+			long typeShift = type-cache.getLogType(middle);
+			if (sortAscending) {
+				if (typeShift>0) {
+						minInter = middle;
+						continue;
+				} else if (typeShift<0) {
+						maxInter = middle;
+						continue;
+				} else {
+					return middle;
+				}
+			} else {
+				if (typeShift>0) {
+					maxInter = middle;
+					continue;
+				} else if (typeShift<0) {
+					minInter = middle;
+					continue;
+				} else {
+					return middle;
+				}
 			}
 		} while (true);
 	}
