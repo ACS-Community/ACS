@@ -39,6 +39,9 @@
       <_ Name="PYBACI1"	Code="acspytestImpl.PyBaciTest"
       Type="IDL:alma/acspytest/PyBaciTest:1.0"
       Container="pyContainer"/>
+     <_ Name="PYBACI2"	Code="acspytestImpl.PyBaciTest"
+      Type="IDL:alma/acspytest/PyBaciTest:1.0"
+      Container="pyContainer"/>
       <_ Name="TEST_PS_1"    Code="acsexmplPowerSupplyImpl"
                        Type="IDL:alma/PS/PowerSupply:1.0"
                        Container="TestContainer"/>
