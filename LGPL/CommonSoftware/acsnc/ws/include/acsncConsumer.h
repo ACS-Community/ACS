@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.60 2006/03/08 22:10:00 dfugate Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.61 2006/06/06 11:16:37 gchiozzi Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -43,6 +43,8 @@ NAMESPACE_BEGIN(nc);
  *  the pure virtual function: push_structured_event(). Derived classes must
  *  implement this function plus any others which facilitate the consuming of
  *  data, for example, a callback function.
+ *  The contructor of derived classes must also call the init() method
+ *  (see the SimpleConsumer class for an example).
  *
  *  TODO:
  *  - add a mutex for the polling thread???
@@ -290,7 +292,9 @@ class Consumer :
     /**
      * Utility method.
      * Initialization method where code common to all constructors is kept.
-     * @param orb ORB which has a reference to the Naming Service.
+     * It shall be called explicitly in the constructors of the derived classes,
+     * since it is actually NOT called in the constructors of this
+     * pure virtual class.
      *  @htmlonly
         <br><hr>
         @endhtmlonly
