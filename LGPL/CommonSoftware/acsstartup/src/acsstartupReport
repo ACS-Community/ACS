@@ -22,6 +22,10 @@ ps -U root -u root -N > $REPORT_DIR/ps.log
 netstat -t -p -e -e -l | grep "30" > $REPORT_DIR/netstat.log
 
 #-----------------------------------------------------------
+#get an overview using ACS status
+acsStatus > $REPORT_DIR/instance_overview.log 2>1
+
+#-----------------------------------------------------------
 #bundle everything up
 OLD_PWD=$PWD
 cd /tmp
