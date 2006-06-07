@@ -163,8 +163,9 @@ public class ACSLogParserVTD implements ACSLogParser
 				/* There was an exception parsing the log, but before giving up 
 				 * we try to fix markup issues inside the text that is contained in the XML */
 				vg.clear();
-				String newLogString = XmlNormalizer.normalizeXMLEmbeddedTextOnly(xmlString);
-				vg.setDoc(newLogString.getBytes());
+				xmlString = XmlNormalizer.normalizeXMLEmbeddedTextOnly(xmlString);
+				bytesArray = xmlString.getBytes();
+				vg.setDoc(xmlString.getBytes());
 				vg.parse(false);
 			}
 			retVal = makeLogEntryFromParsedXML(vg, bytesArray, xmlString);
