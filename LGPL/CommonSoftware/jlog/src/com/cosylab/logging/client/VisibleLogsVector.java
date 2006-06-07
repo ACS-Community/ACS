@@ -125,7 +125,6 @@ public class VisibleLogsVector extends Thread {
 					Thread.sleep(refreshInterv);
 				} catch (InterruptedException ie) {}
 				if (min>=0 && max>=0 && !isSuspended) {
-					System.out.println("Firing ["+min+","+max+"]");
 					tableModel.fireTableRowsInserted(min,max);
 					min=max=-1;
 				}
