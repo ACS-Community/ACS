@@ -156,8 +156,8 @@ public class VisibleLogsVector extends Thread {
 			}
 			if (firstVal==secondVal) {
 				return 0;
-			}
-			int ret=(secondVal>firstVal)?1:1;
+			} 
+			int ret=(secondVal>firstVal)?1:-1;
 			if (sortAscending) {
 				return -1*ret;
 			} else {
@@ -564,27 +564,28 @@ public class VisibleLogsVector extends Thread {
 	}
 	
 	/**
-	 * When the logs are ordered by timestamp, it finds the position
+	 * When the logs are ordered by entry type, it finds the position
 	 *  in the ordered list where the log has to be inserted.
 	 * The algoritm has logaritmic complexity
 	 * 
-	 * param The timestamp of the log to be inserted
+	 * @param The entry type of the log to be inserted
 	 * @return The position log to insert in the visible logs
 	 */
 	private int findPosLogarthmicDate(long date) {
 		int minInter = 0;
 		int maxInter = visibleLogs.size()-1;
 		int middle=0;
-		long maxDate=-1;
-		long minDate=-1;
+		long maxDate;
+		long minDate;
 		boolean sortAscending = comparator.isSortAscending();
+		int iter = 0;
 		do {
-			maxDate = cache.getLogTimestamp(maxInter);
-			minDate = cache.getLogTimestamp(minInter);
-
+			maxDate = cache.getLogTimestamp(visibleLogs.get(maxInter));
+			minDate = cache.getLogTimestamp(visibleLogs.get(minInter));
+			
 			if (maxInter-minInter<=1) {
 				if (sortAscending) {
-					if (date>maxDate) {
+					if (date>=maxDate) {
 						return maxInter+1;
 					} else if (date<minDate) {
 						return minInter;
@@ -592,23 +593,23 @@ public class VisibleLogsVector extends Thread {
 						return maxInter;
 					}
 				} else {
-					if (date>minDate) {
+					if (date>=minDate) {
 						return minInter;
-					} else if (date<maxDate) {
-						return maxInter+1;
-					} else {
+					} else if (date>=maxDate) {
 						return maxInter;
+					} else {
+						return maxInter+1;
 					}
 				}
 			}
 			
 			middle = minInter+(maxInter - minInter)/2;
-			long dateShift = date-cache.getLogTimestamp(middle);
+			long dateShift = date-cache.getLogTimestamp(visibleLogs.get(middle));
 			if (sortAscending) {
 				if (dateShift>=0) {
 						minInter = middle;
 						continue;
-				} else if (dateShift<0) {
+				} else {
 						maxInter = middle;
 						continue;
 				} 
@@ -616,13 +617,66 @@ public class VisibleLogsVector extends Thread {
 				if (dateShift>=0) {
 					maxInter = middle;
 					continue;
-			} else if (dateShift<0) {
+				} else {
 					minInter = middle;
 					continue;
-			}
+				} 
 			}
 		} while (true);
 	}
+	
+	
+	/**
+	 * When the logs are ordered by timestamp, it finds the position
+	 *  in the ordered list where the log has to be inserted.
+	 * The algoritm has logaritmic complexity
+	 * 
+	 * param The timestamp of the log to be inserted
+	 * @return The position log to insert in the visible logs
+	 */
+	/*private int findPosLogarthmicDate(long date) {
+		int minInter = 0;
+		int maxInter = visibleLogs.size()-1;
+		int middle=0;
+		long maxDate;
+		long minDate;
+		int iter=0;
+		//System.out.println("\n\n#########################################");
+		//System.out.println("#########################################");
+		//System.out.println("Finding pos for "+date+"\n");
+		do {
+			//System.out.println("\n***Iter. "+(++iter));
+			//System.out.println("maxInter="+maxInter+", minInter="+minInter);
+			maxDate = cache.getLogTimestamp(maxInter);
+			minDate = cache.getLogTimestamp(minInter);
+			//System.out.println("minDate = "+minDate);
+			//System.out.println("maxDate = "+maxDate);
+			
+
+			if (maxInter-minInter<=1) {
+				if (date<maxDate) {
+					return maxInter+1;
+				} else if (date>minDate) {
+					return minInter;
+				} else {
+					return maxInter;
+				}
+			}
+			
+			middle = minInter+(maxInter - minInter)/2;
+			long middleDate=cache.getLogTimestamp(middle);
+			//System.out.println("midDate = "+middleDate);
+			long dateShift = date-cache.getLogTimestamp(middle);
+			//System.out.println("shft="+dateShift);
+			if (dateShift<=0) {
+					minInter = middle;
+					continue;
+			} else {
+					maxInter = middle;
+					continue;
+			} 
+		} while (true);
+	}*/
 	
 	/**
 	 * When the logs are ordered by entry type, it finds the position
@@ -640,8 +694,8 @@ public class VisibleLogsVector extends Thread {
 		int minType;
 		boolean sortAscending = comparator.isSortAscending();
 		do {
-			maxType = cache.getLogType(maxInter);
-			minType = cache.getLogType(minInter);
+			maxType = cache.getLogType(visibleLogs.get(maxInter));
+			minType = cache.getLogType(visibleLogs.get(minInter));
 
 			if (maxInter-minInter<=1) {
 				if (sortAscending) {
@@ -664,27 +718,23 @@ public class VisibleLogsVector extends Thread {
 			}
 			
 			middle = minInter+(maxInter - minInter)/2;
-			long typeShift = type-cache.getLogType(middle);
+			int typeShift = type-cache.getLogType(visibleLogs.get(middle));
 			if (sortAscending) {
-				if (typeShift>0) {
+				if (typeShift>=0) {
 						minInter = middle;
 						continue;
-				} else if (typeShift<0) {
+				} else {
 						maxInter = middle;
 						continue;
-				} else {
-					return middle;
-				}
+				} 
 			} else {
-				if (typeShift>0) {
+				if (typeShift>=0) {
 					maxInter = middle;
 					continue;
 				} else if (typeShift<0) {
 					minInter = middle;
 					continue;
-				} else {
-					return middle;
-				}
+				} 
 			}
 		} while (true);
 	}
@@ -806,8 +856,11 @@ public class VisibleLogsVector extends Thread {
 				if (request.getType()==LogOperationRequest.TERMINATE) {
 							return;
 				} else {
+					LoggingClient.getInstance().getLogEntryTable().getTableHeader().setEnabled(false);
+					LoggingClient.getInstance().setEnabledGUIControls(false);
 					sort(request.getOrderingField(),request.orderDirection());
 					LoggingClient.getInstance().getLogEntryTable().getTableHeader().setEnabled(true);
+					LoggingClient.getInstance().setEnabledGUIControls(true);
 					LoggingClient.getInstance().getLogEntryTable().getTableHeader().resizeAndRepaint();
 				}
 			}
