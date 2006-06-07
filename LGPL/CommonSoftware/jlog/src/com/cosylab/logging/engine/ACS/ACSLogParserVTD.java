@@ -33,6 +33,13 @@ import com.ximpleware.VTDNav;
 public class ACSLogParserVTD implements ACSLogParser 
 {
 	
+	private VTDGen vg;
+
+
+	public ACSLogParserVTD() {
+		vg = new VTDGen();
+	}
+
 	private Vector<AdditionalData> getAdditionalData(VTDNav vNav, ByteArrayOutputStream os, byte[] bytesArray) throws NavException
 	{
 		/**
@@ -152,10 +159,9 @@ public class ACSLogParserVTD implements ACSLogParser
 		LogEntry retVal = null; 
 		byte[] bytesArray = xmlString.getBytes();	
 		
-		VTDGen vg = null;
 		try {
 			try {
-				vg = new VTDGen();
+				vg.clear();
 				vg.setDoc(bytesArray);
 				vg.parse(false); // set namespace awareness to false for now
 			}
