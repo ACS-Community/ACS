@@ -33,6 +33,7 @@
 #
 #------------------------------------------------------------------------
 #
+ACS_LOG_COMMAND $@
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -103,8 +104,6 @@ fi
 # (Note: Rest of command line now in $@ )
 #
 ### ---------- End of Command Line Parsing -------------
-ACS_LOG_COMMAND
-
 export HOST=`getIP`
 
 

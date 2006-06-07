@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStartManager,v 1.30 2006/03/13 16:55:43 dfugate Exp $"
+# "@(#) $Id: acsStartManager,v 1.31 2006/06/07 16:51:49 dfugate Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -57,6 +57,8 @@
 #------------------------------------------------------------------------
 #
 #
+
+ACS_LOG_COMMAND $@
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -157,8 +159,6 @@ if [ "$ACS_STARTUP_TIMEOUT_MULTIPLIER" = "" ]
  then
    ACS_STARTUP_TIMEOUT_MULTIPLIER=5
 fi
-
-ACS_LOG_COMMAND
 
 #give manager this amount of time to initialize
 MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))

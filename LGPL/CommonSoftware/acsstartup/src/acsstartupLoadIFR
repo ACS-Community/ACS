@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.2 2006/06/05 22:54:11 dfugate Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.3 2006/06/07 16:51:49 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -80,7 +80,7 @@
 #
 #------------------------------------------------------------------------
 #
-ACS_LOG_COMMAND
+ACS_LOG_COMMAND $@
 
 export HOST=`getIP`
 #Find the port number of the IR

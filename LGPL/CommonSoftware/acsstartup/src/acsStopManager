@@ -26,6 +26,8 @@
 #
 if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 
+ACS_LOG_COMMAND $@
+
 ###
 ### ----------- Command Line Parsing ---------------------
 
@@ -144,8 +146,6 @@ fi
 #---------------------------------------------------------------------------------
 #run the normal command to shutdown manager
 #------------------------------------------
-ACS_LOG_COMMAND
-
 #everything checked out so manager can really be shutdown
 #if this command does not finish in 15 seconds, it will be
 #killed

@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsIrfeed,v 1.12 2006/03/24 23:24:53 dfugate Exp $"
+# "@(#) $Id: acsIrfeed,v 1.13 2006/06/07 16:51:49 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -80,7 +80,7 @@
 #
 #------------------------------------------------------------------------
 #
-ACS_LOG_COMMAND
+ACS_LOG_COMMAND $@
 
 export HOST=`getIP`
 

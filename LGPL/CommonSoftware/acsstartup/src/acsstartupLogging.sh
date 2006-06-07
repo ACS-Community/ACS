@@ -203,7 +203,7 @@ PID=$$
 HOST=$HOSTNAME
 
 #log the time, user, command, process ID, acs instance, host
-MSG="Time:$TS; User=$USER; Host=$HOST; Command:$CMD; Process ID:$PID; ACS_INSTANCE=$ACS_INSTANCE; ACS_TMP=$ACS_TMP"
+MSG="Time:$TS; User=$USER; Host=$HOST; Command:$CMD $@; Process ID:$PID; ACS_INSTANCE=$ACS_INSTANCE; ACS_TMP=$ACS_TMP"
 
 #sanity check on the history file
 if [ ! -e $ACS_COMMAND_HISTORY_FILE ]

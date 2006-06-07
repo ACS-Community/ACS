@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.17 2006/06/05 22:54:11 dfugate Exp $"
+# "@(#) $Id: acsStop,v 1.18 2006/06/07 16:51:49 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -43,6 +43,8 @@
 #
 #------------------------------------------------------------------------
 #
+
+ACS_LOG_COMMAND $@
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -122,8 +124,6 @@ if [ "$CL_BASEPORT" ]
 then
     export ACS_INSTANCE=$CL_BASEPORT
 fi
-
-ACS_LOG_COMMAND
 
 export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 

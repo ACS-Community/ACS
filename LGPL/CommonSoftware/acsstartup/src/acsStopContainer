@@ -24,6 +24,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
+ACS_LOG_COMMAND $@
+
 if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 
 THIS=`basename $0`
@@ -137,7 +139,6 @@ if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
    ACS_STARTUP_TIMEOUT_MULTIPLIER=5
 fi
 
-ACS_LOG_COMMAND
 #------------------------------------------------------------------
 #maximum timeout for anything in this script to finish executing.
 MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
