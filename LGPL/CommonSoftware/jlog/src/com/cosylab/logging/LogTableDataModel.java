@@ -441,6 +441,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		logging.animateProgressBar("Regenerating",0,size);
 		visibleLogs.clear();
 		logging.setEnabledGUIControls(false);
+		visibleLogs.setRefreshInterval(2000);
 		for (int i = 0; i < size; i++) {
 			try {
 				// Check here the log level so we can avoid getting a log
@@ -457,6 +458,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			}
 		}
 		logging.freezeProgressBar();
+		visibleLogs.setRefreshInterval(null);
 		logging.setEnabledGUIControls(true);
 	}
 	
