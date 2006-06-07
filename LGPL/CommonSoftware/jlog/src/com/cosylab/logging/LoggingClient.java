@@ -232,10 +232,11 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
     private JComboBox discardLevelCB;
     private final int DEFAULT_DISCARDLEVEL = LogTypeHelper.ENTRYTYPE_DEBUG;
     
-    // The radio button to enable/disable (pause) the scroll lock
-    private JToggleButton pauseTB;
-    private ImageIcon pauseGreenIcon;
-    private ImageIcon pauseRedIcon;
+    // The button to enable/disable (play/pause) the scroll lock
+    private JButton pauseB;
+    private boolean pauseBtnPaused; // The status of the button
+    private ImageIcon pauseIcon;
+    private ImageIcon playIcon;
     
     // The search button in the toolbar
     private JButton searchBtn;
@@ -354,12 +355,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
             	}
             } else if (e.getSource()==LoggingClient.this.shortDateViewMI) {
             	logEntryTable.setShortDateFormat(LoggingClient.this.shortDateViewMI.getState());
-            } else if (e.getSource()==LoggingClient.this.pauseTB) {
-            	tableModel.scrollLock(pauseTB.isSelected());
-            	if (pauseTB.isSelected()) {
-            		pauseTB.setIcon(pauseRedIcon);
+            } else if (e.getSource()==LoggingClient.this.pauseB) {
+            	pauseBtnPaused=!pauseBtnPaused;
+            	tableModel.scrollLock(pauseBtnPaused);
+            	if (pauseBtnPaused) {
+            		pauseB.setIcon(playIcon);
+            		pauseB.setText("<HTML><FONT size=-2>Play");
             	} else {
-            		pauseTB.setIcon(pauseGreenIcon);
+            		pauseB.setIcon(pauseIcon);
+            		pauseB.setText("<HTML><FONT size=-2>Pause");
             	}
             } else if (e.getSource()==LoggingClient.this.suspendMI) {
             	getEngine().setSupended(suspendMI.isSelected());
@@ -993,19 +997,19 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
         discardLevelCB.addActionListener(eventHandler);
         tbLevelPanel.add(discardLevelCB);
         
-        pauseGreenIcon=new ImageIcon(LogTypeHelper.class.getResource("/pauseGreen.png"));
-        pauseRedIcon=new ImageIcon(LogTypeHelper.class.getResource("/pauseRed.png"));
-        pauseTB = new JToggleButton("Pause",pauseGreenIcon,false);
-        pauseTB.setSelected(false);
-        pauseTB.addActionListener(eventHandler);
-        tbLevelPanel.add(pauseTB);
+        pauseIcon=new ImageIcon(LogTypeHelper.class.getResource("/pauseGreen.png"));
+        playIcon=new ImageIcon(LogTypeHelper.class.getResource("/playRed.png"));
+        pauseB = new JButton("<HTML><FONT size=-2>Pause</FONT>",pauseIcon);
+        pauseBtnPaused=false;
+        pauseB.addActionListener(eventHandler);
+        tbLevelPanel.add(pauseB);
         
         
         userPanel.add(tbLevelPanel);
         
         // Add the  search button
         ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.gif"));
-        searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT></HTML>",searchIcon);
+        searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT>",searchIcon);
         userPanel.add(searchBtn);
         searchBtn.addActionListener(eventHandler);
         
@@ -2069,5 +2073,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		connectMenuItem.setEnabled(enabled);
 		autoReconnectMI.setEnabled(enabled);
 	}
+	
 }
 
