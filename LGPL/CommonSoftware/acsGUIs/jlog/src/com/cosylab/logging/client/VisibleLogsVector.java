@@ -46,6 +46,11 @@ public class VisibleLogsVector extends Thread {
 		private int max;
 		
 		/**
+		 * The interval in microsecond between two refresh of the table
+		 */
+		private int refreshInterv;
+		
+		/**
 		 * Indicate if the GUI has to be refreshed
 		 * @see setSupended()
 		 */
@@ -56,6 +61,7 @@ public class VisibleLogsVector extends Thread {
 		 *
 		 */
 		public NewLogGUIRefresher() {
+			refreshInterv=REFRESH_INTERVAL;
 			clear();
 			start();
 		}
@@ -95,6 +101,20 @@ public class VisibleLogsVector extends Thread {
 		}
 		
 		/**
+		 * Set the new interval for refreshing.
+		 * 
+		 * @param newInterval The new interval in microsecond
+		 *        If null, then set the default interval (REFRESH_INTERVAL)
+		 */
+		public void setRefreshInterval(Integer newInterval) {
+			if (newInterval==null) {
+				refreshInterv=REFRESH_INTERVAL;
+			} else {
+				refreshInterv=newInterval;
+			}
+		}
+		
+		/**
 		 * The thread to notify the GUI about new insertion of logs.
 		 * It is a loop that notifies the table about all the changes that
 		 * happened in the REFRESH_INTERVAL time.
@@ -102,9 +122,10 @@ public class VisibleLogsVector extends Thread {
 		public void run() {
 			while (true) {
 				try {
-					Thread.sleep(REFRESH_INTERVAL);
+					Thread.sleep(refreshInterv);
 				} catch (InterruptedException ie) {}
 				if (min>=0 && max>=0 && !isSuspended) {
+					System.out.println("Firing ["+min+","+max+"]");
 					tableModel.fireTableRowsInserted(min,max);
 					min=max=-1;
 				}
@@ -897,5 +918,16 @@ public class VisibleLogsVector extends Thread {
 	 */
 	public void suspendRefresh(boolean suspend) {
 		guiRefresher.setSuspended(suspend);
+	}
+	
+	/**
+	 * Set the interval between two refreshes of the table
+	 * 
+	 * @param newInterv The new Interval of refreshing in microsecond
+	 *                  If null the default interval is set 
+	 * 
+	 */
+	public void setRefreshInterval(Integer newInterv) {
+		guiRefresher.setRefreshInterval(newInterv);
 	}
 }
