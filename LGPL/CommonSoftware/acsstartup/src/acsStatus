@@ -51,4 +51,5 @@ then
     echo "ACS CDB process ID is: $PID"
 fi
 #---------------------------
-
+echo ""
+acsContainersStatus
