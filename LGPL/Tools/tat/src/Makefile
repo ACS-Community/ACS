@@ -1,7 +1,7 @@
 #*******************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.82 2004/10/19 12:56:59 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.83 2006/06/08 15:05:30 psivera Exp $"
 #
 # Makefile of tat: tools for automated testing
 #
@@ -33,7 +33,6 @@ TCL_SCRIPTS     = tat \
 		  tatCleanShm \
 		  tatGetClock \
 		  tatEnvStatus \
-                  eccsTestDriver eccsTestSpawner \
                   tatTestSpawner
 
 
@@ -57,11 +56,8 @@ tatEnvStatus_OBJECTS  = tatEnvStatus
 tatEnvStatus_LIBS = tatlib $(VCC_LIB)
 tatEnvStatus_TCLSH = seqSh
 
-eccsTestDriver_OBJECTS  =    eccsTestDriver
-eccsTestDriver_TCLSH    =    seqSh
-
-eccsTestSpawner_OBJECTS  =    eccsTestSpawner
-eccsTestSpawner_TCLSH    =    seqSh
+tatTestSpawner_OBJECTS  =    tatTestSpawner
+tatTestSpawner_TCLSH    =    seqSh
 
 tatTestSpawner_OBJECTS  =    tatTestSpawner
 tatTestSpawner_TCLSH    =    seqSh
@@ -89,7 +85,7 @@ endif
 # man pages to be done
 # --------------------
 MANSECTIONS = 1
-MAN1 = tat.tcl tatCleanShm.tcl tatEnvStatus.tcl eccsTestDriver.tcl eccsTestSpawner.tcl
+MAN1 = tat.tcl tatCleanShm.tcl tatEnvStatus.tcl tatTestSpawner.tcl
 ifndef NOCCS
 MAN1 := $(MAN1) tatMakeLCUEnv.tcl tatMakeRTAPEnv.tcl tatCleanLCUEnv.tcl                tatCleanRTAPEnv.tcl tatGetRTAPEnv.tcl tatGetQsemuEnv.tcl tatGetLCUEnv.tcl 
 endif
@@ -105,10 +101,15 @@ CSOURCENAMES = \
 # INCLUDE STANDARDS
 # -----------------
 
+ifdef ACSROOT
 MAKEDIRTMP := $(shell searchFile include/acsMakefile)
 ifneq ($(MAKEDIRTMP),\#error\#)
    MAKEDIR := $(MAKEDIRTMP)/include
    include $(MAKEDIR)/acsMakefile
+endif
+else
+MAKEDIR = $(VLTROOT)/include
+include $(MAKEDIR)/vltMakefile
 endif
 
 #

@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.99 2006/05/08 13:59:57 gchiozzi Exp $"
+# "@(#) $Id: tat.tcl,v 1.100 2006/06/08 15:05:30 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -31,6 +31,10 @@
 # psivera  2004-02-16 corrected bug when parsing the keyword "all" (& C.)
 #                     passed from command line
 # psivera  2004-03-16 ALMASW2003086 solved: ../bin and ../lib are created if not existing
+# psivera  2004-06-22 SPR 20040140: the outputFile is saved in .orig before
+#		      being processed with sed and grep
+# eallaert 2005-02-08 SPR 200500442: include sleep while waiting for test termination
+# sfeyrin  2005-08-12 SPR 20050196: take into account .TestList.sed in sedFilterx
 # psivera  2005-12-09 ALMASW2005120: the source script is sourced before running doCleanEnv
 # psivera  2006-02-13 ALMASW2005119 and ALMASW2006007 implemented
 # psivera  2006-02-15 ALMASW200$075 implemented: test lines in TestList(.lite) can be 
@@ -537,7 +541,7 @@ proc buildLists {} {
     set gv(envNameList) {}
     set gv(testList) {}
     set gv(sourceScript) {}
-    set gv(porologueScript) {}
+    set gv(prologueScript) {}
     set gv(prologueArgs) {}
     set gv(epilogueScript) {}
     set gv(epilogueArgs) {}
@@ -1415,24 +1419,58 @@ proc runTest { testList generate rep } {
 	    set startTime [getclock]
 	    set waitTime 0
 
-	    while { [ expr {$waitTime < $time_out} ] } {
-		if { [ catch { exec ps -p $testPid } ] } {
-		    # ps -p <pid> returns 1 
-		    # if the process <pid> does not exist
-		    set testHasEnded 1
-		    break
-		} else {
-		    # $testid still in the process list
-		    set currentTime [getclock]
-		    set waitTime [expr {$currentTime - $startTime}]
-		}
-	    }
-	    if { $testHasEnded == 0 } {
-		# test is still running after $time_out minutes:
-		# kill it
-		kill SIGKILL $testPid
-		puts "TEST $testcmd KILLED."
-	    }
+# The following commented lines should be removed once the merge 
+# tat (VLT) tat(ALMA) is finished.
+#
+#	    while { [ expr {$waitTime < $time_out} ] } {
+#		if { [ catch { exec ps -p $testPid } ] } {
+#		    # ps -p <pid> returns 1 
+#		    # if the process <pid> does not exist
+#		    set testHasEnded 1
+#		    break
+#		} else {
+#		    # $testid still in the process list
+#		    set currentTime [getclock]
+#		    set waitTime [expr {$currentTime - $startTime}]
+#		}
+#	    }
+#	    if { $testHasEnded == 0 } {
+#		# test is still running after $time_out minutes:
+#		# kill it
+#		kill SIGKILL $testPid
+#		puts "TEST $testcmd KILLED."
+#	    }
+
+            # Test if the "wait" command is available under this opsys.
+            # On HP-UX 11.00, Solaris 2.8 and Linux it should be.
+            set have_waitpid [infox have_waitpid]
+            while {[expr {$waitTime < $time_out}]} {
+                if {$have_waitpid} {
+                    set testExitStatus [wait -nohang $testPid]
+                } else {
+                    # use 'exec ps' to create a similar return value as 'wait'does.
+                    if {[catch {exec ps -p $testPid}]} {
+                        # ps -p <pid> returns 1 if the process <pid> does not exist
+                        set testExitStatus "$testPid EXIT 0"
+                    } else {
+                        set testExitStatus ""
+                    }
+                }
+                if {[llength $testExitStatus] == 3} {
+                    set testHasEnded 1
+                    # We can actually see how this test has ended, as the wait cmd
+                    # returns 3 list elements:
+                    # 1. the pid
+                    # 2. 'EXIT' if exited normally or 'SIG' if ended by signal
+                    # 3. exit code (2 = 'EXIT') or signal name (2 = 'SIG')
+                    break
+                } else {
+                    # $testPid still in the process list
+                    set currentTime [getclock]
+                    set waitTime [expr {$currentTime - $startTime}]
+                    after 1000; # sleep one second before trying again
+                }
+            }
 
 	} else {
 	    # no time out specified
@@ -1538,7 +1576,7 @@ proc runTest { testList generate rep } {
 
                 if { $i != [expr {$nProc -1}] } {
                     printLogVerbose "Executing bg: $cmdLine (out in $outFile)"
-                    set bpid($actualProc) [eval exec eccsTestSpawner [runProg $cmdLine] >&$outFile &]
+                    set bpid($actualProc) [eval exec tatTestSpawner [runProg $cmdLine] >&$outFile &]
                 } else {
                     printLogVerbose "Executing fg: $cmdLine (out in $outFile)"
                     sleep 2
@@ -1831,27 +1869,53 @@ proc sedFilterx {fileName testName} {
     set userId [id user]
     set tmpSed /tmp/${userId}_test[pid]
 
-    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).sed]) } {
-        printLogVerbose "Cleaning with $gv(testListFiles).sed: $fileName"
-        catch {file copy -force  $gv(testListFiles).sed $tmpSed$gv(sedFile).tmp }
-    } elseif {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
-        printLogVerbose "Cleaning with $gv(sedFile) and $testName.sed: $fileName"
-        catch {exec cat $gv(sedFile) $testName.sed > $tmpSed$gv(sedFile).tmp}
-    } elseif {[file exists $testName.sed]} {
-        printLogVerbose "Cleaning with $testName.sed: $fileName"
-        catch {file copy -force $testName.sed $tmpSed$gv(sedFile).tmp}
-    } elseif {[file exists $gv(sedFile)]} {
-        printLogVerbose "Cleaning with $gv(sedFile): $fileName"
-        catch {file copy -force $gv(sedFile) $tmpSed$gv(sedFile).tmp}
-    }
+# The following commented lines should be removed once the merge 
+# tat (VLT) tat(ALMA) is finished.
+#    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).sed]) } {
+#        printLogVerbose "Cleaning with $gv(testListFiles).sed: $fileName"
+#        catch {file copy -force  $gv(testListFiles).sed $tmpSed$gv(sedFile).tmp }
+#    } elseif {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
+#        printLogVerbose "Cleaning with $gv(sedFile) and $testName.sed: $fileName"
+#        catch {exec cat $gv(sedFile) $testName.sed > $tmpSed$gv(sedFile).tmp}
+#    } elseif {[file exists $testName.sed]} {
+#        printLogVerbose "Cleaning with $testName.sed: $fileName"
+#        catch {file copy -force $testName.sed $tmpSed$gv(sedFile).tmp}
+#    } elseif {[file exists $gv(sedFile)]} {
+#        printLogVerbose "Cleaning with $gv(sedFile): $fileName"
+#        catch {file copy -force $gv(sedFile) $tmpSed$gv(sedFile).tmp}
+#    }
+#
+#    # Clean the output file.
+#    if {[file exists $tmpSed$gv(sedFile).tmp]} {
+#        catch {exec sed -f $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp}
+#        catch {file rename -force -- $fileName.tmp $fileName}
+#        catch {file delete -force -- $tmpSed$gv(sedFile).tmp}
+#    } else {
+#	printLogVerbose "No filter applied: sedFile does not exist"
+#    }
 
-    # Clean the output file.
-    if {[file exists $tmpSed$gv(sedFile).tmp]} {
+    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).sed]) } {
+        append sedScript [read_file $gv(testListFiles).sed]
+        append msg "$gv(testListFiles).sed + "
+    } else {
+        foreach scriptFile [list $gv(sedFileBis) $gv(sedFile) $testName.sed] {
+            if {[file exists $scriptFile]} {
+                append sedScript [read_file $scriptFile]
+                append msg "$scriptFile + "
+            }
+        }
+   }
+
+
+    if {[info exists sedScript]} {
+        printLogVerbose "Cleaning with [string range $msg 0 end-3]: $fileName"
+        write_file $tmpSed$gv(sedFile).tmp $sedScript
+        # Clean the output file.
         catch {exec sed -f $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp}
         catch {file rename -force -- $fileName.tmp $fileName}
         catch {file delete -force -- $tmpSed$gv(sedFile).tmp}
     } else {
-	printLogVerbose "No filter applied: sedFile does not exist"
+        printLogVerbose "Nothing to clean: sedFile does not exist"
     }
 
     return 0
@@ -1875,16 +1939,25 @@ proc addTimeStamp {fileName pnum} {
     set fd [open $fileName r]
     set rfd [open $fileName.tmp w]
     while { [gets $fd line] >= 0} {
-        if {[regexp {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]} $line] != 0} {
-            regexp {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]} $line stamp
-            regexp {[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]* *} $line fulltime
+# The following commented lines should be removed once the merge 
+# tat (VLT) tat(ALMA) is finished.
+#        if {[regexp {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]} $line] != 0} {
+#            regexp {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]} $line stamp
+#            regexp {[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]* *} $line fulltime
+# } remove this line
+        if {[regexp {^[0-9]{4}-[0-9]{2}-[0-9]{2}} $line] != 0} {
+            regexp {^[0-9]{4}-[0-9]{2}-[0-9]{2}} $line stamp
+            # Probably "." should be replaced by "\." and "*" by "+", but
+            # I'm not sure what the precise intention is - EAL 2005-02-08
+            regexp {[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{0,6} *} $line fulltime
             set  time  [string range $fulltime 0 8]
             set  msec  [string range $fulltime 9 end]
             set  count 0
             scan $msec "%d" msec
             if {$msec < 0 || $msec > 999999} { set msec 0 }
             set  nmsec [format "%6.6d" $msec]
-            regsub {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] *[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9] *} $line "" newLine
+#            regsub {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] *[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9] *} $line "" newLine
+            regsub {^[0-9]{4}-[0-9]{2}-[0-9]{2} *[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6} *} $line "" newLine
             puts $rfd "$stamp  $time$nmsec $pnum $newLine"
         } else {
             incr count
@@ -1911,7 +1984,8 @@ proc rmTimeStamp {fileName} {
     set fd [open $fileName r]
     set rfd [open $fileName.tmp w]
     while { [gets $fd line] >= 0} {
-        regsub {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] *[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9] *} $line "" newLine
+#        regsub {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] *[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9] *} $line "" newLine
+        regsub {^[0-9]{4}-[0-9]{2}-[0-9]{2} *[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6} *} $line "" newLine
         puts $rfd $newLine
     }
     close $fd

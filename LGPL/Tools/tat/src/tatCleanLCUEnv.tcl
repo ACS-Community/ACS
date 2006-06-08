@@ -1,12 +1,13 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatCleanLCUEnv.tcl,v 1.79 2004/03/16 08:29:41 psivera Exp $"
+# "@(#) $Id: tatCleanLCUEnv.tcl,v 1.80 2006/06/08 15:05:30 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # pforstma  11/07/95  created
 # fcarbogn  22/07/98  Added  WSEnv to tatCleanLCUEnv parameters
+# sfeyrin  2005-08-17 SPR 20050148: Check file owner before LOCK.lcu file deletion
 #
 
 #************************************************************************
@@ -56,9 +57,17 @@ catch { exec vccEnvDelete -e $LCUEnv -w $WSEnv}
 
 set lockFile $LCUROOT/LOCK.$LCUEnv
 
+set user [exec whoami]
+
 tatPuts "Unlocking environment $envName"
 if { [file exists $lockFile] } {
-    catch { file delete -force -- $lockFile }
+#check the owner of the file before deleting (SPR 20050148)
+    set owner [file attributes $lockFile -owner]
+    if { $owner == $user } {
+       catch { file delete -force -- $lockFile }
+    } else {
+       error "$lockFile can't be deleted: $user is not the owner"
+    }
 } else {
     error "$envName is not a 'tat' LCU environment"
 }
