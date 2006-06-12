@@ -32,24 +32,26 @@ import com.ximpleware.VTDNav;
  */
 public class ACSLogParserVTD implements ACSLogParser 
 {
-	
+	// private instance of VTDGen used for parsing XML
 	private VTDGen vg;
 
-
+	/**
+	 * Constructor.
+	 */
 	public ACSLogParserVTD() {
 		vg = new VTDGen();
 	}
 
+	/**
+	 * Gets a Vector<AdditionalData> from VTD XML parser (using VTDNav navigation)
+	 * @param vtdNav the navigator to use to navigate the parsed xml
+	 * @param os output stream to use for conversion of bytes to useful formatted data.
+	 * @param bytesXML the bytes (containing XML) that are being referenced by the navigator.
+	 * @return Vector<AdditionalData> populated with the additional data for the log message, if any, else null
+	 * @throws NavException if navigation encounteres problems
+	 */
 	private Vector<AdditionalData> getAdditionalData(VTDNav vNav, ByteArrayOutputStream os, byte[] bytesArray) throws NavException
 	{
-		/**
-		 * Gets a Vector<AdditionalData> from VTD XML parser (using VTDNav navigation)
-		 * @param vtdNav the navigator to use to navigate the parsed xml
-		 * @param os output stream to use for conversion of bytes to useful formatted data.
-		 * @param bytesXML the bytes (containing XML) that are being referenced by the navigator.
-		 * @return Vector<AdditionalData> populated with the additional data for the log message, if any, else null
-		 * @throws NavException if navigation encounteres problems
-		 */
 		Vector<AdditionalData> retVal = null;
 		if(vNav.toElement(VTDNav.FIRST_CHILD, ILogEntry.DATA_ELEMENT_TAG_NAME)) {
 			do {
@@ -184,18 +186,72 @@ public class ACSLogParserVTD implements ACSLogParser
 		return retVal;
 	}
 
-
-	private LogEntry makeLogEntryFromParsedXML(VTDGen vtdGen, byte[] bytesArray, String xmlString)
-		throws LogParseException
+	/**
+	 * Returns the entry type as an Integer for the current log that is being parsed.
+	 * @param vn an instance of a VTDNav object to use in ascertaining the entry type of the log that is being parsed.
+	 * @return an integer denoting the type of entry (e.g. INFO, DEBUG, WARNING, etc.)
+	 * @throws NavException if the VTDNav navigation fails for some reason.
+	 * @see LogTypeHelper
+	 */
+	private Integer determineEntryType(VTDNav vn) throws NavException
 	{
+		Integer retVal = null;
+
+		if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_INFO))) {
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_INFO);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_TRACE))) {
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_TRACE);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_DEBUG))) {
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_DEBUG);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_WARNING))) {
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_WARNING);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_ERROR))) {
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_ERROR);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_EMERGENCY)))
+		{
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_EMERGENCY);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_ALERT)))
+		{
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_ALERT);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_CRITICAL)))
+		{
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_CRITICAL);
+		}
+		else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_NOTICE)))
+		{
+			retVal = new Integer(LogTypeHelper.ENTRYTYPE_NOTICE);
+		}
+		return retVal;
+	}
+
+
+	/**
+	 * Creates a LogEntry from raw XML, using a VTD XML parser. 
+	 * @param xmlString the XML string that is being parsed.
+	 * @param bytesArray the array of bytes (also containing the xml string that we are parsing, in byte form) 
+	 *                   to be used by VTD.
+	 * @param vtdGen the instance of VTDGen to use for parsing the XML
+	 * @return A LogEntry populated with the data for the log entry contained in the XML string passed in.
+	 * @throws LogParseException if the parsing fails
+	 */
+	private LogEntry makeLogEntryFromParsedXML(VTDGen vtdGen, byte[] bytesArray, String xmlString) throws LogParseException
+	{
+		// TODO: this method, though relatively simple, is a bit long; consider making it shorter
 		LogEntry retVal = null;
 		try 
 		{
 			VTDNav vn = vtdGen.getNav();
 			if (vn.toElement(VTDNav.ROOT)) // to root element
-			{
+			{ 
 				if (vn.matchElement(ILogEntry.LOG_ELEMENT_TAG_NAME)) 
-				{
+				{ 
 					// navigate to child 
 					if(vn.toElement(VTDNav.FIRST_CHILD)) {
 						if(vn.matchElement(ILogEntry.HEADER_ELEMENT_TAG_NAME)) {
@@ -208,7 +264,6 @@ public class ACSLogParserVTD implements ACSLogParser
 				}
 			
 				Long milliseconds = null;
-				Integer entryType = null; 
 				Integer line = null;
 				Integer priority = null;
 				Integer stackLevel = null;
@@ -223,39 +278,10 @@ public class ACSLogParserVTD implements ACSLogParser
 				String stackId = null;
 				String logMessage = null;
 				String srcObjectName = null;
+
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				
-				if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_INFO))) {
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_INFO);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_TRACE))) {
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_TRACE);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_DEBUG))) {
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_DEBUG);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_WARNING))) {
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_WARNING);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_ERROR))) {
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_ERROR);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_EMERGENCY)))
-				{
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_EMERGENCY);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_ALERT)))
-				{
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_ALERT);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_CRITICAL)))
-				{
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_CRITICAL);
-				}
-				else if(vn.matchElement(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_NOTICE)))
-				{
-					entryType = new Integer(LogTypeHelper.ENTRYTYPE_NOTICE);
-				}
+				Integer entryType = determineEntryType(vn);
+
 				// test for timestamp attribute
 				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_TIMESTAMP])){
 					milliseconds = getLongFromTimestamp(vn, os, 
@@ -338,7 +364,6 @@ public class ACSLogParserVTD implements ACSLogParser
 				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_SOURCEOBJECT])){
 					srcObjectName = getString(vn, os, LogEntry.fieldNames[LogEntry.FIELD_SOURCEOBJECT], bytesArray);
 				}
-				
 				// get the additional data, if present
 				Vector<AdditionalData> extraDataList = getAdditionalData(vn, os, bytesArray);
 				
