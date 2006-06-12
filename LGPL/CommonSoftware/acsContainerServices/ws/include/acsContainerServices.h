@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.9 2005/06/27 12:31:07 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.10 2006/06/12 14:04:49 msekoran Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -88,6 +88,17 @@ namespace maci {
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)=0;
+
+        /**
+         * Gets a collocated component as a Corba object. 
+         * 
+         * @param compSpec The description of the component to activate
+         * @param markAsDefault If true, the component becomes the default component 
+         *                      for that IDL type
+	 * @param targetComponent name of the target component (where to activate component)
+         * @return The reference to the component
+         */
+        virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)=0;
         
         /**
          * Gets the default component specified by the IDL component type as a CORBA object.
@@ -144,8 +155,19 @@ namespace maci {
          *                      for that IDL type
          * @return The reference to the component
          */
-        template<class T> T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault);
-      
+        template<class T> T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault);  
+        /**
+         * Gets a collocated component
+         * This method uses templates, so no cast to the request object is required
+         * 
+         * @param compSpec The description of the component to activate
+         * @param markAsDefault If true, the component becomes the default component 
+         *                      for that IDL type
+	 * @param targetComponent name of the target component (where to activate component)
+         * @return The reference to the component
+         */
+        template<class T> T* getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent);  
+    
         /**
          * Gets the default component specified by the IDL component type.
          * This method uses templates, so no cast to the request object is required

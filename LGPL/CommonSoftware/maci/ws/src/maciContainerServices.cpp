@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.19 2005/09/27 08:34:33 vwang Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.20 2006/06/12 14:06:36 msekoran Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -173,6 +173,38 @@ MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bo
     return CORBA::Object::_nil();
    }
 }
+
+CORBA::Object* 
+MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
+{
+   //The IDL ComponentInfo structure returned by the get_collocated_component method
+   //contains tons of information about the newly created component and the most important
+   //field is "reference" (i.e., the unnarrowed collocated component).
+   
+   // Activate the dynamic component
+   ComponentInfo_var cInfo;
+   try 
+   {
+    cInfo  = m_manager->get_collocated_component(m_componentHandle,    //Must pass the client's handle
+                                              compSpec,    //Pass the component specifications
+                                              markAsDefault,
+					      targetComponent); 
+    CORBA::Object_var obj = cInfo->reference;
+     if (CORBA::is_nil(obj.in())) 
+     {
+        ACS_SHORT_LOG((LM_DEBUG, "Failed getting the collocated component."));
+        return CORBA::Object::_nil();
+     }
+     m_usedComponents.push_back(cInfo->name.in());
+     return CORBA::Object::_narrow(obj.in());
+     
+   } catch (...) 
+   {
+    ACS_SHORT_LOG((LM_DEBUG, "Failed getting the collocated component."));
+    return CORBA::Object::_nil();
+   }
+}
+
 
 CORBA::Object* 
 MACIContainerServices::getCORBADefaultComponent(const char* idlType)

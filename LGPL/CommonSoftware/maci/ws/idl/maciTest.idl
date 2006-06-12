@@ -31,6 +31,9 @@ interface ContainerServicesTestClass : ACS::ACSComponent {
   // Test the dynamic component activation
   void dynamicComponentTest();
 
+  // Test the collocated component activation
+  void collocatedComponentTest();
+
   // Test the defaultComponent activation
   void defaultComponentTest();
   

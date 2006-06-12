@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.10 2005/04/18 17:14:48 acaproni Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.11 2006/06/12 14:06:36 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.10 2005/04/18 17:14:48 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.11 2006/06/12 14:06:36 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -116,6 +116,31 @@ void MaciContainerServicesTestClassImpl::dynamicComponentTest()
 	 	getContainerServices()->getDynamicComponent<MACI_TEST::DynamicTestClass>(cSpec,false);
 	 if (CORBA::is_nil(comp.in())) {
 	 	ACS_SHORT_LOG((LM_ERROR,"dynamicComponentTest: Error getting type %s",cSpec.component_type.in()));
+	 	return;
+	 }
+	 // Execute a method on the remote component
+	 comp->whoami();
+	 
+	 // Release the component
+	 getContainerServices()->releaseComponent(comp->name());
+}
+
+void MaciContainerServicesTestClassImpl::collocatedComponentTest() 
+	throw (CORBA::SystemException)
+{
+	 
+	 // Prepare the ComponentSpec struct
+	 ComponentSpec cSpec;
+	 cSpec.component_name="*";		
+	 cSpec.component_code="*";	
+	 cSpec.container_name="*";
+	 cSpec.component_type=IDLTYPE;
+	 
+	 // Get the default component for the given IDL interface
+	 MACI_TEST::DynamicTestClass_var comp = 
+	 	getContainerServices()->getCollocatedComponent<MACI_TEST::DynamicTestClass>(cSpec,false,"MACI_DYN_TEST1");
+	 if (CORBA::is_nil(comp.in())) {
+	 	ACS_SHORT_LOG((LM_ERROR,"collocatedComponentTest: Error getting type %s",cSpec.component_type.in()));
 	 	return;
 	 }
 	 // Execute a method on the remote component

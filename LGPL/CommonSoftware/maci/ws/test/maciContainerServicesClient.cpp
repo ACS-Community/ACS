@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesClient.cpp,v 1.5 2005/04/25 07:29:24 acaproni Exp $"
+* "@(#) $Id: maciContainerServicesClient.cpp,v 1.6 2006/06/12 14:06:36 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.5 2005/04/25 07:29:24 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.6 2006/06/12 14:06:36 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -110,6 +110,12 @@ int main (int argc, char **argv)
 	// releaseComponent of the ContainerServices)
     ACS_SHORT_LOG((LM_INFO,"Testing getDynamicComponent..."));
 	comp->dynamicComponentTest();
+	
+	// Ask the remote component to get a collocated component for the given
+	// IDL interface (it will execute the getCollocatedComponent and the 
+	// releaseComponent of the ContainerServices)
+    ACS_SHORT_LOG((LM_INFO,"Testing getCollocatedComponent..."));
+	comp->collocatedComponentTest();
 	
 	// The remote component uses the ContainerServices to test the 
 	// releaseAllComponents method (it basically gets two components and

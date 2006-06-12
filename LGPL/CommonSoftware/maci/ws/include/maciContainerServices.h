@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.19 2005/04/18 17:08:59 acaproni Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.20 2006/06/12 14:06:36 msekoran Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -81,6 +81,11 @@ class MACIContainerServices: public ContainerServices
      * Implementation of acsContainerServices::getCORBADynamicComponent(const char* name)
      */
     CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault);
+    
+    /**
+     * Implementation of acsContainerServices::getCORBACollocatedComponent(...)
+     */
+    CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent);
     
     /**
      * Implementation of acsContainerServices::getCORBADefaultComponent(const char* name)

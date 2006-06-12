@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.3 2006/01/20 14:27:31 gchiozzi Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.4 2006/06/12 14:04:49 msekoran Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -69,6 +69,28 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
     catch (...) 
 	{
 	ACS_SHORT_LOG((LM_ERROR,"ContainerServices::getDynamicComponent(...) failed"));
+        return T::_nil();
+	}
+    // Narrow the object before returning to the caller
+    if (CORBA::is_nil(obj)) 
+	{
+	return T::_nil();
+	}
+    return T::_narrow(obj);
+}
+
+template<class T> T* 
+ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
+{
+    CORBA::Object* obj =T::_nil();
+    // Get the component as a CORBA object
+    try 
+	{
+    	obj = getCORBACollocatedComponent(compSpec,markAsDefault,targetComponent); 
+	} 
+    catch (...) 
+	{
+	ACS_SHORT_LOG((LM_ERROR,"ContainerServices::getCollocatedComponent(...) failed"));
         return T::_nil();
 	}
     // Narrow the object before returning to the caller
