@@ -46,5 +46,7 @@
 1 -     /PATH/acsexmpl/alma/TEST_RPS_1/TEST_RPS_1.xml[OK]
 1 -     /PATH/acsexmpl/alma/TOWER1/TOWER1.xml[OK]
 1 -     /PATH/acsexmpl/alma/TOWER1/FRONTDOOR/FRONTDOOR.xml[OK]
+1 - 
 1 - CDBChecker exiting. No errors found
+1 - 
 1 - return code is: 0

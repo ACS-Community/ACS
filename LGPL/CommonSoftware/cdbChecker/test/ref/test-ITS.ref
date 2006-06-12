@@ -197,5 +197,7 @@
 1 -     /PATH/ITS/config/CDB/alma/TELCAL_PARAMETERTUNING/TELCAL_PARAMETERTUNING.xml:10:214 [Error]
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'ParameterTuning'.
 1 -     /PATH/ITS/config/CDB/alma/TEST_PS_1/TEST_PS_1.xml[OK]
+1 - 
 1 - [Error] CDBChecker exiting. Errors were found
+1 - 
 1 - return code is: 1
