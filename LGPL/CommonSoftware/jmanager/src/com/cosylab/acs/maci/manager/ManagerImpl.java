@@ -6837,12 +6837,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 																	   defaultComponentInfo.getCode(),	containerInfo.getName(), status, true);
 				if (componentInfo == null || status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
 				{
-					AssertionFailed huse = new AssertionFailed(this, "Failed to default component: '" + defaultComponentName + "'.");
+					AssertionFailed huse = new AssertionFailed(this, "Failed to obtain default component: '" + defaultComponentName + "'.");
 					huse.caughtIn(this, "internalRequestDefaultComponent");
 					huse.putValue("defaultComponentInfo", defaultComponentInfo.toString());
 					// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
 					huse.putValue("componentInfo", componentInfo == null ? "null" : componentInfo.toString());
-					huse.putValue("status", status);
+					huse.putValue("status", status.getStatus());
 					// no error handling...
 					return null;
 				}
@@ -6885,12 +6885,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				Component component = internalRequestComponent(requestor, curl, status, true);
 				if (component == null || status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
 				{
-					AssertionFailed huse = new AssertionFailed(this, "Failed to default component: '" + defaultComponentName + "'.");
+					AssertionFailed huse = new AssertionFailed(this, "Failed to obtain default component: '" + defaultComponentName + "'.");
 					huse.caughtIn(this, "internalRequestDefaultComponent");
 					huse.putValue("defaultComponentName", defaultComponentName);
 					// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
 					huse.putValue("component", component == null ? "null" : component.toString());
-					huse.putValue("status", status);
+					huse.putValue("status", status.getStatus());
 					// no error handling...
 					return null;
 				}
