@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.2 2005/10/06 14:17:22 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.3 2006/06/13 13:01:07 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -155,6 +155,11 @@ class StaticContainerServices: public maci::ContainerServices
    */
     maci::ComponentStateManager* getComponentStateManager(){ return &componentStateManager_m; }
 
+    virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+	{
+	    return CORBA::Object::_nil();
+	}
+	
  private:
     CORBA::ORB_var orb_m;
 
