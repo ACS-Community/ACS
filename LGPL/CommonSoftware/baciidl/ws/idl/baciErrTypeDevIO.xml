@@ -5,18 +5,10 @@ xsi:noNamespaceSchemaLocation="ACSError.xsd" name="baciErrTypeDevIO"
 type="30" _prefix="alma">
 <ErrorCode name="ReadError"
            shortDescription="Read Error"
-	   description="DevIO read error">
-	   <Member name="Property" 
-	           type="string" 
-		   description="Property Name."/>
-</ErrorCode>
+	   description="DevIO read error"/>
 <ErrorCode name="WriteError"
            shortDescription="Write error"
-           description="DevIO write error">
-	   <Member name="Property" 
-	           type="string" 
-		   description="Property Name."/>
-</ErrorCode>
+           description="DevIO write error"/>
 <ErrorCode name="UnimplementedRead" shortDescription="Read Method is not implemented" description="Read Method of DevIO is not implemented"/>
 <ErrorCode name="UnimplementedWrite" shortDescription="Write Method is not implemented" description="Write Method of DevIO is not implemented"/>
 </Type>
