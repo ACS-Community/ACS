@@ -144,6 +144,7 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p
 					    __FILE__, 
 					    __LINE__, 
 					    "baci::RWcommonImpl&lt;&gt;::setValueAction");
+       static_cast<CanNotSetValueCompletion*>(&completion)->setProperty((this->getProperty()->getName()));
       }
 
   // complete action requesting done invokation, 
@@ -199,6 +200,7 @@ ACSErr::Completion * RWcommonImpl<ACS_RW_TL>::set_sync (TIN val
 					  __FILE__, 
 					  __LINE__, 
 					  "baci::RWcommonImpl&lt;&gt;::set_sync");
+      completion.setProperty((this->getProperty()->getName()));
       return completion.returnCompletion(false);
       }
 }//set_sync
@@ -231,6 +233,7 @@ void RWcommonImpl<ACS_RW_TL>::set_nonblocking (TIN val
 				 __FILE__, 
 				 __LINE__, 
 				 "baci::RWcommonImpl&lt;&gt;::set_nonblocking");
+      completion.setProperty(this->property_mp->getName());
       completion.log();
       }
 }//set_nonblocking

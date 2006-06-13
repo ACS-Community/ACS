@@ -239,6 +239,7 @@ ActionRequest PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p,
 					    __FILE__, 
 					    __LINE__, 
 					    "baci::PcommonImpl&lt;&gt;::getValueAction");
+      static_cast<CanNotGetValueCompletion*>(&completion)->setProperty((property_mp->getName()));
       }//if-else
 
   // complete action requesting done invokation, 
@@ -363,10 +364,12 @@ T PcommonImpl<ACS_P_TL>::get_sync (ACSErr::Completion_out c
      }
  else
      {
-     c = CanNotGetValueCompletion(co, 
-				  __FILE__, 
-				  __LINE__, 
-				  "baci::PcommonImpl&lt;&gt;::get_sync").returnCompletion(false);
+     CanNotGetValueCompletion completion(co, 
+					 __FILE__, 
+					 __LINE__, 
+					 "baci::PcommonImpl&lt;&gt;::get_sync");
+     completion.setProperty((property_mp->getName()));
+     c = completion.returnCompletion(false);
      }//if-else
 
  // .... or replace with call BACIValue::retn()
