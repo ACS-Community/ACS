@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.45 2005/10/07 13:59:57 bjeram Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.46 2006/06/13 09:18:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.45 2005/10/07 13:59:57 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.46 2006/06/13 09:18:16 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -85,7 +85,12 @@ class TestContainerServices : public maci::ContainerServices {
         {
             return (CORBA::Object*)NULL;
         }
-        
+
+    virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+	{
+	    return (CORBA::Object*)NULL;
+	}
+
     public:
     
         maci::ComponentInfo getComponentDescriptor(const char* componentName)
