@@ -103,9 +103,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - TestACSThread::~TestACSThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread SuspendForEver
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread SuspendForEver did not stop within 10000000 100ns
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::cancel] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::cancel] Thread stopped:SuspendForEver
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:SuspendForEver
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.23 2006/03/24 12:13:09 vwang Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.24 2006/06/13 13:27:23 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -133,7 +133,6 @@ bool ThreadBase::suspend() {
      */
     suspendStatus_m = true;
     m_suspendSemaphore.acquire();
-	return true;
 	    
     return true; 
 }
@@ -352,6 +351,11 @@ bool ThreadBase::stop() {
      * and ensure that it terminates as soon as possible
      */
     exit();
+
+    /*
+     * Now I force releasing the semaphore.
+     */
+    m_suspendSemaphore.release(1);
 
     /**
      * From now on, I should not use any more 
