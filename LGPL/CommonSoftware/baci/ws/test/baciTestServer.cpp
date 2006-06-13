@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.112 2005/09/30 14:19:52 bjeram Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.113 2006/06/13 09:04:05 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.112 2005/09/30 14:19:52 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.113 2006/06/13 09:04:05 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -72,6 +72,10 @@ class TestContainerServices : public virtual maci::ContainerServices
 	    return (CORBA::Object*)0;
 	}
 
+    virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+	{
+	    return (CORBA::Object*)0;
+	}
   public:
     virtual maci::ComponentInfo getComponentDescriptor(const char* componentName)
 	throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
