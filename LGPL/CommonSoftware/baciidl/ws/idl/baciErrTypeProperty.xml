@@ -18,16 +18,22 @@ type="20" _prefix="alma">
 <ErrorCode name="PropertySetInitValue"
            shortDescription="Error setting initial value"
 	   description="Error setting the intial value of the
-	   property"
+	   	   property"
 />
 <ErrorCode name="CanNotSetValue" 
            shortDescription="Problem to set value"
-	   description="Problem to set value of the property"
-/>
+	   description="Problem to set value of the property">
+           <Member name="Property" 
+	           type="string" 
+		   description="Property Name."/>
+</ErrorCode>
 <ErrorCode name="CanNotGetValue" 
            shortDescription="Problem to get value"
-	   description="Problem to get value of the property"
-/>
+	   description="Problem to get value of the property">
+	   <Member name="Property" 
+	           type="string" 
+		   description="Property Name."/>
+</ErrorCode>
 <ErrorCode name="InvokeActionError" 
            shortDescription="Error in invokeAction"
 	   description="Error in invokeAction which performs
