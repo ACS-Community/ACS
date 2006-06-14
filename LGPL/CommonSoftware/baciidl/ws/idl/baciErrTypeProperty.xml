@@ -47,4 +47,9 @@ type="20" _prefix="alma">
            shortDescription="Decrement value error"
 	   description="Decrement value error"
 />
+<ErrorCode name="ArchiveMonitorProblem"
+           shortDescription="Problem to archive a value"
+	   description="Archive monitor could not archive a value of
+	   a property."
+/>
 </Type>
