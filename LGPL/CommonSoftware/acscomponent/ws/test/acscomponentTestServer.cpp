@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestServer.cpp,v 1.12 2005/09/21 13:40:07 vwang Exp $"
+* "@(#) $Id: acscomponentTestServer.cpp,v 1.13 2006/06/14 07:54:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * rcirami 2002-09-24  created
 */
  
-static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.12 2005/09/21 13:40:07 vwang Exp $";
+static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.13 2006/06/14 07:54:58 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -79,6 +79,11 @@ class TestContainerServices : public maci::ContainerServices {
         {
             return (CORBA::Object*)NULL;
         }
+    
+        CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+	{
+	    return (CORBA::Object*)NULL;
+	}
         
     public:
     
