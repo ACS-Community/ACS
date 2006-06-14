@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.24 2006/06/13 13:27:23 vwang Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.25 2006/06/14 15:18:00 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -306,7 +306,7 @@ bool ThreadBase::terminate() {
 	return true;
 	}
 
-    if (stop()==false) 
+    if (stop(true)==false) 
 	{
 	return cancel();
 	}
@@ -317,7 +317,7 @@ bool ThreadBase::terminate() {
 }
 
 
-bool ThreadBase::stop() {
+bool ThreadBase::stop( bool terminating ) {
     ACE_CString thread_name           = getName();
     ACE_thread_t threadID             = threadID_m;
     ACE_Thread_Manager *threadManager = threadManager_mp;
@@ -416,10 +416,13 @@ bool ThreadBase::stop() {
     /*
      * If we are here, the thread did not stop in the allotted time
      */
-    ACS_LOG(LM_SOURCE_INFO,"ThreadBase::stop",
-	    (LM_ERROR,"Thread %s did not stop within %d 100ns", 
-	     thread_name.c_str(),
-	     rs));	      
+    if( !terminating ) {
+      ACS_LOG(LM_SOURCE_INFO,"ThreadBase::stop",
+  	      (LM_ERROR,"Thread %s did not stop within %d 100ns", 
+	       thread_name.c_str(),
+	       rs));	 
+    }
+     
     return false;
 }
 

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.h,v 1.24 2006/03/24 12:12:49 vwang Exp $"
+* "@(#) $Id: acsThreadBase.h,v 1.25 2006/06/14 15:18:00 vwang Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -309,9 +309,10 @@ class ThreadBase
      * If after some time the thread is not exited, the method timeouts 
      * and returns an error
      * See example of usage.
+     * @param terminating , set to true when called by terminate(), for control the "did not stop.." message
      * @return true if thread has been stopped
      */
-    bool stop();
+    bool stop( bool terminating = false );
 
 
     /**
