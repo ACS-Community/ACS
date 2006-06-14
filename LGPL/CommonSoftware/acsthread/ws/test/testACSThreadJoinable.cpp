@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadJoinable.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"
+* "@(#) $Id: testACSThreadJoinable.cpp,v 1.5 2006/06/14 13:33:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.5 2006/06/14 13:33:04 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -76,7 +76,14 @@ class FastACSThread :public ACS::Thread
      * This is the method executed in the thread loop.
      * It is just an empty method.
      */
-    virtual void runLoop() { std::cout << pthread_self() << " runLoop()" << std::endl; }
+    virtual void runLoop() 
+	{ 
+#ifndef MAKE_VXWORSK
+	std::cout << pthread_self() << " runLoop()" << std::endl; 
+#else
+	std::cout << threadIdSelf() << " runLoop()" << std::endl; 	
+#endif
+	}
 };
 
 int main(int argc, char *argv[])
@@ -86,8 +93,11 @@ int main(int argc, char *argv[])
      * to make sure only LM_INFO messages go on stdout.
      * The test tat environment would otherwise
      * set it to 0, slooding with messages.
+     * Under VxWorks we will "unset" it from the script.
      */
+#ifndef MAKE_VXWORKS
     unsetenv("ACS_LOG_STDOUT");
+#endif
 
     LoggingProxy logger_m(0, 0, 31);
     LoggingProxy::init(&logger_m);
