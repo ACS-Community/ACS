@@ -4,11 +4,11 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
-import org.w3c.dom.NodeList;
-
 import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
+
+import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
 
 public class ACSLogParserTest extends TestCase {
 
@@ -54,7 +54,7 @@ public class ACSLogParserTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		parser = new ACSLogParser();
+		parser = new ACSLogParserVTD();
 	}
 
 	protected void tearDown() throws Exception {
@@ -69,40 +69,18 @@ public class ACSLogParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testParseLogRecord() throws Exception {
-		LogEntryXML log = parser.parse(xmlLogWarningWithException);
+		ILogEntry log = parser.parse(xmlLogWarningWithException);
 		
 		// verify some fields
-		assertEquals("wrong typename string", "Warning", log.getEntryTypeAsString());
-		assertEquals("wrong type code", new Integer(LogTypeHelper.ENTRYTYPE_WARNING), log.getField(LogEntryXML.FIELD_ENTRYTYPE));
+		assertEquals("wrong typename string", "Warning", LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE)));
+		assertEquals("wrong type code", new Integer(LogTypeHelper.ENTRYTYPE_WARNING), log.getField(ILogEntry.FIELD_ENTRYTYPE));
 		
-		NodeList datas = log.getDatas();
-		assertFalse("There should have been 1 piece of attached data!", datas == null || datas.getLength() != 1);
-		Vector<AdditionalData> additionalData = log.getAdditionalData();
+		Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
+		assertFalse("There should have been 1 piece of attached data!", datas == null || datas.size() != 1);
+		Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
 		assertFalse("There should have been 1 piece of additional data!", additionalData == null || additionalData.size() != 1);
-		AdditionalData myData = additionalData.get(0);
+		ILogEntry.AdditionalData myData = additionalData.get(0);
 		assertEquals("LoggedException", myData.getName());
 		assertTrue(myData.getValue().startsWith("alma.xmlstore.OperationalPackage.NotFound: uid://X00000000000028aa/X00000002"));
-	}
-	
-	
-	/**
-	 * This method checks whether identical strings for a certain field of two log messages 
-	 * result in one reused String in memory, or in two redundant strings.
-	 * Field names are highly repetitive, which can be seen by the huge compression rate achievable for real life log files.
-	 * <p>
-	 * As of 2006-04-05 this test fails, and shows what great optimization potential jlog has
-	 * if all Strings would be reused from a HashMap (or field-specific HashMaps) or something like that.
-	 * 
-	 * @throws Exception
-	 */
-	public void testStringReuse() throws Exception {
-		final LogEntryXML record1 = parser.parse(xmlLogInfo1);
-		final LogEntryXML record2 = parser.parse(xmlLogInfo2);
-		
-		String routineName1 = (String) record1.getField(LogEntryXML.FIELD_ROUTINE);
-		String routineName2 = (String) record2.getField(LogEntryXML.FIELD_ROUTINE);
-		// strings must be equal by design of this test, but are they also the same String in memory?
-		assertTrue("Bad junit test: The two parsed records should have identical routine names.", routineName1.equals(routineName2));		
-		assertTrue("Bad jlog implementation: Recurring strings should be reused from a pool to minimize memory consumption!", routineName1 == routineName2);
 	}
 }

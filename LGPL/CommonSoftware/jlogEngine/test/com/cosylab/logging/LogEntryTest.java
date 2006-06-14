@@ -25,10 +25,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
+
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.ACS.ACSLogParser;
+import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
+
 import java.util.Vector;
 
 /**
@@ -43,13 +47,13 @@ public class LogEntryTest extends junit.framework.TestCase
 {
 
 	Document doc = null;
-	LogEntryXML log = null;
+	ILogEntry log = null;
 	Node node = null;
 	DocumentBuilderFactory factory = null;
 
 	java.util.Vector testEntries = new java.util.Vector();
 
-	com.cosylab.logging.engine.ACS.ACSLogParser logparser = null;
+	ACSLogParserVTD logparser = null;
 
 	class TestEntry
 	{
@@ -75,7 +79,7 @@ public class LogEntryTest extends junit.framework.TestCase
 	protected void setUp() throws Exception
 	{
 
-		logparser = new com.cosylab.logging.engine.ACS.ACSLogParser();
+		logparser = new ACSLogParserVTD();
 		log =
 			logparser.parse(
 				"<Trace TimeStamp=\"2002-11-07T15:13:00.012\" File=\"maciHeartbeatController.cpp\" Line=\"64\"><Data Name=\"DataName\">first data</Data></Trace>");
@@ -90,38 +94,21 @@ public class LogEntryTest extends junit.framework.TestCase
 	public void testLogEntryConst() throws Exception
 	{ //public LogEntryXML(Node log) throws DOMException
 
-		Node node = log.getNode();
-		LogEntryXML log1 = new LogEntryXML(node);
-
-		Node node1 = log1.getNode();
-		LogEntryXML log2 = new LogEntryXML(node1);
+		String xmlString = log.toXMLString();
+		ILogEntry log1 = logparser.parse(xmlString);
 
 		String actual = log.toString();
 		String expected = log1.toString();
-
+		
 		assertEquals("The two logs are not equal.", expected, actual);
 
-	}
-
-	public void testGetNode()
-	{ //public Node getNode()
-
-		Node node = log.getNode();
-
-		LogEntryXML log1 = new LogEntryXML(node);
-		Node node1 = log1.getNode();
-
-		String actual = node.toString();
-		String expected = node1.toString();
-
-		assertEquals("The two logs are not equal.", expected, actual);
 	}
 
 	public void testGetDatas()
 	{ //public NodeList getDatas()
 
-		NodeList nl = log.getDatas();
-		int actualLength = nl.getLength();
+		Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
+		int actualLength = datas.size();
 		int expectedLength = 1;
 
 		assertEquals(
@@ -129,24 +116,17 @@ public class LogEntryTest extends junit.framework.TestCase
 			expectedLength,
 			actualLength);
 
-		String nodelist = "" + nl;
-		String nodes = "";
-		if (actualLength > 0)
-		{
-			for (int i = 0; i < nl.getLength(); i++)
-			{
-				Node n = nl.item(i);
-				nodes = nodes + "[" + n.toString() + "]";
-			}
-		}
-
-		assertEquals("The two logs are not equal.", nodelist, nodes);
+		String dataName = datas.get(0).getName();
+		String dataVal =  datas.get(0).getValue();
+		
+		assertEquals("Data name differs", "DataName",dataName);
+		assertEquals("Data value differs", "first data",dataVal);
 	}
 
 	public void testGetEntryTypeAsString()
 	{ //public String getEntryTypeAsString()  
 
-		String actualEntryType = log.getEntryTypeAsString();
+		String actualEntryType = LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
 		String expectedEntryType = "Trace";
 		assertEquals(
 			"The two logs are not equal.",
@@ -163,10 +143,11 @@ public class LogEntryTest extends junit.framework.TestCase
 			String actualEntryTypeDesc = LogTypeHelper.getLogTypeDescription(j);
 			// can be anything: trace, debug, info
 			if (actualEntryTypeDesc
-				.equalsIgnoreCase(log.getEntryTypeAsString()))
+				.equalsIgnoreCase(LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE))));
 				actual = actualEntryTypeDesc; // is the one that matches
+				break;
 		}
-		String expected = log.getEntryTypeAsString(); // "Trace" (Trace)
+		String expected = LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
 		assertEquals("The two logs are not equal.", expected, actual);
 	}
 
@@ -177,8 +158,6 @@ public class LogEntryTest extends junit.framework.TestCase
 		String curFieldDesc = null;
 
 		Object expectedField = "maciHeartbeatController.cpp";
-
-		String act = log.getEntryTypeAsString(); // Trace
 
 		for (int j = 0; j < 15; j++)
 		{
@@ -215,13 +194,6 @@ public class LogEntryTest extends junit.framework.TestCase
 			actualFieldClass);
 	}
 
-	public void testIsLogEntryMessageSimple()
-	{ //void isLogEntryMessageSimple() throws DOMException
-		boolean actual = log.isLogEntryMessageSimple();
-		boolean expected = false;
-		assertEquals("The two logs are not equal.", expected, actual);
-	}
-
 	public void testIsValidFieldIndex()
 	{ //boolean isValidFieldIndex(int fieldIndex)
 		boolean expected = true;
@@ -243,41 +215,6 @@ public class LogEntryTest extends junit.framework.TestCase
 		}
 		assertEquals("The two logs are not equal.", expected, actual);
 
-	}
-
-	public void testToString()
-	{ //String toString()
-		String expected = log.toString();
-		String actual = null;
-
-		StringBuffer sb = new StringBuffer("--- LogEntryXML ---\n");
-		for (int j = 0; j < 15; j++)
-		{
-			if (log.getField(j) != null)
-			{
-				if (j == LogEntryXML.FIELD_ENTRYTYPE)
-					sb.append(
-                            LogEntryXML.getFieldDescription(j)
-							+ ": "
-							+ log.getEntryTypeAsString()
-							+ "\n");
-				else
-					sb.append(
-                            LogEntryXML.getFieldDescription(j)
-							+ ": "
-							+ log.getField(j)
-							+ "\n");
-
-			}
-
-		}
-
-		NodeList nl = log.getDatas();
-		int actualLength = nl.getLength();
-		if (actualLength != 0)
-			sb.append("Datas: " + log.getDatas() + "\n");
-		actual = sb.toString();
-		assertEquals("The two logs are not equal.", expected, actual);
 	}
 
 	public void testGetFieldDesc()
@@ -338,44 +275,4 @@ public class LogEntryTest extends junit.framework.TestCase
 			System.out.println("Exception: " + e);
 		}
 	}
-	
-	/**
-	 * Test if a LogEntry built from a LogEntryXML contains the same
-	 * fields and additional data
-	 *
-	 */
-	public void testLogConversion() {
-		// Build the LogEntry from the LogEntryXML
-		LogEntry logEntry = new LogEntry(log);
-		// Check the value of each field
-		for (int t=0; t<LogEntry.NUMBER_OF_FIELDS; t++) {
-			assertEquals(
-					"The field "+t+" of LogEntry and LogEntryXML differs",
-					logEntry.getField(t),
-					log.getField(t));
-		}
-		// Check the length of AdditionalData vectors
-		Vector<ILogEntry.AdditionalData> addDatasLogEntryXML=log.getAdditionalData();
-		Vector<ILogEntry.AdditionalData> addDatasLogEntry =logEntry.getAdditionalData();
-		Integer logSizeXML = new Integer(addDatasLogEntryXML.size());
-		Integer logSize = new Integer(addDatasLogEntry.size());
-		assertEquals(
-				"The additional datas have different leghts",
-				logSizeXML,
-				logSize);
-		// Check the content of each AdditionalData in the vectors
-		for (int t=0; t<addDatasLogEntry.size(); t++) {
-			ILogEntry.AdditionalData xmlData = addDatasLogEntryXML.get(t);
-			ILogEntry.AdditionalData plainData= addDatasLogEntry.get(t);
-			assertEquals(
-					"The name of the additional data differs",
-					xmlData.getName(),
-					plainData.getName());
-			assertEquals(
-					"The value of the additional data differs",
-					xmlData.getValue(),
-					plainData.getValue());
-		}
-	}
-	
 }

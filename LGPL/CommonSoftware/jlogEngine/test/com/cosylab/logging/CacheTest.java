@@ -1,6 +1,7 @@
 package com.cosylab.logging;
 
 import com.cosylab.logging.client.cache.LogCache;
+import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntryXML;
@@ -69,7 +70,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	private long fillCache() throws Exception {
-		ACSLogParser parser = new ACSLogParser();
+		ACSLogParser parser = new ACSLogParserVTD();
 		String logMsg = "Test log nr. ";
 		
 		
@@ -78,7 +79,7 @@ public class CacheTest extends junit.framework.TestCase {
 		for (int t=0; t<logToInsert; t++) {
 			String newLogMsg=logMsg+"t";
 			String logStr = "<Info TimeStamp=\"2005-11-29T15:33:09.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+newLogMsg+"]]></Info>";
-			LogEntryXML newLog = parser.parse(logStr);
+			ILogEntry newLog = parser.parse(logStr);
 			cache.add(newLog);
 		}
 		return logToInsert;
@@ -111,11 +112,11 @@ public class CacheTest extends junit.framework.TestCase {
 	 *
 	 */
 	public void testAddLog() throws Exception {
-		ACSLogParser parser = new ACSLogParser();
+		ACSLogParser parser = new ACSLogParserVTD();
 		int oldSize = cache.getSize();
 		String logMsg = "Test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T15:33:10.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
-		LogEntryXML newLog = parser.parse(logStr);
+		ILogEntry newLog = parser.parse(logStr);
 		cache.add(newLog);
 		assertEquals("Error adding a log",cache.getSize(),oldSize+1);
 		ILogEntry log = cache.getLog(cache.getSize()-1);
@@ -128,10 +129,10 @@ public class CacheTest extends junit.framework.TestCase {
 	 *
 	 */
 	public void testReplace() throws Exception {
-		ACSLogParser parser = new ACSLogParser();
+		ACSLogParser parser = new ACSLogParserVTD();
 		String logMsg = "Replaced test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T16:00:00.000\" Routine=\"CacheTest::testReplace\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
-		LogEntryXML newLog = parser.parse(logStr);
+		ILogEntry newLog = parser.parse(logStr);
 		// Replace the first log
 		cache.replaceLog(0,newLog);
 		assertEquals("Error replacing log "+0,logMsg,(String)cache.getLog(0).getField(ILogEntry.FIELD_LOGMESSAGE));
