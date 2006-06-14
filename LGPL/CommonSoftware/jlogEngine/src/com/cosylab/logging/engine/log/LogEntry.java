@@ -132,7 +132,7 @@ public class LogEntry implements ILogEntry {
 	 * @return an XML string representing this log
 	 */
 	public String toXMLString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		String logType =LogTypeHelper.getLogTypeDescription(type);
 		sb.append("<"+logType);
@@ -158,10 +158,13 @@ public class LogEntry implements ILogEntry {
 			}
 		}
 		
-		if (type==LogTypeHelper.ENTRYTYPE_TRACE) {
+		if (type==LogTypeHelper.ENTRYTYPE_TRACE && !hasDatas()) {
 			sb.append("/>");
 		} else {
-			sb.append("><![CDATA["+logMessage+"]]>");
+			sb.append(">");
+			if (logMessage!=null) {
+				sb.append("<![CDATA["+logMessage+"]]>");
+			}
 			if (hasDatas()) {
 				sb.append(getXMLDatas());
 			}
@@ -174,8 +177,8 @@ public class LogEntry implements ILogEntry {
 	 * 
 	 * @return The XML representation of the additional data
 	 */
-	private StringBuffer getXMLDatas() {
-		StringBuffer tempStr = new StringBuffer();
+	private StringBuilder getXMLDatas() {
+		StringBuilder tempStr = new StringBuilder();
 		if (additionalData!=null) {
 			int size = additionalData.size();
 			for (int t=0; t<size; t++) {
