@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baci.h,v 1.105 2005/09/12 23:03:42 dfugate Exp $"
+* "@(#) $Id: baci.h,v 1.106 2006/06/14 10:00:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,6 +53,7 @@
 #include "acserr.h"
 #include "ACSErrTypeMonitor.h"
 #include "ACSErrTypeOK.h"
+#include <baciErrTypeProperty.h>
 
 #include <algorithm>
 #include <map>

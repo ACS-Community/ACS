@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.102 2006/05/29 10:52:03 msekoran Exp $"
+* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.103 2006/06/14 10:00:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,6 @@
 * almamgr 2002-02-05 created
 * msekoran  2001/03/06  created
 */
-
 #include <baci.h>
 
 
@@ -73,9 +72,12 @@ bool baci::BACIComponent::dispatchCallback(int callbackID,
 		  }
 		  else
 		  {
-			CompletionImpl c((Completion*)&completion, false);
-			c.log();
-			return true;
+		  baciErrTypeProperty::ArchiveMonitorProblemCompletion c(completion, 
+									 __FILE__,
+									 __LINE__,
+									 "baci::BACIComponent::dispatchCallback");
+		  c.log();
+		  return true;
 		  }//if-else
       }
     else
