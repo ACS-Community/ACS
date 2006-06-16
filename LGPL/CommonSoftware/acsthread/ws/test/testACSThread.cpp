@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThread.cpp,v 1.22 2006/03/24 12:42:31 vwang Exp $"
+* "@(#) $Id: testACSThread.cpp,v 1.23 2006/06/16 11:35:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,12 +30,23 @@
 #include "acsThreadManager.h"
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThread.cpp,v 1.22 2006/03/24 12:42:31 vwang Exp $"; 
+static char *rcsId="@(#) $Id: testACSThread.cpp,v 1.23 2006/06/16 11:35:43 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
+#ifdef MAKE_VXWORKS
+#	include "rebootLib.h"
+#	include "acsutilArgUnpack.h"
 
+int testACSThread (char *szCmdLn){
+  int  argc;
+  char *argv[100];
+
+  argc = argUnpack(szCmdLn, argv);
+  argv[0] = "testACSThread";
+#else
 int main(int argc, char *argv[])
 {
+#endif
     LoggingProxy logger_m(0, 0, 31);
     LoggingProxy::init(&logger_m);
 

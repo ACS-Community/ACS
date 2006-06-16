@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadJoinable.cpp,v 1.5 2006/06/14 13:33:04 bjeram Exp $"
+* "@(#) $Id: testACSThreadJoinable.cpp,v 1.6 2006/06/16 11:35:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.5 2006/06/14 13:33:04 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.6 2006/06/16 11:35:43 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -78,10 +78,10 @@ class FastACSThread :public ACS::Thread
      */
     virtual void runLoop() 
 	{ 
-#ifndef MAKE_VXWORSK
+#ifndef MAKE_VXWORKS
 	std::cout << pthread_self() << " runLoop()" << std::endl; 
 #else
-	std::cout << threadIdSelf() << " runLoop()" << std::endl; 	
+	std::cout << taskIdSelf() << " runLoop()" << std::endl; 	
 #endif
 	}
 };
@@ -182,7 +182,8 @@ int main(int argc, char *argv[])
     ACS_SHORT_LOG(( LM_INFO, "===== 3 - join the threads"));
     for( l=0; l<totalCreated; l++)
 	{
-	ACE_Thread::join(threadIdVec[l]);
+	ACE_thread_t tid = threadIdVec[l];
+	ACE_Thread::join(tid);
 	}
 
     /*
