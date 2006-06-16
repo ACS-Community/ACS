@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.25 2006/06/14 15:18:00 vwang Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.26 2006/06/16 11:35:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -535,7 +535,7 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 	    {
 	    return SLEEP_INTERRUPTED;
 	    }
-	else if(acquireRet == -1 && errno!=62)
+	else if(acquireRet == -1 && errno!=ETIME)
 	    {
 	    ACS_LOG(LM_SOURCE_INFO,"ThreadBase::sleep",
 		    (LM_ERROR,"Acquire %d (errno: %d) - unexpeced acquire in sleep", 
