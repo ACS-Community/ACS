@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSStructuredPushSupplier.cpp,v 1.1 2005/09/09 21:33:45 dfugate Exp $"
+* "@(#) $Id: loggingACSStructuredPushSupplier.cpp,v 1.2 2006/06/19 22:33:20 dfugate Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -26,6 +26,7 @@
 
 
 #include "loggingACSStructuredPushSupplier.h"
+#include <iostream>
 
 /*****************************************************************/
 
@@ -86,7 +87,40 @@ ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& e
 {
   ACE_ASSERT (!CORBA::is_nil (this->proxy_consumer_.in ()));
 
-  proxy_consumer_->push_structured_event (event);
+  try
+      {
+      proxy_consumer_->push_structured_event (event);
+      }
+  catch(CORBA::COMM_FAILURE ex)
+	{
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+	
+	std::cerr << "ERROR (CORBA::COMM_FAILURE): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog;
+	std::cerr << "'!" << std::endl;
+	}
+    catch(CORBA::TRANSIENT ex)
+	{
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+	
+	std::cerr << "ERROR (CORBA::TRANSIENT): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog;
+	std::cerr << "'!" << std::endl;
+	}
+    catch(...)
+	{
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+
+	std::cerr << "ERROR (Unkwown): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog;
+	std::cerr << "'!" << std::endl;
+	}
 }
 
 void
