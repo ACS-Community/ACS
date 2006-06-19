@@ -350,10 +350,16 @@
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [BACI1 - baci::CharacteristicComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: BACI1 exported
@@ -692,10 +698,16 @@
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [BACI2 - baci::CharacteristicComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: BACI2 exported
@@ -912,8 +924,8 @@
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI1...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI1::actionThread
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] Properties destroyed
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
@@ -1158,6 +1170,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
 1 - ----------T--:--:--.--- [BACI1 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] Component 'BACI1' destroyed.
@@ -1169,6 +1182,7 @@
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [BACI1 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
@@ -1179,6 +1193,7 @@
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI2...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] Properties destroyed
@@ -1391,6 +1406,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::~DAONode] 
 1 - ----------T--:--:--.--- [BACI2 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::~BACIComponent] Component 'BACI2' destroyed.
@@ -1402,6 +1418,7 @@
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [BACI2 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
@@ -1421,13 +1438,13 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to get ROdoubleProp...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to narrow CB for ROdoubleProp... 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 1s monitor for ROdoubleProp...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 5s monitor for ROdoubleProp...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 10s monitor for ROdoubleProp...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to get ROfloatProp...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to narrow CB for ROfloatProp... 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 1s monitor for ROfloatProp...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 5s monitor for ROfloatProp...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 10s monitor for ROfloatProp...
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
@@ -1442,9 +1459,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 10s monitor for ROpatternProp...
 2 - ----------T--:--:--.--- [GlobalLogger - ] (baciTest1Client main thread) Going to sleep...
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:-X.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
@@ -1657,6 +1671,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:-X.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:-0.000
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
@@ -1665,6 +1680,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
