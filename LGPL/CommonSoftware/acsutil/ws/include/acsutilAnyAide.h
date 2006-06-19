@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.h,v 1.7 2006/03/09 18:49:42 dfugate Exp $"
+* "@(#) $Id: acsutilAnyAide.h,v 1.8 2006/06/19 23:11:36 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -295,11 +295,6 @@ class AnyAide
      */
     static const std::string unknownType_m;
 
-    ///DWF - we need access to dynamic anys to be able to 
-    //convert enums embedded within any's to strings. For 
-    //the time being, we use a member pointer set by other
-    //classes which should be changed eventually.
-    static CORBA::ORB_ptr orb_mp;
 
   private:
     /**

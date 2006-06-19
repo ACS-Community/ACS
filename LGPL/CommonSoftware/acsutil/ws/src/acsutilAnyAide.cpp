@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.cpp,v 1.6 2006/03/09 18:49:42 dfugate Exp $"
+* "@(#) $Id: acsutilAnyAide.cpp,v 1.7 2006/06/19 23:11:36 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,12 +51,15 @@
 *------------------------------------------------------------------------
 */
 
-#include "acsutilAnyAide.h"
+
 #include <iomanip>
 #include <acscommonC.h>
 #include <tao/DynamicAny/DynamicAny.h>
 
-static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.6 2006/03/09 18:49:42 dfugate Exp $"; 
+#include "acsutilAnyAide.h"
+#include "acsutilORBHelper.h"
+
+static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.7 2006/06/19 23:11:36 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 const std::string AnyAide::nullType_m      = "null";
@@ -365,7 +368,6 @@ AnyAide::anyToString(const CORBA::Any& value, unsigned short precision)
     
     else
 	{
-	//TODO: handle enums here somehow... 
 	UnsupportedType except;
 	except.type = "type not supported yet";
 	throw except;
@@ -381,21 +383,10 @@ std::string
 AnyAide::enumToString(const CORBA::Any& value)
     throw(UnsupportedType)
 {
-    //TEMPORARY
-    //the container or simpleclient should be taking
-    //care of the following. if the container/client does not,
-    //what's below will result in a very small memory leak!!!
-    //TODO: fix me!
-    if (orb_mp==0)
-	{
-	int argc = 1;
-	char* orbArgs[] = { "" };
-	orb_mp = CORBA::ORB_init(argc, orbArgs, "");
-	ACE_ASSERT(!CORBA::is_nil(orb_mp));
-	}
+    CORBA::ORB_ptr orb_p = ORBHelper::getORB();
 
     //get the dynamic any factory
-    CORBA::Object_var factory_obj = orb_mp->resolve_initial_references ("DynAnyFactory");
+    CORBA::Object_var factory_obj = orb_p->resolve_initial_references ("DynAnyFactory");
     //narrow it
     DynamicAny::DynAnyFactory_var dynany_factory = DynamicAny::DynAnyFactory::_narrow(factory_obj.in());
     //sanity check
@@ -422,4 +413,3 @@ AnyAide::enumToString(const CORBA::Any& value)
     return retVal;
 }
 //----------------------------------------------------------------------
-CORBA::ORB_ptr AnyAide::orb_mp = 0;

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAnyAide.cpp,v 1.5 2006/01/09 18:52:17 dfugate Exp $"
+* "@(#) $Id: testAnyAide.cpp,v 1.6 2006/06/19 23:11:36 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,7 +58,7 @@
 #include "acsutilAnyAide.h"
 #include <baciC.h>
 
-static char *rcsId="@(#) $Id: testAnyAide.cpp,v 1.5 2006/01/09 18:52:17 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: testAnyAide.cpp,v 1.6 2006/06/19 23:11:36 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 void 
@@ -105,7 +105,7 @@ printf("'%s' test failed!\n", #isXyz); \
 
 int main(int argc, char *argv[])
 {
-    CORBA::ORB_var orb_p = ORBHelper::getORB();
+    CORBA::ORB_ptr orb_p = ORBHelper::getORB();
 
     CORBA::Any nilCORBAObjectAny;
     CORBA::Object_ptr nilCORBAObjectVal = 0;
@@ -232,8 +232,6 @@ int main(int argc, char *argv[])
 
     //TODO - test isEnum
     //TODO - test isStruct
-
-    orb_p->shutdown(true);
-    orb_p->destroy();
+    
     return 0;
 }
