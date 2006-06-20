@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 
 import javax.naming.Context;
@@ -268,7 +269,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
 						new MessageLogEntry(ManagerImpl.this, "ManagerImpl.RequestComponentTask", "Failed to activate requested component '"+curls[i]+"', reason: '"+status.getStatus()+"'.", LoggingLevel.DEBUG).dispatch();
 				}
-				catch (Exception ex)
+				catch (Throwable ex)
 				{
 					CoreException ce = new CoreException(ManagerImpl.this, "Failed to request component '"+curls[i]+"'.", ex);
 					ce.caughtIn(this, "ManagerImpl.RequestComponentTask");
@@ -309,13 +310,42 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 					internalReleaseComponent(h, handles[i], false);		
 				}
-				catch (Exception ex)
+				catch (Throwable ex)
 				{
 					CoreException ce = new CoreException(ManagerImpl.this, "Failed to release component with handle '"+handles[i]+"'.", ex);
 					ce.caughtIn(this, "ManagerImpl.ReleaseComponentTask");
 					ce.putValue("handle",  new Integer(handles[i]));
 					// exception service will handle this
 				}
+			}
+		}
+	}
+
+	/**
+	 * Task thats invokes <code>internalDeactivateComponent</code> method.
+	 */		
+	class DeactivateComponentTask extends TimerTask
+	{
+		private String name;
+		
+		public DeactivateComponentTask(String name)
+		{
+			super();
+			this.name = name;
+		}
+
+		public void run()
+		{
+			try
+			{
+				internalDeactivateComponent(name);		
+			}
+			catch (Throwable th)
+			{
+				CoreException ce = new CoreException(ManagerImpl.this, "Failed to deactivate component '"+name+"'.", th);
+				ce.caughtIn(this, "ManagerImpl.DeactivateComponentTask");
+				ce.putValue("name",  name);
+				// exception service will handle this
 			}
 		}
 	}
@@ -470,9 +500,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private transient Random random = null;
 
 	/**
-	 * Containers data.
+	 * Heartbeat timer.
 	 */
 	private transient Timer heartbeatTask = null;
+
+	/**
+	 * Delatyed release timer.
+	 */
+	private transient Timer delayedDeactivationTask = null;
 
 	/**
 	 * Root context of the remote directory.
@@ -552,6 +587,21 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Container rights.
 	 */
 	private static final int	CONTAINER_RIGHTS = AccessRights.NONE;
+
+	/**
+	 * Release immediately keep-alive time.
+	 */
+	private static final int	RELEASE_IMMEDIATELY = 0;		// 0 secs
+
+	/**
+	 * Never release (immortal) immediately keep-alive time.
+	 */
+	private static final int	RELEASE_NEVER = -1;		// < 0 secs
+
+	/**
+	 * (Internal) undefined keep-alive time.
+	 */
+	private static final int	RELEASE_TIME_UNDEFINED = Integer.MIN_VALUE + 2;
 
 	/**
 	 * Shutdown implementation.
@@ -675,6 +725,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		random = new Random();
 		heartbeatTask = new Timer(true);
+		delayedDeactivationTask = new Timer(true);
 
 		activationSynchronization = new HashMap();
 		activationPendingRWLock = new ReaderPreferenceReadWriteLock();
@@ -2607,7 +2658,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				ComponentInfo cdbInfo = internalRequestComponent(this.getHandle(),
 										 cdbActivation.getName(), cdbActivation.getType(), 
-										 cdbActivation.getCode(), cdbActivation.getContainer(), status, true);
+										 cdbActivation.getCode(), cdbActivation.getContainer(), RELEASE_IMMEDIATELY, status, true);
 
 				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
 					new MessageLogEntry(ManagerImpl.this, "containerPostLoginActivation", "Failed to activate CDB, reason: '"+status.getStatus()+"'.", LoggingLevel.SEVERE).dispatch();
@@ -5193,7 +5244,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				ComponentInfo componentInfo = null;
 				try
 				{
-					componentInfo = internalNoSyncRequestComponent(requestor, name, null, null, null, status, activate);
+					componentInfo = internalNoSyncRequestComponent(requestor, name, null, null, null, RELEASE_TIME_UNDEFINED, status, activate);
 				}
 				catch(ComponentSpecIncompatibleWithActiveComponentException ciwace)
 				{
@@ -5345,6 +5396,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private ComponentInfo internalRequestComponent(
 								int requestor,
 								String name, String type, String code, String containerName,
+								int keepAliveTime,
 								StatusHolder status, boolean activate)
 		throws ComponentSpecIncompatibleWithActiveComponentException
 	{
@@ -5354,7 +5406,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (isDebug())
 			new MessageLogEntry(this, "internalRequestComponent",
-						new Object[] { new Integer(requestor), name, type, code, containerName,
+						new Object[] { new Integer(requestor), name, type, code, containerName, new Integer(keepAliveTime),
 									   status, new Boolean(activate) }).dispatch();
 
 		checkCyclicDependency(requestor, name);
@@ -5380,7 +5432,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					throw nre;
 				}
 
-				return internalNoSyncRequestComponent(requestor, name, type, code, containerName, status, activate);
+				return internalNoSyncRequestComponent(requestor, name, type, code, containerName, keepAliveTime, status, activate);
 			}
 			finally
 			{
@@ -5414,6 +5466,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private ComponentInfo internalNoSyncRequestComponent(
 								int requestor,
 								String name, String type, String code, String containerName,
+								int keepAliveTime,
 								StatusHolder status, boolean activate)
 		throws ComponentSpecIncompatibleWithActiveComponentException
 	{
@@ -5423,7 +5476,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (isDebug())
 			new MessageLogEntry(this, "internalNoSyncRequestComponent",
-						new Object[] { new Integer(requestor), name, type, code, containerName,
+						new Object[] { new Integer(requestor), name, type, code, containerName, new Integer(keepAliveTime),
 									   status, new Boolean(activate) }).dispatch();
 
 		boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
@@ -5564,7 +5617,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 		// is CDB lookup needed
-		else if (!isOtherDomainComponent && (type == null || code == null || containerName == null))
+		else if (!isOtherDomainComponent &&
+				(type == null || code == null || containerName == null || keepAliveTime == RELEASE_TIME_UNDEFINED))
 		{
 
 			//
@@ -5625,6 +5679,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 			}
 
+			if (keepAliveTime == RELEASE_TIME_UNDEFINED)
+			{
+				// defaults to 0 == RELEASE_IMMEDIATELY
+				keepAliveTime = readLongCharacteristics(dao, name+"/KeepAliveTime", true);
+				if (keepAliveTime == 0)
+					keepAliveTime = RELEASE_IMMEDIATELY;
+			}
+			
 		}
 
 
@@ -5938,6 +6000,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (requestor != 0)
 				if (!data.getClients().contains(requestor))		// hierarchical components need this check
 					data.getClients().add(requestor);
+				
+			if (keepAliveTime <= RELEASE_NEVER)
+				if (!data.getClients().contains(this.getHandle()))		// make component immortal
+					data.getClients().add(this.getHandle());
+				
 		
 			if (isOtherDomainComponent)
 			{
@@ -6158,6 +6225,79 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
+	 * Internal method for deactivating components.
+	 * 
+	 * @param	name	name of the component to be released.
+	 */
+	private void internalDeactivateComponent(String name)
+	{
+		if (isDebug())
+			new MessageLogEntry(this, "internalDeactivateComponent", new Object[] { name }).dispatch();
+
+
+		// try to acquire lock
+		boolean lockAcquired = acquireSynchronizationObject(name, 3*Sync.ONE_MINUTE);
+		if (lockAcquired)
+		{
+			// resolve componentInfo from curl
+			ComponentInfo componentInfo = null;
+			synchronized (components)
+			{
+				int h = components.first();
+				while (h != 0)
+			    {
+			    	ComponentInfo ci = (ComponentInfo)components.get(h);
+					if (ci.getName().equals(name))
+					{
+						// a new owner detected, leave component activated
+						if (ci.getClients().size() > 0)
+							return;
+						componentInfo = ci;
+						break;
+					}
+					h = components.next(h);
+			    }
+			}
+
+			// component is already gone, nothing to do
+			if (componentInfo == null)
+				return;
+				
+			boolean releaseRWLock = true;
+			try
+			{
+				// try to acquire activation readers lock first
+				// NOTE: the locks are NOT reentrant
+				try	{
+					activationPendingRWLock.readLock().acquire();
+				} catch (InterruptedException ie) {
+					releaseRWLock = false;
+					
+					NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"'.");
+					nre.caughtIn(this, "internalDeactivateComponent");
+					nre.putValue("name", name);
+					throw nre;
+				}
+
+				internalNoSyncDeactivateComponent(componentInfo);
+			}
+			finally
+			{
+				if (releaseRWLock)
+					activationPendingRWLock.readLock().release();
+				releaseSynchronizationObject(name);	
+			}
+		}
+		else
+		{
+			NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
+			nre.caughtIn(this, "internalDeactivateComponent");
+			nre.putValue("name", name);
+			throw nre;
+		}
+	}
+
+	/**
 	 * Internal method for releasing components.
 	 * 
 	 * @param	owner	owner of the component.
@@ -6324,186 +6464,32 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		/****************** component deactivation ******************/
 
 		// there is no owners of the component, deactivate it
-		if (owners == 0 || force)
+		if (force)
 		{
-
-			// unbind from remote directory
-			unbind(convertToHiearachical(componentInfo.getName()), "O");
-
-			try
+			internalNoSyncDeactivateComponent(componentInfo);
+		}
+		else if (owners == 0)
+		{
+			int keepAliveTime = 0;
+			String name = componentInfo.getName();
+			boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
+			if (!isOtherDomainComponent)
 			{
-				//
-				// get container/remote manager
-				//
-			    
-				String name = componentInfo.getName();
-				boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
-				
-				if (isOtherDomainComponent)
-				{
-					Manager remoteManager = null;
-					
-					// TODO MF do the login?
-				    try
-				    {
-					    String domainName = CURLHelper.createURI(name).getAuthority();
-					    remoteManager = getManagerForDomain(domainName);
-					    if (remoteManager == null)
-					        throw new AssertionFailed(this, "Failed to obtain manager for domain '" + domainName + "'.");
-				    } catch (Throwable th) {
-						new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Failed to obtain non-local manager required by component '"+name+"'.", th, LoggingLevel.WARNING).dispatch();
-						return 0; 
-				    }
-				    
-					// TODO MF call release_component on other manager (logout?)
-				    // release component
-					try
-					{
-					    URI curlName = CURLHelper.createURI(name);
-					    // TODO MF tmp (handle)
-					    remoteManager.releaseComponent(INTERDOMAIN_MANAGER_HANDLE, curlName);
-					}
-					catch (Exception ex)
-					{
-						RemoteException re = new RemoteException(this, "Failed to release component '"+componentInfo.getName()+"' on remote manager.'", ex);
-						re.caughtIn(this, "internalNoSyncReleaseComponent");
-						re.putValue("h", new Integer(h));
-						re.putValue("owner", new Integer(owner));
-						// exception service will handle this
-						new MessageLogEntry(this, "internalNoSyncReleaseComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();			
-					}
-					
-				}
-				else
-				{
-					//
-					// search for container by its name
-					//
-					Container container = null;
-					ContainerInfo containerInfo = null;
-					int containerHandle = componentInfo.getContainer();
-					// if containerHandle equals 0, we have unavailable or registered component
-					if (containerHandle != 0)
-					{
-						containerInfo = getContainerInfo(containerHandle);
-						if (containerInfo != null)
-						{
-		
-							// remove component from container component list
-							synchronized (containerInfo.getComponents())
-							{
-								// !!! ACID
-								if (containerInfo.getComponents().contains(componentInfo.getHandle()))
-									executeCommand(new ContainerInfoCommandComponentRemove(containerInfo.getHandle() & HANDLE_MASK, componentInfo.getHandle()));
-									//containerInfo.getComponents().remove(componentInfo.getHandle());
-							}
-		
-							// we allow this (since releasing components is part of container shutdown procedure)
-							//checkContainerState(containerInfo);
-							
-							container = containerInfo.getContainer();
-						}
-							
-						// required container is not logged in 
-						if (container == null)
-						{
-							// then simply do not do the deactivation
-							String containerName;
-							if (containerInfo != null)
-								containerName = containerInfo.getName();
-							else
-								containerName = HandleHelper.toString(componentInfo.getContainer());
-							new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.", LoggingLevel.WARNING).dispatch();
-						}
-					
-					}
-				
-					if (container != null)
-					{
-		
-						// log info
-						new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();			
-
-						// destruct
-						try
-						{
-							componentInfo.getComponent().destruct();
-						}
-						catch (Exception ex)
-						{
-							RemoteException re = new RemoteException(this, "Failed to destruct component '"+componentInfo.getName()+"', exception caught when invoking 'destruct()' method.", ex);
-							re.caughtIn(this, "internalNoSyncReleaseComponent");
-							re.putValue("h", new Integer(h));
-							re.putValue("owner", new Integer(owner));
-							// exception service will handle this
-							new MessageLogEntry(this, "internalNoSyncReleaseComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();			
-						}
-				
-						// deactivate component in anycase
-						try
-						{
-							container.deactivate_components(new int[] { componentInfo.getHandle() });
-						}
-						catch (Exception ex)
-						{
-							RemoteException re = new RemoteException(this, "Failed to deactivate component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
-							re.caughtIn(this, "internalNoSyncReleaseComponent");
-							re.putValue("h", new Integer(h));
-							re.putValue("owner", new Integer(owner));
-							// exception service will handle this
-							new MessageLogEntry(this, "internalNoSyncReleaseComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();			
-						}
-		
-					}
-				
-				}
-			
-			} finally {
-				if (owners == 0)
-				{
-					// deallocate Component
-					synchronized (components)
-					{
-						executeCommand(new ComponentCommandDeallocate(handle));
-						//components.deallocate(handle);
-					}
-				}
+				// TODO or not: what about dynamic components - it is not possible
+				// to specify it using ComponentSpec, also not fully recoverable
+				// when info is passed from the container
+				DAOProxy dao = getComponentsDAOProxy();
+				if (dao != null)
+					keepAliveTime = readLongCharacteristics(dao, name+"/KeepAliveTime", true);
 			}
 			
-			// log info
-			new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Component '"+componentInfo.getName()+"' deactivated.", LoggingLevel.INFO).dispatch();			
-
-			// release all subcomponents (just like client logoff)
-			// component should have already done this by itself, but take care of clean cleanup
-			// what about that: if subcomponent becomes unavailable, does component also becomes?!
-			// no, it is notified and it handles situation by its own way (e.g. changes component state).
-			// Just like it already handles activation (manager does not care for dependecy trees).
-			int [] subcomponents = null;
-			// no not hold the lock
-			synchronized (componentInfo.getComponents())
-			{
-			    if (componentInfo.getComponents().size() > 0) {
-			        IntArray toCleanupList = new IntArray();
-			        
-			        IntArray comps = componentInfo.getComponents();
-			        for (int i = 0; i < comps.size(); i++)
-			            if (components.isAllocated(comps.get(i) & HANDLE_MASK))
-			                toCleanupList.add(comps.get(i));
-
-			        if (toCleanupList.size() > 0)
-			            subcomponents = toCleanupList.toArray();
-			    }
-			    
-		        //subcomponents = componentInfo.getComponents().toArray();
-			}
+			if (keepAliveTime == 0)
+				internalNoSyncDeactivateComponent(componentInfo);
+			else if (keepAliveTime > 0)
+				delayedDeactivationTask.schedule(new DeactivateComponentTask(name), keepAliveTime * 1000);
 			
-			if (subcomponents != null && subcomponents.length > 0)
-			    new ReleaseComponentTask(componentInfo.getHandle(), subcomponents).run();
-			
-			// make unavailable (deactivation was forced)
-			if (owners > 0)
-				makeUnavailable(componentInfo);
-
+			// negative means immortal, however this could not happen since immortal
+			// components have manager as an owner
 		}
 
 		// notify administrators about the release request
@@ -6532,6 +6518,191 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		return owners;
 	}
 
+	
+	/**
+	 * Deactivate component, issue deactivate reeust to container (or other manager). 
+	 * @param componentInfo	info about component to be deactivated.
+	 */
+	private void internalNoSyncDeactivateComponent(ComponentInfo componentInfo)
+	{
+		// unbind from remote directory
+		unbind(convertToHiearachical(componentInfo.getName()), "O");
+
+		int handle = componentInfo.getHandle() & HANDLE_MASK;
+		int owners = componentInfo.getClients().size();
+
+		try
+		{
+			//
+			// get container/remote manager
+			//
+		    
+			String name = componentInfo.getName();
+			boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
+			
+			if (isOtherDomainComponent)
+			{
+				Manager remoteManager = null;
+				
+				// TODO MF do the login?
+			    try
+			    {
+				    String domainName = CURLHelper.createURI(name).getAuthority();
+				    remoteManager = getManagerForDomain(domainName);
+				    if (remoteManager == null)
+				        throw new AssertionFailed(this, "Failed to obtain manager for domain '" + domainName + "'.");
+			    } catch (Throwable th) {
+					new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Failed to obtain non-local manager required by component '"+name+"'.", th, LoggingLevel.WARNING).dispatch();
+					return; 
+			    }
+			    
+				// TODO MF call release_component on other manager (logout?)
+			    // release component
+				try
+				{
+				    URI curlName = CURLHelper.createURI(name);
+				    // TODO MF tmp (handle)
+				    remoteManager.releaseComponent(INTERDOMAIN_MANAGER_HANDLE, curlName);
+				}
+				catch (Exception ex)
+				{
+					RemoteException re = new RemoteException(this, "Failed to release component '"+componentInfo.getName()+"' on remote manager.'", ex);
+					re.caughtIn(this, "internalNoSyncDeactivateComponent");
+					re.putValue("componentInfo", componentInfo.toString());
+					// exception service will handle this
+					new MessageLogEntry(this, "internalNoSyncDeactivateComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();			
+				}
+				
+			}
+			else
+			{
+				//
+				// search for container by its name
+				//
+				Container container = null;
+				ContainerInfo containerInfo = null;
+				int containerHandle = componentInfo.getContainer();
+				// if containerHandle equals 0, we have unavailable or registered component
+				if (containerHandle != 0)
+				{
+					containerInfo = getContainerInfo(containerHandle);
+					if (containerInfo != null)
+					{
+	
+						// remove component from container component list
+						synchronized (containerInfo.getComponents())
+						{
+							// !!! ACID
+							if (containerInfo.getComponents().contains(componentInfo.getHandle()))
+								executeCommand(new ContainerInfoCommandComponentRemove(containerInfo.getHandle() & HANDLE_MASK, componentInfo.getHandle()));
+								//containerInfo.getComponents().remove(componentInfo.getHandle());
+						}
+	
+						// we allow this (since releasing components is part of container shutdown procedure)
+						//checkContainerState(containerInfo);
+						
+						container = containerInfo.getContainer();
+					}
+						
+					// required container is not logged in 
+					if (container == null)
+					{
+						// then simply do not do the deactivation
+						String containerName;
+						if (containerInfo != null)
+							containerName = containerInfo.getName();
+						else
+							containerName = HandleHelper.toString(componentInfo.getContainer());
+						new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.", LoggingLevel.WARNING).dispatch();
+					}
+				
+				}
+			
+				if (container != null)
+				{
+	
+					// log info
+					new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();			
+
+					// destruct
+					try
+					{
+						componentInfo.getComponent().destruct();
+					}
+					catch (Exception ex)
+					{
+						RemoteException re = new RemoteException(this, "Failed to destruct component '"+componentInfo.getName()+"', exception caught when invoking 'destruct()' method.", ex);
+						re.caughtIn(this, "internalNoSyncDeactivateComponent");
+						re.putValue("componentInfo", componentInfo.toString());
+						// exception service will handle this
+						new MessageLogEntry(this, "internalNoSyncDeactivateComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();			
+					}
+			
+					// deactivate component in anycase
+					try
+					{
+						container.deactivate_components(new int[] { componentInfo.getHandle() });
+					}
+					catch (Exception ex)
+					{
+						RemoteException re = new RemoteException(this, "Failed to deactivate component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
+						re.caughtIn(this, "internalNoSyncDeactivateComponent");
+						re.putValue("componentInfo", componentInfo.toString());
+						// exception service will handle this
+						new MessageLogEntry(this, "internalNoSyncDeactivateComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();			
+					}
+	
+				}
+			
+			}
+		
+		} finally {
+			if (owners == 0)
+			{
+				// deallocate Component
+				synchronized (components)
+				{
+					executeCommand(new ComponentCommandDeallocate(handle));
+					//components.deallocate(handle);
+				}
+			}
+		}
+		
+		// log info
+		new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Component '"+componentInfo.getName()+"' deactivated.", LoggingLevel.INFO).dispatch();			
+
+		// release all subcomponents (just like client logoff)
+		// component should have already done this by itself, but take care of clean cleanup
+		// what about that: if subcomponent becomes unavailable, does component also becomes?!
+		// no, it is notified and it handles situation by its own way (e.g. changes component state).
+		// Just like it already handles activation (manager does not care for dependecy trees).
+		int [] subcomponents = null;
+		// no not hold the lock
+		synchronized (componentInfo.getComponents())
+		{
+		    if (componentInfo.getComponents().size() > 0) {
+		        IntArray toCleanupList = new IntArray();
+		        
+		        IntArray comps = componentInfo.getComponents();
+		        for (int i = 0; i < comps.size(); i++)
+		            if (components.isAllocated(comps.get(i) & HANDLE_MASK))
+		                toCleanupList.add(comps.get(i));
+
+		        if (toCleanupList.size() > 0)
+		            subcomponents = toCleanupList.toArray();
+		    }
+		    
+	        //subcomponents = componentInfo.getComponents().toArray();
+		}
+		
+		if (subcomponents != null && subcomponents.length > 0)
+		    new ReleaseComponentTask(componentInfo.getHandle(), subcomponents).run();
+		
+		// make unavailable (deactivation was forced)
+		if (owners > 0)
+			makeUnavailable(componentInfo);
+		
+	}
 	/**
 	 * Internal method for restarting components.
 	 * 
@@ -6916,7 +7087,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				
 				ComponentInfo componentInfo = internalRequestComponent(requestor,
 																	   defaultComponentInfo.getName(), defaultComponentInfo.getType(),
-																	   defaultComponentInfo.getCode(),	containerInfo.getName(), status, true);
+																	   defaultComponentInfo.getCode(),	containerInfo.getName(), RELEASE_IMMEDIATELY, status, true);
 				if (componentInfo == null || status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
 				{
 					AssertionFailed huse = new AssertionFailed(this, "Failed to obtain default component: '" + defaultComponentName + "'.");
@@ -7445,7 +7616,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			StatusHolder statusHolder = new StatusHolder();
 			return internalRequestComponent(requestor, componentSpec.getName(),
 							 			    componentSpec.getType(), componentSpec.getCode(),
-											componentSpec.getContainer(), statusHolder, true);
+											componentSpec.getContainer(), RELEASE_IMMEDIATELY, statusHolder, true);
 		}
 		
 		
@@ -7586,7 +7757,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
  			
 		StatusHolder statusHolder = new StatusHolder();
 		return internalRequestComponent(requestor, result[0], result[1],
-									    result[2], result[3], statusHolder, true);
+									    result[2], result[3], RELEASE_IMMEDIATELY, statusHolder, true);
 	}
 
 	/*****************************************************************************/
@@ -8550,7 +8721,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 	
 	/**
-	 * Reads DAO (CDB access) of string type (uses <code>getStringCharctareistics</code> method).
+	 * Reads DAO (CDB access) of string type.
 	 * 
 	 * @param	path		path to be read non-<code>null</code>.
 	 * @param	dao			DAO on which to perform read request.
@@ -8583,6 +8754,45 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	
 		if (isDebug())
 			new MessageLogEntry(this, "readStringCharacteristics", "Exiting.", Level.FINEST).dispatch();
+		
+		return retVal;
+		
+	}
+
+	/**
+	 * Reads DAO (CDB access) of long type.
+	 * 
+	 * @param	path		path to be read non-<code>null</code>.
+	 * @param	dao			DAO on which to perform read request.
+	 * @param	silent		do not complain, if characteristics not found.
+	 * @return	int		value read, <code>0</code> on failure.
+	 */
+	private int readLongCharacteristics(DAOProxy dao, String path, boolean silent)
+	{
+		assert (path != null);
+		
+		if (isDebug())
+			new MessageLogEntry(this, "readLongCharacteristics", new Object[] { path }).dispatch();
+
+		int retVal = 0;
+
+		try
+		{
+			retVal = dao.get_long(path);
+		}
+		catch (Throwable th)
+		{
+			CoreException ce = new CoreException(this, "Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
+			ce.caughtIn(this, "readLongCharacteristics");
+			ce.putValue("path", path);
+			if (silent)
+				new ExceptionIgnorer(ce);
+			// otherwise exception service will handle this
+			// new MessageLogEntry(this, "readLongCharacteristics", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+		}
+	
+		if (isDebug())
+			new MessageLogEntry(this, "readLongCharacteristics", "Exiting.", Level.FINEST).dispatch();
 		
 		return retVal;
 		
