@@ -2,7 +2,7 @@
 #******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: userScript,v 1.14 2005/10/04 14:03:49 bjeram Exp $"
+# "@(#) $Id: userScript,v 1.15 2006/06/20 06:47:58 bjeram Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -50,6 +50,9 @@ lcubootAutoLoad 1,"acsContainerServices"
 lcubootAutoLoad 1,"acsErrTypeLifeCycle"
 lcubootAutoLoad 1,"acsErrTypeComponent"
 lcubootAutoLoad 1,"acscomponent"
+lcubootAutoLoad 1,"baciStubs"
+lcubootAutoLoad 1,"acsncStubs"
+lcubootAutoLoad 1,"basenc"
 lcubootAutoLoad 1,"archiveevents"
 lcubootAutoLoad 1,"expat"
 lcubootAutoLoad 1,"cdbDALStubs"
@@ -58,10 +61,8 @@ lcubootAutoLoad 1,"recovery"
 lcubootAutoLoad 1,"maciStubs"
 lcubootAutoLoad 1,"maciErrTypeComponent"
 lcubootAutoLoad 1,"Container"
-lcubootAutoLoad 1,"baciStubs"
 lcubootAutoLoad 1,"baciErrTypeDevIO"
 lcubootAutoLoad 1,"baciErrTypeProperty"
-lcubootAutoLoad 1,"acsncStubs"
 
 putenv "ACS_LOG_STDOUT=0"
 putenv "ACS_LOG_FILE=ACSlogFile"
