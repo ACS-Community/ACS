@@ -448,6 +448,13 @@ The servant is then initialized with the Configuration Database (CDB) and Persis
 			out ulongSeq status	///< Statuses of individual requests -- one element per request. Can be one of COMPONENT_ACTIVATED, COMPONENT_NONEXISTENT and COMPONENT_NOT_ACTIVATED.
 			);
 
+		/** Change mortality state of an component. Compnent must be already active, otherwise CORBA::NO_RESOURCE exception will be thrown. The caller must be an owner of an component or have administator rights, otherwise CORBA::NO_PERMISSION exception will be thrown. **/
+		void make_component_immortal (
+			in Handle id,	///< Identification of the caller. The caller must be an owner of an component or have administator rights.
+			in CURL component_url,	///< The CURL of the component whose mortality to change.
+			in boolean immortal_state	///< New mortality state.
+			);
+
 		/** Release a component. In order for this operation to be possible, the caller represented by the id must have previously successfuly requested the component via a call to get_component.
 
 Releasing a component more times than requesting it should be avoided, but it produces no errors.
@@ -545,7 +552,7 @@ Calling this function does not affect the internal state of the Manager.
 			in Handle client,	///< Identification of the caller.
 			in ComponentSpec c,	///< Component to be obtained.
 			in boolean mark_as_default,	///< Mark component as default component of its type.
-			in CURL target_component	///< CURL of the targer component (where to activate component).
+			in CURL target_component	///< CURL of the target component (where to activate component).
 			)
 			raises (IncompleteComponentSpec, InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent);
 
