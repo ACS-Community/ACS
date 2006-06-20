@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.7 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.8 2006/06/20 14:57:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -173,6 +173,16 @@ public:
 
   void stopAllThreads();
   bool startAllThreads();
+
+    /**
+       Create and start the Monitoring thread.
+     */ 
+  bool startMonitoringThread();
+
+  /**
+       Create and start the Monitoring thread.
+     */ 
+  bool startActionThread();
 
   CharacteristicModelImpl* getCharacteristicModel() const { return characteristicModel_mp; };
 

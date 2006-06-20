@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.13 2006/05/29 10:51:28 msekoran Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.14 2006/06/20 14:57:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <baciErrTypeProperty.h>
 #include <ACSErrTypeCommon.h>
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.13 2006/05/29 10:51:28 msekoran Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.14 2006/06/20 14:57:01 bjeram Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -389,7 +389,58 @@ BACIComponent::~BACIComponent()
   guard1.release();
 
   ACS_DEBUG_PARAM("baci::BACIComponent::~BACIComponent", "Component '%s' destroyed.", name_m.c_str());
-}
+}//~BACIComponent
+
+
+bool BACIComponent::startMonitoringThread()
+{
+  ACS_TRACE("baci::BACIComponent::startMonitoringThread");
+
+  if (!threadManager_mp)
+    return false;
+
+  if (monitorThread_mp == BACIThread::NullBACIThread)
+      {
+      monitorThread_mp=threadManager_mp->create(name_m+"::monitorThread",
+						(void*)monitorThreadWorker, (void*)this,
+						getMTResponseTime(), getMTSleepTime());
+      }
+  if (monitorThread_mp == BACIThread::NullBACIThread)
+      {
+      return false;
+      }
+  else
+      {
+      monitorThread_mp->resume();
+      }
+
+  return true;
+}//startMonitoringThread
+
+bool BACIComponent::startActionThread()
+{
+  ACS_TRACE("baci::BACIComponent::startActionThread");
+
+  if (!threadManager_mp)
+    return false;
+
+  if (actionThread_mp == BACIThread::NullBACIThread)
+      {
+      actionThread_mp=threadManager_mp->create(name_m+"::actionThread",
+					       (void*)actionThreadWorker, (void*)this,
+					       getRTResponseTime(), getRTSleepTime());
+      }
+  if (actionThread_mp == BACIThread::NullBACIThread)
+    {
+      return false;
+    }
+  else
+    {
+      actionThread_mp->resume();
+    }
+
+  return true;
+}//startActionThread
 
 bool BACIComponent::startAllThreads()
 {
