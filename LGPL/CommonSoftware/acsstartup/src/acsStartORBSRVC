@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.60 2006/06/07 16:51:49 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.61 2006/06/20 21:49:59 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -448,6 +448,9 @@ then
     timeoutExit
 fi
 
+# Create the logging channel now.
+acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id LoggingNotifyEventChannelFactory --channel_id LoggingChannel #--max_queue_length 10 --reject_new_events true #--max_events_per_consumer 5 #--discard_policy FifoOrder #
+
 #------------------------------------------------------------------------------------------
 ################################
 # Archive Notify Service
@@ -473,7 +476,6 @@ then
     ACS_LOG_ERROR "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
     timeoutExit
 fi
-
 
 ################################
 # Logging Service

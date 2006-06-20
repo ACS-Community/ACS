@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupCreateChannel.py,v 1.1 2006/06/20 17:47:13 dfugate Exp $"
+# "@(#) $Id: acsstartupCreateChannel.py,v 1.2 2006/06/20 21:49:59 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -97,7 +97,6 @@ parser.add_option("--channel_kind",
 #max queue length
 parser.add_option("--max_queue_length",
                   dest="max_queue_length",
-                  default=None,
                   help="See ACS Notification Channel tutorial for description.")
 
 #max consumers
