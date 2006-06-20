@@ -385,6 +385,14 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	}
 
 	/**
+	 * @see com.cosylab.acs.maci.Manager#makeComponentImmortal(int, java.net.URI, boolean)
+	 */
+	public void makeComponentImmortal(int id, URI curl, boolean immortalState)
+			throws NoPermissionException {
+		// TODO Auto-generated method stub
+	}
+	
+	/**
 	 * Returns the manager.
 	 * @return si.ijs.maci.Manager
 	 */

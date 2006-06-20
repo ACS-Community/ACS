@@ -1579,6 +1579,88 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
+	 * @see com.cosylab.acs.maci.Manager#makeComponentImmortal(int, java.net.URI, boolean)
+	 */
+	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws NoPermissionException
+	{
+		if (isDebug())
+			new MessageLogEntry(this, "makeComponentImmortal", new Object[] { new Integer(id), curl, new Boolean(immortalState) }).dispatch(); 
+
+		// check if null
+		checkCURL(curl);
+
+		// check handle and NONE permissions
+		securityCheck(id, AccessRights.NONE);
+
+		/****************************************************************/
+
+		// extract name
+		String name = extractName(curl);
+
+		int h;
+		ComponentInfo componentInfo = null;
+		
+		synchronized (components)
+		{
+			h = components.first();
+			while (h != 0)
+		    {
+		    	componentInfo = (ComponentInfo)components.get(h);
+				if (componentInfo.getName().equals(name))
+				{
+					h = componentInfo.getHandle();
+					break;
+				}
+				h = components.next(h);
+		    }
+
+			// component not yet activated check
+			if (h == 0)
+			{
+				NoResourcesException af = new NoResourcesException(this, "Component not activated.");
+				af.caughtIn(this, "makeComponentImmortal");
+				af.putValue("id", new Integer(id));
+				af.putValue("curl", curl);
+				throw af;
+			}
+			
+			// if not an owner of the component, check administrator rights
+			if (!componentInfo.getClients().contains(id))
+			{
+				securityCheck(id, AccessRights.INTROSPECT_MANAGER);
+			}
+			
+			if (immortalState)
+			{
+				// finally, add manager as an owner 
+				if (!componentInfo.getClients().contains(this.getHandle()))
+				{
+					// ACID - !!!
+					executeCommand(new ComponentCommandClientAdd(componentInfo.getHandle() & HANDLE_MASK, this.getHandle()));
+					//componentInfo.getClients().add(this.getHandle());
+				}
+				new MessageLogEntry(this, "makeComponentImmortal", "Component " + name + " was made immortal.", LoggingLevel.INFO).dispatch();
+			}
+		}
+
+		// this must be done outside component sync. block
+		if (!immortalState)
+		{
+			new MessageLogEntry(this, "makeComponentImmortal", "Component " + name + " was made mortal.", LoggingLevel.INFO).dispatch();
+
+			// finally, can happen that the manager is the only owner
+			// so release could be necessary 
+			internalReleaseComponent(this.getHandle(), h, false);
+		}
+
+		/****************************************************************/
+
+		if (isDebug())
+			new MessageLogEntry(this, "makeComponentImmortal", "Exiting.", Level.FINEST).dispatch();
+		
+	}
+
+	/**
 	 * @see com.cosylab.acs.maci.Manager#login(Client)
 	 */
 	public ClientInfo login(Client reference) throws NoPermissionException

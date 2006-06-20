@@ -3099,6 +3099,137 @@ public class ManagerImplTest extends TestCase
 
 	}
 	
+	public void testMakeComponentMortal()
+	{
+
+		try
+		{
+			manager.makeComponentImmortal(0, null, false);
+			fail();
+		}
+		catch (BadParametersException bpe)
+		{
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK: "+bpe.getMessage());
+		}
+
+		try
+		{
+			manager.makeComponentImmortal(Integer.MAX_VALUE, null, false);
+			fail();
+		}
+		catch (BadParametersException bpe)
+		{
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK: "+bpe.getMessage());
+		}
+
+		try
+		{
+			manager.makeComponentImmortal(dummyHandle, dummyURI, false);
+			fail();
+		}
+		catch (NoPermissionException npe)
+		{
+			new ExceptionIgnorer(npe);
+			System.out.println("This is OK: "+npe.getMessage());
+		}
+
+		TestAdministrator adminClient = new TestAdministrator(administratorName);
+		ClientInfo adminInfo = manager.login(adminClient);
+		
+		TestClient client = new TestClient(clientName);
+		ClientInfo info = manager.login(client);
+
+		assertTrue(info.getHandle() != 0);
+		TestContainer container = new TestContainer("Container");
+		Map supportedComponents = new HashMap();
+		Component mount1 = new TestComponent("MOUNT1");
+		supportedComponents.put("MOUNT1", mount1);
+		Component mount2 = new TestComponent("MOUNT2");
+		supportedComponents.put("MOUNT2", mount2);
+		Component mount3 = new TestComponent("MOUNT3");
+		supportedComponents.put("MOUNT3", mount3);
+		container.setSupportedComponents(supportedComponents);
+
+		ClientInfo containerInfo = manager.login(container);
+
+		URI mount2URL = null;
+		try
+		{
+			mount2URL = new URI("MOUNT2");
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), mount2URL, true, status);
+			
+			assertEquals(mount2, ref);
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+
+		// admin will activate it
+		URI mount3URL = null;
+		try
+		{
+			mount3URL = new URI("MOUNT3");
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(adminInfo.getHandle(), mount3URL, true, status);
+			
+			assertEquals(mount3, ref);
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+
+		try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
+
+		// test activated Components
+		ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(3, infos.length);
+
+
+		// make mount2 immortal (as admin which has all the rights)
+		manager.makeComponentImmortal(adminInfo.getHandle(), mount2URL, true);
+		infos = manager.getComponentInfo(info.getHandle(), new int[0], "MOUNT2", "*", true);
+		assertEquals(1, infos.length);
+		assertTrue(infos[0].getClients().contains(manager.getHandle()));
+		
+		manager.makeComponentImmortal(adminInfo.getHandle(), mount2URL, false);
+		infos = manager.getComponentInfo(info.getHandle(), new int[0], "MOUNT2", "*", true);
+		assertEquals(1, infos.length);
+		assertTrue(!infos[0].getClients().contains(manager.getHandle()));
+		
+		// client does not own it, no permission exception expected
+		try
+		{
+			manager.makeComponentImmortal(info.getHandle(), mount3URL, true);
+			fail();
+		}
+		catch (NoPermissionException npe)
+		{
+			new ExceptionIgnorer(npe);
+			System.out.println("This is OK: "+npe.getMessage());
+		}
+
+		// normal op.
+		manager.makeComponentImmortal(info.getHandle(), mount2URL, true);
+
+		manager.releaseComponent(info.getHandle(), mount2URL);
+		
+
+		// mount2 is immortal and stays active, has managers handle as an owner
+		infos = manager.getComponentInfo(adminInfo.getHandle(), new int[0], "MOUNT2", "*", true);
+		assertEquals(1, infos.length);
+		assertTrue(infos[0].getClients().contains(manager.getHandle()));
+
+		// mount2 should be released now
+		manager.makeComponentImmortal(adminInfo.getHandle(), mount2URL, false);
+		infos = manager.getComponentInfo(adminInfo.getHandle(), new int[0], "MOUNT2", "*", true);
+		assertEquals(0, infos.length);
+	}
+
 	public void testForceReleaseComponent()
 	{
 

@@ -906,6 +906,87 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	}
 
 	/**
+	 * Change mortality state of an component.
+	 * Compnent must be already active, otherwise CORBA::NO_RESOURCE exception will be thrown.
+	 * The caller must be an owner of an component or have administator rights,
+	 * otherwise CORBA::NO_PERMISSION exception will be thrown.
+	 * 
+	 * @param id Identification of the caller. The caller must be an owner of an component or have administator rights.
+	 * @param component_url The CURL of the component whose mortality to change.
+	 * @param immortal_state New mortality state.
+	 **/
+	public void make_component_immortal(int id, String component_url, boolean immortal_state)
+	{
+		pendingRequests.increment();
+		try
+		{
+			if (isDebug())
+				new MessageLogEntry(this, "make_component_immortal", new java.lang.Object[] { new Integer(id), component_url, new Boolean(immortal_state) } ).dispatch();
+
+			// simply release Component
+			URI uri = null;
+			if (component_url != null)
+				uri = CURLHelper.createURI(component_url);
+			manager.makeComponentImmortal(id, uri, immortal_state);
+		}
+		catch (URISyntaxException usi)
+		{
+			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
+			hbpe.caughtIn(this, "make_component_immortal");
+			hbpe.putValue("component_url", component_url);
+			// exception service will handle this
+			reportException(hbpe);
+
+			// rethrow CORBA specific
+			throw new BAD_PARAM(usi.getMessage());
+		}
+		catch (BadParametersException bpe)
+		{
+			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
+			hbpe.caughtIn(this, "make_component_immortal");
+			// exception service will handle this
+			reportException(hbpe);
+
+			// rethrow CORBA specific
+			throw new BAD_PARAM(bpe.getMessage());
+		}
+		catch (NoPermissionException npe)
+		{
+			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
+			hnpe.caughtIn(this, "make_component_immortal");
+			// exception service will handle this
+			reportException(hnpe);
+
+			// rethrow CORBA specific
+			throw new NO_PERMISSION(npe.getMessage());
+		}
+		catch (NoResourcesException nre)
+		{
+			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
+			hnre.caughtIn(this, "make_component_immortal");
+			// exception service will handle this
+			reportException(hnre);
+
+			// rethrow CORBA specific
+			throw new NO_RESOURCES(nre.getMessage());
+		}
+		catch (Throwable ex)
+		{
+			CoreException hce = new CoreException(this, ex.getMessage(), ex);
+			hce.caughtIn(this, "make_component_immortal");
+			// exception service will handle this
+			reportException(hce);
+
+			// rethrow CORBA specific
+			throw new UNKNOWN(ex.getMessage());
+		}
+		finally
+		{
+			pendingRequests.decrement();
+		}
+	}
+
+	/**
 	 * Release a Component.
 	 * In order for this operation to be possible, the caller represented by the id
 	 * must have previously successfuly requested the Component via a call to get_component.

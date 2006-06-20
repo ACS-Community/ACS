@@ -107,6 +107,18 @@ public interface Manager
 	 */
 	public Component restartComponent(int id, URI curl) throws NoPermissionException;
 
+	/**
+	 * Change mortality state of an component.
+	 * Compnent must be already active, otherwise <code>NoResourcesException</code> exception will be thrown.
+	 * The caller must be an owner of an component or have administator rights,
+	 * otherwise <code>NoPermissionException</code> exception will be thrown.
+	 * 
+	 * @param id Identification of the caller. The caller must be an owner of an component or have administator rights.
+	 * @param curl The CURL of the component whose mortality to change.
+	 * @param immortalState New mortality state.
+	 **/
+	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws NoPermissionException;
+
 	/** 
 	 * Used for retrieving several components with one call. 
 	 * 
