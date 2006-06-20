@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.49 2006/01/28 00:03:51 dfugate Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.50 2006/06/20 21:47:44 dfugate Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -447,40 +447,49 @@ LoggingService::create_basic_log()
 void
 LoggingService::create_EC ()
 {
+    CosNaming::Name name (1);
+    name.length (1);
+    name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
+    name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
+    
+    try 
+	{
+	//use the naming service to get our object
+	CORBA::Object_var ec_obj =  this->m_naming_context->resolve(name);
+	ACE_ASSERT(!CORBA::is_nil(ec_obj.in()));
+	
+	//narrow it
+	m_logging_ec = CosNotifyChannelAdmin::EventChannel::_narrow(ec_obj.in());
+	ACE_ASSERT(!CORBA::is_nil(m_logging_ec.in()));
+	}
+
+    catch(CosNaming::NamingContext::NotFound ex)
+	{
+	// Logging Channel
+	CosNotifyChannelAdmin::ChannelID id;
+    
+	m_logging_ec = m_notify_factory->create_channel (m_initial_qos,
+							 m_initial_admin,
+							 id);
+	
+	ACE_ASSERT (!CORBA::is_nil (m_logging_ec.in ()));
+	ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
+
+
+	this->m_naming_context->rebind (name,
+					m_logging_ec.in());
   
-  // Logging Channel
-  CosNotifyChannelAdmin::ChannelID id;
-
-  m_logging_ec = m_notify_factory->create_channel (m_initial_qos,
-						   m_initial_admin,
-						   id
-						   );
   
-  
-  ACE_ASSERT (!CORBA::is_nil (m_logging_ec.in ()));
-
-  ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
-
-  CosNaming::Name name (1);
-  name.length (1);
-  name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
-  name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
-
-  this->m_naming_context->rebind (name,
-				  m_logging_ec.in ()
-				  );
-  
-  
-  ACS_SHORT_LOG ((LM_DEBUG,
-              "Logging EC registered with the naming service as: %s",
-              acscommon::LOGGING_CHANNEL_NAME));
-
-  //ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
-
-  //CosNaming::Name name (1);
-  //name.length (1);
+	ACS_SHORT_LOG ((LM_DEBUG,
+			"Logging EC registered with the naming service as: %s",
+			acscommon::LOGGING_CHANNEL_NAME));
+	
+	//ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
+	
+	//CosNaming::Name name (1);
+	//name.length (1);
+	}
 }
-
 void
 LoggingService::create_supplieradmin ()
 {
@@ -574,6 +583,9 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.50  2006/06/20 21:47:44  dfugate
+// Use pre-existing logging channel if it exists.
+//
 // Revision 1.49  2006/01/28 00:03:51  dfugate
 // The LoggingChannel is now created using the LoggingNotifyEventChannelFactory instead of NotifyEventChannelFactory.
 //
