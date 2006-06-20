@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.28 2006/04/19 19:57:27 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.29 2006/06/20 15:24:48 bjeram Exp $"
 *
 */
 
@@ -103,10 +103,12 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
      * is not initilized (i.e. initilization() would return 1 == incomplete).
      * @param Tha name of the Component
      * @param containerServices  pointer to services provided by the container
+     * @param monitoringProperties flag that indicates if monitoring of properties has to be turned on or not. Default is monitroing turned on.
      */
     CharacteristicComponentImpl(
         const ACE_CString& name,
-        maci::ContainerServices *containerServices);
+        maci::ContainerServices *containerServices,
+	bool monitoringProperties=true);
 
     /**
      * Destructor
@@ -177,6 +179,20 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
      */
     virtual void __cleanUp();
     
+   /**
+     * Method to resume (enable) monitoring of the properties.
+     * 
+     * @return void
+     */
+    void resumePropertiesMonitoring();
+
+   /**
+     * Method to suspend (disable) monitoring of the properties.
+     * 
+     * @return void
+     */
+    void suspendPropertiesMonitoring();
+
   protected:
 
     /** ComponentDesc returned by the descriptor method.
@@ -184,7 +200,12 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
     ACS::CharacteristicComponentDesc_var desc_m;
     
   private:
-    
+
+    /**
+       Signal if monitoring of properties is turned on or not.
+     */
+    bool monitoringProperties_mp;
+
 
     /** BACI Component instance
      *  This is a reference to the CORBA object

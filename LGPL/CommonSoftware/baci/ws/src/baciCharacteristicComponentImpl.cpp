@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.38 2006/04/19 19:57:27 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.39 2006/06/20 15:24:44 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.38 2006/04/19 19:57:27 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.39 2006/06/20 15:24:44 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -44,10 +44,12 @@ using namespace acscomponent;
 //
 CharacteristicComponentImpl::CharacteristicComponentImpl(
         const ACE_CString& name,
-        maci::ContainerServices *containerServices) :
+        maci::ContainerServices *containerServices,
+	bool monitoringProperties) :
     ACSComponentImpl(name,containerServices),
     CharacteristicModelImpl(name,containerServices),
     desc_m(0),
+    monitoringProperties_mp(monitoringProperties),
     component_mp(0)
 {  
     // Create Component
@@ -90,13 +92,27 @@ void CharacteristicComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
 {
   ACS_TRACE("baci::CharacteristicComponentImpl::__execute");
     // Start the threads actually created and started
-    if (component_mp!=NULL && component_mp->startAllThreads() == false) 
-    {
-        throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(__FILE__,__LINE__,"ACSComponentImpl::__execute");
-    }
-    
+    if (component_mp==NULL)
+	{
+	//!TBD throw 
+	}//
+    if( monitoringProperties_mp == true )
+	{
+	if (component_mp->startAllThreads() == false) 
+	    {
+	    throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(__FILE__,__LINE__,"ACSComponentImpl::__execute");
+	    }
+	}
+    else
+	{
+	if (component_mp->startActionThread() == false) 
+	    {
+	    throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(__FILE__,__LINE__,"ACSComponentImpl::__execute");
+	    }
+	}//if-else
+
     ACSComponentImpl::__execute();
-}
+}//__execute
     
 void CharacteristicComponentImpl::__aboutToAbort()
 {
@@ -121,6 +137,27 @@ void CharacteristicComponentImpl::__cleanUp()
     ACSComponentImpl::__cleanUp();
 }
 
+
+void  CharacteristicComponentImpl::resumePropertiesMonitoring()
+{
+    if ( component_mp!=NULL && component_mp->startMonitoringThread() == false )
+	{
+	//!TBD error
+	}
+}//resumePropertiesMonitoring
+
+void  CharacteristicComponentImpl::suspendPropertiesMonitoring()
+{
+    maci::ContainerServices *cs = getContainerServices();
+    if ( cs!=NULL )
+	{
+	cs->getThreadManager()->suspend(cs->getName()+"::monitorThread");
+	}
+    else
+	{
+	//TBD::
+	}
+}//suspendPropertiesMonitoring
 
 void CharacteristicComponentImpl::addPropertyToDesc(ACS::Property_ptr prop)
 {
