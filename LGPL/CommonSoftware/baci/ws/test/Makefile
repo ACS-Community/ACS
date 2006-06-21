@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.104 2005/11/03 19:53:15 dfugate Exp $" 
+# "@(#) $Id: Makefile,v 1.105 2006/06/21 10:34:11 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -63,7 +63,8 @@ PROG =
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES_L     = 	$(PROG) baciTestValue \
-			baciTestServer baciTestClient baciTestActions \
+			baciTestServer baciTestServerNoMonitoring \
+			baciTestClient baciTestActions \
 			baciTestDescriptor baciTestPropertySync \
 			baciTestMonitor baciTestThreads baciTestErrSys baciTestCosProperty
 
@@ -120,7 +121,8 @@ acsexmplPropTest_OBJECTS = baciTestClassImpl baciTestC baciTestS
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = 	startBaciTest.sh startBaciThreads.sh \
+SCRIPTS_L         = 	startBaciTest.sh startBaciTestNoMonitoring.sh \
+			startBaciThreads.sh \
 			startBaciTestClient.sh \
 			baciTATPrologue baciTATEpilogue baciTATEnvironment
 

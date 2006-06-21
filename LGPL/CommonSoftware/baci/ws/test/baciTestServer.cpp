@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.114 2006/06/21 10:22:20 bjeram Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.115 2006/06/21 10:34:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.114 2006/06/21 10:22:20 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.115 2006/06/21 10:34:11 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -164,13 +164,9 @@ void TerminationSignalHandler(int)
 int main(int argc, char* argv[])
 { 
     CORBAShutdown::setShutdownFunction(&finalizeOtherThread);
-
     bool monitoring=true;
-    if ( argc>=2 )
-	{
-	monitoring = atoi(argv[1]);
-	}
-    
+
+       
     // create logging proxy
     g_logger = new LoggingProxy(0, 0, 31, 0);
     LoggingProxy::init(g_logger);
@@ -179,10 +175,12 @@ int main(int argc, char* argv[])
     ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created !"));
 
     ACS_SHORT_LOG((LM_INFO,"baciTestServer: Starting"));
-    //if (argc != 1) {
-    //   ACS_SHORT_LOG((LM_INFO,"Usage: baciTestServer"));
-    //  return -1;
-    //}
+
+    if ( argc>=2 )
+	{
+	monitoring = atoi(argv[1]);
+	ACS_SHORT_LOG((LM_INFO,"baciTestServer: monitoring flag: %d passed from cmd line", monitoring));
+	}
 
       // Installs termination signal handlers, to be able
     // to terminate cleanly

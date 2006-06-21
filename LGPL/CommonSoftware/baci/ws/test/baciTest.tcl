@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: baciTest.tcl,v 1.92 2006/04/05 13:54:52 bjeram Exp $"
+# "@(#) $Id: baciTest.tcl,v 1.93 2006/06/21 10:33:48 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,12 +29,13 @@
 
 global argc argv
 
-if { $argc != 2 } {
-    puts "usage: baciTest <lcu> <process name>"
+if { $argc < 2 } {
+    puts "usage: baciTest <lcu> <process name> [parm]"
     exit 1
 }
 set LCU  [lindex $argv 0]
 set Proc [lindex $argv 1]
+set Parm [lindex $argv 2]
 
 if {[info exists env(LCU_WAIT)]} {
    set LCU_WAIT $env(LCU_WAIT)
@@ -66,6 +67,10 @@ expect -gl "*->"
 
 if { $argc == 2 } {
 send "sp $Proc \r"
+}
+
+if { $argc == 3 } {
+    send "sp \"$Proc\", \"$Arg\"\r"
 }
 
 after 1000
