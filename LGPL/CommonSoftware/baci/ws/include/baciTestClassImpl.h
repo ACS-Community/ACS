@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.h,v 1.105 2006/06/21 10:22:20 bjeram Exp $"
+* "@(#) $Id: baciTestClassImpl.h,v 1.106 2006/06/21 15:16:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -187,8 +187,25 @@ public:
 		      ACS::CBvoid_ptr cb,
 		      const ACS::CBDescIn & desc
 		      )
-    throw (CORBA::SystemException);
+      throw (CORBA::SystemException);
   
+    /**
+     * Method to turn monitoring on from a remote client
+     */
+    virtual void turnOnMonitoring() throw (CORBA::SystemException)
+	{
+	    resumePropertiesMonitoring();
+	}//turnOnMonitoring
+
+    /**
+     * Method to turn monitoring off from a remote client
+     */
+    virtual void turnOffMonitoring() throw (CORBA::SystemException)
+	{
+	    suspendPropertiesMonitoring();
+	}//turnOffMonitoring
+
+
   /**
    * Property RWdoubleProps contains the actual RWdoubleProp of the 
    * power supply.

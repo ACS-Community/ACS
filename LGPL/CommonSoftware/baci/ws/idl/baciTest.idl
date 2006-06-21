@@ -20,6 +20,10 @@ interface BaciTestClass: ACS::CharacteristicComponent{                         /
   void off(in ACS::CBvoid cb, in ACS::CBDescIn desc);     // @actions
   void reset(in ACS::CBvoid cb, in ACS::CBDescIn desc);   // @actions
 
+  // methods that we can turing monitoring on/off from the client
+  void turnOnMonitoring(); // @action
+  void turnOffMonitoring(); // @action 
+
   readonly attribute ACS::RWdouble  RWdoubleProp;   // @Properties
   readonly attribute ACS::ROdouble  ROdoubleProp;   // @Properties
   readonly attribute ACS::RWfloat   RWfloatProp;   // @Properties
