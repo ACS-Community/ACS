@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.105 2006/06/21 10:34:11 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.106 2006/06/21 15:17:28 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -63,10 +63,11 @@ PROG =
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES_L     = 	$(PROG) baciTestValue \
-			baciTestServer baciTestServerNoMonitoring \
+			baciTestServer \
 			baciTestClient baciTestActions \
 			baciTestDescriptor baciTestPropertySync \
-			baciTestMonitor baciTestThreads baciTestErrSys baciTestCosProperty
+			baciTestMonitor baciTestThreads baciTestErrSys baciTestCosProperty \
+	                baciTestTurningOnOffMonitoring
 
 # ---> CDB_Test in text directory
 
@@ -91,6 +92,8 @@ baciTestPropertySync_OBJECTS    = baciTestPropertySync baciTestC
 baciTestPropertySync_LIBS       = baciTestUtils
 baciTestMonitor_OBJECTS         = baciTestMonitor baciTestC
 baciTestMonitor_LIBS            = baciTestUtils
+baciTestTurningOnOffMonitoring_OBJECTS =  baciTestTurningOnOffMonitoring baciTestC
+baciTestTurningOnOffMonitoring_LIBS   = baciTestUtils
 baciTestErrSys_OBJECTS          = baciTestErrSys baciTestC
 baciTestErrSys_LIBS             = baciTestUtils
 
