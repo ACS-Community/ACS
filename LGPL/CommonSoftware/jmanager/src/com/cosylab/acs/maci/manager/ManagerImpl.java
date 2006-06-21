@@ -6239,35 +6239,36 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		boolean lockAcquired = acquireSynchronizationObject(name, 3*Sync.ONE_MINUTE);
 		if (lockAcquired)
 		{
-			// resolve componentInfo from curl
-			ComponentInfo componentInfo = null;
-			synchronized (components)
-			{
-				int h = components.first();
-				while (h != 0)
-			    {
-			    	ComponentInfo ci = (ComponentInfo)components.get(h);
-					if (ci.getName().equals(name))
-					{
-						// a new owner detected, leave component activated
-						if (ci.getClients().size() > 0)
-							return;
-						componentInfo = ci;
-						break;
-					}
-					h = components.next(h);
-			    }
-			}
-
-			// component is already gone, nothing to do
-			if (componentInfo == null)
-				return;
-				
-			boolean releaseRWLock = true;
+			boolean releaseRWLock = false;
 			try
 			{
+				// resolve componentInfo from curl
+				ComponentInfo componentInfo = null;
+				synchronized (components)
+				{
+					int h = components.first();
+					while (h != 0)
+				    {
+				    	ComponentInfo ci = (ComponentInfo)components.get(h);
+						if (ci.getName().equals(name))
+						{
+							// a new owner detected, leave component activated
+							if (ci.getClients().size() > 0)
+								return;
+							componentInfo = ci;
+							break;
+						}
+						h = components.next(h);
+				    }
+				}
+
+				// component is already gone, nothing to do
+				if (componentInfo == null)
+					return;
+
 				// try to acquire activation readers lock first
 				// NOTE: the locks are NOT reentrant
+				releaseRWLock = true;
 				try	{
 					activationPendingRWLock.readLock().acquire();
 				} catch (InterruptedException ie) {
