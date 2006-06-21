@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.cpp,v 1.111 2006/05/11 15:01:45 bjeram Exp $"
+* "@(#) $Id: baciTestClassImpl.cpp,v 1.112 2006/06/21 10:23:06 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.111 2006/05/11 15:01:45 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.112 2006/06/21 10:23:06 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -94,8 +94,9 @@ using namespace baci;
 
 
 BaciTestClassImpl::BaciTestClassImpl(const ACE_CString& name,
-				     maci::ContainerServices *cs) :
-    CharacteristicComponentImpl(name, cs),
+				     maci::ContainerServices *cs,
+				     bool monitoring) :
+    CharacteristicComponentImpl(name, cs, monitoring),
     m_shutdown(0),
     m_ROdoubleProp_sp(new ROdouble(name+":ROdoubleProp", getComponent()),this), 
     m_RWdoubleProp_sp(new RWdouble(name+":RWdoubleProp", getComponent()),this), 
