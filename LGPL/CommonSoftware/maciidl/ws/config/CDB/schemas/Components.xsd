@@ -23,6 +23,7 @@
 		<xs:attribute name="Container" type="xs:string" use="required"/>
 		<xs:attribute name="Default" type="xs:boolean" use="optional" default="false"/>
 		<xs:attribute name="Autostart" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="0"/>
 	</xs:complexType>
 	<xs:element name="Components">
 		<xs:complexType>
