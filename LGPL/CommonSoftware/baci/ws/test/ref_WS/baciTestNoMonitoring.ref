@@ -1,6 +1,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Starting
+1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: monitoring flag: 0 passed from cmd line
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Installing signal handlers
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: CharacteristicComponent IDs ready
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
