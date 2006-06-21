@@ -30,5 +30,11 @@
   <_ Name="*"		Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
   			Default="false"		Autostart="false" />
 
+  <_ Name="IMMORTAL"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false"	KeepAliveTime="-1" />
+
+  <_ Name="PERSISTENT"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false"	KeepAliveTime="5" />
+
 </Components>
 

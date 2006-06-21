@@ -3230,6 +3230,110 @@ public class ManagerImplTest extends TestCase
 		assertEquals(0, infos.length);
 	}
 
+	public void testComponentKeepAliveTime()
+	{
+		TestClient client = new TestClient(clientName);
+		ClientInfo info = manager.login(client);
+
+		assertTrue(info.getHandle() != 0);
+		TestContainer container = new TestContainer("Container");
+		Map supportedComponents = new HashMap();
+		Component immortal = new TestComponent("IMMORTAL");
+		supportedComponents.put("IMMORTAL", immortal);
+		Component persistent = new TestComponent("PERSISTENT");
+		supportedComponents.put("PERSISTENT", persistent);
+		container.setSupportedComponents(supportedComponents);
+
+		ClientInfo containerInfo = manager.login(container);
+
+		URI immortalURL = null;
+		try
+		{
+			immortalURL = new URI("IMMORTAL");
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), immortalURL, true, status);
+			
+			assertEquals(immortal, ref);
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+
+		URI persistentURL = null;
+		try
+		{
+			persistentURL = new URI("PERSISTENT");
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), persistentURL, true, status);
+			
+			assertEquals(persistent, ref);
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+
+		// test activated Components
+		ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(2, infos.length);
+
+		// IMMORTAL has to have manager as a client
+		assertTrue(infos[0].getClients().contains(manager.getHandle()));
+		assertTrue(!infos[1].getClients().contains(manager.getHandle()));
+
+		// check immortality
+		manager.releaseComponent(info.getHandle(), immortalURL);
+		infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(2, infos.length);
+		assertTrue(infos[0].getClients().contains(manager.getHandle()));
+
+		final int KEEP_ALIVE_TIME = 5000 + 2000;
+
+		// check keepAliveTime
+		manager.releaseComponent(info.getHandle(), persistentURL);
+		// both alive
+		infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(2, infos.length);
+
+		// another request for component
+		try
+		{
+			persistentURL = new URI("PERSISTENT");
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), persistentURL, true, status);
+			
+			assertEquals(persistent, ref);
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+		
+		// sleep
+		try { Thread.sleep(KEEP_ALIVE_TIME); } catch (InterruptedException ie) {}
+		
+		// still both should be activated
+		infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(2, infos.length);
+
+
+		
+		
+		manager.releaseComponent(info.getHandle(), persistentURL);
+		// both alive
+		infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(2, infos.length);
+		
+		// sleep
+		try { Thread.sleep(KEEP_ALIVE_TIME); } catch (InterruptedException ie) {}
+
+		// only IMMORTAL should be alive
+		infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(1, infos.length);
+		assertEquals(immortal, infos[0].getComponent());
+	}
+
 	public void testForceReleaseComponent()
 	{
 
