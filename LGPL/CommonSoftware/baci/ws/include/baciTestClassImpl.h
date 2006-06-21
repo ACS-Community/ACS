@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.h,v 1.104 2005/08/23 15:34:12 vwang Exp $"
+* "@(#) $Id: baciTestClassImpl.h,v 1.105 2006/06/21 10:22:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -85,7 +85,8 @@ public:
   // Constructors & Destructors
   BaciTestClassImpl(
 		    const ACE_CString& name,
-		    maci::ContainerServices *);
+		    maci::ContainerServices *,
+		    bool monitoring=true);
 
   /**
    * Destructor

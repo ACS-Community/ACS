@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.113 2006/06/13 09:04:05 bjeram Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.114 2006/06/21 10:22:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.113 2006/06/13 09:04:05 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.114 2006/06/21 10:22:20 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -40,132 +40,11 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include "baciTestClassImpl.h"
 #include "baciTest.h"
 #include "baciTestUtils.h"
-#include <acsContainerServices.h>
+#include "baciTestContainerServices.h"
 
 #ifdef MAKE_VXWORKS
 #	include <acsutilArgUnpack.h>
 #endif
-
-//--------------------------------------
-class TestContainerServices : public virtual maci::ContainerServices
-{
-  public:
-    CORBA::ORB_var m_orb;
-
-    TestContainerServices(ACE_CString& compName, PortableServer::POA_ptr poa, CORBA::ORB_ptr orb) :
-	ContainerServices(compName, poa), m_orb(CORBA::ORB::_duplicate(orb))
-	{;}
-    
-  protected:
-    virtual CORBA::Object* getCORBAComponent(const char* name)
-	{
-	    return (CORBA::Object*)0;
-	}
-
-    virtual CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	{
-	    return (CORBA::Object*)0;
-	}
-
-    virtual CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	{
-	    return (CORBA::Object*)0;
-	}
-
-    virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
-	{
-	    return (CORBA::Object*)0;
-	}
-  public:
-    virtual maci::ComponentInfo getComponentDescriptor(const char* componentName)
-	throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
-	{
-	    maci::ComponentInfo retVal;
-	    return retVal;
-	}
-
-    virtual ACE_CString_Vector findComponents(const char *nameWilcard, const char *typeWildcard)
-	{
-	    ACE_CString_Vector retVal;
-	    return retVal;
-	}
-
-    virtual void releaseComponent(const char *name)
-	{;}
-
-    virtual void releaseAllComponents()
-	{;}
-
-    virtual CDB::DAL_ptr getCDB()
-	{
-
-	    ACE_TCHAR corbalocRef[230];
-	    ACE_TCHAR * envRef = ACE_OS::getenv ("DAL_REFERENCE");
-
-	    if (envRef && *envRef)
-		{
-		ACS_LOG(0, "TestContainerServices::getCDB",
-			(LM_INFO, "CDB obtained via environment: '%s'", envRef));
-		strcpy(corbalocRef, envRef);
-		}
-	else
-	    {
-	    // corbaloc::<hostname>:<port>/CDB
-	    const char* hostname = 0;
-	    hostname = ACSPorts::getIP();
-	    if (hostname==0)
-		return (CDB::DAL *)0;
-	    
-	  
-	    ACE_OS::sprintf(corbalocRef, "corbaloc::%s:%s/CDB", hostname, ACSPorts::getCDBPort().c_str());
-
-	    ACS_LOG(0, "TestContainerServices::getCDB",
-		    (LM_INFO, "CDB reference generated using localhost address: '%s'", corbalocRef));
-	    }//if-than
-
-	CDB::DAL_var dalObj = CDB::DAL::_nil();
-	CORBA::Object_var obj = m_orb->string_to_object(corbalocRef);
-  
-	if (!CORBA::is_nil(obj.in()))
-	    {
-	    dalObj = CDB::DAL::_narrow(obj.in());
-	    if (CORBA::is_nil(dalObj.in())) 
-		{
-		ACS_SHORT_LOG((LM_INFO, "TestContainerServices::getCDB() - Failed to narrow CDB"));
-		return (CDB::DAL *)0;
-		}
-	    }
-	
-	return dalObj._retn();
-	}
-
-    virtual PortableServer::POA_var getOffShootPOA()
-	{
-	    PortableServer::POA_var retVal;
-	    return retVal;
-	}
-
-    virtual void deactivateOffShoot(PortableServer::Servant cbServant)throw (
-           acsErrTypeContainerServices::OffShootDeactivationExImpl,
-           acsErrTypeContainerServices::OffShootPOAExImpl)
-	{;}
-
-    virtual PortableServer::POA_var createOffShootPOA()
-	{
-	    PortableServer::POA_var retVal;
-	    return retVal;
-	}
-
-    virtual ACS::OffShoot_ptr activateOffShoot(PortableServer::Servant cbServant)
-	{
-	    return (ACS::OffShoot *)0;
-	}
- 
-    virtual ComponentStateManager* getComponentStateManager()
-    {
-      return (ComponentStateManager*)NULL;
-    }
-};
 
 //--------------------------------------
 // do not use ACS ! 
@@ -286,7 +165,11 @@ int main(int argc, char* argv[])
 { 
     CORBAShutdown::setShutdownFunction(&finalizeOtherThread);
 
-    
+    bool monitoring=true;
+    if ( argc>=2 )
+	{
+	monitoring = atoi(argv[1]);
+	}
     
     // create logging proxy
     g_logger = new LoggingProxy(0, 0, 31, 0);
@@ -354,7 +237,8 @@ int main(int argc, char* argv[])
 					 BACI_CORBA::getPOA(), BACI_CORBA::getORB());
 
         BaciTestClassImpl* ps = new BaciTestClassImpl(devices[n], 
-						      cs_p[n]);
+						      cs_p[n],
+						      monitoring);
 
 	CORBA::Object_var ps_obj = BACI_CORBA::ActivateCORBAObject(ps, devices[n]);
 	if (CORBA::is_nil(ps_obj.in()))
