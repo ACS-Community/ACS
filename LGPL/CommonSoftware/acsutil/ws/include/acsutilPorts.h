@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilPorts.h,v 1.4 2005/08/29 08:32:08 vwang Exp $"
+* "@(#) $Id: acsutilPorts.h,v 1.5 2006/06/21 16:29:11 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -123,6 +123,15 @@ class ACSPorts
      */
     static std::string
     getCDBPort();
+
+    /**
+     * @return the port the ACS Daemon is running on.
+     * @htmlonly
+     <br><hr>
+     @endhtmlonly
+     */
+    static std::string
+    getDaemonPort();
 
     /**
      * @return the stringified IP address of this host.

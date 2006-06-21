@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testPorts.cpp,v 1.3 2004/10/27 22:06:48 dfugate Exp $"
+* "@(#) $Id: testPorts.cpp,v 1.4 2006/06/21 16:30:30 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@
 #include "acsutil.h"
 #include "acsutilPorts.h"
 
-static char *rcsId="@(#) $Id: testPorts.cpp,v 1.3 2004/10/27 22:06:48 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: testPorts.cpp,v 1.4 2006/06/21 16:30:30 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace std;
@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     //cout << "IR port is: "              << ACSPorts::getIRPort()              << endl;
     //cout << "ACS log port is: "         << ACSPorts::getLogPort()             << endl;
     //cout << "CDB port is: "             << ACSPorts::getCDBPort()             << endl;
+    //cout << "Daemon port is: "          << ACSPorts::getDaemonPort()          << endl;
     //cout << "IP address is: "           << ACSPorts::getIP()                  << endl;
     
     

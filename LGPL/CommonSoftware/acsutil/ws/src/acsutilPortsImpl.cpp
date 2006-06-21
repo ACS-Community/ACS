@@ -127,6 +127,20 @@ ACSPorts::getCDBPort()
 }
 
 /**
+ * @return the port the ACS Daemon is running on.
+ * @htmlonly
+ * <br><hr>
+ * @endhtmlonly
+ */
+std::string
+ACSPorts::getDaemonPort()
+{
+    std::ostringstream realOutput;
+    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 13) << ends;
+    return realOutput.str();
+}
+
+/**
  * @return the IP address of this host.
  * @htmlonly
  * <br><hr>
