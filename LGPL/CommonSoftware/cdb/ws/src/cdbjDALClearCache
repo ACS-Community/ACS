@@ -21,13 +21,29 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDALClearCache,v 1.5 2005/10/17 17:05:22 dfugate Exp $"
+# "@(#) $Id: cdbjDALClearCache,v 1.6 2006/06/22 06:25:41 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# cparedes 2006-06-20 using DAL_REFERENCE when the -k option is not used
 # dvitas 2003-04-14 changed package name and removed unused argument
 # bjeram 2002-11-22 removed -OAport
 # bjeram 2002-10-24 created
 #
 
-acsStartJava com.cosylab.cdb.jdal.ClearCache $1 $2 $3 $4
+arg1=$1;
+arg2=$2;
+arg3=$3;
+
+if [ "$arg2" != "-k" ] && [ "$arg1" != "-k" ]
+then
+#use the DAL_REFERENCE
+    if [ "X$DAL_REFERENCE" != "X" ] 
+    then
+	arg2="-k";
+	arg3=$DAL_REFERENCE;
+    fi
+fi
+
+acsStartJava com.cosylab.cdb.jdal.ClearCache $arg1 $arg2 $arg3
+
