@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.26 2006/06/16 11:35:11 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.27 2006/06/22 09:27:56 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -558,23 +558,64 @@ ThreadManagerBase::~ThreadManagerBase() {
 
     ACE_CString thrName;
 
+    /* get mutex lock before starting terminate
+     * since we need to read from threads_m
+     * in case some thread is finishing its job, threads_m will change
+     */ 
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
     terminateAll(); 
-    unsigned int thrNum = getThreadCount();
-    for (unsigned int n=0; n < thrNum; n++)
-	{
-	thrName = threads_m[0]->getName();
 
-        /*
-	 * we delete always the first thread in the vector because 
-	 * the thread removes itself from the thread manager
-	 * (and therefore the vector) when it is deleted.
-	 * But old threads do not remove themself from the thread 
-	 * manager, so we remove them by hand in any case
-	 * to be sure everything is cleaned up.
-	 */
-	delete threads_m[0];
-	removeFromMap(thrName); 
-	}
+    /* after terminating threads, auto-delete threads will wait for
+     * mutex lock in destructor, so we release here
+     */
+    guard.release();
+
+    /* Strange behaviour here, if I don't sleep a while, 
+     * other thread can not acquire this mutex
+     */
+    ACE_OS::sleep(1);
+
+    /* acquire mutex lock again, since thrNum will change if some
+     * threads are in destructor, threads_m will change in such case
+     */
+    guard.acquire();
+    unsigned int thrNum = getThreadCount();
+
+    /* we remove from the last, since threads_m is a vector, it cost less
+     * in ~Threads, it will remove itself from threads_m and threadMap
+     * so, no need to call removeFromMap again
+     * problems? 
+     *   1. ~BaseThread don't call removeFromMap, could it happen 
+     *      some thread in thread_m is a BaseThread ?
+     *   2. double deleting could happen, if some threads' removeFromMap  
+     *      is not finished yet, but, during test, it seems no problem?
+     */
+    for (unsigned int n=thrNum; n > 0 ; n--)
+	{
+        try
+          {
+	  delete threads_m.at(n-1);
+          }
+        catch(std::out_of_range) 
+          {
+            // do nothing
+          }
+	} /* end for n */
+//    for (unsigned int n=0; n < thrNum ; n++)
+//	{
+//	thrName = threads_m[0]->getName();
+//
+//      /*
+//	 * we delete always the first thread in the vector because 
+//	 * the thread removes itself from the thread manager
+//	 * (and therefore the vector) when it is deleted.
+//	 * But old threads do not remove themself from the thread 
+//	 * manager, so we remove them by hand in any case
+//	 * to be sure everything is cleaned up.
+//	 */
+//      delete threads_m[0];
+//	removeFromMap(thrName); 
+//	}
 }
 
 ThreadBase* ThreadManagerBase::create(const ACE_CString& name, 
@@ -693,9 +734,14 @@ bool ThreadManagerBase::terminateAll() {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::terminateAll");
   bool ok = true;
-  for (int n=0; n < getThreadCount(); n++)
+  unsigned int thrNum = getThreadCount();
+
+  /* terminating starting from last threads, 
+   * since threads_m is vector, it is easier to remove from last
+   */
+  for (int n=thrNum; n > 0; n--)
       {
-	  if (threads_m[n]->terminate()==false) 
+	  if (threads_m[n-1]->terminate()==false) 
 	      {
 	      ok = false;
 	      }
