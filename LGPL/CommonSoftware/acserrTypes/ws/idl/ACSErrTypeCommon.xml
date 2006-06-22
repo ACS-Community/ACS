@@ -49,4 +49,11 @@
                            type="string" 
  	                   description="String describing the error condition"/>
 	</ErrorCode>
+	<ErrorCode name="NullPointer"
+	           shortDescription="Null pointer error"
+		   description="Value of the pointer is equale to NULL">
+		   <Member name="Variable"
+		           type="string"
+			   description="Name of varable which value is NULLL"/>
+        </ErrorCode>
 </Type>
