@@ -38,7 +38,7 @@ public class ClearCache {
 			String curl = null;
 			String strIOR = null;
 
-			if (args.length > 1) {
+			if (args.length >= 1 && !args[0].equals("-k")) {
 				curl = args[0];
 			}
 
