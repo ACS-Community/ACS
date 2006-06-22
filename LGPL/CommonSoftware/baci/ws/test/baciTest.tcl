@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: baciTest.tcl,v 1.93 2006/06/21 10:33:48 bjeram Exp $"
+# "@(#) $Id: baciTest.tcl,v 1.94 2006/06/22 09:58:04 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -70,7 +70,7 @@ send "sp $Proc \r"
 }
 
 if { $argc == 3 } {
-    send "sp \"$Proc\", \"$Arg\"\r"
+    send "sp \"$Proc\", \"$Parm\"\r"
 }
 
 after 1000
