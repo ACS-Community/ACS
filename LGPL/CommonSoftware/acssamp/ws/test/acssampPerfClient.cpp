@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampPerfClient.cpp,v 1.7 2005/04/21 16:37:39 dfugate Exp $"
+* "@(#) $Id: acssampPerfClient.cpp,v 1.8 2006/06/22 12:55:41 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@
 using namespace std;
 using namespace maci;
 
-ACE_RCSID(acssampPerfClient, PerfClient, "$Id: acssampPerfClient.cpp,v 1.7 2005/04/21 16:37:39 dfugate Exp $")
+ACE_RCSID(acssampPerfClient, PerfClient, "$Id: acssampPerfClient.cpp,v 1.8 2006/06/22 12:55:41 gchiozzi Exp $")
     
 
 static int endme = 1;
@@ -124,11 +124,7 @@ class SamplerConsumer : public nc::Consumer
 
        firstTime= (*m_SampledData_p)[q].sampTime;
 
-       // file << "TIME STAMP: " << diff <<  "   VALUE: " << extVal << endl;
        file << diff <<  "    " << extVal << endl;
-
-       //  file << "TIME STAMP: " << (unsigned long long) (*m_SampledData_p)[q].sampTime
-       //	    << "   VALUE: " << extVal << endl;
 
     }
     
