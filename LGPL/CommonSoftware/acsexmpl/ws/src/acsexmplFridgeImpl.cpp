@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.130 2006/03/24 13:03:00 vwang Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.131 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include <acsexmplFridgeImpl.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.130 2006/03/24 13:03:00 vwang Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.131 2006/06/22 16:25:51 gchiozzi Exp $")
 using namespace baci;
 
 /**
@@ -177,7 +177,7 @@ void
 FridgeControl::updateTemperature()
 {
     double temperature;
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     
     ACS_TRACE("::FridgeControl::updateTemperature");
@@ -213,7 +213,7 @@ void
 FridgeControl::on ()
     throw (CORBA::SystemException)
 {
-	unsigned long long timestamp;
+	ACS::Time timestamp;
 
 	ACS_DEBUG_PARAM("::FridgeControl::on", "%s", getComponent()->getName());
 	m_powerStatus_sp->getDevIO()->write(FRIDGE::ON, timestamp);
@@ -237,7 +237,7 @@ void
 FridgeControl::off ()
     throw (CORBA::SystemException)
 {
-    unsigned long long timestamp;
+    ACS::Time timestamp;
 
     ACS_DEBUG_PARAM("::FridgeControl::off", "%s", getComponent()->getName());
     // if the fridge has been turned on before, it is turned off.  otherwise there
@@ -253,7 +253,7 @@ void
 FridgeControl::open ()
     throw (CORBA::SystemException)
 {
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     ACS_DEBUG_PARAM("::FridgeControl::open", "%s", getComponent()->getName());
     // there is no actual door to open here: only the enum is changed
@@ -264,7 +264,7 @@ void
 FridgeControl::close ()
     throw (CORBA::SystemException)
 {
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     ACS_DEBUG_PARAM("::FridgeControl::close", "%s", getComponent()->getName());
     // there is no actual door to close here: only the enum is changed
@@ -361,5 +361,6 @@ FridgeControl::loadData()
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(FridgeControl)
 /* ----------------------------------------------------------------*/
+
 
 

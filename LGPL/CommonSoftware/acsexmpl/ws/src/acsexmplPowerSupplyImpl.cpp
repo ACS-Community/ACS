@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.111 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.112 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 
 #include <acsexmplPowerSupplyImpl.h>
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.111 2006/04/20 08:47:59 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.112 2006/06/22 16:25:51 gchiozzi Exp $")
 
 using namespace baci;
 
@@ -77,7 +77,7 @@ PowerSupply::execute()
     ACS_SHORT_LOG((LM_INFO,"PowerSupply::execute"));
     
     // The PowerSupply is initially turned off...
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     m_status_sp->getDevIO()->write(0x00000000, timestamp);
    
     ACS_SHORT_LOG((LM_INFO,"PowerSupply::COMPSTATE_OPERATIONAL"));
@@ -144,7 +144,7 @@ PowerSupply::onAction (BACIComponent *cob_p,
     completion = ACSErrTypeOK::ACSErrOKCompletion();
     try
 	{
-	unsigned long long timestamp;
+	ACS::Time timestamp;
 	m_status_sp->getDevIO()->write(0x00000001 | m_status_sp->getDevIO()->read(timestamp), completion.timeStamp);
 	}
     catch (ACSErr::ACSbaseExImpl &ex)
@@ -174,7 +174,7 @@ PowerSupply::offAction (BACIComponent *cob_p,
 
     try
 	{
-	unsigned long long timestamp;
+	ACS::Time timestamp;
 	m_status_sp->getDevIO()->write(0x11111110 & m_status_sp->getDevIO()->read(timestamp), completion.timeStamp);
 	
 	}
@@ -300,4 +300,5 @@ PowerSupply::status ()
     ACS::ROpattern_var prop = ACS::ROpattern::_narrow(m_status_sp->getCORBAReference());
     return prop._retn();
 }
+
 

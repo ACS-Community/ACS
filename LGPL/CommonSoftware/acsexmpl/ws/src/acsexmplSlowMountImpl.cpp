@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplSlowMountImpl.cpp,v 1.10 2005/05/09 06:54:19 sharring Exp $"
+* "@(#) $Id: acsexmplSlowMountImpl.cpp,v 1.11 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <time.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplSlowMountImpl, "$Id: acsexmplSlowMountImpl.cpp,v 1.10 2005/05/09 06:54:19 sharring Exp $")
+ACE_RCSID(acsexmpl, acsexmplSlowMountImpl, "$Id: acsexmplSlowMountImpl.cpp,v 1.11 2006/06/22 16:25:51 gchiozzi Exp $")
 using namespace baci;
 
 /**
@@ -127,7 +127,7 @@ SlowMount::obstarAction (BACIComponent *cob_p,
     // convert the methods parameters back into something we can use
     __obstar_action *param_p = static_cast<__obstar_action *>(const_cast<void *>(value_p->pointerValue()));
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     // simulate changing the antenna's commanded and actual position
     m_cmdAz_sp->getDevIO()->write(param_p->ra, timestamp);
@@ -184,7 +184,7 @@ SlowMount::objfixAction (BACIComponent *cob_p,
     // convert the methods parameters back into something we can use
     __objfix_action *param_p = static_cast<__objfix_action *>(const_cast<void *>(value_p->pointerValue()));
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     // We need to know if this is the first call to this method
     // to initialize the variables for the simulation
@@ -385,6 +385,7 @@ SlowMount::objfix (CORBA::Double az,
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(SlowMount)
 /* ----------------------------------------------------------------*/
+
 
 
 

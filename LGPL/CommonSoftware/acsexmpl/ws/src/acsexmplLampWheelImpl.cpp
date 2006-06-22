@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.17 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.18 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
  */
 const static int MOVE_ACTION  = 0;
 
-ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.17 2006/04/20 08:47:59 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.18 2006/06/22 16:25:51 gchiozzi Exp $")
 
 using namespace baci;
 
@@ -281,7 +281,7 @@ void LampWheel::char_hndl(void *data, const XML_Char *s, int len)
 
     m_position_sp=new ROdouble(getContainerServices()->getName()+":position", getComponent());
     // Position is 0 at the beginning
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     m_position_sp->getDevIO()->write(0.0, timestamp);
 
     // There are two ways to get an attribute of the component
@@ -418,7 +418,7 @@ LampWheel::moveAction (BACIComponent *cob_p,
 	    {
 	    // The requested slot is on the list:
 	    // the wheel rotates to the position specified in the CDB 
-	    unsigned long long timestamp;
+	    ACS::Time timestamp;
 	    m_position_sp->getDevIO()->write(iter->pos, timestamp);
 	    ACS_SHORT_LOG((LM_INFO,"Wheel moved to %d (using %s lamp, watt=%d)",
 			   iter->pos,
@@ -506,4 +506,5 @@ LampWheel::slots ()
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(LampWheel)
 /* ----------------------------------------------------------------*/
+
 

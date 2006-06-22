@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.5 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.6 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ const static int MOVEFILTER_ACTION   = 0;
 const static int MOVESLOT_ACTION   = 1;
 const static int ADJUST_ACTION = 2;
 
-ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.5 2006/04/20 08:47:59 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.6 2006/06/22 16:25:51 gchiozzi Exp $")
 
 using namespace baci;
 
@@ -219,7 +219,7 @@ void FilterWheel::updateWheel(int slot, int step)
     m_position_sp=new ROdouble(getContainerServices()->getName()+":position", getComponent());
     // Position is 0 at the beginning
     int errcode;
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     m_position_sp->getDevIO()->write(0.0, errcode, timestamp);
 
     // There are two ways to get an attribute of the component
@@ -372,7 +372,7 @@ FilterWheel::adjustAction (
     int* steps = static_cast<int*>(const_cast<void *>(value_p->pointerValue()));
 
     int errcode;
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     ACSErr::Completion_var compl;
     
     int newPosition=(int)m_position_sp->get_sync(compl)+*steps;
@@ -430,7 +430,7 @@ FilterWheel::moveFilterAction (
 	    int delta=m_wheelConfiguration[t].delta;
 	    unsigned int step=m_wheelConfiguration[t].step;
 	    int errcode;
-	    unsigned long long timestamp;
+	    ACS::Time timestamp;
 		m_position_sp->getDevIO()->write(step+delta,errcode,timestamp);
 		ACS_SHORT_LOG((LM_INFO,"Wheel rotaed to step %d",step+delta));
 	}
@@ -471,7 +471,7 @@ FilterWheel::moveSlotAction (
     int* slot = static_cast<int*>(const_cast<void *>(value_p->pointerValue()));
 
     int errcode;
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     ACSErr::Completion_var compl;
     
     ACSErr::Completion_var tempCompletion;
@@ -624,3 +624,4 @@ FilterWheel::slots ()
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(FilterWheel)
 /* ----------------------------------------------------------------*/
+

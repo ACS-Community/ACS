@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.107 2005/04/19 14:36:46 acaproni Exp $"
+* "@(#) $Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.108 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------- ----------------------------------------------
@@ -34,7 +34,7 @@
 
 #include "acsexmplRampedPowerSupplyImpl.h"
 
-ACE_RCSID(acsexmpl, acsexmplRampedPowerSupplyImpl, "$Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.107 2005/04/19 14:36:46 acaproni Exp $")
+ACE_RCSID(acsexmpl, acsexmplRampedPowerSupplyImpl, "$Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.108 2006/06/22 16:25:51 gchiozzi Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -141,7 +141,7 @@ RampedPowerSupply::startRampingAction (BACIComponent *cob_p,
 	{
     // simulate something in hardware...
 	ACE_OS::sleep(5);
-	unsigned long long timestamp;
+	ACS::Time timestamp;
 	m_status_sp->getDevIO()->write(0x00000100 | m_status_sp->getDevIO()->read(timestamp), completion.timeStamp);
 	}
     catch (ACSErr::ACSbaseExImpl &ex)
@@ -179,7 +179,7 @@ RampedPowerSupply::stopRampingAction (BACIComponent *cob_p,
 
     try
 	{
-	unsigned long long timestamp;
+	ACS::Time timestamp;
 	m_status_sp->getDevIO()->write(0x11111011 & m_status_sp->getDevIO()->read(timestamp), completion.timeStamp);
 	}
     catch (ACSErr::ACSbaseExImpl &ex)
@@ -247,4 +247,5 @@ RampedPowerSupply::rampingStep ()
 /////////////////////////////////////////////////
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(RampedPowerSupply)
+
 

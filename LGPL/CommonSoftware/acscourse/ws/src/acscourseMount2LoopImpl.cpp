@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount2LoopImpl.cpp,v 1.8 2006/03/24 12:55:07 vwang Exp $"
+* "@(#) $Id: acscourseMount2LoopImpl.cpp,v 1.9 2006/06/22 16:26:30 gchiozzi Exp $"
 *
 */
  
@@ -51,7 +51,7 @@ void PositionControlThread::runLoop()
 {
     ACS_TRACE("PositionControlThread::runLoop");
 
-    unsigned long long timestamp;
+    ACS::Time timestamp;
 
     double cmdAzValue = mount_p->m_cmdAz_sp->getDevIO()->read(timestamp);
     double cmdElValue = mount_p->m_cmdEl_sp->getDevIO()->read(timestamp);
@@ -118,6 +118,7 @@ MACI_DLL_SUPPORT_FUNCTIONS(Mount2LoopImpl)
 
 
 /*___oOo___*/
+
 
 
 

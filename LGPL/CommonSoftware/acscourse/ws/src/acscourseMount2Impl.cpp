@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount2Impl.cpp,v 1.6 2005/07/12 11:30:11 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount2Impl.cpp,v 1.7 2006/06/22 16:26:30 gchiozzi Exp $"
 *
 */
  
@@ -52,7 +52,7 @@ Mount2Impl::objfix (CORBA::Double az,
     throw (CORBA::SystemException)
 {
     ACS_TRACE("::Mount2Impl::objfix");
-    unsigned long long timestamp;
+    ACS::Time timestamp;
 
     try
 	{
@@ -140,5 +140,6 @@ Mount2Impl::actEl ()
 /* ----------------------------------------------------------------*/
 
 /*___oOo___*/
+
 
 

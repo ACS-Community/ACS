@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplAmsSeqImpl.cpp,v 1.109 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplAmsSeqImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <acsexmplAmsSeqImpl.h>
 #include <ACSErrTypeOK.h>
 
-ACE_RCSID(acsexmpl, acsexmplAmsSeqImpl, "$Id: acsexmplAmsSeqImpl.cpp,v 1.109 2006/04/20 08:47:59 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplAmsSeqImpl, "$Id: acsexmplAmsSeqImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -64,7 +64,7 @@ void
 AmsTestSeq::execute()
     throw (ACSErr::ACSbaseExImpl)
 {
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     // Set default values to properties
     // N.B. number of elements never mean to be fixed to 12, just an exmample.
@@ -115,7 +115,7 @@ void
 AmsTestSeq::setCoeff ()
     throw (CORBA::SystemException)
 {
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     ACSErr::Completion_var completion;
     
     try
@@ -174,5 +174,6 @@ AmsTestSeq::ROdoubleSeqPM ()
 /////////////////////////////////////////////////
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(AmsTestSeq)
+
 
 

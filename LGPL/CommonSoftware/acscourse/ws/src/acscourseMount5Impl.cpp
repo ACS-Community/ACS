@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount5Impl.cpp,v 1.7 2006/05/27 23:08:47 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount5Impl.cpp,v 1.8 2006/06/22 16:26:30 gchiozzi Exp $"
 *
 */
  
@@ -106,7 +106,7 @@ Mount5Impl::objfix (CORBA::Double az,
     ACS_TRACE("::Mount5Impl::objfix");
     ACS_SHORT_LOG((LM_INFO,"Received objfix command. Az: %f El: %f", az, elev));
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     try
 	{
@@ -194,3 +194,4 @@ MACI_DLL_SUPPORT_FUNCTIONS(Mount5Impl)
 
 
 /*___oOo___*/
+

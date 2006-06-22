@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.113 2006/05/11 15:03:19 bjeram Exp $"
+* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.114 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,9 +43,9 @@
 #include <ACSErrTypeCommon.h>
 
 #ifndef MAKE_VXWORKS
-ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.113 2006/05/11 15:03:19 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.114 2006/06/22 16:25:51 gchiozzi Exp $")
 #else
-static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.113 2006/05/11 15:03:19 bjeram Exp $";
+static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.114 2006/06/22 16:25:51 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #endif
 
@@ -78,7 +78,7 @@ void DoorThread::onStart()
 void DoorThread::runLoop()
 {
 	// Control loop
-	unsigned long long timestamp;
+	ACS::Time timestamp;
 
 	// TBD: Error/Exception handling
 	ACSErr::Completion_var completion;
@@ -165,7 +165,7 @@ Door::execute()
   ACS_SHORT_LOG((LM_INFO,"Door::execute"));
 
   // Used just as parameters to getDevIO()->write()
-  unsigned long long timestamp;
+  ACS::Time timestamp;
   
   // Set current version  
 
@@ -268,7 +268,7 @@ Door::openAction (BACIComponent *cob_p,
     ACE_UNUSED_ARG(descOut);
     ACS_DEBUG_PARAM("::Door::openAction", "%s", getComponent()->getName());
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     CompletionImpl *error_p = 0;
 
     DBConnector::writeCommand(getComponent()->getName(), "open", getStringifiedTimeStamp());
@@ -323,7 +323,7 @@ Door::closeAction (BACIComponent *cob_p,
     ACE_UNUSED_ARG(descOut);
     ACS_DEBUG_PARAM("::Door::closeAction", "%s", getComponent()->getName());
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     CompletionImpl *error_p = 0;
 
     DBConnector::writeCommand(getComponent()->getName(), "close", getStringifiedTimeStamp());
@@ -390,7 +390,7 @@ Door::move (CORBA::Double pos)
     // Set new ref_position_p
     try 
 	{
-        unsigned long long timestamp;
+        ACS::Time timestamp;
 	
         // Check for state
         CompletionImpl *error_p = 0;
@@ -479,5 +479,6 @@ Door::version ()
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(Door)
 /* ----------------------------------------------------------------*/
+
 
 

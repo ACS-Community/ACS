@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount4Impl.cpp,v 1.7 2006/03/24 12:55:07 vwang Exp $"
+* "@(#) $Id: acscourseMount4Impl.cpp,v 1.8 2006/06/22 16:26:30 gchiozzi Exp $"
 *
 */
  
@@ -47,7 +47,7 @@ void PositionControlThread::runLoop()
 {
     ACS_STATIC_TRACE("PositionControlThread::runLoop");
 
-    unsigned long long timestamp;
+    ACS::Time timestamp;
 
     double cmdAzValue = mount_p->m_cmdAz_sp->getDevIO()->read(timestamp);
     double cmdElValue = mount_p->m_cmdEl_sp->getDevIO()->read(timestamp);
@@ -141,7 +141,7 @@ Mount4Impl::objfixAction (BACIComponent *cob_p,
 {
     ACS_DEBUG_PARAM("::Mount4::objfixAction", "%s", getComponent()->getName());
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     // convert the methods parameters back into something we can use
     __objfix_action *param_p = 
@@ -183,7 +183,7 @@ Mount4Impl::objfix (CORBA::Double az,
 		    CORBA::Double elev)
     throw (CORBA::SystemException)
 {
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     try
 	{
@@ -280,6 +280,7 @@ MACI_DLL_SUPPORT_FUNCTIONS(Mount4Impl)
 
 
 /*___oOo___*/
+
 
 
 

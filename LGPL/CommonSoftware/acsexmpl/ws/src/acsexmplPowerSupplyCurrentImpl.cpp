@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyCurrentImpl.cpp,v 1.86 2005/04/17 17:35:51 acaproni Exp $"
+* "@(#) $Id: acsexmplPowerSupplyCurrentImpl.cpp,v 1.87 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include <logging.h>
 #include <acsexmplPowerSupplyCurrentImpl.h>
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyCurrentImpl, "$Id: acsexmplPowerSupplyCurrentImpl.cpp,v 1.86 2005/04/17 17:35:51 acaproni Exp $")
+ACE_RCSID(acsexmpl, acsexmplPowerSupplyCurrentImpl, "$Id: acsexmplPowerSupplyCurrentImpl.cpp,v 1.87 2006/06/22 16:25:51 gchiozzi Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -57,7 +57,7 @@ PowerSupplyCurrent::setValue(BACIProperty *property_p,
 			     Completion &completion,
 			     CBDescOut &descOut)
 {
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     /* Calls parent class method */
     baci::RWdouble::setValue(property_p, value_p, completion, descOut);
@@ -67,3 +67,4 @@ PowerSupplyCurrent::setValue(BACIProperty *property_p,
     int err;
     m_readback_p->getDevIO()->write(value, err, timestamp);
 }
+

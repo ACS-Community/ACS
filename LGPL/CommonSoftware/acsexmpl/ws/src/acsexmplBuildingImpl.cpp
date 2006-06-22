@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplBuildingImpl.cpp,v 1.124 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplBuildingImpl.cpp,v 1.125 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@
  *  Implementation file for Building example.
  */
 
-ACE_RCSID(acsexmpl, acsexmplBuildingImpl, "$Id: acsexmplBuildingImpl.cpp,v 1.124 2006/04/20 08:47:59 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplBuildingImpl, "$Id: acsexmplBuildingImpl.cpp,v 1.125 2006/06/22 16:25:51 gchiozzi Exp $")
 
 using namespace baci;
 using namespace maci;
@@ -96,7 +96,7 @@ Building::execute()
     // Set current version - the devIO will write values to errcode and 
     // timestamp. In this simple example, we don't really care what values
     // it sets.
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     // Write out the version number to the property.
     m_version_sp->getDevIO()->write(rcsid_acsexmpl_acsexmplBuildingImpl, timestamp);
     
@@ -199,4 +199,5 @@ Building::version ()
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(Building)
 /* ----------------------------------------------------------------*/
+
 

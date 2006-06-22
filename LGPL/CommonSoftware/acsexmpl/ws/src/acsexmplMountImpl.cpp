@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplMountImpl.cpp,v 1.109 2005/06/11 13:05:31 bjeram Exp $"
+* "@(#) $Id: acsexmplMountImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -45,7 +45,7 @@
 #include <acsexmplMountImpl.h>
 #include <baciDB.h>
 
-ACE_RCSID(acsexmpl, acsexmplMountImpl, "$Id: acsexmplMountImpl.cpp,v 1.109 2005/06/11 13:05:31 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplMountImpl, "$Id: acsexmplMountImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $")
 using namespace baci;
 
 /**
@@ -136,7 +136,7 @@ Mount::obstarAction (BACIComponent *cob_p,
     // convert the methods parameters back into something we can use
     __obstar_action *param_p = static_cast<__obstar_action *>(const_cast<void *>(value_p->pointerValue()));
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     // simulate changing the antenna's commanded and actual position
     try
@@ -205,7 +205,7 @@ Mount::objfixAction (BACIComponent *cob_p,
     // convert the methods parameters back into something we can use
     __objfix_action *param_p = static_cast<__objfix_action *>(const_cast<void *>(value_p->pointerValue()));
     
-    unsigned long long timestamp;
+    ACS::Time timestamp;
 
     // simulate changing the antenna's commanded and actual position
     try
@@ -340,6 +340,7 @@ Mount::objfix (CORBA::Double az,
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(Mount)
 /* ----------------------------------------------------------------*/
+
 
 
 

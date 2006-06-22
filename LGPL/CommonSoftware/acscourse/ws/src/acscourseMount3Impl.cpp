@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount3Impl.cpp,v 1.4 2006/05/27 23:08:32 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount3Impl.cpp,v 1.5 2006/06/22 16:26:30 gchiozzi Exp $"
 *
 */
  
@@ -57,7 +57,7 @@ Mount3Impl::objfix (CORBA::Double az,
     throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetOutOfRangeEx)
 {
     ACS_TRACE("::Mount3Impl::objfix");
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     
     try
 	{
@@ -134,6 +134,7 @@ MACI_DLL_SUPPORT_FUNCTIONS(Mount3Impl)
 /* ----------------------------------------------------------------*/
 
 /*___oOo___*/
+
 
 
 
