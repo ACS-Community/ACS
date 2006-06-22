@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDevIOTime.h,v 1.8 2004/07/16 09:03:14 gchiozzi Exp $
+/* @(#) $Id: acstimeDevIOTime.h,v 1.9 2006/06/22 16:14:18 gchiozzi Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -83,7 +83,7 @@ class DevIOTime : public DevIO<ACS::Time>
        @endhtmlonly
      */     
     virtual ACS::Time 
-    read(int &errcode, unsigned long long &timestamp)
+    read(int &errcode, ACS::Time &timestamp)
 	{
 	    errcode = 0;
 	    timestamp = getTimeStamp();
@@ -100,7 +100,7 @@ class DevIOTime : public DevIO<ACS::Time>
        @endhtmlonly
      */
     virtual void 
-    write(const ACS::Time &value, int &errcode, unsigned long long &timestamp)
+    write(const ACS::Time &value, int &errcode, ACS::Time &timestamp)
 	{
 	    ACE_UNUSED_ARG(value);
 	    errcode = 0;

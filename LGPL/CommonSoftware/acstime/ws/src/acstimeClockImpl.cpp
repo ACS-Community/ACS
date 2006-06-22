@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeClockImpl.cpp,v 1.17 2005/08/29 08:36:14 vwang Exp $
+/* @(#) $Id: acstimeClockImpl.cpp,v 1.18 2006/06/22 16:14:18 gchiozzi Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -148,7 +148,7 @@ ClockImpl::toISO8601(acstime::TimeSystem ts,
     throw (CORBA::SystemException, ACSTimeError::ArgErrorEx)
 {
     int errcode;
-    unsigned long long timestamp;
+    ACS::Time timestamp;
     EpochHelper *e_p = new EpochHelper(timeValue);
 
     std::string tmpStr  = e_p->toString(ts, 
