@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIO.h,v 1.96 2005/04/14 07:49:09 bjeram Exp $"
+* "@(#) $Id: baciDevIO.h,v 1.97 2006/06/22 16:02:36 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -83,7 +83,7 @@ template <class T> class DevIO
      * \exception any of ACS exceptions can be thrown
      * \return read value
      */
-    virtual T read(unsigned long long& timestamp) throw (ACSErr::ACSbaseExImpl)
+    virtual T read(ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
 	{
 	    int errcode;
 	    T value = read(errcode, timestamp);
@@ -105,7 +105,7 @@ template <class T> class DevIO
      * \param timestamp timestamp of writing
      * \exception any of ACS exceptions can be thrown
      */
-    virtual void write(const T& value, unsigned long long& timestamp) throw (ACSErr::ACSbaseExImpl)
+    virtual void write(const T& value, ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
 	{
 	    int errcode;
 	    write(value, errcode, timestamp);
@@ -124,7 +124,7 @@ template <class T> class DevIO
      * \param timestamp timestamp of reading
      * \return read value
      */
-    virtual T read(int& errcode, unsigned long long& timestamp)
+    virtual T read(int& errcode, ACS::Time& timestamp)
 	{
 	    errcode = -1;
 	    timestamp = 0ULL;
@@ -138,7 +138,7 @@ template <class T> class DevIO
      * \param errcode erro code. Old way. ACS Exceptions should be used.
      * \param timestamp timestamp of writing
      */
-    virtual void write(const T& value, int& errcode, unsigned long long& timestamp)
+    virtual void write(const T& value, int& errcode, ACS::Time& timestamp)
 	{
 	    do {/* null */} while (&value == 0); // suppress unused warining
 	    errcode = -1;

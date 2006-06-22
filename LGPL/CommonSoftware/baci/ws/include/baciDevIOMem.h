@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIOMem.h,v 1.95 2005/04/15 09:55:17 bjeram Exp $"
+* "@(#) $Id: baciDevIOMem.h,v 1.96 2006/06/22 16:02:36 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,13 +55,13 @@ template <class T> class DevIOMem : public DevIO<T>
 
     virtual bool initializeValue(){ return true; }
   
-    virtual T read(unsigned long long& timestamp) throw (ACSErr::ACSbaseExImpl)
+    virtual T read(ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
 	{
 	    timestamp = getTimeStamp();
 	    return value_m;
 	}
 
-    virtual void write(const T& value, unsigned long long& timestamp) throw (ACSErr::ACSbaseExImpl)
+    virtual void write(const T& value, ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
 	{
 	    timestamp = getTimeStamp();
 	    value_m = value;
@@ -71,12 +71,12 @@ template <class T> class DevIOMem : public DevIO<T>
 // those two methods can be called from outside baci i.e. getDevIO()-> ...
 // they are deprecated and have to be deleted with next realease
 
-    virtual T read(int& errcode, unsigned long long& timestamp)
+    virtual T read(int& errcode, ACS::Time& timestamp)
 	{
 	    return read(timestamp);
 	}
 
-    virtual void write(const T& value, int& errcode, unsigned long long& timestamp)
+    virtual void write(const T& value, int& errcode, ACS::Time& timestamp)
 	{
 	    write(value, timestamp);
 	}
