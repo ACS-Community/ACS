@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemonImpl.cpp,v 1.1.1.1 2006/06/21 18:47:46 msekoran Exp $"
+* "@(#) $Id: acsdaemonImpl.cpp,v 1.2 2006/06/23 12:23:05 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -28,6 +28,8 @@
 #include "acsdaemonImpl.h"
 #include <tao/IORTable/IORTable.h>
 #include <acserr.h>
+#include <acsdaemonErrType.h>
+#include <ACSErrTypeCommon.h>
 
 /*****************************************************************/
 
@@ -180,19 +182,27 @@ ACSDaemonImpl::start_container (
     )
     ACE_THROW_SPEC ((
 			CORBA::SystemException,
-			::acsdaemonErrType::FailedToStartContainerEx
+			::acsdaemonErrType::FailedToStartContainerEx,
+			::ACSErrTypeCommon::BadParameterEx
 			))
 {
     if (container_type == 0 ||
 	*container_type == 0)
 	{
-	return; // todo throw exception
-//	THROW_ACS_EXCEPTION(ACSErr::acsdaemonErrType, acsdaemonErrType::FailedToStartContainer, "::ACSDaemonImpl::start_container");
+	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__, 
+						  "::ACSDaemonImpl::start_container");
+	ex.setParameter("container_type");
+	throw ex.getBadParameterEx();
 	}
 
     if (container_name == 0 ||
 	*container_name == 0)
-	return; // todo throw exception
+	{
+	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__, 
+						  "::ACSDaemonImpl::start_container");
+	ex.setParameter("container_name");
+	throw ex.getBadParameterEx();
+	}
 
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
@@ -204,12 +214,12 @@ ACSDaemonImpl::start_container (
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
     int result = ACE_OS::system(command);
- 
+
     if (result < 0)
 	{
-/*	throw ::acsdaemonErrType::FailedToStartContainerExImpl(
+	throw ::acsdaemonErrType::FailedToStartContainerExImpl(
 	    __FILE__, __LINE__, 
-	    "::ACSDaemonImpl::start_container").getFailedToStartContainerEx();*/
+	    "::ACSDaemonImpl::start_container").getFailedToStartContainerEx();
 	}
    
 }

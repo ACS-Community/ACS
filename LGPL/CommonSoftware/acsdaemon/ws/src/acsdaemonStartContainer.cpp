@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.1.1.1 2006/06/21 18:47:46 msekoran Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.2 2006/06/23 12:23:05 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -19,6 +19,8 @@
 #include <acsutilPorts.h>
 #include <logging.h>
 #include <acsdaemonC.h>
+#include <ACSErrTypeCommon.h>
+#include <acsdaemonErrType.h>
 
 int
 main (int argc, char *argv[])
@@ -95,6 +97,16 @@ main (int argc, char *argv[])
       
       ACS_SHORT_LOG((LM_INFO, "Done."));
       
+    }
+    catch (ACSErrTypeCommon::BadParameterEx &ex)
+    {
+	ACSErrTypeCommon::BadParameterExImpl exImpl(ex);
+	exImpl.log();
+    }
+    catch (acsdaemonErrType::FailedToStartContainerEx &ex)
+    {
+	acsdaemonErrType::FailedToStartContainerExImpl exImpl(ex);
+	exImpl.log();
     }
     catch( CORBA::Exception &ex )
     {

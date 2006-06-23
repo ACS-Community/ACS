@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemonImpl.h,v 1.1.1.1 2006/06/21 18:47:46 msekoran Exp $"
+* "@(#) $Id: acsdaemonImpl.h,v 1.2 2006/06/23 12:23:05 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,7 +88,8 @@ class ACSDaemonImpl : public POA_acsdaemon::Daemon {
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStartContainerEx
+        ::acsdaemonErrType::FailedToStartContainerEx,
+	::ACSErrTypeCommon::BadParameterEx
       ));
 
   protected:
