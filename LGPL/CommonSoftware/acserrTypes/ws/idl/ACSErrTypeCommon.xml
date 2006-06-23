@@ -54,6 +54,13 @@
 		   description="Value of the pointer is equale to NULL">
 		   <Member name="Variable"
 		           type="string"
-			   description="Name of varable which value is NULLL"/>
+			   description="Name of varable which value is NULL"/>
+        </ErrorCode>
+	<ErrorCode name="BadParameter"
+	           shortDescription="Bad parameter error"
+		   description="Bad parameter error">
+		   <Member name="Parameter"
+		           type="string"
+			   description="Name of the parameter"/>
         </ErrorCode>
 </Type>
