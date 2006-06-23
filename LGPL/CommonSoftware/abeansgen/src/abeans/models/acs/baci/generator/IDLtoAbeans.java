@@ -58,7 +58,7 @@ import org.openorb.util.CharacterCache;
  * Restrictions:
  * 	o) Only single inheritance is supported.
  *  o) Nested arrays/sequences are only supported for primitives
- * 		
+ *
  *
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version		@@VERSION@@
@@ -69,18 +69,19 @@ public class IDLtoAbeans
 	 * Javadoc author tag.
 	 */
 	private static final String JAVADOC_AUTHOR = IDLtoAbeansCompiler.PRODUCT_NAME + " v" + IDLtoAbeansCompiler.VERSION;
-	
+
 	// PACKAGE HANDLING
 	private static final String ABEANS_POSTFIX_DOTLESS = "abeans";
 	private static final String ABEANS_POSTFIX = "." + ABEANS_POSTFIX_DOTLESS;
 	// added to ABEANS_POSTFIX
-	private static final String PROXY_POSTFIX_DOTLESS = "proxy";	
-	private static final String PROXY_POSTFIX = "." + PROXY_POSTFIX_DOTLESS;	
+	private static final String PROXY_POSTFIX_DOTLESS = "proxy";
+	private static final String PROXY_POSTFIX = "." + PROXY_POSTFIX_DOTLESS;
 
 	/**
 	 * Component inteface ID.
 	 */
 	private static final String BASE_CONNECTABLE_ID = "IDL:alma/ACS/CharacteristicComponent:1.0";
+	private static final String BASE_COMPONENT_ID = "IDL:alma/ACS/ACSComponent:1.0";
 	private static final String BASE_LINKABLE_ID = "IDL:alma/ACS/TypelessProperty:1.0";
 
 	private static final String BASE_PROPERTY_ID = "IDL:alma/ACS/TypelessProperty:1.0";
@@ -1115,7 +1116,7 @@ public class IDLtoAbeans
                     i++;
                 }
 
-                
+
                 if (!fixed && queryUseLongLiteral(obj.current()))
                     s.add(CharacterCache.getCharacter('l'));
             }
@@ -1530,7 +1531,7 @@ public class IDLtoAbeans
 
 		// TODO check
         case IdlType.e_native :
-        
+
             if (isNativeDefinition(obj))
                 //printNativeDefinition(obj, output);
 				return "null /* dont now how to handle */";
@@ -1642,7 +1643,7 @@ public class IDLtoAbeans
 		case IdlType.e_forward_interface :
 
 		case IdlType.e_exception :
-	
+
 		case IdlType.e_value :
 		case IdlType.e_forward_value :
 			return fullname_CORBA(obj);
@@ -1659,7 +1660,7 @@ public class IDLtoAbeans
 			return translate_type_CORBA(((IdlIdent) obj).internalObject());
 
 		//
-		// TODO check 
+		// TODO check
 		//
 		case IdlType.e_native :
 
@@ -1679,7 +1680,7 @@ public class IDLtoAbeans
 			}
 
 		}
-		
+
 		return "null /* dont now how to handle */";
 	}
 
@@ -1765,7 +1766,7 @@ public class IDLtoAbeans
                     return "byte";
                 else
                     return "abeans.models.acs.baci.util.ByteHolder";
-			
+
 			case Token.t_any :
 			case Token.t_typecode :
 			case Token.t_object :
@@ -1782,7 +1783,7 @@ public class IDLtoAbeans
             }
 
             break;
-		
+
         case IdlType.e_fixed :
             if (attr == 0)
                 return "java.math.BigDecimal";
@@ -1897,89 +1898,89 @@ public class IDLtoAbeans
 		output.print(translate_parameter(obj, attr));
 		/*
 	    IdlSimple simple = null;
-	
+
 	    switch (obj.kind())
 	    {
-	
+
 	    case IdlType.e_simple :
 	        simple = (IdlSimple) obj;
-	
+
 	        switch (simple.internal())
 	        {
-	
+
 	        case Token.t_float :
-	
+
 	            if (attr == 0)
 	                output.print("float");
 	            else
 	                output.print("abeans.models.acs.baci.util.FloatHolder");
-	
+
 	            break;
-	
+
 	        case Token.t_double :
 	            if (attr == 0)
 	                output.print("double");
 	            else
 	                output.print("abeans.models.acs.baci.util.DoubleHolder");
-	
+
 	            break;
-	
+
 	        case Token.t_short :
-	
+
 	        case Token.t_ushort :
 	            if (attr == 0)
 	                output.print("short");
 	            else
 	                output.print("abeans.models.acs.baci.util.ShortHolder");
-	
+
 	            break;
-	
+
 	        case Token.t_long :
-	
+
 	        case Token.t_ulong :
 	            if (attr == 0)
 	                output.print("int");
 	            else
 	                output.print("abeans.models.acs.baci.util.IntHolder");
-	
+
 	            break;
-	
+
 	        case Token.t_longlong :
-	
+
 	        case Token.t_ulonglong :
 	            if (attr == 0)
 	                output.print("long");
 	            else
 	                output.print("abeans.models.acs.baci.util.LongHolder");
-	
+
 	            break;
-	
+
 	        case Token.t_char :
-	
+
 	        case Token.t_wchar :
 	            if (attr == 0)
 	                output.print("char");
 	            else
 	                output.print("abeans.models.acs.baci.util.CharHolder");
-	
+
 	            break;
-	
+
 	        case Token.t_boolean :
 	            if (attr == 0)
 	                output.print("boolean");
 	            else
 	                output.print("abeans.models.acs.baci.util.BooleanHolder");
-	
+
 	            break;
-	
+
 	        case Token.t_octet :
 	            if (attr == 0)
 	                output.print("byte");
 	            else
 	                output.print("abeans.models.acs.baci.util.ByteHolder");
-	
+
 	            break;
-			
+
 			case Token.t_any :
 			case Token.t_typecode :
 			case Token.t_object :
@@ -1987,39 +1988,39 @@ public class IDLtoAbeans
 					output.print("java.lang.Object");
 				else
 					output.print("abeans.models.acs.baci.util.ObjectHolder");
-	
+
 				break;
-	
+
 			case Token.t_ValueBase :
 				if (attr == 0)
 					output.print("Serializable");
 				else
 					output.print("abeans.models.acs.baci.util.ObjectHolder");
-	
+
 				break;
 	        }
-	
+
 	        break;
-		
+
 	    case IdlType.e_fixed :
-	
+
 	        if (attr == 0)
 	            output.print("java.math.BigDecimal");
 	        else
 	            output.print("abeans.models.acs.baci.util.FixedHolder");
-	
+
 	        break;
-	
+
 	    case IdlType.e_string :
-	
+
 	    case IdlType.e_wstring :
 	        if (attr == 0)
 	            output.print("String");
 	        else
 	            output.print("abeans.models.acs.baci.util.StringHolder");
-	
+
 	        break;
-	
+
 	    case IdlType.e_value_box :
 	        if (attr == 0)
 	        {
@@ -2033,29 +2034,29 @@ public class IDLtoAbeans
 	        }
 	        else
 	            output.print(fullname(obj) + "Holder");
-	
+
 	        break;
-	
+
 	    case IdlType.e_struct :
-	
+
 	    case IdlType.e_union :
-	
+
 	    case IdlType.e_enum :
-	
+
 	    case IdlType.e_interface :
-	
+
 	    case IdlType.e_forward_interface :
-	
+
 	    case IdlType.e_value :
-	
+
 	    case IdlType.e_forward_value :
 	        if (attr == 0)
 	            output.print(fullname(obj));
 	        else
 	            output.print(fullname(obj) + "Holder");
-	
+
 	        break;
-	
+
 	    case IdlType.e_native :
 	        if (attr != 0)
 	        {
@@ -2075,12 +2076,12 @@ public class IDLtoAbeans
 	            else
 	                output.print(fullname(obj));
 	        }
-	
+
 	        break;
-	
+
 	    case IdlType.e_typedef :
 	        obj.reset();
-	
+
 	        if (attr != 0)
 	        {
 	            /*
@@ -2099,11 +2100,11 @@ public class IDLtoAbeans
 	        }
 	        else
 	            translate_parameter(obj.current(), output, attr);
-	
+
 	        break;
-	
+
 	    case IdlType.e_sequence :
-	
+
 	    case IdlType.e_array :
 	        if (attr == 0)
 	        {
@@ -2114,9 +2115,9 @@ public class IDLtoAbeans
 	        {
 	            output.print(fullname(obj.upper()) + "Holder");
 	        }
-	
+
 	        break;
-	
+
 	    case IdlType.e_ident :
 	        translate_parameter(((IdlIdent) obj).internalObject(), output, attr);
 	        break;
@@ -2854,10 +2855,10 @@ public class IDLtoAbeans
 
     /**
      * Map <code>obj</code> to java.lang.Object.
-     * Examples: 
+     * Examples:
      * 		outname = tname;
      * 		outname = new Integer(tname);
-     * 
+     *
      * @param obj the member to encode
      * @param parameter
      * @return	expression
@@ -2876,34 +2877,34 @@ public class IDLtoAbeans
 
 	            case Token.t_float :
 	                return "new Float(" + tname + ")";
-	
+
 	            case Token.t_double :
 					return "new Double(" + tname + ")";
-	
+
 	            case Token.t_short :
 				case Token.t_ushort :
 					return "new Short(" + tname + ")";
-	
+
 	            case Token.t_long :
 				case Token.t_ulong :
 					return "new Integer(" + tname + ")";
-	
+
 	            case Token.t_longlong :
 				case Token.t_ulonglong :
 					return "new Long(" + tname + ")";
-	
+
 	            case Token.t_char :
 				case Token.t_wchar :
 					return "new Character(" + tname + ")";
 
 	            case Token.t_boolean :
 					return "new Boolean(" + tname + ")";
-	
+
 	            case Token.t_octet :
 					return "new Byte(" + tname + ")";
             }
         }
-        
+
         // all other objects are already instances of java.lang.Object
         return tname;
 
@@ -2911,27 +2912,27 @@ public class IDLtoAbeans
 
 	/**
 	 * Casts (sequence) primitive type to apripriate java.lang.Object type.
-	 * Examples: 
+	 * Examples:
 	 * 		inname;
 	 * 		((Double)inname);
 	 *
-	 *  
+	 *
 	 * @param obj the member to decode
 	 * @param inname parameter
 	 * @return expression
 	 */
-	private static String cast_to_abeans_type (IdlObject obj, String inname, boolean toObject) 
+	private static String cast_to_abeans_type (IdlObject obj, String inname, boolean toObject)
 	{
 		return cast_to_abeans_type(obj, inname, toObject, false);
 	}
-	
+
     /**
      * Casts (sequence) primitive type to apropriate java.lang.Object type.
-     * Examples: 
+     * Examples:
      * 		inname;
      * 		((Double)inname);
      *
-     *  
+     *
      * @param obj the member to decode
      * @param inname parameter
      * @param stripOffSequence
@@ -3017,7 +3018,7 @@ public class IDLtoAbeans
 		case IdlType.e_struct :
 		case IdlType.e_union :
 		case IdlType.e_enum :
-		
+
 		case IdlType.e_native :
 		case IdlType.e_value_box :
 		case IdlType.e_value :
@@ -3027,30 +3028,30 @@ public class IDLtoAbeans
 
 		case IdlType.e_array :
 		case IdlType.e_sequence :
-		
+
 			if (stripOffSequence)
 				return cast_to_abeans_type(obj.current(), inname, toObject);
 			else
 				return "abeans.models.acs.baci.util.SequenceConverterHelper.toAbeansSequence((" + translate_type(obj.current()) + "[])" + inname + ")";
-		
+
 		case IdlType.e_typedef :
 			return cast_to_abeans_type(((IdlTypeDef) obj).current(), inname, toObject);
 
 		case IdlType.e_ident :
 			return cast_to_abeans_type(((IdlIdent) obj).internalObject(), inname, toObject);
-		
+
 		}
-		
+
 		return "null";
     }
 
 	/**
 	 * Casts Abeans (sequence) primitive type to appropriate java.lang.Object type.
-	 * Examples: 
+	 * Examples:
 	 * 		inname;
 	 * 		((Double)inname);
 	 *
-	 *  
+	 *
 	 * @param obj the member to decode
 	 * @param inname parameter
 	 * @param stripOffSequence
@@ -3087,7 +3088,7 @@ public class IDLtoAbeans
 			case Token.t_ushort :
 				if (fromObject)
 					return "new Short(((Long)" + inname + ").shortValue())";
-				else		
+				else
 					return "new Short((short)" + inname + ")";
 
 			case Token.t_long :
@@ -3118,7 +3119,7 @@ public class IDLtoAbeans
 					return "new Byte(((Long)" + inname + ").byteValue())";
 				else
 					return "new Byte((byte)" + inname + ")";
-			
+
 			case Token.t_any :
 			case Token.t_typecode :
 			case Token.t_object :
@@ -3139,7 +3140,7 @@ public class IDLtoAbeans
 		case IdlType.e_struct :
 		case IdlType.e_union :
 		case IdlType.e_enum :
-		
+
 		case IdlType.e_native :
 		case IdlType.e_value_box :
 		case IdlType.e_value :
@@ -3159,25 +3160,25 @@ public class IDLtoAbeans
 			else // all rest to long
 				primitiveString = "long";
 			return "abeans.models.acs.baci.util.SequenceConverterHelper." + translate_type(obj.current()) + "Sequence((" + primitiveString + "[])" +inname + ")";
-		
+
 		case IdlType.e_typedef :
 			return cast_to_object_type(((IdlTypeDef) obj).current(), inname, fromObject);
 
 		case IdlType.e_ident :
 			return cast_to_object_type(((IdlIdent) obj).internalObject(), inname, fromObject);
-		
+
 		}
-		
+
 		return "null";
 	}
 
 	/**
 	 * Map <code>from</code> to java.lang.Object.
-	 * Examples: 
+	 * Examples:
 	 * 		inname;
 	 * 		inname.doubleValue();
 	 *
-	 *  
+	 *
 	 * @param obj the member to decode
 	 * @param inname parameter
 	 * @return expression
@@ -3185,84 +3186,84 @@ public class IDLtoAbeans
 	private static String translate_from_object (IdlObject obj, String inname)
 	{
 	    IdlSimple simple = null;
-	
+
 		obj = final_type(obj);
-	
+
 	    switch (obj.kind())
 	    {
-	
+
 	    case IdlType.e_simple :
 	        simple = (IdlSimple) obj;
-	
+
 	        switch (simple.internal())
 	        {
 			case Token.t_float :
 				return "((Float)" + inname + ").floatValue()";
-	
+
 			case Token.t_double :
 				return "((Double)" + inname + ").doubleValue()";
-	
+
 			case Token.t_short :
 			case Token.t_ushort :
 				return "((Short)" + inname + ").shortValue()";
-	
+
 			case Token.t_long :
 			case Token.t_ulong :
 				return "((Integer)" + inname + ").intValue()";
-	
+
 			case Token.t_longlong :
 			case Token.t_ulonglong :
 				return "((Long)" + inname + ").longValue()";
-	
+
 			case Token.t_char :
 			case Token.t_wchar :
 				return "((Character)" + inname + ").charValue()";
-	
+
 			case Token.t_boolean :
 				return "((Boolean)" + inname + ").booleanValue()";
-	
+
 			case Token.t_octet :
 				return "((Byte)" + inname + ").byteValue()";
-	
+
 			case Token.t_any :
 			case Token.t_typecode :
 			case Token.t_object :
 			case Token.t_ValueBase :
 				return "((" + translate_type(obj) + ")" + inname + ")";
 			}
-	
+
 			break;
-	
+
 		case IdlType.e_interface :
 		case IdlType.e_forward_interface :
-	
+
 		case IdlType.e_fixed :
-	
+
 		case IdlType.e_string :
 		case IdlType.e_wstring :
-	
+
 		case IdlType.e_array :
 		case IdlType.e_sequence :
-	
+
 		case IdlType.e_struct :
 		case IdlType.e_union :
 		case IdlType.e_enum :
-		
+
 		case IdlType.e_native :
 		case IdlType.e_value_box :
 		case IdlType.e_value :
 		case IdlType.e_forward_value :
-	
+
 			return "((" + translate_type(obj) + ")" + inname + ")";
-	
+
 		case IdlType.e_typedef :
 			return translate_from_object(((IdlTypeDef) obj).current(), inname);
-	
+
 		case IdlType.e_ident :
 			return translate_from_object(((IdlIdent) obj).internalObject(), inname);
-		
+
 		}
-		
+
 		return "null /* dont now how to handle */";
 	}
 
@@ -3380,10 +3381,10 @@ public class IDLtoAbeans
 	{
 		// fix expr
 		// com.cosylab.ACS.EnumType.first@ -> com.cosylab.ACS.abeans.EnumType.first
-		
+
 		if (expr.length() < 2 || expr.charAt(expr.length()-2) != '@')
 			return expr;
-		
+
 		int pos = expr.lastIndexOf('.');
 		pos = expr.lastIndexOf('.', pos-1);
 		if (pos == -1)
@@ -3392,9 +3393,9 @@ public class IDLtoAbeans
 			expr = expr.substring(0, pos+1) + ABEANS_POSTFIX_DOTLESS + expr.substring(pos);
 
 		return expr;
-		
+
 	}
-	
+
 	/**
 	 * Generates code which converts expr from CORBA to Abeans object.
 	 * @param obj
@@ -3455,7 +3456,7 @@ public class IDLtoAbeans
 			case Token.t_any :
 			case Token.t_typecode :
 			case Token.t_object :
-			
+
 			// TODO check t_ValueBase
 			case Token.t_ValueBase :
 
@@ -3514,7 +3515,7 @@ public class IDLtoAbeans
 
 		case IdlType.e_sequence :
 		case IdlType.e_array :
-		
+
 			if (attr == 0)
 			{
 				fromCORBA(obj.current(), expr, output, 0, false);
@@ -3574,7 +3575,7 @@ System.out.println("fromCORBA: " + obj);
 
 			break;
 
-			
+
 		case IdlType.e_value :
 		case IdlType.e_forward_value :
 System.out.println("fromCORBA: " + obj);
@@ -3615,7 +3616,7 @@ System.out.println("fromCORBA: " + obj);
 	{
 		toCORBA(obj, expr, output, attr, fromObjectMapping, false);
 	}
-	
+
 	/**
 	 * Generates code which converts expr from Abeans to CORBA object.
 	 * @param obj
@@ -3629,7 +3630,7 @@ System.out.println("fromCORBA: " + obj);
 	{
 		// NOTE: do not map values for out (attr == 1) typw
 
-		// explicit cast or extract for primitives 
+		// explicit cast or extract for primitives
 		if (fromObjectMapping && attr != 1)
 		{
 			if (attr == 0)
@@ -3679,11 +3680,11 @@ System.out.println("fromCORBA: " + obj);
 				}
 
 				break;
-				
+
 			case Token.t_any :
 			case Token.t_typecode :
 			case Token.t_object :
-			
+
 			// TODO check t_ValueBase
 			case Token.t_ValueBase :
 
@@ -3712,7 +3713,7 @@ System.out.println("fromCORBA: " + obj);
 						if (parentArraySeq)
 							tmp += "[]";
 						expr = tmp + ")" + expr + ".value";
-						
+
 						output.print("(" + expr + ")");
 					}
 				}
@@ -3723,7 +3724,7 @@ System.out.println("fromCORBA: " + obj);
 
 			break;
 
-			
+
 			case IdlType.e_fixed :
 			case IdlType.e_string :
 			case IdlType.e_wstring :
@@ -3790,7 +3791,7 @@ System.out.println("fromCORBA: " + obj);
 			break;
 
 		case IdlType.e_typedef :
-	
+
 			obj.reset();
 			if (attr != 0)
 			{
@@ -3801,22 +3802,22 @@ System.out.println("fromCORBA: " + obj);
 						output.print("new ");
 						translate_parameter_CORBA(obj, output, attr);
 						//output.print("(" + fullname(obj) + "Helper.toCORBA(" + expr + ".value))");
-						
+
 						if (attr == 1)
 							output.print("()");
 						else
 						{
-						
+
 							// down code is used so have base object helper
 							int fk = final_kind(finalType.current());
-							
+
 							// array of array...
 							while (fk == IdlType.e_array || fk == IdlType.e_sequence)
-							{ 
-								finalType = final_type(finalType.current()); 
+							{
+								finalType = final_type(finalType.current());
 								fk = final_kind(finalType.current());
 							}
-								
+
 							if (fk == IdlType.e_simple)
 								{
 									// simples do not need helpers
@@ -3826,20 +3827,20 @@ System.out.println("fromCORBA: " + obj);
 										case Token.t_any :
 										case Token.t_typecode :
 										case Token.t_object :
-				
+
 										// TODO nested arrays/sequences not supported
 										// TODO check t_ValueBase
 										case Token.t_ValueBase :
 											output.print("((");
 											translate_type_CORBA(finalType.current(), output);
-											output.print("[])(" + expr + ".value))"); 
+											output.print("[])(" + expr + ".value))");
 											break;
 										default:
-											output.print("(" + expr + ".value)"); 
+											output.print("(" + expr + ".value)");
 									}
 								}
 							else if ((fk == IdlType.e_fixed) ||	(fk == IdlType.e_string) || (fk == IdlType.e_wstring))
-								output.print("(" + expr + ".value)"); 
+								output.print("(" + expr + ".value)");
 							else
 								// TODO possible bug for value-box, native, etc. - obj w/o fullname and for nester arrays/sequences
 								output.print("(" + fullname(final_type(finalType.current())) + "Helper.toCORBA(" + expr + ".value))");
@@ -3857,12 +3858,12 @@ System.out.println("fromCORBA: " + obj);
 		case IdlType.e_ident :
 			toCORBA(((IdlIdent) obj).internalObject(), expr, output, attr, false, parentArraySeq);
 			break;
-			
+
 
 		//
 		// TODO what to do here
 		//
-		
+
 		case IdlType.e_value_box :
 System.out.println("toCORBA: " + obj);
 
@@ -3919,7 +3920,7 @@ System.out.println("toCORBA: " + obj);
 	private void generateArrayHelperMethods(IdlObject obj, PrintWriter output)
 	{
 		output.println();
-		
+
 		output.println(tab  + "/** ");
 		output.println(tab  + " * Converts Abeans R3 BACI modeling object to CORBA object.");
 		output.println(tab  + " */ ");
@@ -3931,7 +3932,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab2 + "return retVal;");
 		output.println(tab  + "}");
 		output.println();
-	
+
 		output.println(tab  + "/** ");
 		output.println(tab  + " * Converts CORBA object to Abeans R3 BACI modeling object.");
 		output.println(tab  + " */ ");
@@ -3957,7 +3958,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab2 + "return retVal;");
 		output.println(tab  + "}");
 		output.println();
-	
+
 		output.println(tab  + "/** ");
 		output.println(tab  + " * Converts CORBA object to Abeans R3 BACI modeling object.");
 		output.println(tab  + " */ ");
@@ -3970,7 +3971,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab  + "}");
 
 	}
-	
+
     /**
      * Add a Helper for a data type
      *
@@ -3980,11 +3981,11 @@ System.out.println("toCORBA: " + obj);
     private void write_helper(IdlObject obj, File writeInto)
     {
     	// create helper only for interfaces, enums, structs and unions
-    	int kind = final_kind(obj); 
+    	int kind = final_kind(obj);
     	if (kind != IdlType.e_interface && kind != IdlType.e_enum &&
     		kind != IdlType.e_struct && kind != IdlType.e_union)
     		return;
-    	
+
 		File writeIntoAbeans = createDirectory(ABEANS_POSTFIX_DOTLESS, writeInto);
         PrintWriter output = newFile(writeIntoAbeans, obj.name() + "Helper");
 
@@ -4041,7 +4042,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab  + "{");
 			output.println(tab2 + "return (" + fullname_CORBA(obj) + ")((abeans.pluggable.acs.maci.NarrowCORBAProxy)(abeansObject.getProxy())).getDelegate();");
 			output.println(tab  + "}");
-		
+
 			generateArrayHelperMethods(obj, output);
 
 			break;
@@ -4065,7 +4066,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab  + "{");
 			output.println(tab2 + "return " + fullname_CORBA(obj) + ".from_int(abeansObject.value());");
 			output.println(tab  + "}");
-			
+
 			generateArrayHelperMethods(obj, output);
 
 			break;
@@ -4078,7 +4079,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab  + " */ ");
 			output.println(tab  + "public static " + obj.name() + " fromCORBA(" + fullname_CORBA(obj) + " corbaObject)");
 			output.println(tab  + "{");
-			
+
 			output.println(tab2 + "return new " + obj.name() + "(");
 			obj.reset();
 			while (obj.end() != true)
@@ -4092,7 +4093,7 @@ System.out.println("toCORBA: " + obj);
 					output.println(", ");
 			}
 			output.println(");");
-			
+
 			output.println(tab  + "}");
 			output.println();
 
@@ -4117,7 +4118,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(");");
 
 			output.println(tab  + "}");
-			
+
 			generateArrayHelperMethods(obj, output);
 
 			break;
@@ -4127,30 +4128,30 @@ System.out.println("toCORBA: " + obj);
 
 
 			{
-				
+
 			output.println(tab  + "/** ");
 			output.println(tab  + " * Converts Abeans R3 BACI modeling object to CORBA object.");
 			output.println(tab  + " */ ");
 			output.println(tab  + "public static " + obj.name() + " fromCORBA(" + fullname_CORBA(obj) + " corbaObject)");
 			output.println(tab  + "{");
-			
+
 			int idx = ((IdlUnion) obj).index();
 			obj.reset();
 			output.println(tab2 + obj.name() + " new_one = new " + obj.name() + "();");
 			output.println();
-		
+
 			obj.current().reset();
 			boolean enumeration = false;
-		
+
 			IdlObject d = obj.current().current();
-	
+
 			if (final_kind(d) == IdlType.e_enum)
 				enumeration = true;
-	
+
 			obj.next();
-		
+
 			String discrim = null;
-		
+
 			if (((IdlUnionMember) obj.current()).getExpression().equals("true ") ||
 					((IdlUnionMember) obj.current()).getExpression().equals("false "))
 			{
@@ -4163,16 +4164,16 @@ System.out.println("toCORBA: " + obj);
 				else
 					discrim = "corbaObject.discriminator()";
 			}
-		
+
 			int i = 0;
-		
+
 			while (obj.end() != true)
 			{
 				if (i != idx)
 				{
 					output.print(tab2 + "if (" + discrim + " == ");
-					
-					String expr = ((IdlUnionMember) obj.current()).getExpression(); 
+
+					String expr = ((IdlUnionMember) obj.current()).getExpression();
 					if (expr.equals("true "))
 						output.println("1)");
 					else
@@ -4186,13 +4187,13 @@ System.out.println("toCORBA: " + obj);
 								translate_type(d, output);
 								output.print(")");
 							}
-		
+
 							output.println(translate_to_java_expression(expr, false, ((IdlUnionMember) obj.current())) + ")");
 						}
-		
+
 					output.println(tab2 + "{");
-		
-					// isAsNext() case 
+
+					// isAsNext() case
 					if (((IdlUnionMember) obj.current()).isAsNext() == false)
 					{
 						obj.current().reset();
@@ -4204,9 +4205,9 @@ System.out.println("toCORBA: " + obj);
 					else
 					{
 						IdlObject next = getAsNext(obj);
-		
+
 						next.reset();
-	
+
 						//output.println(tab3 + "new_one." + obj.current().name() + "(corbaObject.discriminator(), corbaObject." + obj.current().name() + "());");
 						output.print(tab3 + "new_one." + obj.current().name() + "(");
 						fromCORBA(d, "corbaObject.discriminator()", output, 0, false);
@@ -4214,23 +4215,23 @@ System.out.println("toCORBA: " + obj);
 						fromCORBA(obj.current().current(), "corbaObject." + obj.current().name() + "()", output, 0, false);
 						output.println(");");
 					}
-		
+
 					output.println(tab2 + "}");
-		
+
 				}
-		
+
 				obj.next();
-		
+
 				if ((obj.end() != true) && ((i + 1) != idx))
 					output.println(tab2 + "else");
-		
+
 				i++;
 			}
-		
+
 			i = 0;
 			obj.reset();
 			obj.next();
-		
+
 			// default value
 			while (obj.end() != true)
 			{
@@ -4238,26 +4239,26 @@ System.out.println("toCORBA: " + obj);
 				{
 					if (obj.length() != 2)
 						output.println(tab2 + "else");
-		
+
 					output.println(tab2 + "{");
-		
+
 					obj.current().reset();
-		
-					// TODO convert	
+
+					// TODO convert
 					//output.println(tab3 + "new_one." + obj.current().name() + "(corbaObject." + obj.current().name() + "());");
 					output.print(tab3 + "new_one." + obj.current().name() + "(");
 					fromCORBA(obj.current().current(), "corbaObject." + obj.current().name() + "()", output, 0, false);
 					output.println(");");
-		
+
 					output.println(tab2 + "}");
-		
+
 				}
-		
+
 				obj.next();
-		
+
 				i++;
 			}
-		
+
 			output.println();
 			output.println(tab2 + "return new_one;");
 			output.println(tab1 + "}");
@@ -4274,24 +4275,24 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab  + " */ ");
 			output.println(tab  + "public static " + fullname_CORBA(obj) + " toCORBA(" + obj.name() + " abeansObject)");
 			output.println(tab  + "{");
-	
+
 			int idx = ((IdlUnion) obj).index();
 			obj.reset();
 			output.println(tab2 + fullname_CORBA(obj) + " new_one = new " + fullname_CORBA(obj) + "();");
 			output.println();
-	
+
 			obj.current().reset();
 			boolean enumeration = false;
-	
+
 			IdlObject d = obj.current().current();
-			
+
 			if (final_kind(d) == IdlType.e_enum)
 				enumeration = true;
 
 			obj.next();
-	
+
 			String discrim = null;
-	
+
 			if (((IdlUnionMember) obj.current()).getExpression().equals("true ") ||
 					((IdlUnionMember) obj.current()).getExpression().equals("false "))
 			{
@@ -4306,13 +4307,13 @@ System.out.println("toCORBA: " + obj);
 			}
 
 			int i = 0;
-	
+
 			while (obj.end() != true)
 			{
 				if (i != idx)
 				{
 					output.print(tab2 + "if (" + discrim + " == ");
-	
+
 					String expr = ((IdlUnionMember) obj.current()).getExpression();
 					if (expr.equals("true "))
 						output.println("1)");
@@ -4334,10 +4335,10 @@ System.out.println("toCORBA: " + obj);
 
 							output.println(translate_to_java_expression(expr, false, ((IdlUnionMember) obj.current())) + ")");
 						}
-	
+
 					output.println(tab2 + "{");
-	
-					// isAsNext() case 
+
+					// isAsNext() case
 					if (((IdlUnionMember) obj.current()).isAsNext() == false)
 					{
 						obj.current().reset();
@@ -4349,7 +4350,7 @@ System.out.println("toCORBA: " + obj);
 					else
 					{
 						IdlObject next = getAsNext(obj);
-	
+
 						next.reset();
 
 						//output.println(tab3 + "new_one." + obj.current().name() + "(abeansObject.discriminator(), abeansObject." + obj.current().name() + "());");
@@ -4358,25 +4359,25 @@ System.out.println("toCORBA: " + obj);
 						output.print(", ");
 						toCORBA(obj.current().current(), "abeansObject." + obj.current().name() + "()", output, 0, false);
 						output.println(");");
-						
+
 					}
-	
+
 					output.println(tab2 + "}");
-	
+
 				}
-	
+
 				obj.next();
-	
+
 				if ((obj.end() != true) && ((i + 1) != idx))
 					output.println(tab2 + "else");
-	
+
 				i++;
 			}
-	
+
 			i = 0;
 			obj.reset();
 			obj.next();
-	
+
 			// default value
 			while (obj.end() != true)
 			{
@@ -4384,38 +4385,38 @@ System.out.println("toCORBA: " + obj);
 				{
 					if (obj.length() != 2)
 						output.println(tab2 + "else");
-	
+
 					output.println(tab2 + "{");
-	
+
 					obj.current().reset();
-	
+
 					//output.println(tab3 + "new_one." + obj.current().name() + "(abeansObject." + obj.current().name() + "());");
 					output.print(tab3 + "new_one." + obj.current().name() + "(");
 					toCORBA(obj.current().current(), "abeansObject." + obj.current().name() + "()", output, 0, false);
 					output.println(");");
-	
+
 					output.println(tab2 + "}");
-	
+
 				}
-	
+
 				obj.next();
-	
+
 				i++;
 			}
-	
+
 			output.println();
 			output.println(tab2 + "return new_one;");
 			output.println(tab1 + "}");
 			output.println();
-			
+
 			}
-			
+
 			generateArrayHelperMethods(obj, output);
 
 			break;
 
         };
-        
+
         output.println("}");
         output.close();
     }
@@ -4884,7 +4885,7 @@ System.out.println("toCORBA: " + obj);
             }
 
             obj.pos(p);
-            
+
             return s;
 
         default :
@@ -4916,12 +4917,12 @@ System.out.println("toCORBA: " + obj);
             	if (simple.internal() == Token.t_boolean)
             		return Boolean.toString(l!=0);
             }
-            
+
             break;
         }
 
         obj.pos(p);
-        
+
         return EMPTY_STRING + l;
     }
 
@@ -5340,7 +5341,7 @@ System.out.println("toCORBA: " + obj);
         }
 
         // Default constructors
-        
+
 		output.println(tab + "/**");
 		output.println(tab + " * Creates a new instance of this exception by specifying the source of the");
 		output.println(tab + " * exception (instance throwing it) and the relevant message.");
@@ -5348,12 +5349,12 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab + " * @param instance 	identifier of the instance throwing this exception, non-<code>null</code>");
 		output.println(tab + " * @param message		a string indicating the exception kind, non-<code>null</code>");
 		output.println(tab + " */");
-		output.println(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message)"); 
+		output.println(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message)");
 		output.println(tab + "{");
 		output.println(tab2 + "super(instance, message);");
 		output.println(tab + "}");
 		output.println();
-	
+
 		output.println(tab + "/**");
 		output.println(tab + " * Creates a new instance of this exception by specifying the source, message and the");
 		output.println(tab + " * exception that caused this exception to be thrown.");
@@ -5362,7 +5363,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab + " * @param	message		a string indicating the exception kind, non-<code>null</code>");
 		output.println(tab + " * @param t			the exception that caused this exception to be thrown");
 		output.println(tab + " */");
-		output.println(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message, Throwable t)"); 
+		output.println(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message, Throwable t)");
 		output.println(tab + "{");
 		output.println(tab2 + "super(instance, message, t);");
 		output.println(tab + "}");
@@ -5387,8 +5388,8 @@ System.out.println("toCORBA: " + obj);
 			}
 
 			output.println(tab + " */");
-			
-			output.print(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message, "); 
+
+			output.print(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message, ");
 			obj.reset();
 			while (obj.end() != true)
 			{
@@ -5439,8 +5440,8 @@ System.out.println("toCORBA: " + obj);
 			}
 
 			output.println(tab + " */");
-			
-			output.print(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message, Throwable t, "); 
+
+			output.print(tab + "public " + obj.name() + "(abeans.core.Identifiable instance, String message, Throwable t, ");
 			obj.reset();
 			while (obj.end() != true)
 			{
@@ -5546,6 +5547,17 @@ System.out.println("toCORBA: " + obj);
      * @param output write access
      */
     private static void translate_bean_attribute (IdlObject obj, PrintWriter output, boolean isParentLinkable, boolean doesImplementInterceptor, boolean isAttributeLinkable)
+	{
+    	translate_bean_attribute (obj, output, isParentLinkable, doesImplementInterceptor, isAttributeLinkable, false);
+	}
+
+    /**
+     * Translate an attribute for the user code
+     *
+     * @param obj attribute to translate
+     * @param output write access
+     */
+    private static void translate_bean_attribute (IdlObject obj, PrintWriter output, boolean isParentLinkable, boolean doesImplementInterceptor, boolean isAttributeLinkable, boolean declarationOnly)
     {
 		if (isAttributeLinkable)
 		{
@@ -5553,27 +5565,37 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab + " * " + obj.name() + " linkable attribute");
 			output.println(tab + " */");
 			output.print(tab + "public ");
-	
+
 			obj.reset();
 			translate_type(obj.current(), output);
-	
+
 			String capitalName = String.valueOf(Character.toUpperCase(obj.name().charAt(0)));
 			if (obj.name().length() > 1)
 			 	capitalName += obj.name().substring(1);
-	
-			output.println(" get"  + capitalName + "()");
-			output.println(tab  + "{");
-			output.println(tab2 + "return "  + obj.name() + ";");
-			output.println(tab  + "}");
+
+			if (declarationOnly)
+			{
+				output.println(" get"  + capitalName + "();");
+			}
+			else
+			{
+				output.println(" get"  + capitalName + "()");
+				output.println(tab  + "{");
+				output.println(tab2 + "return "  + obj.name() + ";");
+				output.println(tab  + "}");
+			}
+	        output.println();
 		}
 
 
         output.println(tab + "/**");
         output.println(tab + " * " + obj.name() + " read attribute");
         output.println(tab + " */");
-		if (isAttributeLinkable)
-        	output.print(tab + "protected ");
-        else
+        //if (declarationOnly)
+		//	output.print(tab);
+		//else if (isAttributeLinkable)
+		//	output.print(tab + "protected ");
+        //else
 			output.print(tab + "public ");
 
         obj.reset();
@@ -5583,26 +5605,33 @@ System.out.println("toCORBA: " + obj);
         //	output.println(" " + obj.name() + "()");
         //else
 		output.println(" " + obj.name() + "()");
-		output.println(tab2 + "throws abeans.engine.RequestException");
-        output.println(tab + "{");
-
-		// invoke
-		// TODO check
-		if (isParentLinkable)
+		if (declarationOnly)
 		{
-			if (doesImplementInterceptor)
-				output.println(tab2 + "Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_get_" + obj.name() + "\", getProxy(), getDefaultTimeout(), this, this, null);");
-			else
-				output.println(tab2 + "Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_get_" + obj.name() + "\", getProxy(), getDefaultTimeout(), interceptor, this, null);");
+			output.println(tab2 + "throws abeans.engine.RequestException;");
 		}
 		else
-			// bypass DB  
-			output.println(tab2 + "Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, \"_get_" + obj.name() + "\", getProxy(), 0, null, null, null);");
-			
-		// return
-		output.println(tab2 + "return " + translate_from_object(obj.current(), "__retVal") + ";");
+		{
+			output.println(tab2 + "throws abeans.engine.RequestException");
+			output.println(tab + "{");
 
-        output.println(tab + "}");
+			// invoke
+			// TODO check
+			if (isParentLinkable)
+			{
+				if (doesImplementInterceptor)
+					output.println(tab2 + "Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_get_" + obj.name() + "\", getProxy(), getDefaultTimeout(), this, this, null);");
+				else
+					output.println(tab2 + "Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_get_" + obj.name() + "\", getProxy(), getDefaultTimeout(), interceptor, this, null);");
+			}
+			else
+				// bypass DB
+				output.println(tab2 + "Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, \"_get_" + obj.name() + "\", getProxy(), 0, null, null, null);");
+
+			// return
+			output.println(tab2 + "return " + translate_from_object(obj.current(), "__retVal") + ";");
+
+			output.println(tab + "}");
+		}
         output.println();
 
         if (((IdlAttribute) obj).readOnly() == false)
@@ -5615,25 +5644,32 @@ System.out.println("toCORBA: " + obj);
             translate_type(obj.current(), output);
 
             output.println(" value)");
-			output.println(tab2 + "throws abeans.engine.RequestException");
-            output.println(tab + "{");
-
-			output.println(tab2 + "Object[] parameters = { " + translate_to_object(obj.current(), "value") + " };");
-
-			// invoke
-			// TODO check
-			if (isParentLinkable)
+			if (declarationOnly)
 			{
-				if (doesImplementInterceptor)
-					output.println(tab2 + "abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_set_" + obj.name() + "\", getProxy(), getDefaultTimeout(), this, this, parameters);");
-				else
-					output.println(tab2 + "abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_set_" + obj.name() + "\", getProxy(), getDefaultTimeout(), interceptor, this, parameters);");
+				output.println(tab2 + "throws abeans.engine.RequestException;");
 			}
 			else
-				// bypass DB  
-				output.println(tab2 + "abeans.models.acs.baci.InvokeUtilities.invokeSync(null, \"_set_" + obj.name() + "\", getProxy(), 0, null, null, parameters);");
+			{
+				output.println(tab2 + "throws abeans.engine.RequestException");
+				output.println(tab + "{");
 
-            output.println(tab + "}");
+				output.println(tab2 + "Object[] parameters = { " + translate_to_object(obj.current(), "value") + " };");
+
+				// invoke
+				// TODO check
+				if (isParentLinkable)
+				{
+					if (doesImplementInterceptor)
+						output.println(tab2 + "abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_set_" + obj.name() + "\", getProxy(), getDefaultTimeout(), this, this, parameters);");
+					else
+						output.println(tab2 + "abeans.models.acs.baci.InvokeUtilities.invokeSync(getRemoteInfo(), \"_set_" + obj.name() + "\", getProxy(), getDefaultTimeout(), interceptor, this, parameters);");
+				}
+				else
+					// bypass DB
+					output.println(tab2 + "abeans.models.acs.baci.InvokeUtilities.invokeSync(null, \"_set_" + obj.name() + "\", getProxy(), 0, null, null, parameters);");
+
+				output.println(tab + "}");
+			}
             output.println();
         }
     }
@@ -5671,7 +5707,7 @@ System.out.println("toCORBA: " + obj);
     {
         obj.reset();
 
-		// read and map java.lang.Object (Abeans R3 model type) to CORBA type  
+		// read and map java.lang.Object (Abeans R3 model type) to CORBA type
         output.print(tab2);
         translate_type_CORBA(obj.current(), output);
         output.print(" param = ");
@@ -5824,7 +5860,7 @@ System.out.println("toCORBA: " + obj);
 	 */
 	private static void translate_operation_callback(IdlObject obj, PrintWriter output)
 	{
-		
+
 	    if (obj.hasComment())
 	        javadoc(output, obj);
 	    else
@@ -5833,31 +5869,31 @@ System.out.println("toCORBA: " + obj);
 	        output.println(tab + " * Operation " + obj.name());
 	        output.println(tab + " */");
 	    }
-	
+
 	    output.print(tab + "public ");
-	
+
 	    obj.reset();
-	
+
 	    translate_type_CORBA(obj.current(), output);
-	
+
 	    output.print(" " + obj.name() + "(");
-	
+
 	    obj.next();
-	
+
 	    if (obj.end() != true)
 	    {
 	        if (obj.current().kind() == IdlType.e_param)
 	        {
 	            while (obj.end() != true)
 	            {
-	
+
 	                obj.current().reset();
 	                translate_parameter_CORBA(obj.current().current(), output, ((IdlParam) obj.current()).param_attr());
-	
+
 	                output.print(" " + obj.current().name());
-	
+
 	                obj.next();
-	
+
 	                if (obj.end() != true)
 	                {
 	                    if (obj.current().kind() == IdlType.e_param)
@@ -5868,33 +5904,33 @@ System.out.println("toCORBA: " + obj);
 	            }
 	        }
 	    }
-	
-	
+
+
 	    output.print(")");
-	
+
 	    if (obj.end() != true)
 	        if (obj.current().kind() == IdlType.e_raises)
 	        {
 	            output.println();
 	            output.print(tab2 + "throws ");
 				IdlRaises r = (IdlRaises) obj.current();
-	
+
 	            r.reset();
-	
+
 	            while (r.end() != true)
 	            {
-	
+
 	                output.print(fullname_CORBA(r.current()));
-	
+
 	                r.next();
-	
+
 	                if (r.end() != true)
-	
+
 	                    output.print(", ");
-	
+
 	            }
 	        }
-	
+
 	    output.println(" {}");
 	    output.println();
 	}
@@ -5907,17 +5943,28 @@ System.out.println("toCORBA: " + obj);
      */
     private static void translate_bean_operation(IdlObject obj, PrintWriter output, boolean isParentLinkable, boolean doesImplementInterceptor)
     {
+		translate_bean_operation(obj, output, isParentLinkable, doesImplementInterceptor, false);
+	}
+
+    /**
+     * Translate an operation for the user code
+     *
+     * @param obj operation to translate
+     * @param output write access
+     */
+    private static void translate_bean_operation(IdlObject obj, PrintWriter output, boolean isParentLinkable, boolean doesImplementInterceptor, boolean declarationOnly)
+    {
         output.println(tab + "/**");
         output.println(tab + " * Operation " + obj.name());
         output.println(tab + " */");
         output.print(tab + "public ");
 
         obj.reset();
-        
+
         IdlObject retObj = obj.current();
         boolean returnsValue = !((retObj.kind() == IdlType.e_simple) &&
 								 (((IdlSimple)retObj).internal() == Token.t_void));
-        
+
         translate_type(retObj, output);
 
         output.print(" " + obj.name() + "(");
@@ -5940,10 +5987,10 @@ System.out.println("toCORBA: " + obj);
 					while (obj.end() != true)
 					{
 						secondLast = last;
-						last = obj.current();						
-	
+						last = obj.current();
+
 						obj.next();
-	
+
 						if (obj.end() != true)
 						{
 							if (obj.current().kind() != IdlType.e_param)
@@ -5952,7 +5999,7 @@ System.out.println("toCORBA: " + obj);
 					}
 				}
 			}
-			
+
 			// we have a last 2 parameters
 			if (secondLast != null)
 			{
@@ -5965,17 +6012,17 @@ System.out.println("toCORBA: " + obj);
 					{
 					 	last = final_type(param.current());
 					 	if (last.kind() == IdlType.e_struct && last.name().equals("CBDescIn"))
-					 		isBACIaction = true; 
+					 		isBACIaction = true;
 					}
 				}
 			}
-	
+
 			obj.reset();
 			obj.next();
 		}
 
 		boolean hasParameters = false;
-		
+
         if (obj.end() != true)
         {
             if (obj.current().kind() == IdlType.e_param)
@@ -5986,12 +6033,12 @@ System.out.println("toCORBA: " + obj);
                 	// do not generate those params...
 					if (isBACIaction && obj.current() == secondLast)
 						break;
-					
+
 					if (hasParameters)
 						output.print(", ");
-					
+
 					hasParameters = true;
-					
+
                     obj.current().reset();
                     translate_parameter(obj.current().current(), output, ((IdlParam) obj.current()).param_attr());
 
@@ -6034,10 +6081,16 @@ System.out.println("toCORBA: " + obj);
                 }
             }
 
+        if (declarationOnly)
+        {
+            output.println(";");
+            return;
+	    }
+
         output.println();
         output.println(tab + "{");
-        
-        
+
+
 		boolean hasOutParameters = false;
 		boolean notFirst = false;
 
@@ -6056,10 +6109,10 @@ System.out.println("toCORBA: " + obj);
 						// do not generate those params...
 						if (isBACIaction && obj.current() == secondLast)
 							break;
-						
+
 						if (notFirst)
 							output.print(", ");
-							
+
 						notFirst = true;
 
 						obj.current().reset();
@@ -6112,9 +6165,9 @@ System.out.println("toCORBA: " + obj);
 			}
 		}
 		else
-			// bypass DB  
+			// bypass DB
 			output.print("abeans.models.acs.baci.InvokeUtilities.invokeSync(null, \"" + obj.name() + "\", getProxy(), 0, null, null, ");
-			
+
 		if (hasParameters)
 			output.println("parameters);");
 		else
@@ -6136,7 +6189,7 @@ System.out.println("toCORBA: " + obj);
 					{
 						obj.current().reset();
 
-						int attr = ((IdlParam)obj.current()).param_attr(); 
+						int attr = ((IdlParam)obj.current()).param_attr();
 						if (attr != 0)
 						{
 							output.println(tab2 + obj.current().name() + " = (" + translate_parameter(obj.current().current(), attr) + ")parameters[" + i + "];");
@@ -6149,16 +6202,16 @@ System.out.println("toCORBA: " + obj);
 							if (obj.current().kind() != IdlType.e_param)
 								break;
 						}
-						
+
 						i++;
 					}
 				}
 			}
-			
+
 			if (returnsValue)
 				output.println();
 		}
-			
+
 		// return
 		if (returnsValue)
 			output.println(tab2 + "return " + translate_from_object(retObj, "__retVal") + ";");
@@ -6177,7 +6230,7 @@ System.out.println("toCORBA: " + obj);
     {
         // extract the parameters
         obj.reset();
-        
+
         // skip return value
         obj.next();
 
@@ -6216,7 +6269,7 @@ System.out.println("toCORBA: " + obj);
 						output.print(" arg" + i + "_inout = ");
 						toCORBA(obj.current().current(), "parameters[" + i + "]", output , 2, true);
 						output.println(";");
-						
+
 						break;
                     }
 
@@ -6360,7 +6413,7 @@ System.out.println("toCORBA: " + obj);
             output.print("arg_ctx");
         }
 		*/
-		
+
         output.println(");");
 		output.println();
 
@@ -6373,7 +6426,7 @@ System.out.println("toCORBA: " + obj);
             {
             	if (raises)
 					output.print(tab);
-					
+
                 output.print(tab2 + "java.lang.Object retVal = ");
                 fromCORBA(obj.current(), "_arg_result", output, 0, true);
 				output.println(";");
@@ -6462,7 +6515,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab2 + "return retVal;");
 		else
 			output.println(tab2 + "return null;");
-		
+
 		// catch th exceptions
 		if (obj.end() != true)
 			if (obj.current().kind() == IdlType.e_raises)
@@ -6581,7 +6634,7 @@ System.out.println("toCORBA: " + obj);
      * Property already has knowledge of BACI and Abeans,
      * also naming convention of P<type>, RO<type>, RW<type>.
      * Expected single inheritance: TypelessProperty -> P<type> -> RO<type> | RW<type> -> ...
-     * Implementation of  P<type>, RO<type>, RW<type> properties is fixed, any user-added 
+     * Implementation of  P<type>, RO<type>, RW<type> properties is fixed, any user-added
      * methods and attributes should be implemented by inheriting P<type>, RO<type> | RW<type> types.
      *
      * @param obj a property interface to translate
@@ -6592,15 +6645,15 @@ System.out.println("toCORBA: " + obj);
     private boolean translate_bean_interface_property(IdlObject obj, File writeInto, List inheritanceList)
     {
 
-		// it always has at least one... 
+		// it always has at least one...
 		IdlInterface itf = (IdlInterface)inheritanceList.get(0);
 		if (itf.isForward())
 			itf = itf.getInterface();
-	
+
 		// 0 = P<type>, 1 = RO<type>, 2 = RW<type>, other is invalid
 		int mode = -1;
-		
-		// determine mode 
+
+		// determine mode
 		IdlInterface ptype = null;
 		if (obj.name().charAt(0) == 'P')
 		{
@@ -6609,7 +6662,7 @@ System.out.println("toCORBA: " + obj);
 			else
 			{
 				mode = 0;
-				ptype = (IdlInterface)obj; 
+				ptype = (IdlInterface)obj;
 			}
 		}
 		else if (obj.name().startsWith("RO"))
@@ -6638,7 +6691,7 @@ System.out.println("toCORBA: " + obj);
 		// get property type
 		// find get_sync method
 		IdlObject propertyType = null;
-		
+
 		if (ptype != null)
 		{
 			ptype.reset();
@@ -6651,17 +6704,17 @@ System.out.println("toCORBA: " + obj);
 						IdlObject retObj = ptype.current();
 						retObj.reset();
 						propertyType = final_type(retObj.current());
-						break; 
+						break;
 					}
 				}
-	
+
 				ptype.next();
 			}
 		}
-		
-		
+
+
 		String historyHolder = null;
-		
+
 		// determine get_history value holder
 		if (mode == 0)
 		{
@@ -6681,10 +6734,10 @@ System.out.println("toCORBA: " + obj);
 							// skip length
 							retObj.next();
 							historyHolder = translate_parameter(retObj.current().current(), 1);
-							break; 
+							break;
 						}
 					}
-		
+
 					ptype.next();
 				}
 			}
@@ -6699,7 +6752,7 @@ System.out.println("toCORBA: " + obj);
 
 		// find get_async method
 		IdlObject cbType = null;
-		
+
 		if (ptype != null)
 		{
 			ptype.reset();
@@ -6713,10 +6766,10 @@ System.out.println("toCORBA: " + obj);
 						retObj.reset();
 						retObj.next();
 						cbType = final_type(retObj.current().current());
-						break; 
+						break;
 					}
 				}
-	
+
 				ptype.next();
 			}
 		}
@@ -6744,7 +6797,7 @@ System.out.println("toCORBA: " + obj);
 				translate_bean_interface_property_RWtype(obj, itf, propertyType, output);
 				break;
 		}
-		
+
 		output.close();
 
 		return true;
@@ -6756,7 +6809,7 @@ System.out.println("toCORBA: " + obj);
 	 * Property already has knowledge of BACI and Abeans,
 	 * also naming convention of P<type>, RO<type>, RW<type>.
 	 * Expected single inheritance: TypelessProperty -> P<type> -> RO<type> | RW<type> -> ...
-	 * Implementation of  P<type>, RO<type>, RW<type> properties is fixed, any user-added 
+	 * Implementation of  P<type>, RO<type>, RW<type> properties is fixed, any user-added
 	 * methods and attributes should be implemented by inheriting P<type>, RO<type> | RW<type> types.
 	 *
 	 * @param obj a property interface to translate
@@ -6766,17 +6819,17 @@ System.out.println("toCORBA: " + obj);
 	 */
 	private boolean translate_bean_interface_callback(IdlObject obj, File writeInto, List inheritanceList)
 	{
-	
-		// it always has at least one... 
+
+		// it always has at least one...
 		IdlInterface itf = (IdlInterface)inheritanceList.get(0);
 		if (itf.isForward())
 			itf = itf.getInterface();
-	
-		// if null, CB implements CBvoid	
+
+		// if null, CB implements CBvoid
 		IdlObject callbackType = findCallbackType(obj);
 
 		int callback = INVALID_PROPERTY;
-		
+
 		if (callbackType != null)
 			callback = mapProperty(callbackType, null, 0);
 
@@ -6784,14 +6837,14 @@ System.out.println("toCORBA: " + obj);
 
 		File writeIntoAbeans = createDirectory(ABEANS_POSTFIX_DOTLESS, writeInto);
 	    PrintWriter output = newFile(writeIntoAbeans, baseName);
-	
-		
+
+
 		addDescriptiveHeader(output, obj);
 		output.println();
 
 		// imports
 		output.println("import org.omg.CORBA.ORB;");
-		
+
 		output.println("import abeans.core.Root;");
 		output.println("import abeans.core.UnableToInstallComponentException;");
 
@@ -6809,17 +6862,17 @@ System.out.println("toCORBA: " + obj);
 
 		output.println("import abeans.models.acs.baci.util.async.HandleDataStore;");
 		output.println("import abeans.models.acs.baci.util.async.RequestInfoEntry;");
-		
+
 		output.println("import abeans.models.acs.baci.util.async.CallbackHandler;");
 		output.println("import abeans.models.acs.baci.util.async.CallbackImplementation;");
 
 
 		output.println();
-		
+
 		// definition
 		output.print("public final class " + baseName + " extends " + fullname_CORBA(obj) + "POA implements CallbackImplementation {");
 		output.println();
-		
+
 
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * This object singleton instance.");
@@ -6836,15 +6889,15 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab1 + "*/");
 		output.println(tab1 + "private alma.ACS.abeans.Callback abeansCallback;");
 		output.println();
-		
+
 		output.println(tab1 + "/**");
 		output.println(tab1 + "* Fast CB ID lookup ADT holding request listeners.");
 		output.println(tab1 + "*/");
 		output.println(tab1 + "private HandleDataStore requests;");
 		output.println();
-		
+
 		output.println(tab1 + "/**");
-		output.println(tab1 + " * Private contstructor."); 
+		output.println(tab1 + " * Private contstructor.");
 		output.println(tab1 + " */");
 		output.println(tab1 + "private " + baseName + "()");
 		output.println(tab1 + "{");
@@ -6863,7 +6916,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab2 + "requests = new HandleDataStore();");
 		output.println(tab2 + "}");
 		output.println();
-	
+
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * Returns, if necessary also creates, instance of this class.");
 		output.println(tab1 + " * This methods follows singleton pattern.");
@@ -6902,7 +6955,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab2 + "rie.callbackHandler.deregistered(requestId, rie.request, this);");
 		output.println(tab1 + "}");
 		output.println();
-		
+
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * @see abeans.models.acs.baci.util.async.CallbackRequestManager#registerCallbackRequest(abeans.engine.Request, abeans.models.acs.baci.util.async.CallbackHandler)");
 		output.println(tab1 + " */");
@@ -7006,36 +7059,36 @@ System.out.println("toCORBA: " + obj);
 
 		//
 		// translate the internal definitions
-		// 
-	
+		//
+
 		obj.reset();
-	
+
 		while (obj.end() != true)
 		{
 			if (!(obj.current().name().equals("working") || obj.current().name().equals("done")))
 				switch (obj.current().kind())
 				{
-		
+
 				case IdlType.e_operation :
 					translate_operation_callback(obj.current(), output);
 					break;
-		
+
 				/*
 				case IdlType.e_attribute :
 					translate_attribute(obj.current(), output);
 					break;
 				*/
 				}
-	
+
 			obj.next();
 		}
 
 
 		output.println("}");
 		output.close();
-	
+
 		return true;
-	
+
 	}
 
 	/**
@@ -7043,46 +7096,46 @@ System.out.println("toCORBA: " + obj);
 	 * @return
 	 */
 	private static IdlInterface findPtypeInterface(IdlObject obj) {
-		
+
 		List fullInheritanceList = getInheritanceList(obj, new ArrayList(), true);
-		
+
 		// first find BASE_PROPERTY_ID
 		int i = fullInheritanceList.size()-1;
 		for (; i >=0; i--)
 			if (((IdlInterface)fullInheritanceList.get(i)).getId().equals(BASE_PROPERTY_ID))
 				break;
-				
+
 		// then find first P<type> property
 		for (; i >=0; i--)
 			if (((IdlInterface)fullInheritanceList.get(i)).name().charAt(0) == 'P')
 			{
 				return (IdlInterface)fullInheritanceList.get(i);
 			}
-			
+
 		return null;
 	}
-	
+
 	/**
 	 * @param obj
 	 * @return
 	 */
 	private static IdlObject findCallbackType(IdlObject obj) {
-		
+
 		List fullInheritanceList = getInheritanceList(obj, new ArrayList(), true);
-		
+
 		// first find BASE_CALLBACK_ID
 		int i = fullInheritanceList.size()-1;
 		for (; i >=0; i--)
 		{
 			IdlInterface cbif = (IdlInterface)fullInheritanceList.get(i);
-				
+
 			// then find done method
 			cbif.reset();
 			while (cbif.end() != true)
 			{
 				if (cbif.current().kind() == IdlType.e_operation)
 				{
-					// TODO it is possible that callback has 2 
+					// TODO it is possible that callback has 2
 					if (cbif.current().name().equals("done"))
 					{
 						IdlObject retObj = cbif.current();
@@ -7090,23 +7143,23 @@ System.out.println("toCORBA: " + obj);
 						// skip retVal
 						retObj.next();
 						retObj.current().reset();
-						
+
 						IdlObject firstParam = final_type(retObj.current().current());
-						
-						// "void" check 
+
+						// "void" check
 						if (firstParam.kind() == IdlType.e_struct && firstParam.name().equals("Completion"))
 							return null;
-							
+
 						return firstParam;
 					}
 				}
-		
+
 				cbif.next();
 			}
-			
-		}	
-			
-		// should never happen	
+
+		}
+
+		// should never happen
 		return null;
 	}
 
@@ -7132,7 +7185,7 @@ System.out.println("toCORBA: " + obj);
 	{
 		return mapPropertyToType(type, toObject, false, false);
 	}
-	
+
 	/**
 	 * @param obj
 	 * @param output
@@ -7160,13 +7213,13 @@ System.out.println("toCORBA: " + obj);
 					return "double";
 				else
 					return "Double";
-					
+
 			case LONG_PROPERTY:
 				if (!toObject)
 					return "long";
 				else
 					return "Long";
-						
+
 			case PATTERN_PROPERTY:
 				if (!useAbeansName)
 				{
@@ -7185,7 +7238,7 @@ System.out.println("toCORBA: " + obj);
 
 			case STRING_PROPERTY:
 					return "String";
-				
+
 			case OBJECT_PROPERTY:
 					if (!stripObject)
 						return "Object";
@@ -7197,13 +7250,13 @@ System.out.println("toCORBA: " + obj);
 						return "double[]";
 					else
 						return "DoubleSeq";
-					
+
 			case LONG_SEQ_PROPERTY:
 					if (!useAbeansName)
 						return "long[]";
 					else
 						return "LongSeq";
-						
+
 			case STRING_SEQ_PROPERTY:
 					if (!useAbeansName)
 						return "String[]";
@@ -7223,7 +7276,7 @@ System.out.println("toCORBA: " + obj);
 							return "";
 		}
 
-		return "<invalid>";		
+		return "<invalid>";
 	}
 
 	/**
@@ -7232,7 +7285,7 @@ System.out.println("toCORBA: " + obj);
 	 */
 	private static boolean isNumbericScalarProperty(int type)
 	{
-		return (type == DOUBLE_PROPERTY || type == LONG_PROPERTY);	
+		return (type == DOUBLE_PROPERTY || type == LONG_PROPERTY);
 	}
 
 	/**
@@ -7243,8 +7296,8 @@ System.out.println("toCORBA: " + obj);
 	{
 		return (type == DOUBLE_SEQ_PROPERTY || type == LONG_SEQ_PROPERTY ||
 				type == STRING_SEQ_PROPERTY || type == OBJECT_SEQ_PROPERTY);
-	} 
-	
+	}
+
 	/**
 	 * @param type
 	 * @return
@@ -7262,10 +7315,10 @@ System.out.println("toCORBA: " + obj);
 
 			case DOUBLE_SEQ_PROPERTY:
 				return DOUBLE_PROPERTY;
-					
+
 			case LONG_SEQ_PROPERTY:
 				return LONG_PROPERTY;
-						
+
 			case STRING_SEQ_PROPERTY:
 				return STRING_PROPERTY;
 
@@ -7273,7 +7326,7 @@ System.out.println("toCORBA: " + obj);
 				return OBJECT_PROPERTY;
 		}
 
-		return type;		
+		return type;
 	}
 
 	/**
@@ -7296,10 +7349,10 @@ System.out.println("toCORBA: " + obj);
 
 			case DOUBLE_SEQ_PROPERTY:
 				return "DOUBLE_SEQ";
-					
+
 			case LONG_SEQ_PROPERTY:
 				return "LONG_SEQ";
-						
+
 			case STRING_SEQ_PROPERTY:
 				return "STRING_SEQ";
 
@@ -7308,7 +7361,7 @@ System.out.println("toCORBA: " + obj);
 				return "OBJECT";
 		}
 
-		return "<invalid>";		
+		return "<invalid>";
 	}
 
 	/**
@@ -7325,7 +7378,7 @@ System.out.println("toCORBA: " + obj);
 			if (output!=null) output.println("abeans.datatypes.ObjectProperty");
 			return OBJECT_PROPERTY;
 		}
-		
+
 		switch (obj.kind())
 		{
 			case IdlType.e_simple :
@@ -7347,7 +7400,7 @@ System.out.println("toCORBA: " + obj);
 						return DOUBLE_PROPERTY;
 					}
 					else
-					{ 
+					{
 						if (output!=null) output.println("abeans.datatypes.DoubleSeqProperty");
 						return DOUBLE_SEQ_PROPERTY;
 					}
@@ -7368,7 +7421,7 @@ System.out.println("toCORBA: " + obj);
 						return LONG_PROPERTY;
 					}
 					else
-					{ 
+					{
 						if (output!=null) output.println("abeans.datatypes.LongSeqProperty");
 						return LONG_SEQ_PROPERTY;
 					}
@@ -7393,10 +7446,10 @@ System.out.println("toCORBA: " + obj);
 				/*
 					if (output!=null) output.println("<invalid>");
 					return INVALID_PROPERTY;
-					
+
 					// boolean
 					--> long
-					
+
 					// char
 					if (sequenceDepth == 0)
 					{
@@ -7521,7 +7574,7 @@ System.out.println("toCORBA: " + obj);
 														 IdlObject propertyType, IdlObject cbType,
 														 String historyHolder, PrintWriter output)
 	{
-			
+
 		addDescriptiveHeader(output, obj);
 		output.println();
 
@@ -7547,25 +7600,25 @@ System.out.println("toCORBA: " + obj);
 		// since there is no ObjectSeqProperty
 		if (isSequenceProperty(property) && property != OBJECT_SEQ_PROPERTY)
 			output.println("import com.cosylab.datatypes.ntuples.*;");
-		
+
 		if (property == PATTERN_PROPERTY)
 			output.println("import com.cosylab.datatypes.Condition;");
-					
+
 		output.println();
-		
+
 		// definition
 		// output.print("public abstract class " + obj.name() + " extends TypelessProperty implements ");
 		// proxies does not work with abstract classes
 		output.print("public class " + obj.name() + " extends TypelessProperty implements ");
-		
+
 		if (property == PATTERN_PROPERTY)
 			output.println("abeans.datatypes.PatternProperty");
 		else
 			mapProperty(propertyType, output, 0);
-		
+
 		output.println("{");
 		output.println();
-		
+
 		// number access for number properties
 		if (isNumbericScalarProperty(property))
 		{
@@ -7575,10 +7628,10 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + "private NumberAccess na = null;");
 			output.println();
 		}
-		
+
 		// default value
 		output.println(tab1 + "/**");
-		output.println(tab1 + " * Property default value"); 
+		output.println(tab1 + " * Property default value");
 		output.println(tab1 + " */");
 		output.print(tab1 + "private " + mapPropertyToType(property, false) + " defaultValue = ");
 		if (isNumbericScalarProperty(property))
@@ -7586,10 +7639,10 @@ System.out.println("toCORBA: " + obj);
 		else
 			output.println("null;");
 		output.println();
-		
+
 		// constructors
 		translate_bean_interface_property_constructors(obj, output);
-		
+
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * @see abeans.datatypes." + mapPropertyToType(property, true, true) + "Property#getAsynchronous()");
 		output.println(tab1 + " */");
@@ -7722,12 +7775,12 @@ System.out.println("toCORBA: " + obj);
 
 		//if (isNumbericScalarProperty(property) || isNumbericScalarProperty(primitiveType))
 		//	output.println(tab4 + "defaultValue = " + cast_to_abeans_type(propertyType, "CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), Characteristics.NAME_DEFAULT_VALUE, remote, getDefaultTimeout(), interceptor, this)") + ";");
-		
+
 		if (isNumbericScalarProperty(property))
 			output.println(tab4 + "defaultValue = CharacteristicContextUtilities.get" + mapPropertyToType(property, true, true, true) + "Characteristic(getRemoteInfo(), Characteristics.NAME_DEFAULT_VALUE, remote, getDefaultTimeout(), interceptor, this);");
 		else // Object / Object[]
 			output.println(tab4 + "defaultValue = (" + mapPropertyToType(property, false) + ")CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), Characteristics.NAME_DEFAULT_VALUE, remote, getDefaultTimeout(), interceptor, this);");
-			
+
 		output.println(tab3 + "} catch (Exception e) {");
 		if (isNumbericScalarProperty(property))
 			output.println(tab4 + "defaultValue = 0;");
@@ -7775,7 +7828,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab2 + "throw new AbeansDataExchangeException(this, \"Method cannot be implemented by P<type> interface.\");");
 			output.println(tab1 + "}");
 			output.println();
-	
+
 			output.println(tab1 + "/**");
 			output.println(tab1 + " * @see com.cosylab.datatypes." + mapPropertyToType(property, true, true) + "AbstractProperty#getMinimum()");
 			output.println(tab1 + " */");
@@ -7784,7 +7837,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + "}");
 			output.println();
 		}
-		
+
 		//
 		// metods of pattern property
 		//
@@ -7794,7 +7847,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + "* @see com.cosylab.datatypes.PatternAbstractProperty#getBitDescriptions()");
 			output.println(tab1 + "*/");
 			output.println(tab1 + "public String[] getBitDescriptions() throws DataExchangeException {");
-			output.println(tab2 + "return (String[])CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), PatternAbstractProperty.C_BIT_DESCRIPTIONS, remote, getDefaultTimeout(), interceptor, this);");	
+			output.println(tab2 + "return (String[])CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), PatternAbstractProperty.C_BIT_DESCRIPTIONS, remote, getDefaultTimeout(), interceptor, this);");
 			output.println(tab1 + "}");
 
 			output.println(tab1 + "/**");
@@ -7805,24 +7858,24 @@ System.out.println("toCORBA: " + obj);
 			//output.println(tab2 + "return toAbeansType(CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), PatternAbstractProperty.NAME_BIT_MASK, remote, getDefaultTimeout(), interceptor, this));");
 			output.println(tab2 + "java.util.BitSet bitSet = new java.util.BitSet(32);");
 			output.println(tab2 + "bitSet.set(0, 32);");
-			output.println(tab2 + "return bitSet;");	
+			output.println(tab2 + "return bitSet;");
 			output.println(tab1 + "}");
 
 			output.println(tab1 + "/**");
 			output.println(tab1 + " * @see com.cosylab.datatypes.PatternAbstractProperty#getConditionWhenCleared()");
 			output.println(tab1 + " */");
 			output.println(tab1 + "public Condition[] getConditionWhenCleared() throws DataExchangeException {");
-			output.println(tab2 + "return (Condition[])CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), PatternAbstractProperty.C_CONDITION_WHEN_SET, remote, getDefaultTimeout(), interceptor, this);");	
+			output.println(tab2 + "return (Condition[])CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), PatternAbstractProperty.C_CONDITION_WHEN_SET, remote, getDefaultTimeout(), interceptor, this);");
 			output.println(tab1 + "}");
 
 			output.println(tab1 + "/**");
 			output.println(tab1 + " * @see com.cosylab.datatypes.PatternAbstractProperty#getConditionWhenSet()");
 			output.println(tab1 + " */");
 			output.println(tab1 + "public Condition[] getConditionWhenSet() throws DataExchangeException {");
-			output.println(tab2 + "return (Condition[])CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), PatternAbstractProperty.C_CONDITION_WHEN_CLEARED, remote, getDefaultTimeout(), interceptor, this);");	
+			output.println(tab2 + "return (Condition[])CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), PatternAbstractProperty.C_CONDITION_WHEN_CLEARED, remote, getDefaultTimeout(), interceptor, this);");
 			output.println(tab1 + "}");
 		}
-		
+
 		// callback singleton factory
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * Returns callback implementation.");
@@ -7832,7 +7885,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab2 + "return " + fullname(cbType) + "Impl.getInstance();");
 		output.println(tab1 + "}");
 		output.println();
-		
+
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * Converts value to Abeans object.");
 		output.println(tab1 + " * @param value	value to be converted to Abeans object.");
@@ -7858,7 +7911,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab2 + "if (value instanceof Integer)");
 			output.println(tab3 + "return " + translate_type(propertyType) + ".from_int(((Integer)value).intValue());");
 			output.println(tab2 + "else");
-			output.println(tab3 + "return value;");		
+			output.println(tab3 + "return value;");
 		}
 		else if (property == PATTERN_PROPERTY)
 		{
@@ -7876,7 +7929,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab2 + "return bitValue;");
 		}
 		else // Object / ObjectSeq
-			output.println(tab2 + "return value;");		
+			output.println(tab2 + "return value;");
 		output.println(tab1 + "}");
 		output.println();
 
@@ -7892,7 +7945,7 @@ System.out.println("toCORBA: " + obj);
 		}
 		else if (property == PATTERN_PROPERTY)
 		{
-			output.println(tab2 + "int intValue = 0;"); 
+			output.println(tab2 + "int intValue = 0;");
 			output.println(tab2 + "java.util.BitSet bitValue = (java.util.BitSet)value;");
 			output.println(tab2 + "if (bitValue != null)");
 			output.println(tab2 + "{");
@@ -7906,10 +7959,10 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab2 + "return new Integer(intValue);");
 		}
 		else // Object / ObjectSeq
-			output.println(tab2 + "return value;");		
+			output.println(tab2 + "return value;");
 		output.println(tab1 + "}");
 		output.println();
-		
+
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * Creates new instance of history value holder object.");
 		output.println(tab1 + " * @return	new instance of history value holder object.");
@@ -7948,7 +8001,7 @@ System.out.println("toCORBA: " + obj);
 	private void translate_bean_interface_property_ROtype(IdlObject obj, IdlInterface itf,
 													 	  IdlObject propertyType, PrintWriter output)
 	{
-			
+
 		addDescriptiveHeader(output, obj);
 
 		int property = mapProperty(propertyType, null, 0);
@@ -7970,10 +8023,10 @@ System.out.println("toCORBA: " + obj);
 		}
 
 		output.println();
-		
+
 		// definition
 		output.println("public class " + obj.name() + " extends " + fullname(itf));
-		
+
 		output.println("{");
 		output.println();
 
@@ -7988,26 +8041,26 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + "public " + mapPropertyToType(primitiveType, false) + " getMaximum() throws DataExchangeException {");
 			//output.println(tab2 + "return " + cast_to_abeans_type(propertyType, "CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), NumericProperty.C_GRAPH_MAX, remote, getDefaultTimeout(), interceptor, this)", true) + ";");
 			//if (isPattern)
-			//	output.println(tab2 + "return Integer.MAX_VALUE;");	
+			//	output.println(tab2 + "return Integer.MAX_VALUE;");
 			//else
-				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NumericProperty.C_GRAPH_MAX, remote, getDefaultTimeout(), interceptor, this);");	
+				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NumericProperty.C_GRAPH_MAX, remote, getDefaultTimeout(), interceptor, this);");
 			output.println(tab1 + "}");
 			output.println();
-	
+
 			output.println(tab1 + "/**");
 			output.println(tab1 + " * @see com.cosylab.datatypes." + mapPropertyToType(property, true, true) + "AbstractProperty#getMinimum()");
 			output.println(tab1 + " */");
 			output.println(tab1 + "public " + mapPropertyToType(primitiveType, false) + " getMinimum() throws DataExchangeException {");
 			//output.println(tab2 + "return " + cast_to_abeans_type(propertyType, "CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), NumericProperty.C_GRAPH_MIN, remote, getDefaultTimeout(), interceptor, this)", true) + ";");
 			//if (isPattern)
-			//	output.println(tab2 + "return Integer.MIN_VALUE;");	
+			//	output.println(tab2 + "return Integer.MIN_VALUE;");
 			//else
-				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NumericProperty.C_GRAPH_MIN, remote, getDefaultTimeout(), interceptor, this);");	
+				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NumericProperty.C_GRAPH_MIN, remote, getDefaultTimeout(), interceptor, this);");
 			output.println(tab1 + "}");
 			output.println();
-	
+
 		}
-		
+
 		output.println("}");
 	}
 
@@ -8018,7 +8071,7 @@ System.out.println("toCORBA: " + obj);
 	 * @param propertyType
 	 * @param output
 	 */
-	private void translate_bean_interface_property_RWtype(IdlObject obj, IdlInterface itf, 
+	private void translate_bean_interface_property_RWtype(IdlObject obj, IdlInterface itf,
 														  IdlObject propertyType, PrintWriter output)
 	{
 		addDescriptiveHeader(output, obj);
@@ -8035,7 +8088,7 @@ System.out.println("toCORBA: " + obj);
 		output.println("import abeans.engine.Request;");
 
 		output.println("import com.cosylab.datatypes.DataExchangeException;");
-		
+
 
 		if (isNumbericScalarProperty(primitiveType))
 		{
@@ -8043,19 +8096,19 @@ System.out.println("toCORBA: " + obj);
 				output.println("import abeans.datatypes.CharacteristicContextUtilities;");
 			output.println("import java.util.Map;");
 		}
-		
+
 		output.println();
-		
+
 		// definition
 		output.println("public class " + obj.name() + " extends " + fullname(itf));
-		
+
 		output.println("{");
 		output.println();
 
-		
+
 		// constructors
 		translate_bean_interface_property_constructors(obj, output);
-		
+
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * @see com.cosylab.datatypes.DataAccess#isSettable()");
 		output.println(tab1 + " */");
@@ -8071,7 +8124,7 @@ System.out.println("toCORBA: " + obj);
 		//if (isNumbericScalarProperty(property) || isNumbericScalarProperty(primitiveType))
 		//	output.println(tab2 + "return DynamicValueUtilities.setDynamicValueAsynchronous(getRemoteInfo(), remote, getDefaultTimeout(), interceptor, this, " + cast_to_object_type(propertyType, "value") + ");");
 		//else // Object / ObjectSeq
-		output.println(tab2 + "return DynamicValueUtilities.set" + mapPropertyToType(property, true, true, true) + "DynamicValueAsynchronous(getRemoteInfo(), remote, getDefaultTimeout(), interceptor, this, value);");		
+		output.println(tab2 + "return DynamicValueUtilities.set" + mapPropertyToType(property, true, true, true) + "DynamicValueAsynchronous(getRemoteInfo(), remote, getDefaultTimeout(), interceptor, this, value);");
 		output.println(tab1 + "}");
 		output.println();
 
@@ -8083,7 +8136,7 @@ System.out.println("toCORBA: " + obj);
 		//	output.println(tab2 + "DynamicValueUtilities.setDynamicValueAsynchronous(getRemoteInfo(), remote, getDefaultTimeout(), interceptor, this, " + cast_to_object_type(propertyType, "value") + ");");
 		//else // Object / ObjectSeq
 		output.println(tab2 + "DynamicValueUtilities.set" + mapPropertyToType(property, true, true, true) + "DynamicValue(getRemoteInfo(), remote, getDefaultTimeout(), interceptor, this, value);");
-			
+
 		output.println(tab1 + "}");
 		output.println();
 
@@ -8098,26 +8151,26 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + "public " + mapPropertyToType(primitiveType, false) + " getMaximum() throws DataExchangeException {");
 			//output.println(tab2 + "return " + cast_to_abeans_type(propertyType, "CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), NAME_MAXIMUM, remote, getDefaultTimeout(), interceptor, this)", true) + ";");
 			//if (isPattern)
-			//	output.println(tab2 + "return Integer.MAX_VALUE;");	
+			//	output.println(tab2 + "return Integer.MAX_VALUE;");
 			//else
-				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NAME_MAXIMUM, remote, getDefaultTimeout(), interceptor, this);");	
+				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NAME_MAXIMUM, remote, getDefaultTimeout(), interceptor, this);");
 			output.println(tab1 + "}");
 			output.println();
-	
+
 			output.println(tab1 + "/**");
 			output.println(tab1 + " * @see com.cosylab.datatypes." + mapPropertyToType(property, true, true) + "AbstractProperty#getMinimum()");
 			output.println(tab1 + " */");
 			output.println(tab1 + "public " + mapPropertyToType(primitiveType, false) + " getMinimum() throws DataExchangeException {");
 			//output.println(tab2 + "return " + cast_to_abeans_type(propertyType, "CharacteristicContextUtilities.getCharacteristic(getRemoteInfo(), NAME_MINIMUM, remote, getDefaultTimeout(), interceptor, this)", true) + ";");
 			//if (isPattern)
-			//	output.println(tab2 + "return Integer.MIN_VALUE;");	
+			//	output.println(tab2 + "return Integer.MIN_VALUE;");
 			//else
-				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NAME_MINIMUM, remote, getDefaultTimeout(), interceptor, this);");	
+				output.println(tab2 + "return CharacteristicContextUtilities.get" + mapPropertyToType(primitiveType, true, true, true) + "Characteristic(getRemoteInfo(), NAME_MINIMUM, remote, getDefaultTimeout(), interceptor, this);");
 			output.println(tab1 + "}");
 			output.println();
 
 		}
-				
+
 		output.println("}");
 	}
 
@@ -8129,7 +8182,7 @@ System.out.println("toCORBA: " + obj);
 	private static void translate_bean_interface_property_constructors(IdlObject obj, PrintWriter output)
 	{
 		// constructors
-		
+
 		// visual composition & fromCORBA support
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * Default constructor.");
@@ -8139,10 +8192,10 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab2 + "super();");
 		output.println(tab1 + "}");
 		output.println();
-		
+
 		output.println(tab1 + "/**");
-		output.println(tab1 + " * Default constructor of " + obj.name() + "."); 
-		output.println(tab1 + " * Constructor is given two arguments: the parent of the property and property name.");  
+		output.println(tab1 + " * Default constructor of " + obj.name() + ".");
+		output.println(tab1 + " * Constructor is given two arguments: the parent of the property and property name.");
 		output.println(tab1 + " * ");
 		output.println(tab1 + " * @param parentComponent	parent component of this property.");
 		output.println(tab1 + " * @param propertyName		name of the property.");
@@ -8168,11 +8221,11 @@ System.out.println("toCORBA: " + obj);
 		//if (inheritanceList.size() > 1)
 		//	System.out.println("WARNING: Multiple inheritance not supported, only first inteface will be inherited: "
 		//						+ fullname(obj) + " inherits from " + inheritanceList);
-	
-	
+
+
 		boolean isConnectable = isInheritedFrom(obj, BASE_CONNECTABLE_ID);
 		boolean isLinkable = isConnectable || isInheritedFrom(obj, BASE_LINKABLE_ID);
-	
+
 		// check if it is a property interface,
 		// property intefraces are handled differently
 		if (isInheritedFrom(obj, BASE_PROPERTY_ID))
@@ -8182,15 +8235,15 @@ System.out.println("toCORBA: " + obj);
 		}
 		else if (isInheritedFrom(obj, BASE_CALLBACK_ID))
 		{
-			// generate also implementation 
+			// generate also implementation
 			translate_bean_interface_callback(obj, writeInto, inheritanceList);
 		}
-	
+
 		File writeIntoAbeans = createDirectory(ABEANS_POSTFIX_DOTLESS, writeInto);
 	    PrintWriter output = newFile(writeIntoAbeans, obj.name() /*+ "Bean"*/);
-	
+
 		addDescriptiveHeader(output, obj);
-	
+
 		// definition
 		output.print("public class " + obj.name() /* + "Bean" */ + " extends ");
 		if (inheritanceList.size() > 0)
@@ -8198,36 +8251,45 @@ System.out.println("toCORBA: " + obj);
 			IdlInterface itf = (IdlInterface)inheritanceList.get(0);
 			if (itf.isForward())
 				itf = itf.getInterface();
-	
+
 			String inheritFrom = fullname(itf);
-			
+
 			String id = itf.getId();
 			if (id.equals(BASE_CONNECTABLE_ID))
 				inheritFrom = "abeans.models.acs.baci.CharacteristicComponent";
 			else if (id.equals(BASE_LINKABLE_ID))
 				inheritFrom = "abeans.models.acs.baci.TypelessProperty";
-				
+
 			output.println(inheritFrom /*+ "Bean"*/);
 		}
 		else
 			output.println("abeans.models.acs.baci.ProxyContainerSupport");
+
+		if (inheritanceList.size() > 0)
+		{
+			output.println(tab1 + "implements");
+			for (int i = 0; i < inheritanceList.size()-1; i++)
+				output.println(tab2 + fullname((IdlObject)inheritanceList.get(0), ABEANS_POSTFIX_DOTLESS) + "Operations, ");
+			output.println(tab2 + fullname((IdlObject)inheritanceList.get(inheritanceList.size()-1), ABEANS_POSTFIX_DOTLESS) + "Operations");
+		}
+
 		output.println("{");
-	
+
 		output.println();
-	
+
 		// create list of linkable readonly attributes
 		List linkableList = null;
 		if (isConnectable)
 		{
 			linkableList = new ArrayList();
-			
+
 			obj.reset();
 			while (obj.end() != true)
 			{
 				if (obj.current().kind() == IdlType.e_attribute)
 				{
 					IdlAttribute attribute = (IdlAttribute)obj.current();
-					
+					attribute.reset();
 					// if read-only
 					if (attribute.isReadOnly())
 					{
@@ -8237,7 +8299,7 @@ System.out.println("toCORBA: " + obj);
 						{
 							// add to list
 							linkableList.add(attribute);
-							
+
 							// and generate member
 							output.println(tab1 + "/**");
 							output.println(tab1 + " * " + attribute.name() + " accessor.");
@@ -8249,12 +8311,12 @@ System.out.println("toCORBA: " + obj);
 				}
 				obj.next();
 			}
-	
+
 		}
-	
-	
+
+
 		// constructors
-	
+
 		// visual composition & fromCORBA support
 		output.println(tab1 + "/**");
 		output.println(tab1 + " * Default constructor.");
@@ -8266,7 +8328,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab2 + "initializeLinkables();");
 		output.println(tab1 + "}");
 		output.println();
-	
+
 		if (isConnectable)
 		{
 			output.println(tab1 + "/**");
@@ -8286,8 +8348,8 @@ System.out.println("toCORBA: " + obj);
 		else if (isLinkable)
 		{
 			output.println(tab1 + "/**");
-			output.println(tab1 + " * Default constructor of " + obj.name() /* + "Bean" */ + "."); 
-			output.println(tab1 + " * Constructor is given two arguments: the parent of the property and property name.");  
+			output.println(tab1 + " * Default constructor of " + obj.name() /* + "Bean" */ + ".");
+			output.println(tab1 + " * Constructor is given two arguments: the parent of the property and property name.");
 			output.println(tab1 + " * ");
 			output.println(tab1 + " * @param parentComponent	parent component of this property.");
 			output.println(tab1 + " * @param propertyName		name of the property.");
@@ -8298,7 +8360,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + "}");
 			output.println();
 		}
-		
+
 		// initializeLinkables
 		if (isConnectable)
 		{
@@ -8307,7 +8369,7 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + " */");
 			output.println(tab1 + "public void initializeLinkables()");
 			output.println(tab1 + "{");
-			
+
 			if (linkableList != null)
 			{
 				Iterator it = linkableList.iterator();
@@ -8315,14 +8377,14 @@ System.out.println("toCORBA: " + obj);
 				{
 					IdlAttribute attribute = (IdlAttribute)it.next();
 					IdlObject finalType = final_type(attribute.current());
-						
+
 					output.println(tab2 + "if (" + attribute.name() + " == null)");
 					output.println(tab3 + attribute.name() + " = new " + fullname(finalType) + "(this, \"" + attribute.name() + "\");");
 				}
 			}
 
 			output.println(tab1 + "}");
-		}		
+		}
 		output.println();
 
 		//
@@ -8331,7 +8393,7 @@ System.out.println("toCORBA: " + obj);
 		if (isConnectable && linkableList != null && linkableList.size() > 0)
 		{
 			// initialize all readonly linkable attributes
-			
+
 			output.println(tab1 + "/**");
 			output.println(tab1 + " * @see abeans.models.Linkable#initialize(abeans.pluggable.Proxy)");
 			output.println(tab1 + " */");
@@ -8346,13 +8408,13 @@ System.out.println("toCORBA: " + obj);
 			output.println();
 			output.println(tab3 + "// create properties");
 			output.println();
-	
+
 			Iterator it = linkableList.iterator();
 			while (it.hasNext())
 			{
 				IdlAttribute attribute = (IdlAttribute)it.next();
 				IdlObject finalType = final_type(attribute.current());
-				
+
 				output.println(tab3 + "try");
 				output.println(tab3 + "{");
 				output.println(tab4 + "if (" + attribute.name() + " == null)");
@@ -8368,20 +8430,20 @@ System.out.println("toCORBA: " + obj);
 				output.println(tab4 + "throw re;");
 				output.println(tab3 + "}");
 				output.println();
-	
+
 			}
-	
+
 			output.println(tab2 + "}");
 			output.println(tab2 + "else");
 			output.println(tab2 + "{");
-			
+
 	/*
 			// parent component will destroy all linkable (iterating throught the tree)
 			it = linkableList.iterator();
 			while (it.hasNext())
 			{
 				IdlAttribute attribute = (IdlAttribute)it.next();
-				
+
 				output.println(tab3 + "try");
 				output.println(tab3 + "{");
 				output.println(tab4 + "if (" + attribute.name()+ " != null)");
@@ -8393,42 +8455,46 @@ System.out.println("toCORBA: " + obj);
 				output.println(tab4 + "ex.printStackTrace();");
 				output.println(tab3 + "}");
 				output.println();
-	
+
 			}
 	*/
 			output.println(tab3 + "super.initialize(null);");
 			output.println();
-	
+
 			output.println(tab2 + "}");
 			output.println();
 			output.println(tab1 + "}");
 			output.println();
 		}
-		 
+
 		//
 		// translate the internal definitions
-		// 
+		//
 		String old_pkg = current_pkg;
-	
+
+		List declaredMethodsList = new ArrayList();
+		
 		addToPkg(obj, obj.name() + "Package");
 		File writeIntoPackage = null;
-	
+
 		obj.reset();
-	
+
 		while (obj.end() != true)
 		{
 			switch (obj.current().kind())
 			{
-	
+
 			case IdlType.e_operation :
 				translate_bean_operation(obj.current(), output, isLinkable, isConnectable);
+				declaredMethodsList.add(obj.current());
 				break;
-	
+
 			case IdlType.e_attribute :
 				translate_bean_attribute(obj.current(), output, isLinkable, isConnectable,
 										 isConnectable && linkableList!=null && linkableList.contains(obj.current()));
+				declaredMethodsList.add(obj.current());
 				break;
-	
+
 			case IdlType.e_const:
 				translate_constant(obj.current(), null, output);
 				break;
@@ -8471,13 +8537,18 @@ System.out.println("toCORBA: " + obj);
 					break;
 
 			}
-	
+
 			obj.next();
 		}
-	
+
+		
+		// for each inherited interface implement all the methods
+		for (int i = 0; i < inheritanceList.size(); i++)
+			writeMethodsForInterface((IdlObject)inheritanceList.get(i), output, declaredMethodsList, true, false);
+		
 		output.println("}");
 		output.close();
-	
+
 		current_pkg = old_pkg;
 	}
 
@@ -8567,15 +8638,15 @@ System.out.println("toCORBA: " + obj);
 	            if ( list.get(i) instanceof IdlInterface )
 	            {
 	                IdlInterface itf = ( IdlInterface ) list.get(i);
-	
+
 	                if ( itf.kind() == IdlType.e_forward_interface )
 	                    itf = itf.getInterface();
-	
+
 	                opList = getInheritanceOpList( itf, opList, true );
 	            }
 	        }
 		}
-		
+
         return opList;
     }
 
@@ -8617,10 +8688,10 @@ System.out.println("toCORBA: " + obj);
         for (int i = 0; i < list.size(); i++)
 	            inList = getInheritanceList((IdlObject) list.get(i), inList, true);
 */
-			
+
 		if (recursive)
 			inList.add(obj);
-			
+
         for (int i = 0; i < list.size(); i++)
 			if (recursive)
 				inList = getInheritanceList((IdlObject) list.get(i), inList, true);
@@ -8643,7 +8714,7 @@ System.out.println("toCORBA: " + obj);
 			return false;
 
 		IdlInterface itf = (IdlInterface) obj;
-		
+
 		if (itf.isForward())
 			itf = itf.getInterface();
 
@@ -8684,9 +8755,11 @@ System.out.println("toCORBA: " + obj);
 
 		// get inheritance list
 		List inheritanceList = getInheritanceList(obj, new ArrayList(), false);
+		/*
 		if (inheritanceList.size() > 1)
 			System.out.println("WARNING: Multiple inheritance not supported, only first inteface will be inherited: "
 								+ fullname(obj) + " inherits from " + inheritanceList);
+        */
 
 		// write into abeans/proxy directory
 		// PACKAGE HANDLING
@@ -8696,7 +8769,7 @@ System.out.println("toCORBA: " + obj);
 		// PACKAGE HANDLING
 		String old_pkg = current_pkg;
 		current_pkg += PROXY_POSTFIX;
-		
+
         addDescriptiveHeader(output, obj);
 
 		// PACKAGE HANDLING
@@ -8712,7 +8785,7 @@ System.out.println("toCORBA: " + obj);
 		output.println("{");
 
 		// get operation list w/ inherited operations
-        List intoList = getInheritanceOpList(obj, new ArrayList(), false);
+        List intoList = getInheritanceOpList(obj, new ArrayList(), true);
 
         boolean bUseHash = IdlCompiler.minTableSize <= intoList.size();
 
@@ -8757,7 +8830,7 @@ System.out.println("toCORBA: " + obj);
 		output.println(tab1 + "*/");
 		output.println(tab1 + "private " + fullname_CORBA(obj) + " delegate;");
 		output.println();
-	
+
 		// constructor
 		output.println(tab1 + "/**");
 		output.println(tab1 + "* Default constructor.");
@@ -8861,10 +8934,10 @@ System.out.println("toCORBA: " + obj);
 			output.println(tab1 + "// helper methods");
 			output.println(tab1 + "//");
 			output.println();
-			
+
 	        for (int i = 0; i < intoList.size(); i++)
 	            writeOperationHelperMethod((IdlObject)intoList.get(i), output);
-	        
+
 	        // write operation classes
 	        if (bUseHash && IdlCompiler.useClasses)
 	        {
@@ -8872,9 +8945,9 @@ System.out.println("toCORBA: " + obj);
 	            output.println(tab1 + "// operation classes");
 	            output.println(tab1 + "private abstract static class AbstractOperation");
 				output.println(tab1 + "{");
-	
+
 	            output.println(tab2 + "protected abstract java.lang.Object invoke(final " + baseName + " target, java.lang.Object[] parameters);");
-	
+
 	            output.println(tab1 + "}");
 	            output.println();
 	            for (int i = 0; i < intoList.size(); i++)
@@ -8888,9 +8961,139 @@ System.out.println("toCORBA: " + obj);
 
 		write_helper(obj, writeInto);
 		write_holder(obj, writeInto);
+
+		translate_interface_interface(obj, writeInto);
     }
 
+	/**
+	 * Translate an interface (operation list to support multiple inheritance) for an interface
+	 *
+	 * @param obj the interface to translate
+	 * @param writeInto the directory where the interface must be defined
+	 */
+	private void translate_interface_interface(IdlObject obj, File writeInto)
+	{
+		final String baseName = obj.name() + "Operations";
+
+		// get inheritance list
+		List inheritanceList = getInheritanceList(obj, new ArrayList(), false);
+		/*
+		if (inheritanceList.size() > 1)
+			System.out.println("WARNING: Multiple inheritance not supported, only first inteface will be inherited: "
+								+ fullname(obj) + " inherits from " + inheritanceList);
+	    */
+
+		// write into abeans/proxy directory
+		// PACKAGE HANDLING
+		File writeIntoAbeansProxy = createDirectory(ABEANS_POSTFIX_DOTLESS, writeInto);
+		PrintWriter output = newFile(writeIntoAbeansProxy, baseName);
+
+		// PACKAGE HANDLING
+		String old_pkg = current_pkg;
+
+	    addDescriptiveHeader(output, obj);
+
+		// PACKAGE HANDLING
+	    current_pkg = old_pkg;
+
+		// definition
+		output.println("public interface " + baseName);
+		if (inheritanceList.size() > 0)
+		{
+			output.println(tab1 + "extends");
+			for (int i = 0; i < inheritanceList.size()-1; i++)
+				output.println(tab2 + fullname((IdlObject)inheritanceList.get(0), ABEANS_POSTFIX_DOTLESS) + "Operations, ");
+			output.println(tab2 + fullname((IdlObject)inheritanceList.get(inheritanceList.size()-1), ABEANS_POSTFIX_DOTLESS) + "Operations");
+		}
+		output.println("{");
+
+		writeMethodsForInterface(obj, output, null, false, true);
+	    
+	    output.println();
+	    output.println("}");
+
+	    output.close();
+	}
+
     /**
+	 * @param obj
+	 * @param output
+	 */
+	private static void writeMethodsForInterface(IdlObject obj, PrintWriter output, List declaredMethodsList, boolean recursive, boolean declareOnly) {
+		
+		boolean isConnectable = isInheritedFrom(obj, BASE_CONNECTABLE_ID);
+		boolean isLinkable = isConnectable || isInheritedFrom(obj, BASE_LINKABLE_ID);
+
+		if (declaredMethodsList == null)
+			declaredMethodsList = new ArrayList();
+		
+		// create list of linkable readonly attributes
+		List linkableList = null;
+		if (isConnectable)
+		{
+			linkableList = new ArrayList();
+
+			obj.reset();
+			while (obj.end() != true)
+			{
+				if (obj.current().kind() == IdlType.e_attribute)
+				{
+					IdlAttribute attribute = (IdlAttribute)obj.current();
+					attribute.reset();
+					// if read-only
+					if (attribute.isReadOnly())
+					{
+						IdlObject finalType = final_type(attribute.current());
+						// ... and linkable
+						if (isInheritedFrom(finalType, BASE_LINKABLE_ID))
+						{
+							// add to list
+							linkableList.add(attribute);
+						}
+					}
+				}
+				obj.next();
+			}
+
+		}
+
+		obj.reset();
+
+		while (obj.end() != true)
+		{
+			switch (obj.current().kind())
+			{
+
+			case IdlType.e_operation :
+                if (!isInto(declaredMethodsList, obj.current()))
+                {
+                	translate_bean_operation(obj.current(), output, isLinkable, isConnectable, declareOnly);
+                	declaredMethodsList.add(obj.current());
+                }	
+                break;
+
+			case IdlType.e_attribute :
+                if (!isInto(declaredMethodsList, obj.current()))
+                {
+                	translate_bean_attribute(obj.current(), output, isLinkable, isConnectable,
+                			isConnectable && linkableList!=null && linkableList.contains(obj.current()), declareOnly);
+                	declaredMethodsList.add(obj.current());
+                }	
+				break;
+			}
+
+			obj.next();
+		}
+
+		if (recursive)
+		{
+			List inheritanceList = getInheritanceList(obj, new ArrayList(), false);
+			for (int i = 0; i < inheritanceList.size(); i++)
+				writeMethodsForInterface((IdlObject)inheritanceList.get(0), output, declaredMethodsList, true, false);
+		}
+	}
+
+	/**
 	 * @param list
 	 * @return
 	 */
@@ -8988,13 +9191,13 @@ System.out.println("toCORBA: " + obj);
         final String name = initialName(obj.name());
 
         output.print(tab1 + "private java.lang.Object _invoke_" + operationPrefix + name + "(java.lang.Object[] parameters)");
-        
+
         // method
         if (operationPrefix.length()==0)
         	output.println(" throws abeans.pluggable.RemoteException");
         else
         	output.println();
-        	
+
         output.println(tab1 + "{");
     }
 
@@ -10113,14 +10316,14 @@ System.out.println("toCORBA: " + obj);
             break;
 
         case IdlType.e_interface :
-        
+
         	if (translateType == 0)
 				if (((IdlInterface) (obj.current())).abstract_interface() == false)
 				{
 					if (((IdlInterface) (obj.current())).local_interface() == false)
 						translate_interface(obj.current(), writeInto);
 				}
-				
+
             break;
         }
 
@@ -10156,7 +10359,7 @@ System.out.println("toCORBA: " + obj);
                         {
                             tmpInto = getPrefixDirectories(obj.current().getPrefix(), writeInto);
                         }
-						
+
                         if (IdlCompiler.reversePrefix)
                             addToPkg(obj, inversedPrefix(obj.current().getPrefix()));
                         else
@@ -10209,7 +10412,7 @@ System.out.println("toCORBA: " + obj);
     }
 
     /**
-     * Translate the data from IDL to Abeans model java classes, helpers, holders 
+     * Translate the data from IDL to Abeans model java classes, helpers, holders
      *
      * @param obj The compilation graph root
      * @param packageName The directory where the definitions are added

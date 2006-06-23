@@ -106,4 +106,69 @@ public class CharacteristicComponent extends Component implements Characteristic
 		// noop
 	}
 
+	
+	
+	/**
+	 * name read attribute
+	 */
+	public String name()
+		throws abeans.engine.RequestException
+	{
+		Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, "_get_name", getProxy(), 0, null, null, null);
+		return ((String)__retVal);
+	}
+
+	/**
+	 * componentState read attribute
+	 */
+	public alma.ACS.abeans.ComponentStates componentState()
+		throws abeans.engine.RequestException
+	{
+		Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, "_get_componentState", getProxy(), 0, null, null, null);
+		return ((alma.ACS.abeans.ComponentStates)__retVal);
+	}
+
+	/**
+	 * Operation get_characteristic_by_name
+	 */
+	public java.lang.Object get_characteristic_by_name(String name)
+		throws abeans.engine.RequestException, alma.ACS.abeans.NoSuchCharacteristic
+	{
+		Object[] parameters = { name };
+		Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, "get_characteristic_by_name", getProxy(), 0, null, null, parameters);
+		return ((java.lang.Object)__retVal);
+	}
+
+	/**
+	 * Operation find_characteristic
+	 */
+	public String[] find_characteristic(String reg_exp)
+		throws abeans.engine.RequestException
+	{
+		Object[] parameters = { reg_exp };
+		Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, "find_characteristic", getProxy(), 0, null, null, parameters);
+		return ((String[])__retVal);
+	}
+
+	/**
+	 * Operation get_all_characteristics
+	 */
+	public org.omg.CosPropertyService.abeans.PropertySet get_all_characteristics()
+		throws abeans.engine.RequestException
+	{
+		Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, "get_all_characteristics", getProxy(), 0, null, null, null);
+		return ((org.omg.CosPropertyService.abeans.PropertySet)__retVal);
+	}
+
+	/**
+	 * Operation descriptor
+	 */
+	public alma.ACS.abeans.CharacteristicComponentDesc descriptor()
+		throws abeans.engine.RequestException
+	{
+		Object __retVal = abeans.models.acs.baci.InvokeUtilities.invokeSync(null, "descriptor", getProxy(), 0, null, null, null);
+		return ((alma.ACS.abeans.CharacteristicComponentDesc)__retVal);
+	}
+	
+	
 }
