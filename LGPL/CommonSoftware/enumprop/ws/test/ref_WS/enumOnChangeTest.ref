@@ -132,8 +132,8 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
 4 - ----------T--:--:--.--- [GlobalLogger - ] Setting current state to: ENABLED
 4 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): ENABLED (1)
-2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::working) Value: ENABLED (1) Completion type: 0 code: 1
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::working) Value: ENABLED (1) Completion type: 0 code: 1
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ENABLED (1)
@@ -154,8 +154,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread EPTESTDEVICE1::actionThread
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:EPTESTDEVICE1::actionThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread EPTESTDEVICE1::monitorThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:EPTESTDEVICE1::monitorThread
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::~ROEnumImpl] 

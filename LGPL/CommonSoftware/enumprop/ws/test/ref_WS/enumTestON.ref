@@ -105,8 +105,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread EPTESTDEVICE1::actionThread
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:EPTESTDEVICE1::actionThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread EPTESTDEVICE1::monitorThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:EPTESTDEVICE1::monitorThread
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::~ROEnumImpl] 
