@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.115 2006/06/21 10:34:11 bjeram Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.116 2006/06/26 15:55:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.115 2006/06/21 10:34:11 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.116 2006/06/26 15:55:13 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -161,8 +161,25 @@ void TerminationSignalHandler(int)
 }
 
 
+#ifdef MAKE_VXWORKS
+
+int startBaciTestServer(char *szCmdLn)
+{
+  int  argc;
+  char *argv[100];
+
+  ACE_OS_Object_Manager ace_os_object_manager;
+  ACE_Object_Manager ace_object_manager;
+
+  argc = argUnpack(szCmdLn, argv);
+  argv[0] = "baciTestServer";
+
+#else
 int main(int argc, char* argv[])
 { 
+#endif
+
+
     CORBAShutdown::setShutdownFunction(&finalizeOtherThread);
     bool monitoring=true;
 
@@ -295,26 +312,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-#ifdef MAKE_VXWORKS
 
-int startBaciTestServer(char *szCmdLn)
-{
-  int  argc;
-  char *argv[100];
-
-  ACE_OS_Object_Manager ace_os_object_manager;
-  ACE_Object_Manager ace_object_manager;
-
-  //ACE_MAIN_OBJECT_MANAGER
-  argc = argUnpack(szCmdLn, argv);
-  argv[0] = "baciTestServer";
-
-  int retval = ace_main_i(argc, argv);
-
-  return retval;
-}
-
-#endif
 
 
 
