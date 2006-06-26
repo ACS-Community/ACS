@@ -28,4 +28,18 @@
                    type="string"
                    description="Name of the thread that could not be started."/>
 </ErrorCode>
+<ErrorCode name="CanNotSuspendThread"
+           shortDescription="Thread could not be suspended"
+           description="Thread could not be suspended">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread that could not be suspended."/>
+</ErrorCode>
+<ErrorCode name="CanNotResumeThread"
+           shortDescription="Thread could not be resumed"
+           description="Thread could not be resumed">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread that could not be resumed."/>
+</ErrorCode>
 </Type>
