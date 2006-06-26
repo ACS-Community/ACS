@@ -21,4 +21,11 @@
  >
 	<Member name="ThreadName" type="string" description="Name of the thread that already exsists."/>	
  </ErrorCode>
+ <ErrorCode name="CanNotStartThread"
+           shortDescription="Thread could not be started"
+           description="Thread could not be started">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread that could not be started."/>
+</ErrorCode>
 </Type>
