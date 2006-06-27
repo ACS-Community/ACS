@@ -107,7 +107,7 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
 	            	}
 	                ILogEntry logEntry = delayedLogEntry.getLogEntry();
 	                String sourceObjectName = (String) logEntry.getField(ILogEntry.FIELD_SOURCEOBJECT);
-	                if (sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
+	                if (sourceObjectName!=null && sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
 		                assertEquals(logMessage, logEntry.getField(ILogEntry.FIELD_LOGMESSAGE));
 		                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue());
 		                System.out.println("Received back log record #" + i);
