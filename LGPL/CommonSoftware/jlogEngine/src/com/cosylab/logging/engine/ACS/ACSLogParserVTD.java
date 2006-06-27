@@ -283,73 +283,73 @@ public class ACSLogParserVTD implements ACSLogParser
 				Integer entryType = determineEntryType(vn);
 
 				// test for timestamp attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_TIMESTAMP])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_TIMESTAMP])){
 					milliseconds = getLongFromTimestamp(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_TIMESTAMP], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_TIMESTAMP], bytesArray);
 				}
 				// test for File attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_FILE])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_FILE])){
 					fileName = this.getString(vn, os, LogEntry.fieldNames[LogEntry.FIELD_FILE], bytesArray);
 				}
 				// test for Line attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_LINE])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_LINE])){
 					line = getInteger(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_LINE], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_LINE], bytesArray);
 				}
 				// test for Routine attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_ROUTINE])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_ROUTINE])){
 					routineName = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_ROUTINE], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_ROUTINE], bytesArray);
 				}
 				// test for host attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_HOST])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_HOST])){
 					hostName = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_HOST], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_HOST], bytesArray);
 				}
 				// test for process attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_PROCESS])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_PROCESS])){
 					processName = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_PROCESS], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_PROCESS], bytesArray);
 				}				         
 				// test for context attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_CONTEXT])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_CONTEXT])){
 					contextName = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_CONTEXT], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_CONTEXT], bytesArray);
 				}
 				// test for thread attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_THREAD])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_THREAD])){
 					threadName = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_THREAD], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_THREAD], bytesArray);
 				}
 				// test for logid attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_LOGID])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_LOGID])){
 					logId = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_LOGID], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_LOGID], bytesArray);
 				}
 				// test for priority attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_PRIORITY])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_PRIORITY])){
 					priority = getInteger(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_PRIORITY], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_PRIORITY], bytesArray);
 				}
 				// test for uri attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_URI])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_URI])){
 					uri = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_URI], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_URI], bytesArray);
 				}
 				// test for stackid attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_STACKID])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_STACKID])){
 					stackId = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_STACKID], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_STACKID], bytesArray);
 				}
 				// test for stacklevel attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_STACKLEVEL])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_STACKLEVEL])){
 					stackLevel = getInteger(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_STACKLEVEL], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_STACKLEVEL], bytesArray);
 				}
 				// test for logMessage attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_LOGMESSAGE])){
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_LOGMESSAGE])){
 					logMessage = this.getString(vn, os, 
-							LogEntry.fieldNames[LogEntry.FIELD_LOGMESSAGE], bytesArray);
+							LogEntry.tagAttributes[LogEntry.FIELD_LOGMESSAGE], bytesArray);
 				}
 				else if(-1 != vn.getText()){
 					// if logMessage isn't an attribute, it's CDATA, so check there
@@ -361,8 +361,10 @@ public class ACSLogParserVTD implements ACSLogParser
 					logMessage = os.toString();
 				}
 				// test for srcObject attribute
-				if (vn.hasAttr(LogEntry.fieldNames[LogEntry.FIELD_SOURCEOBJECT])){
-					srcObjectName = getString(vn, os, LogEntry.fieldNames[LogEntry.FIELD_SOURCEOBJECT], bytesArray);
+				if (vn.hasAttr(LogEntry.tagAttributes[LogEntry.FIELD_SOURCEOBJECT])){
+					srcObjectName = getString(vn, os, LogEntry.tagAttributes[LogEntry.FIELD_SOURCEOBJECT], bytesArray);
+				} else {
+					String msg = new String(bytesArray);
 				}
 				// get the additional data, if present
 				Vector<AdditionalData> extraDataList = getAdditionalData(vn, os, bytesArray);
