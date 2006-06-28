@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.39 2006/06/20 15:24:44 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.40 2006/06/28 08:07:11 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.39 2006/06/20 15:24:44 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.40 2006/06/28 08:07:11 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -35,6 +35,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <acserr.h>
 #include <logging.h>
 #include "baciCharacteristicComponentImpl.h"
+#include <ACSErrTypeCommon.h>
 
 NAMESPACE_USE(baci);
 using namespace acscomponent;
@@ -94,7 +95,9 @@ void CharacteristicComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
     // Start the threads actually created and started
     if (component_mp==NULL)
 	{
-	//!TBD throw 
+	ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "CharacteristicComponentImpl::__execute");
+	ex.setVariable("component_mp(BACIComponent)");
+	throw ex;
 	}//
     if( monitoringProperties_mp == true )
 	{
@@ -138,24 +141,48 @@ void CharacteristicComponentImpl::__cleanUp()
 }
 
 
-void  CharacteristicComponentImpl::resumePropertiesMonitoring()
+void  CharacteristicComponentImpl::startPropertiesMonitoring()
 {
-    if ( component_mp!=NULL && component_mp->startMonitoringThread() == false )
+    if ( component_mp!=NULL)
 	{
-	//!TBD error
+	try
+	    {
+	    component_mp->startMonitoringThread();
+	    }
+	catch(ACSErr::ACSbaseExImpl &_ex)
+	    {
+	    acsthreadErrType::CanNotStartThreadExImpl ex(_ex, __FILE__,__LINE__,"CharacteristicComponentImpl::startPropertiesMonitoring");
+	    maci::ContainerServices *cs = getContainerServices();
+	    if ( cs!=NULL )
+		ex.setThreadName(cs->getName()+"::monitorThread");
+	    throw ex;
+	    }//try-catch
+	}
+    else
+	{
+	ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "CharacteristicComponentImpl::startPropertiesMonitoring");
+	ex.setVariable("cs(ContainerServices)");
+	throw ex;
 	}
 }//resumePropertiesMonitoring
 
-void  CharacteristicComponentImpl::suspendPropertiesMonitoring()
+void  CharacteristicComponentImpl::stopPropertiesMonitoring()
 {
     maci::ContainerServices *cs = getContainerServices();
     if ( cs!=NULL )
 	{
-	cs->getThreadManager()->suspend(cs->getName()+"::monitorThread");
+	if (cs->getThreadManager()->suspend(cs->getName()+"::monitorThread")==false)
+	    {
+	     acsthreadErrType::CanNotSuspendThreadExImpl ex(__FILE__,__LINE__,"CharacteristicComponentImpl::stopPropertiesMonitoring");
+	     ex.setThreadName(cs->getName()+"::monitorThread");
+	    throw ex;
+	    }
 	}
     else
 	{
-	//TBD::
+	ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "CharacteristicComponentImpl::stopPropertiesMonitoring");
+	ex.setVariable("cs(ContainerServices)");
+	throw ex;
 	}
 }//suspendPropertiesMonitoring
 

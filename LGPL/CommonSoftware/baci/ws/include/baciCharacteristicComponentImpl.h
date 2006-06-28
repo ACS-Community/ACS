@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.30 2006/06/21 10:22:20 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.31 2006/06/28 08:07:11 bjeram Exp $"
 *
 */
 
@@ -180,18 +180,20 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
     virtual void __cleanUp();
     
    /**
-     * Method to resume (enable) monitoring of the properties.
-     * 
+     * Method to start monitoring of the properties.
+     * If monitring is already started it just remains started.
+     * In case of an error it throws an exception.
      * @return void
      */
-    void resumePropertiesMonitoring();
+    void startPropertiesMonitoring();
 
    /**
-     * Method to suspend (disable) monitoring of the properties.
-     * 
+     * Method to stop monitoring of the properties.
+     * If monitring is already stopped it just remains stopped.
+     * In case of an error it throws an exception.
      * @return void
      */
-    void suspendPropertiesMonitoring();
+    void stopPropertiesMonitoring();
 
   protected:
 

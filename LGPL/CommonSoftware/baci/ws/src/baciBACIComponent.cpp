@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.14 2006/06/20 14:57:01 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.15 2006/06/28 08:07:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <baciErrTypeProperty.h>
 #include <ACSErrTypeCommon.h>
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.14 2006/06/20 14:57:01 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.15 2006/06/28 08:07:11 bjeram Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -392,12 +392,15 @@ BACIComponent::~BACIComponent()
 }//~BACIComponent
 
 
-bool BACIComponent::startMonitoringThread()
+void BACIComponent::startMonitoringThread()
 {
   ACS_TRACE("baci::BACIComponent::startMonitoringThread");
 
-  if (!threadManager_mp)
-    return false;
+  if (!threadManager_mp){
+	ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "BACIComponent::startMonitoringThread");
+	ex.setVariable("threadManager_mp");
+	throw ex;
+  }//if
 
   if (monitorThread_mp == BACIThread::NullBACIThread)
       {
@@ -405,16 +408,14 @@ bool BACIComponent::startMonitoringThread()
 						(void*)monitorThreadWorker, (void*)this,
 						getMTResponseTime(), getMTSleepTime());
       }
-  if (monitorThread_mp == BACIThread::NullBACIThread)
-      {
-      return false;
-      }
-  else
+  if (monitorThread_mp != BACIThread::NullBACIThread)
       {
       monitorThread_mp->resume();
       }
-
-  return true;
+  else
+      {
+      throw acsthreadErrType::CanNotCreateThreadExImpl(__FILE__, __LINE__, "BACIComponent::startMonitoringThread");
+      }//if-else
 }//startMonitoringThread
 
 bool BACIComponent::startActionThread()

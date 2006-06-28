@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.h,v 1.106 2006/06/21 15:16:27 bjeram Exp $"
+* "@(#) $Id: baciTestClassImpl.h,v 1.107 2006/06/28 08:07:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -194,7 +194,15 @@ public:
      */
     virtual void turnOnMonitoring() throw (CORBA::SystemException)
 	{
-	    resumePropertiesMonitoring();
+	    try
+		{
+		startPropertiesMonitoring();
+		}
+	    catch(ACSErr::ACSbaseExImpl &ex)
+		{
+		ex.log();
+		}
+	    
 	}//turnOnMonitoring
 
     /**
@@ -202,7 +210,14 @@ public:
      */
     virtual void turnOffMonitoring() throw (CORBA::SystemException)
 	{
-	    suspendPropertiesMonitoring();
+            try
+		{
+		stopPropertiesMonitoring();
+		}
+	    catch(ACSErr::ACSbaseExImpl &ex)
+		{
+		ex.log();
+		}
 	}//turnOffMonitoring
 
 

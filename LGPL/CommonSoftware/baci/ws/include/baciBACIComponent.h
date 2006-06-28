@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.8 2006/06/20 14:57:08 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.9 2006/06/28 08:07:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -176,8 +176,9 @@ public:
 
     /**
        Create and start the Monitoring thread.
+       In case of an error it throws an exception.
      */ 
-  bool startMonitoringThread();
+  void startMonitoringThread();
 
   /**
        Create and start the Monitoring thread.
