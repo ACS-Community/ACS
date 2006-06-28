@@ -35,3 +35,7 @@ s/TimeStamp:  \"[0-9, ]*\"/TimeStamp:  xxxxxxxxx/g
 s/PID: [0-9]*, ID: [0-9]* @ [a-z,A-Z,0-9,.]*/PID: ----, ID: ---- @ -----/g
 s/corbaloc::[a-z,A-Z,0-9,.]*:[0-9]*/corbaloc:HOST:PORT/g
 s/:[0-9]* in /:xxx in /g
+s/BACI1::monitorThread/BACI1::xxxxxxThread/g
+s/BACI2::monitorThread/BACI2::xxxxxxThread/g
+s/BACI1::actionThread/BACI1::xxxxxxThread/g
+s/BACI2::actionThread/BACI2::xxxxxxThread/g
