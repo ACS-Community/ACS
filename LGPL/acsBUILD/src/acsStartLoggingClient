@@ -3,10 +3,11 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartLoggingClient,v 1.128 2006/06/22 05:04:59 cparedes Exp $"
+# "@(#) $Id: acsStartLoggingClient,v 1.129 2006/06/28 09:45:06 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# carlita   2006-06-23  help/usage added
 # david 2003-05-14 now bash for tat
 # gchiozzi 2001-09-19 created
 #
@@ -35,18 +36,99 @@
 #------------------------------------------------------------------------
 #
 
+############################################################
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_CHANNEL="LoggingChannel"
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,channel:
+SHORTOPTS=hc:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Wrapper for the cpp command: loggingClient"
+   echo ""
+   echo "Usage: `basename $0` [OPTIONS]  "
+   echo "Options: "
+   echo "   -c | -channel CHANNEL        the channel that you want to log, default value is LoggingChannel"
+   echo "   -h | -help                   prints this help and exits"
+   echo ""
+   echo "Environment Variables:"
+   echo "  NAMESERVICE_REFERENCE | if is set is given like parameter with the option -ORBInitRef"
+   echo "  MANAGER_REFERENCE     | if NAMESERVICE_REFERENCE is not set, this is used to contruct it the value for the option -ORBInitRef"
+   echo "  HOST                  | if neither of the above is set, this is used to create the value for the option -ORBInitRef"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--channel)          CL_CHANNEL=$2 ; shift ;;
+	-c)                 CL_CHANNEL=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   echo ""
+   echo "Calling to loggingClient whit -h option and exit"
+   loggingClient -h
+   exit $EC_OK
+fi
+############################################################
+
+
 ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
 
-if [ "X$NAMESERVICE_REFERENCE" = "X" ]
+#Use the NAMESERVICE_REFERENCE if is set
+#if not, then use the MANAGER_REFERENCE to contruct it
+#if this one is not set neither, then create it using HOST
+if [ "X$NAMESERVICE_REFERENCE" != "X" ]
 then
-    nameservice_corbaloc="corbaloc::$HOST:$ACS_NAMING_SERVICE_PORT/NameService"
-else
     nameservice_corbaloc=$NAMESERVICE_REFERENCE
+else
+    if [ "X$MANAGER_REFERENCE" != "X" ]
+    then
+	#extract the host from MANAGER_REFERENCE
+	extracted_corbaloc=${MANAGER_REFERENCE%:*}
+	nameservice_corbaloc="$extracted_corbaloc:$ACS_NAMING_SERVICE_PORT/NameService"
+    else
+	nameservice_corbaloc="corbaloc::$HOST:$ACS_NAMING_SERVICE_PORT/NameService"
+    fi
 fi
 
-loggingClient LoggingChannel -ORBInitRef NameService=$nameservice_corbaloc $1
-
-
+loggingClient $CL_CHANNEL -ORBInitRef NameService=$nameservice_corbaloc $*
 
 #
 # ___oOo___
