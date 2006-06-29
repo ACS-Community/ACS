@@ -4,7 +4,11 @@ activation.jar		jaf-1.0.1		      (4)	http://java.sun.com/webapps/download/Displa
                         JavaBeans Activation 
                         Framework 
 
-avalon-framework.jar	Avalon Framework 4.1.4	      (1)        http://jakarta.apache.org/avalon/framework/
+avalon-framework.jar	Avalon Framework 4.1.5	      (1)        http://jakarta.apache.org/avalon/framework/
+                        To be coordinated with JacORB since 2.2.4                             
+
+backport-util-concurrent.jar  backport of 1.5 conc    (7)        http://dcl.mathcs.emory.edu/util/backport-util-concurrent/
+                        To be coordinated with JacORB since 2.2.4                             
 
 concurrent.jar 		concurrent-1.3.1	       (6)	 http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html
 
@@ -27,7 +31,8 @@ jnlp-1.0.1		Java Network Launch		(1)
 
 junit.jar		JUnit 3.8.1		        (3)	  http://www.junit.org/index.htm
 
-logkit.jar		 LogKit 1.2		        (1)	  http://avalon.apache.org/logkit/	
+logkit.jar		LogKit 1.2		        (1)	  http://avalon.apache.org/logkit/	
+                        To be coordinated with JacORB since 2.2.4                             
 
 openorb-1.3.0.jar	 OpenORB	1.3.0		 (2)  http://openorb.sourceforge.net/
 
@@ -40,7 +45,8 @@ prevayler		 prevayler-1.02.001		 (1)
 tablelayout.jar		 tablelayout-1.0		 (4)
 
 xalan.jar                xalan 2.7.0                     (1b)
-Licence
+
+Licences
 -----------------------------------------------------------------------
 (1)			The Apache Software License, Version 1.1
 (1b)   		        Apache License, Version 2.0
@@ -49,3 +55,4 @@ Licence
 (4)			Sun Microsystems, Inc. Binary Code License Agreement
 (5)			CosyLab License
 (6)			http://ssllib.sourceforge.net/ExternalLibraries/concurrent.License.txt
+(7)                     http://creativecommons.org/licenses/publicdomain
