@@ -3,6 +3,9 @@
 <head>
 
 
+
+  
+  
   
   
   
@@ -11,6 +14,8 @@
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
 
+
+  
   
   
   <link rel="stylesheet" href="style.css" type="text/css">
@@ -20,29 +25,38 @@
 <body style="" bgcolor="#ffffff" lang="EN-US" link="#0000ff" vlink="#800080">
 
 
+
 <br>
+
 
 
 <table class="MsoNormalTable" style="width: 585pt;" border="0" cellpadding="0" cellspacing="0" width="780">
 
 
+
   <caption><br>
+
 
 
   </caption><tbody>
 
 
+
+  
   
   
   </tbody> <tbody>
 
 
+
     <tr style="">
+
 
 
       <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/projects/alma/"><img src="images/alma_art_3.jpg" alt="[ ALMA 
   ]" id="_x0000_i1025" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
       </td>
+
 
 
       <td style="padding: 0.75pt;"> <span style="font-size: 18pt;"><b>ALMA
@@ -51,171 +65,238 @@ documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p
       <u1:p></u1:p> </td>
 
 
+
       <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/"><img src="images/eso-logo.gif" id="_x0000_i1026" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
       </td>
+
 
 
     </tr>
 
 
+
+  
   
   
   </tbody>
 </table>
 
 
+
 <hr align="center" size="1" width="100%">
 <div align="center"><br>
+
 
 
 <b><br>
 
 
+
 <h1>What's New? - Acs Command Center</h1>
+
 
 
 <br>
 
 
+
 </b><br>
 
 
+
 </div>
+
 
 
 <div> <a href="Acs_Command_Center_-_User_Guide.html"> &lt;&lt; User
 Guide - Acs Command Center </a></div>
 
 
+
 <br>
 
 
+
 <br>
+
 
 
 <h2>Acs 5.0</h2>
 
 
+
 <h4>Starting Acs remotely</h4>
 
 
+
 <ul>
 
-  <li>Now supports&nbsp;native ssh installed on the underlying platform. This allows for using public-key authentication.</li>
 
-  <li>The native ssh support can be switched on/off using Java system properties, command line switches, or the Gui.<br>
+  <li>Now supports&nbsp;native ssh installed on the underlying platform. This allows for using public-key authentication</li>
 
-  </li>
+
+  <li>The native ssh support can be switched on/off using Java system properties, command line switches, or the Gui</li>
+  <li>Remote processes (manager, containers) will no longer leave stray tail processes behind</li>
+  <li>Remote processes&nbsp;can now X-forward to localhost</li>
+  <li>Process logs in ~/.acs/commandcenter/ will now also contain a process's stderr output</li>
+
 
 </ul>
 
+
 <br>
+
 <h4>Variables in Projects</h4>
 
 
+
 <ul>
-  <li>Variables with&nbsp;syntax ${varname}are now allowed in projects.</li>
-  <li>A variable's value can be&nbsp;set by defining&nbsp;a&nbsp;Java system property of the same name, or through&nbsp;the Gui's Variable Editor.</li>
+
+  <li>Variables with&nbsp;syntax ${varname}are now allowed in projects</li>
+
+  <li>A variable's value can be&nbsp;set by defining&nbsp;a&nbsp;Java
+system property of the same name, or through&nbsp;the Gui's Variable
+Editor</li>
+
 </ul>
+
 <br>
+
 <h4>Deployment Info</h4>
 
 
+
 <ul>
+
   <li>The "Containers", "Client Applications", "Components" nodes in the DeploymentInfoView now display how many children they contain</li>
+
   <li>Containers and Clients now have a subnode "location" that displays their host and port</li>
+  <li>A manager to connect to can now be specified as command line argument, either as "<span style="font-style: italic;">corbaloc...</span>" or as "<span style="font-style: italic;">host:port</span>"</li>
+
 </ul>
+
 <br>
+
 <h4>Misc</h4>
 
 
+
 <ul>
-  <li>The project to load can now, alternatively to the -retrieve option, be specified as the first command line argument.</li>
-  <li>Closing the Progress Panel through the window title's X-button will no longer leave the Gui in an inoperable state.</li>
-  <li>Logfiles now also get created when starting a remote container that contains&nbsp;slashes in its name.<br>
+
+  <li>A&nbsp;project to load can now, alternatively to the -retrieve option, be specified as the first command line argument</li>
+  <li>Closing the Progress Panel through the window title's X-button will no longer leave the Gui in an inoperable state</li>
+
+  <li>Logfiles now also get created when starting a remote container that contains&nbsp;slashes in its name<br>
+
   </li>
+
   <li>Some explanatory texts in the Gui have hopefully&nbsp;been made clearer, following suggestions by users</li>
 </ul>
 <br>
 
 
+
 <h2>Acs 4.1</h2>
+
 
 
 <h4>Container Section</h4>
 
 
+
 <ul>
+
 
 
   <li>New controls to start/stop all containers in the container
 list&nbsp; sequentially in one go</li>
 
 
+
   <li>New controls to move containers up/down within the container list</li>
+
 
 
 </ul>
 
 
+
 <h4>Log Area</h4>
+
 
 
 <ul>
 
 
+
   <li>Each tool will now have its own log in the Log Area</li>
+
 
 
   <li>The Log Area comes with various controls, e.g. to save a log, or
 restrict the size of a log</li>
 
 
+
 </ul>
+
 
 
 <h4>Misc</h4>
 
 
+
 <ul>
+
 
 
   <li>The size and location of the application's Gui can now be
 specified through an command line option ("-geometry")</li>
 
 
+
   <li>The (non-graphical) file logging client can now be stopped
 through an entry in the Tools Menu</li>
+
 
 
   <li>The Acs Instance field will no longer accept input while an
 operation is being performed (i.e. the progress panel is on screen)</li>
 
 
+
   <li>Noisy error messages on startup are now avoided by adopting a
 jacorb patch coming with this Acs release</li>
+
 
 
   <li>A help menu has been added and online help can be invoked from it<br>
 
 
+
   </li>
+
 
 
 </ul>
 
 
+
 <h4> Usage as a library</h4>
 
 
+
 <ul>
+
 
 
   <li>An AcsCommandCenterProject now also stores the mode (local
 script, remote script, local java) of a project<br>
 
 
+
   </li>
+
 
 
   <li>Class ProjectRunModel now contains the logic to evaluate a
@@ -224,19 +305,25 @@ had been in the application layer before. This change facilitates the
 implementation of a fully automatic run of a project.<br>
 
 
+
   </li>
+
 
 
 </ul>
 
 
+
 <br>
+
 
 
 <h2>Acs 4.0</h2>
 
 
+
 <h4>Default Settings for Tools and Containers</h4>
+
 
 
 <p>
@@ -245,6 +332,7 @@ Tools" in the Tools menu).
 One set of such settings will be offered as <i>default settings</i> in
 the dialog.
 <br>
+
 
 
 Especially, these settings will be auto-updated synchronously whenever
@@ -257,17 +345,22 @@ had been reported that the IR Browser doesn't work) and should now be
 much more intuitive.</p>
 
 
+
 <p></p>
+
 
 
 <p>The same is true for Containers: the respective dialog can be
 invoked through the "..." button (beside the "+" and "-" button).</p>
 
 
+
 <h4>Deployment Info</h4>
 
 
+
 <ul>
+
 
 
   <li> Improved visualization of node-relations: When the user selects
@@ -276,9 +369,11 @@ nodes will be highlighted <b>gray</b>
   </li>
 
 
+
   <li> Improved manual addition of managers. New "<b>Full Refresh</b>"
 button (in addition to "Refresh" in the manager context menu).
   </li>
+
 
 
   <li> Doing "<b>Remove from View</b>" in a manager's context menu no
@@ -287,9 +382,11 @@ manager context menu.
   </li>
 
 
+
   <li> A manager is now automatically removed from the Deployment Info
 after acsStop or acsStopManager
   </li>
+
 
 
   <li> The Component section is now automatically refreshed when a
@@ -297,18 +394,23 @@ component is requested by any Acs client.
   </li>
 
 
+
   <li> Better dealing with gone-down managers and cut connections: most
 operations are now guarded by small-meshed error handlers
   </li>
 
 
+
 </ul>
+
 
 
 <h4>Misc</h4>
 
 
+
 <ul>
+
 
 
   <li> The tool tip of Java-Only Acs no longer claims it be
@@ -316,9 +418,11 @@ Windows-only
   </li>
 
 
+
   <li> Fixed the bug where NullPointerExceptions arose when one tried
 to sort the containers but there were none
   </li>
+
 
 
   <li> The title of the "View Xml File" dialog is now updated correctly
@@ -326,9 +430,11 @@ each time a file is shown
   </li>
 
 
+
   <li> Progress dialog closing to early when doing acsStop should now
 only appear on rare occasions
   </li>
+
 
 
   <li> Command center now again shows verbose output for <code>acsStart</code>
@@ -337,25 +443,31 @@ standard behavior)
   </li>
 
 
+
   <li> Fixed the problem with foreground scripts like "AcsEventAdmin"
 blocking the command center: changed internal task-execution from
 "foreground" to "background"
   </li>
 
 
+
 </ul>
+
 
 
 <h4> Usage as a library </h4>
 
 
+
 <ul>
+
 
 
   <li> Added class ProjectRunModel: it takes a project file and makes
 it available as a RunModel to the Executor engine. This allows an
 external application to start an Acs Suite described by a project file
   </li>
+
 
 
   <li> The ToolManager responsible for reading the definition files for
@@ -365,13 +477,17 @@ the ToolManager (unless they aren't happy with the standard settings)
   </li>
 
 
+
 </ul>
+
 
 
 <h2>Acs 3.1</h2>
 
 
+
 <h4>Java-only Acs</h4>
+
 
 
 Java-only Acs has been re-enabled, it now also respects the Acs
@@ -379,46 +495,60 @@ Instance setting. It does not provide automatic instance assignment if
 the desired instance can not be occupied due to, e.g., port clashes.<br>
 
 
+
 <h4>Tool Definitions</h4>
+
 
 
 The abilities of Command Center are now defined in two external xml
 files:<br>
 
 
+
 <ul>
+
 
 
   <li>AcsCommandCenterBuiltinTools.xml</li>
 
 
+
   <br>
+
 
 
 Defines the fundamental functions of Command Center: how to
 start/stop/kill an instance of Acs locally/remotely, etc.<br>
 
 
+
 Some or all of the functions can be redefined at runtime.<br>
 
 
+
   <br>
+
 
 
   <li>AcsCommandCenterTools.xml</li>
 
 
+
   <br>
 
 
+
 Defines the extra Tools that can be triggered through the "Tools" menu.<br>
+
 
 
 The complete content of the "Tools" menu can be replaced at runtime.
 </ul>
 
 
+
 <br>
+
 
 
 For both types of tools, an appropriate xml file with tool definitions
@@ -426,14 +556,18 @@ can
 be loaded through the "Expert" menu.<br>
 
 
+
 <br>
+
 
 
 <h4>Deployment Info View</h4>
 
 
+
 Much more information on nodes is shown, the visual representation has
 changed.<br>
+
 
 
 Context menus were enhanced with many new actions to perform on the
@@ -441,12 +575,15 @@ different
 nodes.<br>
 
 
+
 Will now detect when a Manager instance is down or was replaced by
 another
 Manager instance.<br>
 
 
+
 <h4>Misc</h4>
+
 
 
 Some hotkeys (keyboard shortcuts) have been added for easier usage
@@ -454,210 +591,281 @@ without
 the mouse (seems to not work on X Windows, however).<br>
 
 
+
 The Advanced Controls section can now be enabled/disabled through a
 checkbox.<br>
+
 
 
 Menu "Extra" was renamed to "Experts". Its entries changed.<br>
 
 
+
 <br>
 
 
+
 <br>
+
 
 
 <h2>Acs 3.0<br>
 
 
+
 </h2>
 
 
+
 <br>
+
 
 
 First version ...<br>
 
 
+
 <br>
 
 
+
 <br>
+
 
 
 <hr size="2" width="100%"><br>
 
 
+
 <table border="1" cellpadding="2" cellspacing="0" width="50%">
+
 
 
   <tbody>
 
 
+
     <tr>
+
 
 
       <td align="center" valign="top"><code>Version</code><br>
 
 
+
       </td>
+
 
 
       <td align="center" valign="top"><code>Author</code><code> </code><br>
 
 
+
       </td>
+
 
 
       <td align="center" valign="top"><code>Changes</code><br>
 
 
+
       </td>
 
 
+
     </tr>
 
 
+
     <tr>
+
 
       <td>2005-10-28</td>
 
+
       <td>Marcus Schilling</td>
+
 
       <td>Updated to Acs5.0</td>
 
+
     </tr>
 
+
     <tr>
+
 
 
       <td valign="top">2005-04-27<br>
 
 
+
       </td>
+
 
 
       <td valign="top">Marcus Schilling<br>
 
 
+
       </td>
+
 
 
       <td valign="top">Updated to Acs4.1<br>
 
 
+
       </td>
+
 
 
     </tr>
 
 
+
     <tr>
+
 
 
       <td valign="top">2004-11-08<br>
 
 
+
       </td>
+
 
 
       <td valign="top">Marcus Schilling<br>
 
 
+
       </td>
+
 
 
       <td valign="top">Updated to Acs4.0<br>
 
 
+
       </td>
 
 
+
     </tr>
+
 
 
     <tr>
 
 
+
       <td valign="top">2004-05-10<br>
 
 
+
       </td>
+
 
 
       <td valign="top">Marcus Schilling<br>
 
 
+
       </td>
+
 
 
       <td valign="top">Created<br>
 
 
+
       </td>
+
 
 
     </tr>
 
 
+
+  
   
   
   </tbody>
 </table>
 
 
+
 <p>&nbsp;</p>
 
 
+
 <p>&nbsp;</p>
+
 
 
 <p><br>
 
 
+
 </p>
 
 
-<p>&nbsp;</p>
-
 
 <p>&nbsp;</p>
 
 
+
 <p>&nbsp;</p>
 
 
-<br>
 
+<p>&nbsp;</p>
 
-<br>
-
-
-<br>
 
 
 <br>
 
 
-<br>
-
 
 <br>
 
-
-<br>
 
 
 <br>
 
 
-<br>
-
 
 <br>
 
 
+
 <br>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+<br>
+
 
 
 </body>
