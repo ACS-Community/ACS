@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.13 2006/04/12 17:45:15 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.14 2006/06/29 21:00:25 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -72,7 +72,7 @@ man   : do_man
 
 install : install_all
 	@echo " . . . copying jacorb property files"
-	-@cp ../config/.jacorb_properties $(VLTDATA)/config;\
+	-@cp ../config/.jacorb_properties ../config/orb.properties $(VLTDATA)/config;\
 	         chmod ug+rw $(VLTDATA)/config/.jacorb_properties;
 	@echo " . . . installation done"
 
