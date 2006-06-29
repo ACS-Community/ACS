@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.60 2006/03/30 07:59:00 gchiozzi Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.61 2006/06/29 21:26:33 gchiozzi Exp $"
 #
 #
 #
@@ -866,7 +866,7 @@ fi
 # In order to make the command "man" working the MANPATH variable must end with ":"
 MANPATH=$MANPATH:
 
-CLASSPATH=$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar:
+CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.2.jar:$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar:
 
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need
