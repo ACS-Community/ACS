@@ -3,7 +3,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartLoggingClient,v 1.129 2006/06/28 09:45:06 cparedes Exp $"
+# "@(#) $Id: acsStartLoggingClient,v 1.130 2006/07/03 09:23:38 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -55,15 +55,20 @@ SHORTOPTS=hc:
 function printUsage {
    echo "Wrapper for the cpp command: loggingClient"
    echo ""
-   echo "Usage: `basename $0` [OPTIONS]  "
+   echo "Usage: `basename $0` [OPTIONS] [PASS_OPTIONS [COMMAND_OPTIONS]] "
    echo "Options: "
    echo "   -c | -channel CHANNEL        the channel that you want to log, default value is LoggingChannel"
    echo "   -h | -help                   prints this help and exits"
    echo ""
+   echo " PASS_OPTIONS                   the literal string that indicates more options to be passed"
+   echo " COMMAND_OPTIONS                the options to be passed to the command"
    echo "Environment Variables:"
-   echo "  NAMESERVICE_REFERENCE | if is set is given like parameter with the option -ORBInitRef"
-   echo "  MANAGER_REFERENCE     | if NAMESERVICE_REFERENCE is not set, this is used to contruct it the value for the option -ORBInitRef"
-   echo "  HOST                  | if neither of the above is set, this is used to create the value for the option -ORBInitRef"
+   echo "  NAMESERVICE_REFERENCE | if is set is given like parameter with the option    "
+   echo "		           -ORBInitRef"
+   echo "  MANAGER_REFERENCE     | if NAMESERVICE_REFERENCE is not set, this is used to "
+   echo "                          contruct it the value for the option -ORBInitRef"
+   echo "  HOST                  | if neither of the above is set, this is used to      "
+   echo "                          create the value for the option -ORBInitRef"
 }
 
 #
@@ -128,6 +133,13 @@ else
     fi
 fi
 
+if [ "X$1" != "XPASS_OPTIONS" ]
+then
+   printUsage
+   exit $EC_OK
+fi
+
+shift;
 loggingClient $CL_CHANNEL -ORBInitRef NameService=$nameservice_corbaloc $*
 
 #
