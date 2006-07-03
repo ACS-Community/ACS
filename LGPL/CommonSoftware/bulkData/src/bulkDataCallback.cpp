@@ -122,10 +122,11 @@ int BulkDataCallback::handle_stop (void)
 		return 0;
 		}
 
+
 	    if (error_m == true)
 		{
 		timeout_m = true;
-		throw CORBA::TIMEOUT();
+		throw CORBA::BAD_OPERATION();
 		}
 
 	    locLoop = loop_m;
@@ -134,6 +135,13 @@ int BulkDataCallback::handle_stop (void)
 		ACE_OS::sleep(waitPeriod_m);
 		locLoop--;
 		checkFlowTimeout();
+
+		// re-check error_m in case that is not set the first time
+		if (error_m == true)
+		    {
+		    timeout_m = true;
+		    throw CORBA::BAD_OPERATION();
+		    }
 		}
 
 	    if ( locLoop == 0 )
@@ -185,7 +193,8 @@ int BulkDataCallback::handle_stop (void)
 	state_m = CB_UNS;
 	substate_m = CB_SUB_UNS;
 
-	throw CORBA::TIMEOUT();
+	throw CORBA::BAD_OPERATION();
+	//throw CORBA::TIMEOUT();
 	}
     catch(CORBA::Exception &ex)
 	{
@@ -209,7 +218,8 @@ int BulkDataCallback::handle_stop (void)
 	state_m = CB_UNS;
 	substate_m = CB_SUB_UNS;
 
-	throw CORBA::TIMEOUT();
+	throw;
+	//throw CORBA::TIMEOUT();
 	}
     catch(...)
 	{
@@ -227,7 +237,8 @@ int BulkDataCallback::handle_stop (void)
 	state_m = CB_UNS;
 	substate_m = CB_SUB_UNS;
 
-	throw CORBA::TIMEOUT();
+	throw;
+	//throw CORBA::TIMEOUT();
 	}
 
     state_m = CB_UNS;
@@ -347,7 +358,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(ex,__FILE__,__LINE__,"BulkDataCallback::receive_frame");
 	err.log();
 	// add to the completion
-	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop"); 
+	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::receive_frame"); 
 	error_m = true;
 	}
     catch(CORBA::Exception &ex)
