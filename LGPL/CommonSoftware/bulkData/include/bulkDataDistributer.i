@@ -78,6 +78,47 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 
     if ( senderMap_m.find(receiverName,locSender_p) == 0 )
 	{
+
+
+
+	bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
+	if(!CORBA::is_nil(receiver.in()))
+	    {
+	    vector<string> vec = locSender_p->getFlowNames();
+	    for(CORBA::ULong i = 0; i < vec.size(); i++)
+		{
+		CORBA::Boolean loop = true;
+		while(loop)
+		    {
+		    CompletionImpl comp = receiver->getCbStatus(i+1);
+
+		    /*
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbReady)
+			cout << "ACSBulkDataStatus::AVCbReady" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbTimeout)
+			cout << "ACSBulkDataStatus::AVCbTimeout" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbWorking)
+			cout << "ACSBulkDataStatus::AVCbWorking" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbError)
+			cout << "ACSBulkDataStatus::AVCbError" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbWorkingTimeout)
+			cout << "ACSBulkDataStatus::AVCbWorkingTimeout" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbNotAvailable)
+			cout << "ACSBulkDataStatus::AVCbNotAvailable" << endl;
+		    */		   
+
+		    if ((comp.getCode() == ACSBulkDataStatus::AVCbReady) || 
+			(comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
+			{
+			loop = false;
+			}
+		    ACE_OS::sleep(1);
+		    }
+		}
+
+	    }
+
+
 	locSender_p->disconnectPeer();
 	delete locSender_p;
 
@@ -226,8 +267,6 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	    {	
 	    try 
 		{
-		if (timeout_m == 0)  timeout_m = 10000000; // very long timeout to avoid timeout
-		acsQoS::Timeout tim(timeout_m);
 		entry->int_id_->getStreamCtrl()->stop(locSpec);
 		}
 	    catch(CORBA::TIMEOUT & ex)
@@ -294,9 +333,26 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
     if(!CORBA::is_nil(receiver.in()))
 	{
 	CompletionImpl comp = receiver->getCbStatus(flowNumber);
-	    
-	if ( (comp.getCode() == ACSBulkDataStatus::AVCbWorkingTimeout) ||
-	     (comp.getCode() == ACSBulkDataStatus::AVCbWorking) )
+
+	/*
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbReady)
+			cout << "ACSBulkDataStatus::AVCbReady" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbTimeout)
+			cout << "ACSBulkDataStatus::AVCbTimeout" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbWorking)
+			cout << "ACSBulkDataStatus::AVCbWorking" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbError)
+			cout << "ACSBulkDataStatus::AVCbError" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbWorkingTimeout)
+			cout << "ACSBulkDataStatus::AVCbWorkingTimeout" << endl;
+		    if(comp.getCode() == ACSBulkDataStatus::AVCbNotAvailable)
+			cout << "ACSBulkDataStatus::AVCbNotAvailable" << endl;
+	*/
+
+
+	if ((comp.getCode() == ACSBulkDataStatus::AVCbError) || 
+	    (comp.getCode() == ACSBulkDataStatus::AVCbWorkingTimeout) ||
+	    (comp.getCode() == ACSBulkDataStatus::AVCbWorking) )
 	    {
 	    flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
 	    return false;

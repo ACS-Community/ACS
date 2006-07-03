@@ -67,8 +67,8 @@ int BulkDataDistributerCb::handle_stop (void)
 
     if(state_m == CB_UNS)
 	{ 
-	int res = cbFwdUserStop();
-	return res;
+	cbFwdUserStop();
+	return 0;
 	}
 
     if((state_m == CB_SEND_PARAM) || (state_m == CB_SEND_DATA))

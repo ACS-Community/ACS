@@ -87,6 +87,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	throw err.getAVConnectErrorEx();
 	}
 
+    // TBD; not used for now; waiting for requirements 
     try
 	{
 	timeout = (CORBA::ULong) dao_p->get_long("distr_timeout");

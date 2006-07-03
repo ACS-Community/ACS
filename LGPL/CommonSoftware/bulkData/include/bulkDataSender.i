@@ -381,6 +381,12 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	
 	streamctrl_p->stop(locSpec);
 	}
+    catch(CORBA::BAD_OPERATION & bad)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::sendData User Exception catched!"));
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	throw err;
+	}
     catch(CORBA::TIMEOUT & tim)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::sendData TIMEOUT expired!"));
@@ -447,6 +453,12 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	    }
 	
 	streamctrl_p->stop(locSpec);
+	}
+    catch(CORBA::BAD_OPERATION & bad)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::sendData User Exception catched!"));
+	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	throw err;
 	}
     catch(CORBA::TIMEOUT & tim)
 	{
