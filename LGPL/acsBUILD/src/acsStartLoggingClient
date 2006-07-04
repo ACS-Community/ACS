@@ -3,7 +3,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartLoggingClient,v 1.130 2006/07/03 09:23:38 cparedes Exp $"
+# "@(#) $Id: acsStartLoggingClient,v 1.131 2006/07/04 02:44:53 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -133,7 +133,7 @@ else
     fi
 fi
 
-if [ "X$1" != "XPASS_OPTIONS" ]
+if [ "X$1" != "X" ] && [ "X$1" != "XPASS_OPTIONS" ]
 then
    printUsage
    exit $EC_OK
