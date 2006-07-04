@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDAL.idl,v 1.1.1.1 2005/09/21 10:32:35 msekoran Exp $"
+* "@(#) $Id: cdbDAL.idl,v 1.2 2006/07/04 15:11:19 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -105,27 +105,5 @@ module CDB {
 	};
 
 };
-
-/* TODO G.Chiozzi 2003-05-15
-   This should be moved in a separate file, 
-   but TAO IDL compiler complains with the following 
-   error message:
-    /alma/ACS-2.1-GCH/TAO/ACE_wrappers/build/linux/TAO/TAO_IDL/tao_idl: 
-    "../idl/cdbjDAL.idl", line 36: prefix at declaration 
-    differs from prefix at definition or use, , ::CDB
-*/
-module CDB { 
-	interface JDAL : CDB::DAL {
-		// cache handling
-		void	clear_cache(in string curl);
-		void	clear_cache_all();
-	};
-
-	interface WJDAL : JDAL, CDB::WDAL {
-	};
-
-};
-
-
 
 #endif /* _CDBDAL_IDL_ */

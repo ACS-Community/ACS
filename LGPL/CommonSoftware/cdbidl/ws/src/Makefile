@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2005/09/21 10:32:35 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/07/04 15:11:19 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -112,8 +112,7 @@ CDB_SCHEMAS = CDB
 # 
 # IDL Files and flags
 # 
-#IDL_FILES = cdbDAL cdbjDAL
-IDL_FILES = cdbDAL
+IDL_FILES = cdbDAL cdbjDAL
 IDL_TAO_FLAGS =
 USER_IDL =
 #

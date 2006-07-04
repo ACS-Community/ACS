@@ -2,17 +2,6 @@
 #define _CDBJDAL_IDL_
 
 
-/* TODO G.Chiozzi 2003-05-15
-   NOT USED. EVERYTHING IS IN cdbDAL.idl
-   but TAO IDL compiler complains with the following 
-   error message:
-    /alma/ACS-2.1-GCH/TAO/ACE_wrappers/build/linux/TAO/TAO_IDL/tao_idl: 
-    "../idl/cdbjDAL.idl", line 36: prefix at declaration 
-    differs from prefix at definition or use, , ::CDB
-*/
-
-
-
 /*******************************************************************************
 *    ALMA - Atacama Large Millimiter Array
 *    (c) European Southern Observatory, 2002
@@ -34,7 +23,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbjDAL.idl,v 1.1.1.1 2005/09/21 10:32:35 msekoran Exp $"
+* "@(#) $Id: cdbjDAL.idl,v 1.2 2006/07/04 15:11:19 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,12 +35,26 @@
 #pragma prefix "cosylab.com"
 
 module CDB { 
-	interface JDAL : DAL {
+        /**
+	 * Specific interfaces for the Java inplementation of DAL
+	 */
+	interface JDAL : CDB::DAL {
 		// cache handling
+	        /**
+		 * Clear the Java DAL memory cache for a specific CURL
+		 */
 		void	clear_cache(in string curl);
+		/**
+		 * Clear the whole Java DAL memory cache
+		 */
 		void	clear_cache_all();
 	};
 
+	/**
+	 * Specific interfaces for the Java inplementation of Writable DAL
+	 */
+	interface WJDAL : JDAL, CDB::WDAL {
+	};
 
 };
 
