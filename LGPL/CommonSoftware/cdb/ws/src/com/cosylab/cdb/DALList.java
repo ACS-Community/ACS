@@ -42,17 +42,21 @@ public class DALList {
 			String strIOR = null;
 
 			if (args.length < 1) {
-				System.out.println("Usage: cmd curl [-k ior]");
+				System.out.println("Usage: cmd curl [-k|-d ior]");
 				return;
 			}
 			String curl = args[0];
 
 			// test for IOR in cmd line
 			for (int i = 3; i < args.length; i++) {
-				if (args[i].equals("-k")) {
+				if (args[i].equals("-k") || args[i].equals("-d")) {
 					if (i < args.length - 1) {
 						strIOR = args[++i];
 					}
+				}
+				if (args[i].equals("-h") || args[i].equals("-help")) {
+					System.out.println("Usage: cmd curl [-k|-d ior]");
+					return;
 				}
 			}
 			if (strIOR == null) {
