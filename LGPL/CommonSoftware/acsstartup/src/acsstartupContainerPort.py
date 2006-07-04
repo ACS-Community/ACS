@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.30 2006/05/31 15:42:42 dfugate Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.31 2006/07/04 22:48:04 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -25,7 +25,16 @@
 '''
 This script is designed to pick a free container port for ACS to run on using 
 ALL the arguments passed to the container. If theres a free port to run under,
-it prints that to standard out.
+it prints that to standard out. If the script encounters some error, it exits
+with status 1.
+
+Parameters: too many to list. Run "acsstarupContainerPort -h" to see them all
+
+Assumptions: None. This script should handle most errors graciously returning
+with an error exit code.
+
+TODO:
+- 
 '''  
 ###############################################################################
 from os      import environ
@@ -408,12 +417,20 @@ def getNextAvailablePort(host, ports_dict, hosts_dict):
     '''
     Returns the next available port
     '''
+    global cl_baseport
     
     ret_val = None
+
+    if cl_baseport != 0:
+        min_tcp = cl_baseport*100 + 3000 + 50
+        max_tcp = cl_baseport*100 + 3000 + 100
+    else:
+        min_tcp = 4000
+        max_tcp = 5000
     
     #ignore odd-numbered ports
-    for i in range(cl_baseport*100 + 3000 + 50,
-                   cl_baseport*100 + 3000 + 100,
+    for i in range(min_tcp,
+                   max_tcp,
                    2):
         
         #found a port that can be used
