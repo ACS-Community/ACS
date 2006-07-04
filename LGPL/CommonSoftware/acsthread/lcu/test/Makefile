@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2006/06/14 13:10:47 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/07/04 13:29:58 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -59,7 +59,8 @@ EXECUTABLES_L   = testACSThread testACSThreadWithParameter testSelfDelThread \
                   testACSThreadStop testACSThreadTiming testACSThreadSuspend \
                   testACSThreadCorrExmpl testACSThreadNoTM \
                   testACSThreadDoubleLoop testACSThreadSleep	\
-                  testACSThreadJoinable testACSThreadRestart testACSThreadGuard
+                   testACSThreadRestart testACSThreadGuard
+# testACSThreadJoinable
 
 #
 # <brief description of xxxxx program>
