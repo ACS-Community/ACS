@@ -52,7 +52,7 @@ public class ClearCache {
 				if(args[i].equals("-h")){
 					System.out.println("Usage: cmd [curl] [-k|-d ior -h]");
 					System.out.println("if curl is not set, is invoked for all curls");
-					System.exit(0);
+					return;
 				}
 			}
 			if (strIOR == null) {
