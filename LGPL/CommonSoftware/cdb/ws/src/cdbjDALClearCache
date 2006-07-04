@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDALClearCache,v 1.7 2006/07/04 03:05:18 cparedes Exp $"
+# "@(#) $Id: cdbjDALClearCache,v 1.8 2006/07/04 06:56:55 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -121,10 +121,8 @@ fi
 
 ACS_CDB_PORT=`getCDBPort`
 
-if [ "X$CL_DAL_REFERENCE" != "X" ] 
+if [ "X$CL_DAL_REFERENCE" = "X" ] 
 then
-    CL_DAL_REFERENCE="$CL_DAL_REFERENCE"
-else
   #if not set then use the MANAGER_REFERENCE to contruct it
   #if this one is not set neither, then create it using HOST
     if [ "X$MANAGER_REFERENCE" != "X" ]
