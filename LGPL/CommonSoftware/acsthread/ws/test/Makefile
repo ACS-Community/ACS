@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.10 2006/02/23 13:26:48 vwang Exp $"
+# "@(#) $Id: Makefile,v 1.11 2006/07/04 13:30:58 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -132,7 +132,10 @@ SCRIPTS_L       = acsthreadTATEnv
 # TCL scripts (public and local)
 # ------------------------------
 TCL_SCRIPTS     =
-TCL_SCRIPTS_L   =
+TCL_SCRIPTS_L   = acsthreadTest
+
+acsthreadTest_OBJECTS = acsthreadTest
+acsthreadTest_TCLSH   = expect
 
 #
 # Python stuff (public and local)
