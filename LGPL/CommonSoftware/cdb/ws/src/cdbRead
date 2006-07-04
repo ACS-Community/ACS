@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbRead,v 1.30 2006/07/04 04:58:28 cparedes Exp $"
+# "@(#) $Id: cdbRead,v 1.31 2006/07/04 06:35:28 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -70,8 +70,11 @@ function printUsage {
 
 if [ "X$1" != "X" ] 
 then 
-	CL_CURL=$1
-	shift;
+	if [ "X$1" != "X-h" ]
+	then	
+		CL_CURL=$1
+		shift;
+	fi
 else 
     printUsage 
     exit $EC_BADARGS;
