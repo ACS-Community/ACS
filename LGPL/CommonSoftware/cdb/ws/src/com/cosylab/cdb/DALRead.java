@@ -51,20 +51,24 @@ public class DALRead {
 			boolean rawOutput = false;
 
 			if (args.length < 1) {
-				System.out.println("Usage: cmd curl [-k ior -raw]");
+				System.out.println("Usage: cmd curl [-k|-d ior -raw -h]");
 				return;
 			}
 			curl = args[0];
 
 			// test for IOR in cmd line
 			for (int i = 0; i < args.length; i++) {
-				if (args[i].equals("-k")) {
+				if (args[i].equals("-k") || args[i].equals("-d")) {
 					if (i < args.length - 1) {
 						strIOR = args[++i];
 					}
 				}
 				if (args[i].equals("-raw")) {
 					rawOutput = true;
+				}
+				if (args[i].equals("-h")){
+					System.out.println("Usage: cmd curl [-k|-d ior -raw -h]");
+					return;
 				}
 			}
 			if (strIOR == null) {
