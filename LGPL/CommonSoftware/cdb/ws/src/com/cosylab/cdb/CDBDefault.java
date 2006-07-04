@@ -66,11 +66,12 @@ public class CDBDefault {
 	
 	public static void main(String args[]) {
 		try {
-			if (args.length != 2) {
-				System.out.println("Usage: cmd idl_type instance_name ");
+			strIOR=null;
+			if (args.length < 2) {
+				System.out.println("Usage: cmd <idl_type> <instance_name> [-d|-k ior -h]");
 				return;
 			}
-			// we can't use ClientLogManager from acsjlog because that module compiles after the cdb module
+			
 			m_logger = Logger.getLogger("CDBDefault");
 			String in_type = args[0];
 			String in_name = args[1];
@@ -78,9 +79,20 @@ public class CDBDefault {
 			curl_allComponents = "MACI/Components";
 			curl = curl_allComponents + "/" + in_name;
 
-			strIOR = "corbaloc::" + InetAddress.getLocalHost().getHostName() + ":" +
-					ACSPorts.getCDBPort() + "/CDB";
-
+			for (int i = 0; i < args.length; i++) {
+				if (args[i].equals("-k") || args[i].equals("-d")) {
+					if (i < args.length - 1) {
+						strIOR = args[++i];
+					}
+				}
+				if (args[i].equals("-h")){
+					System.out.println("Usage: cmd idl_type instance_name [-d|-k -h]");
+					return;
+				}
+			}
+			if (strIOR == null) {
+				strIOR = "corbaloc::" + InetAddress.getLocalHost().getHostName() + ":" + ACSPorts.getCDBPort() + "/CDB";
+			}
 			// create and initialize the ORB
 			orb = ORB.init(new String[0], null);
 
