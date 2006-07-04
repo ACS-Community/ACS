@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.31 2006/07/04 22:48:04 dfugate Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.32 2006/07/04 22:57:09 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -74,7 +74,9 @@ following:   REAL TCP PORT = port*2 + 3050 + $ACS_INSTANCE*100.
 If this integer value is greater than 24, the TCP port is used as
 provided. The only stipulation to this is that odd TCP port numbers
 from 3000-4000 are not available. These are reserved exclusively for
-so-called remote debuggable containers (Java-only).
+so-called remote debuggable containers (Java-only). Also, it is important
+to note that $ACS_INSTANCE==0 is a special case in which ports 4000-5000
+are used implying a total number of 500 allowable containers.
 '''
 parser.add_option("--port",
                   dest="port",
