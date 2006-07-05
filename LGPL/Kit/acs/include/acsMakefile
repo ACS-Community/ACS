@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.158 2006/03/13 20:03:35 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.159 2006/07/05 14:25:08 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -698,63 +698,84 @@ ifndef MAKE_VXWORKS
 # analysis with the same tool.
 # Mzampare August '03
 #
+
+ifndef MAKE_PURIFY_TYPE
+MAKE_PURIFY_TYPE=OCI
+endif
+
 ifdef MAKE_PURE
 ENABLE_PURIFY=on
 ENABLE_PURECOV=on
 endif
+
+ifneq ($(MAKE_PURIFY_TYPE),SCI)
+ifdef MAKE_PUREGUI
+ENABLE_PURIFY=on
+ENABLE_PURECOV=on
+endif
+endif
+
 ifdef MAKE_PURIFY
 ENABLE_PURIFY=on
 endif
+
 ifdef MAKE_PURECOV
 ENABLE_PURECOV=on
-ifeq ($(platform),Linux)
+ifeq ($(MAKE_PURIFY_TYPE),SCI)
 ENABLE_PURIFY=on
 endif
 endif
 
 
+ifeq ($(MAKE_PURIFY_TYPE),SCI)
     ifdef ENABLE_PURIFY
-	    ifeq ($(platform),Linux)
-		ifdef RATIONAL_DIR
-			purifyOptions=-NOINSTRDIR=$(ALMASW_ROOTDIR)/$(ALMASW_RELEASE) -NOINCLUDE -FDCDIR=.purify -TSFDIR=.purify  -pass -block=logical -noternary -proc=r $(PURE_OPTIONS)
-			CC =attolcc $(purifyOptions) -- gcc -I $(RATIONAL_DIR)/targets/clinuxgnu/lib
-			CXX=attolcc $(purifyOptions) -- gcc -I $(RATIONAL_DIR)/targets/clinuxgnu/lib
-			LD =attolcc $(purifyOptions) -- gcc
-			JAVAC=javic -FDCDIR=.purify -TSFDIR=.purify -proc=r -block=l -perfpro -noternary $(PUREJ_OPTIONS) -- javac
-		endif
-	    else
-	        PURIFY = purify -always-use-cache-dir
+	ifdef RATIONAL_DIR
+		purifyOptions=-NOINSTRDIR=$(ALMASW_ROOTDIR)/$(ALMASW_RELEASE) -NOINCLUDE -FDCDIR=.purifydir -TSFDIR=.purifydir  -pass -block=logical -noternary -proc=r $(PURE_OPTIONS)
+		CC =attolcc $(purifyOptions) -- gcc -I $(RATIONAL_DIR)/targets/clinuxgnu/lib
+		CXX=attolcc $(purifyOptions) -- gcc -I $(RATIONAL_DIR)/targets/clinuxgnu/lib
+		LD =attolcc $(purifyOptions) -- gcc
+		JAVAC=javic -FDCDIR=.purifydir -TSFDIR=.purifydir -proc=r -block=l -perfpro -- javac
+	endif
+    endif
+else # we are now on linux in OCI
         # SPR970010: additional options needed by C++ code. Because it is not
         # easy to know whether the code is C or C++, the options are set for
         # all type of code.
-	        PURIFY = purify \
+    ifdef ENABLE_PURIFY
+	PURIFY = purify \
                 -always-use-cache-dir \
 	                  -user-path="../test:../src:src:test" \
 	                  -g++=yes \
-	                  -collector=/usr/bin/ld -view-file=$(PWD)/purify.pv \
-#                          -cache-dir=/diska/alma_tmp/mzampare/Purify
-	        GCC_EXEC_PREFIX = 
-	    endif
+			  -linker=$(GNU_ROOT)/bin/ld \
+	                  -log-file=./.purifydir/MemoryReport -append-logfile=yes -messages=batch -view-file=./.purifydir/purify-%v.pv 
+	ifdef MAKE_PUREGUI
+		PURIFY = purify \
+                -always-use-cache-dir \
+	                  -user-path="../test:../src:src:test" \
+	                  -g++=yes \
+			  -linker=$(GNU_ROOT)/bin/ld 
+	endif
     else
         PURIFY =
     endif
 
     ifdef ENABLE_PURECOV
-	# PURECOV wishes for Linux can be safely ignored. See above.
-	ifneq ($(platform),Linux)
-        PURECOV = purecov -always-use-cache-dir -counts-file=$(PWD)/purecov.pcv
-        GCC_EXEC_PREFIX = 
-        NEED_DEBUG = on
-	endif
-    else
+           PURECOV = purecov -always-use-cache-dir -counts-file=./.purifydir/purecov-%v.pcv
+           ifdef MAKE_PUREGUI
+              PURECOV = purecov -always-use-cache-dir 
+           endif
+           NEED_DEBUG = on
+    else 
         PURECOV =
     endif
-endif
+endif # end of if over purify type
+
 
 ifndef JAVAC
 	JAVAC=javac
 endif
 
+endif # MAKE_VXWORKS
 #
 # complete CFLAGS definition
 ifdef NEED_DEBUG
@@ -1980,40 +2001,48 @@ $(addprefix ../bin/, $(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $(exe))) :a
 # MZA 22.5.2003
 # we need two targets: report generation and cleanup of the mess
 
-
-
 pureReport:
-ifeq ($(platform),Linux)
+ifeq ($(MAKE_PURIFY_TYPE),SCI)
 # assuming test dir
 # do we have the file, else exit 1
 	$(AT) if [ !  -a atlout.spt ]; then  exit 1; fi
 # if it not empty, else exit 4
 	$(AT) if [ !  -s atlout.spt  ]; then exit 4; fi
 # now it exists and is not empty, split it
-	$(AT) cp atlout.spt .purify ; atlsplit atlout.spt
+	$(AT) cp atlout.spt .purifydir ; atlsplit atlout.spt
 # no TIO, bad thing, exit 2
 	$(AT) if [ ! -a  attolcov.tio ]; then  exit 2; fi
 # else proceed
-	$(AT) attolcov attolcov.tio ../src/.purify/*.fdc -output=CoverageReport
+	$(AT) attolcov attolcov.tio ../src/.purifydir/*.fdc -output=.purifydir/CoverageReport
 	$(AT) echo "== Purify coverage report in 'CoverageReport'."
 	$(AT) if [ -a atlout.rej  ]; then  exit 3; fi
 else
-	purecov -export=CoverageReport purecov.pcv
+	$(AT) purecov -export=.purifydir/CoverageReport .purifydir/*.pcv
 endif
+	$(AT) echo "== Purify coverage report in '.purifydir/CoverageReport'."
 
 pureGUI: 
-ifeq ($(platform),Linux)
-	$(AT) studio *.tpf *.tqf *.tdf *.tio ../src/.purify/{*.fdc,*.tsf} &
+ifeq ($(MAKE_PURIFY_TYPE),SCI)
+	$(AT) studio *.tpf *.tqf *.tdf *.tio ../src/.purifydir/{*.fdc,*.tsf} &
 # studio mempro.jpt mempro.tsf mempro.tpf 
 else
-	purecov -view purecov.pcv &
-	purify  -view purify.pv &
+	$(AT) ls purecov*.pcv > /dev/null 2>&1; if [ $$? = "0" ]; then purecov -view purecov*.pcv &; fi
+	$(AT) ls purify*.pv > /dev/null 2>&1; if [ $$? = "0" ]; then \
+		for member in `ls purify*.pv`; \
+		do purify -view $$member &  \
+		done \
+	      fi
 endif
 
 pureClean:
-	$(AT) $(RM) *.tio *.tpf *.tqf *.tdf ../src/.purify/* ../test/.purify/*  CoverageReport 
-	$(AT) $(RM) ../{src,test}/{purecov.pcv,purify.pv}
-	$(AT) $(RM) ../test/{CoverageReport,attolcov.tio,atltrace.tdf,purifylt.tpf,TP.o,products.h}
+ifeq ($(MAKE_PURIFY_TYPE),SCI)
+	$(AT) $(RM) *.tio *.tpf *.tqf *.tdf ../src/.purifydir/* ../test/.purifydir/*   
+	$(AT) $(RM) ../test/attolcov.tio,atltrace.tdf,purifylt.tpf,TP.o,products.h}
+else
+	$(AT) $(RM) ../{src,test}/.purifydir/purecov-*.{pcv,pv}
+	$(AT) $(RM) ../{src,test}/.purifydir/purify-*.{pcv,pv}
+endif
+	$(AT) $(RM) ./.purifydir/MemoryReport ./.purifydir/CoverageReport
 	$(AT) echo "Purify files cleaned."
 
 
