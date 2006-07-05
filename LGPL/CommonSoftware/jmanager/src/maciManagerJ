@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: maciManagerJ,v 1.28 2006/03/01 19:58:22 dfugate Exp $"
+# "@(#) $Id: maciManagerJ,v 1.29 2006/07/05 05:56:43 gchiozzi Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -168,6 +168,6 @@ fi
 #
 #
 acsStartJava -noClassLoader -noAutoClasspath \
-    -addToClasspath jManager.jar:maci.jar:jACSCommon.jar:cosyframework-core.jar:cosyframework-gui.jar:cosyicons.jar:prevayler-1.02.001.jar:concurrent.jar:activation.jar:CDB.jar:cdbDAL.jar:jACSUtil.jar:acscomponent.jar:acsjlog.jar \
+    -addToClasspath jManager.jar:maci.jar:jACSCommon.jar:cosyframework-core.jar:cosyframework-gui.jar:cosyicons.jar:prevayler-1.02.001.jar:concurrent.jar:activation.jar:CDB.jar:cdbDAL.jar:cdbJDAL.jar:jACSUtil.jar:acscomponent.jar:acsjlog.jar \
     -Dabeans.home=$ACS_MANAGER_CONFIG -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE -DDAL.defaultReference=corbaloc::$HOST:$ACS_CDB_PORT/CDB -DOAPort=$ACS_MANAGER_PORT $ACS_FEDERATION com.cosylab.acs.maci.manager.app.Manager $1 $2 $3 $4 $5 $6 $7 $8 $9
 
