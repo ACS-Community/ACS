@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.cpp,v 1.31 2006/03/24 12:13:09 vwang Exp $"
+* "@(#) $Id: acsThread.cpp,v 1.32 2006/07/06 13:35:20 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsThread.cpp,v 1.31 2006/03/24 12:13:09 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acsThread.cpp,v 1.32 2006/07/06 13:35:20 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsThread.h"
@@ -35,43 +35,44 @@ using namespace ACS;
 // static
 ACE_TSS<ThreadManager::ThreadManagerTSS> ThreadManager::threadManagerTSS;
 
-Thread::Thread(const ACE_CString & name,
-	       const TimeInterval& responseTime, 
-	       const TimeInterval& sleepTime,
-	       const bool del
-		     ) : 
-    ThreadBase(name, 
-	       ACE_Thread_Manager::instance(), 
-	       (void*)Thread::threadSvc, 
-	       (void*)this,
-	       responseTime,
-	       sleepTime,
-	       false /* super class shall not create a thread */),
-    logger_mp(0), thrMgr_mp(0), delete_m(del)
-{
-    ACS_TRACE("ACS::Thread::Thread");
-    thrMgr_mp = ACS::ThreadManager::threadManagerTSS->getThreadManager(true);
-    if (thrMgr_mp != NULL)
-	{
-	thrMgr_mp->add2map(name, static_cast<ACS::Thread*>(this));
-	}
-
-    /* remove els - suspend  here
-     * since ThreadBase is suspended always
-     */
-
-    /*
-     * We create a Kernel Thread and the thread is:
-     * create without parameter, it will create as DETACHED
-     */
-    if (!create() )
-	{
-	if (thrMgr_mp != NULL)  thrMgr_mp->removeFromMap(name);
-	acsthreadErrType::CanNotSpawnThreadExImpl ex(__FILE__, __LINE__, "ACS::Thread::Thread");
-	ex.setThreadName(getName());
-	throw ex;
-	}//if
-}
+// Merge two  constructor
+// Thread::Thread(const ACE_CString & name,
+//	       const TimeInterval& responseTime, 
+//	       const TimeInterval& sleepTime,
+//	       const bool del
+//		     ) : 
+//    ThreadBase(name, 
+//	       ACE_Thread_Manager::instance(), 
+//	       (void*)Thread::threadSvc, 
+//	       (void*)this,
+//	       responseTime,
+//	       sleepTime,
+//	       false /* super class shall not create a thread */),
+//    logger_mp(0), thrMgr_mp(0), delete_m(del)
+//{
+//    ACS_TRACE("ACS::Thread::Thread");
+//    thrMgr_mp = ACS::ThreadManager::threadManagerTSS->getThreadManager(true);
+//    if (thrMgr_mp != NULL)
+//	{
+//	thrMgr_mp->add2map(name, static_cast<ACS::Thread*>(this));
+//	}
+//
+//    /* remove els - suspend  here
+//     * since ThreadBase is suspended always
+//     */
+//
+//    /*
+//     * We create a Kernel Thread and the thread is:
+//     * create without parameter, it will create as DETACHED
+//     */
+//    if (!create() )
+//	{
+//	if (thrMgr_mp != NULL)  thrMgr_mp->removeFromMap(name);
+//	acsthreadErrType::CanNotSpawnThreadExImpl ex(__FILE__, __LINE__, "ACS::Thread::Thread");
+//	ex.setThreadName(getName());
+//	throw ex;
+//	}//if
+//}
 
 Thread::Thread(const ACE_CString & name,
 	       const TimeInterval& responseTime, 

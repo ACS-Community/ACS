@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.25 2006/04/11 16:13:14 gchiozzi Exp $"
+* "@(#) $Id: acsThread.h,v 1.26 2006/07/06 13:35:20 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -105,11 +105,16 @@ namespace ACS
 	   and it will be possible to allocate only a few 
 	   hundred tests before crashing the machine 
 
+           2006/07/06 merge two constructor, since there is almost no difference between them
+
 	 */
 	Thread(const ACE_CString & name,
 	       const TimeInterval& responseTime=ThreadBase::defaultResponseTime,
 	       const TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
-	       const bool del=false);
+//	       const bool del=false);
+	       const bool del=false, 
+	       const long _thrFlags=THR_NEW_LWP | THR_DETACHED);
+    
 
 	/*
 	 * This additional constructor allows to explicitly pass
@@ -118,12 +123,13 @@ namespace ACS
 	 * as well and we do not provide default values.
 	 * @param _thrFlags Thread creation flags to be used if _create = TRUE.
 	 *        See ACE threads and pthread documentation for details.
+         *  2006/07/06 merge two constructor, since there is almost no difference between them
  	 */
-	Thread(const ACE_CString & name,
-	       const TimeInterval& responseTime,
-	       const TimeInterval& sleepTime,
-	       const bool del,
-	       const long _thrFlags);
+//	Thread(const ACE_CString & name,
+//	       const TimeInterval& responseTime,
+//	       const TimeInterval& sleepTime,
+//	       const bool del,
+//	       const long _thrFlags);
 
 	/**
 	   Thread destructor.
