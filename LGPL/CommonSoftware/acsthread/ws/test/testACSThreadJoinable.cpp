@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadJoinable.cpp,v 1.6 2006/06/16 11:35:43 bjeram Exp $"
+* "@(#) $Id: testACSThreadJoinable.cpp,v 1.7 2006/07/06 09:13:38 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.6 2006/06/16 11:35:43 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.7 2006/07/06 09:13:38 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -183,7 +183,8 @@ int main(int argc, char *argv[])
     for( l=0; l<totalCreated; l++)
 	{
 	ACE_thread_t tid = threadIdVec[l];
-	ACE_Thread::join(tid);
+//	ACE_Thread::join(tid);
+        tm.join(tid);
 	}
 
     /*
@@ -205,13 +206,39 @@ int main(int argc, char *argv[])
 	    // ACS_SHORT_LOG(( LM_INFO, "Progress: %ld thread created", l+1 ));
 	    threadId = a->getThreadID();
 	    tm.destroy(a);
-	    ACE_Thread::join(threadId);
+//	    ACE_Thread::join(threadId);
+            int retn = tm.join(threadId);
+            if( retn != 0 )
+	       ACS_SHORT_LOG(( LM_INFO, "Join fail, return %d", retn ));
 	    }
 	}
     catch(acsthreadErrType::CanNotCreateThreadExImpl) 
 	{
 	ACS_SHORT_LOG(( LM_INFO, "acsthreadErrType::CanNotCreateThreadExImpl catched. Counter is: %ld", l ));
 	}
+    catch(...) 
+	{
+	ACS_SHORT_LOG(( LM_INFO, "UNKNOWN exception catched, program stop" ));
+	}
+
+    /*
+     * In the second test we TRY to create and destroy MAX_THREADS
+     * JOINABLE threads, but we join them.
+     * This should not fail.
+     */
+    ACS_SHORT_LOG(( LM_INFO, "===== 5 - create, destroy and join a DETACHED thread"));
+    try {
+        FastACSThread *a = tm.create<FastACSThread>("TestThreadA",
+ 						    5000000, /* 500ms */
+						    1000000, /* 100ms */
+						    false,
+						    THR_NEW_LWP | THR_DETACHED);
+        threadId = a->getThreadID();
+        tm.destroy(a);
+        int retn = tm.join(threadId);
+        if( retn != 0 )
+	   ACS_SHORT_LOG(( LM_INFO, "Join fail, return %d, as expected", retn ));
+        }
     catch(...) 
 	{
 	ACS_SHORT_LOG(( LM_INFO, "UNKNOWN exception catched, program stop" ));

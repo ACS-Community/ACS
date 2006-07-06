@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.h,v 1.25 2006/06/14 15:18:00 vwang Exp $"
+* "@(#) $Id: acsThreadBase.h,v 1.26 2006/07/06 09:13:38 vwang Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -734,6 +734,12 @@ class ThreadManagerBase
      */
     bool areAllAlive();
 
+    /**
+     * join joinable thread
+     * @param tid  thread id
+     * @return -1 if fail
+     */
+    int join(const ACE_thread_t& tid);
 
     /**
      * Returns pointer to the ACE Thread Manager

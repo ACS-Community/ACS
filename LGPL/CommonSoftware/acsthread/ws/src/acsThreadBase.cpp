@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.27 2006/06/22 09:27:56 vwang Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.28 2006/07/06 09:13:38 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -902,6 +902,13 @@ bool ThreadManagerBase::restartDead() {
 	      }
   }
   return ok;
+}
+
+int ThreadManagerBase::join(const ACE_thread_t& tid) {
+
+  ACS_TRACE("ACS::ThreadManagerBase::join");
+
+  return ACE_Thread::join(tid);
 }
 
 /////////////////////////////////////////////////
