@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.cpp,v 1.32 2006/07/06 13:35:20 vwang Exp $"
+* "@(#) $Id: acsThread.cpp,v 1.33 2006/07/07 14:25:27 vwang Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsThread.cpp,v 1.32 2006/07/06 13:35:20 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acsThread.cpp,v 1.33 2006/07/07 14:25:27 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsThread.h"
@@ -83,7 +83,8 @@ Thread::Thread(const ACE_CString & name,
     ThreadBase(name, 
 	       ACE_Thread_Manager::instance(), 
 	       (void*)Thread::threadSvc, 
-	       (void*)this,
+//	       (void*)this,
+	       static_cast<void*>(this),
 	       responseTime,
 	       sleepTime,
 	       false /* super class shall not create a thread */),
@@ -216,7 +217,21 @@ void Thread::run()
  */
 void Thread::threadSvc(void *param)
 {
-    Thread* thrObj_p = (Thread*)(((ThreadBaseParameter*) param)->getParameter());
+//    Thread* thrObj_p = (Thread*)(((ThreadBaseParameter*) param)->getParameter());
+
+    /* change from getParameter() to getThreadBase()
+     * according to acsThreadBase.h, getThreadBase is for this purpose
+     * todo : 1. modify Thread constructor to let getParameter() be useful
+     *        2. remove const from getThreadBase() , then the line could be simplier :
+     * Thread* thrObj_p = dynamic_cast<const Thread*>((static_cast<ThreadBaseParameter*>(param))->getThreadBase());
+     */
+    Thread* thrObj_p = const_cast<Thread *>(dynamic_cast<const Thread*>((static_cast<ThreadBaseParameter*>(param))->getThreadBase()));
+
+    /* since we use dynamic_cast, we'd better check if null */
+    if( thrObj_p == NULL ) {
+      delete static_cast<ThreadBaseParameter*>(param);
+      return;
+    }
     
     /*
      * If the thread is born suspended,
@@ -239,7 +254,7 @@ void Thread::threadSvc(void *param)
 
     thrObj_p->setStopped();
 
-    delete (ThreadBaseParameter*) param;
+    delete static_cast<ThreadBaseParameter*>(param);
 
     /** 
      * @todo GCH IMPORTANT
