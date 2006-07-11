@@ -602,4 +602,33 @@
 			<xs:documentation>LASER alarm-category link definitions list</xs:documentation>
 		</xs:annotation>
 	</xs:element>
+  
+  <xs:element name="configuration-property">
+    <xs:complexType>
+      <xs:simpleContent>
+    		<xs:extension base="xs:string">
+					<xs:attribute name="name" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="255"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+      	</xs:extension>
+      </xs:simpleContent>  
+    </xs:complexType>
+  </xs:element>
+      
+  <xs:element name="alarm-system-configuration" type="alarm-system-configurationListType">
+	  <xs:annotation>
+			<xs:documentation>Global configuration properties for the Alarm System</xs:documentation>
+    </xs:annotation>
+	</xs:element>
+  
+  <xs:complexType name="alarm-system-configurationListType">
+		<xs:sequence>
+			<xs:element ref="configuration-property" maxOccurs="unbounded"/>
+		</xs:sequence>
+  </xs:complexType>
+  
 </xs:schema>
