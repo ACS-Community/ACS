@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.17 2006/05/11 20:49:12 dfugate Exp $
+# @(#) $Id: ContainerServices.py,v 1.18 2006/07/11 20:21:42 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.17 2006/05/11 20:49:12 dfugate Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.18 2006/07/11 20:21:42 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.17 2006/05/11 20:49:12 dfugate Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.18 2006/07/11 20:21:42 dfugate Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -494,6 +494,74 @@ class ContainerServices:
                                                      type_wildcard,
                                                      activated)
         return components
+
+    #--------------------------------------------------------------------------
+    def makeCompImmortal(self,
+                         comp_name,
+                         state):
+        '''
+        Change mortality state of a component.
+        Compnent must be already active.
+        The caller must be owner of the component or have administator rights.
+        
+        Parameters:
+        - comp_name name of the component
+        - state new mortality state
+        
+        Returns: None
+        
+        Raises: ???
+        '''
+        #just delegate call directly to manager
+        getManager().make_component_immortal(self.__handle,
+                                             comp_name,
+                                             state)
+        
+        return
+
+    #--------------------------------------------------------------------------
+    def restartComp(self,
+                    comp_name):
+        '''
+        Restarts a component.
+        
+        Parameters:
+        - comp_name name of the component
+        
+        Returns: Reference to the restarted component.
+        
+        Raises: ???
+        '''
+        #just delegate call directly to manager
+        return getManager().restart_component(self.__handle,
+                                              comp_name)
+
+    #--------------------------------------------------------------------------
+    def getCollocatedComp(self,
+                          comp_spec,
+                          mark_as_default,
+                          target_comp):
+        '''
+        Activation of a component so that it runs in the same process as
+        another given component.
+        
+        Parameters:
+        - comp_spec (maci.ComponentSpec) Component to be obtained.
+        - mark_as_default (bool) Mark component as default component of its type
+        - target_comp Name of the target component (where to activate component)
+        
+        Returns: maci.ComponentInfo object
+        
+        Raises:
+        - IncompleteComponentSpec
+        - InvalidComponentSpec
+        - ComponentSpecIncompatibleWithActiveComponent
+        '''
+        #just delegate call directly to manager
+        return getManager().get_collocated_component(self.__handle,
+                                                     comp_spec,
+                                                     mark_as_default,
+                                                     target_comp)
     
     #--------------------------------------------------------------------------
     def activateOffShoot(self, py_obj):
