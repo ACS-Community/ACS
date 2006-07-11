@@ -1,0 +1,16 @@
+#! /bin/bash
+#it must trhow an exception because the record does not exist
+cdbRead MACI/Components/CONTROL/MASTER
+
+#then we copy the file in the cdb
+cp case-files/MASTER.xml CDB/MACI/Components/CONTROL/MASTER
+
+#we clear the cache
+cdbjDALClearCache
+
+#read again, this time without the exception 
+cdbRead MACI/Components/CONTROL/MASTER
+
+#turn to the normal state
+rm CDB/MACI/Components/CONTROL/MASTER/MASTER.xml
+
