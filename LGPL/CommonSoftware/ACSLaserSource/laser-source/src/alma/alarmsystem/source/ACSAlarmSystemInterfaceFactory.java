@@ -49,25 +49,25 @@ public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory 
 	// It is true if ACS implementation for sources must be used and
 	// null if it has not yet been initialized
 	// false means CERN implementation
-	private static Boolean useACSImplementation = null;
+	private static Boolean useACSAlarmSystem = null;
 	
-	private static boolean useACSImplementation() {
-		if (useACSImplementation!=null) {
-			return useACSImplementation;
+	private synchronized static boolean useACSImplementation() {
+		if (useACSAlarmSystem!=null) {
+			return useACSAlarmSystem;
 		}
 		
         DAL dal = getDAL();
         if (dal==null) {
-        	useACSImplementation=true;
+        	useACSAlarmSystem=true;
         } else {
-        	useACSImplementation = retrieveImplementationType(dal);
+        	useACSAlarmSystem = retrieveImplementationType(dal);
         }
-        if (useACSImplementation) {
+        if (useACSAlarmSystem) {
         	System.out.println("Using ACS implementation");
         } else {
         	System.out.println("Using CERN implementation");
         }
-        return useACSImplementation;
+        return useACSAlarmSystem;
 	}
 	
 	/**
@@ -151,7 +151,6 @@ public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory 
 			}
 			
 		}
-		System.out.println("Returning <"+propName+","+val+">");
 		return val;
 	}
 	
@@ -196,8 +195,11 @@ public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory 
 	  * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	   */
 	  public static AlarmSystemInterface createSource(String sourceName) throws ASIException {
-		  System.out.println("ACS implementation: "+useACSImplementation());
-		  return new AlarmSystemInterfaceProxy(sourceName);
+		  if (useACSImplementation()) {
+			  return new ACSAlarmSystemInterfaceProxy(sourceName);
+		  } else {
+			  return new AlarmSystemInterfaceProxy(sourceName);
+		  }
 	  }
 
 	  /**
@@ -206,7 +208,10 @@ public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory 
 	  * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	   */
 	  public static AlarmSystemInterface createSource() throws ASIException {
-		  System.out.println("ACS implementation: "+useACSImplementation());
-		  return new AlarmSystemInterfaceProxy("UNDEFINED");
+		  if (useACSImplementation()) {
+			  return new ACSAlarmSystemInterfaceProxy("UNDEFINED");
+		  } else {
+			  return new AlarmSystemInterfaceProxy("UNDEFINED");
+		  }
 	  }
 }
