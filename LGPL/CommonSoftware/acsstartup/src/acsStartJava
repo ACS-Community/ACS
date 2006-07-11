@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.35 2006/05/09 15:19:42 acaproni Exp $"
+# "@(#) $Id: acsStartJava,v 1.36 2006/07/11 08:08:38 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -111,6 +111,12 @@ function printUsage {
 	echo "   -vmtools                                         start JVM Tools together with the application"
 	echo "   -v | -jvmOption option [-jvmOption option]       an option for the JVM"
 	echo "   -h | -help                                       prints this help and exits"
+	echo "Environment Variables:"
+	echo "   MANAGER_REFERENCE		if is not set, take the HOST to contruct it. Used if not given as parameter"
+	echo "   ACS_NAME_SERVICE		if is not set, take the computer where Manager is located"
+	echo "   ACS_INTERFACE_REPOSITORY	if is not set, take the computer where Manager is located"
+	echo "   ACS_ABEANS_CONFIG		if is not set, creates default values for configuration files directory "
+	echo "				(\$ACSDATA/config/abeans/Config)"
 }
 
 #
