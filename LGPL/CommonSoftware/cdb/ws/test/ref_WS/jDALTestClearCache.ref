@@ -2,9 +2,9 @@
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ERROR : com.cosylab.CDB.RecordDoesNotExist: IDL:cosylab.com/CDB/RecordDoesNotExist:1.0
 1 - com.cosylab.CDB.RecordDoesNotExist: IDL:cosylab.com/CDB/RecordDoesNotExist:1.0
-1 - 	at com.cosylab.CDB.RecordDoesNotExistHelper.read(RecordDoesNotExistHelper.java:38)
-1 - 	at com.cosylab.CDB._DALStub.get_DAO(_DALStub.java:45)
-1 - 	at com.cosylab.cdb.DALRead.main(DALRead.java:84)
+1 - 	at com.cosylab.CDB.RecordDoesNotExistHelper.read(RecordDoesNotExistHelper.java:xx)
+1 - 	at com.cosylab.CDB._DALStub.get_DAO(_DALStub.java:xx)
+1 - 	at com.cosylab.cdb.DALRead.main(DALRead.java:xx)
 1 -  -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
 1 - clear_cache is invoked for all curls
