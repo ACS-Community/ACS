@@ -6,8 +6,8 @@ import alma.alarmsystemdemo.Mount;
 import alma.alarmsystemdemo.MountOperations;
 import alma.alarmsystemdemo.MountHelper;
 
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import cern.laser.source.alarmsysteminterface.AlarmSystemInterface;
-import cern.laser.source.alarmsysteminterface.AlarmSystemInterfaceFactory;
 import cern.laser.source.alarmsysteminterface.FaultState;
 import java.sql.Timestamp;
 import java.util.Properties;
@@ -44,8 +44,8 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 	public void send_alarm(String faultFamily, String faultMember, int faultCode, String faultState) {
 		AlarmSystemInterface alarmSource;
 		try {
-			alarmSource = AlarmSystemInterfaceFactory.createSource(this.name());
-			FaultState fs = AlarmSystemInterfaceFactory.createFaultState(
+			alarmSource = ACSAlarmSystemInterfaceFactory.createSource(this.name());
+			FaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(
 					faultFamily, faultMember, faultCode);
 			fs.setDescriptor(faultState);
 			fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
@@ -57,6 +57,7 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 			fs.setUserProperties(props);
 
 			alarmSource.push(fs);
+			System.out.println("Alarm sent");
 		} catch (ASIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

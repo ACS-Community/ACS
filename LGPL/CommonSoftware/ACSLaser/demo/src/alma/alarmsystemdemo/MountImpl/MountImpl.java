@@ -6,6 +6,7 @@ import alma.alarmsystemdemo.Antenna;
 import alma.alarmsystemdemo.AntennaOperations;
 import alma.alarmsystemdemo.AntennaHelper;
 
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import cern.laser.source.alarmsysteminterface.AlarmSystemInterface;
 import cern.laser.source.alarmsysteminterface.AlarmSystemInterfaceFactory;
 import cern.laser.source.alarmsysteminterface.FaultState;
@@ -41,8 +42,8 @@ class MountImpl extends ComponentImplBase implements MountOperations {
 	public void send_alarm(String faultFamily, String faultMember, int faultCode, String faultState) {
 		AlarmSystemInterface alarmSource;
 		try {
-			alarmSource = AlarmSystemInterfaceFactory.createSource(this.name());
-			FaultState fs = AlarmSystemInterfaceFactory.createFaultState(
+			alarmSource = ACSAlarmSystemInterfaceFactory.createSource(this.name());
+			FaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(
 					faultFamily, faultMember, faultCode);
 			fs.setDescriptor(faultState);
 			fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
