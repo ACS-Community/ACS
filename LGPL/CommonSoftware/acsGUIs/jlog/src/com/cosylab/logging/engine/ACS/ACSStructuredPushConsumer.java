@@ -251,8 +251,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		/////////////////////////////////////////////////////////
 		String xmlLog = event.remainder_of_body.extract_string();
 
-		//System.out.println("***********Log**********\n" + xmlLog);
-		//System.out.println("************************");
 		if (!xmlLogs.offer(xmlLog)) {
 			if (!discarding) {
 				discarding=true;
