@@ -103,7 +103,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		    {
 		    System.out.println("DAL root is: " + m_root);
 		    }
-
+		loadFactory();
+	}
+	public void loadFactory(){
 		factory = SAXParserFactory.newInstance();
 		try {
 			try {
@@ -127,7 +129,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			if (allURIs != null) {
 				saxParser.setProperty(EXTERNAL_SCHEMA_LOCATION_PROPERTY_ID, allURIs);
 			} else {
-			System.out.println("Schema files: NO SCHEMAS!");
+				System.out.println("Schema files: NO SCHEMAS!");
 			}
 
 		} catch (Throwable t) {
@@ -658,7 +660,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			}
 		}
 	}
-
+/*
 	public void clear_cache_all() {
 		synchronized (listenedCurls) {
 			Iterator iter = listenedCurls.keySet().iterator();
@@ -668,7 +670,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			}
 		}
 	}
-	
+*/	
+	public void clear_cache_all() {
+		//loadFactory();
+		rootNode = DALNode.getRoot(m_root);
+	}
 	// listing
 	public String list_nodes(String name) {
 		// if we didn't create a root node yet or we are listing
