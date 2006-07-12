@@ -1,3 +1,4 @@
 #! /bin/bash
 
-acsstartupGenericProcess.sh -e HANG "ACS Centralized Logger is running"
+echo "ACS Centralized Logger is running"
+tcpBlocker $@

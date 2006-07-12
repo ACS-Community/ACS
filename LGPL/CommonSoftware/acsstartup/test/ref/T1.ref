@@ -1,30 +1,30 @@
-1 - INFO - Starting CORBA Services
 2 - INFO - Stopping all ACS processes using 'ACS_INSTANCE=9'
-1 - INFO -     Orb options:  -ORBDottedDecimalAddresses 1
 2 - INFO - Shutting down containers...
-1 - INFO - Starting Interface Repository
 2 - INFO - Stopping Manager
-1 - INFO - Starting Naming Service
 2 - ERROR - Unable to determine manager's process ID.
-1 - INFO - Starting ACS Configuration Database
 2 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
-1 - INFO -     CDB data is in:  /alma/ACS-x.y/acsdata/config/defaultCDB
 2 - INFO - Stopping the CDB
-1 - INFO - Starting Notify Service
 2 - INFO - Stopping the CORBA Naming Service
-1 - JDAL is ready and waiting
 2 - INFO - Stopping the CORBA Notification Service
-1 - INFO - Starting Logging Notify Service
 2 - INFO - Stopping the CORBA Logging Notification Service
-1 - INFO - Starting Archive Notify Service
 2 - INFO - Stopping the CORBA Archive Notification Service
-1 - INFO - Starting Logging Service
 2 - INFO - Stopping the CORBA Logging Service
-1 - INFO - Starting ACS Log service
 2 - INFO - Stopping the CORBA Interface Repository
-1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 2 - INFO - Stopping the ACS Logging Service
-1 - INFO - The acsStartORBSRVC script has now completed!
 2 - INFO - Killing any rogue ACS processes...
-1 - INFO -  of IDL interfaces in Interface Repository completed OK
 2 - INFO - Freeing $ACSDATA/tmp/ACS_INSTANCE.9
+1 - INFO - Starting CORBA Services
+1 - INFO -     Orb options:  -ORBDottedDecimalAddresses 1
+1 - INFO - Starting Interface Repository
+1 - INFO - Starting Naming Service
+1 - INFO - Starting ACS Configuration Database
+1 - INFO -     CDB data is in:  /alma/ACS-x.y/acsdata/config/defaultCDB
+1 - INFO - Starting Notify Service
+1 - JDAL is ready and waiting
+1 - INFO - Starting Logging Notify Service
+1 - INFO - Starting Archive Notify Service
+1 - INFO - Starting Logging Service
+1 - INFO - Starting ACS Log service
+1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
+1 - INFO - The acsStartORBSRVC script has now completed!
+1 - INFO - Loading of IDL interfaces in Interface Repository completed OK

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsContainersStatus.py,v 1.1 2006/06/07 16:25:13 dfugate Exp $
+# @(#) $Id: acsContainersStatus.py,v 1.2 2006/07/12 21:36:02 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -24,8 +24,16 @@
 ###############################################################################
 '''
 This script is designed to emit information about all known containers including
-those living on remote hosts.
-'''  
+those living on remote hosts for a given $ACS_INSTANCE.
+
+Paramters: None
+
+Assumptions:
+- $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS exists
+
+TODO:
+- accept "-b" switch for $ACS_INSTANCE???
+'''
 ###############################################################################
 from os      import environ
 from os      import chdir
@@ -42,7 +50,8 @@ import socket
 #--Functions
 def getPortsFile():
     '''
-    Returns the file containing a list of containers and used ports
+    Returns the file containing a list of containers and used ports.
+    In the event of error, bails out of Python.
     '''
     
     #initialize the return value
@@ -127,15 +136,8 @@ def getContainerDict(portsFile):
     return (ret_val_ports, ret_val_hosts)
 
 #--------------------------------------------------------------------------
-#--Go through the command-line arguments:
-#--  creating a few global variables based on them
-#--  do a little preprocessing on their values
-
 #--determine the ACS_INSTANCE
 cl_baseport = int(environ['ACS_INSTANCE'])
-
-#--------------------------------------------------------------------
-#--GLOBALS-----------------------------------------------------------
 
 #get the file which shows us which ports are currently taken up
 container_file = getPortsFile()

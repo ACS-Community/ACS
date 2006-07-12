@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsGetSpecificJars.py,v 1.5 2005/02/03 21:47:05 dfugate Exp $
+# @(#) $Id: acsGetSpecificJars.py,v 1.6 2006/07/12 21:36:02 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -27,13 +27,20 @@ This is a helper script to be used by acsStartJava to obtain the exact locations
 (passed from the command-line) within the ALMA SE-prescribed directory structure (i.e., ../,
 $INTROOT, $ACSROOT) by using the standard acsFindFile file search routine.
 
-The first parameter to this script is the separator to be used between the jar files (when passed
+Parameters:
+- the first parameter to this script is the separator to be used between the jar files (when passed
 to the JVM). Under UNIX, this is normally ":" and in Windows it is ";"
-
-The next set of parameters are a list of jar files separated by spaces.
+- the next set of parameters are a list of jar files separated by spaces.
 It does not matter whether the jars actually exist or not (the script will figure this out on its own).
+
 Sample usage of this script could be something like:
      acsGetSpecificJars : baci.jar acsnc.jar someOtherJar.jar
+
+Assumptions:
+- 
+
+TODO:
+- 
 '''
 ################################################################################################
 from sys                 import argv

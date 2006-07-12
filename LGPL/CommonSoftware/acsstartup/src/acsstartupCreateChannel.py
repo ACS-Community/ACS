@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupCreateChannel.py,v 1.2 2006/06/20 21:49:59 dfugate Exp $"
+# "@(#) $Id: acsstartupCreateChannel.py,v 1.3 2006/07/12 21:36:02 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -47,6 +47,20 @@
 #
 #------------------------------------------------------------------------
 #
+
+'''
+This script is designed to create notification channels from the command-line
+with the assigned quality of service and administrative properties.
+
+Assumptions:
+- the CORBA Naming Service is up and running
+- the Notify_Service process which will host the channel is up and running
+- the Notify_Service process is registered with the CORBA Naming Service
+- the end-user knows which Q of S and admin properties cause the TAO Notify Service
+to fail to create channels. This varies with each release of TAO
+
+TODO:
+'''
 
 from optparse import OptionParser
 

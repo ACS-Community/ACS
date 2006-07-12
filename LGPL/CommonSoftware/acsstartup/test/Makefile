@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.12 2006/05/23 23:45:07 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.13 2006/07/12 21:36:02 dfugate Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = 
+PY_SCRIPTS_L       = tcpBlocker
 
 PY_MODULES         =
 PY_MODULES_L       =

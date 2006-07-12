@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsGetAllJars.py,v 1.3 2005/02/03 21:47:05 dfugate Exp $
+# @(#) $Id: acsGetAllJars.py,v 1.4 2006/07/12 21:36:02 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -25,18 +25,25 @@
 '''
 This is a helper script to be used by acsStartJava to obtain a list of all jar files in directories
 specified as parameters to this script. Once it finds those jar files, it prints them to standard
-out in a format suitable for use with a JVM. If improvements are not made with the way class loading is
-handled in the near future, this script should be rewritten in C/C++ to be made even faster.
+out in a format suitable for use with a JVM.
 
-The first parameter to this script is the separator to be used between jar files (when passed
+Parameters:
+- the first parameter to this script is the separator to be used between jar files (when passed
 to the JVM). Under UNIX, this is normally ":" and in Windows it is ";"
-
-The next set of parameters are a list of directories to be searched for jar files. It does not
+- the next set of parameters are a list of directories to be searched for jar files. It does not
 matter whether the directories actually exist or not (the script will figure this out on its own).
 Do be careful with the order the directories are passed though because if duplicate jar files
 are found; only the jar file found in the first directory specified will be passed to the JVM.
-In other words, sample usage of this script in the ALMA directory structure should be:
+
+Sample usage of this script in the ALMA directory structure should be:
      acsGetAllJars : ../lib $INTROOT/lib $ACSROOT/lib
+
+Assumptions:
+-
+
+TODO:
+-
+
 '''
 ################################################################################################
 from sys     import argv
