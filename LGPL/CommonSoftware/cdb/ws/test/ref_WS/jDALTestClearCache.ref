@@ -23,4 +23,5 @@
 1 -     Container="CONTROL/ACC/javaContainer"
 1 -     Default="false"
 1 -     Autostart="false"
+1 -     KeepAliveTime="0"
 1 - ________________________________________________________
