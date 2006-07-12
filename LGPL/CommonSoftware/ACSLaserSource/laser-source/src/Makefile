@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2006/07/12 10:24:00 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/07/12 13:20:45 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -125,7 +125,7 @@ ASIMessage_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.message
 # Jarfiles and their directories
 #
 JARFILES= alarmsysteminterface
-alarmsysteminterface_DIRS= cern alma
+alarmsysteminterface_DIRS= cern
 alarmsysteminterface_EXTRAS= cern/laser/source/alarmsysteminterface/impl/asi-configuration.xml
 #
 # java sources in Jarfile on/off
