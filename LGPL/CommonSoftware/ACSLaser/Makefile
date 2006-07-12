@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.9 2006/02/28 16:09:10 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.10 2006/07/12 13:19:56 acaproni Exp $"
 #
 #
 
@@ -25,6 +25,7 @@ MODULES = acslaserextlib \
           laser-guiplatform \
           laser-CppUtil \
           laser-CppSource \
+          acs-sources \
           NetbeansACS \
           demo 
 
