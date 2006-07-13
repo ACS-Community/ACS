@@ -129,7 +129,14 @@ void ConfigPropertyGetter::parseDAO() {
 std::string ConfigPropertyGetter::getProperty(std::string propName) {
 	if (m_properties==NULL || propName.size()==0) {
 		return "";
-	} 
+	}
+	std::list<Property>::iterator iter;
+	for (iter=m_properties->begin(); iter!=m_properties->end(); iter++) {
+		Property p = (*iter);
+		if (p.key==propName) {
+			return p.value;
+		}
+	}
 	return "";
 }
 

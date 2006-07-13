@@ -69,17 +69,24 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		static auto_ptr<laserSource::AlarmSystemInterface> createSource(string sourceName) //throws ASIException {
 		{
 			std::cout<<"ACSAlarmSystemInterfaceFactory::createSource(<name>)"<<std::endl;
-			if (useACSAlarmSystem==NULL) {
-				std::cout<<"\tGetting the prop"<<std::endl;
-				ConfigPropertyGetter* pGetter;
-				pGetter = new ConfigPropertyGetter();
-				pGetter->getProperty("Test");
-				std::cout<<"\tGetter instantiated"<<std::endl;
-				delete pGetter;
+			if (cernImplementationRequested()) {
+				return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
 			} else {
-				std::cout<<"useACSAlarmSystem="<<useACSAlarmSystem<<std::endl;
+				return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
 			}
-			return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
+		}
+		
+		static bool cernImplementationRequested() {
+			if (useACSAlarmSystem!=NULL) {
+				return *useACSAlarmSystem;
+			}
+			useACSAlarmSystem = new bool();
+			ConfigPropertyGetter* pGetter;
+			pGetter = new ConfigPropertyGetter();
+			string str = pGetter->getProperty("Implementation");
+			delete pGetter;
+			*useACSAlarmSystem= (str=="CERN");
+			return *useACSAlarmSystem;
 		}
 
 		/**
@@ -90,12 +97,11 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		static auto_ptr<laserSource::AlarmSystemInterface> createSource() //throws ASIException {
 		{
 			std::cout<<"ACSAlarmSystemInterfaceFactory::createSource()"<<std::endl;
-			if (useACSAlarmSystem==NULL) {
-				
+			if (cernImplementationRequested()) {
+				return laserSource::AlarmSystemInterfaceFactory::createSource();
 			} else {
-				std::cout<<"useACSAlarmSystem="<<useACSAlarmSystem<<std::endl;
+				return laserSource::AlarmSystemInterfaceFactory::createSource();
 			}
-			return laserSource::AlarmSystemInterfaceFactory::createSource();
 		}
 
 };
