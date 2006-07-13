@@ -319,6 +319,7 @@ public class CDBChecker {
 		System.out.println("    NOTE: 1) the value passed in as the XSDPath will be pre-pended to the");
 		System.out.println("    value from the ACS.cdbPath property; 2) if not specified, the XMLPath");
 		System.out.println("    will default to $ACS_CDB/CDB (if ACS_CDB environment variable is set).\n");
+   		System.out.println("    ACS_CDB is used if XMLPath is not given"); 
 	}
 
 	/**
@@ -404,8 +405,9 @@ public class CDBChecker {
 			}
 
 			// finally, if XMLPath wasn't specified, use a sensible default
+
 			if(retVal && null == this.XMLPath) {
-      		String acsCdbPath = System.getenv("ACS_CDB");
+      				String acsCdbPath = System.getenv("ACS_CDB");
 				if(null != acsCdbPath)
 				{
 					acsCdbPath += "/CDB";
