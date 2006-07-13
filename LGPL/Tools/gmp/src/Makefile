@@ -9,10 +9,23 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    include $(MAKEDIR)/acsMakefile
 endif
 
+#
+# Defines BUILD_PLATFORM_FLAGS assuming pentium3 pc 
+# hardware.
+# This does not work for 64bit architecture.
+# In that case we let config choose the best by itself.
+#
 BUILD_PLATFORM_FLAGS=
-ifndef GMP_OPTIMIZE
-   BUILD_PLATFORM_FLAGS=--build=pentium3-pc-linux-gnu
+ARCH_RET=$(shell uname -a | grep -c 'x86_64')
+ifeq ($(ARCH_RET), 1)
+   BUILD_PLATFORM_FLAGS=
+else
+  ifndef GMP_OPTIMIZE
+     BUILD_PLATFORM_FLAGS=--build=pentium3-pc-linux-gnu
+  endif
 endif
+##############################################
+
 
 # RANLIB is defined by vltMakefile, but the definition prevents
 # the configure stage from working properly (leading to failures in
