@@ -2,7 +2,7 @@
 #*******************************************************************************
 # cdbChecker
 #
-# "@(#) $Id: cdbChecker,v 1.5 2006/06/01 01:07:09 sharring Exp $"
+# "@(#) $Id: cdbChecker,v 1.6 2006/07/13 08:32:35 cparedes Exp $"
 #
 
 #************************************************************************
@@ -63,6 +63,34 @@
 #
 #------------------------------------------------------------------------
 #
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+	echo " Wrapper for the java command: CDBChecker [-flags] [XMLPath] [XSDPath]"
+  	echo "    Flags:"
+	echo "      -v | --verbose    Verbose output"
+	echo "      -r | --recursive  Disable recursive traversal of XMLPath and XSDPath"
+	echo "                        when searching for .xml/.xsd files"
+	echo "      -n | --network    Get required schemas from the network"
+	echo "      -h | --help       Show this help"
+	echo "    The XMLPath and XSDPath can have multiple paths separated by \":\"."
+	echo "    The paths must be absolute (i.e. they should start with '/')"
+	echo "    The checker will search for files recursively inside the given paths,"
+	echo "    unless the -r flag is specified."
+	echo "    NOTE: 1) the value passed in as the XSDPath will be pre-pended to the"
+	echo "    value from the ACS.cdbPath property; 2) if not specified, the XMLPath"
+	echo "    will default to \$ACS_CDB/CDB (if ACS_CDB environment variable is set)."
+   	echo "    ACS_CDB is used if XMLPath is not given" 
+}
+
+
+if [ "X$1" = "X-h" ]
+then
+	printUsage;
+	exit 0;
+fi
 
 #
 # Build the schema files search path
