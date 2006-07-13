@@ -741,4 +741,15 @@ public class AcsManagerProxy
 		String managerLoc = "corbaloc::" + host + ":" + ACSPorts.getManagerPort() + "/Manager";
 		return managerLoc;
 	}
+
+
+
+	/**
+	 * Creates a new instance, using the same manager, orb and logger.
+	 * The new instance can then be used to log in to the manager (again) independently of this instance.
+	 */
+	public AcsManagerProxy createInstance() {
+		AcsManagerProxy inst = new AcsManagerProxy(m_managerLoc, m_orb, m_logger);
+		return inst;
+	}
 }
