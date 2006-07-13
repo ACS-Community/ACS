@@ -24,7 +24,6 @@ package alma.acs.component.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
@@ -58,20 +57,20 @@ public class ComponentClient
 	private ContainerServicesImpl m_containerServices;
     private CleaningDaemonThreadFactory m_threadFactory;
 		
-	protected Logger m_logger;
+	protected final Logger m_logger;
 
-	private String m_clientName;
+	final String m_clientName;
 
     // manager client object 
 	private Client m_managerClient;
-    private AcsManagerProxy m_acsManagerProxy;
+    AcsManagerProxy m_acsManagerProxy;
             
     /**
      * The instance of {@link AcsCorba} to be used by this class for all CORBA activities. 
      */
-    protected AcsCorba acsCorba;
-
-    private boolean ownAcsCorba;
+    final AcsCorba acsCorba;
+    
+    final boolean ownAcsCorba;
     
 
 
@@ -115,7 +114,7 @@ public class ComponentClient
 	 * @throws Exception  at the slightest provocation...
 	 * @see #initRemoteLogging()
 	 */
-	public ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) 
+	protected ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) 
 		throws Exception
 	{
 		if (logger == null) {
@@ -167,9 +166,9 @@ public class ComponentClient
 						throw new RuntimeException("disconnected from the manager");
 					}
 				};
-			m_managerClient = clImpl._this(getORB());
+			m_managerClient = clImpl._this(acsCorba.getORB());
 		
-			m_acsManagerProxy = new AcsManagerProxy(managerLoc, getORB(), m_logger);
+			m_acsManagerProxy = new AcsManagerProxy(managerLoc, acsCorba.getORB(), m_logger);
 			
 			m_acsManagerProxy.loginToManager(m_managerClient, false);
 
@@ -183,8 +182,8 @@ public class ComponentClient
 		{
 //			m_logger.log(Level.SEVERE, "failed to connect to the ACS Manager " + 
 //										"or to set up the container services.", ex);
-			if (getORB() != null) {
-				getORB().destroy();
+			if (acsCorba.getORB() != null) {
+				acsCorba.getORB().destroy();
 			}
 			throw ex;
 		}
@@ -214,7 +213,7 @@ public class ComponentClient
                 boolean gotLogService = false;
                 try {
                     gotLogService = ClientLogManager.getAcsLogManager().initRemoteLogging(
-                            getORB(), 
+                            acsCorba.getORB(), 
                             m_acsManagerProxy.getManager(), 
                             m_acsManagerProxy.getManagerHandle(),
                             true);
@@ -251,17 +250,6 @@ public class ComponentClient
 	}
 
 
-	/**
-	 * Use only when direct access to the ORB is absolutely necessary. 
-	 * We try to not expose the ORB to applications. 
-	 *  
-	 * @return ORB
-	 */
-	public ORB getORB()
-	{
-		return acsCorba.getORB();
-	}
-	
 	
 	/////////////////////////////////////////////////////////////
 	// finalization stuff
