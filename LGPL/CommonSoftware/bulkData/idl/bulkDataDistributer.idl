@@ -55,7 +55,14 @@ module bulkdata
 	void multiConnect(in BulkDataReceiver receiver)
 	    raises (ACSBulkDataError::AVConnectErrorEx);
 	
-       	void multiDisconnect(in BulkDataReceiver receiver);
+	void connectByName(in string receiverName)
+	    raises (ACSBulkDataError::AVConnectErrorEx);
+	
+       	void multiDisconnect(in BulkDataReceiver receiver)
+	    raises (ACSBulkDataError::AVDisconnectErrorEx);
+
+	void disconnectByName(in string receiverName)
+	    raises (ACSBulkDataError::AVDisconnectErrorEx);
 
 	ACSErr::Completion getReceiverCbStatus(in string recvName, in unsigned long flowNumber);
 	};

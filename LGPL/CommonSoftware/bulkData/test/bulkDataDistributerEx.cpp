@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataDistributerEx.cpp,v 1.5 2005/08/19 13:04:12 rcirami Exp $"
+ * "@(#) $Id: bulkDataDistributerEx.cpp,v 1.6 2006/07/13 13:25:07 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -98,8 +98,10 @@ int main(int argc, char *argv[])
 	sender->connect(distributer.in());
 
 	distributer->multiConnect(receiver1.in());
+	//distributer->connectByName("BulkDataReceiverDistr1");
 
 	distributer->multiConnect(receiver2.in());
+	//distributer->connectByName("BulkDataReceiverDistr2");
 
 	sender->startSend();
 	
@@ -112,8 +114,10 @@ int main(int argc, char *argv[])
 	distributer->closeReceiver();
 
 	distributer->multiDisconnect(receiver1.in());
-	distributer->multiDisconnect(receiver2.in());
+	//distributer->disconnectByName("BulkDataReceiverDistr1");
 
+	distributer->multiDisconnect(receiver2.in());
+	//distributer->disconnectByName("BulkDataReceiverDistr2");
 	}
 
     catch (AVConnectErrorEx & ex)

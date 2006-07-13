@@ -143,19 +143,19 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	}
     catch (AVReceiverConfigErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::init AVReceiverConfigErrorEx exception catched !"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVReceiverConfigErrorEx exception catched !"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
     catch (AVReceiverConfigErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::init AVReceiverConfigErrorExImpl exception catched !"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVReceiverConfigErrorExImpl exception catched !"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
     catch (AVStreamBindErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::init AVStreamBindErrorExImpl exception catched !"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVStreamBindErrorExImpl exception catched !"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
@@ -166,8 +166,35 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	throw err.getAVConnectErrorEx();
 	}
 
+}
 
 
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connectByName(const char *receiverName_p)
+    throw (CORBA::SystemException, AVConnectErrorEx)
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::connectByName");
+
+    bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName_p);
+    if(!CORBA::is_nil(receiver.in()))
+	{
+	try
+	    {
+	    multiConnect(receiver.in());
+	    }
+	catch(AVConnectErrorExImpl &ex)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connectByName AVConnectErrorExImpl exception catched !"));
+	    AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	    throw err.getAVConnectErrorEx();
+	    }
+	}
+    else
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connectByName AVConnectErrorExImpl exception catched !"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	throw err.getAVConnectErrorEx();
+	}
 }
 
 
@@ -182,7 +209,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnect()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException)
+    throw (CORBA::SystemException, AVDisconnectErrorEx)
 {
     
     ACE_CString recvName = receiverObj_p->name();
@@ -196,7 +223,46 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnec
 	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnect");
 	throw err.getAVDisconnectErrorEx();
 	}
- }
+}
+
+
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnectByName(const char *receiverName_p)
+    throw (CORBA::SystemException, AVDisconnectErrorEx)
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::disconnectByName");
+
+    if(!distributer.isRecvConnected(receiverName_p))
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl - receiver %s not connected",receiverName_p));
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	throw err.getAVDisconnectErrorEx();
+	}
+
+    bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName_p);
+    if(!CORBA::is_nil(receiver.in()))
+	{
+	try
+	    {
+	    multiDisconnect(receiver.in());
+	    containerServices_p->releaseComponent(receiverName_p);	
+	    }
+	catch(...)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl exception catched !"));
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	    throw err.getAVDisconnectErrorEx();
+	    }
+	}
+    else
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl exception catched !"));
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	throw err.getAVDisconnectErrorEx();
+	}
+
+
+}
 
 
 template<class TReceiverCallback, class TSenderCallback>

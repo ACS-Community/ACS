@@ -100,7 +100,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 
     /**
      *  Negotiate and initialize connection with the Sender object.
-     *  @param receiver reference of the Receiver Component.
+     *  @param receiverObj_p reference of the Receiver Component.
      *  @return void
      *  @htmlonly
      <br><hr>
@@ -110,17 +110,36 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	throw (CORBA::SystemException, AVConnectErrorEx);
 
 
+    /**
+     *  Negotiate and initialize connection with the Sender object.
+     *  @param receiverObj_p reference of the Receiver Component.
+     *  @return void
+     *  @htmlonly
+     <br><hr>
+     @endhtmlonly
+    */
     virtual void multiConnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
 	throw (CORBA::SystemException, AVConnectErrorEx);
 
+    /**
+     *  Negotiate and initialize connection with the Sender object.
+     *  @param receiverName_p name of the Receiver Component.
+     *  @return void
+     *  @htmlonly
+     <br><hr>
+     @endhtmlonly
+    */
+    virtual void connectByName(const char *receiverName_p)
+	throw (CORBA::SystemException, AVConnectErrorEx);
 
     virtual void disconnect()
 	throw (CORBA::SystemException, AVDisconnectErrorEx);
 
-
     virtual void multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException);
+	throw (CORBA::SystemException, AVDisconnectErrorEx);
 
+    virtual void disconnectByName(const char *receiverName_p)
+	throw (CORBA::SystemException, AVDisconnectErrorEx);
 
 
     /** 
