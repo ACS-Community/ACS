@@ -34,9 +34,10 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include "ACSAlarmSystemInterfaceFactory.h"
 #include <AlarmSystemInterfaceFactory.h>
 #include <AlarmSystemInterface.h>
+#include "ACSAlarmSystemInterfaceFactory.h"
+#include "ACSAlarmSystemInterfaceProxy.h"
 #include "ConfigPropertyGetter.h"
 
 /**
@@ -72,7 +73,9 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 			if (cernImplementationRequested()) {
 				return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
 			} else {
-				return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
+				ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
+				auto_ptr<laserSource::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
+				return asIfAutoPtr;
 			}
 		}
 		
@@ -96,12 +99,7 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		 */
 		static auto_ptr<laserSource::AlarmSystemInterface> createSource() //throws ASIException {
 		{
-			std::cout<<"ACSAlarmSystemInterfaceFactory::createSource()"<<std::endl;
-			if (cernImplementationRequested()) {
-				return laserSource::AlarmSystemInterfaceFactory::createSource();
-			} else {
-				return laserSource::AlarmSystemInterfaceFactory::createSource();
-			}
+			return createSource("UNDEFINED");
 		}
 
 };
