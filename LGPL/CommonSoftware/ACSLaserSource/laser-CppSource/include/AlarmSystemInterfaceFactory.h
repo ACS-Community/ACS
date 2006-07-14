@@ -4,7 +4,7 @@
 #include "FaultState.h"
 #include "AlarmSystemInterface.h"
 #include "AlarmSystemInterfaceProxy.h"
-#include "asiConfigurationConstants.h"
+#include <asiConfigurationConstants.h>
 
 using asiConfigurationConstants::ALARM_SOURCE_NAME;
 
@@ -57,7 +57,7 @@ namespace laserSource
 		 */
 		static auto_ptr<AlarmSystemInterface> createSource(string sourceName) //throws ASIException {
 		{
-			AlarmSystemInterfaceProxy * asIfProxyPtr = new AlarmSystemInterfaceProxy(sourceName);
+			AlarmSystemInterfaceProxy * asIfProxyPtr = new AlarmSystemInterfaceProxy(string sourceName);
 			auto_ptr<AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 			return asIfAutoPtr;
 		}
@@ -69,9 +69,7 @@ namespace laserSource
 		 */
 		static auto_ptr<AlarmSystemInterface> createSource() //throws ASIException {
 		{
-			AlarmSystemInterfaceProxy * asIfProxyPtr = new AlarmSystemInterfaceProxy(ALARM_SOURCE_NAME);
-			auto_ptr<AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
-			return asIfAutoPtr;
+			return createSource("UNDEFINED");
 		}
 	};
 };
