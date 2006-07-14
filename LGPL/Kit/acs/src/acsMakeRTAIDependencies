@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeRTAIDependencies,v 1.24 2005/11/18 15:44:14 mzampare Exp $"
+# "@(#) $Id: acsMakeRTAIDependencies,v 1.25 2006/07/14 08:21:04 bjeram Exp $"
 #
 #************************************************************************
 #   NAME
@@ -97,7 +97,7 @@ then
     echo "PWD :=\$(shell pwd)"   
     echo "CC:=\$(shell \$(RTAI_CONFIG) --cc)" 
     echo "USR_INC := $USR_INC"
-    echo "EXTRA_CFLAGS := \$(shell \$(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration \$(USR_INC) \$(USER_RTAI_CFLAGS)" 
+    echo "EXTRA_CFLAGS := \$(shell \$(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration \$(USR_INC) \$(USER_RTAI_CFLAGS) -DRTAI_HOME" 
 ##########################################################
     
     echo "$components" >> Kbuild
@@ -119,7 +119,7 @@ then
     echo "	\$(AT)echo \"$components\" >> Kbuild"
     #
     echo "	\$(AT)echo \"USR_INC := $USR_INC\"   >> Kbuild"
-    echo "	\$(AT)echo \"EXTRA_CFLAGS := \$(shell \$(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration \$(USR_INC) \$(USER_RTAI_CFLAGS)\" >> Kbuild"
+    echo "	\$(AT)echo \"EXTRA_CFLAGS := \$(shell \$(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration \$(USR_INC) \$(USER_RTAI_CFLAGS) -DRTAI_HOME\" >> Kbuild"
     echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) V=1 modules"
     echo "	\$(AT)rm Kbuild"
     echo "	\$(AT)mv ${modName}.ko ../rtai"

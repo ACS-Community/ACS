@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.159 2006/07/05 14:25:08 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.160 2006/07/14 08:21:04 bjeram Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1292,6 +1292,7 @@ endif
 #
 ifdef RTAI_HOME
 I_PATH := $(I_PATH) -I$(RTAI_HOME)/include -I$(LINUX_HOME)/include 
+CFLAGS := $(CFLAGS) -DRTAI_HOME
 
 ifneq ($(strip $(RTAI_MODULES) $(RTAI_MODULES_L)),)
     CLEAN_TARGET := $(CLEAN_TARGET) clean_rtai
