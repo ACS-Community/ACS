@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Log xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\GChiozzi\Temp\XML\loggingMI.xsd">
+<Log xmlns="urn:schemas-cosylab-com:logging:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-cosylab-com:logging:1.0 ../idl/loggingMI.xsd">
 	<Header Name="NameForXmlDocument" Type="LOGFILE"/>
 	<Trace TimeStamp="2004-07-22T12:12:27.768" File="/alma/ACS-3.1/ACSSW/include/enumpropROImpl.i" Line="111" Routine="ROEnumImpl::~ROEnumImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
 	<Trace TimeStamp="2004-07-22T12:12:27.768" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
