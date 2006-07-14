@@ -85,7 +85,11 @@ bool ConfigPropertyGetter::initializeCorbaServices() {
 	DALaccess::forceDAL(cdbDAL.in());
 	
 	// Get the DAO
-	m_dao = cdbDAL->get_DAO("Alarms/AlarmSystemConfiguration");
+	try {
+		m_dao = cdbDAL->get_DAO("Alarms/AlarmSystemConfiguration");
+	} catch (CDB::RecordDoesNotExist) {
+		return false;
+	}
 	if (m_dao.size()>0) {
 		parseDAO();
 	}
