@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.68 2005/10/28 17:52:24 dfugate Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.69 2006/07/17 22:50:36 dfugate Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -25,86 +25,99 @@
 #include "acsncSupplier.h"
 #include <baciCORBA.h>
 #include <acscommonC.h>
+#include <acsutilTimeStamp.h>
+#include "acsncCDBProperties.h"
+#include <maciContainerImpl.h>
 
 NAMESPACE_BEGIN(nc);
 //-----------------------------------------------------------------------------
 Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* component) : 
-    Helper(channelName),    
+    BaseHelper(channelName),    
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
     reference_m(0),
     component_mp(component),
     typeName_mp(0),
-    count_m(0)
+    count_m(0),
+    okToLog_m(false)
 {     
     ACS_TRACE("Supplier::Supplier");    
     init(static_cast<CORBA::ORB_ptr>(0));
 }
 //-----------------------------------------------------------------------------
 Supplier::Supplier(const char* channelName, CORBA::ORB_ptr orb_mp, acscomponent::ACSComponentImpl* component) : 
-    Helper(channelName),
+    BaseHelper(channelName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
     reference_m(0),
     component_mp(component),
     typeName_mp(0),
-    count_m(0)
+    count_m(0),
+    okToLog_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
     init(orb_mp);
 }
 //-----------------------------------------------------------------------------
 Supplier::Supplier(const char* channelName, int argc, char *argv[], acscomponent::ACSComponentImpl* component) : 
-    Helper(channelName),
+    BaseHelper(channelName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
     reference_m(0),
     component_mp(component),
     typeName_mp(0),
-    count_m(0)
+    count_m(0),
+    okToLog_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
 
     // Create our own ORB which will in turn give us a reference to the Naming
     // Service using either the arguments passed in or environment variables.
-    if(argc!=0 && (orbHelper_mp==0))
+    if(argc!=0 && (orb_mp==0))
 	{
-	orbHelper_mp = new ORBHelper(argc, argv);
+	orb_mp = ORBHelper::getORB();
 	}
-    else if(orbHelper_mp==0)
+    else if(orb_mp==0)
 	{
-	orbHelper_mp = new ORBHelper();
+	orb_mp = ORBHelper::getORB();
 	}
-    // Run the orb on a separate thread
-    orbHelper_mp->runOrb();
 
-    init(orbHelper_mp->getORB());
+    init(orb_mp);
 }
 //-----------------------------------------------------------------------------
 void
 Supplier::init(CORBA::ORB_ptr orb)
     throw(CORBAProblemEx)
 {
+    //check the CDB to see if we use integration logs
+    if(nc::CDBProperties::getIntegrationLogs(channelName_mp)==false)
+	    {
+	    okToLog_m = false;
+	    }
+	else
+	    {
+	    okToLog_m = true;
+	    }
+
     //things we only have to do once.
     event_m.filterable_data.length (1);
     event_m.filterable_data[0].name = acscommon::DEFAULTDATANAME;
 
-    // Resolve the naming service using the orb
-    resolveNamingService(orb);
-
-    // If a notification channel already exists, then use it, otherwise
-    // Create the NC
-    if(resolveNotifyChannel()==false)
+    CosNaming::NamingContext_var naming_context;
+    if(orb_mp!=0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Creating Notification Channel for the '%s' channel!",
-		       channelName_mp));
-	
-	// Resolve the notify factory
-	resolveNotificationFactory();
-	
-	// Create NC
-	createNotificationChannel( );
+	CORBA::Object_var naming_obj = orb->resolve_initial_references ("NameService");
+	CosNaming::NamingContext_var naming_context = CosNaming::NamingContext::_narrow(naming_obj.in());
 	}
+    else
+	{
+	naming_context = ContainerImpl::getContainer()->getService<CosNaming::NamingContext>(acscommon::NAMING_SERVICE_NAME, 
+											     0, 
+											     true);
+	}
+    
+    BaseHelper::init(naming_context.in());
+
     //Finally we can create the supplier admin, consumer proxy, etc.
     createSupplier();
 }
@@ -240,10 +253,6 @@ Supplier::populateHeader(CosNotification::StructuredEvent &event)
 
     //pack the event description into the event
     event.remainder_of_body <<= descrip;
-
-    
-	
-
 }
 //-----------------------------------------------------------------------------
 void 
@@ -396,11 +405,29 @@ Supplier::subscription_change(const CosNotification::EventTypeSeq &added,
     ACE_UNUSED_ARG(added);
     ACE_UNUSED_ARG(removed);
 }
+
+
 //-----------------------------------------------------------------------------
 void
 Supplier::setEventType(const char* typeName)
 {
     typeName_mp = CORBA::string_dup(typeName);
+}
+
+
+
+//-----------------------------------------------------------------------------
+//The following was requested by Heiko Sommer and is needed for integrations.
+void
+Supplier::integrationLog(const std::string& log)
+{
+    if (okToLog_m==true)
+	{
+	//fine, send the log
+	getNamedLogger("IntegrationLogger")->log(Logging::BaseLog::LM_NOTICE,
+						 log,
+						 __FILE__, __LINE__, "Helper::integrationLog");
+	}
 }
 //-----------------------------------------------------------------------------
 
