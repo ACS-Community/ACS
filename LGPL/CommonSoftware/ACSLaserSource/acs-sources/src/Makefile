@@ -63,6 +63,9 @@ LIBRARIES_L     =
 # <brief description of lllll library>
 acsSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter
 acsSource_LIBS = acsutil expat
+
+ACSERRDEF = acsErrTypeAlarmSourceFactory
+
 #
 # Scripts (public and local)
 # ----------------------------
