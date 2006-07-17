@@ -57,7 +57,7 @@ namespace laserSource
 		 */
 		static auto_ptr<AlarmSystemInterface> createSource(string sourceName) //throws ASIException {
 		{
-			AlarmSystemInterfaceProxy * asIfProxyPtr = new AlarmSystemInterfaceProxy(string sourceName);
+			AlarmSystemInterfaceProxy * asIfProxyPtr = new AlarmSystemInterfaceProxy(sourceName);
 			auto_ptr<AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 			return asIfAutoPtr;
 		}
