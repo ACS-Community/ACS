@@ -73,8 +73,9 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		/**
 		 * Init the object of the class: must be called before using the other
 		 * methods of this class otherwise an exception will be thrown.
+		 * Return true if the initialization went ok
 		 */
-		static void init(maci::Manager_ptr manager);
+		static bool init(maci::Manager_ptr manager);
 		
 		/**
 		 * Release the resources: must be called when finished using the

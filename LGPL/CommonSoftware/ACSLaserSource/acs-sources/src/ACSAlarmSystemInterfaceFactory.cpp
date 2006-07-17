@@ -73,7 +73,7 @@ auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
 	}
 }
 
-void ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
+bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
 	if (CORBA::is_nil(manager)) {
 		throw acsErrTypeAlarmSourceFactory::InavalidManagerExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
 	}
@@ -84,4 +84,5 @@ void ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
 	string str = pGetter->getProperty("Implementation");
 	delete pGetter;
 	*m_useACSAlarmSystem = (str=="CERN");
+	return true;
 }
