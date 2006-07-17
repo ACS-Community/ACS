@@ -51,18 +51,18 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        =
+INCLUDES        = ACSAlarmSystemInterfaceFactory.h ACSAlarmSystemInterfaceProxy.h 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsSource
+LIBRARIES       = acsAlSysSource
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-acsSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter
-acsSource_LIBS = acsutil expat
+acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter
+acsAlSysSource_LIBS = acsutil expat
 
 ACSERRDEF = acsErrTypeAlarmSourceFactory
 
