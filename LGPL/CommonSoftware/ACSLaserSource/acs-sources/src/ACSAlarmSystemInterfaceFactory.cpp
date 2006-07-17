@@ -85,6 +85,6 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
 	pGetter = new ConfigPropertyGetter(m_manager);
 	string str = pGetter->getProperty("Implementation");
 	delete pGetter;
-	*m_useACSAlarmSystem = (str=="CERN");
+	*m_useACSAlarmSystem = !(str=="CERN");
 	return true;
 }
