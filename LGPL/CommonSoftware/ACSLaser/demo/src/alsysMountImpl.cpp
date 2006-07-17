@@ -56,7 +56,7 @@ void Mount::sendAlarm(bool active) {
 		int code = 1;
 
 		// create the AlarmSystemInterface
-		auto_ptr<laserSource::AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+		auto_ptr<laserSource::AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
 
 		// create the FaultState
 		auto_ptr<laserSource::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);

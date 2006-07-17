@@ -57,12 +57,12 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       = alsysMountImpl
-LIBRARIES_L     =
+LIBRARIES_L     = 
 
 #
 # <brief description of lllll library>
 alsysMountImpl_OBJECTS  = alsysMountImpl
-alsysMountImpl_LIBS		= demoComponentsStubs
+alsysMountImpl_LIBS		= demoComponentsStubs laserCppUtil laserSource
 #
 # Scripts (public and local)
 # ----------------------------
