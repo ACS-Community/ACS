@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.h,v 1.2 2005/11/18 00:17:58 dfugate Exp $"
+* "@(#) $Id: basencHelper.h,v 1.3 2006/07/17 22:26:58 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNamingC.h>
 #include <acsncC.h>
+#include <acsutilORBHelper.h>
 
 /**
  * Baseclass for all NC objects. Provides common functionality
@@ -200,6 +201,11 @@ class BaseHelper
      * Shows whether the init method has been called yet.
      */
     bool initCalled_m;
+
+    /**
+     *  In case of standalone mode, this must be used!
+     */
+    CORBA::ORB_ptr orb_mp;
 };
 
 #endif /*!_H*/

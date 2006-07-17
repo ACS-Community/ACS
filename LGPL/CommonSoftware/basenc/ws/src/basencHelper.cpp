@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.cpp,v 1.2 2005/11/18 00:17:58 dfugate Exp $"
+* "@(#) $Id: basencHelper.cpp,v 1.3 2006/07/17 22:26:58 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,7 +75,7 @@
 
 #include "basencHelper.h"
 //-----------------------------------------------------------------------------
-static char *rcsId="@(#) $Id: basencHelper.cpp,v 1.2 2005/11/18 00:17:58 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: basencHelper.cpp,v 1.3 2006/07/17 22:26:58 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 //-----------------------------------------------------------------------------
 BaseHelper::BaseHelper(const char* channelName) :
@@ -85,7 +85,8 @@ BaseHelper::BaseHelper(const char* channelName) :
     ifgop_m(CosNotifyChannelAdmin::AND_OP),
     notifyChannel_m(CosNotifyChannelAdmin::EventChannel::_nil()),
     channelName_mp(channelName),
-    initCalled_m(false)
+    initCalled_m(false),
+    orb_mp(0)
 {
     //no-op
 }
