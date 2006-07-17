@@ -30,3 +30,45 @@
 static char *rcsId="@(#) $Id$"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
+ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AlarmSystemInterface() {
+	setSourceName(name);
+	// Get the logger
+	m_logger=Logger::getGlobalLogger();
+}
+
+/**
+ * Push a fault state.
+ * @param state the fault state change to push.
+ */
+ void ACSAlarmSystemInterfaceProxy::push(laserSource::FaultState & state) {
+	char msgA[16];
+	sprintf(msgA,"%d",state.getCode());
+	string msg="Alarm sent: <";
+	msg+=state.getFamily();
+	msg+=",";
+	msg+=state.getMember();
+	msg+=",";
+	msg+=msgA;
+	msg+="> ";
+	msg+=state.getDescriptor();
+	m_logger->log(m_logger->LM_ALERT,msg.c_str());
+}
+
+/**
+ * Push a collection of fault states.
+ * @param states
+ */
+void ACSAlarmSystemInterfaceProxy::push(vector<laserSource::FaultState> & states) {
+	for (unsigned int t=0; t<states.size(); t++) {
+		laserSource::FaultState fs = states[t];
+		push(fs);
+	}
+}
+
+/**
+ * Push the set of active fault states.
+ * @param activeFaults the active fault states.
+ */
+void ACSAlarmSystemInterfaceProxy::pushActiveList(vector<laserSource::FaultState> & activeFaults) {
+	push(activeFaults);
+}

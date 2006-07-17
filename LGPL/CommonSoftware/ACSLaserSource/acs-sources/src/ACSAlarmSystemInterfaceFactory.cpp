@@ -30,9 +30,50 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ACSAlarmSystemInterfaceFactory.h"
 
+bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 
+/**
+ * Create a new instance of an alarm system interface without binding it to any source.
+ * @return the interface instance.
+ * @throws ASIException if the AlarmSystemInterface instance can not be created.
+ */
+auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
+{
+	return createSource("UNDEFINED");
+}
 
+bool ACSAlarmSystemInterfaceFactory::cernImplementationRequested() {
+	if (m_useACSAlarmSystem!=NULL) {
+		return *m_useACSAlarmSystem;
+	}
+	m_useACSAlarmSystem = new bool();
+	ConfigPropertyGetter* pGetter;
+	pGetter = new ConfigPropertyGetter();
+	string str = pGetter->getProperty("Implementation");
+	delete pGetter;
+	*m_useACSAlarmSystem= (str=="CERN");
+		return *m_useACSAlarmSystem;
+}
 
+/**
+ * Create a new instance of an alarm system interface.
+ * @param sourceName the source name.
+ * @return the interface instance.
+ * @throws ASIException if the AlarmSystemInterface instance can not be created.
+ */
+auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
+{
+	std::cout<<"ACSAlarmSystemInterfaceFactory::createSource(<name>)"<<std::endl;
+	if (cernImplementationRequested()) {
+		std::cout<<"Creating LASER source\n";
+		return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
+	} else {
+		std::cout<<"Creating ACS source\n";
+		ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
+		auto_ptr<laserSource::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
+		return asIfAutoPtr;
+	}
+}
 
-
-
+void ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
+}

@@ -57,47 +57,26 @@ class ACSAlarmSystemInterfaceProxy: public laserSource::AlarmSystemInterface {
 	
 	public:
 	
-		ACSAlarmSystemInterfaceProxy(string name): AlarmSystemInterface() {
-			setSourceName(name);
-			// Get the logger
-			m_logger=Logger::getGlobalLogger();
-		}
+		ACSAlarmSystemInterfaceProxy(string name);
 		
 		virtual ~ACSAlarmSystemInterfaceProxy() {}
 		/**
 	 	 * Push a fault state.
 	 	 * @param state the fault state change to push.
 	 	 */
-		virtual void push(laserSource::FaultState & state) {
-			string msg="Alarm sent: <";
-			msg+=state.getFamily();
-			msg+=",";
-			msg+=state.getMember();
-			msg+=",";
-			msg+=state.getCode();
-			msg+="> ";
-			msg+=state.getDescriptor();
-			m_logger->log(m_logger->LM_ALERT,msg.c_str());
-		}
+		virtual void push(laserSource::FaultState & state);
 	
 		/**
 	 	 * Push a collection of fault states.
 	 	 * @param states
 	 	 */
-		virtual void push(vector<laserSource::FaultState> & states) {
-			for (unsigned int t=0; t<states.size(); t++) {
-				laserSource::FaultState fs = states[t];
-				push(fs);
-			}
-		}
+		virtual void push(vector<laserSource::FaultState> & states);
 	
 		/**
 	 	 * Push the set of active fault states.
 	 	 * @param activeFaults the active fault states.
 	 	 */
-		virtual void pushActiveList(vector<laserSource::FaultState> & activeFaults) {
-			push(activeFaults);
-		}
+		virtual void pushActiveList(vector<laserSource::FaultState> & activeFaults);
 };
 
 #endif /*!ACS_ALARM_SYSTEM_INTERFACE_PROXY_H*/

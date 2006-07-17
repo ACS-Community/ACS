@@ -39,6 +39,7 @@
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSAlarmSystemInterfaceProxy.h"
 #include "ConfigPropertyGetter.h"
+#include "maciS.h"
 
 /**
  * The class to create sources and fault states.
@@ -52,8 +53,11 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		// It is true if ACS implementation for sources must be used and
 		// null if it has not yet been initialized
 		// false means CERN implementation
-		static bool* useACSAlarmSystem;
-	
+		static bool* m_useACSAlarmSystem;
+		
+		// The manager
+		maci::Manager_ptr m_manager;
+		
 	private:
 		/** Default constructor.
 		*/
@@ -61,49 +65,26 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		virtual ~ACSAlarmSystemInterfaceFactory();
 	
 	public:
+	
+		static void init(maci::Manager_ptr manager);
+	
 	/**
-	 	 * Create a new instance of an alarm system interface.
-		 * @param sourceName the source name.
-		 * @return the interface instance.
-		 * @throws ASIException if the AlarmSystemInterface instance can not be created.
-		 */
-		static auto_ptr<laserSource::AlarmSystemInterface> createSource(string sourceName) //throws ASIException {
-		{
-			std::cout<<"ACSAlarmSystemInterfaceFactory::createSource(<name>)"<<std::endl;
-			if (cernImplementationRequested()) {
-				return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
-			} else {
-				ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
-				auto_ptr<laserSource::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
-				return asIfAutoPtr;
-			}
-		}
+ 	 * Create a new instance of an alarm system interface.
+	 * @param sourceName the source name.
+	 * @return the interface instance.
+	 * @throws ASIException if the AlarmSystemInterface instance can not be created.
+	 */
+	static auto_ptr<laserSource::AlarmSystemInterface> createSource(string sourceName);
 		
-		static bool cernImplementationRequested() {
-			if (useACSAlarmSystem!=NULL) {
-				return *useACSAlarmSystem;
-			}
-			useACSAlarmSystem = new bool();
-			ConfigPropertyGetter* pGetter;
-			pGetter = new ConfigPropertyGetter();
-			string str = pGetter->getProperty("Implementation");
-			delete pGetter;
-			*useACSAlarmSystem= (str=="CERN");
-			return *useACSAlarmSystem;
-		}
+	static bool cernImplementationRequested();
 
-		/**
-		 * Create a new instance of an alarm system interface without binding it to any source.
-		 * @return the interface instance.
-		 * @throws ASIException if the AlarmSystemInterface instance can not be created.
-		 */
-		static auto_ptr<laserSource::AlarmSystemInterface> createSource() //throws ASIException {
-		{
-			return createSource("UNDEFINED");
-		}
+	/**
+	 * Create a new instance of an alarm system interface without binding it to any source.
+	 * @return the interface instance.
+	 * @throws ASIException if the AlarmSystemInterface instance can not be created.
+	 */
+	static auto_ptr<laserSource::AlarmSystemInterface> createSource();
 
 };
-
-bool* ACSAlarmSystemInterfaceFactory::useACSAlarmSystem=NULL;
 
 #endif /*!ACS_ALARM_SYSTEM_INTERFACE_FACTORY_H*/
