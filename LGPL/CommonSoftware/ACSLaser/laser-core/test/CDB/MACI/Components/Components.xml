@@ -32,8 +32,12 @@
 	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
 	   Code="alma.alarmsystemdemo.MountImpl.MountHelper" 
 	   Container="frodoContainer" />
-        <_ Name="ALARM_SOURCE_ANTENNA"
+  <_ Name="ALARM_SOURCE_ANTENNA"
 	   Type="IDL:alma/alarmsystemdemo/Antenna:1.0"
 	   Code="alma.alarmsystemdemo.AntennaImpl.AntennaHelper" 
 	   Container="frodoContainer" />
+  <_ Name="ALARM_SOURCE_MOUNTCPP"
+	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
+	   Code="alsysMountImpl" 
+	   Container="bilboContainer" />
 </Components>
