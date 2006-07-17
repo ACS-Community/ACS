@@ -46,38 +46,30 @@ typedef struct {
     short actualTag;
 } ParserStruct;
 
-ConfigPropertyGetter::ConfigPropertyGetter():
-	m_corbaInitialized(false), m_properties(NULL) {
-	m_corbaInitialized=initializeCorbaServices();
+ConfigPropertyGetter::ConfigPropertyGetter(maci::Manager_ptr manager):m_properties(NULL) 
+{
+	m_dao = getDAO(manager);
+	if (m_dao.size()>0) {
+		parseDAO();
+	}
 }
 
 ConfigPropertyGetter::~ConfigPropertyGetter() {
-	m_properties->clear();
-	m_properties=NULL;
+	if (m_properties!=NULL) {
+		m_properties->clear();
+		m_properties=NULL;
+	}
 }
 
-bool ConfigPropertyGetter::initializeCorbaServices() {
-	std::cout << "ConfigPropertyGetter::initializeCorbaServices()\n";
-	
-	// Get the ORB    
-    CORBA::ORB_ptr orb = ORBHelper::getORB();
-    if (CORBA::is_nil(orb)) {
-    	std::cout << "Error getting ORB\n";
-    	return false;
-    }
-    
-    maci::Manager_ptr manager = maci::MACIHelper::resolveManager(orb, 0, 0, 0, 0);
-    if (CORBA::is_nil(manager)) {
-    	std::cout << "Error getting Manager\n";
-    	return false;
-    }
+std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
+	std::cout << "ConfigPropertyGetter::getDAO()\n";
     
     CDB::DAL_var cdbDAL;
 	CORBA::ULong status;
 	CORBA::Object_var cdb = manager->get_service(0, "CDB", true, status);
 	if (CORBA::is_nil(cdb.in()))
 	{
-		return false;
+		throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(__FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
 	}
 	
 	cdbDAL = CDB::DAL::_narrow(cdb.in());
@@ -86,17 +78,14 @@ bool ConfigPropertyGetter::initializeCorbaServices() {
 	
 	// Get the DAO
 	try {
-		m_dao = cdbDAL->get_DAO("Alarms/AlarmSystemConfiguration");
+		return cdbDAL->get_DAO("Alarms/AlarmSystemConfiguration");
 	} catch (CDB::RecordDoesNotExist) {
-		return false;
+		return "";
 	}
-	if (m_dao.size()>0) {
-		parseDAO();
-	}
-	return true;
 }
 
 void ConfigPropertyGetter::parseDAO() {
+	std::cout << "Parsing\n";
 	if (m_dao.size()==0) {
 		return;
 	}
@@ -128,9 +117,11 @@ void ConfigPropertyGetter::parseDAO() {
         // Release the memory used by the parser
     XML_ParserFree(p);
     m_properties = commonData.props;
+    std::cout << "Parsing done\n";
 }
 
 std::string ConfigPropertyGetter::getProperty(std::string propName) {
+	std::cout << "getProperty("<<propName<<")\n";
 	if (m_properties==NULL || propName.size()==0) {
 		return "";
 	}
@@ -138,9 +129,11 @@ std::string ConfigPropertyGetter::getProperty(std::string propName) {
 	for (iter=m_properties->begin(); iter!=m_properties->end(); iter++) {
 		Property p = (*iter);
 		if (p.key==propName) {
+			std::cout << "\tProp found: "<<p.value<<"\n";
 			return p.value;
 		}
 	}
+	std::cout << "\tProp NOT found\n";
 	return "";
 }
 

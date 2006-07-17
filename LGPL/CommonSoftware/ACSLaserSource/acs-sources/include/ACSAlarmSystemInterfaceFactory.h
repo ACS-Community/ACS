@@ -40,6 +40,7 @@
 #include "ACSAlarmSystemInterfaceProxy.h"
 #include "ConfigPropertyGetter.h"
 #include "maciS.h"
+#include "acsErrTypeAlarmSourceFactory.h"
 
 /**
  * The class to create sources and fault states.
@@ -47,16 +48,20 @@
  * sources depending of a value of a property of the CDB
  * 
  * The ACS implementation of the source logs a message for each alarm
+ * 
+ * Before using the static methods of this class, the init method must be called otherwise
+ * an exception is thrown.
+ * 
  */
 class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFactory {
 	private:
-		// It is true if ACS implementation for sources must be used and
-		// null if it has not yet been initialized
+		// It is true if ACS implementation for sources must be used,  and
 		// false means CERN implementation
+		// The pointer is null if it has not yet been initialized (this is done by the init method)
 		static bool* m_useACSAlarmSystem;
 		
 		// The manager
-		maci::Manager_ptr m_manager;
+		static maci::Manager_ptr m_manager;
 		
 	private:
 		/** Default constructor.
@@ -65,8 +70,17 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		virtual ~ACSAlarmSystemInterfaceFactory();
 	
 	public:
-	
+		/**
+		 * Init the object of the class: must be called before using the other
+		 * methods of this class otherwise an exception will be thrown.
+		 */
 		static void init(maci::Manager_ptr manager);
+		
+		/**
+		 * Release the resources: must be called when finished using the
+		 * methods of this class
+		 */
+		static void done();
 	
 	/**
  	 * Create a new instance of an alarm system interface.
@@ -76,8 +90,6 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 	 */
 	static auto_ptr<laserSource::AlarmSystemInterface> createSource(string sourceName);
 		
-	static bool cernImplementationRequested();
-
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.

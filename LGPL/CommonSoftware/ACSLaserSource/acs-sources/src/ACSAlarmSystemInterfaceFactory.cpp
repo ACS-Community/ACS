@@ -31,6 +31,14 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include "ACSAlarmSystemInterfaceFactory.h"
 
 bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
+maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
+
+void ACSAlarmSystemInterfaceFactory::done() {
+	delete m_useACSAlarmSystem;
+	m_useACSAlarmSystem=NULL;
+	CORBA::release(m_manager);
+	m_manager=maci::Manager::_nil();
+}
 
 /**
  * Create a new instance of an alarm system interface without binding it to any source.
@@ -42,19 +50,6 @@ auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
 	return createSource("UNDEFINED");
 }
 
-bool ACSAlarmSystemInterfaceFactory::cernImplementationRequested() {
-	if (m_useACSAlarmSystem!=NULL) {
-		return *m_useACSAlarmSystem;
-	}
-	m_useACSAlarmSystem = new bool();
-	ConfigPropertyGetter* pGetter;
-	pGetter = new ConfigPropertyGetter();
-	string str = pGetter->getProperty("Implementation");
-	delete pGetter;
-	*m_useACSAlarmSystem= (str=="CERN");
-		return *m_useACSAlarmSystem;
-}
-
 /**
  * Create a new instance of an alarm system interface.
  * @param sourceName the source name.
@@ -64,7 +59,10 @@ bool ACSAlarmSystemInterfaceFactory::cernImplementationRequested() {
 auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
 	std::cout<<"ACSAlarmSystemInterfaceFactory::createSource(<name>)"<<std::endl;
-	if (cernImplementationRequested()) {
+	if (m_useACSAlarmSystem==NULL) {
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
+	}
+	if (!(*m_useACSAlarmSystem)) {
 		std::cout<<"Creating LASER source\n";
 		return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
 	} else {
@@ -76,4 +74,14 @@ auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
 }
 
 void ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
+	if (CORBA::is_nil(manager)) {
+		throw acsErrTypeAlarmSourceFactory::InavalidManagerExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
+	}
+	m_manager=maci::Manager::_duplicate(manager);
+	m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
+	ConfigPropertyGetter* pGetter;
+	pGetter = new ConfigPropertyGetter(m_manager);
+	string str = pGetter->getProperty("Implementation");
+	delete pGetter;
+	*m_useACSAlarmSystem = (str=="CERN");
 }

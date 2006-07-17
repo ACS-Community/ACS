@@ -37,6 +37,9 @@
 #include <expat.h>
 #include <list>
 
+#include <maciS.h>
+#include "acsErrTypeAlarmSourceFactory.h"
+
 typedef struct {
 	std::string key;
 	std::string value;
@@ -48,12 +51,12 @@ typedef struct {
  */
 class ConfigPropertyGetter {
 	private:
-		bool m_corbaInitialized;
+		// The DAO record with the AS properties
 		std::string m_dao;
-		
+		// The list of the AS props in the DAO record
 		std::list<Property>* m_properties;
 	public:
-		ConfigPropertyGetter();
+		ConfigPropertyGetter(maci::Manager_ptr manager);
 		~ConfigPropertyGetter();
 		
 		/**
@@ -67,10 +70,13 @@ class ConfigPropertyGetter {
 	
 	private:
 		/**
-		 * Initialize CORBA services
-		 * @retutn false in case of error, true otherwise
+		 * Get the DAO for the AS properties
+		 * 
+		 * Return an empty string if the DAO doesn't exist
+		 * (this is not an error because the missing DAO means to use ACS
+		 * implementation)
 		 */
-		bool initializeCorbaServices();
+		std::string getDAO(maci::Manager_ptr manager);
 		
 		/**
 		 * Parse the DAO building the list of the properties
