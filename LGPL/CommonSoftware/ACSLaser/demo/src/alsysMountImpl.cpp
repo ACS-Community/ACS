@@ -23,6 +23,11 @@
 
 #include <alsysMountImpl.h>
 
+#include "ACSAlarmSystemInterfaceFactory.h"
+#include "AlarmSystemInterface.h"
+#include "FaultState.h"
+#include "faultStateConstants.h"
+
 using namespace acscomponent;
 
 Mount::Mount(const ACE_CString &name,maci::ContainerServices * containerServices) : 
@@ -37,9 +42,51 @@ Mount::~Mount()
 }
 
 void Mount::faultMount() throw (CORBA::SystemException ) {
+	sendAlarm(true);
 }
 
 void Mount::terminate_faultMount() throw (CORBA::SystemException ) {
+	sendAlarm(false);
+}
+
+void Mount::sendAlarm(bool active) {
+	// constants we will use when creating the fault
+		string family = "AlarmSource";
+		string member = "ALARM_SOURCE_MOUNT";
+		int code = 1;
+
+		// create the AlarmSystemInterface
+		auto_ptr<laserSource::AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+
+		// create the FaultState
+		auto_ptr<laserSource::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
+
+		// set the fault state's descriptor
+		string stateString;
+		if (active) 
+		{
+			stateString = faultState::ACTIVE_STRING;
+		} else {
+			stateString = faultState::TERMINATE_STRING;
+		}
+		fltstate->setDescriptor(stateString);
+		
+		// create a Timestamp and use it to configure the FaultState
+		Timestamp * tstampPtr = new Timestamp();
+		auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
+		fltstate->setUserTimestamp(tstampAutoPtr);
+
+		// create a Properties object and configure it, then assign to the FaultState
+		Properties * propsPtr = new Properties();
+		propsPtr->setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
+		propsPtr->setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
+		propsPtr->setProperty("TEST_PROPERTY", "TEST_VALUE");
+		auto_ptr<Properties> propsAutoPtr(propsPtr);
+		fltstate->setUserProperties(propsAutoPtr);
+
+		// push the FaultState using the AlarmSystemInterface previously created
+		laserSource::FaultState stateToPush(*fltstate);
+		alarmSource->push(stateToPush);
 }
 
 

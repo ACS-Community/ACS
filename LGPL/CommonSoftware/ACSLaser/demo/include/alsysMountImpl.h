@@ -53,6 +53,12 @@ class Mount: public ACSComponentImpl,
     void faultMount() throw (CORBA::SystemException );
                                                                                                                        
     void terminate_faultMount() throw (CORBA::SystemException );
+    
+    /**
+     * Send an alarm active or inactive depending on the
+     * value of the parameter
+     */
+    void sendAlarm(bool active);
 
 };
 
