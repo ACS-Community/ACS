@@ -56,13 +56,13 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       =
+LIBRARIES       = alsysMountImpl
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-lllll_OBJECTS   =
-
+alsysMountImpl_OBJECTS  = alsysMountImpl
+alsysMountImpl_LIBS		= demoComponentsStubs
 #
 # Scripts (public and local)
 # ----------------------------
