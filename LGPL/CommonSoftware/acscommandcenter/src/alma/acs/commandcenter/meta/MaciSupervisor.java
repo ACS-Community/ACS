@@ -42,11 +42,23 @@ public class MaciSupervisor implements IMaciSupervisor {
     * @param orb the orb to use 
     */
 	protected MaciSupervisor(String managerLoc, ORB orb, Logger log) {
+		this("AcsCommandCenter", managerLoc, orb, log);
+	}
+	
+   /**
+    * Creates a MaciSupervisor running on the given ORB, it will connect to
+    * the specified manager.
+    * 
+    * @param clientName name-prefix like "AcsCommandCenter" or "OMC"
+    * @param managerLoc  the manager corbaloc
+    * @param orb the orb to use 
+    */
+	protected MaciSupervisor(String clientName, String managerLoc, ORB orb, Logger log) {
+		this.name = clientName + ".MaciSupervisor";
 		this.managerLoc = managerLoc;
 		this.orb = orb;
 		this.log = log;
-	}
-	
+	}	
 	 	
    /**
     * start() must be called after construction, before usage.
@@ -763,6 +775,11 @@ public class MaciSupervisor implements IMaciSupervisor {
    	return managerRef;
    }
    
+   /** 
+    * assigned in constructor
+    */
+   protected String name = null;
+   
    /**
     * assigned in constructor
     */
@@ -1210,7 +1227,7 @@ public class MaciSupervisor implements IMaciSupervisor {
       
       public String name() {
          log.finer("name() received");
-         return "AcsCommandCenter.MaciSupervisor";
+         return name;
       }
 
       public String authenticate(String arg0) {

@@ -50,8 +50,9 @@ public class MaciSupervisorFactory {
 	/// ----------------- Internal --------------------- ///
 	////////////////////////////////////////////////////////
 
-   private Map managerLoc2instance = new WeakHashMap();
+   private Map<String, IMaciSupervisor> managerLoc2instance = new WeakHashMap<String, IMaciSupervisor>();
    
+   private String clientName = null;
    private ORB orb = null;
    private Logger factoryLogger = null;
 
@@ -61,12 +62,25 @@ public class MaciSupervisorFactory {
 	/// ------------------- API ------------------------ ///
 	////////////////////////////////////////////////////////
 
-   
+
+   /**
+	 * Creates a Firestarter for a client with the specified name (like "AcsCommandCenter"
+	 * or "OMC"). The new factory will pass the given
+    * ORB to new MaciSupervisors.
+    */
+	public MaciSupervisorFactory(String clientName, Logger factoryLogger, ORB orb) {
+		this.clientName = clientName;
+		this.orb = orb;
+		this.factoryLogger = factoryLogger;
+	}
+	
    /**
     * Creates a factory. The new factory will pass the given
     * ORB to new MaciSupervisors.
+    * @deprecated always use other constructor with clientName param
     */
 	public MaciSupervisorFactory(Logger factoryLogger, ORB orb) {
+		this.clientName = "";
 		this.orb = orb;
 		this.factoryLogger = factoryLogger;
 	}
@@ -76,9 +90,9 @@ public class MaciSupervisorFactory {
 	 * Stops all MaciSupervisors that have been created through this factory.
 	 */
    synchronized public void stop() {
-   	Iterator iter = managerLoc2instance.values().iterator();
+   	Iterator<IMaciSupervisor> iter = managerLoc2instance.values().iterator();
    	while (iter.hasNext()) {
-   		IMaciSupervisor s = (IMaciSupervisor) iter.next(); 
+   		IMaciSupervisor s = iter.next(); 
    		try {
 				s.stop();
 			} catch (Exception exc) {
@@ -116,11 +130,11 @@ public class MaciSupervisorFactory {
 	synchronized public IMaciSupervisor giveMaciSupervisor(String managerLoc, Logger logger) {
 		
       IMaciSupervisor ret = null;
-      ret = (IMaciSupervisor) managerLoc2instance.get(managerLoc);
+      ret = managerLoc2instance.get(managerLoc);
 
       // see if instance needs to be created
       if (ret == null) {
-			ret = new MaciSupervisor(managerLoc, orb, logger);
+			ret = new MaciSupervisor(clientName, managerLoc, orb, logger);
 			managerLoc2instance.put(managerLoc, ret);
 			
       } else {
