@@ -25,6 +25,8 @@
 
 #include "vltPort.h"
 
+#include "ConfigPropertyGetter.h"
+
 static char *rcsId="@(#) $Id$"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 

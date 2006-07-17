@@ -38,7 +38,6 @@
 #include <AlarmSystemInterface.h>
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSAlarmSystemInterfaceProxy.h"
-#include "ConfigPropertyGetter.h"
 #include "maciS.h"
 #include "acsErrTypeAlarmSourceFactory.h"
 
