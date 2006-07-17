@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
-import alma.acs.component.client.ComponentClient;
+import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.util.AcsLocations;
@@ -47,7 +47,7 @@ public class Firestarter {
 
 	protected AcsCorba acsCorba = null;
 	protected POA rootPoa = null;
-	protected ComponentClient componentClient = null;
+	protected AdvancedComponentClient componentClient = null;
 	protected MaciSupervisorFactory maciSupervisorFactory = null;
 
 	protected Logger firestarterLog = null;
@@ -193,27 +193,12 @@ public class Firestarter {
 	 * 
 	 * @throws Exception if creation of component client fails
 	 */
-	protected ComponentClient createComponentClient (Logger compclientLog, String managerLoc) throws Exception {
-		ComponentClient ret = new MyComponentClient(compclientLog, managerLoc, clientName+".ComponentClient");
+	protected AdvancedComponentClient createComponentClient (Logger compclientLog, String managerLoc) throws Exception {
+		AdvancedComponentClient ret;
+		ret = new AdvancedComponentClient(compclientLog, managerLoc, clientName+".ComponentClient", acsCorba);
 		return ret;
 	}
 
-
-	/**
-	 * ComponentClient extension that does not create its own AcsCorba instance, but
-	 * instead works with the AcsCorba instance defined in Firestarter.
-	 */
-	protected class MyComponentClient extends ComponentClient {
-
-		public MyComponentClient(Logger logger, String managerLoc, String clientName) throws Exception {
-			super(logger, managerLoc, clientName);
-		}
-
-		protected POA initAcsCorba () throws Exception {
-			return rootPoa;
-		}
-
-	}
 
 	/**
 	 * Returns the {@link ContainerServices}. Note: {@link #prepareContainerServices()}
@@ -259,7 +244,7 @@ public class Firestarter {
 		 */
 		prepareAcsCorba();
 
-		maciSupervisorFactory = new MaciSupervisorFactory(factoryLog, acsCorba.getORB());
+		maciSupervisorFactory = new MaciSupervisorFactory(clientName, factoryLog, acsCorba.getORB());
 	}
 
 	/**
@@ -312,7 +297,7 @@ public class Firestarter {
 	 */
 	protected void prepareAcsCorba () throws Exception {
 
-		if (this.rootPoa != null) {
+		if (acsCorba != null && acsCorba.isInitialized()) {
 			return; // already prepared
 		}
 
@@ -322,9 +307,8 @@ public class Firestarter {
 		
 		acsCorba = new AcsCorba(acscorbaLog);
 		acsCorba.setPortOptions(orbPort, orbPortSearchRetry);
-
 		boolean isAdmin = true;
-		rootPoa = acsCorba.initCorbaForClient(isAdmin);
+		acsCorba.initCorbaForClient(isAdmin);
 	}
 
 
