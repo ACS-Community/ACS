@@ -1,4 +1,4 @@
-# @(#) $Id: CDBProperties.py,v 1.11 2006/03/08 18:53:20 dfugate Exp $
+# @(#) $Id: CDBProperties.py,v 1.12 2006/07/18 21:52:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - lots
 '''
 
-__revision__ = "$Id: CDBProperties.py,v 1.11 2006/03/08 18:53:20 dfugate Exp $"
+__revision__ = "$Id: CDBProperties.py,v 1.12 2006/07/18 21:52:57 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -136,6 +136,9 @@ def get_channel_qofs_props(channel_name):
     ($ACS_CDB/CDB/MACI/EventChannels/channel_name/channel_name.xml), this
     function returns the channels quality of service properties in their CORBA
     format.
+    
+    DWF - check q of s and admin properties implemented with each
+    new version of TAO and uncomment properties accordingly.
     '''
     prop_seq = []
     

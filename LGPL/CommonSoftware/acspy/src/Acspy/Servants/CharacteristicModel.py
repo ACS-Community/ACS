@@ -1,4 +1,4 @@
-# @(#) $Id: CharacteristicModel.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $
+# @(#) $Id: CharacteristicModel.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: CharacteristicModel.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $"
+# "@(#) $Id: CharacteristicModel.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -32,10 +32,10 @@
 This module provides an implementation of the CharacteristicModel IDL interface:
 
 TODO:
-- descriptor implementation is bad.
+- replace dummie implementations of all methods.
 '''
 
-__revision__ = "$Id: CharacteristicModel.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $"
+__revision__ = "$Id: CharacteristicModel.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
@@ -121,7 +121,5 @@ class CharacteristicModel:
         '''
         return CORBA.Object._nil
 #--------------------------------------------------------------------------
-if __name__ == "__main__":
-    joe = CharacteristicModel()
-    print "done"
+
 

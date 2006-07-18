@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.23 2006/01/18 23:39:58 dfugate Exp $
+# @(#) $Id: Container.py,v 1.24 2006/07/18 21:52:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.23 2006/01/18 23:39:58 dfugate Exp $"
+# "@(#) $Id: Container.py,v 1.24 2006/07/18 21:52:57 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.23 2006/01/18 23:39:58 dfugate Exp $"
+__revision__ = "$Id: Container.py,v 1.24 2006/07/18 21:52:57 dfugate Exp $"
 
 
 #--REGULAR IMPORTS-------------------------------------------------------------
@@ -334,7 +334,7 @@ class Container(maci__POA.Container, BaseClient):
                                             interfaces  #stringSeq interfaces;
                                             )
 
-	#Make a copy of everything for the container
+	    #Make a copy of everything for the container
         self.compHandles[temp[HANDLE]] = temp[NAME]
         self.components[name] = temp
 

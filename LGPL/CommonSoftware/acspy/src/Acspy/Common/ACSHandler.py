@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.5 2006/04/03 16:32:31 dfugate Exp $
+# @(#) $Id: ACSHandler.py,v 1.6 2006/07/18 21:52:57 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.5 2006/04/03 16:32:31 dfugate Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.6 2006/07/18 21:52:57 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -154,14 +154,8 @@ class ACSHandler(logging.handlers.BufferingHandler):
             #and there's a chance the CORBA logger will never be available.
             #due to this fact, the buffer is sent to a file handler instead!
             else:
-                
-                #sanity check
-                if self.file_handler == None:
-                    #create the file handler on demand only
-                    self.initFileHandler()
-                
-                for record in self.buffer():
-                    self.file_handler.handle(record)
+                for record in self.buffer:
+                    self.flushToFile(record)
                 
                 self.buffer = []
                 #OK to return true because the buffer is now empty
@@ -170,12 +164,34 @@ class ACSHandler(logging.handlers.BufferingHandler):
         #for some reason or another it's not OK to flush the buffer.
         return 0
     #--------------------------------------------------------------------------
+    def flushToFile(self, record):
+        '''
+        Helper method.
+        Sends a single record to file.
+        
+        Parameters:
+            - record a Logging record
+            
+        Returns: Nothing
+        
+        Raises: ???
+        '''
+        #sanity check
+        if self.file_handler == None:
+            #create the file handler on demand only
+            self.initFileHandler()
+            
+        self.file_handler.handle(record)    
+    #--------------------------------------------------------------------------
     def flush(self):
         '''
         Overridden
         '''
         for record in self.buffer:
-            self.sendLog(record)
+            try:
+                self.sendLog(record)
+            except:
+                self.flushToFile(record)
 
         self.buffer = []
     

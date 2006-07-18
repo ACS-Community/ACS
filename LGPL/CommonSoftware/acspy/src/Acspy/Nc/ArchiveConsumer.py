@@ -1,4 +1,4 @@
-# @(#) $Id: ArchiveConsumer.py,v 1.4 2006/01/27 19:07:07 dfugate Exp $
+# @(#) $Id: ArchiveConsumer.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -27,7 +27,7 @@ TODO:
 - everything
 '''
 
-__revision__ = "$Id: ArchiveConsumer.py,v 1.4 2006/01/27 19:07:07 dfugate Exp $"
+__revision__ = "$Id: ArchiveConsumer.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -89,17 +89,17 @@ class ArchiveConsumer (Consumer):
         Raises: Nothing
         '''
         return "*"
-
+        
     #------------------------------------------------------------------------------
     def getNotificationFactoryName(self):
         '''
         Overridden.
-
+        
         Parameters: None
         
         Returns: pointer to a constant string. Normally
         acscommon::ARCHIVE_NOTIFICATION_FACTORY_NAME
-
+        
         Raises: Nothing
         '''
         return acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME
@@ -117,13 +117,13 @@ class ArchiveConsumer (Consumer):
         #extract useful info
         timeStamp = event.filterable_data[0].value.value()
         value =     event.filterable_data[1].value.value()
-
+        
         t_name_list = event.header.fixed_header.event_name.split(':')
-
+        
         container = t_name_list[0]
-	device =    t_name_list[1]
-	parameter = t_name_list[2]
-	
+        device =    t_name_list[1]
+        parameter = t_name_list[2]
+	    
         try:
             #invoke the user-defined function on it
             self.handler(timeStamp, device, parameter, value)

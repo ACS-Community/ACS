@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# @(#) $Id: NamingService.py,v 1.4 2005/06/13 18:04:24 dfugate Exp $
+# @(#) $Id: NamingService.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +20,7 @@
 #    License along with this library; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
-__revision__ = "$Id: NamingService.py,v 1.4 2005/06/13 18:04:24 dfugate Exp $"
+__revision__ = "$Id: NamingService.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
 
 '''
 TODO:

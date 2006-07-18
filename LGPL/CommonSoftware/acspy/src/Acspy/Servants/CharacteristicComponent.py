@@ -1,4 +1,4 @@
-# @(#) $Id: CharacteristicComponent.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $
+# @(#) $Id: CharacteristicComponent.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: CharacteristicComponent.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $"
+# "@(#) $Id: CharacteristicComponent.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -35,7 +35,7 @@ TODO:
 - descriptor implementation is bad.
 '''
 
-__revision__ = "$Id: CharacteristicComponent.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $"
+__revision__ = "$Id: CharacteristicComponent.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
@@ -96,7 +96,7 @@ class CharacteristicComponent(ACSComponent, CharacteristicModel):
         CosPropertyService::PropertySet characteristics;
         /** The PropertySet object that allows access to all characteritics */
 		
-	};
+	    };
 
         '''
         return ACS.CharacteristicComponentDesc(self._corbaRef,
@@ -104,7 +104,3 @@ class CharacteristicComponent(ACSComponent, CharacteristicModel):
                                                (),
                                                CORBA.Object._nil)
 #--------------------------------------------------------------------------
-if __name__ == "__main__":
-    joe = CharacteristicComponent()
-    print "done"
-
