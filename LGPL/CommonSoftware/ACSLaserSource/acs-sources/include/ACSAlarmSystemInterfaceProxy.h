@@ -34,10 +34,9 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include <logging.h>
 #import <AlarmSystemInterface.h>
 #import <FaultState.h>
-#import <loggingLogger.h>
-#import <loggingACEMACROS.h>
 
 using namespace Logging;
 
@@ -50,7 +49,7 @@ class ACSAlarmSystemInterfaceProxy: public laserSource::AlarmSystemInterface {
 		/**
 		 * The logger
 		 */
-		Logger::LoggerSmartPtr m_logger;
+		LoggingProxy* m_logger;
 	
 	virtual void close() {
 	}
