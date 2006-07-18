@@ -46,7 +46,10 @@ AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string theSourceName)
 AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy()
 {
 	cout << "AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy(): entering...\n";
-	delete laserPublisher;
+	if (laserPublisher!=NULL) {
+		delete laserPublisher;
+		laserPublisher=NULL;
+	}
 	cout << "AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy(): exiting...\n";
 }
 
@@ -199,7 +202,7 @@ void AlarmSystemInterfaceProxy::commonPush(vector<FaultState> & states, bool bac
 
 	// set the ASIMessage's version
 	asiMessage.setVersion(configuration.getASIVersion());
-
+	
 	// publish the ASIMessage to the alarm server
 	publishMessageDLL(asiMessage);
 	//publishMessage(asiMessage);
