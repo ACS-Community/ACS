@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2005/11/22 21:41:03 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/07/18 16:27:21 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -53,7 +53,7 @@ xxxxx_LIBS      =
 # ---------------------------------
 INCLUDES        = ASIMessage.h FaultState.h AlarmSystemInterfaceProxy.h AlarmSystemInterface.h \
     AlarmSystemInterfaceFactory.h faultStateConstants.h  ASIConfiguration.h \
-    AlarmPublisher.h AcsAlarmPublisher.h AlarmSupplier.h
+    AlarmPublisher.h AcsAlarmPublisher.h AlarmSupplier.h asiConfigurationConstants.h
 
 #
 # Libraries (public and local)
