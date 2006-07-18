@@ -67,9 +67,11 @@ public class ComponentClient
     AcsManagerProxy m_acsManagerProxy;
             
     /**
-     * The instance of {@link AcsCorba} to be used by this class for all CORBA activities. 
+     * The instance of {@link AcsCorba} to be used by this class for all CORBA activities.
+     * DO NOT USE THIS FIELD FROM OUTSIDE THE PACKAGE alma.acs.component.client!!! IT WILL BECOME PACKAGE-PRIVATE IN ACS 6.0!!
+     * TODO: change visibility!!! Before ACS 5.0.4 it was protected, but should now be invisible to subclasses other than AdvancedComponentClient.
      */
-    final AcsCorba acsCorba;
+    public final AcsCorba acsCorba;
     
     final boolean ownAcsCorba;
     
