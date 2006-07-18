@@ -708,7 +708,21 @@ public class AcsManagerProxy
 		}
 	}
 
-	
+	/**
+	 * @deprecated  remove this method once weak component references are implemented.
+	 * @since ACS 5.0.4
+	 */
+	public int force_release_component(int clientHandle, String curl) {
+		try {
+			int clientNumber = m_manager.force_release_component(clientHandle, curl);
+			return clientNumber;
+
+		} catch (RuntimeException exc) {
+			handleException(exc);
+			throw exc;
+		}
+	}
+
 
 	/////////////////////////////////////////////////////////////
 	// other (interaction with container)
@@ -752,4 +766,7 @@ public class AcsManagerProxy
 		AcsManagerProxy inst = new AcsManagerProxy(m_managerLoc, m_orb, m_logger);
 		return inst;
 	}
+
+
+
 }
