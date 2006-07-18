@@ -58,7 +58,7 @@ public class AdvancedComponentClient extends ComponentClient {
 	
 	/**
 	 * Factory method for additional container service instances.
-	 * This method should only be used by specialized clients such as the OMC GUI, 
+	 * This method should only be used by specialized clients such as the OMC GUI
 	 * which needs independent ContainerServices instances for the plug-ins it runs.
 	 * @param clientName  name for {@link ContainerServices#getName()}
 	 * @param csLogger  logger to be used internally by the new ContainerServices instance 
@@ -88,16 +88,37 @@ public class AdvancedComponentClient extends ComponentClient {
     	}
     }
 	
+    
+    /**
+     * "un-factory" method which inverts {@link #createContainerServices(String, Logger)}.
+     * @param cs ContainerServices instance created by {@link #createContainerServices(String, Logger)}.
+     */
+    public void destroyContainerServices(ContainerServices cs) throws ContainerException {
+    	// todo- check if cs was created by this instance
+    	try {
+			ContainerServicesImpl csImpl = (ContainerServicesImpl) cs;
+			m_acsManagerProxy.shutdownNotify();
+			csImpl.releaseAllComponents();
+			((CleaningDaemonThreadFactory) csImpl.getThreadFactory()).cleanUp();							
+			m_acsManagerProxy.logoutFromManager();
+		} catch (Throwable thr) {
+			throw new ContainerException("Failed to destroy additional container services instance", thr);
+		}
+    }
+    
+    
 	/**
 	 * Use only when direct access to the ORB is absolutely necessary. 
 	 * We try to not expose the ORB to applications. 
 	 *  
 	 * @return ORB
 	 */
-	public ORB getORB()
-	{
+	public ORB getORB() {
 		return acsCorba.getORB();
 	}
 	
+	public AcsCorba getAcsCorba() {
+		return acsCorba;
+	}
 
 }
