@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.52 2005/12/14 19:33:18 dfugate Exp $" 
+# "@(#) $Id: Makefile,v 1.53 2006/07/18 16:52:43 sharring Exp $" 
 #
 # Makefile of ........
 #
@@ -62,7 +62,7 @@ EXECUTABLES_L   =
 
 loggingService_OBJECTS = loggingService loggingACSLogFactory_i loggingACSStructuredPushSupplier loggingACSLog_i \
 			loggingHelper 
-loggingService_LIBS = logging
+loggingService_LIBS = logging basenc
 
 loggingClient_OBJECTS = loggingClient loggingHelper 
 loggingClient_LIBS = logging

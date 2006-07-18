@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.50 2006/06/20 21:47:44 dfugate Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.51 2006/07/18 16:52:43 sharring Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -507,9 +507,7 @@ LoggingService::create_suppliers ()
 {
   m_logging_supplier = new ACSStructuredPushSupplier ();
   ACE_ASSERT (m_logging_supplier);
-
-  m_logging_supplier->connect (this->m_logging_supplier_admin.in ()
-			       );
+  m_logging_supplier->init(this->m_naming_context.in());
 }
 
 /*****************************************************************/
@@ -583,6 +581,9 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.51  2006/07/18 16:52:43  sharring
+// Modifications to make loggingACSStructuredPushSupplier extend basencSupplier
+//
 // Revision 1.50  2006/06/20 21:47:44  dfugate
 // Use pre-existing logging channel if it exists.
 //

@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingACSStructuredPushSupplier.h,v 1.1 2005/09/09 21:33:45 dfugate Exp $"
+ * "@(#) $Id: loggingACSStructuredPushSupplier.h,v 1.2 2006/07/18 16:52:43 sharring Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -35,9 +35,9 @@
 
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
+#include <basencSupplier.h>
 
-class ACSStructuredPushSupplier : public POA_CosNotifyComm::StructuredPushSupplier,
-				  public PortableServer::RefCountServantBase
+class ACSStructuredPushSupplier : public BaseSupplier
 {
     // = TITLE
     //   StructuredPushSupplier
@@ -47,42 +47,56 @@ class ACSStructuredPushSupplier : public POA_CosNotifyComm::StructuredPushSuppli
     //
   public:
     // = Initialization and Termination code
-    ACSStructuredPushSupplier (void);
+    ACSStructuredPushSupplier ();
     // Constructor.
     
-    void connect (CosNotifyChannelAdmin::SupplierAdmin_ptr supplier_admin);
+    //void connect (CosNotifyChannelAdmin::SupplierAdmin_ptr supplier_admin);
     // Connect the Supplier to the EventChannel.
     // Creates a new proxy supplier and connects to it.
     
-    void disconnect ();
+    //void disconnect ();
     // Disconnect from the supplier.
     
     virtual void send_event (const CosNotification::StructuredEvent& event);
     // Send one event.
     
     
-    // = NotifySubscribe
-    virtual void subscription_change (const CosNotification::EventTypeSeq & added,
-				      const CosNotification::EventTypeSeq & removed)
-	throw (CORBA::SystemException,
-	       CosNotifyComm::InvalidEventType);
-    
-    // = StructuredPushSupplier method
-    virtual void disconnect_structured_push_supplier ()
-	throw (CORBA::SystemException);
-
   protected:
+/*
     // = Data members
     CosNotifyChannelAdmin::StructuredProxyPushConsumer_var proxy_consumer_;
     // The proxy that we are connected to.
     
     CosNotifyChannelAdmin::ProxyID proxy_consumer_id_;
     // This supplier's id.
+*/
     
-    // = Protected Methods
     virtual ~ACSStructuredPushSupplier ();
     // Destructor
-    
+
+	/**
+ 	 * Overridden.
+	 */
+	virtual const char* getChannelKind() 
+	{ 
+		return acscommon::LOGGING_CHANNEL_KIND; 
+	}
+
+	virtual const char* getEventType()
+	{ 
+		return acscommon::LOGGING_TYPE;
+	}
+
+	virtual const char* getChannelDomain()
+	{
+		return acscommon::LOGGING_DOMAIN;
+	}
+
+	virtual const char* getNotificationFactoryName()
+	{
+		return acscommon::LOGGING_NOTIFICATION_FACTORY_NAME;
+	}
+
 };
 
 #endif
