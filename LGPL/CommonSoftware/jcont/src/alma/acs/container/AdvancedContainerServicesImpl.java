@@ -88,5 +88,11 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
 	}
     
 
+    /* TODO: remove this method once weak component references are implemented.
+     * @see alma.acs.container.AdvancedContainerServices#forceReleaseComponent(java.lang.String)
+     */
+    public void forceReleaseComponent(String curl) throws ContainerException {
+    	containerServicesImpl.m_acsManagerProxy.force_release_component(containerServicesImpl.m_clientHandle, curl);
+    }
 }
 
