@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #------------------------------------------------------------------------------
-# @(#) $Id: ACSStartContainerPy.py,v 1.4 2005/06/13 18:04:24 dfugate Exp $
+# @(#) $Id: ACSStartContainerPy.py,v 1.5 2006/07/18 20:11:39 dfugate Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -26,12 +26,23 @@
 Starts a Python Container.
 '''
 #------------------------------------------------------------------------------
-__version__ = "$Id: ACSStartContainerPy.py,v 1.4 2005/06/13 18:04:24 dfugate Exp $"
+__version__ = "$Id: ACSStartContainerPy.py,v 1.5 2006/07/18 20:11:39 dfugate Exp $"
 #------------------------------------------------------------------------------
+from Acspy.Util.ACSCorba import getManager
 from Acspy.Container import Container
+
 from sys import argv
+from time import sleep
+
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
+    
+    #this ensures that we don't log into manager until it's really
+    #up and running.
+    while getManager()==None:
+        print "Failed to obtain the manager reference. Will keep trying!"
+        sleep(3)
+    
     g = Container(argv[1])
     if argv.count("-interactive")==0 and argv.count("-i")==0:
         g.run()
