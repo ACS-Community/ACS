@@ -24,8 +24,6 @@ package alma.acs.container.archive;
 
 import junit.framework.TestCase;
 
-import alma.acs.testsupport.tat.TATJUnitRunner;
-
 /**
  * @author hsommer Jun 6, 2003 1:58:43 PM
  */
@@ -74,11 +72,5 @@ public class UidTest extends TestCase
 		catch (UniqueIdException e)
 		{
 		}
-	}
-	
-	public static void main(String[] args)
-	{
-		TATJUnitRunner.run(UidTest.class);
-	}
-
+	}	
 }
