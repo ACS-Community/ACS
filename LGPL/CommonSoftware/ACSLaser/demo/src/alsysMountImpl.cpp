@@ -42,18 +42,15 @@ Mount::~Mount()
 }
 
 void Mount::faultMount() throw (CORBA::SystemException ) {
-	sendAlarm(true);
+	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNT",1,true);
 }
 
 void Mount::terminate_faultMount() throw (CORBA::SystemException ) {
-	sendAlarm(false);
+	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNT",1,false);
 }
 
-void Mount::sendAlarm(bool active) {
+void Mount::sendAlarm(std::string family, std::string member, int code, bool active) {
 	// constants we will use when creating the fault
-		string family = "AlarmSource";
-		string member = "ALARM_SOURCE_MOUNT";
-		int code = 1;
 
 		// create the AlarmSystemInterface
 		auto_ptr<laserSource::AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
