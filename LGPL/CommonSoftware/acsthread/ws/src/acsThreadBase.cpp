@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.28 2006/07/06 09:13:38 vwang Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.29 2006/07/18 08:09:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -592,14 +592,7 @@ ThreadManagerBase::~ThreadManagerBase() {
      */
     for (unsigned int n=thrNum; n > 0 ; n--)
 	{
-        try
-          {
-	  delete threads_m.at(n-1);
-          }
-        catch(std::out_of_range) 
-          {
-            // do nothing
-          }
+	  delete threads_m[n-1];
 	} /* end for n */
 //    for (unsigned int n=0; n < thrNum ; n++)
 //	{
@@ -907,8 +900,13 @@ bool ThreadManagerBase::restartDead() {
 int ThreadManagerBase::join(const ACE_thread_t& tid) {
 
   ACS_TRACE("ACS::ThreadManagerBase::join");
-
+#ifndef MAKE_VXWORKS
   return ACE_Thread::join(tid);
+#else
+  ACE_UNUSED_ARG(tid);
+#warning VxWorks does not support join!!
+  return -1;
+#endif
 }
 
 /////////////////////////////////////////////////
