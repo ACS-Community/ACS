@@ -97,7 +97,7 @@ public class ContainerServicesImpl implements ContainerServices
 	private final Map<String, ComponentDescriptor> m_componentDescriptorMap;
 	
 	// the handle that the manager has assigned to the component to whom this ContainerServices object belongs
-	private final int m_clientHandle;
+	protected final int m_clientHandle;
     
     // the component name. "Client" refers to the component acting as a client to the manager 
 	private final String m_clientName;
