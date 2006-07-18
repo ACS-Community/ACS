@@ -62,7 +62,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 alsysMountImpl_OBJECTS  = alsysMountImpl
-alsysMountImpl_LIBS		= demoComponentsStubs laserCppUtil laserSource
+alsysMountImpl_LIBS		= demoComponentsStubs laserCppUtil laserSource acsnc ACSJMSMessageEntityStubs
 #
 # Scripts (public and local)
 # ----------------------------
