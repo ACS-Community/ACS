@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testSupplier.cpp,v 1.2 2005/12/19 23:54:30 dfugate Exp $"
+* "@(#) $Id: testSupplier.cpp,v 1.3 2006/07/18 16:32:53 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,21 +55,19 @@
 // #include "vltPort.h"
 
 #include "testSupplier.h"
-#include "acsncORBHelper.h"
+#include "acsutilORBHelper.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: testSupplier.cpp,v 1.2 2005/12/19 23:54:30 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: testSupplier.cpp,v 1.3 2006/07/18 16:32:53 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 int main(int argc, char *argv[])
 {
-    nc::ORBHelper *oh = new nc::ORBHelper();
-    oh->runOrb();
-    CORBA::ORB_ptr orb = oh->getORB();
+    CORBA::ORB_ptr orb = ORBHelper::getORB();
     CORBA::Object_var naming_obj = orb->resolve_initial_references ("NameService");
     CosNaming::NamingContext_var naming_context = CosNaming::NamingContext::_narrow(naming_obj.in());
  
@@ -83,13 +81,10 @@ int main(int argc, char *argv[])
 
     joe->disconnect();
 
-    delete oh;
-
     //G. Chiozzi complained about missing logs during various runs
     //of this test. They come from logging which will not print logs
     //to stdout if everything does not have a chance to shutdown
     //properly. This sleep should be considered a temporary solution.
     ACE_OS::sleep(3);
     return 0;
-
 }
