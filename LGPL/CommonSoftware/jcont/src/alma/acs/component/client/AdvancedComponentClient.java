@@ -22,6 +22,8 @@
 
 package alma.acs.component.client;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
@@ -43,6 +45,8 @@ import alma.acs.container.corba.AcsCorba;
  */
 public class AdvancedComponentClient extends ComponentClient {
 
+	private Map<ContainerServicesImpl, AcsManagerProxy> additionalContainerServices = new HashMap<ContainerServicesImpl, AcsManagerProxy>();
+	
 	public AdvancedComponentClient(Logger logger, String managerLoc, String clientName) throws Exception {
 		super(logger, managerLoc, clientName);
 	}
@@ -60,6 +64,9 @@ public class AdvancedComponentClient extends ComponentClient {
 	 * Factory method for additional container service instances.
 	 * This method should only be used by specialized clients such as the OMC GUI
 	 * which needs independent ContainerServices instances for the plug-ins it runs.
+	 * <p>
+	 * Make sure to call {@link #destroyContainerServices(ContainerServices)} when done with the new CS.
+	 *  
 	 * @param clientName  name for {@link ContainerServices#getName()}
 	 * @param csLogger  logger to be used internally by the new ContainerServices instance 
 	 *                  (which is different from the Logger returned in {@link ContainerServices#getLogger()}). 
@@ -79,7 +86,8 @@ public class AdvancedComponentClient extends ComponentClient {
 	        acsManagerProxy.loginToManager(managerClient, false);
 	        int clientHandle = acsManagerProxy.getManagerHandle();
 	        
-	    	ContainerServices cs = new ContainerServicesImpl(acsManagerProxy, acsCorba.getRootPOA(), acsCorba, csLogger, clientHandle, clientName, null, threadFactory);
+	        ContainerServicesImpl cs = new ContainerServicesImpl(acsManagerProxy, acsCorba.getRootPOA(), acsCorba, csLogger, clientHandle, clientName, null, threadFactory);
+	    	additionalContainerServices.put(cs, acsManagerProxy);
 	    	return cs;
     	} catch (ContainerException ex) {
     		throw ex;
@@ -94,13 +102,17 @@ public class AdvancedComponentClient extends ComponentClient {
      * @param cs ContainerServices instance created by {@link #createContainerServices(String, Logger)}.
      */
     public void destroyContainerServices(ContainerServices cs) throws ContainerException {
-    	// todo- check if cs was created by this instance
+    	if (!additionalContainerServices.containsKey(cs)) {
+    		throw new ContainerException("The given ContainerServices object was not created by this AdvancedComponentClient!");
+    	}
     	try {
 			ContainerServicesImpl csImpl = (ContainerServicesImpl) cs;
-			m_acsManagerProxy.shutdownNotify();
+			AcsManagerProxy acsManagerProxy = additionalContainerServices.get(cs);
+			acsManagerProxy.shutdownNotify();
 			csImpl.releaseAllComponents();
 			((CleaningDaemonThreadFactory) csImpl.getThreadFactory()).cleanUp();							
-			m_acsManagerProxy.logoutFromManager();
+			acsManagerProxy.logoutFromManager();
+			additionalContainerServices.remove(cs);
 		} catch (Throwable thr) {
 			throw new ContainerException("Failed to destroy additional container services instance", thr);
 		}
