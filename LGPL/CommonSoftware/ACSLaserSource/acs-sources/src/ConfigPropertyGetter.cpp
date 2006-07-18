@@ -62,8 +62,6 @@ ConfigPropertyGetter::~ConfigPropertyGetter() {
 }
 
 std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
-	std::cout << "ConfigPropertyGetter::getDAO()\n";
-    
     CDB::DAL_var cdbDAL;
 	CORBA::ULong status;
 	CORBA::Object_var cdb = manager->get_service(0, "CDB", true, status);
@@ -85,7 +83,6 @@ std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
 }
 
 void ConfigPropertyGetter::parseDAO() {
-	std::cout << "Parsing\n";
 	if (m_dao.size()==0) {
 		return;
 	}
@@ -117,11 +114,9 @@ void ConfigPropertyGetter::parseDAO() {
         // Release the memory used by the parser
     XML_ParserFree(p);
     m_properties = commonData.props;
-    std::cout << "Parsing done\n";
 }
 
 std::string ConfigPropertyGetter::getProperty(std::string propName) {
-	std::cout << "getProperty("<<propName<<")\n";
 	if (m_properties==NULL || propName.size()==0) {
 		return "";
 	}
@@ -129,11 +124,9 @@ std::string ConfigPropertyGetter::getProperty(std::string propName) {
 	for (iter=m_properties->begin(); iter!=m_properties->end(); iter++) {
 		Property p = (*iter);
 		if (p.key==propName) {
-			std::cout << "\tProp found: "<<p.value<<"\n";
 			return p.value;
 		}
 	}
-	std::cout << "\tProp NOT found\n";
 	return "";
 }
 

@@ -60,15 +60,12 @@ auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
  */
 auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
-	std::cout<<"ACSAlarmSystemInterfaceFactory::createSource(<name>)"<<std::endl;
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
 	}
 	if (!(*m_useACSAlarmSystem)) {
-		std::cout<<"Creating LASER source\n";
 		return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
 	} else {
-		std::cout<<"Creating ACS source\n";
 		ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
 		auto_ptr<laserSource::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 		return asIfAutoPtr;

@@ -52,7 +52,6 @@ ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AlarmSy
 	msg+=msgA;
 	msg+="> ";
 	msg+=state.getDescriptor();
-	//m_logger->log(LM_ALERT,msg.c_str());
 	ACS_SHORT_LOG((LM_ALERT, msg.c_str()));
 }
 
