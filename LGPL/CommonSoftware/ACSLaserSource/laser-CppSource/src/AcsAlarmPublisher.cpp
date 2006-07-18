@@ -38,7 +38,7 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 AcsAlarmPublisher::~AcsAlarmPublisher()
 {
 	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): entering...\n";
-	if(NULL != getAlarmSupplier())
+	/*if(NULL != getAlarmSupplier())
 	{
 		// disconnect the AlarmSupplier.
 		getAlarmSupplier()->disconnect();
@@ -49,7 +49,7 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 
 	delete AcsAlarmPublisher::singletonMutex;
 	delete AcsAlarmPublisher::alarmSupplierMutex;
-	singletonInstance = NULL;
+	singletonInstance = NULL;*/
 	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): exiting...\n";
 }
 
@@ -58,14 +58,14 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
  */
 AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName)
 {
-	cout << "AcsAlarmPublisher::getInstance(): entering...\n";
+	cout << "AcsAlarmPublisher::getInstance("<<topicName<<"): entering...\n";
   	ACE_Guard<ACE_Mutex> guard(*AcsAlarmPublisher::singletonMutex);
 	if(NULL == singletonInstance)
 	{
 		singletonInstance = new AcsAlarmPublisher(topicName);
 	}
-	return singletonInstance;
 	cout << "AcsAlarmPublisher::getInstance(): exiting...\n";
+	return singletonInstance;
 }
 
 /*
@@ -73,11 +73,14 @@ AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName)
  */
 bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 {
+	cout<<"AcsAlarmPublisher::publishAlarm(): entering\n";
 	if(NULL != getAlarmSupplier())
 	{
 		getAlarmSupplier()->publishEvent(msg);
+	} else {
+		cout<<"Alarm not published: alarm supplier is NULL!!!\n";
 	}
-
+	cout<<"AcsAlarmPublisher::publishAlarm(): exiting\n";
 	return true;
 }
 
