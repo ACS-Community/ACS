@@ -17,7 +17,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampImpl.cpp,v 1.26 2005/04/14 09:41:05 acaproni Exp $"
+ * "@(#) $Id: acssampImpl.cpp,v 1.27 2006/07/18 17:20:56 dfugate Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.26 2005/04/14 09:41:05 acaproni Exp $";
+static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.27 2006/07/18 17:20:56 dfugate Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <Request.h>
@@ -38,6 +38,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include "acssampObjImpl.h"
 #include <maciContainerImpl.h>
 #include <maciACSComponentDefines.h>
+#include <tao/IFR_Client/IFR_BasicC.h>
+
 
 using namespace baci;
 using namespace maci;

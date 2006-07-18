@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampFullNCTest.cpp,v 1.13 2005/04/21 16:37:39 dfugate Exp $"
+* "@(#) $Id: acssampFullNCTest.cpp,v 1.14 2006/07/18 17:20:56 dfugate Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,20 +38,21 @@
  *  - printout the received data 
  */
 
-#include <vltPort.h>
-#include <acsutil.h>
-
-#include <maciSimpleClient.h>
 #include <acssampC.h>
-#include <acssampS.h>
+//#include <acssampS.h>
 #include <baciS.h>
-#include <acserr.h>
 
+#include <acsutil.h>
+#include <acserr.h>
+#include <baciThread.h>
 #include <acsncConsumer.h>
+#include <maciSimpleClient.h>
 
 using namespace std;
+using namespace baci;
+
 NAMESPACE_USE(maci);
-ACE_RCSID(acssampFullNCTest, fullNCTest, "$Id: acssampFullNCTest.cpp,v 1.13 2005/04/21 16:37:39 dfugate Exp $")
+ACE_RCSID(acssampFullNCTest, fullNCTest, "$Id: acssampFullNCTest.cpp,v 1.14 2006/07/18 17:20:56 dfugate Exp $")
     
 
   
