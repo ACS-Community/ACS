@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.52 2006/07/19 09:26:50 gchiozzi Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.53 2006/07/19 16:57:28 dfugate Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -583,14 +583,8 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
-// Revision 1.52  2006/07/19 09:26:50  gchiozzi
-// Reverted back modification done yesterday by Steve.
-// loggingACSStructuredPushSupplier cannot extend basencSupplier,
-// because the basenc module comes much after in the build sequence of
-// ACS.
-// This modification would avoid replicating code, but would require some
-// higher level refactoring involving the ACS build sequence.
-// We cannot afford to do this just 2 days before a release.
+// Revision 1.53  2006/07/19 16:57:28  dfugate
+// Regressed all files back to July  16, 2006 for ACS 5.0.4.
 //
 // Revision 1.50  2006/06/20 21:47:44  dfugate
 // Use pre-existing logging channel if it exists.

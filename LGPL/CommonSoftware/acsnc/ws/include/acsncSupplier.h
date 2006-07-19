@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.57 2006/07/17 22:50:36 dfugate Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.58 2006/07/19 16:57:28 dfugate Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -30,11 +30,8 @@
  *  Header file for event channel Supplier.
  */
 
-#include "basencHelper.h"
+#include "acsncHelper.h"
 #include <acscomponentImpl.h>
-#include <ACSErrTypeCommon.h>
-
-NAMESPACE_USE(ACSErrTypeCommon);
 NAMESPACE_BEGIN(nc);
 /** 
  * Supplier provides an implementation of the structured event push supplier interface 
@@ -53,7 +50,7 @@ NAMESPACE_BEGIN(nc);
  * - clean-up the usage of typeName_mp somehow
  */
 class Supplier : 
-    protected BaseHelper, 
+    protected Helper, 
     public POA_CosNotifyComm::StructuredPushSupplier,
     protected virtual PortableServer::RefCountServantBase
 {
@@ -77,7 +74,7 @@ class Supplier :
      * @param component A reference to a component is needed for the Event 
      */
     Supplier(const char* channelName, 
-	     CORBA::ORB_ptr orb_p, 
+	     CORBA::ORB_ptr orb_mp, 
 	     acscomponent::ACSComponentImpl* component);
     
     /** 
@@ -296,31 +293,10 @@ class Supplier :
      * for a small performance gain.
      */
     CosNotification::StructuredEvent event_m;
-
-    /**
-     * The following was requested by Heiko Sommer and is needed for integrations.
-     * It should be removed at some later date.
-     */
-    void
-    integrationLog(const std::string& log);
-
-    /**
-     * This method returns a constant character pointer to the "kind" of notification channel
-     * as registered with the naming service (i.e., the kind field of a CosNaming::Name) which
-     * is normally equivalent to acscommon::NC_KIND. The sole reason this method is provided is to 
-     * accomodate subclasses which subscribe/publish non-ICD style events (ACS archiving channel 
-     * for example).In that case, the developer would override this method.
-     * @return pointer to a constant string.
-     *  @htmlonly
-        <br><hr>
-        @endhtmlonly
-     */
-    virtual const char* 
-    getChannelKind()
-	{return acscommon::NC_KIND;}
     
   private:
     
+
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.
      */
@@ -330,12 +306,6 @@ class Supplier :
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     Supplier(const Supplier&);
-
-    /**
-     * The following was requested by Heiko Sommer and is needed for integrations.
-     * It should be removed at some later date.
-     */
-    bool okToLog_m;
 };
 NAMESPACE_END(nc);
 #endif

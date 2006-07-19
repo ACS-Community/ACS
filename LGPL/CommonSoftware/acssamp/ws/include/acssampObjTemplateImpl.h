@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjTemplateImpl.h,v 1.30 2006/07/18 17:20:56 dfugate Exp $"
+ * "@(#) $Id: acssampObjTemplateImpl.h,v 1.31 2006/07/19 16:57:28 dfugate Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -31,8 +31,6 @@
 /** @file acssampObjTemplateImpl.h
  *  Source file for sampling object implementatation (it is a template class).  
  */
-
-#include <baciDB.h>
 
 using namespace baci;
 using namespace maci;

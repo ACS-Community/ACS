@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.62 2006/07/17 22:50:35 dfugate Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.63 2006/07/19 16:57:28 dfugate Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -31,14 +31,11 @@
  *  Header file for Consumer.
  */
 
-#include "basencHelper.h"
+#include "acsncHelper.h"
 #include <acstimeProfiler.h>
 #include "acsncCDBProperties.h"
-#include <ACSErrTypeCommon.h>
 
 #include <list>
-
-NAMESPACE_USE(ACSErrTypeCommon);
 NAMESPACE_BEGIN(nc);
 
 /** Consumer implements a structured event push consumer interface from the
@@ -50,10 +47,11 @@ NAMESPACE_BEGIN(nc);
  *  (see the SimpleConsumer class for an example).
  *
  *  TODO:
+ *  - add a mutex for the polling thread???
  *  - check for both local and remote memory leaks
  */
 class Consumer :
-    protected BaseHelper,
+    protected Helper,
     public POA_CosNotifyComm::StructuredPushConsumer,
     protected virtual PortableServer::RefCountServantBase
 {
@@ -376,29 +374,6 @@ class Consumer :
      * Used to profile handler times.
      */
     Profiler *profiler_mp;
-
-    /**
-     * The following was requested by Heiko Sommer and is needed for integrations.
-     * It should be removed at some later date.
-     */
-    void
-    integrationLog(const std::string& log);
-
-    /**
-     * This method returns a constant character pointer to the "kind" of notification channel
-     * as registered with the naming service (i.e., the kind field of a CosNaming::Name) which
-     * is normally equivalent to acscommon::NC_KIND. The sole reason this method is provided is to 
-     * accomodate subclasses which subscribe/publish non-ICD style events (ACS archiving channel 
-     * for example).In that case, the developer would override this method.
-     * @return pointer to a constant string.
-     *  @htmlonly
-        <br><hr>
-        @endhtmlonly
-     */
-    virtual const char* 
-    getChannelKind()
-	{return acscommon::NC_KIND;}
-
   private:
 
     /**
@@ -412,6 +387,11 @@ class Consumer :
     void
     init(CORBA::ORB_ptr orb)
 	throw (CORBAProblemEx);
+
+    /**
+     * ORB used by this consumer.
+     */
+    CORBA::ORB_ptr orb_mp;
 
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.
@@ -449,13 +429,6 @@ class Consumer :
     void
     removeSubscription(const char* type_name)
 	throw (CORBAProblemEx);
-
-
-    /**
-     * The following was requested by Heiko Sommer and is needed for integrations.
-     * It should be removed at some later date.
-     */
-    bool okToLog_m;
     ///////////////////////////////////////////////////////////////////////////////////////
 };
 NAMESPACE_END(nc);

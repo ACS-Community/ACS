@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.55 2006/07/17 22:50:36 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.56 2006/07/19 16:57:28 dfugate Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -31,8 +31,7 @@ USER_CFLAGS =
 USER_LIB    =  	-lbaci \
 		-lmaci \
 		-lTAO_CosNotification \
-		-lacstime \
-		-lbasenc
+		-lacstime
 
 DEBUG=on
 
@@ -43,7 +42,8 @@ EXECUTABLES_L   =
 
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES = 	acsncSupplier.h acsncConsumer.h \
+INCLUDES = 	acsncHelper.h acsncSupplier.h acsncConsumer.h \
+		acsncORBHelper.h \
 		acsncSimpleSupplier.i acsncSimpleSupplier.h \
 		acsncSimpleConsumer.i acsncSimpleConsumer.h \
 		acsncRTSupplier.i acsncRTSupplier.h \
@@ -58,6 +58,7 @@ LIBRARIES_L     =
 
 acsnc_OBJECTS  = acsncCDBProperties \
 		 acsncArchiveConsumer \
+		 acsncORBHelperImpl acsncHelperImpl \
 		 acsncConsumerImpl acsncSimpleConsumerImpl \
                  acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl
 acsnc_LIBS     = ACSErrTypeCommon acsncStubs

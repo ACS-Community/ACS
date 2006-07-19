@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.66 2006/07/17 22:50:36 dfugate Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.67 2006/07/19 16:57:28 dfugate Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -26,69 +26,66 @@
 #include <baciThread.h>
 #include <baciCORBA.h>
 #include <acscommonC.h>
-#include "acsncCDBProperties.h"
-#include <maciContainerImpl.h>
-
 //-----------------------------------------------------------------------------
 NAMESPACE_BEGIN(nc);
 //-----------------------------------------------------------------------------
 double Consumer::DEFAULT_MAX_PROCESS_TIME = 2.0;
 //-----------------------------------------------------------------------------
 Consumer::Consumer(const char* channelName) : 
-    BaseHelper(channelName),
+    Helper(channelName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),
     reference_m(0),
     profiler_mp(0),
-    okToLog_m(false)
+    orb_mp(0)
 {
     ACS_TRACE("Consumer::Consumer");
     orb_mp = static_cast<CORBA::ORB_ptr>(0);
 }
 //-----------------------------------------------------------------------------
 Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb) : 
-    BaseHelper(channelName),
+    Helper(channelName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),
     reference_m(0),
     profiler_mp(0),
-    okToLog_m(false)
+    orb_mp(0)
 {
     ACS_TRACE("Consumer::Consumer");
     orb_mp = orb;
 }
 //-----------------------------------------------------------------------------
 Consumer::Consumer(const char* channelName, int argc, char *argv[]) : 
-    BaseHelper(channelName),
+    Helper(channelName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),
     reference_m(0),
     profiler_mp(0),
-    okToLog_m(false)
+    orb_mp(0)
 {
     ACS_TRACE("Consumer::Consumer");
     
     //Create an ORB to discover where the Naming Service is running for 
     //ourselves
-
-    if(argc!=0 && (orb_mp==0))
+    if(argc!=0 && (orbHelper_mp==0))
 	{
-	//DWF - this argv type should be removed!
-	orb_mp = ORBHelper::getORB();
+	orbHelper_mp = new ORBHelper(argc, argv);
 	}
-    else if(orb_mp == 0)
+    else if(orbHelper_mp == 0)
 	{
-	orb_mp = ORBHelper::getORB();
+	orbHelper_mp = new ORBHelper();
 	}
+    orbHelper_mp->runOrb();
+    orb_mp = orbHelper_mp->getORB();
 }
 //-----------------------------------------------------------------------------
 void
 Consumer::init()
     throw (CORBAProblemEx)
-{  
+{    
     //just delegate to other signature
     init(orb_mp);
 }
@@ -97,34 +94,25 @@ void
 Consumer::init(CORBA::ORB_ptr orb)
     throw (CORBAProblemEx)
 {    
-    //check the CDB to see if we use integration logs
-    if(nc::CDBProperties::getIntegrationLogs(channelName_mp)==false)
-	{
-	okToLog_m = false;
-	}
-    else
-	{
-	okToLog_m = true;
-	}
-    
     //setup profiling stuff here
     handlerTimeoutMap_m = CDBProperties::getEventHandlerTimeoutMap(channelName_mp);
     profiler_mp = new Profiler();
+
+    // Must call resolveNamingService B-4 resolveNotifyChannel!
+    // using activator's orb
+    resolveNamingService(orb);
     
-    CosNaming::NamingContext_var naming_context;
-    if(orb_mp!=0)
+    if(resolveNotifyChannel()==false)
 	{
-	CORBA::Object_var naming_obj = orb->resolve_initial_references ("NameService");
-	CosNaming::NamingContext_var naming_context = CosNaming::NamingContext::_narrow(naming_obj.in());
+	ACS_SHORT_LOG((LM_INFO,"Creating Notification Channel for the '%s' channel!",
+		       channelName_mp));
+	
+	// Resolve the notify factory
+	resolveNotificationFactory();
+	
+	// Create NC
+	createNotificationChannel( );
 	}
-    else
-	{
-	naming_context = ContainerImpl::getContainer()->getService<CosNaming::NamingContext>(acscommon::NAMING_SERVICE_NAME, 
-											     0, 
-											     true);
-	}
-    
-    BaseHelper::init(naming_context.in());
     
     //create consumer corba objects
     createConsumer();
@@ -213,6 +201,8 @@ Consumer::consumerReady()
     throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::consumerReady");
+    
+    resolveNotifyChannel();
     
     try
 	{
@@ -526,20 +516,6 @@ Consumer::getFilterLanguage()
     //return a constant defined in acsnc.idl to be portable in the other 
     //programming languages supported by ACS.
     return acsnc::FILTER_LANGUAGE_NAME;
-}
-
-//-----------------------------------------------------------------------------
-//The following was requested by Heiko Sommer and is needed for integrations.
-void
-Consumer::integrationLog(const std::string& log)
-{
-    if (okToLog_m==true)
-	{
-	//fine, send the log
-	getNamedLogger("IntegrationLogger")->log(Logging::BaseLog::LM_NOTICE,
-						 log,
-						 __FILE__, __LINE__, "Helper::integrationLog");
-	}
 }
 //-----------------------------------------------------------------------------
 NAMESPACE_END(nc);
