@@ -45,6 +45,13 @@ module jconttest
 		boolean testGetThreadFactory(in long numThreads, in long busyLoopCount, in boolean randomize);
 		
 		void testGetCollocatedComponent(in string curl, in string targetCurl) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		
+		/**
+		 * Will obtain a reference to the given component (if getOwnRef is true) and then try to forcefully release that component.
+		 * The calling client is exepcted to already hold a reference to that component, as otherwise the 
+		 * component unloading would be trivial instead of forceful.
+		 */
+		void testForceReleaseComponent(in string curl, in boolean getOwnRef) raises (ACSErrTypeCommon::CouldntPerformActionEx);		
 	};
 	
 	

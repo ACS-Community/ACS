@@ -21,13 +21,17 @@
  */
 package alma.acs.container;
 
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.StringHolder;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.jconttest.ContainerServicesTester;
 import alma.jconttest.ContainerServicesTesterHelper;
+import alma.jconttest.DummyComponent;
+import alma.jconttest.DummyComponentHelper;
 
 /**
  * @author hsommer
@@ -36,6 +40,7 @@ import alma.jconttest.ContainerServicesTesterHelper;
 public class ComponentTestclient extends ComponentClientTestCase
 {
 	private static final String CONTSRVCOMP_INSTANCE = "CONT_SERVICES_TESTER";
+	private static final String DEFAULT_DUMMYCOMP_INSTANCE = "DefaultDummyComp";
 	
 	private ContainerServicesTester m_contSrvTesterComp;
 	
@@ -86,6 +91,36 @@ public class ComponentTestclient extends ComponentClientTestCase
 			
 			// now we check whether a non-activated target component also works
 			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy2", "MyCollocationTargetDummy");			
+    	} catch (CouldntPerformActionEx ex) {
+    		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+    	}
+    }
+
+    public void testForceReleaseComponent() throws Exception {
+    	try {
+    		// first something very easy: "forcefully" unloading a component to which no other client has a reference
+    		m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
+    		Thread.sleep(2000);
+    		
+    		// the normal case: 2 references and a forceful unload
+    		DummyComponent defaultDummy = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
+    		assertEquals(DEFAULT_DUMMYCOMP_INSTANCE, defaultDummy.name());    		
+			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
+			// our reference should no longer work
+			try {
+				String name = defaultDummy.name();
+				fail("Did not expect to get the proper component name '" + name + "' after forceful unloading!");
+			} catch (OBJECT_NOT_EXIST ex) {
+				; // that's good
+			}
+			
+			// component trying to forcefully unload another comp to which it never got a reference
+			// this does not work yet (2006-07-19); TODO:check with Matej
+			String onlyMyDummyName = "onlyMyDummy";
+			DummyComponent onlyMyDummy = DummyComponentHelper.narrow(getContainerServices().getDynamicComponent(new ComponentQueryDescriptor(onlyMyDummyName, "IDL:alma/jconttest/DummyComponent:1.0"), false));
+			m_contSrvTesterComp.testForceReleaseComponent(onlyMyDummyName, false);
+			// TODO: check log messages for "ignoring request by client 'CONT_SERVICES_TESTER' to release other component with unknown curl='onlyMyDummy'."
+			
     	} catch (CouldntPerformActionEx ex) {
     		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
     	}
