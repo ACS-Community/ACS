@@ -92,7 +92,7 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
      * @see alma.acs.container.AdvancedContainerServices#forceReleaseComponent(java.lang.String)
      */
     public void forceReleaseComponent(String curl) throws ContainerException {
-    	containerServicesImpl.m_acsManagerProxy.force_release_component(containerServicesImpl.m_clientHandle, curl);
+    	containerServicesImpl.releaseComponent(curl, true);
     }
 }
 
