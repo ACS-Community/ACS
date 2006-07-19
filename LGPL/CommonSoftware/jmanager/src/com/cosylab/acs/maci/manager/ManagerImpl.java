@@ -2144,7 +2144,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// check handle and INTROSPECT_MANAGER permissions
 		// TODO not clean !!! admin permissions required
-		securityCheck(id, AccessRights.INTROSPECT_MANAGER);
+		//securityCheck(id, AccessRights.INTROSPECT_MANAGER);
+		
+		// hack by HSO 2006-07-19: ACS 5.0.4 temporarily offers the forceReleaseComponent in the AdvancedContainerServices,
+		// which will be removed when we have implemented the concept of non-sticky clients whose references must not prevent
+		// the unloading of a component.
+		// This feature will be used by some master components, which just cannot be admin/supervisors for the manager, 
+		// therefore we temporarily have to grant access to just any kind of client.
+		securityCheck(id, AccessRights.NONE);
 
 		/****************************************************************/
 
