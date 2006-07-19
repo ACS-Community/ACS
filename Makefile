@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.121 2006/04/22 08:28:01 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.122 2006/07/19 13:28:09 acaproni Exp $"
 #
 #
 
@@ -19,8 +19,7 @@ MODULES_KIT = vlt doc acs acstempl
 # because it is already built in the prepare phase.
 #
 MODULES_TOOLS = cmm emacs compat tat expat loki extjars antlr freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor mimetic gmp jfree xsddoc
-MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents baci enumprop jacscommon jmanager maci parameter task abeans acstime acsnc acslog acsexmpl acsabeans acssamp jlog acspy  comphelpgen XmlIdl define acstestentities acsjlog objexp jcont jcontnc jcontexmpl jbaci acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse
-
+MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents baci enumprop jacscommon jmanager ACSLaserSources maci parameter task abeans acstime acsnc acslog acsexmpl acsabeans acssamp jlog acspy  comphelpgen XmlIdl define acstestentities acsjlog objexp jcont jcontnc jcontexmpl jbaci acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
 ######## end Modules ###########################
 
 #
@@ -130,6 +129,8 @@ define canned
 			$(MAKE) $(MAKE_FLAGS) -C $${member}/src/ $@ || break ;\
 		    elif [ -f $${member}/ws/src/Makefile ]; then \
 			$(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ $@ || break ;\
+		    elif [ -f $${member}/Makefile ]; then \
+			$(MAKE) $(MAKE_FLAGS) -C $${member}/ $@ || break ;\
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
@@ -198,6 +199,9 @@ checkModuleTree:
 		    if [ ! -d $${member} ]; then \
                          echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
                     fi;\
+                    if [ -f $${member}/Makefile ]; then \
+                         $(SHELL) $(MODULE_PREFIX)/acsBUILD/src/acsBUILDCheckModuleTree.sh $${member} >> build.log 2>& 1;\
+		    fi;\
 		    if [ -f $${member}/src/Makefile ]; then \
                          $(SHELL) $(MODULE_PREFIX)/acsBUILD/src/acsBUILDCheckModuleTree.sh $${member} >> build.log 2>& 1;\
 		    fi;\
@@ -239,7 +243,7 @@ update:	cvs-tag checkModuleTree
                          echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
                     fi;\
 		    if [ -f $${member}/src/Makefile ]; then \
-		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
+		         $(ECHO) "############ $${member} SRC" | tee -a build.log;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ clean >> build.log 2>& 1;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
@@ -248,6 +252,11 @@ update:	cvs-tag checkModuleTree
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ clean >> build.log 2>& 1;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
+		    elif [ -f $${member}/Makefile ]; then \
+		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ clean >> build.log 2>& 1;\
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
@@ -273,7 +282,7 @@ define update-clean-one-module
                          echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
                     fi;\
 		    if [ -f $${member}/src/Makefile ]; then \
-		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
+		         $(ECHO) "############ $${member} SRC" | tee -a build.log;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ clean >> build.log 2>& 1;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
@@ -286,6 +295,13 @@ define update-clean-one-module
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ clean >> build.log 2>& 1 || echo "### ==> FAILED clean ! " | tee -a build.log; \
+		    elif [ -f $${member}/Makefile ]; then \
+		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ clean >> build.log 2>& 1;\
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ clean >> build.log 2>& 1 || echo "### ==> FAILED clean ! " | tee -a build.log; \
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
