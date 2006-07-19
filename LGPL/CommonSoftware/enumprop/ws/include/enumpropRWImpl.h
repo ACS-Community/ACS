@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropRWImpl.h,v 1.39 2005/09/28 13:58:52 msekoran Exp $"
+* "@(#) $Id: enumpropRWImpl.h,v 1.40 2006/07/19 08:21:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,8 @@
 #include <baciCharacteristicModelImpl.h>
 
 
-NAMESPACE_USE(baci)
+using namespace baci;
+using namespace baciErrTypeProperty;
 
 #define HISTORY_SIZE 32
 
