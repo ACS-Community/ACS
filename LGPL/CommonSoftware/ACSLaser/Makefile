@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.11 2006/07/17 15:32:01 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.12 2006/07/19 13:14:02 acaproni Exp $"
 #
 #
 
@@ -11,15 +11,7 @@ os     = $(shell uname)
 #
 # Modules in the various Laser sub-packages.
 #
-MODULES = acslaserextlib \
-          acsjms \
-          cmw-mom \
-          laser-util \
-          laser-source \
-          laser-CppUtil \
-          laser-CppSource \
-          acs-sources \
-          gp-openide \
+MODULES = gp-openide \
           gp \
           laser-core \
           laser-client \
