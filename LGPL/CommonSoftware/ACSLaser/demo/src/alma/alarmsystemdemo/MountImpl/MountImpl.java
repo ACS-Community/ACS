@@ -55,7 +55,7 @@ class MountImpl extends ComponentImplBase implements MountOperations {
 			fs.setUserProperties(props);
 
 			alarmSource.push(fs);
-		} catch (ASIException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

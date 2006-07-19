@@ -58,7 +58,7 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 
 			alarmSource.push(fs);
 			System.out.println("Alarm sent");
-		} catch (ASIException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
