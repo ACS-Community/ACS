@@ -56,6 +56,8 @@ import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.util.StopWatch;
 
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+
 /**
  * The main container class that interfaces with the maci manager.
  * By extending <code>ContainerPOA</code>, an instance of this class is a corba object
@@ -148,6 +150,11 @@ public class AcsContainer extends ContainerPOA
             }
 
             s_instance = this;
+            try {
+            	ACSAlarmSystemInterfaceFactory.init(m_managerProxy.getManager());
+            } catch (Exception e) {
+            	throw new ContainerException("Error initializing the alarm system factory");
+            }
         }
         else
         {
