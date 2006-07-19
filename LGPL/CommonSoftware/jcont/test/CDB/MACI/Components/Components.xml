@@ -6,6 +6,12 @@
 		Type="IDL:alma/jconttest/ContainerServicesTester:1.0" 
 		Container="frodoContainer"
 		/>
+	<_ Name="DefaultDummyComp"
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="frodoContainer"
+		Default="true"
+		/>
 	
 	<!-- to be used for retrieving as a dynamic component. Name will be assigned to instances automatically -->	
 	<_ Name="*" 
