@@ -5,6 +5,7 @@
 #include "AlarmSystemInterface.h"
 #include "AlarmSystemInterfaceProxy.h"
 #include <asiConfigurationConstants.h>
+#include "maciS.h"
 
 using asiConfigurationConstants::ALARM_SOURCE_NAME;
 
@@ -22,6 +23,9 @@ namespace laserSource
 		private:
 			AlarmSystemInterfaceFactory();
 			virtual ~AlarmSystemInterfaceFactory();
+			
+			// The manager
+			static maci::Manager_ptr m_manager;
 
 		public:
 
@@ -71,6 +75,16 @@ namespace laserSource
 		{
 			return createSource("UNDEFINED");
 		}
+		
+		static bool init(maci::Manager_ptr manager) {
+			m_manager=maci::Manager::_duplicate(manager);
+		}
+		
+		static void done() {
+			CORBA::release(m_manager);
+			m_manager=maci::Manager::_nil();
+		}
+			
 	};
 };
 
