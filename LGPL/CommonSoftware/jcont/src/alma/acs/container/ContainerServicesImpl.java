@@ -97,7 +97,7 @@ public class ContainerServicesImpl implements ContainerServices
 	private final Map<String, ComponentDescriptor> m_componentDescriptorMap;
 	
 	// the handle that the manager has assigned to the component to whom this ContainerServices object belongs
-	protected final int m_clientHandle;
+	private final int m_clientHandle;
     
     // the component name. "Client" refers to the component acting as a client to the manager 
 	private final String m_clientName;
@@ -586,8 +586,15 @@ public class ContainerServicesImpl implements ContainerServices
 	 * 
 	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
 	 */
-	public void releaseComponent(String curl)
-	{
+	public void releaseComponent(String curl) {
+		releaseComponent(curl, false);
+	}
+
+	/**
+	 * This method was introduced to unify the implementation of #releaseComponent and AdvancedContainerServices#forceReleaseComponent.
+	 * TODO: check if this should be taken back with ACS 6.0.
+	 */
+	void releaseComponent(String curl, boolean forcefully) {
 		if (!m_usedComponentsMap.containsKey(curl)) 
 		{
 			m_logger.info("ignoring request by client '" + m_clientName + 
@@ -597,10 +604,15 @@ public class ContainerServicesImpl implements ContainerServices
 		{
 			org.omg.CORBA.Object stub = m_usedComponentsMap.get(curl);
 			
-			m_logger.fine("about to release component " + curl);
+			m_logger.fine("about to release component " + curl + (forcefully ? " forcefully" : ""));
 			try {
 				stub._release();
-				m_acsManagerProxy.release_component(m_clientHandle, curl);
+				if (forcefully) {
+					m_acsManagerProxy.force_release_component(m_clientHandle, curl);
+				}
+				else {
+					m_acsManagerProxy.release_component(m_clientHandle, curl);
+				}
 				m_logger.info("client '" + m_clientName + "' has successfully released " + 
 						" a component with curl=" + curl);
 			}
@@ -613,7 +625,6 @@ public class ContainerServicesImpl implements ContainerServices
 			}
 		}
 	}
-
 
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)

@@ -178,6 +178,19 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 		} catch (Throwable thr) {
 			throw (new AcsJCouldntPerformActionEx("testGetCollocatedComponent failed for " + msg, thr)).toCouldntPerformActionEx();
 		}		
-	}    
-    
+	}
+
+	
+	public void testForceReleaseComponent(String curl, boolean getOwnRef) throws CouldntPerformActionEx {
+		try {
+			if (getOwnRef) {
+				m_containerServices.getComponent(curl);
+			}
+			m_containerServices.getAdvancedContainerServices().forceReleaseComponent(curl); 
+		} catch (Throwable thr) {
+			m_logger.log(Level.WARNING, "testForceReleaseComponent failed", thr);
+			throw (new AcsJCouldntPerformActionEx("testForceReleaseComponent failed", thr)).toCouldntPerformActionEx();
+		}
+	}
+
 }
