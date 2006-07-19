@@ -40,6 +40,9 @@ void ACSAlarmSystemInterfaceFactory::done() {
 	m_useACSAlarmSystem=NULL;
 	CORBA::release(m_manager);
 	m_manager=maci::Manager::_nil();
+	if (!(*m_useACSAlarmSystem)) {
+		laserSource::AlarmSystemInterfaceFactory::done();
+	}
 }
 
 /**
@@ -83,5 +86,8 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
 	string str = pGetter->getProperty("Implementation");
 	delete pGetter;
 	*m_useACSAlarmSystem = !(str=="CERN");
+	if (!(*m_useACSAlarmSystem)) {
+		laserSource::AlarmSystemInterfaceFactory::init(manager);
+	}
 	return true;
 }
