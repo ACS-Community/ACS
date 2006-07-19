@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.51 2006/07/18 16:52:43 sharring Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.52 2006/07/19 09:26:50 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -507,7 +507,9 @@ LoggingService::create_suppliers ()
 {
   m_logging_supplier = new ACSStructuredPushSupplier ();
   ACE_ASSERT (m_logging_supplier);
-  m_logging_supplier->init(this->m_naming_context.in());
+
+  m_logging_supplier->connect (this->m_logging_supplier_admin.in ()
+			       );
 }
 
 /*****************************************************************/
@@ -581,8 +583,14 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
-// Revision 1.51  2006/07/18 16:52:43  sharring
-// Modifications to make loggingACSStructuredPushSupplier extend basencSupplier
+// Revision 1.52  2006/07/19 09:26:50  gchiozzi
+// Reverted back modification done yesterday by Steve.
+// loggingACSStructuredPushSupplier cannot extend basencSupplier,
+// because the basenc module comes much after in the build sequence of
+// ACS.
+// This modification would avoid replicating code, but would require some
+// higher level refactoring involving the ACS build sequence.
+// We cannot afford to do this just 2 days before a release.
 //
 // Revision 1.50  2006/06/20 21:47:44  dfugate
 // Use pre-existing logging channel if it exists.

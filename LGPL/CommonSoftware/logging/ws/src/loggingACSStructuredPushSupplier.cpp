@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSStructuredPushSupplier.cpp,v 1.3 2006/07/18 16:52:43 sharring Exp $"
+* "@(#) $Id: loggingACSStructuredPushSupplier.cpp,v 1.4 2006/07/19 09:26:50 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -30,7 +30,7 @@
 
 /*****************************************************************/
 
-ACSStructuredPushSupplier::ACSStructuredPushSupplier() : BaseSupplier(acscommon::LOGGING_CHANNEL_NAME)
+ACSStructuredPushSupplier::ACSStructuredPushSupplier (void)
 {
 }
 
@@ -38,13 +38,96 @@ ACSStructuredPushSupplier::~ACSStructuredPushSupplier ()
 {
 }
 
-
-void ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& event)
+void
+ACSStructuredPushSupplier::connect (CosNotifyChannelAdmin::SupplierAdmin_ptr supplier_admin
+				    )
 {
-	//BaseSupplier::populateHeader((CosNotification::StructuredEvent&)event);
-	BaseSupplier::publishEvent(event);
+  CosNotifyComm::StructuredPushSupplier_var objref =
+    this->_this ();
+  
+
+  CosNotifyChannelAdmin::ProxyConsumer_var proxyconsumer =
+    supplier_admin->obtain_notification_push_consumer (CosNotifyChannelAdmin::STRUCTURED_EVENT, 
+						       proxy_consumer_id_);
+  
+
+  ACE_ASSERT (!CORBA::is_nil (proxyconsumer.in ()));
+
+  // narrow
+  this->proxy_consumer_ =
+    CosNotifyChannelAdmin::StructuredProxyPushConsumer::_narrow (proxyconsumer.in ());
+  
+
+  ACE_ASSERT (!CORBA::is_nil (proxy_consumer_.in ()));
+
+  proxy_consumer_->connect_structured_push_supplier (objref.in ()
+                                                     );
+  
 }
 
+void
+ACSStructuredPushSupplier::disconnect ()
+{
+  ACE_ASSERT (!CORBA::is_nil (this->proxy_consumer_.in ()));
+  this->proxy_consumer_->disconnect_structured_push_consumer();
+}
 
+void
+ACSStructuredPushSupplier::subscription_change (const CosNotification::EventTypeSeq & /*added*/,
+						const CosNotification::EventTypeSeq & /*removed */)
+  throw (CORBA::SystemException,
+         CosNotifyComm::InvalidEventType)
+{
+  //No-Op.
+}
+
+void
+ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& event
+				       )
+{
+  ACE_ASSERT (!CORBA::is_nil (this->proxy_consumer_.in ()));
+
+  try
+      {
+      proxy_consumer_->push_structured_event (event);
+      }
+  catch(CORBA::COMM_FAILURE ex)
+	{
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+	
+	std::cerr << "ERROR (CORBA::COMM_FAILURE): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog;
+	std::cerr << "'!" << std::endl;
+	}
+    catch(CORBA::TRANSIENT ex)
+	{
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+	
+	std::cerr << "ERROR (CORBA::TRANSIENT): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog;
+	std::cerr << "'!" << std::endl;
+	}
+    catch(...)
+	{
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+
+	std::cerr << "ERROR (Unkwown): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog;
+	std::cerr << "'!" << std::endl;
+	}
+}
+
+void
+ACSStructuredPushSupplier::disconnect_structured_push_supplier ()
+  throw (CORBA::SystemException)
+{
+  // No-Op.
+}
 
 /*****************************************************************/
