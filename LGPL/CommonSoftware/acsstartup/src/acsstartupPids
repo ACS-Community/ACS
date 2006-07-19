@@ -52,22 +52,34 @@ function getPid
 {
 local FILE
 local PORT
+local TEST_PORT
 
 FILE=$1
 PORT=$2
 
+
 #try to get the pid from a file first
 if ! PID=`cat $FILE 2>/dev/null`
 then
-    ACS_SILENT_LOG "DEBUGUnable to determine the process ID from $FILE."
+    ACS_SILENT_LOG "DEBUG - Unable to determine the process ID from $FILE."
 
     #check by TCP port if using the file fails
     if ! PID=`getPidFromTCP $PORT`
     then
-	ACS_SILENT_LOG "DEBUGUnable to determine the process ID from TCP port $PORT."
+	ACS_SILENT_LOG "DEBUG - Unable to determine the process ID from TCP port $PORT."
+	exit $EC_FAILURE
+    fi
+#sanity check to ensure the process ID found in the file is actually being occupied
+else
+    TEST_PORT=`ps -A | grep "^$PID " 2> /dev/null`
+    if [ "$TEST_PORT" = "" ]
+    then
+	ACS_SILENT_LOG "ERROR - The process ID from file, $FILE, is not really alive."
 	exit $EC_FAILURE
     fi
 fi
+
+
 
 echo $PID
 }
