@@ -37,20 +37,29 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
  */
 AcsAlarmPublisher::~AcsAlarmPublisher()
 {
-	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): entering...\n";
-	/*if(NULL != getAlarmSupplier())
+	// TODO: Rethink this. May need something more along the lines of
+	// a reference counting scheme rather than a singleton(?) - for now, we have the destructor
+	// deleting everything each time, making the singleton a bit dubious. This is a temporary fix
+	// to get the ACS-5.0.4 patch done on time. What we probably really want is something that hangs around
+	// until *all* clients of it are finished (hence the reference counting suggestion), and then (and only then)
+	// releases all the dynamically allocated resources.
+
+	cout << "STEVE::AcsAlarmPublisher::~AcsAlarmPublisher(): entering...\n";
+	if(NULL != getAlarmSupplier())
 	{
 		// disconnect the AlarmSupplier.
 		getAlarmSupplier()->disconnect();
 		setAlarmSupplier(NULL);
-		// NOTE: delete should not be called on the alarmSupplier
-		// see, e.g., http://almasw.hq.eso.org/almasw/bin/view/ACS/FAQCppCompPropertyDestroy
 	}
 
 	delete AcsAlarmPublisher::singletonMutex;
+	AcsAlarmPublisher::singletonMutex = NULL;
+
 	delete AcsAlarmPublisher::alarmSupplierMutex;
-	singletonInstance = NULL;*/
-	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): exiting...\n";
+	AcsAlarmPublisher::alarmSupplierMutex = NULL;
+
+	singletonInstance = NULL;
+	cout << "STEVE::AcsAlarmPublisher::~AcsAlarmPublisher(): exiting...\n";
 }
 
 /*
@@ -59,11 +68,20 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName)
 {
 	cout << "AcsAlarmPublisher::getInstance("<<topicName<<"): entering...\n";
+
+	if(NULL == singletonMutex) {
+		singletonMutex = new ACE_Mutex;
+	}
+	if(NULL == alarmSupplierMutex) {
+		alarmSupplierMutex = new ACE_Mutex;
+	}
+
   	ACE_Guard<ACE_Mutex> guard(*AcsAlarmPublisher::singletonMutex);
 	if(NULL == singletonInstance)
 	{
 		singletonInstance = new AcsAlarmPublisher(topicName);
 	}
+
 	cout << "AcsAlarmPublisher::getInstance(): exiting...\n";
 	return singletonInstance;
 }

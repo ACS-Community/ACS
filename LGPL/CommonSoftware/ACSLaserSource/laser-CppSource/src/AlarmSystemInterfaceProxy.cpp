@@ -17,6 +17,8 @@ using asiConfigurationConstants::ALARM_SOURCE_NAME;
 AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy()
 {
 	cout << "AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(): entering...\n";
+	laserPublisher = NULL;
+	setSourceName(ALARM_SOURCE_NAME);
 	init();
 	cout << "AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(): exiting...\n";
 }
@@ -46,9 +48,9 @@ AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string theSourceName)
 AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy()
 {
 	cout << "AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy(): entering...\n";
-	if (laserPublisher!=NULL) {
+	if (laserPublisher != NULL) {
 		delete laserPublisher;
-		laserPublisher=NULL;
+		laserPublisher = NULL;
 	}
 	cout << "AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy(): exiting...\n";
 }
