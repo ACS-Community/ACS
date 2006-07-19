@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.62 2006/03/13 14:08:00 gchiozzi Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.63 2006/07/19 13:23:37 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -71,7 +71,9 @@
 
 #include <archiveeventsArchiveSupplier.h>
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.62 2006/03/13 14:08:00 gchiozzi Exp $")
+#include <ACSAlarmSystemInterfaceFactory.h>
+
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.63 2006/07/19 13:23:37 acaproni Exp $")
 
 NAMESPACE_USE(maci);
 NAMESPACE_USE(cdb);
@@ -531,6 +533,7 @@ ContainerImpl::init(int argc, char *argv[])
 	  strCmdLn = ACE_CString(argv[i])+ " " + strCmdLn;
 
       // if there is not command line parameters for DAL, query manager...
+      maci::Manager_var manager;
       CORBA::ORB_var cdbORB;
       CDB::DAL_var cdbDAL;
       if (strCmdLn.find("-d") == ACE_CString::npos &&
@@ -558,7 +561,7 @@ ContainerImpl::init(int argc, char *argv[])
 	    int cdb_argc = cdbBootstrapArgv.argc();
 	    cdbORB = CORBA::ORB_init (cdb_argc, cdbBootstrapArgv.argv());
                                                                                                                          
-	    maci::Manager_var manager = MACIHelper::resolveManager(cdbORB.in(), cdbBootstrapArgv.argc(), cdbBootstrapArgv.argv(), 0, 0, -1 ,0/*2, 5*/);
+	    manager = MACIHelper::resolveManager(cdbORB.in(), cdbBootstrapArgv.argc(), cdbBootstrapArgv.argv(), 0, 0, -1 ,0/*2, 5*/);
 	      if (!CORBA::is_nil(manager.in()))
 		{
 		  CORBA::ULong status;
@@ -799,6 +802,19 @@ ContainerImpl::init(int argc, char *argv[])
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
 		(LM_INFO, "Failed to initialize acsQoS."));
 	  return false;
+	}
+
+	// Initialize the alarm system factory
+	bool asfRet=true;;
+	try {
+		asfRet=ACSAlarmSystemInterfaceFactory::init(manager);
+	} catch (acsErrTypeAlarmSourceFactory::InavalidManagerExImpl &ex) {
+		asfRet=false;
+	}
+	if (!asfRet) {
+		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
+                (LM_INFO, "Failed to initialize AlarmSystem factory."));
+		return false;
 	}
 
       // parse args for opts
@@ -1223,6 +1239,8 @@ ContainerImpl::done()
   acsQoS::done();
 
   ACSError::done();
+
+  ACSAlarmSystemInterfaceFactory::done();
 
   if(m_dllmgr)
       {
