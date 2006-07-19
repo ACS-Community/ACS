@@ -109,6 +109,9 @@ public class ComponentClient
 	 * which works with different ORBs, tries out available ports, and so on.
 	 * <p>
 	 * With this constructor, also initialization and termination of remote ACS logging is left to the caller. 
+	 * <p>
+	 * TODO: make this ctor protected with ACS 6.0. The idea is that only AdvancedComponentClient makes it public.
+	 * For backward compatibility, we keep it public here in ACS 5.0.4 though.
 	 * 
 	 * @param logger  the logger to be used. If <code>null</code>, one will be created.
 	 * @param managerLoc  the corbaloc for the ACS manager, e.g. "corbaloc::myhost:xxxx/Manager"
@@ -117,7 +120,7 @@ public class ComponentClient
 	 * @throws Exception  at the slightest provocation...
 	 * @see #initRemoteLogging()
 	 */
-	protected ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) 
+	public ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) 
 		throws Exception
 	{
 		if (logger == null) {
