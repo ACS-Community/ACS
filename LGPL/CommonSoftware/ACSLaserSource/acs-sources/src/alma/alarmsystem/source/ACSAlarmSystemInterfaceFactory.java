@@ -3,7 +3,9 @@ package alma.alarmsystem.source;
 import cern.laser.source.alarmsysteminterface.ASIException;
 import cern.laser.source.alarmsysteminterface.AlarmSystemInterfaceFactory;
 import cern.laser.source.alarmsysteminterface.AlarmSystemInterface;
+import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.AlarmSystemInterfaceProxy;
+import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
 
 import alma.acs.util.ACSPorts;
 
@@ -29,6 +31,14 @@ import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import alma.acsErrTypeAlarmSourceFactory.acsErrTypeAlarmSourceFactoryEx;
+import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
+import alma.acsErrTypeAlarmSourceFactory.InavalidManagerEx;
+import alma.acsErrTypeAlarmSourceFactory.ErrorGettingDALEx;
+import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJACSASFactoryNotInitedEx;
+import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJInavalidManagerEx;
+import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJErrorGettingDALEx;
+
 import java.io.StringReader;
 
 /**
@@ -45,30 +55,37 @@ import java.io.StringReader;
  * @author acaproni
  *
  */
-public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory {
+public class ACSAlarmSystemInterfaceFactory {
 	// It is true if ACS implementation for sources must be used and
 	// null if it has not yet been initialized
 	// false means CERN implementation
 	private static Boolean useACSAlarmSystem = null;
 	
-	private synchronized static boolean useACSImplementation() {
-		if (useACSAlarmSystem!=null) {
-			return useACSAlarmSystem;
+	public static void init(Manager manager) throws InavalidManagerEx, ErrorGettingDALEx {
+		if (manager==null) {
+			IllegalArgumentException e = new IllegalArgumentException("The manager can't be null!");
+			AcsJInavalidManagerEx acsE = new AcsJInavalidManagerEx(e);
+			throw acsE.toInavalidManagerEx();
 		}
-		
-        DAL dal = getDAL();
-        if (dal==null) {
-        	useACSAlarmSystem=true;
-        } else {
-        	useACSAlarmSystem = retrieveImplementationType(dal);
-        }
-        if (useACSAlarmSystem) {
-        	System.out.println("Using ACS implementation");
-        } else {
-        	System.out.println("Using CERN implementation");
-        }
-        return useACSAlarmSystem;
+		IntHolder status = new IntHolder();
+		DAL dal;
+		try {
+	        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false, status);
+	        if (cdbObj==null) {
+				throw new NullPointerException("Error getting the CDB from the manager");
+			} 
+	        dal = DALHelper.narrow(cdbObj);
+	        if (dal==null) {
+	        	throw new NullPointerException("Error narrowing the DAL");
+	        }
+		} catch (Exception e) {
+			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
+			throw dalEx.toErrorGettingDALEx();
+		}
+        useACSAlarmSystem = retrieveImplementationType(dal);
+        System.out.println("ACSAlarmSystemInterfaceFactory inited. Use ACS Implementation "+useACSAlarmSystem);
 	}
+	
 	
 	/**
 	 * Read the Implementation property from the Alarm System Configuration
@@ -86,7 +103,6 @@ public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory 
 		try {
 			dao = dal.get_DAO("Alarms/AlarmSystemConfiguration");
 		} catch (Exception e) {
-			System.out.println("Alarms/AlarmSystemConfiguration not found");
 			return true;
 		}
 		String implementation = getProperty(dao,"Implementation");
@@ -155,47 +171,18 @@ public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory 
 	}
 	
 	/**
-	 * Get the DAL
-	 * 
-	 * @return A reference to the DAL
+	 * Create a new instance of an alarm system interface.
+	 * @param sourceName the source name.
+	 * @return the interface instance.
+	 * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	 */
-	private static DAL getDAL() {
-		String managerLoc = System.getProperty("ACS.manager");
-        if (managerLoc == null) {
-                System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-                System.exit(-1);
-        }
-        String args[] = {};
-		ORB orb=ORB.init(args, null);
-		if (orb==null) {
-			return null;
-		}
-		org.omg.CORBA.Object managerObj = orb.string_to_object(managerLoc);
-		if (managerObj==null) {
-			return null;
-		} 
-		Manager manager = ManagerHelper.narrow(managerObj);
-        if (manager==null) {
-			return null;
-		} 
-        IntHolder status = new IntHolder();
-        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false, status);
-        if (cdbObj==null) {
-			return null;
-		} 
-        DAL dal = DALHelper.narrow(cdbObj);
-        
-        return dal;
-	}
-	
-	/**
-	   * Create a new instance of an alarm system interface.
-	   * @param sourceName the source name.
-	   * @return the interface instance.
-	  * @throws ASIException if the AlarmSystemInterface instance can not be created.
-	   */
-	  public static AlarmSystemInterface createSource(String sourceName) throws ASIException {
-		  if (useACSImplementation()) {
+	  public static AlarmSystemInterface createSource(String sourceName) throws ASIException, ACSASFactoryNotInitedEx {
+		  if (useACSAlarmSystem==null) {
+			  IllegalStateException e = new IllegalStateException("ACSAlarmSystemFactory not initialized");
+			  AcsJACSASFactoryNotInitedEx e2 = new AcsJACSASFactoryNotInitedEx(e);
+			  throw e2.toACSASFactoryNotInitedEx();
+		  }
+		  if (useACSAlarmSystem) {
 			  return new ACSAlarmSystemInterfaceProxy(sourceName);
 		  } else {
 			  return new AlarmSystemInterfaceProxy(sourceName);
@@ -207,11 +194,34 @@ public class ACSAlarmSystemInterfaceFactory extends AlarmSystemInterfaceFactory 
 	   * @return the interface instance.
 	  * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	   */
-	  public static AlarmSystemInterface createSource() throws ASIException {
-		  if (useACSImplementation()) {
+	  public static AlarmSystemInterface createSource() throws ASIException, ACSASFactoryNotInitedEx {
+		  if (useACSAlarmSystem==null) {
+			  IllegalStateException e = new IllegalStateException("ACSAlarmSystemFactory not initialized");
+			  AcsJACSASFactoryNotInitedEx e2 = new AcsJACSASFactoryNotInitedEx(e);
+			  throw e2.toACSASFactoryNotInitedEx();
+		  }
+		  if (useACSAlarmSystem) {
 			  return new ACSAlarmSystemInterfaceProxy("UNDEFINED");
 		  } else {
 			  return new AlarmSystemInterfaceProxy("UNDEFINED");
 		  }
+	  }
+	  
+	  /** Factory method for creating FaultState instances.
+	   * @return a new FaultState instance.
+	   *
+	   */
+	  public static FaultState createFaultState() {
+	    return new FaultStateImpl();
+	  }
+
+	  /** Factory method for creating FaultState instances.
+	   * @return a new FaultState instance.
+	   * @param family the fault family.
+	   * @param member the fault member.
+	   * @param code the fault code.
+	   */
+	  public static FaultState createFaultState(String family, String member, int code) {
+	    return new FaultStateImpl(family, member, code);
 	  }
 }
