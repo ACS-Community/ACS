@@ -1,6 +1,4 @@
-acl-2.2.23-5
-acs-scripts-1-0
-alchemist-1.0.34-1
+acs-scripts-1-1
 alsa-lib-1.0.6-5.RHEL4
 alsa-utils-1.0.6-3
 anacron-2.3-32
@@ -14,7 +12,6 @@ atk-1.8.0-2
 at-spi-1.6.0-3
 audiofile-0.2.6-1
 authconfig-4.6.10-rhel4.1
-authconfig-gtk-4.6.10-rhel4.1
 autoconf-2.59-5
 autofs-4.1.3-131
 automake14-1.4p6-12
@@ -54,9 +51,7 @@ cups-1.1.22-0.rc1.9.6
 cups-libs-1.1.22-0.rc1.9.6
 cvs-1.11.17-7.RHEL4
 cyrus-sasl-2.1.19-5.EL4
-cyrus-sasl-devel-2.1.19-5.EL4
 cyrus-sasl-md5-2.1.19-5.EL4
-cyrus-sasl-plain-2.1.19-5.EL4
 db4-4.2.52-7.1
 db4-devel-4.2.52-7.1
 db4-utils-4.2.52-7.1
@@ -66,6 +61,7 @@ desktop-backgrounds-basic-2.0-26.2.1E
 desktop-file-utils-0.9-2
 device-mapper-1.01.01-1.RHEL4
 dhclient-3.0.1-12_EL
+dialog-1.0.20040731-3
 diffstat-1.31-5
 diffutils-2.8.1-12
 docbook-dtds-1.0-25
@@ -94,7 +90,6 @@ fbset-2.1-17
 file-4.10-2
 filesystem-2.3.0-1
 findutils-4.1.20-7
-finger-0.17-26
 firefox-1.0.4-1.4.1
 flac-1.1.0-7
 flex-2.5.4a-33
@@ -115,11 +110,9 @@ gcc-c++-3.4.3-22.1
 gcc-g77-3.4.3-22.1
 GConf2-2.8.1-1
 gconf-editor-2.8.0-2
-gd-2.0.28-4
 gdb-6.3.0.0-0.31
 gdbm-1.8.0-24
 gdbm-devel-1.8.0-24
-gd-devel-2.0.28-4
 gdk-pixbuf-0.22.0-16.el4
 gdm-2.6.0.5-7.rhel4.1
 gettext-0.14.1-13
@@ -157,15 +150,12 @@ gnome-python2-gnomeprint-2.6.0-3
 gnome-python2-gnomevfs-2.6.0-3
 gnome-python2-gtkhtml2-2.6.0-3
 gnome-python2-nautilus-2.6.0-3
-gnome-session-2.8.0-5
 gnome-system-monitor-2.7.0-2
 gnome-terminal-2.7.3-1
 gnome-themes-2.8.0-1
 gnome-utils-2.8.0-5
 gnome-vfs2-2.8.2-8.2
 gnome-vfs2-smb-2.8.2-8.2
-gnome-volume-manager-1.1.0-5
-gnupg-1.2.6-1
 gnutls-1.0.20-3
 gphoto2-2.1.4-7
 gpm-1.20.1-66
@@ -175,7 +165,6 @@ groff-1.18.1.1-3
 grub-0.95-3.1
 gstreamer-0.8.7-4.EL.0
 gstreamer-plugins-0.8.5-1.EL.0
-gthumb-2.4.2-7
 gtk+-1.2.10-33
 gtk2-2.4.13-14
 gtk2-engines-2.2.0-6
@@ -187,7 +176,6 @@ gzip-1.3.3-13
 hal-0.4.2-1.EL4
 hdparm-5.7-2
 hesiod-3.0.2-30
-hesiod-devel-3.0.2-30
 hicolor-icon-theme-0.3-3
 hotplug-2004_04_01-7.5
 htmlview-3.0.0-8
@@ -210,14 +198,11 @@ kbd-1.12-2
 kernel-2.6.9-11.EL
 kernel-devel-2.6.9-11.EL
 kernel-utils-2.4-13.1.66
-krb5-devel-1.3.4-12
 krb5-libs-1.3.4-12
 kudzu-1.1.95.11-2
 less-382-4
 lftp-3.0.6-3
-lha-1.14i-17
 libacl-2.2.23-5
-libacl-devel-2.2.23-5
 libao-0.8.5-2.EL.0
 libart_lgpl-2.3.16-3
 libattr-2.4.16-3
@@ -281,10 +266,8 @@ libuser-devel-0.52.5-1
 libvorbis-1.1.0-1
 libvorbis-devel-1.1.0-1
 libwnck-2.8.1-1
-libwvstreams-3.75.0-2
 libxklavier-1.02-3
 libxml2-2.6.16-6
-libxml2-devel-2.6.16-6
 libxml2-python-2.6.16-6
 libxslt-1.1.11-1
 lockdev-1.0.1-3
@@ -301,8 +284,7 @@ make-3.80-5
 MAKEDEV-3.15-2
 man-1.5o1-9
 man-pages-1.67-3
-man-pages-de-0.4-9
-man-pages-fr-0.9.7-11
+mc-4.6.1-0.8.1
 metacity-2.8.6-2.1
 mgetty-1.1.31-2
 mikmod-3.1.6-30.1
@@ -330,6 +312,7 @@ ncurses-devel-5.4-13
 netconfig-0.8.21-1
 netpbm-10.25-2
 netpbm-devel-10.25-2
+netpbm-progs-10.25-2
 net-tools-1.60-37.EL4.6
 NetworkManager-0.3.1-3
 newt-0.51.6-5
@@ -346,7 +329,6 @@ openssh-3.9p1-8.RHEL4.4
 openssh-clients-3.9p1-8.RHEL4.4
 openssh-server-3.9p1-8.RHEL4.4
 openssl-0.9.7a-43.1
-openssl-devel-0.9.7a-43.1
 ORBit-0.5.17-14
 ORBit2-2.12.0-3
 pam-0.77-66.5
@@ -379,13 +361,14 @@ perl-XML-Encoding-1.01-26
 perl-XML-Grove-0.46alpha-27
 perl-XML-Parser-2.34-5
 perl-XML-Twig-3.13-6
+pgplot-5.2.2-6ds
+pgplot-devel-5.2.2-6ds
 pilot-link-0.11.8-8
 pinfo-0.6.8-7
 pkgconfig-0.15.0-3
 pnm2ppa-1.04-11
 popt-1.9.1-9_nonptl
 portmap-4.0-63
-ppp-2.4.2-6.4.RHEL4
 prelink-0.3.3-0.EL4
 procmail-3.22-14
 procps-3.2.3-8.1
@@ -399,7 +382,6 @@ pyparted-1.6.8-2
 python-2.3.4-14.1
 python-devel-2.3.4-14.1
 pyxf86config-0.3.19-1
-PyXML-0.8.3-6
 qt-3.3.3-9.3
 quota-3.12-5
 rcs-5.7-26
@@ -422,7 +404,6 @@ rpmdb-redhat-4-0.20050525
 rpm-devel-4.3.3-9_nonptl
 rpm-libs-4.3.3-9_nonptl
 rpm-python-4.3.3-9_nonptl
-rp-pppoe-3.5-22
 rsh-0.17-25.3
 rsh-server-0.17-25.3
 rsync-2.6.3-1
@@ -430,6 +411,7 @@ samba-3.0.10-1.4E
 samba-client-3.0.10-1.4E
 samba-common-3.0.10-1.4E
 schedutils-1.4.0-2
+screen-4.0.2-5
 scrollkeeper-0.3.14-3
 SDL-1.2.7-8
 sed-4.1.2-4
@@ -486,6 +468,10 @@ tcsh-6.13-9
 telnet-0.17-31.EL4.2
 telnet-server-0.17-31.EL4.2
 termcap-5.4-3
+tetex-2.0.2-22.EL4.4
+tetex-dvips-2.0.2-22.EL4.4
+tetex-fonts-2.0.2-22.EL4.4
+tetex-latex-2.0.2-22.EL4.4
 texinfo-4.7-5
 thunderbird-1.0.2-1.4.1
 time-1.7-25
@@ -510,11 +496,12 @@ vim-common-6.3.046-0.40E.4
 vim-enhanced-6.3.046-0.40E.4
 vim-minimal-6.3.046-0.40E.4
 vixie-cron-4.1-20_EL
+vnc-4.0-8.1
+vnc-server-4.0-8.1
 vte-0.11.11-6
 wget-1.9.1-17
 which-2.16-4
 words-3.0-3
-wvdial-1.54.0-3
 Xaw3d-1.5-24
 Xaw3d-devel-1.5-24
 xinetd-2.3.13-4
@@ -534,6 +521,7 @@ xorg-x11-libs-6.8.2-1.EL.13.6
 xorg-x11-Mesa-libGL-6.8.2-1.EL.13.6
 xorg-x11-Mesa-libGLU-6.8.2-1.EL.13.6
 xorg-x11-tools-6.8.2-1.EL.13.6
+xorg-x11-twm-6.8.2-1.EL.13.6
 xorg-x11-xauth-6.8.2-1.EL.13.6
 xorg-x11-xdm-6.8.2-1.EL.13.6
 xorg-x11-xfs-6.8.2-1.EL.13.6
@@ -542,7 +530,6 @@ xpdf-3.00-11.5
 xscreensaver-4.18-5.rhel4.2
 xsri-2.1.0-8
 xterm-192-1
-yelp-2.6.4-2
 ypbind-1.17.2-3
 yp-tools-2.8-7
 zip-2.3-27
