@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
+import alma.acs.component.client.ComponentClient;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.corba.AcsCorba;
@@ -47,7 +48,7 @@ public class Firestarter {
 
 	protected AcsCorba acsCorba = null;
 	protected POA rootPoa = null;
-	protected AdvancedComponentClient componentClient = null;
+	protected ComponentClient componentClient = null;
 	protected MaciSupervisorFactory maciSupervisorFactory = null;
 
 	protected Logger firestarterLog = null;
@@ -189,11 +190,12 @@ public class Firestarter {
 
 
 	/**
-	 * Hook for subclasses
+	 * Hook for subclasses. This default implementation creates an
+	 * <code>AdvancedComponentClient</code>.
 	 * 
 	 * @throws Exception if creation of component client fails
 	 */
-	protected AdvancedComponentClient createComponentClient (Logger compclientLog, String managerLoc) throws Exception {
+	protected ComponentClient createComponentClient (Logger compclientLog, String managerLoc) throws Exception {
 		AdvancedComponentClient ret;
 		ret = new AdvancedComponentClient(compclientLog, managerLoc, clientName+".ComponentClient", acsCorba);
 		return ret;
