@@ -3,7 +3,7 @@
 #
 # ACS/README-new-release
 #
-# "@(#) $Id: README-new-release,v 1.4 2005/07/26 08:26:01 gchiozzi Exp $"
+# "@(#) $Id: README-new-release,v 1.5 2006/07/20 12:33:04 gchiozzi Exp $"
 #
 
 This file contains notes useful when preparing a new ACS release.
@@ -24,10 +24,6 @@ This file contains notes useful when preparing a new ACS release.
     there is no clean way to rely on environment variables.
     Remember to update rc.d/init.d/acsDHCPConfig on the installed
     machines.
-  - ACS/ExtProd/INSTALL/buildRTOS
-    This file contains hardcoded the tag for 
-    checking-out RTOS (3rdParty/linux and
-    3rdParty/rtai).
 - Do not forget to update the reference files for  
   the acsConfigReport tool in the ACS/LGPL/Kit/acs module
 - Check 
