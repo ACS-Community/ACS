@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.63 2006/07/19 13:23:37 acaproni Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.64 2006/07/20 10:35:50 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -73,7 +73,7 @@
 
 #include <ACSAlarmSystemInterfaceFactory.h>
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.63 2006/07/19 13:23:37 acaproni Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.64 2006/07/20 10:35:50 acaproni Exp $")
 
 NAMESPACE_USE(maci);
 NAMESPACE_USE(cdb);
@@ -804,18 +804,6 @@ ContainerImpl::init(int argc, char *argv[])
 	  return false;
 	}
 
-	// Initialize the alarm system factory
-	bool asfRet=true;;
-	try {
-		asfRet=ACSAlarmSystemInterfaceFactory::init(manager);
-	} catch (acsErrTypeAlarmSourceFactory::InavalidManagerExImpl &ex) {
-		asfRet=false;
-	}
-	if (!asfRet) {
-		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
-                (LM_INFO, "Failed to initialize AlarmSystem factory."));
-		return false;
-	}
 
       // parse args for opts
       parseArgs(m_argc, m_argv);
@@ -1239,8 +1227,6 @@ ContainerImpl::done()
   acsQoS::done();
 
   ACSError::done();
-
-  ACSAlarmSystemInterfaceFactory::done();
 
   if(m_dllmgr)
       {
