@@ -26,6 +26,9 @@ namespace laserSource
 			
 			// The manager
 			static maci::Manager_ptr m_manager;
+			
+			// The naming service
+			static CosNaming::NamingContext_ptr m_naming_p;
 
 		public:
 
@@ -61,7 +64,7 @@ namespace laserSource
 		 */
 		static auto_ptr<AlarmSystemInterface> createSource(string sourceName) //throws ASIException {
 		{
-			AlarmSystemInterfaceProxy * asIfProxyPtr = new AlarmSystemInterfaceProxy(sourceName);
+			AlarmSystemInterfaceProxy * asIfProxyPtr = new AlarmSystemInterfaceProxy(sourceName,m_naming_p);
 			auto_ptr<AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 			return asIfAutoPtr;
 		}
@@ -76,13 +79,17 @@ namespace laserSource
 			return createSource("UNDEFINED");
 		}
 		
-		static bool init(maci::Manager_ptr manager) {
+		static bool init(maci::Manager_ptr manager,CosNaming::NamingContext_ptr naming_p) {
 			m_manager=maci::Manager::_duplicate(manager);
+			m_naming_p=CosNaming::NamingContext::_duplicate(naming_p);
+			return true;
 		}
 		
 		static void done() {
 			CORBA::release(m_manager);
 			m_manager=maci::Manager::_nil();
+			CORBA::release(m_naming_p);
+			m_naming_p=CosNaming::NamingContext::_nil();
 		}
 			
 	};

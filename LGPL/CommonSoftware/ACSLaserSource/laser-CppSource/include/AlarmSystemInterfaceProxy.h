@@ -5,6 +5,9 @@
 #include "ASIMessage.h"
 #include "ASIConfiguration.h"
 #include "AlarmPublisher.h"
+#include <orbsvcs/CosNotifyChannelAdminS.h>
+#include <orbsvcs/CosNotifyCommC.h>
+#include <orbsvcs/CosNamingC.h>
 
 using laserAlarmPublisher::AlarmPublisher;
 
@@ -12,12 +15,16 @@ namespace laserSource
 {
 	class AlarmSystemInterfaceProxy : public AlarmSystemInterface
 	{
+		private:
+			// The naming service
+			CosNaming::NamingContext_ptr m_naming_p;
+			
 		public:
-			AlarmSystemInterfaceProxy();
-			AlarmSystemInterfaceProxy(string theSourceName);
+			AlarmSystemInterfaceProxy(CosNaming::NamingContext_ptr naming_p);
+			AlarmSystemInterfaceProxy(string theSourceName,CosNaming::NamingContext_ptr naming_p);
 			virtual ~AlarmSystemInterfaceProxy();
 			void close();
-
+			
 			/**
 		 	* Push a fault state.
 		 	* @param state the fault state change to push.

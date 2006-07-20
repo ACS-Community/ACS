@@ -14,8 +14,9 @@ using asiConfigurationConstants::ALARM_SOURCE_NAME;
 /*
  * Default no-args constructor.
  */
-AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy()
+AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(CosNaming::NamingContext_ptr naming_p)
 {
+	m_naming_p=CosNaming::NamingContext::_duplicate(naming_p);
 	cout << "AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(): entering...\n";
 	laserPublisher = NULL;
 	setSourceName(ALARM_SOURCE_NAME);
@@ -28,8 +29,9 @@ AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy()
  * @param theSourceName the name of the source. This should normally be the
  * one (and only one) source name defined in asiConfigurationConstants.h ALARM_SOURCE_NAME.
  */
-AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string theSourceName)
+AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string theSourceName,CosNaming::NamingContext_ptr naming_p )
 {
+	m_naming_p=CosNaming::NamingContext::_duplicate(naming_p);
 	cout << "AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string): entering...\n";
 	laserPublisher = NULL;
 	setSourceName(theSourceName);
@@ -48,6 +50,8 @@ AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string theSourceName)
 AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy()
 {
 	cout << "AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy(): entering...\n";
+	CORBA::release(m_naming_p);
+	m_naming_p=CosNaming::NamingContext::_nil();
 	if (laserPublisher != NULL) {
 		delete laserPublisher;
 		laserPublisher = NULL;

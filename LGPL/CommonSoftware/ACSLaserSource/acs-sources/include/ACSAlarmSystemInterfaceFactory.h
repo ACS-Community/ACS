@@ -40,6 +40,9 @@
 #include "ACSAlarmSystemInterfaceProxy.h"
 #include "maciS.h"
 #include "acsErrTypeAlarmSourceFactory.h"
+#include <orbsvcs/CosNotifyChannelAdminS.h>
+#include <orbsvcs/CosNotifyCommC.h>
+#include <orbsvcs/CosNamingC.h>
 
 /**
  * The class to create sources and fault states.
@@ -74,7 +77,7 @@ class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFa
 		 * methods of this class otherwise an exception will be thrown.
 		 * Return true if the initialization went ok
 		 */
-		static bool init(maci::Manager_ptr manager);
+		static bool init(maci::Manager_ptr manager,CosNaming::NamingContext_ptr naming_p);
 		
 		/**
 		 * Release the resources: must be called when finished using the

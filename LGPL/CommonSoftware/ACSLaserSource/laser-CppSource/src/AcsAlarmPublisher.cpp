@@ -2,6 +2,9 @@
 #include "AcsAlarmPublisher.h"
 #include "ACSJMSMessageEntityS.h"
 #include "acsncORBHelper.h"
+#include <orbsvcs/CosNotifyChannelAdminS.h>
+#include <orbsvcs/CosNotifyCommC.h>
+#include <orbsvcs/CosNamingC.h>
 
 using std::cout;
 using namespace laserAlarmPublisher;
@@ -17,7 +20,7 @@ ACE_Mutex* AcsAlarmPublisher::alarmSupplierMutex = new ACE_Mutex;
  * @param topicName the name of the topic for the notification channel which will 
  *        be used for communication with the laser alarm server.
  */
-AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
+AcsAlarmPublisher::AcsAlarmPublisher(string topicName,CosNaming::NamingContext_ptr naming_p)
 {
 	cout << "AcsAlarmPublisher::AcsAlarmPublisher(): entering...\n";
 	// create the shared AlarmSupplier
@@ -27,7 +30,8 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 		cout << "AcsAlarmPublisher::AcsAlarmPublisher(): about to instantiate the alarm supplier.\n";
 		setAlarmSupplier(new AlarmSupplier(topicName.c_str()));
 		cout << "AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier\n";
-		initializeCorbaServices();
+		// initialize the AlarmSupplier with the naming context
+		getAlarmSupplier()->init(naming_p);
 	}
 	cout << "AcsAlarmPublisher::AcsAlarmPublisher(): exiting...\n";
 }
@@ -65,7 +69,7 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 /*
  * Returns the singleton instance, creating it if necessary.
  */
-AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName)
+AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName,CosNaming::NamingContext_ptr naming_p)
 {
 	cout << "AcsAlarmPublisher::getInstance("<<topicName<<"): entering...\n";
 
@@ -79,7 +83,7 @@ AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName)
   	ACE_Guard<ACE_Mutex> guard(*AcsAlarmPublisher::singletonMutex);
 	if(NULL == singletonInstance)
 	{
-		singletonInstance = new AcsAlarmPublisher(topicName);
+		singletonInstance = new AcsAlarmPublisher(topicName,naming_p);
 	}
 
 	cout << "AcsAlarmPublisher::getInstance(): exiting...\n";
@@ -102,30 +106,6 @@ bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 	return true;
 }
 
-/*
- * Private method for initialization of CORBA notification channel services.
- */
-void AcsAlarmPublisher::initializeCorbaServices()
-{
-	cout << "AcsAlarmPublisher::initializeCorbaServices(): entering\n";
-
-	// start an ORB 
-	nc::ORBHelper *orbHelper = new nc::ORBHelper();
-	orbHelper->runOrb();
-
-	// get the naming service/context
-	CORBA::ORB_ptr orb = orbHelper->getORB();
-	CORBA::Object_var naming_obj = orb->resolve_initial_references ("NameService");
-	CosNaming::NamingContext_var naming_context = CosNaming::NamingContext::_narrow(naming_obj.in());
-	
-	// initialize the AlarmSupplier with the naming context
-	getAlarmSupplier()->init(naming_context.in());
-
-	// delete the orb helper
-	delete orbHelper;
-	cout << "AcsAlarmPublisher::initializeCorbaServices(): exiting\n";
-}
-
 
 /*
  * Simple factory method to return an instance of AlarmPublisher as an entry point 
@@ -137,10 +117,10 @@ void AcsAlarmPublisher::initializeCorbaServices()
  */
 extern "C" 
 {
-	AlarmPublisher * getAlarmPublisher(string topicName)
+	AlarmPublisher * getAlarmPublisher(string topicName,CosNaming::NamingContext_ptr naming_p)
 	{
 		cout<< "extern C getAlarmPublisher(): DLL entry point, entering...\n";
-		AlarmPublisher * retVal = AcsAlarmPublisher::getInstance(topicName);
+		AlarmPublisher * retVal = AcsAlarmPublisher::getInstance(topicName,naming_p);
 		cout << "extern C getAlarmPublisher(): DLL entry point, exiting...\n";
 		return retVal;
 	}

@@ -75,8 +75,8 @@ auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
 	}
 }
 
-bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
-	if (CORBA::is_nil(manager)) {
+bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager,CosNaming::NamingContext_ptr naming_p) {
+	if (CORBA::is_nil(manager) || CORBA::is_nil(naming_p)) {
 		throw acsErrTypeAlarmSourceFactory::InavalidManagerExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
 	}
 	m_manager=maci::Manager::_duplicate(manager);
@@ -87,7 +87,7 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
 	delete pGetter;
 	*m_useACSAlarmSystem = !(str=="CERN");
 	if (!(*m_useACSAlarmSystem)) {
-		laserSource::AlarmSystemInterfaceFactory::init(manager);
+		laserSource::AlarmSystemInterfaceFactory::init(manager,naming_p);
 	}
 	return true;
 }
