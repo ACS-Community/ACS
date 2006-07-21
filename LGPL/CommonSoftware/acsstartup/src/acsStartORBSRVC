@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.61 2006/06/20 21:49:59 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.62 2006/07/21 21:37:39 dfugate Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -449,7 +449,7 @@ then
 fi
 
 # Create the logging channel now.
-acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id LoggingNotifyEventChannelFactory --channel_id LoggingChannel #--max_queue_length 10 --reject_new_events true #--max_events_per_consumer 5 #--discard_policy FifoOrder #
+acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id LoggingNotifyEventChannelFactory --channel_id LoggingChannel #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
 
 #------------------------------------------------------------------------------------------
 ################################
@@ -463,7 +463,7 @@ ACS_LOG_INFO "Starting Archive Notify Service"
 # in order to get the correct svc.conf service configuration file.
 STARTUP_DIR=$PWD
 cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$ARCHIVE_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $ARCHIVE_NOTIFY_IOR $ORBOPTS -Factory ArchiveNotifyEventChannelFactory -Channel -ChannelName ArchivingChannel -Boot &> $ARCHIVE_NOTIFY_OUT &
+$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$ARCHIVE_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $ARCHIVE_NOTIFY_IOR $ORBOPTS -Factory ArchiveNotifyEventChannelFactory -Boot &> $ARCHIVE_NOTIFY_OUT &
 cd $STARTUP_DIR
 
 ARCHIVE_NOTIFY_SERVICE_PID=$!
@@ -476,6 +476,10 @@ then
     ACS_LOG_ERROR "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
     timeoutExit
 fi
+
+# Create the archiving channel now.
+acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id ArchiveNotifyEventChannelFactory --channel_id ArchivingChannel #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
+
 
 ################################
 # Logging Service
