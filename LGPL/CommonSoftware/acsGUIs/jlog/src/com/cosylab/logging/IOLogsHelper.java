@@ -48,7 +48,7 @@ import alma.acs.util.StopWatch;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
+import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -724,7 +724,7 @@ public class IOLogsHelper extends Thread  {
 		ILogEntry log=null;
 		try {
 			if (parser == null) {
-				parser = new ACSLogParserVTD();
+				parser = new ACSLogParserDOM();
 			}
 			log = parser.parse(logStr.trim());
 		} catch (Exception e) {

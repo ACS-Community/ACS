@@ -1,7 +1,7 @@
 package com.cosylab.logging;
 
 import com.cosylab.logging.client.cache.LogCache;
-import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
+import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntryXML;
@@ -70,7 +70,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	private long fillCache() throws Exception {
-		ACSLogParser parser = new ACSLogParserVTD();
+		ACSLogParser parser = new ACSLogParserDOM();
 		String logMsg = "Test log nr. ";
 		
 		
@@ -112,7 +112,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 *
 	 */
 	public void testAddLog() throws Exception {
-		ACSLogParser parser = new ACSLogParserVTD();
+		ACSLogParser parser = new ACSLogParserDOM();
 		int oldSize = cache.getSize();
 		String logMsg = "Test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T15:33:10.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
@@ -129,7 +129,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 *
 	 */
 	public void testReplace() throws Exception {
-		ACSLogParser parser = new ACSLogParserVTD();
+		ACSLogParser parser = new ACSLogParserDOM();
 		String logMsg = "Replaced test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T16:00:00.000\" Routine=\"CacheTest::testReplace\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
 		ILogEntry newLog = parser.parse(logStr);

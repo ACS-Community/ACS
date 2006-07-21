@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.4 2006/06/06 23:57:11 sharring Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.5 2006/07/21 08:03:01 acaproni Exp $
  * @since    
  */
 
@@ -33,6 +33,8 @@ import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+
+import  javax.xml.parsers.ParserConfigurationException;
 
 /**
  * ACSLogRetireval stores the XML string representing logs on a file
@@ -79,16 +81,16 @@ public class ACSLogRetrieval extends Thread {
 		} catch (FileNotFoundException fne) {
 			rOutF=null;
 		}
-		//try {
-			parser = new ACSLogParserVTD();
-		/*} catch (ParserConfigurationException pce) {
+		try {
+			parser = new ACSLogParserDOM();
+		} catch (ParserConfigurationException pce) {
 			parser=null;
-		}*/
+		}
 		if (rOutF!=null && parser!=null) {
 			this.setPriority(Thread.MIN_PRIORITY);
 			this.start();
 		} else {
-			System.out.println("Retrieval of discarded logs disabled");
+			System.err.println("Retrieval of discarded logs disabled");
 		}
 	}
 	

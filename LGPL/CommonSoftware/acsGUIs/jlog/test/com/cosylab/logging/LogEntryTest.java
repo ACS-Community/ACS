@@ -31,7 +31,7 @@ import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
+import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 
 import java.util.Vector;
 
@@ -53,7 +53,7 @@ public class LogEntryTest extends junit.framework.TestCase
 
 	java.util.Vector testEntries = new java.util.Vector();
 
-	ACSLogParserVTD logparser = null;
+	ACSLogParserDOM logparser = null;
 
 	class TestEntry
 	{
@@ -79,7 +79,7 @@ public class LogEntryTest extends junit.framework.TestCase
 	protected void setUp() throws Exception
 	{
 
-		logparser = new ACSLogParserVTD();
+		logparser = new ACSLogParserDOM();
 		log =
 			logparser.parse(
 				"<Trace TimeStamp=\"2002-11-07T15:13:00.012\" File=\"maciHeartbeatController.cpp\" Line=\"64\"><Data Name=\"DataName\">first data</Data></Trace>");

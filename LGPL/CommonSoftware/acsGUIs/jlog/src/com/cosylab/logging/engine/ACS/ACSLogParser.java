@@ -9,7 +9,6 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * 
  * @author sharring
  * @see ACSLogParserDOM
- * @see ACSLogParserVTD
  */
 public interface ACSLogParser {
 

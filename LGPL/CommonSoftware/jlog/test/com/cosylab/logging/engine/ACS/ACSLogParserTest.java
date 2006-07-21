@@ -8,7 +8,7 @@ import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
-import com.cosylab.logging.engine.ACS.ACSLogParserVTD;
+import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 
 public class ACSLogParserTest extends TestCase {
 
@@ -54,7 +54,7 @@ public class ACSLogParserTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		parser = new ACSLogParserVTD();
+		parser = new ACSLogParserDOM();
 	}
 
 	protected void tearDown() throws Exception {

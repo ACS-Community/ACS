@@ -170,16 +170,16 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	private void initialize()
 	{
-		/*try
-		{*/
-			parser = new ACSLogParserVTD();
-		//}
-//		catch (javax.xml.parsers.ParserConfigurationException pce)
-//		{
-//			engine.publishReport("Exception occurred when initializing the XML parser.");
-//			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
-//			return;
-//		}
+		try
+		{
+			parser = new ACSLogParserDOM();
+		}
+		catch (javax.xml.parsers.ParserConfigurationException pce)
+		{
+			engine.publishReport("Exception occurred when initializing the XML parser.");
+			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
+			return;
+		}
 		org.omg.CORBA.IntHolder proxyId = new org.omg.CORBA.IntHolder();
 
 		ProxySupplier proxySupplier = null;
