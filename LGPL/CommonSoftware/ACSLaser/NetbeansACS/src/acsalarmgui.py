@@ -193,6 +193,18 @@ def setupNetbeansModules(modJars,laserJars,dirs):
     for jar in laserJars:
         src = getJarPath(jar,dirs)
         copyFile(src,netbeansHomeDir+"modules/laser/"+jar)
+        
+def usage():
+    '''Print the usage message'''
+    print "Usage:"
+    print sys.argv[0],"[-h|<manger_CORBA_loc>]"
+    print "  -h: print help string"
+    print "  <manger_CORBA-loc>: the CORBA loc of the manager"
+    print "If the CORBA loc of the manager is not present"
+    print " the script assumes the local computer as host and"
+    print "instance is read from ACS_INSTANCE (0 if ACS_INSTANCE"
+    print "is not defined)."
+    print
 
 ####################### MAIN ###############################
 
@@ -248,17 +260,34 @@ laserJars = [  "log4j-1.2.8.jar", \
               "AlarmSystem.jar", \
               "ACSAlarmMessage.jar" ]
 
-# The program accepts only one parameter: the CORBALOC of the manager
-if len(sys.argv)==2:
-    managerCORBA=sys.argv[1]
-    # Some checks before going on
-    # The regular expression is not perfect but enough good I hope ;-)
-    regExp = re.compile("corbaloc::[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/Manager")
-    if not regExp.match(managerCORBA):
-        print "Wrong CORBA loc for remote manager",managerCORBA
-        sys.exit(-1)
+if len(sys.argv)>2:
+    usage()
+    sys.exit(-1)
+# The program accepts only one parameter: the CORBALOC of the manager or -h
+elif len(sys.argv)==2:
+    if sys.argv[1]=='-h':
+        usage()
+        sys.exit(0)
+    else:
+        managerCORBA=sys.argv[1]
+        # Some checks before going on
+        # The regular expression is not perfect but enough good I hope ;-)
+        regExp = re.compile("corbaloc::[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/Manager")
+        if not regExp.match(managerCORBA):
+            print "Wrong CORBA loc for remote manager",managerCORBA
+            sys.exit(-1)
 else:
-   managerCORBA=None 
+    # Check if the manager reference is in the env variable
+    if os.environ.has_key('MANAGER_REFERENCE'):
+        managerCORBA=os.environ['MANAGER_REFERENCE'].strip()
+    else:
+        managerCORBA=None
+
+print "Manager:",
+if managerCORBA!=None:
+    print managerCORBA
+else:
+    print "UNDEFINED (will try the local host)"
 
 # Get some useful variables from the environment
 if os.environ.has_key('INTROOT'):
@@ -269,6 +298,9 @@ if os.environ.has_key('INTLIST'):
     intlist = os.environ['INTLIST'].strip()
 else:
     intlist = None
+
+print "INTROOT:",introot
+print "INTLIST:",intlist
     
 try:
     # These variables must be defined otherwise there something wrong 
@@ -288,13 +320,13 @@ except exceptions.IOError, e:
     print "Error:",e
     sys.exit(-1)
     
+print "Netbeans home:",netbeansHomeDir
+    
 # The java command with the path
 javaExe = javaHome+"bin/java"
 
 # The java class to exceture
 javaMainClass = "org.netbeans.Main"
-
-print "Using netbeans in", netbeansHomeDir
 
 try:
     acsInstance = getInstance(managerCORBA)
