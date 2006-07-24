@@ -188,10 +188,20 @@ def setupNetbeansModules(modJars,laserJars,dirs):
     '''Copy the jar files in netbeans/modules and netbeans/modules/laser'''
     global netbeansHomeDir
     for jar in modJars:
-        src = getJarPath(jar,dirs)
+        try:
+            src = getJarPath(jar,dirs)
+        except:
+            print jar,"NOT found in",dirs
+            print "Check your laser installation before launching the GUI"
+            sys.exit(-1)
         copyFile(src,netbeansHomeDir+"modules/"+jar)
     for jar in laserJars:
-        src = getJarPath(jar,dirs)
+        try:
+            src = getJarPath(jar,dirs)
+        except:
+            print jar,"NOT found in",dirs
+            print "Check your laser installation before launching the GUI"
+            sys.exit(-1)
         copyFile(src,netbeansHomeDir+"modules/laser/"+jar)
         
 def usage():
@@ -373,6 +383,9 @@ command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s 
       'main': javaMainClass }
 
 print "Executing",command
+print
+
+# Launch the GUI
 os.system(command)
 
 
