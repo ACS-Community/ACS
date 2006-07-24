@@ -118,7 +118,7 @@ def getACSProps(instance,managerCORBALoc):
     nameServicePort = 3001+instance*100
     if managerCORBALoc==None:
         localIP = getLocalIP()
-        managerCORBALoc= 'corbaloc::%(ip)s:%(port)d:/Manager' % \
+        managerCORBALoc= 'corbaloc::%(ip)s:%(port)d/Manager' % \
             { 'ip': localIP, 'port': managerPort }
         NSCORBALoc= 'corbaloc::%(ip)s:%(port)d/NameService' % \
             { 'ip': localIP, 'port': nameServicePort }
@@ -362,7 +362,7 @@ allJars = netbeansExtJars+javaJars+acsJars
 for jar in allJars:
     classpath+=jar+":"
 classpath = classpath[0:len(classpath)-1]
-classpath+=acsData+"config"
+classpath+=":"+acsData+"config"
 
 # Build the string with props for JVM
 JVMPropString = ""
@@ -374,7 +374,7 @@ cleanNetbeansModules(modulesJars)
 setupNetbeansModules(modulesJars,laserJars,searchDirs)
 
 # Build the command 
-command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s &" % \
+command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s " % \
     { 'exe': javaExe, 
       'classpath':classpath, 
       'jvmprops':  JVMPropString, 
