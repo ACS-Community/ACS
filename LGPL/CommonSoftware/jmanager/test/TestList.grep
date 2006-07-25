@@ -16,3 +16,7 @@ POA ManagerPOA
 export
 -D abeans.home=
 Starting Java/abeans application:
+\[jacorb\.poa\] INFO : Using server ID 
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+\[jacorb\.poa\] INFO : oid:
+object is activated
