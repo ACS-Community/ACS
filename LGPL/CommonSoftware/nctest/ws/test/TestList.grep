@@ -48,3 +48,10 @@ Traceback \(most recent call last\)
 TypeError: 'NoneType' object is not callable
 Aborted
 terminate called after throwing an instance of 'omni_thread_fatal'
+\[jacorb\.poa\] INFO : Using server ID
+\[jacorb\.poa\] INFO : oid:
+\[jacorb\.poa\] INFO : POA
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+object is activated
+object is deactivated
+servant is etherealized

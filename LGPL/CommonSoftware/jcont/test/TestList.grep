@@ -24,3 +24,7 @@ Done!
 about to exit the JVM...
 Local file logger: Cache saved to
 Waiting for the container to really shutdown
+\[jacorb\.poa\] INFO : Using server ID
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+\[jacorb\.poa\] INFO : oid:
+object is activated
