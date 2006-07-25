@@ -18,8 +18,8 @@ start() {
 	# Perform configuration
 	echo -n $"Configuring DHCP for ACS "
         RETVAL=0
-        if [ -f /alma/ACS-5.0/ACSSW/bin/acsDHCPBoot ] ; then
-	     /alma/ACS-5.0/ACSSW/bin/acsDHCPBoot > /dev/null 2>&1
+        if [ -f /alma/ACS-6.0/ACSSW/bin/acsDHCPBoot ] ; then
+	     /alma/ACS-6.0/ACSSW/bin/acsDHCPBoot > /dev/null 2>&1
              RETVAL=$?
         fi
         echo
