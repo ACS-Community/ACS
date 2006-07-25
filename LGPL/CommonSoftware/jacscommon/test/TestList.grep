@@ -14,3 +14,7 @@ export
 ERROR: Abnormal connection termination
 Starting Java/abeans application:
 -D abeans.home
+\[jacorb\.poa\] INFO : Using server ID 
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+\[jacorb\.poa\] INFO : oid:
+object is activated
