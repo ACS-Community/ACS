@@ -16,3 +16,7 @@ ACS Name Service:
 Running the following command:
 modified by jDAL
 INFO - Using endorsed jar files in: -Djava.endorsed.dirs=
+INFO : Using server ID 
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+\[jacorb\.poa\] INFO : oid:
+object is activated
