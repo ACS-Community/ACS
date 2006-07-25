@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.12 2005/12/30 11:54:07 gchiozzi Exp $"
+# "@(#) $Id: buildJacORB,v 1.13 2006/07/25 14:21:10 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -96,8 +96,12 @@ fi
 
 echo ==== Extracting package
 cd $ALMASW_INSTDIR
-tar xfzp $JACORB_SOURCES/JacORB_1_4_1-full.tar.gz
-mv JacORB_1_4_1 $JACORB_HOME
+
+#tar xfzp $JACORB_SOURCES/JacORB_1_4_1-full.tar.gz
+#mv JacORB_1_4_1 $JACORB_HOME
+
+unzip $JACORB_SOURCES/JacORB_2_2_4-full.zip
+mv JacORB-2.2.4 $JACORB_HOME
 if [ $? -ne 0 ]
 then
      echo "========= FAILED =========="
@@ -113,56 +117,38 @@ cd $JACORB_HOME
 #         directory and is not relocatable
 # /idl/build.xml
 #         Extend the set of services we build support for with Peoperty Service
-# /src/org/jacorb/idl/AliasTypeSpec.java
-#         Replace with AliasTypeSpec.java 1.33 from CVS archive
-#         to fix unwinding of defines for output parameters.
-# /src/org/jacorb/idl/Module.java
 # /src/org/jacorb/idl/NameTable.java
 # /src/org/jacorb/idl/ScopedName.java
 # /src/org/jacorb/idl/parser.java
 #         Fix IDL compiler and handling of prefix/package names
 # /src/org/jacorb/orb/CDRInputStream.java
 #         Fix problem with CDRInputStream.java read boolean
-# /src/org/jacorb/security/level2/CredentialsImpl.java
-#         Replace with CredentialsImpl.java 1.9 1.33 from CVS archive
-#         because of fixed unwinding of defines for output parameters.
+# /idl/omg/orb.idl 
+#   Uncommented pragma inhibit_code_generation.
+#   This was uncommented with JacORB 1.1.4, but it is commented now.
+# /src/org/jacorb/idl/StructType.java
+#   Added support for forward declarations in IDL with JacORB 2.2.4
 #
-# Added 2005-09-14:
-# /...../build.xml
-#         Replaced "javac" with "javac source="1.4"
-#        This is necessary to build with JDK 1.5 compiler.
-#        We will hopefully be able to remove this with a porting
-#        to JDK 1.5 or by using a newer version of JacORB.
-# /src/org/jacorb/poa/RequestController.java
-#        With JDK 1.5 it seems that a variable of type State is assumed 
-#        to be a java.lang.Thread's public enum State, 
-#        in spite of explicitly importing org.omg.PortableServer.POAManagerPackage.State. 
-#        This results in a type mismatch.
-#        Thus we have to patch the JacORB code from
-#           State state;
-#        to
-#           org.omg.PortableServer.POAManagerPackage.State state;
 # The patch file has been generated from the following command:
-# LC_ALL=C TZ=UTC0 diff -Naur JacORB_1_4_1 JacORB_1_4_1-new >JacORB-ACS-2005-09-14.patch
-# (previous patch name, without 1.5 changes, was: JacORB-ACS-2005-03-08.patch
+# LC_ALL=C TZ=UTC0 diff -Naur JacORB_2_2_4 JacORB_2_2_4-new >JacORB-ACS-2006-06-29.patch
 
 echo ==== Cumulative Patch
-if [ -f $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch.gz ]
+if [ -f $JACORB_SOURCES/JacORB-ACS-2006-06-29.patch.gz ]
 then
-    gunzip -c $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch.gz >$JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-2006-06-29.patch.gz >$JACORB_SOURCES/JacORB-ACS-2006-06-29.patch
 else
-    echo "file $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch.gz not found"
+    echo "file $JACORB_SOURCES/JacORB-ACS-2006-06-29.patch.gz not found"
     echo "Installation aborted"
     exit 3
 fi
-patch -p1 < $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-2006-06-29.patch
 if [ $? -ne 0 ]
 then
-    rm $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+    rm $JACORB_SOURCES/JacORB-ACS-2006-06-29.patch
     echo "========= FAILED =========="
 	exit 1
 else
-    rm $JACORB_SOURCES/JacORB-ACS-2005-09-14.patch
+    rm $JACORB_SOURCES/JacORB-ACS-2006-06-29.patch
 fi
 
 echo ==== Building jaco
