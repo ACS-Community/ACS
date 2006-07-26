@@ -37,11 +37,18 @@
 <!-- the SimulatedComponent XML element                -->
 <SimulatedComponent xmlns="urn:schemas-cosylab-com:SimulatedComponent:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     
+<!-- Section where normal Python imports are performed.-->
+<!-- By importing modules/packages here, they will be  -->
+<!-- accessible throughout the rest of the XML.        -->
         <pythonImports>
 import ACSErr
 import ACS
         </pythonImports>
 
+<!-- A CORBA method is implemented. This particular   -->
+<!-- method, stopRamping, accepts as its first        -->
+<!-- parameter a CallbackVoid object. We in turn play -->
+<!-- around with the callback before returning.       -->
 	<_corbaMethod Name="startRamping" Timeout="0">
 print "Simulated startRamping (alma/simulated/interfaces CDB section):"
 print "    simply invoking the callback's 'done' method."
