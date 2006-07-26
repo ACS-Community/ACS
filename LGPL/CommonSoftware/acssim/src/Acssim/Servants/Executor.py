@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.15 2006/04/03 19:44:14 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.16 2006/07/26 21:28:00 dfugate Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.15 2006/04/03 19:44:14 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.16 2006/07/26 21:28:00 dfugate Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -36,6 +36,7 @@ from inspect import isfunction
 from copy    import copy
 from sys     import stdout
 import types
+from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
@@ -46,7 +47,7 @@ from Acssim.Corba.Generator            import *
 
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Servants.Executor")
-__revision__ = "@(#) $Id: Executor.py,v 1.15 2006/04/03 19:44:14 dfugate Exp $"
+__revision__ = "@(#) $Id: Executor.py,v 1.16 2006/07/26 21:28:00 dfugate Exp $"
 #------------------------------------------------------------------------------
 def _execute(comp_name, meth_name, args, local_ns):
     '''
@@ -130,8 +131,9 @@ def _executeList(code_list, args, local_ns):
         #great, this makes things much easier for us
         try:
             #assume they want to see the arguments
-            return code_list(globals(), _locals)
+            return code_list(args)
         except:
+            print_exc()
             #fine...it's a parameterless function
             return code_list()
     elif type(code_list)==types.CodeType:
