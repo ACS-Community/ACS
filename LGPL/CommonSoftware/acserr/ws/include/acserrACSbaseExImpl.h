@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrACSbaseExImpl.h,v 1.7 2004/04/30 07:10:04 bjeram Exp $"
+* "@(#) $Id: acserrACSbaseExImpl.h,v 1.8 2006/07/26 11:27:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,7 +47,7 @@ is just continer for errotrace. It is here because errotrace of baseX has to bei
 class ErrorTraceForBaseEx
 {
   protected:
-    ErrorTraceForBaseEx(){};
+    ErrorTraceForBaseEx();
     ErrorTraceForBaseEx(ACSErr::ErrorTrace &errortrace) :
 	m_errorTrace (errortrace){} // ??? can be removed when errotrace is just in baseEx !!!
     ErrorTraceForBaseEx(const ACSErr::ErrorTrace &errortrace) :

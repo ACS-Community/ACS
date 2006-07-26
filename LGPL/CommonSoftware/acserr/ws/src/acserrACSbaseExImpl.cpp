@@ -16,19 +16,21 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrACSbaseExImpl.cpp,v 1.5 2004/04/30 07:10:55 bjeram Exp $"
+* "@(#) $Id: acserrACSbaseExImpl.cpp,v 1.6 2006/07/26 11:27:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-02-17  created 
 */
 
-static char *rcsId="@(#) $Id: acserrACSbaseExImpl.cpp,v 1.5 2004/04/30 07:10:55 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrACSbaseExImpl.cpp,v 1.6 2006/07/26 11:27:26 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrACSbaseExImpl.h"
 
 using namespace ACSErr;
+
+ErrorTraceForBaseEx::ErrorTraceForBaseEx(){}
 
 /*
 Implemantation of ACSbaseExImpl is done in such a way because of BKWD compaitibilty. It manges error trace which it gets as a parameter from subclass. This has to be removed. Parts of constructors are copied from acserr.cpp (ErrorTraceHelper)
