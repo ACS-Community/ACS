@@ -113,7 +113,13 @@ public class AcsFileFinder
 			}
 			
 			// get files from the current directory
-			String filenames[] = dir.list(filenameFilter);
+			String[] filenames = null;
+			if (filenameFilter != null) {
+				filenames = dir.list(filenameFilter);
+			}
+			else {
+				filenames = dir.list();
+			}
 			for (int j = 0; j < filenames.length; j++) 
 			{
 				String filename = filenames[j];
