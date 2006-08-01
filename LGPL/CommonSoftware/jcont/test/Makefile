@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.15 2004/10/27 16:38:34 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.16 2006/08/01 13:17:18 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -48,9 +48,15 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
+COMPONENTS_JARFILES = jcontTestComp
+jcontTestComp_DIRS = \
+	alma/jconttest/ContainerServicesTesterImpl \
+	alma/jconttest/DummyComponentImpl
+	
 JARFILES = jcontTest
-jcontTest_DIRS = alma
-jcontTest_EXTRAS = 
+jcontTest_DIRS = alma/acs
+
+
 
 #
 # Scripts (public and local)
