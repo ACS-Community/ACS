@@ -23,9 +23,10 @@ package alma.acs.classloading;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -41,7 +42,7 @@ import java.util.StringTokenizer;
  * @author hsommer
  * created Sep 21, 2004 2:28:51 PM
  */
-public class JarOrderOptimizer implements Comparator
+public class JarOrderOptimizer implements Comparator<File>
 {
 	private boolean verbose = false;
 
@@ -58,8 +59,6 @@ public class JarOrderOptimizer implements Comparator
 		"acsjlog.jar",
 		"maci.jar",
 		"jacorb.jar",
-		"concurrent.jar", //todo: remove after ACS 4.1
-        "backport-util-concurrent.jar",
 		"acscomponent.jar",
 		"jmanager.jar",
 		"cdbDAL.jar",
@@ -84,12 +83,12 @@ public class JarOrderOptimizer implements Comparator
 	/**
 	 * key = (String) jarname, value = (Integer) position.
 	 */
-	private Map topJarMap;
+	private Map<String, Integer> topJarMap;
 	
 	JarOrderOptimizer(boolean verbose) {
 		this.verbose = verbose;
 		// use a map for more efficient lookup of jarfile names 
-		topJarMap = new HashMap();
+		topJarMap = new HashMap<String, Integer>();
 		int i = 0;
 		for (i = 0; i < orderedAcsJarNames.length; i++) {
 			topJarMap.put(orderedAcsJarNames[i], new Integer(i));
@@ -106,25 +105,25 @@ public class JarOrderOptimizer implements Comparator
 //		if (verbose) {		
 //			for (Iterator iter = topJarMap.keySet().iterator(); iter.hasNext();) {
 //				String jarName = (String) iter.next();
-//				Integer pos = (Integer) topJarMap.get(jarName);
+//				Integer pos = topJarMap.get(jarName);
 //				System.out.print(pos.toString() + "-" + jarName + "  ");
 //			}
 //			System.out.println();
 //		}
 	}
 	
-	public int compare(Object o1, Object o2)
+	public int compare(File f1, File f2)
 	{
 		int ret = 0;
 		
-		if (o1 == null || o2 == null) { // todo: check if this can happen
+		if (f1 == null || f2 == null) { // todo: check if this can happen
 			throw new NullPointerException("bad null arg"); 
 		}
-		String n1 = ((File) o1).getName();
-		String n2 = ((File) o2).getName();
+		String n1 = f1.getName();
+		String n2 = f2.getName();
 
-		Integer i1 = (Integer) topJarMap.get(n1);
-		Integer i2 = (Integer) topJarMap.get(n2);
+		Integer i1 = topJarMap.get(n1);
+		Integer i2 = topJarMap.get(n2);
 
 		if (i1 != null) {
 			if (i2 != null) {
@@ -150,8 +149,8 @@ public class JarOrderOptimizer implements Comparator
 	 * Sorts <code>jars</code> using {@link #compare(Object, Object)}.
 	 * @see Arrays#sort(java.lang.Object[], java.util.Comparator)
 	 */
-	void sortJars(File[] jars) {
-		Arrays.sort(jars, this);
+	void sortJars(List<File> jarlist) {
+		Collections.sort(jarlist, this);
 	}
 
 	
@@ -162,14 +161,15 @@ public class JarOrderOptimizer implements Comparator
 	 * @param allJars  jar files to be filtered
 	 * @return  those whose name matches one from the prio list
 	 */
-	File[] getTopJarsOnly(File[] allJars) {
-		List topJars = new ArrayList();
-		for (int i = 0; i < allJars.length; i++) {
-			if (topJarMap.containsKey(allJars[i].getName())) {
-				topJars.add(allJars[i]);
+	List<File> getTopJarsOnly(List<File> allJars) {
+		List<File> topJars = new ArrayList<File>();
+		for (Iterator<File> iter = allJars.iterator(); iter.hasNext();) {
+			File jarfile = iter.next();
+			if (topJarMap.containsKey(jarfile.getName())) {
+				topJars.add(jarfile);
 			}
 		}
-		return (File[]) topJars.toArray(new File[topJars.size()]);
+		return topJars;
 	}
 	
 	
