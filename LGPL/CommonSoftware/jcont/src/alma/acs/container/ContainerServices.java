@@ -21,15 +21,14 @@
  */
 package alma.acs.container;
 
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
 
-import si.ijs.maci.ComponentSpec;
-
 import com.cosylab.CDB.DAL;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
+import si.ijs.maci.ComponentSpec;
 
 import alma.ACS.OffShoot;
 import alma.acs.component.ComponentDescriptor;

@@ -1,14 +1,13 @@
 package alma.acs.container.corba;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
-
-import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
 import alma.acs.container.ComponentServantManager;
 import alma.acs.logging.ClientLogManager;
@@ -181,7 +180,6 @@ public class AcsCorbaTest extends TestCase {
 
 		String poaId = new String(jacCompPOA.getPOAId());
 		assertEquals("unexpected poaId ", "StandardImplName/ComponentPOA/ComponentPOA_" + compName, poaId);
-
 		
 		// create a thread-aware test component servant using that POA
 		DummyComponentImpl impl = new DummyComponentImpl() {

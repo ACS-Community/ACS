@@ -23,12 +23,10 @@ package alma.acs.container;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
-import edu.emory.mathcs.backport.java.util.concurrent.Executors;
-
 
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;

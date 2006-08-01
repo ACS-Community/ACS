@@ -24,11 +24,10 @@ package alma.acs.container;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -74,7 +73,7 @@ public class CleaningDaemonThreadFactory implements ThreadFactory {
      * as all other threads created by this method.
      * The thread's name will be that of the group, with an integer value appended.
      * 
-     * @see edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
+     * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
      */
     public Thread newThread(Runnable command) {
         if (group == null) {

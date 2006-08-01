@@ -24,11 +24,10 @@ package alma.acs.component.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
 
 import si.ijs.maci.Client;
 

@@ -21,22 +21,21 @@
  */
 package alma.acs.component.client;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
-import edu.emory.mathcs.backport.java.util.concurrent.Executors;
-
 import si.ijs.maci.Client;
 
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsManagerProxy;
+import alma.acs.container.CleaningDaemonThreadFactory;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
-import alma.acs.container.CleaningDaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 
