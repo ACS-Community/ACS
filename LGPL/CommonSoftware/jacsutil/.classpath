@@ -6,8 +6,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/backport-util-concurrent.jar"/>
-	<classpathentry sourcepath="/INTROOT/lib/xalan_src.zip" kind="var" path="INTROOT/lib/xalan.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/xalan.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="output" path="object"/>
 </classpath>
