@@ -26,14 +26,10 @@ import java.util.concurrent.ThreadFactory;
 
 /**
  * Factory for daemon threads.
- * <p>
- * TODO: remove "implements edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory" for next major ACS release after 5.0.3
- * currently we keep this for compatibility even though ALMA now officially has moved to JDK 1.5
- * 
  * @author hsommer
  * created Oct 29, 2003 3:51:25 PM
  */
-public class DaemonThreadFactory implements ThreadFactory, edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory
+public class DaemonThreadFactory implements ThreadFactory
 {
     private String threadNamePrefix;
     
