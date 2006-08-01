@@ -30,7 +30,6 @@ import alma.acs.container.archive.UidTest;
 import alma.acs.container.corba.AcsCorbaTest;
 import alma.acs.entityutil.EntityRefFinderTest;
 import alma.acs.entityutil.EntitySerializerTest;
-import alma.acs.testsupport.tat.TATJUnitRunner;
 
 /**
  * JUnit test suite for all JUnit tests in this module which do not require 
@@ -56,11 +55,4 @@ public class SelfcontainedJUnitTestsJCONT
 		//$JUnit-END$
 		return suite;
 	}
-
-
-	public static void main(String[] args)
-	{
-		TATJUnitRunner.run(SelfcontainedJUnitTestsJCONT.class);
-	}
-	
 }
