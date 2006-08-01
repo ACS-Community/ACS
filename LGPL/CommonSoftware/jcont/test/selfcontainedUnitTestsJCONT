@@ -21,5 +21,5 @@
 # MA 02111-1307  USA
 #
 echo "=== Running all ACS-independent JUnit tests of module jcont"
-    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.acs.SelfcontainedJUnitTestsJCONT
+    acsStartJava -endorsed -addToClasspath ../lib/ACScomponents/jcontTestComp.jar:../lib/jconttest_if.jar alma.acs.testsupport.tat.TATJUnitRunner alma.acs.SelfcontainedJUnitTestsJCONT
 echo "=== Done running independent jcont JUnit tests"
