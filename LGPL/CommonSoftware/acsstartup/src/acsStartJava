@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.36 2006/07/11 08:08:38 cparedes Exp $"
+# "@(#) $Id: acsStartJava,v 1.37 2006/08/01 12:49:50 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -335,8 +335,7 @@ fi
 
 #-------------------------------------------------------
 # Handling of CLASSPATH.
-# There are different options controlled controlled by
-# the mutually exclusive options 
+# There are different options controlled by the mutually exclusive options 
 #  -noClassLoader and -addToClasspath
 #
 
@@ -355,9 +354,6 @@ fi
 # If we do not want to use the custom Java class loader,
 # the command acsGetAllJars is used to retrieve all
 # jar files in the $CL_JARPATH.
-# The Java class loader cannot be usedwhen using some Java class
-# that itself installs a class loader.
-# An example of this is JUnit
 #
 if [ "X$CL_NCL" = "Xtrue" -a "X$CL_NAC" = "X" ]
 then
