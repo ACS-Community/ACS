@@ -456,23 +456,6 @@ public class LogReceiver {
         startCaptureLogs(logWriter, (ThreadFactory) null);
     }
     
-    /**
-     * Version with pre-JDK 1.5 version of ThreadFactory.
-     * @param logWriter
-     * @param threadFactory
-     * @deprecated Will be removed as soon as <code>ContainerServices#getThreadFactory</code> has changed from  
-     * 				edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory to java.util.concurrent.ThreadFactory
-     */
-    public void startCaptureLogs(final PrintWriter logWriter, final edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory oldstyleThreadFactory) 
-    	throws IOException {
-    	ThreadFactory threadFacAdapter = new ThreadFactory() {
-			public Thread newThread(Runnable r) {
-				return oldstyleThreadFactory.newThread(r);
-			}    		
-    	};
-    	startCaptureLogs(logWriter, threadFacAdapter);
-    }
-    
 	/**
      * Variant of {@link #startCaptureLogs(PrintWriter)} which takes an optional ThreadFactory
      * which will be used to create the thread that reads out the log queue.
