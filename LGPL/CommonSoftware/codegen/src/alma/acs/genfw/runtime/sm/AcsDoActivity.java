@@ -21,9 +21,9 @@
  */
 package alma.acs.genfw.runtime.sm;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
-import edu.emory.mathcs.backport.java.util.concurrent.Executors;
-import edu.emory.mathcs.backport.java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 import alma.acs.concurrent.DaemonThreadFactory;
 
@@ -118,7 +118,7 @@ public abstract class AcsDoActivity
 	/**
 	 * Terminates the actions if they are still running. 
 	 * In the current implementation, this should never be called, since we don't allow
-	 * events in activitiy states which would force the terminiation from the current state's exit method.
+	 * events in activitiy states which would force the termination from the current state's exit method.
 	 * Implemented nontheless, just to have things complete.
 	 */
 	public void terminateActions()
