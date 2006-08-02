@@ -108,22 +108,38 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             // OK as we are only committed to making a "best effort" here.
         }
         
-        super.log(record);
+        super.log(record);        
     }
 
     /**
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
+    	LogConfigData logConfigData;
+		try {
+			logConfigData = logConfig.getLogConfigData(getName());
+	    	configureJDKLogger(this, logConfigData);
+		} catch (Exception e) {
+			info("Failed to configure logger.");
+		}
+    }
+    
+    /**
+     * Service method for configuring a non-ACS Logger. 
+     * Shares code with {@link #configureLogging(LogConfig)}.
+     * @param jdkLogger 
+     * @param logConfigData
+     */
+    static void configureJDKLogger(Logger jdkLogger, LogConfigData logConfigData) {
         int minLogLevelACS; // small integer level
         try {
-        	LogConfigData configData = logConfig.getLogConfigData(getName());
         	// the logger must let through the lowest log level required for either local or remote logging.
-            minLogLevelACS = Math.min(configData.getMinLogLevel(), configData.getMinLogLevelLocal());
+            minLogLevelACS = Math.min(logConfigData.getMinLogLevel(), logConfigData.getMinLogLevelLocal());
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style 
-            setLevel(minLogLevelJDK);
+            jdkLogger.setLevel(minLogLevelJDK);
         } catch (Exception ex) {
-            info("Failed to configure logger.");
+        	jdkLogger.info("Failed to configure logger.");
         }
-    }        
+    	
+    }
 }
