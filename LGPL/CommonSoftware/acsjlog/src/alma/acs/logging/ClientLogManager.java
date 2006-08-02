@@ -468,6 +468,10 @@ public class ClientLogManager implements LogConfigSubscriber
         else {
             logger = Logger.getLogger(namespace);
             addLocalHandler(logger);
+            // this is a bit dirty: the local-only loggers are of the plain JDK Logger type which does not implement LogConfigSubscriber
+            // and thus can't be configured in the normal way.
+            // Nonetheless we want to configure its log level, for which we reuse code from AcsLogger
+            AcsLogger.configureJDKLogger(logger, logConfig.getLogConfigData());
         }
         return logger;
     }
