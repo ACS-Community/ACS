@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.15 2006/08/03 05:46:13 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.16 2006/08/03 06:27:42 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -103,18 +103,6 @@ bin/create_ace_build $OSTAG
 echo "done"
 echo ""
 
-#
-# Here we apply another patch(es)
-#
-
-# This patch makes OMNIORB/Py happy
-# we just link old CosPropertyService.idl to the CosProperty.idl
-# originally CosPropertyService.idl includes CosProperty.idl
-# what Py/OMNIORB does not like
-cd $ACE_ROOT/TAO/orbsvcs/orbsvcs
-# first we remove old link
-rm CosPropertyService.idl
-ln -s CosProperty.idl CosPropertyService.idl
 
 #
 # Copy the proper ACE/TAO configuration files for the platform
@@ -165,12 +153,26 @@ cd $ACE_ROOT/TAO/orbsvcs; make
 echo "done"
 echo ""
 
-#cd $ACE_ROOT/TAO/utils/nslist; make
+
 # Let's try to build all utils:
 echo "building utils"
 cd $ACE_ROOT/TAO/utils; make
 echo "done"
 echo ""
+
+
+#
+# Here we apply another dirty patch
+#
+
+# This patch makes OMNIORB/Py happy
+# we just link old CosPropertyService.idl to the CosProperty.idl
+# originally CosPropertyService.idl includes CosProperty.idl
+# what Py/OMNIORB does not like
+cd $ACE_ROOT/TAO/orbsvcs/orbsvcs
+# first we remove old link
+rm CosPropertyService.idl
+ln -s CosProperty.idl CosPropertyService.idl
 
 
 #
