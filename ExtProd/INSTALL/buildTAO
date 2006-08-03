@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.17 2006/08/03 08:10:56 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.18 2006/08/03 08:29:04 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -138,8 +138,9 @@ echo ""
 #cd $ACE_ROOT/TAO/TAO_IDL ; make INSLIB=../../ace
 #cd $ACE_ROOT/TAO/orbsvcs/orbsvcs ; make INSLIB=../../ace
 # ... or not
+
 echo "building whole TAO"
-cd $ACE_ROOT/TAO ; make 
+cd $ACE_ROOT/TAO ; make
 echo "done"
 echo ""
 
