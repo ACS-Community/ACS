@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.14 2006/01/11 11:57:26 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.15 2006/08/03 05:46:13 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -73,7 +73,7 @@ mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 #
-FILE=ACE-5.4.2+TAO-1.4.2
+FILE=ACE-5.5.2+TAO-1.5.2
 ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 echo "unpacking the archive"
@@ -87,8 +87,8 @@ echo ""
 echo "patching the code"
 echo "- ACErelpath.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACErelpath.patch
-echo "- ACETAOVxWorks.patch"
-patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACETAOVxWorks.patch
+#echo "- ACETAOVxWorks.patch"
+#patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACETAOVxWorks.patch
 echo "- TAOAV.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
 echo "done"
@@ -103,6 +103,18 @@ bin/create_ace_build $OSTAG
 echo "done"
 echo ""
 
+#
+# Here we apply another patch(es)
+#
+
+# This patch makes OMNIORB/Py happy
+# we just link old CosPropertyService.idl to the CosProperty.idl
+# originally CosPropertyService.idl includes CosProperty.idl
+# what Py/OMNIORB does not like
+cd $ACE_ROOT/TAO/orbsvcs/orbsvcs
+# first we remove old link
+rm CosPropertyService.idl
+ln -s CosProperty.idl CosPropertyService.idl
 
 #
 # Copy the proper ACE/TAO configuration files for the platform

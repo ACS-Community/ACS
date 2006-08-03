@@ -1,24 +1,15 @@
 # -*- Makefile -*-
-# platform_linux.GNU,v 4.66 2004/03/03 00:17:37 dhinton Exp
+# platform_linux.GNU,v 4.73 2006/01/16 11:56:36 schmidt Exp
 
 # According to Bryon G. Rigg <bgrigg@opus.bcbnet.com>, this file
 # should allow ACE to be built on Linux.
-
-# debug = 1
-# optimize = 1
 
 # We always include config-linux.h on Linux platforms.
 ACE_PLATFORM_CONFIG ?= config-linux.h
 
 exceptions ?= 1
-
-ifeq (,$(debug))
-  debug = 1
-endif
-ifeq (,$(optimize))
-  optimize = 1
-endif
-
+debug ?= 1
+optimize ?= 1
 threads ?= 1
 
 PLATFORM_XT_CPPFLAGS=
@@ -46,8 +37,20 @@ PLATFORM_WX_CPPFLAGS= $(shell wx-config --cxxflags) $(PLATFORM_GTK_CPPFLAGS)
 PLATFORM_WX_LIBS    = $(shell wx-config --libs)     $(PLATFORM_GTK_LIBS)
 PLATFORM_WX_LDFLAGS = $(shell wx-config --ldflags)  $(PLATFORM_GTK_LDFLAGS)
 
+PLATFORM_BOOST_CPPFLAGS ?=
+PLATFORM_BOOST_LDLAGS ?=
+PLATFORM_BOOST_UTF_LIBS ?= -lboost_unit_test_framework
+
+PLATFORM_TCL_CPPFLAGS=-I/usr/include/tcl8.4
+PLATFORM_TCL_LIBS=-ltcl8.4
+PLATFORM_TCL_LDFLAGS=
+
+PLATFORM_TK_CPPFLAGS=-I$(shell . /usr/lib/tk8.4/tkConfig.sh && echo -n $$TK_INC_DIR $$TK_DEFS)
+PLATFORM_TK_LIBS=$(shell . /usr/lib/tk8.4/tkConfig.sh && echo -n $$TK_LIB_FLAG)
+PLATFORM_TK_LDFLAGS=
+
 PLATFORM_AIO_SUPPORT := \
-       $(shell test -e /usr/lib/librt.so && echo -DACE_HAS_AIO_CALLS)
+       $(shell test "`ls -L /usr/lib/librt.so* /lib/librt.so*`" && echo -DACE_HAS_AIO_CALLS)
 
 ssl ?= 0
 ifeq ($(ssl),1)
@@ -68,8 +71,8 @@ ifeq ($(insure),1)
   CC  = insure
   CXX = insure
 else
-  CC  = gcc
-  CXX = g++
+  CC  ?= gcc
+  CXX ?= g++
 endif
 
 # fix this
@@ -80,8 +83,8 @@ ifeq ($(threads),1)
     CPPFLAGS  += -D_REENTRANT $(PLATFORM_AIO_SUPPORT)
 endif # threads
 
-# 
-# Rely on _GNU_SOURCE to set these defaults defined in /usr/include/features.h 
+#
+# Rely on _GNU_SOURCE to set these defaults defined in /usr/include/features.h
 # instead of setting them directly here (older versions of gcc don't set it
 # for you): _SVID_SOURCE _BSD_SOURCE _POSIX_SOURCE _POSIX_C_SOURCE=199506L, etc...
 CPPFLAGS += -D_GNU_SOURCE
@@ -94,11 +97,16 @@ LIBS    += -ldl
 ifeq ($(threads),1)
   LIBS += -lpthread
 endif
-LIBS += $(shell test -e /usr/lib/librt.so && echo -lrt)
+# look for the rt library in the usual places
+LIBS += $(shell test "`ls -L /usr/lib/librt.so* /lib/librt.so*`" && echo -lrt)
 
-PLATFORM_QT_CPPFLAGS=-I$(QTDIR)/include
-PLATFORM_QT_LIBS=-lqt
-PLATFORM_QT_LDFLAGS=-L$(QTDIR)/lib
+ifeq ($(optimize),1)
+  SOFLAGS += -Wl,-O3
+endif
+
+PLATFORM_QT_CPPFLAGS ?= -I$(QTDIR)/include
+PLATFORM_QT_LIBS ?= -lqt-mt
+PLATFORM_QT_LDFLAGS ?= -L$(QTDIR)/lib
 
 OCFLAGS ?= -O3
 PIC     = -fPIC
@@ -110,7 +118,7 @@ SOBUILD = $(COMPILE.cc) $(PIC) -o $(VSHDIR)$*.so $<; \
           $(SOLINK.cc) -o $@ $(LDFLAGS) $(VSHDIR)$*.o
 PRELIB  = @true
 
-# Test for template instantiation, add to SOFLAGS if SONAME set, 
+# Test for template instantiation, add to SOFLAGS if SONAME set,
 # add -E to LDFLAGS if using GNU ld
 #
 include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
