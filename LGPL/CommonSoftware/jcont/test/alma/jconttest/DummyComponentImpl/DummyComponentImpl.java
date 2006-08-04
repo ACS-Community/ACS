@@ -33,6 +33,17 @@ import alma.jconttest.DummyComponentOperations;
  */
 public class DummyComponentImpl extends ComponentImplBase implements DummyComponentOperations
 {
+	
+	/** 
+	 * Logs a message, which should facilitate debugging the logs when the synchronization of deactivation with long-running methods is being tested.
+	 */
+	public void cleanUp() {
+		getLogger().info("cleanUp called.");
+		super.cleanUp();
+	}
+
+	
+	
 	/**
 	 * @see alma.jconttest.DummyComponentOperations#dymmyComponentsCanDoCloseToNothing()
 	 */
