@@ -34,6 +34,7 @@ import java.util.logging.LogRecord;
 
 import alma.acs.logging.ACSCoreLevel;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
 import alma.acs.util.XmlNormalizer;
 
 /**
@@ -123,9 +124,9 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 
 
 		// source object: the container name or component name
-		String sourceObject = SourceObjectExtractor.getSourceObject(logRecord);
+		String sourceObject = ClientLogManager.stripKnownLoggerNamespacePrefix(logRecord.getLoggerName());
 		if (sourceObject != null) {
-			sb.append("SourceObject=\"" + SourceObjectExtractor.getSourceObject(logRecord) + "\" ");
+			sb.append("SourceObject=\"" + sourceObject + "\" ");
         }
 		// add thread ID, or name if given		
 		String threadName = logParamExtractor.extractStringProperty(LogParameterExtractor.PARAM_THREAD_NAME, null);

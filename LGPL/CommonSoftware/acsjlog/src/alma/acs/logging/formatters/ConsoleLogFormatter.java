@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import alma.acs.logging.ClientLogManager;
+
 /**
  * An implementation of <code>java.util.logging.Formatter</code>.
  * Produces single line log reports meant to go to the console.
@@ -81,7 +83,7 @@ public class ConsoleLogFormatter extends Formatter
 		// hso 2005-10-14: C++ logs source object and class and method name since a few months.
 		// These names are often long in Java, but at least the source object (e.g. component name) should be there.
 		// C++ sample: 2005-10-14T12:45:32.924 [GlobalLogger - baci::BACIComponent::startAllThreads] My log message...
-		String sourceObject = SourceObjectExtractor.getSourceObject(record);
+		String sourceObject = ClientLogManager.stripKnownLoggerNamespacePrefix(record.getLoggerName());
 		if (sourceObject != null) {
 			sb.append(" [").append(sourceObject).append("] ");
         }
