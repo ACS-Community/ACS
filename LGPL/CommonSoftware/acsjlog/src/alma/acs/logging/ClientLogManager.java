@@ -57,6 +57,9 @@ import alma.acs.logging.formatters.ConsoleLogFormatter;
  */
 public class ClientLogManager implements LogConfigSubscriber
 {
+	/** logger namespace for CORBA classes (ORB, POAs, etc) */
+	public static final String NS_CORBA = "alma.acs.corba";
+
 	/** logger namespace for container classes during operation */
 	public static final String NS_CONTAINER = "alma.acs.container";
 
@@ -393,19 +396,24 @@ public class ClientLogManager implements LogConfigSubscriber
 
     
 	/**
+	 * Gets a logger to be used by ORB and POA classes.
+	 * The logger is connected to the central ACS logger.
+	 */
+	public Logger getLoggerForCorba(String corbaName) {
+        String ns = NS_CORBA;
+        if (corbaName != null) {
+        	corbaName = corbaName.trim();
+            if (corbaName.length() > 0) {
+                ns = ns + '.' + corbaName;
+            }
+        }
+        Logger logger = createRemoteLogger(ns);        
+        return logger;
+	}
+	
+	/**
 	 * Gets a logger to be used by the Java container classes.
 	 * The logger is connected to the central ACS logger.
-	 * <p>
-	 * Tries to find <code>almalogging.properties</code> on the classpath and
-	 * feed it to <code>java.util.logging.LogManager</code>.
-	 * <p>
-	 * It will override settings of <code>java.util.logging.LogManager</code>,
-	 * including those from a user-supplied logging properties file
-	 * given in <code>java.util.logging.config.file</code>.
-	 * Therefore, user settings must be re-set.
-	 * <p>
-	 * TODO (perhaps) retrieve logger settings from CDB
-	 * 		(currently the property file should be found in acsjlog.jar)
 	 */
 	public Logger getLoggerForContainer(String containerName) {
         String ns = NS_CONTAINER;
@@ -532,4 +540,28 @@ public class ClientLogManager implements LogConfigSubscriber
         }
     }
 
+	
+	/**
+	 * Strips the prepended constants {@link #NS_CORBA}, {@link #NS_CONTAINER}, {@link #NS_COMPONENT} etc from the logger namespace.
+	 * This allows for a short, but possibly not unique display of the logger name.   
+	 */
+	public static String stripKnownLoggerNamespacePrefix(String loggerName) {
+		if (loggerName != null) {
+            // try to strip off fixed prefix from logger namespace
+            try {
+                if (loggerName.startsWith(NS_COMPONENT)) {
+                	loggerName = loggerName.substring(NS_COMPONENT.length()+1);
+                }
+                else if (loggerName.startsWith(NS_CONTAINER)) {
+                	loggerName = loggerName.substring(NS_CONTAINER.length()+1);
+                }
+                else if (loggerName.startsWith(NS_CORBA)) {
+                	loggerName = loggerName.substring(NS_CORBA.length()+1);
+                }
+            } catch (Exception e) {
+                // fallback: use logger namespace
+            }            
+        }
+		return loggerName;		
+	}
 }
