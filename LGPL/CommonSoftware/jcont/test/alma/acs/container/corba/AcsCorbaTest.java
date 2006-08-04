@@ -2,6 +2,7 @@ package alma.acs.container.corba;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
@@ -34,6 +35,7 @@ public class AcsCorbaTest extends TestCase {
 	protected void setUp() throws Exception {
 		exceptionInThread = null;
 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AcsCorbaTest#" + getName(), false);
+		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 		m_logger.info("-----------------------------------------------");
 		m_logger.info("AcsCorbaTest#setUp()");
 
@@ -74,7 +76,7 @@ public class AcsCorbaTest extends TestCase {
 	}
 	
 	/**
-	 * This test method is currently hidden from JUnit because it fails with JacORB 1.4.
+	 * This test method is currently hidden from JUnit because it fails with JacORB 1.4. and 2.2.4.
 	 * Problem: RequestController#waitForCompletion returns immediately when currently processing calls are local.
 	 * This could be related to JacORB bug 132, see http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=132. <br>
 	 * TODO: try again when the Java ORB gets updated or replaced in ACS.
@@ -86,7 +88,7 @@ public class AcsCorbaTest extends TestCase {
 	 * The component is run outside a container, but with the same ORB/POA usage as inside the container.
 	 * @throws Exception
 	 */
-	public void __testComponentPOALifecycleAsync() throws Exception { 
+	public void __dontrun__testComponentPOALifecycleAsync() throws Exception { 
 		_testComponentPOALifecycle(true, 10);
 	}
 
@@ -100,7 +102,7 @@ public class AcsCorbaTest extends TestCase {
 	private void _testComponentPOALifecycle(boolean destroyWhileBusy, int iterations) throws Exception {
 		final String compName = "virtualTestComp";
 		
-		for (int i=0; i < iterations; i++) {
+		for (int i=0; i < iterations; i++) {			
 			
 			m_logger.info("Will create and destroy component instance #" + i);
 			final POA compPOA = acsCorba.createPOAForComponent(compName);
@@ -115,7 +117,7 @@ public class AcsCorbaTest extends TestCase {
 			// activate the component 
 			org.omg.CORBA.Object objRef = acsCorba.activateComponent(servant, compName, compPOA);			
 			
-			// make CORBA calls to the component , and destroy the POA
+			// make a simple CORBA call to the component, and then destroy the POA
 			final DummyComponent testCompRef = DummyComponentHelper.narrow(objRef);
 			testCompRef.dummyComponentsCanDoCloseToNothing();			
 			
@@ -127,7 +129,7 @@ public class AcsCorbaTest extends TestCase {
 						try {
 							testCompRef.callThatTakesSomeTime(1000);
 						} catch (Exception ex) {
-							exceptionInThread = ex;
+							exceptionInThread = ex; 
 						}
 					}
 				};
@@ -140,11 +142,11 @@ public class AcsCorbaTest extends TestCase {
 				testCompRef.callThatTakesSomeTime(0);
 			}
 			// timeout should be larger than pending call (callThatTakesSomeTime)
-			boolean isInactive = acsCorba.deactivateComponentPOAManager(compPOA, compName, 200000);
+			boolean isInactive = acsCorba.deactivateComponentPOAManager(compPOA, compName, 2000);
 			assertTrue(isInactive);
-			// active calls are over already, so the timeout can be smaller than execution time for "callThatTakesSomeTime"
+			// active calls are supposedly over already, so the timeout can be smaller than execution time for "callThatTakesSomeTime"
 			boolean isEtherealized = acsCorba.destroyComponentPOA(compPOA, servantManager, 500);
-			assertTrue(isEtherealized); 
+			assertTrue("Timeout here probably means that 'deactivateComponentPOAManager' did not properly wait for active requests to finish.", isEtherealized); 
 
 			if (exceptionInThread != null) {
 				fail("asynchronous component call (#callThatTakesSomeTime) failed: " + exceptionInThread.toString());
@@ -220,11 +222,11 @@ public class AcsCorbaTest extends TestCase {
 /**
  * Special version of this component for local use. 
  * The CountDownLatch set in <code>setMethodCallSync</code> can be used to synchronize between the client and
- * method invocations on the servant.
+ * method invocations on the servant. This allows the client to block until the servant method is actually being executed. 
  * @author hsommer
  */
 class SyncDummyComponentImpl extends DummyComponentImpl {
-	private CountDownLatch sync;
+	private volatile CountDownLatch sync;
 	void setMethodCallSync(CountDownLatch sync) {
 		this.sync = sync;
 	}

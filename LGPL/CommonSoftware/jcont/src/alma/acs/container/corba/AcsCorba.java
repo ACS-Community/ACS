@@ -852,17 +852,25 @@ public class AcsCorba
 
 	
 	/**
-	 * Deactivates a component's POA manager with a timeout.
-	 * Simply returns if the POA manager is already inactive.
+	 * Deactivates a component's POA manager. 
+	 * The effect is that no further calls will reach the component.
+	 * This method returns immediately if the POA manager is already inactive.
+	 * Otherwise it will only return when the active requests are done.
+	 * <p>
+	 * Note for JacORB (1.4 as well as 2.2.4): there seems to be a problem in 
+	 * <code>org.jacorb.poa.RequestController#waitForCompletion</code> with local calls (e.g. collocated component). 
+	 * Instead of duly waiting for completion, that method returns immediately when such calls are still executing. 
+	 * Even worse, <code>RequestController#activeRequestTable</code> seems to never get touched in case of local calls.
+	 * There is a currently commented out JUnit test that verifies this problem.
 	 * <p>
 	 * The purpose of this method is to allow the container to "drain" a component of requests,
-	 * so that <code>cleanUp</code> can be called while no functional calls are pending or can come in.
+	 * so that <code>cleanUp</code> can be called while no functional calls are running or can come in.
 	 * An alternative to using the component POA manager could be to destroy the component POA before
 	 * calling <code>cleanUp</code>. This has the disadvantage of also destroying the offshoot child POA,
 	 * which is needed to properly clean up callback connections.
 	 * <p>
 	 * Note that {@link POAManager#deactivate(boolean, boolean)} is called in a separate thread,
-	 * so that this method may well be called from an ORB thread.
+	 * so that this method itself may well be called from an ORB thread.
 	 * This method uses <code>etherealize_objects=false</code> and <code>wait_for_completion=true</code>.
 	 * 
 	 * @param compPOA the component POA
@@ -902,12 +910,14 @@ public class AcsCorba
 		try {
 			isInactive = deactivateSyncer.await(timeoutMillis, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
-			// isInactive = false
+			// isInactive == false
 		} finally {
 			if (m_logger.isLoggable(Level.FINEST)) {
 				long deactivationTime = stopWatch.getLapTimeMillis();
-				m_logger.finest("Deactivation of component '" + compName + "' was " + (isInactive ? "" : "not ") + 
-						"successful and took " + deactivationTime + " ms.");
+				String msg = "POA manager deactivation for component '" + compName + "' was " + (isInactive ? "" : "*not* ") + 
+				"successful and took " + deactivationTime + " ms. " +
+				"The component can" + (isInactive ? "not" : "") + " receive further calls over CORBA.";
+				m_logger.finest(msg);
 			}
 
 		}
@@ -935,7 +945,7 @@ public class AcsCorba
 		}
 		// sync with component etherealization.
 		// Note that a steady stream of calls to this component can effectively prevent deactivation,
-		// therefore we use  a timeout.
+		// therefore we use a timeout.
 		return compServantManager.waitForEtherealize(timeoutMillis);
 	}
 

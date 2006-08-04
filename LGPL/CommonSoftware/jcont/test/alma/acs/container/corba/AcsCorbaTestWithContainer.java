@@ -83,6 +83,7 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 						try {
 							dummyComponent.callThatTakesSomeTime(remoteCallDurationMin);
 						} catch (Exception ex) {
+							ex.printStackTrace();
 							exceptionInThread = ex;
 						}
 					}
@@ -105,7 +106,7 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 			assertTrue(timeReleaseCompCall > remoteCallDurationMin-callOverheadMax);
 			
 			if (exceptionInThread != null) {
-				fail("asynchronous component call (#callThatTakesSomeTime) failed: " + exceptionInThread.toString());
+				fail("asynchronous component call number " + i + " (callThatTakesSomeTime) failed: " + exceptionInThread.toString());
 			}					
 		}
 	}
