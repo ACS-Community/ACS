@@ -125,7 +125,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     }
     
     /**
-     * Service method for configuring a non-ACS Logger. 
+     * Service method for configuring even a non-ACS Logger. 
      * Shares code with {@link #configureLogging(LogConfig)}.
      * @param jdkLogger 
      * @param logConfigData
