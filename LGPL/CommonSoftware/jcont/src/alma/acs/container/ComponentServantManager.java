@@ -117,7 +117,7 @@ public class ComponentServantManager extends ServantActivatorPOA
 	 * Resets the flag that gets raised when the <code>etherealize</code> method gets called.
 	 * Such a flag is needed because servant etherealization occurs asynchonously some time after 
 	 * POA.destroy has been called. 
-	 * A thread that wants to fait for etherealization must first call <code>resetWaitForEtherealize</code>,
+	 * A thread that wants to wait for etherealization must first call <code>resetWaitForEtherealize</code>,
 	 * then <code>POA.destroy</code>, and then <code>waitForEtherealize</code>.
 	 * 
 	 * @see #waitForEtherealize(int)
