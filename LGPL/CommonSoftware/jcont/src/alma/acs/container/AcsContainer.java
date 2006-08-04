@@ -634,20 +634,22 @@ public class AcsContainer extends ContainerPOA
                 ComponentAdapter compAdapter = validAdapters[i];
                 int compHandle = compAdapter.getHandle();
 
-                m_logger.finer("deactivating component '" + compAdapter.getName() +
-                            "' with handle " + compHandle);
+                if (m_logger.isLoggable(Level.FINER)) {
+                	m_logger.finer("will deactivate component '" + compAdapter.getName() + "' with handle " + compHandle);
+                }
 
                 // todo: check if it's still necessary to delete from the map,
                 // now that we have the DEFUNCT state concept
                 m_activeComponentMap.remove(compHandle);
 
-                try
-                {
+                try {
                     // todo: perhaps use thread pool and deactivate a bunch in parallel
                     compAdapter.deactivateComponent();
+                    if (m_logger.isLoggable(Level.FINER)) {
+                    	m_logger.finer("deactivated component '" + compAdapter.getName() + "' with handle " + compHandle);
+                    }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     m_logger.log(Level.INFO, "failed to properly deactivate component " + compAdapter.getName(), ex);
                 }
             }
