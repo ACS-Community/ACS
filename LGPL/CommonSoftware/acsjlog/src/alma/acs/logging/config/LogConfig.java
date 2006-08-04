@@ -197,6 +197,7 @@ public class LogConfig {
 
     /**
      * Gets the specialized logging configuration data for a given logger.
+     * Resorts to the default configuration if a specialized configuration is not available.
      * <p> 
      * Note that a copy of the config data is returned, so changes to it 
      * will not affect any other object's configuration.
@@ -211,19 +212,31 @@ public class LogConfig {
         LogConfigData ret = namedLogConfigData.get(loggerName);
         if (ret == null) {
             // in any case we can use the default config
-            ret = new LogConfigData(defaultLogConfigData);
-            // check if we have a CDB path for this particular logger
+            ret = getLogConfigData();
+            // check if we have a CDB path for this particular logger which should modify the default settings
             String cdbPath = cdbComponentPaths.get(loggerName);
             if (cdbPath != null) {
                 // CDB should have specialized config for this logger
                 String componentConfigXML = cdb.get_DAO(cdbPath);
                 ret.takeCdbComponentXml(componentConfigXML);
-                namedLogConfigData.put(loggerName, ret);
+                setLogConfigData(loggerName, ret);
             }
         }
         return ret;
     }
     
+    /**
+     * Sets the logger configuration for a named logger.
+     * <p>
+     * From outside of this class, this method should be used only for tests and temporary hacks, 
+     * as the {@link LogConfigData} is supposed to be created on demand in {@link #getLogConfigData(String)} 
+     * where it should modify itself based on the CDB readings.
+     *  
+     * @param logConfigData
+     */
+    public void setLogConfigData(String loggerName, LogConfigData logConfigData) {
+    	namedLogConfigData.put(loggerName, logConfigData);
+    }
     
     /////////////////////////////////////////////////////////////////////
     // configuration based on JDK logging property files
