@@ -118,7 +118,7 @@ public class JacORBLoggerFactory implements LoggerFactory {
 	 */
 	private synchronized Logger getDelegate() {
 		if (delegate == null) {
-			delegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("JacORB");
+			delegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("jacorb", true);
 
 			// we can't use the same log levels that the container logger uses, because JacORB is much too verbose compared with ALMA code. 
 			// Thus we restrict this Logger's level, assuming that the log handler will be generous enough always.
