@@ -45,6 +45,8 @@ import alma.acs.logging.formatters.LogParameterExtractor;
 public class AcsLogger extends Logger implements LogConfigSubscriber {
     
     private final String thisClassName;
+        
+	private String loggerName;
 
     public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
         super(name, resourceBundleName);
@@ -53,6 +55,15 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         configureLogging(logConfig);
     }
 
+    /**
+     * Optionally sets a logger name that can be different from the {@link Logger#name} passed in the constructor.
+     * The new name will be used for the <code>LogRecord</code>s produced by this class.
+     * This allows changing the name later on, e.g. when a container name or JUnit test name should be prepended to the simple name of a Corba logger.
+     * @param loggerName
+     */
+    void setLoggerName(String loggerName) {
+    	this.loggerName = loggerName;
+    }
     
     /**
      * Logs the given <code>LogRecord</code>.
@@ -64,17 +75,22 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * information will be added. This can be useful if
      *   <ul>
      *   <li> the log record was reconstructed from a remote error by the ACS error handling code
-     *        (see <code>AcsJException</code>, or
+     *        (see <code>AcsJException</code>), or
      *   <li> if in very exceptional cases application code needs to manipulate such information by hand.
      *   </ul>
      * <li> otherwise, context information is inferred, similar to {@link LogRecord#inferCaller()},
-     *   but also including thread name and line of code.
+     *   but additionally including thread name and line of code.
      * </ul>  
      * Note that by overloading this method, we intercept all logging activities of the base class.
      * 
      * @see java.util.logging.Logger#log(java.util.logging.LogRecord)
      */
     public void log(LogRecord record) {
+    	// modify the logger name if necessary
+    	if (loggerName != null) {
+    		record.setLoggerName(loggerName);
+    	}
+    	
         // check if this record alreay has context data attached
         LogParameterExtractor paramExtractor = new LogParameterExtractor(record);
         String threadName = paramExtractor.extractStringProperty(LogParameterExtractor.PARAM_THREAD_NAME, null);
