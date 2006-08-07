@@ -21,6 +21,9 @@
  */
 package alma.acs.logging;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
@@ -101,8 +104,10 @@ public class ClientLogManager implements LogConfigSubscriber
 	/** for testing */
 	private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
 
-    
+	/** the process name to be prepended to the name for the Corba logger, so that different ORB instances in the system can be distinguished */ 
+    private String processName;
 
+    private List<AcsLogger> loggersNeedingProcessNameUpdate = new ArrayList<AcsLogger>();
     
 	/**
 	 * Singleton accessor.
@@ -237,25 +242,25 @@ public class ClientLogManager implements LogConfigSubscriber
     }
 
     
-    private Logger createRemoteLogger(String loggerNamespace) {
+    private AcsLogger createRemoteLogger(String loggerNamespace) {
         if (loggerNamespace == null) {
             loggerNamespace = "unknown";
             System.err.println("illegal namespace 'null' in ClientLogManager#createRemoteLogger turned to 'unknown'.");
         }
         
-        Logger logger = null;
+        AcsLogger logger = null;
         
         // just to make sure we never throw an exception
         try {
             LogManager manager = LogManager.getLogManager();
-            logger = manager.getLogger(loggerNamespace);
+            logger = (AcsLogger) manager.getLogger(loggerNamespace);
             if (logger == null) {
             	// not yet in cache, so we create the logger
                 AcsLogger acsLogger = new AcsLogger(loggerNamespace, null, logConfig);
                 manager.addLogger(acsLogger);
                 
                 // get it from the cache
-                logger = manager.getLogger(loggerNamespace);
+                logger = (AcsLogger) manager.getLogger(loggerNamespace);
             
                 logger.setParent(parentRemoteLogger);
                 logger.setUseParentHandlers(true);
@@ -398,8 +403,10 @@ public class ClientLogManager implements LogConfigSubscriber
 	/**
 	 * Gets a logger to be used by ORB and POA classes.
 	 * The logger is connected to the central ACS logger.
+	 * <p>
+	 * @param autoConfigureContextName  if true, the context (e.g. container name) will be appended to this logger's name as soon as it is available.
 	 */
-	public Logger getLoggerForCorba(String corbaName) {
+	public Logger getLoggerForCorba(String corbaName, boolean autoConfigureContextName) {
         String ns = NS_CORBA;
         if (corbaName != null) {
         	corbaName = corbaName.trim();
@@ -407,7 +414,20 @@ public class ClientLogManager implements LogConfigSubscriber
                 ns = ns + '.' + corbaName;
             }
         }
-        Logger logger = createRemoteLogger(ns);        
+        boolean needsProcessNameUpdate = false; // use boolean instead of another processName!=null check to avoid sync issues
+        if (autoConfigureContextName) {
+        	if (processName != null) {
+	        	// if the process name is already known, we can even use it for the regular logger name instead of using a later workaround 
+	        	ns += "@" + processName;
+		    }
+        	else {
+        		needsProcessNameUpdate = true;
+        	}
+        }
+        AcsLogger logger = createRemoteLogger(ns);
+        if (needsProcessNameUpdate) {
+        	loggersNeedingProcessNameUpdate.add(logger);
+        }
         return logger;
 	}
 	
@@ -418,6 +438,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	public Logger getLoggerForContainer(String containerName) {
         String ns = NS_CONTAINER;
         if (containerName != null) {
+            setProcessName(containerName);
             containerName = containerName.trim();
             if (containerName.length() > 0) {
                 ns = ns + '.' + containerName;
@@ -469,6 +490,9 @@ public class ClientLogManager implements LogConfigSubscriber
         if (namespace == null || namespace.trim().length() == 0) {
             namespace = "unknownClientApplication";
         }
+        else {
+           	setProcessName(namespace);
+        }
         Logger logger = null;
         if (enableRemoteLogging) {
             logger = createRemoteLogger(namespace);
@@ -487,6 +511,22 @@ public class ClientLogManager implements LogConfigSubscriber
     
     
     /**
+     * Takes the process name and overwrites previous names,
+     * and updates all Loggers which are waiting to get their overly simple name enriched.
+     * The new name will be the old name + @ + processName.
+     * @param name
+     */
+    private void setProcessName(String processName) {
+		if (processName != null) {
+			this.processName = processName;
+			for (Iterator<AcsLogger> iter = loggersNeedingProcessNameUpdate.iterator(); iter.hasNext();) {
+				AcsLogger logger = iter.next();
+				logger.setLoggerName(logger.getName() + "@" + processName);
+			}
+		}
+	}
+
+	/**
      * Shuts down remote ACS logging. 
      * The loggers can still be used, but will only log locally. 
      * @param wait
