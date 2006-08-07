@@ -665,7 +665,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 */	
 	public void clear_cache_all() {
-		//loadFactory();
+		loadFactory();
 		rootNode = DALNode.getRoot(m_root);
 		synchronized (listenedCurls) {
 			Iterator iter = listenedCurls.keySet().iterator();
