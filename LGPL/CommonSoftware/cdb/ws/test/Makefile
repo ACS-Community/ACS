@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.40 2006/07/11 03:54:25 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.41 2006/08/07 05:46:18 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -90,7 +90,7 @@ JDALTests_DIRS = com
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = cdbTestJClient cdbTATHelper cdbTestSetDefaultComponent cdbTestClearCache
+SCRIPTS_L         = cdbTestJClient cdbTATHelper cdbTestSetDefaultComponent cdbTestClearCache cdbTATRead
 
 #
 # TCL scripts (public and local)

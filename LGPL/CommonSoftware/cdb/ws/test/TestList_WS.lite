@@ -27,5 +27,6 @@ PROLOGUE cdbTATPrologue
 3 jDALTestClearCache   "cdbTATHelper cdbTestClearCache"
 4 nodeTest	 "cdbTATHelper nodeTest"
 5 setDefaultComponent	 "cdbTATHelper cdbTestSetDefaultComponent"
+6 cdbTestRead "cdbTATRead"
 
 EPILOGUE cdbTATEpilogue

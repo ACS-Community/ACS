@@ -1,0 +1,21 @@
+#! /bin/bash
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+
+CDB_DIR=`pwd`/CDB-MIX
+
+cdbTATPrologue $CDB_DIR
+
+#read all components
+cdbRead MACI/Components
+
+#read one
+cdbRead MACI/Components/CONTROL/Antenna
+
+#read one that doesn't exist
+cdbRead MACI/Components/NotExist
+
+
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+cdbTATPrologue > cdbTATPrologue.log 2>&1
+
+
