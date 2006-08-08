@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.h,v 1.8 2006/06/19 23:11:36 dfugate Exp $"
+* "@(#) $Id: acsutilAnyAide.h,v 1.9 2006/08/08 11:10:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,8 +34,8 @@
  */
 
 #include <sstream>
-#include <tao/Any.h>
-#include <tao/Typecode.h>
+#include <tao/AnyTypeCode/Any.h>
+#include <tao/AnyTypeCode/TypeCode.h>
 
 /**
  * AnyAide is a class whose sole purpose is to assist ALMA developers

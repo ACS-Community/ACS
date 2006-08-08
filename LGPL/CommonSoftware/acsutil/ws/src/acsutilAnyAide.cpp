@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.cpp,v 1.7 2006/06/19 23:11:36 dfugate Exp $"
+* "@(#) $Id: acsutilAnyAide.cpp,v 1.8 2006/08/08 11:10:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include "acsutilAnyAide.h"
 #include "acsutilORBHelper.h"
 
-static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.7 2006/06/19 23:11:36 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.8 2006/08/08 11:10:24 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 const std::string AnyAide::nullType_m      = "null";
@@ -252,7 +252,7 @@ AnyAide::getId(const CORBA::Any& any)
 	{
 	return floatType_m;
 	}
-    //aliases can be BACI sequences...
+    //aliases can be ...
     else if(kind==CORBA::tk_alias)
 	{
 	//first get a hold of the IFR id
@@ -261,6 +261,22 @@ AnyAide::getId(const CORBA::Any& any)
 	tc = any.type();
 
 	return std::string(tc->id());
+	}
+    // after TAO 1.5.2 we have to handel seqence separatly
+    else if (kind==CORBA::tk_sequence)
+	{
+//!!! here we play dirty !!!
+// this solution does not work with seq of seq
+// we can change it but first we have to change it on the places where seqences are used !!
+	CORBA::TypeCode_var tc;
+	//get the type from the any
+	tc = any.type();
+	//create another any with type of content type (long/double ..)
+	CORBA::Any a;
+	a._tao_set_typecode(tc->content_type());
+	// get recursivly the ID of contained type
+	std::string c = getId(a);
+	return std::string("IDL:alma/ACS/" + c + "Seq:1.0"); // very dirty but should be OK 
 	}
     
     //bad case

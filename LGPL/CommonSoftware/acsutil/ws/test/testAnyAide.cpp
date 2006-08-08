@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAnyAide.cpp,v 1.6 2006/06/19 23:11:36 dfugate Exp $"
+* "@(#) $Id: testAnyAide.cpp,v 1.7 2006/08/08 11:10:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,7 +58,7 @@
 #include "acsutilAnyAide.h"
 #include <baciC.h>
 
-static char *rcsId="@(#) $Id: testAnyAide.cpp,v 1.6 2006/06/19 23:11:36 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: testAnyAide.cpp,v 1.7 2006/08/08 11:10:24 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 void 
@@ -170,6 +170,11 @@ int main(int argc, char *argv[])
     AnyAide::setValue<ACS::floatSeq>(floatSeqAny, floatSeqVal);
 
 
+//    CORBA::Any doubleSeqSeqAny;
+//    ACS::doubleSeqSeq doubleSeqSeqVal(1);
+//    doubleSeqVal.length(1);
+//    doubleSeqVal[0] = 3.14;
+//    AnyAide::setValue<ACS::doubleSeqSeq>(doubleSeqSeqAny, doubleSeqSeqVal);
     //TODO - provide test for CORBA objects. Should this really be necessary
     //since we technically do not support them?
     //testAny<CORBA::Object_ptr>("nilCORBAObject", nilCORBAObjectAny);
@@ -230,6 +235,8 @@ int main(int argc, char *argv[])
     ACS::floatSeq* tFloatSeq = testAny<ACS::floatSeq *>("floatSeq", floatSeqAny);
     printf("[ %f ].\n\n", (*tFloatSeq)[0]);
 
+//    IS_XYZ_TEST(doubleSeqSeqAny, isDoubleSeqSeq);
+//    ACS::doubleSeqSeq* tDoubleSeqSeq = testAny<ACS::doubleSeqSeq *>("doubleSeqSeq", doubleSeqSeqAny);
     //TODO - test isEnum
     //TODO - test isStruct
     
