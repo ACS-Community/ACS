@@ -144,9 +144,10 @@ public class ClientLogManager implements LogConfigSubscriber
         
         sharedLocalHandler.setFormatter(new ConsoleLogFormatter());
         
-        m_internalLogger = getInternalLogger();
+        m_internalLogger = createRemoteLogger(NS_LOGGER);
+        logConfig.setInternalLogger(m_internalLogger);
         if (DEBUG){
-            m_internalLogger.fine("ClientLogManager instance is created.");    
+            m_internalLogger.fine("ClientLogManager instance is created.");
         }        
 	}
 
@@ -278,15 +279,6 @@ public class ClientLogManager implements LogConfigSubscriber
         return logger;
     }
    
-   
-    
-	/**
-	 * Creates a logger for this module.
-	 * @return Logger
-	 */
-	Logger getInternalLogger() {
-        return createRemoteLogger(NS_LOGGER);
-	}
 
     
 	/**
@@ -406,7 +398,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * <p>
 	 * @param autoConfigureContextName  if true, the context (e.g. container name) will be appended to this logger's name as soon as it is available.
 	 */
-	public Logger getLoggerForCorba(String corbaName, boolean autoConfigureContextName) {
+	public AcsLogger getLoggerForCorba(String corbaName, boolean autoConfigureContextName) {
         String ns = NS_CORBA;
         if (corbaName != null) {
         	corbaName = corbaName.trim();
