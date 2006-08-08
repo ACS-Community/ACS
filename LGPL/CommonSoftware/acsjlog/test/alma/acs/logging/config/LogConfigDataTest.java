@@ -21,6 +21,8 @@
  */
 package alma.acs.logging.config;
 
+import alma.acs.testsupport.TestLogger;
+
 import junit.framework.TestCase;
 
 /**
@@ -38,7 +40,9 @@ public class LogConfigDataTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         logConfigData = new LogConfigData();
+        logConfigData.setInternalLogger(TestLogger.getLogger("LogConfigDataTest"));
     }
+    
     protected void tearDown() throws Exception {
         super.tearDown();
     }

@@ -3,14 +3,19 @@ package alma.acs.logging.config;
 import junit.framework.TestCase;
 
 import alma.acs.logging.ACSCoreLevel;
+import alma.acs.testsupport.TestLogger;
 
 public class LogConfigTest extends TestCase {
 
 	private LogConfig logConfig;
 	
+	/**
+	 * 
+	 */
 	public LogConfigTest() {
 		super("LogConfigTest");
 		logConfig = new LogConfig();
+		logConfig.setInternalLogger(TestLogger.getLogger("LogConfigTest"));
 	}
 
 	protected void setUp() throws Exception {
