@@ -118,7 +118,7 @@ ACE_TRY
     ACS_SHORT_LOG((LM_INFO, "The test will create database with remote DAOs"));
 
     // this is done by local parser now try it with remote DAO
-    ACE_ARGV myArgs( 0 );
+    ACE_ARGV myArgs;
     myArgs.add (argv);
     myArgs.add("-DAOremote");
     
