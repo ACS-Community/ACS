@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.70 2006/07/19 16:57:28 dfugate Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.71 2006/08/08 11:22:11 bjeram Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -200,7 +200,18 @@ void
 Supplier::populateHeader(const CORBA::Any &any)
     throw (CORBAProblemEx)
 {
-    setEventType(any.type()->name());
+    if (any.type()->kind()!=CORBA::tk_sequence)
+	{
+	setEventType(any.type()->name());
+	}
+    else
+	{
+	std::string etName= "_SequqnceOf_";
+	CORBA::Any a;
+	a._tao_set_typecode(any.type()->content_type());
+	etName+=a.type()->name();
+	setEventType(etName.c_str());
+	}
     populateHeader(event_m);
     event_m.filterable_data[0].value = any;
 }

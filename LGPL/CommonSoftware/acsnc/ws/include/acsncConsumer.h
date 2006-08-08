@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.63 2006/07/19 16:57:28 dfugate Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.64 2006/08/08 11:22:11 bjeram Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -222,9 +222,21 @@ class Consumer :
 	    //I can come up with at the moment.
 	    any <<= junk;
 
-	    //Use the version of addSubscription which really subscribes
+            //Use the version of addSubscription which really subscribes
 	    //to events from the channel
-	    addSubscription(any.type()->name());
+	   
+	    if (any.type()->kind()!=CORBA::tk_sequence)
+		{
+		addSubscription(any.type()->name());
+		}
+	    else
+		{
+		std::string etName= "_SequqnceOf_";
+		CORBA::Any a;
+		a._tao_set_typecode(any.type()->content_type());
+		etName+=a.type()->name();
+		addSubscription(etName.c_str());
+		}
 	}
 
     /** 
@@ -252,7 +264,18 @@ class Consumer :
 	    
 	    //Use the version of removeSubscription which really unsubscribes
 	    //from an event type.
-	    removeSubscription(any.type()->name());
+	    if (any.type()->kind()!=CORBA::tk_sequence)
+		{
+		removeSubscription(any.type()->name());
+		}
+	    else
+		{
+		std::string etName= "_SequqnceOf_";
+		CORBA::Any a;
+		a._tao_set_typecode(any.type()->content_type());
+		etName+=a.type()->name();
+		removeSubscription(etName.c_str());
+		}
 	}
     
     /** 
