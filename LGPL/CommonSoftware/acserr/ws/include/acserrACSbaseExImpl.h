@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrACSbaseExImpl.h,v 1.8 2006/07/26 11:27:26 bjeram Exp $"
+* "@(#) $Id: acserrACSbaseExImpl.h,v 1.9 2006/08/08 11:15:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,8 +114,9 @@ class ETHolder
        
 
     ETHolder(const CompletionImpl &c) : 
-	m_errorTrace( const_cast<CompletionImpl&>(c).isErrorFree() ?  emptyErrorTrace : const_cast<CompletionImpl&>(c).getErrorTraceHelper()->getErrorTrace()) {}
-// (const_cast<CompletionImpl&>(c).isErrorFree() ?  ACSErr::ErrorTrace() : const_cast<CompletionImpl&>(c).getErrorTraceHelper()->getErrorTrace())) {}
+	m_errorTrace( const_cast<CompletionImpl&>(c).isErrorFree() ? this->emptyErrorTrace : const_cast<ACSErr::ErrorTrace&>(c.previousError[0])) {}
+/*const_cast<CompletionImpl&>(c).getErrorTraceHelper()->getErrorTrace()*/
+
 	
     /*   this will be used later */
     

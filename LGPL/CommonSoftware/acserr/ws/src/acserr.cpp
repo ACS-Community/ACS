@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.77 2006/05/12 10:22:50 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.78 2006/08/08 11:15:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,8 +34,9 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.77 2006/05/12 10:22:50 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.78 2006/08/08 11:15:17 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+
 
 /******************************************************************************
 
@@ -118,15 +119,13 @@ ErrorTraceHelper::ErrorTraceHelper (const ACSErr::ErrorTrace &pet,
 	c = &c->previousError[0];
 	}
 
-    
     if( m_depth < m_maxDepth ) 
     {
       fill(et, ec, severity, file, line, routine, sd); 
-
       m_errorTraceRef.previousError.length(1);
       m_errorTraceRef.previousError[0] = pet; 
-
       m_depth++;
+//      m_current = &m_errorTraceRef;
     }
     else if( m_depth > m_maxDepth )
     { 
@@ -146,14 +145,11 @@ ErrorTraceHelper::ErrorTraceHelper (const ACSErr::ErrorTrace &pet,
       m_current = &m_errorTraceRef;
     }
 
-    
-//	ACSErr::ErrorTrace::_tao_seq_ACSErr_ErrorTrace__1 (1, const_cast<ACSErr::ErrorTrace*>(&pet), 0);
 }
 
 ErrorTraceHelper& ErrorTraceHelper::operator=(ACSErr::ErrorTrace& et)
 {
     m_errorTraceRef = et;
-
     const ACSErr::ErrorTrace *c = &m_errorTraceRef;
     if (c) 
 	{ 
@@ -218,7 +214,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level, char* stackId)
     LoggingProxy::StackLevel (level);
     LoggingProxy::StackId (stackId);
 
-  for (j=0; j<c->data.length(); j++) 
+    for (j=0; j<c->data.length(); j++) 
       LoggingProxy::AddData (c->data[j].name.in(), c->data[j].value.in());
 
   // set runtime context
@@ -422,17 +418,49 @@ void ErrorTraceHelper::setProcessName (const char *pn){
   strncpy (m_processName, pn, 64);
 }
 
+/******************************************************************************
+ *
+ *               CompletionInit
+ *
+ ******************************************************************************/
+CompletionInit::CompletionInit(const ACSErr::Completion &c) : 
+    ACSErr::Completion(c) {
+}
+
+CompletionInit::CompletionInit(ACSErr::CompletionType t, ACSErr::CompletionCode c, bool initTrace)
+{
+    type = t;
+    code = c;
+    timeStamp = ErrorTraceHelper::getTime();
+    if (initTrace)
+	{
+	previousError.length(1);
+	previousError[0] = ACSErr::ErrorTrace();
+	}//if
+}//CompletionInit
+
+
 /****************************************************************************************
  *
  *               CompletionImpl
  *
  ****************************************************************************************/
 CompletionImpl::CompletionImpl() :
-        CompletionInit(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::EmptyError),
-        m_errorTraceHelper(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::EmptyError,
-                           "",0,"", ::ErrorSystemErrType::EmptyErrorExImpl::getShortDescription(),
-                           DEFAULT_SEVERITY, previousError[0] )
+    CompletionInit(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::EmptyError),
+    m_errorTraceHelper(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::EmptyError,
+		       "",0,"", ::ErrorSystemErrType::EmptyErrorExImpl::getShortDescription(),
+		       DEFAULT_SEVERITY, previousError[0] )
 {}
+
+CompletionImpl::CompletionImpl (const ACSErr::Completion &c) :
+    CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length()) 
+{}
+
+CompletionImpl::CompletionImpl(ACSErr::Completion* c, bool del) :
+	CompletionInit(*c), m_errorTraceHelper(previousError[0], previousError.length())
+	{ 
+	    if (del) delete c; 
+	}
 
 void CompletionImpl::log()
 {
@@ -456,12 +484,19 @@ CompletionImpl::operator=(CompletionImpl& c)
 	type = c.getType();
 	code = c.getCode();
 	timeStamp = c.getTimeStamp();
-
 	previousError = c.previousError;
-	m_errorTraceHelper = c.previousError[0];
+	if (c.previousError.length()>0)
+	    {
+	    m_errorTraceHelper = c.previousError[0];
+	    }//if
 
 	}
   return *this;
+}
+
+CompletionImpl::CompletionImpl (const CompletionImpl &c)
+    : CompletionInit(c), m_errorTraceHelper(previousError[0])
+{
 }
 
 CompletionImpl&
@@ -472,9 +507,11 @@ CompletionImpl::operator=(Completion* c)
 	type = c->type;;
 	code = c->code;
 	timeStamp = c->timeStamp;
-
 	previousError = c->previousError;
-	m_errorTraceHelper = c->previousError[0];
+	if (c->previousError.length()>0)
+	    {
+	    m_errorTraceHelper = c->previousError[0];
+	    }//if
 	}
     else
 	{

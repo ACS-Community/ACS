@@ -53,8 +53,8 @@ module ACSErr {
 	Emergency /**< Emergency */
     };
 
-  struct ErrorTrace; 
-  typedef sequence<ErrorTrace, 1> ErrorLinkedList;
+    struct ErrorTrace; 
+    typedef sequence<ErrorTrace/*, 1*/> ErrorLinkedList;
   
 
     /**
@@ -62,7 +62,7 @@ module ACSErr {
      *
      */
     struct ErrorTrace {
-    
+
 	/**
 	 * file name
 	 */
@@ -118,17 +118,12 @@ module ACSErr {
 	 *  container for pair(s) name-value
 	 */
 	NameValueSeq data;
-    
-      ErrorLinkedList previousError;
-      
 
-	/**
+    	/**
 	 * previos error(s) (error stack)
 	 */
-	// sequence <ErrorTrace, 1> previousError;
+	ErrorLinkedList previousError;
     };
-
-  //    typedef sequence <ErrorTrace, 1> ErrorLinkedList;
 
     struct Completion {
      
@@ -150,8 +145,7 @@ module ACSErr {
 	/**
 	 * previos error(s) (error trace)
 	 */
-	/* sequence <ErrorTrace, 1>*/ 
-      ErrorLinkedList  previousError;
+	ErrorLinkedList  previousError;
     };
 
     /** 

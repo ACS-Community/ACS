@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.70 2006/05/12 10:22:50 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.71 2006/08/08 11:15:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -397,19 +397,9 @@ class ErrorTraceHelper
 class CompletionInit : public ACSErr::Completion
 {
   public:
-    CompletionInit(const ACSErr::Completion &c) : ACSErr::Completion(c) {}
+    CompletionInit(const ACSErr::Completion &c);
 
-    CompletionInit(ACSErr::CompletionType t, ACSErr::CompletionCode c, bool initTrace=true)
-	{
-	    type = t;
-	    code = c;
-	    timeStamp = ErrorTraceHelper::getTime();
-	    if (initTrace)
-		{
-		previousError.length(1);
-		previousError[0] = ACSErr::ErrorTrace();
-		}
-	}
+    CompletionInit(ACSErr::CompletionType t, ACSErr::CompletionCode c, bool initTrace=true);
     
   /**
    * Returns completion code
@@ -494,14 +484,18 @@ class CompletionImpl : public CompletionInit
      * @param c remote CORBA completion
      * @parm del flag which indiactes if the completion should be deleted. Its default value is true, so the remote completion is deleted.
      */
-    CompletionImpl(ACSErr::Completion* c, bool del=true) :
-	CompletionInit(*c), m_errorTraceHelper(previousError[0], previousError.length())
-	{ if (del) delete c; }
+    CompletionImpl(ACSErr::Completion* c, bool del=true);
 
-    CompletionImpl (const ACSErr::Completion &c) :
-	CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length()) 
-	{}
+    CompletionImpl (const ACSErr::Completion &c);
 
+    /**
+       Copy constructor
+    */
+    CompletionImpl (const CompletionImpl &c);
+
+    /**
+       Destructor
+     */
     virtual ~CompletionImpl(){}
     
   /**
@@ -579,6 +573,7 @@ T ErrorTraceHelper::getMemberValue (const char* name)
 
 // these two lines are just for backward compatibility and should be removed
 // ... with next release
+typedef ACSErr::CompletionInit CompletionInit;
 typedef ACSErr::CompletionImpl CompletionImpl;
 typedef ACSErr::ErrorTraceHelper ErrorTraceHelper;
 
