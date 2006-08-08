@@ -29,4 +29,5 @@ export ACS_CDB=$PWD
 acsutilTATPrologue -l
 
 echo " Starting Test Java Container"
+export JAVA_OPTIONS="-Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory"
 acsutilAwaitContainerStart -java frodoContainer
