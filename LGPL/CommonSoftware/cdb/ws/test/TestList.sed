@@ -11,3 +11,4 @@ s/log_cache\.dat_[0-9,a-z,A-Z]*_[0-9]*/log_cache.dat__XXXXXXXX_XXX/g
 s/corbaloc::[a-z,A-Z,0-9,_,.,-]*:[0-9]*/corbaloc::xxxxxxx:yyyy/g
 s/-classpath .* -Dabeans.config/-classpath ..... -Dabeans.config/g
 s/.java:[0-9]*/.java:xx/g
+s/^  ..$/ /g

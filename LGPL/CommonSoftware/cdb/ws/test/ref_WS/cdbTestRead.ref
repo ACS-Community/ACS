@@ -359,24 +359,6 @@
 1 -     space="preserve"
 1 -     Autostart="false"
 1 -     KeepAliveTime="0"
-1 -   Node ARCHIVE_IDENTIFIER
-1 -     Name="ARCHIVE_IDENTIFIER"
-1 -     Code="alma.archive.helpers.IdentifierHelper"
-1 -     Type="IDL:alma/xmlstore/Identifier:1.0"
-1 -     Container="frodoContainer"
-1 -     Default="true"
-1 -     space="preserve"
-1 -     Autostart="false"
-1 -     KeepAliveTime="0"
-1 -   Node ARCHIVE_CONNECTION
-1 -     Name="ARCHIVE_CONNECTION"
-1 -     Code="carliCode"
-1 -     Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
-1 -     Container="carliContainer"
-1 -     Default="true"
-1 -     space="preserve"
-1 -     Autostart="false"
-1 -     KeepAliveTime="0"
 1 -   Node EXEC_ACCESS_AUTH
 1 -     xmlns="urn:schemas-cosylab-com:Component:1.0"
 1 -     xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
@@ -1046,7 +1028,7 @@
 1 -     Default="false"
 1 -     Autostart="false"
 1 -     KeepAliveTime="0"
-1 -   Node ARCHIVE_IDENTIFIER1
+1 -   Node ARCHIVE_IDENTIFIER
 1 -     xmlns="urn:schemas-cosylab-com:Component:1.0"
 1 -     xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
 1 -     xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
@@ -1070,7 +1052,7 @@
 1 -     Default="false"
 1 -     Autostart="false"
 1 -     KeepAliveTime="0"
-1 -   Node ARCHIVE_CONNECTION2
+1 -   Node ARCHIVE_CONNECTION
 1 -     xmlns="urn:schemas-cosylab-com:Component:1.0"
 1 -     xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
 1 -     xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
