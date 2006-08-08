@@ -22,7 +22,9 @@
 package alma.acs.logging;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -44,13 +46,15 @@ import alma.acs.logging.formatters.LogParameterExtractor;
  */
 public class AcsLogger extends Logger implements LogConfigSubscriber {
     
-    private final String thisClassName;
+	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. */
+    private Set<String> loggerClassNames = new HashSet<String>();
         
 	private String loggerName;
 
     public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
         super(name, resourceBundleName);
-        thisClassName = getClass().getName();
+        addLoggerClass(getClass());
+        addLoggerClass(Logger.class);
         logConfig.addSubscriber(this);
         configureLogging(logConfig);
     }
@@ -110,7 +114,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             while (ix < stack.length) {
                 StackTraceElement frame = stack[ix];
                 String cname = frame.getClassName();
-                if (!cname.equals(thisClassName) && !cname.equals("java.util.logging.Logger")) {
+                if (!loggerClassNames.contains(cname))  {
                     // We've found the relevant frame.
                     record.setSourceClassName(cname);
                     record.setSourceMethodName(frame.getMethodName());
@@ -158,4 +162,14 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         }
     	
     }
+
+	/**
+	 * Adds a logger class, which will be used to skip entries in the stack trace until the original logging method is found.
+	 * If you have a delegation chain that involves loggers besides AcsLogger and the normal JDK Logger, 
+	 * make sure you call this method for each of them.
+	 * @param loggerClass
+	 */
+	public void addLoggerClass(Class<?> loggerClass) {
+		loggerClassNames.add(loggerClass.getName());
+	}
 }
