@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.125 2005/11/03 19:53:15 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.126 2006/08/08 11:20:23 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS = 
-USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lacsutil -lcdb -llogging -lacscomponent -lrecovery -lacserr -lbaciStubs -larchiveevents
+USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_CosProperty_Serv -lTAO_IFR_Client -lacsutil -lcdb -llogging -lacscomponent -lrecovery -lacserr -lbaciStubs -larchiveevents
 USER_INC = 
 
 # Program to build
