@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.2 2005/09/12 19:02:15 dfugate Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -49,13 +49,12 @@ class ACSLog_i : public TAO_BasicLog_i
     /**
      * Constructor
      */
-    ACSLog_i(TAO_LogMgr_i &logmgr_i,
-	     DsLogAdmin::LogMgr_ptr factory,
-	     DsLogAdmin::LogId id,
-	     DsLogAdmin::LogFullActionType log_full_action = DsLogAdmin::wrap,
-	     CORBA::ULongLong max_size = 0,
-	     ACE_Reactor *reactor = ACE_Reactor::instance ());
-    
+    ACSLog_i (CORBA::ORB_ptr orb,
+	      PortableServer::POA_ptr poa,
+	      TAO_LogMgr_i &logmgr_i,
+	      DsLogAdmin::LogMgr_ptr factory,
+	      DsLogAdmin::LogId id);
+
     /**
      * Destructor
      */

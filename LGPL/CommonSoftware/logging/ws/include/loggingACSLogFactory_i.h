@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLogFactory_i.h,v 1.2 2005/09/12 19:02:15 dfugate Exp $"
+* "@(#) $Id: loggingACSLogFactory_i.h,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -64,17 +64,19 @@ class ACSLogFactory_i : public TAO_BasicLogFactory_i
 	    m_logging_supplier = supplier;
 	}
     
+    PortableServer::ServantBase* create_log_servant(DsLogAdmin::LogId id);
+
     /**
      * Same as BasicLogFactory implementation, except it creates ACSLog
      */
-    DsLogAdmin::BasicLog_ptr
+/*    DsLogAdmin::BasicLog_ptr
     create_with_id (DsLogAdmin::LogId id,
                     DsLogAdmin::LogFullActionType full_action,
                     CORBA::ULongLong max_size)
 	throw (CORBA::SystemException,
 	       DsLogAdmin::LogIdAlreadyExists,
 	       DsLogAdmin::InvalidLogFullAction);
-    
+*/  
   protected:
     
     /** The logging supplier */

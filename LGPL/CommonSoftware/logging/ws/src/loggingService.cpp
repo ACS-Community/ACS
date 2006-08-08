@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.53 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.54 2006/08/08 11:14:04 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -387,8 +387,9 @@ LoggingService::create_basic_log_factory()
   this->m_basic_log_factory.set_logging_supplier(m_logging_supplier);
 
   DsLogAdmin::BasicLogFactory_var obj =
-    this->m_basic_log_factory.activate (this->m_poa.in ()
-                                       );
+      this->m_basic_log_factory.activate (this->m_orb.in(),
+					  this->m_poa.in ()
+	  );
   
 
   ACE_ASSERT (!CORBA::is_nil (obj.in ()));
@@ -583,6 +584,12 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.54  2006/08/08 11:14:04  bjeram
+// ported to ACE+TAO x.5.2:
+//   * change dur to cahnge in TAO_BasicLogFactory_i and TAO_BasicLog_i
+//   and TAO_LogMgr_i
+//   * prioties in ACE has been changed due to fix of ACE::log2(..)
+//
 // Revision 1.53  2006/07/19 16:57:28  dfugate
 // Regressed all files back to July  16, 2006 for ACS 5.0.4.
 //

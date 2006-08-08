@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.20 2006/03/14 11:09:39 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.21 2006/08/08 11:14:04 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -40,7 +40,7 @@
 * almamgr   2000-10-19  Looging of INFO on stdout more compact than XML output
 * almamgr   2000-10-19  created 
 */
-
+#include <string>
 #include <loggingLoggingProxy.h>
 
 #include <loggingXMLParser.h>
@@ -56,7 +56,7 @@ NAMESPACE_USE(loggingXMLParser);
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.20 2006/03/14 11:09:39 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.21 2006/08/08 11:14:04 bjeram Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -81,7 +81,8 @@ int LoggingProxy::m_failureLimit = 3;
 int LoggingProxy::m_minReconnectionTime = 15;      // sec
 
 ACE_TSS<LoggingTSSStorage> * LoggingProxy::tss = 0;
-ACE_CString LoggingProxy::m_process;
+//ACE_CString LoggingProxy::m_process=""; // for some reason does not work in cases wherr logs come from ditructor of objects.
+char LoggingProxy::m_process[256];
 
 
 void
@@ -102,7 +103,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     const ACE_TCHAR * entryType = (*tss)->logEntryType();
     if (!entryType)
 	{
-	if (log_record.priority() < 12)
+	if (log_record.priority() <= ACE::log2(LM_MAX))
 	    {
 	    entryType = m_LogEntryTypeName[log_record.priority()];
 	    }
@@ -123,7 +124,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	if (m_stdio<0)
 	    {
 	    // log only LM_INFO and higher
-	    if (log_record.priority()>=4) 
+	    if (log_record.priority()>=ACE::log2(LM_INFO)) 
 		{
                 // GCH: if (log_record.priority()>=6)   // LM_WARNING+
                 // GCH:     ACE_OS::printf( "ERROR!! " );
@@ -137,7 +138,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		    ACE_OS::printf ("%s [%s] %s", timestamp, (*tss)->sourceObject(), log_record.msg_data());
 		    }
 
-                if (log_record.priority()>=6)   // LM_WARNING+
+                if (log_record.priority()>=ACE::log2(LM_WARNING))   // LM_WARNING+
                     {
                     for (; hash_iter.next(entry) != 0; hash_iter.advance() )
 	               {
@@ -148,7 +149,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		ACE_OS::fflush (stdout); //(2004-01-05)msc: added
 		}
 	    }
-	else if (log_record.priority()>=(unsigned int)m_stdio)
+	else if (log_record.priority()+1>=(unsigned int)m_stdio)
 	    {
             // GCH: if (log_record.priority()>=6)   // LM_WARNING+
             // GCH:    ACE_OS::printf( "ERROR!! " );
@@ -181,7 +182,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		}
 	    
 	    ACE_OS::printf ("%s", log_record.msg_data());
-            if (log_record.priority()>=6)   // LM_WARNING+
+            if (log_record.priority()>=ACE::log2(LM_WARNING))   // LM_WARNING+
                 {
                 for (; hash_iter.next(entry) != 0; hash_iter.advance() )
 	           {
@@ -192,7 +193,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
 	    }
 	}
-    
+   
     //
     // format XML
     //
@@ -207,7 +208,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     
     // source info
     if (flags & LM_SOURCE_INFO ||
-	(log_record.priority()==3))		// LM_DEBUG
+	(log_record.priority()==ACE::log2(LM_DEBUG)))		// LM_DEBUG
 	{
 	ACE_Log_Msg *log_msg = ACE_Log_Msg::instance ();
 	if (log_msg)
@@ -222,8 +223,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // routine (REQUIRED for LM_TRACE and LM_DEBUG)
     const ACE_TCHAR * r = (*tss)->routine();
     if (r || 
-	(log_record.priority()==2) ||			// LM_TRACE
-	(log_record.priority()==3))				// LM_DEBUG
+	(log_record.priority()==ACE::log2(LM_TRACE)) ||		// LM_TRACE
+	(log_record.priority()==ACE::log2(LM_DEBUG)))		// LM_DEBUG
 	{
 	if (r)
 	    {
@@ -256,7 +257,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    xml += " Host=\"";
 	    xml += log_msg->local_host();
 	    xml += "\" Process=\"";
-	    if (m_process.c_str())
+	    if (m_process/*.c_str()*/)
 		{
 		xml += m_process;
 		}
@@ -290,7 +291,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	xml += " SourceObject=\"" + ACE_CString((*tss)->sourceObject()) + "\"";
 	}
     
-    if (log_record.priority()>=6)		// LM_WARNING+
+    if (log_record.priority()>=ACE::log2(LM_WARNING))		// LM_WARNING+
 	{
 	// stackId
 	r = (*tss)->stackId();
@@ -385,7 +386,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     */
     
     // sent record directly to centralized logger
-    if (m_cacheDisabled || (priority > m_maxCachePriority))
+    if (!m_noLogger && (m_cacheDisabled || (priority+1 > m_maxCachePriority)))
 	{
 	CORBA::Any record;
 	record <<= xml.c_str();
@@ -503,14 +504,14 @@ void
 LoggingProxy::ProcessName(const ACE_TCHAR *szName)
 {
   if (tss)
-    m_process = szName;
+    strncpy(m_process, szName, 255); 
 }
 
 const ACE_TCHAR *
 LoggingProxy::ProcessName()
 {
   if (tss)
-    return m_process.c_str();
+      return m_process;//.c_str();
   else
     return 0;
 }

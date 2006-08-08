@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.2 2005/09/12 19:02:15 dfugate Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -35,18 +35,16 @@
 using namespace loggingXMLParser;
 
 /*****************************************************************/
-
-ACSLog_i::ACSLog_i (TAO_LogMgr_i &logmgr_i,
-		    DsLogAdmin::LogMgr_ptr factory,
-		    DsLogAdmin::LogId id,
-		    DsLogAdmin::LogFullActionType log_full_action,
-		    CORBA::ULongLong max_size,
-		    ACE_Reactor *reactor) : 
-  TAO_BasicLog_i(logmgr_i, factory, id, log_full_action, max_size, reactor),
-  m_logging_supplier(0)
-
+ ACSLog_i::ACSLog_i (CORBA::ORB_ptr orb,
+		  PortableServer::POA_ptr poa,
+                  TAO_LogMgr_i &logmgr_i,
+                  DsLogAdmin::LogMgr_ptr factory,
+		     DsLogAdmin::LogId id):
+     TAO_BasicLog_i(orb, poa, logmgr_i, factory, id),
+     m_logging_supplier(0)
 {
 }
+
 
 ACSLog_i::~ACSLog_i ()
 {
@@ -85,7 +83,7 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
 	    throw DsLogAdmin::LogFull (0);
 	    }
 	else   // Check the administrative state.
-	    if (this->admin_state_ == DsLogAdmin::locked)
+	    if (this->get_administrative_state() == DsLogAdmin::locked)
 		{
 		throw DsLogAdmin::LogLocked ();
 		}

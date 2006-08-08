@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.55 2006/07/19 16:57:28 dfugate Exp $" 
+# "@(#) $Id: Makefile,v 1.56 2006/08/08 11:14:04 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -107,8 +107,8 @@ logging_OBJECTS = 	logging loggingXMLElement loggingXMLParser loggingLocalSyslog
 			loggingLoggingTSSStorage loggingLoggingProxy \
 			loggingACSLogger loggingLogSvcHandler
 logging_LIBS    =	baselogging 
-logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
-			-lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosNotification -lacsutil -lacscommonStubs
+logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
+			-lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosNotification -lTAO_CosNotification_Serv -lacsutil -lacscommonStubs
 
 #
 # other files to be installed

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLogFactory_i.cpp,v 1.2 2005/09/12 19:02:15 dfugate Exp $"
+* "@(#) $Id: loggingACSLogFactory_i.cpp,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -29,6 +29,47 @@
 
 /*****************************************************************/
 
+PortableServer::ServantBase*
+ACSLogFactory_i::create_log_servant(DsLogAdmin::LogId id)
+{
+    ACSLog_i* basic_log_i=0;
+    
+    try
+	{
+	basic_log_i = new ACSLog_i(this->orb_.in(), 
+				   this->log_poa_.in(),
+				   *this,
+				   this->log_mgr_.in(),
+				   id);
+	}
+    catch(...)
+	{
+	return basic_log_i;
+	}
+    
+    if (basic_log_i==0)
+	{
+	errno = ENOMEM;
+	throw CORBA::NO_MEMORY ();
+	}  
+    
+    // Set suppliers
+    basic_log_i->set_logging_supplier(m_logging_supplier);
+    
+    try
+	{
+	basic_log_i->init ();
+	}
+    catch(...)
+	{
+	delete basic_log_i;
+	return 0;
+	}
+    
+    return basic_log_i;
+}//create_log_servant
+
+/*
 DsLogAdmin::BasicLog_ptr
 ACSLogFactory_i::create_with_id (DsLogAdmin::LogId id,
 				 DsLogAdmin::LogFullActionType full_action,
@@ -38,7 +79,7 @@ ACSLogFactory_i::create_with_id (DsLogAdmin::LogId id,
 	  DsLogAdmin::InvalidLogFullAction)
 {
     // Make sure the id not used up.
-    if (hash_map_.find (id) == 0)
+    if (exists (id) )
 	{
 	
 	throw DsLogAdmin::LogIdAlreadyExists();
@@ -71,9 +112,6 @@ ACSLogFactory_i::create_with_id (DsLogAdmin::LogId id,
     PortableServer::ServantBase_var safe_basic_log_i = basic_log_i;
     // Transfer ownership to the POA.
     
-    /* commented since x.3  auto_ptr<ACSLog_i> basic_log_auto (basic_log_i);
-    // just in case the activation fails.
-    */
 
     try
 	{
@@ -99,7 +137,7 @@ ACSLogFactory_i::create_with_id (DsLogAdmin::LogId id,
     
     return basic_log._retn ();
 }
-
+*/
 ACSLogFactory_i::ACSLogFactory_i (void) : TAO_BasicLogFactory_i(), 
 					  m_logging_supplier(0)
 {}
