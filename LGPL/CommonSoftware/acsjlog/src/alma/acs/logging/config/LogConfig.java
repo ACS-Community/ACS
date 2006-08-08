@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.cosylab.CDB.DALOperations;
 import com.cosylab.CDB.RecordDoesNotExist;
@@ -46,10 +48,12 @@ public class LogConfig {
 //    private static final String USER_LOG_PROPERTY_FILE_PROPERTY = "java.util.logging.config.file";
 
     
-//    /**
-//     * The logger for messages logged by this class.
-//     */
-//    private Logger logger;
+    /**
+     * The logger for messages logged by this class.
+     * Note that this field will be null at first, until the Logger gets provided, 
+     * so better use {@link #log(Level, String, Throwable)} for safe access. 
+     */
+	private Logger logger;
 
 //    private LogManager m_logManager;
     
@@ -87,14 +91,6 @@ public class LogConfig {
         defaultLogConfigData = new LogConfigData();
 //        m_logManager = LogManager.getLogManager();
 	}
-
-//    /**
-//     * Sets a logger to be used by this class to log error messages etc.
-//     * If this method has not been called, messages are printed to stdout.
-//     */
-//    public void setInternalLogger(Logger logger) {
-//        this.logger = logger;
-//    }
     
     
     /**
@@ -148,11 +144,11 @@ public class LogConfig {
         
 //        setDefaultLogConfiguration();
 //        setUserLogConfiguration();        
-        
+        String containerConfigXML = null;
         if (cdb != null) {
             if (cdbContainerPath != null) {
                 try {
-                    String containerConfigXML = cdb.get_DAO(cdbContainerPath);
+                    containerConfigXML = cdb.get_DAO(cdbContainerPath);
                     defaultLogConfigData.takeCdbContainerXml(containerConfigXML);
                 } catch (LogConfigException ex) {
                     errMsg.append(ex.getMessage());
@@ -179,6 +175,15 @@ public class LogConfig {
         }
 
         notifySubscribers();
+        
+        // now that the subscribers had a chance to adjust their log levels according to the changes from the CDB (if present), we can publish a trace log
+    	if (containerConfigXML != null) {
+    		log(Level.FINER, "Updated default logging configuration based on CDB settings " + containerConfigXML, null);
+    		// TODO: also log something for named loggers
+    	}
+    	else {
+    		log(Level.FINER, "LogConfig was initialized, but not from CDB settings.", null);
+    	}
         
         if (errMsg.length() > 0) {
             throw new LogConfigException("Log config initialization at least partially failed. " + errMsg.toString());
@@ -236,6 +241,32 @@ public class LogConfig {
      */
     public void setLogConfigData(String loggerName, LogConfigData logConfigData) {
     	namedLogConfigData.put(loggerName, logConfigData);
+    }
+    
+    
+    /**
+     * Sets the Logger to be used by this class and dependent classes for internal tracing.
+     * <p>
+     * Note that in the current design of ClientLogManager and LogConfig, 
+     * the Logger can not be provided already in the constructor, 
+     * because the Logger first must be configured, which in turn requires a LogConfig instance.
+     * That's why we have this setter method.
+     */
+    public void setInternalLogger(Logger logger) {
+    	this.logger = logger;
+    	defaultLogConfigData.setInternalLogger(logger);
+    	for (Iterator<LogConfigData> iter = namedLogConfigData.values().iterator(); iter.hasNext();) {
+			iter.next().setInternalLogger(logger);			
+		}
+    }
+    
+    protected void log(Level level, String msg, Throwable thr) {
+    	if (logger != null) {
+    		logger.log(level, msg, thr);
+    	}
+    	else {    		
+    		System.out.println(level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
+    	}
     }
     
     /////////////////////////////////////////////////////////////////////
