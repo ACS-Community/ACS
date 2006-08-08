@@ -31,6 +31,7 @@ import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.logger.Jdk14Logger;
 import org.jacorb.config.LoggerFactory;
 
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 
 /**
@@ -49,7 +50,7 @@ public class JacORBLoggerFactory implements LoggerFactory {
 
     private final static String BACKEND_NAME = "jdk14";
     
-    private Logger delegate;
+    private AcsLogger delegate;
     
     /** verbosity level 0-4 from jacorb property */
 	private int jacOrbVerbosity;
@@ -65,10 +66,13 @@ public class JacORBLoggerFactory implements LoggerFactory {
 
 	/**
 	 * Returns an avalon logger which wraps the JDK logger obtained from {@link ClientLogManager}.
+	 * @param name the name (e.g. "jacorb.poa") is ignored, since we treat all jacorb logging with just one logger.
 	 * @see org.jacorb.config.LoggerFactory#getNamedLogger(java.lang.String)
 	 */
 	public org.apache.avalon.framework.logger.Logger getNamedLogger(String name) {
-		org.apache.avalon.framework.logger.Logger wrapper = new Jdk14Logger(getDelegate());
+		AcsLogger acsLogger = getDelegate();
+		acsLogger.addLoggerClass(Jdk14Logger.class);
+		org.apache.avalon.framework.logger.Logger wrapper = new Jdk14Logger(acsLogger);
 		return wrapper;
 	}
 
@@ -116,7 +120,7 @@ public class JacORBLoggerFactory implements LoggerFactory {
 	 * Its name is "alma.acs.corba.JacORB", where the prefix is supplied by ClientLogManager.
 	 * @return
 	 */
-	private synchronized Logger getDelegate() {
+	private synchronized AcsLogger getDelegate() {
 		if (delegate == null) {
 			delegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("jacorb", true);
 
