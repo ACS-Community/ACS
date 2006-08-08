@@ -904,7 +904,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteFepsA()
 	fepMap_m.find(flowname, fep);
 	if (fep != 0)
 	    {
-	    CORBA::Long dim = fep->_ref_count();
+	    CORBA::Long dim = fep->_refcount_value/*_ref_count*/();
 	 
 	    for(CORBA::Long n = 0; n < dim; n++)
 		{
@@ -929,7 +929,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteSepA()
     
     if (sepRefCount_p != 0)
 	{
-	CORBA::Long dim = sepRefCount_p->_ref_count();
+	CORBA::Long dim = sepRefCount_p->_refcount_value/*_ref_count*/();
 	for(CORBA::Long n = 0; n < dim; n++)
 	    {
 	    TAO_AV_Core::deactivate_servant(sepRefCount_p);
@@ -1078,5 +1078,5 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 	flowSpec_m[i] = CORBA::string_dup(locEntry);
 	}
 
-    delete peerAddr_p;
+    //  delete peerAddr_p;
 }

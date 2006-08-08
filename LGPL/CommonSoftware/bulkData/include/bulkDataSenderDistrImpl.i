@@ -49,7 +49,7 @@ void BulkDataSenderDistrImpl<TSenderCallback>::startSend()
 	mb->wr_ptr(sizeof(char));
     
 	CORBA::ULong flowNumber = 1;
-	getSender()->startSend(flowNumber, mb);
+	this->getSender()->startSend(flowNumber, mb);
     
 	ACS_SHORT_LOG ((LM_INFO,"flow 1 length start parameter sent = %d", mb->length()));
     
@@ -66,7 +66,7 @@ void BulkDataSenderDistrImpl<TSenderCallback>::startSend()
 	const char * ptr = fileName;
 
 	flowNumber = 2;
-	getSender()->startSend(flowNumber,ptr,size);
+	this->getSender()->startSend(flowNumber,ptr,size);
     
 	ACS_SHORT_LOG ((LM_DEBUG,"flow 2 start parameter sent = %s", fileName));
 
@@ -132,7 +132,7 @@ void BulkDataSenderDistrImpl<TSenderCallback>::paceData()
 	mb->wr_ptr(sizeof(char));
 
 	flowNumber = 1;
-	getSender()->sendData(flowNumber, mb);
+	this->getSender()->sendData(flowNumber, mb);
 
 	ACS_SHORT_LOG ((LM_INFO,"flow 1 length sent data = %d", mb->length()));
 
@@ -182,7 +182,7 @@ void BulkDataSenderDistrImpl<TSenderCallback>::paceData()
 	
 
 	    flowNumber = 2;
-	    getSender()->sendData(flowNumber,&mb1);
+	    this->getSender()->sendData(flowNumber,&mb1);
 
 
 	    // Reset the mb.
@@ -229,10 +229,10 @@ void BulkDataSenderDistrImpl<TSenderCallback>::stopSend()
 	{
 
 	flowNumber = 1;
-	getSender()->stopSend(flowNumber);
+	this->getSender()->stopSend(flowNumber);
 
 	flowNumber = 2;
-	getSender()->stopSend(flowNumber);
+	this->getSender()->stopSend(flowNumber);
 
 	}
 

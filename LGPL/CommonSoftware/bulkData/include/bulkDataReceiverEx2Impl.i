@@ -33,7 +33,7 @@ void BulkDataReceiverEx2Impl<TCallback>::setParam(const CORBA::Any &param)
     param >>= longParam;
     ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverEx2Impl<>::setParam param: %d",longParam));
 
-    getReceiver()->getFlowCallback(flw, cb);
+    this->getReceiver()->getFlowCallback(flw, cb);
     if(cb == 0)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverEx2Impl<>::setParam: receiver callback = 0"));
