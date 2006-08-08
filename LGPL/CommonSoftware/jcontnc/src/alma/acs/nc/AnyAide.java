@@ -294,19 +294,19 @@ class AnyAide {
             // extract method
             returnValue = new Integer(any.extract_ulong());
          }
-         else if (anyType.compareTo("alma::ACS::doubleSeq") == 0) {
+         else if (anyType.compareTo("sequence <double>") == 0) {
             returnValue = doubleSeqHelper.extract(any);
          }
          // IDL://alma:ACS:longSeq:1.0
-         else if (anyType.compareTo("alma::ACS::longSeq") == 0) {
+         else if (anyType.compareTo("sequence <long>") == 0) {
             returnValue = alma.ACS.longSeqHelper.extract(any);
          }
          // IDL://alma:ACS:strSeq:1.0
-         else if (anyType.compareTo("alma::ACS::stringSeq") == 0) {
+         else if (anyType.compareTo("sequence <string>") == 0) {
             returnValue = alma.ACS.stringSeqHelper.extract(any);
          }
          // IDL://alma:ACS:floatSeq:1.0
-         else if (anyType.compareTo("alma::ACS::floatSeq") == 0) {
+         else if (anyType.compareTo("sequence <float>") == 0) {
             returnValue = alma.ACS.floatSeqHelper.extract(any);
          }
          else {
@@ -324,19 +324,19 @@ class AnyAide {
       // handle all sequences here
       case org.omg.CORBA.TCKind._tk_sequence:
          // IDL://alma:ACS:doubleSeq:1.0
-         if (anyType.compareTo("alma::ACS::doubleSeq") == 0) {
+         if (anyType.compareTo("sequence <double>") == 0) {
             returnValue = doubleSeqHelper.extract(any);
          }
          // IDL://alma:ACS:longSeq:1.0
-         else if (anyType.compareTo("alma::ACS::longSeq") == 0) {
+         else if (anyType.compareTo("sequence <long>") == 0) {
             returnValue = alma.ACS.longSeqHelper.extract(any);
          }
          // IDL://alma:ACS:strSeq:1.0
-         else if (anyType.compareTo("alma::ACS::stringSeq") == 0) {
+         else if (anyType.compareTo("sequence <string>") == 0) {
             returnValue = alma.ACS.stringSeqHelper.extract(any);
          }
          // IDL://alma:ACS:floatSeq:1.0
-         else if (anyType.compareTo("alma::ACS::floatSeq") == 0) {
+         else if (anyType.compareTo("sequence <float>") == 0) {
             returnValue = alma.ACS.floatSeqHelper.extract(any);
          }
          // pretty severe situation if we cannot find
