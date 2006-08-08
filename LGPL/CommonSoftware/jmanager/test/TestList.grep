@@ -20,3 +20,4 @@ Starting Java/abeans application:
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 \[jacorb\.poa\] INFO : oid:
 object is activated
+Bound ID: InterfaceRepository
