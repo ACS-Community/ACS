@@ -114,12 +114,11 @@ public class ComponentTestclient extends ComponentClientTestCase
 				; // that's good
 			}
 			
-			// component trying to forcefully unload another comp to which it never got a reference
-			// this does not work yet (2006-07-19); TODO:check with Matej
+			// component trying to forcefully unload another comp to which it never got a reference.
+			// The container services should prevent this, thus we can't test whether manager would check it as well.
 			String onlyMyDummyName = "onlyMyDummy";
 			DummyComponent onlyMyDummy = DummyComponentHelper.narrow(getContainerServices().getDynamicComponent(new ComponentQueryDescriptor(onlyMyDummyName, "IDL:alma/jconttest/DummyComponent:1.0"), false));
 			m_contSrvTesterComp.testForceReleaseComponent(onlyMyDummyName, false);
-			// TODO: check log messages for "ignoring request by client 'CONT_SERVICES_TESTER' to release other component with unknown curl='onlyMyDummy'."
 			
     	} catch (CouldntPerformActionEx ex) {
     		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
