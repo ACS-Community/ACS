@@ -23,6 +23,8 @@ package alma.acs.logging.config;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,10 +71,17 @@ public class LogConfigData {
 
     private DocumentBuilder domBuilder;
 
+    /**
+     * The logger for messages logged by this class.
+     * Initially it is null, so better use {@link #log(Level, String, Throwable)} for safe access. 
+     */
+	private Logger logger;
+
     
     LogConfigData() {
         setDefaultValues();
     }
+
 
     /**
      * Sets the default values for the various fields.
@@ -252,5 +261,20 @@ public class LogConfigData {
         }
         return ret;
     }
+
+    
+    void setInternalLogger(Logger logger) {
+    	this.logger = logger;
+    }
+    
+    protected void log(Level level, String msg, Throwable thr) {
+    	if (logger != null) {
+    		logger.log(level, msg, thr);
+    	}
+    	else {    		
+    		System.out.println(msg + (thr != null ? thr.toString() : ""));
+    	}
+    }
+    
 
 }
