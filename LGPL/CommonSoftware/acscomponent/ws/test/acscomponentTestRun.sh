@@ -41,6 +41,7 @@ i=0
   fi
 else 
   $*
+  pkill -2 acscomponentTe
 fi
 rm -f ACSCOMPONENTTEST1.ior
 echo "All done!"

@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestServer.cpp,v 1.13 2006/06/14 07:54:58 bjeram Exp $"
+* "@(#) $Id: acscomponentTestServer.cpp,v 1.14 2006/08/08 11:27:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * rcirami 2002-09-24  created
 */
  
-static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.13 2006/06/14 07:54:58 bjeram Exp $";
+static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.14 2006/08/08 11:27:02 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -137,6 +137,22 @@ class TestContainerServices : public maci::ContainerServices {
 
 CORBA::ORB_var orb;
 
+void TerminationSignalHandler(int)
+{
+     try
+	{
+	// false - avoid deadlock; true would try to wait for all requests
+	// to complete before returning, but because we are calling it from within
+	// a request, we would be blocking it from 
+	  orb->shutdown(false);
+	  
+	}
+    catch( CORBA::Exception &ex )
+	{
+	ACE_PRINT_EXCEPTION( ex, "TerminationSignalHandler");
+	}
+}
+
 
 #ifdef MAKE_VXWORKS
 #	include "rebootLib.h"
@@ -161,6 +177,9 @@ int main(int argc, char* argv[])
 
   try
     {
+    ACE_OS::signal(SIGINT,  TerminationSignalHandler);  // Ctrl+C
+    ACE_OS::signal(SIGTERM, TerminationSignalHandler);  // termination request
+
       //Get a reference to the RootPOA
       CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");
       
