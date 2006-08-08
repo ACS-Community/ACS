@@ -14,3 +14,4 @@ Thread to run the ORB
 service as:
 priority:
 warning, got duplicate tcp line
+Bound ID: InterfaceRepository
