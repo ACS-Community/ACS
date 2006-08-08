@@ -3,7 +3,7 @@ if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeXmlErrLibraries,v 1.22 2006/05/04 14:18:11 mzampare Exp $"
+# "@(#) $Id: acsMakeXmlErrLibraries,v 1.23 2006/08/08 11:05:28 bjeram Exp $"
 #
 
 # the ugly solution taken here is really ugly: it requires one to maintain the list
@@ -148,7 +148,8 @@ then
     # now we play it dirty
     rm -f ../object/${xmlName}.da ../object/${xmlName}.h 
     rm -f ../object/${xmlName}.cpp
-    rm -f ../object/${xmlName}{C,S}.{h,inl,cpp} ../object/${xmlName}S_T.{h,cpp,inl}
+    rm -f ../object/${xmlName}{C,S}.{h,inl,cpp}
+#../object/${xmlName}S_T.{h,cpp,inl}
     rm -f ../object/${xmlName}*.o  
     rm -f ../idl/${xmlName}.idl
     rm -f $FILE
@@ -173,7 +174,7 @@ then
 	chmod 664  ${VLTTOP}/lib/lib${xmlName}.{a,so}
 	cp ../object/${xmlName}.h ${VLTTOP}/include
 	cp ../object/${xmlName}{C,S}.{h,inl} ${VLTTOP}/include
-	cp ../object/${xmlName}S_T.{h,cpp,inl} ${VLTTOP}/include
+#	cp ../object/${xmlName}S_T.{h,cpp,inl} ${VLTTOP}/include
 	cp ../idl/${xmlName}.idl ${VLTTOP}/idl
 	cp ../idl/${xmlName}.xml ${VLTTOP}/idl
     else
