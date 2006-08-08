@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.91 2006/01/09 21:15:17 dfugate Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.92 2006/08/08 11:16:55 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -669,7 +669,7 @@ SimpleClient::components_unavailable (const maci::stringSeq & cob_names
   CORBA::ULong len = cob_names.length (); 
   
   for (unsigned int i=0; i < len; i++) {
-    ACS_SHORT_LOG((LM_DEBUG, "Unavailable component: '%s'.", cob_names[i].in()));
+  ACS_SHORT_LOG((LM_DEBUG, "Unavailable component: '%s'.", cob_names[i]/*.in()*/));
   }
 }
 

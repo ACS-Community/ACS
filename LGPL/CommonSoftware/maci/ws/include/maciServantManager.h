@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciServantManager.h,v 1.84 2004/09/02 15:25:26 bjeram Exp $"
+* "@(#) $Id: maciServantManager.h,v 1.85 2006/08/08 11:16:55 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -13,6 +13,7 @@
 
 #include <acsutil.h>
 #include <tao/PortableServer/PortableServer.h>
+#include <tao/PortableServer/ServantActivatorC.h>
 
 NAMESPACE_BEGIN(maci);
 
