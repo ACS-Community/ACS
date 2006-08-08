@@ -17,7 +17,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampImpl.cpp,v 1.28 2006/07/19 16:57:28 dfugate Exp $"
+ * "@(#) $Id: acssampImpl.cpp,v 1.29 2006/08/08 11:25:17 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.28 2006/07/19 16:57:28 dfugate Exp $";
+static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.29 2006/08/08 11:25:17 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <Request.h>
@@ -123,42 +123,32 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
     ACE_CString propName=CORBA::string_dup(property);
     ACE_CString fullName=cobName+":"+propName;
 
+   
 
     try
 	{
-
-	CORBA::Object_var obj =
+	CORBA::Object_var obj = 
 	    ContainerImpl::getContainer()->get_object(name, 0, true);
-      
+
 	if (!CORBA::is_nil(obj.in()))
 	    {
-
-	    ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","DII invocation");
-
-	    CORBA::Request_var reqV;
-	    reqV=obj->_request("descriptor");
-
-	    ACS::CharacteristicComponentDesc *ret_struct;
-	    reqV->set_return_type (ACS::_tc_CharacteristicComponentDesc);
-
-	    reqV->invoke();
-	  
-	    reqV->return_value() >>= ret_struct;
-	  
+	    // here we do not need DII as it was implemented!!
+	    ACS::CharacteristicComponent_var comp = ACS::CharacteristicComponent::_narrow(obj.in());
+	    ACS::CharacteristicComponentDesc_var ret_struct = comp->descriptor();
             // contains the number of properties for a specific component
 	    CORBA::ULong len = ret_struct->properties.length();
 
             // internal index in the while loop; must not exceed the
             // number of properties
 	    CORBA::ULong ind = 0;
-
+	  
             // error flag;
 	    int errGuard = 1;
 
 	    while (ind < len)
 		{ 
          
-                // Is the name of the discovered DII component 
+                // Is the name of the discovered component 
                 // the same, as what the user has request to sample?
                 // if yes then we proceed, otherwise we throw an exception
 		if (ACE_OS::strcmp(ret_struct->properties[ind].name,fullName.c_str()) == 0 )
@@ -215,7 +205,6 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 			{
 
 			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered RWdouble property type");
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","DII invocation ended");
 
                         // dynamically create a new sampling object
 			ACSSampObjImpl<ACS::RWdouble,ACS::RWdouble_var,CORBA::Double>* sampling = NULL;
@@ -255,7 +244,6 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 			{
 
 			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered ROdouble property type");
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","DII invocation ended");
 
 			ACSSampObjImpl<ACS::ROdouble,ACS::ROdouble_var,CORBA::Double>* sampling = NULL;
 
@@ -294,7 +282,6 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 			{
 
 			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered RWlong property type");
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","DII invocation ended");
 
 			ACSSampObjImpl<ACS::RWlong,ACS::RWlong_var,CORBA::Long>* sampling = NULL;
 
@@ -333,7 +320,6 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 			{
 
 			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered ROlong property type");
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","DII invocation ended");
 
 			ACSSampObjImpl<ACS::ROlong,ACS::ROlong_var,CORBA::Long>* sampling = NULL;
 
