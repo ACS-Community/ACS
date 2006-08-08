@@ -140,11 +140,12 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p
       }
   else
       {
-      completion = CanNotSetValueCompletion(co, 
-					    __FILE__, 
-					    __LINE__, 
-					    "baci::RWcommonImpl&lt;&gt;::setValueAction");
-       static_cast<CanNotSetValueCompletion*>(&completion)->setProperty((this->getProperty()->getName()));
+      CanNotSetValueCompletion  errComp(co, 
+					__FILE__, 
+					__LINE__, 
+					"baci::RWcommonImpl&lt;&gt;::setValueAction");
+      errComp.setProperty((this->getProperty()->getName()));
+      completion = errComp;
       }
 
   // complete action requesting done invokation, 

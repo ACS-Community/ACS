@@ -235,11 +235,12 @@ ActionRequest PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p,
       }
   else
       {
-      completion = CanNotGetValueCompletion(co, 
-					    __FILE__, 
-					    __LINE__, 
-					    "baci::PcommonImpl&lt;&gt;::getValueAction");
-      static_cast<CanNotGetValueCompletion*>(&completion)->setProperty((property_mp->getName()));
+      CanNotGetValueCompletion errComp (co, 
+					__FILE__, 
+					__LINE__, 
+					"baci::PcommonImpl&lt;&gt;::getValueAction");
+      errComp.setProperty((property_mp->getName()));
+      completion = errComp;
       }//if-else
 
   // complete action requesting done invokation, 
