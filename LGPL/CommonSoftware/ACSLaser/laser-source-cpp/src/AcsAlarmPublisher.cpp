@@ -20,7 +20,7 @@ ACE_Mutex* AcsAlarmPublisher::alarmSupplierMutex = new ACE_Mutex;
  * @param topicName the name of the topic for the notification channel which will 
  *        be used for communication with the laser alarm server.
  */
-AcsAlarmPublisher::AcsAlarmPublisher(string topicName,CosNaming::NamingContext_ptr naming_p)
+AcsAlarmPublisher::AcsAlarmPublisher(string topicName, CosNaming::NamingContext_ptr naming_p)
 {
 	cout << "AcsAlarmPublisher::AcsAlarmPublisher(): entering...\n";
 	// create the shared AlarmSupplier
@@ -69,7 +69,7 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 /*
  * Returns the singleton instance, creating it if necessary.
  */
-AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName,CosNaming::NamingContext_ptr naming_p)
+AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName, CosNaming::NamingContext_ptr naming_p)
 {
 	cout << "AcsAlarmPublisher::getInstance("<<topicName<<"): entering...\n";
 
@@ -117,7 +117,7 @@ bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
  */
 extern "C" 
 {
-	AlarmPublisher * getAlarmPublisher(string topicName,CosNaming::NamingContext_ptr naming_p)
+	AlarmPublisher * getAlarmPublisher(string topicName, CosNaming::NamingContext_ptr naming_p)
 	{
 		cout<< "extern C getAlarmPublisher(): DLL entry point, entering...\n";
 		AlarmPublisher * retVal = AcsAlarmPublisher::getInstance(topicName,naming_p);
