@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.13 2006/07/25 14:21:10 gchiozzi Exp $"
+# "@(#) $Id: buildJacORB,v 1.14 2006/08/09 10:45:42 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -195,12 +195,20 @@ then
      echo "========= FAILED =========="
 	exit 1
 fi
+mkdir tao
+cp $ACE_ROOT/TAO/tao/TimeBase.pidl tao/
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
 cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/AVStreams.idl .
 if [ $? -ne 0 ]
 then
      echo "========= FAILED =========="
 	exit 1
 fi
+ln -s CosPropertyService.idl CosProperty.idl
 cd $JACORB_HOME/idl
 
 ant property
