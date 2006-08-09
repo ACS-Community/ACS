@@ -605,15 +605,14 @@ public class ContainerServicesImpl implements ContainerServices
 			
 			m_logger.fine("about to release component " + curl + (forcefully ? " forcefully" : ""));
 			try {
-				stub._release();
 				if (forcefully) {
 					m_acsManagerProxy.force_release_component(m_clientHandle, curl);
 				}
 				else {
 					m_acsManagerProxy.release_component(m_clientHandle, curl);
 				}
-				m_logger.info("client '" + m_clientName + "' has successfully released " + 
-						" a component with curl=" + curl);
+				m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
+				stub._release();
 			}
 			catch (Throwable thr) { // mainly thinking of org.omg.CORBA.NO_PERMISSION
 				m_logger.log(Level.WARNING, "client '" + m_clientName + "' (handle " + m_clientHandle + ") failed to release " + 
