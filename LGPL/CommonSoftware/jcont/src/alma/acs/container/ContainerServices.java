@@ -256,6 +256,10 @@ public interface ContainerServices
 	 * Releases the specified component. This involves notification of the manager,
 	 * as well as calling <code>_release()</code> on the CORBA stub for that component.
 	 * If the curl is not known to the container, the request will be ignored.
+	 * <p>
+	 * This method will return only when the component has actually been released,
+	 * which may take some time in case there are still active requests being processed.
+	 * 
 	 * @param componentUrl  the name/curl of the component instance as used by the manager  
 	 */
 	public void releaseComponent(String componentUrl);
