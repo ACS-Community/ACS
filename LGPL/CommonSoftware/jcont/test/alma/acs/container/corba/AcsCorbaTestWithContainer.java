@@ -1,5 +1,7 @@
 package alma.acs.container.corba;
 
+import java.util.logging.Level;
+
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.jconttest.DummyComponent;
@@ -26,6 +28,7 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 
 	
 	protected void setUp() throws Exception {
+		Thread.sleep(2000); // to make sure that logging client is up and captures all logs
 		super.setUp();
 	}
 
@@ -34,6 +37,39 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 		super.tearDown();
 	}
 
+	
+	public void testParallelCalls() throws Exception {
+		org.omg.CORBA.Object compObj = getContainerServices().getDynamicComponent(new ComponentQueryDescriptor(null, DUMMYCOMP_TYPENAME), false);
+		assertNotNull(compObj);
+		dummyComponent = DummyComponentHelper.narrow(compObj);
+		String compName = dummyComponent.name();
+		assertNotNull(compName);
+	
+		exceptionInThread = null;
+		
+		// run a call to 'callThatTakesSomeTime' from a client thread
+		Runnable compMethodCallRunnable = new Runnable() {
+			public void run() {
+				try {
+					dummyComponent.callThatTakesSomeTime(2000);
+				} catch (Exception ex) {
+					m_logger.log(Level.SEVERE, "Async client call 'dummyComponent#callThatTakesSomeTime' failed with exception.", ex);
+					exceptionInThread = ex;
+				}
+			}
+		};
+		(new Thread(compMethodCallRunnable)).start();
+		
+		// now run another call from the main thread
+		Thread.sleep(500); // just to make sure the first call is out
+		compMethodCallRunnable.run();
+
+		// some other parallel call that uses ContainerServices
+		getContainerServices().getDynamicComponent(new ComponentQueryDescriptor(null, DUMMYCOMP_TYPENAME), false);
+		
+		assertNull("got an exception in the first of two calls", exceptionInThread);
+	}
+	
 	
 	/**
 	 * Activates / deactivates a component 10 times, each time calling a method that still runs while 
@@ -83,7 +119,7 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 						try {
 							dummyComponent.callThatTakesSomeTime(remoteCallDurationMin);
 						} catch (Exception ex) {
-							ex.printStackTrace();
+							m_logger.log(Level.SEVERE, "Async client call 'dummyComponent#callThatTakesSomeTime' failed with exception.", ex);
 							exceptionInThread = ex;
 						}
 					}
@@ -97,7 +133,6 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 			else {
 				dummyComponent.callThatTakesSomeTime(0);
 			}
-			
 			// we expect the releaseComponent call to take some time, because the container must wait for the 
 			// currently active call to finish before the component can be unloaded.
 			long timeBeforeRelease = System.currentTimeMillis(); 
