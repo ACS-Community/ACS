@@ -16,7 +16,7 @@ using asiConfigurationConstants::ALARM_SOURCE_NAME;
  */
 AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(CosNaming::NamingContext_ptr naming_p)
 {
-	m_naming_p=CosNaming::NamingContext::_duplicate(naming_p);
+	m_naming_p = CosNaming::NamingContext::_duplicate(naming_p);
 	cout << "AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(): entering...\n";
 	laserPublisher = NULL;
 	setSourceName(ALARM_SOURCE_NAME);
@@ -29,9 +29,9 @@ AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(CosNaming::NamingContext_pt
  * @param theSourceName the name of the source. This should normally be the
  * one (and only one) source name defined in asiConfigurationConstants.h ALARM_SOURCE_NAME.
  */
-AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string theSourceName,CosNaming::NamingContext_ptr naming_p )
+AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string theSourceName, CosNaming::NamingContext_ptr naming_p )
 {
-	m_naming_p=CosNaming::NamingContext::_duplicate(naming_p);
+	m_naming_p = CosNaming::NamingContext::_duplicate(naming_p);
 	cout << "AlarmSystemInterfaceProxy::AlarmSystemInterfaceProxy(string): entering...\n";
 	laserPublisher = NULL;
 	setSourceName(theSourceName);
@@ -51,7 +51,7 @@ AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy()
 {
 	cout << "AlarmSystemInterfaceProxy::~AlarmSystemInterfaceProxy(): entering...\n";
 	CORBA::release(m_naming_p);
-	m_naming_p=CosNaming::NamingContext::_nil();
+	m_naming_p = CosNaming::NamingContext::_nil();
 	if (laserPublisher != NULL) {
 		delete laserPublisher;
 		laserPublisher = NULL;
@@ -152,7 +152,7 @@ bool AlarmSystemInterfaceProxy::publishMessageDLL(ASIMessage msg)
 			exit(-1);
 		}
 		void * publisherFactoryFunctionPtr = dlsym(hndl, configuration.getPublisherFactoryFunctionName().c_str());
-		laserPublisher = ((AlarmPublisher*(*)(string))(publisherFactoryFunctionPtr))(topicName);
+		laserPublisher = ((AlarmPublisher*(*)(string, CosNaming::NamingContext_ptr))(publisherFactoryFunctionPtr))(topicName, m_naming_p);
 
 		// check for success/failure
 		if (NULL != laserPublisher)
