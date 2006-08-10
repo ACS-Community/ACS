@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.68 2006/08/10 14:20:00 acaproni Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.69 2006/08/10 14:20:59 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -73,7 +73,7 @@
 
 #include <ACSAlarmSystemInterfaceFactory.h>
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.68 2006/08/10 14:20:00 acaproni Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.69 2006/08/10 14:20:59 acaproni Exp $")
 
 NAMESPACE_USE(maci);
 NAMESPACE_USE(cdb);
@@ -1227,8 +1227,6 @@ ContainerImpl::done()
   acsQoS::done();
 
   ACSError::done();
-
-  ACSAlarmSystemInterfaceFactory::done();
 
   if(m_dllmgr)
       {
