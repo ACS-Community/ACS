@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.66 2006/08/10 00:51:06 sharring Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.67 2006/08/10 01:19:49 sharring Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -73,7 +73,7 @@
 
 #include <ACSAlarmSystemInterfaceFactory.h>
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.66 2006/08/10 00:51:06 sharring Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.67 2006/08/10 01:19:49 sharring Exp $")
 
 NAMESPACE_USE(maci);
 NAMESPACE_USE(cdb);
@@ -505,7 +505,6 @@ bool
 ContainerImpl::init(int argc, char *argv[])
 {
 
-	int iCounter = 0;
   //ACS_TRACE("maci::ContainerImpl::init");
   
   
@@ -809,7 +808,6 @@ ContainerImpl::init(int argc, char *argv[])
 	bool asfRet=true;;
 	try {
 		CosNaming::NamingContext_ptr namingContextPtr = MACIHelper::resolveNamingService(orb);
-		//while(iCounter < 1) {}
 		maci::Manager_ptr theManagerPtr = manager.in();
 		asfRet = ACSAlarmSystemInterfaceFactory::init(theManagerPtr, namingContextPtr);
 	} catch (acsErrTypeAlarmSourceFactory::InavalidManagerExImpl &ex) {
