@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.124 2006/07/20 11:47:33 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.125 2006/08/10 04:30:09 sharring Exp $"
 #
 #
 
@@ -19,7 +19,7 @@ MODULES_KIT = vlt doc acs acstempl
 # because it is already built in the prepare phase.
 #
 MODULES_TOOLS = cmm emacs compat tat expat loki extjars antlr freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor mimetic gmp jfree xsddoc
-MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents baci enumprop jacscommon jmanager maci parameter task abeans acstime acsnc acslog acsexmpl acsabeans acssamp jlog acspy  comphelpgen XmlIdl define acstestentities acsjlog objexp jcont jcontnc jcontexmpl jbaci acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse
+MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents baci enumprop jacscommon jmanager lasersourceacsjmsidl lasersourceutilcpp lasersourcecpp lasersourceacscpp maci lasersourceextlib parameter task abeans acstime acsnc acslog acsexmpl acsabeans acssamp jlog acspy  comphelpgen XmlIdl define acstestentities acsjlog objexp jcont jcontnc lasersourceacsjms  lasersourcecmwmom lasersourceutiljava  lasersourcejava lasersourceacsjava jcontexmpl jbaci acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
 ######## end Modules ###########################
 
 #
