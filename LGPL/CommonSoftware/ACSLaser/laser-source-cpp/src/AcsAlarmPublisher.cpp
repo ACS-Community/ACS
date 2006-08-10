@@ -82,7 +82,7 @@ AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName, CosNaming::Nami
   	ACE_Guard<ACE_Mutex> guard(*AcsAlarmPublisher::singletonMutex);
 	if(NULL == singletonInstance)
 	{
-		singletonInstance = new AcsAlarmPublisher(topicName,naming_p);
+		singletonInstance = new AcsAlarmPublisher(topicName, naming_p);
 	}
 
 	cout << "AcsAlarmPublisher::getInstance(): exiting...\n";
@@ -110,7 +110,7 @@ bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
  * Simple factory method to return an instance of AlarmPublisher as an entry point 
  * for clients of the shared library. Other implementations (i.e. different concrete classes which
  * extend the abstract base class, AlarmPublisher) would return instances of different concrete classes
- * in their factory corresponding methods; that is, to implement a new concrete AlarmPublisher class, 
+ * in their corresponding factory methods; that is, to implement a new concrete AlarmPublisher class, 
  * extend AlarmPublisher, implement the abstract publishAlarm method, and create a factory method
  * like the one below which returns an instance of *your* concrete class.
  */
@@ -119,7 +119,7 @@ extern "C"
 	AlarmPublisher * getAlarmPublisher(string topicName, CosNaming::NamingContext_ptr naming_p)
 	{
 		cout<< "extern C getAlarmPublisher(): DLL entry point, entering...\n";
-		AlarmPublisher * retVal = AcsAlarmPublisher::getInstance(topicName,naming_p);
+		AlarmPublisher * retVal = AcsAlarmPublisher::getInstance(topicName, naming_p);
 		cout << "extern C getAlarmPublisher(): DLL entry point, exiting...\n";
 		return retVal;
 	}
