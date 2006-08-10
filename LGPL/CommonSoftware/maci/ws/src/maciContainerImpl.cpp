@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.65 2006/07/20 13:16:56 gchiozzi Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.66 2006/08/10 00:51:06 sharring Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -71,7 +71,9 @@
 
 #include <archiveeventsArchiveSupplier.h>
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.65 2006/07/20 13:16:56 gchiozzi Exp $")
+#include <ACSAlarmSystemInterfaceFactory.h>
+
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.66 2006/08/10 00:51:06 sharring Exp $")
 
 NAMESPACE_USE(maci);
 NAMESPACE_USE(cdb);
@@ -503,6 +505,7 @@ bool
 ContainerImpl::init(int argc, char *argv[])
 {
 
+	int iCounter = 0;
   //ACS_TRACE("maci::ContainerImpl::init");
   
   
@@ -802,6 +805,21 @@ ContainerImpl::init(int argc, char *argv[])
 	  return false;
 	}
 
+	// Initialize the alarm system factory
+	bool asfRet=true;;
+	try {
+		CosNaming::NamingContext_ptr namingContextPtr = MACIHelper::resolveNamingService(orb);
+		//while(iCounter < 1) {}
+		maci::Manager_ptr theManagerPtr = manager.in();
+		asfRet = ACSAlarmSystemInterfaceFactory::init(theManagerPtr, namingContextPtr);
+	} catch (acsErrTypeAlarmSourceFactory::InavalidManagerExImpl &ex) {
+		asfRet=false;
+	}
+	if (!asfRet) {
+		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
+                (LM_INFO, "Failed to initialize AlarmSystem factory."));
+		return false;
+	}
 
       // parse args for opts
       parseArgs(m_argc, m_argv);
@@ -1225,6 +1243,8 @@ ContainerImpl::done()
   acsQoS::done();
 
   ACSError::done();
+
+  ACSAlarmSystemInterfaceFactory::done();
 
   if(m_dllmgr)
       {
