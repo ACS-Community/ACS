@@ -1,7 +1,6 @@
 #include <iostream>
 #include "AcsAlarmPublisher.h"
 #include "ACSJMSMessageEntityS.h"
-#include "acsncORBHelper.h"
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
 #include <orbsvcs/CosNamingC.h>
