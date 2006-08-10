@@ -36,13 +36,13 @@ bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
 
 void ACSAlarmSystemInterfaceFactory::done() {
-	delete m_useACSAlarmSystem;
-	m_useACSAlarmSystem=NULL;
 	CORBA::release(m_manager);
 	m_manager=maci::Manager::_nil();
 	if (!(*m_useACSAlarmSystem)) {
 		laserSource::AlarmSystemInterfaceFactory::done();
 	}
+	delete m_useACSAlarmSystem;
+	m_useACSAlarmSystem=NULL;
 }
 
 /**
