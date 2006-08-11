@@ -47,7 +47,7 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 	// until *all* clients of it are finished (hence the reference counting suggestion), and then (and only then)
 	// releases all the dynamically allocated resources.
 
-	cout << "STEVE::AcsAlarmPublisher::~AcsAlarmPublisher(): entering...\n";
+	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): entering...\n";
 	if(NULL != getAlarmSupplier())
 	{
 		// disconnect the AlarmSupplier.
@@ -62,7 +62,7 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 	AcsAlarmPublisher::alarmSupplierMutex = NULL;
 
 	singletonInstance = NULL;
-	cout << "STEVE::AcsAlarmPublisher::~AcsAlarmPublisher(): exiting...\n";
+	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): exiting...\n";
 }
 
 /*
