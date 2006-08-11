@@ -18,6 +18,13 @@
 VXWORKS = 1
 CROSS-COMPILE = 1
 
+# host OS is linux!
+HOST_ROOT=$(ACE_ROOT)/../linux
+
+TAO_IDL := $(HOST_ROOT)/bin/tao_idl
+TAO_IDL_DEP := $(TAO_IDL)
+TAO_IDLFLAGS += -g $(HOST_ROOT)/bin/gperf
+
 exceptions = 1
 templates = implicit
 
