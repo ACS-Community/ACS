@@ -54,6 +54,7 @@ public class Server {
 	public void run(String args[]) {
 		String iorFileName = null;
 		try {
+		Properties properties = System.getProperties();
 			boolean useJacORB = false; // default is JDK ORB
 			int portNumber = Integer.parseInt(ACSPorts.getCDBPort());
 			for (int i = 0; i < args.length; i++) {
@@ -62,6 +63,13 @@ public class Server {
 						portNumber = Integer.valueOf(args[++i]).intValue();
 					}
 				}
+
+				if (args[i].equals("-OAIAddr"))
+				    {
+				    if (i < args.length - 1) {
+				    properties.put("OAIAddr", args[++i]);
+				    }
+				    }
 				if (args[i].equals("-orbacus")) {
 					System.err.println(
 						"ORBacus is no longer supported, switching to JacORB.");
@@ -80,7 +88,7 @@ public class Server {
 
 			}
 
-			Properties properties = System.getProperties();
+		
 			if (useJacORB) {
 			if (Integer.getInteger("ACS.logstdout", 4) < 4)
 			    {
@@ -94,7 +102,7 @@ public class Server {
 				// port
 				properties.put("OAPort", Integer.toString(portNumber));
 
-				// ORB implementation name
+		    		// ORB implementation name
 				properties.put("jacorb.implname", "ORB");
 
 				/*
