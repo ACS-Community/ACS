@@ -56,10 +56,6 @@
          Code="acsexmplErrorComponentImpl" 
          Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
          Container="Container"/>
-      <_ Name="ERRORCOMP_JAVA" 
-         Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
-         Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 
-         Container="frodoContainer"/>
       <_ Name="TEST_RPS_1"
          Code="acsexmplRampedPowerSupplyImpl"
          Type="IDL:alma/RampedPS/RampedPowerSupply:1.0"
