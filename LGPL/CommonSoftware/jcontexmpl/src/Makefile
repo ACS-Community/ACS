@@ -55,11 +55,15 @@ jcontexmplComp_DIRS = \
 	alma/demo/HelloDemoImpl \
 	alma/demo/LampAccessImpl \
 	alma/demo/LampCallbackImpl \
-	alma/demo/XmlComponentImpl
+	alma/demo/XmlComponentImpl \
+	alma/acsexmplErrorComponent
 
 JARFILES = jcontexmplClient
-jcontexmplClient_DIRS = alma/demo/client alma/demo/dyncomp alma/demo/EventConsumerImpl
-
+jcontexmplClient_DIRS = \
+	alma/demo/client \
+	alma/demo/dyncomp \
+	alma/demo/EventConsumerImpl \
+	alma/acsexmpl/clients
 
 DEBUG = on
 #COMPONENT_HELPERS=on
