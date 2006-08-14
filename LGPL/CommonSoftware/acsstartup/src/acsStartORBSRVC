@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.62 2006/07/21 21:37:39 dfugate Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.63 2006/08/14 07:46:31 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -387,7 +387,8 @@ fi
 
 ACS_LOG_INFO "Starting ACS Configuration Database"
 ACS_LOG_INFO "    CDB data is in:  $ACS_CDB"
-cdbjDAL -OAport $CDB_PORT -n 2>&1 | tee $CDB_OUT &
+
+cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT -n 2>&1 | tee $CDB_OUT &
 #copy tee's PID
 echo $! >> $INSTANCE_DIR/$ACS_PIDSFILE
 
