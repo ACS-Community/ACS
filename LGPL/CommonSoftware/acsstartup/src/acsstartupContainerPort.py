@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.32 2006/07/04 22:57:09 dfugate Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.33 2006/08/14 07:47:20 bjeram Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -660,6 +660,13 @@ i = i + 1
 if cl_java:
     parsed_argv.insert(i, cl_java_container)
     i = i + 1
+
+    parsed_argv.insert(i, "-OAIAddr")
+    i = i + 1
+    
+    parsed_argv.insert(i, container_host)
+    i = i + 1
+    
     
     parsed_argv.insert(i, "-OAport")
     i = i + 1
