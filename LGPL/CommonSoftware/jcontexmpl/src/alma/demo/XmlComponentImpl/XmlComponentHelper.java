@@ -24,9 +24,11 @@ package alma.demo.XmlComponentImpl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.omg.PortableServer.Servant;
+
+import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.JContExmplErrTypeTest.XmlComponentErrorEx;
-import alma.acs.component.ComponentException;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 import alma.acs.container.ContainerException;
@@ -81,7 +83,7 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#_getPOATieClass()
      */
-    protected Class _getPOATieClass()
+    protected Class<? extends Servant> _getPOATieClass()
     {
         return XmlComponentPOATie.class;
     }
@@ -89,7 +91,7 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#_getOperationsInterface()
      */
-    protected Class _getOperationsInterface()
+    protected Class<? extends ACSComponentOperations> _getOperationsInterface()
     {
         return XmlComponentOperations.class;
     }
@@ -98,7 +100,7 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#getInternalInterface()
      */
-    protected Class getInternalInterface() throws ContainerException
+    protected Class<?> getInternalInterface() throws ContainerException
     {
         return XmlComponentJ.class;
     }
@@ -107,20 +109,11 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#_getInterfaceTranslator(java.lang.Object)
      */
-    protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator)
-        throws ComponentException
-    {
+    protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws ContainerException {
         XmlComponentJ impl = null;
         XmlComponentOperations opDelegate = null;
-        try
-        {
-            impl = (XmlComponentJ) getComponentImpl();
-            opDelegate = (XmlComponentOperations) defaultInterfaceTranslator;
-        }
-        catch (Exception e)
-        {
-            throw new ComponentException("failed to cast XmlComponentJ or XmlComponentOperations", e);
-        }
+        impl = (XmlComponentJ) getComponentImpl();
+        opDelegate = (XmlComponentOperations) defaultInterfaceTranslator;
         return new IFTranslator(impl, opDelegate, getComponentLogger());
     }
 
