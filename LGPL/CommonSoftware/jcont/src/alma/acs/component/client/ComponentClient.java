@@ -67,10 +67,8 @@ public class ComponentClient
             
     /**
      * The instance of {@link AcsCorba} to be used by this class for all CORBA activities.
-     * DO NOT USE THIS FIELD FROM OUTSIDE THE PACKAGE alma.acs.component.client!!! IT WILL BECOME PACKAGE-PRIVATE IN ACS 6.0!!
-     * TODO: change visibility!!! Before ACS 5.0.4 it was protected, but should now be invisible to subclasses other than AdvancedComponentClient.
      */
-    public final AcsCorba acsCorba;
+    final AcsCorba acsCorba;
     
     final boolean ownAcsCorba;
     
@@ -108,9 +106,6 @@ public class ComponentClient
 	 * which works with different ORBs, tries out available ports, and so on.
 	 * <p>
 	 * With this constructor, also initialization and termination of remote ACS logging is left to the caller. 
-	 * <p>
-	 * TODO: make this ctor protected with ACS 6.0. The idea is that only AdvancedComponentClient makes it public.
-	 * For backward compatibility, we keep it public here in ACS 5.0.4 though.
 	 * 
 	 * @param logger  the logger to be used. If <code>null</code>, one will be created.
 	 * @param managerLoc  the corbaloc for the ACS manager, e.g. "corbaloc::myhost:xxxx/Manager"
@@ -119,7 +114,7 @@ public class ComponentClient
 	 * @throws Exception  at the slightest provocation...
 	 * @see #initRemoteLogging()
 	 */
-	public ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) 
+	protected ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) 
 		throws Exception
 	{
 		if (logger == null) {
