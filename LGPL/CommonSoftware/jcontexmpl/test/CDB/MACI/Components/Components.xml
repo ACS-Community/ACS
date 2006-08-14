@@ -12,4 +12,9 @@
     <_ Name="ErrorSys1"     Code="alma.demo.ErrorSystemComp.ErrorSystemHelper"
                             Type="IDL:alma/demo/ErrorSystem:1.0"
                             Container="frodoContainer"/>
+    <_ Name="ERRORCOMP_JAVA" 
+       Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
+       Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 
+       Container="frodoContainer" />
+                            
 </Components>
