@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.135 2006/08/14 14:07:32 hsommer Exp $" 
+# "@(#) $Id: Makefile,v 1.136 2006/08/14 16:41:33 hsommer Exp $" 
 #
 # Makefile of ........
 #
@@ -69,9 +69,6 @@ USER_LIB = 	-lACE \
 # and generation of documentation for generated code.
 #
 DEBUG=on
-
-COMPONENTS_JARFILES = acsexmplComp
-acsexmplComp_DIRS = alma
 
 
 # Program to build
