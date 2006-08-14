@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import org.omg.PortableServer.Servant;
 
 import alma.ACS.ACSComponentOperations;
-import alma.acs.component.ComponentException;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
@@ -301,10 +300,8 @@ public abstract class ComponentHelper
 	 * @param defaultInterfaceTranslator  the default translator that the custon translator may 
 	 * 										use to delegate some or all method invocations to.
 	 * @return  the custom translator, or null if the default translator should be used.
-	 * @throws ComponentException if the translator construction failed. 
 	 */
-	protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws ComponentException
-	{
+	protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws ContainerException {
 		return null;
 	}
 	
