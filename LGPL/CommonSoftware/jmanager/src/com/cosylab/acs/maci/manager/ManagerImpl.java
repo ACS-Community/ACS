@@ -8598,15 +8598,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
         try
         {
-            // set of ignored (non-ComponentInfo element names) attributes
-            HashSet ignoreSet = new HashSet();
-            ignoreSet.add("Name");
-            ignoreSet.add("Code");
-            ignoreSet.add("Type");
-            ignoreSet.add("Container");
-            ignoreSet.add("Default");
-            ignoreSet.add("Autostart");
-
             LinkedHashSet nodes = new LinkedHashSet();
             // current
             nodes.add("");
@@ -8628,10 +8619,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                 while (tokenizer.hasMoreTokens())
                 {
                     String subname = tokenizer.nextToken().toString();
-                    // ignore attributes, take only nodes
-                    if (ignoreSet.contains(subname))
-                        continue;
-
                     String componentName = prefix + subname;
 
                     // check if potentially valid ComponentInfo entry - read name
