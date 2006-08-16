@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.2 2006/05/11 13:13:19 bjeram Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.3 2006/08/16 15:25:33 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.2 2006/05/11 13:13:19 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.3 2006/08/16 15:25:33 gchiozzi Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -57,7 +57,8 @@ void
 ErrorComponent::displayMessage ()
     throw (CORBA::SystemException)
 {
-    std::cout << "Hello World" << std::endl; 
+    ACS_LOG(LM_RUNTIME_CONTEXT, "ErrorComponent::displayMessage",
+	    (LM_INFO, "Hello World"));
 }
 /* ----------------------------------------------------------------*/
 void 
@@ -81,10 +82,9 @@ ErrorComponent::badMethod(CORBA::Short depth)
 	}
     catch(...)
 	{
-	ACSErrTypeCommon::GenericErrorExImpl ex2(__FILE__, __LINE__, 
+	ACSErrTypeCommon::UnexpectedExceptionExImpl ex2(__FILE__, __LINE__, 
 						 "ErrorComponent::badMethod");
-	ex2.setErrorDesc("Got unexpected exception");
-	throw ex2.getGenericErrorEx();
+	throw ex2.getUnexpectedExceptionEx();
 	}
     
     /*
@@ -119,10 +119,9 @@ void ErrorComponent::typeException(CORBA::Short depth)
 	}
     catch(...)
 	{
-	ACSErrTypeCommon::GenericErrorExImpl ex2(__FILE__, __LINE__, 
+	ACSErrTypeCommon::UnexpectedExceptionExImpl ex2(__FILE__, __LINE__, 
 						 "ErrorComponent::badMethod");
-	ex2.setErrorDesc("Got unexpected exception");
-	throw ex2.getACSErrTypeCommonEx();
+	throw ex2.getUnexpectedExceptionEx();
 	}
     
     /*
@@ -160,7 +159,7 @@ ACSErr::Completion *ErrorComponent::completionOnStack(CORBA::Short depth)
     CompletionImpl *comp = returnCompletion(depth);
     
 
-    // if comp does not conatin error (=is error free) we return it 
+    // if comp does not contain error (=is error free) we return it 
     // otherwise we create a new completion which takes the error trace from a completion comp.
     if (comp->isErrorFree())
 	{
@@ -259,8 +258,8 @@ CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
 	    }
 	catch(ACSErrTypeCommon::GenericErrorExImpl &ex)
 	    {
-          // Here we build a completion from an exception: 
-	  //  we create a new completion where it is added the error trace from an exception.
+	    // Here we build a completion from an exception: 
+	    // we create a new completion where it is added the error trace from an exception.
 	    ACSErrTypeCommon::GenericErrorCompletion *erg = 
 		new ACSErrTypeCommon::GenericErrorCompletion(ex, 
 						     __FILE__, __LINE__, 
@@ -270,11 +269,10 @@ CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
 	    }
 	catch(...)
 	    {
-	    ACSErrTypeCommon::GenericErrorCompletion *erg = 
-		new ACSErrTypeCommon::GenericErrorCompletion( 
+	    ACSErrTypeCommon::UnexpectedExceptionCompletion *erg = 
+		new ACSErrTypeCommon::UnexpectedExceptionCompletion( 
 						     __FILE__, __LINE__, 
 						     "ErrorComponent::completionFromException");
-	    erg->setErrorDesc("Got unexpected exception");
 	    er=erg;
 	    }
 	}  
@@ -328,10 +326,9 @@ ErrorComponent::buildErrorTrace(unsigned short depth)
 	    }
 	catch(...) // This should never happen!!!!
 	    {
-	    ACSErrTypeCommon::GenericErrorExImpl ex2(__FILE__, __LINE__, 
-						     "ErrorComponent::errorTrace");
-	    ex2.setErrorDesc("Got unexpected exception");
-	    throw ex2;
+	    ACSErrTypeCommon::UnexpectedExceptionExImpl ex2(__FILE__, __LINE__, 
+							    "ErrorComponent::errorTrace");
+	    throw ex2.getUnexpectedExceptionEx();
 	    }
 	}
     /*
