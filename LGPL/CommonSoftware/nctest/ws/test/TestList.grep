@@ -11,6 +11,7 @@ ACS abeans configuration directory:
 ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
+LogConfig was initialized, but not from CDB settings
 java -classpath
 Logging to ACS log server.
 RTContext:
