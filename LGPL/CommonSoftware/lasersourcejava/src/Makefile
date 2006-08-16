@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2006/08/09 22:41:22 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/08/16 08:07:26 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -197,7 +197,7 @@ generated:
 	@echo "\n\nCode generation in progress...."
 	@for item in $(foreach name, $(CASTOR_GENERATED), "-i $(name).xsd -package $($(name)_PACKAGE)") ;\
 	do\
-	acsStartJava -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item};\
+	acsStartJava -noDirectory -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item};\
 	done
 	@echo "Code generation done!\n\n"
 
