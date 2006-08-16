@@ -9,6 +9,7 @@ AcsContainerRunner
 -- alma.demo.test.LocalNC.TestLocalNC
 -- alma.demo.test.client.ArchiveConsumerTest
 Using endorsed jar files in
+LogConfig was initialized, but not from CDB settings
 frodoContainer
 Starting Java
 FINE \[alma.demo.test.client.ArchiveConsumerTest\]
