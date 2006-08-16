@@ -63,4 +63,18 @@
 		           type="string"
 			   description="Name of the parameter"/>
         </ErrorCode>
+	<ErrorCode name="UnexpectedException" 
+                   shortDescription="An unexpected exception has been catched" 
+                   description="An unexpected exception has been catched.
+                   Code should always catch for unexpected exceptions
+		   at the end of any try block, to avoid having
+		   unexpected exceptions flowing high up in the call trace.
+                   This ACS exception definition provides a generic
+		   catcher for such situations, so that call trace
+		   context information can be added to the stack trace
+		   to identify where the unextected exception has been
+		   caught. It should be used when there are no specific additional
+		   details that can be better described by using
+		   another, more specific, ACS exception.">
+	</ErrorCode>
 </Type>
