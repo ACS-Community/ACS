@@ -5,7 +5,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java java1
-1 - acsStartJavaContainer java1 alma.acs.container.AcsContainerRunner -OAport 4002 -m corbaloc::a.b.c.d:3000/Manager
+1 - acsStartJavaContainer java1 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4002 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -py py1
@@ -19,7 +19,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java funny/name/java1
-1 - acsStartJavaContainer funny/name/java1 alma.acs.container.AcsContainerRunner -OAport 4008 -m corbaloc::a.b.c.d:3000/Manager
+1 - acsStartJavaContainer funny/name/java1 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4008 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -py funny/name/py1
@@ -33,7 +33,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name java2
-1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name py2
@@ -47,7 +47,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name java2 -m corbaloc::some_host:666/Manager
-1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 4014 -m corbaloc::some_host:666/Manager
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4014 -m corbaloc::some_host:666/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name py2 -m corbaloc::some_host:666/Manager
@@ -62,7 +62,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name java2 -m corbaloc::some_host:666/Manager -d corbaloc::some_host:123/DAL
-1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 4014 -m corbaloc::some_host:666/Manager
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4014 -m corbaloc::some_host:666/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name py2 -m corbaloc::some_host:666/Manager -d corbaloc::some_host:123/DAL
@@ -76,7 +76,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name java2 -e fakeContainerExe
-1 - fakeContainerExe java2 alma.acs.container.AcsContainerRunner -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
+1 - fakeContainerExe java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name py2 -e fakeContainerExe
@@ -90,7 +90,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name javaRH -remoteHost 127.0.0.1
-1 - ssh -f user@127.0.0.1 acsStartJavaContainer javaRH alma.acs.container.AcsContainerRunner -OAport 4002 -m corbaloc::a.b.c.d:3000/Manager
+1 - ssh -f user@127.0.0.1 acsStartJavaContainer javaRH alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4002 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name pyRH -remoteHost 127.0.0.1
@@ -104,7 +104,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name javaB -b 1
-1 - acsStartJavaContainer javaB alma.acs.container.AcsContainerRunner -OAport 3150 -m corbaloc::a.b.c.d:3100/Manager
+1 - acsStartJavaContainer javaB alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 3150 -m corbaloc::a.b.c.d:3100/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name pyB -b 2
@@ -114,13 +114,13 @@
 1 - *Testing custom Java container library*
 1 - ---------
 1 - --Params: -java -name java2 -custom_java fake.java.container.class
-1 - acsStartJavaContainer java2 fake.java.container.class -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
+1 - acsStartJavaContainer java2 fake.java.container.class -OAIAddr a.b.c.d -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - 
 1 - *Testing Java remote debuggable*
 1 - ---------
 1 - --Params: -java -name java2 -remoteDebuggable
-1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - 
 1 - *Testing debug*
@@ -135,7 +135,7 @@
 1 - Executable to be run is:acsStartJavaContainer
 1 - Remote host to run the container under is:None
 1 - Remote debuggable is:0
-1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4014 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - 
 1 - *Testing specific TCP ports*
@@ -145,7 +145,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name java3 -port 4445
-1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAport 4445 -m corbaloc::a.b.c.d:3000/Manager
+1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4445 -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - ---------
 1 - --Params: -py -name py3 -port 4446
@@ -159,7 +159,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java java3 more stuff
-1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAport 4445 -m corbaloc::a.b.c.d:3000/Manager more stuff
+1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4445 -m corbaloc::a.b.c.d:3000/Manager more stuff
 1 - 
 1 - ---------
 1 - --Params: -py py3 yet more stuff
@@ -171,7 +171,7 @@
 1 - 
 1 - ---------
 1 - --Params: -java -name java3 more stuff
-1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAport 4445 -m corbaloc::a.b.c.d:3000/Manager more stuff
+1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport 4445 -m corbaloc::a.b.c.d:3000/Manager more stuff
 1 - 
 1 - ---------
 1 - --Params: -py -name py3 yet more stuff
