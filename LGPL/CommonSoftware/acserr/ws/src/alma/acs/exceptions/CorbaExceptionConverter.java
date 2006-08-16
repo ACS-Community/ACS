@@ -100,7 +100,7 @@ public class CorbaExceptionConverter
 		{
 			// default ex represents ErrorTrace that comes from other languages than Java,
             // or when reconstruction of the same Java exception failed for whatever reason. 
-			thr = new DefaultAcsJException(message, et.errorType, et.errorCode);
+			thr = new DefaultAcsJException(message, et.errorType, et.errorCode, et.shortDescription);
 		}
 		
 		resurrectThrowable(thr, et);
@@ -137,9 +137,7 @@ public class CorbaExceptionConverter
 			acsJEx.m_severity = et.severity; 
 			acsJEx.m_threadName = et.thread;
 			acsJEx.m_timeMilli = UTCUtility.utcOmgToJava(et.timeStamp);
-			acsJEx.m_properties = ErrorTraceManipulator.getProperties(et);
-			
-			acsJEx.setShortDesc(et.shortDescription);
+			acsJEx.m_properties = ErrorTraceManipulator.getProperties(et);			
 		}
 
 		if (et.previousError != null && et.previousError.length > 0 && 
