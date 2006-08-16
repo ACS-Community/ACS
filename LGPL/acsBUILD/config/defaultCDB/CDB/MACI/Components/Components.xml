@@ -133,4 +133,16 @@
                              Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
                              Container="frodoContainer"
                              Default="true"/>
+      <_ Name="ERRORCOMP_CPP" 	    
+         Code="acsexmplErrorComponentImpl" 
+         Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
+         Container="bilboContainer"/>
+      <_ Name="ERRORCOMP_JAVA" 
+         Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
+         Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 
+         Container="frodoContainer" />
+      <_ Name="ERRORCOMP_PY" 	    
+         Code="acsexmplErrorComponentImpl.ErrorComponent" 
+         Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
+         Container="aragornContainer"/>
 </Components>
