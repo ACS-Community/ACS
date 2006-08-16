@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.21 2006/08/08 11:14:04 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.22 2006/08/16 14:39:16 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@ NAMESPACE_USE(loggingXMLParser);
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.21 2006/08/08 11:14:04 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.22 2006/08/16 14:39:16 bjeram Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -105,7 +105,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	{
 	if (log_record.priority() <= ACE::log2(LM_MAX))
 	    {
-	    entryType = m_LogEntryTypeName[log_record.priority()];
+	    entryType = m_LogEntryTypeName[log_record.priority()+1];
 	    }
 	else
 	    {
@@ -331,7 +331,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // priority
     if (priority != log_record.priority())
 	{
-	ACE_OS::sprintf(line, " Priority=\"%lu\"", priority);
+	ACE_OS::sprintf(line, " Priority=\"%lu\"", priority+1); //align to ACS priorty
 	xml += line;
 	}
     
