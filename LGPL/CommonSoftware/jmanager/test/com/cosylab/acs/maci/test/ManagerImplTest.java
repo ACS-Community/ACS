@@ -273,6 +273,31 @@ public class ManagerImplTest extends TestCase
 		
 	}
 
+	public void testAllComponentNames(){
+		TestContainer container = new TestContainer("Container");
+		Map supportedComponents = new HashMap();
+		TestComponent mount1COB = new TestComponent("Default");
+		supportedComponents.put("Default", mount1COB);
+		container.setSupportedComponents(supportedComponents);
+		
+		ClientInfo containerInfo = manager.login(container);
+
+		try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
+
+		// test activated Components
+		TestAdministrator client = new TestAdministrator(administratorName);
+		ClientInfo info = manager.login(client);
+		ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", false);
+		assertEquals(10, infos.length);
+		
+		boolean thereisDefault = false;
+		for (int i=0 ; i< infos.length; i++)
+			if(infos[i].getName().equals("Default")){
+				thereisDefault = true;
+				break;
+		}
+		if(!thereisDefault) fail();
+	}
 	
 	public void testAbeansFrameworkStartupShutdown() throws Exception
 	{

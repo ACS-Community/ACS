@@ -20,6 +20,9 @@
  
   <_ Name="MOUNT5"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container2"
   			Default="false"		Autostart="false" />
+  
+  <_ Name="Default"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false" />
  
   <_ Name="PBEND_B_01"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
   			Default="false"		Autostart="false" />
