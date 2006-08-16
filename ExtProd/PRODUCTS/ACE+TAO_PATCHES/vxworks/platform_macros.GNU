@@ -65,7 +65,7 @@ ifeq ($(HOST_OS),Linux)
         TAO_IDLFLAGS+= -g $(ACE_ROOT)/../linux/apps/gperf/src/gperf
 endif
 
-TAO_ORBSVCS= Naming Property Log Notify IFR_Service Notify
+#TAO_ORBSVCS= Naming Property Log Notify IFR_Service Notify
 
 GCC_VERSION = gcc-2.96
 
