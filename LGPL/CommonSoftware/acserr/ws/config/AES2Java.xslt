@@ -89,6 +89,9 @@ public abstract class </xsl:text>
 		super();
 	}
 
+        /**
+          * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
+          */
 	public </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(String message)
@@ -96,6 +99,9 @@ public abstract class </xsl:text>
 		super(message);
 	}
 
+        /**
+         * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
+         */
 	public </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(String message, Throwable cause)
@@ -107,7 +113,7 @@ public abstract class </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(Throwable cause)
 	{
-		super(cause);
+		super(null, cause);
 	}
 
 	public </xsl:text>
@@ -117,6 +123,9 @@ public abstract class </xsl:text>
 		super(etCause);
 	}
 
+        /**
+         * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
+         */
 	public </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(String message, ErrorTrace etCause)
@@ -165,6 +174,7 @@ public abstract class </xsl:text>
 		<xsl:text>Ex(et);
 		return acsEx;
 	}
+	
 }  </xsl:text>
 
 
@@ -269,7 +279,10 @@ public class </xsl:text>
 	{
 		super();
 	}
-
+	
+        /**
+         * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
+         */
 	public </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(String message)
@@ -277,6 +290,9 @@ public class </xsl:text>
 		super(message);
 	}
 
+        /**
+         * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
+         */
 	public </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(String message, Throwable cause)
@@ -288,7 +304,7 @@ public class </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(Throwable cause)
 	{
-		super(cause);
+		super(null, cause);
 	}
 
 	public </xsl:text>
@@ -298,6 +314,9 @@ public class </xsl:text>
 		super(etCause);
 	}
 
+        /**
+         * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
+         */
 	public </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text>(String message, ErrorTrace etCause)
@@ -307,9 +326,19 @@ public class </xsl:text>
 
 
 	/////////////////////////////////////////////////////////////
-	// Type specific methods
+	// Code specific methods
 	/////////////////////////////////////////////////////////////
-
+  
+       /**
+        * Returns the short description of the error
+        */
+	public String getShortDescription() 
+	{
+	   return "</xsl:text>
+	   <xsl:value-of select="@shortDescription"/>
+	   <xsl:text>";
+	}
+    
 	/**
 	 * Returns the error code, which is fixed to &lt;code&gt;</xsl:text>
 	 <xsl:number value="$NumCodes+position()-1"/>
@@ -580,6 +609,15 @@ public class </xsl:text>
 		 this(AcsJCompletion.fromCorbaCompletion(corbaComp));
 	}
 	
+       /**
+        * Returns the short description of the error
+        */
+	public String getShortDescription() 
+	{
+	   return "</xsl:text>
+	   <xsl:value-of select="@shortDescription"/>
+	   <xsl:text>";
+	}	
 }
 
 </xsl:text>

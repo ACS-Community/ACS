@@ -199,6 +199,9 @@ public abstract class AcsJException extends Exception
 	}
 
 
+        public String getShortDescription() {
+	   return "";
+         }
 
 	
 	/**
