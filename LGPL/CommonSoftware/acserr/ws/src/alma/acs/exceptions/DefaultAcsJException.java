@@ -47,21 +47,21 @@ import alma.ACSErr.ErrorTrace;
  */
 public class DefaultAcsJException extends AcsJException
 {
-	int errType = 0;
-	int errCode = 0;
+	private int errType;
+	private int errCode;
+	private String shortDescription;
 	
-	/**
-	 * @param message
-	 */
-	public DefaultAcsJException(String message)
-	{
-		super(message);
-	}
 
-	public DefaultAcsJException(String message, int errType, int errCode) {
+	public DefaultAcsJException(String message, int errType, int errCode, String shortDescription) {
 		super(message);
 		this.errType = errType;
 		this.errCode = errCode;
+		if (shortDescription != null && shortDescription.trim().length() > 0) {
+			this.shortDescription = shortDescription.trim();
+		}
+		else {
+			this.shortDescription = "";
+		}
 	}
 
 	
@@ -85,7 +85,7 @@ public class DefaultAcsJException extends AcsJException
 		return getACSException();
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.exceptions.AcsJException#getErrorType()
 	 */
 	protected int getErrorType()
@@ -93,12 +93,19 @@ public class DefaultAcsJException extends AcsJException
 		return errType;
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.exceptions.AcsJException#getErrorCode()
 	 */
 	protected int getErrorCode()
 	{
 		return errCode;
+	}
+
+	/**
+	 * @see alma.acs.exceptions.AcsJException#getShortDescription()
+	 */
+	public String getShortDescription() {
+		return shortDescription;
 	}
 
 }
