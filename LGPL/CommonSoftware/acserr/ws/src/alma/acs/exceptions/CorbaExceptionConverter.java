@@ -52,8 +52,7 @@ public class CorbaExceptionConverter
 	static Throwable recursiveGetThrowable(ErrorTrace et)
 	{
 		// check if underlying Java exception class is stored as a property
-		String classname = ErrorTraceManipulator.getProperty(
-			et, PROPERTY_JAVAEXCEPTION_CLASS);
+		String classname = ErrorTraceManipulator.getProperty(et, PROPERTY_JAVAEXCEPTION_CLASS);
 				
 		String message = ErrorTraceManipulator.getProperty(et, PROPERTY_JAVAEXCEPTION_MESSAGE);    
         if (message == null) {
@@ -75,23 +74,20 @@ public class CorbaExceptionConverter
 			try
 			{
 				Class exClass = Class.forName(classname);
-				if (Throwable.class.isAssignableFrom(exClass))
-				{
-					if (!AcsJException.class.isAssignableFrom(exClass))
-					{
-						// non-ACS exceptions we don't reconstruct directly
-						// because we'd loose the additional information
-						// like line number etc. that ErrorTrace has.
-						message += " (original type " + classname + ")";
-						exClass = DefaultAcsJException.class;						
-					}
+				if (AcsJException.class.isAssignableFrom(exClass)) {
 					Constructor msgCtor = exClass.getConstructor(new Class[] {String.class});
 					thr = (Throwable) msgCtor.newInstance(new Object[]{message});
+				}
+				else {
+					// non-ACS Java exceptions we don't reconstruct directly
+					// because we'd loose the additional information
+					// like line number etc. that ErrorTrace has.
+					thr = new DefaultAcsJException(message, 0, 0, classname);
 				}
 			}
 			catch (Exception e)
 			{
-				message = "failed to reconstruct Java exception. Original msg was " + message;
+				message = "failed to reconstruct Java exception '" + classname + "'. Original msg was '" + message + "'.";
 				// just leave thr == null
 			}
 		}
