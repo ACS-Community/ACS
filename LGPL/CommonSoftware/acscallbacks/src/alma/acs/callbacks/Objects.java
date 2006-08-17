@@ -24,11 +24,12 @@ public class Objects {
 
 	/**
 	 * Wraps an arbitrary Throwable in an AcsJException.
+	 * TODO HSO 2006-08-17: why do we not use a generated subclass of AcsJException, e.g. one from module acserrTypes ?
 	 */
 	static public class MyAcsJException extends AcsJException {
 
 		public MyAcsJException(Throwable cause) {
-			super(cause);
+			super(null, cause);
 		}
 
 		protected int getErrorType () {
