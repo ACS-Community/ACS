@@ -685,18 +685,14 @@ public class </xsl:text>
 	   <xsl:value-of select="@shortDescription"/>
 	   <xsl:text>";
 	}	
-<!--
+
 	/////////////////////////////////////////////////////////////
 	// Getter/Setter for members
 	/////////////////////////////////////////////////////////////	
 </xsl:text>
-             *******************************************************                                    members 
-!!!!!!!!!!! TO be uncommented when ACSJcompletion will contain set/getProperty methods
+<!--             *******************************************************                                    members -->
 <xsl:apply-templates/>		
-
-
 <xsl:text>
--->
 }
 </xsl:text>
 </redirect:write>
@@ -793,6 +789,14 @@ public class </xsl:text>
 	   <xsl:value-of select="@shortDescription"/>
 	   <xsl:text>";
 	}
+	
+	/////////////////////////////////////////////////////////////
+	// Getter/Setter for members
+	/////////////////////////////////////////////////////////////	
+</xsl:text>
+<!--             *******************************************************                                    members -->
+<xsl:apply-templates/>		
+<xsl:text>
 }
 </xsl:text>
 
