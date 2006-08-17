@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.18 2006/08/03 08:29:04 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.19 2006/08/17 11:43:30 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -138,11 +138,21 @@ echo ""
 #cd $ACE_ROOT/TAO/TAO_IDL ; make INSLIB=../../ace
 #cd $ACE_ROOT/TAO/orbsvcs/orbsvcs ; make INSLIB=../../ace
 # ... or not
-
-echo "building whole TAO"
-cd $ACE_ROOT/TAO ; make
+echo "building tao"
+echo "building TAO_IDL"
+cd $ACE_ROOT/TAO/TAO_IDL ; make 
 echo "done"
 echo ""
+
+cd $ACE_ROOT/TAO/tao ; make 
+echo "done"
+echo ""
+
+echo "building orbsvcs"
+cd $ACE_ROOT/TAO/orbsvcs; make 
+echo "done"
+echo ""
+
 
 #
 # Here we apply another dirty patch
