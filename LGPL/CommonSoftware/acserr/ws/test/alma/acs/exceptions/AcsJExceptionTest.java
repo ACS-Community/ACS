@@ -151,7 +151,8 @@ public class AcsJExceptionTest extends TestCase
 			Throwable cause1 = e.getCause();
 			assertNotNull(cause1);
 			assertTrue(cause1 instanceof DefaultAcsJException);
-			assertEquals("mean NPE (original type java.lang.NullPointerException)", cause1.getMessage());
+			assertEquals("mean NPE", cause1.getMessage());
+			assertEquals("java.lang.NullPointerException", ((AcsJException)cause1).getShortDescription());
 			DefaultAcsJException acsJCause1 = (DefaultAcsJException) cause1;
 			assertEquals(1, acsJCause1.getTraceDepth());
 		}		
@@ -194,7 +195,8 @@ public class AcsJExceptionTest extends TestCase
         Throwable cause2 = cause1.getCause();
         assertNotNull(cause2);
         assertTrue(cause2 instanceof DefaultAcsJException);
-        assertEquals("mean NPE (original type java.lang.NullPointerException)", cause2.getMessage());
+        assertEquals("mean NPE", cause2.getMessage());
+        assertEquals("java.lang.NullPointerException", ((DefaultAcsJException)cause2).getShortDescription());
         DefaultAcsJException acsJCause2 = (DefaultAcsJException) cause2;
         assertEquals("ClientServerExceptionExample.java", acsJCause2.getFile());
         assertEquals(timeCause1 - 1, acsJCause2.getTimestampMillis());
@@ -202,7 +204,7 @@ public class AcsJExceptionTest extends TestCase
         assertEquals(hostName, acsJCause2.getHost());
         assertEquals("NA", acsJCause2.getThreadName()); // NPE did not carry thread name info
         assertTrue(acsJCause2.getLine() > 0);
-        assertNotNull(acsJCause2.getMethod());
+        assertNotNull(acsJCause2.getMethod()); 
         assertTrue(acsJCause2.getMethod().trim().length() > 0);
         assertEquals(Severity.Error, acsJCause2.getSeverity());
     }
@@ -303,7 +305,7 @@ public class AcsJExceptionTest extends TestCase
             
             // The top-level exception is logged first, with stack level = 2
             LogRecord lr2 = logRecords[1];
-            assertEquals(" (type=" + ACSErrTypeTest.value + ", code=" + ACSErrTest0.value + ") :: remote call failed", lr2.getMessage());
+            assertEquals("Test error 0 (type=" + ACSErrTypeTest.value + ", code=" + ACSErrTest0.value + ") :: remote call failed", lr2.getMessage());
             assertTrue(lr2.getMillis() >= timeBefore);
             assertTrue(lr2.getMillis() <= timeAfter);
             Map logProperties = (Map) lr2.getParameters()[0];
@@ -320,7 +322,7 @@ public class AcsJExceptionTest extends TestCase
             // The causing exception is logged next, with stack level = 1
             LogRecord lr1 = logRecords[2];
             String msg1 = lr1.getMessage();
-            assertEquals(" (type=" + ACSErrTypeTest.value + ", code=" + ACSErrTest0.value + ") :: low level ex", msg1);
+            assertEquals("Test error 0 (type=" + ACSErrTypeTest.value + ", code=" + ACSErrTest0.value + ") :: low level ex", msg1);
             assertTrue(lr1.getMillis() >= timeBefore);
             assertTrue(lr1.getMillis() <= timeAfter);
             logProperties = (Map) lr1.getParameters()[0];
@@ -337,7 +339,7 @@ public class AcsJExceptionTest extends TestCase
             // last comes the wrapped NullPointerException, with stack level = 0
             LogRecord lr0 = logRecords[3];
             String msg0 = lr0.getMessage();
-            assertEquals(" (type=0, code=0) :: mean NPE (original type java.lang.NullPointerException)", msg0);
+            assertEquals("java.lang.NullPointerException (type=0, code=0) :: mean NPE", msg0);
             logProperties = (Map) lr0.getParameters()[0];
             assertTrue(logProperties.containsKey("Line"));
             assertTrue(logProperties.containsKey("ThreadName"));
