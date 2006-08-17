@@ -21,6 +21,8 @@
  */
 package alma.acs.exceptions;
 
+import java.util.Properties;
+
 import alma.ACSErr.Completion;
 import alma.ACSErr.ErrorTrace;
 import alma.acs.util.UTCUtility;
@@ -57,6 +59,9 @@ public class AcsJCompletion
 	
 	/** optional exception; if present, type and code of completion and exception must be the same */
 	private AcsJException m_jex;
+
+	// additional name-value pairs
+	protected Properties m_properties;
 
 	
 	protected AcsJCompletion()
@@ -237,6 +242,22 @@ public class AcsJCompletion
 		
 		return jcompletion;
 	}
+
 	
-	
+	/**
+	 * Allows extra information to be attached to the completion.
+	 * @return     the previous value of the specified key in this property
+	 *             list, or <code>null</code> if it did not have one.
+	 */
+	public Object setProperty(String key, String value) {
+		return m_properties.setProperty(key, value);
+	}
+
+	/**
+	 * @see #setProperty
+	 */
+	public String getProperty(String key) {
+		return m_properties.getProperty(key);
+	}
+
 }
