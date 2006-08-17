@@ -789,14 +789,16 @@ public class </xsl:text>
 	   <xsl:value-of select="@shortDescription"/>
 	   <xsl:text>";
 	}
-	
+<!--
+to be uncommented latter if we found that name value pairs should be used in non error completion as well.	
 	/////////////////////////////////////////////////////////////
 	// Getter/Setter for members
 	/////////////////////////////////////////////////////////////	
 </xsl:text>
-<!--             *******************************************************                                    members -->
+             *******************************************************                                    members 
 <xsl:apply-templates/>		
 <xsl:text>
+-->
 }
 </xsl:text>
 
