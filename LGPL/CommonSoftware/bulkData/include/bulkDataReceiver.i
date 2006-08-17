@@ -378,7 +378,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteFepsB()
 	    {
 
 	    CORBA::Long dim = fep->_refcount_value /*_ref_count*/();
-	    for(CORBA::Long n = 0; n < dim; n++)
+	    for(CORBA::Long n = 1; n < dim; n++)
 		{
 		TAO_AV_Core::deactivate_servant(fep);
 		}
@@ -401,7 +401,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteSepB()
 	{
 
 	CORBA::Long dim = sepRefCount_p->_refcount_value/*_ref_count*/();
-	for(CORBA::Long n = 0; n < dim; n++)
+	for(CORBA::Long n = 1; n < dim; n++)
 	    {
 	    TAO_AV_Core::deactivate_servant(sepRefCount_p);
 	    }
@@ -424,6 +424,31 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteAcceptor()
 	TAO_AV_CORE::instance()->remove_acceptor(flowname.c_str());
 	}
 }
+
+
+template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeSocket()
+{
+    ACS_TRACE("BulkDataReceiver<>::closeSocket");
+
+    for(CORBA::ULong i = 0; i < fepsData.length(); i++)
+	{
+	ACE_CString flowName = TAO_AV_Core::get_flowname(fepsData[i]);
+	
+	BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
+	
+	fepMap_m.find(flowName, fep);
+	
+	if(fep != 0)
+	    {
+	    TReceiverCallback *cb_p = fep->getBulkDataCallback();
+	    
+	    if (cb_p != 0)
+		cb_p->closePeer();
+	    }
+	
+	}
+}   
 
 
 template<class TReceiverCallback>

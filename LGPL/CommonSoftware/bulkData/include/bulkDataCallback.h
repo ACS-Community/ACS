@@ -68,6 +68,8 @@ class BulkDataCallback : public TAO_AV_Callback
 
     virtual void setFlowTimeout(CORBA::ULong timeout);
 
+    virtual void closePeer();
+
     /********************* methods to be implemented by the user *****************/
 
     virtual int cbStart(ACE_Message_Block * userParam_p = 0) = 0;

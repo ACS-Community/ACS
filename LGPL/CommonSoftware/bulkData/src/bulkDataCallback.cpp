@@ -482,3 +482,15 @@ void BulkDataCallback::checkFlowTimeout()
 	throw err;
 	}
 }
+
+
+void BulkDataCallback::closePeer()
+{
+    ACE_Svc_Handler<ACE_SOCK_STREAM,ACE_NULL_SYNCH> *svch = 
+	dynamic_cast<ACE_Svc_Handler<ACE_SOCK_STREAM,ACE_NULL_SYNCH> *>(handler_);   
+
+    if (svch != 0)
+	{
+	svch->peer().close();
+	}
+}

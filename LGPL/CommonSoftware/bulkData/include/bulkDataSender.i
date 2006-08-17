@@ -880,6 +880,16 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteStreamCtrl()
 	{
 	AVStreams::flowSpec nilSpec;
 	streamctrl_p->destroy(nilSpec);
+	CORBA::Long dim = streamctrl_p->_refcount_value();
+
+	for(CORBA::Long n = 1; n < dim; n++)
+	    {
+	    TAO_AV_Core::deactivate_servant(streamctrl_p);
+	    }
+
+	if(streamctrl_p != 0)
+	    streamctrl_p->_remove_ref();
+
 	streamctrl_p = 0;
 	}
 }
@@ -906,7 +916,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteFepsA()
 	    {
 	    CORBA::Long dim = fep->_refcount_value/*_ref_count*/();
 	 
-	    for(CORBA::Long n = 0; n < dim; n++)
+	    for(CORBA::Long n = 1; n < dim; n++)
 		{
 		TAO_AV_Core::deactivate_servant(fep);
 		}
@@ -930,7 +940,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteSepA()
     if (sepRefCount_p != 0)
 	{
 	CORBA::Long dim = sepRefCount_p->_refcount_value/*_ref_count*/();
-	for(CORBA::Long n = 0; n < dim; n++)
+	for(CORBA::Long n = 1; n < dim; n++)
 	    {
 	    TAO_AV_Core::deactivate_servant(sepRefCount_p);
 	    }

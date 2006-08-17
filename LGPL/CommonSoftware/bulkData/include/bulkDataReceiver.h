@@ -236,6 +236,8 @@ namespace AcsBulkdata
 
 	void deleteAcceptor();
 
+	void closeSocket();
+
 	/** Create the Flow Specifications
 	 * @param flowname
 	 * @param fep_protocol
