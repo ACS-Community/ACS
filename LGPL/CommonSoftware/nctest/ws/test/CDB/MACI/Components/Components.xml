@@ -12,6 +12,11 @@
       <_ Name="SUPPLIERCOMP1" Code="alma.demo.EventSupplierImpl.EventSupplierHelper" Type="IDL:alma/demo/SupplierComp:1.0" Container="hugoContainer"/>
       <_ Name="CONSUMERCOMP1" Code="alma.demo.EventConsumerImpl.EventConsumerHelper" Type="IDL:alma/demo/ConsumerComp:1.0" Container="hugoContainer"/>
 
+      <_ Name="SUPPLIERSPR2005067" 
+         Code="alma.nctest.EventSupplierSpr2005067Impl.EventSupplierSpr2005067Helper" 
+	 Type="IDL:alma/demo/SupplierComp:1.0" 
+	 Container="hugoContainer"/>
+
       <!--Python components should go here...-->
 
 </Components>

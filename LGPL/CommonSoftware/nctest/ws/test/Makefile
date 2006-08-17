@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.9 2006/02/23 23:49:23 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.10 2006/08/17 16:19:05 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -113,7 +113,7 @@ PANELS_L =
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES_L = nctestSpr2005067
 IDL_TAO_FLAGS =
 USER_IDL =
 #
@@ -126,7 +126,7 @@ jjj_EXTRAS=
 nctest_DIRS= alma
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on 
 #
 # ACS XmlIdl generation on/off
 #
