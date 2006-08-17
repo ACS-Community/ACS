@@ -1,6 +1,67 @@
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:redirect="http://xml.apache.org/xalan/redirect" extension-element-prefixes="redirect">
 	<xsl:output method="text" version="1.0" encoding="ASCII"/>
+	
+<!--                                                                BEGIN: template for members          -->
+<xsl:template match="Member">
+		 <xsl:variable name="MemberType">
+		 <xsl:choose>
+					<xsl:when test='@type="string"'>
+					<xsl:text>String</xsl:text>
+					</xsl:when>
+					<xsl:when test='@type="long"'>
+					<xsl:text>int</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+					<xsl:value-of select="@type"/>
+					</xsl:otherwise>
+		  </xsl:choose>
+		</xsl:variable>
+<!--                                                                           set member -->
+<xsl:text>
+        public void set</xsl:text>
+	           <xsl:value-of select="@name"/>
+				<xsl:text>(</xsl:text>
+				<xsl:value-of select="$MemberType"/>
+				<xsl:text> value)
+	{ 
+		setProperty("</xsl:text>
+				 <xsl:value-of select="@name"/>
+				<xsl:text>", ""+value);
+	}            				
+	</xsl:text>
+	<!--                                                            get member -->
+	<xsl:text>
+	public </xsl:text>
+	<xsl:value-of select="$MemberType"/>
+					 <xsl:text> get</xsl:text>
+	  	           <xsl:value-of select="@name"/>
+	  	           <xsl:text>()</xsl:text>
+        			<xsl:choose>
+					<xsl:when test='@type="long"'>
+					<xsl:text>
+	{ 
+		return Integer.parseInt(</xsl:text>
+					</xsl:when>
+					<xsl:when test='@type="double"'>
+					<xsl:text> throws NumberFormatException 
+	{ 
+		return Double.parseDouble(</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+					<xsl:text>
+	{ 
+		return (</xsl:text>
+					</xsl:otherwise>
+		            </xsl:choose> 
+		            <xsl:text>getProperty("</xsl:text>
+        			<xsl:value-of select="@name"/>
+    			    <xsl:text>")); 
+	}
+  </xsl:text> 
+</xsl:template>
+<!--                                                                END: template for members          -->	
+	
 <xsl:template match="/Type">
 <xsl:variable name="NumCodes">
 			<xsl:number value="count(//Code)"/>
@@ -133,7 +194,6 @@ public abstract class </xsl:text>
 		super(message, etCause);
 	}
 
-
 	/////////////////////////////////////////////////////////////
 	// Mapping of Error Type 
 	/////////////////////////////////////////////////////////////
@@ -174,7 +234,7 @@ public abstract class </xsl:text>
 		<xsl:text>Ex(et);
 		return acsEx;
 	}
-	
+
 }  </xsl:text>
 
 
@@ -469,6 +529,13 @@ public class </xsl:text>
 		return jEx;
 	}
 	
+	/////////////////////////////////////////////////////////////
+	// Getter/Setter for members
+	/////////////////////////////////////////////////////////////	
+</xsl:text>
+<!--             *******************************************************                                    members -->
+<xsl:apply-templates/>		
+<xsl:text>
 } 
 </xsl:text>
 
@@ -618,8 +685,19 @@ public class </xsl:text>
 	   <xsl:value-of select="@shortDescription"/>
 	   <xsl:text>";
 	}	
-}
+<!--
+	/////////////////////////////////////////////////////////////
+	// Getter/Setter for members
+	/////////////////////////////////////////////////////////////	
+</xsl:text>
+             *******************************************************                                    members 
+!!!!!!!!!!! TO be uncommented when ACSJcompletion will contain set/getProperty methods
+<xsl:apply-templates/>		
 
+
+<xsl:text>
+-->
+}
 </xsl:text>
 </redirect:write>
 <!-- *********************************************************Generated Completion code for Codes  END-->
