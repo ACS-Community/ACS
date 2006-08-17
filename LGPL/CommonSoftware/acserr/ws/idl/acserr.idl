@@ -87,6 +87,7 @@ module ACSErr {
 	 * process name or PID
 	 */
 	string process;
+
 	/**
 	 * thread name or its ID
 	 */
@@ -96,6 +97,11 @@ module ACSErr {
 	 * time stamp in 100 ns
 	 */
 	unsigned long long timeStamp;
+
+	/**
+	 * source object
+	 */
+	string sourceObject;
 
 	/**
 	 * error type (group)
@@ -112,6 +118,9 @@ module ACSErr {
 	 */
 	ACSErr::Severity severity;    
 
+	/**
+	 * short description of the error
+	 */
 	string shortDescription;
     
 	/**

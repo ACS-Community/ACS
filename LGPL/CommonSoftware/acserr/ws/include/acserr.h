@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.71 2006/08/08 11:15:22 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.72 2006/08/17 09:51:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 * almamgr 2004-03-02 added isErrorFree, log and getErrorTraceHelper to CompletionImpl
 * bjeram 2003-07-07 added std:: prefix (gcc 3.2.x)
 * bjeram 2003-03-06 added strstream #include
-* bjeram 2003-03-06 added ACSErr prefix to types defined in the idl files
+1* bjeram 2003-03-06 added ACSErr prefix to types defined in the idl files
 * bjeram 2002-06-05 added setTimeStamp
 * bjeram 2002-06-05 added ACSError (const char* file, int line, ACSError &err, ACSErrType et, ACSErr::ErrorCode ec, const char *routine, ACSErr::Severity severity);
 * bjeram 2002-06-04 moved getDescription(type, code) to public and made it static
@@ -261,6 +261,11 @@ class ErrorTraceHelper
   char* getThread(){ return CORBA::string_dup (m_current->thread); }
 
   /**
+   * Returns source object information of the error.
+   * @return pointer to the char points to the copy of the source object (caller has to delete it).
+   */
+  char* getSourceObject(){ return CORBA::string_dup (m_current->sourceObject); }
+  /**
    * Returns time stamp of the error in 100th of nanoseconds.
    * @return CORBA::ULongLong time stamp
    */
@@ -294,6 +299,13 @@ class ErrorTraceHelper
    * @parm time CORBA::ULongLong time stamp
    */
  void setTimeStamp (CORBA::ULongLong time){ m_current->timeStamp = time; }
+
+ /**
+  * Sets source object
+  * @param source object
+  *
+  */
+  void setSourceObject(const char* so){ m_current->sourceObject = CORBA::string_dup (so); }
 
  /**
   * Sets file name

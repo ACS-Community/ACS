@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.78 2006/08/08 11:15:17 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.79 2006/08/17 09:51:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.78 2006/08/08 11:15:17 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.79 2006/08/17 09:51:32 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -228,15 +228,31 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level, char* stackId)
   //set the logging proxy flags
   LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT);
   ACS_CHECK_LOGGER;
-  //just delegate
-  LOG_RECORD(Logging::BaseLog::LM_ERROR, 
-	     ostr.str(), 
-	     c->file.in(), 
-	     c->lineNum, 
-	     c->routine.in(), 
-	     c->timeStamp,
-	     getLogger()->getName());
-}
+ 
+
+  if (strlen(c->sourceObject.in())>0)
+      {
+      //just delegate
+      LOG_RECORD(Logging::BaseLog::LM_ERROR, 
+		 ostr.str(), 
+		 c->file.in(), 
+		 c->lineNum, 
+		 c->routine.in(), 
+		 c->timeStamp,
+		 c->sourceObject.in());
+      }
+  else
+      {
+      //just delegate
+      LOG_RECORD(Logging::BaseLog::LM_ERROR, 
+		 ostr.str(), 
+		 c->file.in(), 
+		 c->lineNum, 
+		 c->routine.in(), 
+		 c->timeStamp,
+		 getLogger()->getName());
+      }//if-else
+}//log
 
 void ErrorTraceHelper::log()
 {  
