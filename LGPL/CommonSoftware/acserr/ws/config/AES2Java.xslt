@@ -783,6 +783,16 @@ public class </xsl:text>
  		 <xsl:value-of select="@name"/> 
 		<xsl:text>.value);
 	}
+	
+	/**
+        * Returns the short description of the error
+        */
+	public String getShortDescription() 
+	{
+	   return "</xsl:text>
+	   <xsl:value-of select="@shortDescription"/>
+	   <xsl:text>";
+	}
 }
 </xsl:text>
 
