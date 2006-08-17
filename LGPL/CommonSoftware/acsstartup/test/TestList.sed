@@ -27,3 +27,4 @@ s/ACS-[0-9].[0-9]/ACS-x.y/g
 s/iiop:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:/iiop:\/\/a.b.c.d:/g
 s/giop:tcp:[0-9]*.[0-9]*.[0-9]*.[0-9]*:/giop:tcp:a.b.c.d:/g
 s/ssh -f [a-z,A-Z,0-9]*@/ssh -f user@/g
+s/-OAIAddr [0-9]*.[0-9]*.[0-9]*.[0-9]*/-OAIAddr a.b.c.d/g
