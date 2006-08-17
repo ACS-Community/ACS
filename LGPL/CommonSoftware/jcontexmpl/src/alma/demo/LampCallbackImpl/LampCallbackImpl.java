@@ -30,13 +30,13 @@ import alma.ACSErr.CompletionHolder;
 import alma.ACS.Monitordouble;
 import alma.ACS.RWdouble;
 import alma.ACSErr.ACSException;
+import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acsexmplLamp.Lamp;
 import alma.acsexmplLamp.LampHelper;
 import alma.demo.LampCallbackOperations;
 import alma.demo.LampUnavailable;
-import alma.demo.LampAccessImpl.LampAccessAcsJEx;
 
 /**
  * @author rgeorgie
@@ -210,7 +210,7 @@ public class LampCallbackImpl extends ComponentImplBase implements LampCallbackO
 		catch (Exception ex)
 		{
 			// wrap that npe with an acs ex and throw it on
-			AcsJException acsEx = new LampAccessAcsJEx("low level ex", ex);
+			AcsJException acsEx = new AcsJJavaLangEx("low level ex", ex);
 			throw acsEx;
 		}
 	}
