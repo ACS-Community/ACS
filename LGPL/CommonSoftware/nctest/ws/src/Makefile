@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2006/08/17 16:18:57 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/08/18 06:50:00 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -113,7 +113,7 @@ PANELS_L =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = nctestSpr2005067
+IDL_FILES =
 IDL_TAO_FLAGS =
 USER_IDL =
 #
