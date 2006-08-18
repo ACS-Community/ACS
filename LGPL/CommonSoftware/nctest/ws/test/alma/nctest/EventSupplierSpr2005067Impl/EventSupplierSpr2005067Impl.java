@@ -34,6 +34,10 @@ import alma.acs.container.ContainerServices;
 import alma.acs.nc.SimpleSupplier;
 import alma.demo.SupplierCompOperations;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
+import alma.acs.exceptions.AcsJException;
+
 import alma.SPR2005067.CHANNELNAME_SPR2005067;
 import alma.SPR2005067.ControlSystemChangeOfStateEvent;
 import alma.SPR2005067.ControlSystemChangeOfStateEvent2;
@@ -52,54 +56,117 @@ public class EventSupplierSpr2005067Impl
     */
    public void sendEvents(short param)
    {
-      System.out.println("Now sending ControlSystemChangeOfStateEvent events...");
-      try
-      {
-         //first send out some number of events.
-      /*
-         ControlSystemChangeOfStateEvent t_block = 
-	     new ControlSystemChangeOfStateEvent(alma.SPR2005067.SystemState.INACCESSIBLE,
-						 alma.SPR2005067.SystemSubstate.STARTING_UP_PASS1,
-						 alma.SPR2005067.SystemState.INACCESSIBLE,
-						 alma.SPR2005067.SystemSubstate.STARTING_UP_PASS1,
-						 false,
-						 0
-						 );
-      */
-         ControlSystemChangeOfStateEvent2 t_block = 
-	     new ControlSystemChangeOfStateEvent2(alma.SPR2005067.SystemState.INACCESSIBLE,
-						 alma.SPR2005067.SystemSubstate.STARTING_UP_PASS1,
-						 false,
-						 0
-						 );
-         for(short i=0; i<param; i++)
-         {
-            m_supplier.publishEvent(t_block);
-         }
-                  
-      }
-      catch(Exception e)
-      {
-         System.err.println(e);
-      }
+       /* 
+	* This is OK
+	*/
+       m_logger.info("Now sending ControlSystemChangeOfStateEvent2 events. This should always be OK");
+       try
+	   {
+	   ControlSystemChangeOfStateEvent2 t_block = 
+	       new ControlSystemChangeOfStateEvent2(alma.SPR2005067.SystemState.INACCESSIBLE,
+						    alma.SPR2005067.SystemSubstate.STARTING_UP_PASS1,
+						    false,
+						    0
+		   );
+	   for(short i=0; i<param; i++)
+	       {
+	       m_supplier.publishEvent(t_block);
+	       }
+	   
+	   }
+       catch(AcsJException e)
+	   {
+	   /*
+	    * Here I just log the error trace.
+	    * It would be nicer to throw it to the caller,
+	    * but the interface of sendEvents does not allow it.
+	    * We should change that interface.
+	    */
+	   AcsJGenericErrorEx ex = new AcsJGenericErrorEx("This exception publishing events should have never occurred", e); 
+	   ex.log(m_logger);
+	   }
+       catch (Throwable thr) 
+	   {
+	   AcsJUnexpectedExceptionEx ex = new AcsJUnexpectedExceptionEx("Got unexpected exception", thr);
+	   /*
+	    * Here I just log the error trace.
+	    * It would be nicer to throw it to the caller,
+	    * but the interface of sendEvents does not allow it.
+	    * We should change that interface.
+	    */
+	   ex.log(m_logger);
+	   }
+       /*
+	* This fails with JacORB (tested up to version 2.2.4)
+	* See SPR 2005067
+	*/
+       m_logger.info("Now sending ControlSystemChangeOfStateEvent events. This FAILS now but should be OK as well. See SPR2005067");
+       try
+	   {
+	   ControlSystemChangeOfStateEvent t_block = 
+	       new ControlSystemChangeOfStateEvent(alma.SPR2005067.SystemState.INACCESSIBLE,
+						   alma.SPR2005067.SystemSubstate.STARTING_UP_PASS1,
+						   alma.SPR2005067.SystemState.INACCESSIBLE,
+						   alma.SPR2005067.SystemSubstate.STARTING_UP_PASS1,
+						   false,
+						   0
+		   );
+	   for(short i=0; i<param; i++)
+	       {
+	       m_supplier.publishEvent(t_block);
+	       }
+	   
+	   }
+       catch(AcsJException e)
+	   {
+	   /*
+	    * Here I just log the error trace.
+	    * It would be nicer to throw it to the caller,
+	    * but the interface of sendEvents does not allow it.
+	    * We should change that interface.
+	    */
+	   AcsJGenericErrorEx ex = new AcsJGenericErrorEx("This exception is due to SPR2005067", e); 
+	   ex.log(m_logger);
+	   }
+       catch (Throwable thr) 
+	   {
+	   /*
+	    * The message int the exception logged is incomplete.
+	    * Look at the println and compare to see the difference
+	    */
+           System.err.println(thr);
+	   AcsJUnexpectedExceptionEx ex = new AcsJUnexpectedExceptionEx("Got unexpected exception", thr);
+	   /*
+	    * Here I just log the error trace.
+	    * It would be nicer to throw it to the caller,
+	    * but the interface of sendEvents does not allow it.
+	    * We should change that interface.
+	    */
+	   ex.log(m_logger);
+	   }
    }
-   
-   /** Disconnects the supplier. */
+    
+    /** Disconnects the supplier. */
    public void cleanUp()
    {
       m_logger.info("cleanUp() called...");
       
       try
-      {
-      
-      //fake a consumer disconnecting...
-      m_supplier.disconnect_structured_push_supplier();
-      m_supplier.disconnect();
-      }
-      catch(Exception e)
-      {
-       e.printStackTrace();  
-      }
+	  {
+	  
+	  //fake a consumer disconnecting...
+	  m_supplier.disconnect_structured_push_supplier();
+	  m_supplier.disconnect();
+	  }
+      catch (Exception e)
+	  {
+	  ComponentLifecycleException acsex = new ComponentLifecycleException(
+	      "failed to cleanup SimpleSupplier", e);
+
+	  // Here I want to log the error stack.
+          // But this is not an ACS exception, so I cannot do it.
+
+	  }
    }
    
    
@@ -114,15 +181,16 @@ public class EventSupplierSpr2005067Impl
       m_logger.info("initialize() called...");
       
       try
-      {
+	  {
          //Instantiate our supplier
-         m_supplier = new SimpleSupplier(alma.SPR2005067.CHANNELNAME_SPR2005067.value,  //the channel's name
-					 m_containerServices);
-      }
-      catch(Exception e)
-      {
-         e.printStackTrace(System.err);
-      }
+	  m_supplier = new SimpleSupplier(alma.SPR2005067.CHANNELNAME_SPR2005067.value,  //the channel's name
+					  m_containerServices);
+	  }
+      catch (Exception e)
+	  {
+	  throw new ComponentLifecycleException(
+	      "failed to create new SimpleSupplier", e);
+	  }
    }
 }
 
