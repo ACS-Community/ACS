@@ -24,7 +24,7 @@
  *
  * Created on March 12, 2003, 2:33 PM
  */
-package alma.nctest;
+package alma.nctest.clients;
 
 import alma.FRIDGE.temperatureDataBlockEvent;
 

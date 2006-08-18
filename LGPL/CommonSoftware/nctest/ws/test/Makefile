@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.10 2006/08/17 16:19:05 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.11 2006/08/18 10:22:47 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -116,14 +116,15 @@ PANELS_L =
 IDL_FILES_L = nctestSpr2005067
 IDL_TAO_FLAGS =
 USER_IDL =
+
 #
 # Jarfiles and their directories
 #
-JARFILES= nctest 
-jjj_DIRS=
-jjj_EXTRAS= 
+COMPONENTS_JARFILES = nctestcomp
+nctestcomp_DIRS = alma/nctest/EventSupplierSpr2005067Impl
 
-nctest_DIRS= alma
+JARFILES= nctest 
+nctest_DIRS= alma/nctest/clients
 #
 # java sources in Jarfile on/off
 DEBUG=on 

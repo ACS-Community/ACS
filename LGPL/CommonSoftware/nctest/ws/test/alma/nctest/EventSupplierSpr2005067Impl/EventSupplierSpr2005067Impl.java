@@ -27,6 +27,7 @@
 package alma.nctest.EventSupplierSpr2005067Impl;
 
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
@@ -162,6 +163,8 @@ public class EventSupplierSpr2005067Impl
 	  {
 	  ComponentLifecycleException acsex = new ComponentLifecycleException(
 	      "failed to cleanup SimpleSupplier", e);
+
+	  m_logger.log(Level.SEVERE, "Failed to cleanup", e);
 
 	  // Here I want to log the error stack.
           // But this is not an ACS exception, so I cannot do it.
