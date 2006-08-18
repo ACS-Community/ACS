@@ -1,0 +1,80 @@
+#ifndef _SPR2005067_IDL_
+#define _SPR2005067_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+* "@(#) $Id: nctestSpr2005067.midl,v 1.1 2006/08/18 06:52:20 gchiozzi Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* gchiozzi 2003-05-19 Put back ACS_ENUM
+* 
+*/
+
+#include <baci.idl>
+#include <enumpropMACRO.idl>
+
+#pragma prefix "alma"
+
+/** @file nctestSpr2005067.idl
+ *  FridgeControl's IDL File
+ */
+
+module SPR2005067 
+{
+        enum SystemState {
+          INACCESSIBLE,
+          OPERATIONAL
+        };
+  
+        enum SystemSubstate {
+          STARTING_UP_PASS1,
+          STARTED_UP_PASS1,
+          STARTING_UP_PASS2,
+          WAITING,
+          SHUTTING_DOWN_PASS1,
+          SHUT_DOWN_PASS1,
+          SHUTTING_DOWN_PASS2,
+          STOPPED,
+          NOERROR,
+          ERROR
+        };
+
+	struct ControlSystemChangeOfStateEvent {
+  	   SystemState currentState;
+  	   SystemSubstate currentSubstate;
+           SystemState previousState;
+           SystemSubstate previousSubstate;
+           boolean error;
+           ACS::Time time;
+        };
+
+	struct ControlSystemChangeOfStateEvent2 {
+  	   SystemState currentState;
+  	   SystemSubstate currentSubstate;
+           boolean error;
+           ACS::Time time;
+        };
+
+        const string CHANNELNAME_SPR2005067 = "SPR2005067";
+};
+
+#endif
