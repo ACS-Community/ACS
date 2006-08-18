@@ -1,10 +1,11 @@
+2 -  -- alma.nctest.clients.FridgeConsumer
 3 - Welcome to acsexmplClientFridgeNC!
 4 - Getting the Supplier
 4 - Sending events
 4 - Finished sending events
+1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .
-1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 2 - Waiting for events...
 2 - The Java temperature difference is ---
 2 - The Java temperature difference is ---
@@ -17,8 +18,8 @@
 3 - ----------T--:--:--.--- [GlobalLogger - ] Helper::resolveNameService wrong constructor - attempting recovery for the 'fridge' channel!
 3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname generated using localhost address: 'xxx'
 3 - ----------T--:--:--.--- [GlobalLogger - ] ORBHelper::runORB the ORB is now running!
-3 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'runOrbThread'
 3 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to 'temperatureDataBlockEvent' events for the 'fridge' channel!
+3 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'runOrbThread'
 3 - created a consumer
 1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
 3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
