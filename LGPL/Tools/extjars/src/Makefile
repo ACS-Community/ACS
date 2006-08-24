@@ -43,7 +43,7 @@
 #    ../lib/openorb-1.3.0.jar ../lib/openorb_tools-1.3.0.jar
 # are part of the openORB distribution, but shall NOT be installed,
 # because they would collide with JacORB
-INSTALL_FILES = ../lib/activation.jar ../lib/avalon-framework.jar ../lib/backport-util-concurrent.jar ../lib/commons-logging.jar ../lib/cosyframework-gui.jar ../lib/cosyicons.jar ../lib/cosyicons-1.0.jar ../lib/cosyframework-core.jar ../lib/concurrent.jar ../lib/genfw.jar ../lib/genfwutil.jar ../lib/gnu-regexp-1.1.4.jar ../lib/icons.jar ../lib/infobus.jar ../lib/jakarta-oro-2.0.5.jar ../lib/jakarta-regexp-1.2.jar ../lib/jaxen-core.jar ../lib/jaxen-jdom.jar ../lib/jdom.jar ../lib/jnlp.jar ../lib/junit.jar ../lib/logkit.jar ../lib/log4j-1.2.8.jar ../lib/metacore.jar ../lib/openorb13Debug.jar ../lib/prevayler-1.02.001.jar ../lib/saxpath.jar ../lib/tablelayout.jar ../lib/xalan.jar ../lib/xalan_serializer.jar ../lib/endorsed/xmlParserAPIs.jar 
+INSTALL_FILES = ../lib/activation.jar ../lib/avalon-framework.jar ../lib/backport-util-concurrent.jar ../lib/commons-logging.jar ../lib/cosyframework-gui.jar ../lib/cosyicons.jar ../lib/cosyicons-1.0.jar ../lib/cosyframework-core.jar ../lib/genfw.jar ../lib/genfwutil.jar ../lib/gnu-regexp-1.1.4.jar ../lib/icons.jar ../lib/infobus.jar ../lib/jakarta-oro-2.0.5.jar ../lib/jakarta-regexp-1.2.jar ../lib/jaxen-core.jar ../lib/jaxen-jdom.jar ../lib/jdom.jar ../lib/jnlp.jar ../lib/junit.jar ../lib/logkit.jar ../lib/log4j-1.2.8.jar ../lib/metacore.jar ../lib/openorb13Debug.jar ../lib/prevayler-1.02.001.jar ../lib/saxpath.jar ../lib/tablelayout.jar ../lib/xalan.jar ../lib/xalan_serializer.jar ../lib/endorsed/xmlParserAPIs.jar 
 
 
 #
