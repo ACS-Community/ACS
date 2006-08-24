@@ -22,6 +22,10 @@ jakarta-oro-2.0.5.jar	Jakarta-ORO 2.0.5		(1)	 http://jakarta.apache.org/oro/inde
 
 jakarta-regexp-1.2.jar	Regexp 1.2		        (1)	 http://jakarta.apache.org/regexp/
 
+commons-cli-1.0.jar	Jakarta commons Command Line Interfaces		(1)  http://jakarta.apache.org/commons/cli/
+
+commons-lang-2.1.jar	Jakarta commons Lang		(1b)  http://jakarta.apache.org/commons/lang/
+
 commons-logging.jar	Jakarta commons logging		(1b)  http://jakarta.apache.org/commons/logging/
 
 jnlp-1.0.1		Java Network Launch		(1)  
