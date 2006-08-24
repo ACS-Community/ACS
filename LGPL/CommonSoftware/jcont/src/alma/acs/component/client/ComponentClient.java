@@ -26,7 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
 import si.ijs.maci.Client;
@@ -118,7 +117,7 @@ public class ComponentClient
 		throws Exception
 	{
 		if (logger == null) {
-			logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(getClass().getName(), true);
+			logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(clientName, true);
 		}
 		
 		m_logger = logger;
@@ -248,20 +247,6 @@ public class ComponentClient
 	{
 		return m_containerServices;
 	}
-
-
-	/**
-	 * Use only when direct access to the ORB is absolutely necessary. 
-	 * We try to not expose the ORB to applications. 
-	 *  
-	 * @return ORB
-	 * @deprecated  If you need system-level access, use {@link AdvancedComponentClient} instead of this class.
-	 */
-	public ORB getORB()
-	{
-		return acsCorba.getORB();
-	}
-
 	
 	/////////////////////////////////////////////////////////////
 	// finalization stuff
