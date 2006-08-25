@@ -1,13 +1,13 @@
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] component 'alma.demo.test.client.ArchiveConsumerTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Double
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Float
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Integer
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Integer
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.String
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [D
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [F
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [I
-1 - ----------T--:--:--.--- INFO [alma.demo.test.client.ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [Ljava.lang.String;
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] component 'ArchiveConsumerTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Double
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Float
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Integer
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Integer
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.String
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [D
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [F
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [I
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [Ljava.lang.String;
 1 - Test passed!
