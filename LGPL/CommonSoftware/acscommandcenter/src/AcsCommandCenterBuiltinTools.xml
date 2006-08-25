@@ -148,7 +148,7 @@ Please read the documentation in "AcsCommandCenterTools.xml" first. The differen
       </tool>
       <tool>
             <caption> Container_startRemote_cpp_intrep</caption>
-            <command>accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager -d ? ? -ORBInitRef=?</command>
+            <command>accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager -d ? ?</command>
             <insertion source="model">ContainerName</insertion>            
             <insertion source="model">ContainerType</insertion>
             <insertion source="model">ContainerScriptBase</insertion>
@@ -156,7 +156,6 @@ Please read the documentation in "AcsCommandCenterTools.xml" first. The differen
             <insertion source="model">ContainerAgainstManagerPort</insertion>
             <insertion source="model">ContainerAgainstCDB</insertion>
             <insertion source="model">ContainerName</insertion>
-            <insertion source="model">ContainerAgainstInterfaceRepository</insertion>            
             <expectedOutput>Container running...</expectedOutput>
       </tool>
       <tool>
