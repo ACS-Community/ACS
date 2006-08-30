@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.19 2006/08/17 11:43:30 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.20 2006/08/30 18:28:15 gchiozzi Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -153,6 +153,11 @@ cd $ACE_ROOT/TAO/orbsvcs; make
 echo "done"
 echo ""
 
+echo "building utilities"
+cd $ACE_ROOT/TAO/util; make 
+echo "done"
+echo ""
+
 
 #
 # Here we apply another dirty patch
@@ -228,6 +233,7 @@ then
     cd $ACE_ROOT_VW/TAO/orbsvcs/orbsvcs ; make
     echo "done"
     echo ""
+
     echo "Installation of ACE/TAO for $OSTAG finished"
 
 fi
