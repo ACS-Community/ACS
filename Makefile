@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.125 2006/08/10 04:30:09 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.126 2006/08/30 13:36:32 gchiozzi Exp $"
 #
 #
 
@@ -522,7 +522,7 @@ cvs-get-no-lgpl: cvs-tag cvs-get-version cvs-get-lgpl
 # This target gets from CVS the files that are specific for RH-9.
 # This includes the RTOS branch and the Kit with the Makefile 
 #
-RH9-BRANCH=ACS-5_0-RTOS-3_1-B
+RH9-BRANCH=ACS-6_0-RTOS-3_1-B
 
 cvs-update-for-rtos31:
 	$(ECHO) "Updating from CVS using RTOS-3_1 tag $(RH9-BRANCH)" 
