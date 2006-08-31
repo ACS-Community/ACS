@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.20 2006/08/30 18:28:15 gchiozzi Exp $"
+# "@(#) $Id: buildTAO,v 1.21 2006/08/31 07:08:53 gchiozzi Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -154,7 +154,7 @@ echo "done"
 echo ""
 
 echo "building utilities"
-cd $ACE_ROOT/TAO/util; make 
+cd $ACE_ROOT/TAO/utils; make 
 echo "done"
 echo ""
 
