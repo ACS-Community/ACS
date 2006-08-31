@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.153 2006/04/19 22:21:18 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.154 2006/08/31 12:45:04 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -98,7 +98,7 @@ SCRIPTS         = acsBUILDBeforeInstall.sh acsBUILDTest \
 SCRIPTS_L       = 
 
 
-PY_SCRIPTS = acsdataClean 
+PY_SCRIPTS =
 PY_SCRIPTS_L = acsGenGlobalPythonIndex
 
 #

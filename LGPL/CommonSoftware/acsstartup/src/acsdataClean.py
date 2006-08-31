@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.6 2006/03/13 18:12:49 dfugate Exp $
+# @(#) $Id: acsdataClean.py,v 1.1 2006/08/31 12:43:02 gchiozzi Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -28,6 +28,9 @@ Normally ACS_INSTANCE directories are NOT cleaned up.
 The -a or -all command line option forces ALL files and directories
 to be cleaned up
 '''
+
+# This script is part of LGPL/CommonSoftware/acsstartup module
+
 ################################################################################################
 from os import environ
 from os import chdir
@@ -40,7 +43,7 @@ from os.path import isfile, isdir
 from sys import argv
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.6 2006/03/13 18:12:49 dfugate Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.1 2006/08/31 12:43:02 gchiozzi Exp $"
 #------------------------------------------------------------------------------
 
 print "Cleaning up ACS temporary directories"
