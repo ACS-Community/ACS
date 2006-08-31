@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.63 2006/07/26 08:30:26 gchiozzi Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.64 2006/08/31 09:20:07 gchiozzi Exp $"
 #
 #
 #
@@ -447,7 +447,7 @@ fi
 # package.
 if [ X"$MATPLOTLIBDATA" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   MATPLOTLIBDATA=$ACSROOT
+   MATPLOTLIBDATA=$ACSROOT/share/matplotlib
 fi
 
 # set the following variable to the path where you installed your java stuff.
