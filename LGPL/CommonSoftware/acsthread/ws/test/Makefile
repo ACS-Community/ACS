@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.11 2006/07/04 13:30:58 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.12 2006/08/31 13:04:52 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ testACSThreadSuspend_OBJECTS   = testACSThreadSuspend
 testACSThreadSuspend_LIBS      = acsThread
 
 testACSThreadCorrExmpl_OBJECTS   = testACSThreadCorrExmpl	
-testACSThreadCorrExmpl_LIBS      = acsThread acsErrTypeLifeCycle ACSErrTypeCommon
+testACSThreadCorrExmpl_LIBS      = acsThread ACSErrTypeCommon
 
 testACSThreadNoTM_OBJECTS   = testACSThreadNoTM	
 testACSThreadNoTM_LIBS      = acsThread

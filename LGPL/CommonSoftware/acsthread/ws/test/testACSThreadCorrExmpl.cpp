@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"
+* "@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.5 2006/08/31 13:04:52 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,11 +28,13 @@
 
 
 #include "acsThreadManager.h"
-#include <acsErrTypeLifeCycle.h>
 #include <ACSErrTypeCommon.h>
 
+// Commented from original example to remove a forward dependency in the test.
+// #include <acsErrTypeLifeCycle.h>
 
-static char *rcsId="@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.4 2006/03/24 12:42:31 vwang Exp $"; 
+
+static char *rcsId="@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.5 2006/08/31 13:04:52 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /************************************************************** 
