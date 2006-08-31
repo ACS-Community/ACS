@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_WS.lite,v 1.4 2006/02/10 20:41:03 sharring Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.5 2006/08/31 12:51:18 gchiozzi Exp $"
 #
 # TestList
 #
@@ -28,9 +28,9 @@
 # almamgr 2000-09-13 created
 
 SOURCE   acsQoSTATEnvironment
-PROLOGUE cdbTATPrologue
+PROLOGUE acsutilTATPrologue
 
 1 TimeoutTest runTest
 
-EPILOGUE cdbTATEpilogue
+EPILOGUE acsutilTATEpilogue
 

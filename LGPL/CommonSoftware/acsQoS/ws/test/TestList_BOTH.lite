@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_BOTH.lite,v 1.5 2006/02/10 20:41:03 sharring Exp $"
+# "@(#) $Id: TestList_BOTH.lite,v 1.6 2006/08/31 12:53:14 gchiozzi Exp $"
 #
 # TestList
 #
@@ -29,9 +29,9 @@
 
 #ENVIRONMENT lcuTat LCU
 SOURCE   acsQoSTATEnvironment
-PROLOGUE cdbTATPrologue
+PROLOGUE acsutilTATPrologue
 
 1 TimeoutTest runTest
 
-EPILOGUE cdbTATEpilogue
+EPILOGUE acsutilTATEpilogue
 
