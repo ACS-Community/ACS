@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierCompImpl.h,v 1.4 2005/04/15 03:23:49 dfugate Exp $"
+* "@(#) $Id: acsncRTSupplierCompImpl.h,v 1.5 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include "EventComponentS.h"
 #include "acsncRTSupplier.h"
 
-NAMESPACE_USE(baci);
+ using namespace baci;
 
 /**
  * This class is for testing the notification channel under an activator

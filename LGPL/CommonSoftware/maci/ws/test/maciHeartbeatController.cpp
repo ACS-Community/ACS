@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciHeartbeatController.cpp,v 1.2 2005/09/27 08:35:27 vwang Exp $"
+* "@(#) $Id: maciHeartbeatController.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -28,7 +28,7 @@
 /// and heartbeat controller considers client as inactive
 /// solution: use CORBA QoS (real-time CORBA) and make ping() invocations priority high
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
 // Failure limit.
 int HeartbeatHandler::m_failureLimit = 3;

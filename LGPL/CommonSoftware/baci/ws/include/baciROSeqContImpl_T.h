@@ -37,7 +37,7 @@
 #include "baciROcontImpl_T.h"
 #include "baciROSeqCommonImpl_T.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 template <ACS_RO_C> 
 class ROSeqContImpl : public virtual POA_SK,
@@ -66,7 +66,7 @@ class ROSeqContImpl : public virtual POA_SK,
     /** @} */
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

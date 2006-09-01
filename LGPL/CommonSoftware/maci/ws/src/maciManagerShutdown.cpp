@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciManagerShutdown.cpp,v 1.83 2005/09/27 08:35:06 vwang Exp $"
+* "@(#) $Id: maciManagerShutdown.cpp,v 1.84 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 #include <logging.h>
 #include <maciHelper.h>
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
 int
 main (int argc, char *argv[])

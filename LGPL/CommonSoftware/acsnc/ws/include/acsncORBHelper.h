@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelper.h,v 1.46 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: acsncORBHelper.h,v 1.47 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,17 +43,17 @@
 #include <maciHelper.h>
 #include <ACSErrTypeCommon.h>
 
-NAMESPACE_USE(baci);
-NAMESPACE_USE(maci);
+ using namespace baci;
+ using namespace maci;
 
-NAMESPACE_USE(ACSErrTypeCommon);
+ using namespace ACSErrTypeCommon;
 
 
 /** @file acsncORBHelper.h
  *  ORBHelper
  */
 
-NAMESPACE_BEGIN(nc);
+namespace nc {
 
     
 /**
@@ -181,7 +181,7 @@ class ORBHelper
     ORBHelper(const ORBHelper&);
 
 };
-NAMESPACE_END(nc);
+ }; 
 
 #endif /*!ACSNC_ORB_H*/
 

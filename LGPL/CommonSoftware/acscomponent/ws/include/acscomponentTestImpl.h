@@ -12,7 +12,7 @@
 #include <acscomponentTestS.h>
 
 
-NAMESPACE_USE(acscomponent);
+ using namespace acscomponent;
 
 
 class ACSComponentTestClassImpl: public virtual ACSComponentImpl,

@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeTimerImpl.h,v 1.18 2005/08/08 23:55:46 dfugate Exp $
+/* @(#) $Id: acstimeTimerImpl.h,v 1.19 2006/09/01 02:20:54 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -40,7 +40,7 @@
 #include "ACSTimeError.h"
 #include "acstimeTimeUtil.h"
 ////////////////////////////////////////////////////////////////////////
-NAMESPACE_USE(baci);
+ using namespace baci;
 /** @file acstimeTimerImpl.h
  *  Header file for implementation of ACS Timer interface.
  */

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPpatternImpl.cpp,v 1.15 2005/09/28 13:53:09 msekoran Exp $"
+* "@(#) $Id: baciPpatternImpl.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include "baciPpatternImpl.h"
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /////////////////////////////////////////////////
 // Ppattern
@@ -142,7 +142,7 @@ PpatternImpl::whenCleared ()
   return result._retn();
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 

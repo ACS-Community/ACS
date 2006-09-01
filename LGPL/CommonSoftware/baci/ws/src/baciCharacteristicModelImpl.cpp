@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.9 2006/01/12 21:31:12 gchiozzi Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include "baciCharacteristicModelImpl.h"
 #include "baciCDBPropertySet.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 PortableServer::POA_ptr CharacteristicModelImpl::offShootPOA = 0;
 
@@ -299,4 +299,4 @@ bool CharacteristicModelImpl::readCharacteristics()
     return true;
 }
 
-NAMESPACE_END(baci);
+ }; 

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbField.cpp,v 1.30 2005/08/23 15:23:27 vwang Exp $"
+* "@(#) $Id: cdbField.cpp,v 1.31 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,8 +42,8 @@
 #include <sstream>
 #include <string>
 
-NAMESPACE_USE(cdb)
-NAMESPACE_BEGIN(cdb)
+ using namespace cdb;
+namespace cdb {
 
 // -----------------[ Set type, assignment operator ]----------------------
 
@@ -614,7 +614,7 @@ inline Boolean HexStringToOctets(const String& str,
   return bHi;
 }
 
-NAMESPACE_END(cdb)
+ }; 
 
 // ========================================================================
 //
@@ -748,7 +748,7 @@ std::istream& operator>>(std::istream &is, Any &any)
 
 #endif // defined(CDB_HAS_ANY)
 
-NAMESPACE_BEGIN(cdb)
+namespace cdb {
 
 //
 // Split string str into several substrings, which are separated with
@@ -1424,7 +1424,7 @@ Boolean Field::FromString(const String &str)
   return 0;
 }
 
-NAMESPACE_END(cdb)
+ }; 
 
 #if defined(ACE_HAS_EXPLICIT_TEMPLATE_INSTANTIATION)
 
@@ -2574,6 +2574,9 @@ Boolean Field::SetDoubleArray(const DoubleArray &val)
 // REVISION HISTORY:
 //
 //   $Log: cdbField.cpp,v $
+//   Revision 1.31  2006/09/01 02:20:54  cparedes
+//   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 //   Revision 1.30  2005/08/23 15:23:27  vwang
 //   to add float into BACI
 //

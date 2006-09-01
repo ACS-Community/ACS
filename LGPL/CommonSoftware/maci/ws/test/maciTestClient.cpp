@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.87 2005/09/27 08:35:35 vwang Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.88 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.87 2005/09/27 08:35:35 vwang Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.88 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -34,10 +34,10 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #define ERROR 1
 #define FATAL 2
 
-NAMESPACE_USE(maci);
-NAMESPACE_USE(MACI_TEST)
+ using namespace maci;
+ using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.87 2005/09/27 08:35:35 vwang Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.88 2006/09/01 02:20:54 cparedes Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>

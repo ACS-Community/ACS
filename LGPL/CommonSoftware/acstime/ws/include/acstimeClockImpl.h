@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeClockImpl.h,v 1.14 2005/04/14 09:38:43 acaproni Exp $
+/* @(#) $Id: acstimeClockImpl.h,v 1.15 2006/09/01 02:20:54 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -42,7 +42,7 @@
 #include "acstimeTimeUtil.h"
 #include "acstimeDevIOTime.h"
 ////////////////////////////////////////////////////////////////////////
-NAMESPACE_USE(baci);
+ using namespace baci;
 
 /** @file acstimeClockImpl.h
  *  Header file for implementation of ACS Clock.

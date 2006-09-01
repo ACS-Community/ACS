@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.56 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.57 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,9 +31,9 @@
 #include "acsncC.h"
 #include <acscommonC.h>
 //-----------------------------------------------------------------------------
-NAMESPACE_USE(baci);
+ using namespace baci;
 //-----------------------------------------------------------------------------
-NAMESPACE_BEGIN(nc);
+namespace nc {
 //-----------------------------------------------------------------------------
 ORBHelper::ORBHelper() :
     orb_mp(0),
@@ -250,7 +250,7 @@ ORBHelper::runOrbThread(void *this_p)
     return static_cast<void *>(0);
 }
 //-----------------------------------------------------------------------------
-NAMESPACE_END(nc);
+ }; 
 /*___oOo___*/
 
 

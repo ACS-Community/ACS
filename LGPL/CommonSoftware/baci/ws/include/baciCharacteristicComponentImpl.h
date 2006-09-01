@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.31 2006/06/28 08:07:11 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.32 2006/09/01 02:20:54 cparedes Exp $"
 *
 */
 
@@ -46,7 +46,7 @@
  * but allows namespace support for compilers that do not have it
  * natively (i.e., GCC 2.95 for VxWorks).
  */
-NAMESPACE_USE(baci)
+ using namespace baci;
 
 /** @file baciCharacteristicComponentImpl.h
  *  This is the include file for CharacteristicComponent which is the 
@@ -82,7 +82,7 @@ NAMESPACE_USE(baci)
     desc_m->properties[desc_m->properties.length()-1].characteristics = CppImplVar->get_all_characteristics(); \
     }
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * This class implements the ACS DO.  All the standard methods and 
@@ -226,7 +226,7 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
 
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* CHARACTERISTIC_COMPONENT_IMPL_H */
 

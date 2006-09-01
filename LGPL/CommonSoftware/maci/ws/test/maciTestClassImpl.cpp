@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.92 2005/04/18 17:14:48 acaproni Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.93 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.92 2005/04/18 17:14:48 acaproni Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.93 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -24,7 +24,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <maciContainerImpl.h>
 #include <maciContainerServices.h>
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
 /////////////////////////////////////////////////
 // MaciTestClass

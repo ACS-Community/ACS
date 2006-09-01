@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeClockImpl.cpp,v 1.18 2006/06/22 16:14:18 gchiozzi Exp $
+/* @(#) $Id: acstimeClockImpl.cpp,v 1.19 2006/09/01 02:20:54 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -26,7 +26,7 @@
 #include "acstimeTimeUtil.h"
 #include "acstimeEpochHelper.h"
 //------------------------------------------------------------------------------
-NAMESPACE_USE(baci);
+ using namespace baci;
 //------------------------------------------------------------------------------
 ClockImpl::ClockImpl(
 		     const ACE_CString& name,

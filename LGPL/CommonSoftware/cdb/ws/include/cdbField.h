@@ -1,6 +1,6 @@
 // ************************************************************************
 //
-// $Id: cdbField.h,v 1.29 2005/08/23 15:22:54 vwang Exp $
+// $Id: cdbField.h,v 1.30 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (c) 2000 by Klemen Zagar
 //
@@ -70,7 +70,7 @@ std::istream& operator>>(std::istream &is, cdb::Any &any);
 
 #endif // defined(CDB_HAS_ANY)
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 // ------------------------[ Null field types ]----------------------------
 
@@ -432,7 +432,7 @@ typedef std::vector<Field> FieldArray;
 
 //#include "cdbField.i"
 
-NAMESPACE_END(cdb);
+ }; 
 
 #endif // __cdb__Field_h__
 
@@ -441,6 +441,9 @@ NAMESPACE_END(cdb);
 // REVISION HISTORY:
 //
 //   $Log: cdbField.h,v $
+//   Revision 1.30  2006/09/01 02:20:54  cparedes
+//   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 //   Revision 1.29  2005/08/23 15:22:54  vwang
 //   to add float into BACI
 //

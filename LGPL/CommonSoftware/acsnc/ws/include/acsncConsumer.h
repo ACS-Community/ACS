@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.64 2006/08/08 11:22:11 bjeram Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.65 2006/09/01 02:20:54 cparedes Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -36,7 +36,7 @@
 #include "acsncCDBProperties.h"
 
 #include <list>
-NAMESPACE_BEGIN(nc);
+namespace nc {
 
 /** Consumer implements a structured event push consumer interface from the
  *  CORBA notification service (NC). This class is an abstract base class due to
@@ -454,6 +454,6 @@ class Consumer :
 	throw (CORBAProblemEx);
     ///////////////////////////////////////////////////////////////////////////////////////
 };
-NAMESPACE_END(nc);
+ }; 
 
 #endif /* CONSUMER_H */

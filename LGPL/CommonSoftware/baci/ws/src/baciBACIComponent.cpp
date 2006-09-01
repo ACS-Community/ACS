@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.15 2006/06/28 08:07:11 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,12 +32,12 @@
 #include <baciErrTypeProperty.h>
 #include <ACSErrTypeCommon.h>
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.15 2006/06/28 08:07:11 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 
 /////////////////////////////////////////////////
@@ -719,7 +719,7 @@ void BACIComponent::removeProperty(BACIProperty* property)
   ACS_TRACE("baci::BACIComponent::removeProperty done");
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 

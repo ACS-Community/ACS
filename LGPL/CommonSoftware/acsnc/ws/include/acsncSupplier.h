@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.58 2006/07/19 16:57:28 dfugate Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.59 2006/09/01 02:20:54 cparedes Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -32,7 +32,7 @@
 
 #include "acsncHelper.h"
 #include <acscomponentImpl.h>
-NAMESPACE_BEGIN(nc);
+namespace nc {
 /** 
  * Supplier provides an implementation of the structured event push supplier interface 
  * from the notification service (NC). It is designed to assist the developer in publishing
@@ -307,6 +307,6 @@ class Supplier :
      */
     Supplier(const Supplier&);
 };
-NAMESPACE_END(nc);
+ }; 
 #endif
 

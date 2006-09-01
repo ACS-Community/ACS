@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACICallback.cpp,v 1.2 2005/02/04 00:33:59 dfugate Exp $"
+* "@(#) $Id: baciBACICallback.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,9 +28,9 @@
 #include "baciBACICallback.h"
 #include "baci.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACICallback.cpp,v 1.2 2005/02/04 00:33:59 dfugate Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACICallback.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $");
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /////////////////////////////////////////////////
 // BACICallback
@@ -52,7 +52,7 @@ void BACICallback::failed()
       }
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 

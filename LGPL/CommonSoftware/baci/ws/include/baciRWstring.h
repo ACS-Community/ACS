@@ -33,7 +33,7 @@
 #include <baciRWdiscImpl_T.h>
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitorstringImplTemplate MonitorstringImpl Class
  * The MonitorstringImpl class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -52,7 +52,7 @@ typedef  RWdiscImpl<char*, ACS::CBstring, ACS::stringSeq, ACS::stringSeq_out, AC
 /** @} */
 
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciRWstring */
 

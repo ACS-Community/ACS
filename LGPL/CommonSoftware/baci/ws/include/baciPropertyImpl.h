@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPropertyImpl.h,v 1.11 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciPropertyImpl.h,v 1.12 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 
 #include <baciCharacteristicModelImpl.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 class baci_EXPORT PropertyImpl : public virtual POA_ACS::Property,
 				 public CharacteristicModelImpl
@@ -74,7 +74,7 @@ private:
   BACIComponent* component_mp;
 }; //class PropertyImpl
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

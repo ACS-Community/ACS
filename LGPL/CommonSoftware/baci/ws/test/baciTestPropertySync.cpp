@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestPropertySync.cpp,v 1.99 2005/08/23 15:38:35 vwang Exp $"
+* "@(#) $Id: baciTestPropertySync.cpp,v 1.100 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.99 2005/08/23 15:38:35 vwang Exp $";
+static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.100 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -45,8 +45,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <baciTest.h>
 #include <baciTestUtils.h>
 
-NAMESPACE_USE(baci)
-NAMESPACE_USE(BACI_TEST)
+ using namespace baci;
+ using namespace BACI_TEST;
 
 #ifdef MAKE_VXWORKS
 unsigned int sleep(unsigned int);

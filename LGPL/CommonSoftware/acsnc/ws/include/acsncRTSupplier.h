@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_H
 #define RT_SUPPLIER_H
-/*    @(#) $Id: acsncRTSupplier.h,v 1.15 2006/07/19 16:57:28 dfugate Exp $
+/*    @(#) $Id: acsncRTSupplier.h,v 1.16 2006/09/01 02:20:54 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -30,7 +30,7 @@
 
 #include "acsncSupplier.h"
 #include <queue>
-NAMESPACE_BEGIN(nc);
+namespace nc {
 /**
  *  RTSupplier is used to publish data onto a notification channel
  *  defined by the string passed to RTSupplier's constructor. Please 
@@ -162,7 +162,7 @@ class RTSupplier : public Supplier
      */
     RTSupplier(const RTSupplier&);
 };
-NAMESPACE_END(nc);
+ }; 
 
 
 #include "acsncRTSupplier.i"

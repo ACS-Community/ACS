@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: acssampPerfServer.cpp,v 1.4 2004/10/14 21:42:04 gchiozzi Exp $"
+ * "@(#) $Id: acssampPerfServer.cpp,v 1.5 2006/09/01 02:20:55 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -50,11 +50,11 @@
 #include <iostream>
 
 
-ACE_RCSID(acssampPerfServer, perfServer, "$Id: acssampPerfServer.cpp,v 1.4 2004/10/14 21:42:04 gchiozzi Exp $")
+ACE_RCSID(acssampPerfServer, perfServer, "$Id: acssampPerfServer.cpp,v 1.5 2006/09/01 02:20:55 cparedes Exp $")
 
 using namespace std;
-NAMESPACE_USE(maci); 
-NAMESPACE_USE(ACSErrTypeCommon); 
+ using namespace maci; 
+ using namespace ACSErrTypeCommon; 
 
 
 static int endme = 1;

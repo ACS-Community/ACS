@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDALaccess.cpp,v 1.40 2005/08/29 08:44:22 vwang Exp $"
+* "@(#) $Id: cdbDALaccess.cpp,v 1.41 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #define MSG_XML_ERROR   "CDB::XMLerror '%s' '%s'\n"
 
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 CDB::DAL_var DALaccess::m_forcedDAL = CDB::DAL::_nil();
 
@@ -501,7 +501,7 @@ char* DALaccess::resolveDALserverIOR( int argc, char *argv[] )
 }
 
 
-NAMESPACE_END(cdb)
+ }; 
 
 /*___oOo___*/
 

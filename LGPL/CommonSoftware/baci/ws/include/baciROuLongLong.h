@@ -38,7 +38,7 @@
 #include <baciMonitor_T.h>
 #include <baciROcontImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitoruLongLongTemplate MonitoruLongLong Class
  * The MonitoruLongLong class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -56,7 +56,7 @@ typedef  Monitor<ACS_MONITOR(uLongLong, ACS::uLongLong)> MonitoruLongLong;
 typedef  ROcontImpl<ACS_RO_T(uLongLong, ACS::uLongLong)> ROuLongLong;
 /** @} */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

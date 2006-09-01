@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciUtil.cpp,v 1.2 2005/02/04 00:34:00 dfugate Exp $"
+* "@(#) $Id: baciUtil.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,9 +27,9 @@
 
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciUtil.cpp,v 1.2 2005/02/04 00:34:00 dfugate Exp $");
+ACE_RCSID(baci, baci, "$Id: baciUtil.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $");
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 #ifdef MAKE_VXWORKS
 unsigned long long lpow10(int value)
@@ -174,7 +174,7 @@ TimeInterval calculateModulus(TimeInterval t1, TimeInterval t2) {
 #endif
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 

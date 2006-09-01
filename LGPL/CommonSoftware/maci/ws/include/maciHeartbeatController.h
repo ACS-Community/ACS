@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciHeartbeatController.h,v 1.80 2003/09/19 08:35:02 almamgr Exp $"
+* "@(#) $Id: maciHeartbeatController.h,v 1.81 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -26,7 +26,7 @@
 
 #include <ace/Hash_Map_Manager.h>
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 
 // Forward declaration
 class HeartbeatController;
@@ -36,7 +36,7 @@ class HeartbeatController;
  * The handle_timeout hook method is inovked the the timer times out...
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciHeartbeatController.h,v 1.80 2003/09/19 08:35:02 almamgr Exp $"
+ * @version "@(#) $Id: maciHeartbeatController.h,v 1.81 2006/09/01 02:20:54 cparedes Exp $"
  */
 class HeartbeatHandler : public ACE_Event_Handler
 {
@@ -108,7 +108,7 @@ class HeartbeatHandler : public ACE_Event_Handler
  * Initialization event handler.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciHeartbeatController.h,v 1.80 2003/09/19 08:35:02 almamgr Exp $"
+ * @version "@(#) $Id: maciHeartbeatController.h,v 1.81 2006/09/01 02:20:54 cparedes Exp $"
  */
 class HeartbeatInitializationHandler : public ACE_Event_Handler
 {
@@ -162,7 +162,7 @@ class HeartbeatInitializationHandler : public ACE_Event_Handler
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciHeartbeatController.h,v 1.80 2003/09/19 08:35:02 almamgr Exp $"
+ * @version "@(#) $Id: maciHeartbeatController.h,v 1.81 2006/09/01 02:20:54 cparedes Exp $"
  */
 
 class maci_EXPORT HeartbeatController
@@ -260,7 +260,7 @@ public:
 
 };
 
-NAMESPACE_END(maci);
+ }; 
 
 #endif  /* maciHeartbeatController_H */
 

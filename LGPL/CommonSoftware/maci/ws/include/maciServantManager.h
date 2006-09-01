@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciServantManager.h,v 1.85 2006/08/08 11:16:55 bjeram Exp $"
+* "@(#) $Id: maciServantManager.h,v 1.86 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -15,7 +15,7 @@
 #include <tao/PortableServer/PortableServer.h>
 #include <tao/PortableServer/ServantActivatorC.h>
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 
 /**
  * Servant manager class
@@ -58,7 +58,7 @@ private:
 
 };
 
-NAMESPACE_END(maci);
+ }; 
 
 #endif /*maciServantManager_h*/ 
 

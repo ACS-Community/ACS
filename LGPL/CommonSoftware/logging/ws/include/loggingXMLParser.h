@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingXMLParser.h,v 1.34 2003/03/14 10:24:37 rgeorgie Exp $"
+* "@(#) $Id: loggingXMLParser.h,v 1.35 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 
 #include <loggingXMLElement.h>
 
-NAMESPACE_BEGIN(loggingXMLParser);
+namespace loggingXMLParser {
 
 #define XP_NONE 0
 
@@ -68,7 +68,7 @@ NAMESPACE_BEGIN(loggingXMLParser);
  * (This is due to lack of time of the programmer, give me 2h and ...)
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingXMLParser.h,v 1.34 2003/03/14 10:24:37 rgeorgie Exp $"
+ * @version "@(#) $Id: loggingXMLParser.h,v 1.35 2006/09/01 02:20:55 cparedes Exp $"
  */
 class logging_EXPORT XMLParser
 {
@@ -92,7 +92,7 @@ public:
   static int parseElementType(const ACE_TCHAR * xml, ACE_CString &elementType);
 };
 
-NAMESPACE_END(loggingXMLParser);
+ }; 
 
 #endif /*!loggingXMLParser_H*/
 
@@ -101,6 +101,9 @@ NAMESPACE_END(loggingXMLParser);
 // REVISION HISTORY:
 //
 // $Log: loggingXMLParser.h,v $
+// Revision 1.35  2006/09/01 02:20:55  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.34  2003/03/14 10:24:37  rgeorgie
 // LGPL
 //

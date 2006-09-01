@@ -1,4 +1,4 @@
-// $Id: testProfiler.cpp,v 1.2 2004/10/21 20:06:41 dfugate Exp $
+// $Id: testProfiler.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -31,7 +31,7 @@
 
 #include "acstimeProfiler.h"
 
-NAMESPACE_USE(std)
+ using namespace std;
 
 //------------------------------------------------------------------------------
 

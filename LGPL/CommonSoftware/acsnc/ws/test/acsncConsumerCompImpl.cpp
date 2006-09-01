@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncConsumerCompImpl.cpp,v 1.11 2006/03/08 17:50:44 dfugate Exp $"
+* "@(#) $Id: acsncConsumerCompImpl.cpp,v 1.12 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,17 +27,17 @@
 * david  25/09/02  created 
 */
 
-static char *rcsId="@(#) $Id: acsncConsumerCompImpl.cpp,v 1.11 2006/03/08 17:50:44 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncConsumerCompImpl.cpp,v 1.12 2006/09/01 02:20:54 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsncConsumerCompImpl.h"
 #include <ACSErrTypeCommon.h>
 
-NAMESPACE_USE(ACSErrTypeCommon);
+ using namespace ACSErrTypeCommon;
 
 
 using namespace std;
-NAMESPACE_USE(baci);
+ using namespace baci;
 
 /* ----------------------------------------------------------------*/
 void

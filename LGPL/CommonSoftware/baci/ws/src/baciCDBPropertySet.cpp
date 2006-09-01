@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCDBPropertySet.cpp,v 1.97 2005/09/28 13:53:09 msekoran Exp $"
+* "@(#) $Id: baciCDBPropertySet.cpp,v 1.98 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -34,10 +34,10 @@
 
 #include <orbsvcs/Property/CosPropertyService_i.h>
 
-NAMESPACE_USE(baci);
-NAMESPACE_USE(cdb);
+ using namespace baci;
+ using namespace cdb;
 
-ACE_RCSID(baci, baciCDBPropertySet, "$Id: baciCDBPropertySet.cpp,v 1.97 2005/09/28 13:53:09 msekoran Exp $");
+ACE_RCSID(baci, baciCDBPropertySet, "$Id: baciCDBPropertySet.cpp,v 1.98 2006/09/01 02:20:54 cparedes Exp $");
 
 CDBPropertySet * CDBPropertySet::instance_mp = 0;
 

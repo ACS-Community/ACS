@@ -19,7 +19,7 @@
 //*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //*
 //
-// $Id: cdbCCS.cpp,v 1.26 2004/10/14 20:46:18 gchiozzi Exp $
+// $Id: cdbCCS.cpp,v 1.27 2006/09/01 02:20:54 cparedes Exp $
 //
 // GROUP    =  Configuration Database
 // AUTHOR  --- Mihael Kadunc, Matej Sekoranja, IJS
@@ -91,10 +91,10 @@ static const dbTYPES   dbTypes[] = {
 #include "err.h"
 #include "log.h"
 
-static char *rcsId="@(#) $Id: cdbCCS.cpp,v 1.26 2004/10/14 20:46:18 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: cdbCCS.cpp,v 1.27 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
-NAMESPACE_BEGIN(cdb)
+namespace cdb {
 
 Table* CCS::createTable( int argc, char** argv, CORBA::ORB_ptr orb)
 {
@@ -683,13 +683,16 @@ Boolean CCS::GetChildren(const String &,
   return FALSE;
 }
 
-NAMESPACE_END(cdb)
+ }; 
 
   // ************************************************************************
   //
   // REVISION HISTORY:
   //
   //   $Log: cdbCCS.cpp,v $
+  //   Revision 1.27  2006/09/01 02:20:54  cparedes
+  //   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+  //
   //   Revision 1.26  2004/10/14 20:46:18  gchiozzi
   //   Cleaned up logging messages:
   //   - uses now only ACS_* macros and not any more ACE_* macros

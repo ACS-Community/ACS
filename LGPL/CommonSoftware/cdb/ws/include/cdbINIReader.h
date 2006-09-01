@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbINIReader.h,v 1.24 2003/01/28 16:43:50 vltsccm Exp $"
+* "@(#) $Id: cdbINIReader.h,v 1.25 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when       what
 * --------  ---------- ----------------------------------------------
@@ -24,7 +24,7 @@
 #define INI_BEGIN_SECTION_CHAR '['
 #define INI_END_SECTION_CHAR ']'
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 class cdb_EXPORT INIReader : public Table
 {
@@ -92,7 +92,7 @@ private:
 
 };
 
-NAMESPACE_END(cdb);
+ }; 
 
 #endif /* cdbINIReader_H */
 
@@ -101,6 +101,9 @@ NAMESPACE_END(cdb);
 // REVISION HISTORY:
 //
 // $Log: cdbINIReader.h,v $
+// Revision 1.25  2006/09/01 02:20:54  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.24  2003/01/28 16:43:50  vltsccm
 // gchiozzi: patch for cdb module to create lib/endorsed directory, since CVS cannot restore empty directories
 //

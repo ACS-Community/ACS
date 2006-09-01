@@ -1,4 +1,4 @@
-// @(#) $Id: testEpoch.cpp,v 1.13 2005/09/21 14:46:33 vwang Exp $
+// @(#) $Id: testEpoch.cpp,v 1.14 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -33,8 +33,8 @@
 #include "acstimeDurationHelper.h"
 #include "acstimeEpochHelper.h"
 
-NAMESPACE_USE(maci)
-NAMESPACE_USE(ACS)
+ using namespace maci;
+ using namespace ACS;
 //------------------------------------------------------------------------------
 #include "helperFuncs.c"
 //------------------------------------------------------------------------------

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.h,v 1.5 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciBACIProperty.h,v 1.6 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,7 +44,7 @@
 
 #include <vector>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 
 class BACIComponent;
@@ -232,7 +232,7 @@ typedef std::vector<BACIProperty*> BACIPropertyVector;
 
 /* ------------------------------------------------------------------------ */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baci_H */ 
 

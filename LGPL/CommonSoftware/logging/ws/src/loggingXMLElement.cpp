@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingXMLElement.cpp,v 1.34 2003/03/14 10:24:49 rgeorgie Exp $"
+* "@(#) $Id: loggingXMLElement.cpp,v 1.35 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <vltPort.h>
 #include <loggingXMLElement.h>
 
-NAMESPACE_USE(loggingXMLParser);
+ using namespace loggingXMLParser;
 
 XMLElement::XMLElement()
 {
@@ -94,6 +94,9 @@ XMLElement::getAttributesIterator (void)
 // REVISION HISTORY:
 //
 // $Log: loggingXMLElement.cpp,v $
+// Revision 1.35  2006/09/01 02:20:55  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.34  2003/03/14 10:24:49  rgeorgie
 // LGPL
 //

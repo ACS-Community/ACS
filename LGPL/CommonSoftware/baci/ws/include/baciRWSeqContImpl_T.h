@@ -41,7 +41,7 @@
  */
 #define ACS_RW_SEQ_T(T, TC) ACS::T##Seq*, ACS::CB##T##Seq, ACS::T##Seq##Seq, ACS::T##Seq##Seq_out, ACS::Monitor##T, Monitor##T##Seq, ACS::T##Seq, TC, TC, POA_ACS::RW##T##Seq, const ACS::T##Seq&
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 template <ACS_RW_C> 
 class RWSeqContImpl : public virtual POA_SK,
@@ -86,7 +86,7 @@ class RWSeqContImpl : public virtual POA_SK,
 
 // #include "baciRWSeqContImpl_T.i"
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

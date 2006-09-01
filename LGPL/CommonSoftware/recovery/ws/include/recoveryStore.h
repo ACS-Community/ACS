@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: recoveryStore.h,v 1.7 2004/03/17 07:39:50 bjeram Exp $"
+* "@(#) $Id: recoveryStore.h,v 1.8 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,7 +24,7 @@
 #include <Thread_Mutex.h>
 #include <Recursive_Thread_Mutex.h>
 
-NAMESPACE_BEGIN(recovery);
+namespace recovery {
 
 /**
  * Maximum record size (line in the recovery file)
@@ -43,7 +43,7 @@ NAMESPACE_BEGIN(recovery);
  * It also supports saving data into a file.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: recoveryStore.h,v 1.7 2004/03/17 07:39:50 bjeram Exp $"
+ * @version "@(#) $Id: recoveryStore.h,v 1.8 2006/09/01 02:20:55 cparedes Exp $"
  * @precondition keys must not contain SEPARATOR_CHAR --- 
  * this restriction should be somehow removed in implementation... 
  */
@@ -208,7 +208,7 @@ protected:
 
 #include <ace/post.h>
 
-NAMESPACE_END(recovery);
+ }; 
 
 #endif /* recoveryStore_H */
 
@@ -217,6 +217,9 @@ NAMESPACE_END(recovery);
 // REVISION HISTORY:
 //
 // $Log: recoveryStore.h,v $
+// Revision 1.8  2006/09/01 02:20:55  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.7  2004/03/17 07:39:50  bjeram
 // ported to ACE 5.4 and TAO 1.4
 //

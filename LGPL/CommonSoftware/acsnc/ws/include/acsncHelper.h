@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.62 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.63 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@
 
 #include <ACSErrTypeCommon.h>
 
-NAMESPACE_USE(ACSErrTypeCommon);
+ using namespace ACSErrTypeCommon;
 
 
 /** @file acsncHelper.h
@@ -63,7 +63,7 @@ NAMESPACE_USE(ACSErrTypeCommon);
  */
 #define ACSNC_STRING_MACRO(something) #something
 
-NAMESPACE_BEGIN(nc);
+namespace nc {
 /**
  *  Class Helper is a base class used to provide common functionality between the
  *  Consumer and Supplier classes. That is, it hides much of the ACE/TAO
@@ -284,7 +284,7 @@ class Helper
      */
     bool okToLog_m;
 };
-NAMESPACE_END(nc);
+ }; 
 
 #endif /*!_H*/
 

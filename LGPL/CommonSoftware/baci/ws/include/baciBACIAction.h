@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIAction.h,v 1.5 2005/02/01 00:44:38 dfugate Exp $"
+* "@(#) $Id: baciBACIAction.h,v 1.6 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 
 #include <deque>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 
 // forwards
@@ -294,6 +294,6 @@ typedef std::deque<BACIAction*> BACIActionQueue;
 
 /* ------------------------------------------------------------------------ */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baci_H */ 

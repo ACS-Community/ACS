@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampImpl.h,v 1.19 2005/04/14 09:41:05 acaproni Exp $"
+ * "@(#) $Id: acssampImpl.h,v 1.20 2006/09/01 02:20:55 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -50,10 +50,10 @@
  * but allows namespace support for compilers that do not have it 
  * natively (i.e., GCC 2.95 for VxWorks).
  */ 
-NAMESPACE_USE(baci);
-NAMESPACE_USE(std);
+ using namespace baci;
+ using namespace std;
 
-NAMESPACE_USE(ACSErrTypeCommon);
+ using namespace ACSErrTypeCommon;
 
 /** @file acssampImpl.h
  *  Header file for the factory object, which allows to create 

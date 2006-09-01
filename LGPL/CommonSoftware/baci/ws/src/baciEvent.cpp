@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciEvent.cpp,v 1.93 2005/02/04 00:34:00 dfugate Exp $"
+* "@(#) $Id: baciEvent.cpp,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include "baciRecovery.h"
 #include "baciEvent.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /* ------------------------------------------------------------------*/
 /* --------------------- [ EventDispathcer ] ------------------------*/
@@ -116,7 +116,7 @@ EventDispatcher::destroyEvents()
 		(*iter)->destroy();
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 

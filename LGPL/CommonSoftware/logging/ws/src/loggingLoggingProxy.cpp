@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.22 2006/08/16 14:39:16 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.23 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -51,12 +51,12 @@
 
 #include <acsutilTempFile.h>
 
-NAMESPACE_USE(loggingXMLParser);
+ using namespace loggingXMLParser;
 
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.22 2006/08/16 14:39:16 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.23 2006/09/01 02:20:55 cparedes Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {

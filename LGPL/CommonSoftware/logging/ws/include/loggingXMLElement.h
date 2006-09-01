@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingXMLElement.h,v 1.35 2004/03/17 07:38:33 bjeram Exp $"
+* "@(#) $Id: loggingXMLElement.h,v 1.36 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <ace/Hash_Map_Manager.h>
 #include <Thread_Mutex.h>
 
-NAMESPACE_BEGIN(loggingXMLParser);
+namespace loggingXMLParser {
 
 class logging_EXPORT XMLElement
 {
@@ -121,7 +121,7 @@ private:
 
 };
 
-NAMESPACE_END(loggingXMLParser);
+ }; 
 
 
 #endif /*!loggingXMLElement_H*/
@@ -131,6 +131,9 @@ NAMESPACE_END(loggingXMLParser);
 // REVISION HISTORY:
 //
 // $Log: loggingXMLElement.h,v $
+// Revision 1.36  2006/09/01 02:20:55  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.35  2004/03/17 07:38:33  bjeram
 // ported to ACE 5.4 and TAO 1.4
 //

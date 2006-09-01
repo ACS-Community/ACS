@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingXMLParser.cpp,v 1.37 2004/10/14 21:03:48 gchiozzi Exp $"
+* "@(#) $Id: loggingXMLParser.cpp,v 1.38 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <vltPort.h>
 #include <loggingXMLParser.h>
 
-NAMESPACE_USE(loggingXMLParser);
+ using namespace loggingXMLParser;
 
 XMLElement *
 XMLParser::parseString(const ACE_TCHAR * xml, bool skipValueParsing)
@@ -370,6 +370,9 @@ XMLParser::parseElementType(const ACE_TCHAR * xml, ACE_CString &elementType)
 // REVISION HISTORY:
 //
 // $Log: loggingXMLParser.cpp,v $
+// Revision 1.38  2006/09/01 02:20:55  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.37  2004/10/14 21:03:48  gchiozzi
 // No change. Simply add a commet for the previous change.
 // Fixed nasty bug with ACE_CString allocation.

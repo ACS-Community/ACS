@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampOnlyNCClient.cpp,v 1.14 2005/04/21 16:37:39 dfugate Exp $"
+* "@(#) $Id: acssampOnlyNCClient.cpp,v 1.15 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,8 +46,8 @@
 #include <acsncConsumer.h>
 
 using namespace std;
-NAMESPACE_USE(maci);
-ACE_RCSID(acssampOnlyNCClient, OnlyNCClient, "$Id: acssampOnlyNCClient.cpp,v 1.14 2005/04/21 16:37:39 dfugate Exp $")
+ using namespace maci;
+ACE_RCSID(acssampOnlyNCClient, OnlyNCClient, "$Id: acssampOnlyNCClient.cpp,v 1.15 2006/09/01 02:20:55 cparedes Exp $")
     
   
   

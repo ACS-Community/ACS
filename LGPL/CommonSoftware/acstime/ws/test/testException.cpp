@@ -1,4 +1,4 @@
-// @(#) $Id: testException.cpp,v 1.6 2005/09/21 14:46:39 vwang Exp $
+// @(#) $Id: testException.cpp,v 1.7 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -32,8 +32,8 @@
 #include <baciCORBA.h>
 #include "ClockC.h"
 
-NAMESPACE_USE(maci)
-NAMESPACE_USE(ACS)
+ using namespace maci;
+ using namespace ACS;
 
 //------------------------------------------------------------------------------
 

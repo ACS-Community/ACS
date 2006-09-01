@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDevIOTime.h,v 1.9 2006/06/22 16:14:18 gchiozzi Exp $
+/* @(#) $Id: acstimeDevIOTime.h,v 1.10 2006/09/01 02:20:54 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -33,7 +33,7 @@
 #include <baciDevIO.h>
 #include "acstimeTimeUtil.h"
 ////////////////////////////////////////////////////////////////////////
-NAMESPACE_USE(baci);
+ using namespace baci;
 ////////////////////////////////////////////////////////////////////////
 /** @file acstimeDevIOTime.h
  *  Header file for Clock's time devIO. 

@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciORBTask.h,v 1.1 2003/05/23 09:26:37 msekoran Exp $"
+* "@(#) $Id: maciORBTask.h,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -16,7 +16,7 @@
 #include <ace/Task.h>
 #include <tao/ORB.h>
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 
 /**
  * Implementation of the task (set of thread workers)
@@ -62,7 +62,7 @@ class ORBTask : public ACE_Task_Base
 
 };
 
-NAMESPACE_END(maci);
+ }; 
 
 #endif /* maciORBTask_h */ 
 
@@ -71,6 +71,9 @@ NAMESPACE_END(maci);
 // REVISION HISTORY:
 //
 // $Log: maciORBTask.h,v $
+// Revision 1.2  2006/09/01 02:20:54  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.1  2003/05/23 09:26:37  msekoran
 // Multi-threaded servers, hierarchical COBs reactivation deadlock fixed.
 //

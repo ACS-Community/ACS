@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWcontImpl_T.h,v 1.21 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciRWcontImpl_T.h,v 1.22 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -49,7 +49,7 @@
  */
 #define DEC_ACTION 3
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * Implementation of RWcontImpl property
@@ -187,7 +187,7 @@ class baci_EXPORT RWcontImpl : public virtual POA_SK,
     TSM	max_value_m;
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciRWcontImpl */
 

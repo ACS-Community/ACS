@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRecoverableObject.h,v 1.93 2005/01/27 23:57:55 dfugate Exp $"
+* "@(#) $Id: baciRecoverableObject.h,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <acsutil.h>
 #include <baciExport.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * Monitor ID (needed for decoding)
@@ -94,7 +94,7 @@ public:
 
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baciRecoverableObject_h */
 

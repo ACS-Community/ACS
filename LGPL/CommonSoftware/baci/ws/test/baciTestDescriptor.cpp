@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestDescriptor.cpp,v 1.94 2004/10/14 20:46:18 gchiozzi Exp $"
+* "@(#) $Id: baciTestDescriptor.cpp,v 1.95 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
  
-static char *rcsId="@(#) $Id: baciTestDescriptor.cpp,v 1.94 2004/10/14 20:46:18 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: baciTestDescriptor.cpp,v 1.95 2006/09/01 02:20:55 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -48,8 +48,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <baciTestUtils.h>
 #include <baciTestClassImpl.h>
 
-NAMESPACE_USE(baci)
-NAMESPACE_USE(BACI_TEST)
+ using namespace baci;
+ using namespace BACI_TEST;
 
 #ifdef MAKE_VXWORKS
 unsigned int sleep(unsigned int);

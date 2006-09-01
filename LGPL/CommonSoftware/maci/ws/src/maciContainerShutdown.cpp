@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerShutdown.cpp,v 1.7 2005/10/19 09:01:34 msekoran Exp $"
+* "@(#) $Id: maciContainerShutdown.cpp,v 1.8 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <maciHelper.h>
 #include <maciContainerImpl.h>
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
 int
 main (int argc, char *argv[])

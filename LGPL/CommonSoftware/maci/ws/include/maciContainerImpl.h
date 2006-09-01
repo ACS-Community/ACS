@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.31 2005/10/06 14:15:05 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.32 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,9 +44,9 @@
 /// 2 - exit the container
 #define CONTAINER_EXIT 2
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 
-NAMESPACE_USE(cdb);
+ using namespace cdb;
 
 /**
  * Each DLL is expected to export a function with public name "ConstructComponentFunc",
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.31 2005/10/06 14:15:05 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.32 2006/09/01 02:20:54 cparedes Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -791,7 +791,7 @@ T* ContainerImpl::getService(const char *name, const char *domain, bool activate
 
 
 
-NAMESPACE_END(maci);
+ }; 
 
 #endif // maciContainerImpl_h
 

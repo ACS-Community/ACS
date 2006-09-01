@@ -7,7 +7,7 @@
 #endif
 
 
-NAMESPACE_USE(baci);
+ using namespace baci;
 
 LoggingProxy *g_logger = 0;
 int iter = 0;

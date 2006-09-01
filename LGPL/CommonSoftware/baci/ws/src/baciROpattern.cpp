@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROpattern.cpp,v 1.106 2005/09/29 08:25:26 msekoran Exp $"
+* "@(#) $Id: baciROpattern.cpp,v 1.107 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include "baciROdiscImpl_T.i"
 #include "baciMonitor_T.i"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 template class Monitor<ACS_MONITOR(pattern, ACS::pattern)>;
 template class ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>;
@@ -50,7 +50,7 @@ ROpatternImpl::~ROpatternImpl()
     ACS_TRACE("baci::ROpatternImpl::~ROpatternImpl");
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 

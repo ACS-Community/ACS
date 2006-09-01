@@ -1,4 +1,4 @@
-// $Id: testNow.cpp,v 1.10 2005/09/21 14:46:55 vwang Exp $
+// $Id: testNow.cpp,v 1.11 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -41,8 +41,8 @@
 #include <baci.h>
 #include "acstime.h"
 
-NAMESPACE_USE(maci)
-NAMESPACE_USE(ACS)
+ using namespace maci;
+ using namespace ACS;
 
 //------------------------------------------------------------------------------
 

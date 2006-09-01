@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainer.cpp,v 1.15 2005/09/27 08:34:24 vwang Exp $"
+* "@(#) $Id: maciContainer.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -71,9 +71,9 @@ int g_containerShutdownAction = 0;
 
 #endif
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
-ACE_RCSID(maci, maciContainer, "$Id: maciContainer.cpp,v 1.15 2005/09/27 08:34:24 vwang Exp $")
+ACE_RCSID(maci, maciContainer, "$Id: maciContainer.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $")
 
 volatile bool shutting_down = false;
 

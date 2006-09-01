@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPropertyImpl.cpp,v 1.9 2005/09/28 13:53:09 msekoran Exp $"
+* "@(#) $Id: baciPropertyImpl.cpp,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include "baciDB.h"
 #include "baciPropertyImpl.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 PropertyImpl::PropertyImpl(const ACE_CString& name, BACIComponent* component_p) :
     CharacteristicModelImpl(name, component_p->getCharacteristicModel()),
@@ -57,7 +57,7 @@ PropertyImpl::characteristic_component_name ()
   return CORBA::string_dup (component_mp->getName());
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 
 

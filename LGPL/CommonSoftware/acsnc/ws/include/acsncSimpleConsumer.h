@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_H
 #define SIMPLE_CONSUMER_H
-/*    @(#) $Id: acsncSimpleConsumer.h,v 1.6 2005/06/21 21:26:51 dfugate Exp $
+/*    @(#) $Id: acsncSimpleConsumer.h,v 1.7 2006/09/01 02:20:54 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -28,7 +28,7 @@
  */
 
 #include "acsncConsumer.h"
-NAMESPACE_BEGIN(nc);
+namespace nc {
 
 
 /**
@@ -182,7 +182,7 @@ template <class T> class SimpleConsumer : public Consumer
     addSubscription(const char* type_name, eventHandlerFunction templateFunction, void *handlerParam=0)
 	throw (CORBA::SystemException);
 };
-NAMESPACE_END(nc);
+ }; 
 
 #include "acsncSimpleConsumer.i"
 

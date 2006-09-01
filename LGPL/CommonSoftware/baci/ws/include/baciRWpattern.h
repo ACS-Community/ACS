@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWpattern.h,v 1.104 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciRWpattern.h,v 1.105 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@
 #include <baciRWdiscImpl_T.h>
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 class RWpatternImpl;
 
@@ -63,7 +63,7 @@ class baci_EXPORT RWpatternImpl : public virtual POA_ACS::RWpattern,
     ~RWpatternImpl();
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciRWpattern */
 

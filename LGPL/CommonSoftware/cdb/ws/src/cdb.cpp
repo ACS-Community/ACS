@@ -19,7 +19,7 @@
 //*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //*
 //
-// $Id: cdb.cpp,v 1.29 2005/02/14 10:39:36 acaproni Exp $
+// $Id: cdb.cpp,v 1.30 2006/09/01 02:20:54 cparedes Exp $
 //
 // GROUP    =  Configuration Database
 // AUTHOR  --- Klemen Zagar
@@ -38,7 +38,7 @@
 #include <cdbINIReader.h>
 #include <Null_Mutex.h>
 
-NAMESPACE_USE(cdb)
+ using namespace cdb;
 
 Record::Record(const String &strRecord, Table *pTable) :
   m_pTable(pTable),
@@ -274,6 +274,9 @@ cdb_EXPORT void cdb::registerTable( const char* name, TableFactory pTf )
 // REVISION HISTORY:
 //
 //   $Log: cdb.cpp,v $
+//   Revision 1.30  2006/09/01 02:20:54  cparedes
+//   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 //   Revision 1.29  2005/02/14 10:39:36  acaproni
 //   Some changes to reduce the coding standards number of errors
 //

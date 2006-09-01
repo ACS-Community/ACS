@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropAlarm.h,v 1.33 2005/11/03 21:30:31 dfugate Exp $"
+* "@(#) $Id: enumpropAlarm.h,v 1.34 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -19,7 +19,7 @@
 #include <baciRecoverableObject.h>
 #include <ACSErrTypeAlarmC.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 template <class T>
 class MonitorenumpropEventDispatcher : public EventDispatcher
@@ -161,7 +161,7 @@ private:
 };
 
 #include "enumpropAlarm.i"
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

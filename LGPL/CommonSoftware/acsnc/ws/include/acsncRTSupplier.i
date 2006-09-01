@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_I
 #define RT_SUPPLIER_I
-/*    @(#) $Id: acsncRTSupplier.i,v 1.18 2005/06/21 21:26:51 dfugate Exp $
+/*    @(#) $Id: acsncRTSupplier.i,v 1.19 2006/09/01 02:20:54 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -26,7 +26,7 @@
  *  Header file for the real-time Supplier class implementation.
  */
 
-NAMESPACE_BEGIN(nc);
+namespace nc {
 //----------------------------------------------------------------------    
 template <class T> void
 RTSupplier::publishData(T data)
@@ -62,5 +62,5 @@ RTSupplier::publishData(T data)
 	}
 }
 //----------------------------------------------------------------------
-NAMESPACE_END(nc);
+ }; 
 #endif

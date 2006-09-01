@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: recoveryStore.cpp,v 1.6 2002/02/08 14:21:45 vltsccm Exp $"
+* "@(#) $Id: recoveryStore.cpp,v 1.7 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -14,9 +14,9 @@
 
 #include <logging.h>
 
-ACE_RCSID(recovery, recoveryStore, "$Id: recoveryStore.cpp,v 1.6 2002/02/08 14:21:45 vltsccm Exp $")
+ACE_RCSID(recovery, recoveryStore, "$Id: recoveryStore.cpp,v 1.7 2006/09/01 02:20:54 cparedes Exp $")
 
-NAMESPACE_USE(recovery)
+ using namespace recovery;
 
 RecoveryStore::RecoveryStore (const ACE_CString& file_name, bool bload, ACE_UINT32 max_size)
   : file_name_(file_name),
@@ -252,6 +252,9 @@ RecoveryStore::unlink(void)
 // REVISION HISTORY:
 //
 // $Log: recoveryStore.cpp,v $
+// Revision 1.7  2006/09/01 02:20:54  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.6  2002/02/08 14:21:45  vltsccm
 // bgustafs: Removed chmod for VxWorks
 //

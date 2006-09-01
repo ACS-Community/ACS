@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: recoveryStore_Test.cpp,v 1.8 2004/10/14 20:46:17 gchiozzi Exp $"
+* "@(#) $Id: recoveryStore_Test.cpp,v 1.9 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -12,9 +12,9 @@
 #include <recoveryStore.h>
 #include <logging.h>
 
-ACE_RCSID(recovery, recoveryStore_test, "$Id: recoveryStore_Test.cpp,v 1.8 2004/10/14 20:46:17 gchiozzi Exp $")
+ACE_RCSID(recovery, recoveryStore_test, "$Id: recoveryStore_Test.cpp,v 1.9 2006/09/01 02:20:54 cparedes Exp $")
 
-NAMESPACE_USE(recovery)
+ using namespace recovery;
 
 struct String_Table {
   ACE_CString key_;

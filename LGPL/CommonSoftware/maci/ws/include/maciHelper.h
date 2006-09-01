@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciHelper.h,v 1.85 2006/08/10 00:52:20 sharring Exp $"
+* "@(#) $Id: maciHelper.h,v 1.86 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -29,14 +29,14 @@
 
 #include <tao/IFR_Client/IFR_BasicC.h>
 
-NAMESPACE_BEGIN(maci);
-NAMESPACE_USE(cdb);
+namespace maci {
+ using namespace cdb;
 
 /**
  * MACIHelper class is a class helping to handle commonly used operations.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciHelper.h,v 1.85 2006/08/10 00:52:20 sharring Exp $"
+ * @version "@(#) $Id: maciHelper.h,v 1.86 2006/09/01 02:20:54 cparedes Exp $"
  */
 
 class maci_EXPORT MACIHelper
@@ -181,7 +181,7 @@ private:
 
 };
 
-NAMESPACE_END(maci);
+ }; 
 
 #endif  /* maciResolveHelper_H_ */
 

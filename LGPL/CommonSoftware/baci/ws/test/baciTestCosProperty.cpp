@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestCosProperty.cpp,v 1.1 2005/09/28 13:57:18 msekoran Exp $"
+* "@(#) $Id: baciTestCosProperty.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * msekoran 2005-09-27 created
 */
  
-static char *rcsId="@(#) $Id: baciTestCosProperty.cpp,v 1.1 2005/09/28 13:57:18 msekoran Exp $";
+static char *rcsId="@(#) $Id: baciTestCosProperty.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -42,8 +42,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <baciTest.h>
 #include <baciTestUtils.h>
 
-NAMESPACE_USE(baci)
-NAMESPACE_USE(BACI_TEST)
+ using namespace baci;
+ using namespace BACI_TEST;
 
 unsigned int sleep(unsigned int);
 

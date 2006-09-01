@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDB.cpp,v 1.98 2005/02/08 22:01:53 dfugate Exp $"
+* "@(#) $Id: baciDB.cpp,v 1.99 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -31,8 +31,8 @@
 #include "baciDB.h"
 #include <logging.h>
 
-NAMESPACE_USE(cdb);
-NAMESPACE_USE(baci);
+ using namespace cdb;
+ using namespace baci;
 
 ACE_CString DBConnector::dbPrefix_m = "";
 Table * DBConnector::dbTable_mp = 0;

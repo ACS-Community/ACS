@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbDAOImpl.h,v 1.26 2003/10/23 07:57:09 acaproni Exp $"
+* "@(#) $Id: cdbDAOImpl.h,v 1.27 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -12,7 +12,7 @@
 #define cdbDAOImpl_H_
 
 #include <cdb.h>
-NAMESPACE_USE(cdb);
+ using namespace cdb;
 
 /////////////////////////////////////////////////////////////////////////////
 // internal class for XML tree handling

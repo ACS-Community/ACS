@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.h,v 1.3 2005/02/01 00:44:38 dfugate Exp $"
+* "@(#) $Id: baciBACIMonitor.h,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 #include "logging.h"
 #include <vector>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 
 
@@ -286,7 +286,7 @@ private:
 typedef std::vector<BACIMonitor*> BACIMonitorVector;
 /* ------------------------------------------------------------------------ */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baci_H */ 
 

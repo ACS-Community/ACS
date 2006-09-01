@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.9 2006/06/28 08:07:11 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,7 +48,7 @@
 #include <acsThreadManager.h>
 #include "baciCharacteristicModelImpl.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /* ------------------------------------------------------------------------ */
 
@@ -247,7 +247,7 @@ private:
 
 /* ------------------------------------------------------------------------ */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baci_H */ 
 

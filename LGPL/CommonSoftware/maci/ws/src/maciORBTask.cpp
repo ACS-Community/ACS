@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciORBTask.cpp,v 1.3 2005/09/27 08:35:10 vwang Exp $"
+* "@(#) $Id: maciORBTask.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -12,7 +12,7 @@
 
 #include <maciORBTask.h>
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
 ORBTask::ORBTask (CORBA::ORB_ptr orb, LoggingProxy * logger, unsigned int timeToRun)
     :  m_orb(CORBA::ORB::_duplicate(orb)), m_logger(logger), m_timeToRun(timeToRun)
@@ -65,6 +65,9 @@ ORBTask::svc (void)
 // REVISION HISTORY:
 //
 // $Log: maciORBTask.cpp,v $
+// Revision 1.4  2006/09/01 02:20:54  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.3  2005/09/27 08:35:10  vwang
 //  change from ACE_TRY CATCH to C++ try catch
 //

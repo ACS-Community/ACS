@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.cpp,v 1.108 2005/12/15 19:20:31 dfugate Exp $"
+* "@(#) $Id: baciValue.cpp,v 1.109 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,9 +36,9 @@
 
 #include "logging.h"
 
-ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.108 2005/12/15 19:20:31 dfugate Exp $")
+ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.109 2006/09/01 02:20:54 cparedes Exp $")
 
-NAMESPACE_USE(baci)
+ using namespace baci;
 
 
 #define ACCESSOR_INLINE_TYPE(ty, realType)     \
@@ -520,6 +520,9 @@ std::istream& operator>>(std::istream &is, ACE_CString &data)
 // REVISION HISTORY:
 //
 // $Log: baciValue.cpp,v $
+// Revision 1.109  2006/09/01 02:20:54  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.108  2005/12/15 19:20:31  dfugate
 // If the BACIValue is null or a pointer to a C++ object, do not store anything
 // into the CORBA any. By default, it should be initialized to tk_null and the

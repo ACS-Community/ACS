@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROdouble.h,v 1.94 2005/01/07 23:41:17 dfugate Exp $"
+* "@(#) $Id: baciROdouble.h,v 1.95 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include <baciMonitor_T.h>
 #include <baciROcontImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitordoubleTemplate Monitordouble Class
  * The Monitordouble class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -59,7 +59,7 @@ typedef  ROcontImpl<ACS_RO_T(double, CORBA::Double)> ROdouble;
 /** @} */
 
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

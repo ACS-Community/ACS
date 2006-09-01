@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROpattern.h,v 1.104 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciROpattern.h,v 1.105 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -42,7 +42,7 @@
 #include <baciROdiscImpl_T.h>
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 class ROpatternImpl;
 
@@ -66,7 +66,7 @@ class baci_EXPORT ROpatternImpl : public virtual POA_ACS::ROpattern,
     ~ROpatternImpl();
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciROpattern */
 

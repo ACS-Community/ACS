@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRecovery.cpp,v 1.95 2005/08/18 09:32:07 msekoran Exp $"
+* "@(#) $Id: baciRecovery.cpp,v 1.96 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,10 +32,10 @@
 
 #include "acsutilTempFile.h"
 
-ACE_RCSID(baci, baciRecovery, "$Id: baciRecovery.cpp,v 1.95 2005/08/18 09:32:07 msekoran Exp $")
+ACE_RCSID(baci, baciRecovery, "$Id: baciRecovery.cpp,v 1.96 2006/09/01 02:20:54 cparedes Exp $")
 
-NAMESPACE_USE(recovery);
-NAMESPACE_BEGIN(baci);
+ using namespace recovery;
+namespace baci {
 
 BACIRecoveryManager* BACIRecoveryManager::instance_mp = 0;
 bool BACIRecoveryManager::load_m = false;
@@ -189,7 +189,7 @@ BACIRecoveryManager::generateObjectName(const char* namePrefix) {
   return newName_p;
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 
@@ -198,6 +198,9 @@ NAMESPACE_END(baci);
 // REVISION HISTORY:
 //
 // $Log: baciRecovery.cpp,v $
+// Revision 1.96  2006/09/01 02:20:54  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.95  2005/08/18 09:32:07  msekoran
 // Replacing / chars in recovery filename with :
 //

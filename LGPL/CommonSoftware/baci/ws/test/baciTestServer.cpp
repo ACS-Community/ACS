@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.116 2006/06/26 15:55:13 bjeram Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.117 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.116 2006/06/26 15:55:13 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.117 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -50,8 +50,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // do not use ACS ! 
 // ACS:: prefix is obligatory for VxWorks 
 // (for all CORBA objects, object declared in an IDL, e.g. ACS::Callback, maci::Manager)
-// NAMESPACE_USE(ACS);
-NAMESPACE_USE(baci);
+//  using namespace ACS;
+ using namespace baci;
 
 /**
  * Hardcoded !

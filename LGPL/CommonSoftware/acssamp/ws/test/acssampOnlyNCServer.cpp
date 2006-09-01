@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: acssampOnlyNCServer.cpp,v 1.7 2004/10/14 21:42:04 gchiozzi Exp $"
+ * "@(#) $Id: acssampOnlyNCServer.cpp,v 1.8 2006/09/01 02:20:55 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -48,11 +48,11 @@
 #include <iostream>
 
 
-ACE_RCSID(acssampOnlyNCServer, onlyNCServer, "$Id: acssampOnlyNCServer.cpp,v 1.7 2004/10/14 21:42:04 gchiozzi Exp $")
+ACE_RCSID(acssampOnlyNCServer, onlyNCServer, "$Id: acssampOnlyNCServer.cpp,v 1.8 2006/09/01 02:20:55 cparedes Exp $")
 
 using namespace std;
-NAMESPACE_USE(maci); 
-NAMESPACE_USE(ACSErrTypeCommon); 
+ using namespace maci; 
+ using namespace ACSErrTypeCommon; 
 
     
 int main(int argc, char *argv[])

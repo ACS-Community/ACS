@@ -1,6 +1,6 @@
 // ************************************************************************
 //
-// $Id: cdb.h,v 1.25 2003/07/09 08:07:35 bjeram Exp $
+// $Id: cdb.h,v 1.26 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (c) 2000 by Klemen Zagar
 //
@@ -21,7 +21,7 @@
 #include "cdbExport.h"
 #include "ace/Singleton.h"
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 class cdb_EXPORT Table;
 
 //
@@ -295,7 +295,7 @@ cdb_EXPORT void registerTable( const char* name, TableFactory pTf );
 
 #include "cdb.i"
 
-NAMESPACE_END(cdb);
+ }; 
 
 
 
@@ -306,6 +306,9 @@ NAMESPACE_END(cdb);
 // REVISION HISTORY:
 //
 //   $Log: cdb.h,v $
+//   Revision 1.26  2006/09/01 02:20:54  cparedes
+//   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 //   Revision 1.25  2003/07/09 08:07:35  bjeram
 //   ported to gcc 3.2
 //

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.22 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.23 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -58,7 +58,7 @@
  */
 #define ACS_RO_C ACS_P_C, class TAlarm, class POA_CB, class TIN
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * Implementation of ROcommon property
@@ -136,7 +136,7 @@ protected:
 
 // #include "baciROcommonImpl_T.i"
 
-NAMESPACE_END(baci);
+ }; 
 
 
 

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciUtil.h,v 1.1 2005/01/18 00:29:44 dfugate Exp $"
+* "@(#) $Id: baciUtil.h,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include "baciExport.h"
 #include "baciTime.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 #ifdef MAKE_VXWORKS
 
@@ -53,7 +53,7 @@ TimeInterval ModulusAlgorithm(TimeInterval a,
 
 TimeInterval calculateModulus(TimeInterval t1, TimeInterval t2);
 
-NAMESPACE_END(baci);
+ }; 
 
 /* ------------------------------------------------------------------------ */
 

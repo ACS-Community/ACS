@@ -36,7 +36,7 @@
 
 #include <baciPcommonImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * Implementation of P (cont) property
@@ -111,7 +111,7 @@ private:
 
 // #include "baciPcontImpl_T.i"
 
-NAMESPACE_END(baci);
+ }; 
 
 
 #endif

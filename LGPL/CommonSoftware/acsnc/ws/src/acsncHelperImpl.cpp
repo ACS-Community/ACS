@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.70 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.71 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,11 +32,11 @@
 #include <acscommonC.h>
 #include "acsncCDBProperties.h"
 //-----------------------------------------------------------------------------
-NAMESPACE_USE(baci);
-NAMESPACE_USE(maci);
-NAMESPACE_USE(ACSErrTypeCommon);
+ using namespace baci;
+ using namespace maci;
+ using namespace ACSErrTypeCommon;
 //-----------------------------------------------------------------------------
-NAMESPACE_BEGIN(nc);
+namespace nc {
 //-----------------------------------------------------------------------------
 Helper::Helper(const char* channelName):
     namingContext_m(CosNaming::NamingContext::_nil()),
@@ -407,5 +407,5 @@ Helper::integrationLog(const std::string& log)
 }
 //-----------------------------------------------------------------------------
 
-NAMESPACE_END(nc);
+ }; 
 /*___oOo___*/

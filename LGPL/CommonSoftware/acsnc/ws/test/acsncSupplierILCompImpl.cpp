@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.1 2005/10/19 15:52:35 dfugate Exp $"
+* "@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,13 +27,13 @@
 * david  25/09/02  created 
 */
 
-static char *rcsId="@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.1 2005/10/19 15:52:35 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsncSupplierCompImpl.h"
 
 using namespace std;
-NAMESPACE_USE(baci);
+ using namespace baci;
 /* ----------------------------------------------------------------*/
 SupplierCompImpl::SupplierCompImpl(const ACE_CString &name,
 				   maci::ContainerServices *cs) :

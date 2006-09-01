@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTypelessPropertyImpl.cpp,v 1.10 2005/09/28 13:53:09 msekoran Exp $"
+* "@(#) $Id: baciTypelessPropertyImpl.cpp,v 1.11 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include "baciDB.h"
 #include "baciTypelessPropertyImpl.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 TypelessPropertyImpl::TypelessPropertyImpl(const ACE_CString& name, BACIComponent* component_p) :
     PropertyImpl(name, component_p)
@@ -115,7 +115,7 @@ TypelessPropertyImpl::resolution ()
   return resolution_m;
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 
 

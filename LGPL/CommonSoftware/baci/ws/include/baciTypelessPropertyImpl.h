@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTypelessPropertyImpl.h,v 1.11 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciTypelessPropertyImpl.h,v 1.12 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 
 #include <baciPropertyImpl.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 class baci_EXPORT TypelessPropertyImpl : public virtual POA_ACS::TypelessProperty,
 					public PropertyImpl
@@ -92,7 +92,7 @@ class baci_EXPORT TypelessPropertyImpl : public virtual POA_ACS::TypelessPropert
 
 }; //class TypelessPropertyImpl
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

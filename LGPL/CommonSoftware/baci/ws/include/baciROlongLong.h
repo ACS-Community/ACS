@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROlongLong.h,v 1.4 2005/01/07 23:41:17 dfugate Exp $"
+* "@(#) $Id: baciROlongLong.h,v 1.5 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <baciMonitor_T.h>
 #include <baciROcontImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitorlongLongTemplate MonitorlongLong Class
  * The MonitorlongLong class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -57,7 +57,7 @@ typedef  Monitor<ACS_MONITOR(longLong, ACS::longLong)> MonitorlongLong;
 typedef  ROcontImpl<ACS_RO_T(longLong, ACS::longLong)> ROlongLong;
 /** @} */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

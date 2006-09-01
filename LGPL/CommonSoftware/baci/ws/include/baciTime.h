@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTime.h,v 1.96 2005/12/14 21:45:04 dfugate Exp $"
+* "@(#) $Id: baciTime.h,v 1.97 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include <baciExport.h>
 #include <baciTypes.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * Entire module deprecated. Use acsutilTimeStamp.h instead.
@@ -103,7 +103,7 @@ ACE_Time_Value UTCtoACE_Time_Value(const TimeStamp &time);
  */
 ACE_CString getStringifiedUTC(TimeInterval time);
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciTime_H */
 

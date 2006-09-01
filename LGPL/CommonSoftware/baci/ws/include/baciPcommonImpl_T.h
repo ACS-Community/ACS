@@ -78,7 +78,7 @@
 #define ACS_P_C class T, class TCB, class TSeq, class TSeq_out, class TMonitor, class TMonitorImpl, class TM, class TS, class TSM, class POA_SK
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
 It helps converting value read from CDB to the right type. It was introduced due the problem with std library under VxWorks
@@ -370,7 +370,7 @@ public:
 
 //#include "baciPcommonImpl_T.i"
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

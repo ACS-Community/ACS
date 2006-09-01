@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTime.cpp,v 1.93 2005/12/14 21:45:04 dfugate Exp $"
+* "@(#) $Id: baciTime.cpp,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include "baciTime.h"
 #include <acsutilTimeStamp.h>
 
-NAMESPACE_BEGIN(baci)
+namespace baci {
 
 TimeStamp getTimeStamp()
 {
@@ -59,5 +59,5 @@ ACE_CString getStringifiedUTC(TimeInterval time)
   return ::getStringifiedUTC(time);
 }
 
-NAMESPACE_END(baci)
+ }; 
 

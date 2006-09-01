@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClient.cpp,v 1.93 2004/10/14 20:46:18 gchiozzi Exp $"
+* "@(#) $Id: baciTestClient.cpp,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * rlemke 2001-11-08 Added initialisation of ACS::CBDescIn
 */
  
-static char *rcsId="@(#) $Id: baciTestClient.cpp,v 1.93 2004/10/14 20:46:18 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: baciTestClient.cpp,v 1.94 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -43,8 +43,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <baciTest.h>
 #include <baciTestUtils.h>
 
-NAMESPACE_USE(baci)
-NAMESPACE_USE(BACI_TEST)
+ using namespace baci;
+ using namespace BACI_TEST;
 
 unsigned int sleep(unsigned int);
 

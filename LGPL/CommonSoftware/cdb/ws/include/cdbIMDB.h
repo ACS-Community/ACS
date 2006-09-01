@@ -1,6 +1,6 @@
 // ************************************************************************
 //
-// $Id: cdbIMDB.h,v 1.25 2003/07/09 08:07:35 bjeram Exp $
+// $Id: cdbIMDB.h,v 1.26 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (c) 2000 by Klemen Zagar
 //
@@ -18,7 +18,7 @@
 
 #include "cdb.h"
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 class cdb_EXPORT IMDB : public Table
 {
@@ -75,7 +75,7 @@ public:
                               StringArray &astrChildren);
 };
 
-NAMESPACE_END(cdb);
+ }; 
 
 #endif // __cdb_IMDB_h__
 
@@ -84,6 +84,9 @@ NAMESPACE_END(cdb);
 // REVISION HISTORY:
 //
 //   $Log: cdbIMDB.h,v $
+//   Revision 1.26  2006/09/01 02:20:54  cparedes
+//   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 //   Revision 1.25  2003/07/09 08:07:35  bjeram
 //   ported to gcc 3.2
 //

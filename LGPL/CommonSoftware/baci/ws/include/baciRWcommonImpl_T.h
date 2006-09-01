@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWcommonImpl_T.h,v 1.24 2006/05/11 15:01:15 bjeram Exp $"
+* "@(#) $Id: baciRWcommonImpl_T.h,v 1.25 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -60,7 +60,7 @@
  */
 #define SET_ACTION 1
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * Implementation of RWcommonImpl property
@@ -178,7 +178,7 @@ public:
 
 // #include "baciRWcommonImpl_T.i"
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciRWcommonImpl */
 

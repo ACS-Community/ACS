@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncArchiveConsumerCompImpl.cpp,v 1.2 2005/08/08 22:47:29 dfugate Exp $"
+* "@(#) $Id: acsncArchiveConsumerCompImpl.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,17 +27,17 @@
 * david  25/09/02  created 
 */
 
-static char *rcsId="@(#) $Id: acsncArchiveConsumerCompImpl.cpp,v 1.2 2005/08/08 22:47:29 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncArchiveConsumerCompImpl.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsncArchiveConsumerCompImpl.h"
 #include <ACSErrTypeCommon.h>
 
-NAMESPACE_USE(ACSErrTypeCommon);
+ using namespace ACSErrTypeCommon;
 
 
 using namespace std;
-NAMESPACE_USE(baci);
+ using namespace baci;
 
 /* ----------------------------------------------------------------*/
 ArchiveConsumerCompImpl::ArchiveConsumerCompImpl(const ACE_CString &name,

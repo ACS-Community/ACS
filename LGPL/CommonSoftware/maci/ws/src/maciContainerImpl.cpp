@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.69 2006/08/10 14:20:59 acaproni Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.70 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -73,10 +73,10 @@
 
 #include <ACSAlarmSystemInterfaceFactory.h>
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.69 2006/08/10 14:20:59 acaproni Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.70 2006/09/01 02:20:54 cparedes Exp $")
 
-NAMESPACE_USE(maci);
-NAMESPACE_USE(cdb);
+ using namespace maci;
+ using namespace cdb;
 
 // static public vars 
 ContainerImpl * ContainerImpl::m_container = 0;

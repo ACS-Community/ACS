@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_H
 #define SIMPLE_SUPPLIER_H
-/*    @(#) $Id: acsncSimpleSupplier.h,v 1.15 2005/07/28 17:06:17 dfugate Exp $
+/*    @(#) $Id: acsncSimpleSupplier.h,v 1.16 2006/09/01 02:20:54 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -28,7 +28,7 @@
  */
 
 #include "acsncSupplier.h"
-NAMESPACE_BEGIN(nc);
+namespace nc {
 /**
  *  SimpleSupplier is used to publish data onto a notification channel
  *  defined by the string passed to SimpleSupplier's constructor.
@@ -85,7 +85,7 @@ class SimpleSupplier : public Supplier
      */
     void operator=(const SimpleSupplier&);
 };
-NAMESPACE_END(nc);
+ }; 
 
 
 #include "acsncSimpleSupplier.i"

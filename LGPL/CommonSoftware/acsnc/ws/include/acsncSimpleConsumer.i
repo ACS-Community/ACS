@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.18 2006/06/06 11:16:37 gchiozzi Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.19 2006/09/01 02:20:54 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -27,7 +27,7 @@
  *  components to consume events.
  */
 
-NAMESPACE_BEGIN(nc);
+namespace nc {
 //---------------------------------------------------------------
 template <class T>
 SimpleConsumer<T>::SimpleConsumer(const char* channelName) : 
@@ -139,5 +139,5 @@ SimpleConsumer<T>::addSubscription(const char* type_name,
     Consumer::addSubscription(type_name);
 }
 //---------------------------------------------------------------
-NAMESPACE_END(nc);
+ }; 
 #endif

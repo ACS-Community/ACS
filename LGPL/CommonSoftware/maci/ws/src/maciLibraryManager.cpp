@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciLibraryManager.cpp,v 1.86 2005/09/29 13:43:00 msekoran Exp $"
+* "@(#) $Id: maciLibraryManager.cpp,v 1.87 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -15,9 +15,9 @@
 
 #include <logging.h>
 
-ACE_RCSID(maci, maciLibraryManager, "$Id: maciLibraryManager.cpp,v 1.86 2005/09/29 13:43:00 msekoran Exp $");
+ACE_RCSID(maci, maciLibraryManager, "$Id: maciLibraryManager.cpp,v 1.87 2006/09/01 02:20:54 cparedes Exp $");
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 
 #ifdef MAKE_VXWORKS
 # include "VxWorksDLL.cpp"
@@ -771,5 +771,5 @@ LibraryManager::getSymbol(int i, const char * symbol)
 
 }
 
-NAMESPACE_END(maci)
+ }; 
 

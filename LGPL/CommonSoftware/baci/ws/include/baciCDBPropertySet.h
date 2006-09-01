@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCDBPropertySet.h,v 1.96 2005/09/28 13:52:49 msekoran Exp $"
+* "@(#) $Id: baciCDBPropertySet.h,v 1.97 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -42,7 +42,7 @@
 #include <map>
 #include "baciCharacteristicModelImpl.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * The PropertySet interface provides operations to define
@@ -300,7 +300,7 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
     CDBPropertySet(const CDBPropertySet&);  
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baciCDBPropertySet_h  */
 

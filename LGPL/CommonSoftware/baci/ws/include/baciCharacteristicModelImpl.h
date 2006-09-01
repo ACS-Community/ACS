@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.9 2006/01/12 21:31:12 gchiozzi Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -43,7 +43,7 @@
 #include <cdbDAONode.h>
 #include <cdbErrType.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 class baci_EXPORT CharacteristicModelImpl : public virtual PortableServer::RefCountServantBase,
 					    public virtual POA_ACS::CharacteristicModel
@@ -128,7 +128,7 @@ class baci_EXPORT CharacteristicModelImpl : public virtual PortableServer::RefCo
 
 }; //class CharacteristicModelImpl
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

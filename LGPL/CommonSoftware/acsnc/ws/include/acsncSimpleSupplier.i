@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_I
 #define SIMPLE_SUPPLIER_I
-/*    @(#) $Id: acsncSimpleSupplier.i,v 1.22 2005/06/21 21:26:51 dfugate Exp $
+/*    @(#) $Id: acsncSimpleSupplier.i,v 1.23 2006/09/01 02:20:54 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -27,7 +27,7 @@
  *  components to publish events.
  */
 
-NAMESPACE_BEGIN(nc);
+namespace nc {
 //----------------------------------------------------------------------
 template <class T> void 
 SimpleSupplier::publishData(T data)
@@ -55,5 +55,5 @@ SimpleSupplier::publishData(T data)
 	}
 }
 //----------------------------------------------------------------------
-NAMESPACE_END(nc);
+ }; 
 #endif

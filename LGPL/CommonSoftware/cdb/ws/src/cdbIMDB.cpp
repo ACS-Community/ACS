@@ -18,7 +18,7 @@
 //*    License along with this library; if not, write to the Free Software
 //*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //*
-// $Id: cdbIMDB.cpp,v 1.26 2005/02/14 10:39:36 acaproni Exp $
+// $Id: cdbIMDB.cpp,v 1.27 2006/09/01 02:20:54 cparedes Exp $
 //
 // GROUP    =  Configuration Database
 // AUTHOR  --- Klemen Zagar
@@ -31,7 +31,7 @@
 
 #include <algorithm>
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 Table* IMDB::createTable( int argc, char** argv, CORBA::ORB_ptr orb)
 {
@@ -237,13 +237,16 @@ Boolean IMDB::GetChildren(const String &strRecordName,
 	return FALSE;
 }
 
-NAMESPACE_END(cdb)
+ }; 
 
 // ************************************************************************
 //
 // REVISION HISTORY:
 //
 //   $Log: cdbIMDB.cpp,v $
+//   Revision 1.27  2006/09/01 02:20:54  cparedes
+//   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 //   Revision 1.26  2005/02/14 10:39:36  acaproni
 //   Some changes to reduce the coding standards number of errors
 //

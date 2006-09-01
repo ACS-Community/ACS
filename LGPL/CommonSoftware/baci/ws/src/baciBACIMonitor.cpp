@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.cpp,v 1.3 2005/02/04 00:33:59 dfugate Exp $"
+* "@(#) $Id: baciBACIMonitor.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,10 +30,10 @@
 #include "baci.h"
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.3 2005/02/04 00:33:59 dfugate Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $");
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 /////////////////////////////////////////////////
 // BACIMonitor
 /////////////////////////////////////////////////
@@ -351,6 +351,6 @@ void BACIMonitor::setLastValue(const BACIValue& _lastValue)
   lastValue_m=_lastValue;
 }
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/

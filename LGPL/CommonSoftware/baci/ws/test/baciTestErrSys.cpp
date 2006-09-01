@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestErrSys.cpp,v 1.101 2006/05/11 15:01:45 bjeram Exp $"
+* "@(#) $Id: baciTestErrSys.cpp,v 1.102 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * msekoran 2002-05-19 created
 */
  
-static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.101 2006/05/11 15:01:45 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.102 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -52,8 +52,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <acserr.h>
 #include <ACSErrTypeCORBAC.h>
 
-NAMESPACE_USE(baci)
-NAMESPACE_USE(BACI_TEST)
+ using namespace baci;
+ using namespace BACI_TEST;
 
 void printCompletion(const ACSErr::Completion *c)
 {

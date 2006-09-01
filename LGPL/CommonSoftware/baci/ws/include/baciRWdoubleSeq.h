@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWdoubleSeq.h,v 1.93 2005/01/07 23:41:17 dfugate Exp $"
+* "@(#) $Id: baciRWdoubleSeq.h,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <baciMonitor_T.h>
 #include <baciRWSeqContImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitordoubleSeqTemplate MonitordoubleSeq Class
  * The MonitordoubleSeq class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -56,7 +56,7 @@ typedef  Monitor<ACS_MONITOR_SEQ(double, CORBA::Double)> MonitordoubleSeq;
 typedef  RWSeqContImpl<ACS_RW_SEQ_T(double, CORBA::Double)> RWdoubleSeq;
 /** @} */
 
-NAMESPACE_END(baci);
+ }; 
 
 
 #endif  /* baciRWdoubleSeq */

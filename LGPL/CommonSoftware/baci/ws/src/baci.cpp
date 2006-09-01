@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baci.cpp,v 1.105 2005/01/18 00:29:45 dfugate Exp $"
+* "@(#) $Id: baci.cpp,v 1.106 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,14 +35,14 @@
 #include "baci.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baci.cpp,v 1.105 2005/01/18 00:29:45 dfugate Exp $");
+ACE_RCSID(baci, baci, "$Id: baci.cpp,v 1.106 2006/09/01 02:20:54 cparedes Exp $");
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 // make core baci indepented (avoid changing this file)
 #include "baciCallbackDispatcher.cpp"
 
-NAMESPACE_END(baci);
+ }; 
 
 /*___oOo___*/
 

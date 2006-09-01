@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciServantManager.cpp,v 1.85 2005/09/27 08:35:14 vwang Exp $"
+* "@(#) $Id: maciServantManager.cpp,v 1.86 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -15,7 +15,7 @@
 #include <maciContainerImpl.h>
 #include <maciServantManager.h>
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
 PortableServer::Servant
 MACIServantManager::incarnate (const PortableServer::ObjectId &oid,

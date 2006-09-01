@@ -38,7 +38,7 @@
 #include <baciPcontImpl_T.h>
 #include <baciROcommonImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * Implementation of ROcont property
@@ -131,7 +131,7 @@ private:
 
 // #include "baciROcontImpl_T.i"
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif
 

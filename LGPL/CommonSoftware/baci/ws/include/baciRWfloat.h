@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWfloat.h,v 1.2 2005/09/12 19:55:38 dfugate Exp $"
+* "@(#) $Id: baciRWfloat.h,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@
 #include <baciRWcontImpl_T.h>
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitorfloatTemplate Monitorfloat Class
  * The Monitorfloat class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -59,7 +59,7 @@ typedef  Monitor<ACS_MONITOR(float, CORBA::Float)> Monitorfloat;
 typedef  RWcontImpl<ACS_RW_T(float, CORBA::Float)> RWfloat;
 /** @} */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciRWfloat */
 

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbINIReader.cpp,v 1.26 2005/02/14 10:39:36 acaproni Exp $"
+* "@(#) $Id: cdbINIReader.cpp,v 1.27 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -30,9 +30,9 @@
 #include "cdbINIReader.h"
 #include "logging.h"
 
-ACE_RCSID(cdb, cdbINIReader, "$Id: cdbINIReader.cpp,v 1.26 2005/02/14 10:39:36 acaproni Exp $");
+ACE_RCSID(cdb, cdbINIReader, "$Id: cdbINIReader.cpp,v 1.27 2006/09/01 02:20:54 cparedes Exp $");
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 Table* INIReader::createTable( int argc, char** argv, CORBA::ORB_ptr orb)
 {
@@ -302,13 +302,16 @@ INIReader::GetChildren(const String &strRecordName,
   return FALSE;
 }
 
-NAMESPACE_END(cdb);
+ }; 
 
 // ************************************************************************
 //
 // REVISION HISTORY:
 //
 // $Log: cdbINIReader.cpp,v $
+// Revision 1.27  2006/09/01 02:20:54  cparedes
+// small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 // Revision 1.26  2005/02/14 10:39:36  acaproni
 // Some changes to reduce the coding standards number of errors
 //

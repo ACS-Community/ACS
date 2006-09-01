@@ -37,7 +37,7 @@
 
 #include <baciROcommonImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 template <ACS_RO_C> 
 class ROdiscImpl : public virtual POA_SK,
@@ -68,6 +68,6 @@ class ROdiscImpl : public virtual POA_SK,
     /** @} */
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif

@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.67 2006/07/19 16:57:28 dfugate Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.68 2006/09/01 02:20:54 cparedes Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -27,7 +27,7 @@
 #include <baciCORBA.h>
 #include <acscommonC.h>
 //-----------------------------------------------------------------------------
-NAMESPACE_BEGIN(nc);
+namespace nc {
 //-----------------------------------------------------------------------------
 double Consumer::DEFAULT_MAX_PROCESS_TIME = 2.0;
 //-----------------------------------------------------------------------------
@@ -518,4 +518,4 @@ Consumer::getFilterLanguage()
     return acsnc::FILTER_LANGUAGE_NAME;
 }
 //-----------------------------------------------------------------------------
-NAMESPACE_END(nc);
+ }; 

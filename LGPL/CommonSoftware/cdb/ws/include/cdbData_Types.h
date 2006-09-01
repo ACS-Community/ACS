@@ -1,6 +1,6 @@
 // ************************************************************************
 //
-// $Id: cdbData_Types.h,v 1.24 2003/01/28 16:43:49 vltsccm Exp $
+// $Id: cdbData_Types.h,v 1.25 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (c) 2000 by Klemen Zagar
 //
@@ -27,7 +27,7 @@
 #include <vector>
 #include <ace/SString.h>
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 // ------------------------------------------------------------------------
 // GROUP = Scalar data types
@@ -156,7 +156,7 @@ typedef std::vector<ULongLong> ULongLongArray;
 typedef std::vector<Float>     FloatArray;
 typedef std::vector<Double>    DoubleArray;
 
-NAMESPACE_END(cdb);
+ }; 
 
 #endif // __cdb__Data_Types_h__
 
@@ -165,6 +165,9 @@ NAMESPACE_END(cdb);
 // REVISION HISTORY:
 //
 //   $Log: cdbData_Types.h,v $
+//   Revision 1.25  2006/09/01 02:20:54  cparedes
+//   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
+//
 //   Revision 1.24  2003/01/28 16:43:49  vltsccm
 //   gchiozzi: patch for cdb module to create lib/endorsed directory, since CVS cannot restore empty directories
 //

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDLL.cpp,v 1.94 2005/02/04 00:34:00 dfugate Exp $"
+* "@(#) $Id: baciDLL.cpp,v 1.95 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -35,9 +35,9 @@
 #include "baciThread.h"
 #include "baciCDBPropertySet.h"
 
-ACE_RCSID(baci, baciDLL, "$Id: baciDLL.cpp,v 1.94 2005/02/04 00:34:00 dfugate Exp $");
+ACE_RCSID(baci, baciDLL, "$Id: baciDLL.cpp,v 1.95 2006/09/01 02:20:54 cparedes Exp $");
  
-NAMESPACE_USE(baci);
+ using namespace baci;
 
 ACS_DLL_UNMANGLED_EXPORT bool DLLOpen(int argc, char* argv[])
 {

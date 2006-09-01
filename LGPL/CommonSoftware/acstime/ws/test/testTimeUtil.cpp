@@ -1,4 +1,4 @@
-// $Id: testTimeUtil.cpp,v 1.9 2005/09/21 14:47:08 vwang Exp $
+// $Id: testTimeUtil.cpp,v 1.10 2006/09/01 02:20:54 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -34,8 +34,8 @@
 #include "acstime.h"
 
 using namespace std;
-NAMESPACE_USE(maci)
-NAMESPACE_USE(ACS)
+ using namespace maci;
+ using namespace ACS;
 
 //------------------------------------------------------------------------------
 

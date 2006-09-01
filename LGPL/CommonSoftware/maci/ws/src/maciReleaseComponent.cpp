@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciReleaseComponent.cpp,v 1.1 2005/10/19 09:01:34 msekoran Exp $"
+* "@(#) $Id: maciReleaseComponent.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <maciHelper.h>
 #include <maciContainerImpl.h>
 
-NAMESPACE_USE(maci);
+ using namespace maci;
 
 
 //Class AdministratorImpl

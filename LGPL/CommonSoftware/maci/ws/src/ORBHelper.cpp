@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ORBHelper.cpp,v 1.1 2006/08/10 00:51:06 sharring Exp $"
+* "@(#) $Id: ORBHelper.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,9 +30,9 @@
 #include <acsutilPorts.h>
 #include <acscommonC.h>
 //-----------------------------------------------------------------------------
-NAMESPACE_USE(baci);
+ using namespace baci;
 //-----------------------------------------------------------------------------
-NAMESPACE_BEGIN(maci);
+namespace maci {
 //-----------------------------------------------------------------------------
 ORBHelper::ORBHelper() :
     orb_mp(0),
@@ -249,5 +249,5 @@ ORBHelper::runOrbThread(void *this_p)
     return static_cast<void *>(0);
 }
 //-----------------------------------------------------------------------------
-NAMESPACE_END(maci);
+ }; 
 /*___oOo___*/

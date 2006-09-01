@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.71 2006/08/08 11:22:11 bjeram Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.72 2006/09/01 02:20:54 cparedes Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -26,7 +26,7 @@
 #include <baciCORBA.h>
 #include <acscommonC.h>
 
-NAMESPACE_BEGIN(nc);
+namespace nc {
 //-----------------------------------------------------------------------------
 Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* component) : 
     Helper(channelName),    
@@ -415,7 +415,7 @@ Supplier::setEventType(const char* typeName)
 }
 //-----------------------------------------------------------------------------
 
-NAMESPACE_END(nc);
+ }; 
 
 
 

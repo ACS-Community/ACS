@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.90 2005/09/27 08:33:01 vwang Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.91 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include "maciSimpleClientThreadHook.h"
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 
 /**
  * The class SimpleClient is the base class for a ACS C++ client.
@@ -355,6 +355,6 @@ T* SimpleClient::get_object(const char *name, const char *domain, bool activate
     return T::_nil();
 }
 
-NAMESPACE_END(maci);
+ }; 
 
 #endif  /* maciSimpleClient_H */

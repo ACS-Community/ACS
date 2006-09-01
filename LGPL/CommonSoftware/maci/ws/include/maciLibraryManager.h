@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciLibraryManager.h,v 1.82 2005/04/14 19:45:47 dfugate Exp $"
+* "@(#) $Id: maciLibraryManager.h,v 1.83 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include <logging.h>
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 
 /**
  * Class responsible of loading/unloading of dynamic-linked/shared libraries
@@ -228,7 +228,7 @@ private:
 
 };
 
-NAMESPACE_END(maci);
+ }; 
 
 #endif // maciLibraryManager_h
 

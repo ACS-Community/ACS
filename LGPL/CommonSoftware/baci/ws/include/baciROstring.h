@@ -32,7 +32,7 @@
 #include <baciMonitor_T.h>
 #include <baciROdiscImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitorstringTemplate MonitorstringImpl Class
  * The MonitorstringImpl class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -56,7 +56,7 @@ ACS::Subscription_ptr ROdiscImpl<char*, ACS::CBstring, ACS::stringSeq, ACS::stri
 typedef  ROdiscImpl<char*, ACS::CBstring, ACS::stringSeq, ACS::stringSeq_out, ACS::Monitor, MonitorstringImpl, ACE_CString, char*, ACE_CString, POA_ACS::ROstring, ACS::Alarmstring, POA_ACS::CBstring, const char*> ROstring;
 /** @} */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciROstring */
 

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWfloatSeq.h,v 1.2 2005/09/12 19:55:38 dfugate Exp $"
+* "@(#) $Id: baciRWfloatSeq.h,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <baciMonitor_T.h>
 #include <baciRWSeqContImpl_T.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /** @defgroup MonitorfloatSeqTemplate MonitorfloatSeq Class
  * The MonitorfloatSeq class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -56,7 +56,7 @@ typedef  Monitor<ACS_MONITOR_SEQ(float, CORBA::Float)> MonitorfloatSeq;
 typedef  RWSeqContImpl<ACS_RW_SEQ_T(float, CORBA::Float)> RWfloatSeq;
 /** @} */
 
-NAMESPACE_END(baci);
+ }; 
 
 
 #endif  /* baciRWfloatSeq */

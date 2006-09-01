@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestMonitor.cpp,v 1.97 2005/08/23 15:38:27 vwang Exp $"
+* "@(#) $Id: baciTestMonitor.cpp,v 1.98 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 * rlemke   30/08/01  integrated into tat
 */
  
-static char *rcsId="@(#) $Id: baciTestMonitor.cpp,v 1.97 2005/08/23 15:38:27 vwang Exp $";
+static char *rcsId="@(#) $Id: baciTestMonitor.cpp,v 1.98 2006/09/01 02:20:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -52,8 +52,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <baciTestUtils.h>
 #include <baciTestClassImpl.h>
 
-NAMESPACE_USE(baci)
-NAMESPACE_USE(BACI_TEST)
+ using namespace baci;
+ using namespace BACI_TEST;
 
 #ifdef MAKE_VXWORKS
 unsigned int sleep(unsigned int);

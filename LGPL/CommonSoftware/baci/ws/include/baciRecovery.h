@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRecovery.h,v 1.97 2005/04/12 13:06:36 acaproni Exp $"
+* "@(#) $Id: baciRecovery.h,v 1.98 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -44,8 +44,8 @@
 #include <ace/SString.h>
 #include <vector>
 
-NAMESPACE_BEGIN(baci);
-NAMESPACE_USE(recovery);
+namespace baci {
+ using namespace recovery;
 
 /**
  * Default file name of BACI recovery file
@@ -184,7 +184,7 @@ private:
     BACIRecoveryManager(const BACIRecoveryManager&);  
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baciRecovery_h */
 

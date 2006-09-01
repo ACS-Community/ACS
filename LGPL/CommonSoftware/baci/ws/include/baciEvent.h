@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciEvent.h,v 1.97 2005/01/27 23:57:55 dfugate Exp $"
+* "@(#) $Id: baciEvent.h,v 1.98 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -43,7 +43,7 @@
 
 #include <ace/Synch.h>
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 // forward
 class EventStrategy;
@@ -219,7 +219,7 @@ public:
   
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif  /* baciEvent_H */
 

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciMonitor_T.h,v 1.100 2005/02/02 23:44:49 dfugate Exp $"
+* "@(#) $Id: baciMonitor_T.h,v 1.101 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,7 +44,7 @@
 #include <baciRecoverableObject.h>
 
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 #ifdef MAKE_VXWORKS
 unsigned long long convString2LLU(char *);
@@ -373,7 +373,7 @@ private:
 
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif   /* baciMonitorTempl_H */
 

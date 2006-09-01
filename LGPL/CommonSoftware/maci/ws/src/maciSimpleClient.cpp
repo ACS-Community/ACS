@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.92 2006/08/08 11:16:55 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.93 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -61,7 +61,7 @@
 #include "maciContainerImpl.h"
 
 
-NAMESPACE_BEGIN(maci);
+namespace maci {
 using namespace baci;
 
 // Init the static logger
@@ -703,7 +703,7 @@ SimpleClient::ping ()
     return true;
 }
 
-NAMESPACE_END(maci);
+ }; 
 
 
 /*___oOo___*/

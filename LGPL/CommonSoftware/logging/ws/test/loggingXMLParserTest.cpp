@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingXMLParserTest.cpp,v 1.35 2005/04/05 23:35:00 dfugate Exp $"
+* "@(#) $Id: loggingXMLParserTest.cpp,v 1.36 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <logging.h>
 #include <loggingXMLParser.h>
 
-NAMESPACE_USE(loggingXMLParser);
+ using namespace loggingXMLParser;
 
 const ACE_TCHAR * testXMLs[] = {
     "",

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.33 2005/12/21 09:56:47 bjeram Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.34 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <expat.h>
 #include <logging.h>
 
-NAMESPACE_USE(cdb);
+ using namespace cdb;
 
 /////////////////////////////////////////////////////////////////////////////
 // CXMLTreeNode

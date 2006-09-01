@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baci.h,v 1.106 2006/06/14 10:00:09 bjeram Exp $"
+* "@(#) $Id: baci.h,v 1.107 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,7 +68,7 @@
 
 #include "archiveeventsArchiveSupplier.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 /**
  * ACS_ARCHIVE is a macro used to log something to the archive. As far as I know,
@@ -102,7 +102,7 @@ ArchiveSupplierSingleton::Instance().send_event(prio, getTimeStamp(), device, pa
 
 /* ------------------------------------------------------------------------ */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baci_H */ 
 

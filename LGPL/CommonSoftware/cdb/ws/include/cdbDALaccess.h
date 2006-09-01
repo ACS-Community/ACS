@@ -1,7 +1,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbDALaccess.h,v 1.30 2004/03/23 09:29:35 msekoran Exp $"
+* "@(#) $Id: cdbDALaccess.h,v 1.31 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -21,7 +21,7 @@
 #include <cdbDAOImpl.h>
 
 
-NAMESPACE_BEGIN(cdb);
+namespace cdb {
 
 class DALChangeListenerImpl;
 
@@ -112,7 +112,7 @@ public:
 
 };
 
-NAMESPACE_END(cdb);
+ }; 
 
 #endif // __cdb_DALaccess_h__
 

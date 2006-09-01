@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDB.h,v 1.96 2005/02/01 00:44:38 dfugate Exp $"
+* "@(#) $Id: baciDB.h,v 1.97 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -47,8 +47,8 @@
 
 #include <cdb.h>
 
-NAMESPACE_USE(cdb);
-NAMESPACE_BEGIN(baci);
+ using namespace cdb;
+namespace baci {
 
 class baci_EXPORT DBConnector
 {
@@ -178,7 +178,7 @@ private:
 
 };
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif   /* baciDB_H */
 

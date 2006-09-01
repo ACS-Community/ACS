@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampFullNCTest.cpp,v 1.15 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: acssampFullNCTest.cpp,v 1.16 2006/09/01 02:20:55 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,8 +50,8 @@
 #include <acsncConsumer.h>
 
 using namespace std;
-NAMESPACE_USE(maci);
-ACE_RCSID(acssampFullNCTest, fullNCTest, "$Id: acssampFullNCTest.cpp,v 1.15 2006/07/19 16:57:28 dfugate Exp $")
+ using namespace maci;
+ACE_RCSID(acssampFullNCTest, fullNCTest, "$Id: acssampFullNCTest.cpp,v 1.16 2006/09/01 02:20:55 cparedes Exp $")
     
 
   

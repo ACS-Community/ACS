@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciHelper.cpp,v 1.90 2006/08/10 00:51:06 sharring Exp $"
+* "@(#) $Id: maciHelper.cpp,v 1.91 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,8 +25,8 @@
 #define MANAGER_REFERENCE  "MANAGER_REFERENCE"
 #define NAMESERVICE_REFERENCE  "NAMESERVICE_REFERENCE"
 
-NAMESPACE_USE(maci);
-NAMESPACE_USE(cdb);
+ using namespace maci;
+ using namespace cdb;
 
 
 bool MACIHelper::m_terminate = false;

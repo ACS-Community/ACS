@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACICallback.h,v 1.4 2005/01/31 19:40:46 dfugate Exp $"
+* "@(#) $Id: baciBACICallback.h,v 1.5 2006/09/01 02:20:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include "baciValue.h"
 #include "baciRegistrar.h"
 
-NAMESPACE_BEGIN(baci);
+namespace baci {
 
 
 // forwards
@@ -229,7 +229,7 @@ typedef Registrar<int, BACICallback*> BACICallbackTable;
 
 /* ------------------------------------------------------------------------ */
 
-NAMESPACE_END(baci);
+ }; 
 
 #endif /* baciBACICallback_H */ 
 
