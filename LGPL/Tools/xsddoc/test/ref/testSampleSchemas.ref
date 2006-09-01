@@ -1,5 +1,4 @@
 1 - === Processing
-1 -  --noDirectory -- net.sf.xframe.xsddoc.Main -o ../doc -t title -b bottom -verbose testLAMP.xsd
 1 - xsddoc starting.
 1 - process complexType {urn:schemas-cosylab-com:CDB:1.0}ArrayElement from file testCDB.xsd
 1 - process complexType {urn:schemas-cosylab-com:CDB:1.0}Array from file testCDB.xsd
