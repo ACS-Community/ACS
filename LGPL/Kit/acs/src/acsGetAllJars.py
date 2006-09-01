@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsGetAllJars.py,v 1.4 2006/07/12 21:36:02 dfugate Exp $
+# @(#) $Id: acsGetAllJars.py,v 1.1 2006/09/01 09:34:07 gchiozzi Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -30,13 +30,13 @@ out in a format suitable for use with a JVM.
 Parameters:
 - the first parameter to this script is the separator to be used between jar files (when passed
 to the JVM). Under UNIX, this is normally ":" and in Windows it is ";"
-- the next set of parameters are a list of directories to be searched for jar files. It does not
+- the second parameter is a 'separator' separated list of directories to be searched for jar files. It does not
 matter whether the directories actually exist or not (the script will figure this out on its own).
 Do be careful with the order the directories are passed though because if duplicate jar files
-are found; only the jar file found in the first directory specified will be passed to the JVM.
+are found, only the jar file found in the first directory specified will be passed to the JVM.
 
 Sample usage of this script in the ALMA directory structure should be:
-     acsGetAllJars : ../lib $INTROOT/lib $ACSROOT/lib
+     acsGetAllJars : ../lib:$INTROOT/lib:$ACSROOT/lib
 
 Assumptions:
 -
@@ -86,7 +86,7 @@ retList = []
 cpsep = argv[1]
 
 #for each directory specified in the command-line
-for dir in string.split(argv[2],':'):
+for dir in string.split(argv[2],cpsep):
     #create a list of jars
     try:
         #attempt to get a list of all files in the directory
