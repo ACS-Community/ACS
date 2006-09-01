@@ -120,6 +120,9 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 
 
 	locSender_p->disconnectPeer();
+
+	receiver->closeReceiver();
+
 	delete locSender_p;
 
 	senderMap_m.unbind(receiverName);
