@@ -38,4 +38,10 @@ fi
 
 CLASSPATH=`acsGetAllJars $CPSEP $CL_JARPATH`$CLASSPATH
 
-java -classpath $CLASSPATH alma.acs.testsupport.tat.TATJUnitRunner org.jfree.chart.junit.JFreeChartTestSuite
+java -classpath $CLASSPATH -Duser.timezone=UTC  alma.acs.testsupport.tat.TATJUnitRunner org.jfree.chart.junit.JFreeChartTestSuite
+
+##
+## This was the original call to acsStartJava
+## We cannot use it here because this module is built
+## BEFORE acsstartup
+## acsStartJava --noDirectory alma.acs.testsupport.tat.TATJUnitRunner org.jfree.chart.junit.JFreeChartTestSuite
