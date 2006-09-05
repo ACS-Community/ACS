@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.127 2006/08/31 13:32:26 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.128 2006/09/05 21:38:39 gchiozzi Exp $"
 #
 #
 
@@ -19,7 +19,7 @@ MODULES_KIT = vlt doc acs acstempl
 # because it is already built in the prepare phase.
 #
 MODULES_TOOLS = cmm emacs compat tat expat loki extjars antlr freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor mimetic gmp jfree xsddoc
-MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents baci enumprop jacscommon jmanager lasersourceacsjmsidl lasersourceutilcpp lasersourcecpp lasersourceacscpp maci lasersourceextlib parameter task abeans acstime acsnc acslog acsexmpl acsabeans jlog acspy  comphelpgen XmlIdl define acstestentities acsjlog objexp jcont jcontnc lasersourceacsjms  lasersourcecmwmom lasersourceutiljava  lasersourcejava lasersourceacsjava jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
+MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents baci enumprop acsdaemon jacscommon jmanager lasersourceacsjmsidl lasersourceutilcpp lasersourcecpp lasersourceacscpp maci lasersourceextlib parameter task abeans acstime acsnc acslog acsexmpl acsabeans jlog acspy  comphelpgen XmlIdl define acstestentities acsjlog objexp jcont jcontnc lasersourceacsjms  lasersourcecmwmom lasersourceutiljava  lasersourcejava lasersourceacsjava jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
 ######## end Modules ###########################
 
 #
