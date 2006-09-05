@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIO.h,v 1.97 2006/06/22 16:02:36 gchiozzi Exp $"
+* "@(#) $Id: baciDevIO.h,v 1.98 2006/09/05 20:04:35 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -119,7 +119,7 @@ template <class T> class DevIO
 
     /**
      * Method to read a value. It has to be override by implementation of DevIO
-     * \deprecated The method is depricated
+     * \deprecated The method is deprecated
      * \param errcode erro code. Old way. ACS Exceptions should be used.
      * \param timestamp timestamp of reading
      * \return read value
@@ -133,7 +133,7 @@ template <class T> class DevIO
 
     /**
      * Method to write a value. It has to be override by implementation of DevIO
-     * \deprecated The method is depricated
+     * \deprecated The method is deprecated
      * \param value value to be writen
      * \param errcode erro code. Old way. ACS Exceptions should be used.
      * \param timestamp timestamp of writing

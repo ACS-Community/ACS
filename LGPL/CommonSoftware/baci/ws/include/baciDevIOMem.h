@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIOMem.h,v 1.97 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciDevIOMem.h,v 1.98 2006/09/05 20:04:35 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,7 +48,17 @@
 template <class T> class DevIOMem : public DevIO<T>
 {
  public:
+    /**
+     * Constructor that accepts a generic pointer to the allocated memory
+     * \deprecated The method is deprecated because dangerous. Using the templated version is much safer
+     * \param value pointer to the allocated memory to be used for the data
+     */
     DevIOMem(void *value) : value_m( *(static_cast<T*>(value)) ) {}  //deprecated  
+
+    /**
+     * Constructor that accepts a reference to an object of any type using templates.
+     * \param value templated reference to the allocated memory to be used for the data
+     */
     DevIOMem(T &value) : value_m(value) {};
 
     virtual ~DevIOMem() {};
