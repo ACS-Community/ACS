@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.50 2006/09/06 12:42:17 gchiozzi Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.51 2006/09/06 13:57:23 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -338,7 +338,9 @@ bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
 #if 0
       /*
        * The following characteristics are not used
-       * by enum properties, since they do not make sense
+       * by enum properties, since archiving is not
+       * implemented yet.
+       * archive_delta in any case does not make sense
        * for this type of properties.
        */
       dbl = dao->get_double("archive_min_int");

@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.41 2006/07/19 08:21:41 bjeram Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.42 2006/09/06 13:57:23 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,6 +36,8 @@ using namespace baciErrTypeProperty;
 #define ACS_ENUM_C class T, class TCB, class TSeq, class TSeq_out, class TAlarm, class SK
 /**
  * Template implemantation of enum RO property
+ *
+ * @togo GCH - Monitor archiving is not implemented.
  */
 template <ACS_ENUM_C>
 class ROEnumImpl: public virtual PortableServer::RefCountServantBase,

@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropRWImpl.h,v 1.40 2006/07/19 08:21:41 bjeram Exp $"
+* "@(#) $Id: enumpropRWImpl.h,v 1.41 2006/09/06 13:57:23 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,6 +37,9 @@ using namespace baciErrTypeProperty;
 #define ACS_ENUM_C class T, class TCB, class TSeq, class TSeq_out, class TAlarm, class SK
 /**
  * Template implemantation of enum RW property
+ *
+ * @todo GCH - Monitor archiving is not implemented.
+ *
  */
 template <ACS_ENUM_C>
 class RWEnumImpl: public virtual PortableServer::RefCountServantBase,
