@@ -22,10 +22,11 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
+#pragma prefix "alma"
+
 #include <xmlentity.idl> 
 #include <acscomponent.idl>
 
-#pragma prefix "alma"
 
 module xmlstore
 {
@@ -49,7 +50,7 @@ module xmlstore
 	 */		
 	typedef sequence <UniqueIdentifier> UniqueIdentifierSeq;
 	
-	/**
+	/** 
 	 * A Range xml entity
 	 */
 	 typedef xmlentity::XmlEntityStruct IdentifierRange;
@@ -59,6 +60,7 @@ module xmlstore
 	 * Used for returning sequences of XML (fragments).
 	 */
 	typedef sequence <string> StringSeq;
+	
 	/**
 	 * Thrown if some internal problem occurs.
 	 */
@@ -93,7 +95,7 @@ module xmlstore
 		 * Thrown if something is wrong in the Archive.
 		 */
 		exception NotAvailable{};
-		
+
 		/**
 		 * Thrown if the range in question can't be found
 		 */
@@ -133,7 +135,7 @@ module xmlstore
 	 * This interface provides a cursor functionality for query results. A Cursor 
 	 * holds all query results that can be retrieved from the cursor one by one
 	 * or in blocks.
-	 * A cursor lives in the database and must be closed after its not longer used. 
+	 * A cursor lives in the database and must be closed when it is no longer used. 
 	 */	
 	interface Cursor : ACS::OffShoot
 	{
@@ -173,11 +175,10 @@ module xmlstore
 			raises (ArchiveInternalError);
 		
 		/**
-		 * Closes the cursor. It is obligatory to call this method, when the 
-		 * cursor object is no longer needed.
+		 * Closes the cursor to free resources. It is obligatory to call this method 
+		 * when the cursor object is no longer needed.
 		 */
-		void close()
-			raises (ArchiveInternalError);
+		oneway void close(); 
 	};
 
 	/**
@@ -236,7 +237,7 @@ module xmlstore
 		/** Stores a new entity. */
 		void store(in xmlentity::XmlEntityStruct entity)
 			raises (ArchiveInternalError, IllegalEntity);
-
+			
 		/** Updates an existing entity. The timestamp that is part of the 
 		 * XmlEntityStruct is compared to the latest timestamp of that entity
 		 * in the Archive. If the timestamps mismatch an exception is thrown.  */
@@ -248,7 +249,7 @@ module xmlstore
 		 */
 		void forceUpdate(in xmlentity::XmlEntityStruct entity)
 			raises (ArchiveInternalError, IllegalEntity);
-		
+			
 		/** Retrieves an entity (latest version) from the Archive. If the entity
 		 * is marked as dirty an exception is thrown. 
 		 */
@@ -308,7 +309,7 @@ module xmlstore
 		 */			
 		URISeq queryUIDs( in string query, in string schema)
 			raises (ArchiveInternalError);
-
+		
 		/** Returns UIDs of all documents belonging to specified schema 
 		 *  which are newer (latest version) then timestamp.
 		 *  Entities flagged as dirty are not returned.  
@@ -404,4 +405,4 @@ module xmlstore
 };
 
 
-#endif /* _CDBDAL_IDL_ */
+#endif /* _ARCHIVE_XMLSTORE_IF_IDL_ */
