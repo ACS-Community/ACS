@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.49 2006/05/12 10:43:12 bjeram Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.50 2006/09/06 12:42:17 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -336,6 +336,11 @@ bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
       m_alarm_timer_trig = static_cast<CORBA::ULong>(dbl);
 
 #if 0
+      /*
+       * The following characteristics are not used
+       * by enum properties, since they do not make sense
+       * for this type of properties.
+       */
       dbl = dao->get_double("archive_min_int");
       dbl = dbl * static_cast<CORBA::Double>(10000000.0);
       m_archive_min_int = static_cast<CORBA::ULong>(dbl);

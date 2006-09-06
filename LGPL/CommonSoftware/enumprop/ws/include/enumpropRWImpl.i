@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropRWImpl.i,v 1.51 2006/06/01 18:58:12 bjeram Exp $"
+* "@(#) $Id: enumpropRWImpl.i,v 1.52 2006/09/06 12:42:17 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -415,6 +415,11 @@ bool RWEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
           m_condition[i] = static_cast<ACS::Condition>(lc[i]);
 
 #if 0
+      /*
+       * The following characteristics are not used
+       * by enum properties, since they do not make sense
+       * for this type of properties.
+       */
       dbl = dao->get_double("archive_min_int");
       dbl = dbl * static_cast<CORBA::Double>(10000000.0);
       m_archive_min_int = static_cast<CORBA::ULong>(dbl);
