@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Component:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:Component:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
-		<xs:documentation>This schema file describes ACS CDB entries to specify Components to be instantiated. It is used to place a component in an own XML file in the directory hierarchy of the ACS CDB based on files.</xs:documentation>
+		<xs:documentation>This schema file describes ACS CDB entries to specify Components to be instantiated. It is used to place a component in an own XML file in the directory hierarchy of the ACS CDB based on files.  For more details, in particular with respect to the various option to describe Components configuration,  see the ACS CDB documentation and the FAQ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
 	</xs:annotation>
 	<xs:complexType name="ComponentInfo">
 		<xs:annotation>

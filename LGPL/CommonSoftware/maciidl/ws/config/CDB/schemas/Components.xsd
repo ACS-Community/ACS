@@ -10,7 +10,7 @@
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:Components:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
-		<xs:documentation>This schema file describes ACS CDB entries to specify Components to be instantiated. It is used to place multiple components in the same XML file in the directory hierarchy of the ACS CDB based on files, using a sequence.</xs:documentation>
+		<xs:documentation>This schema file describes ACS CDB entries to specify Components to be instantiated. It is used to place multiple components in the same XML file in the directory hierarchy of the ACS CDB based on files, using a sequence.  For more details, in particular with respect to the various option to describe Components configuration,  see the ACS CDB documentation and the FAQ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
 	</xs:annotation>
 	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
 	<xs:complexType name="ComponentInfo">
