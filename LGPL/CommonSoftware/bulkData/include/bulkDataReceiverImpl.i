@@ -202,3 +202,19 @@ void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA:
 
     cb->setFlowTimeout(timeout);
 }
+
+
+template<class TCallback>
+void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName) 
+    throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+{
+    try
+	{
+	getReceiver()->setReceiverName(recvName);
+	}
+    catch(...)
+	{
+	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::setRecvName");
+	throw err.getAVInvalidFlowNumberEx();
+	}    
+}

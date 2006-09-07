@@ -180,6 +180,11 @@ class BulkDataSendRecvImpl : public virtual CharacteristicComponentImpl,
 	{
 	}
 
+    virtual void setRecvName(const char *recvName) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	{
+	}
+
   private:
 
     AcsBulkdata::BulkDataSender<TSenderCallback> sender;

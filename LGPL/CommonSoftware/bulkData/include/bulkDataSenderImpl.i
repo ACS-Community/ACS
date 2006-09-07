@@ -85,6 +85,8 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 
 	sender.connectToPeer(receiverConfig);
 
+	receiverObj_p->setRecvName(receiverObj_p->name());
+
 	bulkdata::BulkDataReceiverDistr_var distrObj_p = bulkdata::BulkDataReceiverDistr::_narrow(receiverObj_p);
 	if(!CORBA::is_nil(distrObj_p.in()))
 	    {
@@ -120,19 +122,19 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 	}
     catch (AVReceiverConfigErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::init AVReceiverConfigErrorEx exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}
-    catch (AVReceiverConfigErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::init AVReceiverConfigErrorExImpl exception catched !"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVReceiverConfigErrorEx exception catched !"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
     catch (AVStreamBindErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::init AVStreamBindErrorExImpl exception catched !"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVStreamBindErrorExImpl exception catched !"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	throw err.getAVConnectErrorEx();
+	}
+    catch (AVInvalidFlowNumberEx & ex)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVInvalidFlowNumberExImpl exception catched !"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}

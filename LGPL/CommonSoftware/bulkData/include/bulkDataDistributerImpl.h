@@ -218,6 +218,12 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	    //empty
 	}
 
+    virtual void setRecvName(const char *recvName) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	{
+	    //empty
+	}
+
   private:
 
     ContainerServices *containerServices_p;

@@ -125,6 +125,9 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
     virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
 	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
 
+    virtual void setRecvName(const char *recvName) 
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
+
   protected: 
 
     

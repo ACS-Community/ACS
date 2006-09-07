@@ -56,6 +56,8 @@ class BulkDataCallback : public TAO_AV_Callback
 
     virtual void setFlowname (const char*);
 
+    virtual void setReceiverName(ACE_CString recvName);
+
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
     virtual void setSafeTimeout(CORBA::ULong locLoop);
@@ -83,6 +85,8 @@ class BulkDataCallback : public TAO_AV_Callback
     ACE_CString flowname_m;
 
     CORBA::ULong flowNumber_m;
+
+    ACE_CString recvName_m;
 
   private:
 

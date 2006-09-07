@@ -394,6 +394,12 @@ void BulkDataCallback::setFlowname (const char * flowname_p)
 }
 
 
+void BulkDataCallback::setReceiverName(ACE_CString recvName)
+{
+    recvName_m = recvName;
+}
+
+
 void BulkDataCallback::setSleepTime(ACE_Time_Value locWaitPeriod)
 {
     ACS_TRACE("BulkDataCallback::setSleepTime");

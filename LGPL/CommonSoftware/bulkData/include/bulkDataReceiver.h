@@ -158,6 +158,15 @@ namespace AcsBulkdata
 	*/
 	vector<string> getFlowNames();
 
+	/** Set receiver name in receiver callback
+	 *  @param ACE_CString
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void setReceiverName(ACE_CString recvName);
+
       private:
 
 	typedef ACE_Hash_Map_Manager<ACE_CString, BulkDataFlowConsumer<TReceiverCallback> *, ACE_Null_Mutex> FepObjects;

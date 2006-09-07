@@ -488,3 +488,33 @@ const char * AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createFlowSpec(AC
 
     return CORBA::string_dup(entry.entry_to_string());
 } 
+
+
+template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CString recvName)
+{
+    for(CORBA::ULong i = 0; i < fepsData.length(); i++)
+	{
+	ACE_CString flowName = TAO_AV_Core::get_flowname(fepsData[i]);
+	
+	BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
+	
+	fepMap_m.find(flowName, fep);
+	if(fep == 0)
+	    {
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
+	    throw err;
+	    } 
+	else
+	    {
+	    TReceiverCallback *cb_p = fep->getBulkDataCallback();
+	    if(cb_p == 0)
+		{
+		AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
+		throw err;
+		}
+	    else
+		cb_p->setReceiverName(recvName);
+	    }	
+	}
+}
