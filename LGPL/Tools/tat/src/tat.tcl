@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.100 2006/06/08 15:05:30 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.101 2006/09/07 07:52:11 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1949,8 +1949,13 @@ proc addTimeStamp {fileName pnum} {
             regexp {^[0-9]{4}-[0-9]{2}-[0-9]{2}} $line stamp
             # Probably "." should be replaced by "\." and "*" by "+", but
             # I'm not sure what the precise intention is - EAL 2005-02-08
-            regexp {[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{0,6} *} $line fulltime
+            # buggy: regexp {[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{0,6} *} $line fulltime
+	    # better (see ITS/FunctionalTests/obsp/test): 
+	    regexp {([0-9]{2}:[0-9]{2}:[0-9]{2})+(\.[0-9]{0,6})*} $line fulltime
             set  time  [string range $fulltime 0 8]
+	    if { ![regexp {(\.)+} $time dot]} {
+                set time [concat $time\.]
+            }
             set  msec  [string range $fulltime 9 end]
             set  count 0
             scan $msec "%d" msec
