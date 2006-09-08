@@ -10,7 +10,13 @@
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:Manager:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
-		<xs:documentation>This schema file describes the configuration for a Manager. There might be slight differences in the meaning of some attributes depending on the specific implementation of the Manager, in particular depending on the implementation language. See also the documentation of the specific implementation of Manager for a list of supported and un-supported configuration parameters.</xs:documentation>
+		<xs:documentation>This schema file describes the configuration for a Manager. 
+There might be slight differences in the meaning of some attributes 
+depending on the specific implementation of the Manager, 
+in particular depending on the implementation language. 
+See also the documentation of the specific implementation of 
+Manager for a list of supported and un-supported 
+configuration parameters.</xs:documentation>
 	</xs:annotation>
 	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
 	<xs:element name="Manager" type="Manager"/>
@@ -23,7 +29,7 @@
 			</xs:element>
 			<xs:element name="Execute" type="cdb:Array">
 				<xs:annotation>
-					<xs:documentation>Unused.</xs:documentation>
+					<xs:documentation>DEPRECATED. Unused.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="ServiceComponents" type="cdb:Array">

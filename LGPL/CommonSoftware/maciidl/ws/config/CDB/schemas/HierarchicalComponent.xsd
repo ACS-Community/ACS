@@ -10,8 +10,16 @@
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:HierarchicalComponent:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:HierarchicalComponent:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
-		<xs:documentation>This schema file allows to specify in a single CDB file a whole hierarchy of Components. This structure gives an advantage when we are dealing with true hierarchical component that must be deployed always together.
-In this way one single file is sufficient to describe the deployment of the whole hierarchy. For more details, in particular with respect to the various option to describe Components configuration,  see the ACS CDB documentation and the FAQ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
+		<xs:documentation>This schema file allows to specify in a single CDB file a whole hierarchy of Components. 
+This structure gives an advantage when we are 
+dealing with true hierarchical component that must be deployed always 
+together.
+In this way one single file is sufficient to 
+describe the deployment of the whole hierarchy. 
+For more details, in particular with respect to the various 
+option to describe Components configuration,  
+see the ACS CDB documentation and the 
+FAQ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
 	</xs:annotation>
 	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
 	<xs:complexType name="ComponentInfo">

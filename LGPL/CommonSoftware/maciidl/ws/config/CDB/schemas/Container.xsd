@@ -11,7 +11,13 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:Container:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
 	<xs:annotation>
-		<xs:documentation>This schema file describes the configuration for a Container. There might be slight differences in the meaning of some attributes depending on the specific implementation of the Container, in particular depending on the implementation language. See also the documentation of the specific implementation of Container for a list of supported and un-supported configuration parameters.</xs:documentation>
+		<xs:documentation>This schema file describes the configuration for a Container. 
+There might be slight differences in the meaning of some 
+attributes depending on the specific implementation of the Container, 
+in particular depending on the implementation language. 
+See also the documentation of the specific implementation 
+of Container for a list of supported and un-supported 
+configuration parameters.</xs:documentation>
 	</xs:annotation>
 	<xs:element name="Container" type="Container"/>
 	<xs:complexType name="Container">
