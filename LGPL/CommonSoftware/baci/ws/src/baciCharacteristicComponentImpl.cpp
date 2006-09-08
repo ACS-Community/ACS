@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.41 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.42 2006/09/08 14:19:27 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.41 2006/09/01 02:20:54 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.42 2006/09/08 14:19:27 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -108,9 +108,13 @@ void CharacteristicComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
 	}
     else
 	{
-	if (component_mp->startActionThread() == false) 
+	try
 	    {
-	    throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(__FILE__,__LINE__,"ACSComponentImpl::__execute");
+	    component_mp->startActionThread();
+	    }
+	catch(ACSErr::ACSbaseExImpl &_ex)
+	    {
+	    throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(_ex, __FILE__,__LINE__,"ACSComponentImpl::__execute");
 	    }
 	}//if-else
 
@@ -138,10 +142,10 @@ void CharacteristicComponentImpl::__cleanUp()
         component_mp->stopAllThreads();
     }
     ACSComponentImpl::__cleanUp();
-}
+}//__cleanUp
 
-
-void  CharacteristicComponentImpl::startPropertiesMonitoring()
+void  CharacteristicComponentImpl::startPropertiesMonitoring() throw (acsthreadErrType::CanNotStartThreadExImpl,
+								      ACSErrTypeCommon::NullPointerExImpl)
 {
     if ( component_mp!=NULL)
 	{
@@ -161,30 +165,30 @@ void  CharacteristicComponentImpl::startPropertiesMonitoring()
     else
 	{
 	ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "CharacteristicComponentImpl::startPropertiesMonitoring");
-	ex.setVariable("cs(ContainerServices)");
+	ex.setVariable("component_mp (BACIComponent)");
 	throw ex;
-	}
-}//resumePropertiesMonitoring
+	}//if-else
+}//startPropertiesMonitoring
 
 void  CharacteristicComponentImpl::stopPropertiesMonitoring()
 {
-    maci::ContainerServices *cs = getContainerServices();
-    if ( cs!=NULL )
+    if ( component_mp!=NULL)
 	{
-	if (cs->getThreadManager()->suspend(cs->getName()+"::monitorThread")==false)
-	    {
-	     acsthreadErrType::CanNotSuspendThreadExImpl ex(__FILE__,__LINE__,"CharacteristicComponentImpl::stopPropertiesMonitoring");
-	     ex.setThreadName(cs->getName()+"::monitorThread");
-	    throw ex;
-	    }
+	component_mp->stopMonitoringThread();
+	}//if
+}//stopPropertiesMonitoring
+
+bool CharacteristicComponentImpl::isPropertiesMonitoringActive()
+{
+    if ( component_mp!=NULL)
+	{
+	return component_mp->isMonitoringActive();
 	}
     else
 	{
-	ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "CharacteristicComponentImpl::stopPropertiesMonitoring");
-	ex.setVariable("cs(ContainerServices)");
-	throw ex;
-	}
-}//suspendPropertiesMonitoring
+	return false;
+	}//if-else 
+}//isPropertiesMonitoringActive
 
 void CharacteristicComponentImpl::addPropertyToDesc(ACS::Property_ptr prop)
 {

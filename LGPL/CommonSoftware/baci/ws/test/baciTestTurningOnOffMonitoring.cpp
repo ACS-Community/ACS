@@ -18,13 +18,13 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.3 2006/09/08 14:19:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 */
  
-static char *rcsId="@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.3 2006/09/08 14:19:27 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -64,6 +64,7 @@ int main (int argc, char **argv)
   LoggingProxy::ProcessName(argv[0]);
   LoggingProxy::ThreadName("main");
   ACS_TEST_INIT_LOGGING;
+  bool isPropertiesMonitoringActive=false;
 
   ACE_TRY
     {
@@ -138,23 +139,67 @@ int main (int argc, char **argv)
 	md->set_timer_trigger(5000000);
 	sleep(2); // sleep for 2sec. We should not get anything in this time
 
+	// Checks the status of monitoring
+	isPropertiesMonitoringActive=ps->isPropertiesMonitoringActive();
+	ACS_SHORT_LOG((LM_INFO,"Monitoring is suspended: %d", isPropertiesMonitoringActive));
+
+	// We start by suspending the monitor.
+        // If the monitor was never started, this should simply
+        // return as if nothing was done.
+        // But in the first implementation we got an exception handled by
+        // the implementation of turnOffMonitoring, because
+        // there was no check about the monitor beeing created before
+        // trying to retrieve the thread object (not existing) and resume it.
+	ACS_SHORT_LOG((LM_INFO,"Turn OFF Monitoring"));
+	ps->turnOffMonitoring();	
+	sleep(2); // sleep for another 2sec. We should not get anything in this time
+
+	// Checks the status of monitoring
+	isPropertiesMonitoringActive=ps->isPropertiesMonitoringActive();
+	ACS_SHORT_LOG((LM_INFO,"Monitoring is active: %d", isPropertiesMonitoringActive));
+
 	prop->set_sync(1.0);
+	ACS_SHORT_LOG((LM_INFO,"Turn ON Monitoring"));
 	ps->turnOnMonitoring();	
 	sleep(2); // sleep for another 2sec. Now we should receive value 1.0
 
+	// Checks the status of monitoring
+	isPropertiesMonitoringActive=ps->isPropertiesMonitoringActive();
+	ACS_SHORT_LOG((LM_INFO,"Monitoring is active: %d", isPropertiesMonitoringActive));
+
+	ACS_SHORT_LOG((LM_INFO,"Turn OFF Monitoring"));
 	ps->turnOffMonitoring();
 	prop->set_sync(2.0);
 	sleep(2); // sleep for another 2sec. Now we should *not* receive value 2.0
 	
+	// Checks the status of monitoring
+	isPropertiesMonitoringActive=ps->isPropertiesMonitoringActive();
+	ACS_SHORT_LOG((LM_INFO,"Monitoring is active: %d", isPropertiesMonitoringActive));
+
 	//let's try if we can turn it off again
+	ACS_SHORT_LOG((LM_INFO,"Turn OFF Monitoring"));
 	ps->turnOffMonitoring();
 
+	// Checks the status of monitoring
+	isPropertiesMonitoringActive=ps->isPropertiesMonitoringActive();
+	ACS_SHORT_LOG((LM_INFO,"Monitoring is active: %d", isPropertiesMonitoringActive));
+
 	prop->set_sync(3.0);
+	ACS_SHORT_LOG((LM_INFO,"Turn ON Monitoring"));
 	ps->turnOnMonitoring();	
 	sleep(2); // sleep for another 2sec. Now we should receive value 3.0
 
+	// Checks the status of monitoring
+	isPropertiesMonitoringActive=ps->isPropertiesMonitoringActive();
+	ACS_SHORT_LOG((LM_INFO,"Monitoring is active: %d", isPropertiesMonitoringActive));
+
 	//let's try if we can turn it on again
+	ACS_SHORT_LOG((LM_INFO,"Turn ON Monitoring"));
 	ps->turnOnMonitoring();	
+
+	// Checks the status of monitoring
+	isPropertiesMonitoringActive=ps->isPropertiesMonitoringActive();
+	ACS_SHORT_LOG((LM_INFO,"Monitoring is active: %d", isPropertiesMonitoringActive));
 
 	//---------------------------------------------------------------
 

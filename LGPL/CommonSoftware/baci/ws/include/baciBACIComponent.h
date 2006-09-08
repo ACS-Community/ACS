@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.11 2006/09/08 14:19:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,8 +47,12 @@
 #include "baciBACIProperty.h"
 #include <acsThreadManager.h>
 #include "baciCharacteristicModelImpl.h"
+#include <baciErrTypeProperty.h>
+#include <ACSErrTypeCommon.h>
 
-namespace baci {
+namespace baci
+{
+
 
 /* ------------------------------------------------------------------------ */
 
@@ -167,25 +171,57 @@ public:
   void removeCallbackAndAction(int callbackID);
     BACICallback* getCallback(int callbackID);
     void removeCallback(int callbackID);
-
+    
   int getPropertyCount() const { return propertyVector_m.size(); }
   BACIProperty* getPropertyAt(int pos) const;
 
   void stopAllThreads();
   bool startAllThreads();
 
-    /**
-       Create and start the Monitoring thread.
-       In case of an error it throws an exception.
-     */ 
-  void startMonitoringThread();
+  /**
+   *  Creates and starts the Monitoring thread.
+   *  In case of an error it throws an exception:
+   *    - #ACSErrTypeCommon::NullPointerExImpl if there is no thread manager
+   *    - #acsthreadErrType::CanNotCreateThreadExImpl if the thread can not be created
+   */ 
+  void startMonitoringThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
+				      acsthreadErrType::CanNotCreateThreadExImpl);
 
   /**
-       Create and start the Monitoring thread.
-     */ 
-  bool startActionThread();
+   * Creates and starts the Action thread. 
+   * The thread which is used for executing asyhronous commmand.
+   *  In case of an error it throws an exception:
+   *    - #ACSErrTypeCommon::NullPointerExImpl if there is no thread manager
+   *    - #acsthreadErrType::CanNotCreateThreadExImpl if the thread can not be created
+   */ 
+   void startActionThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
+				   acsthreadErrType::CanNotCreateThreadExImpl);
 
-  CharacteristicModelImpl* getCharacteristicModel() const { return characteristicModel_mp; };
+  /**
+   * Stops (suspends) the Monitoring thread
+   * If the thread is already suspended, or if it has not been created yet, it just returns.
+   */
+   void stopMonitoringThread();
+
+    /**
+     * Stops (suspends) the Action thread. 
+     * If the thread is already suspended, or if it has not been created yet, it just returns.
+     */
+    void stopActionThread();
+
+    /**
+     * Returns true if monitoring is active, i.e. 
+     * if monitoring thread is created and resumed.
+     */
+    bool isMonitoringActive();
+
+    /**
+     * Returns true if Action Thread is active, i.e. 
+     * if the action thread is created and resumed.
+     */
+    bool isActionThreadActive();
+
+    CharacteristicModelImpl* getCharacteristicModel() const { return characteristicModel_mp; };
 
 protected:
 
@@ -247,7 +283,8 @@ private:
 
 /* ------------------------------------------------------------------------ */
 
- }; 
+
+};//namespace baci
 
 #endif /* baci_H */ 
 

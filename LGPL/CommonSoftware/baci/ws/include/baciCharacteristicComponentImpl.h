@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.32 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.33 2006/09/08 14:19:27 bjeram Exp $"
 *
 */
 
@@ -180,20 +180,32 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
     virtual void __cleanUp();
     
    /**
-     * Method to start monitoring of the properties.
-     * If monitring is already started it just remains started.
-     * In case of an error it throws an exception.
+     * Method to start monitoring of the properties. If monitoring is already started 
+     * it just remains active.
+     * If the thread has not been yet created, it creates one. 
+     * If the thread has been already created, it just resumes it.
+     * In case the monitoring thread can not be created,
+     * it throws #acsthreadErrType::CanNotStartThreadExImpl
+     * ... and if BACIComponent is NULL it throws #ACSErrTypeCommon::NullPointerExImpl
      * @return void
      */
-    void startPropertiesMonitoring();
+    void startPropertiesMonitoring() throw (acsthreadErrType::CanNotStartThreadExImpl,
+					    ACSErrTypeCommon::NullPointerExImpl);
 
    /**
      * Method to stop monitoring of the properties.
-     * If monitring is already stopped it just remains stopped.
-     * In case of an error it throws an exception.
+     * If the monitoring thread has not been created yet, 
+     * or if monitring is already stopped 
+     * (=monitoring thread is suspended), it just returns.
      * @return void
      */
     void stopPropertiesMonitoring();
+
+    /**
+     * Returns true if monitoring of properties is turned on (=active), otherwise false
+     * @return bool
+     */
+    bool isPropertiesMonitoringActive();
 
   protected:
 

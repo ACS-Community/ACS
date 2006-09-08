@@ -23,6 +23,7 @@ interface BaciTestClass: ACS::CharacteristicComponent{                         /
   // methods that we can turing monitoring on/off from the client
   void turnOnMonitoring(); // @action
   void turnOffMonitoring(); // @action 
+  boolean isPropertiesMonitoringActive(); // @action 
 
   readonly attribute ACS::RWdouble  RWdoubleProp;   // @Properties
   readonly attribute ACS::ROdouble  ROdoubleProp;   // @Properties

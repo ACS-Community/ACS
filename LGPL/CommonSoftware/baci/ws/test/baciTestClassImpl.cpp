@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.cpp,v 1.112 2006/06/21 10:23:06 bjeram Exp $"
+* "@(#) $Id: baciTestClassImpl.cpp,v 1.113 2006/09/08 14:19:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.112 2006/06/21 10:23:06 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.113 2006/09/08 14:19:27 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -86,7 +86,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace baciErrTypeProperty;
 using namespace baci;     
-
 
 /////////////////////////////////////////////////
 // BaciTestClassImpl
@@ -337,6 +336,16 @@ BaciTestClassImpl::reset (ACS::CBvoid_ptr cb,
   getComponent()->registerAction(BACIValue::type_null, cb, 
 			   desc, this, RESET_ACTION);
 }
+
+CORBA::Boolean
+BaciTestClassImpl::isPropertiesMonitoringActive() throw (CORBA::SystemException)
+{
+    CORBA::Boolean retVal = CharacteristicComponentImpl::isPropertiesMonitoringActive();
+    ACS_SHORT_LOG((LM_INFO,"Retrieved monitoring active status: %d", retVal));
+ 
+    return retVal;  
+} //isPropertiesMonitoringActive
+
 
 ACS::RWdouble_ptr
 BaciTestClassImpl::RWdoubleProp ()

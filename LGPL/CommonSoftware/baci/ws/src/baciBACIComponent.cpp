@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.17 2006/09/08 14:19:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,10 +29,8 @@
 #include "baciUtil.h"
 #include "baciError.h"
 #include "logging.h"
-#include <baciErrTypeProperty.h>
-#include <ACSErrTypeCommon.h>
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.17 2006/09/08 14:19:27 bjeram Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -392,7 +390,8 @@ BACIComponent::~BACIComponent()
 }//~BACIComponent
 
 
-void BACIComponent::startMonitoringThread()
+void BACIComponent::startMonitoringThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
+						   acsthreadErrType::CanNotCreateThreadExImpl)
 {
   ACS_TRACE("baci::BACIComponent::startMonitoringThread");
 
@@ -418,12 +417,17 @@ void BACIComponent::startMonitoringThread()
       }//if-else
 }//startMonitoringThread
 
-bool BACIComponent::startActionThread()
+void BACIComponent::startActionThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
+					       acsthreadErrType::CanNotCreateThreadExImpl)
 {
   ACS_TRACE("baci::BACIComponent::startActionThread");
 
   if (!threadManager_mp)
-    return false;
+      {
+      ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "BACIComponent::startActionThread");
+      ex.setVariable("threadManager_mp");
+      throw ex;
+      }//if
 
   if (actionThread_mp == BACIThread::NullBACIThread)
       {
@@ -431,16 +435,15 @@ bool BACIComponent::startActionThread()
 					       (void*)actionThreadWorker, (void*)this,
 					       getRTResponseTime(), getRTSleepTime());
       }
-  if (actionThread_mp == BACIThread::NullBACIThread)
-    {
-      return false;
-    }
-  else
-    {
+  if (actionThread_mp != BACIThread::NullBACIThread)
+      {
       actionThread_mp->resume();
-    }
+      }
+  else
+      {
+      throw acsthreadErrType::CanNotCreateThreadExImpl(__FILE__, __LINE__, "BACIComponent::startActionThread");
+      }//if-else
 
-  return true;
 }//startActionThread
 
 bool BACIComponent::startAllThreads()
@@ -485,7 +488,25 @@ bool BACIComponent::startAllThreads()
     }
 
   return true;
-}
+}//startAllThreads
+
+void BACIComponent::stopMonitoringThread()
+{
+    ACS_TRACE("baci::BACIComponent::stopMonitoringThread");
+    if (monitorThread_mp!=NULL)
+	{
+	monitorThread_mp->suspend();
+	}
+}//stopMonitoringThread
+
+void BACIComponent::stopActionThread()
+{
+    ACS_TRACE("baci::BACIComponent::stopActionThread");
+    if (actionThread_mp!=NULL)
+	{
+	actionThread_mp->suspend();
+	}
+}//stopActionThread
 
 void BACIComponent::stopAllThreads()
 {
@@ -493,7 +514,31 @@ void BACIComponent::stopAllThreads()
   // set destruction flag
   inDestructionState_m = true;
   threadManager_mp->terminateAll();
-}
+}//stopAllThreads
+
+bool BACIComponent::isMonitoringActive()
+{
+    if (monitorThread_mp!=NULL)
+	{
+	return !(monitorThread_mp->isSuspended());
+	}
+    else
+	{
+	return false;
+	}
+}//isMonitoringActive
+
+bool BACIComponent::isActionThreadActive()
+{
+    if (actionThread_mp!=NULL)
+	{
+	return !(actionThread_mp->isSuspended());
+	}
+    else
+	{
+	return false;
+	}
+}//isActionThreadActive
 
 void BACIComponent::setRTResponseTime(const TimeInterval& _actionThreadResponseTime)
 {

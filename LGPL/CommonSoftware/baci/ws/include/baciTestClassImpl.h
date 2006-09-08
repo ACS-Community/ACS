@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.h,v 1.108 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTestClassImpl.h,v 1.109 2006/09/08 14:19:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -183,7 +183,7 @@ public:
    *
    * @param callBack  callback when action has finished
    */ 
-  virtual void reset (
+    virtual void reset (
 		      ACS::CBvoid_ptr cb,
 		      const ACS::CBDescIn & desc
 		      )
@@ -219,6 +219,12 @@ public:
 		ex.log();
 		}
 	}//turnOffMonitoring
+
+    /**
+     * Check the status of the monitoring thread and logs it
+     */
+    virtual CORBA::Boolean isPropertiesMonitoringActive() 
+	throw (CORBA::SystemException);
 
 
   /**
