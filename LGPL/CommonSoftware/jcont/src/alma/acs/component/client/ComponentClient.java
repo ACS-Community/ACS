@@ -175,7 +175,7 @@ public class ComponentClient
 
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
-										this.getClass().getName(), null, m_threadFactory);
+										m_clientName, null, m_threadFactory);
 		}
 		catch (Exception ex)
 		{
