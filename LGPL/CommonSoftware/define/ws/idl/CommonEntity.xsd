@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<xsd:schema targetNamespace="Alma/CommonEntity" 
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-	xmlns:ent="Alma/CommonEntity" 
-	elementFormDefault="qualified" attributeFormDefault="unqualified" version="1">
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:ent="Alma/CommonEntity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="Alma/CommonEntity" version="1">
 	
 	<!-- globally unique id for entity objects (formatted hex string "uid://X0000000000000000/X00000000") -->
 	<xsd:simpleType name="EntityIdT">
@@ -51,7 +47,7 @@
 	     (2) a subnode of another entity (both entityId and partId required) -->
 	<xsd:complexType name="EntityRefT">
 		<xsd:attribute name="entityId" type="ent:EntityIdT" use="required"/>
-		<xsd:attribute name="partId" type="ent:EntityPartIdRefT" use="optional" />
+		<xsd:attribute name="partId" type="ent:EntityPartIdRefT" use="optional"/>
 		<!-- name of the root element of the entity, usually same as schema name -->
 		<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required"/>
 		<!-- version -->
@@ -76,6 +72,8 @@
 		     be used (e.g. by the ACS framework) to temporarily convert an 
 		     XmlEntityStruct to a tree of binding classes w/o losing information. -->
 		<xsd:attribute name="timestamp" type="xsd:string" use="optional"/>
+		<!-- Version of the APDM or ASDM data model, currently equal to the CVS revision number -->
+		<xsd:attribute name="datamodelVersion" type="xsd:string" use="required"/>		
 	</xsd:complexType>
 	
 </xsd:schema>
