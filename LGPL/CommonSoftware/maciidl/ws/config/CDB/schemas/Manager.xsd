@@ -29,7 +29,7 @@ configuration parameters.</xs:documentation>
 			</xs:element>
 			<xs:element name="Execute" type="cdb:Array">
 				<xs:annotation>
-					<xs:documentation>DEPRECATED. Unused.</xs:documentation>
+					<xs:documentation>DEPRECATED. Unused. Was originally ment for starting up automatcally services when the Manger was started.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="ServiceComponents" type="cdb:Array">
