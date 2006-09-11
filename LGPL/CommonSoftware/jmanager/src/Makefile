@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.6 2005/04/12 13:08:59 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/09/11 08:29:01 hsommer Exp $"
 #
 # Makefile of jManager
 #
@@ -141,7 +141,9 @@ USER_IDL =
 JARFILES = jManager
 jManager_DIRS = com
 jManager_EXTRAS =
-USER_JFLAGS=-source 1.4
+USER_JFLAGS=
+
+DEBUG=on
 
 #
 # man pages to be done
