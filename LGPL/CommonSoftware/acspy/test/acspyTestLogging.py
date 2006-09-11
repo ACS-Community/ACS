@@ -21,14 +21,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestLogging.py,v 1.14 2004/04/21 22:36:36 dfugate Exp $
+# @(#) $Id: acspyTestLogging.py,v 1.15 2006/09/11 14:16:45 bjeram Exp $
 
 '''
 Demonstration of how to use the acspyPySimpleClient class
 to access an ACS DO from a Python program
 '''
 
-__version__ = "$Id: acspyTestLogging.py,v 1.14 2004/04/21 22:36:36 dfugate Exp $"
+__version__ = "$Id: acspyTestLogging.py,v 1.15 2006/09/11 14:16:45 bjeram Exp $"
 
 from Acspy.Common.Log import getLogger
 import sys
@@ -88,6 +88,7 @@ tempET = ACSErr.ErrorTrace(str("file"),        #string file;
                            str("process"),     #string process;
                            str("thread"),      #string thread;
                            long(23L),        #unsigned long long timeStamp;
+                           str("sourceObject"), #string souceObject;
                            long(1),          #ACSErr::ACSErrType errorType;
                            long(2),       #ACSErr::ErrorCode errorCode;
                            ACSErr.Alert,    #ACSErr::Severity severity;
