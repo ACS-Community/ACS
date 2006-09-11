@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2004/11/22 11:47:01 jibsen Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/09/11 08:07:47 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -36,7 +36,7 @@
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = acsclock acstimer
+EXECUTABLES     = acstime acsclock acstimer
 EXECUTABLES_L   = 
 
 #
@@ -45,15 +45,15 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
-acsclock_OBJECTS = acstimeClockImpl \
-		   acstimeTimeUtil \
+acstime_OBJECTS =  acstimeTimeUtil \
 		   acstimeDurationHelper acstimeEpochHelper \
+	           acstimeProfiler \
 		   acstimeC acstimeS
 
-acstimer_OBJECTS = acstimeTimerImpl \
-		   acstimeTimeUtil \
-		   acstimeDurationHelper acstimeEpochHelper \
-		   acstimeC acstimeS
+acsclock_OBJECTS = acstimeClockImpl 
+
+acstimer_OBJECTS = acstimeTimerImpl 
+
 
 #
 # IDL Files and flags
@@ -80,6 +80,7 @@ LINK_FILES= $(addprefix ../idl/, $(addsuffix .midl, $(IDL_FILES))) \
              acstimeClockImpl.cpp \
 	     acstimeTimerImpl.cpp \
 	     acstimeTimeUtil.cpp \
+	     acstimeProfiler.cpp \
 	     acstimeDurationHelper.cpp acstimeEpochHelper.cpp
 
 
