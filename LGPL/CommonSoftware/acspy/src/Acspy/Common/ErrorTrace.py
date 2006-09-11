@@ -510,6 +510,9 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
         #Get the ACS time
         time = getTimeStamp().value
             
+        # Source Object is for time being empty
+        sourceObject = ""
+        
         #Set the severity
         if severity == None:
             severity = ACSErr.Error
@@ -531,6 +534,7 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
                                                 str(process),     #string process;
                                                 str(thread),      #string thread;
                                                 long(time),       #unsigned long long timeStamp;
+                                                str(sourceObject),#string sourceObject;
                                                 long(error_type), #ACSErr::ACSErrType errorType;
                                                 long(error_code), #ACSErr::ErrorCode errorCode;
                                                 severity,         #ACSErr::Severity severity;
