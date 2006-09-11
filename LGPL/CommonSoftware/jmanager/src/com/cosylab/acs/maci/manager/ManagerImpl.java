@@ -838,10 +838,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				Class strategyClass = Class.forName(loadBalancingStrategyClassName);
 		
 				// create component implementation
-				Constructor constructor = strategyClass.getConstructor(null);
+				Constructor constructor = strategyClass.getConstructor((Class)null);
 				if (constructor == null)
 					throw new IllegalArgumentException("Class '" + strategyClass.getName() + "' does have required default constructor.");
-				Object strategyObject = constructor.newInstance(null);
+				Object strategyObject = constructor.newInstance((Class)null);
 				if (!(strategyObject instanceof LoadBalancingStrategy))
 					throw new IllegalArgumentException("Class '" + strategyClass.getName() + "' does not implement '" + LoadBalancingStrategy.class.getName() + "' interface.");
 				loadBalancingStrategy = (LoadBalancingStrategy)strategyObject;
