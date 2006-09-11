@@ -100,7 +100,7 @@ public class FridgeConsumer extends alma.acs.nc.Consumer
 		System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
 		System.exit(-1);
 		}
-	    String clientName = "ACSSampPanelClient";
+	    String clientName = "FridgeConsumer";
 	    ComponentClient myClient = new ComponentClient(null, managerLoc, clientName);
 	 
 	    FridgeConsumer joe = new FridgeConsumer(myClient.getContainerServices());

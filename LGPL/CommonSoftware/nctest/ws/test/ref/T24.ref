@@ -4,6 +4,7 @@
 1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .
+2 - ----------T--:--:--.--- INFO [FridgeConsumer] component 'FridgeConsumer' requested AdvancedContainerServices
 2 - Waiting for events...
 2 - The Java temperature difference is ---
 2 - The Java temperature difference is ---
@@ -24,7 +25,6 @@
 1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
 1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
 1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
-1 - ----------T--:--:--.--- FridgeNCConsumer Main - Events all done . . . exiting
 4 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 4 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
 4 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
@@ -38,6 +38,7 @@
 3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
 3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
 3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Events all done . . . exiting
 4 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 4 - ----------T--:--:--.--- Python Client Main - Events all done . . . exiting
 3 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...

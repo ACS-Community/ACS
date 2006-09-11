@@ -7,6 +7,7 @@
 1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .
+2 - ----------T--:--:--.--- INFO [FridgeConsumer] component 'FridgeConsumer' requested AdvancedContainerServices
 2 - Waiting for events...
 2 - The Java temperature difference is ---
 2 - The Java temperature difference is ---
