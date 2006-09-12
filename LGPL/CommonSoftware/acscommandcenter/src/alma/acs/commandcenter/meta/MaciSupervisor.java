@@ -189,8 +189,9 @@ public class MaciSupervisor implements IMaciSupervisor {
 			// msc (2006-04-28): lowered loglevel (certain users felt confused)
 		   log.finer("couldn't log out from manager: " + exc);
 		   
-		} catch (Exception exc) { // PENDING: really swallow the possible exceptions when logging out?
-			log.info("couldn't log out from manager: " + exc);
+		} catch (Exception exc) {
+			//	 msc (2006-09-12): lowered loglevel 
+			log.finer("couldn't log out from manager: " + exc);
 		}
    	
    	uninitialize();
@@ -678,6 +679,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 	            } // -----------------------------------------------
 	            //
 	         }
+	         
+	         containerNode.sortChildrenByInfoDetail("name");
 	
 	      } catch (Exception exc) {
 	         log.info("couldn't refresh container info: " + exc.getClass().getName());
@@ -710,6 +713,8 @@ public class MaciSupervisor implements IMaciSupervisor {
          for (int i = 0; i < clients.length; i++)
             clientNode.add(createNode(clients[i]));
 
+         clientNode.sortChildrenByInfoDetail("name");
+         
       } catch (Exception exc) {
          log.info("couldn't refresh client info: " + exc.getClass().getName());
          return exc;
@@ -743,6 +748,8 @@ public class MaciSupervisor implements IMaciSupervisor {
          for (int i = 0; i < components.length; i++)
             componentNode.add(createNode(components[i]));
 
+         componentNode.sortChildrenByInfoDetail("name");
+         
       } catch (Exception exc) {
          log.info("couldn't refresh component info: " + exc.getClass().getName());
          return exc;
