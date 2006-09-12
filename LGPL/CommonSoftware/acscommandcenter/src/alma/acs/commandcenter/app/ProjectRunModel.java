@@ -160,7 +160,8 @@ public class ProjectRunModel implements RunModel {
 					|| n.startsWith("file.") || n.startsWith("awt.") || n.startsWith("org.omg.")
 					|| n.startsWith("jacorb.") || n.startsWith("path.") || n.startsWith("line.")
 					|| n.startsWith("user.country") || n.startsWith("user.language") || n.startsWith("user.timezone")
-					|| n.startsWith("user.variant")) {
+					|| n.startsWith("user.variant") || n.startsWith("deployment.") || n.startsWith("javaplugin.")
+					|| n.startsWith("jnlpx.") || n.startsWith("org.apache.")) {
 				// skip
 			} else {
 				m.put(n, e.getValue());
