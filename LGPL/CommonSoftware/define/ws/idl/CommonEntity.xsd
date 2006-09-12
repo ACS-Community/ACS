@@ -72,8 +72,10 @@
 		     be used (e.g. by the ACS framework) to temporarily convert an 
 		     XmlEntityStruct to a tree of binding classes w/o losing information. -->
 		<xsd:attribute name="timestamp" type="xsd:string" use="optional"/>
-		<!-- Version of the APDM or ASDM data model, currently equal to the CVS revision number -->
-		<xsd:attribute name="datamodelVersion" type="xsd:string" use="required"/>		
+		<!-- Version of the APDM or ASDM data model, currently equal to the CVS revision number. 
+		     Introduced with ACS 5.0.5, we make this attribute optional at first so that existing XML documents are still valid. 
+		     TODO: make it "required" with ACS 6.0. -->
+		<xsd:attribute name="datamodelVersion" type="xsd:string" use="optional"/>		
 	</xsd:complexType>
 	
 </xsd:schema>
