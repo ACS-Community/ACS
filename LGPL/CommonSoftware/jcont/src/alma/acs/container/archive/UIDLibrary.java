@@ -47,14 +47,14 @@ public class UIDLibrary
 	private static UIDLibrary _instance = null;
 	private static int count = 0;
 	
-	private final Logger logger;
-	private final ContainerServices cs;
-	private final IdentifierJ identifier;
+	private Logger logger = null;
+	private ContainerServices cs = null;
+	private IdentifierJ identifier = null;
 	
 	private Range defaultRange = null;
 	
-	private HashMap<URI, Range> idRanges = null;
-	private HashMap<URI, Range> refRanges = null;
+	private HashMap idRanges = null;
+	private HashMap refRanges = null;
 	
 	/**
 	 * Return an instance of the UID library
@@ -63,8 +63,9 @@ public class UIDLibrary
 	 * @return
 	 * @throws UIDLibraryException
 	 */
-	public static synchronized UIDLibrary instance(ContainerServices cs, Identifier ident) 
-		throws UIDLibraryException
+	public static UIDLibrary instance(ContainerServices cs, Identifier ident) 
+		throws 
+			UIDLibraryException
 	{
 		if (_instance == null)
 		{
@@ -80,6 +81,9 @@ public class UIDLibrary
 		if (count == 0)
 		{
 			_instance = null; 
+			logger = null;
+			cs = null;
+			identifier = null;
 		}
 	}
 
@@ -91,7 +95,8 @@ public class UIDLibrary
 	 * @throws UIDLibraryException
 	 */
 	private UIDLibrary(ContainerServices cs, Identifier ident) 
-		throws UIDLibraryException
+		throws 
+			UIDLibraryException
 	{
 		this.cs = cs;
 		this.logger = cs.getLogger(); 
@@ -115,8 +120,8 @@ public class UIDLibrary
 			throw new UIDLibraryException(e);
 		}
 		
-		idRanges = new HashMap<URI, Range>();
-		refRanges = new HashMap<URI, Range>();
+		idRanges = new HashMap();
+		refRanges = new HashMap();
 	}
 
 	/**
@@ -142,7 +147,8 @@ public class UIDLibrary
 	 * @return
 	 */
 	public URI getNewRestrictedRange(int size, String user)
-		throws UIDLibraryException
+		throws
+			UIDLibraryException
 	{
 		Range range = null;
 		try
@@ -152,7 +158,7 @@ public class UIDLibrary
 				identifier.getNewRestrictedRange(size,user);
 			range = new Range(idRange);
 		}
-		catch (NotAvailable e) {
+		catch (NotAvailable e){
 			throw new UIDLibraryException(e);
 		}
 		
@@ -177,12 +183,13 @@ public class UIDLibrary
 	 * @throws UIDLibraryException
 	 */
 	public void assignUniqueEntityId(EntityT entity, URI uri) 
-		throws UIDLibraryException
+		throws 
+			UIDLibraryException
 	{
 		if (idRanges.containsKey(uri)){
 			logger.finest("UIDLibrary: Assigning ID to entity from: " 
 				+ uri.toASCIIString());
-			Range r = idRanges.get(uri);
+			Range r = (Range)idRanges.get(uri);
 			r.assignUniqueEntityId(entity);
 		}
 		else{
@@ -198,7 +205,8 @@ public class UIDLibrary
 	 * @throws UIDLibraryException
 	 */
 	public void fetchRange(URI uri, String user) 
-		throws UIDLibraryException
+		throws 
+			UIDLibraryException
 	{
 		IdentifierRange idRange = null;
 		try{
@@ -228,12 +236,13 @@ public class UIDLibrary
 	 * @throws UIDLibraryException
 	 */
 	public void assignUniqueEntityRef(EntityRefT ref, URI uri) 
-		throws UIDLibraryException
+		throws 
+			UIDLibraryException
 	{
 		if (refRanges.containsKey(uri)){
 			logger.finest("UIDLibrary: Assigning ID Ref to entity from: " 
 				+ uri.toASCIIString());
-			Range r = refRanges.get(uri);
+			Range r = (Range)refRanges.get(uri);
 			r.assignUniqueEntityRef(ref);
 		}
 		else{
