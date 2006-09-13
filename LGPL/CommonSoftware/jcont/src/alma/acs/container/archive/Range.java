@@ -21,40 +21,44 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package alma.archive.identifier;
+package alma.acs.container.archive;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.atomic.AtomicLong;
 
-import alma.archive.exceptions.UIDLibraryException;
+import alma.acs.container.ContainerException;
 import alma.archive.range.IdentifierRange;
 import alma.archive.range.RangeT;
 import alma.entities.commonentity.EntityRefT;
 import alma.entities.commonentity.EntityT;
 
 /**
+ * This class is an intelligent wrapper for the castor class {@link IdentifierRange}
+ * which itself gets generated from the schema "IdentifierRange.xsd".
+ * 
+ * See <a href="http://almasw.hq.eso.org/almasw/bin/view/Archive/UidLibrary">wiki</a>.
+ * 
  * @author simon
  */
 public class Range
 {
-	private String archiveid;
-	private boolean serialized;
+	private final String archiveid;
+	private final boolean isLocked;
 	
-	private String rangeid;
-	private long documentid = 0;
+	private final String rangeid;
+	private final AtomicLong documentid;
 	
-	private long minDocumentid = 0;
-	private long maxDocumentid = Long.MAX_VALUE;
+	private final long minDocumentid;
+	private final long maxDocumentid;
 	
 	/**
 	 * 
 	 */
 	public Range(IdentifierRange identifierRange)
-		throws
-			UIDLibraryException
 	{
 		archiveid = identifierRange.getArchiveID();
-		serialized = identifierRange.getSerialised();
+		isLocked = identifierRange.getSerialised();
 		
 		RangeT r = identifierRange.getRange();
 		
@@ -62,74 +66,90 @@ public class Range
 		
 		String baseid = r.getBaseDocumentID();
 		minDocumentid = Long.parseLong(baseid,16);
-		documentid = minDocumentid;
+		documentid = new AtomicLong(minDocumentid);
 		
 		String maxid = r.getMaxDocumentID();
-		if (maxid != null) maxDocumentid = Long.parseLong(maxid,16);
+		maxDocumentid = ( maxid != null ? Long.parseLong(maxid,16) : Long.MAX_VALUE ); 
+	}
+
+	public boolean isLocked() {
+		return isLocked;
 	}
 	
-	public void assignUniqueEntityId(EntityT entity)
-		throws
-			UIDLibraryException
-	{
-		if (!serialized)
+	/**
+	 * @see {@link ContainerServices#assignUniqueEntityId(EntityT)}
+	 */
+	public void assignUniqueEntityId(EntityT entity) throws ContainerException {
+		if (!isLocked)
 		{
-			if (documentid > maxDocumentid) throw new UIDLibraryException(
-				"Maximum document exceeded"); 
 			String uid = getNextID(); 
 			entity.setEntityId(uid);
 			entity.setEntityIdEncrypted("-- id encryption not yet implemented --");
 		}
-		else throw new UIDLibraryException(
-			"Cannot assign Entity ID's with a serialized range");
+		else {
+			throw new ContainerException("Cannot assign Entity IDs from a locked range");
+		}
 	}
-	
-	public void assignUniqueEntityRef(EntityRefT ref)
-		throws
-			UIDLibraryException
-	{
-		if (serialized)
+
+	/**
+	 * Assigns a UID from the range to a given entity <b>reference</b>.
+	 * Note that this is different from assigning a UID to an entity.
+	 * This method only works if this range is locked, see {@link #isLocked()}.
+	 * @param ref
+	 * @throws ContainerException
+	 */
+	public void assignUniqueEntityRef(EntityRefT ref) throws ContainerException {
+		if (isLocked)
 		{
-			if (documentid > maxDocumentid) throw new UIDLibraryException(
-				"Maximum document exceeded");
 			String uid = getNextID();
 			ref.setEntityId(uid);
 		}
-		else throw new UIDLibraryException(
-			"Cannot assign Refernce ID's with a non-serialized range");
+		else {
+			throw new ContainerException("Cannot assign Reference IDs with an unlocked (\"non-serialized\") range.");
+		}			
 	}
 	
-	private String getNextID()
-		throws
-			UIDLibraryException
-	{
-		if (documentid > maxDocumentid) 
-			throw new UIDLibraryException("Range Exceeded");
-		
-		String uid = "uid://X" + archiveid + 
-					 	  "/X" + rangeid + 
-						  "/X" + Long.toHexString(documentid);
-		documentid++;
-		return uid;
+	/**
+	 * Returns a UID that is constructed from the archiveID, the rangeID, and the running local document ID.
+	 * @throws ContainerException
+	 */
+	private String getNextID() throws ContainerException {
+		long nextID = documentid.getAndIncrement();
+		if (nextID <= maxDocumentid) {
+			String uid = "uid://X" + archiveid + 
+		 	  "/X" + rangeid + 
+			  "/X" + Long.toHexString(nextID);
+			return uid;
+		} 
+		else {
+			documentid.decrementAndGet(); // to avoid a LONG overflow in the zillions of next calls
+			throw new ContainerException("UID range maximum is reached, no more UIDs available."); // TODO ACS exception with rangeID, UID, ...
+		}
 	}
+
 	
-	//TODO: this needs to be moved to protected soon, will require the
-	//ArchiveID web service to be moved to this namespace
-	public URI next() throws UIDLibraryException
+	
+	/**
+	 * cryptic comment from Simon: TODO: this needs to be moved to protected soon, will require the ArchiveID web service to be moved to this namespace
+	 * @return
+	 * @throws ContainerException
+	 */
+	public URI next() throws ContainerException
 	{
 		try{
 			URI uri = new URI(getNextID());
 			return uri;
 		}
 		catch (URISyntaxException e){
-			throw new UIDLibraryException(e.getMessage());
+			throw new ContainerException(e);
 		}
 	}
 	
-	public URI rangeId() 
-		throws 
-			UIDLibraryException
-	{
+	/**
+	 * Gets the UID of this range document itself.
+	 * @throws ContainerException
+	 */
+	public URI rangeId() throws ContainerException 	{
 		String uid = "uid://X" + archiveid + 
 	 	  "/X" + rangeid + 
 		  "/X0";
@@ -140,7 +160,7 @@ public class Range
 		}
 		catch (URISyntaxException e)
 		{
-			throw new UIDLibraryException();
+			throw new ContainerException();
 		}
 	}
 }
