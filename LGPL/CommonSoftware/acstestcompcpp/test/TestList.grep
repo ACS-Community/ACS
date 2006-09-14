@@ -1,0 +1,7 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+Local file logger
+Logging to log file
+Running the container with these arguments
