@@ -73,12 +73,12 @@ public class DynamicProxyFactory
 	 * @return Object
 	 * @throws DynWrapperException
 	 */
-	public Object createClientProxy(Class componentInterface, 
+	public <T> T createClientProxy(Class<T> componentInterface, 
 											org.omg.CORBA.Object corbaStub, 
 											Class corbaOperationsIF)
 			throws DynWrapperException
 	{
-		Object proxy = null;
+		T proxy = null;
 		
 		try {
 			ComponentInvocationHandler handler = 
@@ -87,7 +87,7 @@ public class DynamicProxyFactory
 			// TODO: use the result
 			checkMethodMatching(componentInterface, handler);
 
-			proxy = Proxy.newProxyInstance(componentInterface.getClassLoader(),
+			proxy = (T) Proxy.newProxyInstance(componentInterface.getClassLoader(),
 																new Class[] { componentInterface },
 																handler);
 		}
