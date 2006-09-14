@@ -27,19 +27,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import alma.acs.container.ContainerException;
 import alma.archive.range.IdentifierRange;
 import alma.archive.range.RangeT;
 import alma.entities.commonentity.EntityRefT;
 import alma.entities.commonentity.EntityT;
 
 /**
- * This class is an intelligent wrapper for the castor class {@link IdentifierRange}
+ * This class represents a range of UIDs as created by the Alma archive, 
+ * and allows using them as XML document IDs or links to XML documents. 
+ * A range is always limited to a finite number of UIDs, given either by an explicitly requested limit, 
+ * or otherwise by <code>Long.MAX_VALUE</code> many UIDs.
+ * <p>
+ * This class is implemented as an intelligent wrapper for the castor class {@link IdentifierRange}
  * which itself gets generated from the schema "IdentifierRange.xsd".
- * 
- * See <a href="http://almasw.hq.eso.org/almasw/bin/view/Archive/UidLibrary">wiki</a>.
- * 
- * @author simon
+ * <p>
+ * For a better description, see the <a href="http://almasw.hq.eso.org/almasw/bin/view/Archive/UidLibrary">Archive/UidLibrary wiki page</a>.
+ * @author simon, hsommer
  */
 public class Range
 {
@@ -72,25 +75,59 @@ public class Range
 		maxDocumentid = ( maxid != null ? Long.parseLong(maxid,16) : Long.MAX_VALUE ); 
 	}
 
+	/**
+	 * A range can be either locked or unlocked. 
+	 * This immutable property was originally called "serialised" but was considered too confusing 
+	 * since this logical concept has nothing to do with technically serializing the castor class to XML.
+	 * <p>
+	 * TODO: explain better the real meaning of this locking, and the forseen scenarios. 
+	 * @return true if this object represents a locked range.
+	 */
 	public boolean isLocked() {
 		return isLocked;
 	}
 	
 	/**
-	 * @see {@link ContainerServices#assignUniqueEntityId(EntityT)}
+	 * Assigns a UID to the <code>EntityT</code> castor object that should be a direct child of an Alma XML entity.
+	 * As a means of protection, this call will fail if the entity already has a UID. If you actually need to
+	 * replace a UID in some rare cases, please use {@link #replaceUniqueEntityId(EntityT)}. 
+	 * <p>
+	 * The same functionality is offered in {@link ContainerServices#assignUniqueEntityId(EntityT)} which actually delegates to here.
+	 * @throws UniqueIdException  if this range is locked, or if <code>entity</code> already has a UID, or if no new UID is available from this Range.
 	 */
-	public void assignUniqueEntityId(EntityT entity) throws ContainerException {
+	public void assignUniqueEntityId(EntityT entity) throws UniqueIdException {
+		setUniqueEntityId(entity, false);
+	}
+
+	/**
+	 * Assigns a UID to the <code>EntityT</code> castor object that should be a direct child of an Alma XML entity.
+	 * Unlike {@link #assignUniqueEntityID}, this method will silently replace any existing UID,
+	 * which is possibly dangerous. Therefore it should only be used in rare cases where replacing an exisint ID is 
+	 * needed, for example when the ObsPrep tool might translate locally created documents into an archivable format. 
+	 * @throws UniqueIdException  if this range is locked, or if no new UID is available from this Range.
+	 */
+	public void replaceUniqueEntityId(EntityT entity) throws UniqueIdException {
+		setUniqueEntityId(entity, true);
+	}
+
+	
+	private void setUniqueEntityId(EntityT entity, boolean allowReplacing) throws UniqueIdException {
 		if (!isLocked)
 		{
-			String uid = getNextID(); 
+			if (entity.getEntityId() != null && entity.getEntityId().length() > 0 && !allowReplacing) {
+				throw new UniqueIdException("Entity " + entity.getEntityTypeName() + " already has UID " + entity.getEntityId() + " which cannot be reassigned.");
+			}
+			String uid = getNextID();
 			entity.setEntityId(uid);
 			entity.setEntityIdEncrypted("-- id encryption not yet implemented --");
 		}
 		else {
-			throw new ContainerException("Cannot assign Entity IDs from a locked range");
+			throw new UniqueIdException("Cannot assign Entity IDs from a locked range");
 		}
 	}
 
+	
+	
 	/**
 	 * Assigns a UID from the range to a given entity <b>reference</b>.
 	 * Note that this is different from assigning a UID to an entity.
@@ -98,14 +135,14 @@ public class Range
 	 * @param ref
 	 * @throws ContainerException
 	 */
-	public void assignUniqueEntityRef(EntityRefT ref) throws ContainerException {
+	public void assignUniqueEntityRef(EntityRefT ref) throws UniqueIdException {
 		if (isLocked)
 		{
 			String uid = getNextID();
 			ref.setEntityId(uid);
 		}
 		else {
-			throw new ContainerException("Cannot assign Reference IDs with an unlocked (\"non-serialized\") range.");
+			throw new UniqueIdException("Cannot assign Reference IDs with an unlocked (\"non-serialized\") range.");
 		}			
 	}
 	
@@ -113,35 +150,53 @@ public class Range
 	 * Returns a UID that is constructed from the archiveID, the rangeID, and the running local document ID.
 	 * @throws ContainerException
 	 */
-	private String getNextID() throws ContainerException {
+	private String getNextID() throws UniqueIdException {
 		long nextID = documentid.getAndIncrement();
 		if (nextID <= maxDocumentid) {
-			String uid = "uid://X" + archiveid + 
-		 	  "/X" + rangeid + 
-			  "/X" + Long.toHexString(nextID);
-			return uid;
+			return generateUID(archiveid, rangeid, nextID);
 		} 
 		else {
 			documentid.decrementAndGet(); // to avoid a LONG overflow in the zillions of next calls
-			throw new ContainerException("UID range maximum is reached, no more UIDs available."); // TODO ACS exception with rangeID, UID, ...
+			throw new UniqueIdException("UID range maximum is reached, no more UIDs available."); // TODO ACS exception with rangeID, UID, ...
 		}
 	}
 
-	
+	/**
+	 * This method is only exposed for testing purposes, when a UID has to be generated from its constituent parts.
+	 * You should normally not use this method.  
+	 */
+	public final static String generateUID(String _archiveID, String _rangeID, long _localId) {
+		String uid = "uid://X" + _archiveID + 
+		  "/X" + _rangeID + 
+		  "/X" + Long.toHexString(_localId);
+		return uid;
+	}
+
+	/**
+	 * Checks whether another UID can be pulled from this range without causing an exception due to an overflow.
+	 * <p>
+	 * Warning about thread safety: This method does not reserve a UID or anything like that, 
+	 * thus a returned <code>true</code> value does not necessarily mean that a later call 
+	 * to one of the assignXYZ etc methods will succeed. 
+	 * @return true if at least one more UID can be retrieved from this range.
+	 */
+	public boolean hasNextID() {
+		return ( documentid.get() < maxDocumentid );
+	}
 	
 	/**
 	 * cryptic comment from Simon: TODO: this needs to be moved to protected soon, will require the ArchiveID web service to be moved to this namespace
 	 * @return
 	 * @throws ContainerException
 	 */
-	public URI next() throws ContainerException
+	public URI next() throws UniqueIdException
 	{
 		try{
 			URI uri = new URI(getNextID());
 			return uri;
 		}
 		catch (URISyntaxException e){
-			throw new ContainerException(e);
+			throw new UniqueIdException(e);
 		}
 	}
 	
@@ -149,7 +204,7 @@ public class Range
 	 * Gets the UID of this range document itself.
 	 * @throws ContainerException
 	 */
-	public URI rangeId() throws ContainerException 	{
+	public URI rangeId() throws UniqueIdException 	{
 		String uid = "uid://X" + archiveid + 
 	 	  "/X" + rangeid + 
 		  "/X0";
@@ -160,7 +215,7 @@ public class Range
 		}
 		catch (URISyntaxException e)
 		{
-			throw new ContainerException();
+			throw new UniqueIdException();
 		}
 	}
 }
