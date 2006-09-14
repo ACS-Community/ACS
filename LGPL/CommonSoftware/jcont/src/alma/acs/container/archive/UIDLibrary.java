@@ -25,18 +25,13 @@ package alma.acs.container.archive;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import alma.acs.container.ContainerException;
-import alma.acs.container.ContainerServices;
 import alma.archive.range.IdentifierRange;
 import alma.entities.commonentity.EntityRefT;
 import alma.entities.commonentity.EntityT;
-import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierJ;
-import alma.xmlstore.IdentifierOperations;
 import alma.xmlstore.IdentifierPackage.NotAvailable;
 import alma.xmlstore.IdentifierPackage.NotFound;
 
@@ -45,93 +40,102 @@ import alma.xmlstore.IdentifierPackage.NotFound;
  */
 public class UIDLibrary
 {
-	private static UIDLibrary _instance = null;
-	private static final AtomicInteger count = new AtomicInteger(0);
+//	private static UIDLibrary _instance = null;
+//	private static final AtomicInteger count = new AtomicInteger(0);
+	
 	
 	private final Logger logger;
-	private final ContainerServices cs;
-	private final IdentifierJ identifier;	
-	private final Range defaultRange;
+//	private final ContainerServices cs;
+//	private final IdentifierJ identifier;	
+	private static volatile Range defaultRange;
 	
 	private final HashMap<URI, Range> idRanges;
 	private final HashMap<URI, Range> refRanges;
 	
-	/**
-	 * Return an instance of the UID library
-	 * @param cs
-	 * @param ident
-	 * @return
-	 * @throws ContainerException
-	 */
-	public static synchronized UIDLibrary instance(ContainerServices cs, Identifier ident) 
-		throws ContainerException
-	{
-		if (_instance == null)
-		{
-			_instance = new UIDLibrary(cs,ident);
-		}
-		count.incrementAndGet();
-		return _instance;
-	}
-	
-	/**
-	 * TODO: check if this method is useful, given that its sole purpose is to release the bit of memory 
-	 * used for the single instance returned from the {@link #instance(ContainerServices, Identifier)} method.
-	 */
-	public void close()
-	{
-		if (count.decrementAndGet() == 0)
-		{
-			_instance = null; 
-		}
-	}
+//	/**
+//	 * Return an instance of the UID library
+//	 * @param cs
+//	 * @param ident
+//	 * @return
+//	 * @throws ContainerException
+//	 */
+//	public static synchronized UIDLibrary instance(ContainerServices cs, Identifier ident) 
+//		throws UniqueIdException
+//	{
+//		if (_instance == null)
+//		{
+//			_instance = new UIDLibrary(cs, ident);
+//		}
+//		count.incrementAndGet();
+//		return _instance;
+//	}
+//	
+//	/**
+//	 * TODO: check if this method is useful, given that its sole purpose is to release the bit of memory 
+//	 * used for the single instance returned from the {@link #instance(ContainerServices, Identifier)} method.
+//	 * If we keep it, then after this call it should be impossible to work with an instance, thus the close-status should be checked.
+//	 */
+//	public void close()
+//	{
+//		if (count.decrementAndGet() == 0)
+//		{
+//			_instance = null; 
+//		}
+//	}
 
 	/**
 	 * Creates the UIDLibrary, fetches the default range from the Identifier interface.
-	 * @param cs
-	 * @param ident
-	 * @throws ContainerException
+	 * @param logger Logger used by this instance.
+	 * @throws UniqueIdException if no UID range could be retrieved, or if <code>ident</code> cannot be wrapped with the XML binding layer
 	 */
-	private UIDLibrary(ContainerServices cs, Identifier ident)
-		throws ContainerException
+	public UIDLibrary(Logger logger) //throws UniqueIdException
 	{
-		this.cs = cs;
-		this.logger = cs.getLogger(); 
+		this.logger = logger; 
 		idRanges = new HashMap<URI, Range>();
 		refRanges = new HashMap<URI, Range>();
 		
-		identifier = (IdentifierJ) cs.getTransparentXmlComponent(
-				IdentifierJ.class, ident, IdentifierOperations.class);
-		try {
-			logger.finest("UIDLibrary: Building default range class");
-			IdentifierRange idRange = identifier.getNewRange();
-			defaultRange = new Range(idRange);
-		}
-		catch (NotAvailable e){
-			throw new ContainerException(e);
-		}		
+//		try {
+//			identifier = (IdentifierJ) cs.getTransparentXmlComponent(
+//					IdentifierJ.class, ident, IdentifierOperations.class);
+//		} catch (ContainerException e1) {
+//			throw new UniqueIdException(e1);
+//		}
+//		try {
+//			logger.finest("UIDLibrary: will retrieve the UID default range.");
+//			IdentifierRange idRange = identifier.getNewRange();
+//			defaultRange = new Range(idRange);
+//		}
+//		catch (NotAvailable e) {
+//			throw new UniqueIdException(e);
+//		}		
 	}
 
 	
 	/**
 	 * Assigns a uid from the default range to the <code>EntityT</code> castor class 
 	 * of an XML-based entity such as a SchedBlock.
-	 * @throws ContainerException
+	 * @throws UniqueIdException
 	 * @see {@link ContainerServices#assignUniqueEntityId(EntityT)}
 	 */
-	public void assignUniqueEntityId(EntityT entity) throws ContainerException {
-		logger.finest("Will assign default UID to entity of type " + entity.getEntityTypeName());
+	public void assignUniqueEntityId(EntityT entity, IdentifierJ indentifier) throws UniqueIdException {
+		
+		checkDefaultRange(indentifier);
 		defaultRange.assignUniqueEntityId(entity);
+		
+		if (logger.isLoggable(Level.FINEST)) {
+			logger.finest("Assigned UID '" + entity.getEntityId() + "' to entity of type " + entity.getEntityTypeName());
+		}
 	}
 
+	
 	/**
-	 * Fetch a new restricted range, this will return a URI allowing access to
-	 * the new Range. The range is automatically stored in the archive. 
-	 * @return
+	 * Fetches a new restricted range. 
+	 * This will return a URI allowing access to the new Range. 
+	 * The range is automatically stored in the archive. 
+	 * @return the UID of the range, which can be used for example as an argument in {@link #assignUniqueEntityId(EntityT, URI)}.
+	 * @throws UniqueIdException  if the range cannot be obtained from the archive. 
 	 */
-	public URI getNewRestrictedRange(int size, String user)
-		throws ContainerException
-	{
+	public URI getNewRestrictedRange(int size, String user, IdentifierJ identifier) throws UniqueIdException {
 		Range range = null;
 		try
 		{
@@ -140,12 +144,12 @@ public class UIDLibrary
 			range = new Range(idRange);
 		}
 		catch (NotAvailable e) {
-			throw new ContainerException(e);
+			throw new UniqueIdException(e);
 		}
 		
 		URI uri = range.rangeId();
 		if (idRanges.containsKey(uri)) {
-			throw new ContainerException("Cannot store new range. URI occupied. This should never have happened by design!!");
+			throw new UniqueIdException("Cannot store new range. URI occupied. This should never have happened by design!!");
 		}
 		logger.finest("UIDLibrary: Storing Range under: "+ uri.toASCIIString());
 		
@@ -156,14 +160,17 @@ public class UIDLibrary
 	
 	
 	/**
-	 * Assign a uid to the EntityT from the specified range, not permitted with
-	 * deserialised Ranges
-	 * @param entity
-	 * @param uri
-	 * @throws ContainerException
+	 * Assigns a uid to the EntityT from the specified range.
+	 * This is not permitted with a locked Range object.
+	 * <p>
+	 * TODO: figure out if this is meant to work only if the Range referenced by uri has been loaded previously by this instance.
+	 * If so, put a comment that fetchRange must be called first.
+	 *  
+	 * @param entity  
+	 * @param uri  the UID of the Range object
+	 * @throws UniqueIdException
 	 */
-	public void assignUniqueEntityId(EntityT entity, URI uri) 
-		throws ContainerException
+	public void assignUniqueEntityId(EntityT entity, URI uri) throws UniqueIdException
 	{
 		if (idRanges.containsKey(uri)){
 			if (logger.isLoggable(Level.FINEST)) {
@@ -173,10 +180,10 @@ public class UIDLibrary
 			r.assignUniqueEntityId(entity);
 		}
 		else{
-			throw new ContainerException(
-				"Cannot find range: " + uri.toASCIIString());
+			throw new UniqueIdException("Cannot find range: " + uri.toASCIIString());
 		}
 	}
+	
 	
 	/**
 	 * Fetch an existing range from the archive and deserialise, only certain
@@ -184,8 +191,8 @@ public class UIDLibrary
 	 * @param uri
 	 * @throws ContainerException
 	 */
-	public void fetchRange(URI uri, String user) 
-		throws ContainerException
+	public void fetchRange(URI uri, String user, IdentifierJ identifier) 
+		throws UniqueIdException
 	{
 		IdentifierRange idRange = null;
 		try{
@@ -194,7 +201,7 @@ public class UIDLibrary
 			idRange = identifier.getExistingRange(uri.toASCIIString(),user);
 		}
 		catch (NotFound e){
-			throw new ContainerException(e);
+			throw new UniqueIdException(e);
 		}
 		
 		Range r = new Range(idRange);
@@ -202,7 +209,7 @@ public class UIDLibrary
 			refRanges.put(uri,r);
 		}
 		else{
-			throw new ContainerException(
+			throw new UniqueIdException(
 				"Range: " + uri.toASCIIString() + " is already in use");
 		}
 	}
@@ -215,7 +222,7 @@ public class UIDLibrary
 	 * @throws ContainerException
 	 */
 	public void assignUniqueEntityRef(EntityRefT ref, URI uri) 
-		throws ContainerException
+		throws UniqueIdException
 	{
 		if (refRanges.containsKey(uri)){
 			logger.finest("UIDLibrary: Assigning ID Ref to entity from: " 
@@ -224,8 +231,32 @@ public class UIDLibrary
 			r.assignUniqueEntityRef(ref);
 		}
 		else{
-			throw new ContainerException(
+			throw new UniqueIdException(
 				"Cannot find range: " + uri.toASCIIString());
 		}
 	}
+	
+	/**
+	 * Creates a new Range for {@link #defaultRange} as part of lazy instantiation, or if the old Range has no more free UIDs.
+	 * Note that the default range object is shared among instances to be frugal on UIDs and to minimize archive access.
+	 * <p>
+	 * Note on thread safety: a subsequent call that needs to allocate a fresh UID may still fail.
+	 * TODO: either put the free-UID-check and the assignments under one thread monitor (e.g. by making all methods synchronized),
+	 * or keep calling this method in case of assignment exceptions.
+	 * @param indentifier the identifier archive from which a new Range can be obtained.
+	 * @throws UniqueIdException
+	 */
+	protected synchronized void checkDefaultRange(IdentifierJ indentifier) throws UniqueIdException {
+		try {
+			if (defaultRange == null) {
+				defaultRange = new Range(indentifier.getNewRange());
+			}
+			else if (!defaultRange.hasNextID()) {
+				defaultRange = new Range(indentifier.getNewRange());
+			}
+		} catch (NotAvailable e) {
+			throw new UniqueIdException(e);
+		}
+	}	
+	
 }
