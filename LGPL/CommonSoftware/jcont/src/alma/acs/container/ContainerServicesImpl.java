@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,10 +56,15 @@ import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
-import alma.acs.container.archive.ArchiveProxy;
+import alma.acs.container.archive.Range;
+import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.entities.commonentity.EntityT;
+import alma.xmlstore.Identifier;
+import alma.xmlstore.IdentifierHelper;
+import alma.xmlstore.IdentifierJ;
+import alma.xmlstore.IdentifierOperations;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -78,9 +84,14 @@ import alma.entities.commonentity.EntityT;
 public class ContainerServicesImpl implements ContainerServices
 {
     private AdvancedContainerServicesImpl advancedContainerServices;
-    
-	private volatile ArchiveProxy m_archiveProxy;
 
+    // identifier archive and UID lib will created lazily
+	private volatile UIDLibrary uidLibrary;
+	private volatile IdentifierJ identifierArchive;
+	/** cheat property that allows testing without identifier archive present, because UIDs will be faked */
+	public static final String PROPERTYNAME_FAKE_UID_FOR_TESTING = "acs.container.fakeUIDsForTesting";
+	private final boolean fakeUIDsForTesting = Boolean.getBoolean(PROPERTYNAME_FAKE_UID_FOR_TESTING);
+	
 	protected final AcsManagerProxy m_acsManagerProxy;
 
     // logger used by this class
@@ -147,6 +158,10 @@ public class ContainerServicesImpl implements ContainerServices
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
         
         m_threadFactory = threadFactory;        
+        
+        if (fakeUIDsForTesting) {
+        	m_logger.warning("Running in test mode where UIDs will be constructed randomly instead of being retrieved from the archive!");
+        }
 	}
 
 
@@ -210,31 +225,31 @@ public class ContainerServicesImpl implements ContainerServices
 	 */
 	public void assignUniqueEntityId(EntityT entity) throws ContainerException
 	{
-		if (entity == null)
-		{
-			throw new ContainerException("The XML entity's child of type EntityT must not be null.");
-		}
-		
-		String newId = null;
-		try
-		{ 	
-			if (m_archiveProxy == null)
-			{
-				// must be lazy inst., can't do it in ctor 
-				m_archiveProxy = ArchiveProxy.getArchiveProxy(this, m_logger);
-			}
-		
-			newId = m_archiveProxy.nextUniqueId();
-		}
-		catch (Exception ex)
-		{
-			throw new ContainerException("failed to create id.", ex);
+		if (entity == null) {
+			throw new ContainerException("The EntityT arg must not be null.");
 		}
 
-		entity.setEntityId(newId);
+		if (fakeUIDsForTesting) {
+			long localId = (new Random(System.currentTimeMillis())).nextLong();
+			String uid = Range.generateUID("testArchiveId", "testRangeId", localId);
+			entity.setEntityId(uid);
+			return;
+		}
 		
-		entity.setEntityIdEncrypted("-- id encryption not yet implemented --");
-		
+		try {
+			if (identifierArchive == null) {
+				Identifier identRaw;
+				identRaw = IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"));
+				identifierArchive = getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);
+			}
+			if (uidLibrary == null) {
+				uidLibrary = new UIDLibrary(m_logger);
+			}
+			uidLibrary.assignUniqueEntityId(entity, identifierArchive);
+		}
+		catch (Throwable thr) {
+			throw new ContainerException("failed to assign a UID to entity of type .", thr);
+		}
 	}
 
 
@@ -735,15 +750,15 @@ public class ContainerServicesImpl implements ContainerServices
 	 *   
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
-    public Object getTransparentXmlComponent(
-            Class transparentXmlIF,
+    public <T> T getTransparentXmlComponent(
+            Class<T> transparentXmlIF,
             org.omg.CORBA.Object componentReference,
             Class flatXmlIF)
     throws ContainerException
     {
         m_logger.finer("creating xml binding class aware wrapper around component " + 
                 "implementing " + flatXmlIF.getName() + "..."); 
-        Object wrapper = null;
+        T wrapper = null;
         try
         {
             wrapper = DynamicProxyFactory.getDynamicProxyFactory(m_logger).createClientProxy(
