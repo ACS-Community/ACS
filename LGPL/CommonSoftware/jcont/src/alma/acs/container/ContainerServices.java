@@ -365,8 +365,8 @@ public interface ContainerServices
 	 * 					serialized XML inside a CORBA struct.
 	 * @return the object that implements <code>transparentXmlIF</code>.
 	 */
-	public Object getTransparentXmlComponent(
-		Class transparentXmlIF,
+	public <T> T getTransparentXmlComponent(
+		Class<T> transparentXmlIF,
 		org.omg.CORBA.Object componentReference,
 		Class flatXmlIF) 
 		throws ContainerException;
