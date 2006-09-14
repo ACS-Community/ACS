@@ -58,7 +58,7 @@ public class Range
 	public Range(IdentifierRange identifierRange)
 	{
 		archiveid = identifierRange.getArchiveID();
-		isLocked = identifierRange.getSerialised();
+		isLocked = identifierRange.getIsLocked();
 		
 		RangeT r = identifierRange.getRange();
 		
