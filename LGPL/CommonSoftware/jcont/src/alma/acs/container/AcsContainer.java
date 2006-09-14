@@ -284,7 +284,7 @@ public class AcsContainer extends ContainerPOA
         StopWatch activationWatch = new StopWatch(m_logger);
 
         // to make component activations stick out in the log list
-        m_logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        m_logger.fine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         m_logger.info("activate_component: handle=" + componentHandle + " name=" + compName +
                         " helperClass=" + exe + " type=" + type);
 
@@ -418,7 +418,7 @@ public class AcsContainer extends ContainerPOA
         finally
         {
             // to make (possibly nested) component activations stick out in the log list
-            m_logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            m_logger.fine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         }
 
         return componentInfo;
