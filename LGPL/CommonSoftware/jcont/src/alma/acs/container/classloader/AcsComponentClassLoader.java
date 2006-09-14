@@ -51,8 +51,7 @@ public class AcsComponentClassLoader extends URLClassLoader
 	 * Example value: <code>../lib/ACScomponents:/alma/ACS-5.0/ACSSW/lib/ACScomponents:"</code>.
 	 */
 	public static final String PROPERTY_JARDIRS = "acs.components.classpath.jardirs";
-	
-	
+		
 	/**
 	 * Name of the property that flags verbose mode of the component classloader. 
 	 * Verbose mode is a debugging tool, only to be enabled locally by defining this property.
@@ -64,8 +63,8 @@ public class AcsComponentClassLoader extends URLClassLoader
 	public static final String PROPERTY_CLASSLOADERVERBOSE = "acs.components.classloader.verbose";
 
 	private boolean verbose;
-	private Logger logger;
-	private String componentName;
+	private final Logger logger;
+	private final String componentName;
 
     /**
      * @param parent  parent class loader (currently the container class loader)
@@ -84,6 +83,8 @@ public class AcsComponentClassLoader extends URLClassLoader
 		if (verbose) {
 			logger.fine("Property '" + PROPERTY_JARDIRS + "' is set to " + jarDirPath);
 		}
+//System.out.println("Property '" + PROPERTY_JARDIRS + "' is set to " + jarDirPath);
+		
 		File[] jarDirs = parseJarDirs(jarDirPath);
 
 		AcsJarFileFinder jarFinder = new AcsJarFileFinder(jarDirs, null);
@@ -112,7 +113,6 @@ public class AcsComponentClassLoader extends URLClassLoader
 		}
 	}
 
-	
 	private File[] parseJarDirs(String jarDirPath)
 	{
 		StringTokenizer tok = new StringTokenizer(jarDirPath, File.pathSeparator);
@@ -142,6 +142,7 @@ public class AcsComponentClassLoader extends URLClassLoader
 	protected synchronized Class<?> loadClass(String name, boolean resolve)
 			throws ClassNotFoundException
 	{
+//		System.out.println("### load " + name);
 		// First, check if the class has already been loaded by this classloader
 		Class c = findLoadedClass(name);
 		if (c == null) {
