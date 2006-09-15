@@ -27,6 +27,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import alma.ArchiveIdentifierError.RangeUnlockedEx;
+import alma.ArchiveIdentifierError.wrappers.AcsJIdentifierUnexpectedEx;
+import alma.ArchiveIdentifierError.wrappers.AcsJRangeExhaustedEx;
+import alma.ArchiveIdentifierError.wrappers.AcsJRangeLockedEx;
+import alma.ArchiveIdentifierError.wrappers.AcsJUidAlreadyExistsEx;
 import alma.archive.range.IdentifierRange;
 import alma.archive.range.RangeT;
 import alma.entities.commonentity.EntityRefT;
@@ -93,9 +98,8 @@ public class Range
 	 * replace a UID in some rare cases, please use {@link #replaceUniqueEntityId(EntityT)}. 
 	 * <p>
 	 * The same functionality is offered in {@link ContainerServices#assignUniqueEntityId(EntityT)} which actually delegates to here.
-	 * @throws UniqueIdException  if this range is locked, or if <code>entity</code> already has a UID, or if no new UID is available from this Range.
 	 */
-	public void assignUniqueEntityId(EntityT entity) throws UniqueIdException {
+	public void assignUniqueEntityId(EntityT entity) throws AcsJUidAlreadyExistsEx, AcsJRangeLockedEx, AcsJRangeExhaustedEx {
 		setUniqueEntityId(entity, false);
 	}
 
@@ -104,25 +108,27 @@ public class Range
 	 * Unlike {@link #assignUniqueEntityID}, this method will silently replace any existing UID,
 	 * which is possibly dangerous. Therefore it should only be used in rare cases where replacing an exisint ID is 
 	 * needed, for example when the ObsPrep tool might translate locally created documents into an archivable format. 
-	 * @throws UniqueIdException  if this range is locked, or if no new UID is available from this Range.
 	 */
-	public void replaceUniqueEntityId(EntityT entity) throws UniqueIdException {
+	public void replaceUniqueEntityId(EntityT entity) throws AcsJUidAlreadyExistsEx, AcsJRangeLockedEx, AcsJRangeExhaustedEx {
 		setUniqueEntityId(entity, true);
 	}
 
 	
-	private void setUniqueEntityId(EntityT entity, boolean allowReplacing) throws UniqueIdException {
+	private void setUniqueEntityId(EntityT entity, boolean allowReplacing) throws AcsJUidAlreadyExistsEx, AcsJRangeLockedEx, AcsJRangeExhaustedEx {
+		if (entity == null) {
+			throw new NullPointerException("argument 'entity' must not be null.");
+		}
 		if (!isLocked)
 		{
 			if (entity.getEntityId() != null && entity.getEntityId().length() > 0 && !allowReplacing) {
-				throw new UniqueIdException("Entity " + entity.getEntityTypeName() + " already has UID " + entity.getEntityId() + " which cannot be reassigned.");
+				throw new AcsJUidAlreadyExistsEx("Entity " + entity.getEntityTypeName() + " already has UID " + entity.getEntityId() + " which cannot be reassigned.");
 			}
 			String uid = getNextID();
 			entity.setEntityId(uid);
 			entity.setEntityIdEncrypted("-- id encryption not yet implemented --");
 		}
 		else {
-			throw new UniqueIdException("Cannot assign Entity IDs from a locked range");
+			throw new AcsJRangeLockedEx();
 		}
 	}
 
@@ -133,31 +139,29 @@ public class Range
 	 * Note that this is different from assigning a UID to an entity.
 	 * This method only works if this range is locked, see {@link #isLocked()}.
 	 * @param ref
-	 * @throws ContainerException
 	 */
-	public void assignUniqueEntityRef(EntityRefT ref) throws UniqueIdException {
+	public void assignUniqueEntityRef(EntityRefT ref) throws RangeUnlockedEx, AcsJRangeExhaustedEx {
 		if (isLocked)
 		{
 			String uid = getNextID();
 			ref.setEntityId(uid);
 		}
 		else {
-			throw new UniqueIdException("Cannot assign Reference IDs with an unlocked (\"non-serialized\") range.");
+			throw new RangeUnlockedEx();
 		}			
 	}
 	
 	/**
 	 * Returns a UID that is constructed from the archiveID, the rangeID, and the running local document ID.
-	 * @throws ContainerException
 	 */
-	private String getNextID() throws UniqueIdException {
+	private String getNextID() throws AcsJRangeExhaustedEx {
 		long nextID = documentid.getAndIncrement();
 		if (nextID <= maxDocumentid) {
 			return generateUID(archiveid, rangeid, nextID);
 		} 
 		else {
 			documentid.decrementAndGet(); // to avoid a LONG overflow in the zillions of next calls
-			throw new UniqueIdException("UID range maximum is reached, no more UIDs available."); // TODO ACS exception with rangeID, UID, ...
+			throw new AcsJRangeExhaustedEx(); // TODO add rangeID, UID, ...
 		}
 	}
 
@@ -189,14 +193,14 @@ public class Range
 	 * @return
 	 * @throws ContainerException
 	 */
-	public URI next() throws UniqueIdException
+	public URI next() throws AcsJIdentifierUnexpectedEx, AcsJRangeExhaustedEx
 	{
 		try{
 			URI uri = new URI(getNextID());
 			return uri;
 		}
 		catch (URISyntaxException e){
-			throw new UniqueIdException(e);
+			throw new AcsJIdentifierUnexpectedEx(e);
 		}
 	}
 	
@@ -204,7 +208,7 @@ public class Range
 	 * Gets the UID of this range document itself.
 	 * @throws ContainerException
 	 */
-	public URI rangeId() throws UniqueIdException 	{
+	public URI rangeId() throws AcsJIdentifierUnexpectedEx 	{
 		String uid = "uid://X" + archiveid + 
 	 	  "/X" + rangeid + 
 		  "/X0";
@@ -215,7 +219,7 @@ public class Range
 		}
 		catch (URISyntaxException e)
 		{
-			throw new UniqueIdException();
+			throw new AcsJIdentifierUnexpectedEx(e);
 		}
 	}
 }
