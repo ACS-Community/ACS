@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	ACS error system definitions for identifier archive exceptions.
+	See http://almasw.hq.eso.org/almasw/bin/view/HLA/CompletionErrorTypes 
+	
+	TODO: add Member child elements for parameters, so that free-text with embedded parameters can be replaced in the code.
+-->
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	  xsi:noNamespaceSchemaLocation="ACSError.xsd" 
+	  name="ArchiveIdentifierError"
+	  type="8000"
+	  _prefix="alma">
+	  
+	<ErrorCode name="IdentifierUnexpected" 
+               shortDescription="An unexpected error occured in the identifier archive or UID-related classes." 
+               description="todo"/>
+	
+	<ErrorCode name="IdentifierUnavailable" 
+               shortDescription="The identifier archive is not available." 
+               description="todo"/>
+	
+	<ErrorCode name="UidAlreadyExists" 
+               shortDescription="Cannot replace an existing UID." 
+               description="todo"/>	
+
+	<ErrorCode name="RangeUnavailable" 
+               shortDescription="The UID range is not available." 
+               description="todo"/>	
+
+	<ErrorCode name="RangeLocked" 
+               shortDescription="The requested operation cannot be performed with a locked range of UIDs." 
+               description="todo"/>	
+		
+	<ErrorCode name="RangeUnlocked" 
+               shortDescription="The requested operation cannot be performed with an unlocked (non-serialized) range of UIDs." 
+               description="todo"/>	
+		
+	<ErrorCode name="RangeExhausted" 
+               shortDescription="The UID range is full and no more UIDs can be delivered." 
+               description="todo"/>
+		
+</Type>
+
