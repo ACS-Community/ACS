@@ -52,6 +52,10 @@ XSDBIND = systementities
 XML_IDL = "IdentifierRange=alma.archive.range.IdentifierRange"
 
 
+# error definitions to generate ACS-style exceptions from
+ACSERRDEF = ArchiveIdentifierError
+
+
 # 
 # IDL Files and flags
 # 
