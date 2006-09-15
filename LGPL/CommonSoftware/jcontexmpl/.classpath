@@ -35,8 +35,10 @@
 	<classpathentry kind="lib" path="lib/ErrorSystemExample.jar"/>
 	<classpathentry kind="lib" path="lib/JContExmplErrTypeTest.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/backport-util-concurrent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsexmplErrorComponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
