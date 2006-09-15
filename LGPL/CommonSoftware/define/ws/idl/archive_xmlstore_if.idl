@@ -22,10 +22,14 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-#pragma prefix "alma"
 
 #include <xmlentity.idl> 
 #include <acscomponent.idl>
+
+// HSO 2006-09-15: it seems that after a year of freedom from this bug, 
+// we must again put the pragma after the includes. Otherwise a unit test in ARCHIVE/Archive failed,
+// in which a C++ client accesses a Java component.
+#pragma prefix "alma"
 
 
 module xmlstore
@@ -234,6 +238,12 @@ module xmlstore
 		/** An entity is requested that does not exist in the Archive. */
 		exception NotFound{};
 
+		/** Checks whether an entity with given UID already exists in Archive. 
+		 * Returns true, if this is the case.
+		 */
+		boolean exists(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
+		
 		/** Stores a new entity. */
 		void store(in xmlentity::XmlEntityStruct entity)
 			raises (ArchiveInternalError, IllegalEntity);
@@ -255,14 +265,7 @@ module xmlstore
 		 */
 		xmlentity::XmlEntityStruct retrieve(in URI identifier)
 			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
-		
-		
-		/** Checks whether an entity with given UID already exists in Archive. 
-		 * Returns true, if this is the case.
-		 */
-		boolean exists(in URI identifier)
-			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
-		
+				
 		/** Retrieves part of an entity (latest version). The part is specified 
 		 * by the XPath expression handed over in the parameter id.
 		 */
@@ -308,6 +311,10 @@ module xmlstore
 		 * documents itself). Entities flagged as dirty are not returned.  
 		 */			
 		URISeq queryUIDs( in string query, in string schema)
+			raises (ArchiveInternalError);		
+
+		/** Same as queryUIDs, but entities flagged dirty are returned, too. */
+		URISeq queryUIDsDirty( in string query, in string schema)
 			raises (ArchiveInternalError);
 		
 		/** Returns UIDs of all documents belonging to specified schema 
@@ -317,11 +324,9 @@ module xmlstore
 		URISeq queryRecent( in string schemaname, in string timestamp)
 			raises (ArchiveInternalError);
 		
-		/** Same as queryUIDs, but entities flagged dirty are returned, too. */
-		URISeq queryUIDsDirty( in string query, in string schema)
-			raises (ArchiveInternalError);
-		
-		/** Shuts down the Archive. Replaced by close in Administrative.. */			
+		/**
+		 * TODO: update comment, is wrong. 
+		 * Shuts down the Archive. Replaced by close in Administrative.. */			
 		void close()
 			raises (ArchiveInternalError);
 			
