@@ -26,6 +26,7 @@ import junit.framework.TestSuite;
 
 import alma.acs.container.CleaningThreadFactoryTest;
 import alma.acs.container.ComponentMapTest;
+import alma.acs.container.archive.UIDLibraryTest;
 import alma.acs.container.corba.AcsCorbaTest;
 import alma.acs.entityutil.EntityRefFinderTest;
 import alma.acs.entityutil.EntitySerializerTest;
@@ -50,6 +51,7 @@ public class SelfcontainedJUnitTestsJCONT
 		suite.addTestSuite(EntityRefFinderTest.class);
 		suite.addTestSuite(EntitySerializerTest.class);
 		suite.addTestSuite(AcsCorbaTest.class);
+		suite.addTestSuite(UIDLibraryTest.class);
 		//$JUnit-END$
 		return suite;
 	}
