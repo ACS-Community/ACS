@@ -298,8 +298,18 @@ module xmlstore
 		 * matching the XPath query passed over in the parameter query.
 		 * Only entities associated with the schema name handed over in parameter
 		 * schema are returned.  Entities flagged as dirty are not returned.
+		 * 
+		 * Due to a problem in Oracle XPath handling, this method does not handle
+		 * XPath expressions querying for content (eg. a/attribute::b) as query *result*
+		 * correctly. For these queries you'll have to use the dedicated queryContent method.
 		 */
 		Cursor query( in string query, in string schema)
+		raises (ArchiveInternalError);
+/**
+ * Same as query, but is able to handle content queries (eg. a/b/text() ) correctly. 
+ * Do not use this method for non-content queries (eg. a[@b]/c ). 
+ */
+		Cursor queryContent( in string query, in string schema)
 			raises (ArchiveInternalError);
 			
 		/** Same as query, but entities flagged as dirty are returned, too. */
