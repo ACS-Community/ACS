@@ -2,16 +2,12 @@ package alma.alarmsystem.source;
 
 import java.util.Collection;
 
-import cern.laser.source.alarmsysteminterface.ASIException;
-import cern.laser.source.alarmsysteminterface.AlarmSystemInterface;
-import cern.laser.source.alarmsysteminterface.FaultState;
-import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import alma.acs.logging.ClientLogManager;
 
 import java.util.Iterator;
+
+import alma.acs.util.XmlNormalizer;
 
 /**
  * ACS implementation of the AlarmSystemInterface.
@@ -20,7 +16,7 @@ import java.util.Iterator;
  * @author acaproni
  *
  */
-public class ACSAlarmSystemInterfaceProxy implements AlarmSystemInterface {
+public class ACSAlarmSystemInterfaceProxy implements ACSAlarmSystemInterface {
 	
 	// The logger to publish the alarms
 	private  Logger m_logger;
@@ -32,10 +28,11 @@ public class ACSAlarmSystemInterfaceProxy implements AlarmSystemInterface {
 	 * The basic constructor
 	 * 
 	 * @param name The name of the source
+	 * @param logger The logger to log alarms in
 	 */
-	public ACSAlarmSystemInterfaceProxy(String name) {
+	public ACSAlarmSystemInterfaceProxy(String name, Logger logger) {
 		this.name=name;
-		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(getClass().getName(), true);
+		m_logger = logger;
 		m_logger.fine("Alarm source of "+name+" connected to the logging");
 	}
 	
@@ -65,7 +62,7 @@ public class ACSAlarmSystemInterfaceProxy implements AlarmSystemInterface {
 	 * @param state the fault state change to push.
 	 * @throws ASIException if the fault state can not be pushed.
 	 */
-	public void push(FaultState state) throws ASIException {
+	public void push(ACSFaultState state) {
 		logFaultState(state);
 	}
 	
@@ -74,7 +71,7 @@ public class ACSAlarmSystemInterfaceProxy implements AlarmSystemInterface {
 	 * @param states
 	 * @throws ASIException if the fault state collection can not be pushed.
 	 */
-	public void push(Collection states) throws ASIException {
+	public void push(Collection states) {
 		if (states==null || states.size()==0) {
 			return;
 		}
@@ -83,10 +80,10 @@ public class ACSAlarmSystemInterfaceProxy implements AlarmSystemInterface {
 	    while (iterator.hasNext()) {
 	      Object next = iterator.next();
 
-	      if (next instanceof FaultState) {
-	        push((FaultState) next);
+	      if (next instanceof ACSFaultState) {
+	        push((ACSFaultState) next);
 	      } else {
-	        throw new IllegalArgumentException("states collection does not contain FaultState instances");
+	        throw new IllegalArgumentException("states collection does not contain ACSFaultState instances");
 	      }
 	    }
 	}
@@ -96,7 +93,7 @@ public class ACSAlarmSystemInterfaceProxy implements AlarmSystemInterface {
 	 * @param active the active fault states.
 	 * @throws ASIException if the fault state active list can not be pushed.
 	 */
-	public void pushActiveList(Collection active) throws ASIException {
+	public void pushActiveList(Collection active) {
 		if (active==null || active.size()==0) {
 			return;
 		}
@@ -104,17 +101,18 @@ public class ACSAlarmSystemInterfaceProxy implements AlarmSystemInterface {
 	}
 	
 	/**
-	 * Write the FaultState in the log
+	 * Write the ACSFaultState in the log
 	 * 
-	 * @param fs The FaultState to log
+	 * @param fs The ACSFaultState to log
 	 */
-	private void logFaultState(FaultState fs) {
+	private void logFaultState(ACSFaultState fs) {
 		if (fs==null) {
 			return;
 		}
 		StringBuilder sb = new StringBuilder("Alarm sent: <");
 		sb.append(fs.getFamily()+','+fs.getMember()+','+fs.getCode()+'>');
 		sb.append(" "+fs.getDescriptor());
-		m_logger.severe(sb.toString());
+		m_logger.severe(XmlNormalizer.normalize(sb.toString()));
 	}
 }
+

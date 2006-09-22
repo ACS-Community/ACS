@@ -1,12 +1,5 @@
 package alma.alarmsystem.source;
 
-import cern.laser.source.alarmsysteminterface.ASIException;
-import cern.laser.source.alarmsysteminterface.AlarmSystemInterfaceFactory;
-import cern.laser.source.alarmsysteminterface.AlarmSystemInterface;
-import cern.laser.source.alarmsysteminterface.FaultState;
-import cern.laser.source.alarmsysteminterface.impl.AlarmSystemInterfaceProxy;
-import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
-
 import alma.acs.util.ACSPorts;
 
 import si.ijs.maci.Manager;
@@ -19,6 +12,8 @@ import org.omg.CORBA.Object;
 import org.omg.CORBA.IntHolder;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
+
+import java.lang.reflect.Constructor;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,10 +31,15 @@ import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
 import alma.acsErrTypeAlarmSourceFactory.InavalidManagerEx;
 import alma.acsErrTypeAlarmSourceFactory.ErrorGettingDALEx;
 import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
+import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJACSASFactoryNotInitedEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJInavalidManagerEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJErrorGettingDALEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJSourceCreationErrorEx;
+import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJFaultStateCreationErrorEx;
+
+import java.util.logging.Logger;
+
 import java.io.StringReader;
 
 /**
@@ -62,13 +62,29 @@ public class ACSAlarmSystemInterfaceFactory {
 	// false means CERN implementation
 	private static Boolean useACSAlarmSystem = null;
 	
+	// The ORB
+	private static ORB orb=null;
+	
+	// The Manager
+	private static Manager manager=null;
+	
+	// The logger
+	private static Logger logger=null;
+	
 	/**
 	 * Init the static variables of the class
 	 * This method has to be called outside of the class before executing any other
 	 * methods. In this implementation it is called the first time a static method is
 	 * executed (in this case infact useACSAlarmSystem is null)
+	 * 
+	 * @param theORB The ORB 
+	 * @param manager A reference to the manager 
+	 * @param logger The logger
 	 */
-	public static void init(Manager manager) throws InavalidManagerEx, ErrorGettingDALEx {
+	public static void init(ORB theORB, Manager manager, Logger logger) throws InavalidManagerEx, ErrorGettingDALEx {
+		ACSAlarmSystemInterfaceFactory.orb=theORB;
+		ACSAlarmSystemInterfaceFactory.manager=manager;
+		ACSAlarmSystemInterfaceFactory.logger = logger;
 		if (manager==null) {
 			manager = getManager();
 		}
@@ -80,7 +96,18 @@ public class ACSAlarmSystemInterfaceFactory {
 		
 		DAL dal=getDAL(manager);
         useACSAlarmSystem = retrieveImplementationType(dal);
-        System.out.println("ACSAlarmSystemInterfaceFactory inited. Use ACS Implementation "+useACSAlarmSystem);
+	}
+	
+	/**
+	 * Cleanup the class.
+	 * This method has to be called outside of the class and performs all the necessary
+	 * clean up
+	 *
+	 */
+	public static void done() {
+		useACSAlarmSystem=null;
+		manager=null;
+		orb=null;
 	}
 	
 	/**
@@ -108,24 +135,38 @@ public class ACSAlarmSystemInterfaceFactory {
 	}
 	
 	/**
+	 * Return the orb
+	 * If it is null, a new ORB is created and inited
+	 * 
+	 * @return The ORB
+	 */
+	private static ORB getORB() {
+		if (orb!=null) {
+			return orb;
+		}
+		String args[] = {};
+		orb = ORB.init(args, null);
+		return orb;
+	}
+	
+	/**
 	 * Get a reference to the Manager
 	 */
 	private static Manager getManager() {
+		if (manager!=null) {
+			return manager;
+		}
 		String managerLoc = System.getProperty("ACS.manager");
         if (managerLoc == null) {
                 System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
                 System.exit(-1);
         }
-        String args[] = {};
-		ORB orb=ORB.init(args, null);
-		if (orb==null) {
-			return null;
-		}
-		org.omg.CORBA.Object managerObj = orb.string_to_object(managerLoc);
+        
+		org.omg.CORBA.Object managerObj = getORB().string_to_object(managerLoc);
 		if (managerObj==null) {
 			return null;
 		} 
-		Manager manager = ManagerHelper.narrow(managerObj);
+		manager = ManagerHelper.narrow(managerObj);
         return manager;
 	}
 	
@@ -149,7 +190,7 @@ public class ACSAlarmSystemInterfaceFactory {
 			return true;
 		}
 		String implementation = getProperty(dao,"Implementation");
-		return implementation==null || implementation.equals("ACS");
+		return implementation==null || !implementation.equals("CERN");
 	}
 	
 	/**
@@ -219,18 +260,26 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * @return the interface instance.
 	 * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	 */
-	  public static AlarmSystemInterface createSource(String sourceName) throws ASIException, SourceCreationErrorEx  {
+	  public synchronized static ACSAlarmSystemInterface createSource(String sourceName) throws ACSASFactoryNotInitedEx, SourceCreationErrorEx  {
 		  if (useACSAlarmSystem==null) {
-			  try {
-				  init(null);
-			  } catch (Exception e) {
-				  throw new AcsJSourceCreationErrorEx(e).toSourceCreationErrorEx();
-			  }
+			  Exception e = new IllegalStateException("Factory not initialised");
+			  throw new AcsJACSASFactoryNotInitedEx(e).toACSASFactoryNotInitedEx();
 		  }
 		  if (useACSAlarmSystem) {
-			  return new ACSAlarmSystemInterfaceProxy(sourceName);
+			  return new ACSAlarmSystemInterfaceProxy(sourceName,logger);
 		  } else {
-			  return new AlarmSystemInterfaceProxy(sourceName);
+			  try {
+				  Thread t = Thread.currentThread();
+				  ClassLoader loader = t.getContextClassLoader();
+				  Class cl =loader.loadClass("alma.acs.alarmsystem.binding.ACSLaserSource");
+				  Class[] classes = {Class.forName("java.lang.String")};
+				  Constructor constructor = cl.getConstructor(classes);
+				  return (ACSAlarmSystemInterface)constructor.newInstance(sourceName);
+			  } catch (Exception e) {
+				  System.out.println("ERROR: "+e.getMessage());
+				  e.printStackTrace();
+				  throw new AcsJSourceCreationErrorEx(e).toSourceCreationErrorEx();
+			  }
 		  }
 	  }
 
@@ -239,36 +288,61 @@ public class ACSAlarmSystemInterfaceFactory {
 	   * @return the interface instance.
 	  * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	   */
-	  public static AlarmSystemInterface createSource() throws ASIException, SourceCreationErrorEx {
-		  if (useACSAlarmSystem==null) {
-			  try {
-				  init(null);
-			  } catch (Exception e) {
-				  throw new AcsJSourceCreationErrorEx(e).toSourceCreationErrorEx();
-			  }
-		  }
-		  if (useACSAlarmSystem) {
-			  return new ACSAlarmSystemInterfaceProxy("UNDEFINED");
-		  } else {
-			  return new AlarmSystemInterfaceProxy("UNDEFINED");
-		  }
+	  public static ACSAlarmSystemInterface createSource() throws ACSASFactoryNotInitedEx, SourceCreationErrorEx {
+		  return createSource("UNDEFINED");
 	  }
 	  
-	  /** Factory method for creating FaultState instances.
-	   * @return a new FaultState instance.
+	  /** 
+	   * Factory method for creating ACSFaultState instances.
+	   * @return a new ACSFaultState instance.
 	   *
 	   */
-	  public static FaultState createFaultState() {
-	    return new FaultStateImpl();
+	  public synchronized static ACSFaultState createFaultState() throws ACSASFactoryNotInitedEx, FaultStateCreationErrorEx{
+		  if (useACSAlarmSystem==null) {
+			  Exception e = new IllegalStateException("Factory not initialised");
+			  throw new AcsJACSASFactoryNotInitedEx(e).toACSASFactoryNotInitedEx();
+		  }
+		  if (useACSAlarmSystem) {
+			  return new ACSFaultStateImpl();
+		  } else {
+			  try {
+				  Thread t = Thread.currentThread();
+				  ClassLoader loader = t.getContextClassLoader();
+				  Class cl =loader.loadClass("alma.acs.alarmsystem.binding.ACSLaserFaultStateImpl");
+				  Class[] classes = {};
+				  Constructor constructor = cl.getConstructor(classes);
+				  return (ACSFaultState)constructor.newInstance();
+			  } catch (Exception e) {
+				  throw new AcsJFaultStateCreationErrorEx(e).toFaultStateCreationErrorEx();
+			  }
+		  }
 	  }
 
-	  /** Factory method for creating FaultState instances.
-	   * @return a new FaultState instance.
+	  /** 
+	   * Factory method for creating ACSFaultState instances.
+	   * @return a new ACSFaultState instance.
 	   * @param family the fault family.
 	   * @param member the fault member.
 	   * @param code the fault code.
 	   */
-	  public static FaultState createFaultState(String family, String member, int code) {
-	    return new FaultStateImpl(family, member, code);
+	  public static ACSFaultState createFaultState(String family, String member, int code) throws ACSASFactoryNotInitedEx, FaultStateCreationErrorEx {
+		  ACSFaultState state = createFaultState();
+		  state.setFamily(family);
+		  state.setMember(member);
+		  state.setCode(code);
+		  return state;
+	  }
+	  
+	  /**
+	   * Return the type of AS used
+	   * 
+	   * @return True if ACS AS is used, false otherwise
+	   */
+	  public static boolean usingACSAlarmSystem() throws ACSASFactoryNotInitedEx {
+		  if (useACSAlarmSystem==null) {
+			  Exception e = new IllegalStateException("Factory not initialised");
+			  throw new AcsJACSASFactoryNotInitedEx(e).toACSASFactoryNotInitedEx();
+		  }
+		  return ACSAlarmSystemInterfaceFactory.useACSAlarmSystem;
 	  }
 }

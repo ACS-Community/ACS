@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2006/08/09 21:58:59 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/09/22 14:53:37 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -51,8 +51,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = 
-
+INCLUDES        = 	
 #
 # Libraries (public and local)
 # ----------------------------
