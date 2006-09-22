@@ -31,15 +31,24 @@ static char *rcsId="@(#) $Id$";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ACSAlarmSystemInterfaceFactory.h"
+#include "ACSFaultState.h"
+#include "ACSFaultStateImpl.h"
+#include <logging.h>
 
 bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
+AbstractAlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
 
 void ACSAlarmSystemInterfaceFactory::done() {
-	CORBA::release(m_manager);
-	m_manager=maci::Manager::_nil();
-	if (!(*m_useACSAlarmSystem)) {
-		laserSource::AlarmSystemInterfaceFactory::done();
+	if (m_manager!=maci::Manager::_nil()) {
+		CORBA::release(m_manager);
+		m_manager=maci::Manager::_nil();
+	}
+	 
+	if (!(*m_useACSAlarmSystem) && NULL != m_AlarmSystemInterfaceFactory_p) {
+		m_AlarmSystemInterfaceFactory_p->done();
+		delete m_AlarmSystemInterfaceFactory_p;
+		m_AlarmSystemInterfaceFactory_p = NULL;
 	}
 	delete m_useACSAlarmSystem;
 	m_useACSAlarmSystem=NULL;
@@ -50,9 +59,16 @@ void ACSAlarmSystemInterfaceFactory::done() {
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
+auto_ptr<laserSource::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
 {
-	return createSource("UNDEFINED");
+	if (m_useACSAlarmSystem == NULL) {
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
+	}
+	if (!(*m_useACSAlarmSystem)) {
+		return m_AlarmSystemInterfaceFactory_p->createSource();
+	} else {
+		return createSource("UNDEFINED");
+	}
 }
 
 /**
@@ -61,33 +77,78 @@ auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<laserSource::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
+auto_ptr<laserSource::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
 	}
 	if (!(*m_useACSAlarmSystem)) {
-		return laserSource::AlarmSystemInterfaceFactory::createSource(sourceName);
+		return m_AlarmSystemInterfaceFactory_p->createSource(sourceName);
 	} else {
 		ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
-		auto_ptr<laserSource::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
+		auto_ptr<laserSource::ACSAlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 		return asIfAutoPtr;
 	}
 }
 
-bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager,CosNaming::NamingContext_ptr naming_p) {
-	if (CORBA::is_nil(manager) || CORBA::is_nil(naming_p)) {
-		throw acsErrTypeAlarmSourceFactory::InavalidManagerExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
+bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
+	if (manager!=maci::Manager::_nil()) {
+		m_manager=maci::Manager::_duplicate(manager);
+		m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
+		ConfigPropertyGetter* pGetter;
+		pGetter = new ConfigPropertyGetter(m_manager);
+		string str = pGetter->getProperty("Implementation");
+		delete pGetter;
+		*m_useACSAlarmSystem = !(str=="CERN");
+	} else {
+		m_useACSAlarmSystem = new bool();
+		*m_useACSAlarmSystem=true;
 	}
-	m_manager=maci::Manager::_duplicate(manager);
-	m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
-	ConfigPropertyGetter* pGetter;
-	pGetter = new ConfigPropertyGetter(m_manager);
-	string str = pGetter->getProperty("Implementation");
-	delete pGetter;
-	*m_useACSAlarmSystem = !(str=="CERN");
-	if (!(*m_useACSAlarmSystem)) {
-		laserSource::AlarmSystemInterfaceFactory::init(manager,naming_p);
+	if (!(*m_useACSAlarmSystem)) 
+	{
+		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+		// load the DLL and then set pointer m_AlarmSystemInterfaceFactory_p to point to the object
+		// that is returned from the DLL's entry point function. From then on, we can use the pointer/object directly.
+		void *hndl = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
+		if(hndl == NULL)
+		{
+			string errString = "ACSAlarmSystemInterfaceFactory::init(): could not open DLL; error was:\n\n" + string(dlerror()); 
+			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
+			throw acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
+		}
+		// Call the well-defined entry point function of the DLL, to get an object 
+		// which implements the AbstractAlarmSystemInterfaceFactory interface, which will be used for publishing 
+		// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
+		void * publisherFactoryFunctionPtr = dlsym(hndl, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
+		m_AlarmSystemInterfaceFactory_p = ((AbstractAlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
+		return m_AlarmSystemInterfaceFactory_p->init();
 	}
 	return true;
+}
+
+auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) {
+	if (m_useACSAlarmSystem==NULL) {
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
+	}
+	if (!(*m_useACSAlarmSystem)) {
+		return m_AlarmSystemInterfaceFactory_p->createFaultState(family, member, code);
+	} else {
+		laserSource::ACSFaultState * asFaultStatePtr = new laserSource::ACSFaultStateImpl(family, member, code);
+		auto_ptr<laserSource::ACSFaultState> asFaultStateAutoPtr(asFaultStatePtr);
+		return asFaultStateAutoPtr;
+	}
+}
+	
+auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultState() {
+	if (m_useACSAlarmSystem==NULL) {
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
+	}
+	if (!(*m_useACSAlarmSystem)) {
+		return m_AlarmSystemInterfaceFactory_p->createFaultState();
+	} else {
+		laserSource::ACSFaultState * asIfProxyPtr = new laserSource::ACSFaultStateImpl();
+		auto_ptr<laserSource::ACSFaultState> asIfAutoPtr(asIfProxyPtr);
+		return asIfAutoPtr;
+	}
 }

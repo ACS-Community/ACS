@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2006/08/09 21:52:21 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/09/22 14:00:27 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -36,15 +36,7 @@ USER_LIB = -lstdc++
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = 
-EXECUTABLES_L   = faultSourceTest 
-
-#
-# <brief description of xxxxx program>
-faultSourceTest_OBJECTS   = faultSourceTest
-#faultSourceTest_LIBS      = laserCppUtil laserAlarmPublisher laserSource ACSJMSMessageEntityStubs
-faultSourceTest_LIBS      = laserCppUtil laserSource ACSJMSMessageEntityStubs basenc acsncStubs acscommonStubs baciStubs acscomponentStubs acserrStubs acsnc
-
-# faultSourceTest_LDFLAGS   = -ldl -rdynamic --export-dynamic -Wl,-whole-archive ../lib/liblaserSource.a -Wl,-no-whole-archive
+EXECUTABLES_L   = 
 
 #
 # special compilation flags for single c sources
@@ -58,19 +50,14 @@ faultSourceTest_LIBS      = laserCppUtil laserSource ACSJMSMessageEntityStubs ba
 #
 # Libraries (public and local)
 # ----------------------------
-#LIBRARIES       = testFaultSource
+LIBRARIES       = 
 LIBRARIES_L     = 
-
-#
-# <brief description of lllll library>
-#testFaultSource_OBJECTS   = testFaultSourceImpl
-#testFaultSource_LIBS   = testFaultSourceStubs laserSource laserCppUtil
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = 
 
 #
 # TCL scripts (public and local)
@@ -195,6 +182,8 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) sed.scan
+	$(RM) tmp tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

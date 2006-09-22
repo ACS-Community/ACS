@@ -34,15 +34,15 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <AlarmSystemInterfaceFactory.h>
-#include <AlarmSystemInterface.h>
+#include "AbstractAlarmSystemInterfaceFactory.h"
+#include "ACSAlarmSystemInterface.h"
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSAlarmSystemInterfaceProxy.h"
+#include "utilConstants.h"
 #include "maciS.h"
 #include "acsErrTypeAlarmSourceFactory.h"
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
-#include <orbsvcs/CosNamingC.h>
 
 /**
  * The class to create sources and fault states.
@@ -55,50 +55,63 @@
  * an exception is thrown.
  * 
  */
-class ACSAlarmSystemInterfaceFactory: public laserSource::AlarmSystemInterfaceFactory {
+class ACSAlarmSystemInterfaceFactory
+// TODO: Alessandro, can this class extend AbstractAlarmSystemInterfaceFactory? 
+// We would need to make static methods non-static to do so...
+{
 	private:
-		// It is true if ACS implementation for sources must be used,  and
-		// false means CERN implementation
-		// The pointer is null if it has not yet been initialized (this is done by the init method)
-		static bool* m_useACSAlarmSystem;
+	// It is true if ACS implementation for sources must be used,  and
+	// false means CERN implementation
+	// The pointer is null if it has not yet been initialized (this is done by the init method)
+	static bool* m_useACSAlarmSystem;
 		
-		// The manager
-		static maci::Manager_ptr m_manager;
-		
+	// The manager
+	static maci::Manager_ptr m_manager;
+
+	// Pointer to CERN alarm system object; will remain null if we are not using CERN implementation
+	static AbstractAlarmSystemInterfaceFactory * m_AlarmSystemInterfaceFactory_p;
+
 	private:
-		/** Default constructor.
-		*/
-		ACSAlarmSystemInterfaceFactory();
-		virtual ~ACSAlarmSystemInterfaceFactory();
+	/** Default constructor.  */
+	ACSAlarmSystemInterfaceFactory();
+	virtual ~ACSAlarmSystemInterfaceFactory();
 	
 	public:
-		/**
-		 * Init the object of the class: must be called before using the other
-		 * methods of this class otherwise an exception will be thrown.
-		 * Return true if the initialization went ok
-		 */
-		static bool init(maci::Manager_ptr manager,CosNaming::NamingContext_ptr naming_p);
+	/**
+	 * Init the object of the class: must be called before using the other
+	 * methods of this class otherwise an exception will be thrown.
+	 * Return true if the initialization went ok
+	 */
+	static bool init(maci::Manager_ptr manager);
 		
-		/**
-		 * Release the resources: must be called when finished using the
-		 * methods of this class
-		 */
-		static void done();
+	/**
+	 * Release the resources: must be called when finished using the
+	 * methods of this class
+	 */
+	static void done();
 	
 	/**
  	 * Create a new instance of an alarm system interface.
 	 * @param sourceName the source name.
 	 * @return the interface instance.
-	 * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	 */
-	static auto_ptr<laserSource::AlarmSystemInterface> createSource(string sourceName);
+	static auto_ptr<laserSource::ACSAlarmSystemInterface> createSource(string sourceName);
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.
-	 * @throws ASIException if the AlarmSystemInterface instance can not be created.
 	 */
-	static auto_ptr<laserSource::AlarmSystemInterface> createSource();
+	static auto_ptr<laserSource::ACSAlarmSystemInterface> createSource();
+	
+	/**
+	 * Create a fault state with the given family, member and code
+	 */
+	static auto_ptr<laserSource::ACSFaultState>createFaultState(string family, string member, int code);
+	
+	/**
+	 * Create a fault state 
+	 */
+	static auto_ptr<laserSource::ACSFaultState>createFaultState();
 
 };
 

@@ -1,5 +1,5 @@
-#ifndef ACS_ALARM_SYSTEM_INTERFACE_PROXY_H
-#define ACS_ALARM_SYSTEM_INTERFACE_PROXY_H
+#ifndef ACS_FAULT_STATE_IMPL_H
+#define ACS_FAULT_STATE_IMPL_H
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
 * (c) European Southern Observatory, 2006 
@@ -22,59 +22,63 @@
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* acaproni  2006-07-12  created
+* acaproni  2006-08-16  created
 */
 
 /************************************************************************
  *
  *----------------------------------------------------------------------
  */
-
+ 
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <logging.h>
-#include "ACSAlarmSystemInterface.h"
-#include "ACSFaultState.h"
+#include <string>
 
-using namespace Logging;
+#include <Properties.h>
+#include <Timestamp.h>
 
-/**
- * Implementation of a source that log messages instead of sending msg
- * to the AlarmSrevice
- */
-class ACSAlarmSystemInterfaceProxy: public laserSource::ACSAlarmSystemInterface {
-	private:
-		/**
-		 * The logger
-		 */
-		LoggingProxy* m_logger;
+#import "ACSFaultState.h"
+
+using namespace std;
+using namespace laserUtil;
+
+namespace laserSource
+{
+	/*
+	 * The Fault State for the ACS AS
+	 * All the methods have a null implementation
+	 */
+	class ACSFaultStateImpl: public ACSFaultState 
+	{	
+		public:
+			ACSFaultStateImpl();
+			
+			ACSFaultStateImpl(ACSFaultState& fs);
+			
+			ACSFaultStateImpl(string family, string member, int code);
+			
+			virtual string toXML(int amountToIndent = 3);
+			virtual void setUserProperties(auto_ptr<Properties> theProperties);
 	
-                virtual void close() {}
+			virtual Properties & getUserProperties();
+			virtual void setUserTimestamp(auto_ptr<Timestamp> theTimestamp);
 	
-	public:
 	
-		ACSAlarmSystemInterfaceProxy(string name);
+			virtual Timestamp & getUserTimestamp();
+	
+			virtual bool getActivatedByBackup();
+	
+			virtual void setActivatedByBackup(bool newActivatedByBackup);
+	
+			virtual bool getTerminatedByBackup();
+	
+			virtual void setTerminatedByBackup(bool newTerminatedByBackup);
 		
-		virtual ~ACSAlarmSystemInterfaceProxy() {}
-		/**
-	 	 * Push a fault state.
-	 	 * @param state the fault state change to push.
-	 	 */
-		virtual void push(laserSource::ACSFaultState & state);
-	
-		/**
-	 	 * Push a collection of fault states.
-	 	 * @param states
-	 	 */
-		virtual void push(vector<laserSource::ACSFaultState> & states);
-	
-		/**
-	 	 * Push the set of active fault states.
-	 	 * @param activeFaults the active fault states.
-	 	 */
-		virtual void pushActiveList(vector<laserSource::ACSFaultState> & activeFaults);
+		private:
+			Properties props;
+			Timestamp dummyTimestamp;
+	};
 };
-
-#endif 
+#endif
