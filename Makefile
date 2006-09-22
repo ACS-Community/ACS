@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.130 2006/09/14 15:25:49 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.131 2006/09/22 13:27:45 acaproni Exp $"
 #
 #
 
@@ -19,7 +19,7 @@ MODULES_KIT = vlt doc acs acstempl
 # because it is already built in the prepare phase.
 #
 MODULES_TOOLS = cmm emacs compat tat expat loki extjars antlr freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor mimetic gmp jfree xsddoc
-MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl acsjlog cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents baci enumprop acsdaemon jacscommon jmanager lasersourceacsjmsidl lasersourceutilcpp lasersourcecpp lasersourceacscpp maci lasersourceextlib parameter task abeans acstime acsnc acslog acstestcompcpp acsexmpl acsabeans jlog acspy  comphelpgen XmlIdl define acstestentities objexp jcont jcontnc lasersourceacsjms  lasersourcecmwmom lasersourceutiljava  lasersourcejava lasersourceacsjava jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
+MODULES_ACS = abeansgen acsidlcommon acsutil jacsutil acsutilpy xmljbind acsstartup logging acserr acserrTypes acsQoS acsthread maciidl acscomponentidl cdbidl acsjlog cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents acsalarm baci enumprop acsdaemon jacscommon jmanager maci parameter task abeans acstime acsnc acslog acstestcompcpp acsexmpl acsabeans jlog acspy  comphelpgen XmlIdl define acstestentities objexp jacsalarm jcont jcontnc jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
 ######## end Modules ###########################
 
 #
@@ -130,7 +130,7 @@ define canned
 		    elif [ -f $${member}/ws/src/Makefile ]; then \
 			$(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ $@ || break ;\
 		    elif [ -f $${member}/Makefile ]; then \
-			$(MAKE) $(MAKE_FLAGS) -C $${member}/ $@ || break ;\
+			$(MAKE) $(MAKE_FLAGS) -C $${member}/ $@ | tee -a build.log;\
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
@@ -254,9 +254,7 @@ update:	cvs-tag checkModuleTree
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
 		    elif [ -f $${member}/Makefile ]; then \
 		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ clean >> build.log 2>& 1;\
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
+			 $(MAKE) $(MAKE_FLAGS) -C $${member}/ -s $@  || echo "### ==> FAILED all ! " | tee -a build.log;\
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
@@ -296,12 +294,8 @@ define update-clean-one-module
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ clean >> build.log 2>& 1 || echo "### ==> FAILED clean ! " | tee -a build.log; \
 		    elif [ -f $${member}/Makefile ]; then \
-		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ clean >> build.log 2>& 1;\
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
-                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ clean >> build.log 2>& 1 || echo "### ==> FAILED clean ! " | tee -a build.log; \
+			  $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
+                         $(MAKE) $(MAKE_FLAGS) -C $${member}/ -s $@  || echo "### ==> FAILED all ! " | tee -a build.log;\
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
