@@ -14,8 +14,8 @@
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ----------T--:--:--.--- FINE [testContainer] received call to deactivate_components
 1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- FINE [testContainer] about to log out from manager...
-1 - ----------T--:--:--.--- FINE [testContainer] received call to deactivate_components
 1 - ----------T--:--:--.--- FINE [testContainer] orb loop over.
 1 - === Done running a Java container with prioritized jar files only

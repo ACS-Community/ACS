@@ -56,8 +56,7 @@ import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.util.StopWatch;
 
-// \todo Commented out until the Alarm System is better integrated.
-//import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
  * The main container class that interfaces with the maci manager.
@@ -152,12 +151,11 @@ public class AcsContainer extends ContainerPOA
 
             s_instance = this;
 
-// \todo Commented out until the Alarm System is better integrated.
-//            try {
-//            	ACSAlarmSystemInterfaceFactory.init(m_managerProxy.getManager());
-//            } catch (Exception e) {
-//            	throw new ContainerException("Error initializing the alarm system factory");
-//            }
+            try {
+            	ACSAlarmSystemInterfaceFactory.init(m_acsCorba.getORB(),m_managerProxy.getManager(),m_logger);
+            } catch (Exception e) {
+            	throw new ContainerException("Error initializing the alarm system factory");
+            }
 
         }
         else

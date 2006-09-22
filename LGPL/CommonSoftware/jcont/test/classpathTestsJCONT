@@ -32,6 +32,20 @@ export ACS_LOG_STDOUT=2
 # If this test fails, the hardcoded list in jacsutil / JarOrderOptimizer should be updated.
 export JAVA_OPTIONS="-Dacs.system.classpath.topjarsonly=true"
 
+#
+# GCH 2006-08-31
+# Now it explicitly adds to the CLASSPATH a set of jar files that are needed to 
+# start the container.
+# These files are needed because of the Alarm System.
+# What I find strange is that some of them look to me should have
+# been need also before!
+# I use here the UNIX separator.
+# Porting the code to Windows would require to handle also ; instead of :
+#
+
+NEEDED_JAR_FILES=`acsGetSpecificJars : cdbDAL.jar:maci.jar:acsErrTypeAlarmSourceFactory.jar:acsASsources.jar:`
+export CLASSPATH=$NEEDED_JAR_FILES:$CLASSPATH
+
 # the real test: start and stop the container (errors will occur if jar files are missing on the classpath)
 acsStartContainer -java testContainer &
 sleep 10
