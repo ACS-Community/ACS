@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.70 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.71 2006/09/23 16:39:45 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -71,9 +71,12 @@
 
 #include <archiveeventsArchiveSupplier.h>
 
+/// @todo Alarm System is not yet supported for VxWorks
+#ifndef MAKE_VXWORKS
 #include <ACSAlarmSystemInterfaceFactory.h>
+#endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.70 2006/09/01 02:20:54 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.71 2006/09/23 16:39:45 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -211,7 +214,7 @@ ContainerImpl::initializeCORBA(int &argc, char *argv[])
       orb = CORBA::ORB_init(argc, argv, "TAO");
       
       //set the global ORB in simpleclient
-      ORBHelper::setORB(orb);
+      ORBHelper::setORB(orb.in());
       
       if(orb.ptr() == CORBA::ORB::_nil())
 	return false;
@@ -804,7 +807,24 @@ ContainerImpl::init(int argc, char *argv[])
 	  return false;
 	}
 
+/// @todo AlarmSystem is not supported for VxWorks
+#ifndef MAKE_VXWORKS
+	// Initialize the alarm system factory
+	bool asfRet=true;;
+	try {
+		maci::Manager_ptr theManagerPtr = manager.in();
+		asfRet = ACSAlarmSystemInterfaceFactory::init(theManagerPtr);
+	} 
+   catch (acsErrTypeAlarmSourceFactory::InavalidManagerExImpl &ex) {
+		asfRet=false;
+	}
 
+	if (!asfRet) {
+		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
+                (LM_INFO, "Failed to initialize AlarmSystem factory."));
+		return false;
+	}
+#endif
       // parse args for opts
       parseArgs(m_argc, m_argv);
 
@@ -1227,6 +1247,10 @@ ContainerImpl::done()
   acsQoS::done();
 
   ACSError::done();
+
+#ifndef MAKE_VXWORKS
+  ACSAlarmSystemInterfaceFactory::done();
+#endif
 
   if(m_dllmgr)
       {
