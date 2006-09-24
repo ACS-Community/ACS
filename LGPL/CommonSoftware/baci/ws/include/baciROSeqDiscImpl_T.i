@@ -22,7 +22,8 @@
 
 template <ACS_RO_C> 
 ROSeqDiscImpl<ACS_RO_TL>::ROSeqDiscImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
-    ROdiscImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO)
+    ROdiscImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO),
+    alarmSystemMonitor_mp(0)
 {
     ACS_TRACE("baci::ROSeqDiscImpl&lt;&gt;::ROSeqDiscImpl"); 
 
@@ -32,7 +33,12 @@ ROSeqDiscImpl<ACS_RO_TL>::ROSeqDiscImpl(const ACE_CString& name, BACIComponent *
 	//devIO_mp->write(defaultValue_m, timeStamp);
 	ACS_DEBUG("baci::ROSeqDiscImpl&lt;&gt;::ROSeqDiscImpl", "DevIO initial value set not implemented yet.");
 	}
-
+#ifndef MAKE_VXWORKS
+    if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
+	{
+	alarmSystemMonitor_mp = new AlarmSystemMonitorSeqDisc<TM, PropType>(this, this->monitorEventDispatcher_mp);
+	}//if
+#endif
   initialization_m = 0;   // property successfuly initialized
   ACS_DEBUG("baci::ROSeqDiscImpl&lt;&gt;::ROSeqDiscImpl", "Successfully created.");  
 }
@@ -41,6 +47,11 @@ template <ACS_RO_C>
 ROSeqDiscImpl<ACS_RO_TL>::~ROSeqDiscImpl()
 {
     ACS_TRACE("baci::ROSeqDiscImpl&lt;&gt;::~ROSeqDiscImpl");
+    if(alarmSystemMonitor_mp) 
+	{
+	delete alarmSystemMonitor_mp;
+	alarmSystemMonitor_mp=0;
+	}
 }
 
 template<ACS_RO_C>
@@ -49,15 +60,27 @@ ACS::Subscription_ptr ROSeqDiscImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *
 					)
     throw (CORBA::SystemException)
 {
-
-  if (monitorEventDispatcher_mp==0)
-  {
-    CBDescIn descIn;
-    descIn.id_tag = 0;
-    monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, alarmTimerTrig_m, property_mp);
-	if (!monitorEventDispatcher_mp)
+//TBD: this could be done just in the constructor
+    if (this->alarmTimerTrig_m==0)
+	{
+	
+	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROSeqDiscImpl&lt;&gt;::new_subscription_Alarm",
+		(LM_ERROR, "Can not create alarm dispatcher for %s because alarm_timer_trig=0", 
+		 this->getProperty()->getName()));
 	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
-  }  
+	}//
+
+    if (monitorEventDispatcher_mp==0)
+	{
+	CBDescIn descIn;
+	descIn.id_tag = 0;
+	monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, alarmTimerTrig_m, property_mp);
+
+	if (!monitorEventDispatcher_mp)
+	    {
+	    ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	    }
+	}//if 
 
   AlarmEventStrategyDiscSeq<TM, PropType, TAlarm> * eventStrategy = 
     new AlarmEventStrategyDiscSeq<TM, PropType, TAlarm>(cb, desc, alarmTimerTrig_m, 

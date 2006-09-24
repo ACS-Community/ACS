@@ -22,7 +22,8 @@
 
 template <ACS_RO_C> 
 ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
-    ROcontImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO)
+    ROcontImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO),
+    alarmSystemMonitor_mp(0)
 {
     ACS_TRACE("baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl"); 
 
@@ -33,6 +34,12 @@ ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACIComponent *
 	ACS_DEBUG("baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl", "DevIO initial value set not implemented yet.");
 	}
 
+/*TBD: fix BACI type in MonitorEventDisp
+    if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
+	{
+	alarmSystemMonitor_mp = new AlarmSystemMonitorSeqCont<TM, PropType>(this, this->monitorEventDispatcher_mp);
+	}//if
+*/
   this->initialization_m = 0;   // property successfuly initialized
   ACS_DEBUG("baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl", "Successfully created.");  
 }
@@ -41,6 +48,11 @@ template <ACS_RO_C>
 ROSeqContImpl<ACS_RO_TL>::~ROSeqContImpl()
 {
     ACS_TRACE("baci::ROSeqContImpl&lt;&gt;::~ROSeqContImpl");
+    if (alarmSystemMonitor_mp) 
+	{
+	delete alarmSystemMonitor_mp;
+	alarmSystemMonitor_mp = 0;
+	}//if
 }
 
 template<ACS_RO_C>
@@ -49,15 +61,24 @@ ACS::Subscription_ptr ROSeqContImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *
 					)
     throw (CORBA::SystemException)
 {
+//TBD: this could be done just in the constructor
+    if (this->alarmTimerTrig_m==0)
+	{
+	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROSeqContImpl&lt;&gt;::new_subscription_Alarm",
+		(LM_ERROR, "Can not create alarm dispatcher for %s because alarm_timer_trig=0", 
+		 this->getProperty()->getName()));
+	ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	}//if
 
-  if (this->monitorEventDispatcher_mp==0)
-  {
-    CBDescIn descIn;
-    descIn.id_tag = 0;
-    this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
+    if (this->monitorEventDispatcher_mp==0)
+	{
+	CBDescIn descIn;
+	descIn.id_tag = 0;
+	this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
+	
 	if (this->monitorEventDispatcher_mp==0)
 	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
-  }  
+	}  
 
   AlarmEventStrategyContSeq<TM, PropType, TAlarm> * eventStrategy_p = 
     new AlarmEventStrategyContSeq<TM, PropType, TAlarm>(cb, desc, this->alarmTimerTrig_m, 

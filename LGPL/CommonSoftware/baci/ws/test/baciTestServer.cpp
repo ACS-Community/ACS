@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.117 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.118 2006/09/24 18:45:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.117 2006/09/01 02:20:54 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.118 2006/09/24 18:45:30 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -42,8 +42,14 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include "baciTestUtils.h"
 #include "baciTestContainerServices.h"
 
+
+
+#include "maciS.h"
+
 #ifdef MAKE_VXWORKS
 #	include <acsutilArgUnpack.h>
+#else
+#include "ACSAlarmSystemInterfaceFactory.h"
 #endif
 
 //--------------------------------------
@@ -57,7 +63,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  * Hardcoded !
  */ 
 static int   devCount = 2;
-static char *devices[] = {"BACI1","BACI2"};
+static char *devices[] = {"BACI1", "BACI2"};
 static bool shutting_down = false;
 static bool signaled = false;
 static TestContainerServices *cs_p[]={0, 0};
@@ -88,6 +94,8 @@ void finalize()
 		
 	      ACS_SHORT_LOG((LM_INFO,"baciTestServer: Destroying \"%s\"", devices[n]));
 
+	      cs_p[n]->getThreadManager()->stopAll();
+
 	      PortableServer::ObjectId_var id =
 		PortableServer::string_to_ObjectId(devices[n]);
 	    
@@ -101,8 +109,6 @@ void finalize()
 	      // do not bail out just because of one Component destruction failure 
 	      // ACE_CHECK_RETURN (-1);
 	    }
-
-	    
 	  }
 
     ACS_SHORT_LOG((LM_INFO,"baciTestServer: Closing CORBA."));
@@ -236,6 +242,11 @@ int main(int argc, char* argv[])
 	return -1;
       }
 
+#ifndef MAKE_VXWORKS
+	// Init the Alarm factory      
+    ACSAlarmSystemInterfaceFactory::init(maci::Manager::_nil());
+#endif
+
      // Instantiate the CBDPropertySet singleton
      if (DBConnector::getDBTable())
 	 CDBPropertySet::createInstance(BACI_CORBA::getORB(), 
@@ -290,8 +301,11 @@ int main(int argc, char* argv[])
  
     write_iors_to_file(count, name, type, ior);
  
+ 	
     ACS_SHORT_LOG((LM_INFO,"baciTestServer: Running ORB."));
     BACI_CORBA::getORB()->run();
+    
+    
 
     // check if already shut down using signals
     if (shutting_down)

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROlong.cpp,v 1.97 2005/01/07 18:18:02 dfugate Exp $"
+* "@(#) $Id: baciROlong.cpp,v 1.98 2006/09/24 18:43:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,6 +30,7 @@
 
 #include "baciROlong.h"
 #include "baciAlarm_T.i"
+#include "baciAlarmSystemMonitorCont_T.i"
 #include "baciROcontImpl_T.i"
 #include "baciMonitor_T.i"
 

@@ -225,6 +225,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI1:ROdoubleSeqProp_monitorEventDispatcher' (archiving: 0, triggerTime: 1000000)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerValue] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
@@ -267,6 +277,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI1:ROfloatSeqProp_monitorEventDispatcher' (archiving: 0, triggerTime: 1000000)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerValue] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
@@ -309,6 +329,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI1:ROlongSeqProp_monitorEventDispatcher' (archiving: 0, triggerTime: 0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerValue] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
@@ -568,6 +597,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI2:ROdoubleSeqProp_monitorEventDispatcher' (archiving: 0, triggerTime: 1000000)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerValue] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
@@ -610,6 +649,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI2:ROfloatSeqProp_monitorEventDispatcher' (archiving: 0, triggerTime: 1000000)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerValue] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
@@ -652,6 +701,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI2:ROlongSeqProp_monitorEventDispatcher' (archiving: 0, triggerTime: 0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerValue] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
@@ -738,13 +796,13 @@
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Turn OFF Monitoring
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopMonitoringThread] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Turn OFF Monitoring
@@ -758,12 +816,12 @@
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Turn ON Monitoring
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startMonitoringThread] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 1
@@ -833,13 +891,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Destroying CharacteristicComponents.
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Destroying "BACI1"
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI1::xxxxxxThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI1::xxxxxxThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI1::xxxxxxThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI1::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI1...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI1::xxxxxxThread
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI1::xxxxxxThread
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] Properties destroyed
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
@@ -860,6 +921,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::~MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Destroying monitor 'BACI1:ROlongSeqProp_monitorEventDispatcher'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::removeMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'BACI1:ROlongSeqProp_monitorEventDispatcher' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::EventCB&lt;&gt;::~EventCB&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI1:ROlongSeqProp
@@ -887,6 +957,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::~MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Destroying monitor 'BACI1:ROfloatSeqProp_monitorEventDispatcher'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::removeMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'BACI1:ROfloatSeqProp_monitorEventDispatcher' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::EventCB&lt;&gt;::~EventCB&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI1:ROfloatSeqProp
@@ -914,6 +993,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::~MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Destroying monitor 'BACI1:ROdoubleSeqProp_monitorEventDispatcher'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::removeMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'BACI1:ROdoubleSeqProp_monitorEventDispatcher' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::EventCB&lt;&gt;::~EventCB&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI1:ROdoubleSeqProp
@@ -1071,13 +1159,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Destroying "BACI2"
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI2::xxxxxxThread
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI2::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI2...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread BACI2::xxxxxxThread
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI2::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] Properties destroyed
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::~RWcontImpl] 
@@ -1097,6 +1186,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::~MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Destroying monitor 'BACI2:ROlongSeqProp_monitorEventDispatcher'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::removeMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'BACI2:ROlongSeqProp_monitorEventDispatcher' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::EventCB&lt;&gt;::~EventCB&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI2:ROlongSeqProp
@@ -1124,6 +1222,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::~MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Destroying monitor 'BACI2:ROfloatSeqProp_monitorEventDispatcher'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::removeMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'BACI2:ROfloatSeqProp_monitorEventDispatcher' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::EventCB&lt;&gt;::~EventCB&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI2:ROfloatSeqProp
@@ -1151,6 +1258,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::~ROcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::~ROcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::~MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::destroy] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Destroying monitor 'BACI2:ROdoubleSeqProp_monitorEventDispatcher'
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::removeMonitor] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'BACI2:ROdoubleSeqProp_monitorEventDispatcher' destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - baci::EventCB&lt;&gt;::~EventCB&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI2:ROdoubleSeqProp

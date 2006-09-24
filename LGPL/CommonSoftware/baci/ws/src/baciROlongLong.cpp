@@ -26,6 +26,7 @@
 
 #include "baciROlongLong.h"
 #include "baciAlarm_T.i"
+#include "baciAlarmSystemMonitorCont_T.i"
 #include "baciROcontImpl_T.i"
 #include "baciMonitor_T.i"
 

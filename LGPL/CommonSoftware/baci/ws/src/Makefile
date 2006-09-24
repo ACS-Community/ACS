@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.126 2006/08/08 11:20:23 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.127 2006/09/24 18:43:39 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -112,7 +112,13 @@ INCLUDES      = baciCharacteristicModelImpl.h baciCharacteristicComponentImpl.h 
 		baciPropertyImpl.h\
 		baciSmartPropertyPointer.h baciSmartPropertyPointer.i \
 		baciSmartServantPointer.h baciSmartServantPointer.i \
-		baciBACIAction.h baciBACICallback.h baciBACIMonitor.h baciUtil.h baciBACIProperty.h baciBACIComponent.h
+		baciBACIAction.h baciBACICallback.h baciBACIMonitor.h baciUtil.h baciBACIProperty.h baciBACIComponent.h \
+		baciAlarmSystemMonitorCont_T.h baciAlarmSystemMonitorCont_T.i \
+		baciAlarmSystemMonitorDisc_T.h baciAlarmSystemMonitorDisc_T.i \
+		baciAlarmSystemMonitorSeqCont_T.h  baciAlarmSystemMonitorSeqCont_T.i \
+		baciAlarmSystemMonitorSeqDisc_T.h baciAlarmSystemMonitorSeqDisc_T.i \
+	        baciAlarmSystemMonitor_T.h  baciAlarmSystemMonitor_T.i
+
 
 INCLUDES_L	=
 
@@ -137,7 +143,7 @@ baci_OBJECTS =  baciValue baciBACIAction baciBACICallback baciBACIMonitor baciUt
 	        baciROstring baciRWstring \
 		baciROdoubleSeq baciROfloatSeq baciROlongSeq \
 		baciRWdoubleSeq baciRWfloatSeq baciRWlongSeq 
-baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle
+baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle acsAlSysSource laserCppUtil acsErrTypeAlarmSourceFactory 
 
 #
 # Scripts (public and local)

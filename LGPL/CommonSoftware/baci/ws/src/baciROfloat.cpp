@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROfloat.cpp,v 1.2 2005/09/12 19:55:38 dfugate Exp $"
+* "@(#) $Id: baciROfloat.cpp,v 1.3 2006/09/24 18:43:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,6 +30,7 @@
 
 #include "baciROfloat.h"
 #include "baciAlarm_T.i"
+#include "baciAlarmSystemMonitorCont_T.i"
 #include "baciROcontImpl_T.i"
 #include "baciMonitor_T.i"
 

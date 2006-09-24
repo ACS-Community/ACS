@@ -17,6 +17,8 @@
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
 
+#include "baciAlarmSystemMonitor_T.i"
+
 /*********************************** IMPLEMENTATION MonitorEventDispatcher *************************************/
 
 
@@ -55,6 +57,7 @@ MonitorEventDispatcher<T, TCB, POA_CB>::MonitorEventDispatcher(const CBDescIn& d
 			       0, BACIValue::NullValue, 
 			       property, 0),
 		   );
+
 }
 
 template<class T, class TCB, class POA_CB>
@@ -177,7 +180,7 @@ void EventCB<T, TCB, POA_CB>::working (T value,
 				       const ACS::CBDescOut & desc)
     throw (CORBA::SystemException)
 {
-    if (dispatcher_mp != 0)
+     if (dispatcher_mp != 0)
 	{
 	dispatcher_mp->dispatch(value, c, desc);
 	}
@@ -281,19 +284,6 @@ void AlarmEventStrategy<T, TPROP, TALARM>::succeeded()
 {
   failureCount_m = 0;
 }
-
-/*
-template<class T, class TPROP, class TALARM>
-void AlarmEventStrategy<T, TPROP, TALARM>::check(BACIValue &val,
-					     const ACSErr::Completion & c,
-					     const ACS::CBDescOut & desc,
-					     CORBA::Environment &)
-{
-  ACE_UNUSED_ARG(c);
-  ACS_LOG(LM_RUNTIME_CONTEXT, "AlarmEventStrategy&lt;&gt;::check",
-		  (LM_ERROR, "Not implemented"));
-}
-*/
 
 template<class T, class TPROP, class TALARM>
 int AlarmEventStrategy<T, TPROP, TALARM>::getId(void)

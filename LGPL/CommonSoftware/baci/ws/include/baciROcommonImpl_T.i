@@ -18,11 +18,13 @@
 */
 
 #include "baciROcommonImpl_T.h"
+#include "ACSAlarmSystemInterfaceFactory.h"
+#include "acsErrTypeAlarmSourceFactory.h"
 
 template<ACS_RO_C> 
 ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO),
-    monitorEventDispatcher_mp(0)
+    monitorEventDispatcher_mp(0), alarmSource_map(0)
 {
   ACS_TRACE("baci::ROcommonImpl&lt;&gt;::ROcommonImpl");
   
@@ -63,6 +65,30 @@ ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACIComponent* co
       ACS_DEBUG("baci::ROcommonImpl&lt;&gt;::ROcommonImpl", "DevIO initial value set to the default value.");
       }
 
+ if (this->monitorEventDispatcher_mp==0 && this->alarmTimerTrig_m!=0)
+     {
+     CBDescIn descIn;
+     descIn.id_tag = 0;
+	 try {
+
+ /**
+  * %todo GCH: Alarm System is not yet supportedin VxWorks
+  *            Therefore I cut the calls out for the time being.
+  */
+#ifdef MAKE_VXWORKS
+#else
+     	this->alarmSource_map = ACSAlarmSystemInterfaceFactory::createSource(name.c_str());
+#endif
+	 } catch (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl ex) {
+		 std::string procName="ROcommonImpl::ROcommonImpl(";
+		 procName+=name.c_str();
+		 procName+=",...)";
+		 baciErrTypeProperty::PropertySetInitValueExImpl newEx(ex.getErrorTrace(),__FILE__,__LINE__,procName.c_str());
+		 newEx.addData("Property",name.c_str());
+		 throw newEx;
+	 }
+     this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
+     }  //if
 
   ACS_DEBUG("baci::ROcommonImpl&lt;&gt;::ROcommonImpl", "Successfully created.");
 // TMP uncment
@@ -85,6 +111,29 @@ ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, BACICo
 		return;
     }
 
+  if (this->monitorEventDispatcher_mp==0)
+      {
+      CBDescIn descIn;
+      descIn.id_tag = 0;
+      try 
+	  {
+#ifdef MAKE_VXWORKS
+#else
+	  this->alarmSource_map = ACSAlarmSystemInterfaceFactory::createSource(name.c_str());
+#endif
+	  } 
+      catch (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl ex) 
+	  {
+	  std::string procName="ROcommonImpl::ROcommonImpl(";
+	  procName+=name.c_str();
+	  procName+=",...)";
+	  baciErrTypeProperty::PropertySetInitValueExImpl newEx(ex.getErrorTrace(),__FILE__,__LINE__,procName.c_str());
+	  newEx.addData("Property",name.c_str());
+	  throw newEx;
+	  }
+      this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
+      }  //if
+
   ACS_DEBUG("baci::ROcommonImpl&lt;&gt;::ROcommonImpl", "Successfully created.");
 
   // property successfuly initialized
@@ -99,10 +148,10 @@ template<ACS_RO_C> ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()
 
    // destroy event dispatcher (including event subscribers)
   if (monitorEventDispatcher_mp!=0) 
-  {
-    delete monitorEventDispatcher_mp;
-    monitorEventDispatcher_mp = 0;
-  }
+      {
+      delete monitorEventDispatcher_mp;
+      monitorEventDispatcher_mp = 0;
+      }
 }
 
 

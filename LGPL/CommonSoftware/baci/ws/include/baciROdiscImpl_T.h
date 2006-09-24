@@ -36,6 +36,7 @@
 #endif
 
 #include <baciROcommonImpl_T.h>
+#include <baciAlarmSystemMonitorDisc_T.h>
 
 namespace baci {
 
@@ -54,7 +55,7 @@ class ROdiscImpl : public virtual POA_SK,
 			    const ACS::CBDescIn & desc) 
 	throw (CORBA::SystemException);
 
-    virtual ~ROdiscImpl() {;}
+    virtual ~ROdiscImpl();
 
   protected:
     /** @defgroup  PropTypeROdiscImplTemplate PropType Class (member from ROdiscImpl)
@@ -65,7 +66,16 @@ class ROdiscImpl : public virtual POA_SK,
      * really cannot say much more about PropType.
      */
     typedef ROdiscImpl<ACS_RO_TL> PropType;
+
     /** @} */
+
+
+    /**
+     * monitor which sends information (alarms) to the alarm system
+     */
+// for time being it is just in ROpatter
+//    AlarmSystemMonitorDisc<TS, PropType> *alarmSystemMonitor_mp;
+
 };
 
  }; 

@@ -24,7 +24,8 @@
 template<ACS_RO_C> 
 ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     ROcommonImpl<ACS_RO_TL>(name, component_p, devIO, flagdeldevIO),
-    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO)
+    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO),
+    alarmSystemMonitor_mp(0)
 {
   ACS_TRACE("baci::ROcontImpl&lt;&gt;::ROcontImpl");
   
@@ -32,21 +33,28 @@ ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* compon
 
   if (readCharacteristics()==false) 
     {
-		ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcontImpl&lt;&gt;::ROcontImpl",
-			(LM_ERROR, "Failed to read static data for '%s'", name.c_str()));
+		ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcontImpl&lt;&gt;::ROcontImpdmmakel",
+			(LM_ERROR, "Failed to read static data for '%s'", this->getProperty()->getName()));
 		return;
     }
   
+  if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
+      {
+      alarmSystemMonitor_mp = new AlarmSystemMonitorCont<TS, PropType>(this, this->monitorEventDispatcher_mp);
+      }//if
+
   ACS_DEBUG("baci::ROcontImpl&lt;&gt;::ROcontImpl", "Successfully created.");
 
   // property successfuly initialized
   this->initialization_m = 0;
 }
 
+
 template<ACS_RO_C> 
 ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     ROcommonImpl<ACS_RO_TL>(init, name, component_p, devIO, flagdeldevIO),
-    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO)
+    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO),
+    alarmSystemMonitor_mp(0)
 {
   ACS_TRACE("baci::ROcontImpl&lt;&gt;::ROcontImpl");
   
@@ -57,9 +65,13 @@ ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACICompon
 			(LM_ERROR, "Failed to read static data for '%s'", name.c_str()));
 		return;
     }
-  
+/* will be done in subclass  
+  if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
+      {
+      alarmSystemMonitor_mp = new AlarmSystemMonitorCont<T, PropType>(this, this->monitorEventDispatcher_mp);
+      }//if
+*/
   ACS_DEBUG("baci::ROcontImpl&lt;&gt;::ROcontImpl", "Successfully created.");
-
   // property successfuly initialized
   this->initialization_m = 0;
 }
@@ -67,6 +79,11 @@ ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACICompon
 template<ACS_RO_C> ROcontImpl<ACS_RO_TL>::~ROcontImpl()
 {
   ACS_TRACE("baci::ROcontImpl&lt;&gt;::~ROcontImpl");
+  if (alarmSystemMonitor_mp) 
+      {
+      delete alarmSystemMonitor_mp;
+      alarmSystemMonitor_mp = 0;
+      }
 }
 
 template<ACS_RO_C> 
@@ -155,17 +172,28 @@ ACS::Subscription_ptr ROcontImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
 					)
   throw (CORBA::SystemException)
 {
+//TBD: this could be done just in the constructor
+    if (this->alarmTimerTrig_m==0)
+	{
+	
+	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcontImpl&lt;&gt;::new_subscription_Alarm",
+		(LM_ERROR, "Can not create alarm dispatcher for %s because alarm_timer_trig=0", 
+		 this->getProperty()->getName()));
+	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	}//
 
-  if (this->monitorEventDispatcher_mp==0)
-  {
-    CBDescIn descIn;
-    descIn.id_tag = 0;
-    this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
+    
+    if (this->monitorEventDispatcher_mp==0)
+	{
+	CBDescIn descIn;
+	descIn.id_tag = 0;
+	this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
+	
 	if (this->monitorEventDispatcher_mp==0)
 	    {
 	    ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
 	    }
-  }  
+	}  
 
   AlarmEventStrategyCont<TS, PropType, TAlarm> * eventStrategy_p = 
     new AlarmEventStrategyCont<TS, PropType, TAlarm>(cb, desc, this->alarmTimerTrig_m, 

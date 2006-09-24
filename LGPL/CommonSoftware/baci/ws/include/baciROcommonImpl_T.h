@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.23 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.24 2006/09/24 18:43:34 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,6 +39,7 @@
 #include <baciPcommonImpl_T.h>
 #include <baciErrTypeDevIO.h>
 #include <baciErrTypeProperty.h>
+#include <ACSAlarmSystemInterface.h>
 
 //#define ACS_RO_T(T, TC) ACS_P_TL(T, TC),  POA_ACS::RO##T, ACS::Alarm##T
 /**
@@ -121,6 +122,9 @@ protected:
 
   // RO
   TimeInterval	alarmTimerTrig_m;
+  
+  // The alarm system source
+  auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource_map;
 
   private:
     /**
@@ -132,6 +136,9 @@ protected:
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     ROcommonImpl(const ROcommonImpl&);
+    
+  public:
+    laserSource::ACSAlarmSystemInterface* getAlarmSource() { return alarmSource_map.get(); }
 };
 
 // #include "baciROcommonImpl_T.i"

@@ -37,6 +37,7 @@
 
 #include <baciPcontImpl_T.h>
 #include <baciROcommonImpl_T.h>
+#include "baciAlarmSystemMonitorCont_T.h"
 
 namespace baci {
 
@@ -104,6 +105,11 @@ protected:
      */
     typedef ROcontImpl<ACS_RO_TL> PropType;
     /** @} */
+
+    /**
+     * monitor which sends information (alarms) to the alarm system
+     */
+    AlarmSystemMonitorCont<TS, PropType> *alarmSystemMonitor_mp;
 
   /**
    * Read characteristics from CDB

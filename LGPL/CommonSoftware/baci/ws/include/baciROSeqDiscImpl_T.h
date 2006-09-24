@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROSeqDiscImpl_T.h,v 1.5 2005/01/15 00:20:38 dfugate Exp $"
+* "@(#) $Id: baciROSeqDiscImpl_T.h,v 1.6 2006/09/24 18:43:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,6 +41,7 @@
 
 #include "baciROdiscImpl_T.h"
 #include "baciROSeqCommonImpl_T.h"
+#include <baciAlarmSystemMonitorSeqDisc_T.h>
 
 namespace baci
 {
@@ -69,6 +70,12 @@ namespace baci
 	typedef ROSeqDiscImpl<ACS_RO_TL> PropType;
 	/** @} */
 
+	/**
+	 * monitor which sends information (alarms) to the alarm system
+	 */
+#ifndef MAKE_VXWORKS       
+	AlarmSystemMonitorSeqDisc<TM, PropType> *alarmSystemMonitor_mp;
+#endif
     };//class ROSeqContImpl
 
 }; //namespace baci

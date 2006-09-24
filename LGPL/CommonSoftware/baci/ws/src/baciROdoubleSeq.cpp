@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROdoubleSeq.cpp,v 1.94 2004/06/23 09:51:54 bjeram Exp $"
+* "@(#) $Id: baciROdoubleSeq.cpp,v 1.95 2006/09/24 18:43:39 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -29,6 +29,7 @@
 
 #include "baciROdoubleSeq.h"
 #include "baciAlarm_T.i"
+#include "baciAlarmSystemMonitorSeqCont_T.i"
 #include "baciROSeqContImpl_T.i"
 #include "baciMonitor_T.i"
 

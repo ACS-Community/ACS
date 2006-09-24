@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.11 2006/09/08 14:19:27 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.12 2006/09/24 18:43:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -283,8 +283,8 @@ private:
 
 /* ------------------------------------------------------------------------ */
 
+}//namespace baci
 
-};//namespace baci
 
 #endif /* baci_H */ 
 

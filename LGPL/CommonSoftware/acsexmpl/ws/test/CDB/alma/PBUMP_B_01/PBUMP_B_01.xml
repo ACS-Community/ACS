@@ -14,7 +14,9 @@
 	alarm_high_on="990.0"
 	alarm_high_off="980.0"
         archive_min_int="5.0"
-        archive_max_int="10.0" />
+        archive_max_int="10.0"
+	alarm_timer_trig="1.0"
+	 />
   <status description="status"
                archive_min_int="5.0"
                archive_max_int="10.0" />

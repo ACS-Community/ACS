@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROpattern.h,v 1.105 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciROpattern.h,v 1.106 2006/09/24 18:43:34 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -64,6 +64,13 @@ class baci_EXPORT ROpatternImpl : public virtual POA_ACS::ROpattern,
  public:
     ROpatternImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<ACS::pattern> *devIO=0, bool flagdeldevIO=false);
     ~ROpatternImpl();
+  protected:
+
+// for time being we have AlarmSystemMonitorDisc just here we have to move to ROdisc
+/**
+     * monitor which sends information (alarms) to the alarm system
+     */
+    AlarmSystemMonitorDisc<ACS::pattern, ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>::PropType> *alarmSystemMonitor_mp;
 };
 
  }; 

@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.42 2006/09/08 14:19:27 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.43 2006/09/24 18:43:39 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.42 2006/09/08 14:19:27 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.43 2006/09/24 18:43:39 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>

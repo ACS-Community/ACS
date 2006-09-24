@@ -261,7 +261,7 @@ Above this value alarm is cleared
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>The minimum time interval (in seconds and fractions of seconds) for the notification of changes in the alarm status.
 See the documentation of the specific implementation for details on the implications of thsi value.
@@ -392,7 +392,7 @@ of the ROlong propery.
 NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.							</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the ROlong propery.			</xs:documentation>
@@ -496,7 +496,7 @@ of the ROlong propery.							</xs:documentation>
 of the ROlong propery.							</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the ROlong propery.	</xs:documentation>
@@ -611,7 +611,7 @@ of the ROlong propery.							</xs:documentation>
 of the ROlong propery.							</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the ROlong propery.	</xs:documentation>
@@ -679,7 +679,7 @@ NOTE: This is normally not used, since the concept or "delta" does not really ma
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Pstring">
-				<xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
@@ -778,7 +778,7 @@ of the Plong propery.                                      </xs:documentation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
@@ -888,7 +888,7 @@ of the Plong propery.                     </xs:documentation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
@@ -996,7 +996,7 @@ and index numbers, this might not be true for other implementations of
 properties. Check with the implementation specific documentation.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
@@ -1100,7 +1100,7 @@ The values defined for the Characteristics apply to each single element of the s
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
 					</xs:annotation>
@@ -1213,7 +1213,7 @@ The values defined for the Characteristics apply to each single element of the s
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
 					</xs:annotation>
@@ -1327,7 +1327,7 @@ The values defined for the Characteristics apply to each single element of the s
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
 					</xs:annotation>
