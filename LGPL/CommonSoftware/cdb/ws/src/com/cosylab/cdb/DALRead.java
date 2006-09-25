@@ -41,6 +41,9 @@ import java.util.Iterator;
 
 import alma.acs.util.ACSPorts;
 
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+//import alma.cdbErrType.CDBXMLErrorEx;
+
 public class DALRead {
 	static	int indent = 0;
 
@@ -93,7 +96,7 @@ public class DALRead {
 			saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
-				XMLerror xmlErr = new XMLerror(info);
+				AcsJCDBXMLErrorEx xmlErr = new AcsJCDBXMLErrorEx();
 				System.err.println(info);
 				throw xmlErr;
 			}
@@ -103,8 +106,8 @@ public class DALRead {
 			walk(xmlSolver.m_rootNode);
 			System.out.println("________________________________________________________");
 		}
-		catch (XMLerror e) {
-			System.out.println("XMLerror : " + e.msg );
+		catch (AcsJCDBXMLErrorEx e) {
+			//System.out.println("CDBXMLErrorEx : " + e.msg );
 			e.printStackTrace(System.out);
 		}
 		catch (Exception e) {

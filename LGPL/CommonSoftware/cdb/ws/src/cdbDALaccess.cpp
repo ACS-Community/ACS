@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDALaccess.cpp,v 1.41 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: cdbDALaccess.cpp,v 1.42 2006/09/25 08:36:59 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -34,10 +34,12 @@
 #include <logging.h>
 
 #include <acsutilPorts.h>
+#include <cdbErrType.h>
 
 // string table
-#define MSG_XML_ERROR   "CDB::XMLerror '%s' '%s'\n"
+#define MSG_XML_ERROR   "cdbErrType::CDBXMLerrorEx '%s' '%s'\n"
 
+using namespace cdbErrType;
 
 namespace cdb {
 
@@ -193,8 +195,10 @@ DAOImpl* DALaccess::getDAO( const String &strRecordName )
 			pDAO = new DAOImpl( dao.in() );
 		}
 	}
-	ACE_CATCH ( CDB::XMLerror, ex ) {
-		ACE_OS::printf( MSG_XML_ERROR, strRecordName.c_str(), ex.msg.in() );
+	ACE_CATCH ( cdbErrType::CDBXMLErrorEx, ex ) {
+		CDBXMLErrorExImpl ex_impl(ex); 
+		// a = ex_impl.getCurl();
+		ACE_OS::printf( MSG_XML_ERROR, strRecordName.c_str(), ex_impl.getCurl().c_str());
 		if( pDAO )
 		{
 			delete pDAO;

@@ -33,6 +33,8 @@ import com.cosylab.CDB.*;
 import java.net.InetAddress;
 
 import alma.acs.util.ACSPorts;
+import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 
 public class DALWrite {
 	static	int indent = 0;
@@ -79,8 +81,9 @@ public class DALWrite {
 
 			System.out.println("Setting '" + curl + "/" + field + "'='" + value + "'");
 		}
-		catch (XMLerror e) {
-			System.out.println("XMLerror : " + e.msg );
+		catch (CDBXMLErrorEx e) {
+			AcsJCDBXMLErrorEx e2 = new AcsJCDBXMLErrorEx(e);
+			System.out.println("XMLerror : " + e2.getCurl() );
 			e.printStackTrace(System.out);
 		}
 		catch (Exception e) {

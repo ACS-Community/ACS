@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.4 2005/09/28 13:30:02 msekoran Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.5 2006/09/25 08:36:59 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -263,15 +263,15 @@ void DAONode::connect(bool silent)
 	    newDAOProxy = new DAOProxy(m_name.c_str(), xml.in());
 	    }
 	}
-    catch (CDB::RecordDoesNotExist &rde)
+    catch (cdbErrType::CDBRecordDoesNotExistEx &rde)
 	{
 	if (!silent)
-	    throw cdbErrType::CDBRecordDoesNotExistExImpl (__FILE__, __LINE__,"cdb::DAONode::connect");
+	    throw cdbErrType::CDBRecordDoesNotExistExImpl (rde, __FILE__, __LINE__,"cdb::DAONode::connect");
 	}
-    catch (CDB::XMLerror &xee)
+    catch (cdbErrType::CDBXMLErrorEx &xee)
 	{
 	if (!silent)
-	    throw cdbErrType::CDBXMLErrorExImpl (__FILE__, __LINE__,"cdb::DAONode::connect");
+	    throw cdbErrType::CDBXMLErrorExImpl (xee, __FILE__, __LINE__,"cdb::DAONode::connect");
 	}
     catch (ACSErr::ACSbaseExImpl& ex)
 	{
@@ -305,8 +305,8 @@ void DAONode::connect(bool silent)
 CORBA::Long DAONode::get_long (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAONode::get_long");
@@ -320,8 +320,8 @@ CORBA::Long DAONode::get_long (const char * propertyName)
 CORBA::Double DAONode::get_double (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAONode::get_double");
@@ -335,8 +335,8 @@ CORBA::Double DAONode::get_double (const char * propertyName)
 char * DAONode::get_string (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAONode::get_string");
@@ -350,8 +350,8 @@ char * DAONode::get_string (const char * propertyName)
 char * DAONode::get_field_data (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAONode::get_field_data");
@@ -365,8 +365,8 @@ char * DAONode::get_field_data (const char * propertyName)
 CDB::stringSeq* DAONode::get_string_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAONode::get_string_seq");
@@ -380,8 +380,8 @@ CDB::stringSeq* DAONode::get_string_seq (const char * propertyName)
 CDB::longSeq * DAONode::get_long_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAONode::get_long_seq");
@@ -396,8 +396,8 @@ CDB::longSeq * DAONode::get_long_seq (const char * propertyName)
 CDB::doubleSeq * DAONode::get_double_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAONode::get_double_seq");
@@ -457,8 +457,8 @@ DAONode* DAOChildNode::createChild(const char* childName)
 CORBA::Long DAOChildNode::get_long (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOChildNode::get_long");
@@ -470,8 +470,8 @@ CORBA::Long DAOChildNode::get_long (const char * propertyName)
 CORBA::Double DAOChildNode::get_double (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOChildNode::get_double");
@@ -483,8 +483,8 @@ CORBA::Double DAOChildNode::get_double (const char * propertyName)
 char * DAOChildNode::get_string (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOChildNode::get_string");
@@ -496,8 +496,8 @@ char * DAOChildNode::get_string (const char * propertyName)
 char * DAOChildNode::get_field_data (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOChildNode::get_field_data");
@@ -509,8 +509,8 @@ char * DAOChildNode::get_field_data (const char * propertyName)
 CDB::stringSeq* DAOChildNode::get_string_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOChildNode::get_string_seq");
@@ -522,8 +522,8 @@ CDB::stringSeq* DAOChildNode::get_string_seq (const char * propertyName)
 CDB::longSeq * DAOChildNode::get_long_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOChildNode::get_long_seq");
@@ -536,8 +536,8 @@ CDB::longSeq * DAOChildNode::get_long_seq (const char * propertyName)
 CDB::doubleSeq * DAOChildNode::get_double_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOChildNode::get_double_seq");

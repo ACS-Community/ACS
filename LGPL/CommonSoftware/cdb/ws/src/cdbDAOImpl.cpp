@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.34 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.35 2006/09/25 08:36:59 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -28,7 +28,9 @@
 #include <cdbDAOImpl.h>
 #include <expat.h>
 #include <logging.h>
-
+#include <cdbErrType.h>
+ 
+ using namespace cdbErrType;
  using namespace cdb;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -303,7 +305,7 @@ CORBA::Long DAOImpl::get_long (
   )
   throw (
     CORBA::SystemException,
-    CDB::WrongDataType
+    cdbErrType::WrongCDBDataTypeEx
   )
 {
 	if( m_remote )
@@ -313,11 +315,15 @@ CORBA::Long DAOImpl::get_long (
 	Field fld;
 	if( !get_field(propertyName, fld) )
 	{
-		ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
+		throw CDBFieldDoesNotExistExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getCDBFieldDoesNotExistEx();
 	}
 	if(fld.GetType() != Field::tyLong)
 	{
-		ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+		throw WrongCDBDataTypeExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getWrongCDBDataTypeEx();
 	}
 	Long retVal;
 	fld.GetLong(retVal);
@@ -330,7 +336,7 @@ CORBA::Double DAOImpl::get_double (
   )
   throw (
     CORBA::SystemException,
-    CDB::WrongDataType
+    cdbErrType::WrongCDBDataTypeEx    
   )
 {
 	if( m_remote )
@@ -340,11 +346,15 @@ CORBA::Double DAOImpl::get_double (
 	Field fld;
 	if( !get_field(propertyName, fld) )
 	{
-		ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
+		throw CDBFieldDoesNotExistExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getCDBFieldDoesNotExistEx();
 	}
 	if(fld.GetType() != Field::tyDouble)
 	{
-		ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+		throw WrongCDBDataTypeExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getWrongCDBDataTypeEx();
 	}
 	Double retVal;
 	fld.GetDouble(retVal);
@@ -357,8 +367,8 @@ char * DAOImpl::get_string (
   )
   throw (
     CORBA::SystemException,
-    CDB::WrongDataType
-  )
+    cdbErrType::WrongCDBDataTypeEx 
+ )
 
   {
   	if( m_remote )
@@ -368,11 +378,17 @@ char * DAOImpl::get_string (
 	Field fld;
 	if( !get_field(propertyName, fld) )
 	{
-		ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
+		throw CDBFieldDoesNotExistExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getCDBFieldDoesNotExistEx();
+		//ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
 	}
 	if(fld.GetType() != Field::tyString)
 	{
-		ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+		throw WrongCDBDataTypeExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getWrongCDBDataTypeEx();
+		//ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
 	}
 	cdb::String str;
 	fld.GetString(str);
@@ -385,14 +401,18 @@ char * DAOImpl::get_field_data (
   )
   throw (
     CORBA::SystemException,
-    CDB::WrongDataType,
-    CDB::FieldDoesNotExist
+    cdbErrType::WrongCDBDataTypeEx,
+    cdbErrType::CDBFieldDoesNotExistEx
+    //CDB::WrongDataType,
+    //CDB::FieldDoesNotExist
   )
 {
 	Field fld;
 	if( !get_field(propertyName, fld) )
 	{
-		ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
+		throw CDBFieldDoesNotExistExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getCDBFieldDoesNotExistEx();
 	}
 	String fieldData;
 	fld.ToString(fieldData);
@@ -405,19 +425,25 @@ CDB::stringSeq* DAOImpl::get_string_seq (
   )
   throw (
     CORBA::SystemException,
-    CDB::WrongDataType,
-    CDB::FieldDoesNotExist
+    cdbErrType::WrongCDBDataTypeEx,
+    cdbErrType::CDBFieldDoesNotExistEx
+//CDB::WrongDataType,
+    //CDB::FieldDoesNotExist
   )
 {
 	Field fld;
 	if( !get_field(propertyName, fld) )
 	{
-		ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
+		throw CDBFieldDoesNotExistExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getCDBFieldDoesNotExistEx();
 	}
     
 	if(fld.GetType() != Field::tyStringArray)
 	{
-		ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+		throw WrongCDBDataTypeExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getWrongCDBDataTypeEx();
 	}
 
 	// create return value
@@ -443,19 +469,23 @@ CDB::stringSeq* DAOImpl::get_string_seq (
 	)
 	throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+    cdbErrType::WrongCDBDataTypeEx,
+    cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
 	Field fld;
     if( !get_field(propertyName, fld) )
     {
-      ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
+		throw CDBFieldDoesNotExistExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getCDBFieldDoesNotExistEx();
    }
   // I don't know why but it returns always an array of string
   if(fld.GetType() != Field::tyStringArray)
   {
-      ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+		throw WrongCDBDataTypeExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getWrongCDBDataTypeEx();
    }
  // create return value
  CDB::longSeq_var retSeq;
@@ -474,7 +504,9 @@ CDB::stringSeq* DAOImpl::get_string_seq (
          retSeq[n++]=lng;
       } else {
          // The string doesn't contain a long: throw an exception
-         ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+	  throw WrongCDBDataTypeExImpl (
+		__FILE__, __LINE__,
+		"DAOImpl::get_long").getWrongCDBDataTypeEx();
       }
  }
   
@@ -488,19 +520,23 @@ CDB::stringSeq* DAOImpl::get_string_seq (
 	)
 	throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+    		cdbErrType::WrongCDBDataTypeEx,
+    		cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
 	Field fld;
     if( !get_field(propertyName, fld) )
     {
-      ACE_THROW_RETURN( CDB::FieldDoesNotExist(), 0 );
+	throw CDBFieldDoesNotExistExImpl (
+		__FILE__, __LINE__,
+		"DAOImpl::get_long").getCDBFieldDoesNotExistEx();
    }
   // I don't know why but it returns always an array of string
   if(fld.GetType() != Field::tyStringArray)
   {
-      ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+	throw WrongCDBDataTypeExImpl (
+		__FILE__, __LINE__,
+		"DAOImpl::get_long").getWrongCDBDataTypeEx();
    }
  // create return value
  CDB::doubleSeq_var retSeq;
@@ -519,7 +555,10 @@ CDB::stringSeq* DAOImpl::get_string_seq (
          retSeq[n++]=dbl;
       } else {
          // The string doesn't contain a long: throw an exception
-         ACE_THROW_RETURN( CDB::WrongDataType(), 0 );
+		throw WrongCDBDataTypeExImpl (
+			__FILE__, __LINE__,
+			"DAOImpl::get_long").getWrongCDBDataTypeEx();
+         
       }
  }
   

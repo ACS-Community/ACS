@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbDAOImpl.h,v 1.28 2006/09/01 12:33:32 gchiozzi Exp $"
+* "@(#) $Id: cdbDAOImpl.h,v 1.29 2006/09/25 08:36:59 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -55,37 +55,37 @@ class  DAOImpl
     // scalars
     virtual CORBA::Long get_long (const char * propertyName )
 	throw (CORBA::SystemException,
-	       CDB::WrongDataType );
+	       cdbErrType::WrongCDBDataTypeEx);
     
     virtual CORBA::Double get_double (const char * propertyName)
 	throw (CORBA::SystemException,
-	       CDB::WrongDataType );
+	       cdbErrType::WrongCDBDataTypeEx );
     
     virtual char * get_string (const char * propertyName )
 	throw (CORBA::SystemException,
-	       CDB::WrongDataType);
+	       cdbErrType::WrongCDBDataTypeEx);
 
     virtual char * get_field_data (const char * propertyName )
 	throw (CORBA::SystemException,
-	       CDB::WrongDataType,
-	       CDB::FieldDoesNotExist);
+	       cdbErrType::WrongCDBDataTypeEx,
+	       cdbErrType::CDBFieldDoesNotExistEx);
 
     ///////////////////////////////////////////
     // sequences
     virtual ::CDB::stringSeq * get_string_seq (const char * propertyName )
 	throw (CORBA::SystemException,
-	       CDB::WrongDataType,
-	       CDB::FieldDoesNotExist);
+	       cdbErrType::WrongCDBDataTypeEx,
+	       cdbErrType::CDBFieldDoesNotExistEx);
 
     virtual ::CDB::longSeq * get_long_seq (const char * propertyName )
 	throw (CORBA::SystemException,
-	       CDB::WrongDataType,
-	       CDB::FieldDoesNotExist);
+	       cdbErrType::WrongCDBDataTypeEx,
+	       cdbErrType::CDBFieldDoesNotExistEx);
 
     virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName )
 	throw (CORBA::SystemException,
-	       CDB::WrongDataType,
-	       CDB::FieldDoesNotExist);
+	       cdbErrType::WrongCDBDataTypeEx,
+	       cdbErrType::CDBFieldDoesNotExistEx);
 
     Boolean get_field( const String &strFieldName, Field &fld );
 

@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: cdbDAOProxy.h,v 1.1 2005/09/20 09:12:41 msekoran Exp $"
+ * "@(#) $Id: cdbDAOProxy.h,v 1.2 2006/09/25 08:36:59 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -38,6 +38,7 @@
 #include <vector>
 
 #include <cdbDALS.h>
+#include <cdbErrType.h>
 
 using namespace std;
 
@@ -114,7 +115,7 @@ namespace cdb {
 	 */
 	void get_field(const char* name, string &value)
 	    throw (
-		CDB::FieldDoesNotExist
+		cdbErrType::CDBFieldDoesNotExistExImpl
 		);
       
 	typedef vector<string> VectorString;
@@ -134,50 +135,50 @@ namespace cdb {
 	virtual CORBA::Long get_long (const char * propertyName)
 	    throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+		cdbErrType::WrongCDBDataTypeEx,
+		cdbErrType::CDBFieldDoesNotExistEx
 		);
 
 	virtual CORBA::Double get_double (const char * propertyName)
 	    throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+		cdbErrType::WrongCDBDataTypeEx,
+		cdbErrType::CDBFieldDoesNotExistEx
 		);
 
 	virtual char * get_string (const char * propertyName )
 	    throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+		cdbErrType::WrongCDBDataTypeEx,
+		cdbErrType::CDBFieldDoesNotExistEx
 		);
 
 	virtual char * get_field_data (const char * propertyName)
 	    throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+		cdbErrType::WrongCDBDataTypeEx,
+		cdbErrType::CDBFieldDoesNotExistEx
 		);
 
 	virtual ::CDB::stringSeq * get_string_seq (const char * propertyName)
 	    throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+		cdbErrType::WrongCDBDataTypeEx,
+		cdbErrType::CDBFieldDoesNotExistEx
 		);
 
 	virtual ::CDB::longSeq * get_long_seq (const char * propertyName)
 	    throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+		cdbErrType::WrongCDBDataTypeEx,
+		cdbErrType::CDBFieldDoesNotExistEx
 		);
 
 	virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName )
 	    throw (
 		CORBA::SystemException,
-		CDB::WrongDataType,
-		CDB::FieldDoesNotExist
+		cdbErrType::WrongCDBDataTypeEx,
+		cdbErrType::CDBFieldDoesNotExistEx
 		);
 
 	virtual void destroy(

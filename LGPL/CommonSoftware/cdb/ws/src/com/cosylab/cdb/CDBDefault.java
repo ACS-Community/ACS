@@ -37,7 +37,8 @@ import org.xml.sax.InputSource;
 import com.cosylab.CDB.WDAL;
 import com.cosylab.CDB.WDALHelper;
 import com.cosylab.CDB.WDAO;
-import com.cosylab.CDB.XMLerror;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+import alma.cdbErrType.CDBXMLErrorEx;
 import com.cosylab.cdb.jdal.XMLHandler;
 import com.cosylab.cdb.jdal.XMLTreeNode;
 
@@ -107,12 +108,14 @@ public class CDBDefault {
 			
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
-				XMLerror xmlErr = new XMLerror(info);
-				throw xmlErr;
+				AcsJCDBXMLErrorEx cdbxmlErr =  new AcsJCDBXMLErrorEx();
+				//cdbxmlErr.setFileN
+				//XMLerror xmlErr = new XMLerror(info);
+				throw cdbxmlErr;
 			}		
 			setDefault(xmlSolver.m_rootNode, in_type, in_name);
 		}
-		catch (XMLerror e) {
+		catch (AcsJCDBXMLErrorEx e) {
 			m_logger.log(Level.WARNING, "Xml Error", e);
 			e.printStackTrace();
 		}
@@ -174,7 +177,7 @@ public class CDBDefault {
 				XMLTreeNode value = (XMLTreeNode) node_root.getNodesMap().get(key);
 				setDefault(value, in_type,in_name);
 			}
-		}catch(XMLerror e){
+		}catch(CDBXMLErrorEx e){
 			m_logger.log(Level.WARNING, "Xml Error", e);
 			e.printStackTrace();
 		}

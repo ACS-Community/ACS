@@ -27,15 +27,9 @@
  */
 package com.cosylab.cdb.jdal;
 
-import com.cosylab.CDB.CDBException;
 import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.FieldDoesNotExist;
-import com.cosylab.CDB.RecordAlreadyExists;
-import com.cosylab.CDB.RecordDoesNotExist;
-import com.cosylab.CDB.RecordIsReadOnly;
 import com.cosylab.CDB.WDAO;
 import com.cosylab.CDB.WDAOHelper;
-import com.cosylab.CDB.XMLerror;
 
 import org.omg.CORBA.ORB;
 
@@ -62,6 +56,18 @@ import java.util.StringTokenizer;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBRecordIsReadOnlyEx;
+import alma.cdbErrType.CDBRecordAlreadyExistsEx;
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.CDBExceptionEx;
+
+import alma.cdbErrType.wrappers.AcsJCDBRecordAlreadyExistsEx;
+import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+import alma.cdbErrType.wrappers.AcsJCDBExceptionEx;
+//import alma.cdbErrType.wrappers.;
 
 /**
  * Implementation of Writable Data Access Layer (WDAL) interface.   Enables
@@ -95,7 +101,7 @@ public class WDALImpl extends WDALBaseImpl
 	 * @see com.cosylab.CDB.WDALOperations#get_WDAO_servant(java.lang.String)
 	 */
 	public WDAO get_WDAO_Servant(String curl)
-		throws XMLerror, RecordDoesNotExist, RecordIsReadOnly
+		throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, CDBRecordIsReadOnlyEx
 	{
 		// if we already have WDAO
 		synchronized(wdaoMap) {
@@ -127,7 +133,7 @@ public class WDALImpl extends WDALBaseImpl
 			return href;
 		} catch(Throwable t) {
 			String info = "WDAL::get_WDAO_Servant " + t;
-			XMLerror xmlErr = new XMLerror(info);
+			CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
 			System.err.println(info);
 			throw xmlErr;
 		}
@@ -139,29 +145,37 @@ public class WDALImpl extends WDALBaseImpl
 	 * @param curl uri for the CDB node
 	 * @param xml
 	 *
-	 * @throws RecordAlreadyExists
-	 * @throws XMLerror
-	 * @throws CDBException
+	 * @throws CDBRecordAlreadyExistsEx
+	 * @throws CDBXMLErrorEx
+	 * @throws CDBExceptionEx
 	 */
 	public void add_node(String curl, String xml)
-		throws RecordAlreadyExists, XMLerror, CDBException
+		throws CDBRecordAlreadyExistsEx, CDBXMLErrorEx, CDBExceptionEx
 	{
 		System.out.println("add_node " + curl);
 
 		// check if node is already there
 		if(nodeExists(curl)) {
 			System.err.println("Record already exists: " + curl);
-			throw new RecordAlreadyExists(curl);
+			AcsJCDBRecordAlreadyExistsEx e2 = new AcsJCDBRecordAlreadyExistsEx();
+			e2.setCurl(curl);
+			throw e2.toCDBRecordAlreadyExistsEx();
 		}
 
 		// check that suplied xml is valid 
-		validateXML(xml);
-
+		try{
+			validateXML(xml);
+		}catch(AcsJCDBXMLErrorEx e){
+			throw e.toCDBXMLErrorEx();
+		}
 		// recreate dir structure and put data content 
 		getNodeFile(curl).getParentFile().mkdirs();
-
+		try{
 		// write content
 		writeXmlData(curl, xml);
+		}catch(AcsJCDBExceptionEx e){
+			throw e.toCDBExceptionEx();
+		}
 	}
 
 	/**
@@ -170,18 +184,18 @@ public class WDALImpl extends WDALBaseImpl
 	 *
 	 * @param curl uri for the CDB node
 	 *
-	 * @throws RecordDoesNotExist
-	 * @throws RecordIsReadOnly
+	 * @throws CDBRecordDoesNotExistEx
+	 * @throws CDBRecordIsReadOnlyEx
 	 */
 	public void remove_node(String curl)
-		throws RecordDoesNotExist, RecordIsReadOnly
+		throws CDBRecordDoesNotExistEx, CDBRecordIsReadOnlyEx
 	{
 		System.out.println("remove_node " + curl);
 
 		// check if node exisits
 		if(!nodeExists(curl)) {
 			System.err.println("Record does not exists: " + curl);
-			throw new RecordDoesNotExist();
+			throw new CDBRecordDoesNotExistEx();
 		}
 
 		// if so delete nodes file
@@ -190,7 +204,7 @@ public class WDALImpl extends WDALBaseImpl
 
 		// if we can't delete it assume that it is read only
 		if(!deleted) {
-			throw new RecordIsReadOnly();
+			throw new CDBRecordIsReadOnlyEx();
 		}
 
 		// also delete directory node but don't care if it is not empty and we actually didn't delete it  
@@ -217,28 +231,28 @@ public class WDALImpl extends WDALBaseImpl
 	 * @param curl uri for the CDB node
 	 * @param xml
 	 *
-	 * @throws RecordDoesNotExist
-	 * @throws FieldDoesNotExist
-	 * @throws RecordIsReadOnly
-	 * @throws XMLerror
-	 * @throws CDBException
+	 * @throws CDBRecordDoesNotExistEx
+	 * @throws CDBFieldDoesNotExistEx
+	 * @throws CDBRecordIsReadOnlyEx
+	 * @throws CDBXMLErrorEx
+	 * @throws CDBExceptionEx
 	 */
 	public void set_DAO(String curl, String xml)
-		throws RecordDoesNotExist, FieldDoesNotExist, RecordIsReadOnly, 
-			XMLerror, CDBException
+		throws CDBRecordDoesNotExistEx, CDBFieldDoesNotExistEx, CDBRecordIsReadOnlyEx, 
+			CDBXMLErrorEx, CDBExceptionEx
 	{
 		System.out.println("set_DAO " + curl);
 
 		// check if node exisits
 		if(!nodeExists(curl)) {
 			System.err.println("Record does not exists: " + curl);
-			throw new RecordDoesNotExist();
+			throw new CDBRecordDoesNotExistEx();
 		}
 
 		File xmlFile = getNodeFile(curl);
 
 		if(!xmlFile.canWrite()) {
-			throw new RecordIsReadOnly();
+			throw new CDBRecordIsReadOnlyEx();
 		}
 
 		// read given xml and iterate through its content and check if something was changed
@@ -261,12 +275,20 @@ public class WDALImpl extends WDALBaseImpl
 
 		// iterater throuth given xml and put changed attributes in map
 		LinkedHashMap map = new LinkedHashMap();
-		chekforChanges("", xmlSolver.m_rootNode, map, daoImp);
-		saveChanges(curl, map);
+		try{
+			checkforChanges("", xmlSolver.m_rootNode, map, daoImp);
+			saveChanges(curl, map);
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}catch(AcsJCDBXMLErrorEx e){
+			throw e.toCDBXMLErrorEx();
+		}catch(AcsJCDBExceptionEx e){
+			throw e.toCDBExceptionEx();
+		}
 	}
 
 	private void parseXML(String xml, XMLHandler xmlSolver)
-		throws XMLerror
+		throws CDBXMLErrorEx
 	{
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -275,13 +297,13 @@ public class WDALImpl extends WDALBaseImpl
 
 			if(xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
-				XMLerror xmlErr = new XMLerror(info);
+				CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
 				System.err.println(info);
 				throw xmlErr;
 			}
 		} catch(Throwable t) {
 			String info = "SAXException " + t;
-			XMLerror xmlErr = new XMLerror(info);
+			CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
 			System.err.println(info);
 			throw xmlErr;
 		}
@@ -293,11 +315,11 @@ public class WDALImpl extends WDALBaseImpl
 	 * @param curl uri for the CDB node
 	 * @param xmlData xml to write
 	 *
-	 * @throws CDBException general CDB exception if something goes wrong while
+	 * @throws CDBExceptionEx general CDB exception if something goes wrong while
 	 *         saving
 	 */
 	private synchronized void writeXmlData(String curl, String xmlData)
-		throws CDBException
+		throws AcsJCDBExceptionEx
 	{
 		File xmlFile = getNodeFile(curl);
 
@@ -309,8 +331,12 @@ public class WDALImpl extends WDALBaseImpl
 			fw.close();
 		} catch(IOException e) {
 			e.printStackTrace();
-			throw new CDBException("Exception while writing node " + curl
-			    + " : " + e);
+			
+			AcsJCDBExceptionEx e2 = new AcsJCDBExceptionEx(e);
+			//e2.setCurl(curl);
+			throw e2;
+			//throw new CDBExceptionEx("Exception while writing node " + curl
+			  //  + " : " + e);
 		}
 
 		// let other new about change
@@ -325,11 +351,11 @@ public class WDALImpl extends WDALBaseImpl
 	 * @param map
 	 * @param dao
 	 *
-	 * @throws FieldDoesNotExist
-	 * @throws XMLerror
+	 * @throws AcsJCDBFieldDoesNotExistEx
+	 * @throws AcsJCDBXMLErrorEx
 	 */
-	private void chekforChanges(String name, XMLTreeNode node, Map map,
-	    DAOImpl dao) throws FieldDoesNotExist, XMLerror
+	private void checkforChanges(String name, XMLTreeNode node, Map map,
+	    DAOImpl dao) throws AcsJCDBFieldDoesNotExistEx, AcsJCDBXMLErrorEx
 	{
 		String propertyName;
 		String currentValue;
@@ -371,7 +397,7 @@ public class WDALImpl extends WDALBaseImpl
 				
 				e.printStackTrace();
 
-				XMLerror xmlErr = new XMLerror(e.toString());
+				AcsJCDBXMLErrorEx xmlErr = new AcsJCDBXMLErrorEx(e);
 				throw xmlErr;
 			}
 
@@ -386,7 +412,7 @@ public class WDALImpl extends WDALBaseImpl
 		for(Iterator iter = node.m_subNodesMap.keySet().iterator();
 		    iter.hasNext();) {
 			String key = (String)iter.next();
-			chekforChanges(name + "/" + key,
+			checkforChanges(name + "/" + key,
 			    (XMLTreeNode)node.m_subNodesMap.get(key), map, dao);
 		}
 	}
@@ -423,12 +449,12 @@ public class WDALImpl extends WDALBaseImpl
 	 * @param curl
 	 * @param propertyMap
 	 *
-	 * @throws XMLerror
-	 * @throws CDBException
-	 * @throws FieldDoesNotExist
+	 * @throws CDBXMLErrorEx
+	 * @throws CDBExceptionEx
+	 * @throws CDBFieldDoesNotExistEx
 	 */
 	public void saveChanges(String curl, Map propertyMap)
-		throws XMLerror, CDBException, FieldDoesNotExist
+		throws AcsJCDBXMLErrorEx, AcsJCDBExceptionEx, AcsJCDBFieldDoesNotExistEx
 	{
 		if(!nodeExists(curl)) {
 			return; // we can't save merged curl
@@ -451,17 +477,25 @@ public class WDALImpl extends WDALBaseImpl
 			saxParser.parse(getNodeFile(curl), xmlHandler);
 		} catch(Exception e) {
 			e.printStackTrace();
-			throw new XMLerror(e.toString());
+			
+			AcsJCDBXMLErrorEx e2 = new AcsJCDBXMLErrorEx(e);
+			e2.setCurl(curl);
+			//throw new CDBXMLErrorEx(e.toString());
+			throw e2;
 		}
 
 		StringWriter sw = new StringWriter();
 		xmlHandler.writeXML(sw);
-		
-		// now check that everything conforms to the schema
-		validateXML(sw.toString());
-
-		// ok it is safe now to write it to disk
-		writeXmlData(curl, sw.toString());
+	//	try{	
+			// now check that everything conforms to the schema
+			validateXML(sw.toString());
+			// ok it is safe now to write it to disk
+			writeXmlData(curl, sw.toString());
+	//	}catch(AcsJCDBXMLErrorEx e){
+		//	throw e;
+		//}catch(AcsJCDBException e){
+		//	thro
+		//}
 	}
 
 	/**
@@ -470,9 +504,9 @@ public class WDALImpl extends WDALBaseImpl
 	 *
 	 * @param xml
 	 *
-	 * @throws XMLerror
+	 * @throws AcsJCDBXMLErrorEx
 	 */
-	public void validateXML(String xml) throws XMLerror
+	public void validateXML(String xml) throws AcsJCDBXMLErrorEx
 	{
 		try {
 			XMLHandler dalSolver = new XMLHandler(true);
@@ -481,15 +515,19 @@ public class WDALImpl extends WDALBaseImpl
 
 			if(dalSolver.m_errorString != null) {
 				System.err.println(dalSolver.m_errorString);
-				throw new XMLerror(dalSolver.m_errorString);
+				AcsJCDBXMLErrorEx e2 = new AcsJCDBXMLErrorEx();
+				e2.setErrorString(dalSolver.m_errorString);	
+				throw e2;
 			}
-		} catch(XMLerror e) {
+		} catch(AcsJCDBXMLErrorEx e) {
 			throw e;
 		} catch(Throwable t) {
 			t.printStackTrace();
 
-			XMLerror xmlErr = new XMLerror(t.toString());
-			throw xmlErr;
+			AcsJCDBXMLErrorEx e2 = new AcsJCDBXMLErrorEx(t);
+			throw e2;
+			//CDBXMLErrorEx xmlErr = new CDBXMLErrorEx(t.toString());
+			//throw xmlErr;
 		}
 	}
 
@@ -521,11 +559,11 @@ public class WDALImpl extends WDALBaseImpl
 		 *
 		 * @param writer writer to write to
 		 *
-		 * @throws FieldDoesNotExist
-		 * @throws CDBException
+		 * @throws CDBFieldDoesNotExistEx
+		 * @throws CDBExceptionEx
 		 */
 		public void writeXML(Writer writer)
-			throws FieldDoesNotExist, CDBException
+			throws AcsJCDBFieldDoesNotExistEx, AcsJCDBExceptionEx
 		{
 			this.writer = writer;
 
@@ -553,7 +591,7 @@ public class WDALImpl extends WDALBaseImpl
 				writeNode(m_rootNode, 0);
 			} catch(IOException e) {
 				e.printStackTrace();
-				throw new CDBException(e.toString());
+				throw new AcsJCDBExceptionEx(e);
 			}
 		}
 
@@ -583,7 +621,7 @@ public class WDALImpl extends WDALBaseImpl
 		}
 
 		private void setField(String strFieldName, String value, boolean asArray)
-			throws FieldDoesNotExist
+			throws AcsJCDBFieldDoesNotExistEx
 		{
 			XMLTreeNode pNode = m_rootNode;
 			StringTokenizer st = new StringTokenizer(strFieldName, "/");
@@ -600,8 +638,9 @@ public class WDALImpl extends WDALBaseImpl
 				pNode = (XMLTreeNode)pNode.m_subNodesMap.get(fieldName);
 
 				if(pNode == null) { // is this attempt to modify merged xml?
-					throw new FieldDoesNotExist("Field '" + strFieldName
-					    + "' does not exists.");
+					AcsJCDBFieldDoesNotExistEx e2 = new AcsJCDBFieldDoesNotExistEx();
+					e2.setFieldName(strFieldName);
+					throw e2;
 				}
 
 				fieldName = st.nextToken();

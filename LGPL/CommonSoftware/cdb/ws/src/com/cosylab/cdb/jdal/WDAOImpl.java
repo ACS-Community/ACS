@@ -32,10 +32,11 @@ import java.util.StringTokenizer;
 
 import org.omg.PortableServer.POA;
 
-import com.cosylab.CDB.FieldDoesNotExist;
-import com.cosylab.CDB.FieldIsReadOnly;
+import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.CDBFieldIsReadOnlyEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
 import com.cosylab.CDB.WDAOPOA;
-import com.cosylab.CDB.WrongDataType;
 
 /**
  * @author dvitas
@@ -58,110 +59,138 @@ public class WDAOImpl extends WDAOPOA {
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDAOOperations#set_long(java.lang.String, int)
 	 */
-	public void set_long(String propertyName, int value) throws FieldDoesNotExist, FieldIsReadOnly {
+	public void set_long(String propertyName, int value) throws CDBFieldDoesNotExistEx, CDBFieldIsReadOnlyEx {
+		try{
 		setField(propertyName, String.valueOf(value));
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDAOOperations#set_double(java.lang.String, double)
 	 */
-	public void set_double(String propertyName, double value) throws FieldDoesNotExist, FieldIsReadOnly {
+	public void set_double(String propertyName, double value) throws CDBFieldDoesNotExistEx, CDBFieldIsReadOnlyEx {
+		try{
 		setField(propertyName, String.valueOf(value));
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDAOOperations#set_string(java.lang.String, java.lang.String)
 	 */
-	public void set_string(String propertyName, String value) throws FieldDoesNotExist, FieldIsReadOnly {
+	public void set_string(String propertyName, String value) throws CDBFieldDoesNotExistEx, CDBFieldIsReadOnlyEx {
+		try{
 		setField(propertyName, value);
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDAOOperations#set_field_data(java.lang.String, java.lang.String)
 	 */
-	public void set_field_data(String propertyName, String value) throws WrongDataType, FieldDoesNotExist, FieldIsReadOnly {
+	public void set_field_data(String propertyName, String value) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx, CDBFieldIsReadOnlyEx {
+		try{
 		setField(propertyName, value);
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDAOOperations#set_string_seq(java.lang.String, java.lang.String[])
 	 */
-	public void set_string_seq(String propertyName, String[] value) throws FieldDoesNotExist, FieldIsReadOnly {
+	public void set_string_seq(String propertyName, String[] value) throws CDBFieldDoesNotExistEx, CDBFieldIsReadOnlyEx {
 		StringBuffer strValue = new StringBuffer(64);
 		for (int i = 0; i < value.length; i++) {
 			strValue.append(value[i]).append(',');
 		}
+		try{
 		setField(propertyName, strValue.toString());
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDAOOperations#set_long_seq(java.lang.String, int[])
 	 */
-	public void set_long_seq(String propertyName, int[] value) throws FieldDoesNotExist, FieldIsReadOnly {
+	public void set_long_seq(String propertyName, int[] value) throws CDBFieldDoesNotExistEx, CDBFieldIsReadOnlyEx {
 		StringBuffer strValue = new StringBuffer(64);
 		for (int i = 0; i < value.length; i++) {
 			strValue.append(value[i]).append(',');
 		}
+		try{
 		setField(propertyName, strValue.toString());
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDAOOperations#set_double_seq(java.lang.String, double[])
 	 */
-	public void set_double_seq(String propertyName, double[] value) throws FieldDoesNotExist, FieldIsReadOnly {
+	public void set_double_seq(String propertyName, double[] value) throws CDBFieldDoesNotExistEx, CDBFieldIsReadOnlyEx {
 		StringBuffer strValue = new StringBuffer(64);
 		for (int i = 0; i < value.length; i++) {
 			strValue.append(value[i]).append(',');
 		}
+		try{
 		setField(propertyName, strValue.toString());
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DAOOperations#get_long(java.lang.String)
 	 */
-	public int get_long(String propertyName) throws WrongDataType, FieldDoesNotExist {
+	public int get_long(String propertyName) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
 		return daoImpl.get_long(propertyName);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DAOOperations#get_double(java.lang.String)
 	 */
-	public double get_double(String propertyName) throws WrongDataType, FieldDoesNotExist {
+	public double get_double(String propertyName) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
 		return daoImpl.get_double(propertyName);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DAOOperations#get_string(java.lang.String)
 	 */
-	public String get_string(String propertyName) throws WrongDataType, FieldDoesNotExist {
+	public String get_string(String propertyName) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
 		return daoImpl.get_string(propertyName);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DAOOperations#get_field_data(java.lang.String)
 	 */
-	public String get_field_data(String propertyName) throws WrongDataType, FieldDoesNotExist {
+	public String get_field_data(String propertyName) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
 		return daoImpl.get_field_data(propertyName);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DAOOperations#get_string_seq(java.lang.String)
 	 */
-	public String[] get_string_seq(String propertyName) throws WrongDataType, FieldDoesNotExist {
+	public String[] get_string_seq(String propertyName) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
 		return daoImpl.get_string_seq(propertyName);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DAOOperations#get_long_seq(java.lang.String)
 	 */
-	public int[] get_long_seq(String propertyName) throws WrongDataType, FieldDoesNotExist {
+	public int[] get_long_seq(String propertyName) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
 		return daoImpl.get_long_seq(propertyName);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DAOOperations#get_double_seq(java.lang.String)
 	 */
-	public double[] get_double_seq(String propertyName) throws WrongDataType, FieldDoesNotExist {
+	public double[] get_double_seq(String propertyName) throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
 		return daoImpl.get_double_seq(propertyName);
 	}
 
@@ -202,20 +231,25 @@ public class WDAOImpl extends WDAOPOA {
 		return daoImpl.getPOA();
 	}
 
-	private void setField(String strFieldName, String value) throws FieldDoesNotExist {
+	private void setField(String strFieldName, String value) throws AcsJCDBFieldDoesNotExistEx {
 		XMLTreeNode pNode = getRootNode();
 		StringTokenizer st = new StringTokenizer(strFieldName, "/");
 		String fieldName = st.nextToken();
 		while (st.hasMoreTokens()) {
 			pNode = (XMLTreeNode) pNode.m_subNodesMap.get(fieldName);
-			if (pNode == null)
-				throw new FieldDoesNotExist("Field '" + strFieldName + "' does not exists.");
+			if (pNode == null){
+				AcsJCDBFieldDoesNotExistEx e = new AcsJCDBFieldDoesNotExistEx();
+				e.setFieldName(strFieldName);
+				throw e;
+			}
 			fieldName = st.nextToken();
 		}
 		String currentValue = (String) pNode.m_fieldMap.get(fieldName);
 		if (currentValue == null) {
 			System.err.println("WDAO:'" + getName() + "' Unable to find field: '" + strFieldName + "'");
-			throw new FieldDoesNotExist("Field '" + strFieldName + "' does not exists.");
+			AcsJCDBFieldDoesNotExistEx e = new AcsJCDBFieldDoesNotExistEx();
+			e.setFieldName(strFieldName);
+			throw e;
 		}
 		System.err.println("WDAO:'" + getName() + "' set '" + strFieldName + "'=" + value);
 		// set value in memory
@@ -226,7 +260,7 @@ public class WDAOImpl extends WDAOPOA {
 		try {
 			wdal.saveChanges(getName(), map);
 		}
-		catch(FieldDoesNotExist e) {
+		catch(AcsJCDBFieldDoesNotExistEx e) {
 			throw e;
 		}
 		catch(Exception e) {

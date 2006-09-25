@@ -18,6 +18,10 @@ import org.omg.CORBA.ORB;
 // The package containing our CORBA stubs.
 import com.cosylab.CDB.*;
 
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+import alma.cdbErrType.CDBXMLErrorEx;
+
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
  *    (c) European Southern Observatory, 2002
@@ -119,11 +123,12 @@ public class JNDIContext implements Context {
 				}
 				return new JNDIContext(nameToLookup, elements);
 			}
-		} catch (RecordDoesNotExist e) {
+		} catch (CDBRecordDoesNotExistEx e) {
 			// if it does not exists then it is just a context
 			return new JNDIContext(nameToLookup, elements);
-		} catch (XMLerror e) {
-			throw new NamingException(e.msg);
+		} catch (CDBXMLErrorEx e) {
+			AcsJCDBXMLErrorEx acse = new AcsJCDBXMLErrorEx(e);
+			throw new NamingException(acse.getFilename());
 		}
 	}
 

@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import java.net.InetAddress;
 
 import alma.acs.util.ACSPorts;
+import alma.cdbErrType.CDBXMLErrorEx;
 
 /**
  * Modify the component attributes, like Container and Code, given the name.
@@ -73,8 +74,8 @@ public class CDBChangeDeployment {
 				wdao.set_string( "Code", new_code);
 			}
 		}
-		catch (XMLerror e) {
-			m_logger.log(Level.WARNING, "Xml Error", e);
+		catch (CDBXMLErrorEx e) {
+			m_logger.log(Level.WARNING, "CDBXMLErrorEx Error", e);
 			e.printStackTrace(System.out);
 		}
 		catch (Exception e) {

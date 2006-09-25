@@ -6,6 +6,10 @@ import java.util.StringTokenizer;
 import org.omg.PortableServer.POA;
 
 import com.cosylab.CDB.*;
+import alma.cdbErrType.WrongCDBDataTypeEx;
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
+import alma.cdbErrType.wrappers.AcsJWrongCDBDataTypeEx;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -67,7 +71,7 @@ public class DAOImpl extends DAOPOA {
 	}
 
 	private String getField(String strFieldName)
-		throws FieldDoesNotExist {
+		throws AcsJCDBFieldDoesNotExistEx {
 		XMLTreeNode pNode = m_rootNode;
 		if (strFieldName.length() == 0
 			|| strFieldName.equals(m_rootNode.m_name)) {
@@ -88,9 +92,11 @@ public class DAOImpl extends DAOPOA {
 			}
 		}
 
-		if (pNode == null)
-		    throw new FieldDoesNotExist("Field '" + strFieldName + "' does not exists.");
-
+		if (pNode == null){
+			AcsJCDBFieldDoesNotExistEx e2 = new AcsJCDBFieldDoesNotExistEx();
+			e2.setFieldName(strFieldName);
+			throw e2;
+		}
 		String value;
 		// backward compatibility
 		if (fieldName.equals("_characteristics")) {
@@ -105,8 +111,9 @@ public class DAOImpl extends DAOPOA {
 			if (node == null) {
 				if (!m_silent)
 					System.err.println("DAO:'" + m_name + "' Unable to return field: '" + strFieldName + "'");
-				throw new FieldDoesNotExist("Field '" + strFieldName + "' does not exists.");
-
+				AcsJCDBFieldDoesNotExistEx e2 = new AcsJCDBFieldDoesNotExistEx();
+				e2.setFieldName(strFieldName);
+				throw e2;
 			}
 			value = node.getAttributeNames();
 		}
@@ -116,42 +123,70 @@ public class DAOImpl extends DAOPOA {
 	}
 
 	public int get_long(String propertyName)
-		throws WrongDataType, FieldDoesNotExist {
-		String stringValue = getField(propertyName);
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
+		String stringValue;
+		try{
+			stringValue = getField(propertyName);
+		}catch(AcsJCDBFieldDoesNotExistEx e){ 
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 		try {
 			return Integer.parseInt(stringValue);
 		} catch (NumberFormatException nfe) {
 			if (!m_silent)
 				System.err.println("Failed to cast '" + stringValue + "' to long: " + nfe);
-			throw new WrongDataType("Failed to cast '" + stringValue + "' to long: " + nfe);
+			AcsJWrongCDBDataTypeEx e2 = new AcsJWrongCDBDataTypeEx(nfe);
+			e2.setValue(stringValue);
+			e2.setDataType("long");
+			throw e2.toWrongCDBDataTypeEx();
 		}
 	}
 
 	public double get_double(String propertyName)
-		throws WrongDataType, FieldDoesNotExist {
-		String stringValue = getField(propertyName);
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
+		String stringValue;
+		try{
+			stringValue = getField(propertyName);
+		}catch(AcsJCDBFieldDoesNotExistEx e){ 
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 		try {
 			return Double.parseDouble(stringValue);
 		} catch (NumberFormatException nfe) {
 			System.err.println("Failed to cast '" + stringValue + "' to double: " + nfe);
-			throw new WrongDataType("Failed to cast '" + stringValue + "' to double: " + nfe);
+			AcsJWrongCDBDataTypeEx e2 = new AcsJWrongCDBDataTypeEx(nfe);
+			e2.setValue(stringValue);
+			e2.setDataType("double");
+			throw e2.toWrongCDBDataTypeEx();
 		}
 	}
 
 	public String get_string(String propertyName)
-		throws WrongDataType, FieldDoesNotExist {
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
+		try{
 		return getField(propertyName);
+		}catch(AcsJCDBFieldDoesNotExistEx e){ 
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	public String get_field_data(String propertyName)
-		throws WrongDataType, FieldDoesNotExist {
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
+		try{
 		return getField(propertyName);
+		}catch(AcsJCDBFieldDoesNotExistEx e){ 
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 	}
 
 	public String[] get_string_seq(String propertyName)
-		throws WrongDataType, FieldDoesNotExist {
-		String stringValue = getField(propertyName);
-
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
+		String stringValue;
+		try{
+			stringValue = getField(propertyName);
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+				throw e.toCDBFieldDoesNotExistEx();
+		}
 		ArrayList list = new ArrayList();
 		StringTokenizer st = new StringTokenizer(stringValue, ",");
 		while (st.hasMoreTokens())
@@ -164,9 +199,13 @@ public class DAOImpl extends DAOPOA {
 	}
 
 	public int[] get_long_seq(String propertyName)
-		throws WrongDataType, FieldDoesNotExist {
-		String stringValue = getField(propertyName);
-
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
+		String stringValue;
+		try{
+			stringValue = getField(propertyName);
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 		ArrayList list = new ArrayList();
 		String val = null;
 		try {
@@ -185,13 +224,10 @@ public class DAOImpl extends DAOPOA {
 						+ val
 						+ "' to long: "
 						+ nfe);
-			throw new WrongDataType(
-				"Failed to cast element #"
-					+ list.size()
-					+ " of value '"
-					+ val
-					+ "' to long: "
-					+ nfe);
+			AcsJWrongCDBDataTypeEx e2 = new AcsJWrongCDBDataTypeEx(nfe);
+			e2.setValue(val);
+			e2.setDataType("long");
+				throw e2.toWrongCDBDataTypeEx();
 		}
 
 		int[] seq = new int[list.size()];
@@ -202,9 +238,13 @@ public class DAOImpl extends DAOPOA {
 	}
 
 	public double[] get_double_seq(String propertyName)
-		throws WrongDataType, FieldDoesNotExist {
-		String stringValue = getField(propertyName);
-
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx {
+		String stringValue;
+		try{
+		stringValue = getField(propertyName);
+		}catch(AcsJCDBFieldDoesNotExistEx e){
+			throw e.toCDBFieldDoesNotExistEx();
+		}
 		ArrayList list = new ArrayList();
 		String val = null;
 		try {
@@ -223,13 +263,11 @@ public class DAOImpl extends DAOPOA {
 						+ val
 						+ "' to double: "
 						+ nfe);
-			throw new WrongDataType(
-				"Failed to cast element #"
-					+ list.size()
-					+ " of value '"
-					+ val
-					+ "' to double: "
-					+ nfe);
+			
+			AcsJWrongCDBDataTypeEx e = new AcsJWrongCDBDataTypeEx(nfe);
+			e.setValue(val);
+			e.setDataType("double");
+			throw e.toWrongCDBDataTypeEx();
 		}
 
 		double[] seq = new double[list.size()];

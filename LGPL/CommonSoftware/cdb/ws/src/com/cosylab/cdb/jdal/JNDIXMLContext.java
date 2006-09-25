@@ -46,7 +46,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.cosylab.CDB.XMLerror;
+//import alma.cdbErrType.CDBXMLErrorEx;
 
 /**
  * @author dvitas
@@ -92,7 +92,7 @@ public class JNDIXMLContext extends JNDIContext {
 		}
 		if (xmlSolver.m_errorString != null) {
 			String info = "XML parser error: " + xmlSolver.m_errorString;
-			XMLerror xmlErr = new XMLerror(info);
+			//XMLerror xmlErr = new XMLerror(info);
 			System.err.println(info);
 		}
 		node = xmlSolver.m_rootNode;

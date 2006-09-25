@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAOProxy.cpp,v 1.3 2005/09/30 07:25:08 gchiozzi Exp $"
+ * "@(#) $Id: cdbDAOProxy.cpp,v 1.4 2006/09/25 08:36:59 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -261,7 +261,7 @@ DAOProxy::~DAOProxy()
 
 void DAOProxy::get_field(const char* name, string &value)
     throw (
-	CDB::FieldDoesNotExist
+	cdbErrType::CDBFieldDoesNotExistExImpl
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_field");
@@ -327,7 +327,10 @@ void DAOProxy::get_field(const char* name, string &value)
 		{
 		ACS_LOG(LM_RUNTIME_CONTEXT, "cdb::DAOProxy::get_field",
 			(LM_WARNING, "Field %s/%s does not exist.", m_nodeName.c_str(), name));
-		throw CDB::FieldDoesNotExist();
+		//throw CDB::FieldDoesNotExist();
+		throw cdbErrType::CDBFieldDoesNotExistExImpl (
+			__FILE__, __LINE__,
+			"DAOProxy::get_field");
 		}
 	    }
 	}
@@ -428,8 +431,8 @@ bool DAOProxy::split(const string& str, VectorString& array)
 CORBA::Long DAOProxy::get_long (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_long");
@@ -439,20 +442,27 @@ CORBA::Long DAOProxy::get_long (const char * propertyName)
 	return m_dao->get_long(propertyName);
 
     string value;
+    try{
     get_field(propertyName, value);
+    }catch(cdbErrType::CDBFieldDoesNotExistExImpl ex){
+	throw ex.getCDBFieldDoesNotExistEx();
+    }
     std::istringstream is(value.c_str());
     CORBA::Long val;
     (istream&) is >> val;
     if (!is)
-	throw CDB::WrongDataType();
+	throw cdbErrType::WrongCDBDataTypeExImpl(
+		__FILE__, __LINE__,
+		"cdb::DAOProxy::get_long" ).getWrongCDBDataTypeEx();
+	//throw CDB::WrongDataType();
     return val;
 }
 
 CORBA::Double DAOProxy::get_double (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_double");
@@ -462,20 +472,27 @@ CORBA::Double DAOProxy::get_double (const char * propertyName)
 	return m_dao->get_double(propertyName);
 
     string value;
+    try{
     get_field(propertyName, value);
+    }catch(cdbErrType::CDBFieldDoesNotExistExImpl ex){
+	throw ex.getCDBFieldDoesNotExistEx();
+    }
     std::istringstream is(value.c_str());
     CORBA::Double val;
     (istream&) is >> val;
     if (!is)
-	throw CDB::WrongDataType();
+	throw cdbErrType::WrongCDBDataTypeExImpl(
+		__FILE__, __LINE__,
+		"cdb::DAOProxy::get_long" ).getWrongCDBDataTypeEx();
+	//throw CDB::WrongDataType();
     return val;
 }
 
 char * DAOProxy::get_string (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_string");
@@ -490,8 +507,8 @@ char * DAOProxy::get_string (const char * propertyName)
 char * DAOProxy::get_field_data (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_field_data");
@@ -501,15 +518,19 @@ char * DAOProxy::get_field_data (const char * propertyName)
 	return m_dao->get_field_data(propertyName);
 
     string value;
+    try{
     get_field(propertyName, value);
+    }catch(cdbErrType::CDBFieldDoesNotExistExImpl ex){
+	throw ex.getCDBFieldDoesNotExistEx();
+    }
     return CORBA::string_dup (value.c_str());
 }
 
 CDB::stringSeq* DAOProxy::get_string_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_string_seq");
@@ -519,7 +540,11 @@ CDB::stringSeq* DAOProxy::get_string_seq (const char * propertyName)
 	return m_dao->get_string_seq(propertyName);
 
     string value;
+    try{
     get_field(propertyName, value);
+    }catch(cdbErrType::CDBFieldDoesNotExistExImpl ex){
+	throw ex.getCDBFieldDoesNotExistEx();
+    }
 
     VectorString array;
     split(value.c_str(), array);
@@ -540,8 +565,8 @@ CDB::stringSeq* DAOProxy::get_string_seq (const char * propertyName)
 CDB::longSeq * DAOProxy::get_long_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_long_seq");
@@ -551,7 +576,11 @@ CDB::longSeq * DAOProxy::get_long_seq (const char * propertyName)
 	return m_dao->get_long_seq(propertyName);
 
     string value;
+    try{
     get_field(propertyName, value);
+    }catch(cdbErrType::CDBFieldDoesNotExistExImpl ex){
+	throw ex.getCDBFieldDoesNotExistEx();
+    }
 
     VectorString array;
     split(value.c_str(), array);
@@ -567,7 +596,10 @@ CDB::longSeq * DAOProxy::get_long_seq (const char * propertyName)
 	CORBA::Long val;
 	(istream&) is >> val;
 	if (!is)
-	    throw CDB::WrongDataType();
+		throw cdbErrType::WrongCDBDataTypeExImpl(
+		__FILE__, __LINE__,
+		"cdb::DAOProxy::get_long" ).getWrongCDBDataTypeEx();
+	//    throw CDB::WrongDataType();
 	seq[i++] = val;
 	}
 
@@ -578,8 +610,8 @@ CDB::longSeq * DAOProxy::get_long_seq (const char * propertyName)
 CDB::doubleSeq * DAOProxy::get_double_seq (const char * propertyName)
     throw (
 	CORBA::SystemException,
-	CDB::WrongDataType,
-	CDB::FieldDoesNotExist
+	cdbErrType::WrongCDBDataTypeEx,
+	cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_double_seq");
@@ -589,7 +621,11 @@ CDB::doubleSeq * DAOProxy::get_double_seq (const char * propertyName)
 	return m_dao->get_double_seq(propertyName);
 
     string value;
+    try{
     get_field(propertyName, value);
+    }catch(cdbErrType::CDBFieldDoesNotExistExImpl ex){
+	throw ex.getCDBFieldDoesNotExistEx();
+    }
 
     VectorString array;
     split(value.c_str(), array);
@@ -605,7 +641,9 @@ CDB::doubleSeq * DAOProxy::get_double_seq (const char * propertyName)
 	CORBA::Double val;
 	(istream&) is >> val;
 	if (!is)
-	    throw CDB::WrongDataType();
+	    throw cdbErrType::WrongCDBDataTypeExImpl(
+		__FILE__, __LINE__,
+		"cdb::DAOProxy::get_long" ).getWrongCDBDataTypeEx();
 	seq[i++] = val;
 	}
 

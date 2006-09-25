@@ -32,9 +32,9 @@ import org.omg.PortableServer.POA;
 
 import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.RecordDoesNotExist;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import com.cosylab.CDB.WJDALPOA;
-import com.cosylab.CDB.XMLerror;
+import alma.cdbErrType.CDBXMLErrorEx;
 
 /**
  * @author dragan
@@ -78,14 +78,14 @@ abstract public class WDALBaseImpl extends WJDALPOA implements Recoverer {
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DALOperations#get_DAO_servant(java.lang.String)
 	 */
-	public DAO get_DAO_Servant(String curl) throws XMLerror, RecordDoesNotExist {
+	public DAO get_DAO_Servant(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
 		return dalImpl.get_DAO_Servant(curl);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DALOperations#get_DAO(java.lang.String)
 	 */
-	public String get_DAO(String curl) throws XMLerror, RecordDoesNotExist {
+	public String get_DAO(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
 		return dalImpl.get_DAO(curl);
 	}
 

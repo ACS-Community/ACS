@@ -19,7 +19,7 @@
 //*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //*
 //
-// $Id: cdb.cpp,v 1.30 2006/09/01 02:20:54 cparedes Exp $
+// $Id: cdb.cpp,v 1.31 2006/09/25 08:36:59 cparedes Exp $
 //
 // GROUP    =  Configuration Database
 // AUTHOR  --- Klemen Zagar
@@ -246,7 +246,10 @@ cdb_EXPORT Table* cdb::getDatabase( int argc, char** argv, CORBA::ORB_ptr orb, c
     ts->setDefault(pDBName);
   }
   ts->bind( pDBName, pDataBase );
-  return pDataBase;}
+  
+  return pDataBase;
+
+}
 
 cdb_EXPORT void cdb::destroyDatabase( Table* table )
 {
@@ -274,6 +277,22 @@ cdb_EXPORT void cdb::registerTable( const char* name, TableFactory pTf )
 // REVISION HISTORY:
 //
 //   $Log: cdb.cpp,v $
+//   Revision 1.31  2006/09/25 08:36:59  cparedes
+//   cdbErrType extended to complete the others exceptions not covered on cdbDAL.idl
+//   Removed all the exceptions from cdbDAL.idl, now they are in cdbErrType.
+//   The list of changes is:
+//
+//   FieldIsReadOnly  ----> CDBFieldIsReadOnlyEx
+//   RecordIsReadOnly  ----> CDBReadoOnlyDataEx
+//   WrongDataType  ----> WrongCDBDataTypeEx
+//   RecordAlreadyExists  ----> CDBRecordAlreadyExistsEx
+//   CDBException  ----> CDBExceptionEx
+//   FieldDoesNotExist  ----> CDBFieldDoesNotExistEx
+//   RecordDoesNotExist  ----> CDBRecordDoesNotExistEx
+//   XMLerror  ----> CDBXMLErrorEx
+//
+//   All the source code and the reference files on the test directories on the HEAD were changed according the above.
+//
 //   Revision 1.30  2006/09/01 02:20:54  cparedes
 //   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //
