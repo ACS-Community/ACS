@@ -170,39 +170,9 @@ monitor point archiving data.</h3>
 to the central archive</h3>
 <h3> Each Property can be uniquely identified by a name, composed of
 the Characteristic Component name followed by the Property name.</h3>
-<h3> Periodic data collection of Properties can be synchronized to the
-48 ms hardware tick</h3>
-<h3> The following time periods are actually synchronized:</h3>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; synchronization of second intervals:
-0.5, 1, 5, 10, 60, 300
-<ul>
-  <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.5s is fired every half or round
-second</li>
-  <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1s is fired every round second</li>
-  <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5s is fired every 0, 5, 10, 15,
-20, ... 55 second of a minute</li>
-  <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10s is fired every 0, 10, 20, 30,
-40, 50 second of a minute</li>
-  <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 60s is fired every round minute</li>
-  <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 300s is fired every 0, 5, 10, 15,
-20, ... 55 minute of an hour</li>
-</ul>
-<p><br>
-All other periods are randomly distributed, i.e the interval is
-constant but the starting time of the first period is random. </p>
-<p>The advantage of synchronized periods is that you can directly
-extract from the archive series of monitor values with the same
-timestamp. <br>
-The disadvantage is that you increase the peak load of your system
-concentrating many monitoring operations on the same tick (at the 300s
-tick everything gets archived!). </p>
-<p>On the other hand, when using randomly distributed periods (or archiving on 
-  change), you have to interpolate the values to get time series consistently 
-  distributed on the same points in time. <br>
-</p>
-<h3>The Archiving API can be used also to send to the archiving system
-data that does not fit in the Property design pattern. This feature is
-currently only supported in C++.<br>
+<h3> The Archiving API can be used also to send to the archiving system data that 
+  does not fit in the Property design pattern. This feature is currently only 
+  supported in C++.<br>
 </h3>
 </body>
 </html>
