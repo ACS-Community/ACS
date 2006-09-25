@@ -1,12 +1,3 @@
-s/working) desc.id_tag: 0.5 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0]/working) desc.id_tag: 0.5 Value: 5.000000 TimeStamp: ----------T--:--:--.X/g
-s/working) desc.id_tag: 0.5 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[5]/working) desc.id_tag: 0.5 Value: 5.000000 TimeStamp: ----------T--:--:--.X/g
-s/working) desc.id_tag: 1 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9]/working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--/g
-s/working) desc.id_tag: 5 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0]/working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:-X/g
-s/working) desc.id_tag: 5 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][5]/working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:-X/g
-s/working) desc.id_tag: 10 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9]/working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:-/g
-s/working) desc.id_tag: 60 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]/working) desc.id_tag: 60 Value: 5.000000 TimeStamp: ----------T--:--/g
-s/working) desc.id_tag: 300 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0]/working) desc.id_tag: 300 Value: 5.000000 TimeStamp: ----------T--:-X/g
-s/working) desc.id_tag: 300 Value: 5.000000 TimeStamp: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][5]/working) desc.id_tag: 300 Value: 5.000000 TimeStamp: ----------T--:-X/g
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]\{1,3\}/----------T--:--:--.---/g
 s/IOR:[a-z,0-9,.,]*/IOR:xxxxxxxxxxxxxx/g
 s/iioploc:\/\/[a-z,0-9,.,]*:[0-9]*/iioploc:\/\/xxxxx\.xxxxx:xxxx/g

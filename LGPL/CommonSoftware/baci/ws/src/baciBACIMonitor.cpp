@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciBACIMonitor.cpp,v 1.5 2006/09/25 15:06:30 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baci.h"
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.5 2006/09/25 15:06:30 gchiozzi Exp $");
 
 
 namespace baci {
@@ -246,53 +246,7 @@ void BACIMonitor::setTriggerTime(const TimeInterval& _triggerTime)
 	  triggerTime_m=_triggerTime;
 	  }
 
-      //transmitTime=lastTime+triggerTime;
-      // synchronization of second intervals: 0.5, 1, 5, 10, 60, 300
-      // 0.5s is fired every half or round second
-      // 1s is fired every round second
-      // 5s is fired every 0, 5, 10, 15, 20, ... 55 second of a minute
-      // 10s is fired every 0, 10, 20, 30, 40, 50 second of a minute
-      // 60s is fired every round minute
-      // 300s is fired every 0, 5, 10, 15, 20, ... 55 minute of an hour
-#ifndef MAKE_VXWORKS
-      switch (triggerTime_m)
-      {
-        case 5000000UL:    // 0.5s
-        case 10000000UL:   // 1s
-        case 50000000UL:   // 5s
-        case 100000000UL:  // 10s
-        case 600000000UL:  // 60s
-        case 3000000000UL:  // 300s (in range ACE_UINT32)
-#else
-      int trTime = triggerTime_m / 1000000UL;
-      switch (trTime)
-      {
-        case 5:    // 0.5s
-        case 10:   // 1s
-        case 50:   // 5s
-        case 100:  // 10s
-        case 600:  // 60s
-        case 300:  // 300s (in range ACE_UINT32)
-#endif
-	{
-	if (userControlledTransmitTime_m==false)
-	    {
-
-	    TimeInterval startTime = getTimeStamp();
-	    startTime = (startTime / ACE_static_cast(ACE_UINT32, getTriggerTime()) + 1) * ACE_static_cast(ACE_UINT32, getTriggerTime());
-	    setTransmitTime(startTime);
-
-	    // fire monitor immediately & align sync. mon.
-	    setLastTime(startTime-getTriggerTime());
-	    }
-
-	    break;
-	}
-	default:
-	    // fire monitor immediately
-	    setLastTime(getTimeStamp()-getTriggerTime());
-	    break;
-      }
+      setLastTime(getTimeStamp()-getTriggerTime());
 
       monitorStateChanged();
       property_mp->updateMonitorStates();
