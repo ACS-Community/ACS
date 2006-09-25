@@ -31,6 +31,7 @@
 #include <acsutilORBHelper.h>
 #include <cdb.h>
 #include <cdbDALaccess.h>
+#include <cdbErrType.h>
 
 // The following defines, remeber what we'are parsing
 #define NO_TAG		0
