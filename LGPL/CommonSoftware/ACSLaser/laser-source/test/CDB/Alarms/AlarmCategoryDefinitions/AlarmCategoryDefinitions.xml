@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Sample configuration of assignment of alarms to categories.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<alarm-category-definitions xmlns="urn:schemas-cosylab-com:Alarm:1.0"
+                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                            xsi:schemaLocation="urn:schemas-cosylab-com:Alarm:1.0 ../../../../config/CDB/schemas/laser-definition.xsd">
+	<category-links-to-create>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_A" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_A" fault-code="2"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:CURRENT"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="ROdouble" fault-member="ALARM_SOURCE_A#current" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:CURRENT"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="ROdouble" fault-member="ALARM_SOURCE_A#current" fault-code="2"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_B" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_B" fault-code="2"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:CURRENT"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="ROdouble" fault-member="ALARM_SOURCE_B#current" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:CURRENT"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="ROdouble" fault-member="ALARM_SOURCE_B#current" fault-code="2"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_PS" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MOUNT" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_ANTENNA" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MOUNTCPP" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+	</category-links-to-create>
+</alarm-category-definitions>
