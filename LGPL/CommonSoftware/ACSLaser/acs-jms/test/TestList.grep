@@ -1,0 +1,20 @@
+ACS Manager:
+ACS Interface Repository:
+java -classpath
+ACS abeans configuration directory:
+ACS abeans configuration directory
+Time:
+export
+Starting Java/abeans application
+-D user.dir=
+Jlog will use cache for
+JacORB
+Gerald Brose
+Connected
+INFO
+WARNING
+POA RootPOA - ready
+POA offshootPoa - ready
+POA RootPOA - destroyed
+POA offshootPoa - destroyed
+almaacscontainerContainerServicesImpl getAdvancedContainerServices

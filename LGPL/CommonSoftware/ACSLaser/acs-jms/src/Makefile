@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.1 2006/08/09 22:05:04 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:00:54 acaproni Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsjms/src
@@ -61,7 +61,7 @@ CSOURCENAMES = \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
 
 # IDL Files
-IDL_FILES = 
+IDL_FILES =  ACSJMSMessageEntity
 USER_IDL  =
 
 #>>>>> END OF standard rules
