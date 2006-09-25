@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2006/09/22 14:00:27 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/09/25 19:08:53 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@ USER_CFLAGS = -rdynamic
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lstdc++
+USER_LIB = -lstdc++ -lxerces-c
 
 #
 # MODULE CODE DESCRIPTION:
@@ -35,8 +35,15 @@ USER_LIB = -lstdc++
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 
+EXECUTABLES     = TestAcsAlarmSending unitTestDriver
 EXECUTABLES_L   = 
+
+TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
+#TestAcsAlarmSending_LIBS      = laserCppUtil laserAlarmPublisher laserSource ACSJMSMessageEntityStubs
+TestAcsAlarmSending_LIBS      = laserCppUtil logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs
+
+unitTestDriver_OBJECTS   = unitTestDriver 
+unitTestDriver_LIBS      = TestFaultState acsErrTypeAlarmSourceFactory cdb cppunit logging laserCppUtil acsAlSysSource acsXercesUtilities 
 
 #
 # special compilation flags for single c sources
@@ -45,13 +52,14 @@ EXECUTABLES_L   =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-# INCLUDES        = 
+ INCLUDES        = AcsAlarmTestCase.h
 
 #
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       = 
 LIBRARIES_L     = 
+XXX_OBJECTS   = 
 
 #
 # Scripts (public and local)
@@ -179,6 +187,7 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Sample configuration of a fault state for the alarm system.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<alarm-definition-list xmlns="urn:schemas-cosylab-com:Alarm:1.0"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                 xsi:schemaLocation="urn:schemas-cosylab-com:Alarm:1.0 ../../../../../config/CDB/schemas/laser-definition.xsd">
+	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_PS" fault-code="1">
+		<visual-fields>
+			<system-name></system-name>
+			<identifier></identifier>
+			<problem-description></problem-description>
+		</visual-fields>
+		<instant>false</instant>
+		<!--cause></cause-->
+		<!--action></action-->
+		<!--consequence></consequence-->
+		<priority>2</priority>
+		<responsible-id>123</responsible-id>
+		<!--piquetGSM>12345</piquetGSM-->
+		<!--help-url></help-url-->
+		<source-name>ALARM_SYSTEM_SOURCES</source-name>
+		<!--location>
+			<building></building>
+			<floor></floor>
+			<room></room>
+			<mnemonic></mnemonic>
+			<position></position>
+		</location-->
+		<!--piquetEmail></piquetEmail-->
+	</alarm-definition>
+</alarm-definition-list>
