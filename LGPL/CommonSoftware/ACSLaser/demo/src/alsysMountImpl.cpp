@@ -24,8 +24,8 @@
 #include <alsysMountImpl.h>
 
 #include "ACSAlarmSystemInterfaceFactory.h"
-#include "AlarmSystemInterface.h"
-#include "FaultState.h"
+#include "ACSAlarmSystemInterface.h"
+#include "ACSFaultState.h"
 #include "faultStateConstants.h"
 
 using namespace acscomponent;
@@ -42,21 +42,21 @@ Mount::~Mount()
 }
 
 void Mount::faultMount() throw (CORBA::SystemException ) {
-	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNT",1,true);
+	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNTCPP",1,true);
 }
 
 void Mount::terminate_faultMount() throw (CORBA::SystemException ) {
-	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNT",1,false);
+	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNTCPP",1,false);
 }
 
 void Mount::sendAlarm(std::string family, std::string member, int code, bool active) {
 	// constants we will use when creating the fault
 
 		// create the AlarmSystemInterface
-		auto_ptr<laserSource::AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
+		auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
 
 		// create the FaultState
-		auto_ptr<laserSource::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
+		auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
 
 		// set the fault state's descriptor
 		string stateString;
@@ -82,8 +82,8 @@ void Mount::sendAlarm(std::string family, std::string member, int code, bool act
 		fltstate->setUserProperties(propsAutoPtr);
 
 		// push the FaultState using the AlarmSystemInterface previously created
-		laserSource::FaultState stateToPush(*fltstate);
-		alarmSource->push(stateToPush);
+		//laserSource::FaultState stateToPush(*fltstate);
+		alarmSource->push(*fltstate);
 }
 
 

@@ -21,7 +21,7 @@ import cern.laser.definition.LaserDefinitionXMLException;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class AlarmDefinitionHandlerImpl extends DefinitionHandlerImpl implements AlarmDefinitionHandler {
 	private AlarmService alarmService;

@@ -1,9 +1,9 @@
 /*
- * $Id: CategoryBrowsingHandlerImpl.java,v 1.5 2005/08/19 23:16:38 kzagar Exp $
+ * $Id: CategoryBrowsingHandlerImpl.java,v 1.6 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/08/19 23:16:38 $ 
- * $Revision: 1.5 $ 
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.6 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */

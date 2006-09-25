@@ -1,9 +1,9 @@
 /*
- * $Id: AlarmReductionHandlerImpl.java,v 1.2 2005/08/19 23:24:53 kzagar Exp $
+ * $Id: AlarmReductionHandlerImpl.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/08/19 23:24:53 $ 
- * $Revision: 1.2 $ 
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.3 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */

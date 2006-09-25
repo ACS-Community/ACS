@@ -1,9 +1,9 @@
 /*
- * $Id: Behaviour.java,v 1.2 2005/08/29 13:04:43 kzagar Exp $
+ * $Id: Behaviour.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/08/29 13:04:43 $ 
- * $Revision: 1.2 $ 
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.3 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */

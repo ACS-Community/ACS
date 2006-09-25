@@ -1,8 +1,8 @@
 /*
- * $Id: HeartbeatHelper.java,v 1.4 2005/09/28 09:48:45 acaproni Exp $
+ * $Id: HeartbeatHelper.java,v 1.5 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/28 09:48:45 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -34,7 +34,7 @@ import cern.laser.client.services.selection.LaserSelectionException;
  * This class subscribes to the heartbeat from the business layer and verifies that it arrives in time. If it doesn't
  * the AlarmSelectionListener is informed. It is a helper class for the AlarmSelectionHandler.
  * 
- * @version $Revision: 1.4 $ $Date: 2005/09/28 09:48:45 $
+ * @version $Revision: 1.5 $ $Date: 2006/09/25 08:52:36 $
  * @author Katarina Sigerud
  */
 class HeartbeatHelper implements ExceptionListener {
@@ -103,20 +103,16 @@ class HeartbeatHelper implements ExceptionListener {
   }
 
   public void stopHeartbeatCheck() throws LaserException {
-	  System.out.println("### HeartbeatHelper::stopHeartbeatCheck");
     if (timer != null) {
       LOGGER.info("stopping heartbeat check...");
-      System.out.println("### Stopping heartbeat check...");
       timer.cancel();
       timer = null;
       heartbeatTopic = null;
       heartbeatFrequency = -1;
       heartbeatCheckFrequency = -1;
       LOGGER.info("stopped heartbeat check");
-      System.out.println("### Stopped heartbeat check...");
     }
     if (cmwSubscriber != null) {
-    	System.out.println("### Closing cmwSubscriber...");
       cmwSubscriber.close();
       cmwSubscriber = null;
     }

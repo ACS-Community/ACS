@@ -1,8 +1,8 @@
 /*
- * $Id: ProcessingController.java,v 1.1.1.1 2005/03/30 13:37:50 acaproni Exp $
+ * $Id: ProcessingController.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/03/30 13:37:50 $ 
- * $Revision: 1.1.1.1 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.2 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -17,7 +17,7 @@ import java.util.Set;
  * This class is a singleton controlling if the MDB's should start processing alarm messages or not.
  * The MDB's are notified via an callback method.
  * 
- * @version $Revision: 1.1.1.1 $ $Date: 2005/03/30 13:37:50 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  * @author Katarina Sigerud
  */
 public class ProcessingController {

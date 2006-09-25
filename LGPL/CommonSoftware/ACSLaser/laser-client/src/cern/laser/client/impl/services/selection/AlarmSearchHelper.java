@@ -1,9 +1,9 @@
 /*
- * $Id: AlarmSearchHelper.java,v 1.3 2005/08/26 10:11:34 sbelak Exp $
+ * $Id: AlarmSearchHelper.java,v 1.4 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/08/26 10:11:34 $ 
- * $Revision: 1.3 $ 
- * $Author: sbelak $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.4 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -40,7 +40,7 @@ import cern.laser.util.UUIDGenerator;
 /**
  * 
  * 
- * @version $Revision: 1.3 $ $Date: 2005/08/26 10:11:34 $
+ * @version $Revision: 1.4 $ $Date: 2006/09/25 08:52:36 $
  * @author Katarina Sigerud
  */
 class AlarmSearchHelper implements ExceptionListener {

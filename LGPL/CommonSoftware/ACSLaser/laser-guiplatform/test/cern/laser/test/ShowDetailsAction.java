@@ -10,7 +10,7 @@ import cern.gp.nodes.GPNode;
  * An action that displays the selected nodes in a separate ListTableExplorer 
  * 
  * @author Vito Baggiolini
- * @version $Revision: 1.1 $ $Date: 2005/06/07 04:07:03 $ $Author: kzagar $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:37 $ $Author: acaproni $
  */
 public class ShowDetailsAction extends NodeAction {
     

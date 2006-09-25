@@ -1,8 +1,8 @@
 /*
- * $Id: NetBeansLog.java,v 1.2 2005/10/19 15:22:17 acaproni Exp $
+ * $Id: NetBeansLog.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/10/19 15:22:17 $
- * $Revision: 1.2 $
+ * $Date: 2006/09/25 08:52:36 $
+ * $Revision: 1.3 $
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -49,7 +49,7 @@ import org.openide.ErrorManager;
  *
  * @author Katarina Sigerud
  *
- * @version $Id: NetBeansLog.java,v 1.2 2005/10/19 15:22:17 acaproni Exp $
+ * @version $Id: NetBeansLog.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  */
 public class NetBeansLog implements Log {
 

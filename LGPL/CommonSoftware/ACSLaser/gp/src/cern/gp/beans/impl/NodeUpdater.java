@@ -1,9 +1,9 @@
 /*
- * $Id: NodeUpdater.java,v 1.1 2005/06/07 03:26:13 kzagar Exp $
+ * $Id: NodeUpdater.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/06/07 03:26:13 $
- * $Revision: 1.1 $
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $
+ * $Revision: 1.2 $
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -18,7 +18,7 @@ import cern.gp.beans.GPBean;
  * Usually a JavaBean or a support class will implement this interface to 
  * update a node dynamically.
  *
- * @version $Revision: 1.1 $  $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $  $Date: 2006/09/25 08:52:36 $
  * @author Lionel Mestre
  */
 public interface NodeUpdater extends GPBean {

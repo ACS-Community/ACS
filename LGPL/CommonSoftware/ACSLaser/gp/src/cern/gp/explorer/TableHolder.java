@@ -11,7 +11,7 @@ import cern.gp.nodes.GPNode;
  * Both ListTableExplorer and TreeTableExplorer contain an instance of this class
  * and delegate to it.
  *
- * @version $Revision: 1.1 $ $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  * @author Vito Baggiolini
  */
 interface TableHolder {

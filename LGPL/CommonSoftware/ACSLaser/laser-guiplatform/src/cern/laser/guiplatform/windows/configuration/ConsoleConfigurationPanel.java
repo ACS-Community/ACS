@@ -397,23 +397,16 @@ public class ConsoleConfigurationPanel extends JPanel /*implements ActionListene
         
         // register new loaded configuration
         java.util.Map activeAlarms = null;
-        System.out.println("# ConsoleConfigurationPanel::applyButtonActionPerformed 0");
         try {
             AppRegister.getInstance().registerLoadedConfiguration(confTemp);
-            System.out.println("# ConsoleConfigurationPanel::applyButtonActionPerformed 1");
             selection  = confTemp.getSelection();
-            System.out.println("# ConsoleConfigurationPanel::applyButtonActionPerformed 2");
             behaviour = confTemp.getBehaviour();
-            System.out.println("# ConsoleConfigurationPanel::applyButtonActionPerformed 3");
             configurationName = confTemp.getName();
-            System.out.println("# ConsoleConfigurationPanel::applyButtonActionPerformed 4");
             // make new selection
             activeAlarms = jms_selectionHandler.select(selection,
             ProxyBuffer.getDefault());
-            System.out.println("# ConsoleConfigurationPanel::applyButtonActionPerformed 5");
             // reload Alarm container
             AlarmContainer.getDefault().reloadContainer(activeAlarms, confTemp);
-            System.out.println("# ConsoleConfigurationPanel::applyButtonActionPerformed 6");
             infoLabel.setText("Current configuration: " + confTemp.getName());
         } catch (LaserConsoleException lce) {
             logger.error(lce, lce.fillInStackTrace());

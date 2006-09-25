@@ -1,9 +1,9 @@
 /*
- * $Id: LogTimeStamp.java,v 1.1 2006/08/09 22:49:41 sharring Exp $
+ * $Id: LogTimeStamp.java,v 1.2 2006/09/25 08:52:37 acaproni Exp $
  *
- * $Date: 2006/08/09 22:49:41 $ 
- * $Revision: 1.1 $ 
- * $Author: sharring $
+ * $Date: 2006/09/25 08:52:37 $ 
+ * $Revision: 1.2 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * 
  * 
- * @version $Revision: 1.1 $ $Date: 2006/08/09 22:49:41 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:37 $
  * @author Katarina Sigerud
  */
 public class LogTimeStamp {

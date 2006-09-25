@@ -57,7 +57,6 @@ public class AlarmMessageProcessorImpl {
   }
 
   public void process(Message alarmMessage) throws Exception {
-	System.out.println("*** Processing message:");
 	if (alarmMessage instanceof TextMessage) {
 		TextMessage text_message = (TextMessage) alarmMessage;
 		System.out.println(text_message.getText());
@@ -73,12 +72,10 @@ public class AlarmMessageProcessorImpl {
       ASIMessage asi_message = XMLMessageHelper.unmarshal(xml_message);
       LOGGER.info("message from " + asi_message.getSourceName() + "@" + asi_message.getSourceHostname());
       if (asi_message.getBackup()) {
-    	  System.out.println("*** Processing backup"); 
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("processing backup...");
         processBackup(asi_message);
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("backup processed");
       } else {
-    	  System.out.println("*** Processing change"); 
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("processing change...");
         processChanges(asi_message);
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("change processed");
@@ -93,14 +90,12 @@ public class AlarmMessageProcessorImpl {
   public void processChange(FaultState faultState, String sourceName, String sourceHostname, Timestamp sourceTimestamp)
       throws Exception {
     LOGGER.info("processing fault state :\n" + faultState);
-    System.out.println("*** Processing fault state :\n" + faultState);
     Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
     Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
         faultState.getCode())));
     // XXX LOCKING EXPOSED
     // AlarmImpl alarm = alarmCache.acquire(triplet.toIdentifier());
     // boolean released = false;
-    System.out.println("*** Alarm from cache: ==>"+alarm.getTriplet().toString()+"<==");
 
     // process the change
     String defined_source_name = alarm.getSource().getName();
@@ -128,7 +123,6 @@ public class AlarmMessageProcessorImpl {
           ordered = false;
         }
       }
-      System.out.println("*** Is the alarm ordered? "+ordered);
       if (ordered) {
         //        StatusImpl new_status = null;
         //        StatusImpl alarm_status = alarm.getStatus();
@@ -198,7 +192,6 @@ public class AlarmMessageProcessorImpl {
         if (alarm_updated) {
           //          alarm.setStatus(new_status);
           if (LOGGER.isDebugEnabled()) LOGGER.debug("applying change...");
-          System.out.println("*** Applying change...");
           alarmCache.put(alarm);
           // XXX LOCKING EXPOSED
           //alarmCache.replace(alarm);
@@ -224,7 +217,6 @@ public class AlarmMessageProcessorImpl {
     currentStatus.setUserTimestamp(faultState.getUserTimestamp());
     currentStatus.setSystemTimestamp(system_timestamp);
     currentStatus.setProperties(faultState.getUserProperties());
-    System.out.println("*** Alarm status updated");
   }
 
   public void updateMultiplicityNode(Alarm alarm) {

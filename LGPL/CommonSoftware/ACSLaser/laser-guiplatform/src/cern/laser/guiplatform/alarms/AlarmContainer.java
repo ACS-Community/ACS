@@ -1926,8 +1926,6 @@ public class AlarmContainer implements AlarmSelectionListener, AlarmSearchListen
         String ff = _alarm.getTriplet().getFaultFamily();
         String fm = _alarm.getTriplet().getFaultMember();
         Integer fc = _alarm.getTriplet().getFaultCode();
-        System.out.print("### AlarmContainer::onAlarm (sizes inhibit="+inhibitList.size());
-        System.out.println(", maskedList="+maskedList.size()+", activeList="+activeList.size()+")");
         
         //logger.debug("on alarm method, alarm Id: " + alarmId + " " + ff + " " + fm + " " + fc);
         try {
@@ -1935,18 +1933,14 @@ public class AlarmContainer implements AlarmSelectionListener, AlarmSearchListen
             try {
                 //action
                 if ( inhibitList.containsKey(alarmId) ) {
-                	System.out.println("### Updating the alarm the inhibitList size="+inhibitList.size());
                     updateAlarmOnInhibitList(_alarm);
                 } else if ( maskedList.containsKey(alarmId) ) {
-                	System.out.println("### Updating the alarm the maskedList size="+maskedList.size());
                     updateAlarmMaskedOnList(_alarm);
                 } else if ( _alarm.isInstant() ) {
                     updateAlarmOnInstantList(_alarm);
                 } else if ( activeList.containsKey(alarmId) ) {
-                	System.out.println("### Updating the alarm the activeList size="+activeList.size());
                     updateAlarmOnActiveList(_alarm);
                 } else {
-                	System.out.println("### Adding the alarm to the activeList size="+activeList.size());
                     addAlarmToActiveList(_alarm);
                 }
                 // end: action

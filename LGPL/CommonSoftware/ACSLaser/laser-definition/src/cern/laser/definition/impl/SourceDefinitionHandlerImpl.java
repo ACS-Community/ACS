@@ -22,7 +22,7 @@ import cern.laser.definition.SourceDefinitionHandler;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class SourceDefinitionHandlerImpl extends DefinitionHandlerImpl implements SourceDefinitionHandler {
 	private AlarmService alarmService;

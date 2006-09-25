@@ -90,15 +90,12 @@ public class AlarmPublisherImpl {
     try {
       LOGGER.info("publishing alarm change for \n" + alarmChange.getCurrent().getTriplet() + "\nwith current STATUS "
           + alarmChange.getCurrent().getStatus());
-      System.out.println("*** Publishing alarm change for \n" + alarmChange.getCurrent().getTriplet() + "\nwith current STATUS "
-              + alarmChange.getCurrent().getStatus());
       Alarm alarm = alarmChange.getCurrent();
       Alarm previous = alarmChange.getPrevious();
       Iterator iterator = alarm.getCategories().iterator();
       while (iterator.hasNext()) {
         Category category = (Category) iterator.next();
         String destination = categoryRootTopic + "." + category.getPath();
-        System.out.println("*** Destination "+destination);
 
         Topic topic = getTopicSession().createTopic(destination);
         //ObjectMessage message = getTopicSession().createObjectMessage((AlarmImpl) alarm);
@@ -151,15 +148,10 @@ public class AlarmPublisherImpl {
         
         if (alarm.getStatus().getSourceTimestamp().getTime()==0) {
         	// This should be filtered by jms...
-        	System.out.println("*** Alarm discarded because it pretend to be an alarm!");
         	return;
         }
-        System.out.println("*** Publishing a message of type:"+message.getClass().getName());
         getTopicPublisher().publish(topic, message);
         LOGGER.info("change published on : " + destination);
-        System.out.println("*** Change published on : " + destination);
-        System.out.println("*** Msg Type ["+message.getJMSType()+"]");
-        System.out.println("*** Msg text: \n"+message.getText());
       }
     } catch (Exception e) {
       LOGGER.error("unable to publish", e);

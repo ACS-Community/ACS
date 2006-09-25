@@ -1,12 +1,13 @@
-#include <iostream>
 #include "AcsAlarmPublisher.h"
 #include "ACSJMSMessageEntityS.h"
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
 #include <orbsvcs/CosNamingC.h>
+#include <logging.h>
+#include <maciHelper.h>
 
-using std::cout;
 using namespace laserAlarmPublisher;
+using namespace maci;
 
 // initialize the static variables for the singletons, etc.
 AlarmPublisher* AcsAlarmPublisher::singletonInstance = NULL;
@@ -19,20 +20,31 @@ ACE_Mutex* AcsAlarmPublisher::alarmSupplierMutex = new ACE_Mutex;
  * @param topicName the name of the topic for the notification channel which will 
  *        be used for communication with the laser alarm server.
  */
-AcsAlarmPublisher::AcsAlarmPublisher(string topicName, CosNaming::NamingContext_ptr naming_p)
-{
-	cout << "AcsAlarmPublisher::AcsAlarmPublisher(): entering...\n";
+AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
+{ 
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): entering.");
+
 	// create the shared AlarmSupplier
   	ACE_Guard<ACE_Mutex> guard(*AcsAlarmPublisher::alarmSupplierMutex);
 	if(NULL == getAlarmSupplier())
 	{
-		cout << "AcsAlarmPublisher::AcsAlarmPublisher(): about to instantiate the alarm supplier.\n";
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): about to instantiate the alarm supplier.");
 		setAlarmSupplier(new AlarmSupplier(topicName.c_str()));
-		cout << "AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier\n";
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier.");
+
 		// initialize the AlarmSupplier with the naming context
+		CosNaming::NamingContext_ptr naming_p = MACIHelper::resolveNamingService(NULL);
+		if(CORBA::is_nil(naming_p)) {
+			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was nil.");
+		}
+		else {
+			myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was not nil.");
+		}
 		getAlarmSupplier()->init(naming_p);
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): init called on alarm supplier.");
 	}
-	cout << "AcsAlarmPublisher::AcsAlarmPublisher(): exiting...\n";
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): exiting.");
 }
 
 /*
@@ -47,7 +59,8 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 	// until *all* clients of it are finished (hence the reference counting suggestion), and then (and only then)
 	// releases all the dynamically allocated resources.
 
-	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): entering...\n";
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::~AcsAlarmPublisher(): entering.");
 	if(NULL != getAlarmSupplier())
 	{
 		// disconnect the AlarmSupplier.
@@ -62,15 +75,16 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 	AcsAlarmPublisher::alarmSupplierMutex = NULL;
 
 	singletonInstance = NULL;
-	cout << "AcsAlarmPublisher::~AcsAlarmPublisher(): exiting...\n";
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::~AcsAlarmPublisher(): exiting.");
 }
 
 /*
  * Returns the singleton instance, creating it if necessary.
  */
-AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName, CosNaming::NamingContext_ptr naming_p)
+AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName)
 {
-	cout << "AcsAlarmPublisher::getInstance("<<topicName<<"): entering...\n";
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::getInstance(): entering.");
 
 	if(NULL == singletonMutex) {
 		singletonMutex = new ACE_Mutex;
@@ -82,10 +96,11 @@ AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName, CosNaming::Nami
   	ACE_Guard<ACE_Mutex> guard(*AcsAlarmPublisher::singletonMutex);
 	if(NULL == singletonInstance)
 	{
-		singletonInstance = new AcsAlarmPublisher(topicName, naming_p);
+		singletonInstance = new AcsAlarmPublisher(topicName);
 	}
 
-	cout << "AcsAlarmPublisher::getInstance(): exiting...\n";
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::getInstance(): exiting.");
 	return singletonInstance;
 }
 
@@ -94,14 +109,16 @@ AlarmPublisher* AcsAlarmPublisher::getInstance(string topicName, CosNaming::Nami
  */
 bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 {
-	cout<<"AcsAlarmPublisher::publishAlarm(): entering\n";
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): entering.");
 	if(NULL != getAlarmSupplier())
 	{
 		getAlarmSupplier()->publishEvent(msg);
 	} else {
-		cout<<"Alarm not published: alarm supplier is NULL!!!\n";
+		// TODO: throw an exception here?
+		myLoggerSmartPtr->log(Logging::Logger::LM_WARNING, "AcsAlarmPublisher::publishAlarm(): alarm not published; alarm supplier is null.");
 	}
-	cout<<"AcsAlarmPublisher::publishAlarm(): exiting\n";
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): exiting.");
 	return true;
 }
 
@@ -116,11 +133,12 @@ bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
  */
 extern "C" 
 {
-	AlarmPublisher * getAlarmPublisher(string topicName, CosNaming::NamingContext_ptr naming_p)
+	AlarmPublisher * getAlarmPublisher(string topicName)
 	{
-		cout<< "extern C getAlarmPublisher(): DLL entry point, entering...\n";
-		AlarmPublisher * retVal = AcsAlarmPublisher::getInstance(topicName, naming_p);
-		cout << "extern C getAlarmPublisher(): DLL entry point, exiting...\n";
+		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::getAlarmPublisher(): entering.");
+		AlarmPublisher * retVal = AcsAlarmPublisher::getInstance(topicName);
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::getAlarmPublisher(): exiting.");
 		return retVal;
 	}
 };

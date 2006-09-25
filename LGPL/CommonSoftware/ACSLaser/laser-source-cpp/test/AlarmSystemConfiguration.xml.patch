@@ -1,0 +1,9 @@
+--- /export/home/newbie/sharring/Dev/ACS-5_0_4_LASER_PATCH-post-vacation/ACS/LGPL/CommonSoftware/ACSLaser/laser-source-cpp/test/CDB/Alarms/AlarmSystemConfiguration/AlarmSystemConfiguration.xml	2006-09-11 14:48:41.000000000 -0600
++++ acs.xml	2006-09-11 14:50:06.000000000 -0600
+@@ -4,5 +4,5 @@
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                     xsi:schemaLocation="urn:schemas-cosylab-com:Alarm:1.0 ../../../../config/CDB/schemas/laser-definition.xsd">
+ 
+-	<configuration-property name="Implementation">CERN</configuration-property>
++	<configuration-property name="Implementation">ACS</configuration-property>
+ </alarm-system-configuration>

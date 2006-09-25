@@ -1,9 +1,9 @@
 /*
- * $Id: TestAlarmBrowsing.java,v 1.1 2005/06/06 18:18:35 kzagar Exp $
+ * $Id: TestAlarmBrowsing.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/06/06 18:18:35 $ 
- * $Revision: 1.1 $ 
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.2 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -16,7 +16,7 @@ import cern.laser.client.services.browsing.AlarmBrowsingHandler;
  * DOCUMENT ME!
  * 
  * @author $author$
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestAlarmBrowsing {
   /**

@@ -11,7 +11,7 @@ import cern.gp.nodes.children.NodeCollection;
  * TODO finish it...
  * @see org.openide.nodes.FilterNode
  * @author Vito Baggiolini
- * @version $Revision: 1.1 $ $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  */
 public class GPFilterNode extends FilterNode implements GPNode {
 	private final GPNode origGPNode;

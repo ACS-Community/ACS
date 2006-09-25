@@ -1,22 +1,16 @@
 import os,sys, time, datetime, tarfile
 
-################### Support functions ################
+'''
+Install netbeans
 
-def getDestinationName():
-    '''Return the name of the directory where netbeans
-    has to be installed into
-    This is the name of the directory with a trailing '/'
-    
-    In this version, the function returns the home directory
-    but we should discuss if and how follow the ACS hyerarchy
-    of INTROOT, INTLIST and ACSROOT
-    '''
-    homeDir = os.environ['HOME']
-    if len(homeDir)==0:
-        homeDir="~/"
-    elif homeDir[len(homeDir)-1]!='/':
-        homeDir+='/'
-    return homeDir
+Netbeans is installed into ALMASW_INSTDIR i.e.
+the installation is done only for almamgr
+
+For the other users, the files will be copied into
+.netbeans/3.5 by acsalarmgui
+'''
+
+################### Support functions ################
 
 def checkDestination(destName,remove):
     '''Check if the destination directory already exists.
@@ -72,10 +66,25 @@ if not tarfile.is_tarfile(sourceTarFile):
 # Read some variable from the environment
 homeDir = os.environ['HOME']
 
+#Read the user name
+userName = os.environ['USER']
+
+if userName!='almamgr':
+    print "netbeans is installed only for almamgr"
+    print 'Installation skipped: nothing to do for',userName
+    sys.exit(0)
+
 # Get the name of the dest folder
 # Here we'll unpack the tar
-installationDir = getDestinationName()
+try:
+    installationDir = os.environ['ALMASW_INSTDIR']
+except:
+    print "Error: ALMASW_INSTDIR not found in the environment"
+    
+if installationDir[len(installationDir)-1]!='/':
+    installationDir+='/'
 
+print "\nInstalling Netbeans for ACS in",installationDir
 # Get the destination folder name from the tar file
 mainDir = None
 tarFile = tarfile.open(sourceTarFile,"r:gz")
@@ -94,7 +103,5 @@ if not checkDestination(destDir,False):
 for tarinfo in tarFile:
     tarFile.extract(tarinfo,installationDir)
 tarFile.close()
-
-print "\nInstalling Netbeans for ACS in",destDir
 
 print "Done"

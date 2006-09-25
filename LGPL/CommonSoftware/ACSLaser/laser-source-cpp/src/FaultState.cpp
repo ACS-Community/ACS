@@ -10,7 +10,7 @@ using std::stringstream;
 /**
  * Default Constructor
  */
-FaultState::FaultState()
+FaultState::FaultState(): ACSFaultState()
 {
 	auto_ptr<Timestamp> tstamp(new Timestamp());
 	setUserTimestamp(tstamp);
@@ -19,11 +19,8 @@ FaultState::FaultState()
 /**
  * Constructor for initializing a fault state with values
  */
-FaultState::FaultState(string theFamily, string theMember, int theCode)
+FaultState::FaultState(string theFamily, string theMember, int theCode): ACSFaultState(theFamily, theMember, theCode)
 {
-	setFamily(theFamily);
-	setCode(theCode);
-	setMember(theMember);
 	auto_ptr<Timestamp> tstamp(new Timestamp());
 	setUserTimestamp(tstamp);
 }

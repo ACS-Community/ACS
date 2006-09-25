@@ -26,7 +26,7 @@ import cern.gp.nodes.GPNode;
  * It is recommended that the developer uses the NodeFactory and ChildrenListManager or ChildrenMapManager
  * to create the Node hierarchy to be explored.
  *
- * @version $Revision: 1.1 $  $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $  $Date: 2006/09/25 08:52:36 $
  * @author Vito Baggiolini
  */
 public class TreeTableExplorer extends TreeExplorer implements TablePropertyHolder {
@@ -140,7 +140,7 @@ public class TreeTableExplorer extends TreeExplorer implements TablePropertyHold
   /**
    * This class is a regular table view that gives access to the underlying table and tree from Swing.
    * 
-   * @version $Id: TreeTableExplorer.java,v 1.1 2005/06/07 03:26:13 kzagar Exp $
+   * @version $Id: TreeTableExplorer.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
    * @author Lionel Mestre
    */
   private static class GPTreeTableView extends TreeTableView implements TreeTableViewTableAccess {

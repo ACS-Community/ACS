@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSelectionHelper.java,v 1.6 2005/09/30 12:47:05 acaproni Exp $
+ * $Id: AlarmSelectionHelper.java,v 1.7 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/30 12:47:05 $ 
- * $Revision: 1.6 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.7 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -58,7 +58,7 @@ import alma.alarmsystem.alarmmessage.AlarmMessageConversion;
 /**
  * 
  * 
- * @version $Revision: 1.6 $ $Date: 2005/09/30 12:47:05 $
+ * @version $Revision: 1.7 $ $Date: 2006/09/25 08:52:36 $
  * @author Katarina Sigerud
  */
 class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
@@ -125,7 +125,6 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
       throw new LaserException("unable to get a unique id for the console", e);
     }
     String init_topic = getClientRootTopic() + "." + console_id;
-    System.out.println("### AlarmSelectionHelper::subscribe: init_topic="+init_topic+" [console_id="+console_id+"]");
 
     String init_sql_filter = buildInitSQLFilter(sql_filter);
 
@@ -181,7 +180,6 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
   }
 
   public void resetSelection() throws LaserException {
-	  System.out.println("### AlarmSelectionHelper::resetSelection");
     try {
       Subscriber subscriber=getSubscriber();
       subscriber.unSubscribeAll();
@@ -231,8 +229,6 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
    * @param msg DOCUMENT ME!
    */
   public void onMessage(Message msg) {
-	  System.out.println("\n#######################");
-	  System.out.println("## ====> Message received: "+msg.getClass().getName());
 	  ACSJMSTextMessage acsMsg = (ACSJMSTextMessage)msg;
 	  try {
 		  System.out.print("## FaultFamily: ");
@@ -248,7 +244,6 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
 	  }
 	  
 	  
-	  System.out.println("#######################\n");
 	  
     if (selectionListener != null) {
       try {

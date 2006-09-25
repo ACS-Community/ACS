@@ -74,7 +74,6 @@ public class CreateFiltersPanel extends javax.swing.JPanel {
     public CreateFiltersPanel(Configuration configuration) throws LaserConsoleException {
    		super();
         
-        System.out.println("### CreateFiltersPanel::CreateFiltersPanel()");
         this.configuration = configuration;
         initComponents();
     }
@@ -86,7 +85,6 @@ public class CreateFiltersPanel extends javax.swing.JPanel {
     private void initComponents() throws LaserConsoleException {
         java.awt.GridBagConstraints gridBagConstraints;
         
-        System.out.println("### CreateFiltersPanel::initComponents");
         headerPanel = new javax.swing.JPanel();
         centralPanel = new javax.swing.JPanel();
         staticInfoPanel = new javax.swing.JPanel();

@@ -1,8 +1,8 @@
 /*
- * $Id: Source.java,v 1.3 2005/09/28 09:59:30 acaproni Exp $
+ * $Id: Source.java,v 1.4 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/28 09:59:30 $ 
- * $Revision: 1.3 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.4 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -19,7 +19,7 @@ import cern.laser.business.definition.data.SourceDefinition;
  * 
  * 
  * 
- * @version $Revision: 1.3 $ $Date: 2005/09/28 09:59:30 $
+ * @version $Revision: 1.4 $ $Date: 2006/09/25 08:52:36 $
  * @author Niall Stapley
  * @author Katarina Sigerud
  * 

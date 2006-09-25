@@ -42,27 +42,18 @@ public class CategoriesPreLoader {
     public void loadCategories() {
         final Runnable doLoadAllCategories = new Runnable() {
             public void run() {
-            	System.out.println("### Category thread started");
                 try {
                     Category categoryRoot =
                     CategoryBrowsingHandlerFactory.getHandler().getCategoryTreeRoot();
-                    System.out.println("### Category thread: loading category ");
-                    System.out.println("###  Name: "+categoryRoot.getName());
-                    System.out.println("###  Path: "+categoryRoot.getPath());
-                    System.out.println("###  ID: "+categoryRoot.getCategoryId());
-                    System.out.println("###  Path: "+categoryRoot.getDescription().trim());
                     loadCategory( categoryRoot );
                     logger.debug("Categories Pre Loading finished");
                 }
                 catch ( LaserException le) {
                     logger.debug(le.getMessage(), le);
                 }
-                System.out.println("### "+categories.size()+" categories stored in the HashMap");
-                System.out.println("### Thread terminated");
             }
         };
         
-        System.out.println("### Starting the thread");
         new Thread(doLoadAllCategories).start();
     }
     
@@ -79,11 +70,6 @@ public class CategoriesPreLoader {
             Iterator iter = children.iterator();
             while ( iter.hasNext() ) {
                 Category cat = (Category) iter.next();
-                System.out.println("\t### loadCategory: loading category ");
-                System.out.println("\t###  Name: "+cat.getName());
-                System.out.println("\t###  Path: "+cat.getPath());
-                System.out.println("\t###  ID: "+cat.getCategoryId());
-                System.out.println("\t###  Path: "+cat.getDescription().trim());
                 loadCategory( cat );
             }
         }

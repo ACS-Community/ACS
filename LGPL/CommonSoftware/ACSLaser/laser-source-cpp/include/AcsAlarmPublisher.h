@@ -19,7 +19,7 @@ namespace laserAlarmPublisher
 			/*
  			 * Returns the singleton instance, creating it if necessary.
  			 */
-			static AlarmPublisher* getInstance(string topicName,CosNaming::NamingContext_ptr naming_p);
+			static AlarmPublisher* getInstance(string topicName);
 
 			/*
  			 * Method to publish an alarm to the laser alarm server.
@@ -39,7 +39,7 @@ namespace laserAlarmPublisher
 	
 			// private constructor for singleton enforcement
 			// TODO: also disable copy constructor, etc. to enforce singleton
-			AcsAlarmPublisher(string topicName,CosNaming::NamingContext_ptr naming_p);
+			AcsAlarmPublisher(string topicName);
 	};
 };
 

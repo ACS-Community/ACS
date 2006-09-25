@@ -1,8 +1,8 @@
 /*
- * $Id: CoreServiceImpl.java,v 1.4 2005/09/30 12:42:01 acaproni Exp $
+ * $Id: CoreServiceImpl.java,v 1.5 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/30 12:42:01 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -33,7 +33,7 @@ import cern.laser.business.data.Source;
 import cern.laser.business.data.Triplet;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2005/09/30 12:42:01 $
+ * @version $Revision: 1.5 $ $Date: 2006/09/25 08:52:36 $
  * @author Francesco Calderini
  * @author Katarina Sigerud
  */

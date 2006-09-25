@@ -1,5 +1,15 @@
 #!/usr/bin/env python
-'''Start the netbeans GUI for alarm'''
+
+'''
+Start the netbeans GUI for alarm
+The jarfile are copied into ~/.netbeans/3.5
+
+The script launchs netbeans  without using runide.sh because
+in this way it is possible to set all the propertiess diredctly
+in the command line.
+
+The command line is always shown befor launching the GUI.
+'''
 
 import os, os.path, exceptions, sys, socket, re
 
@@ -33,13 +43,17 @@ def NormalizeDirName(name):
 def getNetbeansHome():
     '''Return the home directory of netbeans
     
-    It can be NBPLATFORM_HOME env variable or ~/netbeans
+    It can be NBPLATFORM_HOME env variable or $ALMASW_INSTDIR/netbeans
     In future it can be different'''
-    global homeDir
     if os.environ.has_key('NBPLATFORM_HOME'):
         nbHome = os.environ['NBPLATFORM_HOME']
+    elif os.environ.has_key('ALMASW_INSTDIR'):
+        nbHome = os.environ['ALMASW_INSTDIR']
     else:
-        nbHome = homeDir
+        print "Netbeans installation not found."
+        print "Install netbeans and setup NBPLATFORM_HOME or ALMASW_INSTDIR"
+        print "In ACS netbeans has to be installed by almamgr"
+        sys.exit(-1)
     nbHome=NormalizeDirName(nbHome)
     nbHome+='netbeans/'
     if not os.path.exists(nbHome):
@@ -147,12 +161,12 @@ def getACSProps(instance,managerCORBALoc):
         temp+=prop+" "
     return temp
 
-def getNetbeansProps():
+def getNetbeansProps(userNBFolder):
     global netbeansHomeDir, homeDir
     # "-Dnetbeans.osenv=/tmp/nbenv.20411", \
     
     properties = [ \
-                   "-Dnetbeans.user="+homeDir+".netbeans/3.5" , \
+                   "-Dnetbeans.user="+userNBFolder, \
                    "-Dnetbeans.osenv.nullsep=true", \
                    "-Dnetbeans.home="+netbeansHomeDir,\
                    "-Djava.security.policy="+netbeansHomeDir+"bin/ide.policy"]
@@ -167,12 +181,30 @@ def getLocalIP():
     ip =  socket.gethostbyname(name)
     return ip
 
-def cleanNetbeansModules(modJars):
-    '''Clean the modules folder of netbeans before installing the new
-    jars
+def checkNetbeansModulesFolder(userNBFolder):
+    '''Check if the netbeans local folder of the user is ready
+    It usually is ~/.netbeans/3.5/ and it should contain the following
+    folders:
+        autoload
+        eager
+        modules
+          laser'''
+    dirs = [    userNBFolder, \
+                userNBFolder+"autoload", \
+                userNBFolder+"eager", \
+                userNBFolder+"modules", \
+                userNBFolder+"modules/laser" ]
+    for dir in dirs:
+        if not os.access(dir,os.F_OK):
+            os.makedirs(dir)
+            
+
+def cleanNetbeansModules(userNBFolder,modJars):
+    '''Clean the modules folder of user netbeans folder before installing 
+    the new jars
     It removes all the old jars and prepare that lasr dir (empty)'''
-    global netbeansHomeDir
-    modulesDir = netbeansHomeDir+"modules/"
+    checkNetbeansModulesFolder(userNBFolder)
+    modulesDir = userNBFolder+"modules/"
     for jar in modJars:
         if os.access(modulesDir+jar,os.F_OK):
             os.remove(modulesDir+jar)
@@ -184,9 +216,9 @@ def cleanNetbeansModules(modJars):
     else:
         os.mkdir(laserModDir)
         
-def setupNetbeansModules(modJars,laserJars,dirs):
-    '''Copy the jar files in netbeans/modules and netbeans/modules/laser'''
-    global netbeansHomeDir
+def setupNetbeansModules(userNBFolder,modJars,laserJars,dirs):
+    '''Copy the jar files in the local NB folder of the user,
+    i.e ~/.netbeans/3.5/modules and ~/.netbeans/3.5/modules/laser'''
     for jar in modJars:
         try:
             src = getJarPath(jar,dirs)
@@ -194,7 +226,7 @@ def setupNetbeansModules(modJars,laserJars,dirs):
             print jar,"NOT found in",dirs
             print "Check your laser installation before launching the GUI"
             sys.exit(-1)
-        copyFile(src,netbeansHomeDir+"modules/"+jar)
+        copyFile(src,userNBFolder+"modules/"+jar)
     for jar in laserJars:
         try:
             src = getJarPath(jar,dirs)
@@ -202,7 +234,7 @@ def setupNetbeansModules(modJars,laserJars,dirs):
             print jar,"NOT found in",dirs
             print "Check your laser installation before launching the GUI"
             sys.exit(-1)
-        copyFile(src,netbeansHomeDir+"modules/laser/"+jar)
+        copyFile(src,userNBFolder+"modules/laser/"+jar)
         
 def usage():
     '''Print the usage message'''
@@ -269,6 +301,12 @@ laserJars = [  "log4j-1.2.8.jar", \
               "ACSJMSMessageEntity.jar", \
               "AlarmSystem.jar", \
               "ACSAlarmMessage.jar" ]
+              
+# All the jars are installed in this directory of the user
+# before launching the GUI
+homeDir = os.environ['HOME']
+nbUserDir = homeDir+"/.netbeans/3.5/"
+print "User folder (local) for netbeans:",nbUserDir
 
 if len(sys.argv)>2:
     usage()
@@ -330,7 +368,7 @@ except exceptions.IOError, e:
     print "Error:",e
     sys.exit(-1)
     
-print "Netbeans home:",netbeansHomeDir
+print "Netbeans installation folder:",netbeansHomeDir
     
 # The java command with the path
 javaExe = javaHome+"bin/java"
@@ -370,8 +408,8 @@ for prop in jvmProps:
     JVMPropString+=prop+" "
 
 print "Configuring netbeans"
-cleanNetbeansModules(modulesJars)
-setupNetbeansModules(modulesJars,laserJars,searchDirs)
+cleanNetbeansModules(nbUserDir,modulesJars)
+setupNetbeansModules(nbUserDir,modulesJars,laserJars,searchDirs)
 
 # Build the command 
 command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s " % \
@@ -379,11 +417,10 @@ command = "%(exe)s %(classpath)s %(jvmprops)s %(acsprops)s %(nbprops)s %(main)s 
       'classpath':classpath, 
       'jvmprops':  JVMPropString, 
       'acsprops': getACSProps(acsInstance,managerCORBA), 
-      'nbprops': getNetbeansProps(), 
+      'nbprops': getNetbeansProps(nbUserDir), 
       'main': javaMainClass }
 
-print "Executing",command
-print
+print "Executing: ",command,"\n"
 
 # Launch the GUI
 os.system(command)

@@ -67,10 +67,6 @@ public class ProxyBuffer implements AlarmSelectionListener, SynchroBufferListene
                 alarm.getStatus().isActive()  + " isMasked: " + 
                alarm.getStatus().isMasked()  +
                " isReduced: " + alarm.getStatus().isReduced());
-        System.out.println("### ProxiBuffer::onAlarm, Pushed: " + alarm.getTriplet().toString() + " isActive: " +
-                alarm.getStatus().isActive()  + " isMasked: " + 
-                alarm.getStatus().isMasked()  +
-                " isReduced: " + alarm.getStatus().isReduced());
         buffer.push(alarm);
     }
     
@@ -80,7 +76,6 @@ public class ProxyBuffer implements AlarmSelectionListener, SynchroBufferListene
     }
     
     public void pull(PullEvent pullEvent) throws PullException {
-    	System.out.println("### ProxiBuffer::pull(pullEvent)");
         if ( listener != null )
             for (Iterator iter = pullEvent.getPulled().iterator();
                     iter.hasNext(); )

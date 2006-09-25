@@ -707,15 +707,10 @@ public class LaserComponent extends ComponentImplBase
 		{
 			Collection ids = new ArrayList(categoryIds.length);
 			for (int i = 0; i < categoryIds.length; i++) {
-				System.out.println("# Adding category ID "+i);
 				ids.add(new Integer(categoryIds[i]));
 			}
-			System.out.println("# selecting the categories...");
 			coreService.select(ids, client);
 		} catch (cern.laser.business.LaserProcessingException lpe) {
-			System.out.println("##\n");
-			lpe.printStackTrace();
-			System.out.println("##");
 			throw new LaserProcessingException(lpe.getMessage());
 		}
 	}

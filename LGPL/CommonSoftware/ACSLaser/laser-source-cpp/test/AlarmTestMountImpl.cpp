@@ -1,0 +1,98 @@
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+* 
+*/
+
+#include <AlarmTestMountImpl.h>
+#include "ACSAlarmSystemInterfaceFactory.h"
+#include "ACSAlarmSystemInterface.h"
+#include "ACSFaultState.h"
+#include "faultStateConstants.h"
+
+using namespace acscomponent;
+using namespace testalarmsystem;
+
+AlarmTestMountImpl::AlarmTestMountImpl(const ACE_CString &name,maci::ContainerServices * containerServices) : 
+    ACSComponentImpl(name, containerServices)
+{
+	ACS_TRACE("::AlarmTestMount::AlarmTestMount");
+}
+
+AlarmTestMountImpl::~AlarmTestMountImpl()
+{
+	ACS_TRACE("::AlarmTestMount::~AlarmTestMount");
+}
+
+void AlarmTestMountImpl::faultMount() throw (CORBA::SystemException ) 
+{
+	sendAlarm("AlarmSource", "ALARM_SOURCE_MOUNT", 1, true);
+}
+
+void AlarmTestMountImpl::terminate_faultMount() throw (CORBA::SystemException ) 
+{
+	sendAlarm("AlarmSource", "ALARM_SOURCE_MOUNT", 1, false);
+}
+
+void AlarmTestMountImpl::sendAlarm(std::string family, std::string member, int code, bool active) 
+{
+	ACS_TRACE("::AlarmTestMount::sendAlarm entering");
+
+	// create the AlarmSystemInterface
+	auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+
+	// create the FaultState
+	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
+
+	// set the fault state's descriptor
+	string stateString;
+	if (active) 
+	{
+		stateString = faultState::ACTIVE_STRING;
+	} 
+	else 
+	{
+		stateString = faultState::TERMINATE_STRING;
+	}
+	fltstate->setDescriptor(stateString);
+		
+	// create a Timestamp and use it to configure the FaultState
+	Timestamp * tstampPtr = new Timestamp();
+	auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
+	fltstate->setUserTimestamp(tstampAutoPtr);
+
+	// create a Properties object and configure it, then assign to the FaultState
+	Properties * propsPtr = new Properties();
+	propsPtr->setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
+	propsPtr->setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
+	propsPtr->setProperty("TEST_PROPERTY", "TEST_VALUE");
+	auto_ptr<Properties> propsAutoPtr(propsPtr);
+	fltstate->setUserProperties(propsAutoPtr);
+
+	// push the FaultState using the AlarmSystemInterface previously created
+	alarmSource->push(*fltstate);
+
+	ACS_TRACE("::AlarmTestMount::sendAlarm exiting");
+}
+
+/* --------------- [ MACI DLL support functions ] -----------------*/
+
+#include <maciACSComponentDefines.h>
+MACI_DLL_SUPPORT_FUNCTIONS(AlarmTestMountImpl)
+/* ----------------------------------------------------------------*/

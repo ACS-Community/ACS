@@ -11,7 +11,7 @@ import cern.laser.business.definition.data.AlarmDefinition;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestDownload {
   /**

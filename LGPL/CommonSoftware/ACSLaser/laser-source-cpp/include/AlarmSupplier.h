@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.h,v 1.1 2006/08/09 22:29:10 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.h,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------

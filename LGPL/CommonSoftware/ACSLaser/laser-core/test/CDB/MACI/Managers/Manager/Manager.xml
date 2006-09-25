@@ -14,7 +14,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
            CacheSize="0">
 	<Startup>
-		<!-- <cdb:_ string="AlarmService"/> -->
+		<cdb:_ string="AlarmService"/> 
 	</Startup> 
 	<Execute>
 		<cdb:_ string=""/>
@@ -29,6 +29,5 @@
 		<cdb:_ string="CDB"/>
 		<cdb:_ string="ACSLogSvc"/>
 		<cdb:_ string="PDB"/>
-		<cdb:_ string="AlarmService"/>
 	</ServiceComponents>
 </Manager>

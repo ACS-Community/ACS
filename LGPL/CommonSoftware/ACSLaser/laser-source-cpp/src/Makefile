@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2006/08/09 22:29:10 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -51,24 +51,30 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = ASIMessage.h FaultState.h AlarmSystemInterfaceProxy.h AlarmSystemInterface.h \
-    AlarmSystemInterfaceFactory.h faultStateConstants.h  ASIConfiguration.h \
-    AlarmPublisher.h AcsAlarmPublisher.h AlarmSupplier.h asiConfigurationConstants.h
+INCLUDES        = ASIMessage.h FaultState.h CERNAlarmSystemInterfaceProxy.h \
+    AlarmPublisher.h AcsAlarmPublisher.h AlarmSupplier.h asiConfigurationConstants.h ASIConfiguration.h \
+# AlarmSystemInterfaceFactory.h 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = laserSource laserAlarmPublisher
+LIBRARIES       = laserSource laserAlarmPublisher laserAlarmCERN
 LIBRARIES_L     =
 
 #
 # <brief description of laserSource library>
-laserSource_OBJECTS   = FaultState AlarmSystemInterfaceProxy AlarmSystemInterfaceFactory ASIMessage ASIConfiguration AlarmPublisher
+#laserSource_OBJECTS   = FaultState AlarmSystemInterfaceProxy AlarmSystemInterfaceFactory ASIMessage ASIConfiguration AlarmPublisher
+laserSource_OBJECTS   = FaultState CERNAlarmSystemInterfaceProxy ASIMessage ASIConfiguration AlarmPublisher
 
 # <brief description of laserAlarmPublisher library>
 laserAlarmPublisher_OBJECTS   = AcsAlarmPublisher AlarmSupplier
-laserAlarmPublsiher_LIBS      = basenc
+laserAlarmPublisher_LIBS      = basenc ACSJMSMessageEntityStubs
 laserAlarmPublisher_LDFLAGS = --export-dynamic -dl -fpic
+
+# <brief description of laserAlarmCERN library>
+laserAlarmCERN_OBJECTS   = CERNAlarmSystemInterfaceFactory 
+laserAlarmCERN_LIBS = laserSource
+laserAlarmCERN_LDFLAGS = --export-dynamic -dl -fpic
 
 #
 # Scripts (public and local)

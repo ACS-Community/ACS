@@ -1,9 +1,9 @@
 /*
  * $Id $
  *
- * $Date: 2005/06/07 03:26:13 $
- * $Revision: 1.1 $
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $
+ * $Revision: 1.2 $
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -15,7 +15,7 @@ import org.openide.explorer.view.TreeTableView;
 
 /**
  * An interface a TableView can implements to give pubilc access to its underlying JTable
- * @version $Id: TreeTableViewTableAccess.java,v 1.1 2005/06/07 03:26:13 kzagar Exp $
+ * @version $Id: TreeTableViewTableAccess.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
  * @author Lionel Mestre
  */
 public interface TreeTableViewTableAccess extends TreeViewTreeAccess {

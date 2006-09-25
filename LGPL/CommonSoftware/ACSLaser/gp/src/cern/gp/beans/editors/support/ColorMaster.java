@@ -14,7 +14,7 @@ import java.awt.Color;
  * to the value of the property it edits.
  *
  * @author  Vito Baggiolini
- * @version $Revision: 1.1 $ $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  */
 public interface ColorMaster {
 	/** the background color property name */

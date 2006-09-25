@@ -12,7 +12,7 @@ import java.awt.Color;
  * A class that was intended for setting colors and fonts using Html Rendering in JLabel
  * Finally not used.
  * @author Vito Baggiolini
- * @version $Revision: 1.1 $, $Date: 2005/06/07 03:26:13 $, $Author: kzagar $
+ * @version $Revision: 1.2 $, $Date: 2006/09/25 08:52:36 $, $Author: acaproni $
  */
 public class HtmlTagger {
 	//size=\""-1\" color=\"#00FF00\" bgcolor=\"#FF0000\">" 

@@ -100,7 +100,6 @@ public class AlarmNodeManagerImpl extends AlarmNodeManager {
      *
      */
     public void addAlarm(AlarmBean alarm) {
-    	System.out.println("### AlarmNodeManagerImpl::addAlarm");
         try {
             // the NodeFactory creates the node corresponding to the Alarm ( = bean)
             // then, it is added to the nodeMap (the Integer privateIdentifier is used

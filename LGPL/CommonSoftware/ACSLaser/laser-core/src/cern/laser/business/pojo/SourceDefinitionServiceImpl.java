@@ -1,9 +1,9 @@
 /*
- * $Id: SourceDefinitionServiceImpl.java,v 1.2 2005/04/18 08:51:39 kzagar Exp $
+ * $Id: SourceDefinitionServiceImpl.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/04/18 08:51:39 $ 
- * $Revision: 1.2 $ 
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.3 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -40,7 +40,7 @@ import cern.laser.business.definition.data.SourceDefinition;
 /**
  * 
  * 
- * @version $Revision: 1.2 $ $Date: 2005/04/18 08:51:39 $
+ * @version $Revision: 1.3 $ $Date: 2006/09/25 08:52:36 $
  * @author Katarina Sigerud
  */
 public class SourceDefinitionServiceImpl {

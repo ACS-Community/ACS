@@ -8,7 +8,7 @@ package cern.gp.explorer.test.helpers;
 
 /**
  * @author Vito Baggiolini
- * @version $Revision: 1.1 $ $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  */
 public class ColoredBean {
   private static int counter = 0;

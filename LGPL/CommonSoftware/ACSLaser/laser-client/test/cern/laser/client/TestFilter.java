@@ -1,9 +1,9 @@
 /*
- * $Id: TestFilter.java,v 1.1 2005/06/06 18:18:35 kzagar Exp $
+ * $Id: TestFilter.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/06/06 18:18:35 $ 
- * $Revision: 1.1 $ 
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.2 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */

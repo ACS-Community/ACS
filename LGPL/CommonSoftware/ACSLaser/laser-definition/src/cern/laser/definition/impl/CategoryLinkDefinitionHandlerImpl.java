@@ -17,7 +17,7 @@ import cern.laser.definition.LaserDefinitionXMLException;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CategoryLinkDefinitionHandlerImpl extends DefinitionHandlerImpl implements CategoryLinkDefinitionHandler {
   /**

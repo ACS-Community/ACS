@@ -1,0 +1,5 @@
+SOURCE alarmTATEnv
+PROLOGUE alarmTestPrologue
+0 AlarmTestCern "testDriver 10"
+1 AlarmTestAcs "runAcsTest.sh 10"
+EPILOGUE alarmTestEpilogue

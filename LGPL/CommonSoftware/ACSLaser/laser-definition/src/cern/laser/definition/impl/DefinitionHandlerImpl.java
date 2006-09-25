@@ -6,7 +6,7 @@ import cern.laser.definition.LaserDefinitionException;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DefinitionHandlerImpl {
   protected static final String DEFAULT_XSD_LOCATION = "http://proj-laser.web.cern.ch/proj-laser/xml/laser-definition.xsd";

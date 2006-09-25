@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmImpl.java,v 1.7 2005/09/28 10:00:15 acaproni Exp $
+ * $Id: AlarmImpl.java,v 1.8 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/28 10:00:15 $ 
- * $Revision: 1.7 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.8 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -22,7 +22,7 @@ import cern.laser.business.definition.data.AlarmDefinition;
 /**
  * 
  * 
- * @version $Revision: 1.7 $ $Date: 2005/09/28 10:00:15 $
+ * @version $Revision: 1.8 $ $Date: 2006/09/25 08:52:36 $
  * @author Niall Stapley
  * @author Katarina Sigerud
  * 

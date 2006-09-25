@@ -52,11 +52,9 @@ public abstract class ACExplorer extends ExplorerPanel {
         //aleStr[8]="problemDescription";
         aleStr[7]="sourceName";
         propNames=aleStr;
-        System.out.println("### Setting table cols: num. of cols= "+propNames.length);
         Node.Property [] properties = new Node.Property[propNames.length];        
         
         for( int i=0; i<propNames.length; i++) {  
-        	System.out.println("### Col to display: "+propNames[i]);
             Class type;
             if( propNames[i].equalsIgnoreCase("faultCode") || propNames[i].equalsIgnoreCase("priority") ){
                 type = Integer.class;

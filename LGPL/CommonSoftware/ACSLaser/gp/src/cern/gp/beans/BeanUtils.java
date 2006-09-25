@@ -1,9 +1,9 @@
 /*
- * $Id: BeanUtils.java,v 1.1 2005/06/07 03:26:13 kzagar Exp $
+ * $Id: BeanUtils.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/06/07 03:26:13 $
- * $Revision: 1.1 $
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $
+ * $Revision: 1.2 $
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -19,7 +19,7 @@ import org.openide.util.WeakListener;
  * A few utility methods for Beans.
  * 
  * @author Lionel Mestre
- * @version $REvision: $ $Date: 2005/06/07 03:26:13 $
+ * @version $REvision: $ $Date: 2006/09/25 08:52:36 $
  */
 public class BeanUtils {
 

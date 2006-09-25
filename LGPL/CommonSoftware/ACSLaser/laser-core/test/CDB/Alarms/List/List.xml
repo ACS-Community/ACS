@@ -25,4 +25,5 @@
     <alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_PS" fault-code="1" />
 	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MOUNT" fault-code="1" />
 	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_ANTENNA" fault-code="1" />
+	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MOUNTCPP" fault-code="1" />
 </alarm-definition-list>

@@ -15,7 +15,7 @@ import java.beans.PropertyEditorSupport;
 /**
  * An editor base class for building editors that color the field they edit when it has been changed
  * @author Vito Baggiolini
- * @version $Revision: 1.1 $ $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  */
 public abstract class ColoredEditorSupport extends PropertyEditorSupport implements ColorMaster {
 

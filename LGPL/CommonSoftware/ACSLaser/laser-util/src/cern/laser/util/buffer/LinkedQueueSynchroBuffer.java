@@ -20,7 +20,7 @@ import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
  * similar function signatures to SynchroBuffer.
  * 
  * @author Niall Stapley
- * @version $Revision: 1.1 $ $Date: 2006/08/09 22:49:41 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:37 $
  */
 public class LinkedQueueSynchroBuffer {
 

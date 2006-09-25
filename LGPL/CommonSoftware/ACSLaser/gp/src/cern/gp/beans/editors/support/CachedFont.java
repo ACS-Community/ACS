@@ -7,7 +7,7 @@ import java.util.HashMap;
  * A small helper class that caches derived fonts, instead of creating a new Font every time the method
  * {@link java.awt.Font#deriveFont(int)} is called
  * @author Vito Baggiolini
- * @version $Revision: 1.1 $, $Date: 2005/06/07 03:26:13 $, $Author: kzagar $
+ * @version $Revision: 1.2 $, $Date: 2006/09/25 08:52:36 $, $Author: acaproni $
  * @since 2.0.6
  */
 class CachedFont  {

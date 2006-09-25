@@ -14,7 +14,7 @@ import cern.laser.definition.SourceDefinitionHandler;
  * DOCUMENT ME!
  * 
  * @author $author$
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class AdminUserImpl implements AdminUser {
   private AlarmDefinitionHandler alarmHandler;

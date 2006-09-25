@@ -1,8 +1,8 @@
 /*
- * $Id: UserHandlerImpl.java,v 1.3 2005/09/16 09:33:57 acaproni Exp $
+ * $Id: UserHandlerImpl.java,v 1.4 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/16 09:33:57 $ 
- * $Revision: 1.3 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.4 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -73,12 +73,10 @@ public class UserHandlerImpl extends UserHandler
 	  int t;
 	  for (t=0; t<users.size() && !found; t++) {
 		  if (((UserImpl)users.get(t)).getName().equalsIgnoreCase(name)) {
-			  System.out.println("#Returning USER: "+name);
 			  user = (UserImpl)users.get(t);
 			  return user;
 		  }
 	  }
-	  System.out.println("# Creating USER: "+name);
 	  user = new UserImpl(name);
 	  users.add(user);
 	  return user;

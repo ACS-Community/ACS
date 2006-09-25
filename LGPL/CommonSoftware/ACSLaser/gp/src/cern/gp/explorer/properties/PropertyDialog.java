@@ -11,7 +11,7 @@ import cern.gp.util.GPManager;
  * 
  * @author Vito Baggiolini
  *
- * @version $Revision: 1.1 $, $Date: 2005/06/07 03:26:13 $, $Author: kzagar $
+ * @version $Revision: 1.2 $, $Date: 2006/09/25 08:52:36 $, $Author: acaproni $
  */
 public class PropertyDialog {
   private final DialogDescriptor dd;

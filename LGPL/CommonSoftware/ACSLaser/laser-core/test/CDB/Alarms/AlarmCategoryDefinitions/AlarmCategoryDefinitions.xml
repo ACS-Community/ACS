@@ -100,5 +100,13 @@
 				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_ANTENNA" fault-code="1"/>
 			</alarm>
 		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MOUNTCPP" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
 	</category-links-to-create>
 </alarm-category-definitions>

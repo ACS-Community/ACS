@@ -1,9 +1,9 @@
 /*
- * $Id: ConfigurationImpl.java,v 1.2 2005/08/26 10:13:05 sbelak Exp $
+ * $Id: ConfigurationImpl.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/08/26 10:13:05 $ 
- * $Revision: 1.2 $ 
- * $Author: sbelak $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.3 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */

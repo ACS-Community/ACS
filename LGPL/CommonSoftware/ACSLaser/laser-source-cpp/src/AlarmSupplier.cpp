@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.1 2006/08/09 22:29:10 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,13 +57,10 @@
 
 #include "AlarmSupplier.h"
 #include "ACSJMSMessageEntityC.h"
-
-#include <iostream>
+#include <logging.h>
 #include <string>
 
-using std::cout;
-
-static char *rcsId="@(#) $Id: AlarmSupplier.cpp,v 1.1 2006/08/09 22:29:10 sharring Exp $"; 
+static char *rcsId="@(#) $Id: AlarmSupplier.cpp,v 1.2 2006/09/25 08:52:37 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -73,7 +70,10 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 AlarmSupplier::AlarmSupplier(const char* channelName) :
     BaseSupplier(channelName)
 {
-    //no-op
+   //no-op
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::AlarmSupplier(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::AlarmSupplier(): exiting.");
 }
 
 /**
@@ -81,7 +81,10 @@ AlarmSupplier::AlarmSupplier(const char* channelName) :
  */
 AlarmSupplier::~AlarmSupplier()
 {
-    //no-op
+   //no-op
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::~AlarmSupplier(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::~AlarmSupplier(): exiting.");
 }
 
 
@@ -90,22 +93,25 @@ AlarmSupplier::~AlarmSupplier()
  * @param msg the ASIMessage to publish.
  */
 void AlarmSupplier::publishEvent(laserSource::ASIMessage &msg)
-{
+{ 
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): entering.");
 
-    CosNotification::StructuredEvent event;
-    populateHeader(event);    
-    event.filterable_data.length(1);
+	CosNotification::StructuredEvent event;
+	populateHeader(event);    
+	event.filterable_data.length(1);
 
-    com::cosylab::acs::jms::ACSJMSMessageEntity msgForNotificationChannel;
-    string xmlToSend = msg.toXML();
+	com::cosylab::acs::jms::ACSJMSMessageEntity msgForNotificationChannel;
+	string xmlToSend = msg.toXML();
 
-    cout << "\n\nAbout to send XML of: \n\n" << xmlToSend << "\n\n";
+	string xmlToLog = "AlarmSupplier::publishEvent()\n\nAbout to send XML of: \n\n" + xmlToSend + "\n\n";
+	myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, xmlToLog);
 
-    msgForNotificationChannel.text = CORBA::string_dup(xmlToSend.c_str());
+	msgForNotificationChannel.text = CORBA::string_dup(xmlToSend.c_str());
     
-    event.filterable_data[0].value <<= msgForNotificationChannel;
+	event.filterable_data[0].value <<= msgForNotificationChannel;
 	
-    cout << "Preparing to send XML.\n";
-    BaseSupplier::publishEvent(event);
-    cout << "Sent XML\n";
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Preparing to send XML.");
+	BaseSupplier::publishEvent(event);
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Sent XML.");
 }

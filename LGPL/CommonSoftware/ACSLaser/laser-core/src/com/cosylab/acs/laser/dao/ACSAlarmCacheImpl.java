@@ -76,7 +76,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		if (alarmDAO==null || alarmCacheListener==null) {
 			throw new IllegalArgumentException("The AlarmDAO and the listener can't be null!");
 		}
-		//System.out.println("*** ACSAlarmCacheImpl::ACSAlarmCacheImpl");
 		alarms.clear(); // Redundant
 		
 		// Store the values in local variables
@@ -122,13 +121,11 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	}
 
 	public void initializeAlarmCache(Map alarms, Map activeLists) {
-		//System.out.println("*** ACSAlarmCacheImpl::initializeAlarmCache");
 		this.alarms.putAll(alarms);
 		this.activeLists.putAll(activeLists);
 	}
 
 	public Alarm getCopy(String identifier) throws AlarmCacheException {
-		//System.out.println("*** ACSAlarmCacheImpl::getCopy("+identifier+")");
 		// This method get the reference to the object first and then
 		// create a copy to return to the caller
 		
@@ -141,7 +138,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	}
 
 	public Alarm getReference(String identifier) throws AlarmCacheException {
-		System.out.println("*** ACSAlarmCacheImpl::getReference("+identifier+") "+alarms.size()+" items in cache");
 		// The Alarm to return a reference of
 		Alarm retAl;
 		
@@ -176,11 +172,9 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			} else {
 				// Add the alarm to the cache
 				alarms.put(identifier,retAl);
-				System.out.println("*** Added "+identifier+" to cache from CDB ("+alarms.size()+" items in cache)");
 			}
 		} else {
 			// Get the alarm from the cache
-			System.out.println("*** Alarm retrieved from the cache");
 			retAl=(Alarm)alarms.get(identifier);
 		}
 		if (retAl==null) {
@@ -188,12 +182,10 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			throw new AlarmCacheException("Invalid Alarm");
 		}
 		
-		System.out.println("*** ACSAlarmCacheImpl::getReference returning alarm "+retAl.getTriplet().toString());
 		return retAl;
 	}
 
 	public void replace(Alarm alarm) throws AlarmCacheException {
-		System.out.println("*** ACSAlarmCacheImpl::replace");
 		if (alarm==null) {
 			throw new IllegalArgumentException("Replacing with a null alarm is not allowed");
 		}
@@ -205,7 +197,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	}
 
 	public void put(Alarm alarm) throws AlarmCacheException {
-		System.out.println("*** ACSAlarmCacheImpl::put");
 		if (alarm==null) {
 			throw new IllegalArgumentException("Inserting a null alarm is not allowed");
 		}
@@ -217,7 +208,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	}
 
 	public void invalidate(String identifier) throws AlarmCacheException {
-		System.out.println("*** ACSAlarmCacheImpl::invalidate");
 		if (identifier==null) {
 			throw new IllegalArgumentException("Invalidating a null key is not allowed");
 		}
@@ -230,7 +220,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	}
 
 	public CategoryActiveList getActiveListReference(Integer identifier) throws AlarmCacheException {
-		System.out.println("*** ACSAlarmCacheImpl::getActiveListReference("+identifier+")");
 		if (activeLists.containsKey(identifier)) {
 			return (CategoryActiveList)activeLists.get(identifier);
 		} else {
@@ -241,12 +230,10 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	}
 
 	public void close() {
-		//System.out.println("*** ACSAlarmCacheImpl::close");
 		alarms.clear();
 	}
 
 	public void removeActiveList(Integer identifier) throws AlarmCacheException {
-		System.out.println("*** ACSAlarmCacheImpl::removeActiveList");
 		activeLists.remove(identifier);
 	}
 	
@@ -265,7 +252,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	 * @param old The previous alarm
 	 */
 	private void sendMsgToListener(Alarm actual, Alarm old) {
-		//System.out.println("*** ACSAlarmCacheImpl::sendMsgToListener");
 		if (old==null) {
 			listener.onAlarmChange(new AlarmChange(actual,actual));
 		} else {
@@ -282,24 +268,19 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	 */
 	private void dumpAlarmsCache(boolean verbose) {
 		if (alarms==null) {
-			System.out.println("** The alarm cache is null");
 			return;
 		}
 		if (alarms.size()==0) {
-			System.out.println("** The alarm cache is empty");
 			return;
 		} 
-		System.out.println("** Items in cache: "+alarms.size());
 		
 		// Get the keys
 		Set keys = alarms.keySet();
 		Iterator iter = keys.iterator();
 		while ( iter.hasNext() ) {
 			String key = (String)iter.next();
-			System.out.println("** Key = "+key.toString());
 			if (verbose) {
 				Alarm al = (Alarm)alarms.get(key);
-				System.out.println("** Alarm "+al.toString());
 			}
 		}
 	}

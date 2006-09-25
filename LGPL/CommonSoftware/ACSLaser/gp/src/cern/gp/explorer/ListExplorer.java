@@ -21,7 +21,7 @@ import cern.gp.nodes.impl.NodeUtils;
  * to create the Node hierarchy to be explored.
  *
  * @author  Vito Baggiolini
- * @version $Revision: 1.1 $  $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $  $Date: 2006/09/25 08:52:36 $
  */
 public class ListExplorer extends GPListExplorerPanel {
   
@@ -115,7 +115,7 @@ public class ListExplorer extends GPListExplorerPanel {
   /**
    * This class is a regular list view that gives access to the underlying list from Swing.
    * 
-   * @version $Id: ListExplorer.java,v 1.1 2005/06/07 03:26:13 kzagar Exp $
+   * @version $Id: ListExplorer.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
    * @author Lionel Mestre
    */
   private static class GPListView extends ListView implements ListViewListAccess {

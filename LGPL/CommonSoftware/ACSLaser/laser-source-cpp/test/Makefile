@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2006/08/09 22:29:10 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -35,16 +35,17 @@ USER_LIB = -lstdc++
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 
-EXECUTABLES_L   = faultSourceTest 
+EXECUTABLES     = testDriver testDriverAcs
+EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
-faultSourceTest_OBJECTS   = faultSourceTest
-#faultSourceTest_LIBS      = laserCppUtil laserAlarmPublisher laserSource ACSJMSMessageEntityStubs
-faultSourceTest_LIBS      = laserCppUtil laserSource ACSJMSMessageEntityStubs basenc acsncStubs acscommonStubs baciStubs acscomponentStubs acserrStubs acsnc
+testDriver_OBJECTS   = testDriver
+testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient maci AlarmSystemStubs ACSJMSMessageEntityStubs acsnc
 
-# faultSourceTest_LDFLAGS   = -ldl -rdynamic --export-dynamic -Wl,-whole-archive ../lib/liblaserSource.a -Wl,-no-whole-archive
+# <brief description of xxxxx program>
+testDriverAcs_OBJECTS   = testDriverAcs
+testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient maci AlarmSystemStubs acsnc
 
 #
 # special compilation flags for single c sources
@@ -58,19 +59,18 @@ faultSourceTest_LIBS      = laserCppUtil laserSource ACSJMSMessageEntityStubs ba
 #
 # Libraries (public and local)
 # ----------------------------
-#LIBRARIES       = testFaultSource
+LIBRARIES       = AlarmTestMountImpl
 LIBRARIES_L     = 
 
-#
-# <brief description of lllll library>
-#testFaultSource_OBJECTS   = testFaultSourceImpl
-#testFaultSource_LIBS   = testFaultSourceStubs laserSource laserCppUtil
+# <brief description of alsysTestMountImpl library>
+AlarmTestMountImpl_OBJECTS  = AlarmTestMountImpl
+AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory laserCppUtil
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = alarmTestPrologue alarmTATEnv alarmTestEpilogue runAcsTest.sh
 
 #
 # TCL scripts (public and local)
@@ -115,7 +115,7 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-#IDL_FILES = testFaultSource
+IDL_FILES = testCppAlarmSourceComponents
 IDL_TAO_FLAGS =
 USER_IDL =
 #
@@ -192,9 +192,14 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) sed.scan
+	$(RM) AlarmSystemConfiguration.xml
+	$(RM) logs.xml
+	$(RM) tmp tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

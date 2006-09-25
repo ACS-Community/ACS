@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmDefinitionServiceImpl.java,v 1.1.1.1 2005/03/30 13:37:51 acaproni Exp $
+ * $Id: AlarmDefinitionServiceImpl.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/03/30 13:37:51 $ 
- * $Revision: 1.1.1.1 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.2 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -46,7 +46,7 @@ import cern.laser.business.definition.data.ReductionLink;
 /**
  * 
  * 
- * @version $Revision: 1.1.1.1 $ $Date: 2005/03/30 13:37:51 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  * @author Katarina Sigerud
  */
 public class AlarmDefinitionServiceImpl {

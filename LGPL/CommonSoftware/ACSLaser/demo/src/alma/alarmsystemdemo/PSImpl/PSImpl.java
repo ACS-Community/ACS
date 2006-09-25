@@ -6,21 +6,20 @@ import alma.alarmsystemdemo.Mount;
 import alma.alarmsystemdemo.MountOperations;
 import alma.alarmsystemdemo.MountHelper;
 
+import alma.alarmsystem.source.ACSFaultState;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import cern.laser.source.alarmsysteminterface.AlarmSystemInterface;
-import cern.laser.source.alarmsysteminterface.FaultState;
+
+
 import java.sql.Timestamp;
 import java.util.Properties;
-import cern.laser.source.alarmsysteminterface.ASIException;
-
 
 
 class PSImpl extends ComponentImplBase implements PSOperations {
 	Mount mount = null;
 	
 	public void faultPS() {
-		System.out.println("faultPS");
-		send_alarm("AlarmSource","ALARM_SOURCE_PS",1,FaultState.ACTIVE);
+		send_alarm("AlarmSource","ALARM_SOURCE_PS",1,ACSFaultState.ACTIVE);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}
@@ -30,8 +29,7 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 		}
 	}
 	public void terminate_faultPS() {
-		System.out.println("faultPS");
-		send_alarm("AlarmSource","ALARM_SOURCE_PS",1,FaultState.TERMINATE);
+		send_alarm("AlarmSource","ALARM_SOURCE_PS",1,ACSFaultState.TERMINATE);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}
@@ -42,22 +40,21 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 	}
 	
 	public void send_alarm(String faultFamily, String faultMember, int faultCode, String faultState) {
-		AlarmSystemInterface alarmSource;
+		ACSAlarmSystemInterface alarmSource;
 		try {
 			alarmSource = ACSAlarmSystemInterfaceFactory.createSource(this.name());
-			FaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(
+			ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(
 					faultFamily, faultMember, faultCode);
 			fs.setDescriptor(faultState);
 			fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
 
 			Properties props = new Properties();
-			props.setProperty(FaultState.ASI_PREFIX_PROPERTY, "prefix");
-			props.setProperty(FaultState.ASI_SUFFIX_PROPERTY, "suffix");
+			props.setProperty(ACSFaultState.ASI_PREFIX_PROPERTY, "prefix");
+			props.setProperty(ACSFaultState.ASI_SUFFIX_PROPERTY, "suffix");
 			props.setProperty("TEST_PROPERTY", "TEST_VALUE");
 			fs.setUserProperties(props);
 
 			alarmSource.push(fs);
-			System.out.println("Alarm sent");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

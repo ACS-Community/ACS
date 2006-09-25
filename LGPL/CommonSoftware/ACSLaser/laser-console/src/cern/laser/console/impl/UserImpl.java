@@ -1,8 +1,8 @@
 /*
- * $Id: UserImpl.java,v 1.6 2005/09/28 09:51:43 acaproni Exp $
+ * $Id: UserImpl.java,v 1.7 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/28 09:51:43 $ 
- * $Revision: 1.6 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.7 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -192,12 +192,10 @@ public class UserImpl implements User {
   }
 
   public Configuration createConfiguration(String name) throws LaserConsoleException {
-	  System.out.println("# Creating configuration ["+name+"]");
 	  Configuration config;
 	  try {
 		  config = getDefaultConfiguration();
 	  } catch (Exception e) {
-		  System.out.println("# UserImpl::createConfiguration exception "+e.getMessage());
 		  e.printStackTrace();
 		  throw new LaserConsoleException(e.getMessage());
 	  }

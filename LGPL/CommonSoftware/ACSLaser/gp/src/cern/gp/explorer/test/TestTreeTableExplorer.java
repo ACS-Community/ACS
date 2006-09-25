@@ -17,7 +17,7 @@ import cern.gp.nodes.GPNode;
  * A simple test driver for the TreeTableExplorer
  * @todo test all functionality of the TreeableExplorer
  * @author  Vito Baggiolini
- * @version $Revision: 1.1 $ $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  */
 public class TestTreeTableExplorer {
   

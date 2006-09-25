@@ -348,10 +348,8 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             if ( user == null) {
             	throw new LaserConnectionException("cannot get User");
             }
-            System.out.println("### I have got the user!");
             
             if ( user.getName()!= Constants.GUEST_USER_NAME && !user.getPassword().equals(password) ) {
-            	System.out.println("### user is GUEST (name "+Constants.GUEST_USER_NAME+")");
                 NotifyDescriptor errorDescriptor =
                 new NotifyDescriptor.Message(
                 NbBundle.getMessage(AlarmConsoleLoginWindow.class,
@@ -371,7 +369,6 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             try {
                 if ( user.getConfiguration(Constants.DEFAULT_CONFIGURATION_NAME) != null ) {
 	                user.removeConfiguration(Constants.DEFAULT_CONFIGURATION_NAME);
-	                System.out.println("### User configuration removed");
                 }
             } catch (LaserConfigurationNotFoundException lcnf) {
                 // user.removeConfiguration
@@ -392,7 +389,6 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             // for test only
             //throw new LaserConsoleException();
             
-            System.out.println("### Getting the default configuration for user ->"+user.getName()+"<-");
             defaultConf = user.getDefaultConfiguration();
             
             if ( defaultConf == null ) {
@@ -403,8 +399,6 @@ public class AlarmConsoleLoginWindow extends TopComponent {
                 Constants.DEFAULT_CONFIGURATION_NAME);
             }
             defaultConfName = defaultConf.getName();
-            System.out.println("### Default configuration for user is: ");
-            System.out.println("### Name: "+defaultConf.getName());
         } catch (LaserUserNotFoundException lune) {
         	System.out.println("### login exception: LaserUserNotFoundException");
             close();
@@ -458,14 +452,12 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             
             try {
             	if( user != null) {
-            		System.out.println("### Loading the defaultConf");
             		withoutDefaultConf = true;
                 	defaultConf = user.createConfiguration(Constants.DEFAULT_CONFIGURATION_NAME);
                 	defaultConfName = defaultConf.getName();
                 	isTimeoutOccured = true;
             	}
             	else {
-            		System.err.println("### User is null");
             		throw new LaserConsoleException("user is null");
             	}
             }
@@ -484,7 +476,6 @@ public class AlarmConsoleLoginWindow extends TopComponent {
         }
         
         this.close();
-        System.out.println("###\n### PLACEHOLDER\n###");
         try {
             // user is successfully logged
             
@@ -502,7 +493,6 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             ProxyBuffer.getDefault().registerAlarmSelectionListener(
             AlarmContainer.getDefault());
             
-            System.out.println("### Selecting active alarms");
             // Add all the categories
             //cern.laser.client.impl.services.selection.CategorySelectionImpl catSel = new cern.laser.client.impl.services.selection.CategorySelectionImpl();
             //catSel.addAll(CategoriesPreLoader.getInstance().getChildren(CategoryBrowsingHandlerFactory.getHandler().getCategoryTreeRoot()));
@@ -512,7 +502,6 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             jms_selectionHandler.select(defaultConf.getSelection(),
             ProxyBuffer.getDefault() );
             
-            System.out.println("### "+activeAlarms.size()+" active alarms");
             
             logger.debug("selected " + activeAlarms.size() + " alarms ");
             //logger.debug("active alarms: ");

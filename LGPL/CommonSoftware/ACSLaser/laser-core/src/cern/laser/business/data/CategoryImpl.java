@@ -1,8 +1,8 @@
 /*
- * $Id: CategoryImpl.java,v 1.4 2005/09/28 10:03:30 acaproni Exp $
+ * $Id: CategoryImpl.java,v 1.5 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/28 10:03:30 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -19,7 +19,7 @@ import cern.laser.business.definition.data.CategoryDefinition;
  * 
  * 
  * 
- * @version $Revision: 1.4 $ $Date: 2005/09/28 10:03:30 $
+ * @version $Revision: 1.5 $ $Date: 2006/09/25 08:52:36 $
  * @author Niall Stapley
  * @author Katarina Sigerud
  * 

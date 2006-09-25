@@ -24,10 +24,8 @@ public class UserHandlerFactory {
         UserHandler handler = null;
 
         if ( Constants.getDefaultWorkingMode() == Constants.TEST_WORKING_MODE ) {
-        	System.out.println("### Getting the cern.laser.guiplatform.user.helpers.UserHandler");
             handler = cern.laser.guiplatform.user.helpers.UserHandler.get(); 
         } else {
-        	System.out.println("### Getting the cern.laser.console.UserHandler");
             handler = cern.laser.console.UserHandler.get();
         }
         return handler;

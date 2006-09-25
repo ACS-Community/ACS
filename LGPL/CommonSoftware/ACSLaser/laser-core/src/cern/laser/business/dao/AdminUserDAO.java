@@ -1,9 +1,9 @@
 /*
- * $Id: AdminUserDAO.java,v 1.2 2005/04/18 08:48:50 kzagar Exp $
+ * $Id: AdminUserDAO.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/04/18 08:48:50 $ 
- * $Revision: 1.2 $ 
- * $Author: kzagar $
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.3 $ 
+ * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
@@ -14,7 +14,7 @@ import cern.laser.business.data.AdminUser;
 /**
  * 
  * 
- * @version $Revision: 1.2 $ $Date: 2005/04/18 08:48:50 $
+ * @version $Revision: 1.3 $ $Date: 2006/09/25 08:52:36 $
  * @author Klemen Zagar
  */
 public interface AdminUserDAO {

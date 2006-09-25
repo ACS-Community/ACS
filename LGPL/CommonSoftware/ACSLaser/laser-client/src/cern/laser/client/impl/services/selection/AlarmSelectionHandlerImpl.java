@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSelectionHandlerImpl.java,v 1.3 2005/09/28 09:48:45 acaproni Exp $
+ * $Id: AlarmSelectionHandlerImpl.java,v 1.4 2006/09/25 08:52:36 acaproni Exp $
  *
- * $Date: 2005/09/28 09:48:45 $ 
- * $Revision: 1.3 $ 
+ * $Date: 2006/09/25 08:52:36 $ 
+ * $Revision: 1.4 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -27,7 +27,7 @@ import cern.laser.util.LogTimeStamp;
  * DOCUMENT ME!
  * 
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
   private static final Logger LOGGER = Logger.getLogger(AlarmSelectionHandlerImpl.class.getName());
@@ -84,20 +84,14 @@ public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
   public void resetSelection() throws LaserException {
     try {
       if (heartbeatHelper != null) {
-    	  System.out.println("### Stopping heartbeatHelper...");
         heartbeatHelper.stopHeartbeatCheck();
-        System.out.println("### heartbeatHelper stopped");
         heartbeatHelper = null;
       } else {
-    	  System.out.println("### null heartbeatHelper: stop skipped");
       }
       if (alarmSelectionHelper != null) {
-    	  System.out.println("### Resetting alarmSelectionHelper...");
         alarmSelectionHelper.resetSelection();
-        System.out.println("### alarmSelectionHelper reset done");
       }
       else {
-    	  System.out.println("### null alarmSelectionHelper: reset skipped");
       }
     } catch (Exception e) {
     	System.err.println("### Exception: "+e.getMessage());
@@ -123,22 +117,18 @@ public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
   public Map select(Selection selection, AlarmSelectionListener selectionListener) throws LaserException,
       LaserTimeOutException {
     if (selection == null) {
-    	System.err.println("### Selection parameter is null");
     	throw new IllegalArgumentException("selection parameter is null"); 
     }
     if (selection.getCategorySelection() == null) { 
-    	System.err.println("### No categories selected");
     	throw new IllegalArgumentException("no categories selected"); 
     }
     try {
       resetSelection();
 
       // setup the heartbeat reception and start checking
-      System.out.println("### Subscribing to Heartbeat");
       startHeartbeatSubscription(selectionListener);
 
       // perform the subscriptions
-      System.out.println("### Found "+selection.getCategorySelection().list().length+" to subscribe");
       if (selection.getCategorySelection().list().length != 0) {
         return subscribe(selection, selectionListener);
       } else {

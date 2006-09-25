@@ -13,7 +13,7 @@ import java.beans.PropertyDescriptor;
 
 /**
  * A bean info class for a ColoredBean
- * @version $Revision: 1.1 $ $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
  * @author  Vito Baggiolini
  */
 public class ColoredBeanBeanInfo extends BeanInfoSupport {

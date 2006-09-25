@@ -27,7 +27,7 @@ import cern.gp.nodes.impl.NodeUtils;
  * a NetBeans Mode. It has methods to easily configure the colums of the Table.
  * It is recommended that the developer uses the NodeFactory to create the Node hierarchy to be explored.
  *
- * @version $Revision: 1.1 $  $Date: 2005/06/07 03:26:13 $
+ * @version $Revision: 1.2 $  $Date: 2006/09/25 08:52:36 $
  * @author Vito Baggiolini
  */
 public class ListTableExplorer extends GPListExplorerPanel implements TableHolder, TablePropertyHolder {
@@ -293,7 +293,7 @@ public class ListTableExplorer extends GPListExplorerPanel implements TableHolde
   /**
    * This class is a regular table view that gives access to the underlying table and tree from Swing.
    * 
-   * @version $Id: ListTableExplorer.java,v 1.1 2005/06/07 03:26:13 kzagar Exp $
+   * @version $Id: ListTableExplorer.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
    * @author Lionel Mestre
    */
   private static class GPTreeTableView extends TreeTableView implements TreeTableViewTableAccess {

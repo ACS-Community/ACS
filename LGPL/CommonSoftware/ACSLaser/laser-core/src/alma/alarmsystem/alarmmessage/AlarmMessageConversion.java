@@ -367,7 +367,7 @@ public class AlarmMessageConversion {
 		while (iter.hasNext()) {
 			try {
 				obj = iter.next();
-				res[pos++]=(String)obj;
+				res[pos++]=obj.toString();
 			} catch (ClassCastException cce) {
 				System.err.println("*** Calls cast exception: "+cce.getMessage());
 				System.err.println("*** Original class is "+obj.getClass().getName());

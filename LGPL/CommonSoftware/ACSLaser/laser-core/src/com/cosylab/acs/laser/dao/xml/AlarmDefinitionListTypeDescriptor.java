@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.7</a>, using an XML
  * Schema.
- * $Id: AlarmDefinitionListTypeDescriptor.java,v 1.2 2005/06/14 15:21:12 mslenc Exp $
+ * $Id: AlarmDefinitionListTypeDescriptor.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
  */
 
 package com.cosylab.acs.laser.dao.xml;
@@ -14,7 +14,7 @@ package com.cosylab.acs.laser.dao.xml;
 /**
  * Class AlarmDefinitionListTypeDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2005/06/14 15:21:12 $
+ * @version $Revision: 1.3 $ $Date: 2006/09/25 08:52:36 $
  */
 public class AlarmDefinitionListTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl
 {
