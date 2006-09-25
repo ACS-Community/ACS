@@ -32,8 +32,9 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSFaultState.h"
-#include "ACSFaultStateImpl.h"
 #include <logging.h>
+
+using namespace laserUtil;
 
 bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
@@ -134,7 +135,7 @@ auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultS
 	if (!(*m_useACSAlarmSystem)) {
 		return m_AlarmSystemInterfaceFactory_p->createFaultState(family, member, code);
 	} else {
-		laserSource::ACSFaultState * asFaultStatePtr = new laserSource::ACSFaultStateImpl(family, member, code);
+		laserSource::ACSFaultState * asFaultStatePtr = new laserSource::ACSFaultState(family, member, code);
 		auto_ptr<laserSource::ACSFaultState> asFaultStateAutoPtr(asFaultStatePtr);
 		return asFaultStateAutoPtr;
 	}
@@ -147,7 +148,7 @@ auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultS
 	if (!(*m_useACSAlarmSystem)) {
 		return m_AlarmSystemInterfaceFactory_p->createFaultState();
 	} else {
-		laserSource::ACSFaultState * asIfProxyPtr = new laserSource::ACSFaultStateImpl();
+		laserSource::ACSFaultState * asIfProxyPtr = new laserSource::ACSFaultState();
 		auto_ptr<laserSource::ACSFaultState> asIfAutoPtr(asIfProxyPtr);
 		return asIfAutoPtr;
 	}

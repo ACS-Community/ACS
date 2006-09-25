@@ -1,106 +1,52 @@
-#ifndef ACS_FAULT_STATE_H
-#define ACS_FAULT_STATE_H
-/*******************************************************************************
-* ALMA - Atacama Large Millimiter Array
-* (c) European Southern Observatory, 2006 
-* 
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-* 
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-* 
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*
-* "@(#) $Id$"
-*
-* who       when      what
-* --------  --------  ----------------------------------------------
-* acaproni  2006-08-16  created
-*/
+#ifndef FAULTSTATE_H_
+#define FAULTSTATE_H_
 
-/************************************************************************
- *
- *----------------------------------------------------------------------
- */
- 
-#ifndef __cplusplus
-#error This is a C++ include file and cannot be used from plain C
-#endif
+#include <iostream>	
+#include <memory>
+#include "Properties.h"
+#include "Timestamp.h"
 
-#include <string>
+using std::string;
+using laserUtil::Properties;
+using laserUtil::Timestamp;
 
-#include <Properties.h>
-#include <Timestamp.h>
-#include <iostream>
-
-using namespace std;
-using namespace laserUtil;
-
-namespace laserSource
+namespace laserSource 
 {
 	/*
-	 * The interface for a FaultState.
-	 * It manages the triplet (family, member, code) and the descriptor.
-	 * All other methods must be defined in the derived classes.
+	 * Class representing a single fault state for use by cpp alarm source clients 
+	 * which wish to send an alarm to the laser alarm server.
 	 */
-	class ACSFaultState 
+	class ACSFaultState
 	{	
 		public:
 
 			/**
 			 * Default constructor, values must be subsequently initialized using setters
 			 */
-			ACSFaultState() {
-				family=member=descriptor="";
-				code=0;
-			}
+			ACSFaultState();
 
 			/**
 			 * Copy constructor.
 			 */
-			ACSFaultState(ACSFaultState & fltState) {
-				*this=fltState;
-			}
+			ACSFaultState(const ACSFaultState &);
 
 			/**
 			 * Constructor for initializing a fault state with values
 			 */
-			ACSFaultState(string theFamily, string theMember, int theCode) {
-				this->setFamily(theFamily);
-				this->setMember(theMember);
-				this->setCode(theCode);
-			}
+			ACSFaultState(string family, string member, int code);
 
 			/*
 			 * Destructor
 			 */
-			virtual ~ACSFaultState() {}
+			virtual ~ACSFaultState();
 
-			ACSFaultState & operator=(ACSFaultState & rhs) {
-				family=rhs.getFamily();
-				code=rhs.getCode();
-				member=rhs.getMember();
-				descriptor=rhs.getDescriptor();
-				return (*this);
-			}
+			ACSFaultState & operator=(const ACSFaultState & rhs);
  
-			/**
- 			 * Returns an XML representation of the fault state. 
- 			 */
-			virtual string toXML(int amountToIndent = 3)=0;
-
 			/** 
 			 * Fault code accessor method.
 			 * @param faultCode the fault code.
 			 */
-			void setCode(int faultCode) {
+			void setCode(const int faultCode) {
 				code=faultCode;
 			}
 
@@ -108,7 +54,7 @@ namespace laserSource
 			 * Fault code accessor method.
 			 * @return the fault code.
 			 */
-			int getCode() {
+			int getCode() const {
 				return code;
 			}
 
@@ -123,7 +69,7 @@ namespace laserSource
 			/** Fault descriptor accessor method.
 			 * @return string the fault descriptor.
 			 */
-			string getDescriptor() {
+			string getDescriptor() const {
 				return descriptor;
 			}
 
@@ -139,7 +85,7 @@ namespace laserSource
 			 * Fault family accessor method.
 			 * @return the fault family.
 			 */
-			string getFamily() {
+			string getFamily() const {
 				return family;
 			}
 	 
@@ -155,48 +101,65 @@ namespace laserSource
 			 * Fault member accessor method.
 			 * @return the fault member.
 			 */
-			string getMember() {
+			string getMember() const {
 				return member;
 			}
+			/**
+ 			 * Returns an XML representation of the fault state. NOTE: this 
+ 			 * will not be a complete XML document, but just a fragment.
+ 			 *
+			 * @param amountToIndent the amount (in spaces) to indent for readability
+			 *
+ 			 * For example:
+ 			 *
+ 			 * <fault-state family="AlarmSource" member="ALARM_SOURCE_ANTENNA" code="1">
+ 			 *     <descriptor>TERMINATE</descriptor>
+ 			 *     <user-properties>
+ 			 *        <property name="ASI_PREFIX" value="prefix"/>
+ 			 *        <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+ 			 *        <property name="ASI_SUFFIX" value="suffix"/>
+ 			 *     </user-properties>
+ 			 *     <user-timestamp seconds="1129902763" microseconds="105000"/>
+ 			 *  </fault-state>
+ 			 */
+			virtual string toXML(int amountToIndent = 3);
 
-			/** 
-			 * User properties accessor method.
+			/** User properties accessor method.
 			 * @param properties the user properties.
 			 */
-			virtual void setUserProperties(auto_ptr<Properties> theProperties) =0;
+			virtual void setUserProperties(auto_ptr<Properties> theProperties) { userProperties = theProperties; }
 
-			/** 
-			 * User properties accessor method.
+			/** User properties accessor method.
 			 * @return Properties the user properties.
 			 */
-			virtual Properties & getUserProperties() =0;
+			const virtual Properties & getUserProperties() const { return *userProperties; }
 
-			/** 
-			 * Timestamp accessor method.
+			/** Timestamp accessor method.
 			 * @param timestamp the timestamp.
 			 */
-			virtual void setUserTimestamp(auto_ptr<Timestamp> theTimestamp)=0;
+			virtual void setUserTimestamp(auto_ptr<Timestamp> theTimestamp) { userTimestamp = theTimestamp; }
 
-			/** 
-			 * Timestamp accessor method.
+			/** Timestamp accessor method.
 			 * @return long the timestamp.
 			 */
-			virtual Timestamp & getUserTimestamp()=0;
+			const virtual Timestamp & getUserTimestamp() const { return *userTimestamp; }
 
-			virtual bool getActivatedByBackup() =0;
+			virtual bool getActivatedByBackup() const { return activatedByBackup; }
+			virtual void setActivatedByBackup(bool newActivatedByBackup) { activatedByBackup = newActivatedByBackup; }
 
-			virtual void setActivatedByBackup(bool newActivatedByBackup) =0;
+			virtual bool getTerminatedByBackup() const { return terminatedByBackup; }
+			virtual void setTerminatedByBackup(bool newTerminatedByBackup) { terminatedByBackup = newTerminatedByBackup; }
 
-			virtual bool getTerminatedByBackup() =0;
-
-			virtual void setTerminatedByBackup(bool newTerminatedByBackup) =0;
-		
 		private:
+
 			string member;
 			string family;
 			string descriptor;
 			int code;
-
+			bool activatedByBackup; 
+			bool terminatedByBackup;
+			auto_ptr<Properties> userProperties;
+			auto_ptr<Timestamp> userTimestamp;
 	};
 };
-#endif
+#endif /*FAULTSTATE_H_*/

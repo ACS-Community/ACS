@@ -26,7 +26,7 @@
 #include "vltPort.h"
 
 #include "ACSAlarmSystemInterfaceProxy.h"
-#include "ACSFaultStateImpl.h"
+#include "ACSFaultState.h"
 
 static char *rcsId="@(#) $Id$"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
@@ -34,7 +34,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): ACSAlarmSystemInterface() {
 	setSourceName(name);
 	// Get the logger
-	m_logger= new LoggingProxy(0,0,31);
+	m_logger = new LoggingProxy(0 ,0, 31);
 	LoggingProxy::init (m_logger);
 }
 
@@ -62,7 +62,7 @@ ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): ACSAlar
  */
 void ACSAlarmSystemInterfaceProxy::push(vector<laserSource::ACSFaultState> & states) {
 	for (unsigned int t=0; t<states.size(); t++) {
-		laserSource::ACSFaultStateImpl fs(states[t]);
+		laserSource::ACSFaultState fs(states[t]);
 		push(fs);
 	}
 }

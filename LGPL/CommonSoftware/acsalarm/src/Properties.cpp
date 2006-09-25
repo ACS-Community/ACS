@@ -57,23 +57,31 @@ int Properties::operator==(const Properties &rhs) const
 string Properties::getProperty(string key)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::getProperty(): entering");
+	if(myLoggerSmartPtr != NULL) {
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::getProperty(): entering");
+	}
 
 	string retVal;
 	map<string, string >::iterator mapEntry = propertiesMap.find(key);
 	if(mapEntry != propertiesMap.end())
 	{
 		string logStr = "Properties::getProperty(): entry for: " + key + " was found"; 
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, logStr); 
+		if(myLoggerSmartPtr != NULL) {
+			myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, logStr); 
+		}
 		retVal = mapEntry->second;
 	}
 	else 
 	{ 
 		string logStr = "Properties::getProperty(): entry for: " + key + " was not found"; 
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, logStr); 
+		if(myLoggerSmartPtr != NULL) {
+			myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, logStr); 
+		}
 	}
 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::getProperty(): exiting");
+	if(myLoggerSmartPtr != NULL) {
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::getProperty(): exiting");
+	}
 	return retVal;
 } 
 
@@ -102,16 +110,22 @@ auto_ptr<vector<string> > Properties::propertyNames()
 void Properties::setProperty(string key, string value) throw(invalid_argument)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::setProperty(): entering.");
+	if(myLoggerSmartPtr != NULL) {
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::setProperty(): entering.");
+	}
 	if(0 == key.length())
 	{
 		// TODO later: can a NULL be passed in? if so, check for it and throw exception 
 		throw invalid_argument("zero-length key not allowed");
 	}
 	string logStr = "Properties::setProperty(): inserting key: " + key + " and value: " + value;
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, logStr);
+	if(myLoggerSmartPtr != NULL) {
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, logStr);
+	}
 	propertiesMap.insert(PropertyMapEntryType( key, value ) );
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::setProperty(): exiting.");
+	if(myLoggerSmartPtr != NULL) {
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "Properties::setProperty(): exiting.");
+	}
 }
 
 /**
