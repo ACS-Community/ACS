@@ -76,7 +76,7 @@ std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
 	// Get the DAO
 	try {
 		return cdbDAL->get_DAO("Alarms/AlarmSystemConfiguration");
-	} catch (CDB::RecordDoesNotExist) {
+	} catch (cdbErrType::CDBRecordDoesNotExistEx) {
 		return "";
 	}
 }

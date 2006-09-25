@@ -20,6 +20,7 @@
 #include "baciROcontImpl_T.h"
 #include "baciPcontImpl_T.i"
 #include "baciROcommonImpl_T.i"
+#include <cdbErrType.h>
 
 template<ACS_RO_C> 
 ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
@@ -104,7 +105,7 @@ bool ROcontImpl<ACS_RO_TL>::readCharacteristics()
       std::istringstream is(str.in()); \
       (istream&) is >> var ; \
       if (!is) \
-	  throw CDB::WrongDataType(); \
+	  throw cdbErrType::WrongCDBDataTypeEx(); \
       }
 
       READ_VALUE("alarm_low_on", alarmLowOn_m);

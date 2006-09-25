@@ -37,7 +37,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import com.cosylab.CDB.XMLerror;
+import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import java.util.*;
 
 /**
@@ -88,7 +89,8 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
 	 }
 	 if (xmlSolver.m_errorString != null) {
 	     String info = "XML parser error: " + xmlSolver.m_errorString;
-	     XMLerror xmlErr = new XMLerror(info);
+	     AcsJCDBXMLErrorEx xmlErr = new AcsJCDBXMLErrorEx();
+	     xmlErr.setErrorString(info);
 	     System.err.println(info);
 	 }
 	 
@@ -149,7 +151,7 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
 	 
 	 if( slashIndex != -1 ) { //nameToLookup is String rep. of the full path to last selected node
 	     String nodeName = nameToLookup.substring(0,slashIndex); //path of the parent node
-	     if (node.getNodesMap().containsKey(nodeName)) { // Returns true if map contains a mapping for the specified key.
+	     if (node.getNodesMap().containsKey(nodeName)) { //Returns true if map contains a mapping for the specified key.
 		 XMLTreeNode nextNode = (XMLTreeNode) node.getNodesMap().get(nodeName);
 		 return new BrowserJNDIXMLContext(nextNode).lookup(nameToLookup.substring(slashIndex+1));
 	     }

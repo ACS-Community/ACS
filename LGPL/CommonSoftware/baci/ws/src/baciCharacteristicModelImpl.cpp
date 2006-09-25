@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.11 2006/09/25 08:48:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,6 +28,7 @@
 #include "baciDB.h"
 #include "baciCharacteristicModelImpl.h"
 #include "baciCDBPropertySet.h"
+#include <cdbErrType.h>
 
 namespace baci {
 
@@ -226,14 +227,14 @@ CharacteristicModelImpl::get_characteristic_by_name (const char * name)
 	
 	return value_p;
 	}
-    catch (CDB::FieldDoesNotExist& fde)
+    catch (cdbErrType::CDBFieldDoesNotExistEx& fde)
 	{
 	ACS::NoSuchCharacteristic nsc;
 	nsc.characteristic_name = CORBA::string_dup(name);
 	nsc.component_name = CORBA::string_dup(model_name_m.c_str());
 	throw nsc;
 	}
-    catch (cdbErrType::CDBRecordDoesNotExistExImpl& rde)
+    catch (cdbErrType::CDBRecordDoesNotExistEx& rde)
 	{
 	ACS::NoSuchCharacteristic nsc;
 	nsc.characteristic_name = CORBA::string_dup(name);

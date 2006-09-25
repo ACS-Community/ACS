@@ -13,7 +13,7 @@ import org.xml.sax.InputSource;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAOOperations;
-import com.cosylab.CDB.XMLerror;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import com.cosylab.cdb.jdal.DAOImpl;
 import com.cosylab.cdb.jdal.XMLHandler;
 
@@ -59,9 +59,11 @@ public final class DAOLocalProxy extends DAOProxy
 		
 		saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
 		
-		if (xmlSolver.m_errorString != null)
-			throw new XMLerror("XML parser error: " + xmlSolver.m_errorString);
-		
+		if (xmlSolver.m_errorString != null){
+			AcsJCDBXMLErrorEx e = new AcsJCDBXMLErrorEx();
+			e.setErrorString(xmlSolver.m_errorString);
+			throw e;
+		}
 		// create non-CORBA related, silent DAO
 		return new DAOImpl(curl, xmlSolver.m_rootNode, null, true);
 	}

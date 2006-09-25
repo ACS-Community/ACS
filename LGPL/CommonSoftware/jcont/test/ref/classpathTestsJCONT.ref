@@ -7,7 +7,7 @@
 1 - ----------T--:--:--.--- FINE [testContainer] POA activated
 1 - ----------T--:--:--.--- FINE [testContainer] Manager reference not available. Trying to resolve...
 1 - ----------T--:--:--.--- FINE [testContainer] creating the AcsContainer testContainer
-1 - ----------T--:--:--.--- FINE [testContainer] Failed to configure logging (default values will be used). Reason: Log config initialization at least partially failed. Failed to read node MACI/Containers/testContainer from the CDB (msg='IDL:cosylab.com/CDB/RecordDoesNotExist:1.0'). 
+1 - ----------T--:--:--.--- FINE [testContainer] Failed to configure logging (default values will be used). Reason: Log config initialization at least partially failed. Failed to read node MACI/Containers/testContainer from the CDB (msg='IDL:alma/cdbErrType/CDBRecordDoesNotExistEx:1.0'). 
 1 - ----------T--:--:--.--- FINE [testContainer] AcsContainer 'testContainer' created.
 1 - ----------T--:--:--.--- FINE [testContainer] call to authenticate() answered with 'AR testContainer'.
 1 - ----------T--:--:--.--- FINE [testContainer] call to name() answered with 'testContainer'.

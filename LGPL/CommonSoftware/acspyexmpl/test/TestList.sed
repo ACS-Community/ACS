@@ -4,13 +4,13 @@ s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9]
 s/[0-9][0-9][0-9][0-9][\/][0-9][0-9][\/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [a-z,A-Z,0-9,-]*/---------- --:--:-- username/g
 s/acspyTestLogging.py,v [0-9]*.[0-9]*/acspyTestLogging.py,v x.x/g
 s/get local manager from [a-z,A-Z,0-9,-]*/get local manager from xxxx/g
-s/corbaloc::[a-z,A-Z,0-9,-,.]*:[0-9]*\//corbaloc::xxxx:xxxx\//g
+s/corbaloc::[a-z,A-Z,0-9,_,.,-]*:[0-9]*/corbaloc::xxxx:xxxx/g
 s/$Id: .* Exp/-Id:  acspyTestLogging.py,v x.x ---------- --:--:-- username Exp/g
 s/The temperature difference is [0-9,.]*/The temperature difference is x.x/g
 s/TimeStamp=[0-9,a-z,A-Z,:, ]*,/TimeStamp=xxxx,/g
 s/File=[^,]*,/File=xxx/g
 s/Line=[0-9]*,/Line=xxx/g
-s/Host=[0-9,a-z,A-Z,-,_,.]*,/Host=xxxx,/g
+s/Host=[0-9,a-z,A-Z,_,.,-]*,/Host=xxxx,/g
 s/Process=PID: [0-9]*/Process=PID: xxx/g
 s/RTContext: ([-0-9,a-z,A-Z,_]*, [-0-9,a-z,A-Z,_]*, [-0-9,a-z,A-Z,_]*, [0-9,a-z,A-Z,-,_]*,/RTContext: (xxx, xxx, xxx, xxx/g
 s/Thread=ID: [0-9]*/Thread=ID: xxx/g

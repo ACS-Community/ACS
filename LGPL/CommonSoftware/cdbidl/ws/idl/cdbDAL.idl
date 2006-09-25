@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDAL.idl,v 1.3 2006/08/24 08:26:45 cparedes Exp $"
+* "@(#) $Id: cdbDAL.idl,v 1.4 2006/09/25 08:38:55 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,7 @@
 
 
 #include <acscomponent.idl>
+#include "cdbErrType.idl"
 
 #pragma prefix "cosylab.com"
 
@@ -44,17 +45,6 @@ module CDB {
 	typedef sequence <long> longSeq;
 	typedef sequence <double> doubleSeq;
 
-	// exceptions
-	exception WrongDataType{};
-	exception FieldDoesNotExist{};
-	exception RecordDoesNotExist{};
-	exception XMLerror{ string msg; };
-	
-	exception FieldIsReadOnly{};
-	exception RecordIsReadOnly{};
-	exception RecordAlreadyExists{};
-	exception CDBException{ string msg; };
-
 	/**
 	 * Interface to manipulate xml
 	 * 
@@ -63,28 +53,28 @@ module CDB {
 		/*
 		 * Give a long value for a specific property of the Node
 		 */
-		long		get_long( in string propertyName )		raises (WrongDataType, FieldDoesNotExist);
+		long		get_long( in string propertyName )		raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
 		/*
 		 * Give a double value for a specific property of the Node
 		 */
-		double		get_double( in string propertyName )	raises (WrongDataType, FieldDoesNotExist);
+		double		get_double( in string propertyName )	raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
 		/*
 		 * Give a string value for a specific property of the Node
 		 */
-		string		get_string( in string propertyName )	raises (WrongDataType, FieldDoesNotExist);
-		string		get_field_data( in string propertyName )raises (WrongDataType, FieldDoesNotExist);
+		string		get_string( in string propertyName )	raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+		string		get_field_data( in string propertyName )raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
 		/*
 		 * Give a string seq of the value of specific property of the Node
 		*/
-		stringSeq	get_string_seq( in string propertyName )raises (WrongDataType, FieldDoesNotExist);
+		stringSeq	get_string_seq( in string propertyName )raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
 		/*
 		 * Give a long seq of the value of specific property of the Node
 		 */
-		longSeq		get_long_seq( in string propertyName )	raises (WrongDataType, FieldDoesNotExist);
+		longSeq		get_long_seq( in string propertyName )	raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
 		/*
 		 * Give a double seq of the value of specific property of the Node
 		 */
-		doubleSeq	get_double_seq( in string propertyName )raises (WrongDataType, FieldDoesNotExist);
+		doubleSeq	get_double_seq( in string propertyName )raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
 
 		void 		destroy();
 	};
@@ -105,11 +95,11 @@ module CDB {
 		/**
 		 * Gives an xml string of a given curl  
 		 */
-		string	get_DAO( in string curl ) raises (RecordDoesNotExist,XMLerror);
+		string	get_DAO( in string curl ) raises (cdbErrType::CDBRecordDoesNotExistEx,cdbErrType::CDBXMLErrorEx);
 		/**
 		 * Gives a DAO node of a given curl
 		 */
-		DAO get_DAO_Servant( in string curl )	raises (RecordDoesNotExist,XMLerror);
+		DAO get_DAO_Servant( in string curl )	raises (cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBXMLErrorEx);
 		oneway 	void 	shutdown();
 
 		//data change handling
@@ -149,33 +139,33 @@ module CDB {
 		 * \param property name to set the value
 		 * \param the value to write
 		 */
-		void set_long(in string propertyName, in long value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_long(in string propertyName, in long value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
 		/**
 		 * Set a double value in the given property of the current Node
 		 * \param property name to set the value
 		 * \param the value to write
 		 */
-		void set_double(in string propertyName, in double value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_double(in string propertyName, in double value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
 		/**
 		 * Set a string value in the given property of the current Node
 		 * \param property name to set the value
 		 * \param the value to write
 		 */
-		void set_string(in string propertyName, in string value) raises(FieldDoesNotExist, FieldIsReadOnly);
-		void set_field_data(in string propertyName, in string value) raises(WrongDataType, FieldDoesNotExist, FieldIsReadOnly);
+		void set_string(in string propertyName, in string value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		void set_field_data(in string propertyName, in string value) raises(cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
 		/**
 		 * Set a string sequence value in the given property of the current Node
 		 * \param property name to set the value
 		 * \param the value to write
 		 */
-		void set_string_seq(in string propertyName, in stringSeq value) raises(FieldDoesNotExist, FieldIsReadOnly);
-		void set_long_seq(in string propertyName, in longSeq value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_string_seq(in string propertyName, in stringSeq value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		void set_long_seq(in string propertyName, in longSeq value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
 		/**
 		 * Set a double sequence value in the given property of the current Node
 		 * \param property name to set the value
 		 * \param the value to write
 		 */
-		void set_double_seq(in string propertyName, in doubleSeq value) raises(FieldDoesNotExist, FieldIsReadOnly);
+		void set_double_seq(in string propertyName, in doubleSeq value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
 	};
 	
 	/**
@@ -187,24 +177,24 @@ module CDB {
 		 * \param curl of the root node to return
 		 * \return WDAO Node of the given curl
 		 */
-		WDAO get_WDAO_Servant(in string curl) raises(RecordDoesNotExist, RecordIsReadOnly, XMLerror);
+		WDAO get_WDAO_Servant(in string curl) raises(cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBRecordIsReadOnlyEx, cdbErrType::CDBXMLErrorEx);
 		/**
 		 * Create node in that curl given a xml string. It fails if the record on that curl aleady exist.
 		 * \param curl where the new node is going to be in the tree
 		 * \param the string xml to create the node
 		 */
-		void add_node(in string curl, in string xml) raises(RecordAlreadyExists, XMLerror, CDBException);
+		void add_node(in string curl, in string xml) raises(cdbErrType::CDBRecordAlreadyExistsEx, cdbErrType::CDBXMLErrorEx, cdbErrType::CDBExceptionEx);
 		/**
 		 * Remove the node of the given curl
 		 * \param curl of the node to remove
 		 */
-		void remove_node(in string curl) raises(RecordDoesNotExist, RecordIsReadOnly);
+		void remove_node(in string curl) raises(cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBRecordIsReadOnlyEx);
 		/**
 		 * Change content of a node identified by curl so given xml is scanned for differences which are applied.
 		 * \param curl of the node to change
 		 * \param the string of the xml
 		 */
-		void set_DAO(in string curl, in string xml) raises(RecordDoesNotExist, FieldDoesNotExist, RecordIsReadOnly, XMLerror, CDBException);
+		void set_DAO(in string curl, in string xml) raises(cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBRecordIsReadOnlyEx, cdbErrType::CDBXMLErrorEx, cdbErrType::CDBExceptionEx);
 	};
 
 };

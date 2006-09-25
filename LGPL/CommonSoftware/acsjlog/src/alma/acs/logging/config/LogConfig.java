@@ -30,8 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.cosylab.CDB.DALOperations;
-import com.cosylab.CDB.RecordDoesNotExist;
-import com.cosylab.CDB.XMLerror;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
 
 /**
  * Class that encapsulates all configuration sources (defaults, properties, CDB) for Java logging,
@@ -152,7 +152,7 @@ public class LogConfig {
                     defaultLogConfigData.takeCdbContainerXml(containerConfigXML);
                 } catch (LogConfigException ex) {
                     errMsg.append(ex.getMessage());
-                } catch (Throwable thr) { // XMLerror, RecordDoesNotExist, etc
+                } catch (Throwable thr) { // CDBXMLErrorEx, CDBRecordDoesNotExistEx, etc
                     errMsg.append("Failed to read node " + cdbContainerPath + " from the CDB (msg='" + thr.getMessage() + "'). ");
                 }
             }
@@ -168,7 +168,7 @@ public class LogConfig {
                     getLogConfigData(loggerName);
                 } catch (LogConfigException ex) {
                     errMsg.append(ex.getMessage());
-                } catch (Throwable thr) { // XMLerror, RecordDoesNotExist, etc
+                } catch (Throwable thr) { // CDBXMLErrorEx, CDBRecordDoesNotExistEx, etc
                     errMsg.append("Failed to read config for logger " + loggerName + " from the CDB (msg='" + thr.getMessage() + "'). ");
                 }
             }
@@ -206,11 +206,11 @@ public class LogConfig {
      * <p> 
      * Note that a copy of the config data is returned, so changes to it 
      * will not affect any other object's configuration.
-     * @throws RecordDoesNotExist 
-     * @throws XMLerror 
+     * @throws CDBRecordDoesNotExistEx 
+     * @throws CDBXMLErrorEx 
      * @throws LogConfigException 
      */
-    public LogConfigData getLogConfigData(String loggerName) throws XMLerror, RecordDoesNotExist, LogConfigException {
+    public LogConfigData getLogConfigData(String loggerName) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, LogConfigException {
         if (loggerName == null) {
             return getLogConfigData();
         }

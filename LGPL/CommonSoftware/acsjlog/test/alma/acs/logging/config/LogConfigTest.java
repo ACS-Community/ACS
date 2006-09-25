@@ -173,7 +173,7 @@ public class LogConfigTest extends TestCase {
 		}
 		catch (LogConfigException ex) {
 			assertEquals("Log config initialization at least partially failed. " + 
-					"Failed to read node MACI/Containers/frodoContainer from the CDB (msg='This is a test exception.'). ", ex.getMessage());
+					"Failed to read node MACI/Containers/frodoContainer from the CDB (msg='IDL:alma/cdbErrType/CDBRecordDoesNotExistEx:1.0'). ", ex.getMessage());
 		}
 		
 	}

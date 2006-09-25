@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCDBPropertySet.cpp,v 1.98 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciCDBPropertySet.cpp,v 1.99 2006/09/25 08:48:50 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -33,11 +33,13 @@
 #include "logging.h"
 
 #include <orbsvcs/Property/CosPropertyService_i.h>
+#include <cdbErrType.h>
 
  using namespace baci;
  using namespace cdb;
+ using namespace cdbErrType;
 
-ACE_RCSID(baci, baciCDBPropertySet, "$Id: baciCDBPropertySet.cpp,v 1.98 2006/09/01 02:20:54 cparedes Exp $");
+ACE_RCSID(baci, baciCDBPropertySet, "$Id: baciCDBPropertySet.cpp,v 1.99 2006/09/25 08:48:50 cparedes Exp $");
 
 CDBPropertySet * CDBPropertySet::instance_mp = 0;
 
@@ -443,7 +445,7 @@ CDBPropertySet::get_property_value (const char * property_name)
       
       return value_p;
       }
-  catch (CDB::FieldDoesNotExist& fde)
+  catch (cdbErrType::CDBFieldDoesNotExistEx& fde)
       {
       throw CosPropertyService::PropertyNotFound();
       }
@@ -757,7 +759,7 @@ CDBPropertySet::is_property_defined (const char * property_name)
       CORBA::String_var strVal = node->get_string(property_name);
       return true;
       }
-  catch (CDB::FieldDoesNotExist& fde)
+  catch (CDBFieldDoesNotExistEx &fde)
       {
       return false;
       }

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.118 2006/09/24 18:45:30 bjeram Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.119 2006/09/25 08:48:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.118 2006/09/24 18:45:30 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.119 2006/09/25 08:48:50 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -196,7 +196,6 @@ int main(int argc, char* argv[])
     LoggingProxy::ProcessName(argv[0]);
     LoggingProxy::ThreadName("main");
     ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created !"));
-
     ACS_SHORT_LOG((LM_INFO,"baciTestServer: Starting"));
 
     if ( argc>=2 )

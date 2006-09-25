@@ -275,7 +275,7 @@ bool RWcontImpl<ACS_RW_TL>::readCharacteristics()
       std::istringstream is(str.in()); \
       (istream&) is >> var ; \
       if (!is) \
-	  throw CDB::WrongDataType(); \
+	  throw cdbErrType::WrongCDBDataTypeEx(); \
       }
 
       READ_VALUE("min_value", min_value_m);

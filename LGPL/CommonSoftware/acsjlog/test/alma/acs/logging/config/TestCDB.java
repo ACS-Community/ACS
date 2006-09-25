@@ -6,8 +6,9 @@ import java.util.Map;
 import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DALOperations;
 import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.RecordDoesNotExist;
-import com.cosylab.CDB.XMLerror;
+import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
 
 /**
  * 
@@ -41,9 +42,11 @@ public class TestCDB implements DALOperations {
 	/** 
 	 * Test impl of the only CDB method which actually gets used by the logging config classes.
 	 */
-	public String get_DAO(String curl) throws XMLerror, RecordDoesNotExist {
+	public String get_DAO(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
 		if (throwEx) {
-			throw new RecordDoesNotExist("This is a test exception.");
+			AcsJCDBRecordDoesNotExistEx ex = new AcsJCDBRecordDoesNotExistEx();
+		//	ex.setStringMessage("This is a test exception.");
+			throw ex.toCDBRecordDoesNotExistEx();
 		}
 		return curlToXmlMap.get(curl);
 	}
@@ -52,7 +55,7 @@ public class TestCDB implements DALOperations {
     // Dummy impl of unused methods from the interface
     ////////////////////////////////////////////////////
 
-	public DAO get_DAO_Servant(String curl) throws XMLerror, RecordDoesNotExist {
+	public DAO get_DAO_Servant(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
 		throw new IllegalStateException("Operation not implemented!");
 	}
 

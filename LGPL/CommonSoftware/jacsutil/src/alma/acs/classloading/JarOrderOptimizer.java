@@ -67,6 +67,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"systementities.jar",
 		"acserr.jar",
 		"acserrj.jar",
+		"cdbErrType.jar",
 		"acsnc.jar",
 		"baci.jar",
 //		"xercesImpl.jar", currently separate, location defined by -Djava.endorsed.dirs=...

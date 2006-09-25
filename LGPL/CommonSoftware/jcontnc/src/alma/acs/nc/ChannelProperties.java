@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.5 2006/03/09 21:52:10 dfugate Exp $
+ * @version $Id: ChannelProperties.java,v 1.6 2006/09/25 08:51:37 cparedes Exp $
  * @since
  */
 
@@ -57,8 +57,9 @@ import org.omg.CosNotification.StopTimeSupported;
 import org.omg.CosNotification.Timeout;
 
 import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.FieldDoesNotExist;
-import com.cosylab.CDB.WrongDataType;
+import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
@@ -137,12 +138,12 @@ public class ChannelProperties {
          tempDAO = m_services.getCDB().get_DAO_Servant(
                "MACI/Channels/" + channelName);
       }
-      catch (com.cosylab.CDB.XMLerror e) {
+      catch (alma.cdbErrType.CDBXMLErrorEx e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
       }
-      catch (com.cosylab.CDB.RecordDoesNotExist e) {
+      catch (alma.cdbErrType.CDBRecordDoesNotExistEx e) {
          m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
@@ -158,12 +159,12 @@ public class ChannelProperties {
          }
          return true;
       }
-      catch (WrongDataType e) {
+      catch (WrongCDBDataTypeEx e) {
          m_logger
                .log(Level.SEVERE, "Wrong type of data for IntegrationLogs", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
-      catch (FieldDoesNotExist e) {
+      catch (CDBFieldDoesNotExistEx e) {
          m_logger.log(Level.SEVERE, "Field does not exist for IntegrationLogs",
                e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
@@ -190,12 +191,12 @@ public class ChannelProperties {
          tempDAO = m_services.getCDB().get_DAO_Servant(
                "MACI/Channels/" + channelName);
       }
-      catch (com.cosylab.CDB.XMLerror e) {
+      catch (alma.cdbErrType.CDBXMLErrorEx e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
       }
-      catch (com.cosylab.CDB.RecordDoesNotExist e) {
+      catch (alma.cdbErrType.CDBRecordDoesNotExistEx e) {
          m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
@@ -284,12 +285,12 @@ public class ChannelProperties {
          tempDAO = m_services.getCDB().get_DAO_Servant(
                "MACI/Channels/" + channelName);
       }
-      catch (com.cosylab.CDB.XMLerror e) {
+      catch (alma.cdbErrType.CDBXMLErrorEx e) {
          m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
       }
-      catch (com.cosylab.CDB.RecordDoesNotExist e) {
+      catch (alma.cdbErrType.CDBRecordDoesNotExistEx e) {
          m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);

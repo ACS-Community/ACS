@@ -8,8 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.cosylab.CDB.DAOOperations;
-import com.cosylab.CDB.FieldDoesNotExist;
-import com.cosylab.CDB.WrongDataType;
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
 
 /**
  * CDB DAO proxy.
@@ -113,7 +113,7 @@ public class DAOProxy implements DAOOperations
 	 * @see com.cosylab.CDB.DAOOperations#get_double_seq(String)
 	 */
 	public double[] get_double_seq(String propertyName)
-		throws WrongDataType, FieldDoesNotExist
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx
 	{
 		return dao.get_double_seq(propertyName);
 	}
@@ -122,7 +122,7 @@ public class DAOProxy implements DAOOperations
 	 * @see com.cosylab.CDB.DAOOperations#get_double(String)
 	 */
 	public double get_double(String propertyName)
-		throws WrongDataType, FieldDoesNotExist
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx
 	{
 		return dao.get_double(propertyName);
 	}
@@ -131,7 +131,7 @@ public class DAOProxy implements DAOOperations
 	 * @see com.cosylab.CDB.DAOOperations#get_field_data(String)
 	 */
 	public String get_field_data(String propertyName)
-		throws WrongDataType, FieldDoesNotExist
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx
 	{
 		return dao.get_field_data(propertyName);
 	}
@@ -140,7 +140,7 @@ public class DAOProxy implements DAOOperations
 	 * @see com.cosylab.CDB.DAOOperations#get_long_seq(String)
 	 */
 	public int[] get_long_seq(String propertyName)
-		throws WrongDataType, FieldDoesNotExist
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx
 	{
 		return dao.get_long_seq(propertyName);
 	}
@@ -149,7 +149,7 @@ public class DAOProxy implements DAOOperations
 	 * @see com.cosylab.CDB.DAOOperations#get_long(String)
 	 */
 	public int get_long(String propertyName)
-		throws WrongDataType, FieldDoesNotExist
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx
 	{
 		return dao.get_long(propertyName);
 	}
@@ -158,7 +158,7 @@ public class DAOProxy implements DAOOperations
 	 * @see com.cosylab.CDB.DAOOperations#get_string_seq(String)
 	 */
 	public String[] get_string_seq(String propertyName)
-		throws WrongDataType, FieldDoesNotExist
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx
 	{
 		return dao.get_string_seq(propertyName);
 	}
@@ -167,7 +167,7 @@ public class DAOProxy implements DAOOperations
 	 * @see com.cosylab.CDB.DAOOperations#get_string(String)
 	 */
 	public String get_string(String propertyName)
-		throws WrongDataType, FieldDoesNotExist
+		throws WrongCDBDataTypeEx, CDBFieldDoesNotExistEx
 	{
 		return dao.get_string(propertyName);
 	}

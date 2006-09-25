@@ -61,7 +61,7 @@ bool PcontImpl<ACS_P_TL>::readCharacteristics(CharacteristicModelImpl *model)
       std::istringstream is(str.in()); \
       (istream&) is >> var ; \
       if (!is) \
-	  throw CDB::WrongDataType(); \
+	  throw cdbErrType::WrongCDBDataTypeEx(); \
       }
 
       READ_VALUE("min_step", min_step_m);

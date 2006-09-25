@@ -26,6 +26,8 @@ import javax.naming.NamingException;
 import org.omg.CORBA.ORB;
 // The package containing the CORBA stubs.
 import com.cosylab.CDB.*;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
 import java.util.regex.PatternSyntaxException;
 
 
@@ -127,14 +129,15 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
 		//Elements of current node do not contain xml file  -> return JNDI_Context(nameToLookup, elements)
 		return new BrowserJNDIContext(nameToLookup, elements);
 	    }
-	} catch (RecordDoesNotExist e) {
+	} catch (CDBRecordDoesNotExistEx e) {
 
 
 	    //CASE 4 *********************************************************
 	    //repeat case 3 (statement never reached???)
 	    return new BrowserJNDIContext(nameToLookup, elements);
-	} catch (XMLerror e) {
-	    throw new NamingException(e.msg);
+	} catch (CDBXMLErrorEx e) {
+		throw new NamingException();
+		//  throw new NamingException(e);
 	}
     }
 }

@@ -299,7 +299,7 @@ public class ManagerEngine extends AbeansEngine
 			System.out.println( "Skipping saved manager state!");
 		}
 
-	    manager = (ManagerImpl)prevayler.system();
+	    	manager = (ManagerImpl)prevayler.system();
 
 		manager.initialize(prevayler, applicationContext, new CDBAccess(orb), context);
 		manager.setShutdownImplementation(shutdownImplementation);

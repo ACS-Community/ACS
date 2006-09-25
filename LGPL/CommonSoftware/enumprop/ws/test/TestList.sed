@@ -9,7 +9,7 @@ s/ThreadID=\"[0-9]*\"/ProcessID=xxxxxxxxx/g
 s/v[0-9]*\.[0-9]*\.[0-9]*.* built at [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]/v-.-.- built at ---------- --:--:--/g
 s/([0-9]*|[0-9]*) EXCEPTION/ (xxxxx|xxxx) EXCEPTION/g
 s/enumpropTestServer_[0-9]*/enumpropTestServer_XXXX/g
-s/corbaloc::[A-Z,a-z,0-9,.,:,\/,]*/corbaloc::XXXX:xxxx/g
+s/corbaloc::[A-Z,a-z,0-9,:,\/,_,.,-]*/corbaloc::XXXX:xxxx/g
 s/dat_onchangeMonitorTest_[0-9]*/dat_onchangeMonitorTest_XXXX/g
 s/dat_testClient_[0-9]*/dat_testClient_XXXX/g
 s/dat_testRWClient_[0-9]*/dat_testRWClient_XXXX/g

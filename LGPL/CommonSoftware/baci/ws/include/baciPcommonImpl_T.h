@@ -92,7 +92,7 @@ class CDBconverter
 	    std::istringstream is(str);
 	    (istream&) is >> v;
 	    if (!is)
-		throw CDB::WrongDataType();
+		throw cdbErrType::WrongCDBDataTypeExImpl(__FILE__, __LINE__, "CDBconverter::converterValue");
 	}
 };
 
