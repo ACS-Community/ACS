@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.71 2006/09/23 16:39:45 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.72 2006/09/25 12:24:56 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.71 2006/09/23 16:39:45 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.72 2006/09/25 12:24:56 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -812,8 +812,7 @@ ContainerImpl::init(int argc, char *argv[])
 	// Initialize the alarm system factory
 	bool asfRet=true;;
 	try {
-		maci::Manager_ptr theManagerPtr = manager.in();
-		asfRet = ACSAlarmSystemInterfaceFactory::init(theManagerPtr);
+		asfRet = ACSAlarmSystemInterfaceFactory::init(getManager());
 	} 
    catch (acsErrTypeAlarmSourceFactory::InavalidManagerExImpl &ex) {
 		asfRet=false;
