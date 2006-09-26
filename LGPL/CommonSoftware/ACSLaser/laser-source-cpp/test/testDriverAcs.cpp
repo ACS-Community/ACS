@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.3 2006/09/26 06:43:00 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,7 @@
 #include <AlarmSystemC.h>
 #include <stdlib.h>
 
+
 /****************************************************/
 
 class LoggingConsumer : public nc::Consumer
@@ -43,6 +44,8 @@ class LoggingConsumer : public nc::Consumer
     LoggingConsumer():
 	nc::Consumer(acscommon::LOGGING_CHANNEL_NAME)
 	{
+		 mutex_m = new ACE_Mutex;
+       evtsReceived = 0;
 	    subscribeAllEvents();
 	}
 	
@@ -59,10 +62,23 @@ class LoggingConsumer : public nc::Consumer
     push_structured_event(const CosNotification::StructuredEvent &publishedEvent)
 	throw (CORBA::SystemException, CosEventComm::Disconnected)
 	{
-	    std::cout << "Detected notification channel event: " 
-		      << std::endl;
+			// check for the messages of interest
+		   const char * filterableData;
+		   publishedEvent.remainder_of_body >>= filterableData; 
+			string filterableDataString(filterableData);
+			if(filterableDataString.find("<Alert TimeStamp") == 0 && filterableDataString.find("Alarm sent:") != std::string::npos) 
+			{
+       		ACE_Guard<ACE_Mutex> guard(*mutex_m);
+       		{
+	      		std::cout << "Detected notification channel event: " << ++evtsReceived << std::endl;
+	      		std::cout << "remainder of body was: " << filterableDataString << std::endl;
+					std::cout.flush();
+      		}
+			}	
 	}
 	
+	int getEventsReceived() { return evtsReceived; }
+
   protected:
 
     //--------------------------------------------------------------
@@ -84,6 +100,9 @@ class LoggingConsumer : public nc::Consumer
 
 
   private:
+	
+	int evtsReceived;
+	ACE_Mutex * mutex_m;
 
     //--------------------------------------------------------------
     /**
@@ -157,8 +176,6 @@ int main(int argc, char *argv[])
 	// Get the component which will be used to generate alarms
 	testalarmsystem::AlarmTestMount_var alarmTestMount = client.get_object<testalarmsystem::AlarmTestMount>("ALARM_SOURCE_MOUNTCPP", 0, true);
     
-	int receivedEvtCount = 0, sentEvtCount = 0;
-
 	/*
 	 * This can throw exceptions.
 	 * No point catching: just exit, but it would be
@@ -167,28 +184,48 @@ int main(int argc, char *argv[])
 	LoggingConsumer *m_simpConsumer_p = new LoggingConsumer;
 
 	m_simpConsumer_p->consumerReady();
+	ACE_OS::sleep(10);
 
-	while(receivedEvtCount < numAlarmsToSend && 
-	      sentEvtCount < numAlarmsToSend)
+	int sentEvtCount = 0;
+	ACE_Time_Value tv1(1);
+
+	while ( (sentEvtCount < numAlarmsToSend) ) 
 	{
-		// generate an alarm
 		alarmTestMount->faultMount();
 		sentEvtCount++;
-
-		ACE_Time_Value tv(1);
-		client.run(tv);
+		client.run(tv1);
 	}
-    
-        m_simpConsumer_p->disconnect();   
-	delete m_simpConsumer_p;
-	m_simpConsumer_p=0;
+
+	int timeWaited = 0;
+	int MAX_TIME_TO_WAIT = 30;
+
+	while ((m_simpConsumer_p->getEventsReceived() < numAlarmsToSend) && timeWaited < MAX_TIME_TO_WAIT)
+	{
+		timeWaited++;
+		client.run(tv1);
+	}
 
 	// release the component and logout from manager
-	client.manager()->release_component(client.handle(), "TEST_MOUNT_CPP");
+	client.manager()->release_component(client.handle(), "ALARM_SOURCE_MOUNTCPP");
 	client.logout();
     
-	// Sleep for 5 sec to allow everything to cleanup and stablize
-	ACE_OS::sleep(5);
+	// Sleep for 10 sec to allow everything to cleanup and stablize
+	ACE_OS::sleep(10);
+
+	if(m_simpConsumer_p->getEventsReceived() >= numAlarmsToSend)
+	{
+		std::cout << "disconnecting consumer" << std::endl;
+		std::cout << "timeWaited is: " << timeWaited << " and received events is: " << m_simpConsumer_p->getEventsReceived() 
+			<< " and sent is: " << sentEvtCount << std::endl;
+   	m_simpConsumer_p->disconnect();   
+		delete m_simpConsumer_p;
+		m_simpConsumer_p=0;
+	}
+	else
+	{
+		std::cout << "never detected all the events" << std::endl;
+	}
+
 	return 0;
 }
 

@@ -12,4 +12,8 @@ clear_cache
 Logging proxy
 Killed
 StaticMethodLogger
+testFaultState
+testASIMessage
+hunk
+patch
 GlobalLogger

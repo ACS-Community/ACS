@@ -1,0 +1,13 @@
+1 - Detected notification channel event: 1
+1 - Detected notification channel event: 2
+1 - Detected notification channel event: 3
+1 - Detected notification channel event: 4
+1 - Detected notification channel event: 5
+1 - Detected notification channel event: 6
+1 - Detected notification channel event: 7
+1 - Detected notification channel event: 8
+1 - Detected notification channel event: 9
+1 - Detected notification channel event: 10
+1 - disconnecting consumer
+1 - timeWaited is: 30 and received events is: 10 and sent is: 10
+1 - SUCCESS: expected 10 alarms and detected 10 alarms

@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriver.cpp,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
+* "@(#) $Id: testDriver.cpp,v 1.3 2006/09/26 06:43:00 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -80,21 +80,24 @@ int main(int argc, char *argv[])
    ACS_NEW_SIMPLE_CONSUMER(m_simpConsumer_p, com::cosylab::acs::jms::ACSJMSMessageEntity, "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES", myHandlerFunction, (void*) & receivedEvtCount);
    m_simpConsumer_p->consumerReady();
 
+	ACE_Time_Value tv(30);
+	client.run(tv);
+
 	int sentEvtCount = 0;
 	while(receivedEvtCount < numAlarmsToSend)
 	    {
 	    // generate an alarm
 	    if(sentEvtCount < numAlarmsToSend)
 		{
-		alarmTestMount->faultMount();
-		sentEvtCount++;
+			alarmTestMount->faultMount();
+			sentEvtCount++;
 		}
 	    ACE_Time_Value tv(1);
 	    client.run(tv);
 	}
     
 	// release the component and logout from manager
-	client.manager()->release_component(client.handle(), "TEST_MOUNT_CPP");
+	client.manager()->release_component(client.handle(), "ALARM_SOURCE_MOUNTCPP");
 	client.logout();
     
 	// Sleep for 10 sec to allow everything to cleanup and stablize

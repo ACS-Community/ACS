@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/09/26 06:43:00 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@ USER_CFLAGS = -rdynamic
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lstdc++
+USER_LIB = -lstdc++ -lxerces-c
 
 #
 # MODULE CODE DESCRIPTION:
@@ -35,10 +35,9 @@ USER_LIB = -lstdc++
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = testDriver testDriverAcs
+EXECUTABLES     = testDriver testDriverAcs unitTestDriver 
 EXECUTABLES_L   = 
 
-#
 # <brief description of xxxxx program>
 testDriver_OBJECTS   = testDriver
 testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient maci AlarmSystemStubs ACSJMSMessageEntityStubs acsnc
@@ -46,6 +45,10 @@ testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maci
 # <brief description of xxxxx program>
 testDriverAcs_OBJECTS   = testDriverAcs
 testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient maci AlarmSystemStubs acsnc
+
+# <brief description of xxxxx program>
+unitTestDriver_OBJECTS   = unitTestDriver 
+unitTestDriver_LIBS      = cppunit laserCppUtil logging maci maciClient acsXercesUtilities laserSource
 
 #
 # special compilation flags for single c sources
