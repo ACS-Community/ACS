@@ -1,7 +1,7 @@
 package alma.ACS.MasterComponentImpl.statemachine;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
-import alma.acs.genfw.runtime.sm.AcsStateIllegalEventException;
 
 /**
  * Abstract state class. Concrete subclass receives delegation calls from the
@@ -21,35 +21,35 @@ public abstract class AlmaSubsystemStateAbstract implements AcsState
 	// all events that the master component can handle
 	// make all events illegal here, and let subclasses allow certain events 
 
-	public void stop() throws AcsStateIllegalEventException {
+	public void stop() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "stop");
 	}
 
-	public void shutdownPass1() throws AcsStateIllegalEventException {
+	public void shutdownPass1() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "shutdownPass1");
 	}
 
-	public void initPass2() throws AcsStateIllegalEventException {
+	public void initPass2() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "initPass2");
 	}
 
-	public void start() throws AcsStateIllegalEventException {
+	public void start() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "start");
 	}
 
-	public void initPass1() throws AcsStateIllegalEventException {
+	public void initPass1() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "initPass1");
 	}
 
-	public void shutdownPass2() throws AcsStateIllegalEventException {
+	public void shutdownPass2() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "shutdownPass2");
 	}
 
-	public void reinit() throws AcsStateIllegalEventException {
+	public void reinit() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "reinit");
 	}
 
-	public void error() throws AcsStateIllegalEventException {
+	public void error() throws AcsJIllegalStateEventEx {
 		m_superContext.illegalEvent(stateName(), "error");
 	}
 

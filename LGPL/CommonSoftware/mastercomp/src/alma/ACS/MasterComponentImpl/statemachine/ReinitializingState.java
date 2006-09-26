@@ -46,4 +46,9 @@ public class ReinitializingState extends OfflineSubStateAbstract implements AcsS
 		m_doActivity.execute();
 	}
 
+	public void exit()
+	{
+		m_doActivity.terminateActions();
+	}
+
 }

@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
 import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
-import alma.acs.genfw.runtime.sm.AcsStateIllegalEventException;
 
 
 /**
@@ -20,7 +20,7 @@ public class AlmaSubsystemContext
 {
 	private AlmaSubsystemStateAbstract m_currentState;
 	private AlmaSubsystemActions m_actionDelegate;
-	private List m_stateChangeListeners;
+	private List<AcsStateChangeListener> m_stateChangeListeners;
 	private AcsState[] m_oldHierarchy;
 	private Logger m_logger;
 	private boolean m_verbose = false;
@@ -58,7 +58,7 @@ public class AlmaSubsystemContext
 
 	public AlmaSubsystemContext(AlmaSubsystemActions actions, Logger logger) {
 		m_actionDelegate = actions;
-		m_stateChangeListeners = new ArrayList();
+		m_stateChangeListeners = new ArrayList<AcsStateChangeListener>();
 		m_logger = logger;
 
 		m_stateAvailable = new AvailableState(this);
@@ -114,8 +114,8 @@ public class AlmaSubsystemContext
 		// check if there was a state change down the nesting hierarchy		
 		if (!Arrays.equals(currentHierarchy, m_oldHierarchy)) {
 			// if so, notify listeners
-			for (Iterator iter = m_stateChangeListeners.iterator(); iter.hasNext();) {
-				AcsStateChangeListener listener = (AcsStateChangeListener) iter.next();
+			for (Iterator<AcsStateChangeListener> iter = m_stateChangeListeners.iterator(); iter.hasNext();) {
+				AcsStateChangeListener listener = iter.next();
 				listener.stateChangedNotify(m_oldHierarchy, currentHierarchy);
 			}
 			m_oldHierarchy = currentHierarchy;
@@ -131,35 +131,35 @@ public class AlmaSubsystemContext
 	// delegates incoming events to current state class
 	//======================================================================
 
-	public synchronized void initPass1() throws AcsStateIllegalEventException {
+	public synchronized void initPass1() throws AcsJIllegalStateEventEx {
 		m_currentState.initPass1();
 	}
 
-	public synchronized void initPass2() throws AcsStateIllegalEventException {
+	public synchronized void initPass2() throws AcsJIllegalStateEventEx {
 		m_currentState.initPass2();
 	}
 
-	public synchronized void reinit() throws AcsStateIllegalEventException {
+	public synchronized void reinit() throws AcsJIllegalStateEventEx {
 		m_currentState.reinit();
 	}
 
-	public synchronized void start() throws AcsStateIllegalEventException {
+	public synchronized void start() throws AcsJIllegalStateEventEx {
 		m_currentState.start();
 	}
 
-	public synchronized void stop() throws AcsStateIllegalEventException {
+	public synchronized void stop() throws AcsJIllegalStateEventEx {
 		m_currentState.stop();
 	}
 
-	public synchronized void shutdownPass1() throws AcsStateIllegalEventException {
+	public synchronized void shutdownPass1() throws AcsJIllegalStateEventEx {
 		m_currentState.shutdownPass1();
 	}
 
-	public synchronized void shutdownPass2() throws AcsStateIllegalEventException {
+	public synchronized void shutdownPass2() throws AcsJIllegalStateEventEx {
 		m_currentState.shutdownPass2();
 	}
 
-	public synchronized void error() throws AcsStateIllegalEventException {
+	public synchronized void error() throws AcsJIllegalStateEventEx {
 		m_currentState.error();
 	}
 
@@ -235,7 +235,7 @@ public class AlmaSubsystemContext
 	// util methods
 	//======================================================================
 
-	void illegalEvent(String stateName, String eventName) throws AcsStateIllegalEventException
+	void illegalEvent(String stateName, String eventName) throws AcsJIllegalStateEventEx
 	{
 		String msg = "illegal event '" + eventName + "' in state '" + stateName + "'.";
 		if (m_verbose) {
@@ -245,7 +245,10 @@ public class AlmaSubsystemContext
 //			AcsStateChangeListener listener = (AcsStateChangeListener) iter.next();
 //			listener.illegalEventNotify(stateName, eventName);			
 //		}
-		throw new AcsStateIllegalEventException(msg);
+		AcsJIllegalStateEventEx ex = new AcsJIllegalStateEventEx();
+		ex.setEvent(eventName);
+		ex.setState(stateName);
+		throw ex;
 	}
 	
 	void logTransition(AcsState sourceState, AcsState targetState, String eventName) {

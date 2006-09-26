@@ -1,8 +1,8 @@
 package alma.ACS.MasterComponentImpl.statemachine;
 
 import alma.ACS.SUBSYSSTATE_OFFLINE;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
-import alma.acs.genfw.runtime.sm.AcsStateIllegalEventException;
 
 public class OfflineState extends AvailableSubStateAbstract
 {
@@ -46,15 +46,15 @@ public class OfflineState extends AvailableSubStateAbstract
 	public void entry() {
 	}
 	
-	public void initPass1() throws AcsStateIllegalEventException {
+	public void initPass1() throws AcsJIllegalStateEventEx {
 		m_subState.initPass1();
 	}
 
-	public void initPass2() throws AcsStateIllegalEventException {
+	public void initPass2() throws AcsJIllegalStateEventEx {
 		m_subState.initPass2();
 	}
 
-	public void shutdownPass2() throws AcsStateIllegalEventException {
+	public void shutdownPass2() throws AcsJIllegalStateEventEx {
 		m_subState.shutdownPass2();
 	}
 

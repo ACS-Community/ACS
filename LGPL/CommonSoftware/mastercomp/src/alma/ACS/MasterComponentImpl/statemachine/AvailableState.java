@@ -1,8 +1,8 @@
 package alma.ACS.MasterComponentImpl.statemachine;
 
 import alma.ACS.SUBSYSSTATE_AVAILABLE;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
-import alma.acs.genfw.runtime.sm.AcsStateIllegalEventException;
 
 public class AvailableState extends AlmaSubsystemStateAbstract
 {
@@ -56,23 +56,23 @@ public class AvailableState extends AlmaSubsystemStateAbstract
 	public void entry() {
 	}
 
-	public void initPass1() throws AcsStateIllegalEventException {
+	public void initPass1() throws AcsJIllegalStateEventEx {
 		m_subState.initPass1();
 	}
 
-	public void initPass2() throws AcsStateIllegalEventException {
+	public void initPass2() throws AcsJIllegalStateEventEx {
 		m_subState.initPass2();
 	}
 
-	public void start() throws AcsStateIllegalEventException {
+	public void start() throws AcsJIllegalStateEventEx {
 		m_subState.start();
 	}
 
-	public void stop() throws AcsStateIllegalEventException {
+	public void stop() throws AcsJIllegalStateEventEx {
 		m_subState.stop();
 	}
 
-	public void shutdownPass2() throws AcsStateIllegalEventException {
+	public void shutdownPass2() throws AcsJIllegalStateEventEx {
 		m_subState.shutdownPass2();
 	}
 
