@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestCosProperty.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTestCosProperty.cpp,v 1.3 2006/09/26 06:26:32 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * msekoran 2005-09-27 created
 */
  
-static char *rcsId="@(#) $Id: baciTestCosProperty.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestCosProperty.cpp,v 1.3 2006/09/26 06:26:32 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -55,7 +55,7 @@ int main (int argc, char **argv)
 {
     
 
-    ACE_TRY
+    try
 	{
 	// create logging proxy
 	LoggingProxy *m_logger = new LoggingProxy(0, 0, 31, 0);
@@ -200,12 +200,11 @@ int main (int argc, char **argv)
 	delete m_logger;
 
 	}
-    ACE_CATCHANY
+    catch(CORBA::Exception &ex)
 	{
         ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION,"Error!");
         return -1;
 	}
-    ACE_ENDTRY;
     ACE_CHECK_RETURN (-1);
 
     // Wait for the servant to complete cleanup before exiting.

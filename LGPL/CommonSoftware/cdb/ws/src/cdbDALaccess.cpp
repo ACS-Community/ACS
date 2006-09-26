@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDALaccess.cpp,v 1.42 2006/09/25 08:36:59 cparedes Exp $"
+* "@(#) $Id: cdbDALaccess.cpp,v 1.43 2006/09/26 06:26:32 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -90,8 +90,7 @@ DALaccess:: DALaccess( int argc, char *argv[], CORBA::ORB_ptr orb ) : m_orb(CORB
   }
 	// init DAL client
 	
-	ACE_TRY {
-
+	try{
 		if( orb == CORBA::ORB::_nil() ){
 			// init ORB
 			m_orb = CORBA::ORB_init (argc, argv, orbId);
@@ -108,13 +107,9 @@ DALaccess:: DALaccess( int argc, char *argv[], CORBA::ORB_ptr orb ) : m_orb(CORB
 		m_dal = CDB::DAL::_narrow (object.in ());
 
 		
-	}
-	ACE_CATCHANY {
+	}catch(CORBA::Exception &ex){
 		ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "cdb::DALaccess::DALaccess()");
 	}
-	ACE_CATCHALL {
-	}
-	ACE_ENDTRY;
 
 	if( DALior )
 	{
@@ -140,17 +135,15 @@ DALaccess::~DALaccess()
 {
 	if( m_useCacheListener && !exitStarts ) {
 		
-		ACE_TRY {
+		try{
 			if( !CORBA::is_nil(m_dal.in()) ) 
 			{
 				m_dal->remove_change_listener( changeListenerID );
 				
 			}
-		}
-		ACE_CATCHANY {
+		}catch(CORBA::Exception &ex){
 			// don't worry server will handle itself
 		}
-		ACE_ENDTRY;
 	}
 	MapStrRec::const_iterator iter = m_mpRecords.begin();
 	while(iter != m_mpRecords.end()) {
@@ -168,7 +161,7 @@ DAOImpl* DALaccess::getDAO( const String &strRecordName )
 	DAOImpl* pDAO = NULL;
 
 	
-	ACE_TRY {
+	try{
 		// in the case when we create local object
 		if( m_useLocalDAO ) {
 			// remote call
@@ -195,7 +188,7 @@ DAOImpl* DALaccess::getDAO( const String &strRecordName )
 			pDAO = new DAOImpl( dao.in() );
 		}
 	}
-	ACE_CATCH ( cdbErrType::CDBXMLErrorEx, ex ) {
+	catch( CDBXMLErrorEx ex ) {
 		CDBXMLErrorExImpl ex_impl(ex); 
 		// a = ex_impl.getCurl();
 		ACE_OS::printf( MSG_XML_ERROR, strRecordName.c_str(), ex_impl.getCurl().c_str());
@@ -205,7 +198,7 @@ DAOImpl* DALaccess::getDAO( const String &strRecordName )
 		}
 		return NULL;
 	}
-	ACE_CATCHANY {
+	catch(CORBA::Exception &ex){
 	/**
          * TODO GCH Commented out for the time being
          */
@@ -216,7 +209,6 @@ DAOImpl* DALaccess::getDAO( const String &strRecordName )
 		}
 		return NULL;
 	}
-	ACE_ENDTRY;
 
 	// seems all OK
 	return pDAO;

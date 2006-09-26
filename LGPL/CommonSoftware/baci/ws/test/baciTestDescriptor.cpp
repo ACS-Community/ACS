@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestDescriptor.cpp,v 1.95 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: baciTestDescriptor.cpp,v 1.96 2006/09/26 06:26:32 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
  
-static char *rcsId="@(#) $Id: baciTestDescriptor.cpp,v 1.95 2006/09/01 02:20:55 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestDescriptor.cpp,v 1.96 2006/09/26 06:26:32 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -70,7 +70,7 @@ int main (int argc, char **argv)
   LoggingProxy::ThreadName("main");
   ACS_TEST_INIT_LOGGING;
 
-  ACE_TRY
+  try
     {
         // 
         // Initialysation of CORBA, POA and related CORBA internals  
@@ -142,13 +142,12 @@ ACE_CString g_strCmdLn;
 
 	BACI_CORBA::DoneCORBA();
     }
-  ACE_CATCHANY
+  catch(CORBA::Exception &ex)
     {
         ACS_SHORT_LOG((LM_INFO, "Exception"));
         ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION,"Error!");
         return -1;
     }
-  ACE_ENDTRY;
   ACE_CHECK_RETURN (-1);
 
   return 0;

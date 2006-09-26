@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestErrSys.cpp,v 1.102 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTestErrSys.cpp,v 1.103 2006/09/26 06:26:32 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * msekoran 2002-05-19 created
 */
  
-static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.102 2006/09/01 02:20:54 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.103 2006/09/26 06:26:32 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -157,7 +157,7 @@ static void* worker(void *arg)
 
   ACS_SHORT_LOG((LM_INFO,"Entering working thread"));
 
-  ACE_TRY
+  try
     {
 	ACSErr::Completion_var completion;
 
@@ -228,11 +228,10 @@ static void* worker(void *arg)
 	  }//for
 	
       }
-     ACE_CATCHANY
+     catch(CORBA::Exception &ex)
       {
        ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION,"Error!");
        }
-     ACE_ENDTRY;
 
   // clean up here ...
      BACI_CORBA::getORB()->shutdown(); 
@@ -254,7 +253,7 @@ int main (int argc, char **argv)
   LoggingProxy::ThreadName("main");
   ACS_TEST_INIT_LOGGING;
 
-  ACE_TRY
+  try
     {
         // 
         // Initialisation of CORBA, POA and related CORBA internals  
@@ -343,12 +342,11 @@ int main (int argc, char **argv)
         // Delete the logger last.
         delete m_logger;
     }
-  ACE_CATCHANY
+  catch(CORBA::Exception &ex)
     {
         ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION,"Error!");
         return -1;
     }
-  ACE_ENDTRY;
   ACE_CHECK_RETURN (-1);
 
   sleep(2);

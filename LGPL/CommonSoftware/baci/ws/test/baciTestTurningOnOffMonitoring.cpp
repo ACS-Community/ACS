@@ -18,13 +18,13 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.3 2006/09/08 14:19:27 bjeram Exp $"
+* "@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.4 2006/09/26 06:26:32 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 */
  
-static char *rcsId="@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.3 2006/09/08 14:19:27 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestTurningOnOffMonitoring.cpp,v 1.4 2006/09/26 06:26:32 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -66,7 +66,7 @@ int main (int argc, char **argv)
   ACS_TEST_INIT_LOGGING;
   bool isPropertiesMonitoringActive=false;
 
-  ACE_TRY
+  try
     {
         // 
         // Initialysation of CORBA, POA and related CORBA internals  
@@ -241,12 +241,11 @@ int main (int argc, char **argv)
 	LoggingProxy::done();
 	std::cout << std::flush; 
     }
-  ACE_CATCHANY
+  catch(CORBA::Exception &ex)
     {
         ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION,"Error!");
         return -1;
     }
-  ACE_ENDTRY;
   ACE_CHECK_RETURN (-1);
 
   return 0;

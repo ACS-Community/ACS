@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.35 2006/09/25 08:36:59 cparedes Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.36 2006/09/26 06:26:32 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -228,16 +228,14 @@ Boolean DAOImpl::get_field( const String &strFieldName, Field &fld )
 {
 	if( m_remote ) {
 		
-		ACE_TRY {
+		try{
 			CORBA::String_var filedData = m_dao->get_field_data( strFieldName.c_str() );
 			
       			if(!fld.SetType(Field::tyString, 0)) return 0;
       			return fld.SetString(filedData.in());
-		}
-		ACE_CATCHANY {
+		}catch(CORBA::Exception &ex){
 			// be silent here
 		}
-		ACE_ENDTRY;
 		return false;
 	}
 

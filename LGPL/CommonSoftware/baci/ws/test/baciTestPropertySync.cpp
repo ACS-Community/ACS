@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestPropertySync.cpp,v 1.100 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTestPropertySync.cpp,v 1.101 2006/09/26 06:26:32 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.100 2006/09/01 02:20:54 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.101 2006/09/26 06:26:32 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -237,8 +237,7 @@ int main (int argc, char **argv)
 	exit(1);
 	}
     
-    ACE_TRY
-	{
+    try{
 	ACSErr::Completion_var completion;
 
 	// create logging proxy
@@ -365,13 +364,12 @@ int main (int argc, char **argv)
 	BACI_CORBA::DoneCORBA();
 	delete m_logger;
     }
-  ACE_CATCHANY
+  catch(CORBA::Exception &ex)
     {
 	ACS_SHORT_LOG((LM_INFO,"Exception: .... The End."));
         ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION,"Error!");
         return -1;
     }
-  ACE_ENDTRY;
   ACE_CHECK_RETURN (-1);
 
   return 0;

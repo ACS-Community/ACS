@@ -40,8 +40,7 @@ int main(int argc, char* argv[])
 #endif // defined( MAKE_VXWORKS )
 
   
-ACE_TRY
-    {
+try{
     CORBA::ULong ul;
     Field dbFld;
     Table* dataBase;
@@ -197,11 +196,10 @@ ACE_TRY
     ACS_SHORT_LOG ((LM_INFO, "cdbTestClient ends"));
     
     }
-ACE_CATCHANY
+catch(CORBA::Exception ex)
     {
     ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "main");
     }
-ACE_ENDTRY;
   
   
 return 0;
