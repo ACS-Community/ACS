@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.3 2006/09/26 06:43:00 sharring Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.4 2006/09/26 08:24:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,19 +62,22 @@ class LoggingConsumer : public nc::Consumer
     push_structured_event(const CosNotification::StructuredEvent &publishedEvent)
 	throw (CORBA::SystemException, CosEventComm::Disconnected)
 	{
-			// check for the messages of interest
-		   const char * filterableData;
-		   publishedEvent.remainder_of_body >>= filterableData; 
-			string filterableDataString(filterableData);
-			if(filterableDataString.find("<Alert TimeStamp") == 0 && filterableDataString.find("Alarm sent:") != std::string::npos) 
-			{
-       		ACE_Guard<ACE_Mutex> guard(*mutex_m);
-       		{
-	      		std::cout << "Detected notification channel event: " << ++evtsReceived << std::endl;
-	      		std::cout << "remainder of body was: " << filterableDataString << std::endl;
-					std::cout.flush();
-      		}
-			}	
+     // TODO: ascertain length of remainder_of_body rather than use fixed 4k length
+     char remainderOfBodyStorage[4096];
+     const char* remainderOfBody = (const char*) remainderOfBodyStorage;
+     publishedEvent.remainder_of_body >>= remainderOfBody; 
+     string remainderOfBodyString(remainderOfBody);
+
+     // check for the messages of interest
+     if(remainderOfBodyString.find("<Alert TimeStamp") == 0 && remainderOfBodyString.find("Alarm sent:") != std::string::npos) 
+     {
+       ACE_Guard<ACE_Mutex> guard(*mutex_m);
+       {
+         std::cout << "Detected notification channel event: " << ++evtsReceived << std::endl;
+         std::cout << "remainder of body was: " << remainderOfBodyString << std::endl;
+         std::cout.flush();
+       }
+     }	
 	}
 	
 	int getEventsReceived() { return evtsReceived; }
