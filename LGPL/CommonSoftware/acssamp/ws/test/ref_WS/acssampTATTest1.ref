@@ -9,10 +9,11 @@
 1 - 
 1 - 
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' initialized successfuly
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Manager...
@@ -20,17 +21,17 @@
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Set Naming Context to Logger.
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Logged into the Manager.
 1 - ----------T--:--:--.--- [Container - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Logged into the Manager.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 1 components queued to be activated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplMountImpl'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsexmplMountImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libacsexmplMountImpl.so'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'MOUNT1' activated.
 1 - ----------T--:--:--.--- [MOUNT1::actionThread - maci::ContainerImpl::initThread] Thread name: 'MOUNT1::actionThread'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'MOUNT1' activated.
 1 - ----------T--:--:--.--- [MOUNT1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'MOUNT1::monitorThread'
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 1 of 1 components activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
@@ -42,16 +43,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'SAMP1' activated.
 1 - ----------T--:--:--.--- [SAMP1::actionThread - maci::ContainerImpl::initThread] Thread name: 'SAMP1::actionThread'
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'SAMP1' activated.
 1 - ----------T--:--:--.--- [SAMP1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'SAMP1::monitorThread'
 1 - ----------T--:--:--.--- [SAMP1 - ] Starting SampObj creation ... 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsexmplLampImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplLampImpl'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsexmplLampImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libacsexmplLampImpl.so'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [LAMP1::actionThread - maci::ContainerImpl::initThread] Thread name: 'LAMP1::actionThread'
 1 - ----------T--:--:--.--- [LAMP1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'LAMP1::monitorThread'
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'LAMP1' activated.
@@ -65,45 +66,45 @@
 2 - ----------T--:--:--.--- [StaticMethodLogger - ] CDBProperties::getCDB
 2 - ----------T--:--:--.--- [GlobalLogger - ] ::SamplerConsumer::SamplerConsumer(names, orb)
 2 - ----------T--:--:--.--- [StaticMethodLogger - ] CDBProperties::getCDB
-1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_thread'
 1 - ----------T--:--:--.--- [GlobalLogger - ] ACSSamp Starting thread LAMP1_brightness_1000000_10000000_thread
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_thread'
 2 - ----------T--:--:--.--- multicast_query: unable to accept: Connection timed out
 2 - 
 2 - ----------T--:--:--.--- 
-2 - ----------T--:--:--.--- Specify -m 1 when starting Naming_Service,
 2 - multicast discovery of NameService failed.
 2 - 
+2 - ----------T--:--:--.--- Specify -m 1 when starting Naming_Service,
 2 - or see http://www.theaceorb.com/faq/#115
 2 - for using NameService without multicast.
 2 - 
 2 - 
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_f_thread'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to '_SequqnceOf_sampDataBlock' events for the 'NC_LAMP1_brightness_1000000_10000000' channel!
-1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_f_thread'
 1 - ----------T--:--:--.--- [GlobalLogger - ] ACSSamp deleting object LAMP1_brightness_1000000_10000000
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'SAMP1' etherealized.
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacssamp.so'.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] SAMP1 released
 2 - Shutting down Container
 2 - All done!
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'LAMP1' etherealized.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacsexmplLampImpl.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'LAMP1' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacsexmplLampImpl.so'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MOUNT1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'MOUNT1' etherealized.
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'MOUNT1' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacsexmplMountImpl.so'.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'MOUNT1' deactivated.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::logout] Logging out from the Manager.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::logout] Logged out from the Manager.
 1 - ----------T--:--:--.--- [Container - ContainerImpl::run] Container stopping...
 1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
 1 - /----/libbaci.so
-1 - ----------T--:--:--.--- [GlobalLogger - ] Container stopped.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Container stopped.
