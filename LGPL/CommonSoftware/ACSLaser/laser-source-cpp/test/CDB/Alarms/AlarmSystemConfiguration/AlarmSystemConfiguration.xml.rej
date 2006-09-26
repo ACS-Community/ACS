@@ -1,0 +1,13 @@
+***************
+*** 4,8 ****
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xsi:schemaLocation="urn:schemas-cosylab-com:Alarm:1.0 ../../../../config/CDB/schemas/laser-definition.xsd">
+  
+- 	<configuration-property name="Implementation">CERN</configuration-property>
+  </alarm-system-configuration>
+--- 4,8 ----
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xsi:schemaLocation="urn:schemas-cosylab-com:Alarm:1.0 ../../../../config/CDB/schemas/laser-definition.xsd">
+  
++ 	<configuration-property name="Implementation">ACS</configuration-property>
+  </alarm-system-configuration>
