@@ -73,7 +73,7 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(AcsAlarmTestCase);
     CPPUNIT_TEST(testFaultState);
-    CPPUNIT_TEST(testProperties);
+    CPPUNIT_TEST(testProps);
     CPPUNIT_TEST(testTimestamp);
     CPPUNIT_TEST_SUITE_END();
 
@@ -83,7 +83,7 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 		
   protected:
     void testFaultState();
-    void testProperties();
+    void testProps();
     void testTimestamp();
 
 	private:
@@ -178,7 +178,7 @@ void AcsAlarmTestCase::testTimestamp()
  *              <property name="ASI_SUFFIX" value="suffix"/>
  *  </user-properties>
  */
-void AcsAlarmTestCase::testProperties()
+void AcsAlarmTestCase::testProps()
 {
 	Properties properties;
 

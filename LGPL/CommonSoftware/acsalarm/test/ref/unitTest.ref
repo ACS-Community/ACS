@@ -1,2 +1,4 @@
 1 - AcsAlarmTestCase::testFaultState : OK
-1 - OK (1)
+1 - AcsAlarmTestCase::testProps : OK
+1 - AcsAlarmTestCase::testTimestamp : OK
+1 - OK (3)

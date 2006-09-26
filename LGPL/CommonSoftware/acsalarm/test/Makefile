@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2006/09/25 19:08:53 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/09/26 19:37:55 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -43,7 +43,7 @@ TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
 TestAcsAlarmSending_LIBS      = laserCppUtil logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs
 
 unitTestDriver_OBJECTS   = unitTestDriver 
-unitTestDriver_LIBS      = TestFaultState acsErrTypeAlarmSourceFactory cdb cppunit logging laserCppUtil acsAlSysSource acsXercesUtilities 
+unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging laserCppUtil acsAlSysSource acsXercesUtilities 
 
 #
 # special compilation flags for single c sources
