@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.17 2005/09/09 00:05:28 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.18 2006/09/26 22:21:12 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -48,7 +48,7 @@ standaloneTaskTest_LIBS = characteristicTask execComponentTestImpl ACSErrTypeCom
 # but since we already have library jut link them togther
 
 
-paramTaskTest_LIBS = parameterTask ACSErrTypeCommon paramTaskTestImpl
+paramTaskTest_LIBS = parameterTask ACSErrTypeCommon paramTaskTestImpl acsXercesUtilities
 # could be :
 # paramTaskTest_OBJECTS   = paramTaskTestImpl 
 # paramTaskTest_LIBS = parameterTask ACSErrTypeCommon
