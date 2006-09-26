@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.42 2006/09/06 13:57:23 gchiozzi Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.43 2006/09/26 12:10:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,6 +25,7 @@
 #include <enumpropAlarm.h>
 #include <baciErrTypeProperty.h>
 #include <baciCharacteristicModelImpl.h>
+#include "enumpropAlarmSystemMonitorEnumProp.h"
 
 using namespace baci;
 using namespace baciErrTypeProperty;
@@ -36,8 +37,6 @@ using namespace baciErrTypeProperty;
 #define ACS_ENUM_C class T, class TCB, class TSeq, class TSeq_out, class TAlarm, class SK
 /**
  * Template implemantation of enum RO property
- *
- * @togo GCH - Monitor archiving is not implemented.
  */
 template <ACS_ENUM_C>
 class ROEnumImpl: public virtual PortableServer::RefCountServantBase,
@@ -337,15 +336,15 @@ public:
     virtual ACS::Subscription_ptr new_subscription_AlarmEnum (
 	ACS::Alarmpattern_ptr cb,
 	const ACS::CBDescIn & desc
-	  
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+	) throw (CORBA::SystemException);
     
-    
-//  ACSErr::Completion* set_sync (T value);
-    
+    /**
+     * Checks if the passed state correspond to an alarm on.
+     * @param state the value for the enumeration to be checked.
+     * @return true if this state is in the alarm_on list.
+     */
+    bool checkAlarm(T state);
+
   protected:
     
     /**
@@ -354,13 +353,6 @@ public:
      * @return true on success, false on failure
      */
     virtual bool readCharacteristics();
-
-    /**
-     * Checks if the passed state correspond to an alarm on.
-     * @param state the value for the enumeration to be checked.
-     * @return true if this state is in the alarm_on list.
-     */
-    bool checkAlarm(T state);
 
     /* --------------------- [ History support ] ---------------------- */
     
@@ -393,8 +385,11 @@ public:
     BACIProperty* property_mp;
     
     /// Event dispatcher;
-    MonitorenumpropEventDispatcher<T> * monitorEventDispatcher_mp;
+    MonitorenumpropEventDispatcher *monitorEventDispatcher_mp;
     
+    /// alarm system monitor
+    AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> > *alarmSystemMonitorEnumProp_mp;
+
     /// history value buffer
     T historyValue_m[HISTORY_SIZE];
     

@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.h,v 1.37 2006/09/01 02:20:55 cparedes Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.h,v 1.38 2006/09/26 12:10:49 bjeram Exp $
  */
 /*
 * DeviceImpl.h - ALMA Device interface implementation.
@@ -34,8 +34,8 @@
 #include "enumpropRWImpl.h"
 #include "baciCharacteristicComponentImpl.h"
 
- using namespace baci;
- using namespace ENUMPROP_TEST;
+NAMESPACE_USE(baci)
+NAMESPACE_USE(ENUMPROP_TEST)
 
 class  enumpropTestDeviceImpl : public baci::CharacteristicComponentImpl,
 				public POA_ENUMPROP_TEST::enumpropTestDevice

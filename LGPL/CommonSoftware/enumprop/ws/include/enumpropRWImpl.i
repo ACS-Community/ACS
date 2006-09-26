@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropRWImpl.i,v 1.53 2006/09/06 13:57:23 gchiozzi Exp $"
+* "@(#) $Id: enumpropRWImpl.i,v 1.54 2006/09/26 12:10:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@ template <ACS_ENUM_C>
 RWEnumImpl<ACS_ENUM_T(T), SK>::RWEnumImpl(const ACE_CString& name, BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
     initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
-    monitorEventDispatcher_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
+    historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
 {
 
     ACS_TRACE("RWEnumImpl::RWEnumImpl");
@@ -141,13 +141,6 @@ RWEnumImpl<ACS_ENUM_T(T), SK>::~RWEnumImpl()
 
    if (deldevIO_m)
       delete devIO_mp;
-
-   // destroy event dispatcher (including event subscribers)
-  if (monitorEventDispatcher_mp) 
-  {
-    delete monitorEventDispatcher_mp;
-    monitorEventDispatcher_mp = 0;
-  }
 
   // destroy BACI property
   if (property_mp) {
@@ -415,13 +408,6 @@ bool RWEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
           m_condition[i] = static_cast<ACS::Condition>(lc[i]);
 
 #if 0
-      /*
-       * The following characteristics are not used
-       * by enum properties, since archiving is not
-       * implemented yet.
-       * archive_delta in any case does not make sense
-       * for this type of properties.
-       */
       dbl = dao->get_double("archive_min_int");
       dbl = dbl * static_cast<CORBA::Double>(10000000.0);
       m_archive_min_int = static_cast<CORBA::ULong>(dbl);

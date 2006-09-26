@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: alarmTest.cpp,v 1.38 2005/09/21 14:03:39 vwang Exp $"
+* "@(#) $Id: alarmTest.cpp,v 1.39 2006/09/26 12:10:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * bjeram
 */
 
-static char *rcsId="@(#) $Id: alarmTest.cpp,v 1.38 2005/09/21 14:03:39 vwang Exp $"; 
+static char *rcsId="@(#) $Id: alarmTest.cpp,v 1.39 2006/09/26 12:10:49 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -56,7 +56,7 @@ public:
 		 ) 
     throw (CORBA::SystemException)
   {
-    ACS_SHORT_LOG ((LM_DEBUG, "(%s::AlarmCBStates::raised) Value: %s (%d). Completion (type=%d, code=%d)", prop.c_str(), description[value].in(), value, value, c.type, c.code));
+    ACS_SHORT_LOG ((LM_DEBUG, "(%s::AlarmCBStates::raised) Value: %s (%d). Completion (type=%d, code=%d)", prop.c_str(), description[value].in(), value, c.type, c.code));
   }
 
   void alarm_cleared (	ACS::pattern value,
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
     
     try
 	{
-ACE_CString g_strCmdLn;
+	ACE_CString g_strCmdLn;
 	for (int i=argc-1; i>=0; i--)
 	    g_strCmdLn = ACE_CString(argv[i])+ " " + g_strCmdLn;
 
@@ -102,6 +102,10 @@ ACE_CString g_strCmdLn;
 			 m_argc,
 			 m_argv);
 	BACI_CORBA::InitCORBA(m_argc, m_argv);
+
+	LoggingProxy EP_log (0, 0, 31, 0);
+	LoggingProxy::init (&EP_log);
+
 	/**
 	 * Get reference to a device
 	 */

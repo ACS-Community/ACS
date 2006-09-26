@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.51 2006/09/06 13:57:23 gchiozzi Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.52 2006/09/26 12:10:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@ template <ACS_ENUM_C>
 ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
     initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
-    monitorEventDispatcher_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
+    monitorEventDispatcher_mp(0), alarmSystemMonitorEnumProp_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
 {
 
     ACS_TRACE("ROEnumImpl::ROEnumImpl");
@@ -102,7 +102,20 @@ ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent
 	m_value = (T)defaultValue_m; 
 	devIO_mp = new DevIOMem<T> (m_value);
 	ACS_DEBUG("ROEnumImpl::ROEnumImpl", "No DevIO provided - created DevIOMem.");
-      }
+	}//if-else
+
+    if (monitorEventDispatcher_mp==0 && this-> m_alarm_timer_trig!=0)
+	{
+	CBDescIn descIn;
+	descIn.id_tag = 0;
+	monitorEventDispatcher_mp = new MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
+
+	if (this->monitorEventDispatcher_mp!=0 && this->m_alarm_timer_trig!=0)
+	    {
+	     alarmSystemMonitorEnumProp_mp = new AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> >(this, this->monitorEventDispatcher_mp);
+	    }//if
+	}  
+
 
     ACS_DEBUG_PARAM("ROEnumImpl::ROEnumImpl", "Successfully created %s.", name.c_str() );
 	
@@ -117,6 +130,11 @@ ROEnumImpl<ACS_ENUM_T(T), SK>::~ROEnumImpl()
 
   if (deldevIO_m)
       delete devIO_mp;
+  if (alarmSystemMonitorEnumProp_mp)
+      {
+      delete alarmSystemMonitorEnumProp_mp;
+      alarmSystemMonitorEnumProp_mp = 0;
+      }//if
 
   // destroy event dispatcher (including event subscribers)
   if (monitorEventDispatcher_mp) 
@@ -336,13 +354,6 @@ bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
       m_alarm_timer_trig = static_cast<CORBA::ULong>(dbl);
 
 #if 0
-      /*
-       * The following characteristics are not used
-       * by enum properties, since archiving is not
-       * implemented yet.
-       * archive_delta in any case does not make sense
-       * for this type of properties.
-       */
       dbl = dao->get_double("archive_min_int");
       dbl = dbl * static_cast<CORBA::Double>(10000000.0);
       m_archive_min_int = static_cast<CORBA::ULong>(dbl);
@@ -664,19 +675,31 @@ ACS::Subscription_ptr ROEnumImpl<ACS_ENUM_T(T), SK>::new_subscription_AlarmEnum 
 					)
   throw (CORBA::SystemException)
 {
+   if (this->m_alarm_timer_trig==0)
+       {
+       
+       ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROEnumImpl&lt;&gt;::new_subscription_Alarm",
+	       (LM_ERROR, "Can not create alarm dispatcher for %s because alarm_timer_trig=0", 
+		this->getProperty()->getName()));
+       ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+       }//if
 
   if (monitorEventDispatcher_mp==0)
   {
     CBDescIn descIn;
     descIn.id_tag = 0;
-    monitorEventDispatcher_mp = new MonitorenumpropEventDispatcher<T>();//descIn, m_alarm_timer_trig, property_mp);		// 100ms
+    monitorEventDispatcher_mp = new MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
 	if (!monitorEventDispatcher_mp)
 	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
   }  
 
   AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> * eventStrategy = 
-    new AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> (cb, desc, m_alarm_timer_trig, 
-				 this, monitorEventDispatcher_mp);
+      new AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern>
+      (cb,
+       desc,
+       m_alarm_timer_trig,
+       this,
+       monitorEventDispatcher_mp);
 
 if (!eventStrategy)
 	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());

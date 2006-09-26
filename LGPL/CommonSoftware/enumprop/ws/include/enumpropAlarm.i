@@ -95,26 +95,30 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::check(BACIValue &val,
   ACE_UNUSED_ARG(c);
 
   ACS::pattern value = val.patternValue();
-  //ACE_OS::printf ("Check value: %d\n", value);
-  
-  ACE_TRY_EX(clear)
-   {
-    if (c.type==0 && c.code==0){
-     callback_mp->alarm_cleared(value, c, desc);
-     ACE_TRY_CHECK_EX(clear);
-    }else{
-     callback_mp->alarm_raised(value, c, desc);
-     ACE_TRY_CHECK_EX(clear);
-      }  
-     succeeded();
+ 
+  try
+      {
+      if ( property_mp->checkAlarm(T(value)) && !alarmRaised_m )
+	  {	  
+//TBD:: here should be alarm raised, but it has to be added to codes
+	  ACSErrTypeAlarm::ACSErrAlarmHighCompletion comp;
+	  callback_mp->alarm_raised(T(value), comp, desc);
+	  alarmRaised_m = true;
+	  }
+      if (!property_mp->checkAlarm(T(value)) && alarmRaised_m )
+	  {
+	  ACSErrTypeAlarm::ACSErrAlarmClearedCompletion comp;
+	  callback_mp->alarm_cleared(T(value), comp, desc);
+	  alarmRaised_m = false;
+	  }
+      succeeded();
+      }
+  catch(...)
+      {
+      if (failed()) 
+	  destroy();
 	}
-  ACE_CATCHANY
-	{
-	  if (failed()) 
-	    destroy();
-	}
-      ACE_ENDTRY;
-}
+}//check
   
 /* ------------------- [ Recoverable interface ] --------------------*/
 
@@ -137,7 +141,7 @@ char* AlarmenumpropEventStrategy<T, ROT, AlarmT>::getObjectState(void)
   ACE_NEW_RETURN (buffer, ACE_TCHAR[MAX_RECORD_SIZE], 0);
   
   
-  try 
+  ACE_TRY 
     {
 
       CORBA::String_var ior = BACI_CORBA::getORB()->object_to_string(callback_mp
@@ -157,10 +161,11 @@ char* AlarmenumpropEventStrategy<T, ROT, AlarmT>::getObjectState(void)
       return buffer;
       
     }
-  catch(CORBA::Exception &ex) 
+  ACE_CATCHANY 
     { 
       // log debug
     }
+  ACE_ENDTRY;
   
   return 0;
 }
@@ -191,7 +196,7 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::setObjectState(const char * sta
   name_m = cname;
 
   
-  try 
+  ACE_TRY 
     {
        
       CORBA::Object_var obj = BACI_CORBA::getORB()->string_to_object(ior);
@@ -226,10 +231,11 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::setObjectState(const char * sta
       
       BACIRecoveryManager::getInstance()->addRecoverableObject(this);
     }
-  catch(CORBA::Exception &ex) 
+  ACE_CATCHANY 
     {
       // error.
     }
+  ACE_ENDTRY;
 }
 
 /* --------------- [ Subscription interface ] --------------- */ 

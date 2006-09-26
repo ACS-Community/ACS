@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.38 2005/09/02 11:46:56 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.39 2006/09/26 12:10:49 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -75,7 +75,10 @@ $(PROG)_LIBS               = C++ CCS
 #
 # Includes (.h) files (public and local)
 # ---------------------------------
-INCLUDES        = enumpropRWImpl.h enumpropRWImpl.i enumpropROImpl.h enumpropROImpl.i enumpropAlarm.h enumpropAlarm.i
+INCLUDES        = enumpropRWImpl.h enumpropRWImpl.i \
+		  enumpropROImpl.h enumpropROImpl.i \
+		  enumpropAlarm.h enumpropAlarm.i \
+		  enumpropAlarmSystemMonitorEnumProp.h enumpropAlarmSystemMonitorEnumProp.i
 INCLUDES_L      =
                   
 #

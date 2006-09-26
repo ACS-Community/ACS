@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: testClient.cpp,v 1.43 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: testClient.cpp,v 1.44 2006/09/26 12:10:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 */
 
 
-static char *rcsId="@(#) $Id: testClient.cpp,v 1.43 2006/09/01 02:20:55 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: testClient.cpp,v 1.44 2006/09/26 12:10:49 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -38,7 +38,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <enumpropTestDeviceC.h>
 #include <logging.h>
 
- using namespace ENUMPROP_TEST;
+NAMESPACE_USE(ENUMPROP_TEST)
 
 class TestCBpattern: public virtual POA_ACS::CBpattern 
 {

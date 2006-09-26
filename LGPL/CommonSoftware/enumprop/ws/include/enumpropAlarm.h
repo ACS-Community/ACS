@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropAlarm.h,v 1.34 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: enumpropAlarm.h,v 1.35 2006/09/26 12:10:49 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -19,58 +19,20 @@
 #include <baciRecoverableObject.h>
 #include <ACSErrTypeAlarmC.h>
 
-namespace baci {
+NAMESPACE_BEGIN(baci);
 
-template <class T>
-class MonitorenumpropEventDispatcher : public EventDispatcher
+class MonitorenumpropEventDispatcher : 
+    public MonitorEventDispatcher<ACS::pattern, ACS::CBpattern, POA_ACS::CBpattern>
 {
 public:
-  //  MonitordoubleEventDispatcher();
-		       
-  virtual ~MonitorenumpropEventDispatcher(){ destroyEvents(); }
+    MonitorenumpropEventDispatcher(const CBDescIn& descIn,
+			   const TimeInterval& interval,
+				   BACIProperty * property) :
+	MonitorEventDispatcher<ACS::pattern, ACS::CBpattern, POA_ACS::CBpattern>(descIn, interval, property)
+	{
+	}
 
-  virtual void subscribe(EventStrategy * event){
-    EventDispatcher::subscribe(event);
-    if (!event->isSuspended()) resume();
-  }
-
-  virtual void unsubscribe(EventStrategy * event){
-    EventDispatcher::unsubscribe(event);
-    if (!event->isSuspended()) suspend();
-  }
-
-  virtual void dispatch(T value,
-			const ACSErr::Completion & c,
-			const ACS::CBDescOut & desc
-			 ) 
-			{
-      //     ACE_OS::printf("...dispatch...\n");
-
-    EventStrategyVector subscribers = EventStrategyVector(getSubscribers());    // copy
-    for (EventStrategyVector::iterator iter = subscribers.begin();
-	 iter != subscribers.end(); 
-	 iter++)
-      {
-	//	ACE_OS::printf("dispatch %d \n", value);
-      CORBA::Any tAny;
-      tAny <<= value;
-	BACIValue val((ACS::pattern)value, tAny);
-	(*iter)->check(val, c, desc);
-      }
-  }
-
-  virtual void suspend(){
-    if (active_m==1)
-      //monitor_mp->suspend();
-    active_m--;
-  }
-
-  virtual void resume(){
-    if (active_m==0)
-      //monitor_mp->resume();
-    active_m++;
-  }
-};//class
+};//class MonitorenumpropEventDispatcher
 
 template <class T, class ROT, class AlarmT>
 class AlarmenumpropEventStrategy : public EventStrategy
@@ -161,7 +123,7 @@ private:
 };
 
 #include "enumpropAlarm.i"
- }; 
+NAMESPACE_END(baci);
 
 #endif
 

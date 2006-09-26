@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.44 2006/09/01 02:20:55 cparedes Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.45 2006/09/26 12:10:49 bjeram Exp $
  */
 /*
 *    DeviceImpl.cpp - ALMA Device interface implementation.
@@ -31,7 +31,7 @@
 
 #include "enumpropTestDeviceImpl.h"
   
- using namespace baci;
+NAMESPACE_USE(baci)
 
  
 // Implementation skeleton constructor

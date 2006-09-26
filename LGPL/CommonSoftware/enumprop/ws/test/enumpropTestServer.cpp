@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.46 2006/06/13 09:18:16 bjeram Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.47 2006/09/26 12:10:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.46 2006/06/13 09:18:16 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.47 2006/09/26 12:10:49 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -47,6 +47,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #ifdef MAKE_VXWORKS
 #	include "rebootLib.h"
 #	include "acsutilArgUnpack.h"
+#else
+#include "ACSAlarmSystemInterfaceFactory.h"
 #endif
 
 using namespace ACS;
@@ -252,6 +254,12 @@ int main(int l_argc, char* l_argv[])
 		(LM_INFO, "Failed to initialize ACSError."));
 	return -1;
 	}
+
+#ifndef MAKE_VXWORKS
+	// Init the Alarm factory      
+    ACSAlarmSystemInterfaceFactory::init(maci::Manager::_nil());
+#endif
+
 
     ACS_SHORT_LOG((LM_INFO,"enumpropTestServer: Init DB"));
 
