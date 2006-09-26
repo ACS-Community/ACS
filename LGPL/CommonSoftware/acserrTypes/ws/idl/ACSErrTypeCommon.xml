@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeCommon" type="10" _prefix="alma">
+	
 	<ErrorCode name="FileNotFound" 
-	           shortDescription="File couldn't be found" 
-                   description="File couldn't be found">
-	           <Member name="FileName" type="string" description="File name"/>
+		shortDescription="File couldn't be found" 
+		description="File couldn't be found" >
+		<Member name="FileName" type="string" description="File name"/>
 	</ErrorCode>
+	
 	<ErrorCode name="OutOfBounds" 
-	           shortDescription="Out of bounds"
-	           description="Out of bounds">
-		   <Member name="MinValue" 
-                           type="string" 
- 	                   description="Min value of the bounds."/>
-	           <Member name="MaxValue" 
-		          type="string" 
- 	                  description="Max value of the bounds."/>
-	            <Member name="RequestedValue" 
-		          type="string" 
- 	                  description="Requested value."/>
+		shortDescription="Out of bounds"
+		description="Out of bounds" >
+		<Member name="MinValue" type="string" description="Min value of the bounds."/>
+		<Member name="MaxValue" type="string" description="Max value of the bounds."/>
+		<Member name="RequestedValue" type="string" description="Requested value."/>
 	</ErrorCode>
+	
 	<ErrorCode name="IOError" shortDescription="Input Output Error" description="Input Output Error"/>
 	<ErrorCode name="Unknown" shortDescription="Unknown Error" description="Unknown Error"/>
 	<ErrorCode name="NoResources" shortDescription="No Resources" description="No Resources"/>
@@ -30,42 +27,41 @@
 	<ErrorCode name="TypeNotFound" shortDescription="Type Not Found" description="Type Not Found"/>
 	<ErrorCode name="TypeNotSupported" shortDescription="Type Not Supported" description="Type Not Supported"/>
 	<ErrorCode name="CORBAProblem" shortDescription="CORBA Problem" description="CORBA Problem"/>
-	<ErrorCode name="IllegalStateEvent" shortDescription="illegal event sent to a state machine" description="illegal event sent to a state machine"/>
+	
+	<ErrorCode name="IllegalStateEvent" 
+		shortDescription="Illegal event sent to a state machine" 
+		description="An illegal event was sent to a state machine">
+		<Member name="Event" type="string" description="Name of the offending event"/>
+		<Member name="State" type="string" description="Name of the current state that could not accept the event."/>
+	</ErrorCode>
+
 	<ErrorCode name="NotImplemented" 
-                   shortDescription="Method or feature not implemented" 
-                   description="The specified feature is not
-		   implemented. If none is specified, the whole method
-		   is not implemented.">
- 	           <Member name="Feature" 
-                           type="string" 
- 	                   description="Feature not implemented. Whole method is not specified"/>
+		shortDescription="Method or feature not implemented" 
+		description="The specified feature is not implemented. If none is specified, the whole method is not implemented.">
+		<Member name="Feature" type="string" description="Feature not implemented. Whole method is not specified"/>
 	</ErrorCode>
+	
 	<ErrorCode name="GenericError" 
-                   shortDescription="An error occurred, see ErrorDesc member" 
-                   description="An error occurred and no specific
-		   error code exists. A description of the error is
-		   given in the ErrorDesc member.">
-	           <Member name="ErrorDesc" 
-                           type="string" 
- 	                   description="String describing the error condition"/>
+		shortDescription="An error occurred, see ErrorDesc member" 
+		description="An error occurred and no specific error code exists. A description of the error is given in the ErrorDesc member.">
+		<Member name="ErrorDesc" type="string" description="String describing the error condition"/>
 	</ErrorCode>
+	
 	<ErrorCode name="NullPointer"
-	           shortDescription="Null pointer error"
-		   description="Value of the pointer is equale to NULL">
-		   <Member name="Variable"
-		           type="string"
-			   description="Name of varable which value is NULL"/>
-        </ErrorCode>
+		shortDescription="Null pointer error"
+		description="Value of the pointer is equale to NULL">
+		<Member name="Variable" type="string" description="Name of varable which value is NULL"/>
+	</ErrorCode>
+	
 	<ErrorCode name="BadParameter"
-	           shortDescription="Bad parameter error"
-		   description="Bad parameter error">
-		   <Member name="Parameter"
-		           type="string"
-			   description="Name of the parameter"/>
-        </ErrorCode>
+		shortDescription="Bad parameter error"
+		description="Bad parameter error">
+		<Member name="Parameter" type="string" description="Name of the parameter"/>
+	</ErrorCode>
+        
 	<ErrorCode name="UnexpectedException" 
-                   shortDescription="An unexpected exception has been catched" 
-                   description="An unexpected exception has been catched.
+                   shortDescription="An unexpected exception has been caught" 
+                   description="An unexpected exception has been caught.
                    Code should always catch for unexpected exceptions
 		   at the end of any try block, to avoid having
 		   unexpected exceptions flowing high up in the call trace.
@@ -77,4 +73,5 @@
 		   details that can be better described by using
 		   another, more specific, ACS exception.">
 	</ErrorCode>
+	
 </Type>
