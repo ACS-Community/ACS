@@ -23,6 +23,7 @@ package alma.acs.genfw.runtime.sm;
 
 /**
  * @author hsommer
+ * @deprecated since ACS 6.0, will be removed with 6.1 or 7.0. Use the generated alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx instead.
  * created Apr 15, 2004 4:45:45 PM
  */
 public class AcsStateIllegalEventException extends Exception
