@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestImpl.cpp,v 1.9 2006/09/26 10:26:13 acaproni Exp $"
+* "@(#) $Id: acscomponentTestImpl.cpp,v 1.10 2006/09/26 12:34:20 acaproni Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acscomponentTestImpl.cpp,v 1.9 2006/09/26 10:26:13 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: acscomponentTestImpl.cpp,v 1.10 2006/09/26 12:34:20 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acscomponentTestImpl.h>
@@ -60,6 +60,7 @@ void ACSComponentTestClassImpl::shutdown ()
     throw (CORBA::SystemException )
 {
     ACS_SHORT_LOG((LM_INFO, "acscomponentTestImpl Shutdown")); 
+    orb->shutdown(1);
  }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
