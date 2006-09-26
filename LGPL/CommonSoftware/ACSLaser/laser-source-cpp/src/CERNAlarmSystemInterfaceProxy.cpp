@@ -78,15 +78,15 @@ void CERNAlarmSystemInterfaceProxy::close()
 void CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState> & states)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<FaultState>): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState>): entering.");
 	
-	vector<FaultState> newStates;
+	vector<ACSFaultState> newStates;
 	for (unsigned int t=0; t<states.size(); t++) {
-		FaultState* fs=(FaultState*)&states[t];
-		newStates.push_back((FaultState)*fs);
+		ACSFaultState* fs=(ACSFaultState*)&states[t];
+		newStates.push_back((ACSFaultState)*fs);
 	}
 	commonPush(newStates, true);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<FaultState>): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState>): exiting.");
 }
 
 /**
@@ -99,16 +99,16 @@ void CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState> & states)
 void CERNAlarmSystemInterfaceProxy::push(ACSFaultState & state)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(FaultState): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(ACSFaultState): entering.");
 	// create a vector and populate with the (single) fault state, 
 	// to be passed to the buildMessageXML method
 
-	vector<FaultState> states;
-	FaultState* st=(FaultState*)&state;
-	states.push_back((FaultState)*st);
+	vector<ACSFaultState> states;
+	ACSFaultState* st=(ACSFaultState*)&state;
+	states.push_back((ACSFaultState)*st);
 
 	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(FaultState): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(ACSFaultState): exiting.");
 }
 
 /**
@@ -163,8 +163,8 @@ bool CERNAlarmSystemInterfaceProxy::publishMessageDLL(ASIMessage msg)
 		{
 			string errString = "CERNAlarmSystemInterfaceProxy::publishMessageDLL(): could not open DLL; error was:\n\n" + string(dlerror()); 
 			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
-			// TODO - do something other than exiting here, probably throw an exception
-			exit(-1);
+			// TODO - throw an exception rather than returning...
+			return false;
 		}
 		void * publisherFactoryFunctionPtr = dlsym(hndl, configuration.getPublisherFactoryFunctionName().c_str());
 		laserPublisher = ((AlarmPublisher*(*)(string))(publisherFactoryFunctionPtr))(topicName);
@@ -178,8 +178,8 @@ bool CERNAlarmSystemInterfaceProxy::publishMessageDLL(ASIMessage msg)
 		{
 			string errString = "CERNAlarmSystemInterfaceProxy::publishMessageDLL(): could not get publisher from DLL; error was:\n\n" + string(dlerror()); 
 			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
-			// TODO - do something other than exiting here, probably throw an exception
-			exit(-1);
+			// TODO - throw an exception rather than returning...
+			return false;
 		}
 	}
 
@@ -202,13 +202,13 @@ bool CERNAlarmSystemInterfaceProxy::publishMessageDLL(ASIMessage msg)
  * TODO later:
  * @throws ASIException if the fault state collection can not be pushed.
  */
-void CERNAlarmSystemInterfaceProxy::commonPush(vector<FaultState> & states, bool backup)
+void CERNAlarmSystemInterfaceProxy::commonPush(vector<ACSFaultState> & states, bool backup)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::commonPush(): entering.");
 	// create the ASIMessage, supplying the faults which are to be published to the alarm server
-	vector<FaultState> * statesPtr = new vector<FaultState>(states);
-	auto_ptr<vector<FaultState> > statesAutoPtr(statesPtr); 
+	vector<ACSFaultState> * statesPtr = new vector<ACSFaultState>(states);
+	auto_ptr<vector<ACSFaultState> > statesAutoPtr(statesPtr); 
 	ASIMessage asiMessage(statesAutoPtr);
 
 	// populate the ASIMessage's source timestamp (with the current time)

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/09/26 06:44:11 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -51,7 +51,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = ASIMessage.h FaultState.h CERNAlarmSystemInterfaceProxy.h \
+INCLUDES        = ASIMessage.h CERNAlarmSystemInterfaceProxy.h \
     AlarmPublisher.h AcsAlarmPublisher.h AlarmSupplier.h asiConfigurationConstants.h ASIConfiguration.h \
 # AlarmSystemInterfaceFactory.h 
 
@@ -63,8 +63,8 @@ LIBRARIES_L     =
 
 #
 # <brief description of laserSource library>
-#laserSource_OBJECTS   = FaultState AlarmSystemInterfaceProxy AlarmSystemInterfaceFactory ASIMessage ASIConfiguration AlarmPublisher
-laserSource_OBJECTS   = FaultState CERNAlarmSystemInterfaceProxy ASIMessage ASIConfiguration AlarmPublisher
+#laserSource_OBJECTS   = AlarmSystemInterfaceProxy AlarmSystemInterfaceFactory ASIMessage ASIConfiguration AlarmPublisher
+laserSource_OBJECTS   = CERNAlarmSystemInterfaceProxy ASIMessage ASIConfiguration AlarmPublisher
 
 # <brief description of laserAlarmPublisher library>
 laserAlarmPublisher_OBJECTS   = AcsAlarmPublisher AlarmSupplier

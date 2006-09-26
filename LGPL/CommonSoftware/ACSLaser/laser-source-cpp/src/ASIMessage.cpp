@@ -15,9 +15,9 @@ ASIMessage::ASIMessage()
 
 /*
  * Constructor.
- * @param states a vector of FaultState's to be sent to the laser alarm server.
+ * @param states a vector of ACSFaultState's to be sent to the laser alarm server.
  */
-ASIMessage::ASIMessage(auto_ptr<vector<FaultState> > & states)
+ASIMessage::ASIMessage(auto_ptr<vector<ACSFaultState> > & states)
 {
 	setFaultStates(states);
 }

@@ -4,7 +4,6 @@
 #include "ASIMessage.h"
 #include "ASIConfiguration.h"
 #include "AlarmPublisher.h"
-#include "FaultState.h"
 #include "ACSAlarmSystemInterface.h"
 #include "ACSFaultState.h"
 
@@ -59,7 +58,7 @@ namespace laserSource
  			 *
  			 * @throws ASIException if the fault state collection can not be pushed.
  			 */
-			void commonPush(vector<FaultState> & states, bool backup);
+			void commonPush(vector<ACSFaultState> & states, bool backup);
 
 			string hostname;
 			ASIConfiguration configuration;

@@ -1,5 +1,4 @@
 
-#include "FaultState.h"
 #include "ACSFaultState.h"
 #include "ACSAlarmSystemInterface.h"
 #include "CERNAlarmSystemInterfaceProxy.h"
@@ -66,26 +65,26 @@ auto_ptr<laserSource::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::
 	return createSource(ALARM_SOURCE_NAME);
 }
 
-/** Factory method for creating FaultState instances.
- * @return a new FaultState instance.
+/** Factory method for creating ACSFaultState instances.
+ * @return a new ACSFaultState instance.
  * @param family the fault family.
  * @param member the fault member.
  * @param code the fault code.
  */
 auto_ptr<laserSource::ACSFaultState> CERNAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code)
 {
-	ACSFaultState * fsPtr = new FaultState(family, member, code);
+	ACSFaultState * fsPtr = new ACSFaultState(family, member, code);
 	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);
 	return fsAutoPtr;
 }
 
 /**
  * Create a fault state 
- * @return a new FaultState instance
+ * @return a new ACSFaultState instance
  */
 auto_ptr<laserSource::ACSFaultState> CERNAlarmSystemInterfaceFactory::createFaultState()
 {
-	ACSFaultState * fsPtr = new FaultState();
+	ACSFaultState * fsPtr = new ACSFaultState();
 	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);
 	return fsAutoPtr;
 }
