@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarm_T.h,v 1.14 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciAlarm_T.h,v 1.15 2006/09/26 10:24:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -372,7 +372,7 @@ class baci_EXPORT AlarmEventStrategyDiscSeq : public AlarmEventStrategy<T, TPROP
     AlarmEventStrategyDiscSeq(const AlarmEventStrategyDiscSeq&);
 };
 
- }; 
+}; //namespace baci
 
 #endif /*!_H*/
 

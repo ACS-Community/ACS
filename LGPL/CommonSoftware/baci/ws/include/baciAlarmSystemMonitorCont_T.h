@@ -1,5 +1,5 @@
 #ifndef _ALARM_SYSTEM_MONITOR_CONT_H
-#define _ALARM_SYSTEM_MONITOR__CONT_H
+#define _ALARM_SYSTEM_MONITOR_CONT_H
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
 * (c) European Southern Observatory, 2006 
@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitorCont_T.h,v 1.2 2006/09/24 18:43:33 bjeram Exp $"
+* "@(#) $Id: baciAlarmSystemMonitorCont_T.h,v 1.3 2006/09/26 10:24:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,6 +35,9 @@
 #endif
 
 #include "baciAlarmSystemMonitor_T.h"
+
+namespace baci 
+{
 /**
  * implementation of the AlarmSystemMonitor for continous types (double, long, ...) 
  */
@@ -64,5 +67,7 @@ class baci_EXPORT AlarmSystemMonitorCont : public AlarmSystemMonitor<TPROP>
     AlarmSystemMonitorCont(const AlarmSystemMonitorCont&);
     
 };//class AlarmSystemMonitorCont
+
+}//namespace baci
 
 #endif /*!_H*/

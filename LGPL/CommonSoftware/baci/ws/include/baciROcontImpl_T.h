@@ -118,11 +118,7 @@ protected:
    */
   virtual bool readCharacteristics();
   
- 
- 
 private:
- 
-  
   ///
   /// Characteristics
   ///
@@ -132,12 +128,10 @@ private:
   TSM	alarmLowOff_m;			
   TSM	alarmHighOn_m;			
   TSM	alarmHighOff_m;			
-
 };
 
-// #include "baciROcontImpl_T.i"
 
- }; 
+}; 
 
 #endif
 

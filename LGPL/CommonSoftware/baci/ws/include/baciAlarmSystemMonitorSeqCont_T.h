@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitorSeqCont_T.h,v 1.2 2006/09/24 18:43:33 bjeram Exp $"
+* "@(#) $Id: baciAlarmSystemMonitorSeqCont_T.h,v 1.3 2006/09/26 10:24:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,6 +35,10 @@
 #endif
 
 #include "baciAlarmSystemMonitor_T.h"
+
+namespace baci
+{
+
 /**
  * implementation of the AlarmSystemMonitor for sequence continous types (doubleSeq, longSeq, ...) 
  */
@@ -67,4 +71,5 @@ class baci_EXPORT AlarmSystemMonitorSeqCont : public AlarmSystemMonitor<TPROP>
     int alarmsRaisedLength_m;
 };//class AlarmSystemMonitorSeqCont
 
+}//namespace baci
 #endif /*!_H*/

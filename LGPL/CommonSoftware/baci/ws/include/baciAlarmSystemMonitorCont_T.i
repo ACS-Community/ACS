@@ -27,14 +27,10 @@ void AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 
     T value = val.getValue(static_cast<T*>(0)); //val.patternValue();
 
-    if ((this->alarmRaised_m!=0) &&				// we have an alarm (0 indicates no alarm)
+    if ((this->alarmRaised_m!=0) &&		// we have an alarm (0 indicates no alarm)
 	(value>=this->property_mp->alarm_low_off()) && 
 	(value<=this->property_mp->alarm_high_off()))
 	{
-
-//	Completion c=ACSErrTypeAlarm::ACSErrAlarmClearedCompletion();         
-//	  this->callback_mp->alarm_cleared(value, c, desc);
-//  	  this->succeeded();
 	 ostr << value << std::ends;
 	 ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 	ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s cleared. Value change to: %s", this->property_mp->name(), ts.c_str()));
@@ -44,24 +40,15 @@ void AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
     else if ((this->alarmRaised_m!=-1) &&            // if not alarm low
 	     (value<=this->property_mp->alarm_low_on()))
 	{
-      
-//	Completion c=ACSErrTypeAlarm::ACSErrAlarmLowCompletion();
-//	this->callback_mp->alarm_raised(value, c, desc);
-//	  this->succeeded();
 	ostr << value << std::ends;
 	ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 	ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s raised. Value change to: %s", this->property_mp->name(), ts.c_str()));
 	this->sendAlarm("BACIProperty",this->property_mp->name(),1,true);
-
-	  this->alarmRaised_m = -1;
+	this->alarmRaised_m = -1;
 	}
     else if ((this->alarmRaised_m!=1) &&            // if not alarm hi 
-	   (value>=this->property_mp->alarm_high_on()))
+	     (value>=this->property_mp->alarm_high_on()))
 	{
-      
-//	Completion c= ACSErrTypeAlarm::ACSErrAlarmHighCompletion();
-//          this->callback_mp->alarm_raised(value, c, desc);
-//          this->succeeded();
 	ostr << value << std::ends;
 	ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 	ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s raised. Value change to: %s", this->property_mp->name(), ts.c_str()));
