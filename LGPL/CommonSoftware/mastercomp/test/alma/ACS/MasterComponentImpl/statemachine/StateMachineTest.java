@@ -26,10 +26,10 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import alma.ACS.MasterComponentImpl.StateChangeSemaphore;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
 import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
-import alma.acs.genfw.runtime.sm.AcsStateIllegalEventException;
 import alma.acs.genfw.runtime.sm.AcsStateUtil;
 
 
@@ -72,35 +72,45 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
 	
     public void testLegalLifecycle() throws Exception 
 	{
-        m_logger.info("============ starting testLegalLifecycle ===========");
-        
-        m_logger.info("---> Event initPass1 will be sent.");
-        m_sync.reset();
-        m_context.initPass1();
-        m_sync.waitForStateChanges(2); // wait for asynchronous do method to trigger state transition toward PreInitialized
-        
-        m_logger.info("---> Event initPass2 will be sent.");
-        m_sync.reset();
-        m_context.initPass2();
-        m_sync.waitForStateChanges(2); // wait for asynchronous do method to trigger state transition toward Online
-        
-        m_logger.info("---> Event start will be sent.");
-        m_context.start();
-        m_logger.info("---> Event start will be sent again.");
-        m_context.start();
-        m_logger.info("---> Event stop will be sent.");
-        m_context.stop();
-        
-        m_logger.info("---> Event shutdownPass1 will be sent.");
-        m_sync.reset();
-        m_context.shutdownPass1();
-        m_sync.waitForStateChanges(2); // wait for state transition toward PreShutdown
-        
-        m_logger.info("---> Event shutdownPass2 will be sent.");
-        m_sync.reset();
-        m_context.shutdownPass2();
-        m_sync.waitForStateChanges(2); // wait for state transition toward Shutdown
-        
+    	final int n = 20;
+        m_logger.info("============ starting testLegalLifecycle with " + n + " iterations ===========");
+    	
+    	for (int i=0; i< n; i++) {
+	        assertStateHierarchy("AVAILABLE/OFFLINE/SHUTDOWN");
+	        m_logger.info("---> Event initPass1 will be sent.");
+	        m_sync.reset();
+	        m_context.initPass1();
+	        m_sync.waitForStateChanges(2); 
+	        assertStateHierarchy("AVAILABLE/OFFLINE/PREINITIALIZED");
+	        
+	        m_logger.info("---> Event initPass2 will be sent.");
+	        m_sync.reset();
+	        m_context.initPass2();
+	        m_sync.waitForStateChanges(2); 
+	        assertStateHierarchy("AVAILABLE/ONLINE");
+	        
+	        m_logger.info("---> Event start will be sent.");
+	        m_context.start();
+	        assertStateHierarchy("AVAILABLE/OPERATIONAL");
+	        m_logger.info("---> Event start will be sent again.");
+	        m_context.start();
+	        assertStateHierarchy("AVAILABLE/OPERATIONAL");
+	        m_logger.info("---> Event stop will be sent.");
+	        m_context.stop();
+	        assertStateHierarchy("AVAILABLE/ONLINE");
+	        
+	        m_logger.info("---> Event shutdownPass1 will be sent.");
+	        m_sync.reset();
+	        m_context.shutdownPass1();
+	        m_sync.waitForStateChanges(2); 
+	        assertStateHierarchy("AVAILABLE/OFFLINE/PRESHUTDOWN");
+	        
+	        m_logger.info("---> Event shutdownPass2 will be sent.");
+	        m_sync.reset();
+	        m_context.shutdownPass2();
+	        m_sync.waitForStateChanges(2); 
+	        assertStateHierarchy("AVAILABLE/OFFLINE/SHUTDOWN");
+    	}        
         m_logger.info("============ testLegalLifecycle successful! ===========\n");
     }
 
@@ -110,16 +120,19 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
 
         m_sync.reset();
         m_context.initPass1();
-        m_sync.waitForStateChanges(2); // wait for asynchronous do method to trigger state transition toward PreInitialized
+        m_sync.waitForStateChanges(2);
+        assertStateHierarchy("AVAILABLE/OFFLINE/PREINITIALIZED");
         
         try {
-        	// illegal event, since we're in "INITIALIZING_PASS1"
+        	// illegal event "start" in "AVAILABLE/OFFLINE/PREINITIALIZED"
 			m_context.start();
 			fail("AcsStateIllegalEventException expected!");
 		}
-		catch (AcsStateIllegalEventException e) {
-			// that's fine...
+		catch (AcsJIllegalStateEventEx e) {
+			assertEquals("OFFLINE", e.getState());
+			assertEquals("start", e.getEvent());
 		}
+        assertStateHierarchy("AVAILABLE/OFFLINE/PREINITIALIZED");
 		
         m_logger.info("============ testIllegalEvent successful! ===========\n");
     }
@@ -129,30 +142,39 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
     {
         m_logger.info("============ starting testActionException ===========");
 
-        m_actionImpl.throwExInInitPass1(true);    	
+        m_actionImpl.throwExInInitPass1(true); // we enforce the exception    	
 
         m_sync.reset();
         m_context.initPass1();
-        m_sync.waitForStateChanges(2); // wait for asynchronous do method to trigger state transition toward PreInitialized
+        m_sync.waitForStateChanges(2); 
+        assertStateHierarchy("AVAILABLE/ERROR");
         
-        // the action exception should have brought us into ERROR by now...
         try {
 			m_context.initPass2();
-			fail("AcsStateIllegalEventException expected, with state machine in ERROR state");
+			fail("AcsJIllegalStateEventEx expected, with state machine in ERROR state");
 		}
-		catch (AcsStateIllegalEventException e) {
-			assertEquals("illegal event 'initPass2' in state 'ERROR'.", e.getMessage());
+		catch (AcsJIllegalStateEventEx e) {
+			assertEquals("initPass2", e.getEvent());
+			assertEquals("ERROR", e.getState());
 		}
         // let's get out of error again...
         m_context.shutdownPass1();
-        m_sync.waitForStateChanges(2); // wait for asynchronous do method to trigger state transition toward         m_sync.waitForStateChanges(2); // wait for asynchronous do method to trigger state transition toward PreInitialized
+        m_sync.waitForStateChanges(2); 
+        assertStateHierarchy("AVAILABLE/OFFLINE/PRESHUTDOWN");
 
         m_context.shutdownPass2();
+        m_sync.waitForStateChanges(2); 
+        assertStateHierarchy("AVAILABLE/OFFLINE/SHUTDOWN");
         
         m_logger.info("============ testActionException successful! ===========\n");
     }
 
     
+    private void assertStateHierarchy(String expectedPath) {
+		AcsState[] actualHierarchy = m_context.getCurrentTopLevelState().getStateHierarchy();
+		String actualPath = AcsStateUtil.stateHierarchyToString(actualHierarchy);
+		assertEquals("current state is not as expected!", expectedPath, actualPath);
+    }
 
 
     /**
@@ -191,7 +213,7 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
         public synchronized void initSubsysPass2() {
            	log("initSubsysPass2");
            	try {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
