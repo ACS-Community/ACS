@@ -42,7 +42,6 @@ import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
-import alma.acs.genfw.runtime.sm.AcsStateIllegalEventException;
 import alma.acs.genfw.runtime.sm.AcsStateUtil;
 
 /**
@@ -137,7 +136,9 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 			throws IllegalStateEventEx 
 	{
 		if (event == null) {
-			throw (new AcsJIllegalStateEventEx("Paramter 'event' must not be null.")).toIllegalStateEventEx();
+			AcsJIllegalStateEventEx ex = new AcsJIllegalStateEventEx();
+			ex.setEvent("null");
+			throw ex.toIllegalStateEventEx();
 		}
 		
 		String eventName = event2Name(event);
@@ -175,10 +176,9 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 							" found; most likely " + MasterComponentImplBase.class.getName() + " must be updated.");
 			}
 		}
-		catch (AcsStateIllegalEventException ex) {
-			m_logger.log(Level.WARNING, "Illegal event.", ex);
-			AcsJIllegalStateEventEx jex = new AcsJIllegalStateEventEx(ex);
-			throw jex.toIllegalStateEventEx();
+		catch (AcsJIllegalStateEventEx ex) {
+			m_logger.log(Level.WARNING, "Illegal event '" + ex.getEvent() + "' received in state '" + ex.getState() + "'.", ex);
+			throw ex.toIllegalStateEventEx();
 		}
 	}
 	
