@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParamSetDef.cpp,v 1.13 2005/09/08 23:58:15 sharring Exp $"
+* "@(#) $Id: ParamSetDef.cpp,v 1.14 2006/09/26 19:23:11 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <vector>
 
 #include <ParamSetDef.h>
-#include <MyDOMErrorHandler.h>
+#include <acsDOMErrorHandler.h>
 #include <StrX.h>
 
 #include <xercesc/dom/DOM.hpp>
@@ -416,10 +416,10 @@ int ParamSetDef::parseDOM(const string & xmlFile)
 	parser->setFeature(XMLUni::fgDOMDatatypeNormalization, true);
 
 	/*******************
-	// optionally you can implement your DOMErrorHandler (e.g. MyDOMErrorHandler)
+	// optionally you can implement your DOMErrorHandler (e.g. acsDOMErrorHandler)
 	// and set it to the builder
 	*******************/
-	MyDOMErrorHandler* errHandler = new MyDOMErrorHandler();
+	acsDOMErrorHandler* errHandler = new acsDOMErrorHandler();
 	parser->setErrorHandler(errHandler);
 
 	DOMDocument *doc = 0;

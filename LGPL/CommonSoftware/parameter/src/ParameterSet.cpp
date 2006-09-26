@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParameterSet.cpp,v 1.25 2006/01/10 02:09:56 sharring Exp $"
+* "@(#) $Id: ParameterSet.cpp,v 1.26 2006/09/26 19:23:11 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <vector>
 
 #include <ParameterSet.h>
-#include <MyDOMErrorHandler.h>
+#include <acsDOMErrorHandler.h>
 #include <StrX.h>
 
 #include <xercesc/dom/DOM.hpp>
@@ -879,8 +879,8 @@ int ParameterSet::parseDOM(const char* xmlFile, InMemoryXmlData * xmlData) throw
 
 	setSchemaLocation(parser);
 
-	// Set the error handler to an instance of MyDOMErrorHandler
-	MyDOMErrorHandler* errHandler = new MyDOMErrorHandler();
+	// Set the error handler to an instance of acsDOMErrorHandler
+	acsDOMErrorHandler* errHandler = new acsDOMErrorHandler();
 	parser->setErrorHandler(errHandler);
 
 	DOMDocument *doc = 0;

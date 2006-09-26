@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MyDOMErrorHandler.h,v 1.2 2005/01/24 23:03:38 sharring Exp $"
+* "@(#) $Id: acsDOMErrorHandler.h,v 1.1 2006/09/26 19:23:11 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <xercesc/dom/DOMErrorHandler.hpp>
 #include <iostream>
 
-/** @file MyDOMErrorHandler.h */
+/** @file acsDOMErrorHandler.h */
 
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMErrorHandler;
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMError;
@@ -46,20 +46,20 @@ using XERCES_CPP_NAMESPACE_QUALIFIER DOMError;
 namespace parameterSet {
 
 	/**
-	 * MyDOMErrorHandler class - class to handle DOM parsing errors
+	 * acsDOMErrorHandler class - class to handle DOM parsing errors
 	 */
-	class MyDOMErrorHandler : public DOMErrorHandler
+	class acsDOMErrorHandler : public DOMErrorHandler
 	{ 			
 	   public: 		
 	    /**
 	     * Constructor
 	     */
-	    MyDOMErrorHandler();
+	    acsDOMErrorHandler();
 	    
 	    /**
 	     * Destructor
 	     */
-	    virtual ~MyDOMErrorHandler();
+	    virtual ~acsDOMErrorHandler();
 
 	    virtual bool handleError(const DOMError& domError);
 	}; 	

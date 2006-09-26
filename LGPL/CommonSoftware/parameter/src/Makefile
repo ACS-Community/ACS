@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2005/09/26 13:08:33 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.8 2006/09/26 19:23:11 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -51,11 +51,11 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # --------------------------------- 
-INCLUDES        = ParameterSet.h ParamSetDef.h BoolParam.h IntParam.h IntArrayParam.h DoubleArrayParam.h DoubleParam.h StringParam.h StringArrayParam.h StrX.h IntParamDef.h IntArrayParamDef.h DoubleParamDef.h DoubleArrayParamDef.h StringParamDef.h StringArrayParamDef.h BoolParamDef.h ParamDef.h QuantityParam.h Param.h InMemoryXmlData.h parameterConstants.h 
+INCLUDES        = ParameterSet.h ParamSetDef.h BoolParam.h IntParam.h IntArrayParam.h DoubleArrayParam.h DoubleParam.h StringParam.h StringArrayParam.h StrX.h IntParamDef.h IntArrayParamDef.h DoubleParamDef.h DoubleArrayParamDef.h StringParamDef.h StringArrayParamDef.h BoolParamDef.h ParamDef.h QuantityParam.h Param.h InMemoryXmlData.h parameterConstants.h acsDOMErrorHandler.h
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = parameter
+LIBRARIES       = parameter acsXercesUtilities
 LIBRARIES_L     =
 
 #
@@ -63,7 +63,9 @@ LIBRARIES_L     =
 parameter_OBJECTS   = ParameterSet ParamSetDef ParamDef IntParamDef StringParamDef \
                          DoubleParamDef BoolParamDef IntArrayParamDef \
                          DoubleArrayParamDef StringArrayParamDef Param QuantityParam IntParam IntArrayParam \
-                         DoubleArrayParam DoubleParam StringParam StringArrayParam BoolParam MyDOMErrorHandler
+                         DoubleArrayParam DoubleParam StringParam StringArrayParam BoolParam 
+
+acsXercesUtilities_OBJECTS = acsDOMErrorHandler
 
 #
 # Scripts (public and local)

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2005/09/08 23:58:15 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.5 2006/09/26 19:23:11 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -41,7 +41,7 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 parameterTest_OBJECTS   = parameterTest
-parameterTest_LIBS = parameter logging
+parameterTest_LIBS = parameter logging acsXercesUtilities
 
 
 xxxxx_OBJECTS   =	

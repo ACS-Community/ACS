@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: MyDOMErrorHandler.cpp,v 1.3 2005/02/23 02:52:37 sharring Exp $"
+* "@(#) $Id: acsDOMErrorHandler.cpp,v 1.1 2006/09/26 19:23:11 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,12 +30,12 @@
 
 #include <string>
 #include <xercesc/util/XMLString.hpp>
-#include <MyDOMErrorHandler.h>
+#include <acsDOMErrorHandler.h>
 #include <xercesc/dom/DOMError.hpp>
 #include <xercesc/dom/DOMLocator.hpp>
 #include <logging.h>
 
-//  MyDOMHandlers: Overrides of the DOM ErrorHandler interface
+//  acsDOMHandlers: Overrides of the DOM ErrorHandler interface
 
 using namespace std;
 using namespace parameterSet;
@@ -44,43 +44,43 @@ XERCES_CPP_NAMESPACE_USE
 /**
  * Constructor.
  */
-MyDOMErrorHandler::MyDOMErrorHandler()
+acsDOMErrorHandler::acsDOMErrorHandler()
 {
 }
 
 /**
  * Destructor.
  */
-MyDOMErrorHandler::~MyDOMErrorHandler()
+acsDOMErrorHandler::~acsDOMErrorHandler()
 {
 }
 
-bool MyDOMErrorHandler::handleError(const DOMError& domError)
+bool acsDOMErrorHandler::handleError(const DOMError& domError)
 {
-        ACS_LOG(LM_ERROR, "MyDOMErrorHandler::handleError", (LM_ERROR, "--------------------------------------------------\n"))
+        ACS_LOG(LM_ERROR, "acsDOMErrorHandler::handleError", (LM_ERROR, "--------------------------------------------------\n"))
 
 	if (domError.getSeverity() == DOMError::DOM_SEVERITY_WARNING) {
-		ACS_LOG(LM_ERROR, "MyDOMErrorHandler::handleError", (LM_ERROR, "Warning at file "))
+		ACS_LOG(LM_ERROR, "acsDOMErrorHandler::handleError", (LM_ERROR, "Warning at file "))
 	}
 	else if (domError.getSeverity() == DOMError::DOM_SEVERITY_ERROR) {
-		ACS_LOG(LM_ERROR, "MyDOMErrorHandler::handleError", (LM_ERROR, "Error at file "))
+		ACS_LOG(LM_ERROR, "acsDOMErrorHandler::handleError", (LM_ERROR, "Error at file "))
 	}
 	else {
-		ACS_LOG(LM_ERROR, "MyDOMErrorHandler::handleError", (LM_ERROR, "FATAL error at file "))
+		ACS_LOG(LM_ERROR, "acsDOMErrorHandler::handleError", (LM_ERROR, "FATAL error at file "))
 	}
 
         DOMLocator * myLocator = domError.getLocation();
         string location = XMLString::transcode( myLocator->getURI() );
         string errorMsg = XMLString::transcode(domError.getMessage());
 
-	ACS_LOG(LM_ERROR, "MyDOMErrorHandler::handleError", (LM_ERROR, "%s, line %d, char %d \n Message: %s", 
+	ACS_LOG(LM_ERROR, "acsDOMErrorHandler::handleError", (LM_ERROR, "%s, line %d, char %d \n Message: %s", 
 		location.c_str(), domError.getLocation()->getLineNumber(), domError.getLocation()->getColumnNumber(), 
 		errorMsg.c_str()))
 	//cerr << location << ", line " << domError.getLocation()->getLineNumber()
 	//	<< ", char " << domError.getLocation()->getColumnNumber()
 	//	<< "\n  Message: " << errorMsg << endl;
 
-        ACS_LOG(LM_ERROR, "MyDOMErrorHandler::handleError", (LM_ERROR, "--------------------------------------------------\n"))
+        ACS_LOG(LM_ERROR, "acsDOMErrorHandler::handleError", (LM_ERROR, "--------------------------------------------------\n"))
 	return true;
 }
 
