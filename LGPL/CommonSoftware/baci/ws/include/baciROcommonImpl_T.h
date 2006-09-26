@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.24 2006/09/24 18:43:34 bjeram Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.25 2006/09/26 10:23:42 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include <baciPcommonImpl_T.h>
 #include <baciErrTypeDevIO.h>
 #include <baciErrTypeProperty.h>
-#include <ACSAlarmSystemInterface.h>
+
 
 //#define ACS_RO_T(T, TC) ACS_P_TL(T, TC),  POA_ACS::RO##T, ACS::Alarm##T
 /**
@@ -98,14 +98,6 @@ public:
 
     /* -------------------- [ RO interface ] -------------------- */
   
-/*    virtual ACS::Subscription_ptr new_subscription_Alarm (
-	TAlarm *cb,
-	const ACS::CBDescIn & desc,
-	)
-	throw (
-	    CORBA::SystemException
-	    );
-*/    
   protected:
 
   /**
@@ -123,9 +115,6 @@ protected:
   // RO
   TimeInterval	alarmTimerTrig_m;
   
-  // The alarm system source
-  auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource_map;
-
   private:
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.
@@ -136,16 +125,9 @@ protected:
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     ROcommonImpl(const ROcommonImpl&);
-    
-  public:
-    laserSource::ACSAlarmSystemInterface* getAlarmSource() { return alarmSource_map.get(); }
+};// class ROcommonImpl
+
 };
-
-// #include "baciROcommonImpl_T.i"
-
- }; 
-
-
 
 #endif
 

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.2 2006/09/24 18:43:33 bjeram Exp $"
+* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.3 2006/09/26 10:23:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,10 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <string>
+#include <ACSAlarmSystemInterface.h>
+
+namespace baci
+{
 
 /**
  *  Common class for the Alarm System Monitors.
@@ -105,9 +108,14 @@ class baci_EXPORT AlarmSystemMonitor : public EventStrategy
     
     
   protected:
-    
+    // The alarm system source
+    auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource_map;
+
     TPROP *property_mp;
     
     int alarmRaised_m;
 };//class AlarmSystemMonitor
+
+}// namespace baci
+
 #endif /*!_H*/
