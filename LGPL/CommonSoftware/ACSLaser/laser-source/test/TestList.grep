@@ -19,3 +19,5 @@ POA RootPOA - destroyed
 POA offshootPoa - destroyed
 almaacscontainerContainerServicesImpl getAdvancedContainerServices
 SynchroBuffer
+FINER: LogConfig was initialized, but not from CDB settings
+
