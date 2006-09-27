@@ -24,8 +24,11 @@ package alma.ACS.SpecialTestMasterComponentImpl;
 
 import java.util.logging.Logger;
 
+import org.omg.PortableServer.Servant;
+
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
+import alma.ACS.ACSComponentOperations;
 import alma.ACS.SpecialTestMasterComponentOperations;
 import alma.ACS.SpecialTestMasterComponentPOATie;
 import alma.ACS.SpecialTestMasterComponentImpl.SpecialTestMasterComponentImpl;
@@ -65,7 +68,7 @@ public class SpecialTestMasterComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	*/
-	protected Class _getPOATieClass()
+	protected Class<? extends Servant> _getPOATieClass()
 	{
 		return SpecialTestMasterComponentPOATie.class;
 	}
@@ -73,7 +76,7 @@ public class SpecialTestMasterComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	*/
-	protected Class _getOperationsInterface()
+	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
 		return SpecialTestMasterComponentOperations.class;
 	}
