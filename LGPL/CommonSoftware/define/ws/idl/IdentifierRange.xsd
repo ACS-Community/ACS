@@ -2,6 +2,7 @@
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Simon Farrow (E.S.O.) -->
 <xs:schema xmlns:ent="Alma/CommonEntity" xmlns:ran="Alma/Archive/ArchiveRange" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Alma/Archive/ArchiveRange" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
+    <xs:type name="IdentifierRange">
     <xs:element name="IdentifierRange">
         <xs:annotation>
             <xs:documentation>Entity that acts as a pool for unique IDs (UID).
@@ -19,6 +20,7 @@ createdTimeStamp:</xs:documentation>
             <xs:attribute name="archiveID" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
+    </xs:type>
     <xs:complexType name="RangeT">
         <xs:annotation>
             <xs:documentation>Describes the values that a range can hold.
