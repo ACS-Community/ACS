@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACEMACROS.h,v 1.7 2006/04/04 19:01:07 dfugate Exp $"
+* "@(#) $Id: loggingACEMACROS.h,v 1.8 2006/09/27 15:21:21 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -222,15 +222,6 @@ STATIC_LOG(Logging::ace2acsPriority(LM_TRACE), routine, Logging::BaseLog::FIELD_
  *		234243, "maci::ContainerImpl::init",
  *		(LM_INFO, "A sample log entry "));
  */
-#define ACS_LOG(flags, routine, X) \
-{ \
-    ACS_CHECK_LOGGER; \
-    LoggingProxy::Flags(flags); \
-    Logging::LogSvcHandler::DeprecatedLogInfo tStruct; \
-    tStruct = Logging::LogSvcHandler::unformatted2formatted X; \
-    LOG(tStruct.priority, routine, tStruct.message); \
-}
-
 #define ACS_LOG_TIME(flags, tStamp, routine, _log) \
 { \
     ACS_CHECK_LOGGER; \
