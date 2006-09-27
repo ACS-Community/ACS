@@ -21,7 +21,9 @@
  */
 package alma.ACS.MasterComponentImpl;
 
+import java.util.LinkedList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import alma.ACS.MasterComponentOperations;
 import alma.ACS.ROstringSeq;
@@ -74,10 +76,12 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 
 	private AlmaSubsystemContext m_stateMachine;
 
-
+	private StateChangeNotificationChecker stateChangeNotificationChecker; 
+	
 	/******************* [ Lifecycle implementations ] *******************/
 	
 	/**
+	 * Master component subclasses must call <code>super.initialize()</code> if they override this method!
 	 * @see alma.acs.component.ComponentLifecycle#initialize(alma.acs.container.ContainerServices)
 	 */
 	public void initialize(ContainerServices containerServices)
@@ -104,6 +108,17 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		m_stateMachine = new AlmaSubsystemContext(actionHandler, m_logger);
 		m_stateMachine.addAcsStateChangeListener(this);
 
+		
+		if (StateChangeNotificationChecker.monitorStateChangeNotification) {
+			try {
+				stateChangeNotificationChecker = new StateChangeNotificationChecker(m_logger);
+				stateChangeNotificationChecker.createMonitor(m_currentStateHierarchy, m_containerServices);
+			} catch (Exception e) {
+				m_logger.log(Level.WARNING, "Master component " + name() + 
+						" failed to monitor its state change notification although this was requested by the property '" + StateChangeNotificationChecker.PROPERTYNAME + "'.", e);
+			}
+		}
+		
 		try {
 			updateStateHierarchy();
 		}
@@ -111,7 +126,24 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 			throw new ComponentLifecycleException("failed to initialize state property", e);
 		}
 	}
+	
 
+	
+	/**
+	 * Master component subclasses must call <code>super.cleanUp()</code> if they override this method!
+	 * @see alma.ACS.impl.CharacteristicComponentImpl#cleanUp()
+	 */
+	public void cleanUp() {
+		try {
+			if (stateChangeNotificationChecker != null) {
+				stateChangeNotificationChecker.destroyMonitor();
+			}
+		} catch (Exception e) {
+			m_logger.log(Level.WARNING, "Failed to destroy the monitor object that checks state change notification", e);
+		}
+	}
+	
+	
 	
 	
 	/*********************** [ MasterComponent interface ] ***********************/
@@ -215,8 +247,10 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	}
 
 	/**
-	 * sets the property value of <code>currentStateHierarchy</code>
+	 * Sets the property value of <code>currentStateHierarchy</code>
 	 * to match the current (sub-)states from the state machine.
+	 * <p>
+	 * This method should not be overloaded by subclasses! We just don't make it final to meet special testing needs. 
 	 */
 	public void updateStateHierarchy() throws AcsJException 
 	{
@@ -228,7 +262,11 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		for (int i = 0; i < stateHierarchy.length; i++) {
 			stateNameHierarchy[i] = stateHierarchy[i].stateName();
 		}
-		// set Baci property
+				
+		// set Baci property and announce the notification to the checker object beforehand if checking is enabled
+		if (StateChangeNotificationChecker.monitorStateChangeNotification) {
+			stateChangeNotificationChecker.announceStateChangeNotification(stateNameHierarchy);
+		}
 		CompletionHolder ch = new CompletionHolder();
 		m_currentStateHierarchyDataAccess.set(stateNameHierarchy, ch);		
 		
@@ -279,4 +317,56 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 			default: return null;
 		}
 	}
+	
+	
+	/**
+	 * This class can be used by tests to compare the externally visible state change notifications
+	 * that are sent by the ROstringSeq Baci property with the internally triggered notifications.
+	 * To enable this feature, the property <code>acs.mastercomp.monitorStateChangeNotification</code>
+	 * must be set to <code>true</code>.
+	 * <p>
+	 * We suspect that in some cases the baci property fires too often, which would be documented with a SEVERE log.
+	 */
+	private static class StateChangeNotificationChecker extends StateChangeListener {
+		
+		public static final String PROPERTYNAME = "acs.mastercomp.monitorStateChangeNotification";
+		public static final boolean monitorStateChangeNotification = Boolean.getBoolean(PROPERTYNAME);
+		
+		private LinkedList<String> announcedStateNameHierarchy = new LinkedList<String>();
+		
+		StateChangeNotificationChecker(Logger logger) {
+			super(logger);
+		}
+
+		synchronized void announceStateChangeNotification(String[] stateNameHierarchy) {	
+			String statesFlat = AcsStateUtil.stateHierarchyNamesToString(stateNameHierarchy);
+			announcedStateNameHierarchy.add(statesFlat);
+			logger.finest("StateChangeNotificationChecker: jbaci notification for '" + statesFlat + "' is announced.");
+		}
+		
+		protected synchronized void stateChangedNotification(String[] newStateHierarchy) {
+			String newStatesFlat = AcsStateUtil.stateHierarchyNamesToString(newStateHierarchy);
+			// now check if this external notification corresponds to an announced state change
+			boolean matched = false;
+			for (int i=0; i < announcedStateNameHierarchy.size(); i++) {
+				String announcedState = announcedStateNameHierarchy.get(i);
+				if (newStatesFlat.equals(announcedState)) {
+					if (i == 0) {
+						// this is the good case in which the messages announced  first internally is also received first externally
+						logger.finest("StateChangeNotificationChecker received jbaci notification for '" + newStatesFlat + "' as expected.");
+					}
+					else {
+						logger.warning("StateChangeNotificationChecker received jbaci notification for '" + newStatesFlat + "' before " + i + " other expected notifications.");						
+					}
+					announcedStateNameHierarchy.remove(i);
+					matched = true;
+					break;
+				}
+			}
+			if (!matched) {
+				logger.severe("The auto-monitoring of mastercomp state change notifications has detected an unexpected notification for '" + newStatesFlat + "'.");
+			}
+		}				
+	}	
+	
 }
