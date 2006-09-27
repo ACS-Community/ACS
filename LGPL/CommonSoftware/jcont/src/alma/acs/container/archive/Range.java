@@ -31,6 +31,7 @@ import alma.ArchiveIdentifierError.RangeUnlockedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJIdentifierUnexpectedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJRangeExhaustedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJRangeLockedEx;
+import alma.ArchiveIdentifierError.wrappers.AcsJRangeUnlockedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJUidAlreadyExistsEx;
 import alma.archive.range.IdentifierRange;
 import alma.archive.range.RangeT;
@@ -121,14 +122,19 @@ public class Range
 		if (!isLocked)
 		{
 			if (entity.getEntityId() != null && entity.getEntityId().length() > 0 && !allowReplacing) {
-				throw new AcsJUidAlreadyExistsEx("Entity " + entity.getEntityTypeName() + " already has UID " + entity.getEntityId() + " which cannot be reassigned.");
+				AcsJUidAlreadyExistsEx ex = new AcsJUidAlreadyExistsEx();
+				ex.setObjectDesc("Entity " + entity.getEntityTypeName());
+				ex.setUid(entity.getEntityId());
+				throw ex;
 			}
 			String uid = getNextID();
 			entity.setEntityId(uid);
 			entity.setEntityIdEncrypted("-- id encryption not yet implemented --");
 		}
 		else {
-			throw new AcsJRangeLockedEx();
+			AcsJRangeLockedEx ex = new AcsJRangeLockedEx();
+			ex.setRange(rangeIdString());
+			throw ex;
 		}
 	}
 
@@ -140,14 +146,16 @@ public class Range
 	 * This method only works if this range is locked, see {@link #isLocked()}.
 	 * @param ref
 	 */
-	public void assignUniqueEntityRef(EntityRefT ref) throws RangeUnlockedEx, AcsJRangeExhaustedEx {
+	public void assignUniqueEntityRef(EntityRefT ref) throws AcsJRangeUnlockedEx, AcsJRangeExhaustedEx {
 		if (isLocked)
 		{
 			String uid = getNextID();
 			ref.setEntityId(uid);
 		}
 		else {
-			throw new RangeUnlockedEx();
+			AcsJRangeUnlockedEx ex = new AcsJRangeUnlockedEx();
+			ex.setRange(rangeIdString());
+			throw ex;
 		}			
 	}
 	
@@ -161,7 +169,10 @@ public class Range
 		} 
 		else {
 			documentid.decrementAndGet(); // to avoid a LONG overflow in the zillions of next calls
-			throw new AcsJRangeExhaustedEx(); // TODO add rangeID, UID, ...
+			AcsJRangeExhaustedEx ex = new AcsJRangeExhaustedEx();
+			ex.setRange(rangeIdString());
+			ex.setRangeMaxDocumentId(""+getMaxDocumentId());
+			throw ex;
 		}
 	}
 
@@ -188,10 +199,14 @@ public class Range
 		return ( documentid.get() < maxDocumentid );
 	}
 	
+	long getMaxDocumentId() {
+		return maxDocumentid;
+	}
+	
 	/**
 	 * cryptic comment from Simon: TODO: this needs to be moved to protected soon, will require the ArchiveID web service to be moved to this namespace
 	 * @return
-	 * @throws ContainerException
+	 * @throws AcsJIdentifierUnexpectedEx
 	 */
 	public URI next() throws AcsJIdentifierUnexpectedEx, AcsJRangeExhaustedEx
 	{
@@ -206,20 +221,27 @@ public class Range
 	
 	/**
 	 * Gets the UID of this range document itself.
-	 * @throws ContainerException
+	 * @throws AcsJIdentifierUnexpectedEx  if the string from {@link #rangeIdString()} cannot be turned into a URI 
 	 */
 	public URI rangeId() throws AcsJIdentifierUnexpectedEx 	{
-		String uid = "uid://X" + archiveid + 
-	 	  "/X" + rangeid + 
-		  "/X0";
-		try
-		{
+		String uid = rangeIdString();
+		try {
 			URI uri = new URI(uid);
 			return uri;
 		}
-		catch (URISyntaxException e)
-		{
+		catch (URISyntaxException e) {
 			throw new AcsJIdentifierUnexpectedEx(e);
 		}
 	}
+	
+	/**
+	 * Gets a String representation of the UID of this range document itself.
+	 */
+	public final String rangeIdString() {
+		String uid = "uid://X" + archiveid + 
+	 	  "/X" + rangeid + 
+		  "/X0";
+		return uid;
+	}
+	
 }
