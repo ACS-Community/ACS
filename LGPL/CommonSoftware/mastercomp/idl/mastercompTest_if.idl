@@ -39,10 +39,16 @@ module ACS
     interface SpecialTestMasterComponent : MasterComponent
     {
         /** 
+         * This is an example method through which the subsystem components can notify the MC.
          */
         void componentNeedsAttention(in string componentName, in string troubleCode);               
         
+        /** 
+         * This property is just to demonstrate how one can add properties to a custom master comp.
+         * This example was once requested by LDavis.
+         */
         readonly attribute ACS::RWdouble someOtherProperty;
+        
     };
     
 };
