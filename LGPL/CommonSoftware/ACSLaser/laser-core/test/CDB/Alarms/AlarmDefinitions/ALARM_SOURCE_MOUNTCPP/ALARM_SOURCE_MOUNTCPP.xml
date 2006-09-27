@@ -10,9 +10,9 @@
  -->
 <alarm-definition-list 
    xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
 
-	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_ANTENNA" fault-code="1">
+	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MOUNTCPP" fault-code="1">
 		<visual-fields>
 			<system-name></system-name>
 			<identifier></identifier>
@@ -22,7 +22,7 @@
 		<!--cause></cause-->
 		<!--action></action-->
 		<!--consequence></consequence-->
-		<priority>3</priority>
+		<priority>1</priority>
 		<responsible-id>123</responsible-id>
 		<!--piquetGSM>12345</piquetGSM-->
 		<!--help-url></help-url-->
