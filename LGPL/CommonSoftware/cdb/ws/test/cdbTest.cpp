@@ -196,7 +196,7 @@ try{
     ACS_SHORT_LOG ((LM_INFO, "cdbTestClient ends"));
     
     }
-catch(CORBA::Exception ex)
+catch(CORBA::Exception &ex)
     {
     ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "main");
     }
