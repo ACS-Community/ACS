@@ -9,5 +9,5 @@
 1 - Detected notification channel event: 9
 1 - Detected notification channel event: 10
 1 - disconnecting consumer
-1 - timeWaited is: 30 and received events is: 10 and sent is: 10
+1 - received: 10 events, and sent: 10 events
 1 - SUCCESS: expected 10 alarms and detected 10 alarms

@@ -8,7 +8,7 @@
            UseIFR="1" 
            ManagerRetry="10" 
            ManagerReference="" 
-           CacheSize="10" 
+           CacheSize="0" 
            MinCachePriority="0" 
            MaxCachePriority="31" 
            CentralizedLogger="Log">

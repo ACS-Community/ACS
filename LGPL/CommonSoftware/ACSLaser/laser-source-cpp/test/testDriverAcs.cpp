@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.4 2006/09/26 08:24:26 sharring Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.5 2006/09/27 22:40:38 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -201,33 +201,29 @@ int main(int argc, char *argv[])
 
 	int timeWaited = 0;
 	int MAX_TIME_TO_WAIT = 30;
-
-	while ((m_simpConsumer_p->getEventsReceived() < numAlarmsToSend) && timeWaited < MAX_TIME_TO_WAIT)
+	while ((m_simpConsumer_p->getEventsReceived() < numAlarmsToSend) && (timeWaited < MAX_TIME_TO_WAIT))
 	{
 		timeWaited++;
 		client.run(tv1);
 	}
 
-	// release the component and logout from manager
-	client.manager()->release_component(client.handle(), "ALARM_SOURCE_MOUNTCPP");
-	client.logout();
-    
-	// Sleep for 10 sec to allow everything to cleanup and stablize
-	ACE_OS::sleep(10);
-
 	if(m_simpConsumer_p->getEventsReceived() >= numAlarmsToSend)
 	{
 		std::cout << "disconnecting consumer" << std::endl;
-		std::cout << "timeWaited is: " << timeWaited << " and received events is: " << m_simpConsumer_p->getEventsReceived() 
-			<< " and sent is: " << sentEvtCount << std::endl;
+		std::cout << "received: " << m_simpConsumer_p->getEventsReceived() 
+			<< " events, and sent: " << sentEvtCount << " events" << std::endl;
    	m_simpConsumer_p->disconnect();   
 		delete m_simpConsumer_p;
 		m_simpConsumer_p=0;
 	}
 	else
 	{
-		std::cout << "never detected all the events" << std::endl;
+		std::cout << "ERROR: never detected all the events" << std::endl;
 	}
+
+	// release the component and logout from manager
+	client.manager()->release_component(client.handle(), "ALARM_SOURCE_MOUNTCPP");
+	client.logout();
 
 	return 0;
 }
