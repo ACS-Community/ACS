@@ -30,7 +30,6 @@ import alma.ACS.SUBSYSSTATE_ONLINE;
 import alma.ACS.SUBSYSSTATE_OPERATIONAL;
 import alma.ACS.SUBSYSSTATE_PREINITIALIZED;
 import alma.ACS.SUBSYSSTATE_PRESHUTDOWN;
-import alma.ACS.SUBSYSSTATE_REINITIALIZING;
 import alma.ACS.SUBSYSSTATE_SHUTDOWN;
 import alma.ACS.MasterComponentPackage.SubsystemStateEvent;
 import alma.ACSErr.ACSErrTypeOK;
@@ -39,6 +38,7 @@ import alma.ACSErrTypeCommon.IllegalStateEventEx;
 import alma.ACSErrTypeOK.ACSErrOK;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.genfw.runtime.sm.AcsStateUtil;
 
 /**
  * @author hsommer
@@ -55,15 +55,10 @@ public class MasterComponentTest extends ComponentClientTestCase
 			super("MASTERCOMP1-Test");
 	}
 
-	protected void initAcsLogging() {
-		// empty, workaround for logging bug...
-	}
-	
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		org.omg.CORBA.Object compObj = getContainerServices().getComponent("MASTERCOMP1");
-		
+		org.omg.CORBA.Object compObj = getContainerServices().getComponent("MASTERCOMP1");		
 		assertNotNull(compObj);
 		m_masterComp = alma.ACS.MasterComponentHelper.narrow(compObj);
 		assertNotNull(m_masterComp);
@@ -81,7 +76,7 @@ public class MasterComponentTest extends ComponentClientTestCase
 	
 	public void testInitPass1() throws Exception 
 	{
-		ROstringSeq statesProperty = m_masterComp.currentStateHierarchy();
+		ROstringSeq statesProperty = m_masterComp.currentStateHierarchy(); 
 		assertNotNull(statesProperty);
 
 		// verify initial state
@@ -139,6 +134,26 @@ public class MasterComponentTest extends ComponentClientTestCase
 		// todo: send more events
 	}
 
+	
+	
+	/**
+	 * Test method for multiple runs of {@link #_testEventSync()}.
+	 */
+	public void testEventSyncMultipleRuns() throws Exception {
+		
+		ROstringSeq statesProperty = m_masterComp.currentStateHierarchy();
+		assertNotNull(statesProperty);
+
+		StateChangeListener listener = new StateChangeListener(m_logger);		
+		listener.createMonitor(statesProperty, getContainerServices());
+
+		for (int i=0; i < 100; i++) {
+			m_logger.info("\n*** testEventSyncMultipleRuns(" + i + ") ***");
+			_testEventSync(listener);	
+		}
+		
+		listener.destroyMonitor();
+	}
 
 	/**
 	 * Uses state change notification to synchronize sending the next event,
@@ -146,17 +161,9 @@ public class MasterComponentTest extends ComponentClientTestCase
 	 * <p>
 	 * This method could be taken as an example of how subsystems can use these synchronization helper classes 
 	 * to write unit tests for their own master components.
-	 * 
-	 * @throws Exception
 	 */
-	public void testEventSync() throws Exception 
+	private void _testEventSync(StateChangeListener listener) throws Exception 
 	{
-		ROstringSeq statesProperty = m_masterComp.currentStateHierarchy();
-		assertNotNull(statesProperty);
-
-		StateChangeListener listener = new StateChangeListener(m_logger);		
-		listener.createMonitor(statesProperty, getContainerServices());
-
 		String[] expectedHierarchy = new String[] {
 				SUBSYSSTATE_AVAILABLE.value, SUBSYSSTATE_OFFLINE.value, SUBSYSSTATE_SHUTDOWN.value };
 		listener.verifyCurrentState(expectedHierarchy);
@@ -202,9 +209,7 @@ public class MasterComponentTest extends ComponentClientTestCase
 		m_masterComp.doTransition(SubsystemStateEvent.SUBSYSEVENT_SHUTDOWNPASS2);
 		sync.waitForStateChanges(2); // SUBSYSSTATE_SHUTTINGDOWN_PASS2, SUBSYSSTATE_SHUTDOWN
 		expectedHierarchy[2] = SUBSYSSTATE_SHUTDOWN.value;
-		assertTrue(listener.verifyCurrentState(expectedHierarchy));
-		
-		listener.destroyMonitor();
+		assertTrue(listener.verifyCurrentState(expectedHierarchy));		
 	}
 	
 	
@@ -220,18 +225,17 @@ public class MasterComponentTest extends ComponentClientTestCase
 	{ 
 		CompletionHolder ch = new CompletionHolder();
 		String[] states = statesProperty.get_sync(ch);
-		
+
 		AcsJCompletion statesSyncCompletion = AcsJCompletion.fromCorbaCompletion(ch.value);
 		assertFalse(statesSyncCompletion.isError());
 		assertEquals(ACSErrTypeOK.value, statesSyncCompletion.getType());
 		assertEquals(ACSErrOK.value, statesSyncCompletion.getCode());
+		assertNotNull(states);
 		
 		// verify state
-		assertNotNull(states);
-		assertTrue(states.length == expectedHierarchy.length);
-		for (int i = 0; i < states.length; i++) {
-			assertEquals(expectedHierarchy[i], states[i]);
-		}
+		String expectedPath = AcsStateUtil.stateHierarchyNamesToString(expectedHierarchy);
+		String actualPath = AcsStateUtil.stateHierarchyNamesToString(states);
+		assertEquals("current states hierarchy was not as expected!", expectedPath, actualPath);
 	}
 
 }
