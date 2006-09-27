@@ -15,20 +15,27 @@
 	/>
 	<ErrorCode name="CDBRecordIsReadOnly"
 	           shortDescription="CDB record is readonly"
-		   description="CDB record is readonly"
-	/>
+		   description="CDB record is readonly"	>
+		<Member name="Curl" 
+			type="string"
+			description="Curl of the record"
+		/>
+	</ErrorCode>
 	<ErrorCode name="CDBFieldIsReadOnly"
 	           shortDescription="CDB field is readonly"
-		   description="CDB field is readonly"
-	/>
+		   description="CDB field is readonly"	>
+		<Member name="FieldName" 
+			type="string"
+			description="Field name"
+		/>
+	</ErrorCode>
 	<ErrorCode name="CDBReadoOnlyData"
 	           shortDescription="CDB data are readonly"
 		   description="CDB data are readonly"
 	/>
 	<ErrorCode name="WrongCDBDataType"
 	           shortDescription="Wrong CDB data type"
-		   description="Wrong CDB data type"
-	>
+		   description="Wrong CDB data type"	>
 		<Member name="Value"
 			type="string"
 			description="Value to transform to that data type"
@@ -40,8 +47,7 @@
 	</ErrorCode>
 	<ErrorCode name="CDBRecordAlreadyExists"
 	           shortDescription="CDB record already exists"
-		   description="CDB record already exists"
-	>
+		   description="CDB record already exists">
 		<Member name="Curl" 
 			type="string"
 			description="Curl of the record"
@@ -53,8 +59,7 @@
 	/>
 	<ErrorCode name="CDBFieldDoesNotExist"
 	           shortDescription="CDB field does not exist"
-		   description="CDB field does not exist"
-	>
+		   description="CDB field does not exist" >
 		<Member name="FieldName" 
 			type="string"
 			description="Field name"
@@ -62,8 +67,12 @@
 	</ErrorCode>
 	<ErrorCode name="CDBRecordDoesNotExist"
 	           shortDescription="CDB record does not exist"
-		   description="CDB record does not exist"
-	/>
+		   description="CDB record does not exist">
+		<Member name="Curl" 
+			type="string"
+			description="Curl of the record"
+		/>
+	</ErrorCode>
 	<ErrorCode name="CDBXMLError"
 	           shortDescription="CDB XML error"
 		   description="CDB XML error"
