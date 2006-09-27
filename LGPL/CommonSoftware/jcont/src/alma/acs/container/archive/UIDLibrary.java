@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import alma.ArchiveIdentifierError.RangeUnlockedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJIdentifierUnavailableEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJIdentifierUnexpectedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJRangeExhaustedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJRangeLockedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJRangeUnavailableEx;
+import alma.ArchiveIdentifierError.wrappers.AcsJRangeUnlockedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJUidAlreadyExistsEx;
 import alma.archive.range.IdentifierRange;
 import alma.entities.commonentity.EntityRefT;
@@ -96,8 +96,12 @@ public class UIDLibrary
 	 * This method is synchronized to avoid the very unlikely situation that <code>defaultRange.hasNextId</code> succeeds for one thread but then later
 	 * assigning the UID still fails because of another thread having stolen the last free UID in the meantime.
 	 * 
-	 * @param identifier the identifier archive from which a new Range can be obtained if necessary. 
-	 * @see {@link ContainerServices#assignUniqueEntityId(EntityT)}
+	 * @param identifier  the identifier archive from which a new <code>Range</code> can be obtained if necessary. Use <br>
+	 *        <code>ContainerServices#getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);</code> <br>
+	 *        to create the required XML binding class aware interface from the plain-Corba <code>Identifier</code> object 
+	 *        (<code>identRaw</code>) that is obtained, for example, by <br>
+	 *        <code>IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"))</code>.
+	 * @see ContainerServices#assignUniqueEntityId(EntityT)
 	 */
 	public synchronized void assignUniqueEntityId(EntityT entity, IdentifierJ identifier) 
 	throws AcsJUidAlreadyExistsEx, AcsJIdentifierUnavailableEx, AcsJRangeUnavailableEx, AcsJIdentifierUnexpectedEx  {
@@ -124,6 +128,11 @@ public class UIDLibrary
 	 * Similar to {@link #assignUniqueEntityId(EntityT, IdentifierJ)}, but allows replacing an existing ID. 
 	 * Only in very special cases such as ObsPrep replacing locally-generated IDs with archive-generated UIDs
 	 * should this method be used. Replacing UIDs can easily corrupt the archive because existing links would no longer hold!
+	 * @param identifier  the identifier archive from which a new <code>Range</code> can be obtained if necessary. Use <br>
+	 *        <code>ContainerServices#getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);</code> <br>
+	 *        to create the required XML binding class aware interface from the plain-Corba <code>Identifier</code> object 
+	 *        (<code>identRaw</code>) that is obtained, for example, by <br>
+	 *        <code>IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"))</code>.
 	 * @see #assignUniqueEntityId(EntityT, IdentifierJ)
 	 */
 	public synchronized void replaceUniqueEntityId(EntityT entity, IdentifierJ identifier) 
@@ -150,18 +159,26 @@ public class UIDLibrary
 	/**
 	 * Creates a default range on demand, or sets a new default range if the old range has no more UID
 	 * (which happens after pulling Long.MAX UIDs, or sooner if a limit was set).
-	 * @param identifier
+	 * @param identifier  the identifier archive from which a new <code>Range</code> can be obtained if necessary. Use <br>
+	 *        <code>ContainerServices#getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);</code> <br>
+	 *        to create the required XML binding class aware interface from the plain-Corba <code>Identifier</code> object 
+	 *        (<code>identRaw</code>) that is obtained, for example, by <br>
+	 *        <code>IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"))</code>.
 	 */
 	protected synchronized void checkDefaultRange(IdentifierJ identifier) throws AcsJRangeUnavailableEx, AcsJIdentifierUnavailableEx {
 		if (identifier == null) {
-			throw new AcsJIdentifierUnavailableEx("Provided identifier reference is null.");
+			AcsJIdentifierUnavailableEx ex =  new AcsJIdentifierUnavailableEx();
+			ex.setContextInfo("Provided identifier reference is null.");
+			throw ex;
 		}
 		try {
 			if (defaultRange == null || !defaultRange.hasNextID()) {
 				defaultRange = new Range(identifier.getNewRange());
 			}
 		} catch (NotAvailable e) {
-			throw new AcsJRangeUnavailableEx("Failed to retrieve a default range of UIDs from the archive.", e);
+			AcsJRangeUnavailableEx ex = new AcsJRangeUnavailableEx();
+			ex.setRange("default");
+			throw ex;
 		}
 	}
 	
@@ -172,6 +189,11 @@ public class UIDLibrary
 	 * The range is automatically stored in the archive. 
 	 * This method should only be used in very special cases, 
 	 * see <a href="http://almasw.hq.eso.org/almasw/bin/view/Archive/UidLibrary">Archive/UidLibrary wiki page</a>!
+	 * @param identifier  the identifier archive from which a new <code>Range</code> can be obtained if necessary. Use <br>
+	 *        <code>ContainerServices#getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);</code> <br>
+	 *        to create the required XML binding class aware interface from the plain-Corba <code>Identifier</code> object 
+	 *        (<code>identRaw</code>) that is obtained, for example, by <br>
+	 *        <code>IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"))</code>.
 	 * @return the UID of the range, which can be used for example as an argument in {@link #assignUniqueEntityId(EntityT, URI)}.
 	 * @throws UniqueIdException  if the range cannot be obtained from the archive. 
 	 */
@@ -189,7 +211,9 @@ public class UIDLibrary
 		
 		URI uri = range.rangeId();
 		if (idRanges.containsKey(uri)) {
-			throw new AcsJIdentifierUnexpectedEx("Cannot store new range. URI occupied. This should never have happened by design!!");
+			AcsJIdentifierUnexpectedEx ex = new AcsJIdentifierUnexpectedEx();
+			ex.setContextInfo("Cannot store new range. URI occupied. This should never have happened by design!!");
+			throw ex;
 		}
 		logger.finest("UIDLibrary: Storing Range under: "+ uri.toASCIIString());
 		
@@ -221,7 +245,9 @@ public class UIDLibrary
 			r.assignUniqueEntityId(entity);
 		}
 		else{
-			throw new AcsJRangeUnavailableEx("Cannot find range: " + uri.toASCIIString());
+			AcsJRangeUnavailableEx ex = new AcsJRangeUnavailableEx();
+			ex.setRange(uri.toASCIIString());
+			throw ex;
 		}
 	}
 	
@@ -232,7 +258,13 @@ public class UIDLibrary
 	 * This method should only be used in very special cases, 
 	 * see <a href="http://almasw.hq.eso.org/almasw/bin/view/Archive/UidLibrary">Archive/UidLibrary wiki page</a>!
 	 * @param uri
-	 * @throws UniqueIdException
+	 * @param identifier  the identifier archive from which a new <code>Range</code> can be obtained if necessary. Use <br>
+	 *        <code>ContainerServices#getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);</code> <br>
+	 *        to create the required XML binding class aware interface from the plain-Corba <code>Identifier</code> object 
+	 *        (<code>identRaw</code>) that is obtained, for example, by <br>
+	 *        <code>IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"))</code>.
+	 * 
+	 * @throws AcsJRangeUnavailableEx
 	 */
 	public void fetchRange(URI uri, String user, IdentifierJ identifier) 
 		throws AcsJRangeUnavailableEx
@@ -252,7 +284,9 @@ public class UIDLibrary
 			refRanges.put(uri,r);
 		}
 		else {
-			throw new AcsJRangeUnavailableEx("Range: " + uri.toASCIIString() + " is already in use");
+			AcsJRangeUnavailableEx ex = new AcsJRangeUnavailableEx();
+			ex.setRange(uri.toASCIIString());
+			throw ex;
 		}
 	}
 	
@@ -266,16 +300,17 @@ public class UIDLibrary
 	 * @throws UniqueIdException
 	 */
 	public void assignUniqueEntityRef(EntityRefT ref, URI uri) 
-		throws AcsJRangeUnavailableEx, AcsJRangeExhaustedEx, RangeUnlockedEx
+		throws AcsJRangeUnavailableEx, AcsJRangeExhaustedEx, AcsJRangeUnlockedEx
 	{
 		if (refRanges.containsKey(uri)){
-			logger.finest("UIDLibrary: Assigning ID Ref to entity from: " 
-				+ uri.toASCIIString());
+			logger.finest("UIDLibrary: Assigning ID Ref to entity from: " + uri.toASCIIString());
 			Range r = refRanges.get(uri);
 			r.assignUniqueEntityRef(ref);
 		}
 		else{
-			throw new AcsJRangeUnavailableEx("Cannot find range: " + uri.toASCIIString());
+			AcsJRangeUnavailableEx ex = new AcsJRangeUnavailableEx();
+			ex.setRange(uri.toASCIIString());
+			throw ex;
 		}
 	}
 	
