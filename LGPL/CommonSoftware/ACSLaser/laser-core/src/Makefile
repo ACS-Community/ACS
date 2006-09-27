@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.18 2006/09/25 08:52:36 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.19 2006/09/27 09:50:06 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -107,7 +107,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = laser-definition
+CDB_SCHEMAS = 
 
 # 
 # IDL Files and flags
