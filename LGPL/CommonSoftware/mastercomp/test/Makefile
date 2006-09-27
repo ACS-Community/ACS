@@ -34,12 +34,20 @@ SCRIPTS_L       = mastercompTATPrologue mastercompTATEpilogue junitNoACS junitWi
 IDL_FILES = mastercompTest_if
 IDL_TAO_FLAGS =
 USER_IDL =
+
 #
 # Jarfiles and their directories
+# Note that a clean separation between test component impl classes in mastercompTestComp.jar and JUnit test classes in mastercompTest
+# would require moving some of the files into different packages. Thus at the moment we have a lot of overlap between the jar files. 
 #
 JARFILES= mastercompTest
 mastercompTest_DIRS=alma
 mastercompTest_EXTRAS= 
+
+COMPONENTS_JARFILES = mastercompTestComp
+mastercompTestComp_DIRS = \
+	alma/ACS/MasterComponentImpl \
+	alma/ACS/SpecialTestMasterComponentImpl
 
 #
 # java sources in Jarfile on/off
