@@ -54,8 +54,8 @@ public class StateChangeListener extends CBstringSeqPOA
     private ROstringSeq statesProperty;
 	private MonitorstringSeq monitor;
 	private ContainerServices contSrv;
-	private MyStateChangeSemaphore stateChangeSemaphore;
-	private Logger logger;
+	private final MyStateChangeSemaphore stateChangeSemaphore;
+	protected final Logger logger;
 
 	
 	public StateChangeListener(Logger logger)
