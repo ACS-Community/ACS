@@ -62,12 +62,12 @@ public class JarOrderOptimizer implements Comparator<File>
 		"acscomponent.jar",
 		"jmanager.jar",
 		"cdbDAL.jar",
+		"cdbErrType.jar",
 		"archive_xmlstore_if.jar",
 		"xmlentity.jar",
 		"systementities.jar",
 		"acserr.jar",
 		"acserrj.jar",
-		"cdbErrType.jar",
 		"acsnc.jar",
 		"baci.jar",
 //		"xercesImpl.jar", currently separate, location defined by -Djava.endorsed.dirs=...
@@ -78,7 +78,9 @@ public class JarOrderOptimizer implements Comparator<File>
 		"acscommandcenter.jar",
 		"AcsCommandCenterEntities.jar",
 		"lc.jar", // cosylab logging client
-		"jdom.jar"
+		"jdom.jar",
+		"acsASsources.jar",
+		"acsErrTypeAlarmSourceFactory.jar"
 	};
 	
 	/**
