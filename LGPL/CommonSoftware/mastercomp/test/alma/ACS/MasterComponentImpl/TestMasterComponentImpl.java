@@ -22,6 +22,7 @@
 package alma.ACS.MasterComponentImpl;
 
 import alma.ACS.MasterComponentImpl.statemachine.AlmaSubsystemActions;
+import alma.acs.genfw.runtime.sm.AcsStateActionException;
 
 /**
  * Subsystem master component for testing purposes, with 
@@ -52,12 +53,11 @@ public class TestMasterComponentImpl extends MasterComponentImplBase implements 
 	 * @see alma.ACS.MasterComponentImpl.statemachine.AlmaSubsystemActions#initSubsysPass1()
 	 */
 	public void initSubsysPass1() {
-		m_logger.info("action method 'initSubsysPass1' called, will sleep for 2 seconds.");
+		m_logger.info("action method 'initSubsysPass1' called, will sleep for 1 second.");
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 		}
 		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -72,7 +72,7 @@ public class TestMasterComponentImpl extends MasterComponentImplBase implements 
 	/**
 	 * @see alma.ACS.MasterComponentImpl.statemachine.AlmaSubsystemActions#reinitSubsystem()
 	 */
-	public void reinitSubsystem() {
+	public void reinitSubsystem() throws AcsStateActionException {
 		m_logger.info("action method 'reinitSubsystem' called.");
 	}
 
