@@ -22,7 +22,6 @@
 
 #include <AlarmTestMountImpl.h>
 #include "ACSAlarmSystemInterfaceFactory.h"
-#include "ACSAlarmSystemInterface.h"
 #include "ACSFaultState.h"
 #include "faultStateConstants.h"
 
@@ -33,6 +32,8 @@ AlarmTestMountImpl::AlarmTestMountImpl(const ACE_CString &name,maci::ContainerSe
     ACSComponentImpl(name, containerServices)
 {
 	ACS_TRACE("::AlarmTestMount::AlarmTestMount");
+	// create the AlarmSystemInterface
+	alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 }
 
 AlarmTestMountImpl::~AlarmTestMountImpl()
@@ -53,9 +54,6 @@ void AlarmTestMountImpl::terminate_faultMount() throw (CORBA::SystemException )
 void AlarmTestMountImpl::sendAlarm(std::string family, std::string member, int code, bool active) 
 {
 	ACS_TRACE("::AlarmTestMount::sendAlarm entering");
-
-	// create the AlarmSystemInterface
-	auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 
 	// create the FaultState
 	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);

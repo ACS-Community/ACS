@@ -32,6 +32,8 @@
 ///CORBA generated servant stub
 #include <testCppAlarmSourceComponentsS.h>
 
+#include "ACSAlarmSystemInterface.h"
+
 using namespace acscomponent;
 
 namespace testalarmsystem
@@ -58,6 +60,10 @@ namespace testalarmsystem
      * value of the parameter
      */
     void sendAlarm(std::string fFamily, std::string fMember, int code, bool active);
+
+	private:
+	 // the AlarmSystemInterface
+	 auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource;
 	};
 };
 
