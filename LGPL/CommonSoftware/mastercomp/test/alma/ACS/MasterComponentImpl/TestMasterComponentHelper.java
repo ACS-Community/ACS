@@ -24,6 +24,9 @@ package alma.ACS.MasterComponentImpl;
 
 import java.util.logging.Logger;
 
+import org.omg.PortableServer.Servant;
+
+import alma.ACS.ACSComponentOperations;
 import alma.ACS.MasterComponentOperations;
 import alma.ACS.MasterComponentPOATie;
 import alma.acs.component.ComponentLifecycle;
@@ -64,7 +67,7 @@ public class TestMasterComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	*/
-	protected Class _getPOATieClass()
+	protected Class<? extends Servant> _getPOATieClass()
 	{
 		return MasterComponentPOATie.class;
 	}
@@ -72,7 +75,7 @@ public class TestMasterComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	*/
-	protected Class _getOperationsInterface()
+	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
 		return MasterComponentOperations.class;
 	}
