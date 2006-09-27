@@ -32,7 +32,10 @@ ACS_CDB=$PWD
 echo " Starting ORB Services and Manager"
 acsutilTATPrologue -l
 
+# sleep is only needed to bring the logger (see -l option above) up before proceeding. Other more important synchronization is not based on sleep times.
+sleep 10
+
 echo " Starting Test Java Container"
-export JAVA_OPTIONS="-Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory"
+export JAVA_OPTIONS="-Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory -Dacs.mastercomp.monitorStateChangeNotification=true"
 acsutilAwaitContainerStart -java frodoContainer
 
