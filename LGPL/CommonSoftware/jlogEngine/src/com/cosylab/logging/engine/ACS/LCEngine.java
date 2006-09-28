@@ -31,12 +31,22 @@ import com.cosylab.logging.engine.RemoteAccess;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * LCEngine defines output messages to the status panel whenever 
- * any of the control system components reports a message or an error occurs. 
- * This class also applies filters (criteria) to the logs.
+ * LCEngine connects to the logging NC and sends
+ * messages to the listeners
  * 
- * Creation date: (10/31/2001 9:20:37 AM)
- * @author: 
+ * There are three type of listeners supported:
+ *   - ACSLogConnectionListener: listens events related to the conenction
+ *                                with the logging NC and reportMessages
+ *   - ACSRemoteLogListener: listens for LogEntries
+ *   - ACSRemoteRawLogListener: listens for XML strings representing logs
+ *   
+ * It there are no ACSRemoteLogLiestenersRegistered then the string received
+ * from the NC is not parsed
+ * 
+ * @see ACSRemoteLogListener
+ * @see ACSRemoteRawLogListener
+ * @see ACSLogConnectionListener
+ *  
  */
 public class LCEngine implements Runnable {
 	/**
@@ -52,9 +62,24 @@ public class LCEngine implements Runnable {
 	private RemoteAccess remoteAccess = null;
 	
 	/**
-	 * The listeners for this connection
+	 * The log listeners for this connection
 	 */
-	private Vector<ACSRemoteLogListener> listeners = new Vector<ACSRemoteLogListener>();
+	private Vector<ACSRemoteLogListener> logListeners = new Vector<ACSRemoteLogListener>();
+	// The number of listeners (it is the same of listeners.size() but It avoids
+	// executing a method)
+	private int logListenersNum=0;
+	
+	/**
+	 * The listeners of the status of the connection and report messages
+	 */
+	private Vector<ACSLogConnectionListener> connectionListeners = new Vector<ACSLogConnectionListener>();
+	private int connListenersNum=0;
+	
+	/**
+	 * The listeners of the XML strings representing a log
+	 */
+	private Vector<ACSRemoteRawLogListener> rawLogListeners = new Vector<ACSRemoteRawLogListener>();
+	int rawLogListenersNum=0;
 
 	/** 
 	 * A thread used to set and initialize RemoteAccess
@@ -119,28 +144,6 @@ public class LCEngine implements Runnable {
 	
 	/**
 	 * LCEngine constructor.
-	 * 
-	 * @param logEventListener The listener for log events
-	 */
-	public LCEngine(ACSRemoteLogListener logEventListener) {
-		addLogRemoteConnListener(logEventListener);
-		initEngine();
-	}
-	
-	/**
-	 * LCEngine constructor.
-	 * 
-	 * @param logEventListener The listener for log events
-	 * @param autoReconn If true the engine automatically reconnects
-	 */
-	public LCEngine(ACSRemoteLogListener logEventListener, boolean autoReconn) {
-		autoReconnect=autoReconn;
-		addLogRemoteConnListener(logEventListener);
-		initEngine();
-	}
-	
-	/**
-	 * LCEngine constructor.
 	 *
 	 */
 	public LCEngine() {
@@ -174,7 +177,6 @@ public class LCEngine implements Runnable {
 	public void connect() {
 		new AccessSetter().start();
 	}
-	
 	
 	/**
 	 * LCEngine starts an attempt to connect to the remote system.
@@ -325,16 +327,47 @@ public class LCEngine implements Runnable {
 	}
 	
 	/**
-	 * Add a connection status listener
+	 * Add a log listener
 	 * 
 	 * @param listener The listener to add
 	 */
-	public void addLogRemoteConnListener(ACSRemoteLogListener listener) {
+	public void addLogListener(ACSRemoteLogListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener");
 		}
-		synchronized(listeners) {
-			listeners.add(listener);
+		synchronized(logListeners) {
+			logListeners.add(listener);
+			logListenersNum=logListeners.size();
+		}
+	}
+	
+	/**
+	 * Add a RAW log listener
+	 * 
+	 * @param listener The listener to add
+	 */
+	public void addRawLogListener(ACSRemoteRawLogListener listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null listener");
+		}
+		synchronized(rawLogListeners) {
+			rawLogListeners.add(listener);
+			rawLogListenersNum=rawLogListeners.size();
+		}
+	}
+	
+	/**
+	 * Add a RAW log listener
+	 * 
+	 * @param listener The listener to add
+	 */
+	public void addLogConnectionListener(ACSLogConnectionListener listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null listener");
+		}
+		synchronized(connectionListeners) {
+			connectionListeners.add(listener);
+			connListenersNum=connectionListeners.size();
 		}
 	}
 	
@@ -344,14 +377,13 @@ public class LCEngine implements Runnable {
 	 * @param message The message to publish
 	 */
 	public synchronized void publishReport(String message){
-		if (listeners==null) {
-			return;
-		}
-		synchronized(listeners) {
-			for (int t=0; t<listeners.size(); t++) {
-				ACSRemoteLogListener listener = listeners.get(t);
-				if (listener!=null) {
-					listener.reportStatus(message);
+		if (connListenersNum>0) {
+			synchronized(connectionListeners) {
+				for (int t=0; t<connListenersNum; t++) {
+					ACSLogConnectionListener listener = connectionListeners.get(t);
+					if (listener!=null) {
+						listener.reportStatus(message);
+					}
 				}
 			}
 		}
@@ -364,14 +396,11 @@ public class LCEngine implements Runnable {
 	 * @param connected
 	 */
 	public synchronized void publishConnected(boolean connected) {
-		if (listeners==null) {
-			return;
-		}
-		for (int t=0; t<listeners.size(); t++) {
-			ACSRemoteLogListener listener = listeners.get(t);
+		for (int t=0; t<connListenersNum; t++) {
+			ACSLogConnectionListener listener = connectionListeners.get(t);
 			if (listener!=null) {
 					if (connected) {
-					listener.acsLogConnEstablished();
+						listener.acsLogConnEstablished();
 					} else {
 						listener.acsLogConnDisconnected();
 					}
@@ -384,11 +413,8 @@ public class LCEngine implements Runnable {
 	 *
 	 */
 	public synchronized void publishConnectionLost() {
-		if (listeners==null) {
-			return;
-		}
-		for (int t=0; t<listeners.size(); t++) {
-			ACSRemoteLogListener listener = listeners.get(t);
+		for (int t=0; t<connListenersNum; t++) {
+			ACSLogConnectionListener listener = connectionListeners.get(t);
 			if (listener!=null) {
 					listener.acsLogConnLost();
 			}
@@ -399,11 +425,8 @@ public class LCEngine implements Runnable {
 	 * Notify the listeners that an attempt to connect is in progress
 	 */
 	public synchronized void publishConnecting() {
-		if (listeners==null) {
-			return;
-		}
-		for (int t=0; t<listeners.size(); t++) {
-			ACSRemoteLogListener listener = listeners.get(t);
+		for (int t=0; t<connListenersNum; t++) {
+			ACSLogConnectionListener listener = connectionListeners.get(t);
 			if (listener!=null) {
 				listener.acsLogConnConnecting();
 			}
@@ -416,23 +439,35 @@ public class LCEngine implements Runnable {
 	 * @param newLog The log to send to the listeners
 	 */
 	public synchronized void publishLog(ILogEntry newLog) {
-		if (newLog==null) {
-			throw new IllegalArgumentException("Exception: trying to publish a null log"); 
+		if (logListenersNum>0) {
+			synchronized(logListeners) {
+				for (int t=0; t<logListenersNum; t++) {
+					ACSRemoteLogListener listener = logListeners.get(t);
+					listener.logEntryReceived(newLog);
+				}
+			}
 		}
-		synchronized(listeners) {
-			for (int t=0; t<listeners.size(); t++) {
-				ACSRemoteLogListener listener = listeners.get(t);
-				listener.logEntryReceived(newLog);
+	}
+	
+	/**
+	 * Publish a RAW log to the listeners (if any)
+	 * 
+	 * @param newLog The XML string to send to the listeners
+	 */
+	public synchronized void publishLog(String xmlStr) {
+		if (rawLogListenersNum>0) {
+			synchronized(rawLogListeners) {
+				for (int t=0; t<rawLogListenersNum; t++) {
+					ACSRemoteRawLogListener listener = rawLogListeners.get(t);
+					listener.xmlEntryReceived(xmlStr);
+				}
 			}
 		}
 	}
 	
 	public synchronized void publishSuspended() {
-		if (listeners==null) {
-			return;
-		}
-		for (int t=0; t<listeners.size(); t++) {
-			ACSRemoteLogListener listener = listeners.get(t);
+		for (int t=0; t<connListenersNum; t++) {
+			ACSLogConnectionListener listener = connectionListeners.get(t);
 			if (listener!=null) {
 				listener.acsLogConnSuspended();
 			}
@@ -440,11 +475,8 @@ public class LCEngine implements Runnable {
 	}
 	
 	public synchronized void publishDiscarding() {
-		if (listeners==null) {
-			return;
-		}
-		for (int t=0; t<listeners.size(); t++) {
-			ACSRemoteLogListener listener = listeners.get(t);
+		for (int t=0; t<connListenersNum; t++) {
+			ACSLogConnectionListener listener = connectionListeners.get(t);
 			if (listener!=null) {
 				listener.acsLogsDelay();
 			}
@@ -455,14 +487,57 @@ public class LCEngine implements Runnable {
 	 * Remove a connection status listener
 	 * 
 	 * @param listener The listener to remove
-	 * @return true if the listener is effectively removed
+	 * @return true if the listener has been effectively removed
 	 * 
 	 */
-	public boolean removeLogRemoteConnListener(ACSRemoteLogListener listener) {
+	public boolean removeLogListener(ACSRemoteLogListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener");
 		}
-		return listeners.remove(listener);
+		boolean ret;
+		synchronized(logListeners) {
+			ret=logListeners.remove(listener);
+			logListenersNum=logListeners.size();
+		}
+		return ret;
+	}
+	
+	/**
+	 * Remove a connection status listener
+	 * 
+	 * @param listener The listener to remove
+	 * @return true if the listener has been effectively removed
+	 * 
+	 */
+	public boolean removeRawLogListener(ACSRemoteRawLogListener listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null listener");
+		}
+		boolean ret;
+		synchronized(rawLogListeners) {
+			ret=rawLogListeners.remove(listener);
+			rawLogListenersNum=rawLogListeners.size();
+		}
+		return ret;
+	}
+	
+	/**
+	 * Remove a connection status listener
+	 * 
+	 * @param listener The listener to remove
+	 * @return true if the listener has been effectively removed
+	 * 
+	 */
+	public boolean removeConnectionListener(ACSRemoteLogListener listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null listener");
+		}
+		boolean ret;
+		synchronized(connectionListeners) {
+			ret=connectionListeners.remove(listener);
+			connListenersNum=connectionListeners.size();
+		}
+		return ret;
 	}
 	
 	/**
@@ -473,4 +548,30 @@ public class LCEngine implements Runnable {
 	public void enableAutoReconnection(boolean autoRec) {
 		autoReconnect=autoRec;
 	}
+	
+	/**
+	 * 
+	 * @return true is there are registerd log listeners
+	 */
+	public boolean hasLogListeners() {
+		return logListenersNum>0;
+	}
+	
+	/**
+	 * 
+	 * @return true is there are registerd raw log listeners
+	 */
+	public boolean hasRawLogListeners() {
+		return rawLogListenersNum>0;
+	}
+	
+	/**
+	 * 
+	 * @return true is there are registerd connection listeners
+	 */
+	public boolean hasConnectionListeners() {
+		return connListenersNum>0;
+	}
+	
+	
 }
