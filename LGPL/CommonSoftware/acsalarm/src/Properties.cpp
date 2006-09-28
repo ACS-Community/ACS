@@ -115,7 +115,7 @@ void Properties::setProperty(string key, string value) throw(invalid_argument)
 	}
 	if(0 == key.length())
 	{
-		// TODO later: can a NULL be passed in? if so, check for it and throw exception 
+		// NULL passed in for key; not allowed
 		throw invalid_argument("zero-length key not allowed");
 	}
 	string logStr = "Properties::setProperty(): inserting key: " + key + " and value: " + value;
