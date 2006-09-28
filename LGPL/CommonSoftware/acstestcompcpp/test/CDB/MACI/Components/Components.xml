@@ -5,11 +5,16 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 
-      <_ Name="TimingExplorer"  Code="acstestcomp"
+      <_ Name="TimingExplorer"  Code="acstestcompTimingExplorer"
                              Type="IDL:alma/acstestcomp/TimingExplorer:1.0"
                              Container="acstestcomp"/>
-      <_ Name="HangOnInit"  Code="acstestcomp"
+      <_ Name="HangOnInit"  Code="acstestcompTimingExplorer"
                              Type="IDL:alma/acstestcomp/TimingExplorer:1.0"
                              Container="acstestcomp"/>
-
+      <_ Name="ERROR_EXP_OK"  Code="acstestcompErrorExplorer"
+                             Type="IDL:alma/acstestcomp/ErrorExplorer:1.0"
+                             Container="acstestcomp"/>
+      <_ Name="ERROR_EXP_NO_CDB"  Code="acstestcompErrorExplorer"
+                             Type="IDL:alma/acstestcomp/ErrorExplorer:1.0"
+                             Container="acstestcomp"/>
 </Components>
