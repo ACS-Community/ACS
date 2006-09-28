@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -392,6 +394,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		//System.out.println(xmlSolver.m_xmlString.toString());
 		return xmlSolver.m_xmlString.toString();
 		}catch(AcsJCDBXMLErrorEx e){
+			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";
+			Logger m_logger;
+			m_logger = Logger.getLogger("DAL");
+			 
+			m_logger.log(Level.SEVERE, smsg, e);	
 			throw e.toCDBXMLErrorEx();
 		}catch(AcsJCDBRecordDoesNotExistEx e){
 			throw e.toCDBRecordDoesNotExistEx();
@@ -419,6 +426,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		try{
 			xmlSolver  = loadRecords(curl, false);
 		}catch(AcsJCDBXMLErrorEx e){
+			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";
+			Logger m_logger;
+			m_logger = Logger.getLogger("DAL");
+			 
+			m_logger.log(Level.SEVERE, smsg, e);	
 			throw e.toCDBXMLErrorEx();
 		}catch(AcsJCDBRecordDoesNotExistEx e){
 			throw e.toCDBRecordDoesNotExistEx();
