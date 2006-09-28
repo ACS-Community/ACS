@@ -80,6 +80,8 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
   public:
 		AcsAlarmTestCase();
 		~AcsAlarmTestCase();
+		void setUp();
+		void tearDown();
 		
   protected:
     void testFaultState();
@@ -87,15 +89,18 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
     void testTimestamp();
 
 	private:
-		void faultStateSetup();
-		void faultStateTearDown();
-		void verifyFaultStateXML(string);
+		//void faultStateSetup();
+		//void faultStateTearDown();
+
 		void verifyFaultStateElement(DOMDocument * doc, bool);
 		void verifyDescriptorElement(DOMDocument * doc);
 		void verifyUserPropertiesElement(DOMDocument * doc);
 		void verifyUserTimestampElement(DOMDocument * doc);
 
-		DOMDocument *parseDOM(string);
+		void verifyFaultStateXML(string xmlToVerify);
+		void verifyPropertiesXML(string xmlToVerify);
+		void verifyTimestampXML(string xmlToVerify);
+		DOMDocument *parseDOM(string xmlToParse);
 
 		DOMBuilder  *parser;
 		acsDOMErrorHandler* errHandler;
@@ -132,11 +137,6 @@ AcsAlarmTestCase::~AcsAlarmTestCase()
 {
 }
 
-/*
- * XML should look something like this:
- *
- * <source-timestamp seconds="1129902763" microseconds="132000"/>
- */
 void AcsAlarmTestCase::testTimestamp()
 {
 	Timestamp timestamp;
@@ -165,19 +165,30 @@ void AcsAlarmTestCase::testTimestamp()
 	Timestamp timestamp4(timestamp3);
 	CPPUNIT_ASSERT_MESSAGE("Timestamp::Timestamp(timestamp) - copy constructor appears to be broken", (timestamp3 == timestamp4) );
 
-	// TODO: test toXML method
-		
+	// test toXML method
+	Timestamp tstamp(SECONDS_VALUE, MICROSECONDS_VALUE);
+	verifyTimestampXML(tstamp.toXML());
 }
 
 /*
  * XML should look something like this:
  *
- *  <user-properties>
- *              <property name="ASI_PREFIX" value="prefix"/>
- *              <property name="TEST_PROPERTY" value="TEST_VALUE"/>
- *              <property name="ASI_SUFFIX" value="suffix"/>
- *  </user-properties>
+ * <source-timestamp seconds="1129902763" microseconds="132000"/>
  */
+void AcsAlarmTestCase::verifyTimestampXML(string xmlToVerify)
+{
+	try
+	{
+		DOMDocument* doc = parseDOM(xmlToVerify);
+		verifyUserTimestampElement(doc);
+	}
+	catch (const XMLException& toCatch)
+	{
+		ACS_LOG(LM_ERROR, "Properties::toXML", (LM_ERROR, 
+			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
+	}
+}
+
 void AcsAlarmTestCase::testProps()
 {
 	Properties properties;
@@ -225,10 +236,38 @@ void AcsAlarmTestCase::testProps()
 		CPPUNIT_ASSERT_MESSAGE("Properties:: = operator appears to be broken", (keys3->at(i) == key || keys3->at(i) == key2) );
 	}
 	
-	// TODO: test toXML method
+	// test toXML method
+	Properties properties4;
+	properties4.setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, PREFIX_VALUE_VALUE);
+	properties4.setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, SUFFIX_VALUE_VALUE);
+	properties4.setProperty(TEST_NAME_VALUE, TEST_VALUE_VALUE);
+	verifyPropertiesXML(properties4.toXML());
 }
 
-void AcsAlarmTestCase::faultStateSetup()
+/*
+ * XML should look something like this:
+ *
+ *  <user-properties>
+ *              <property name="ASI_PREFIX" value="prefix"/>
+ *              <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+ *              <property name="ASI_SUFFIX" value="suffix"/>
+ *  </user-properties>
+ */
+void AcsAlarmTestCase::verifyPropertiesXML(string xmlToVerify)
+{
+	try
+	{
+		DOMDocument* doc = parseDOM(xmlToVerify);
+		verifyUserPropertiesElement(doc);
+	}
+	catch (const XMLException& toCatch)
+	{
+		ACS_LOG(LM_ERROR, "Properties::toXML", (LM_ERROR, 
+			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
+	}
+}
+
+void AcsAlarmTestCase::setUp()
 {
 	XMLPlatformUtils::Initialize();
 
@@ -276,7 +315,7 @@ void AcsAlarmTestCase::faultStateSetup()
 	SUFFIX_VALUE_VALUE_XMLCH = XMLString::transcode(SUFFIX_VALUE_VALUE);
 }
 
-void AcsAlarmTestCase::faultStateTearDown()
+void AcsAlarmTestCase::tearDown()
 {
 	XMLString::release(&FAULT_STATE_TAG_NAME);
 	XMLString::release(&DESCRIPTOR_TAG_NAME);
@@ -307,7 +346,7 @@ void AcsAlarmTestCase::faultStateTearDown()
 
 void AcsAlarmTestCase::testFaultState()
 {
-	faultStateSetup();
+	//faultStateSetup();
 
 	const string member(MEMBER_VALUE);
 	const string family(FAMILY_VALUE);
@@ -402,7 +441,7 @@ void AcsAlarmTestCase::testFaultState()
 	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getUserProperties", 
 		(assignedFaultState.getUserProperties() == fltstate->getUserProperties()) );
 
-	faultStateTearDown();
+	//faultStateTearDown();
 }
 
 /*
@@ -420,7 +459,6 @@ void AcsAlarmTestCase::testFaultState()
  */
 void AcsAlarmTestCase::verifyFaultStateXML(string xmlData)
 {
-	bool exceptionCaught = false;
 	try
 	{
 		DOMDocument* doc = parseDOM(xmlData);
@@ -430,7 +468,6 @@ void AcsAlarmTestCase::verifyFaultStateXML(string xmlData)
 	{
 		ACS_LOG(LM_ERROR, "ACSFaultState::toXML", (LM_ERROR, 
 			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
-		exceptionCaught = true;
 	}
 }
 
