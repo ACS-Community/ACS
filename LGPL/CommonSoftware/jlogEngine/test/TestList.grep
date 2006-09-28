@@ -8,3 +8,6 @@ export
 Starting Java/abeans application
 -D user.dir=
 Jlog will use cache for
+INFO
+WARN
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]

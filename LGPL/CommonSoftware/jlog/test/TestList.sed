@@ -16,3 +16,4 @@ s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]/----------
 s/user='.*'/user=xxxx/g
 s/\.Jlog will use cache for [0-9]* log records\./Jlog will use cache for N log records/g
 s/\.The WriteBuffer stores [0-9]* logs/The WriteBuffer stores N logs/g
+s/Local file logger: Cache saved to .*/Local file logger: Cache saved to XXXXXX/g
