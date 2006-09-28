@@ -180,17 +180,17 @@ public class AcsContainer extends ContainerPOA
             return cdb;
         }
         
-        IntHolder status = new IntHolder();
         try {
+            IntHolder status = new IntHolder();
             // manager's get_service contains get_component, so even if the CDB becomes a real component, we can leave this 
             org.omg.CORBA.Object dalObj = m_managerProxy.get_service("CDB", true, status);
             cdb = DALHelper.narrow(dalObj);
+            if (cdb == null || status.value != ManagerOperations.COMPONENT_ACTIVATED) {
+                m_logger.log(Level.WARNING, "Failed to access the CDB. Status value was " + status.value);
+            }
         }
         catch (Exception e) {
             m_logger.log(Level.WARNING, "Failed to access the CDB.", e);
-        }
-        if (status.value != ManagerOperations.COMPONENT_ACTIVATED) {
-            m_logger.log(Level.WARNING, "Failed to access the CDB. Status value was " + status.value);
         }
         
         return cdb;
