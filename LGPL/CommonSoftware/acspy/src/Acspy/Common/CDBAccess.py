@@ -1,4 +1,4 @@
-# @(#) $Id: CDBAccess.py,v 1.8 2005/03/03 23:52:30 dfugate Exp $
+# @(#) $Id: CDBAccess.py,v 1.9 2006/09/28 14:30:47 gchiozzi Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -31,7 +31,7 @@ TODO:
 - Fix bug involving an XML with a sequence of identical elements
 '''
 
-__revision__ = "$Id: CDBAccess.py,v 1.8 2005/03/03 23:52:30 dfugate Exp $"
+__revision__ = "$Id: CDBAccess.py,v 1.9 2006/09/28 14:30:47 gchiozzi Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from   xml.sax             import ContentHandler, parseString
@@ -168,7 +168,9 @@ class CDBaccess:
 
         Parameters:
         - xml_name is the name of the XML file (e.g., "alma/MOUNT1")
-        - element_name is the name of the element (e.g, "MOUNT/actAz")
+        - element_name is the name of the element (e.g, "MOUNT/actAz",
+          where acsAz is an XML element contianing all attributes
+          representing the characteristics of a BACI property).
         
         Returns: a dictionary full of attributes or None
 

@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.18 2006/07/11 20:21:42 dfugate Exp $
+# @(#) $Id: ContainerServices.py,v 1.19 2006/09/28 14:30:47 gchiozzi Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.18 2006/07/11 20:21:42 dfugate Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.19 2006/09/28 14:30:47 gchiozzi Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.18 2006/07/11 20:21:42 dfugate Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.19 2006/09/28 14:30:47 gchiozzi Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -125,6 +125,9 @@ class ContainerServices:
         Parameters:
         - record_name is the name of the XML file (e.g., "alma/MOUNT1")
         - ele_name is the name of the element (e.g, "MOUNT/actAz")
+        - element_name is the name of the element (e.g, "MOUNT/actAz",
+          where acsAz is an XML element contianing all attributes
+          representing the characteristics of a BACI property).
 
         Return: a dictionary
 
