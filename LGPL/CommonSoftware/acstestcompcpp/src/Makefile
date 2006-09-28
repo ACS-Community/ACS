@@ -1,9 +1,12 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.1 2006/09/14 14:54:34 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/09/28 16:01:45 gchiozzi Exp $"
 #
 # $Log: Makefile,v $
+# Revision 1.2  2006/09/28 16:01:45  gchiozzi
+# Added new components and cleaned up.
+#
 # Revision 1.1  2006/09/14 14:54:34  gchiozzi
 # First checkin of new module with CPP test components.
 #
@@ -79,18 +82,22 @@ $(PROG)_LIBS = C++
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES = acstestcompImpl.h
+INCLUDES = acstestcompTimingExplorerImpl.h acstestcompErrorExplorerImpl.h
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES = acstestcomp
+LIBRARIES = acstestcompTimingExplorer acstestcompErrorExplorer
 
 #
 # <brief description of acstestcomp library>
-acstestcomp_OBJECTS =  acstestcompImpl
-acstestcomp_LDFLAGS =
-acstestcomp_LIBS    = acstestcompStubs 
+acstestcompTimingExplorer_OBJECTS =  acstestcompTimingExplorerImpl
+acstestcompTimingExplorer_LDFLAGS =
+acstestcompTimingExplorer_LIBS    = acstestcompStubs 
+
+acstestcompErrorExplorer_OBJECTS =  acstestcompErrorExplorerImpl
+acstestcompErrorExplorer_LDFLAGS =
+acstestcompErrorExplorer_LIBS    = acstestcompStubs 
 
 #
 # Scripts (public and local)
@@ -238,9 +245,5 @@ man:	do_man
 install:	install_all
 	@echo " . . . installation done"
 
-dist:
-	@echo ". . . Packing tar archive..."
-	@./make_archive.sh
-	@echo ". . . Packing tar archive done."
 
 #___oOo___
