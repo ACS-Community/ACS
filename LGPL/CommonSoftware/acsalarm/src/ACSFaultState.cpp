@@ -52,6 +52,8 @@ ACSFaultState & ACSFaultState::operator=(const ACSFaultState & rhs)
 	setCode(rhs.getCode());
 	setMember(rhs.getMember());
 	setDescriptor(rhs.getDescriptor());
+	setActivatedByBackup(rhs.getActivatedByBackup());
+	setTerminatedByBackup(rhs.getTerminatedByBackup());
 
 	if(NULL != rhs.userTimestamp.get())
 	{

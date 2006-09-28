@@ -383,7 +383,24 @@ void AcsAlarmTestCase::testFaultState()
 	// test toXML method
 	verifyFaultStateXML(fltstate->toXML());
 
-	// TODO: test assignment operator(?)
+	// test assignment operator
+	ACSFaultState assignedFaultState = *fltstate;
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getFamily", 
+		(assignedFaultState.getFamily() == fltstate->getFamily()) );
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getMember", 
+		(assignedFaultState.getMember() == fltstate->getMember()) );
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getCode", 
+		(assignedFaultState.getCode() == fltstate->getCode()) );
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getDescriptor", 
+		(assignedFaultState.getDescriptor() == fltstate->getDescriptor()) );
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getTerminatedByBackup", 
+		(assignedFaultState.getTerminatedByBackup() == fltstate->getTerminatedByBackup()) );
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getActivatedByBackup", 
+		(assignedFaultState.getActivatedByBackup() == fltstate->getActivatedByBackup()) );
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getUserTimestamp", 
+		(assignedFaultState.getUserTimestamp() == fltstate->getUserTimestamp()) );
+	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getUserProperties", 
+		(assignedFaultState.getUserProperties() == fltstate->getUserProperties()) );
 
 	faultStateTearDown();
 }
