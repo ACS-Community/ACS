@@ -54,6 +54,18 @@ module acstestcomp
 				     in ACS::CBvoid cb, in ACS::CBDescIn desc);
 
 	};
+    /** @interface ErrorExplorer
+     *  This interface allows us to test a set of error conditions
+     *  when accessing a CharacteristicComponent.
+     *  For example problems accessing the CDB.
+     */
+    interface ErrorExplorer : ACS::CharacteristicComponent
+	{
 
+	/** This property is used to test error conditions.
+	 */
+	readonly attribute ACS::RWdouble explorerDoubleProperty;
+
+	};
 };
 #endif
