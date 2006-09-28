@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.47 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.48 2006/09/28 15:00:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.47 2006/09/26 12:10:49 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.48 2006/09/28 15:00:30 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -177,9 +177,33 @@ class TestContainerServices : public maci::ContainerServices {
         {
           return NULL;
         }
-};
+};// class TestContainerServices
+
+/****************************************************************************************/
 
 bool EPshutting_down = false;
+LoggingProxy *loggerProxy;
+
+/*
+ * Thread initializer and thread done functions
+ *
+ */
+
+void initThread(const char * threadName)
+{
+    ACS_CHECK_LOGGER;
+    loggerProxy = new LoggingProxy(0, 0, 31, 0);
+    LoggingProxy::init(loggerProxy);
+    LoggingProxy::ThreadName(threadName);
+}//initThread
+
+void doneThread()
+{
+    LoggingProxy::done();
+    delete loggerProxy;
+}//doneThread
+
+/******************************************************************************************/
 
 void TerminationSignalHandler(int)
 {
@@ -210,11 +234,7 @@ void TerminationSignalHandler(int)
 
 int main(int l_argc, char* l_argv[]) 
 {
-
-    
-
-    // create logging proxy
- 
+    // create logging proxy 
     LoggingProxy EP_log (0, 0, 31, 0);
     LoggingProxy::init (&EP_log);
     LoggingProxy::ProcessName(l_argv[0]);
@@ -244,6 +264,8 @@ int main(int l_argc, char* l_argv[])
     FILE *IOR_file;
  
     try {
+
+    BACIThread::setInitializers(initThread, doneThread);
 
     // Initialize the ORB.
     BACI_CORBA::InitCORBA(l_argc, l_argv);
