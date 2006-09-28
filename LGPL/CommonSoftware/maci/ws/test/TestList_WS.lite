@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: TestList_WS.lite,v 1.83 2006/09/23 16:39:45 bjeram Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.84 2006/09/28 06:29:18 cparedes Exp $"
 #
 # TestList
 #
@@ -16,4 +16,5 @@ PROLOGUE acsutilTATPrologue
 2 maciTestRegistrar maciTestRegistrar
 3 maciContainerServicesClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "acsutilTATTestRunner maciContainerServicesClient MACI_CS_TEST"
 4 maciLifeCycleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciLifeCycleClient"
+5 maciTestCheckException "maciStartWrongCDB.sh" "@SLEEP 50" "maciStopWrongCDB.sh"
 EPILOGUE acsutilTATEpilogue
