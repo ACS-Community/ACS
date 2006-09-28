@@ -27,5 +27,5 @@ public interface ACSRemoteRawLogListener {
 	 * 
 	 * @param xmlLogString The new XML string just read from the NC
 	 */
-	void xmlEntryReceived(String xmlLogSTring);
+	public void xmlEntryReceived(String xmlLogString);
 }

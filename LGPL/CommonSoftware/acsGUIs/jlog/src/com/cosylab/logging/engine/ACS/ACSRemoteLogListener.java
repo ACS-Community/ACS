@@ -35,7 +35,7 @@ public interface ACSRemoteLogListener {
 	 * 
 	 * @param logEntry The new log just read from the NC
 	 */
-	void logEntryReceived(ILogEntry logEntry);
+	public void logEntryReceived(ILogEntry logEntry);
 	
 
 }
