@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.23 2006/04/05 15:15:40 hsommer Exp $" 
+# "@(#) $Id: Makefile,v 1.24 2006/09/28 16:49:26 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -46,13 +46,48 @@ USER_IDL =
 # Jarfiles and their directories
 #
 JARFILES = lcTest
-lcTest_DIRS = com
+lcTest_DIRS = com alma
+
+USER_LIB =      -lACE \
+                -lTAO \
+                -lTAO_DsLogAdmin \
+                -lTAO_CosNaming \
+                -lTAO_IORTable \
+                -lTAO_PortableServer \
+                -lTAO_Svc_Utils \
+                -lTAO_CosTrading \
+                -lTAO_CosNotification \
+                -lTAO_DynamicAny \
+                -lTAO_IFR_Client \
+                -lTAO_CosProperty \
+                -lacsutil \
+                -lcdb \
+                -llogging \
+                -lacscomponent \
+                -lbaci \
+                -lmaci \
+                -lmaciClient \
+                -lacserr \
+                -lm \
+                -lloki \
+                -lACSErrTypeCommon
+
+EXECUTABLES = logClient
+logClient_OBJECTS = logClient
+logClient_LIBS =
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = jlogTest1 jlogLogEntryTest jlogTestCache jlogTestXMLParser
+SCRIPTS_L       = 	jlogTest1 \
+					jlogLogEntryTest \
+					jlogTestCache \
+					jlogTestXMLParser \
+					jlogTestEngine \
+					jlogTATPrologue \
+					jlogTestRun.sh
+
 
 #>>>>> END OF standard rules
   
