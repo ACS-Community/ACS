@@ -76,7 +76,6 @@ using laserSource::ASIMessage;
 class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(AcsAlarmTestCase);
-    CPPUNIT_TEST(testFaultState);
     CPPUNIT_TEST(testASIMessageFaultStateNotPopulated);
     CPPUNIT_TEST(testASIMessageFaultStatePopulated);
     CPPUNIT_TEST_SUITE_END();
@@ -93,12 +92,10 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 		static maci::SimpleClient* getClient() { return AcsAlarmTestCase::client; }
 
   protected:
-    void testFaultState();
     void testASIMessageFaultStateNotPopulated();
     void testASIMessageFaultStatePopulated();
 
 	private:
-		void verifyFaultStateXML(string);
 		void verifyFaultStateElement(DOMDocument * doc, bool);
 		void verifyDescriptorElement(DOMDocument * doc);
 		void verifyUserPropertiesElement(DOMDocument * doc);
@@ -241,7 +238,6 @@ void AcsAlarmTestCase::verifyFaultStatesElement(DOMDocument * doc) {}
 
 void AcsAlarmTestCase::commonTestASIMessage(auto_ptr<vector<ACSFaultState> > statesAutoPtr, bool fullyPopulated)
 {
-
 	// create the ASIMessage
 	ASIMessage asiMessage(statesAutoPtr);
 
@@ -277,9 +273,7 @@ void AcsAlarmTestCase::commonTestASIMessage(auto_ptr<vector<ACSFaultState> > sta
 	CPPUNIT_ASSERT_MESSAGE("ASIMessage::setVersion appears to be broken", (string(asiConfigurationConstants::ASI_VERSION) == asiMessage.getVersion()) );
 
 	// test toXML method
-	// TODO...
 	verifyASIMessageXML(asiMessage.toXML(), fullyPopulated);
-
 }
 
 void AcsAlarmTestCase::testASIMessageFaultStateNotPopulated()
@@ -392,131 +386,6 @@ void AcsAlarmTestCase::verifyASIMessageXML(string xmlData, bool propertiesAndTim
 			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
 		exceptionCaught = true;
 	}
-/*
-	catch(...) {
-		ACS_LOG(LM_ERROR, "ACSFaultState::toXML", (LM_ERROR, "***** unknown exception caught! *********"))
-		exceptionCaught = true;
-	}
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; received an exception during parsing", 
-		(false == exceptionCaught));
-*/
-}
-
-void AcsAlarmTestCase::testFaultState()
-{
-	const string member(MEMBER_VALUE);
-	const string family(FAMILY_VALUE);
-	const string descriptor(DESCRIPTOR_VALUE);
-
-	// create the ACSFaultState
-	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, CODE_VALUE);
-
-	// test family getters
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::getFamily appears to be broken", (family == fltstate->getFamily()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::getMember appears to be broken", (member == fltstate->getMember()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::getCode appears to be broken", (CODE_VALUE == fltstate->getCode()) );
-
-	// test family setter
-	string newfamily = "newfamily";
-	fltstate->setFamily(newfamily);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setFamily appears to be broken", (newfamily == fltstate->getFamily()) );
-
-	// restore previous value
-	fltstate->setFamily(family);
-
-	// test member setter
-	string newmember = "newmember";
-	fltstate->setMember(newmember);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setMember appears to be broken", (newmember == fltstate->getMember()) );
-
-	// restore previous value
-	fltstate->setMember(member);
-
-	// test code setter
-	int newcode = 2;
-	fltstate->setCode(newcode);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setCode appears to be broken", (newcode == fltstate->getCode()) );
-
-	// restore previous value
-	fltstate->setCode(CODE_VALUE);
-
-	// test descriptor setter
-	fltstate->setDescriptor(descriptor);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setDescriptor appears to be broken", (descriptor == fltstate->getDescriptor()) );
-
-	// test timestamp getters/setters
-	Timestamp * tstampPtr = new Timestamp(SECONDS_VALUE, MICROSECONDS_VALUE);
-	auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
-	fltstate->setUserTimestamp(tstampAutoPtr);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setUserTimestamp appears to be broken", (*tstampPtr == fltstate->getUserTimestamp()) );
-
-	// test properties getters/setters
-	Properties * propsPtr = new Properties();
-	propsPtr->setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, PREFIX_VALUE_VALUE);
-	propsPtr->setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, SUFFIX_VALUE_VALUE);
-	propsPtr->setProperty(TEST_NAME_VALUE, TEST_VALUE_VALUE);
-	auto_ptr<Properties> propsAutoPtr(propsPtr);
-	fltstate->setUserProperties(propsAutoPtr);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setUserProperties appears to be broken", (*propsPtr == fltstate->getUserProperties()) );
-
-	// test activated by backup getters/setters
-	bool activatedByBackup = true;
-	fltstate->setActivatedByBackup(activatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setActivatedByBackup appears to be broken", (activatedByBackup == fltstate->getActivatedByBackup()) );
-	activatedByBackup = false;
-	fltstate->setActivatedByBackup(activatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setActivatedByBackup appears to be broken", (activatedByBackup == fltstate->getActivatedByBackup()) );
-
-	// test terminated by backup getters/setters
-	bool terminatedByBackup = true;
-	fltstate->setTerminatedByBackup(terminatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setTerminatedByBackup appears to be broken", (terminatedByBackup == fltstate->getTerminatedByBackup()) );
-	terminatedByBackup = false;
-	fltstate->setTerminatedByBackup(terminatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setTerminatedByBackup appears to be broken", (terminatedByBackup == fltstate->getTerminatedByBackup()) );
-
-	// test toXML method
-	verifyFaultStateXML(fltstate->toXML());
-
-	// TODO: test assignment operator(?)
-
-}
-
-/*
- * XML should look something like this:
- *
- * <fault-state family="AlarmSource" member="ALARM_SOURCE_ANTENNA" code="1">
- *     <descriptor>TERMINATE</descriptor>
- *     <user-properties>
- *        <property name="ASI_PREFIX" value="prefix"/>
- *        <property name="ASI_SUFFIX" value="suffix"/>
- *        <property name="TEST_PROPERTY" value="TEST_VALUE"/>
- *     </user-properties>
- *     <user-timestamp seconds="1129902763" microseconds="105000"/>
- *  </fault-state>
- */
-void AcsAlarmTestCase::verifyFaultStateXML(string xmlData)
-{
-	bool exceptionCaught = false;
-	try
-	{
-		DOMDocument* doc = parseDOM(xmlData);
-		verifyFaultStateElement(doc, true);
-	}
-	catch (const XMLException& toCatch)
-	{
-		ACS_LOG(LM_ERROR, "ACSFaultState::toXML", (LM_ERROR, 
-			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
-		exceptionCaught = true;
-	}
-/*
-	catch(...) {
-		ACS_LOG(LM_ERROR, "ACSFaultState::toXML", (LM_ERROR, "***** unknown exception caught! *********"))
-		exceptionCaught = true;
-	}
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; received an exception during parsing", 
-		(false == exceptionCaught));
-*/
 }
 
 /**
