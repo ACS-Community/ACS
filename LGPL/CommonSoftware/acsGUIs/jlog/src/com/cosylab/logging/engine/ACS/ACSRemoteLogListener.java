@@ -25,57 +25,10 @@ import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
  * This class defines the interface for classes (LCEngine) 
- * that support custom callbacks for receiving entries 
+ * that support custom callbacks for receiving log entries 
  * submitted to the logging mechanism and for processing them.
  */
 public interface ACSRemoteLogListener {
-	/** 
-	 * Notify that the connection with ACS NC has been established
-	 */
-	public void acsLogConnEstablished();
-	
-	/**
-	 * Notify that the connection with ACS NC has been disconnected
-	 * It can happen as a consequence of an error as well as as consequence
-	 * of a request 
-	 */
-	public void acsLogConnDisconnected();
-	
-	/**
-	 * Notify that the connection with ACS NC has been lost
-	 * (it means an error or something abnormal).
-	 *
-	 */
-	public void acsLogConnLost();
-	
-	/**
-	 * Notify that an attempt to connect to ACS NC is in progress
-	 *
-	 */
-	public void acsLogConnConnecting();
-	
-	/**
-	 * Notify that the service is supended 
-	 * (i.e. it is connected to the NC and receiving logs
-	 * but the logs are discarded instead of being sent to the 
-	 * listeners)
-	 * Note: the suspension of the service is not a malfunctioning
-	 *       but a status requested by the user
-	 */
-	public void acsLogConnSuspended();
-	
-	/**
-	 * Notify that for some internal reason the service is not able
-	 * to follow the flow of the incoming logs and is queueing
-	 * the messages to be inserted later, when flow will decrease and 
-	 * enough CPU time is availbale 
-	 * 
-	 * This method is not executed each time a log is queued but
-	 * once when the situation begins.
-	 * When the temporary problem has been fixed, the status will revert
-	 * to connected
-	 */
-	public void acsLogsDelay();
 	
 	/**
 	 * The method is executed when a new log arrives from the NC
@@ -84,10 +37,5 @@ public interface ACSRemoteLogListener {
 	 */
 	void logEntryReceived(ILogEntry logEntry);
 	
-	/**
-	 * Send a report string with the current status of the connection
-	 * 
-	 * @param status The status string
-	 */
-	public void reportStatus(String status);
+
 }
