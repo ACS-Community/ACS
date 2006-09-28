@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testMacros.cpp,v 1.5 2006/02/13 22:16:58 bjeram Exp $"
+* "@(#) $Id: testMacros.cpp,v 1.6 2006/09/28 15:43:45 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -107,7 +107,21 @@ int main(int argc, char *argv[])
 		   tooLong_p,
 		   tooLong_p));
 
-
+    
+    //--------------------------------------------------------------------
+    //Test ACS_LOG
+    ACS_LOG(LM_RUNTIME_CONTEXT, "main",
+	    (LM_INFO, "Test of formatted log 1 - %s",
+	     "This is a string parameter"));
+    
+    ACS_LOG( LM_SOURCE_INFO, "main",
+	    (LM_INFO, "Test of formatted log 2 - %s",
+	     "This is a string parameter"));
+    
+    ACS_LOG( LM_FULL_INFO, "main",
+	    (LM_INFO, "Test of formatted log 3 - %s",
+	     "This is a string parameter"));
+    
     //--------------------------------------------------------------------
     //Test ACS_LOG_TIME
     Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();

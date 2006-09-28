@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.15 2006/08/08 11:14:04 bjeram Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.16 2006/09/28 15:43:45 gchiozzi Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -62,6 +62,9 @@
 /// line number) will also be output.
 #define LM_SOURCE_INFO 0x00000100
 
+/// This profides in one macro both LM_RUNTIME_CONTEXT and LM_SOURCE_INFO
+#define LM_FULL_INFO (LM_RUNTIME_CONTEXT | LM_SOURCE_INFO)
+
 /**
  * The Log Message Callback.
  * All ACE logging requests (ACE_DEBUG, ACE_ERROR, or ACS_LOG calls) are to be redirected through this LoggingProxy.
@@ -101,7 +104,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.15 2006/08/08 11:14:04 bjeram Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.16 2006/09/28 15:43:45 gchiozzi Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {

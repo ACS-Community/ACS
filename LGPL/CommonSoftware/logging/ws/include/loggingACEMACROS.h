@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACEMACROS.h,v 1.8 2006/09/27 15:21:21 gchiozzi Exp $"
+* "@(#) $Id: loggingACEMACROS.h,v 1.9 2006/09/28 15:43:45 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -144,6 +144,7 @@ STATIC_LOG(Logging::ace2acsPriority(LM_TRACE), routine, Logging::BaseLog::FIELD_
 #define ACS_SHORT_LOG(X) \
 { \
     ACS_CHECK_LOGGER; \
+    LoggingProxy::Flags(LM_FULL_INFO); \
     Logging::LogSvcHandler::DeprecatedLogInfo tStruct; \
     tStruct = Logging::LogSvcHandler::unformatted2formatted X; \
     LOG(tStruct.priority, Logging::BaseLog::FIELD_UNAVAILABLE, tStruct.message); \
@@ -157,6 +158,7 @@ STATIC_LOG(Logging::ace2acsPriority(LM_TRACE), routine, Logging::BaseLog::FIELD_
 #define ACS_STATIC_SHORT_LOG(X) \
 { \
     ACS_CHECK_LOGGER; \
+    LoggingProxy::Flags(LM_FULL_INFO); \
     Logging::LogSvcHandler::DeprecatedLogInfo tStruct; \
     tStruct = Logging::LogSvcHandler::unformatted2formatted X; \
     STATIC_LOG(tStruct.priority, Logging::BaseLog::FIELD_UNAVAILABLE, tStruct.message); \
