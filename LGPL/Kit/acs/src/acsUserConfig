@@ -1,0 +1,246 @@
+#! /bin/sh
+
+#*******************************************************************************
+# acsUserConfig
+#
+# "@(#) $Id: acsUserConfig,v 1.1 2006/09/28 11:01:24 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gchiozzi  2005-04-22 created
+#
+
+#************************************************************************
+#   NAME
+#   acsUserConfig - Copies basic account configuration files
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#   This script copies the basic configuration files for an account
+#   This includes emacs configurations.
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#   TODO
+#   - For .Xdefaults and .xresources, if the file already 
+#     exist check for the entries and append if they are not there
+#     instead of creating a new file.
+#     This would avoid loosing configurations done by the user
+#     for other applications.
+#   - Find a reasonable way to handle .bash_profile for
+#     loading the .acs/.bash_profile.acs
+#
+#
+#------------------------------------------------------------------------
+#
+
+######################################
+# Directories names and assumptions  #
+######################################
+
+# Assumes a standard ACS installation in /alma
+# and a standard ACS environment configuration
+# Uses gchiozzi CVS account and not almamgr
+# Extracts from CVS the NO-LGPL heald
+
+#
+# These will contain the command line parsing results 
+# (CL_XXX, CL = command line)
+# or will keep the given default
+#
+CL_DRY_RUN=
+
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help
+SHORTOPTS=hn
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Copies basic account configuration filesStarts a Nightly Build iteration"
+   echo "Assumes a correct ACS environment configuration"
+   echo ""
+   echo "Usage: `basename $0` [OPTIONS]"
+   echo "Options: "
+   echo "   -h | -help          prints this help and exits"
+   echo "   -n                  dry run"
+   echo "Environment Variables:"
+   echo "   ACSROOT - Minimal sanity check. Bails out if not set."
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+        -n)                  CL_DRY_RUN=true ;;
+	--help)              CL_HELP=true ;; 
+	-h)                  CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+#
+# must be unset! otherwise our custom export() function
+# that is defined below doesn't get used by the shell
+#
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+#
+# Set indirect variables, based on command line parameters
+#
+
+# Full name for the binary dostribution file
+BIN_FILE=$CL_BIN_DIR/ACS_BIN.tar.gz
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+################################
+# Initial minimal sanity check #
+################################
+
+if [ X"$ACSROOT" = X ]
+then
+    echo "ERROR - ACSROOT undefined. Cannot continue!"
+    exit -1
+fi
+
+echo ACSROOT: $ACSROOT
+
+###############################
+# If a dry run is requested, the list of options is printed
+# and all commands become simply echo outputs.
+#
+if [ "$CL_DRY_RUN" ] ; then
+   CMD_ECHO=echo
+
+   $CMD_ECHO "======== DRY RUN ============="
+   $CMD_ECHO "Setup for execution is:"
+   $CMD_ECHO CL_DRY_RUN=$CL_DRY_RUN
+   $CMD_ECHO ""
+fi
+
+#########################
+# Let's go!
+#
+
+
+echo "===> Check and update ACS user account configuration"
+
+#
+# Go to the home directory
+#
+cd $HOME
+
+######################################
+# Check .acs directory               #
+######################################
+
+echo "     Check .acs directory"
+if [  -r .acs ]
+then
+   echo "       .acs directory already exist"   
+fi
+$CMD_ECHO cp -ri $ACSROOT/config/.acs .   
+
+######################################
+# Check .emacs file                  #
+######################################
+
+echo "     Check .emacs file"
+if [  -r .emacs ]
+then
+   echo "       .emacs file already exist"   
+else
+   echo "       .emacs file does not exist. Making a link from $HOME/.acs/emacs"
+   $CMD_ECHO ln -s $HOME/.acs/emacs .emacs
+fi
+
+######################################
+# Check .emacs.local file            #
+######################################
+
+echo "     Check .emacs file"
+if [  -r .emacs.local ]
+then
+   echo "       .emacs.local file already exist"   
+else
+   echo "       .emacs.local file does not exist. Making a link from $HOME/.acs/emacs.local"
+   $CMD_ECHO ln -s $HOME/.acs/emacs.local .emacs.local
+fi
+
+######################################
+# Check .xresources file             #
+######################################
+
+echo "     Check .xresources file"
+if [  -r .xresources ]
+then
+   echo "     .xresources file already exist"   
+else
+   echo "     .xresources file does not exist. Making a link from $HOME/.acs/xresources.emacs"
+   $CMD_ECHO ln -s $HOME/.acs/xresources.emacs .xresources
+fi
+
+######################################
+# Check .Xdefaults file              #
+######################################
+
+echo "     Check .emacs file"
+if [  -r .Xdefaults ]
+then
+   echo "       .Xdefaults file already exist"   
+else
+   echo "       .Xdefaults file does not exist. Making a link from $HOME/.acs/xresources.emacs"
+   $CMD_ECHO ln -s $HOME/.acs/xresources.emacs .Xdefaults
+fi
+
+echo "===> DONE"
+
+# ___oOo___

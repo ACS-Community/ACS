@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.89 2006/09/01 09:34:07 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.90 2006/09/28 11:01:24 gchiozzi Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -58,7 +58,8 @@ SCRIPTS  = 	acsMakeTclScriptDependencies    \
                 JacPrep			\
 		acsMakeRTAIDependencies \
 		acsCheckGroupPermissions\
-                cvs2cl
+                cvs2cl \
+                acsUserConfig
 
 #
 # TCL scripts (public and local)
