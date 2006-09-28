@@ -50,7 +50,9 @@ public LoggingClientText(String accessType) {
 private void initialize(String accessType) {
 	
 	rrct = new RemoteResponseCallbackText();
-	lct = new LCEngine(rrct);
+	lct = new LCEngine();
+	lct.addLogConnectionListener(rrct);
+	lct.addLogListener(rrct);
 
 	lct.setAccessType("ACS");
 	lct.connect();

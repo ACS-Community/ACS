@@ -39,6 +39,7 @@ import org.omg.CORBA.ORB;
 import si.ijs.maci.Manager;
 
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
@@ -135,7 +136,9 @@ public class LogReceiver {
         rrc.setVerbose(verbose);
         rrc.setDelayMillis(sortingDelayMillis);
 
-        lct = new LCEngine(rrc);
+        lct = new LCEngine();
+        lct.addLogConnectionListener(rrc);
+        lct.addLogListener(rrc);
 
 		lct.setAccessType("ACS");
 		lct.connect(theORB, manager);
@@ -211,7 +214,7 @@ public class LogReceiver {
 	/**
 	 * Callback class that receives log data from {@link LCEngine}. 
 	 */
-	static class MyRemoteResponseCallback implements ACSRemoteLogListener {
+	static class MyRemoteResponseCallback implements ACSRemoteLogListener, ACSLogConnectionListener {
 		private boolean verbose = false;
 		
 		private ArrayList<String> statusReports;

@@ -22,6 +22,7 @@
 package com.cosylab.logging;
 
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
@@ -29,7 +30,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * Creation date: (11/2/2001 3:21:42 PM)
  * @author: 
  */
-public class RemoteResponseCallbackText implements ACSRemoteLogListener {
+public class RemoteResponseCallbackText implements ACSRemoteLogListener, ACSLogConnectionListener {
 /**
 	 * RemoteResponeCallbackText constructor comment.
 	 */

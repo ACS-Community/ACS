@@ -59,6 +59,7 @@ import javax.swing.filechooser.FileFilter;
 import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -99,7 +100,7 @@ import com.cosylab.logging.stats.StatsDlg;
  * One solution is replacing the character with the appropriate html substitute &lt;.
  * Another solution is keeping it in a CDATA section: <[!CDATA[the log entry message]]>.
  */
-public class LoggingClient extends JFrame implements ACSRemoteLogListener
+public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLogConnectionListener
 {
 	// The loggingClient is a singleton
 	private static LoggingClient singleton=null;
@@ -1687,7 +1688,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener
 		{
 			try
 			{
-				engine = new LCEngine(this);
+				engine = new LCEngine();
+				engine.addLogConnectionListener(this);
+				engine.addLogListener(this);
 
 			}
 			catch (java.lang.Throwable ivjExc)
