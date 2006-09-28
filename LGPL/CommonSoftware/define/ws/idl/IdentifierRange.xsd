@@ -2,25 +2,34 @@
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Simon Farrow (E.S.O.) -->
 <xs:schema xmlns:ent="Alma/CommonEntity" xmlns:ran="Alma/Archive/ArchiveRange" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Alma/Archive/ArchiveRange" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
-    <xs:type name="IdentifierRange">
-    <xs:element name="IdentifierRange">
+
+    <xs:element name="IdentifierRange" type="ran:IdentifierRange">
         <xs:annotation>
             <xs:documentation>Entity that acts as a pool for unique IDs (UID).
 archiveID: unique ID for the archive installation where the range was created. This archiveID becomes part of the UIDs.
 isLocked: true if the range is retrieved from the archive; false if the range has been freshly created.
 createdTimeStamp:</xs:documentation>
         </xs:annotation>
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="IdentifierRangeEntity" type="ran:IdentifierRangeEntityT"/>
-                <xs:element name="Range" type="ran:RangeT"/>
-            </xs:sequence>
-            <xs:attribute name="createdTimeStamp" type="xs:string" use="required"/>
-            <xs:attribute name="isLocked" type="xs:boolean" use="required"/>
-            <xs:attribute name="archiveID" type="xs:string" use="required"/>
-        </xs:complexType>
     </xs:element>
-    </xs:type>
+
+    <xs:complexType name="IdentifierRange">
+        <xs:sequence>
+            <xs:element name="IdentifierRangeEntity" type="ran:IdentifierRangeEntityT"/>
+            <xs:element name="Range" type="ran:RangeT"/>
+        </xs:sequence>
+        <xs:attribute name="createdTimeStamp" type="xs:string" use="required"/>
+        <xs:attribute name="isLocked" type="xs:boolean" use="required"/>
+        <xs:attribute name="archiveID" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="IdentifierRangeEntityT">
+        <xs:complexContent>
+            <xs:restriction base="ent:EntityT">
+                <xs:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="IdentifierRange"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    
     <xs:complexType name="RangeT">
         <xs:annotation>
             <xs:documentation>Describes the values that a range can hold.
@@ -41,11 +50,5 @@ rangeID: the global (middle) part of the created UIDs.
         </xs:sequence>
         <xs:attribute name="rangeID" type="xs:string" use="required"/>
     </xs:complexType>
-    <xs:complexType name="IdentifierRangeEntityT">
-        <xs:complexContent>
-            <xs:restriction base="ent:EntityT">
-                <xs:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="IdentifierRange"/>
-            </xs:restriction>
-        </xs:complexContent>
-    </xs:complexType>
+    
 </xs:schema>
