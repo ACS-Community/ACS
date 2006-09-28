@@ -29,5 +29,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/ArchiveIdentifierError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/commons-lang-2.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
