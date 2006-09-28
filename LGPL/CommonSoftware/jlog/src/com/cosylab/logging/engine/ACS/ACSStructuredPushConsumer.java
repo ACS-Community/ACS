@@ -54,17 +54,22 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 					ie.printStackTrace();
 					continue;
 				}
-				try {
-					logEntry = parser.parse(log);
-				} catch (Exception e) {
-					engine.publishReport("Exception occurred while dispatching the XML log.");
-					engine.publishReport("This log has been lost: "+log);
-					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
-					System.err.println("An XML string that could not be parsed: " + log);
-					e.printStackTrace(System.err);
-					continue;
+				if (engine.hasRawLogListeners()) {
+					engine.publishRawLog(log);
 				}
-				engine.publishLog(logEntry);
+				if (engine.hasLogListeners()) {
+					try {
+						logEntry = parser.parse(log);
+					} catch (Exception e) {
+						engine.publishReport("Exception occurred while dispatching the XML log.");
+						engine.publishReport("This log has been lost: "+log);
+						System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
+						System.err.println("An XML string that could not be parsed: " + log);
+						e.printStackTrace(System.err);
+						continue;
+					}
+					engine.publishLog(logEntry);
+				}
 			}
 		}
 	}
