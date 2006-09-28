@@ -454,7 +454,7 @@ public class LCEngine implements Runnable {
 	 * 
 	 * @param newLog The XML string to send to the listeners
 	 */
-	public synchronized void publishLog(String xmlStr) {
+	public synchronized void publishRawLog(String xmlStr) {
 		if (rawLogListenersNum>0) {
 			synchronized(rawLogListeners) {
 				for (int t=0; t<rawLogListenersNum; t++) {
