@@ -1,5 +1,10 @@
- -- junit.textui.TestRunner com.cosylab.logging.engine.ACS.ACSLogParserTest
-.
-
-OK (1 test)
-
+1 - The WriteBuffer stores N logs
+1 - The WriteBuffer stores N logs
+1 - The WriteBuffer stores N logs
+1 - The WriteBuffer stores N logs
+1 - The WriteBuffer stores N logs
+1 - The WriteBuffer stores N logs
+1 - 
+1 - 
+1 - OK (6 tests)
+1 - 
