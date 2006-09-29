@@ -17,7 +17,7 @@
 1 - Status msg received: Structured Push Consumer initialized.
 1 - Status msg received: Connected to ACS remote access.
 1 - Connection established
-1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="alma" Process="logClient" Thread="main" Context="" SourceObject="GlobalLogger"><![CDATA[Logged in.]]></Debug>
+1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Logged in.]]></Debug>
 1 - Log recived: --- LogEntry ---
 1 - TimeStamp: ----------T--:--:--.---
 1 - Entry Type: Debug
@@ -25,10 +25,10 @@
 1 - File: maciSimpleClient.cpp
 1 - Line: NNN
 1 - Routine: 
-1 - Host: alma
+1 - Host: hostname
 1 - Process: logClient
 1 - Context: 
-1 - Thread: main
+1 - Thread: NNNmain
 1 - Log Message: Logged in.
 1 - 
 1 - RAW log: <Info TimeStamp="----------T--:--:--.---" Routine="" SourceObject="GlobalLogger"><![CDATA[Test message 0]]></Info>
@@ -831,7 +831,7 @@
 1 - Routine: 
 1 - Log Message: Test message 99
 1 - 
-1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="alma" Process="logClient" Thread="main" Context="" SourceObject="GlobalLogger"><![CDATA[Logging out...]]></Debug>
+1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Logging out...]]></Debug>
 1 - Log recived: --- LogEntry ---
 1 - TimeStamp: ----------T--:--:--.---
 1 - Entry Type: Debug
@@ -839,13 +839,13 @@
 1 - File: maciSimpleClient.cpp
 1 - Line: NNN
 1 - Routine: 
-1 - Host: alma
+1 - Host: hostname
 1 - Process: logClient
 1 - Context: 
-1 - Thread: main
+1 - Thread: NNNmain
 1 - Log Message: Logging out...
 1 - 
-1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="alma" Process="logClient" Thread="main" Context="" SourceObject="GlobalLogger"><![CDATA[Destroying CORBA...]]></Debug>
+1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Destroying CORBA...]]></Debug>
 1 - Log recived: --- LogEntry ---
 1 - TimeStamp: ----------T--:--:--.---
 1 - Entry Type: Debug
@@ -853,13 +853,13 @@
 1 - File: maciSimpleClient.cpp
 1 - Line: NNN
 1 - Routine: 
-1 - Host: alma
+1 - Host: hostname
 1 - Process: logClient
 1 - Context: 
-1 - Thread: main
+1 - Thread: NNNmain
 1 - Log Message: Destroying CORBA...
 1 - 
-1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="alma" Process="logClient" Thread="main" Context="" SourceObject="GlobalLogger"><![CDATA[Client destroyed.]]></Debug>
+1 - RAW log: <Debug TimeStamp="----------T--:--:--.---" File="maciSimpleClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Client destroyed.]]></Debug>
 1 - Log recived: --- LogEntry ---
 1 - TimeStamp: ----------T--:--:--.---
 1 - Entry Type: Debug
@@ -867,10 +867,10 @@
 1 - File: maciSimpleClient.cpp
 1 - Line: NNN
 1 - Routine: 
-1 - Host: alma
+1 - Host: hostname
 1 - Process: logClient
 1 - Context: 
-1 - Thread: main
+1 - Thread: NNNmain
 1 - Log Message: Client destroyed.
 1 - 
 2 - ----------T--:--:--.--- [GlobalLogger] Logging proxy successfully created.
