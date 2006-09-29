@@ -45,6 +45,8 @@ public class LogListener implements
 		try {
 			Thread.sleep(120000);
 		} catch (InterruptedException ie) {}
+		ll.disconnet();
+		System.exit(0);
 	}
 	
 	public void acsLogConnEstablished() {
@@ -105,5 +107,13 @@ public class LogListener implements
 	 */
 	public void logEntryReceived(ILogEntry log) {
 		System.out.println("Log recived: "+log.toString());
+	}
+	
+	/**
+	 * Disconnect from the logging channel
+	 *
+	 */
+	public void disconnet() {
+		engine.disconnect();
 	}
 }
