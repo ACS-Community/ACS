@@ -58,7 +58,7 @@ public class SecondaryComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	*/
-	protected Class _getPOATieClass()
+	protected Class<? extends Servant> _getPOATieClass()
 	{
 		return SecondaryComponentPOATie.class;
 	}
@@ -66,7 +66,7 @@ public class SecondaryComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	*/
-	protected Class _getOperationsInterface()
+	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
 		return SecondaryComponentOperations.class;
 	}
