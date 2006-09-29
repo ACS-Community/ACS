@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.119 2006/09/25 08:48:50 cparedes Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.120 2006/09/29 09:12:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.119 2006/09/25 08:48:50 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.120 2006/09/29 09:12:34 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -68,6 +68,7 @@ static bool shutting_down = false;
 static bool signaled = false;
 static TestContainerServices *cs_p[]={0, 0};
 static LoggingProxy *g_logger = 0;
+LoggingProxy *threadLogger = 0;
 
 /// The mutual exclusion mechanism which is required to use the
 /// <condition_>.
@@ -78,7 +79,26 @@ static ACE_SYNCH_MUTEX mutex;
  */
 static ACE_SYNCH_CONDITION condition(mutex);
 
+/*
+ * Thread initializer and thread done functions
+ *
+ */
 
+void initThread(const char * threadName)
+{
+    ACS_CHECK_LOGGER;
+//    threadLogger = new LoggingProxy(0, 0, 31, 0);
+    LoggingProxy::init(g_logger);
+    LoggingProxy::ThreadName(threadName);
+}//initThread
+
+void doneThread()
+{
+    LoggingProxy::done();
+ //    if (threadLogger) delete threadLogger;
+}//doneThread
+
+/******************************************************************************************/
 
 void finalize()
 {
@@ -132,8 +152,6 @@ void finalize()
     ACSError::done();
     DBConnector::closeDB();
     BACI_CORBA::DoneCORBA();
-
-
 }
 
 
@@ -210,7 +228,9 @@ int main(int argc, char* argv[])
     ACE_OS::signal(SIGINT,  TerminationSignalHandler);  // Ctrl+C
     ACE_OS::signal(SIGTERM, TerminationSignalHandler);  // termination request
 
-     ACS_SHORT_LOG((LM_INFO,"baciTestServer: CharacteristicComponent IDs ready"));
+    BACIThread::setInitializers(initThread, doneThread);
+    
+    ACS_SHORT_LOG((LM_INFO,"baciTestServer: CharacteristicComponent IDs ready"));
     if (devCount<1) {
        ACS_SHORT_LOG((LM_INFO,"No devices found for %s", argv[0]));
       return -1;
