@@ -89,9 +89,6 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
     void testTimestamp();
 
 	private:
-		//void faultStateSetup();
-		//void faultStateTearDown();
-
 		void verifyFaultStateElement(DOMDocument * doc, bool);
 		void verifyDescriptorElement(DOMDocument * doc);
 		void verifyUserPropertiesElement(DOMDocument * doc);
@@ -346,8 +343,6 @@ void AcsAlarmTestCase::tearDown()
 
 void AcsAlarmTestCase::testFaultState()
 {
-	//faultStateSetup();
-
 	const string member(MEMBER_VALUE);
 	const string family(FAMILY_VALUE);
 	const string descriptor(DESCRIPTOR_VALUE);
@@ -440,8 +435,6 @@ void AcsAlarmTestCase::testFaultState()
 		(assignedFaultState.getUserTimestamp() == fltstate->getUserTimestamp()) );
 	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getUserProperties", 
 		(assignedFaultState.getUserProperties() == fltstate->getUserProperties()) );
-
-	//faultStateTearDown();
 }
 
 /*
