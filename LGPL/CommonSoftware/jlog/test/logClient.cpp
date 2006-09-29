@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: logClient.cpp,v 1.1 2006/09/28 16:12:24 acaproni Exp $"
+* "@(#) $Id: logClient.cpp,v 1.2 2006/09/29 14:20:34 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,6 +53,6 @@ int main(int argc, char *argv[])
     client.logout();
 
     //Sleep for 10 sec to allow everytihng to cleanup and stablize
-    ACE_OS::sleep(10);
+    ACE_OS::sleep(90);
     return 0;
 }
