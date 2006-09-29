@@ -64,6 +64,7 @@ import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
+import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.settings.LogTypeRenderer;
 import com.cosylab.logging.stats.StatsDlg;
 
@@ -130,6 +131,13 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 */
 	private JMenuItem statisticsMenuItem = null;
 	
+	/**
+     * The menu item to show the error log window
+     */
+    private JMenuItem viewErrorLogMI;
+    
+    private ErrorLogDialog errorLogDlg;
+    
 	/** 
 	 * The filters menu
 	 */
@@ -209,7 +217,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
      */
     private JCheckBoxMenuItem viewDetailedInfoMI;
     
-    /**
+        /**
      * The menu item to show/hide the Detailed log info panel
      */
     private JCheckBoxMenuItem viewStatusAreaMI;
@@ -335,6 +343,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             } else if (e.getSource()==LoggingClient.this.statisticsMenuItem) {
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
+            } else if (e.getSource()==viewErrorLogMI) {
+            	getErrorLogDlg().setVisible(true);
             } else if (e.getSource()==LoggingClient.this.viewStatusAreaMI) {
             	getStatusAreaPanel().setVisible(viewStatusAreaMI.getState());
             	if (viewStatusAreaMI.getState()) {
@@ -914,6 +924,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         statisticsMenuItem = new JMenuItem("Statistics");
         statisticsMenuItem.addActionListener(eventHandler);
         viewMenu.add(statisticsMenuItem);
+        viewErrorLogMI = new JMenuItem("Error log");
+        viewErrorLogMI.addActionListener(eventHandler);
+        viewMenu.add(viewErrorLogMI);
         loggingClientJMenuBar.add(viewMenu);
         
         // Add the Search Menu
@@ -2075,6 +2088,17 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		saveFileMenuItem.setEnabled(enabled);
 		connectMenuItem.setEnabled(enabled);
 		autoReconnectMI.setEnabled(enabled);
+	}
+	
+	/**
+	 * 
+	 * @return A reference to the Error log dialog
+	 */
+	public ErrorLogDialog getErrorLogDlg() {
+		if (errorLogDlg==null) {
+			errorLogDlg = new ErrorLogDialog(null,"Error log",false);
+		}
+		return errorLogDlg;
 	}
 	
 }
