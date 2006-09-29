@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.6 2006/09/28 13:34:29 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.7 2006/09/29 13:55:21 acaproni Exp $
  * @since    
  */
 
@@ -35,7 +35,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 import  javax.xml.parsers.ParserConfigurationException;
-
+import com.cosylab.logging.LoggingClient;
 /**
  * ACSLogRetireval stores the XML string representing logs on a file
  * when the engine is not able to follow the flow of the incoming logs
@@ -194,6 +194,10 @@ public class ACSLogRetrieval extends Thread {
 					try {
 						log = parser.parse(tempStr);
 					} catch (Exception e) {
+						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
+						strB.append("This log has been lost: "+tempStr);
+						LoggingClient.getInstance().getErrorLogDlg().appendText(strB.toString());
+						engine.publishReport(strB.toString());
 						System.err.println("error parsing a log "+e.getMessage());
 						e.printStackTrace();
 						continue;
