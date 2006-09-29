@@ -229,7 +229,7 @@ void CERNAlarmSystemInterfaceProxy::commonPush(vector<ACSFaultState> & states, b
 	
 	// publish the ASIMessage to the alarm server
 	publishMessageDLL(asiMessage);
-	//publishMessage(asiMessage);
+
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::commonPush(): exiting.");
 }
 
