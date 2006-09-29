@@ -730,7 +730,11 @@ public class IOLogsHelper extends Thread  {
 		} catch (Exception e) {
 			System.err.println("Exception parsing a log: "+e.getMessage());
 			System.out.println("Log Str: ["+logStr+"]");
-			JOptionPane.showMessageDialog(null, formatErrorMsg(e.getMessage(),logStr),"Error parsing a log!",JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(null, formatErrorMsg(e.getMessage(),logStr),"Error parsing a log!",JOptionPane.ERROR_MESSAGE);
+			StringBuilder strBuilder = new StringBuilder("\nError parsing the following Log:\n");
+			strBuilder.append(formatErrorMsg(logStr));
+			strBuilder.append("\n");
+			LoggingClient.getInstance().getErrorLogDlg().appendText(strBuilder.toString());
 			return;
 		}
 		logListener.logEntryReceived(log);
@@ -743,8 +747,8 @@ public class IOLogsHelper extends Thread  {
 	 * @param msg The message to show
 	 * @return A formatted string
 	 */
-	private String formatErrorMsg(String error, String msg) {
-		StringBuffer sb = new StringBuffer("Exception: "+error+"\nParsing the Log:");
+	private String formatErrorMsg(String msg) {
+		StringBuilder sb = new StringBuilder();
 		int count = 0;
 		for (int t=0; t<msg.length(); t++) {
 			char c = msg.charAt(t);
