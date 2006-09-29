@@ -75,25 +75,23 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 created
-1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Writing IOR for EPTESTDEVICE1 into file...
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 exported
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: ASI_PREFIX_PROPERTY and value: prefix
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Waiting for requests ... 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: ASI_PREFIX_PROPERTY and value: prefix
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: ASI_SUFFIX_PROPERTY and value: suffix
@@ -106,11 +104,11 @@
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Going in main loop sleep...
 2 - ----------T--:--:--.--- [GlobalLogger - ] (State::AlarmCBStates::raised) Value: DISABLED (0). Completion (type=2, code=3)
-1 - ON
 3 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
 3 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 3 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
 3 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
+1 - ON
 3 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
 3 - ----------T--:--:--.--- [GlobalLogger - ] 0 DISABLED     alarm_on
 3 - ----------T--:--:--.--- [GlobalLogger - ] 1 ENABLED     alarm_on

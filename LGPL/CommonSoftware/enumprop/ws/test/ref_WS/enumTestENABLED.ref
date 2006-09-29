@@ -75,22 +75,20 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 created
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Writing IOR for EPTESTDEVICE1 into file...
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 exported
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Waiting for requests ... 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: ASI_PREFIX_PROPERTY and value: prefix

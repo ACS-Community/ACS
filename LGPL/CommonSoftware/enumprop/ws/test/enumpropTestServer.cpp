@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.48 2006/09/28 15:00:30 bjeram Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.49 2006/09/29 10:09:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.48 2006/09/28 15:00:30 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.49 2006/09/29 10:09:50 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -182,7 +182,7 @@ class TestContainerServices : public maci::ContainerServices {
 /****************************************************************************************/
 
 bool EPshutting_down = false;
-LoggingProxy *loggerProxy;
+LoggingProxy *loggerProxy=0;
 
 /*
  * Thread initializer and thread done functions
@@ -192,7 +192,6 @@ LoggingProxy *loggerProxy;
 void initThread(const char * threadName)
 {
     ACS_CHECK_LOGGER;
-    loggerProxy = new LoggingProxy(0, 0, 31, 0);
     LoggingProxy::init(loggerProxy);
     LoggingProxy::ThreadName(threadName);
 }//initThread
@@ -200,7 +199,6 @@ void initThread(const char * threadName)
 void doneThread()
 {
     LoggingProxy::done();
-    delete loggerProxy;
 }//doneThread
 
 /******************************************************************************************/
@@ -211,8 +209,8 @@ void TerminationSignalHandler(int)
     EPshutting_down=true;
     
     // initialize logger (this is a new thread)
-    LoggingProxy EP_log (0, 0, 31, 0);
-    LoggingProxy::init (&EP_log);
+    LoggingProxy logProx(0, 0, 31, 0);
+    LoggingProxy::init (&logProx);
 
     ACS_LOG(0, "termination", (LM_INFO, "Termination signal detected."));
     
@@ -235,8 +233,8 @@ void TerminationSignalHandler(int)
 int main(int l_argc, char* l_argv[]) 
 {
     // create logging proxy 
-    LoggingProxy EP_log (0, 0, 31, 0);
-    LoggingProxy::init (&EP_log);
+    loggerProxy = new  LoggingProxy(0, 0, 31, 0);
+    LoggingProxy::init (loggerProxy);
     LoggingProxy::ProcessName(l_argv[0]);
     ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created !"));
 
@@ -357,6 +355,7 @@ int main(int l_argc, char* l_argv[])
 
     
     LoggingProxy::done();
+    delete loggerProxy;
     
     std::cout << std::flush;  // shold be done by: LoggingProxy::done()
 
