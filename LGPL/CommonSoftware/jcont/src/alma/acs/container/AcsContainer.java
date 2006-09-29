@@ -113,6 +113,9 @@ public class AcsContainer extends ContainerPOA
     /////////////////////////////////////////////////////////////
 
     /**
+     * Constructor which creates a container that is registered as a CORBA object,
+     * but not yet logged in to the manager (for that, call {@link #initialize()}.
+     * 
      * @param containerName
      * @param acsCorba
      * @param managerProxy
@@ -123,58 +126,67 @@ public class AcsContainer extends ContainerPOA
     AcsContainer(String containerName, AcsCorba acsCorba, AcsManagerProxy managerProxy, boolean isEmbedded)
         throws ContainerException
     {
-        if (s_instance == null)
-        {
+        if (s_instance == null) {
             m_containerName = containerName;
             m_managerProxy = managerProxy;
-
             this.isEmbedded = isEmbedded;
-
-            ClientLogManager clm = ClientLogManager.getAcsLogManager();
-            m_logger = clm.getLoggerForContainer(containerName);
-
+            m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
             m_activeComponentMap = new ComponentMap(m_logger);
             m_acsCorba = acsCorba;
 
-            registerWithCorba();
-            
-            LogConfig logConfig = clm.getLogConfig(); // todo: turn into member field when we get new logging config notification method in the container interface 
-//            logConfig.setInternalLogger(m_logger);
-            logConfig.setCDBContainerPath("MACI/Containers/" + containerName);
-            logConfig.setCDB(getCDB());
-            try {
-                logConfig.initialize();
-            } catch (LogConfigException ex) {
-                // if the CDB can't be read, we still want to run the container, so we only log the problems
-                m_logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: " + ex.getMessage());
-            }
+            registerWithCorba();       
 
-            s_instance = this;
-
-            try {
-            	ACSAlarmSystemInterfaceFactory.init(m_acsCorba.getORB(),m_managerProxy.getManager(),m_logger);
-            } catch (Exception e) {
-            	throw new ContainerException("Error initializing the alarm system factory");
-            }
-
+            s_instance = this;            
         }
-        else
-        {
-            throw new ContainerException("illegal attempt to create more than one instance of " +
-                                            AcsContainer.class.getName() + " inside one JVM.");
+        else {
+            throw new ContainerException("illegal attempt to create more than one instance of " + AcsContainer.class.getName() + " inside one JVM.");
         }
     }
 
+    /**
+     * Container initialization such as logging in to the manager, configuring logging, initializing the alarm system.
+     * This is taken out of the ctor just to keep is lean and be able to instantiate a minimum container for testing.
+     * 
+     * @throws ContainerException
+     */
+    void initialize() throws ContainerException {
+		
+    	loginToManager();
+		
+		// init logging parameters
+		
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig(); // todo: turn into member field when we get new logging config notification method in the container interface
+		// logConfig.setInternalLogger(m_logger);
+		logConfig.setCDBContainerPath("MACI/Containers/" + m_containerName);
+		logConfig.setCDB(getCDB());
+		try {
+			logConfig.initialize();
+		} catch (LogConfigException ex) {
+			// if the CDB can't be read, we still want to run the container, so
+			// we only log the problems
+			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: "
+					+ ex.getMessage());
+		}
+
+		// init the alarm system
+		try {
+			ACSAlarmSystemInterfaceFactory.init(m_acsCorba.getORB(), m_managerProxy.getManager(), m_logger);
+		} catch (Exception e) {
+			throw new ContainerException("Error initializing the alarm system factory");
+		}
+	}
     
     /**
-     * Gets a reference to the CDB.
-     * Reuses the previously obtained reference.
-     * Implemented as on-demand remote call, so always use this method 
-     * instead of directly accessing the field {@link #cdb}. 
-     * <p>
-     * TODO: reuse this CDB reference in ContainerServicesImpl for method getCDB()
-     * @return the CDB reference, or <code>null</code> if it could not be obtained.
-     */
+	 * Gets a reference to the CDB. Reuses the previously obtained reference.
+	 * Implemented as on-demand remote call, so always use this method instead
+	 * of directly accessing the field {@link #cdb}.
+	 * <p>
+	 * TODO: reuse this CDB reference in ContainerServicesImpl for method
+	 * getCDB()
+	 * 
+	 * @return the CDB reference, or <code>null</code> if it could not be
+	 *         obtained.
+	 */
     DAL getCDB() {
         if (cdb != null) {
             return cdb;
@@ -228,6 +240,8 @@ public class AcsContainer extends ContainerPOA
     }
 
 
+    
+    
     /**
      * Will attempt to log into the manager.
      * If the manager reference is not available, will enter a loop and keep trying.
@@ -235,7 +249,7 @@ public class AcsContainer extends ContainerPOA
      *
      * @throws ContainerException
      */
-    void loginToManager() throws ContainerException
+    protected void loginToManager() throws ContainerException
     {
         Container thisContainer = _this(m_acsCorba.getORB());
         m_managerProxy.loginToManager(thisContainer, true);
