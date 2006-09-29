@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2006/09/25 19:09:43 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/09/29 07:42:12 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -70,8 +70,6 @@ acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfac
 acsAlSysSource_LIBS = acsutil expat maciStubs
 
 laserCppUtil_OBJECTS   = Properties Timestamp
-
-ACSERRDEF = acsErrTypeAlarmSourceFactory
 
 #
 # Scripts (public and local)
