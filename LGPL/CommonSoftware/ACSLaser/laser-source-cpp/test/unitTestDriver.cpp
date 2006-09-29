@@ -31,7 +31,7 @@
 
 // constants we will use when creating the fault
 #define DUMMY_PROCESS_NAME "DummyClientProcess"
-#define DUMMY_HOSTNAME "DummyClientProcess"
+#define DUMMY_HOSTNAME "DummyHostname"
 #define FAMILY_VALUE "AlarmSource" 
 #define MEMBER_VALUE "ALARM_SOURCE_MOUNT"
 #define DESCRIPTOR_VALUE "TestDescriptor"
@@ -163,6 +163,7 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 		XMLCh* SOURCE_NAME_TAG_NAME;
 		XMLCh* SOURCE_NAME_VALUE_XMLCH;
 		XMLCh* SOURCE_HOST_NAME_TAG_NAME;
+		XMLCh* SOURCE_HOST_NAME_VALUE_XMLCH;
 		XMLCh* SOURCE_TIMESTAMP_TAG_NAME;
 		XMLCh* FAULT_STATES_TAG_NAME;
 };
@@ -238,6 +239,7 @@ void AcsAlarmTestCase::setUp()
 	SOURCE_NAME_TAG_NAME = 	XMLString::transcode(SOURCE_NAME_NAME);
 	SOURCE_NAME_VALUE_XMLCH = XMLString::transcode(SOURCE_NAME_VALUE);
 	SOURCE_HOST_NAME_TAG_NAME = 	XMLString::transcode(SOURCE_HOST_NAME_NAME);
+	SOURCE_HOST_NAME_VALUE_XMLCH = XMLString::transcode(DUMMY_HOSTNAME);
 	SOURCE_TIMESTAMP_TAG_NAME = 	XMLString::transcode(SOURCE_TIMESTAMP_NAME);
 	FAULT_STATES_TAG_NAME = 	XMLString::transcode(FAULT_STATES_NAME);
 }
@@ -277,6 +279,7 @@ void AcsAlarmTestCase::tearDown()
 	XMLString::release(&SOURCE_NAME_TAG_NAME);
 	XMLString::release(&SOURCE_NAME_VALUE_XMLCH);
 	XMLString::release(&SOURCE_HOST_NAME_TAG_NAME);
+	XMLString::release(&SOURCE_HOST_NAME_VALUE_XMLCH);
 	XMLString::release(&SOURCE_TIMESTAMP_TAG_NAME);
 	XMLString::release(&FAULT_STATES_TAG_NAME);
 
@@ -383,12 +386,15 @@ void AcsAlarmTestCase::verifyASIMessageSourceHostnameElement(DOMDocument * doc)
 	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; no source-hostname sub-element found", 
 		(NULL != sourceHostNameNodes && sourceHostNameNodes->getLength() == 1));
 
-	// check that the hostname is not null, but don't check actual value of source-hostname; this will 
-	// vary depending on where the test is run and is therefore not repeatable.
+	// check value of hostname
 	DOMNode * sourceHostNameElementNode = sourceHostNameNodes->item(0);
 	DOMNode * sourceHostNameTextNode = sourceHostNameElementNode->getFirstChild();
 	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; source-hostname value is not present or null",
 		(NULL != sourceHostNameTextNode));
+
+	const XMLCh * sourceHostNameNodeValue = sourceHostNameTextNode->getNodeValue();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; value of source-hostname is not correct",
+		(NULL != sourceHostNameNodeValue && XMLString::equals(sourceHostNameNodeValue, SOURCE_HOST_NAME_VALUE_XMLCH)));
 
 }
 
