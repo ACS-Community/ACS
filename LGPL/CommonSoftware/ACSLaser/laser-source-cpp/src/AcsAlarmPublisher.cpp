@@ -39,7 +39,7 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was nil.");
 		}
 		else {
-			myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was not nil.");
+			myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was not nil.");
 		}
 		getAlarmSupplier()->init(naming_p);
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): init called on alarm supplier.");
@@ -116,7 +116,7 @@ bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 		getAlarmSupplier()->publishEvent(msg);
 	} else {
 		// TODO: throw an exception here?
-		myLoggerSmartPtr->log(Logging::Logger::LM_WARNING, "AcsAlarmPublisher::publishAlarm(): alarm not published; alarm supplier is null.");
+		myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::publishAlarm(): alarm not published; alarm supplier is null.");
 	}
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): exiting.");
 	return true;

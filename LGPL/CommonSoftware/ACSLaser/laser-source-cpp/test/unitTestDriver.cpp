@@ -44,6 +44,7 @@
 #define MICROSECONDS_VALUE 8888
 
 #define FAULT_STATE_ELEMENT_NAME "fault-state"
+#define ASI_MESSAGE_ELEMENT_NAME "ASI-message"
 #define DESCRIPTOR_ELEMENT_NAME "descriptor"
 
 #define USER_PROPERTIES_ELEMENT_NAME "user-properties"
@@ -56,6 +57,19 @@
 #define VALUE_ATTRIBUTE_NAME "value"
 #define SECONDS_ATTRIBUTE_NAME "seconds"
 #define MICROSECONDS_ATTRIBUTE_NAME "microseconds"
+#define XMLNS_ATTRIBUTE_NAME "xmlns:xsi"
+#define XMLNS_VALUE "http://www.w3.org/2001/XMLSchema-instance"
+#define BACKUP_ATTRIBUTE_NAME "backup"
+#define BACKUP_VALUE "false"
+#define VERSION_ATTRIBUTE_NAME "version"
+#define VERSION_VALUE asiConfigurationConstants::ASI_VERSION
+#define TYPE_ATTRIBUTE_NAME "xsi:type"
+#define TYPE_VALUE "ASI-message"
+#define SOURCE_NAME_NAME "source-name"
+#define SOURCE_NAME_VALUE asiConfigurationConstants::ALARM_SOURCE_NAME
+#define SOURCE_HOST_NAME_NAME "source-hostname"
+#define SOURCE_TIMESTAMP_NAME "source-timestamp"
+#define FAULT_STATES_NAME "fault-states"
 
 #ifndef MEMPARSE_ENCODING
    #if defined(OS390)
@@ -97,16 +111,16 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 
 	private:
 		void verifyFaultStateElement(DOMDocument * doc, bool);
-		void verifyDescriptorElement(DOMDocument * doc);
-		void verifyUserPropertiesElement(DOMDocument * doc);
-		void verifyUserTimestampElement(DOMDocument * doc);
-		void verifyASIMessageXML(string, bool);
+		void verifyFaultStateDescriptorElement(DOMDocument * doc);
+		void verifyFaultStateUserPropertiesElement(DOMDocument * doc);
+		void verifyFaultStateUserTimestampElement(DOMDocument * doc);
 
+		void verifyASIMessageXML(string, bool);
 		void verifyASIMessageElement(DOMDocument * doc);
-		void verifySourceNameElement(DOMDocument * doc);
-		void verifySourceHostnameElement(DOMDocument * doc);
-		void verifySourceTimestampElement(DOMDocument * doc);
-		void verifyFaultStatesElement(DOMDocument * doc);
+		void verifyASIMessageSourceNameElement(DOMDocument * doc);
+		void verifyASIMessageSourceHostnameElement(DOMDocument * doc);
+		void verifyASIMessageSourceTimestampElement(DOMDocument * doc);
+		void verifyASIMessageFaultStatesElement(DOMDocument * doc);
 		void commonTestASIMessage(auto_ptr<vector<ACSFaultState> > fltstates, bool fullyPopulated);
 
 		DOMDocument *parseDOM(string);
@@ -116,6 +130,7 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 		static maci::SimpleClient* AcsAlarmTestCase::client; 
 
 		// Constants
+		XMLCh* ASI_MESSAGE_TAG_NAME;
 		XMLCh* FAULT_STATE_TAG_NAME;
 		XMLCh* DESCRIPTOR_TAG_NAME;
 		XMLCh* USER_PROPERTIES_TAG_NAME;
@@ -137,6 +152,19 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 		XMLCh* TEST_VALUE_VALUE_XMLCH;
 		XMLCh* PREFIX_VALUE_VALUE_XMLCH;
 		XMLCh* SUFFIX_VALUE_VALUE_XMLCH;
+		XMLCh* XMLNS_TAG_NAME;
+		XMLCh* XMLNS_VALUE_XMLCH;
+		XMLCh* BACKUP_TAG_NAME;
+		XMLCh* BACKUP_VALUE_XMLCH;
+		XMLCh* VERSION_TAG_NAME;
+		XMLCh* VERSION_VALUE_XMLCH;
+		XMLCh* TYPE_TAG_NAME;
+		XMLCh* TYPE_VALUE_XMLCH;
+		XMLCh* SOURCE_NAME_TAG_NAME;
+		XMLCh* SOURCE_NAME_VALUE_XMLCH;
+		XMLCh* SOURCE_HOST_NAME_TAG_NAME;
+		XMLCh* SOURCE_TIMESTAMP_TAG_NAME;
+		XMLCh* FAULT_STATES_TAG_NAME;
 };
 
 maci::SimpleClient* AcsAlarmTestCase::client = NULL;
@@ -178,6 +206,7 @@ void AcsAlarmTestCase::setUp()
 	parser->setErrorHandler(errHandler);
 
 	FAULT_STATE_TAG_NAME = 	XMLString::transcode(FAULT_STATE_ELEMENT_NAME);
+	ASI_MESSAGE_TAG_NAME = 	XMLString::transcode(ASI_MESSAGE_ELEMENT_NAME);
 	DESCRIPTOR_TAG_NAME = XMLString::transcode(DESCRIPTOR_ELEMENT_NAME);
 	USER_PROPERTIES_TAG_NAME = XMLString::transcode(USER_PROPERTIES_ELEMENT_NAME);
 	USER_TIMESTAMP_TAG_NAME = XMLString::transcode(USER_TIMESTAMP_ELEMENT_NAME);
@@ -198,12 +227,25 @@ void AcsAlarmTestCase::setUp()
 	TEST_VALUE_VALUE_XMLCH = XMLString::transcode(TEST_VALUE_VALUE);
 	PREFIX_VALUE_VALUE_XMLCH = XMLString::transcode(PREFIX_VALUE_VALUE);
 	SUFFIX_VALUE_VALUE_XMLCH = XMLString::transcode(SUFFIX_VALUE_VALUE);
-
+	XMLNS_TAG_NAME = 	XMLString::transcode(XMLNS_ATTRIBUTE_NAME);
+	XMLNS_VALUE_XMLCH = XMLString::transcode(XMLNS_VALUE);
+	BACKUP_TAG_NAME = 	XMLString::transcode(BACKUP_ATTRIBUTE_NAME);
+	BACKUP_VALUE_XMLCH = XMLString::transcode(BACKUP_VALUE);
+	VERSION_TAG_NAME = 	XMLString::transcode(VERSION_ATTRIBUTE_NAME);
+	VERSION_VALUE_XMLCH = XMLString::transcode(VERSION_VALUE);
+	TYPE_TAG_NAME = 	XMLString::transcode(TYPE_ATTRIBUTE_NAME);
+	TYPE_VALUE_XMLCH = XMLString::transcode(TYPE_VALUE);
+	SOURCE_NAME_TAG_NAME = 	XMLString::transcode(SOURCE_NAME_NAME);
+	SOURCE_NAME_VALUE_XMLCH = XMLString::transcode(SOURCE_NAME_VALUE);
+	SOURCE_HOST_NAME_TAG_NAME = 	XMLString::transcode(SOURCE_HOST_NAME_NAME);
+	SOURCE_TIMESTAMP_TAG_NAME = 	XMLString::transcode(SOURCE_TIMESTAMP_NAME);
+	FAULT_STATES_TAG_NAME = 	XMLString::transcode(FAULT_STATES_NAME);
 }
 
 void AcsAlarmTestCase::tearDown()
 {
 	XMLString::release(&FAULT_STATE_TAG_NAME);
+	XMLString::release(&ASI_MESSAGE_TAG_NAME);
 	XMLString::release(&DESCRIPTOR_TAG_NAME);
 	XMLString::release(&USER_PROPERTIES_TAG_NAME);
 	XMLString::release(&USER_TIMESTAMP_TAG_NAME);
@@ -224,17 +266,195 @@ void AcsAlarmTestCase::tearDown()
 	XMLString::release(&TEST_VALUE_VALUE_XMLCH);
 	XMLString::release(&PREFIX_VALUE_VALUE_XMLCH);
 	XMLString::release(&SUFFIX_VALUE_VALUE_XMLCH);
+	XMLString::release(&XMLNS_TAG_NAME);
+	XMLString::release(&XMLNS_VALUE_XMLCH);
+	XMLString::release(&BACKUP_TAG_NAME);
+	XMLString::release(&BACKUP_VALUE_XMLCH);
+	XMLString::release(&VERSION_TAG_NAME);
+	XMLString::release(&VERSION_VALUE_XMLCH);
+	XMLString::release(&TYPE_TAG_NAME);
+	XMLString::release(&TYPE_VALUE_XMLCH);
+	XMLString::release(&SOURCE_NAME_TAG_NAME);
+	XMLString::release(&SOURCE_NAME_VALUE_XMLCH);
+	XMLString::release(&SOURCE_HOST_NAME_TAG_NAME);
+	XMLString::release(&SOURCE_TIMESTAMP_TAG_NAME);
+	XMLString::release(&FAULT_STATES_TAG_NAME);
 
 	parser->release();
 	delete errHandler;
 	XMLPlatformUtils::Terminate();
 }
 
-void AcsAlarmTestCase::verifyASIMessageElement(DOMDocument * doc) {}
-void AcsAlarmTestCase::verifySourceNameElement(DOMDocument * doc) {}
-void AcsAlarmTestCase::verifySourceHostnameElement(DOMDocument * doc) {}
-void AcsAlarmTestCase::verifySourceTimestampElement(DOMDocument * doc) {}
-void AcsAlarmTestCase::verifyFaultStatesElement(DOMDocument * doc) {}
+/*
+ * XML fragment something like this:
+ *
+ * <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+ * 
+ * ... etc ... 
+ *
+ * </ASI-message>
+ */
+void AcsAlarmTestCase::verifyASIMessageElement(DOMDocument * doc) 
+{
+	// Verify that the ASI-message element exists
+	DOMNodeList * asiMessageNodes = doc->getElementsByTagName(ASI_MESSAGE_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; no ASI-message element found", 
+		(NULL != asiMessageNodes && asiMessageNodes->getLength() == 1));
+
+	// verify that there are the expected attributes (family, member, code) on the fault-state element
+	DOMNode * asiMessageItem = asiMessageNodes->item(0);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; there is no ASI-message elemement",
+		(NULL != asiMessageItem));	
+
+	// verify that there are 4 attributes in total
+	DOMNamedNodeMap * attributesMap = asiMessageItem->getAttributes();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain expected number (4) of attributes",
+		(NULL!= attributesMap && attributesMap->getLength() == 4));
+
+	// check that the element has a "xmlns" attribute
+	DOMNode * xmlnsNode = attributesMap->getNamedItem(XMLNS_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'xmlns' attribute",
+		(NULL!= xmlnsNode));
+
+	// verify that the value of xmlns attribute is correct
+	const XMLCh * xmlnsNodeValue = xmlnsNode->getNodeValue();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; value of 'xmlns' attribute is not correct",
+		(NULL != xmlnsNodeValue && XMLString::equals(xmlnsNodeValue, XMLNS_VALUE_XMLCH)));
+
+	// check that the element has a "backup" attribute
+	DOMNode * backupNode = attributesMap->getNamedItem(BACKUP_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'backup' attribute",
+		(NULL!= backupNode));
+
+	// verify that the value of backup attribute is correct
+	const XMLCh * backupNodeValue = backupNode->getNodeValue();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; value of 'backup' is not correct",
+		(NULL != backupNodeValue && XMLString::equals(backupNodeValue, BACKUP_VALUE_XMLCH)));
+
+	// check that the element has a "version" attribute
+	DOMNode * versionNode = attributesMap->getNamedItem(VERSION_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'version' attribute",
+		(NULL!= versionNode));
+
+	// verify that the value of version attribute is correct
+	const XMLCh * versionNodeValue = versionNode->getNodeValue();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; value of 'version' is not correct",
+		(NULL != versionNodeValue && XMLString::equals(versionNodeValue, VERSION_VALUE_XMLCH)));
+
+	// check that the element has a "xsi:type" attribute
+	DOMNode * typeNode = attributesMap->getNamedItem(TYPE_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'xsi:type' attribute",
+		(NULL!= typeNode));
+
+	// verify that the value of xsi:type attribute is correct
+	const XMLCh * typeNodeValue = typeNode->getNodeValue();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; value of 'xsi:type' is not correct",
+		(NULL != typeNodeValue && XMLString::equals(typeNodeValue, TYPE_VALUE_XMLCH)));
+}
+
+/*
+ *  <source-name>ALARM_SYSTEM_SOURCES</source-name>
+ */
+void AcsAlarmTestCase::verifyASIMessageSourceNameElement(DOMDocument * doc)
+{
+	// Verify that the source-name element exists
+	DOMNodeList * sourceNameNodes = doc->getElementsByTagName(SOURCE_NAME_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; no source-name sub-element found", 
+		(NULL != sourceNameNodes && sourceNameNodes->getLength() == 1));
+
+	// check value of source-name
+	DOMNode * sourceNameElementNode = sourceNameNodes->item(0);
+	DOMNode * sourceNameTextNode = sourceNameElementNode->getFirstChild();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; source-name value is not present or null",
+		(NULL != sourceNameTextNode));
+
+	const XMLCh * sourceNameNodeValue = sourceNameTextNode->getNodeValue();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; value of source-name is not correct",
+		(NULL != sourceNameNodeValue && XMLString::equals(sourceNameNodeValue, SOURCE_NAME_VALUE_XMLCH)));
+}
+
+/*
+ *  <source-hostname>newbie.aoc.nrao.edu</source-hostname>
+ */
+void AcsAlarmTestCase::verifyASIMessageSourceHostnameElement(DOMDocument * doc) 
+{
+	// Verify that the source-hostname element exists
+	DOMNodeList * sourceHostNameNodes = doc->getElementsByTagName(SOURCE_HOST_NAME_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; no source-hostname sub-element found", 
+		(NULL != sourceHostNameNodes && sourceHostNameNodes->getLength() == 1));
+
+	// check that the hostname is not null, but don't check actual value of source-hostname; this will 
+	// vary depending on where the test is run and is therefore not repeatable.
+	DOMNode * sourceHostNameElementNode = sourceHostNameNodes->item(0);
+	DOMNode * sourceHostNameTextNode = sourceHostNameElementNode->getFirstChild();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; source-hostname value is not present or null",
+		(NULL != sourceHostNameTextNode));
+
+}
+
+/*
+ *  <source-timestamp seconds="" microseconds=""/>
+ */
+void AcsAlarmTestCase::verifyASIMessageSourceTimestampElement(DOMDocument * doc) 
+{
+	// Verify that the source-timestamp element exists
+	DOMNodeList * sourceTimestampNodes = doc->getElementsByTagName(SOURCE_TIMESTAMP_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; no source-timestamp sub-element found", 
+		(NULL != sourceTimestampNodes && sourceTimestampNodes->getLength() == 1));
+
+	// verify that there are the expected attributes (seconds, microseconds) on the element
+	DOMNode * sourceTimestampItem = sourceTimestampNodes->item(0);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; there is no source-timestamp elemement",
+		(NULL != sourceTimestampItem));	
+
+	// verify that there are 2 attributes in total
+	DOMNamedNodeMap * attributesMap = sourceTimestampItem->getAttributes();
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain expected number (2) of attributes",
+		(NULL!= attributesMap && attributesMap->getLength() == 2));
+
+	// check that the element has a "seconds" attribute
+	DOMNode * secondsNode = attributesMap->getNamedItem(SECONDS_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'seconds' attribute",
+		(NULL!= secondsNode));
+
+	// check for seconds attribute
+	DOMNode * secondsValueNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
+	const XMLCh * secondsValue = secondsValueNode->getNodeValue();
+	char *secondsCharValue = XMLString::transcode(secondsValue);
+	int secondsIntValue = atoi(secondsCharValue);
+	XMLString::release(&secondsCharValue);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; user-timestamp element, 'seconds' attribute value is not correct",
+		(NULL!= secondsValue && secondsIntValue == MICROSECONDS_VALUE));
+
+	// check that the element has a "microseconds" attribute
+	DOMNode * microsecondsNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'microseconds' attribute",
+		(NULL!= microsecondsNode));
+
+	// check for microseconds attribute
+	DOMNode * microsecondsValueNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
+	const XMLCh * microsecondsValue = microsecondsValueNode->getNodeValue();
+	char *microsecondsCharValue = XMLString::transcode(microsecondsValue);
+	int microsecondsIntValue = atoi(microsecondsCharValue);
+	XMLString::release(&microsecondsCharValue);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; user-timestamp element, 'microseconds' attribute value is not correct",
+		(NULL!= microsecondsValue && microsecondsIntValue == MICROSECONDS_VALUE));
+}
+
+/*
+ * <fault-states> 
+ *
+ * ... etc ...
+ *
+ * </fault-states>
+ */
+void AcsAlarmTestCase::verifyASIMessageFaultStatesElement(DOMDocument * doc) 
+{
+	// Verify that the fault-states element exists
+	DOMNodeList * faultStateNodes = doc->getElementsByTagName(FAULT_STATES_TAG_NAME);
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; no fault-states sub-element found", 
+		(NULL != faultStateNodes && faultStateNodes->getLength() == 1));
+}
 
 void AcsAlarmTestCase::commonTestASIMessage(auto_ptr<vector<ACSFaultState> > statesAutoPtr, bool fullyPopulated)
 {
@@ -253,7 +473,8 @@ void AcsAlarmTestCase::commonTestASIMessage(auto_ptr<vector<ACSFaultState> > sta
 	asiMessage.setSourceHostname(DUMMY_HOSTNAME);
 
 	// set the ASIMessage's version
-	asiMessage.setVersion(asiConfigurationConstants::ASI_VERSION);
+	string version(asiConfigurationConstants::ASI_VERSION);
+	asiMessage.setVersion(version);
 
 	// test backup setter/getter
 	asiMessage.setBackup(true);
@@ -289,14 +510,13 @@ void AcsAlarmTestCase::testASIMessageFaultStateNotPopulated()
 	// set descriptor 
 	fltstate.setDescriptor(descriptor);
 
-	// TODO: test multiple FaultState objects in the vector
+	// TODO: test multiple FaultState objects in the vector?
 	// add the FaultState to a vector
 	vector<ACSFaultState>* statesPtr = new vector<ACSFaultState>();
 	statesPtr->push_back(fltstate);
 	auto_ptr<vector<ACSFaultState> > statesAutoPtr(statesPtr); 
 
 	commonTestASIMessage(statesAutoPtr, false);
-
 }
 
 void AcsAlarmTestCase::testASIMessageFaultStatePopulated()
@@ -327,14 +547,13 @@ void AcsAlarmTestCase::testASIMessageFaultStatePopulated()
 	auto_ptr<Properties> propsAutoPtr(propsPtr);
 	fltstate.setUserProperties(propsAutoPtr);
 
-	// TODO: test multiple FaultState objects in the vector
+	// TODO: test multiple FaultState objects in the vector?
 	// add the FaultState to a vector
 	vector<ACSFaultState>* statesPtr = new vector<ACSFaultState>();
 	statesPtr->push_back(fltstate);
 	auto_ptr<vector<ACSFaultState> > statesAutoPtr(statesPtr); 
 
 	commonTestASIMessage(statesAutoPtr, true);
-
 }
 
 /*******************************************
@@ -359,16 +578,15 @@ void AcsAlarmTestCase::testASIMessageFaultStatePopulated()
 *******************************************/
 void AcsAlarmTestCase::verifyASIMessageXML(string xmlData, bool propertiesAndTimestampPopulated)
 {
-	bool exceptionCaught = false;
 	try
 	{
 		DOMDocument* doc = parseDOM(xmlData);
 
 		verifyASIMessageElement(doc);
-		verifySourceNameElement(doc);
-		verifySourceHostnameElement(doc);
-		verifySourceTimestampElement(doc);
-		verifyFaultStatesElement(doc);
+		verifyASIMessageSourceNameElement(doc);
+		verifyASIMessageSourceHostnameElement(doc);
+		verifyASIMessageSourceTimestampElement(doc);
+		verifyASIMessageFaultStatesElement(doc);
 
 		// For each fault state in fault-states element call verifyFaultStateElement (singular) method
 		DOMNodeList * faultStateNodes = doc->getElementsByTagName(FAULT_STATE_TAG_NAME);
@@ -384,7 +602,6 @@ void AcsAlarmTestCase::verifyASIMessageXML(string xmlData, bool propertiesAndTim
 	{
 		ACS_LOG(LM_ERROR, "ACSFaultState::toXML", (LM_ERROR, 
 			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
-		exceptionCaught = true;
 	}
 }
 
@@ -475,15 +692,15 @@ void AcsAlarmTestCase::verifyFaultStateElement(DOMDocument * doc, bool propertie
 			(NULL != codeNodeValue && codeNodeValueInt == CODE_VALUE));
 	}
 
-	verifyDescriptorElement(doc);
+	verifyFaultStateDescriptorElement(doc);
 	if(propertiesAndTimestampPopulated)
 	{
-		verifyUserPropertiesElement(doc);
-		verifyUserTimestampElement(doc);
+		verifyFaultStateUserPropertiesElement(doc);
+		verifyFaultStateUserTimestampElement(doc);
 	}
 }
 
-void AcsAlarmTestCase::verifyDescriptorElement(DOMDocument * doc) 
+void AcsAlarmTestCase::verifyFaultStateDescriptorElement(DOMDocument * doc) 
 {
 	// Verify the descriptor element 
 	DOMNodeList * descriptorNodes = doc->getElementsByTagName(DESCRIPTOR_TAG_NAME);
@@ -501,7 +718,7 @@ void AcsAlarmTestCase::verifyDescriptorElement(DOMDocument * doc)
 		(NULL != descriptorNodeValue && XMLString::equals(descriptorNodeValue, DESCRIPTOR_VALUE_XMLCH)));
 }
 
-void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc) 
+void AcsAlarmTestCase::verifyFaultStateUserPropertiesElement(DOMDocument * doc) 
 {
 	// Verify the user-properties element 
 	DOMNodeList * userPropertiesNodes = doc->getElementsByTagName(USER_PROPERTIES_TAG_NAME);
@@ -570,7 +787,7 @@ void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc)
 		(NULL!= testValueNodeValue && XMLString::equals(testValueNodeValue, TEST_VALUE_VALUE_XMLCH)));
 }
 
-void AcsAlarmTestCase::verifyUserTimestampElement(DOMDocument * doc) 
+void AcsAlarmTestCase::verifyFaultStateUserTimestampElement(DOMDocument * doc) 
 {
 	// Verify the user-timestamp element 
 	DOMNodeList * userTimestampNodes = doc->getElementsByTagName(USER_TIMESTAMP_TAG_NAME);
