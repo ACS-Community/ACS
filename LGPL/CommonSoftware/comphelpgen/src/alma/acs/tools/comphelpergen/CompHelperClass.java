@@ -319,7 +319,7 @@ public class CompHelperClass
 		stringBuffer.append("\t/**\n");
 		stringBuffer.append("\t* @see alma.acs.container.Component" + m_helperSuffix + "#_getPOATieClass()\n");
 		stringBuffer.append("\t*/\n");
-		stringBuffer.append("\tprotected Class _getPOATieClass()\n");
+		stringBuffer.append("\tprotected Class<? extends Servant> _getPOATieClass()\n");
 		stringBuffer.append("\t{\n");
 		stringBuffer.append("\t\treturn " + POATieClass + ";\n");
 		stringBuffer.append("\t}\n");
@@ -337,7 +337,7 @@ public class CompHelperClass
 		stringBuffer.append("\t/**\n");
 		stringBuffer.append("\t* @see alma.acs.container.Component" + m_helperSuffix + "#getOperationsInterface()\n");
 		stringBuffer.append("\t*/\n");
-		stringBuffer.append("\tprotected Class _getOperationsInterface()\n");
+		stringBuffer.append("\tprotected Class<? extends ACSComponentOperations> _getOperationsInterface()\n");
 		stringBuffer.append("\t{\n");
 		stringBuffer.append("\t\treturn " + m_operationsClass + ".class;\n");
 		stringBuffer.append("\t}\n");
@@ -355,7 +355,7 @@ public class CompHelperClass
 		stringBuffer.append("\t/**\n");
 		stringBuffer.append("\t* @see alma.acs.container.Component" + m_helperSuffix + "#getInternalInterface()\n");
 		stringBuffer.append("\t*/\n");
-		stringBuffer.append("\tprotected Class getInternalInterface()\n");
+		stringBuffer.append("\tprotected Class<?> getInternalInterface()\n");
 		stringBuffer.append("\t{\n");
 		stringBuffer.append("\t\treturn " + m_internalInterface + ".class;\n");
 		stringBuffer.append("\t}\n");
