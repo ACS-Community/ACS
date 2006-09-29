@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2006/09/27 08:57:42 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/09/29 07:45:35 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -103,6 +103,10 @@ TCL_LIBRARIES_L =
 #
 # <brief description of tttlll library>
 tttlll_OBJECTS  = 
+
+#
+# Error definitions
+ACSERRDEF = acsErrTypeAlarmSourceFactory
 
 #
 # Configuration Database Files
