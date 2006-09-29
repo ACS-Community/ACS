@@ -105,7 +105,7 @@ public class AcsEmbeddedContainerRunner {
     
         initManagerProxy();        
         createContainer();
-        m_container.loginToManager();        
+        m_container.initialize();        
     }
     
     /**
