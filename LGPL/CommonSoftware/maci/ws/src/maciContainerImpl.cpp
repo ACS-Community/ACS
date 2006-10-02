@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.72 2006/09/25 12:24:56 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.73 2006/10/02 08:21:59 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.72 2006/09/25 12:24:56 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.73 2006/10/02 08:21:59 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -810,19 +810,23 @@ ContainerImpl::init(int argc, char *argv[])
 /// @todo AlarmSystem is not supported for VxWorks
 #ifndef MAKE_VXWORKS
 	// Initialize the alarm system factory
-	bool asfRet=true;;
-	try {
-		asfRet = ACSAlarmSystemInterfaceFactory::init(getManager());
-	} 
-   catch (acsErrTypeAlarmSourceFactory::InavalidManagerExImpl &ex) {
-		asfRet=false;
-	}
-
-	if (!asfRet) {
-		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
-                (LM_INFO, "Failed to initialize AlarmSystem factory."));
-		return false;
-	}
+	try 
+	    {
+	    ACSAlarmSystemInterfaceFactory::init(getManager());
+	    } 
+	catch(ACSErr::ACSbaseExImpl &ex)
+	    {
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
+		    (LM_ERROR, "Failed to initialize AlarmSystem factory."));
+	    ex.log();
+	    return false;
+	    }
+	catch(...)
+	    {
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
+		    (LM_ERROR, "Failed to initialize AlarmSystem factory."));
+	    return false;
+	    }//try-catch
 #endif
       // parse args for opts
       parseArgs(m_argc, m_argv);
