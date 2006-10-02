@@ -75,7 +75,7 @@ public class PrimaryXmlComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getInternalInterface()
 	*/
-	protected Class getInternalInterface()
+	protected Class<?> getInternalInterface()
 	{
 		return PrimaryXmlComponentJ.class;
 	}
