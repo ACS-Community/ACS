@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import alma.ACS.ACSComponent;
 import alma.ACS.MasterComponentOperations;
 import alma.ACS.ROstringSeq;
 import alma.ACS.ROstringSeqHelper;
@@ -76,8 +77,11 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 
 	private AlmaSubsystemContext m_stateMachine;
 
+	private SubsysResourceMonitor subsysComponentMonitor;
+	
 	private StateChangeNotificationChecker stateChangeNotificationChecker; 
 	
+    
 	/******************* [ Lifecycle implementations ] *******************/
 	
 	/**
@@ -88,6 +92,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		throws ComponentLifecycleException {
 
 		super.initialize(containerServices);
+		subsysComponentMonitor = new SubsysResourceMonitor(m_logger);
 		
 		try
 		{
@@ -224,6 +229,72 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 
 	
 	/*********************** [ miscellaneous ] ***********************/
+	
+	/**
+	 * Subclasses can request to have the "health" of a given subsystem component monitored,
+	 * and that the mastercomponent state be set to "Error" in case problems are detected with this component.
+	 * Note that this is a simplified version of {@link #monitorComponent(ACSComponent, ComponentErrorHandler)},
+	 * which does not require the subclass to provide an error handler.
+	 * @since ACS 6.0
+	 */
+	protected final void monitorComponent(ACSComponent component) {
+		monitorComponent(component, null);
+	}
+	
+	/**
+	 * Subclasses can request to have the "health" of a given subsystem component monitored,
+	 * and that the provided <code>ResourceErrorHandler</code> be called in case problems are detected.
+	 * @param component  the component that should be monitored
+	 * @param err  a custom error handler. If <code>null</code>, then default error handler will be used,
+     *             and component will go to error state automatically.
+	 * @since ACS 6.0
+	 */
+	protected final <T extends ACSComponent> void monitorComponent(T component, SubsysResourceMonitor.ResourceErrorHandler<T> err) {
+		if (component == null) {
+			throw new NullPointerException("component must not be null");
+		}
+		
+		SubsysResourceMonitor.ResourceChecker<T> checker = new SubsysResourceMonitor.ComponentChecker<T>(component);
+		monitorResource(checker, err);
+	}
+	
+	
+	/**
+     * Subclasses can request to have the "health" of a given subsystem component monitored,
+     * and that the provided <code>ResourceErrorHandler</code> be called in case problems are detected.
+     * @param component  the component that should be monitored
+     * @param err  a custom error handler. If <code>null</code>, then default error handler will be used,
+     *             and component will go to error state automatically.
+	 * @param <T>  The resource type 
+	 * @param checker  the checker that encapsulates the specifics of the methods to be checked.
+	 * @param err  custom error handler for this type of resource, or default handler if <code>null</code> is passed.
+     * @since ACS 6.0
+	 */
+	protected final <T> void monitorResource(SubsysResourceMonitor.ResourceChecker<T> checker, SubsysResourceMonitor.ResourceErrorHandler<T> err) {
+        if (err == null) {
+            // use default error handler that sets the subsystem state to ERROR
+            err = new SubsysResourceMonitor.ResourceErrorHandler<T>() {
+                public void resourceUnreachable(T resource) {
+                    try {
+                        m_logger.log(Level.INFO, "Found unreachable component, will go to ERROR state.");
+                        doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
+                    } catch (Throwable thr) {
+                        m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
+                    }
+                }
+                public void badState(T resource, String stateName) {
+                    try {
+                        m_logger.log(Level.INFO, "Found component in bad state '" + stateName + "', will go to ERROR state.");
+                        doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
+                    } catch (Throwable thr) {
+                        m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
+                    }
+                }
+            };
+        }
+		subsysComponentMonitor.monitorResource(checker, err);
+	}
+	
 	
 	/**
 	 * Will be called by the state machine implementation for every state change.
