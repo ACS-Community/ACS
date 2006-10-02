@@ -93,40 +93,49 @@ auto_ptr<laserSource::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::c
 }
 
 bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
-	if (manager!=maci::Manager::_nil()) {
-		m_manager=maci::Manager::_duplicate(manager);
-		m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
-		ConfigPropertyGetter* pGetter;
-		pGetter = new ConfigPropertyGetter(m_manager);
-		string str = pGetter->getProperty("Implementation");
-		delete pGetter;
-		*m_useACSAlarmSystem = !(str=="CERN");
-	} else {
-		m_useACSAlarmSystem = new bool();
-		*m_useACSAlarmSystem=true;
-	}
-	if (!(*m_useACSAlarmSystem)) 
+    if (manager!=maci::Manager::_nil()) 
 	{
-		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-		// load the DLL and then set pointer m_AlarmSystemInterfaceFactory_p to point to the object
-		// that is returned from the DLL's entry point function. From then on, we can use the pointer/object directly.
-		void *hndl = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
-		if(hndl == NULL)
-		{
-			string errString = "ACSAlarmSystemInterfaceFactory::init(): could not open DLL; error was:\n\n" + string(dlerror()); 
-			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
-			throw acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
-		}
-		// Call the well-defined entry point function of the DLL, to get an object 
-		// which implements the AbstractAlarmSystemInterfaceFactory interface, which will be used for publishing 
-		// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
-		void * publisherFactoryFunctionPtr = dlsym(hndl, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
-		m_AlarmSystemInterfaceFactory_p = ((AbstractAlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
-		return m_AlarmSystemInterfaceFactory_p->init();
-	}
-	return true;
-}
+	m_manager=maci::Manager::_duplicate(manager);
+	m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
+	try
+	    {
+	    ConfigPropertyGetter pGetter(m_manager);
+	    string str = pGetter.getProperty("Implementation");
+	    *m_useACSAlarmSystem = !(str=="CERN");
+	    }
+	catch(...)
+	    {
+// if we get any exception from accessing CDB we use the default ACS alarm system
+	    *m_useACSAlarmSystem=true;
+	    }//try-catch	
+	} 
+    else 
+	{
+	m_useACSAlarmSystem = new bool();
+	*m_useACSAlarmSystem=true;
+	}//if-else
+    if (!(*m_useACSAlarmSystem)) 
+	{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	// load the DLL and then set pointer m_AlarmSystemInterfaceFactory_p to point to the object
+	// that is returned from the DLL's entry point function. From then on, we can use the pointer/object directly.
+	void *hndl = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
+	if(hndl == NULL)
+	    {
+	    string errString = "ACSAlarmSystemInterfaceFactory::init(): could not open DLL; error was:\n\n" + string(dlerror()); 
+	    myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
+	    throw acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
+	    }//if
+	// Call the well-defined entry point function of the DLL, to get an object 
+	// which implements the AbstractAlarmSystemInterfaceFactory interface, which will be used for publishing 
+	// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
+	void * publisherFactoryFunctionPtr = dlsym(hndl, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
+	m_AlarmSystemInterfaceFactory_p = ((AbstractAlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
+	return m_AlarmSystemInterfaceFactory_p->init();
+	}//if
+    return true;
+}//init
 
 auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) {
 	if (m_useACSAlarmSystem==NULL) {

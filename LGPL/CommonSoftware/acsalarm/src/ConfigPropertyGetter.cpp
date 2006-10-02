@@ -63,13 +63,22 @@ ConfigPropertyGetter::~ConfigPropertyGetter() {
 
 std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
     CDB::DAL_var cdbDAL;
-	CORBA::ULong status;
-	CORBA::Object_var cdb = manager->get_service(0, "CDB", true, status);
-	if (CORBA::is_nil(cdb.in()))
+    CORBA::ULong status;
+    CORBA::Object_var cdb;
+
+    try
 	{
-		throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(__FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
+	cdb = manager->get_service(0, "CDB", true, status);
+	if (CORBA::is_nil(cdb.in()))
+	    {
+	    throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(__FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
+	    }
 	}
-	
+    catch(CORBA::Exception &ex)
+	{
+	throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(__FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
+	}//try-catch
+    
 	cdbDAL = CDB::DAL::_narrow(cdb.in());
 	
 	DALaccess::forceDAL(cdbDAL.in());
