@@ -19,6 +19,13 @@ See also the documentation of the specific implementation
 of Container for a list of supported and un-supported 
 configuration parameters.</xs:documentation>
 	</xs:annotation>
+	<xs:complexType name="DeployInfo">
+		<xs:attribute name="Type" type="xs:string" use="required" />
+		<xs:attribute name="Host" type="xs:string" use="required" />
+		<xs:attribute name="Instance" type="xs:int" use="optional" default="0"/>
+		<xs:attribute name="Flags" type="xs:string" use="optional" default=""/>
+		<xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="-1"/>
+	</xs:complexType>
 	<xs:element name="Container" type="Container"/>
 	<xs:complexType name="Container">
 		<xs:sequence>
@@ -26,6 +33,10 @@ configuration parameters.</xs:documentation>
 				<xs:documentation>Set of libraries that will be automatically loaded at Container startup time. Used by the CPP Containers to automatically load shared libraries that will be used by many Components. It also allow to resolve dynamically linking problems. The arguments are names of shared libraries.</xs:documentation>
 			</xs:annotation>
 			<xs:element name="Autoload" type="cdb:Array"/>
+			<xs:annotation>
+				<xs:documentation>Optional deployment information. Used by Manager to automatically startup/shutdown containers.</xs:documentation>
+			</xs:annotation>
+			<xs:element name="DeployInfo" type="DeployInfo"/>
 		</xs:sequence>
 		<xs:attribute name="CommandLine" type="xs:string" use="optional" default="">
 			<xs:annotation>
