@@ -390,28 +390,31 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			}
 			
 			LinksToCreate ltc=rds.getLinksToCreate();
-			ReductionLink[] rls=ltc.getReductionLink();
-			for (int a=0; a<rls.length; a++) {
-				ReductionLink link=rls[a];
-				Parent p=link.getParent();
-				Child c=link.getChild();
-				if (p==null || c==null)
-					throw new RuntimeException("Missing child or parent in a reduction link");
-				
-				boolean isMulti;
-				if ("MULTIPLICITY".equals(link.getType())) {
-					isMulti=true;
-				} else
-				if ("NODE".equals(link.getType())) {
-					isMulti=false;
-				} else {
-					throw new RuntimeException("Unknown reduction-link type: "+link.getType());
+			
+			if (ltc!=null) { 
+				ReductionLink[] rls=ltc.getReductionLink();
+				for (int a=0; a<rls.length; a++) {
+					ReductionLink link=rls[a];
+					Parent p=link.getParent();
+					Child c=link.getChild();
+					if (p==null || c==null)
+						throw new RuntimeException("Missing child or parent in a reduction link");
+					
+					boolean isMulti;
+					if ("MULTIPLICITY".equals(link.getType())) {
+						isMulti=true;
+					} else
+					if ("NODE".equals(link.getType())) {
+						isMulti=false;
+					} else {
+						throw new RuntimeException("Unknown reduction-link type: "+link.getType());
+					}
+					
+					if (p.getAlarmDefinition()==null || c.getAlarmDefinition()==null)
+						throw new RuntimeException("Missing alarm-definition in child or parent");
+					
+					links.add(new LinkSpec(toMatcher(p.getAlarmDefinition()), toMatcher(c.getAlarmDefinition()), isMulti));
 				}
-				
-				if (p.getAlarmDefinition()==null || c.getAlarmDefinition()==null)
-					throw new RuntimeException("Missing alarm-definition in child or parent");
-				
-				links.add(new LinkSpec(toMatcher(p.getAlarmDefinition()), toMatcher(c.getAlarmDefinition()), isMulti));
 			}
 		}
 		
