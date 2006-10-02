@@ -6828,6 +6828,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			Daemon daemon = transport.getDaemon(host);
 			if (daemon != null)
 				daemon.startContainer(type, containerName, (short)instance, flags);
+			else
+				throw new RuntimeException("Failed to get daemon.");
 
 		} catch (Throwable th)
 		{
@@ -6836,6 +6838,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			re.putValue("host", host);
 			// exception service will handle this
 			new MessageLogEntry(this, "startUpContainer", re.getMessage(), LoggingLevel.WARNING).dispatch();
+			return null;
 		}
 
 
@@ -6843,7 +6846,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// wait for login
 		//
 
-		final int CONTAINER_STARTUP_TIMEOUT = 150000; // 15 seconds
+		final int CONTAINER_STARTUP_TIMEOUT = 15000; // 15 seconds
 
 		// notify about new container login
 		synchronized (containerLoggedInMonitor)

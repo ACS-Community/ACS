@@ -5,6 +5,7 @@ package com.cosylab.acs.maci.test;
 
 import abeans.pluggable.RemoteException;
 import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.Manager;
 
 /**
  * Test implementation of an container.
@@ -14,6 +15,8 @@ import com.cosylab.acs.maci.ComponentInfo;
  */
 public class TestDynamicContainer extends TestContainer {
 
+	private Manager manager = null;
+	
 	/**
 	 * Constructor for TestContainer.
 	 * @param name
@@ -30,6 +33,13 @@ public class TestDynamicContainer extends TestContainer {
 		super(name);
 	}
 
+	/**
+	 * @param name
+	 */
+	public TestDynamicContainer(String name, Manager manager) {
+		super(name);
+		this.manager = manager;
+	}
 
 	/**
 	 * @see com.cosylab.acs.maci.Container#activate_COB(int, java.lang.String, java.lang.String, java.lang.String)
@@ -45,4 +55,13 @@ public class TestDynamicContainer extends TestContainer {
 		
 		return super.activate_component(handle, name, exe, type);
 	}
+
+	/**
+	 * @see com.cosylab.acs.maci.Container#shutdown(int)
+	 */
+	public void shutdown(int action) throws RemoteException {
+		if (manager != null)
+			manager.logout(handle);
+	}
+
 }

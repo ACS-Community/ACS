@@ -39,5 +39,8 @@
   <_ Name="PERSISTENT"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
   			Default="false"		Autostart="false"	KeepAliveTime="5" />
 
+  <_ Name="DEMANDER"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="OnDemandContainer"
+  			Default="false"		Autostart="false" />
+
 </Components>
 

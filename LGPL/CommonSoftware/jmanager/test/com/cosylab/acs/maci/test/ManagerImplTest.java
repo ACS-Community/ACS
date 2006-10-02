@@ -182,7 +182,8 @@ public class ManagerImplTest extends TestCase
     final int SLEEP_TIME_MS = 3000;
 	
 	URI dummyURI=null;
-
+	TestTransport transport;
+	
 	/**
 	 * Constructor for ManagerImplTest
 	 * 
@@ -247,6 +248,9 @@ public class ManagerImplTest extends TestCase
 	
 		manager.setApplicationContext(ctx);
 
+		transport = new TestTransport();
+		manager.setTransport(transport);
+		
 		// test abeans startup
 		assertTrue(Root.isInitialized());
 	}
@@ -288,7 +292,7 @@ public class ManagerImplTest extends TestCase
 		TestAdministrator client = new TestAdministrator(administratorName);
 		ClientInfo info = manager.login(client);
 		ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", false);
-		assertEquals(10, infos.length);
+		assertEquals(11, infos.length);
 		
 		boolean thereisDefault = false;
 		for (int i=0 ; i< infos.length; i++)
@@ -4009,13 +4013,82 @@ public class ManagerImplTest extends TestCase
 
 	}
 
-	//TODO test all info after logout
-	//TODO test duplicate login and used Components info 
-	
+	public void testOnDemandContainer() throws Throwable
+	{
+		TestDaemon daemon = new TestDaemon(manager, false);
+		transport.registerDeamon("test", daemon);
 
-	
-	//TODO test all info after logout
-	//TODO test duplicate login and used Components info 
+		TestAdministrator client = new TestAdministrator(administratorName);
+		ClientInfo info = manager.login(client);
+		
+		assertTrue(info.getHandle() != 0);
+
+		URI curl = null;
+		// test on-demand activation
+		try
+		{
+			curl = new URI("DEMANDER");
+
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), curl, true, status);
+			
+			assertNotNull(ref);
+			assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+		
+		// check if container is logged in
+		ContainerInfo[] infos = manager.getContainerInfo(info.getHandle(), new int[0], "OnDemandContainer");
+		assertNotNull(infos);
+		assertEquals(1, infos.length);
+
+		// release component
+		manager.releaseComponent(info.getHandle(), curl);
+		
+		Thread.sleep(SLEEP_TIME_MS);
+		
+		// there should be no container
+		infos = manager.getContainerInfo(info.getHandle(), new int[0], "OnDemandContainer");
+		assertNotNull(infos);
+		assertEquals(0, infos.length);
+		
+		
+		// now fail to start container
+		daemon = new TestDaemon(manager, true);
+		transport.registerDeamon("test", daemon);
+
+		try
+		{
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), curl, true, status);
+			
+			assertNull(ref);
+			assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+		
+		// no daemon case
+		transport.registerDeamon("test", null);
+
+		try
+		{
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), curl, true, status);
+			
+			assertNull(ref);
+			assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+	}
 	
 	public static TestSuite suite() {
 		return new TestSuite(ManagerImplTest.class);
