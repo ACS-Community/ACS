@@ -35,6 +35,7 @@ import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.manager.ManagerImpl;
 import com.cosylab.acs.maci.manager.ManagerShutdown;
 import com.cosylab.acs.maci.plug.CORBAReferenceSerializator;
+import com.cosylab.acs.maci.plug.CORBATransport;
 import com.cosylab.acs.maci.plug.ManagerProxyImpl;
 import com.cosylab.util.FileHelper;
 
@@ -328,6 +329,9 @@ public class ManagerEngine extends AbeansEngine
 		// register special service components to the Manager
 		manager.setManagerComponentReference(managerReference);
 
+		// set transport
+		manager.setTransport(new CORBATransport(orb, ior));
+		
 		// register NameService
 		if (remoteDirectory != null)
 		{

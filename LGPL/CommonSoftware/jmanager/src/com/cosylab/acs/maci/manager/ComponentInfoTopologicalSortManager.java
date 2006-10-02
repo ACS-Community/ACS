@@ -199,6 +199,10 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 					IntArray containerOrderdList = new IntArray(10);
 					for (int j = 0; j < orderedList.length; j++)
 					{
+						// if component already deactivated, skip it
+						if (orderedList[j].getContainer() == 0)
+							continue;
+						
 						// this is null proof
 						if (containerName.equals(orderedList[j].getContainerName()))
 						{
@@ -291,6 +295,10 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 		List containerOrderdList = new ArrayList(10);
 		for (int j = 0; j < orderedList.length; j++)
 		{
+			// if component already deactivated, skip it
+			if (orderedList[j].getContainer() == 0)
+				continue;
+			
 			// this is null proof
 			if (containerName.equals(orderedList[j].getContainerName()))
 			{
