@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.10 2006/06/12 14:04:49 msekoran Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.11 2006/10/03 21:38:29 gchiozzi Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -40,6 +40,7 @@
 #include <acsComponentStateManager.h>
 #include <acsThreadManager.h>
 #include <logging.h>
+#include <loggingLoggable.h>
 
 namespace maci {
    
@@ -51,7 +52,7 @@ namespace maci {
      * It can be thought of as a callback handle or a library.
      * Currently, methods are added to this interface as the functionality becomes available. 
      */
-   class ContainerServices {
+   class ContainerServices : public Logging::Loggable {
     public:
         /**
          * Constructor
@@ -280,15 +281,13 @@ namespace maci {
        /**
 	* Returns a pointer to the <code>ThreadManager</code>
         * which should be used for creating and destroying threads inside a component
+	*
+	* @todo This returns a pointer to the intermal threadManager object.
+	*        This operation is potentially dangerous and we should may be
+	*        better return a reference counting Loki smart pointer,
+	*        but this requires changing the interfaces.
 	*/
-       virtual ACS::ThreadManager* getThreadManager(){ return &threadManager_m; }
-
-   /**
-     * Returns an ACS Logger created for this container services.
-     * @return an ACS Logger
-     */
-    Logging::Logger::LoggerSmartPtr
-    getLogger() {return logger_m;}
+       virtual ACS::ThreadManager* getThreadManager(){ return ap_threadManager_m.get(); }
 
    private:
         ACE_CString m_componentName;
@@ -299,16 +298,11 @@ namespace maci {
          */
         PortableServer::POA_var m_poa;
 
-        /**
-	* An ACS Logger instance
-	*/
-       Logging::Logger::LoggerSmartPtr logger_m;
-
        /** ThreadManager
 	* Thread Manager should be used for creating threads inside a component
 	*/
        // It could be that the manager should be moved to MACIContainerServices
-       ACS::ThreadManager threadManager_m;
+       auto_ptr<ACS::ThreadManager> ap_threadManager_m;
       
    };
    
