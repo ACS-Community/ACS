@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.11 2006/09/25 08:48:50 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.12 2006/10/03 22:10:04 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,18 +53,17 @@ CharacteristicModelImpl::CharacteristicModelImpl(const ACE_CString& model_name, 
 	    PortableServer::POA_var op = containerServices->createOffShootPOA();
 	    offShootPOA = op._retn();
 	    }
-
 	m_daoNode_p = new DAONode(prefixedName.c_str(), dal.in(), offShootPOA/*.in()*/);
 	}
 
     /**
-     * TODO This exception handling has be added to allow (for the time being)
-     *      having Characteristic Components with no CDB.
-     *      But they should actually be only ACSComponents
-     *      This deprecated code will be removed later on
-     *      The original code had return here, but then registerCharacteristicModel()
-     *      was not called.
-     *      Also, erro handling should be changed to build a real error stack.
+     * @todo This exception handling has be added to allow (for the time being)
+     *       having Characteristic Components with no CDB.
+     *       But they should actually be only ACSComponents
+     *       This deprecated code will be removed later on
+     *       The original code had return here, but then registerCharacteristicModel()
+     *       was not called.
+     *       Also, erro handling should be changed to build a real error stack.
      */ 
     catch (cdbErrType::CDBRecordDoesNotExistExImpl& ex)
 	{
