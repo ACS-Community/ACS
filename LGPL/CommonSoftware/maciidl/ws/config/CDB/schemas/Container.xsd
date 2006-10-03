@@ -33,10 +33,10 @@ configuration parameters.</xs:documentation>
 				<xs:documentation>Set of libraries that will be automatically loaded at Container startup time. Used by the CPP Containers to automatically load shared libraries that will be used by many Components. It also allow to resolve dynamically linking problems. The arguments are names of shared libraries.</xs:documentation>
 			</xs:annotation>
 			<xs:element name="Autoload" type="cdb:Array"/>
-			<xs:annotation>
+			<!--xs:annotation>
 				<xs:documentation>Optional deployment information. Used by Manager to automatically startup/shutdown containers.</xs:documentation>
-			</xs:annotation>
-			<xs:element name="DeployInfo" type="DeployInfo"/>
+			</xs:annotation-->
+			<xs:element name="DeployInfo" type="DeployInfo" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="CommandLine" type="xs:string" use="optional" default="">
 			<xs:annotation>
