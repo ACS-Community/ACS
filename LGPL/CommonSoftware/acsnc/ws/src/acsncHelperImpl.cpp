@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.71 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.72 2006/10/03 03:52:13 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,12 +37,15 @@
  using namespace ACSErrTypeCommon;
 //-----------------------------------------------------------------------------
 namespace nc {
+
+ORBHelper * Helper::orbHelper_mp = 0;
+
 //-----------------------------------------------------------------------------
 Helper::Helper(const char* channelName):
     namingContext_m(CosNaming::NamingContext::_nil()),
     notifyChannel_m(CosNotifyChannelAdmin::EventChannel::_nil()),
     channelName_mp(0),
-    orbHelper_mp(0),
+   // orbHelper_mp(0),
     notifyFactory_m(0),
     channelID_m(0),
     okToLog_m(false)
@@ -77,75 +80,94 @@ Helper::Helper(const char* channelName):
 Helper::~Helper()
 {
     ACS_TRACE("Helper::~Helper");
-    //since everything is essentially created using _var types...just delete
-    //the ORB helper if it exists
-    if (orbHelper_mp != 0)
-	{
-	delete orbHelper_mp; 
-	orbHelper_mp=0;
-	}
 }
-//-----------------------------------------------------------------------------
-void 
-Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
-    throw (CORBAProblemEx, CouldntCreateThreadEx)
+
+CosNaming::NamingContext_ptr Helper::resolveNamingServiceStatic(CORBA::ORB_ptr orb_mp, string channel) throw (CORBAProblemEx, CouldntCreateThreadEx)
 {
+    ACS_TRACE("Helper::resolveNamingServiceStatic - entering");
+
+    CosNaming::NamingContext_var retVal = CosNaming::NamingContext::_nil();
     ACS_TRACE("Helper::resolveNamingService");
     try
 	{
 	//Here we try a couple of different methods to get at the naming service.
 	if(orb_mp == 0)    //We've been passed a fake ORB.
-	    {
+	{
 	    //Try to get at the Naming Service using the activator singleton first.
 	    if ((ContainerImpl::getContainer() != 0) && 
 		(ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
 		{
-		namingContext_m = ContainerImpl::getContainer()->getService<CosNaming::NamingContext>(acscommon::NAMING_SERVICE_NAME, 0, true);
+		retVal = ContainerImpl::getContainer()->getService<CosNaming::NamingContext>(acscommon::NAMING_SERVICE_NAME, 0, true);
 		}
 	    //DWF - Ideally there would be a SimpleClient singleton that we would try next (this would
 	    // be especially useful in Consumers), but instead we will just create our own ORB 
 	    // and hope this is running on the same host as the Naming Service =(
 	    else    //This is basically just a fail-safe mechanism.
 		{
-		ACS_SHORT_LOG((LM_INFO,
-			       "Helper::resolveNameService wrong constructor - attempting recovery for the '%s' channel!",
-			       channelName_mp));
+		  ACS_SHORT_LOG((LM_INFO,
+			       "Helper::resolveNameService wrong constructor - attempting recovery for the '%s' channel!", channel.c_str()));
 		
-		if (orbHelper_mp == 0)
-		    {
+		  if (Helper::orbHelper_mp == 0)
+		  {
 		    //should never be the case but if it does happen...
-		    orbHelper_mp = new ORBHelper();
-		    orbHelper_mp->runOrb();
-		    }
-		// Get the naming context
-		namingContext_m=MACIHelper::resolveNameService(orbHelper_mp->getORB());
+		    Helper::orbHelper_mp = new ORBHelper();
+		    Helper::orbHelper_mp->runOrb();
+
+          //TODO: when/where to delete the static ORBHelper instance just created. Logic shown, commented out below, 
+          // was previously in the destructor (but this was when the orbHelper_mp was an instance variable, not a 
+          // static variable.  
+
+          /*
+          //since everything is essentially created using _var types...just delete
+          //the ORB helper if it exists
+          if (orbHelper_mp != 0)
+          {
+            delete orbHelper_mp;
+            orbHelper_mp=0;
+          }
+          */
+		  }
+		  // Get the naming context
+		  retVal=MACIHelper::resolveNameService(Helper::orbHelper_mp->getORB());
 		}
-	    }
+   }
 	
 	//Passed a valid orb so we try to resolve the naming service using 
 	//the "normal" method
 	else
 	    {
-	    namingContext_m=MACIHelper::resolveNameService(orb_mp);
+	    retVal=MACIHelper::resolveNameService(orb_mp);
 	    }
 	}
     catch(...)
 	{
-        ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNameService CORBA exception caught for the '%s' channel!",
-		       channelName_mp));
+        ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNameService CORBA exception caught for the '%s' channel!", channel.c_str()));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNamingService");
 	throw err.getCORBAProblemEx();
 	}
 
 	//one last check to make sure we have the correct reference to the name service
-	if(namingContext_m.ptr() == CosNaming::NamingContext::_nil())
+	if(retVal.ptr() == CosNaming::NamingContext::_nil())
 	    {
-	    ACS_SHORT_LOG((LM_ERROR,"Helper::resolveNameService unable to resolve name service for the '%s' channel!",
-			   channelName_mp));
+	    ACS_SHORT_LOG((LM_ERROR,"Helper::resolveNameService unable to resolve name service for the '%s' channel!", channel.c_str()));
 	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNamingService");
 	    throw err.getCORBAProblemEx();
 	    }
+
+    ACS_TRACE("Helper::resolveNamingServiceStatic - exiting");
+    return retVal._retn();
 }
+
+//-----------------------------------------------------------------------------
+void 
+Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
+    throw (CORBAProblemEx, CouldntCreateThreadEx)
+{
+    ACS_TRACE("Helper::resolveNamingService - entering");
+	 namingContext_m = Helper::resolveNamingServiceStatic(orb_mp, channelName_mp);
+    ACS_TRACE("Helper::resolveNamingService - exiting");
+}
+
 //-----------------------------------------------------------------------------
 void 
 Helper::resolveNotificationFactory()
