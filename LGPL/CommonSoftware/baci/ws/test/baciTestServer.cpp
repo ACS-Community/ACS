@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.120 2006/09/29 09:12:34 bjeram Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.121 2006/10/03 22:11:18 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.120 2006/09/29 09:12:34 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.121 2006/10/03 22:11:18 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -276,7 +276,7 @@ int main(int argc, char* argv[])
  
         ACS_SHORT_LOG((LM_INFO,"baciTestServer: Exporting \"%s\"", devices[n]));
         
-	ACE_CString compName = devices[n];
+	ACE_CString compName(devices[n]);
 
 	cs_p[n] = new TestContainerServices(compName,
 					 BACI_CORBA::getPOA(), BACI_CORBA::getORB());
@@ -302,7 +302,6 @@ int main(int argc, char* argv[])
 	
         ior[count] = BACI_CORBA::getORB()->object_to_string (ps_obj.in());
         
- 
         name[count] = CORBA::string_dup(devices[n]);
         type[count] = CORBA::string_dup("BaciTestClass");
         count++;
