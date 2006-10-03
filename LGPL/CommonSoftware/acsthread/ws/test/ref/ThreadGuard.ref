@@ -1,15 +1,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] Creating thread
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestThreadGuard::TestThreadGuard] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - TestThreadGuard::testGuard] enter TestThreadGuard::testGuard
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::run] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
 1 - ----------T--:--:--.--- [GlobalLogger - TestThreadGuard::runLoop] runLoop (0)
 1 - ----------T--:--:--.--- [GlobalLogger - TestThreadGuard::runLoop] runLoop (1)
 1 - ----------T--:--:--.--- [GlobalLogger - TestThreadGuard::runLoop] runLoop (2)
@@ -40,13 +40,13 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] Done
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread TestA
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestA - ThreadBase::stop] Thread TestA
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:TestA
 1 - ----------T--:--:--.--- [GlobalLogger - TestThreadGuard::~TestThreadGuard] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 
