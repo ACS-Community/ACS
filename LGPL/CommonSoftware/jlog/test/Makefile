@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.24 2006/09/28 16:49:26 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.25 2006/10/03 22:01:43 gchiozzi Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -107,10 +107,13 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
 	$(RM) *~ ../*~ *.diff *.rep core
+	$(RM) tatlogs
+	$(RM) tmp
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
