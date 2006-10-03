@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.29 2006/07/18 08:09:58 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.30 2006/10/03 22:18:08 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,6 +64,7 @@ ThreadBase::ThreadBase(const ACE_CString& _name,
 		       const TimeInterval& _sleepTime,
 		       const bool _create,
 		       const long _thrFlags) :
+    Logging::Loggable(_name.c_str()),
     threadProcedure_mp(_threadProcedure), parameter_mp(_parameter),
     responseTime_m(_responseTime), sleepTime_m(_sleepTime), suspendStatus_m(0),
     exitRequest_m(false), stopped_m(false),

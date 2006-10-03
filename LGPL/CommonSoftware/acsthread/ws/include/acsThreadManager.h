@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acsThreadManager.h,v 1.15 2006/03/24 12:12:49 vwang Exp $"
+* "@(#) $Id: acsThreadManager.h,v 1.16 2006/10/03 22:17:28 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -20,6 +20,7 @@
 #endif
 
 #include "acsThread.h"
+#include "loggingLoggable.h"
 
 namespace ACS
 {
@@ -28,7 +29,8 @@ namespace ACS
      * @class ThreadManager
      * This clas is an extension of ACS::ThreadManagerBase which is used with ACS::Thread
      */
-    class ThreadManager : public ACS::ThreadManagerBase
+    class ThreadManager : public ACS::ThreadManagerBase,
+			  public Logging::Loggable
     {
 	friend class Thread;
 
@@ -37,7 +39,9 @@ namespace ACS
 	/**
 	 * Thread Manager Constructor
 	 */
-	ThreadManager() : ACS::ThreadManagerBase() { ACS_CHECK_LOGGER; logger_m = ::getLogger(); }
+	ThreadManager() : 
+	    ACS::ThreadManagerBase(),
+	    Logging::Loggable() {}
 
 	/**
 	 * Thread Manager Constructor, that takes logger as parameter.
@@ -46,7 +50,7 @@ namespace ACS
 	 */
 	ThreadManager(Logging::Logger::LoggerSmartPtr logger) : 
 	    ACS::ThreadManagerBase(), 
-	    logger_m(logger) {}
+	    Logging::Loggable(logger) {}
 
 	/**
 	 * create methods which create a user defined  thread object 
@@ -135,19 +139,6 @@ namespace ACS
 		    }//if
 	    }//destroy
 
-	Logging::Logger::LoggerSmartPtr getLogger() 
-	    { 
-		if (logger_m!=0)
-		    {
-		    return logger_m; 
-		    }
-		else
-		    {
-		    ACS_CHECK_LOGGER;
-		    return ::getLogger();
-		    }
-	    }
-
       private:
 	
 	/**
@@ -159,8 +150,6 @@ namespace ACS
 	 * ALMA C++ coding standards state copy constructors should be disabled.
 	 */
 	ThreadManager(const ThreadManager&);
-
-	Logging::Logger::LoggerSmartPtr logger_m;
 
         /**
 	 * @class ThreadManagerTSS
