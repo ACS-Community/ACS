@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.19 2006/01/06 20:04:07 dfugate Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.20 2006/10/03 21:44:13 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.19 2006/01/06 20:04:07 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.20 2006/10/03 21:44:13 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -210,7 +210,15 @@ namespace Logging {
         ACE_Time_Value time(sec_, usec_); 
 
 	//create the ACE log message
-	int __ace_error = ACE_Log_Msg::last_error_adapter();
+	/**
+         * @todo Here there was an assignment to
+	 * a local variable never used.
+	 * Why was that? 
+         * I have now commented it out
+	 * int __ace_error = ACE_Log_Msg::last_error_adapter();
+	 */
+	ACE_Log_Msg::last_error_adapter();
+
 	ACE_Log_Msg *ace___ = ACE_Log_Msg::instance();
 	
 	//create the ACE log record using the message
