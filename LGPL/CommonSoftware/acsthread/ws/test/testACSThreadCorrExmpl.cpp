@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.5 2006/08/31 13:04:52 gchiozzi Exp $"
+* "@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.6 2006/10/03 22:18:32 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 // #include <acsErrTypeLifeCycle.h>
 
 
-static char *rcsId="@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.5 2006/08/31 13:04:52 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadCorrExmpl.cpp,v 1.6 2006/10/03 22:18:32 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /************************************************************** 
@@ -248,8 +248,8 @@ int main(int argc, char *argv[])
 	 * in order not to touch the original code provided as an example
 	 *
 	 * ACS_SHORT_LOG is fine in test programs, but for application
-	 * code it ACS_SHORT_LOG provides additional information
-	 * that is worth the little adidtional effort
+	 * code, ACS_SHORT_LOG provides additional information
+	 * that is worth the little additional effort
 	 */
 	ACS_LOG(LM_SOURCE_INFO,"main", 
 		(LM_INFO, "=============== Creating thread as was done in example component."));
