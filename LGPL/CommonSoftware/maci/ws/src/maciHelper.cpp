@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciHelper.cpp,v 1.91 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciHelper.cpp,v 1.92 2006/10/03 03:31:04 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -20,7 +20,6 @@
 #include <logging.h>
 
 #include <acsutilPorts.h>
-#include <ORBHelper.h>
 
 #define MANAGER_REFERENCE  "MANAGER_REFERENCE"
 #define NAMESERVICE_REFERENCE  "NAMESERVICE_REFERENCE"
@@ -296,55 +295,6 @@ MACIHelper::resolveManager(CORBA::ORB_ptr orb,
     }
 
   return maci::Manager::_nil();
-}
-
-CosNaming::NamingContext_ptr MACIHelper::resolveNamingService(CORBA::ORB_ptr orb_mp)
-{
-   CosNaming::NamingContext_var namingContext_m = CosNaming::NamingContext::_nil();
-   try
-	{
-	  //Here we try a couple of different methods to get at the naming service.
-	  if(orb_mp == 0) //We've been passed a fake ORB.
-	  {
-	    //Try to get at the Naming Service using the activator singleton first.
-	    if ((ContainerImpl::getContainer() != 0) && 
-		   (ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
-		 {
-		   namingContext_m = ContainerImpl::getContainer()->getService<CosNaming::NamingContext>(acscommon::NAMING_SERVICE_NAME, 0, true);
-		 }
-	    //DWF - Ideally there would be a SimpleClient singleton that we would try next (this would
-	    // be especially useful in Consumers), but instead we will just create our own ORB 
-	    // and hope this is running on the same host as the Naming Service =(
-	    else    //This is basically just a fail-safe mechanism.
-		 {
-         ORBHelper* orbHelper_mp = new ORBHelper();
-         orbHelper_mp->runOrb();
-		   // Get the naming context
-		   namingContext_m = MACIHelper::resolveNameService(orbHelper_mp->getORB());
-		 }
-	  }
-	  //Passed a valid orb so we try to resolve the naming service using the "normal" method
-	  else
-	  {
-	    namingContext_m=MACIHelper::resolveNameService(orb_mp);
-	  }
-	}
-   catch(...)
-	{
-     ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNameService CORBA exception caught!"));
-	  CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNamingService");
-	  throw err.getCORBAProblemEx();
-	}
-
-	//one last check to make sure we have the correct reference to the name service
-	if(namingContext_m.ptr() == CosNaming::NamingContext::_nil())
-	{
-	    ACS_SHORT_LOG((LM_ERROR,"Helper::resolveNameService unable to resolve name service!"));
-	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNamingService");
-	    throw err.getCORBAProblemEx();
-	}
-
-   return namingContext_m._retn();
 }
 
 CosNaming::NamingContext_ptr

@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciHelper.h,v 1.86 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciHelper.h,v 1.87 2006/10/03 03:31:04 sharring Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ namespace maci {
  * MACIHelper class is a class helping to handle commonly used operations.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciHelper.h,v 1.86 2006/09/01 02:20:54 cparedes Exp $"
+ * @version "@(#) $Id: maciHelper.h,v 1.87 2006/10/03 03:31:04 sharring Exp $"
  */
 
 class maci_EXPORT MACIHelper
@@ -101,8 +101,6 @@ public:
   static maci::Manager_ptr resolveManager(CORBA::ORB_ptr orb,
 					  const ACE_TCHAR * reference, 
 					  int retries = 3, unsigned int secTimeout = 0);
-
-  static CosNaming::NamingContext_ptr resolveNamingService(CORBA::ORB_ptr orb);
 
   /**
    * <i>resolveNameService</i> method is a method helping to resolve CORBA NameService's reference.
