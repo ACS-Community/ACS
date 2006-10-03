@@ -4,3 +4,4 @@ SOURCE loggingTATEnvironment
 3 loggingXMLParserTest	"loggingXMLParserTest"
 4 testMacros		"testMacros"
 5 testGenericLogger     "testGenericLogger"
+6 testLoggable          "testLoggable"

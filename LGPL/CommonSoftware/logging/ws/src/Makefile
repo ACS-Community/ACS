@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.56 2006/08/08 11:14:04 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.57 2006/10/03 21:44:38 gchiozzi Exp $" 
 #
 # Makefile of ........
 #
@@ -85,7 +85,8 @@ $(PROG)_LIBS               = $(TESTLIBS) C++ CCS
 INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParser.h \
 		  	loggingClient.h loggingLocalSyslog.h loggingRemoteSyslog.h loggingLocalFile.h \
 			loggingCacheLogger.h \
-			loggingBaseLog.h loggingHandler.h loggingLogger.h loggingLogTrace.h loggingACSLogger.h \
+			loggingBaseLog.h loggingHandler.h loggingLogger.h loggingLoggable.h \
+                        loggingLogTrace.h loggingACSLogger.h \
 			loggingLogSvcHandler.h \
 			loggingLoggingTSSStorage.h loggingLoggingProxy.h loggingMACROS.h \
 			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h 
@@ -100,15 +101,21 @@ INCLUDES_L      = loggingService.h \
 LIBRARIES       = baselogging logging
 LIBRARIES_L     =
 
-baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger loggingLogTrace loggingGetLogger loggingGenericLogger loggingStdoutHandler
+baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
+                        loggingLogTrace loggingGetLogger loggingGenericLogger \
+                        loggingStdoutHandler
 baselogging_LDFLAGS = 	-lloki
 
-logging_OBJECTS = 	logging loggingXMLElement loggingXMLParser loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
+logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
+                        loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 			loggingLoggingTSSStorage loggingLoggingProxy \
 			loggingACSLogger loggingLogSvcHandler
 logging_LIBS    =	baselogging 
-logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
-			-lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosNotification -lTAO_CosNotification_Serv -lacsutil -lacscommonStubs
+logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
+                        -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
+			-lTAO_CosTrading -lTAO_DynamicAny \
+                        -lTAO_CosNotification -lTAO_CosNotification_Serv \
+                        -lacsutil -lacscommonStubs
 
 #
 # other files to be installed
