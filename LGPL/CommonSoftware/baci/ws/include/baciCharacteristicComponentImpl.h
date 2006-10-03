@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.33 2006/09/08 14:19:27 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.34 2006/10/03 22:09:33 gchiozzi Exp $"
 *
 */
 
@@ -91,7 +91,7 @@ namespace baci {
  */
 class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
 				    public baci::CharacteristicModelImpl,
-                    public virtual POA_ACS::CharacteristicComponent
+				    public virtual POA_ACS::CharacteristicComponent
 {
 
   public:
