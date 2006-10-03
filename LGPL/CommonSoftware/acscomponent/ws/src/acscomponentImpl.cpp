@@ -1,7 +1,7 @@
 /*************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acscomponentImpl.cpp,v 1.35 2006/04/19 19:57:13 bjeram Exp $"
+* "@(#) $Id: acscomponentImpl.cpp,v 1.36 2006/10/03 21:51:44 gchiozzi Exp $"
 *
 * who       when        what
 * --------  --------    --------------------------------------------------
@@ -22,12 +22,12 @@ using namespace acscomponent;
 ACSComponentImpl::ACSComponentImpl(
     const ACE_CString& name,
     maci::ContainerServices *containerServices) :
-  m_name(name),
-						m_containerServices_p(containerServices)//,  Save the reference to the ContainerServices
-//  logger_m(getNamedLogger(name.c_str()))
+    Logging::Loggable(containerServices->getLogger()),
+    m_name(name),
+    m_containerServices_p(containerServices)
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::ACSComponentImpl");
-  
+
   // Check if the ContainerServices is NULL
   // Now the ContainerServices is very important and does a lof things
   // and the component

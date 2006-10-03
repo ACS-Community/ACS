@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeTimerImpl.h,v 1.19 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acstimeTimerImpl.h,v 1.20 2006/10/03 21:55:26 gchiozzi Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -39,6 +39,7 @@
 #include "acstimeS.h"
 #include "ACSTimeError.h"
 #include "acstimeTimeUtil.h"
+#include "loggingLoggable.h"
 ////////////////////////////////////////////////////////////////////////
  using namespace baci;
 /** @file acstimeTimerImpl.h
@@ -125,7 +126,9 @@ class TimerImpl : public virtual acscomponent::ACSComponentImpl,
      * timeout handler inner class derived from ACE_Event_Handler
      * Handler hides the ACE alarms/timers.
      */
-    class Handler : public ACE_Event_Handler
+    class Handler : public ACE_Event_Handler,
+		    public Logging::Loggable
+
     {
       public:
 	/**
@@ -164,18 +167,6 @@ class TimerImpl : public virtual acscomponent::ACSComponentImpl,
 	 */
         bool m_oneShotFlag;
 	
-      protected:
-	/**
-	 * Returns an ACS Logger created for this component.
-	 * @return an ACS Logger
-	 */
-	Logging::Logger::LoggerSmartPtr
-	getLogger() 
-	    { 
-		ACS_CHECK_LOGGER;
-		static Logging::Logger::LoggerSmartPtr loggersp = getNamedLogger("acstime::Timer::Handler");
-		return loggersp;
-	    }
     };
 };
 #endif

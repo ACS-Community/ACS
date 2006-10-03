@@ -4,7 +4,7 @@
 /************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acscomponentImpl.h,v 1.29 2006/04/19 19:57:13 bjeram Exp $"
+* "@(#) $Id: acscomponentImpl.h,v 1.30 2006/10/03 21:51:44 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ----------  -------------------------------------------------
@@ -18,6 +18,7 @@
 
 #include "acsutil.h"
 #include "logging.h"
+#include "loggingLoggable.h"
 
 #include <acscomponentS.h>
 #include <acscomponentC.h>
@@ -33,7 +34,8 @@ namespace acscomponent {
  * Characteristic components derive from this class.
  */
 class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
-			 public virtual POA_ACS::ACSComponent
+			 public virtual POA_ACS::ACSComponent,
+			 public Logging::Loggable
 {
  public:
 
@@ -203,14 +205,6 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
      * @endhtmlonly
      */
     maci::ContainerServices *getContainerServices();
-
-    /**
-     * Returns an ACS Logger that is retrieved from container services.
-     * @return an ACS Logger
-     */
-    Logging::Logger::LoggerSmartPtr
-    getLogger() { return m_containerServices_p->getLogger();}
-
 
  private:
 

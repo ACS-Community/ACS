@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeTimerImpl.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acstimeTimerImpl.cpp,v 1.17 2006/10/03 21:55:26 gchiozzi Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -120,9 +120,11 @@ TimerImpl::cancel(int id)
 	throw(InvalidIDExImpl(__FILE__, __LINE__, "TimerImpl::cancel"));
 	}
 }
+
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 TimerImpl::Handler::Handler(acstime::TimeoutHandler_ptr handler, bool flag) : 
+    Logging::Loggable("acstime::Timer::Handler"),
     m_handler(handler)
    
 {
