@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.5 2006/09/27 22:40:38 sharring Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.6 2006/10/03 03:55:42 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-		std::cout << "ERROR: never detected all the events" << std::endl;
+		std::cout << "ERROR: never detected all the events before the timeout elapsed" << std::endl;
 	}
 
 	// release the component and logout from manager

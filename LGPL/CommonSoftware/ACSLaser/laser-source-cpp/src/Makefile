@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2006/09/27 23:46:29 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.5 2006/10/03 03:55:42 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -65,7 +65,7 @@ laserSource_OBJECTS   = CERNAlarmSystemInterfaceProxy ASIMessage ASIConfiguratio
 
 # <brief description of laserAlarmPublisher library>
 laserAlarmPublisher_OBJECTS   = AcsAlarmPublisher AlarmSupplier
-laserAlarmPublisher_LIBS      = basenc ACSJMSMessageEntityStubs
+laserAlarmPublisher_LIBS      = basenc ACSJMSMessageEntityStubs acsnc
 laserAlarmPublisher_LDFLAGS = --export-dynamic -dl -fpic
 
 # <brief description of laserAlarmCERN library>

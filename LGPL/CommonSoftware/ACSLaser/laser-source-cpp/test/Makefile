@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2006/09/26 06:43:00 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/10/03 03:55:42 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -40,15 +40,15 @@ EXECUTABLES_L   =
 
 # <brief description of xxxxx program>
 testDriver_OBJECTS   = testDriver
-testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient maci AlarmSystemStubs ACSJMSMessageEntityStubs acsnc
+testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs ACSJMSMessageEntityStubs acsnc
 
 # <brief description of xxxxx program>
 testDriverAcs_OBJECTS   = testDriverAcs
-testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient maci AlarmSystemStubs acsnc
+testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs acsnc
 
 # <brief description of xxxxx program>
 unitTestDriver_OBJECTS   = unitTestDriver 
-unitTestDriver_LIBS      = cppunit laserCppUtil logging maci maciClient acsXercesUtilities laserSource
+unitTestDriver_LIBS      = cppunit laserCppUtil logging maciClient maci acsXercesUtilities laserSource
 
 #
 # special compilation flags for single c sources

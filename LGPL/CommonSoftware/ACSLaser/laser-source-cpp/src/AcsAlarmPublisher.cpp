@@ -4,10 +4,10 @@
 #include <orbsvcs/CosNotifyCommC.h>
 #include <orbsvcs/CosNamingC.h>
 #include <logging.h>
-#include <maciHelper.h>
+#include <acsncHelper.h>
 
 using namespace laserAlarmPublisher;
-using namespace maci;
+using nc::Helper;
 
 // initialize the static variables for the singletons, etc.
 AlarmPublisher* AcsAlarmPublisher::singletonInstance = NULL;
@@ -34,7 +34,7 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier.");
 
 		// initialize the AlarmSupplier with the naming context
-		CosNaming::NamingContext_ptr naming_p = MACIHelper::resolveNamingService(NULL);
+		CosNaming::NamingContext_ptr naming_p = Helper::resolveNamingServiceStatic(NULL, string("AlarmSystem"));
 		if(CORBA::is_nil(naming_p)) {
 			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was nil.");
 		}
