@@ -41,10 +41,11 @@ i=0
   fi
 else 
   $*
-  pkill -2 acscomponentTe
+  pkill -2 acscomponentTestServer
 fi
 sleep 3
 rm -f ACSCOMPONENTTEST1.ior
 echo "All done!"
-sleep 3
+
+# __oOo__
 
