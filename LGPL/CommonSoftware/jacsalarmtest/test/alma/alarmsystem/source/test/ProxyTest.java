@@ -43,7 +43,7 @@ public class ProxyTest extends junit.framework.TestCase {
 		// Set the CDB to use ACS
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		// Init the Factory
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
+		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),0,TestUtil.getLogger(this.getClass().getName()));
 	}
 	
 	/** 

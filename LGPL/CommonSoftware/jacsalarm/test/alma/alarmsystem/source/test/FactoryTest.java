@@ -50,7 +50,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testNoALarmBranch() throws Exception {
 		TestUtil.deleteAlarmBranch(curDir);
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
+		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),0,TestUtil.getLogger(this.getClass().getName()));
 		assertTrue("Wrong implementation in use (no Alarms in CDB case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -63,7 +63,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testACSAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
+		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),0,TestUtil.getLogger(this.getClass().getName()));
 		assertTrue("Wrong implementation in use (ACS case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -76,7 +76,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testCERNAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"CERN");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
+		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),0,TestUtil.getLogger(this.getClass().getName()));
 		assertFalse("Wrong implementation in use (CERN case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -87,7 +87,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testWrongImplementationProp() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"Wrong property");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
+		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),0,TestUtil.getLogger(this.getClass().getName()));
 		assertTrue("Wrong implementation in use (wrong prop case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -99,7 +99,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testFaultStateCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
+		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),0,TestUtil.getLogger(this.getClass().getName()));
 		ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState("Family","Member",0);
 		assertNotNull("Error creating a FS",fs);
 	}
@@ -112,7 +112,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testAlarmSourceCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
+		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),0,TestUtil.getLogger(this.getClass().getName()));
 		ACSAlarmSystemInterface proxy = ACSAlarmSystemInterfaceFactory.createSource("SourceName");
 		assertNotNull("Error creating an alarm source",proxy);
 	}
