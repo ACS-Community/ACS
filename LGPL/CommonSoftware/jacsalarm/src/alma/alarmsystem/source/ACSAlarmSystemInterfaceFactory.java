@@ -68,6 +68,9 @@ public class ACSAlarmSystemInterfaceFactory {
 	// The Manager
 	private static Manager manager=null;
 	
+	// The manager handle
+	private static int managerHandle=0;
+	
 	// The logger
 	private static Logger logger=null;
 	
@@ -80,10 +83,12 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * @param theORB The ORB 
 	 * @param manager A reference to the manager 
 	 * @param logger The logger
+	 * @param mgrHandle The manager handle
 	 */
-	public static void init(ORB theORB, Manager manager, Logger logger) throws InavalidManagerEx, ErrorGettingDALEx {
+	public static void init(ORB theORB, Manager manager, int mgrHandle, Logger logger) throws InavalidManagerEx, ErrorGettingDALEx {
 		ACSAlarmSystemInterfaceFactory.orb=theORB;
 		ACSAlarmSystemInterfaceFactory.manager=manager;
+		ACSAlarmSystemInterfaceFactory.managerHandle=mgrHandle;
 		ACSAlarmSystemInterfaceFactory.logger = logger;
 		if (manager==null) {
 			manager = getManager();
@@ -94,7 +99,7 @@ public class ACSAlarmSystemInterfaceFactory {
 			throw acsE.toInavalidManagerEx();
 		}
 		
-		DAL dal=getDAL(manager);
+		DAL dal=getDAL(manager,managerHandle);
         useACSAlarmSystem = retrieveImplementationType(dal);
 	}
 	
@@ -114,12 +119,13 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * Get a reference to the DAL
 	 * 
 	 * @param manager A reference to the Manager
+	 * @param handle The manager handle
 	 */
-	private static DAL getDAL(Manager manager) throws ErrorGettingDALEx {
+	private static DAL getDAL(Manager manager, int handle) throws ErrorGettingDALEx {
 		IntHolder status = new IntHolder();
 		DAL dal;
 		try {
-	        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false, status);
+	        org.omg.CORBA.Object cdbObj = manager.get_service(handle, "CDB", true, status);
 	        if (cdbObj==null) {
 				throw new NullPointerException("Error getting the CDB from the manager");
 			} 
