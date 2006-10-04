@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2006/09/22 14:53:37 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/10/04 10:26:05 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -125,7 +125,7 @@ acsASsources_DIRS= alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on
 #
 # ACS XmlIdl generation on/off
 #
