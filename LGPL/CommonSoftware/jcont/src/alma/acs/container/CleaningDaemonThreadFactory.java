@@ -47,12 +47,12 @@ public class CleaningDaemonThreadFactory implements ThreadFactory {
     private LoggingThreadGroup group;
     
     // we keep track of our threads outside of the thread group
-    private List<Thread> threadList = new ArrayList<Thread>();
+    private final List<Thread> threadList = new ArrayList<Thread>();
     
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     
-    private Logger logger;
-    private String name;
+    private final Logger logger;
+    private final String name;
     private ClassLoader newThreadContextCL;
     
 //    private boolean DEBUG = true;
@@ -98,6 +98,15 @@ public class CleaningDaemonThreadFactory implements ThreadFactory {
         }
     }
     
+    /**
+     * Gets a copy of the list of all threads created by this factory up to this call.
+     * This method should only be used for testing, but not in operational code.
+     */
+    public List<Thread> _getAllThreadsCreated() {
+    	synchronized (threadList) {
+			return new ArrayList<Thread>(threadList);
+		}
+    }
     
     /**
      * Kills running threads via {@link Thread#stop()}.
