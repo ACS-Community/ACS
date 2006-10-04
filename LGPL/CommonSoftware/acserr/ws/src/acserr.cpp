@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.80 2006/09/27 14:14:33 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.81 2006/10/04 10:32:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.80 2006/09/27 14:14:33 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.81 2006/10/04 10:32:41 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -173,23 +173,42 @@ ErrorTraceHelper& ErrorTraceHelper::operator=(ACSErr::ErrorTrace& et)
 void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr::Severity severity,
 		   const char* file, int line, const char* routine, const char* sd) 
 {
-//  errorTrace.description = CORBA::string_dup (ed);
-    m_errorTraceRef.timeStamp = getTime();
-    m_errorTraceRef.file = CORBA::string_dup (file);
-    m_errorTraceRef.lineNum = line;
-    m_errorTraceRef.routine = CORBA::string_dup (routine);
+   char tid[64];
 
-    char tid[64];
-    ACE_OS::sprintf( tid, "ID: %lu", (long)ACE_Thread_Manager::instance()->thr_self() );
-    m_errorTraceRef.thread = CORBA::string_dup (tid);
+   m_errorTraceRef.timeStamp = getTime();
+   m_errorTraceRef.file = CORBA::string_dup (file);
+   m_errorTraceRef.lineNum = line;
+   m_errorTraceRef.routine = CORBA::string_dup (routine);
+
+   // setting thread name
+   if (LoggingProxy::ThreadName()!=0 && 
+       strlen(LoggingProxy::ThreadName())>0)
+       {
+       m_errorTraceRef.thread = CORBA::string_dup (LoggingProxy::ThreadName());
+       }
+   else
+       {
+       ACE_OS::sprintf( tid, "ID: %lu", (long)ACE_Thread_Manager::instance()->thr_self() );
+       m_errorTraceRef.thread = CORBA::string_dup (tid);
+       }//if-else
     
     // setting process name
-    if (m_processName[0]==0)
+    if (m_processName[0]!=0)
 	{
-	unsigned long pid = (unsigned long)ACE_OS::getpid();
-	ACE_OS::sprintf (m_processName, "PID: %lu", pid);
+	m_errorTraceRef.process = CORBA::string_dup (m_processName);
 	}
-    m_errorTraceRef.process = CORBA::string_dup (m_processName);
+    else
+	if (LoggingProxy::ProcessName()!=0 
+	    && strlen(LoggingProxy::ProcessName())>0)
+	    {
+	    m_errorTraceRef.process = CORBA::string_dup (LoggingProxy::ProcessName());
+	    }
+	else
+	    {
+	    unsigned long pid = (unsigned long)ACE_OS::getpid();
+	    ACE_OS::sprintf (m_processName, "PID: %lu", pid);
+	    m_errorTraceRef.process = CORBA::string_dup (m_processName);
+	    }//if-else
    
     //setting host name
     if (m_hostName[0]==0)
