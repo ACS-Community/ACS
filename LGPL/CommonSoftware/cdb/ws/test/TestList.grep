@@ -20,3 +20,4 @@ INFO : Using server ID
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 \[jacorb\.poa\] INFO : oid:
 object is activated
+com.cosylab.cdb.DALRead main
