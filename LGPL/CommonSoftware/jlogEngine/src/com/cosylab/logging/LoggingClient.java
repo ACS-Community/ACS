@@ -136,8 +136,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
      */
     private JMenuItem viewErrorLogMI;
     
-    private ErrorLogDialog errorLogDlg;
-    
 	/** 
 	 * The filters menu
 	 */
@@ -344,7 +342,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
             } else if (e.getSource()==viewErrorLogMI) {
-            	getErrorLogDlg().setVisible(true);
+            	ErrorLogDialog.getErrorLogDlg().setVisible(true);
             } else if (e.getSource()==LoggingClient.this.viewStatusAreaMI) {
             	getStatusAreaPanel().setVisible(viewStatusAreaMI.getState());
             	if (viewStatusAreaMI.getState()) {
@@ -2090,16 +2088,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		autoReconnectMI.setEnabled(enabled);
 	}
 	
-	/**
-	 * 
-	 * @return A reference to the Error log dialog
-	 */
-	public ErrorLogDialog getErrorLogDlg() {
-		if (errorLogDlg==null) {
-			errorLogDlg = new ErrorLogDialog(null,"Error log",false);
-		}
-		return errorLogDlg;
-	}
+	
 	
 }
 
