@@ -52,6 +52,7 @@ import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.stats.ResourceChecker;
 
 
@@ -734,7 +735,7 @@ public class IOLogsHelper extends Thread  {
 			StringBuilder strBuilder = new StringBuilder("\nError parsing the following Log:\n");
 			strBuilder.append(formatErrorMsg(logStr));
 			strBuilder.append("\n");
-			LoggingClient.getInstance().getErrorLogDlg().appendText(strBuilder.toString());
+			ErrorLogDialog.getErrorLogDlg().appendText(strBuilder.toString());
 			return;
 		}
 		logListener.logEntryReceived(log);

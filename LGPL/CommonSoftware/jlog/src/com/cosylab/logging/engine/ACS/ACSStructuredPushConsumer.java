@@ -32,6 +32,7 @@ import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.settings.ErrorLogDialog;
 
 /**
  * ACSStructuredPushConsumer gets an XML log from the Engine 
@@ -64,7 +65,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 					} catch (Exception e) {
 						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
 						strB.append("This log has been lost: "+log);
-						LoggingClient.getInstance().getErrorLogDlg().appendText(strB.toString());
+						ErrorLogDialog.getErrorLogDlg().appendText(strB.toString());
 						engine.publishReport(strB.toString());
 						System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
 						System.err.println("An XML string that could not be parsed: " + log);
