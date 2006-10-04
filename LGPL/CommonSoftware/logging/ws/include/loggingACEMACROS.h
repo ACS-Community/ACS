@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACEMACROS.h,v 1.9 2006/09/28 15:43:45 gchiozzi Exp $"
+* "@(#) $Id: loggingACEMACROS.h,v 1.10 2006/10/04 14:18:41 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,14 @@
 #include "loggingLogSvcHandler.h"
 #include "loggingLoggingProxy.h"
 #include "loggingACSLogger.h"
+
+/** @file loggingACSMACROS.h
+ * <h2>Description</h2>
+ * This file contains ACS logging macros based on the 
+ * standar ACE logging patterns.
+ * These macros are the easiest way to use the ACS logging
+ * system in CPP applications.
+ */
 
 //-----------------------------------------------------------------------------
 /**
