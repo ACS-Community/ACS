@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.5 2006/09/25 08:36:59 cparedes Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.6 2006/10/04 14:11:43 gchiozzi Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -266,27 +266,58 @@ void DAONode::connect(bool silent)
     catch (cdbErrType::CDBRecordDoesNotExistEx &rde)
 	{
 	if (!silent)
-	    throw cdbErrType::CDBRecordDoesNotExistExImpl (rde, __FILE__, __LINE__,"cdb::DAONode::connect");
+	    {
+	    cdbErrType::CDBRecordDoesNotExistExImpl rdeImpl(rde);
+	    cdbErrType::CDBRecordDoesNotExistExImpl ex = 
+		cdbErrType::CDBRecordDoesNotExistExImpl (rdeImpl, __FILE__, __LINE__,
+							 "cdb::DAONode::connect");
+	    ex.setCurl(rdeImpl.getCurl());
+	    throw ex;
+	    }
 	}
     catch (cdbErrType::CDBXMLErrorEx &xee)
 	{
 	if (!silent)
-	    throw cdbErrType::CDBXMLErrorExImpl (xee, __FILE__, __LINE__,"cdb::DAONode::connect");
+	    {
+	    cdbErrType::CDBXMLErrorExImpl xeeImpl(xee);
+	    cdbErrType::CDBXMLErrorExImpl ex = 
+		cdbErrType::CDBXMLErrorExImpl (xeeImpl, __FILE__, __LINE__,
+							 "cdb::DAONode::connect");
+	    ex.setCurl(xeeImpl.getCurl());
+	    ex.setFilename(xeeImpl.getFilename());
+	    ex.setNodename(xeeImpl.getNodename());
+	    ex.setErrorString(xeeImpl.getErrorString());
+	    throw ex;
+	    }
 	}
     catch (ACSErr::ACSbaseExImpl& ex)
 	{
 	if (!silent)
+	    {
 	    throw ACSErrTypeCommon::CouldntCreateObjectExImpl (ex,__FILE__, __LINE__,"cdb::DAONode::connect");
+	    }
 	}
     catch (CORBA::SystemException& ex)
 	{
 	if (!silent)
-	    throw ACSErrTypeCommon::CORBAProblemExImpl (__FILE__, __LINE__,"cdb::DAONode::connect");
+	    {
+	    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx = 
+		ACSErrTypeCommon::CORBAProblemExImpl (__FILE__, 
+						      __LINE__,
+						      "cdb::DAONode::connect");
+	    corbaProblemEx.setMinor(ex.minor());
+	    corbaProblemEx.setCompletionStatus(ex.completed());
+	    corbaProblemEx.setInfo(ex._info().c_str());
+
+	    throw corbaProblemEx;
+	    }
 	}
     catch (...)
 	{
 	if (!silent)
-	    throw;
+	    {
+	    throw ACSErrTypeCommon::UnexpectedExceptionExImpl(__FILE__, __LINE__,"cdb::DAONode::connect");
+	    }
 	}
     
     // replace DAO implementations
