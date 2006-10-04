@@ -39,15 +39,23 @@ import javax.xml.parsers.*;
 import org.xml.sax.*;
 import java.util.Iterator;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import alma.acs.util.ACSPorts;
 
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-//import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
 
 public class DALRead {
 	static	int indent = 0;
 
 	public static void main(String args[]) {
+
+	        Logger m_logger = Logger.getLogger("DALRead");
+
 		try {
 			String curl;
 			String strIOR = null;
@@ -107,12 +115,23 @@ public class DALRead {
 			System.out.println("________________________________________________________");
 		}
 		catch (AcsJCDBXMLErrorEx e) {
-			//System.out.println("CDBXMLErrorEx : " + e.msg );
-			e.printStackTrace(System.out);
+			e.printStackTrace();
+			e.log(m_logger);
+		}
+		catch (CDBXMLErrorEx e) {
+		        AcsJCDBXMLErrorEx je = 
+			    AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(e);
+			String smsg = "XML Error \tCURL='" + je.getCurl()+"'\n\t\tFilename='"+je.getFilename()+"'\n\t\tNodename='"+je.getNodename()+"'\n\t\tMSG='"+je.getErrorString()+"'";
+			m_logger.log(Level.SEVERE, smsg, je);	
+		}
+		catch (CDBRecordDoesNotExistEx e) {
+		        AcsJCDBRecordDoesNotExistEx je = 
+			    AcsJCDBRecordDoesNotExistEx.fromCDBRecordDoesNotExistEx(e);
+			String smsg = "Record does not exist \tCURL='" + je.getCurl() + "'";
+			m_logger.log(Level.SEVERE, smsg, je);	
 		}
 		catch (Exception e) {
-			System.out.println("ERROR : " + e);
-			e.printStackTrace(System.out);
+			e.printStackTrace();
 		}
 	}
 	public static void walk(XMLTreeNode node) {
