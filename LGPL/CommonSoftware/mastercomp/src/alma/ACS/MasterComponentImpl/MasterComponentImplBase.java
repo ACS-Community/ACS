@@ -92,7 +92,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		throws ComponentLifecycleException {
 
 		super.initialize(containerServices);
-		subsysComponentMonitor = new SubsysResourceMonitor(m_logger);
+		subsysComponentMonitor = new SubsysResourceMonitor(m_logger, containerServices.getThreadFactory());
 		
 		try
 		{
