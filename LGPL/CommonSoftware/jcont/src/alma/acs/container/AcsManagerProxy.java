@@ -732,7 +732,7 @@ public class AcsManagerProxy
 	 * Returns the handle that the ACS Manager has assigned to this client.
 	 * This handle is kept inside the Manager proxy class, but applies to the whole container.
 	 * 
-	 * @return int
+	 * @return handle, or 0 if not logged in
 	 */
 	public int getManagerHandle()
 	{
