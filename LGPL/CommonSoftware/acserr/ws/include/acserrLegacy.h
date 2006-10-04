@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.h,v 1.8 2005/12/14 22:34:47 dfugate Exp $"
+* "@(#) $Id: acserrLegacy.h,v 1.9 2006/10/04 11:30:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -595,8 +595,6 @@ protected:
 
   
   ACSErr::ErrorTrace errorTrace, *current;
-  static char m_hostName[64];
-  static char m_processName[64];
   unsigned int depth;
 
   static CORBA::ORB_var orb;

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.cpp,v 1.14 2006/04/25 08:16:59 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.cpp,v 1.15 2006/10/04 11:30:55 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #include "acserrHandlers.h"
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.14 2006/04/25 08:16:59 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.15 2006/10/04 11:30:55 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -62,8 +62,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 const ACSErr::ACSErrType ACSError::ACSErrTypeOK = 0;   // this constant is redefined here otherwise we depend on code generated from ACSErrTypeOK
 const ACSErr::ErrorCode ACSError::ACSErrOK = 0; // 
 bool ACSError::initialized = false;
-char ACSError::m_hostName[64] = "";
-char ACSError::m_processName[64] = "";
 CORBA::ORB_var ACSError::orb;
 std::unexpected_handler  ACSError::m_oldUnexpected;
 std::terminate_handler  ACSError::m_oldTerminate;
@@ -327,16 +325,16 @@ void ACSError::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr::Severi
   ACE_OS::sprintf( tid, "ID: %lu", (long)ACE_Thread_Manager::instance()->thr_self() );
   errorTrace.thread = CORBA::string_dup (tid);
   // setting process name
-  if (m_processName[0]==0){
+  if (ErrorTraceHelper::m_processName[0]==0){
     unsigned long pid = (unsigned long)ACE_OS::getpid();
-    ACE_OS::sprintf (m_processName, "PID: %lu", pid);
+    ACE_OS::sprintf (ErrorTraceHelper::m_processName, "PID: %lu", pid);
   }
-  errorTrace.process = CORBA::string_dup (m_processName);
+  errorTrace.process = CORBA::string_dup (ErrorTraceHelper::m_processName);
   //setting host name
-  if (m_hostName[0]==0){
-    ACE_OS::hostname (ACSError::m_hostName, 64);
+  if (ErrorTraceHelper::m_hostName[0]==0){
+    ACE_OS::hostname (ErrorTraceHelper::m_hostName, 64);
   }
-  errorTrace.host = CORBA::string_dup (m_hostName);
+  errorTrace.host = CORBA::string_dup (ErrorTraceHelper::m_hostName);
   
   errorTrace.severity = severity;  
 
@@ -370,11 +368,11 @@ char* ACSError::getDescription(){
 }
 
 void ACSError::hostName (const char* hn){
-  strncpy (m_hostName, hn, 64);
+  strncpy (ErrorTraceHelper::m_hostName, hn, 64);
 }
 
 void ACSError::processName (const char *pn){
-  strncpy (m_processName, pn, 64);
+  strncpy (ErrorTraceHelper::m_processName, pn, 64);
 }
 
 ACSErr::ErrorTrace createErrorTrace (const char* file, int line, ACSError &er)

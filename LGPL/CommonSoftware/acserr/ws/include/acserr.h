@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.72 2006/08/17 09:51:35 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.73 2006/10/04 11:30:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,6 +62,7 @@ class ErrorTraceHelper
   protected:
     friend class CompletionImpl;
     friend class ACSLogImpl;
+    friend class ACSError;
 
     ErrorTraceHelper(ACSErr::ErrorTrace &et);
 
