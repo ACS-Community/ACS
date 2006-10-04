@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: ErrorComponent.py,v 1.2 2006/04/27 16:58:43 dfugate Exp $"
+# "@(#) $Id: ErrorComponent.py,v 1.3 2006/10/04 16:00:02 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -60,6 +60,11 @@ from Acspy.Servants.ComponentLifecycle import ComponentLifecycle
 #environment variable must be set at the DEBUG level or lower for
 #this to occur.
 from Acspy.Common.Log                  import acsPrintExcDebug
+
+#--CORBA Imports-----------------------------------------------------------------
+from CORBA import BAD_PARAM
+
+
 #------------------------------------------------------------------------------
 class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
                      ACSComponent,
@@ -154,6 +159,20 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
 
         return er
     
+    #------------------------------------------------------------------------------
+    def corbaSystemException(self):
+        '''
+        Implementation of IDL method:
+            void corbaSystemException()
+        
+        For details on what this method does, please see the IDL Doxygen
+        documentation.
+        '''
+        self.logger.logTrace("ErrorComponent.corbaSystemException")
+
+        #We instantiate and throw a standard CORBA System Exception
+        raise BAD_PARAM()
+
     #------------------------------------------------------------------------------
     def __errorTrace(self, depth):
         '''
