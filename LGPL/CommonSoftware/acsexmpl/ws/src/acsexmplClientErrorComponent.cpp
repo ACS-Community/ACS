@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.3 2006/05/11 13:13:19 bjeram Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.3 2006/05/11 13:13:19 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -143,6 +143,17 @@ class ClientErrorComponent
      * </ul>
      */
     void TestReceiveRemoteCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+
+    /**
+     * Example 3: Calls a method that throws a CORBA system exception
+     *            It:
+     * <ul>
+     *   <li> Catches the exception, 
+     *   <li> prints it locally 
+     *   <li> sends it to the logging system
+     * </ul>
+     */
+    void TestReceiveCorbaSystemException() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
 
   private:
     SimpleClient &client_m;
@@ -316,6 +327,59 @@ void ClientErrorComponent::TestReceiveRemoteCompletion()
 	}
 }
 
+void ClientErrorComponent::TestReceiveCorbaSystemException() 
+    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
+{
+    ACS_TRACE("ClientErrorComponent::TestReceiveCorbaSystemException");
+
+    if (CORBA::is_nil(foo_m.in()) == true)
+	{
+	throw ACSErrTypeCommon::CouldntAccessComponentExImpl(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::TestReceiveRemoteException");
+	}
+    ACS_SHORT_LOG((LM_INFO, "Example 3: Calls a method that throws a CORBA System Exception."));
+    try
+	{
+	foo_m->corbaSystemException();
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	// This show how to map a CORBA System exception from TAO
+        // in the ACS wrapper ACSErrTypeCommon::CORBAProblemExImpl.
+        /**
+	 * @todo Implement a real wrapper exception class, 
+	 *        to make the conversion transparent 
+	 */
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::TestReceiveRemoteException");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
+
+	ACS::Time timeStamp = corbaProblemEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
+			"Time of the CORBA::SystemException exception: %s\n", tString.c_str());
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(__FILE__, __LINE__,
+		      				 "ClientErrorComponent::TestReceiveRemoteException");
+	badMethodEx.setErrorDesc("corbaSystemException has thrown an UNEXPECTED exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
+			"Time of the unexpected exception: %s\n", tString.c_str());
+	}
+
+}
+
+
 /*******************************************************************************/
 
 int main(int argc, char *argv[])
@@ -345,6 +409,7 @@ int main(int argc, char *argv[])
 	clientErrorComponent.TestOk();
 	clientErrorComponent.TestReceiveRemoteException();
 	clientErrorComponent.TestReceiveRemoteCompletion();
+	clientErrorComponent.TestReceiveCorbaSystemException();
 	}
     catch(ACSErr::ACSbaseExImpl ex)
 	{

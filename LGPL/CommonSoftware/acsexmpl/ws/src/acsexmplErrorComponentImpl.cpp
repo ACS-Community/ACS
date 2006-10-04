@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.3 2006/08/16 15:25:33 gchiozzi Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.3 2006/08/16 15:25:33 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -133,6 +133,11 @@ void ErrorComponent::typeException(CORBA::Short depth)
     throw ex.getACSErrTypeCommonEx();
 }//typeException
 
+
+void ErrorComponent::corbaSystemException() throw (CORBA::SystemException)
+{
+    throw CORBA::BAD_PARAM ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+}
 
 /* ----------------------------------------------------------------*/
 ACSErr::Completion *ErrorComponent::completionFromException(CORBA::Short depth) 
