@@ -311,7 +311,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		DALNode curlNode = rootNode.findNode(curl);
 		if(curlNode == null) {
 			System.err.println("Record does not exists: " + curl);
-			throw new AcsJCDBRecordDoesNotExistEx();
+			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
+			    new AcsJCDBRecordDoesNotExistEx();
+			recordDoesNotExist.setCurl(curl);
+			throw recordDoesNotExist; 
 		}
 		//no Error throwed
 		if(curlNode.isSimple()){
@@ -350,7 +353,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		File xmlFile = new File(xmlPath);
 		if (!xmlFile.exists()) {
 			if (!silent) System.err.println("Record does not exists: " + curl);
-			throw new AcsJCDBRecordDoesNotExistEx();
+			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
+			    new AcsJCDBRecordDoesNotExistEx();
+			recordDoesNotExist.setCurl(curl);
+			throw recordDoesNotExist; 
 		}
 
 		XMLHandler xmlSolver = new XMLHandler(toString);
