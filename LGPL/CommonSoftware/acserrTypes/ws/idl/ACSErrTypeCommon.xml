@@ -26,8 +26,19 @@
 	<ErrorCode name="CouldntPerformAction" shortDescription="Action couldn't be performed" description="Action couldn't be performed"/>
 	<ErrorCode name="TypeNotFound" shortDescription="Type Not Found" description="Type Not Found"/>
 	<ErrorCode name="TypeNotSupported" shortDescription="Type Not Supported" description="Type Not Supported"/>
-	<ErrorCode name="CORBAProblem" shortDescription="CORBA Problem" description="CORBA Problem"/>
-	
+	<ErrorCode name="CORBAProblem" 
+	           shortDescription="CORBA Problem" 
+		   description="CORBA Problem">
+		<Member name="Minor" 
+		        type="long" 
+                        description="Standard CORBA minor exception code"/>
+		<Member name="CompletionStatus" 
+		        type="long" 
+			description="Standard CORBA completion status code"/>
+		<Member name="Info" 
+		        type="string" 
+			description="String containing information about the exception. Availability is ORB dependent and not CORBA compliant."/>
+	</ErrorCode>
 	<ErrorCode name="IllegalStateEvent" 
 		shortDescription="Illegal event sent to a state machine" 
 		description="An illegal event was sent to a state machine">
