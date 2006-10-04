@@ -27,15 +27,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACS.ACSComponent;
-import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
-import alma.ACS.MasterComponentPackage.SubsystemStateEvent;
 
 /**
  * Monitor for any kind of resource whose state a subsystem master component 
@@ -58,15 +57,17 @@ public class SubsysResourceMonitor {
 	private final ScheduledExecutorService scheduler;
 	private final Random random;
 	private final Logger logger;
+	private final ThreadFactory threadFactory;
 	
-    SubsysResourceMonitor(Logger logger) {
-        this(logger, 10);
+    SubsysResourceMonitor(Logger logger, ThreadFactory threadFactory) {
+        this(logger, threadFactory, 10);
     }
     
-    SubsysResourceMonitor(Logger logger, int delaySeconds) {
+    SubsysResourceMonitor(Logger logger, ThreadFactory threadFactory, int delaySeconds) {
         this.delaySeconds = delaySeconds;
 		this.logger = logger;
-		scheduler = Executors.newScheduledThreadPool(1);
+		this.threadFactory = threadFactory;
+		scheduler = Executors.newScheduledThreadPool(1, threadFactory);
 		random = new Random(System.currentTimeMillis());
 	}
 	
@@ -78,7 +79,7 @@ public class SubsysResourceMonitor {
 	 * @param checkRunner
 	 */
 	<T> void monitorResource(ResourceChecker<T> checker, ResourceErrorHandler<T> err) {
-        SubsysResourceMonitor.ResourceCheckRunner<T> checkRunner = new SubsysResourceMonitor.ResourceCheckRunner<T>(checker, err, logger);
+        SubsysResourceMonitor.ResourceCheckRunner<T> checkRunner = new SubsysResourceMonitor.ResourceCheckRunner<T>(checker, err, logger, threadFactory);
         scheduler.scheduleAtFixedRate(checkRunner, random.nextInt(delaySeconds) + 1, delaySeconds, TimeUnit.SECONDS);
 	}
 	
@@ -86,16 +87,18 @@ public class SubsysResourceMonitor {
 	private static class ResourceCheckRunner<T> implements Runnable {
 		
 		public static final int callTimeoutSeconds = 10;
-		private static final ExecutorService exec = Executors.newCachedThreadPool();
+		private static ExecutorService threadPool;
 		
 		private final ResourceChecker<T> resourceChecker;
 		private final ResourceErrorHandler<T> err;
         private final Logger logger;
+    	private final ThreadFactory threadFactory;
 		
-		ResourceCheckRunner(ResourceChecker<T> resourceChecker, ResourceErrorHandler<T> err, Logger logger) {
+		ResourceCheckRunner(ResourceChecker<T> resourceChecker, ResourceErrorHandler<T> err, Logger logger, ThreadFactory threadFactory) {
 			this.resourceChecker = resourceChecker;
 			this.err = err;
             this.logger = logger;
+    		this.threadFactory = threadFactory;
 		}
 		
 		public void run() {
@@ -112,7 +115,7 @@ public class SubsysResourceMonitor {
 					}
 				}
 			};
-			Future future = exec.submit(timeoutCaller);
+			Future future = getThreadPool().submit(timeoutCaller);
 			try {
 				future.get(callTimeoutSeconds, TimeUnit.SECONDS);
 			} catch (TimeoutException e) {
@@ -125,7 +128,14 @@ public class SubsysResourceMonitor {
                 // the asynchronous call "resourceChecker.checkState()" failed, but not because of a timeout.
                 logger.log(Level.WARNING, "Failed to check the status of resource '" + resourceChecker.getResourceName() + "'.", e);
 			}
-		}		
+		}
+		
+		protected synchronized ExecutorService getThreadPool() {
+			if (threadPool == null) {
+				threadPool =  Executors.newCachedThreadPool(threadFactory);
+			}
+			return threadPool;
+		}
 	}
 	
 	/**
