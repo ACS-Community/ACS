@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.12 2006/10/03 22:10:04 gchiozzi Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.13 2006/10/04 14:26:40 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -192,7 +192,13 @@ cdb::DAONode* CharacteristicModelImpl::getDAONode() const
 {
     if(m_daoNode_p == NULL)
 	{
-	throw cdbErrType::CDBRecordDoesNotExistExImpl(__FILE__,__LINE__,"CharacteristicModelImpl::getDAONode");
+	cdbErrType::CDBRecordDoesNotExistExImpl ex = 
+	    cdbErrType::CDBRecordDoesNotExistExImpl(__FILE__,
+						    __LINE__,
+						    "CharacteristicModelImpl::getDAONode");
+	ex.setCurl(model_name_m.c_str());
+	
+	throw ex;
 	}
     return m_daoNode_p;
 }
