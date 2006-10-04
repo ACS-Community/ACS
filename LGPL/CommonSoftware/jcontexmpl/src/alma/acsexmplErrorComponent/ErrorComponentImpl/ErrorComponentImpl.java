@@ -34,6 +34,8 @@ import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 import alma.acsexmplErrorComponent.ErrorComponentOperations;
 
+import org.omg.CORBA.SystemException;
+
 /**
  * Implementation of the <code>ErrorComponent</code> interface,
  * which should demonstrate proper use of the ACS error system in Java.
@@ -69,6 +71,16 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 		} catch (Throwable thr) {
 			throw new AcsJGenericErrorEx("Got unexpected exception", thr).toGenericErrorEx();
 		}
+	}
+	
+	
+	/**
+	 * An intentionally bad method that throws a CORBA::BAD_PARAM system exception
+         * to show how to handle CORBA System Exceptions
+	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#corbaSystemException()
+	 */
+	public void corbaSystemException() throws org.omg.CORBA.SystemException {
+			throw new org.omg.CORBA.BAD_PARAM("Test throwing a CORBA Exception");
 	}
 	
 	
