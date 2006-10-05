@@ -22,6 +22,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
@@ -46,7 +47,7 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	private JScrollPane logSP;
 	private JTextArea logTA;
 	
-	// The document that stores the string in the TextArea
+	// The document of the TextArea
 	PlainDocument document = new PlainDocument();
 	
 	// The button to close (hide) the dialog
@@ -62,9 +63,6 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	// The button is eabled only if some log has been flushed on disk
 	private JButton saveAllBtn;
 	private ImageIcon saveIcon=new ImageIcon(ErrorLogDialog.class.getResource("/save.gif"));
-
-	
-	
 	
 	// The toolbar
 	private JToolBar toolBar;
@@ -161,30 +159,48 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	/**
 	 * Add a String to the error log and show/hide the dialog
 	 * 
+	 * It calls SwingUtilities.invokeLater to avoid deadlocks
+	 * @see javax.swing.SwingUtilities
+	 * 
 	 * @param str The string to append in the TextArea
 	 * @param show Show/hide the dialog
 	 */
 	public synchronized void appendText(String str, boolean show) {
-		int len = document.getLength();
-		// Check the number of chars in the widget
-		synchronized(logTA) {
-			if (maxLength>0 && len>maxLength) {
-				// Flush some chars in the file
-				String strToFlush;
-				try {
-					strToFlush = logTA.getText(0, str.length());
-				} catch (BadLocationException ble) {
-					System.out.println("Error removing text from the TextArea: "+ble.getMessage());
-					ble.printStackTrace();
-					return;
-				}
-				logTA.replaceRange("", 0, str.length());
-				flush(strToFlush);
+		class RunAsyncAppend implements Runnable {
+			private String theString;
+			private boolean visible;
+			
+			public RunAsyncAppend(String str, boolean vis) {
+				theString=str;
+				visible=vis;
 			}
-			logTA.append(str);
-		}
-		setVisible(show);
-		rationalizeButtons();
+			
+			public void run() {
+				int len = document.getLength();
+				// Check the number of chars in the widget
+				synchronized(logTA) {
+					if (maxLength>0 && len>maxLength) {
+						// Flush some chars in the file
+						String strToFlush;
+						try {
+							strToFlush = logTA.getText(0, theString.length());
+						} catch (BadLocationException ble) {
+							System.out.println("Error removing text from the TextArea: "+ble.getMessage());
+							ble.printStackTrace();
+							return;
+						}
+						logTA.replaceRange("", 0, theString.length());
+						flush(strToFlush);
+					}
+					logTA.append(theString);
+				}
+				setVisible(visible);
+				rationalizeButtons();
+			}
+		};
+		
+		RunAsyncAppend runAppend = new RunAsyncAppend(str,show);
+		SwingUtilities.invokeLater(runAppend);
 	}
 	
 	
@@ -193,11 +209,16 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 *
 	 */
 	public synchronized void clearAll() {
-		synchronized (logTA) {
-			if (document.getLength()>0) {
-				logTA.replaceRange("", 0, document.getLength());
+		Runnable clearTA = new Runnable() {
+			public void run() {
+				synchronized (logTA) {
+					if (document.getLength()>0) {
+						logTA.replaceRange("", 0, document.getLength());
+					}
+				}
 			}
-		}
+		};
+		SwingUtilities.invokeLater(clearTA);
 		try {
 			if (outF!=null) {
 				outF.close();
@@ -372,13 +393,13 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 * file
 	 */
 	private void rationalizeButtons() {
-		boolean b;
-		synchronized (logTA) {
-			b = document.getLength()>0;
-		}
-		
-		saveAllBtn.setEnabled(b);
-		cleanAllBtn.setEnabled(b);
+		Runnable ratio = new Runnable() {
+			public void run() {
+				saveAllBtn.setEnabled(document.getLength()>0);
+				cleanAllBtn.setEnabled(document.getLength()>0);
+			}
+		};
+		SwingUtilities.invokeLater(ratio);
 	}
 	
 	/**
@@ -386,18 +407,17 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 * @return A reference to the Error log dialog
 	 */
 	public synchronized static ErrorLogDialog getErrorLogDlg() {
+		// The dialog is created using the SwingUtilities.invokeAndWait
+		// It helps avoiding deadlocks
 		if (instance==null) {
-			instance = new ErrorLogDialog(null,"Error log",false);
-			// It is better to wait until the text area is shown
-			// Otherwise if a string is added there is a deadlock
-			// while refreshing the visible content of logTA
-			//
-			// I have tried other methods must this seems to be the best one
-			do {
-				try {
-					Thread.sleep(150);
-				} catch (Exception e) {}
-			} while (!instance.isVisible());
+			Runnable createObj = new Runnable() {
+				public void run() {
+					ErrorLogDialog.instance = new ErrorLogDialog(null,"Error log",false);
+				}
+			};
+			try {
+				SwingUtilities.invokeAndWait(createObj);
+			} catch (Exception e) {}
 		}
 
 		return instance;
