@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.cpp,v 1.15 2006/10/04 11:30:55 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.cpp,v 1.16 2006/10/05 06:44:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #include "acserrHandlers.h"
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.15 2006/10/04 11:30:55 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.16 2006/10/05 06:44:20 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -371,7 +371,13 @@ void ACSError::hostName (const char* hn){
   strncpy (ErrorTraceHelper::m_hostName, hn, 64);
 }
 
-void ACSError::processName (const char *pn){
+void ACSError::processName (const char *pn)
+{
+    ACSError::setProcessName(pn);
+}
+
+void ACSError::setProcessName (const char *pn)
+{
   strncpy (ErrorTraceHelper::m_processName, pn, 64);
 }
 

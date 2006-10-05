@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestServer.cpp,v 1.43 2005/09/21 08:53:00 vwang Exp $"
+* "@(#) $Id: acserrTestServer.cpp,v 1.44 2006/10/05 06:44:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 * rlemke   30/08/01  integrated into tat 
 */
 
-static char *rcsId="@(#) $Id: acserrTestServer.cpp,v 1.43 2005/09/21 08:53:00 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestServer.cpp,v 1.44 2006/10/05 06:44:28 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestImpl.h"
@@ -98,7 +98,7 @@ int acserrTestServer (char *szCmdLn){
 #else 
       char *buf;
       ACE_OS::argv_to_string (argv, buf);
-      ErrorTraceHelper::setProcessName (buf);
+      ACSError::setProcessName (buf); // = ErrorTraceHelper::setProcessName (buf);
       delete[] buf;
 #endif      
       ACS_DEBUG ("errorServer", "Creating test object ...");

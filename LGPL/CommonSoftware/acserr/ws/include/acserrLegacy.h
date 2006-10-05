@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.h,v 1.9 2006/10/04 11:30:58 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.h,v 1.10 2006/10/05 06:44:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -535,10 +535,19 @@ public:
   static void hostName (const char* hn);
   
   /**
+   * @deprecated
    * Sets process name
    * @param process name
    */
-  static void processName (const char *pn); 
+    static void processName (const char *pn); 
+
+
+   /**
+   * Sets process name
+   * @param process name
+   */
+  static void setProcessName (const char *pn); 
+
 
   static ACSErr::ErrorTrace createErrorTrace (const char* file, int line,
 						    ACSError &er)
