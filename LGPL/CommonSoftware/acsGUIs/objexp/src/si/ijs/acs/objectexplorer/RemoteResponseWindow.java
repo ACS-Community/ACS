@@ -211,7 +211,9 @@ class IvjEventHandler implements java.awt.event.ActionListener, java.awt.event.F
 				connPtoP2SetTarget();
 		};
 		public void windowActivated(java.awt.event.WindowEvent e) {};
-		public void windowClosed(java.awt.event.WindowEvent e) {};
+		public void windowClosed(java.awt.event.WindowEvent e) {
+			setDestroyed(true);
+		};
 		public void windowClosing(java.awt.event.WindowEvent e) {};
 		public void windowDeactivated(java.awt.event.WindowEvent e) {};
 		public void windowDeiconified(java.awt.event.WindowEvent e) {
@@ -1580,7 +1582,7 @@ private static String processResponse(RemoteResponse response, boolean expand) {
 public void remoteResponseWindow_Initialize() {
 	getReportArea().getPopup().add(getJCheckBoxMenuItem1());
 	getJTextField1().setText(Integer.toString(maxLines));
-	if (rr!=null){
+	if (rr!=null && rr.getInvocation().isControllable()){
 		DefaultListModel model=new DefaultListModel();
 		Operation[] ops=rr.getInvocation().getOperations();
 		for (int i = 0; i < ops.length; i++){
@@ -1588,6 +1590,12 @@ public void remoteResponseWindow_Initialize() {
 		}
 		getoperationsList().setModel(model);
 		getoperationsList().revalidate();
+	}
+	
+	// allow window to be closed, since it is not controllable
+	if (rr!=null && !rr.getInvocation().isControllable())
+	{
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	return;
 }

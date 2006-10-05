@@ -23,7 +23,6 @@ public OERemoteResponseCallback(RemoteResponseCallbackListener handler, int id) 
  * invocationDestroyed method comment.
  */
 public void invocationDestroyed() {
-  if (!invoc.isControllable()) return;
   handler.invocationDestroyed(invoc);  
 }
 /**
