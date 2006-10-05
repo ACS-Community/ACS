@@ -274,13 +274,15 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
         if (err == null) {
             // use default error handler that sets the subsystem state to ERROR
             err = new SubsysResourceMonitor.ResourceErrorHandler<T>() {
-                public void resourceUnreachable(T resource) {
+                public boolean resourceUnreachable(T resource) {
                     try {
                         m_logger.log(Level.INFO, "Found unreachable component, will go to ERROR state.");
                         doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
                     } catch (Throwable thr) {
                         m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
                     }
+                    // a component call has a CORBA timeout, so it's safe to keep monitoring it; hanging threads will eventually terminate.
+                    return false;
                 }
                 public void badState(T resource, String stateName) {
                     try {
