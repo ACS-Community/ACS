@@ -4,6 +4,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import java.awt.event.ActionListener;
@@ -96,13 +97,18 @@ public class StatsDlg extends JDialog
 	 *
 	 */
 	private void refreshGUI() {
-		totNumOfLogsLbl.setText(""+logging.getLogEntryTable().getLCModel().totalLogNumber());
-		Runtime rt = Runtime.getRuntime();
-		long freeMem = rt.freeMemory();
-		long totMem = rt.totalMemory();
-		availMemLbl.setText(""+(freeMem/1024)+"Kb");
-        usedMemLbl.setText(""+((totMem-freeMem)/1024)+"Kb");
-        pack();
+		Runnable refresh = new Runnable() {
+			public void run() {
+				totNumOfLogsLbl.setText(""+logging.getLogEntryTable().getLCModel().totalLogNumber());
+				Runtime rt = Runtime.getRuntime();
+				long freeMem = rt.freeMemory();
+				long totMem = rt.totalMemory();
+				availMemLbl.setText(""+(freeMem/1024)+"Kb");
+		        usedMemLbl.setText(""+((totMem-freeMem)/1024)+"Kb");
+		        pack();
+			}
+		};
+		SwingUtilities.invokeLater(refresh);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
