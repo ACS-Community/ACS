@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2005/01/21 12:31:10 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/10/05 12:16:57 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -130,6 +130,12 @@ CDB_SCHEMAS = Container Components Component HierarchicalComponent Manager
 IDL_FILES = maci
 IDL_TAO_FLAGS =
 USER_IDL =
+
+#
+# ACS Error definition files.
+#
+ACSERRDEF = maciErrTypeComponent 
+
 #
 # Jarfiles and their directories
 #
