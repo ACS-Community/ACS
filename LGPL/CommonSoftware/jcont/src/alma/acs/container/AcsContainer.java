@@ -170,7 +170,7 @@ public class AcsContainer extends ContainerPOA
 
 		// init the alarm system
 		try {
-			ACSAlarmSystemInterfaceFactory.init(m_acsCorba.getORB(), m_managerProxy.getManager(), m_logger);
+			ACSAlarmSystemInterfaceFactory.init(m_acsCorba.getORB(), m_managerProxy.getManager(), m_managerProxy.getManagerHandle(),m_logger);
 		} catch (Throwable thr) {
 			throw new ContainerException("Error initializing the alarm system factory", thr);
 		}
