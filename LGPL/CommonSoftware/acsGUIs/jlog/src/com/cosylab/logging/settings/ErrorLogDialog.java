@@ -22,6 +22,8 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
  * The dialog to show the errors.
@@ -44,6 +46,9 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	private JScrollPane logSP;
 	private JTextArea logTA;
 	
+	// The document that stores the string in the TextArea
+	PlainDocument document = new PlainDocument();
+	
 	// The button to close (hide) the dialog
 	private JButton closeBtn;
 	
@@ -59,11 +64,10 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	private ImageIcon saveIcon=new ImageIcon(ErrorLogDialog.class.getResource("/save.gif"));
 
 	
+	
+	
 	// The toolbar
 	private JToolBar toolBar;
-	
-	// Tne content of the text area
-	private StringBuilder content = new StringBuilder("");
 	
 	// The maximum dimension of the log to keep in memory
 	// Its value is read from a property.
@@ -97,6 +101,7 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		pack();
 		maxLength = Long.getLong(ERRORLOG_SIZE_PROP_NAME, ERROR_LOG_DEFAULT_SIZE);
 		System.out.println("Max length of in-memory error log "+maxLength);
+		setVisible(true);
 	}
 	
 	/**
@@ -104,8 +109,12 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 *
 	 */
 	private void initGUI() {
+		System.out.println("Building the GUI");
 		logTA = new JTextArea("", 20, 60);
-		logTA.setEditable(false);
+		synchronized(logTA) {
+			logTA.setDocument(document);
+			logTA.setEditable(false);
+		}
 		logSP = new JScrollPane(logTA);
 		
 		JRootPane mainPnl = this.getRootPane();
@@ -122,12 +131,12 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		// Build the toolbar
 		toolBar = new JToolBar();
 		JPanel toolBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		cleanAllBtn = new JButton("<HTML><Font size=\"-1\">Clean all</FONT></HTML>",cleanIcon);
+		cleanAllBtn = new JButton("<HTML><Font size=\"-1\">Clean</FONT></HTML>",cleanIcon);
 		cleanAllBtn.addActionListener(this);
-		cleanAllBtn.setToolTipText("Delete the log in the window and those flushed on disk");
-		saveAllBtn = new JButton("<HTML><Font size=\"-1\">Save all</FONT></HTML>",saveIcon);
+		cleanAllBtn.setToolTipText("Delete log");
+		saveAllBtn = new JButton("<HTML><Font size=\"-1\">Save</FONT></HTML>",saveIcon);
 		saveAllBtn.addActionListener(this);
-		saveAllBtn.setToolTipText("Save the log in the window and those flushed on disk");
+		saveAllBtn.setToolTipText("Save log");
 		
 		toolBarPanel.add(cleanAllBtn);
 		toolBarPanel.add(saveAllBtn);
@@ -136,6 +145,7 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		mainPnl.add(toolBar, BorderLayout.PAGE_START);
 		
 		rationalizeButtons();
+		System.out.println("GUI inited");
 	}
 	
 	/** 
@@ -155,19 +165,24 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 * @param show Show/hide the dialog
 	 */
 	public synchronized void appendText(String str, boolean show) {
-		synchronized(content) {
-			content.append(str);
-			// Check if the content of the log is too big
-			if (maxLength>0 && content.length()>maxLength) {
-				// The string to flush in the file
-				String strToFlush = content.substring(0,(int)(content.length()-maxLength));
-				// Cut the text in the log
-				content.delete(0,(int)(content.length()-maxLength));
-				// Flush the string on disk
+		int len = document.getLength();
+		// Check the number of chars in the widget
+		synchronized(logTA) {
+			if (maxLength>0 && len>maxLength) {
+				// Flush some chars in the file
+				String strToFlush;
+				try {
+					strToFlush = logTA.getText(0, str.length());
+				} catch (BadLocationException ble) {
+					System.out.println("Error removing text from the TextArea: "+ble.getMessage());
+					ble.printStackTrace();
+					return;
+				}
+				logTA.replaceRange("", 0, str.length());
 				flush(strToFlush);
 			}
+			logTA.append(str);
 		}
-		logTA.setText(content.toString());
 		setVisible(show);
 		rationalizeButtons();
 	}
@@ -178,12 +193,11 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 *
 	 */
 	public synchronized void clearAll() {
-		synchronized (content) {
-			if (content.length()>0) {
-				content.delete(0, content.length());
+		synchronized (logTA) {
+			if (document.getLength()>0) {
+				logTA.replaceRange("", 0, document.getLength());
 			}
 		}
-		logTA.setText(content.toString());
 		try {
 			if (outF!=null) {
 				outF.close();
@@ -278,9 +292,9 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	    }
 	    
 	    // Write the content of the window
-	    synchronized (content) {
+	    synchronized (logTA) {
 	    	try {
-	    		bufOutStream.write(content.toString().getBytes());
+	    		bufOutStream.write(logTA.getText().getBytes());
 	    	} catch (IOException ioe) {
 	    		JOptionPane.showMessageDialog(this, "Error writing on file", "Error saving the log", JOptionPane.ERROR_MESSAGE);
 	    		System.out.println(ioe.getMessage());
@@ -359,8 +373,8 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 */
 	private void rationalizeButtons() {
 		boolean b;
-		synchronized (content) {
-			b = content.length()>0;
+		synchronized (logTA) {
+			b = document.getLength()>0;
 		}
 		
 		saveAllBtn.setEnabled(b);
@@ -374,7 +388,18 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	public synchronized static ErrorLogDialog getErrorLogDlg() {
 		if (instance==null) {
 			instance = new ErrorLogDialog(null,"Error log",false);
+			// It is better to wait until the text area is shown
+			// Otherwise if a string is added there is a deadlock
+			// while refreshing the visible content of logTA
+			//
+			// I have tried other methods must this seems to be the best one
+			do {
+				try {
+					Thread.sleep(150);
+				} catch (Exception e) {}
+			} while (!instance.isVisible());
 		}
+
 		return instance;
 	}
 	
