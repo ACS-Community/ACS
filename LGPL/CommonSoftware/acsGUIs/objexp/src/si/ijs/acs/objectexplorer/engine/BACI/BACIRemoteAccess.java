@@ -297,7 +297,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				new BACIRemoteResponse(invoc, op, names, data);
 			response.setErrorResponse(errorResponse);
 			response.cb = cb;
-			if (baciIntrospector.isInvocationDoneMethod(op)) {
+			if (baciIntrospector.isInvocationDoneMethod(op) || invoc.isDestroyRequested()) {
 				response.destroy = true;
 				org.omg.PortableServer.POA poa = _default_POA();
 				try {

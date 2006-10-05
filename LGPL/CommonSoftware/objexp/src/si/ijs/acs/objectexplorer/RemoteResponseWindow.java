@@ -213,6 +213,7 @@ class IvjEventHandler implements java.awt.event.ActionListener, java.awt.event.F
 		public void windowActivated(java.awt.event.WindowEvent e) {};
 		public void windowClosed(java.awt.event.WindowEvent e) {
 			setDestroyed(true);
+			if (rr!=null) rr.getInvocation().requestDestroy();
 		};
 		public void windowClosing(java.awt.event.WindowEvent e) {};
 		public void windowDeactivated(java.awt.event.WindowEvent e) {};

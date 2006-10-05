@@ -21,6 +21,7 @@ import si.ijs.acs.objectexplorer.OETreeNode;
 public abstract class Invocation extends OETreeNode implements SimpleIntrospectable {
 	private RemoteResponseCallback cb = null;
 	private boolean destroyed = false;
+	private boolean requestDestroy = false;
 /**
  * Constructs a new instance of invocation object.
  *
@@ -47,6 +48,20 @@ public Invocation(short type, String name, RemoteCall data, RemoteResponseCallba
  */
 public synchronized void destroy() {
 	destroyed = true;
+}
+/**
+ * Request destruction.
+ * 
+ */
+public synchronized void requestDestroy() {
+	requestDestroy = true;
+}
+/**
+ * Request destruction.
+ * 
+ */
+public synchronized boolean isDestroyRequested() {
+	return requestDestroy;
 }
 /**
  * Returns a callback object associated with this invocation.
