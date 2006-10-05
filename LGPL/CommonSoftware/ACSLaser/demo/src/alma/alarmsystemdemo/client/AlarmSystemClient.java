@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: AlarmSystemClient.java,v 1.1 2006/09/27 10:50:56 acaproni Exp $
+ * @version $Id: AlarmSystemClient.java,v 1.2 2006/10/05 08:30:40 acaproni Exp $
  * @since    
  */
 
@@ -72,7 +72,7 @@ public class AlarmSystemClient {
 		logger.info(clientName+" connected");
 		// Hanshake with the alarm system
 		ACSJMSTopicConnectionImpl.containerServices=client.getContainerServices();
-		ACSAlarmSystemInterfaceFactory.init(client.getORB(),null,logger);
+		ACSAlarmSystemInterfaceFactory.init(client.getORB(),null,0,logger);
 		logger.info("AS factory inited");
 		// Create the source
 		source = ACSAlarmSystemInterfaceFactory.createSource(client.getContainerServices().getName());

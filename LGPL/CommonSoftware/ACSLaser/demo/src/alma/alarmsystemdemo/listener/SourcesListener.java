@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SourcesListener.java,v 1.1 2006/09/27 10:50:35 acaproni Exp $
+ * @version $Id: SourcesListener.java,v 1.2 2006/10/05 08:30:40 acaproni Exp $
  * @since    
  */
 
@@ -95,7 +95,7 @@ public class SourcesListener {
         
         // Handshaske with the alarm system
         try {
-        	ACSAlarmSystemInterfaceFactory.init(m_client.getORB(),null,logger);
+        	ACSAlarmSystemInterfaceFactory.init(m_client.getORB(),null,0,logger);
         } catch (Exception e) {
         	logger.severe("Error initing the AS factory: "+e.getMessage());
         	e.printStackTrace();
