@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry sourcepath="lib/mastercomp_if.jar" kind="lib" path="lib/mastercomp_if.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/jbaci.jar" kind="var" path="ACSROOT/lib/jbaci.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/jcont.jar" kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/baci.jar" kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/acserr.jar" kind="var" path="ACSROOT/lib/acserr.jar"/>
@@ -16,10 +16,11 @@
 	<classpathentry sourcepath="/ACSROOT/lib/jACSUtil.jar" kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/ACSErrTypeCommon.jar" kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry sourcepath="lib/mastercompTest_if.jar" kind="lib" path="lib/mastercompTest_if.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/acscodegen.jar" kind="var" path="ACSROOT/lib/acscodegen.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/backport-util-concurrent.jar" kind="var" path="ACSROOT/lib/backport-util-concurrent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscodegen.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
