@@ -286,6 +286,8 @@ public class ComponentClient
 			}
             
             m_threadFactory.cleanUp();
+            
+            ACSAlarmSystemInterfaceFactory.done();
 		}
 		catch (org.omg.CORBA.OBJECT_NOT_EXIST ex)
 		{
