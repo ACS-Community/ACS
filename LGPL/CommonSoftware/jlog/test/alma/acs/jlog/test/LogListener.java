@@ -43,7 +43,7 @@ public class LogListener implements
 	public static void main(String[] args) {
 		LogListener ll = new LogListener();
 		try {
-			Thread.sleep(120000);
+			Thread.sleep(90000);
 		} catch (InterruptedException ie) {}
 		ll.disconnet();
 		System.exit(0);
