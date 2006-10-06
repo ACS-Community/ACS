@@ -38,6 +38,7 @@ import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
  * Class that facilitates writing client application that access ACS components. 
@@ -176,6 +177,13 @@ public class ComponentClient
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
 										m_clientName, null, m_threadFactory);
+			
+			//	init the alarm system
+			try {
+				ACSAlarmSystemInterfaceFactory.init(acsCorba.getORB(), m_acsManagerProxy.getManager(), m_acsManagerProxy.getManagerHandle(), m_logger);
+			} catch (Throwable thr) {
+				throw new Exception("Error initializing the alarm system factory", thr);
+			}
 		}
 		catch (Exception ex)
 		{
