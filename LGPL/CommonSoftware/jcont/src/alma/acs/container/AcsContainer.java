@@ -810,6 +810,8 @@ public class AcsContainer extends ContainerPOA
         {
             abortAllComponents(3000);
         }
+        
+    	ACSAlarmSystemInterfaceFactory.done();
 
         m_managerProxy.logoutFromManager();
 
