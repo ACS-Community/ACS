@@ -22,6 +22,7 @@
 package alma.ACS.MasterComponentImpl;
 
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -118,6 +119,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 			try {
 				stateChangeNotificationChecker = new StateChangeNotificationChecker(m_logger);
 				stateChangeNotificationChecker.createMonitor(m_currentStateHierarchy, m_containerServices);
+				m_logger.info("Running in state change notification test mode: All externally visible state changes will be compared with the internally triggered changes.");
 			} catch (Exception e) {
 				m_logger.log(Level.WARNING, "Master component " + name() + 
 						" failed to monitor its state change notification although this was requested by the property '" + StateChangeNotificationChecker.PROPERTYNAME + "'.", e);
@@ -139,6 +141,11 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	 * @see alma.ACS.impl.CharacteristicComponentImpl#cleanUp()
 	 */
 	public void cleanUp() {
+		try {
+			subsysComponentMonitor.destroy(5, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			m_logger.log(Level.WARNING, "Failed to destroy the subsystem resource monitor", e);
+		}
 		try {
 			if (stateChangeNotificationChecker != null) {
 				stateChangeNotificationChecker.destroyMonitor();
