@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SourcesListener.java,v 1.2 2006/10/05 08:30:40 acaproni Exp $
+ * @version $Id: SourcesListener.java,v 1.3 2006/10/06 09:09:33 acaproni Exp $
  * @since    
  */
 
@@ -93,14 +93,6 @@ public class SourcesListener {
         logger.info(clientName+" connected");
         m_contSvcs=m_client.getContainerServices();
         
-        // Handshaske with the alarm system
-        try {
-        	ACSAlarmSystemInterfaceFactory.init(m_client.getORB(),null,0,logger);
-        } catch (Exception e) {
-        	logger.severe("Error initing the AS factory: "+e.getMessage());
-        	e.printStackTrace();
-        	System.exit(-1);
-        }
         try {
 	        if (!ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem()) {
 	        	ACSJMSTopicConnectionImpl.containerServices=m_contSvcs;
