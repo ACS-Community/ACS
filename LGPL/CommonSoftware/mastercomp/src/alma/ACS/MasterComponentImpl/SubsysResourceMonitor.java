@@ -22,11 +22,13 @@
 
 package alma.ACS.MasterComponentImpl;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -34,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACS.ACSComponent;
+import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 
 /**
@@ -57,10 +60,11 @@ public class SubsysResourceMonitor {
 	 */
 	public final int delaySeconds;
 	
-	private final ScheduledExecutorService scheduler;
+	private final ScheduledThreadPoolExecutor scheduler;
 	private final Random random;
 	private final Logger logger;
 	private final ExecutorService monitorCallThreadPool;
+    private final Set<ResourceCheckRunner> resourceRunners;
 	private boolean isShuttingDown;
 	private boolean isShutDown;
 	
@@ -75,39 +79,96 @@ public class SubsysResourceMonitor {
     /**
      * @param logger  Logger to be used by this object
      * @param threadFactory  all threads for scheduling and calling the resources will be created by this factory.  
-     * @param delaySeconds  the delay between two monitoring calls to a resource.
+     * @param delaySeconds  the delay between finishing one monitoring call and starting the next call to the same resource.
+     *                      Values <= 1 will be changed to == 1.
      */
     SubsysResourceMonitor(Logger logger, ThreadFactory threadFactory, int delaySeconds) {
-        this.delaySeconds = delaySeconds;
+        this.delaySeconds = Math.max(1, delaySeconds);
 		this.logger = logger;
 		monitorCallThreadPool = Executors.newCachedThreadPool(threadFactory);
+        resourceRunners = new HashSet<ResourceCheckRunner>();
 		isShuttingDown = false;
 		isShutDown = false;
-		scheduler = Executors.newScheduledThreadPool(1, threadFactory);
+		scheduler = new ScheduledThreadPoolExecutor(1, threadFactory);
 		random = new Random(System.currentTimeMillis());
 	}
 	
 	/**
 	 * Starts to periodically monitor the resource that <code>checker</code> contains.
-	 * The monitor interval length is given by {@link #delaySeconds}.
+	 * The monitor delay length is given by {@link #delaySeconds}.
 	 * <p> 
 	 * In order to randomize check times even if many resources get signed up for monitoring one after the other, 
 	 * the initial delay before the first check is run is taken randomly between 1 second and the period time. 
 	 * @param checker
 	 * @throws IllegalStateException if {@link #destroy(long, TimeUnit)} has been called.
+     * @throws IllegalArgumentException if any of the arguments are <code>null</code><code>, 
+     *         or if checker.getResource()</code> or <code>checker.getResourceName()</code> returns <code>null</code>.
 	 */
 	<T> void monitorResource(ResourceChecker<T> checker, ResourceErrorHandler<T> err) {
 		if (isShuttingDown) {
 			throw new IllegalStateException("Resource monitor is already destroyed.");
-		}
-		SubsysResourceMonitor.ResourceCheckRunner<T> checkRunner = new SubsysResourceMonitor.ResourceCheckRunner<T>(checker, err, logger, monitorCallThreadPool);
-		scheduler.scheduleAtFixedRate(checkRunner, random.nextInt(delaySeconds) + 1, delaySeconds, TimeUnit.SECONDS);
+		}        
+        if (checker == null || checker.getResource() == null || checker.getResourceName() == null) {
+            throw new IllegalArgumentException("ResourceChecker must be non-null and must deliver non-null resource and resource name.");
+        }
+        if (err == null) {
+            throw new IllegalArgumentException("ResourceErrorHandler must not be null");
+        }
+        synchronized (resourceRunners) {
+            for (ResourceCheckRunner runner : resourceRunners) {
+                ResourceChecker existingChecker = runner.getResourceChecker();
+                Object existingResource = existingChecker.getResource();
+                String existingResourceName = existingChecker.getResourceName();
+                if (existingResource == checker.getResource()) {
+                    String msg = "Resource '" + checker.getResourceName() + "' is already being monitored. ";
+                    if (!existingResourceName.equals(checker.getResourceName())) {
+                        msg += "However it was known under the different name '" + existingResourceName + "'! ";
+                    }
+                    msg += "Will re-schedule the monitoring now.";
+                    logger.info(msg);
+                    Future future = runner.getScheduleFuture();
+                    future.cancel(true);
+                    resourceRunners.remove(existingChecker);
+                    break;
+                }
+            }
+        	SubsysResourceMonitor.ResourceCheckRunner<T> checkRunner = new SubsysResourceMonitor.ResourceCheckRunner<T>(checker, err, logger, monitorCallThreadPool);
+        	int initialDelaySeconds = random.nextInt(delaySeconds);
+        	Future future = scheduler.scheduleWithFixedDelay(checkRunner, initialDelaySeconds, delaySeconds, TimeUnit.SECONDS);
+            checkRunner.setScheduleFuture(future);
+            resourceRunners.add(checkRunner);
+//            logger.info("Will monitor resource '" + checker.getResourceName() + "'.");
+        }
 	}
 	
 	/**
+	 * For testing only.
+     * Returns the number of actively running threads, plus the number of tasks in the queue that is used for scheduling the monitoring calls.
+	 */
+	public int getNumberOfMonitorTasks() {
+		return ( scheduler.getActiveCount() + scheduler.getQueue().size() );
+	}
+	
+    /**
+     * For testing only!
+     * <p>
+     * Gets the <code>ResourceCheckRunner</code> that is used for running the monitor checks 
+     * that use the given <code>ResourceChecker</code>.
+     * @return the corresponding  <code>ResourceCheckRunner</code>, or <code>null</code> if no runner matches.
+     */
+    SubsysResourceMonitor.ResourceCheckRunner getResourceCheckRunner(ResourceChecker checker) {
+        for (ResourceCheckRunner runner : resourceRunners) {
+            if (runner.getResourceChecker() == checker) {
+                return runner;
+            }
+        }
+        return null;
+    }
+    
+	/**
 	 * Cancels monitoring of all resources and leaves this object in an unusable state.
 	 * <p>
-	 * This method is synchronized so that a second call can return immediately, but only if the first call has finished.
+	 * Impl note: this method is synchronized so that a second call can return immediately, but only if the first call has finished.
 	 * @param timeout the timeout for waiting that the internal threads, queues, jobs etc are freed, or <code>0</code> to not wait at all.
 	 * @param unit
 	 * @throws InterruptedException
@@ -128,14 +189,22 @@ public class SubsysResourceMonitor {
 		}
 	}
 	
+    
+    
+    
+    
+    
+	/**
+     * The <code>Runnable</code> used for the scheduling queue of <code>SubsysResourceMonitor</code>.
+	 */
 	static class ResourceCheckRunner<T> implements Runnable {
 		
-		public static final int callTimeoutSeconds = 10;
-		
+		private volatile int callTimeoutSeconds = 10;		
 		private final ResourceChecker<T> resourceChecker;
 		private final ResourceErrorHandler<T> err;
         private final Logger logger;
     	private final ExecutorService threadPool;
+        private Future scheduleFuture;
 		
 		ResourceCheckRunner(ResourceChecker<T> resourceChecker, ResourceErrorHandler<T> err, Logger logger, ExecutorService threadPool) {
 			this.resourceChecker = resourceChecker;
@@ -143,6 +212,20 @@ public class SubsysResourceMonitor {
             this.logger = logger;
     		this.threadPool = threadPool;
 		}
+        
+        /**
+         * Sets the future that was obtained from the scheduler when starting the monitoring job.
+         * The future object can be used to cancel the execution of this check runner.
+         * Unfortunately this object is not yet available at construction time, 
+         * that's why we have this separate setter method.
+         */
+        void setScheduleFuture(Future scheduleFuture) {
+            this.scheduleFuture = scheduleFuture;
+        }
+        
+        Future getScheduleFuture() {
+            return scheduleFuture;
+        }
 		
 		public void run() {
 			// run the check in a thread from the thread pool
@@ -183,10 +266,13 @@ public class SubsysResourceMonitor {
 			} catch (Throwable thr) { // ExecutionException or unexpected
 				callError = thr;
 			}
+			
+			boolean beyondRepair = false;
 			if (wasTimedOut) {
 				try {
 					// notify the error handler
-					err.resourceUnreachable(resourceChecker.getResource()); 
+					// TODO: call in separate thread with timeout. Decide about value of "beyondRepair" if method 'resourceUnreachable' times out
+					beyondRepair = err.resourceUnreachable(resourceChecker.getResource()); 
 				} catch (Throwable thr) {
                     logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
 				} 				
@@ -195,9 +281,41 @@ public class SubsysResourceMonitor {
                 // the asynchronous call "resourceChecker.checkState()" failed, but not because of a timeout.
                 logger.log(Level.WARNING, "Failed to check the status of resource '" + resourceChecker.getResourceName() + "'.", callError);				
 			}
-		}		
+			if (beyondRepair) {
+				String msg = "Resource '" + resourceChecker.getResourceName() + "' appears permanently unreachable and will no longer be monitored.";			
+				logger.info(msg);
+                if (scheduleFuture != null) {
+                    scheduleFuture.cancel(true);
+                }
+                else {
+                    // this should never be necessary, but if so, it should also cancel the scheduled job
+                    throw new RuntimeException(msg);
+                }
+			}
+		}
+        
+        /**
+         * Gets the timeout value in seconds, which is used to abandon hanging resource checker tasks.
+         */
+        int getCallTimeoutSeconds() {
+            return callTimeoutSeconds;
+        }
+        
+        /**
+         * For testing only.
+         */
+        void setCallTimeoutSeconds(int timeout) {
+            callTimeoutSeconds = timeout;
+        }
+        
+        ResourceChecker getResourceChecker() {
+            return resourceChecker;
+        }
+        
 	}
 	
+    
+    
 	/**
      * Encapsulates the details of a particular resource,
      * so that all resources (components, offshoots, databases, ...) can
