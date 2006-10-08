@@ -50,7 +50,7 @@ public class SubsysResourceMonitorTest extends TestCase {
     
     protected void setUp() throws Exception {
         logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(getName(), false);
-        logger.info("-------------------------------- setUp " + getName());
+        logger.info("-------------------- setUp " + getName() + " --------------------");
 
         threadFactory = new CleaningDaemonThreadFactory("monitor", logger) {
 			public Thread newThread(Runnable command) {
@@ -81,9 +81,10 @@ public class SubsysResourceMonitorTest extends TestCase {
     	// a well-behaved resource
         TestResource resource = new TestResource(logger);
         resource.setState(TestResource.STATE_OK);
-        resource.setTestDelaySeconds(1);
-        int numberCheckCalls = 4;
-        CountDownLatch resourceCheckCounter = new CountDownLatch(numberCheckCalls);
+        int testDelaySeconds = 1;
+        resource.setTestDelaySeconds(testDelaySeconds);
+        int numMonitorCalls = 4;
+        CountDownLatch resourceCheckCounter = new CountDownLatch(numMonitorCalls);
         resource.setStateCheckCounter(resourceCheckCounter);
         
         // a benign resource checker
@@ -96,50 +97,64 @@ public class SubsysResourceMonitorTest extends TestCase {
         assertEquals(0, handler.getUnreachableCount());
         assertEquals(0, handler.getBadStateCount());
         assertFalse(handler.isPermanentlyUnreachable());
+        assertEquals(0, subsysResourceMonitor.getNumberOfMonitorTasks());
         
         // the call to monitorResource returns immediately, thus we need to wait afterwards
         subsysResourceMonitor.monitorResource(checker, handler);
-        assertTrue("timeout occured while waiting for resource check calls", resourceCheckCounter.await(checkDelaySeconds * numberCheckCalls + 2, TimeUnit.SECONDS));
+        int maxTotalTimeSeconds = (testDelaySeconds + checkDelaySeconds) * numMonitorCalls + 1;
+        assertTrue("timeout occured while waiting for resource check calls", resourceCheckCounter.await(maxTotalTimeSeconds, TimeUnit.SECONDS));
 
         assertEquals(0, handler.getUnreachableCount());
         assertEquals(0, handler.getBadStateCount());
         
-        List<Thread> threadsCreated = threadFactory._getAllThreadsCreated();
-//        for (Thread thread : threadsCreated) {
-//			logger.info("Monitor framework created thread '" + thread.getName() + "' during test run.");
-//		}
         // we expect one thread for the monitor scheduler, and another thread for the asynchronous call to the resource 
+        List<Thread> threadsCreated = threadFactory._getAllThreadsCreated();
         assertEquals("The monitoring should have created 2 threads", 2, threadsCreated.size());
     }
 
-// todo: check what happens if same resource is monitored more than once 
     
     
-    
+    /**
+     * Simulates hanging monitor calls, and tests the notification of the error handler,
+     * the creation and reuse of threads, the continuation and eventual termination of monitoring calls.  
+     */
     public void testResourceUnavailable() throws Exception {
         try {
-			TestResource resource = new TestResource(logger);			
+			TestResource resource = new TestResource(logger);
 			TestResourceChecker checker = new TestResourceChecker(resource, logger);        
 			TestErrorHandler handler = new TestErrorHandler(logger);
 
 			subsysResourceMonitor.monitorResource(checker, handler);
-			
-			// we simulate an unavailable resource, as in a CORBA call that eventually times out
-			int timeoutSeconds = SubsysResourceMonitor.ResourceCheckRunner.callTimeoutSeconds;
-			int testDelaySeconds = 2* timeoutSeconds + 1;
+            SubsysResourceMonitor.ResourceCheckRunner runner = subsysResourceMonitor.getResourceCheckRunner(checker);
+            assertNotNull(runner);
+			runner.setCallTimeoutSeconds(3); // to speed up the test a bit, compared to the default of 10
+            
+			// (1) we simulate an unavailable resource, as in a CORBA call that eventually times out
+			int timeoutSeconds = runner.getCallTimeoutSeconds();
+			int testDelaySeconds = 6 * timeoutSeconds + 1;  // must be greater than timeoutSeconds to allow testing the behavior for unavailable resources
+            assertTrue("for testing, the artifical resource check hanging time should not be an integer multiple of (timeoutSeconds + checkDelaySeconds), to avoid hitting the boundary where an exisitng thread can be reused vs. creating a new thread", testDelaySeconds % (timeoutSeconds + checkDelaySeconds) > 0);
 			resource.setTestDelaySeconds(testDelaySeconds);
 			int numMonitorCalls = 10;
-			CountDownLatch resourceCheckCounter = new CountDownLatch(numMonitorCalls);
-			resource.setStateCheckCounter(resourceCheckCounter);
-			int maxTotalTimeSeconds = checkDelaySeconds + Math.max(checkDelaySeconds, timeoutSeconds) * numMonitorCalls + testDelaySeconds + 1;
+			CountDownLatch timeoutSync = new CountDownLatch(numMonitorCalls);
+            handler.setUnreachabilitySync(timeoutSync);
+			int maxTotalTimeSeconds = (timeoutSeconds + checkDelaySeconds) * numMonitorCalls + 1;
 			logger.info("Test thread will wait for " + numMonitorCalls + " unavailability notifications (at most " + maxTotalTimeSeconds + " seconds)");
-			assertTrue("timeout occured while waiting for deliberately slow resource check calls", resourceCheckCounter.await(maxTotalTimeSeconds, TimeUnit.SECONDS));
-			assertEquals( (numMonitorCalls + (testDelaySeconds-timeoutSeconds)/Math.max(checkDelaySeconds, timeoutSeconds)), handler.getUnreachableCount() );
+			assertTrue("timeout occured while waiting for deliberately slow resource check calls", timeoutSync.await(maxTotalTimeSeconds, TimeUnit.SECONDS));
+			logger.info("Test thread continues...");
+            assertEquals(1, subsysResourceMonitor.getNumberOfMonitorTasks());
+			assertEquals(numMonitorCalls, handler.getUnreachableCount());
 			assertEquals(0, handler.getBadStateCount());
 			
 			List<Thread> threadsCreated = threadFactory._getAllThreadsCreated();
-			// we expect one thread for the monitor scheduler, and 3 threads for the asynchronous calls to the resource 
-			assertEquals("The monitoring should have created 4 threads", 4, threadsCreated.size());
+			// we expect one thread for the monitor scheduler, and some more threads for the asynchronous calls to the resource. 
+			// Their number depends on how many checker threads had to be started before an initially hanging thread could be reused. 
+            int numCheckerThreads = 1 + testDelaySeconds/(timeoutSeconds + checkDelaySeconds);
+			assertEquals("The monitoring should have created " + (numCheckerThreads + 1) + " threads.", numCheckerThreads+1, threadsCreated.size());
+			
+			// (2) we simulate a resource that's gone beyond repair, and whose error handler will request no further monitoring
+			handler.setIsPermanentlyUnreachable(true);
+			Thread.sleep((checkDelaySeconds + timeoutSeconds + 1)*1000); // wait to make sure that the permanent failure has been discovered
+            assertEquals("Monitoring should have been cancelled due to the permanent failure.", 0, subsysResourceMonitor.getNumberOfMonitorTasks()); 
 			
 			logger.info("done");
 		} catch (AssertionFailedError e) {
@@ -150,6 +165,61 @@ public class SubsysResourceMonitorTest extends TestCase {
     }
     
     
+    public void testUsageErrorResponse() throws Exception {
+        TestResource resourceOk = new TestResource(logger);
+                    
+        TestResourceChecker checkerOk = new TestResourceChecker(resourceOk, logger);            
+        TestErrorHandler handler = new TestErrorHandler(logger);
+
+        // (1) ResourceChecker and error handler are null
+        try {
+            subsysResourceMonitor.monitorResource(null, null);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("ResourceChecker must be non-null and must deliver non-null resource and resource name.", ex.getMessage());
+        }
+        // (2) ResourceChecker wraps a null resource
+        TestResourceChecker checkerNullResource = new TestResourceChecker(null, logger);
+        try {
+            subsysResourceMonitor.monitorResource(checkerNullResource, handler);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("ResourceChecker must be non-null and must deliver non-null resource and resource name.", ex.getMessage());
+        }
+        // (3) ResourceChecker wraps a resource with a null name
+        TestResource resourceNullName = new TestResource(logger);
+        resourceNullName.setName(null);
+        TestResourceChecker checkerResourceNullName = new TestResourceChecker(resourceNullName, logger);           
+        try {
+            subsysResourceMonitor.monitorResource(checkerResourceNullName, handler);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("ResourceChecker must be non-null and must deliver non-null resource and resource name.", ex.getMessage());
+        }
+        // (4) decent ResourceChecker, but null error handler
+        try {
+            subsysResourceMonitor.monitorResource(checkerOk, null);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("ResourceErrorHandler must not be null", ex.getMessage());
+        }
+        
+        // (5)
+        logger.info("Will submit the same resource checker twice");
+        subsysResourceMonitor.monitorResource(checkerOk, handler);
+        subsysResourceMonitor.monitorResource(checkerOk, handler); // will re-schedule the task
+        Thread.sleep(10000); // to allow the canceled first thread to disappear
+        assertEquals("Only one monitoring task expected.", 1, subsysResourceMonitor.getNumberOfMonitorTasks()); 
+        
+        // (6)
+        logger.info("Will submit a new resource checker for a resource that is already being monitored");
+        TestResourceChecker checkerOk2 = new TestResourceChecker(resourceOk, logger);            
+        subsysResourceMonitor.monitorResource(checkerOk2, handler); // will re-schedule the task
+        Thread.sleep(10000); // to allow the canceled first thread to disappear
+        assertEquals("Only one monitoring task expected.", 1, subsysResourceMonitor.getNumberOfMonitorTasks()); 
+    }
+    
+    
     
     private static class TestResource {
         public static final String STATE_OK = "OK";
@@ -157,14 +227,19 @@ public class SubsysResourceMonitorTest extends TestCase {
         private int testDelaySeconds;
         private final Logger logger;
 		private volatile CountDownLatch counter;
+        private String name;
 
         public TestResource(Logger logger) {
             this.logger = logger;
             setTestDelaySeconds(1);
             setState(STATE_OK);
+            setName("Your faithful test resource");
         }
         String getName() {
-            return "Your faithful test resource";
+            return name;
+        }
+        void setName(String name) {
+            this.name = name;
         }
         /**
          * This method must be reentrant so that the next scheduled check can work even the last thread is still sleeping. 
@@ -235,6 +310,7 @@ public class SubsysResourceMonitorTest extends TestCase {
         private volatile int badStateCount;
         private volatile int unreachableCount;
         private boolean isPermanentlyUnreachable;
+		private volatile CountDownLatch unreachabilitySync;
 
         TestErrorHandler(Logger logger) {
             this.logger = logger;
@@ -243,11 +319,15 @@ public class SubsysResourceMonitorTest extends TestCase {
         }
         public void badState(TestResource resource, String stateName) {
         	badStateCount++;
+        	logger.info("TestErrorHandler#badState (thread " + Thread.currentThread().getName() + ") called - " + unreachableCount);
         }
 
         public boolean resourceUnreachable(TestResource resource) {
         	unreachableCount++;
-        	logger.info("TestErrorHandler#resourceUnreachable called in thread " + Thread.currentThread().getName());
+        	logger.info("TestErrorHandler#resourceUnreachable (thread " + Thread.currentThread().getName() + ") called - " + unreachableCount);
+            if (unreachabilitySync != null) {
+            	unreachabilitySync.countDown();
+            }
         	return isPermanentlyUnreachable;
         }
         
@@ -266,6 +346,9 @@ public class SubsysResourceMonitorTest extends TestCase {
         }
         void setIsPermanentlyUnreachable(boolean isPermanentlyUnreachable) {
         	this.isPermanentlyUnreachable = isPermanentlyUnreachable;
+        }
+        void setUnreachabilitySync(CountDownLatch sync) {
+        	this.unreachabilitySync = sync;
         }
     }
     
