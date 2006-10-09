@@ -28,9 +28,9 @@ import java.util.logging.Level;
 
 import alma.JContExmplErrTypeTest.XmlComponentErrorEx;
 import alma.JContExmplErrTypeTest.wrappers.AcsJXmlComponentErrorEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerException;
 import alma.acs.container.ContainerServices;
 import alma.demo.ObsProjectTreeJ;
 import alma.demo.SchedBlockHolder;
@@ -93,7 +93,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 				m_schedBlockList.add(sb);			
 			}
 		}
-		catch (ContainerException e)
+		catch (AcsJContainerServicesEx e)
 		{
 			m_logger.log(Level.WARNING, "failed to initialize list of SchedBlocks. ", e);
 			m_schedBlockList.clear();
@@ -132,7 +132,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 			
 			obsProp.setScientificJustification("peak performance enduring a 24-7-365 schedule.");
 		}
-		catch (ContainerException e)
+		catch (AcsJContainerServicesEx e)
 		{
 			m_logger.log(Level.SEVERE, "failed to create ObsProposal. ", e);
 		}

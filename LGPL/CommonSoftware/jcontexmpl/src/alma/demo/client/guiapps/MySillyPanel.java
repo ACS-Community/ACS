@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import alma.acs.container.ContainerException;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
 import alma.demo.XmlComponent;
 import alma.demo.XmlComponentJ;
@@ -50,7 +50,7 @@ public class MySillyPanel extends JPanel
 	/**
 	 * 
 	 */
-	public MySillyPanel(ContainerServices containerServices) throws ContainerException
+	public MySillyPanel(ContainerServices containerServices) throws AcsJContainerServicesEx
 	{
 		org.omg.CORBA.Object compObj = containerServices.getComponent("XMLCOMP1");
 		XmlComponent xmlComp = alma.demo.XmlComponentHelper.narrow(compObj);

@@ -21,8 +21,9 @@ package alma.demo.client;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.client.ComponentClient;
-import alma.acs.container.ContainerException;
 import alma.demo.HelloDemo;
 
 /**
@@ -48,9 +49,9 @@ public class HelloDemoClient extends ComponentClient
 
 	/**
 	 * Calls sayHello() on the hello component.
-	 * @throws ContainerException 
+	 * @throws AcsJContainerServicesEx 
 	 */
-	public void doSomeStuff() throws ContainerException {
+	public void doSomeStuff() throws AcsJContainerServicesEx {
         m_helloComp = alma.demo.HelloDemoHelper.narrow(getContainerServices().getComponent("HELLODEMO1"));
         
 		String helloRet = m_helloComp.sayHello();

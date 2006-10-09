@@ -1,35 +1,29 @@
 package alma.demo.dyncomp;
 
-import javax.swing.JDialog;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableColumn;
-import javax.swing.JScrollPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenuItem;
-import java.awt.Dimension;
-import java.awt.Container;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowEvent;
-import javax.swing.JOptionPane;
+import javax.swing.table.TableColumnModel;
 
 import si.ijs.maci.ComponentSpec;
-import alma.acs.container.ContainerException;
-
-import alma.demo.dyncomp.MyTableModel;
-import alma.demo.dyncomp. MyCellRendererr;
-import alma.demo.dyncomp.MyCellEditor;
-import alma.demo.dyncomp.Client;
 
 
 /**

@@ -29,9 +29,9 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.JContExmplErrTypeTest.XmlComponentErrorEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
-import alma.acs.container.ContainerException;
 import alma.acs.entityutil.EntityDeserializer;
 import alma.acs.entityutil.EntityException;
 import alma.acs.entityutil.EntitySerializer;
@@ -100,7 +100,7 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#getInternalInterface()
      */
-    protected Class<?> getInternalInterface() throws ContainerException
+    protected Class<?> getInternalInterface() throws AcsJContainerServicesEx
     {
         return XmlComponentJ.class;
     }
@@ -109,7 +109,7 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#_getInterfaceTranslator(java.lang.Object)
      */
-    protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws ContainerException {
+    protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws AcsJContainerServicesEx {
         XmlComponentJ impl = null;
         XmlComponentOperations opDelegate = null;
         impl = (XmlComponentJ) getComponentImpl();

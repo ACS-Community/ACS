@@ -4,9 +4,10 @@ import java.util.logging.Logger;
 import alma.acs.component.client.ComponentClient;
 import alma.ACS.ACSComponent;
 import alma.ACS.ACSComponentHelper;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+
 import si.ijs.maci.ComponentSpec;
 import si.ijs.maci.ComponentInfo;
-import alma.acs.container.ContainerException;
 
 /** 
 * Client demostrates how to activate and release dynamic components
@@ -54,7 +55,7 @@ public class Client extends ComponentClient {
 	* @return The cUrl of the activated component (nul if the component is not activated)
 	*/
 	public String getDynamicComponent(ComponentSpec cs, boolean markAsDefault) 
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		// Search for the first free slot in the array
 		int freeSlot=0;
