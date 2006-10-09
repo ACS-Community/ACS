@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -45,18 +44,17 @@ import si.ijs.maci.ComponentSpec;
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
-import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.container.archive.Range;
 import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.entities.commonentity.EntityT;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 import alma.maciErrType.wrappers.AcsJmaciErrTypeEx;
 import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
@@ -220,10 +218,13 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#assignUniqueEntityId(EntityT)
 	 */
-	public void assignUniqueEntityId(EntityT entity) throws ContainerException
+	public void assignUniqueEntityId(EntityT entity) throws AcsJContainerServicesEx
 	{
 		if (entity == null) {
-			throw new ContainerException("The EntityT arg must not be null.");
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("entity"); 
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
 		}
 
 		if (fakeUIDsForTesting) {
@@ -235,8 +236,7 @@ public class ContainerServicesImpl implements ContainerServices
 		
 		try {
 			if (identifierArchive == null) {
-				Identifier identRaw;
-				identRaw = IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"));
+				Identifier identRaw = IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"));
 				identifierArchive = getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);
 			}
 			if (uidLibrary == null) {
@@ -245,7 +245,9 @@ public class ContainerServicesImpl implements ContainerServices
 			uidLibrary.assignUniqueEntityId(entity, identifierArchive);
 		}
 		catch (Throwable thr) {
-			throw new ContainerException("failed to assign a UID to entity of type .", thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo("failed to assign a UID to entity of type " + entity.getEntityTypeName());
+			throw ex;
 		}
 	}
 
@@ -253,7 +255,7 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#findComponents(java.lang.String, java.lang.String)
 	 */
-	public String[] findComponents(String curlWildcard, String typeWildcard)  throws ContainerException
+	public String[] findComponents(String curlWildcard, String typeWildcard) //throws AcsJContainerServicesEx
 	{
 		if (curlWildcard == null)
 		{
@@ -290,26 +292,39 @@ public class ContainerServicesImpl implements ContainerServices
 	 * 
 	 * @see alma.acs.container.ContainerServices#getComponentDescriptor(java.lang.String)
 	 */
-	public ComponentDescriptor getComponentDescriptor(String componentUrl)
-		throws ContainerException
+	public ComponentDescriptor getComponentDescriptor(String curl)
+		throws AcsJContainerServicesEx
 	{
-		ComponentDescriptor desc = m_componentDescriptorMap.get(componentUrl);
+		if (curl == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("curl"); 
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}
+
+		ComponentDescriptor desc = m_componentDescriptorMap.get(curl);
 		
-		if (desc == null)
-		{
+		if (desc == null) {
 			// try to get it from the manager
-			ComponentInfo[] compInfos = m_acsManagerProxy.get_component_info(new int[0], componentUrl, "*", false);
-			if (compInfos != null && compInfos.length == 1)
-			{
-				desc = new ComponentDescriptor(compInfos[0]);
-				m_componentDescriptorMap.put(componentUrl, desc);
+			ComponentInfo[] compInfos;
+			try {
+				compInfos = m_acsManagerProxy.get_component_info(new int[0], curl, "*", false);
+			} catch (Throwable thr) { // at most RuntimeException expected
+				m_logger.log(Level.FINE, "Unexpected failure calling 'get_component_info'.", thr);
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+				ex.setContextInfo("CURL=" + curl);
+				throw ex;
 			}
-			else
-			{
-				String msg = "failed to retrieve the component descriptor for the component instance " 
-								+ componentUrl;
-				m_logger.warning(msg);
-				throw new ContainerException(msg);
+			if (compInfos.length == 1) {
+				desc = new ComponentDescriptor(compInfos[0]);
+				m_componentDescriptorMap.put(curl, desc);
+			}
+			else {
+				String msg = "failed to retrieve a unique component descriptor for the component instance "  + curl;
+				m_logger.fine(msg);
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+				ex.setContextInfo(msg);
+				throw new AcsJContainerServicesEx();
 			}
 		}
 		return desc;
@@ -319,12 +334,15 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#getComponent(String)
 	 */	
-	public org.omg.CORBA.Object getComponent(String curl) throws ContainerException
+	public org.omg.CORBA.Object getComponent(String curl) throws AcsJContainerServicesEx
 	{
 		if (curl == null) {
-			throw new ContainerException("component name (curl) must not be null!");
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("curl"); 
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
 		}
-		
+
 		// check if our component has requested the other component before
 		org.omg.CORBA.Object stub = m_usedComponentsMap.get(curl);
 		
@@ -346,15 +364,22 @@ public class ContainerServicesImpl implements ContainerServices
 							"' using ACS Manager#get_component with client handle " + m_clientHandle);
 		
 			/// @todo: think about timeouts
+			
 			try {
 			    stub = m_acsManagerProxy.get_component(m_clientHandle, curl, true);
 			    m_logger.fine("component " + curl + " retrieved successfully.");
 			    m_usedComponentsMap.put(curl, stub);
 			} catch (AcsJmaciErrTypeEx ex) {				
 			    String msg = "Failed to retrieve component " + curl;
-			    m_logger.fine(msg); // only a low-level log because the client component is supposed to log the exception which contains all context data 
-			    throw new ContainerException(ex);
-			}
+			    m_logger.log(Level.FINE, msg, ex); // only a low-level log because the client component is supposed to log the exception which contains all context data 
+			    throw new AcsJContainerServicesEx(ex);
+			} catch (Throwable thr) {
+			    String msg = "Failed to retrieve component " + curl + " for unexpected reasons.";
+			    m_logger.log(Level.FINE, msg, thr);  
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+				ex.setContextInfo(msg);
+				throw ex;
+			}			
 		}
 		return stub;
 	}
@@ -364,36 +389,42 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @see alma.acs.container.ContainerServices#getDefaultComponent(java.lang.String)
 	 */
 	public org.omg.CORBA.Object getDefaultComponent(String componentIDLType)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
+		if (componentIDLType == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("componentIDLType"); 
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}
+
 		ComponentInfo cInfo = null;
 		try
 		{
 			// the call
 			cInfo = m_acsManagerProxy.get_default_component(m_clientHandle, componentIDLType);
 		}
-		catch (AcsJNoDefaultComponentEx ex) {
-			String msg = "failed to retrieve default component for type " + componentIDLType + 
-						" because no default component has been defined.";
-			m_logger.fine(msg); // higher-level log should be produced by the calling client from the exception later
-			throw new ContainerException(ex);
-		}
-		catch (AcsJCannotGetComponentEx e) {
+		catch (AcsJmaciErrTypeEx ex) {
 			String msg = "failed to retrieve default component for type " + componentIDLType;
-			m_logger.fine(msg);
-			throw new ContainerException(e);
+			m_logger.log(Level.FINE, msg, ex); // higher-level log should be produced by the calling client from the exception later
+			throw new AcsJContainerServicesEx(ex);
 		}
 		catch (Throwable thr) {
 			String msg = "failed to retrieve default component for type " + componentIDLType + " for unexpected reasons!";
 			m_logger.log(Level.FINE, msg, thr);
-			throw new ContainerException(msg, thr); 
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 
-		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0   
+		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0
+		// @todo check and remove this
 		if (cInfo.reference == null) {
 			String msg = "Default component for type '" + componentIDLType + "' could not be accessed. ";
 			m_logger.info(msg);
-			throw new ContainerException(msg);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 		
 		m_usedComponentsMap.put(cInfo.name, cInfo.reference);
@@ -403,8 +434,22 @@ public class ContainerServicesImpl implements ContainerServices
 	}
 
 
-	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws ContainerException {
-		ComponentQueryDescriptor cqd = new ComponentQueryDescriptor(compUrl, null);		
+	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws AcsJContainerServicesEx {
+		
+		if (compUrl == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("compUrl"); 
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}
+		if (targetCompUrl == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("targetCompUrl");
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}
+
+		ComponentQueryDescriptor cqd = new ComponentQueryDescriptor(compUrl, null);
 		ComponentSpec cspec = cqd.toComponentSpec();
 		ComponentInfo cInfo = null;
 		
@@ -415,19 +460,24 @@ public class ContainerServicesImpl implements ContainerServices
 		} catch (AcsJmaciErrTypeEx ex) {				
 			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
 			m_logger.log(Level.FINE, msg, ex); // it's serious, but the caller is supposed to log this. Container only logs just in case.
-		    throw new ContainerException(ex);
+		    throw new AcsJContainerServicesEx(ex);
 		}
 		catch (Throwable thr) {
-			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
-			m_logger.log(Level.FINE, msg, thr); // it's serious, but the caller is supposed to log this. Container only logs just in case.
-			throw new ContainerException(msg, thr);
+			String msg = "Unexpectedly failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
+			m_logger.log(Level.FINE, msg, thr); 
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 
-		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0   
+		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0
+		// @todo check and remove this
 		if (cInfo.reference == null) {
 			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
-			m_logger.log(Level.FINE, msg); // it's serious, but the caller is supposed to log this. Container only logs just in case.
-			throw new ContainerException(msg);
+			m_logger.info(msg);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 		
 		m_usedComponentsMap.put(cInfo.name, cInfo.reference);
@@ -438,12 +488,10 @@ public class ContainerServicesImpl implements ContainerServices
 	
 	
 	/**
-	 * {@inheritDoc}
-	 * 
 	 * @see alma.acs.container.ContainerServices#getDynamicComponent(si.ijs.maci.ComponentSpec, boolean)
 	 */
 	public org.omg.CORBA.Object getDynamicComponent(ComponentQueryDescriptor compDesc, boolean markAsDefault)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 	    return getDynamicComponent(compDesc.toComponentSpec(), markAsDefault);
 	}
@@ -453,7 +501,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @see alma.acs.container.ContainerServices#getDynamicComponent(si.ijs.maci.ComponentSpec, boolean)
 	 */
 	public org.omg.CORBA.Object getDynamicComponent(ComponentSpec compSpec, boolean markAsDefault)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		String entryMsg = "getDynamicComponent called with" + 
 		" compName=" + compSpec.component_name +
@@ -472,13 +520,15 @@ public class ContainerServicesImpl implements ContainerServices
 			m_usedComponentsMap.put(cInfo.name, cInfo.reference);
 			m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
 		} catch (AcsJmaciErrTypeEx ex) {
-			m_logger.fine("Failed to create dynamic component");
-			throw new ContainerException(ex);
+			m_logger.log(Level.FINE, "Failed to create dynamic component", ex);
+			throw new AcsJContainerServicesEx(ex);
 		}
 		catch (Throwable thr) {
-			String msg = "failed to create dynamic component for unexpected reasons!";
-			m_logger.log(Level.WARNING, msg, thr);
-			throw new ContainerException(msg, thr);
+			String msg = "Unexpectedly failed to create dynamic component for unexpected reasons!";
+			m_logger.log(Level.FINE, msg, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 		
 		return cInfo.reference;
@@ -490,7 +540,7 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#getCDB()
 	 */
-	public DAL getCDB() throws ContainerException
+	public DAL getCDB() throws AcsJContainerServicesEx
 	{
 		DAL dal = null;
 
@@ -501,11 +551,15 @@ public class ContainerServicesImpl implements ContainerServices
             org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true);
             dal = DALHelper.narrow(dalObj);
 		} catch (AcsJmaciErrTypeEx ex) {
-			m_logger.fine(errMsg);
-			throw new ContainerException(ex);
+			m_logger.log(Level.FINE, errMsg, ex);
+			throw new AcsJContainerServicesEx(ex);
 		}
         catch (Throwable thr) {
-            throw new ContainerException(errMsg, thr);
+			String msg = "Unexpectedly failed to get the CDB reference!";
+			m_logger.log(Level.FINE, msg, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
         }
         
 		return dal;
@@ -530,11 +584,18 @@ public class ContainerServicesImpl implements ContainerServices
 		releaseComponent(curl, false);
 	}
 
+	
 	/**
 	 * This method was introduced to unify the implementation of #releaseComponent and AdvancedContainerServices#forceReleaseComponent.
 	 * TODO: check if this should be taken back with ACS 6.0.
 	 */
 	void releaseComponent(String curl, boolean forcefully) {
+		
+		if (curl == null) {
+			m_logger.info("Invalid curl 'null', nothing to release.");
+			return;
+		}
+		
 		if (!m_usedComponentsMap.containsKey(curl)) 
 		{
 			m_logger.info("ignoring request by client '" + m_clientName + 
@@ -569,7 +630,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
 	public OffShoot activateOffShoot(Servant servant)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		checkOffShootServant(servant);
 		String servantName = servant.getClass().getName();
@@ -606,22 +667,21 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 				
 		OffShoot shoot = null;
-		try 
-		{
+		try  {
 			org.omg.CORBA.Object obj = acsCorba.activateOffShoot(servant, m_clientPOA);
 			shoot = OffShootHelper.narrow(obj);
 		}
-		catch (Throwable ex)
-		{
+		catch (Throwable thr) {
 			String msg = "failed to activate offshoot object of type '" + servant.getClass().getName() +
 							"' for client '" + m_clientName + "'. ";
 			// flatten the exception chain by one level if possible
-			if (ex instanceof ContainerException && ex.getCause() != null) {
-				msg += "(" + ex.getMessage() + ")"; 
-				ex = ex.getCause();
+			if (thr instanceof AcsJContainerServicesEx && thr.getCause() != null) {
+				msg += "(" + thr.getMessage() + ")"; 
+				thr = thr.getCause();
 			}
-			m_logger.log(Level.WARNING, msg, ex);
-			throw new ContainerException(msg, ex);
+			m_logger.log(Level.FINE, msg, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			throw ex;
 		}	
 //		m_logger.fine("successfully activated offshoot of type " + cbServant.getClass().getName());
 		return shoot;
@@ -630,7 +690,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 
 	public void deactivateOffShoot(Servant cbServant)
-	throws ContainerException
+	throws AcsJContainerServicesEx
 	{
 		checkOffShootServant(cbServant);
 		acsCorba.deactivateOffShoot(cbServant, m_clientPOA);
@@ -640,12 +700,20 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @param cbServant
 	 * @throws ContainerException
 	 */
-	private void checkOffShootServant(Servant cbServant) throws ContainerException {
-		if (!(cbServant instanceof OffShootOperations))
-		{
+	private void checkOffShootServant(Servant servant) throws AcsJContainerServicesEx {
+		if (servant == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("servant");
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}		
+		
+		if (!(servant instanceof OffShootOperations)) {
 			String msg = "invalid offshoot servant provided. Must implement " + OffShootOperations.class.getName();
-			m_logger.warning(msg);
-			throw new ContainerException(msg);
+			m_logger.fine(msg);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 	}
 
@@ -676,14 +744,14 @@ public class ContainerServicesImpl implements ContainerServices
 	 *   
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
-    public <T> T getTransparentXmlComponent(
-            Class<T> transparentXmlIF,
-            org.omg.CORBA.Object componentReference,
-            Class flatXmlIF)
-    throws ContainerException
+    public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
+    	throws AcsJContainerServicesEx
     {
-        m_logger.finer("creating xml binding class aware wrapper around component " + 
-                "implementing " + flatXmlIF.getName() + "..."); 
+    	if (m_logger.isLoggable(Level.FINEST)) {
+	        m_logger.finest("creating xml binding class aware wrapper around component " + 
+	                "implementing " + flatXmlIF.getName() + "...");
+    	}
+    	
         T wrapper = null;
         try
         {
@@ -692,10 +760,13 @@ public class ContainerServicesImpl implements ContainerServices
                     componentReference,
                     flatXmlIF);
         }
-        catch (DynWrapperException e)
+        catch (Throwable thr)
         {
-            throw new ContainerException("failed to create XML binding class wrapper " +
-                    "for component implementing " + flatXmlIF.getName(), e); 
+        	String msg = "failed to create XML binding class wrapper for component implementing " + flatXmlIF.getName();
+        	m_logger.log(Level.FINE, msg, thr);
+        	AcsJContainerServicesEx ex2 = new AcsJContainerServicesEx(thr);
+        	ex2.setContextInfo(msg);
+        	throw ex2;
         }
         return wrapper;
     }
