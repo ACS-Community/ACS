@@ -54,6 +54,11 @@ import abeans.pluggable.acs.logging.RemoteLoggingService;
 
 import alma.acs.util.ACSPorts;
 
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+
+
 /**
  * Implementation of the <code>abeans.pluggable.Plug</code> that starts up and
  * shuts down the ACS database and take care for configuration and policy management.
@@ -579,18 +584,42 @@ public class ACSPlug extends Plug implements Configurable
 				// create a new one 
 				if (connectComponent)
 				{
-					IntHolder status = new IntHolder();
-					org.omg.CORBA.Object component = mcie.getManager().get_component(mcie.getClientInfo().h, curl, true, status);
-					if (component == null || status.value != Manager.COMPONENT_ACTIVATED)
+				    /**
+				     * @todo GCH 2006-10-09
+				     *       Here we do not do a mapping of the
+				     *       received error trace but we simply
+				     *       log a new RemoteException.
+				     *       This code should be improved.
+				     */
+				    org.omg.CORBA.Object component=null;
+ 				    try
 					{
-						RemoteException re = new RemoteException(this, "Manager failed to return component with CURL '" + curl + "'.");
-						re.caughtIn(this, "internalConnect");
-						re.putValue("c", c);
-						re.putValue("curl", curl);
-						re.putValue("status", new Integer(status.value));
-						throw re;
+					component = mcie.getManager().get_component(mcie.getClientInfo().h, curl, true);
 					}
-					
+				    catch(CannotGetComponentEx e)
+					{
+					RemoteException re = new RemoteException(this, "Manager failed to return component with CURL '" + curl + "'.");
+					re.caughtIn(this, "internalConnect");
+					re.putValue("c", c);
+					re.putValue("curl", curl);
+					throw re;
+					}
+				    catch(ComponentNotAlreadyActivatedEx e)
+					{
+					RemoteException re = new RemoteException(this, "Manager failed to return component with CURL '" + curl + "'.");
+					re.caughtIn(this, "internalConnect");
+					re.putValue("c", c);
+					re.putValue("curl", curl);
+					throw re;
+					}
+				    catch(ComponentConfigurationNotFoundEx e)
+					{
+					RemoteException re = new RemoteException(this, "Manager failed to return component with CURL '" + curl + "'.");
+					re.caughtIn(this, "internalConnect");
+					re.putValue("c", c);
+					re.putValue("curl", curl);
+					throw re;
+					}
 	
 					// obtain component type
 					ComponentInfo[] componentInfo = mcie.getManager().get_component_info(mcie.getClientInfo().h, new int[0], curl, "*", true);
@@ -966,13 +995,18 @@ public class ACSPlug extends Plug implements Configurable
 					new MessageLogEntry(this, "initialManagerConnect", "Logged in to the default Manager '" + corbaloc + "'.", Level.INFO).dispatch();
 
 				// set NS to new RemoteLoggingService
+				/**
+				 * @todo GCH 2006-10-09 Here we should catch the
+				 *       specific exceptions of get_service and 
+				 *       print trace logs of ACS exceptions.
+				 */
 				try
 				{
 					RemoteLoggingService remote = (RemoteLoggingService)Root.getComponentManager().getComponent(RemoteLoggingService.class);
 					if (remote != null)
 					{ 
 						// query manager
-						org.omg.CORBA.Object obj = mcie.getManager().get_service(0, "NameService", true, new IntHolder());
+						org.omg.CORBA.Object obj = mcie.getManager().get_service(0, "NameService", true);
 						if (obj != null)
 							remote.setCORBARemoteDirectory(NamingContextHelper.narrow(obj));
 					}
