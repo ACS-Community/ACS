@@ -24,7 +24,6 @@ package alma.acs.container;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
@@ -37,22 +36,24 @@ import si.ijs.maci.ManagerHelper;
 import si.ijs.maci.ulongSeqHolder;
 
 import alma.acs.util.ACSPorts;
-
-import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
-
-import alma.maciErrType.CannotGetServiceEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
-import alma.maciErrType.NoDefaultComponentEx;
-import alma.maciErrType.IncompleteComponentSpecEx;
-import alma.maciErrType.CannotRegisterComponentEx;
-import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.InvalidComponentSpecEx;
 import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.CannotGetServiceEx;
+import alma.maciErrType.CannotRegisterComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.IncompleteComponentSpecEx;
+import alma.maciErrType.InvalidComponentSpecEx;
+import alma.maciErrType.NoDefaultComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotGetServiceEx;
+import alma.maciErrType.wrappers.AcsJCannotRegisterComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentConfigurationNotFoundEx;
+import alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 
 /**
  * Proxy class that encapsulates access to the ACS Manager.
@@ -198,7 +199,7 @@ public class AcsManagerProxy
 	/**
 	 * Invoked by the manager methods on failure 
 	 */
-	protected void handleException (RuntimeException exc) {
+	protected void handleRuntimeException (RuntimeException exc) {
 
 		if (exc instanceof org.omg.CORBA.NO_PERMISSION				// manager changed, or has cut connection
 				||exc instanceof org.omg.CORBA.OBJECT_NOT_EXIST		// manager is down
@@ -495,7 +496,7 @@ public class AcsManagerProxy
 			return m_manager.get_component_info(m_mgrHandle, componentHandles, name_wc, type_wc, active_only);
 			
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
 		}
 	}
@@ -518,19 +519,20 @@ public class AcsManagerProxy
 	 * 			a nil reference is returned, and the status contains an error code detailing the cause of failure 
 	 * 			(one of the component_* constants).
 	 */
-	public Object get_service(
-		String service_url,
-		boolean activate)
-	    throws CannotGetComponentEx,
-    	           ComponentNotAlreadyActivatedEx,
-	           ComponentConfigurationNotFoundEx
+	public Object get_service(String service_url, boolean activate) 
+		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx
 	{
 		try {
-			return m_manager.get_service(m_mgrHandle, service_url, activate);
-		
+			return m_manager.get_service(m_mgrHandle, service_url, activate);		
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
+		} catch (ComponentNotAlreadyActivatedEx ex) {
+			throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
+		} catch (CannotGetComponentEx ex) {
+			throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
+		} catch (ComponentConfigurationNotFoundEx ex) {
+			throw AcsJComponentConfigurationNotFoundEx.fromComponentConfigurationNotFoundEx(ex);
 		}
 	}
 
@@ -545,19 +547,17 @@ public class AcsManagerProxy
 	 * @param status
 	 * @return org.omg.CORBA.Object[]  A sequence of requested services.
 	 */
-	public Object[] get_services(
-		String[] service_urls,
-		boolean activate,
-		ulongSeqHolder status)
-	    throws CannotGetServiceEx
+	public Object[] get_services(String[] service_urls, boolean activate, ulongSeqHolder status)
+	    throws AcsJCannotGetServiceEx
 	{
 		try {
 			return m_manager.get_services(m_mgrHandle, service_urls, activate, status);
-			
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
-		}
+		} catch (CannotGetServiceEx ex) {
+			throw AcsJCannotGetServiceEx.fromCannotGetServiceEx(ex);
+		}			
 	}
 
 
@@ -573,16 +573,19 @@ public class AcsManagerProxy
 	 * @see ContainerServices#getComponent(String)
 	 */
 	public Object get_component(int clientHandle, String component_url, boolean activate)
-	    throws CannotGetComponentEx,
-		   ComponentNotAlreadyActivatedEx,
-		   ComponentConfigurationNotFoundEx
+	    throws AcsJCannotGetComponentEx, AcsJComponentNotAlreadyActivatedEx, AcsJComponentConfigurationNotFoundEx
 	{
 		try {
 			return m_manager.get_component(clientHandle, component_url, activate);
-
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
+		} catch (ComponentNotAlreadyActivatedEx ex) {
+			throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
+		} catch (CannotGetComponentEx ex) {
+			throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
+		} catch (ComponentConfigurationNotFoundEx ex) {
+			throw AcsJComponentConfigurationNotFoundEx.fromComponentConfigurationNotFoundEx(ex);
 		}
 	}
 
@@ -594,15 +597,17 @@ public class AcsManagerProxy
 	 * @see ContainerServices#getDefaultComponent(String)
 	 */
 	public ComponentInfo get_default_component(int clientHandle, String componentIDLType)
-	    throws NoDefaultComponentEx, 
-		   CannotGetComponentEx
+	    throws AcsJNoDefaultComponentEx, AcsJCannotGetComponentEx
 	{
 		try {
 			return m_manager.get_default_component(clientHandle, componentIDLType);
-
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoDefaultComponentEx ex) {
+			throw AcsJNoDefaultComponentEx.fromNoDefaultComponentEx(ex);
+		} catch (CannotGetComponentEx ex) {
+			throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
 		}
 	}
 
@@ -621,17 +626,22 @@ public class AcsManagerProxy
 	 * 				already active.
 	 */
 	public ComponentInfo get_dynamic_component(int clientHandle, ComponentSpec c, boolean mark_as_default) 
-		throws IncompleteComponentSpecEx, 
-		       InvalidComponentSpecEx, 
-		       ComponentSpecIncompatibleWithActiveComponentEx, 
-		       CannotGetComponentEx
+		throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx,  AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx
 	{
 		try {
 			return m_manager.get_dynamic_component(clientHandle, c, mark_as_default);
 			
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
+		} catch (IncompleteComponentSpecEx ex) {
+			throw AcsJIncompleteComponentSpecEx.fromIncompleteComponentSpecEx(ex);
+		} catch (InvalidComponentSpecEx ex) {
+			throw AcsJInvalidComponentSpecEx.fromInvalidComponentSpecEx(ex);
+		} catch (CannotGetComponentEx ex) {
+			throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
+		} catch (ComponentSpecIncompatibleWithActiveComponentEx ex) {
+			throw AcsJComponentSpecIncompatibleWithActiveComponentEx.fromComponentSpecIncompatibleWithActiveComponentEx(ex);
 		}
 	}
 
@@ -648,19 +658,24 @@ public class AcsManagerProxy
 	 * @throws ComponentSpecIncompatibleWithActiveComponent
 	 */
 	public ComponentInfo get_collocated_component(int clientHandle, ComponentSpec c, boolean mark_as_default, String target_component_url) 
-		throws IncompleteComponentSpecEx, 
-		       InvalidComponentSpecEx, 
-		       ComponentSpecIncompatibleWithActiveComponentEx, 
-		       CannotGetComponentEx
-{
-	try {
-		return m_manager.get_collocated_component(clientHandle, c, mark_as_default, target_component_url);
-		
-	} catch (RuntimeException exc) {
-		handleException(exc);
-		throw exc;
+		throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx
+	{
+		try {
+			return m_manager.get_collocated_component(clientHandle, c, mark_as_default, target_component_url);
+			
+		} catch (RuntimeException exc) {
+			handleRuntimeException(exc);
+			throw exc;
+		} catch (IncompleteComponentSpecEx ex) {
+			throw AcsJIncompleteComponentSpecEx.fromIncompleteComponentSpecEx(ex);
+		} catch (InvalidComponentSpecEx ex) {
+			throw AcsJInvalidComponentSpecEx.fromInvalidComponentSpecEx(ex);
+		} catch (CannotGetComponentEx ex) {
+			throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
+		} catch (ComponentSpecIncompatibleWithActiveComponentEx ex) {
+			throw AcsJComponentSpecIncompatibleWithActiveComponentEx.fromComponentSpecIncompatibleWithActiveComponentEx(ex);
+		}
 	}
-}
 
 
 	/**
@@ -674,14 +689,16 @@ public class AcsManagerProxy
 	 * @return int
 	 */
 	public int register_component(String component_url, String type, Object component)
-	    throws CannotRegisterComponentEx
+		throws AcsJCannotRegisterComponentEx
 	{
 		try {
 			return m_manager.register_component(m_mgrHandle, component_url, type, component);
 
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
+		} catch (CannotRegisterComponentEx ex) {
+			throw AcsJCannotRegisterComponentEx.fromCannotRegisterComponentEx(ex);
 		}
 	}
 
@@ -708,7 +725,7 @@ public class AcsManagerProxy
 			return clientNumber;
 
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
 		}
 	}
@@ -727,7 +744,7 @@ public class AcsManagerProxy
 			m_manager.release_components(clientHandle, component_urls);
 
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
 		}
 	}
@@ -742,7 +759,7 @@ public class AcsManagerProxy
 			return clientNumber;
 
 		} catch (RuntimeException exc) {
-			handleException(exc);
+			handleRuntimeException(exc);
 			throw exc;
 		}
 	}
@@ -790,7 +807,6 @@ public class AcsManagerProxy
 		AcsManagerProxy inst = new AcsManagerProxy(m_managerLoc, m_orb, m_logger);
 		return inst;
 	}
-
 
 
 }
