@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.73 2006/10/02 08:21:59 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.74 2006/10/09 06:14:48 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.73 2006/10/02 08:21:59 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.74 2006/10/09 06:14:48 gchiozzi Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -567,8 +567,7 @@ ContainerImpl::init(int argc, char *argv[])
 	    manager = MACIHelper::resolveManager(cdbORB.in(), cdbBootstrapArgv.argc(), cdbBootstrapArgv.argv(), 0, 0, -1 ,0/*2, 5*/);
 	      if (!CORBA::is_nil(manager.in()))
 		{
-		  CORBA::ULong status;
-		  CORBA::Object_var cdb = manager->get_service(0, "CDB", true, status); 
+		  CORBA::Object_var cdb = manager->get_service(0, "CDB", true); 
 
 		  if (!CORBA::is_nil(cdb.in()))
 		    {
@@ -1051,8 +1050,7 @@ ContainerImpl::connect()
       //is available. in as such, we can initialize the archiving system.
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Connecting to the Archiving Channel."));
       //get the naming service reference from manager
-      CORBA::ULong status;
-      CORBA::Object_var nc_obj = m_manager->get_service(m_handle, "NameService", true, status);
+      CORBA::Object_var nc_obj = m_manager->get_service(m_handle, "NameService", true);
       ACE_ASSERT(!CORBA::is_nil(nc_obj.in()));
       CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(nc_obj.in());
       ACE_ASSERT(!CORBA::is_nil(nc.in()));
@@ -1069,9 +1067,8 @@ ContainerImpl::connect()
 
           try
 	    {
-				// get centralized logger
-	      CORBA::ULong status;
-	      CORBA::Object_var log_obj = m_manager->get_service(m_handle, centralizedLogger.c_str(), true, status);
+	    // get centralized logger
+	      CORBA::Object_var log_obj = m_manager->get_service(m_handle, centralizedLogger.c_str(), true);
 
 	      if (log_obj.ptr() != CORBA::Object::_nil())
 		{
@@ -1105,8 +1102,7 @@ ContainerImpl::connect()
 	  // set namingContext to the logger (to enable CL reconnections).
 	  try
 	    {
-	      CORBA::ULong status;
-	      CORBA::Object_var nc_obj = m_manager->get_service(m_handle, "NameService", true, status);
+	      CORBA::Object_var nc_obj = m_manager->get_service(m_handle, "NameService", true);
 
 	      if (nc_obj.ptr() != CORBA::Object::_nil())
 		{
@@ -2116,7 +2112,7 @@ ContainerImpl::shutdown (
 
   // use manager's component shutdown order
 
- // TODO: Error handling is missing here.
+ // @TODO: Error handling is missing here.
   //       we should catch exceptions.
   if (m_componentShutdownOrder.length())
     {
@@ -2151,7 +2147,7 @@ ContainerImpl::shutdown (
 
   ACS_DEBUG_PARAM("maci::ContainerImpl::shutdown", "%d components left unactivated (using reverse activation order).", handles->length());
 
-  // TODO: Error handling is missing here.
+  // @TODO: Error handling is missing here.
   //       we should catch exceptions.
   if (handles->length())
     {
@@ -2443,13 +2439,12 @@ ContainerImpl::get_object(const char *name,
 
   try
     {
-      CORBA::ULong status;
-      CORBA::Object_var obj = m_manager->get_service(m_handle, curl.c_str(), activate, status);
+      CORBA::Object_var obj = m_manager->get_service(m_handle, curl.c_str(), activate);
       
 
-      if (CORBA::is_nil(obj.in()) || status!=maci::Manager::COMPONENT_ACTIVATED)
+      if (CORBA::is_nil(obj.in()))
 	{
-	  ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s', status: %d.",  curl.c_str(), status));
+	  ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'",  curl.c_str()));
 	  return 0;
 	}
   
@@ -2492,4 +2487,57 @@ ContainerImpl::instantiateContainerServices(
 {
   return new MACIContainerServices(h,name,poa);
 }
+
+
+/************************************************************************/
+/**
+ * Logging configurable methods
+ */
+
+maci::LoggingConfigurable::LogLevels ContainerImpl::get_default_logLevels()
+	throw (CORBA::SystemException)
+{
+    // @todo: implementation missing
+    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+}
+
+void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLevels&)
+	throw (CORBA::SystemException)
+{
+    // @todo: implementation missing
+    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+}
+
+
+maci::stringSeq* ContainerImpl::get_logger_names()
+	throw (CORBA::SystemException)
+{
+    // @todo: implementation missing
+    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+}
+
+
+maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char*)
+      throw (CORBA::SystemException)
+{
+    // @todo: implementation missing
+    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+}
+
+
+void ContainerImpl::set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&)
+	throw (CORBA::SystemException)
+{
+    // @todo: implementation missing
+    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+}
+
+
+void ContainerImpl::refresh_logging_config()
+	throw (CORBA::SystemException)
+{
+    // @todo: implementation missing
+    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+}
+
 
