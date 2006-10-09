@@ -33,7 +33,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
@@ -56,26 +55,13 @@ import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.entities.commonentity.EntityT;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
+import alma.maciErrType.wrappers.AcsJmaciErrTypeEx;
 import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
-
-import alma.maciErrType.CannotGetServiceEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
-import alma.maciErrType.NoDefaultComponentEx;
-import alma.maciErrType.IncompleteComponentSpecEx;
-import alma.maciErrType.CannotRegisterComponentEx;
-import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.InvalidComponentSpecEx;
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-
-import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -359,31 +345,16 @@ public class ContainerServicesImpl implements ContainerServices
 			m_logger.fine("will retrieve remote component '" + curl + 
 							"' using ACS Manager#get_component with client handle " + m_clientHandle);
 		
-			/// @todo: think about timeouts, rewrite with exceptions
-			try 
-			    {
+			/// @todo: think about timeouts
+			try {
 			    stub = m_acsManagerProxy.get_component(m_clientHandle, curl, true);
 			    m_logger.fine("component " + curl + " retrieved successfully.");
 			    m_usedComponentsMap.put(curl, stub);
-			    }
-			catch (CannotGetComponentEx e)
-			    {
+			} catch (AcsJmaciErrTypeEx ex) {				
 			    String msg = "Failed to retrieve component " + curl;
-			    m_logger.severe(msg);
-			    throw new ContainerException(msg);
-			    }
-			catch (ComponentNotAlreadyActivatedEx e)
-			    {
-			    String msg = "Failed to retrieve component " + curl;
-			    m_logger.severe(msg);
-			    throw new ContainerException(msg);
-			    }
-			catch (ComponentConfigurationNotFoundEx e)
-			    {
-			    String msg = "Failed to retrieve component " + curl;
-			    m_logger.severe(msg);
-			    throw new ContainerException(msg);
-			    }
+			    m_logger.fine(msg); // only a low-level log because the client component is supposed to log the exception which contains all context data 
+			    throw new ContainerException(ex);
+			}
 		}
 		return stub;
 	}
@@ -401,26 +372,24 @@ public class ContainerServicesImpl implements ContainerServices
 			// the call
 			cInfo = m_acsManagerProxy.get_default_component(m_clientHandle, componentIDLType);
 		}
-		catch (NoDefaultComponentEx e) {
+		catch (AcsJNoDefaultComponentEx ex) {
 			String msg = "failed to retrieve default component for type " + componentIDLType + 
 						" because no default component has been defined.";
-			m_logger.info(msg);
-			throw new ContainerException(msg, e);
+			m_logger.fine(msg); // higher-level log should be produced by the calling client from the exception later
+			throw new ContainerException(ex);
 		}
-		catch (CannotGetComponentEx e) {
-			String msg = "failed to retrieve default component for type " + 
-			    componentIDLType;
-			m_logger.info(msg);
-			throw new ContainerException(msg, e);
+		catch (AcsJCannotGetComponentEx e) {
+			String msg = "failed to retrieve default component for type " + componentIDLType;
+			m_logger.fine(msg);
+			throw new ContainerException(e);
 		}
-
 		catch (Throwable thr) {
-			String msg = "failed to retrieve default component for type " + componentIDLType +
-							" for unexpected reasons!";
-			m_logger.log(Level.WARNING, msg, thr);
-			throw new ContainerException(msg, thr);
+			String msg = "failed to retrieve default component for type " + componentIDLType + " for unexpected reasons!";
+			m_logger.log(Level.FINE, msg, thr);
+			throw new ContainerException(msg, thr); 
 		}
 
+		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0   
 		if (cInfo.reference == null) {
 			String msg = "Default component for type '" + componentIDLType + "' could not be accessed. ";
 			m_logger.info(msg);
@@ -442,6 +411,11 @@ public class ContainerServicesImpl implements ContainerServices
 		try {
 			// the call
 			cInfo = m_acsManagerProxy.get_collocated_component(m_clientHandle, cspec, false, targetCompUrl);
+			
+		} catch (AcsJmaciErrTypeEx ex) {				
+			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
+			m_logger.log(Level.FINE, msg, ex); // it's serious, but the caller is supposed to log this. Container only logs just in case.
+		    throw new ContainerException(ex);
 		}
 		catch (Throwable thr) {
 			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
@@ -449,6 +423,7 @@ public class ContainerServicesImpl implements ContainerServices
 			throw new ContainerException(msg, thr);
 		}
 
+		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0   
 		if (cInfo.reference == null) {
 			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
 			m_logger.log(Level.FINE, msg); // it's serious, but the caller is supposed to log this. Container only logs just in case.
@@ -467,66 +442,17 @@ public class ContainerServicesImpl implements ContainerServices
 	 * 
 	 * @see alma.acs.container.ContainerServices#getDynamicComponent(si.ijs.maci.ComponentSpec, boolean)
 	 */
-	public org.omg.CORBA.Object getDynamicComponent(
-		ComponentQueryDescriptor compDesc,
-		boolean markAsDefault)
+	public org.omg.CORBA.Object getDynamicComponent(ComponentQueryDescriptor compDesc, boolean markAsDefault)
 		throws ContainerException
 	{
-	    /*
-		String entryMsg = "getDynamicComponent called with " +
-		compDesc.toString() + 
-		", markAsDefault=" + markAsDefault;
-		m_logger.fine(entryMsg);
-		
-		ComponentInfo cInfo = null;
-		try
-		{
-			// the call
-			cInfo = m_acsManagerProxy.get_dynamic_component(compDesc.toComponentSpec(), markAsDefault);
-			
-			m_usedComponentsMap.put(cInfo.name, cInfo.reference);
-			m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
-		}
-		catch (IncompleteComponentSpec e)
-		{
-			String msg = "failed to create dynamic component. component spec is incomplete.";
-			m_logger.warning(msg);
-			throw new ContainerException(msg, e);
-		}
-		catch (InvalidComponentSpec e)
-		{
-			String msg = "failed to create dynamic component. component spec is invalid.";
-			m_logger.warning(msg);
-			throw new ContainerException(msg, e);
-		}
-		catch (ComponentSpecIncompatibleWithActiveComponent e)
-		{
-			String msg = "failed to create the dynamic component; " + 
-						"the component spec uniquely describes an existing component.";
-			m_logger.warning(msg);
-			throw new ContainerException(msg, e);
-		}
-		catch (Throwable thr)
-		{
-			String msg = "failed to create dynamic component for unexpected reasons!";
-			m_logger.log(Level.WARNING, msg, thr);
-			throw new ContainerException(msg, thr);
-		}
-		
-		return cInfo.reference;
-	    */
 	    return getDynamicComponent(compDesc.toComponentSpec(), markAsDefault);
 	}
 
 	
-    	/**
-	 * {@inheritDoc}
-	 * 
+	/**
 	 * @see alma.acs.container.ContainerServices#getDynamicComponent(si.ijs.maci.ComponentSpec, boolean)
 	 */
-	public org.omg.CORBA.Object getDynamicComponent(
-		ComponentSpec compSpec,
-		boolean markAsDefault)
+	public org.omg.CORBA.Object getDynamicComponent(ComponentSpec compSpec, boolean markAsDefault)
 		throws ContainerException
 	{
 		String entryMsg = "getDynamicComponent called with" + 
@@ -545,28 +471,11 @@ public class ContainerServicesImpl implements ContainerServices
 			
 			m_usedComponentsMap.put(cInfo.name, cInfo.reference);
 			m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
+		} catch (AcsJmaciErrTypeEx ex) {
+			m_logger.fine("Failed to create dynamic component");
+			throw new ContainerException(ex);
 		}
-		catch (IncompleteComponentSpecEx e)
-		{
-			String msg = "failed to create dynamic component. component spec is incomplete.";
-			m_logger.warning(msg);
-			throw new ContainerException(msg, e);
-		}
-		catch (InvalidComponentSpecEx e)
-		{
-			String msg = "failed to create dynamic component. component spec is invalid.";
-			m_logger.warning(msg);
-			throw new ContainerException(msg, e);
-		}
-		catch (ComponentSpecIncompatibleWithActiveComponentEx e)
-		{
-			String msg = "failed to create the dynamic component; " + 
-						"the component spec uniquely describes an existing component.";
-			m_logger.warning(msg);
-			throw new ContainerException(msg, e);
-		}
-		catch (Throwable thr)
-		{
+		catch (Throwable thr) {
 			String msg = "failed to create dynamic component for unexpected reasons!";
 			m_logger.log(Level.WARNING, msg, thr);
 			throw new ContainerException(msg, thr);
@@ -591,10 +500,12 @@ public class ContainerServicesImpl implements ContainerServices
             // manager's get_service contains get_component, so even if the CDB becomes a real component, we can leave this 
             org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true);
             dal = DALHelper.narrow(dalObj);
-        }
-        catch (Exception e)
-        {
-            throw new ContainerException(errMsg, e);
+		} catch (AcsJmaciErrTypeEx ex) {
+			m_logger.fine(errMsg);
+			throw new ContainerException(ex);
+		}
+        catch (Throwable thr) {
+            throw new ContainerException(errMsg, thr);
         }
         
 		return dal;
@@ -797,12 +708,14 @@ public class ContainerServicesImpl implements ContainerServices
 	public void releaseAllComponents()
 	{
 		// copy curls first to avoid deleting from m_usedComponentsMap
-		// while iterating over it (fail-fast iterator throws ConcurrentModificationException)
-		List<String> curls = new ArrayList<String>(m_usedComponentsMap.keySet());
+		// while iterating over it (fail-fast iterator throws ConcurrentModificationException).
+		// synchronized just in case...
+		List<String> curls = new ArrayList<String>();
+		synchronized (m_usedComponentsMap) {
+			curls.addAll(m_usedComponentsMap.keySet());
+		}
 		
-		for (Iterator<String> iter = curls.iterator(); iter.hasNext();)
-		{
-			String curl = iter.next();
+		for (String curl : curls ) {
 			releaseComponent(curl);
 		}
 	}
