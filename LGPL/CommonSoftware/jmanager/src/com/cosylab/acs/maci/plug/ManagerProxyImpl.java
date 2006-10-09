@@ -17,6 +17,18 @@ import abeans.core.defaults.MessageLogEntry;
 import abeans.framework.ReportEvent;
 import abeans.framework.ApplicationContext;
 
+import si.ijs.maci.Container;
+import si.ijs.maci.ContainerInfo;
+import si.ijs.maci.ContainerHelper;
+import si.ijs.maci.AdministratorHelper;
+import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.Client;
+import si.ijs.maci.ClientHelper;
+import si.ijs.maci.ClientInfo;
+import si.ijs.maci.ManagerPOA;
+import si.ijs.maci.ulongSeqHolder;
+import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.BadParametersException;
 import com.cosylab.acs.maci.Component;
@@ -40,21 +52,35 @@ import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.UNKNOWN;
+import org.omg.CORBA.NO_IMPLEMENT;
 
-import si.ijs.maci.ComponentSpecIncompatibleWithActiveComponent;
-import si.ijs.maci.Container;
-import si.ijs.maci.ContainerInfo;
-import si.ijs.maci.ContainerHelper;
-import si.ijs.maci.AdministratorHelper;
-import si.ijs.maci.ComponentInfo;
-import si.ijs.maci.Client;
-import si.ijs.maci.ClientHelper;
-import si.ijs.maci.ClientInfo;
-import si.ijs.maci.IncompleteComponentSpec;
-import si.ijs.maci.InvalidComponentSpec;
-import si.ijs.maci.ManagerPOA;
-import si.ijs.maci.NoDefaultComponent;
-import si.ijs.maci.ulongSeqHolder;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx;
+import alma.maciErrType.wrappers.AcsJComponentConfigurationNotFoundEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotGetServiceEx;
+import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotRegisterComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotUnregisterComponentEx;
+
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.IncompleteComponentSpecEx;
+import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.InvalidComponentSpecEx;
+import alma.maciErrType.NoDefaultComponentEx;
+import alma.maciErrType.CannotGetServiceEx;
+import alma.maciErrType.CannotActivateComponentEx;
+import alma.maciErrType.CannotDeactivateComponentEx;
+import alma.maciErrType.CannotRestartComponentEx;
+import alma.maciErrType.CannotRegisterComponentEx;
+import alma.maciErrType.CannotUnregisterComponentEx;
 
 /**
  * Manager is the central point of interaction between the components
@@ -442,13 +468,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return Reference to the Component. If the Component could not be activated, a nil reference is returned,
 	 *		  and the status contains an error code detailing the cause of failure (one of the COMPONENT_* constants).
 	 */
-	public Object get_component(int id, String component_url, boolean activate, IntHolder status)
+	public Object get_component(int id, String component_url, boolean activate)
 	{
+	    IntHolder status = new IntHolder();
+
 		pendingRequests.increment();
 		try
 		{
 			if (isDebug())
-				new MessageLogEntry(this, "get_component", new java.lang.Object[] { new Integer(id), component_url, new Boolean(activate), status } ).dispatch();
+				new MessageLogEntry(this, "get_component", new java.lang.Object[] { new Integer(id), component_url, new Boolean(activate) } ).dispatch();
 
 			// returned value
 			Object retVal = null;
@@ -530,6 +558,29 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			pendingRequests.decrement();
 		}
 	}
+
+
+
+
+
+
+
+	/**
+	 * Get a Component, activating it if necessary.
+	 * The client represented by id (the handle)
+	 * must have adequate access rights to access the Component. This is untrue of components:
+	 * components always have unlimited access rights to other components.
+	 *
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param component_url CURL of the Component whose reference is to be retrieved.
+	 * @return Reference to the Component. If the Component could not be activated, a nil reference is returned,
+	 *		  and the status contains an error code detailing the cause of failure (one of the COMPONENT_* constants).
+	 */
+	public Object get_component_non_stiky(int id, String component_url)
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+
 
 	/**
 	 * Used for retrieving several components with one call.
@@ -1368,8 +1419,8 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param	type	component type, IDL ID.
 	 * @return	<code>ComponentInfo</code> of requested component.
 	 */
-	public ComponentInfo get_default_component(int id, String type) throws NoDefaultComponent
-	{
+    public ComponentInfo get_default_component(int id, String type) throws NoDefaultComponentEx, CannotGetComponentEx
+            {
 		pendingRequests.increment();
 		try
 		{
@@ -1423,7 +1474,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hndce);
 
 			// rethrow CORBA specific
-			throw new NoDefaultComponent(ndce.getMessage());
+			throw new AcsJNoDefaultComponentEx(ndce.getMessage()).toNoDefaultComponentEx();
 		}
 		catch (BadParametersException bpe)
 		{
@@ -1479,7 +1530,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return	<code>ComponentInfo</code> of requested component.
 	 */
 	public ComponentInfo get_dynamic_component(int id, si.ijs.maci.ComponentSpec c, boolean mark_as_default)
-		throws IncompleteComponentSpec, InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent
+		throws IncompleteComponentSpecEx, 
+	               InvalidComponentSpecEx, 
+	               ComponentSpecIncompatibleWithActiveComponentEx
 	{
 		pendingRequests.increment();
 
@@ -1500,9 +1553,14 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 				uri = CURLHelper.createURI(c.component_name);
 			ComponentSpec componentSpec = new ComponentSpec(uri, c.component_type, c.component_code, c.container_name);
 			*/
-			// TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
-			ComponentSpec componentSpec = new ComponentSpec(c.component_name, c.component_type, c.component_code, c.container_name);
-			com.cosylab.acs.maci.ComponentInfo info = manager.getDynamicComponent(id, componentSpec, mark_as_default);
+			// @todo si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
+			ComponentSpec componentSpec = 
+			    new ComponentSpec(c.component_name, 
+					      c.component_type, 
+					      c.component_code, 
+					      c.container_name);
+			com.cosylab.acs.maci.ComponentInfo info = 
+			    manager.getDynamicComponent(id, componentSpec, mark_as_default);
 
 			// transform to CORBA specific
 			if (info != null)
@@ -1517,15 +1575,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 					interfaces = new String[0];
 					
 				retVal = new ComponentInfo(info.getType(),
-										   info.getCode(),
-											obj,
-											info.getName(),
-											info.getClients().toArray(),
-											info.getContainer(),
-											info.getContainerName(),
-											info.getHandle(),
-											mapAccessRights(info.getAccessRights()),
-											interfaces);
+							   info.getCode(),
+							   obj,
+							   info.getName(),
+							   info.getClients().toArray(),
+							   info.getContainer(),
+							   info.getContainerName(),
+							   info.getHandle(),
+							   mapAccessRights(info.getAccessRights()),
+							   interfaces);
 			}
 			else
 				retVal = invalidInfo;
@@ -1555,14 +1613,14 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hicse);
 
-			throw new IncompleteComponentSpec(icse.getMessage(),
-							new si.ijs.maci.ComponentSpec(
-								//icse.getIncompleteSpec().getCURL().getPath(),
-								icse.getIncompleteSpec().getName(),
-								icse.getIncompleteSpec().getType(),
-								icse.getIncompleteSpec().getCode(),
-								icse.getIncompleteSpec().getContainer())
-						);
+			// rethrow ACS specific
+			AcsJIncompleteComponentSpecEx ex=
+			    new AcsJIncompleteComponentSpecEx(hicse.getMessage());
+			ex.setCURL(hicse.getIncompleteSpec().getName());
+			ex.setcomponent_type(hicse.getIncompleteSpec().getType());
+			ex.setcomponent_code(hicse.getIncompleteSpec().getCode());
+			ex.setcontainer_name(hicse.getIncompleteSpec().getContainer());
+			throw ex.toIncompleteComponentSpecEx();
 		}
 		catch (InvalidComponentSpecException incse)
 		{
@@ -1571,7 +1629,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hincse);
 			
-			throw new InvalidComponentSpec(incse.getMessage());
+			throw new AcsJInvalidComponentSpecEx(incse.getMessage()).toInvalidComponentSpecEx();
 		}
 		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
 		{
@@ -1580,15 +1638,14 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hciace);
 
-			// rethrow CORBA specific
-			throw new ComponentSpecIncompatibleWithActiveComponent(ciace.getMessage(),
-							new si.ijs.maci.ComponentSpec(
-								//ciace.getActiveComponentSpec().getCURL().getPath(),
-								ciace.getActiveComponentSpec().getName(),
-								ciace.getActiveComponentSpec().getType(),
-								ciace.getActiveComponentSpec().getCode(),
-								ciace.getActiveComponentSpec().getContainer())
-						);
+			// rethrow ACS specific
+			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
+			    new AcsJComponentSpecIncompatibleWithActiveComponentEx(ciace.getMessage());
+			ex.setCURL(ciace.getActiveComponentSpec().getName());
+			ex.setcomponent_type(ciace.getActiveComponentSpec().getType());
+			ex.setcomponent_code(ciace.getActiveComponentSpec().getCode());
+			ex.setcontainer_name(ciace.getActiveComponentSpec().getContainer());
+			throw ex.toComponentSpecIncompatibleWithActiveComponentEx();
 		}
 		catch (BadParametersException bpe)
 		{
@@ -1780,7 +1837,10 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 */
 	public ComponentInfo get_collocated_component(int id, si.ijs.maci.ComponentSpec c,
 			boolean mark_as_default, String target_component)
-		throws IncompleteComponentSpec,	InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent
+	    throws IncompleteComponentSpecEx,
+	           InvalidComponentSpecEx,
+	           ComponentSpecIncompatibleWithActiveComponentEx, 
+	           CannotGetComponentEx
 	{
 		pendingRequests.increment();
 
@@ -1859,14 +1919,14 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hicse);
 
-			throw new IncompleteComponentSpec(icse.getMessage(),
-							new si.ijs.maci.ComponentSpec(
-								//icse.getIncompleteSpec().getCURL().getPath(),
-								icse.getIncompleteSpec().getName(),
-								icse.getIncompleteSpec().getType(),
-								icse.getIncompleteSpec().getCode(),
-								icse.getIncompleteSpec().getContainer())
-						);
+			// rethrow ACS specific
+			AcsJIncompleteComponentSpecEx ex=
+			    new AcsJIncompleteComponentSpecEx(icse.getMessage());
+			ex.setCURL(icse.getIncompleteSpec().getName());
+			ex.setcomponent_type(icse.getIncompleteSpec().getType());
+			ex.setcomponent_code(icse.getIncompleteSpec().getCode());
+			ex.setcontainer_name(icse.getIncompleteSpec().getContainer());
+			throw ex.toIncompleteComponentSpecEx();
 		}
 		catch (InvalidComponentSpecException incse)
 		{
@@ -1875,7 +1935,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hincse);
 			
-			throw new InvalidComponentSpec(incse.getMessage());
+			throw new AcsJInvalidComponentSpecEx(incse.getMessage()).toInvalidComponentSpecEx();
 		}
 		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
 		{
@@ -1884,15 +1944,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hciace);
 
-			// rethrow CORBA specific
-			throw new ComponentSpecIncompatibleWithActiveComponent(ciace.getMessage(),
-							new si.ijs.maci.ComponentSpec(
-								//ciace.getActiveComponentSpec().getCURL().getPath(),
-								ciace.getActiveComponentSpec().getName(),
-								ciace.getActiveComponentSpec().getType(),
-								ciace.getActiveComponentSpec().getCode(),
-								ciace.getActiveComponentSpec().getContainer())
-						);
+			// rethrow ACS specific
+			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
+			    new AcsJComponentSpecIncompatibleWithActiveComponentEx(ciace.getMessage());
+			ex.setCURL(ciace.getActiveComponentSpec().getName());
+			ex.setcomponent_type(ciace.getActiveComponentSpec().getType());
+			ex.setcomponent_code(ciace.getActiveComponentSpec().getCode());
+			ex.setcontainer_name(ciace.getActiveComponentSpec().getContainer());
+			throw ex.toComponentSpecIncompatibleWithActiveComponentEx();
+
 		}
 		catch (BadParametersException bpe)
 		{
@@ -1953,13 +2013,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *		  and the status contains an error code detailing the cause of failure (one of the COMPONENT_* constants).
 	 * @see #get_component
 	 */
-	public Object get_service(int id, String service_url, boolean activate, IntHolder status)
+	public Object get_service(int id, String service_url, boolean activate)
 	{
+	        IntHolder status = new IntHolder();
+
 		pendingRequests.increment();
 		try
 		{
 			if (isDebug())
-				new MessageLogEntry(this, "get_service", new java.lang.Object[] { new Integer(id), service_url, new Boolean(activate), status } ).dispatch();
+				new MessageLogEntry(this, "get_service", new java.lang.Object[] { new Integer(id), service_url, new Boolean(activate) } ).dispatch();
 
 			// returned value
 			Object retVal = null;
@@ -2314,6 +2376,74 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 	}
 	
+        /************************** LoggingConfigurable *************************/
+
+        /**
+	 * Gets the log levels of the default logging configuration.
+	 * These levels are used by all loggers that have not been configured individually.
+	 */
+        public LogLevels get_default_logLevels()
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Sets the log levels of the default logging configuration.
+             * These levels are used by all loggers that have not been configured individually.
+             */
+        public void set_default_logLevels(LogLevels levels)
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /** 
+             * Gets the names of all loggers, to allow configuring their levels individually.
+             * The names are those that appear in the log records in the field "SourceObject".
+             * This includes the container logger, ORB logger, component
+             * loggers, and (only C++) GlobalLogger. 
+             */
+        public String[] get_logger_names()
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Gets log levels for a particular named logger.
+             * If the returned field LogLevels.useDefault is true, then the
+             * logger uses the default levels, see get_default_logLevels();       
+             * otherwise the returned local and remote levels apply.
+             */
+        public LogLevels get_logLevels(String logger_name)
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Sets log levels for a particular named logger.
+             * If levels.useDefault is true, then the logger will be reset to
+             * using default levels;       
+             * otherwise it will use the supplied
+             * local and remote levels. 
+             */
+        public void set_logLevels(String logger_name, LogLevels levels)
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Commands the container or manager to read in again the logging
+             * configuration from the CDB and to reconfigure the loggers
+             * accordingly. 
+             * This allows for persistent changes in the logging
+             * configuration to become effective, and also for changes of more
+             * advanced parameters. 
+             */
+        public void refresh_logging_config()
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+        /************************** END LoggingConfigurable *************************/
+
  	/*****************************************************************************/
 	/************************** [ Mapping methods ] ******************************/
 	/*****************************************************************************/

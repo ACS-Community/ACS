@@ -38,7 +38,7 @@ import com.cosylab.acs.maci.StatusSeqHolder;
 
 /**
  * CORBA Manager Proxy.
- * TODO not completely implemented
+ * @todo not completely implemented
  * 
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
@@ -82,7 +82,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public ClientInfo[] getClientInfo(int id, int[] handles, String name_wc)
             throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -114,10 +114,8 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		{
 		    Component retVal = null;
 
-		    IntHolder statusHolder = new IntHolder();
-		    org.omg.CORBA.Object object = manager.get_component(id, curl.toString(), activate, statusHolder);
+		    org.omg.CORBA.Object object = manager.get_component(id, curl.toString(), activate);
 		    
-		    status.setStatus(mapStatusInverse(statusHolder.value));
 		    if (object != null)
 		        retVal = new ComponentProxy(curl.toString(), object);
 			
@@ -175,7 +173,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		catch (NO_PERMISSION npex)
 		{
 		    NoPermissionException npe = new NoPermissionException(this, "Remote manager has thrown no permission exception.", npex);
-			npe.caughtIn(this, "getComponent");
+			npe.caughtIn(this, "getComponentInfo");
 			throw npe;
 		}
 		catch (Exception ex)
@@ -193,7 +191,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public Component[] getComponents(int id, URI[] curls, boolean activate,
             StatusSeqHolder statuses) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -203,7 +201,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public ContainerInfo[] getContainerInfo(int id, int[] handles,
             String name_wc) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -213,7 +211,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public ComponentInfo getDefaultComponent(int id, String type)
             throws NoPermissionException, NoDefaultComponentException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -222,7 +220,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public String getDomain()
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -235,7 +233,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
             InvalidComponentSpecException,
             ComponentSpecIncompatibleWithActiveComponentException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -245,7 +243,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public ComponentInfo[] getDynamicComponents(int id,
             ComponentSpec[] components) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -258,7 +256,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
             InvalidComponentSpecException,
             ComponentSpecIncompatibleWithActiveComponentException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
 
@@ -268,7 +266,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public Component getService(int id, URI curl, boolean activate,
             StatusHolder status) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -278,7 +276,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public Component[] getServices(int id, URI[] curls, boolean activate,
             StatusSeqHolder statuses) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -287,7 +285,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public ClientInfo login(Client reference) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -296,7 +294,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public void logout(int id) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
 
     }
     
@@ -306,7 +304,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public int registerComponent(int id, URI curl, String type, Component cob)
             throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return 0;
     }
     
@@ -334,7 +332,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public void releaseComponents(int id, URI[] curls)
             throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
 
     }
     
@@ -343,7 +341,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 */
 	public int forceReleaseComponent(int id, URI curl)
 			throws NoPermissionException {
-		// TODO Auto-generated method stub
+		// @todo Auto-generated method stub
 		return 0;
 	}
 
@@ -353,7 +351,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public Component restartComponent(int id, URI curl)
             throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
         return null;
     }
     
@@ -362,7 +360,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public void shutdown(int id, int containers) throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
 
     }
     
@@ -372,7 +370,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     public void unregisterComponent(int id, int handle)
             throws NoPermissionException
     {
-        // TODO Auto-generated method stub
+        // @todo Auto-generated method stub
 
     }
     
@@ -381,7 +379,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 */
 	public void shutdownContainer(int id, String containerName, int action)
 			throws NoPermissionException {
-		// TODO Auto-generated method stub
+		// @todo Auto-generated method stub
 	}
 
 	/**
@@ -389,7 +387,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 */
 	public void makeComponentImmortal(int id, URI curl, boolean immortalState)
 			throws NoPermissionException {
-		// TODO Auto-generated method stub
+		// @todo Auto-generated method stub
 	}
 	
 	/**

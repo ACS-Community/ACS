@@ -288,8 +288,7 @@ public class ClientProxyImpl extends ClientPOA implements Identifiable
 				
 		try
 		{
-			IntHolder status = new IntHolder();
-			Object component = manager.get_service(client.getHandle(), curl.toString(), activate, status);
+			Object component = manager.get_service(client.getHandle(), curl.toString(), activate);
 			
 			if (component != null)
 			{
