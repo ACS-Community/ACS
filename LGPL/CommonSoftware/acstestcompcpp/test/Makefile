@@ -1,11 +1,14 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.1 2006/09/14 14:54:34 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/10/09 14:36:59 bjeram Exp $"
 #
 # Makefile of acstestcomp
 #
 # $Log: Makefile,v $
+# Revision 1.2  2006/10/09 14:36:59  bjeram
+# repalce maciErrTypeComponent with maciErrType
+#
 # Revision 1.1  2006/09/14 14:54:34  gchiozzi
 # First checkin of new module with CPP test components.
 #
@@ -43,7 +46,7 @@ USER_LIB = -lACE \
         -lacscomponent \
         -lbaci \
         -lmaci \
-        -lmaciErrTypeComponent \
+        -lmaciErrType \
         -lmaciClient \
         -lacserr \
         -lm \
@@ -66,7 +69,7 @@ EXECUTABLES_L   = acstestcompTestClient
 # <brief description of xxxxx program>
 acstestcompTestClient_OBJECTS   = acstestcompTestClient
 acstestcompTestClient_LDFLAGS =
-acstestcompTestClient_LIBS = acstestcompStubs  maciClient maciErrTypeComponent acstime
+acstestcompTestClient_LIBS = acstestcompStubs  maciClient maciErrType acstime
 
 #
 # special compilation flags for single c sources
