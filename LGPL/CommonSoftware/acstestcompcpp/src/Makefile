@@ -1,9 +1,12 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.2 2006/09/28 16:01:45 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/10/09 11:00:40 bjeram Exp $"
 #
 # $Log: Makefile,v $
+# Revision 1.3  2006/10/09 11:00:40  bjeram
+# repalce maciErrTypeComponent with maciErrType
+#
 # Revision 1.2  2006/09/28 16:01:45  gchiozzi
 # Added new components and cleaned up.
 #
@@ -50,7 +53,7 @@ USER_LIB = -lACE \
 	-lacscomponent \
 	-lbaci \
 	-lmaci \
-	-lmaciErrTypeComponent \
+	-lmaciErrType \
 	-lmaciClient \
 	-lacserr \
 	-lm \
