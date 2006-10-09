@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.32 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.33 2006/10/09 06:12:40 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,7 +69,6 @@ typedef PortableServer::Servant (*ConstructComponentFunc)(
  * Forward declarations
  */
 class ContainerServices; // This is defined in maciContainerServics.h
-//class ContainerServices; // This is defined in acsmaciContainerServics.h
 class MACIServantManager;
 class LibraryManager;
 
@@ -97,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.32 2006/09/01 02:20:54 cparedes Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.33 2006/10/09 06:12:40 gchiozzi Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -400,6 +399,28 @@ public:
    */
   virtual CORBA::Boolean ping ()
       throw (CORBA::SystemException);
+
+    /**
+     * Logging configurable methods
+     */
+
+    virtual maci::LoggingConfigurable::LogLevels get_default_logLevels()
+	throw (CORBA::SystemException);
+
+    virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&)
+	throw (CORBA::SystemException);
+
+    virtual maci::stringSeq* get_logger_names()
+	throw (CORBA::SystemException);
+
+    virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*)
+      throw (CORBA::SystemException);
+
+    virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&)
+	throw (CORBA::SystemException);
+
+    virtual void refresh_logging_config()
+	throw (CORBA::SystemException);
 
   protected:
     /**
