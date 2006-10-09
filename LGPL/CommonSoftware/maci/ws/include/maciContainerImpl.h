@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.33 2006/10/09 06:12:40 gchiozzi Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.34 2006/10/09 10:45:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.33 2006/10/09 06:12:40 gchiozzi Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.34 2006/10/09 10:45:31 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -748,6 +748,7 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
 ////////////////////////////////////////////////////////////////////////////
 /** 
  * Implementation for get_object template method
+ * @todo should we throw exception here instead nil ?
  */
 template<class T>
 T* ContainerImpl::getService(const char *name, const char *domain, bool activate)
@@ -785,19 +786,18 @@ T* ContainerImpl::getService(const char *name, const char *domain, bool activate
 
     try
 	{
-	CORBA::ULong status;
-	CORBA::Object_var obj = m_manager->get_service(m_handle, curl.c_str(), activate, status);
+	CORBA::Object_var obj = m_manager->get_service(m_handle, curl.c_str(), activate);
 	
-	if (CORBA::is_nil(obj.in()) || status!=maci::Manager::COMPONENT_ACTIVATED)
+	if (CORBA::is_nil(obj.in()))
 	    {
-	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s', status: %d.",  curl.c_str(), status));
+	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s' (reference nil)",  curl.c_str()));
 	    return T::_nil();
 	    }
 	object = T::_narrow(obj.in());
 	
 	return object;
 	}
-    catch( CORBA::Exception &ex )
+	catch( CORBA::Exception &ex ) // here we catch also ACS IDL exceptions
 	{
 	ACE_PRINT_EXCEPTION(ex,
 			    "maci::ContainerImpl::getService");
