@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.container.corba.OrbConfigurator;
@@ -134,9 +135,9 @@ public class AcsContainerRunner
 	 * that access the instance variables. The intent was to make the sequence clearer.
 	 *   
 	 * @param args  command line args as given to <code>main</code>.
-	 * @throws ContainerException  at the slightest provocation...
+	 * @throws AcsJContainerServicesEx  at the slightest provocation...
 	 */
-	private void run(String[] args) throws ContainerException
+	private void run(String[] args) throws AcsJContainerServicesEx
 	{
 		StopWatch containerStartWatch = new StopWatch();
 		
@@ -244,7 +245,7 @@ public class AcsContainerRunner
 	 * 
 	 * @param args		as received by main()
 	 */
-	void setOptions(String[] args) throws ContainerException
+	void setOptions(String[] args) throws AcsJContainerServicesEx
 	{
 		// -- prepare arg parser
 		CmdLineArgs cmdArgs = new CmdLineArgs();
@@ -328,7 +329,7 @@ public class AcsContainerRunner
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("incorrect or missing arguments.", ex);
+			throw new AcsJContainerServicesEx("incorrect or missing arguments.", ex);
 		}
 		
 		
@@ -371,7 +372,7 @@ public class AcsContainerRunner
 		//
 	}
     
-    protected void checkReadyToRun() throws ContainerException {
+    protected void checkReadyToRun() throws AcsJContainerServicesEx {
         String msg = null;
         if (m_containerPort <= 0)
         {

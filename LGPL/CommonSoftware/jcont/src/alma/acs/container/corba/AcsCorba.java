@@ -46,10 +46,10 @@ import org.omg.PortableServer.POAPackage.AdapterAlreadyExists;
 import org.omg.PortableServer.POAPackage.AdapterNonExistent;
 import org.omg.PortableServer.POAPackage.InvalidPolicy;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsContainer;
 import alma.acs.container.ComponentServantManager;
-import alma.acs.container.ContainerException;
 import alma.acs.util.StopWatch;
 
 
@@ -205,9 +205,9 @@ public class AcsCorba
 	 * @param args  command line arguments for the ORB
 	 * @param port  fixed port to be used by the ORB; this method will fail if the port is busy, 
 	 *              since no retries with different ports will be done.
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
-	public synchronized void initCorba(String[] args, int port) throws ContainerException
+	public synchronized void initCorba(String[] args, int port) throws AcsJContainerServicesEx
 	{		
 		if (isInitialized()) {
 			throw new IllegalStateException("Illegal call to initCorba. ORB/POAs have already been initialized.");
@@ -226,10 +226,10 @@ public class AcsCorba
 
 			setInitialized(true);
 		} catch (Exception e) {
-			if (e instanceof ContainerException) {
-				throw (ContainerException) e;
+			if (e instanceof AcsJContainerServicesEx) {
+				throw (AcsJContainerServicesEx) e;
 			}
-			throw new ContainerException("initCorba failed: ", e);
+			throw new AcsJContainerServicesEx("initCorba failed: ", e);
 		}
 	}
 
@@ -286,9 +286,9 @@ public class AcsCorba
 //	/**
 //	 * Initializes the <code>m_rootPOA</code> and <code>m_poaManager</code> fields 
 //	 * with the root POA and its POA manager.
-//	 * @throws ContainerException
+//	 * @throws AcsJContainerServicesEx
 //	 */
-//	private void initRootPoa() throws ContainerException
+//	private void initRootPoa() throws AcsJContainerServicesEx
 //	{
 //		m_rootPOA = null;
 //		try {
@@ -298,20 +298,20 @@ public class AcsCorba
 //				m_logger.finest("RootPOA initialized.");
 //			}
 //			else {
-//				throw new ContainerException("RootPOA == null");
+//				throw new AcsJContainerServicesEx("RootPOA == null");
 //			}
 //
 //			// POA manager, same for all POAs
 //			m_poaManager = m_rootPOA.the_POAManager();			
 //			if (m_poaManager == null) {
-//				throw new ContainerException("POAManager == null");
+//				throw new AcsJContainerServicesEx("POAManager == null");
 //			}
 //		}
-//		catch (ContainerException ex) {
+//		catch (AcsJContainerServicesEx ex) {
 //			throw ex;
 //		}
 //		catch (Exception ex) {
-//			throw new  ContainerException("Cannot resolve RootPOA: ", ex);
+//			throw new  AcsJContainerServicesEx("Cannot resolve RootPOA: ", ex);
 //		}
 //
 //	}
@@ -356,7 +356,7 @@ public class AcsCorba
 	
 
 	private void initPOAForContainer()
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		if (m_containerPOA != null)
 		{
@@ -391,7 +391,7 @@ public class AcsCorba
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("ContainerPOA creation failed: ", ex);
+			throw new AcsJContainerServicesEx("ContainerPOA creation failed: ", ex);
 		}
 
 		if (m_containerPOA != null)
@@ -400,7 +400,7 @@ public class AcsCorba
 		}
 		else
 		{
-			throw new ContainerException("ContainerPOA reference == null");
+			throw new AcsJContainerServicesEx("ContainerPOA reference == null");
 		}
 	}
 
@@ -410,10 +410,10 @@ public class AcsCorba
 	 * This POA will be the parent of the POAs for the individual components. 
 	 * Uses <code>LifespanPolicyValue.PERSISTENT</code>.
 	 * 
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
 	private void initPOAForComponents()
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		if (m_componentPOA != null)
 		{
@@ -441,7 +441,7 @@ public class AcsCorba
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("ComponentPOA creation failed: ", ex);
+			throw new AcsJContainerServicesEx("ComponentPOA creation failed: ", ex);
 		}
 
 		if (m_componentPOA != null)
@@ -450,7 +450,7 @@ public class AcsCorba
 		}
 		else
 		{
-			throw new ContainerException("ComponentPOA reference == null");
+			throw new AcsJContainerServicesEx("ComponentPOA reference == null");
 		}
 	}
 
@@ -462,7 +462,7 @@ public class AcsCorba
 	 * @param timeoutMillisec 
 	 */
 	private void setTimeout(int timeoutMillisec)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 	    /*
 		if (timeoutMillisec <= 0)
@@ -489,7 +489,7 @@ public class AcsCorba
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("failed to set RelativeRoundtripTimeoutPolicy: ", ex);
+			throw new AcsJContainerServicesEx("failed to set RelativeRoundtripTimeoutPolicy: ", ex);
 		}
 	    */
 	}
@@ -498,9 +498,9 @@ public class AcsCorba
 	/**
 	 * Runs the ORB and POAs.
 	 * Currently it calls <code>activate</code> on the poa manager.
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
-	public void runCorba() throws ContainerException
+	public void runCorba() throws AcsJContainerServicesEx
 	{
 		try
 		{
@@ -508,7 +508,7 @@ public class AcsCorba
 		}
 		catch (Exception e)
 		{
-			throw new ContainerException("running CORBA failed", e);
+			throw new AcsJContainerServicesEx("running CORBA failed", e);
 		}
 	}
 
@@ -645,15 +645,15 @@ public class AcsCorba
 	 * @param container  the container servant
 	 * @param name	 a name assigned to the container, used as the CORBA id.
 	 * @return the container CORBA object, never null
-	 * @throws ContainerException  if the activation fails for whatever reason.
+	 * @throws AcsJContainerServicesEx  if the activation fails for whatever reason.
 	 */
 	public org.omg.CORBA.Object activateContainer(AcsContainer container, String name)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		if (name == null || name.length() == 0 || container == null)
 		{
 			String msg = "activateContainer called with missing parameter.";
-			throw new ContainerException(msg);
+			throw new AcsJContainerServicesEx(msg);
 		}
 		m_logger.finer("entering activateContainer name=" + name);
 
@@ -669,7 +669,7 @@ public class AcsCorba
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("failed to activate container object " + name, ex);
+			throw new AcsJContainerServicesEx("failed to activate container object " + name, ex);
 		}
 
 		return actObj;
@@ -685,10 +685,10 @@ public class AcsCorba
 	 * 
 	 * @param compName  the name of the component; used to construct the POA name by prepending "ComponentPOA_"
 	 * @return the new component POA; never null.
-	 * @throws ContainerException  if creation of the POA fails.
+	 * @throws AcsJContainerServicesEx  if creation of the POA fails.
 	 */
 	public POA createPOAForComponent(String compName)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		if (m_componentPOA == null) {
 			throw new IllegalStateException("Must call 'initPOAForComponents()' before 'createPOAForComponent'.");
@@ -714,7 +714,7 @@ public class AcsCorba
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("failed to create POA for component " + compName, ex);
+			throw new AcsJContainerServicesEx("failed to create POA for component " + compName, ex);
 		}
 		return compChildPOA;
 	}
@@ -731,9 +731,9 @@ public class AcsCorba
 	 * @param componentPOA a component POA 
 	 * 
 	 * @return the new <code>ComponentServantManager</code>.
-	 * @throws ContainerException 
+	 * @throws AcsJContainerServicesEx 
 	 */
-	public ComponentServantManager setServantManagerOnComponentPOA(POA componentPOA) throws ContainerException {
+	public ComponentServantManager setServantManagerOnComponentPOA(POA componentPOA) throws AcsJContainerServicesEx {
 		ComponentServantManager servantManager;
 		try {
 			servantManager = new ComponentServantManager(m_logger);
@@ -741,7 +741,7 @@ public class AcsCorba
 		} catch (Exception ex) {
 			String msg = "Failed to set a servant activator on the component POA " + componentPOA.the_name();
 			m_logger.log(Level.FINE, msg, ex);
-			throw new ContainerException(msg, ex);
+			throw new AcsJContainerServicesEx(msg, ex);
 		}
 		return servantManager;
 	}
@@ -759,10 +759,10 @@ public class AcsCorba
 	 * 							 will become the parent of the offshoot POA.
 	 * @return POA  non-persistent POA for offshoot objects for the current component.
 	 * 
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
 	public POA getPOAForOffshoots(POA componentPOA)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		final String offshootPoaName = "offshootPoa";
 		POA offshootPoa = null;
@@ -802,11 +802,11 @@ public class AcsCorba
 					m_logger.finest("successfully created offshoot POA");
 				}
 				catch (InvalidPolicy ex) {
-					throw new ContainerException("Attempted to create offshoot POA with invalid policies.", ex);
+					throw new AcsJContainerServicesEx("Attempted to create offshoot POA with invalid policies.", ex);
 				} 
 				catch (AdapterAlreadyExists ex) {
 					// we sync on componentPOA, so this should never happen
-					throw new ContainerException("Offshoot POA already exists.", ex);
+					throw new AcsJContainerServicesEx("Offshoot POA already exists.", ex);
 				}
 			}
 		}
@@ -820,16 +820,16 @@ public class AcsCorba
 	 * @param name
 	 * @param compPOA
 	 * @return the component as a CORBA object
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
 	public org.omg.CORBA.Object activateComponent(Servant servant, String name, POA compPOA)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		if (name == null || name.length() == 0 ||
 			servant == null || compPOA == null)
 		{
 			String msg = "activateComponent called with missing parameter.";
-			throw new ContainerException(msg);
+			throw new AcsJContainerServicesEx(msg);
 		}
 		m_logger.finer("entering activateComponent: name=" + name);
 	
@@ -844,7 +844,7 @@ public class AcsCorba
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("failed to activate component " + name, ex);
+			throw new AcsJContainerServicesEx("failed to activate component " + name, ex);
 		}
 	
 		return actObj;
@@ -958,15 +958,15 @@ public class AcsCorba
 	 * @param servant  the offshoot servant.
 	 * @param compPOA  the POA responsible for the component which activates the offshoot.
 	 * @return the activated offshoot corba object.
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
 	public org.omg.CORBA.Object activateOffShoot(Servant servant, POA compPOA)
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		if (servant == null || compPOA == null)
 		{
 			String msg = "activateOffShoot called with missing parameter.";
-			throw new ContainerException(msg);
+			throw new AcsJContainerServicesEx(msg);
 		}
 		
 		POA offshootPoa = getPOAForOffshoots(compPOA);
@@ -982,7 +982,7 @@ public class AcsCorba
 		}
 		catch (Exception ex)
 		{
-			throw new ContainerException("failed to activate offshoot of type '" + 
+			throw new AcsJContainerServicesEx("failed to activate offshoot of type '" + 
 				servant.getClass().getName(), ex);
 		}
 	
@@ -990,12 +990,12 @@ public class AcsCorba
 	}
 
 	
-	public void deactivateOffShoot(Servant servant, POA compPOA) throws ContainerException {
+	public void deactivateOffShoot(Servant servant, POA compPOA) throws AcsJContainerServicesEx {
 
 		if (servant == null || compPOA == null)
 		{
 			String msg = "deactivateOffShoot called with missing parameter.";
-			throw new ContainerException(msg);
+			throw new AcsJContainerServicesEx(msg);
 		}
 		
 		byte[] id = null;
@@ -1004,14 +1004,14 @@ public class AcsCorba
 			id = offshootPoa.servant_to_id(servant);
 			offshootPoa.deactivate_object(id);
 		}
-		catch (ContainerException e) {
+		catch (AcsJContainerServicesEx e) {
 			throw e;
 		}
 		catch (Exception e) {
 			String msg = "failed to deactivate offshoot of type '" + servant.getClass().getName() +
 							"' (ID=" + String.valueOf(id) + ")";
 			m_logger.log(Level.WARNING, msg, e);
-			throw new ContainerException(msg, e);
+			throw new AcsJContainerServicesEx(msg, e);
 		}
 	}
 
@@ -1035,7 +1035,7 @@ public class AcsCorba
 	 * will succeed (aside from other general errors).
 	 * 
 	 * @param args 
-	 * @throws ContainerException 
+	 * @throws AcsJContainerServicesEx 
 	 */
 	public void prepareOrb(String[] args) {
 		

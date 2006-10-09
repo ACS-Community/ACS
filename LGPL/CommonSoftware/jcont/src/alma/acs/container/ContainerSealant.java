@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 import org.omg.CORBA.DATA_CONVERSION;
 import org.omg.CORBA.UserException;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.StopWatch;
@@ -99,11 +100,11 @@ public class ContainerSealant implements InvocationHandler
 	 */
 	static Object createContainerSealant(Class corbaInterface, Object component, String name, boolean isOffShoot,
             Logger logger, ClassLoader componentContextCL, String[] methodNamesExcludedFromInvocationLogging )
-			throws ContainerException
+			throws AcsJContainerServicesEx
 	{
 		if (!corbaInterface.isInstance(component))
 		{
-			throw new ContainerException("sealant factory: component " + component.getClass().getName() 
+			throw new AcsJContainerServicesEx("sealant factory: component " + component.getClass().getName() 
 			+ " must implement the sealant interface " + corbaInterface.getClass().getName());
 		}
 		

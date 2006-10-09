@@ -48,6 +48,7 @@ import si.ijs.maci.ManagerOperations;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ComponentStates;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.classloader.AcsComponentClassLoader;
@@ -121,11 +122,11 @@ public class AcsContainer extends ContainerPOA
      * @param acsCorba
      * @param managerProxy
      * @param isEmbedded  true if this container runs within an application. Affects shutdown behavior.
-     * @throws ContainerException  if anything goes wrong, or if another instance of this class
+     * @throws AcsJContainerServicesEx  if anything goes wrong, or if another instance of this class
      *                              has already been created.
      */
     AcsContainer(String containerName, AcsCorba acsCorba, AcsManagerProxy managerProxy, boolean isEmbedded)
-        throws ContainerException
+        throws AcsJContainerServicesEx
     {
         if (s_instance == null) {
             m_containerName = containerName;
@@ -140,7 +141,7 @@ public class AcsContainer extends ContainerPOA
             s_instance = this;            
         }
         else {
-            throw new ContainerException("illegal attempt to create more than one instance of " + AcsContainer.class.getName() + " inside one JVM.");
+            throw new AcsJContainerServicesEx("illegal attempt to create more than one instance of " + AcsContainer.class.getName() + " inside one JVM.");
         }
     }
 
@@ -148,9 +149,9 @@ public class AcsContainer extends ContainerPOA
      * Container initialization such as logging in to the manager, configuring logging, initializing the alarm system.
      * This is taken out of the ctor just to keep is lean and be able to instantiate a minimum container for testing.
      * 
-     * @throws ContainerException
+     * @throws AcsJContainerServicesEx
      */
-    void initialize() throws ContainerException {
+    void initialize() throws AcsJContainerServicesEx {
 		
     	loginToManager();
 		
@@ -173,7 +174,7 @@ public class AcsContainer extends ContainerPOA
 		try {
 			ACSAlarmSystemInterfaceFactory.init(m_acsCorba.getORB(), m_managerProxy.getManager(), m_managerProxy.getManagerHandle(),m_logger);
 		} catch (Throwable thr) {
-			throw new ContainerException("Error initializing the alarm system factory", thr);
+			throw new AcsJContainerServicesEx("Error initializing the alarm system factory", thr);
 		}
 	}
     
@@ -216,22 +217,22 @@ public class AcsContainer extends ContainerPOA
 
     /**
      * To be called only once from the ctor.
-     * @throws ContainerException
+     * @throws AcsJContainerServicesEx
      */
-    private void registerWithCorba() throws ContainerException
+    private void registerWithCorba() throws AcsJContainerServicesEx
     {
         // activate the Container as a CORBA object.
         org.omg.CORBA.Object obj = m_acsCorba.activateContainer(this, m_containerName);
 
         if (obj == null)
         {
-            throw new ContainerException("failed to register this AcsContainer with the ORB.");
+            throw new AcsJContainerServicesEx("failed to register this AcsContainer with the ORB.");
         }
 
         Container container = ContainerHelper.narrow(obj);
         if (container == null)
         {
-            throw new ContainerException("failed to narrow the AcsContainer to a Container.");
+            throw new AcsJContainerServicesEx("failed to narrow the AcsContainer to a Container.");
         }
         else
         {
@@ -245,11 +246,11 @@ public class AcsContainer extends ContainerPOA
     /**
      * Will attempt to log into the manager.
      * If the manager reference is not available, will enter a loop and keep trying.
-     * If login fails on an available manager, will throw a ContainerException.
+     * If login fails on an available manager, will throw a AcsJContainerServicesEx.
      *
-     * @throws ContainerException
+     * @throws AcsJContainerServicesEx
      */
-    protected void loginToManager() throws ContainerException
+    protected void loginToManager() throws AcsJContainerServicesEx
     {
         Container thisContainer = _this(m_acsCorba.getORB());
         m_managerProxy.loginToManager(thisContainer, true);
@@ -309,7 +310,7 @@ public class AcsContainer extends ContainerPOA
                     return existingCompAdapter.getComponentInfo();
                 }
                 else if (!m_activeComponentMap.reserveComponent(componentHandle)) {
-                        throw new ContainerException("Component with handle '" + componentHandle +
+                        throw new AcsJContainerServicesEx("Component with handle '" + componentHandle +
                                 "' is already being activated by this container. Manager should have prevented double activation.");
                 }
             }
@@ -377,7 +378,7 @@ public class AcsContainer extends ContainerPOA
             {
                 String msg = "failed to instantiate the servant object for component " +
                                 compName + " of type " + compImpl.getClass().getName();
-                throw new ContainerException(msg, ex);
+                throw new AcsJContainerServicesEx(msg, ex);
             }
 
             //
@@ -419,7 +420,7 @@ public class AcsContainer extends ContainerPOA
             if (compAdapter != null) {
                 try {
                     compAdapter.deactivateComponent();
-                } catch (ContainerException ex) {
+                } catch (AcsJContainerServicesEx ex) {
                     m_logger.log(Level.FINE, ex.getMessage(), ex);
                 }
             }
@@ -463,7 +464,7 @@ public class AcsContainer extends ContainerPOA
      * @return the adapter for an existing component according to the above rules, or <code>null</code> if none exists.
      */
     private ComponentAdapter getExistingComponent(int componentHandle, String name, String type)
-//      throws ContainerException
+//      throws AcsJContainerServicesEx
     {
         // try same handle
         ComponentAdapter existingCompAdapter = m_activeComponentMap.get(componentHandle);
@@ -536,7 +537,7 @@ public class AcsContainer extends ContainerPOA
 
 
     private ComponentHelper createComponentHelper(String compName, String exe, ClassLoader compCL)
-        throws ContainerException
+        throws AcsJContainerServicesEx
     {
         m_logger.finer("creating component helper instance of type '" + exe + "' using classloader " + compCL.getClass().getName());
 
@@ -544,11 +545,11 @@ public class AcsContainer extends ContainerPOA
         try  {
             compHelperClass = Class.forName(exe, true, compCL);
         } catch (ClassNotFoundException ex) {
-            throw new ContainerException("component helper class '" + exe + "' not found.", ex);
+            throw new AcsJContainerServicesEx("component helper class '" + exe + "' not found.", ex);
         }
 
         if (!ComponentHelper.class.isAssignableFrom(compHelperClass)) {
-            throw new ContainerException("component helper class '" + exe + "' does not inherit from required base class "
+            throw new AcsJContainerServicesEx("component helper class '" + exe + "' does not inherit from required base class "
                                             + ComponentHelper.class.getName());
         }
 
@@ -560,13 +561,13 @@ public class AcsContainer extends ContainerPOA
             String msg = "component helper class '" + exe + "' has no constructor " +
             " that takes a java.util.Logger";
             m_logger.fine(msg);
-            throw new ContainerException(msg, e);
+            throw new AcsJContainerServicesEx(msg, e);
         }
 
         try {
             compHelper = (ComponentHelper) helperCtor.newInstance(new Object[]{m_logger});
         } catch (Exception e) {
-            throw new ContainerException("component helper class '" + exe + "' could not be instantiated", e);
+            throw new AcsJContainerServicesEx("component helper class '" + exe + "' could not be instantiated", e);
         }
         compHelper.setComponentInstanceName(compName);
 

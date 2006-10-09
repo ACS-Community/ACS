@@ -24,16 +24,16 @@ package alma.acs.component.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import junit.framework.TestCase;
+
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
 import si.ijs.maci.Client;
 
-import junit.framework.TestCase;
-
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.CleaningDaemonThreadFactory;
-import alma.acs.container.ContainerException;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
@@ -275,9 +275,9 @@ public class ComponentClientTestCase extends TestCase
      * To receive logs from the log service, use either 
      * {@link LogReceiver#getLogQueue()} or {@link LogReceiver#startCaptureLogs(java.io.PrintWriter)}.
      *  
-     * @throws ContainerException if the LogReceiver fails to initialize within 20 seconds.
+     * @throws AcsJContainerServicesEx if the LogReceiver fails to initialize within 20 seconds.
      */
-    protected LogReceiver getLogReceiver() throws ContainerException {
+    protected LogReceiver getLogReceiver() throws AcsJContainerServicesEx {
         if (logReceiver == null) {
         	boolean initOk = false;
         	try {
@@ -285,10 +285,10 @@ public class ComponentClientTestCase extends TestCase
 	            initOk = logReceiver.initialize(acsCorba.getORB(), m_acsManagerProxy.getManager(), 20);
         	}
         	catch (Throwable thr) {
-        		throw new ContainerException("Failed to obtain an initialized LogReceiver.", thr);
+        		throw new AcsJContainerServicesEx("Failed to obtain an initialized LogReceiver.", thr);
         	}
             if (!initOk) {
-            	throw new ContainerException("LogReceiver failed to initialize within 20 seconds.");
+            	throw new AcsJContainerServicesEx("LogReceiver failed to initialize within 20 seconds.");
             }
         }
         return logReceiver;

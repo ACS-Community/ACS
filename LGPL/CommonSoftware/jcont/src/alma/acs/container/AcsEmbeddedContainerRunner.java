@@ -23,6 +23,7 @@ package alma.acs.container;
 
 import java.util.logging.Logger;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 
@@ -79,9 +80,9 @@ public class AcsEmbeddedContainerRunner {
      * @param acsCorba  the shared instance of AcsCorba 
      * @param containerName 
      * @param managerLoc 
-     * @throws ContainerException  at the slightest provocation...
+     * @throws AcsJContainerServicesEx  at the slightest provocation...
      */
-    public void run(AcsCorba acsCorba, String containerName, String managerLoc) throws ContainerException
+    public void run(AcsCorba acsCorba, String containerName, String managerLoc) throws AcsJContainerServicesEx
     {
         setContainerName(containerName);
         setManagerLoc(managerLoc);
@@ -89,12 +90,12 @@ public class AcsEmbeddedContainerRunner {
     }
 
     
-    void run(AcsCorba acsCorba) throws ContainerException
+    void run(AcsCorba acsCorba) throws AcsJContainerServicesEx
     {
         getContainerLogger();
         
         if (!acsCorba.isInitialized()) {
-            throw new ContainerException("The provided AcsCorba object must be initialized!");
+            throw new AcsJContainerServicesEx("The provided AcsCorba object must be initialized!");
         }
 
         m_acsCorba = acsCorba;        
@@ -133,7 +134,7 @@ public class AcsEmbeddedContainerRunner {
         return m_managerProxy;
     }
     
-    void checkReadyToRun(String otherMsg) throws ContainerException {
+    void checkReadyToRun(String otherMsg) throws AcsJContainerServicesEx {
         String msg = "";
         if (m_managerLoc == null || m_managerLoc.trim().length() == 0)
         {
@@ -151,12 +152,12 @@ public class AcsEmbeddedContainerRunner {
         
         if (msg.length() > 0)
         {
-            throw new ContainerException(
+            throw new AcsJContainerServicesEx(
                 "can't start container because of missing information: " + msg);
         }
     }
 
-    protected void createContainer() throws ContainerException {
+    protected void createContainer() throws AcsJContainerServicesEx {
         m_logger.fine("creating the AcsContainer " + m_containerName);
         
         m_container = new AcsContainer(m_containerName, m_acsCorba, m_managerProxy, isEmbedded);
@@ -171,9 +172,9 @@ public class AcsEmbeddedContainerRunner {
      * and calls <code>getManager</code> on it so that the connection 
      * to the manager will be established, without logging in to the manager yet.
      * 
-     * @throws ContainerException
+     * @throws AcsJContainerServicesEx
      */
-    protected void initManagerProxy() throws ContainerException {
+    protected void initManagerProxy() throws AcsJContainerServicesEx {
         m_managerProxy = new AcsManagerProxy(m_managerLoc, m_acsCorba.getORB(), m_logger);
         m_managerProxy.getManager();        
     }
