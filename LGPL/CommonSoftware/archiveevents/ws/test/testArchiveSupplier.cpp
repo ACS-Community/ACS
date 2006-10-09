@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testArchiveSupplier.cpp,v 1.2 2005/09/19 21:15:39 dfugate Exp $"
+* "@(#) $Id: testArchiveSupplier.cpp,v 1.3 2006/10/09 06:06:00 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@
 
 using namespace maci;
 
-static char *rcsId="@(#) $Id: testArchiveSupplier.cpp,v 1.2 2005/09/19 21:15:39 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: testArchiveSupplier.cpp,v 1.3 2006/10/09 06:06:00 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 template<class T> 
@@ -95,8 +95,7 @@ int main(int argc, char *argv[])
 	}
     
     //get the naming service to use with archive supplier's init method
-    CORBA::ULong status;
-    CORBA::Object_var nc_obj = client.manager()->get_service(client.handle(), "NameService", true, status);
+    CORBA::Object_var nc_obj = client.manager()->get_service(client.handle(), "NameService", true);
     CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(nc_obj.in());
     
     //initialize the singleton

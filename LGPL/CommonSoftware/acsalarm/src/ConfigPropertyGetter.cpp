@@ -63,32 +63,47 @@ ConfigPropertyGetter::~ConfigPropertyGetter() {
 
 std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
     CDB::DAL_var cdbDAL;
-    CORBA::ULong status;
     CORBA::Object_var cdb;
 
     try
 	{
-	cdb = manager->get_service(0, "CDB", true, status);
+	cdb = manager->get_service(0, "CDB", true);
 	if (CORBA::is_nil(cdb.in()))
 	    {
 	    throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(__FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
 	    }
 	}
+    catch(maciErrType::CannotGetComponentEx &ex)
+	{
+	throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(ex, __FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
+	}
+    catch(maciErrType::ComponentNotAlreadyActivatedEx &ex)
+	{
+	throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(ex, __FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
+	}
+	  catch(maciErrType::ComponentConfigurationNotFoundEx &ex)
+	{
+	throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(ex, __FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
+	}
     catch(CORBA::Exception &ex)
+	{
+	throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(__FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
+	}
+    catch(...)
 	{
 	throw acsErrTypeAlarmSourceFactory::ErrorGettingDALExImpl(__FILE__,__LINE__,"ConfigPropertyGetter::getDAO");
 	}//try-catch
     
-	cdbDAL = CDB::DAL::_narrow(cdb.in());
-	
-	DALaccess::forceDAL(cdbDAL.in());
-	
-	// Get the DAO
-	try {
-		return cdbDAL->get_DAO("Alarms/AlarmSystemConfiguration");
-	} catch (cdbErrType::CDBRecordDoesNotExistEx) {
-		return "";
-	}
+    cdbDAL = CDB::DAL::_narrow(cdb.in());
+    
+    DALaccess::forceDAL(cdbDAL.in());
+    
+    // Get the DAO
+    try {
+        return cdbDAL->get_DAO("Alarms/AlarmSystemConfiguration");
+    } catch (cdbErrType::CDBRecordDoesNotExistEx) {
+        return "";
+    }
 }
 
 void ConfigPropertyGetter::parseDAO() {

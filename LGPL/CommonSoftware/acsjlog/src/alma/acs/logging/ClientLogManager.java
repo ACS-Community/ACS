@@ -320,21 +320,21 @@ public class ClientLogManager implements LogConfigSubscriber
             return false;
 		}
                 
-		org.omg.CORBA.IntHolder holder = new org.omg.CORBA.IntHolder();
         Log logService = null;
         int count = 0;
         String errMsg;
         do {
             errMsg = null;
             count++;
-            holder.value = -1;
             try {
-                logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true, holder));
+	        /**
+		   @todo: Here we should catch int a more precise 
+		   way the exceptions that can be thrown
+		   byte the various methods.
+		*/ 
+                logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
                 if (logService == null) {
                     errMsg = "Failed to obtain central log service '" + logServiceName + "': reference is 'null'. ";
-                }
-                else if (holder.value != 0) {
-                    errMsg = "Obtained central log service, but with error code '" + holder.value + "'. ";
                 }
                 else { 
                     if (count > 1) {
