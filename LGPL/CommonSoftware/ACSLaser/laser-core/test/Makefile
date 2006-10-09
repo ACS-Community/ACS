@@ -79,7 +79,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       =
+PY_SCRIPTS_L       = lasercoreTATPrologue lasercoreTestAll
 
 PY_MODULES         =
 PY_MODULES_L       =
@@ -128,7 +128,7 @@ USER_IDL =
 # Jarfiles and their directories
 #
 JARFILES= lasercoretest
-lasercoretest_DIRS=alma
+lasercoretest_DIRS=com
 #
 # java sources in Jarfile on/off
 DEBUG= 
@@ -197,9 +197,11 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) *~ ../*~ *.diff *.rep core tmp tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

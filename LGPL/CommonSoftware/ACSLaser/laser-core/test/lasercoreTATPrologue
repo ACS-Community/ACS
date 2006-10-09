@@ -1,0 +1,10 @@
+#!/bin/bash
+OLD_CDB=$ACS_CDB
+ACS_CDB=../test
+
+#Start the ORB services and manager.
+acsutilTATPrologue
+
+echo " Starting Test Java Container"
+#export JAVA_OPTIONS="-Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory"
+acsutilAwaitContainerStart -java frodoContainer
