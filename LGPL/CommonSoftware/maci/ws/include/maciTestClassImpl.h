@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.h,v 1.87 2005/04/18 17:14:48 acaproni Exp $"
+* "@(#) $Id: maciTestClassImpl.h,v 1.88 2006/10/09 06:13:39 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
  *
  * @author <a href=mailto:klemen.zagar@ijs.si>Klemen Zagar</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciTestClassImpl.h,v 1.87 2005/04/18 17:14:48 acaproni Exp $"
+ * @version "@(#) $Id: maciTestClassImpl.h,v 1.88 2006/10/09 06:13:39 gchiozzi Exp $"
  */
 
 class MaciTestClass: public virtual acscomponent::ACSComponentImpl,
@@ -61,24 +61,15 @@ public:
   /* --------------------- [ CORBA interface ] ----------------------*/
   /* ----------------------------------------------------------------*/
 
-  virtual CORBA::Boolean test (
-                               
-                              )
-    throw (CORBA::SystemException);
+    virtual CORBA::Boolean test ()               
+	throw (CORBA::SystemException);
 
-  virtual CORBA::Object_ptr get_component (
-                                      const char *cob_url,
-                                      CORBA::Boolean activate,
-                                      CORBA::ULong &status
-                                       
-                                    )
-    throw (CORBA::SystemException);
+    virtual CORBA::Object_ptr get_component (const char *cob_url,
+					     CORBA::Boolean activate)
+	throw (CORBA::SystemException);
 
-  virtual CORBA::Long release_component (
-                                    const char *cob_url
-                                     
-                                  )
-    throw (CORBA::SystemException);
+    virtual CORBA::Long release_component (const char *cob_url)                                    
+	throw (CORBA::SystemException);
 
 protected:
 
@@ -111,71 +102,6 @@ public:
 
 };
 
-/*
-class MaciTestConstructableClass:
-  public virtual PortableServer::RefCountServantBase,
-  public virtual POA_MACI_TEST::ConstructableTestClass
-{
-public:
-
-  /// Constructor
-  MaciTestConstructableClass (PortableServer::POA_ptr poa,
-                              const ACE_CString& name);
-
-  virtual ~MaciTestConstructableClass();
-
-  **
-   * Initialization status
-   * @return initialization status
-   */
-//  int initialization() { return m_initialization; }
-
-  /* ----------------------------------------------------------------*/
-  /* --------------------- [ CORBA interface ] ----------------------*/
-  /* ----------------------------------------------------------------*/
-/*
-  virtual CORBA::Boolean test (
-                               TAO_default_environment ()
-                              )
-    throw (CORBA::SystemException)
-  {
-      return false;
-  }
-
-  virtual void construct (
-                           TAO_default_environment ()
-                         )
-    throw (CORBA::SystemException);
-
-  virtual void destruct (
-                          TAO_default_environment ()
-                        )
-    throw (CORBA::SystemException);
-
-  virtual CORBA::Object_ptr get_component (
-                                      const char *cob_url,
-                                      CORBA::Boolean activate,
-                                      CORBA::ULong &status,
-                                        TAO_default_environment()
-                                    )
-    throw (CORBA::SystemException);
-
-  virtual CORBA::Long release_component (
-                                    const char *cob_url,
-                                      TAO_default_environment()
-                                  )
-    throw (CORBA::SystemException);
-
-
-  protected:
-
-    /// Reference to the POA activating this component
-    PortableServer::POA_var m_poa;
-    ACE_CString m_name;
-    /// Initialization status
-    int m_initialization;
-};
-*/
 #endif   /* maciTestClassImpl_h */
 
 

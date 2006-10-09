@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.91 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.92 2006/10/09 06:13:17 gchiozzi Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -330,12 +330,11 @@ T* SimpleClient::get_object(const char *name, const char *domain, bool activate
     
     try
 	{
-	CORBA::ULong status;
-	CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate, status);
+	CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
 	
-	if (CORBA::is_nil(obj.in()) || status!=maci::Manager::COMPONENT_ACTIVATED)
+	if (CORBA::is_nil(obj.in()))
 	    {
-	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s', status: %d.",  curl.c_str(), status));
+	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'",  curl.c_str()));
 	    return T::_nil();
 	    }
 	object = T::_narrow(obj.in());

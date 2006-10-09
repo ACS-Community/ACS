@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.93 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.94 2006/10/09 06:15:54 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.93 2006/09/01 02:20:54 cparedes Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.94 2006/10/09 06:15:54 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -73,8 +73,7 @@ MaciTestClass::test ()
 CORBA::Object_ptr
 MaciTestClass::get_component (
     const char *cob_url,
-    CORBA::Boolean activate,
-    CORBA::ULong &status
+    CORBA::Boolean activate
     )
   throw (CORBA::SystemException)
 {

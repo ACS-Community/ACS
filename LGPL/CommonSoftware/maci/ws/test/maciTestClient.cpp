@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.88 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.89 2006/10/09 06:16:06 gchiozzi Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.88 2006/09/01 02:20:54 cparedes Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.89 2006/10/09 06:16:06 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -37,7 +37,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.88 2006/09/01 02:20:54 cparedes Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.89 2006/10/09 06:16:06 gchiozzi Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -274,17 +274,15 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
     {
       ClientInfo ci;
       MaciTestClass_ptr mtc;
-      CORBA::ULong status;
 
       if (g_Clients.find (requestor, ci) == 0)
         {
-          component = g_Client->manager ()->get_component (ci.h, curl.c_str(), activate,
-                                               status);
+	component = g_Client->manager ()->get_component (ci.h, curl.c_str(), activate);
           ACE_CHECK_RETURN (ERROR);
         }
       else if (g_TestClasses.find (requestor, mtc) == 0)
         {
-          mtc->get_component (curl.c_str(), activate, status);
+          mtc->get_component (curl.c_str(), activate);
           ACE_CHECK_RETURN (ERROR);
         }
       else
@@ -295,17 +293,9 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
           return ERROR;
         }
 
-      ACE_CString strStatus;
-      if (status == Manager::COMPONENT_ACTIVATED)
-        strStatus = "COMPONENT_ACTIVATED";
-      if (status == Manager::COMPONENT_NONEXISTENT)
-        strStatus = "COMPONENT_NONEXISTENT";
-      if (status == Manager::COMPONENT_NOT_ACTIVATED)
-        strStatus = "COMPONENT_NOT_ACTIVATED";
-
       ACS_SHORT_LOG ((LM_INFO,
-                      "Activating component '%s': %s.",
-                      curl.c_str(), strStatus.c_str()));
+                      "Activating component '%s'",
+                      curl.c_str()));
     }
 
   MaciTestClass_ptr componentMTC = MaciTestClass::_narrow (component);

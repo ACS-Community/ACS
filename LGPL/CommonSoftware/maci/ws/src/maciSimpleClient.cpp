@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.93 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.94 2006/10/09 06:15:39 gchiozzi Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -446,8 +446,7 @@ SimpleClient::init(int argc, char *argv[])
       try
 	  {
 	  ACE_CString centralizedLogger("Log");	
-	  CORBA::ULong status;
-	  CORBA::Object_var log_obj = m_manager->get_service(m_handle, centralizedLogger.c_str(), true, status);
+	  CORBA::Object_var log_obj = m_manager->get_service(m_handle, centralizedLogger.c_str(), true);
 	  
 
 	  if (log_obj.ptr() != CORBA::Object::_nil())
@@ -577,13 +576,12 @@ SimpleClient::get_object(const char *name,
   
   try
     {
-      CORBA::ULong status;
-      CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate, status);
+      CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
       
 
-      if (CORBA::is_nil(obj.in()) || status!=maci::Manager::COMPONENT_ACTIVATED)
+      if (CORBA::is_nil(obj.in()))
 	{
-	  ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s', status: %d.",  curl.c_str(), status));
+	  ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'",  curl.c_str()));
 	  return 0;
 	}
   

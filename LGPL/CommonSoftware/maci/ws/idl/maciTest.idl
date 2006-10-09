@@ -16,8 +16,7 @@ interface MaciTestClass : ACS::ACSComponent {
   
   // Request a component
   Object get_component(in maci::CURL component_url,
-                 in boolean activate,
-                 out unsigned long status);
+		       in boolean activate);
   
   // Release a component
   long release_component(in maci::CURL component_url);
