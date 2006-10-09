@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+
 
 /**
  * This class implements the more exotic methods from the container services interface,
@@ -91,7 +93,7 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     /* TODO: remove this method once weak component references are implemented.
      * @see alma.acs.container.AdvancedContainerServices#forceReleaseComponent(java.lang.String)
      */
-    public void forceReleaseComponent(String curl) throws ContainerException {
+    public void forceReleaseComponent(String curl) throws AcsJContainerServicesEx {
     	containerServicesImpl.releaseComponent(curl, true);
     }
 }

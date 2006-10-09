@@ -31,6 +31,7 @@ import com.cosylab.CDB.DAL;
 import si.ijs.maci.ComponentSpec;
 
 import alma.ACS.OffShoot;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
@@ -126,10 +127,10 @@ public interface ContainerServices
 	 * 
 	 * @param componentUrl  the ACS CURL of the deployed component instance.
 	 * @return  the CORBA proxy for the component.
-	 * @throws ContainerException  if something goes wrong.
+	 * @throws ContainerServicesEx  if something goes wrong.
 	 */
 	public org.omg.CORBA.Object getComponent(String componentUrl) 
-			throws ContainerException;
+			throws AcsJContainerServicesEx;
 	
 	/**
 	 * Gets the default component specified by the component type.
@@ -146,20 +147,20 @@ public interface ContainerServices
 	 * Delegates to {@link si.ijs.maci.ManagerOperations#get_default_component}.
 	 * @param componentIDLType 
 	 * @return 
-	 * @throws ContainerException 
+	 * @throws ContainerServicesEx 
 	 */
 	public org.omg.CORBA.Object getDefaultComponent(String componentIDLType) 
-			throws ContainerException;
+			throws AcsJContainerServicesEx;
 	
 
 	/**
 	 * @param compUrl  the component's name (URL)
 	 * @param targetCompUrl  the name (URL) of the target component, in whose container we also want <code>compUrl</code> to run.
 	 * @return  the component reference, which should be cast using the appropriate CORBA narrow operation. Never null.
-	 * @throws ContainerException If the call failed and no component reference could be obtained.
+	 * @throws AcsJContainerServicesEx If the call failed and no component reference could be obtained.
 	 * @since ACS 5.0.3
 	 */
-	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws ContainerException;
+	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws AcsJContainerServicesEx;
 	
 	
 	/**
@@ -182,7 +183,7 @@ public interface ContainerServices
 	 * @param markAsDefault  if true, the new component will become the default component for its IDL type.	
 	 */
 	public org.omg.CORBA.Object getDynamicComponent(ComponentQueryDescriptor compSpec, boolean markAsDefault) 
-			throws ContainerException;
+			throws AcsJContainerServicesEx;
 
     /**
 	 * More powerful and thus more dangerous version of {@link #getDynamicComponent(ComponentQueryDescriptor, boolean)}
@@ -197,7 +198,7 @@ public interface ContainerServices
 	 * 				<code>ComponentQueryDescriptor</code> given to the recommended version of this method.    	
 	 */
 	public org.omg.CORBA.Object getDynamicComponent(ComponentSpec compSpec, boolean markAsDefault) 
-			throws ContainerException;
+			throws AcsJContainerServicesEx;
 
 
 	
@@ -210,7 +211,7 @@ public interface ContainerServices
 	 * @return  the CDB interface
 	 * @throws ContainerException
 	 */
-	public DAL getCDB() throws ContainerException;
+	public DAL getCDB() throws AcsJContainerServicesEx;
 	
 	
 	/**
@@ -226,7 +227,7 @@ public interface ContainerServices
 	 * @see si.ijs.maci.ManagerOperations#get_component_info(int, int[], java.lang.String, java.lang.String, boolean)
 	 */
 	public String[] findComponents(String curlWildcard, String typeWildcard)  
-		throws ContainerException;
+		throws AcsJContainerServicesEx;
 
 
 	/**
@@ -249,7 +250,7 @@ public interface ContainerServices
 	 * @see si.ijs.maci.ComponentInfo	
 	 */
 	public ComponentDescriptor getComponentDescriptor(String componentUrl)
-		throws ContainerException;
+		throws AcsJContainerServicesEx;
 	
 	
 	/**
@@ -293,7 +294,7 @@ public interface ContainerServices
 	 * 								especially if <code>cbServant</code> is not an OffShoot.
 	 */
 	public OffShoot activateOffShoot(Servant cbServant) 
-			throws ContainerException;
+			throws AcsJContainerServicesEx;
 	
 	/**
 	 * Deactivates the offshoot corba object.
@@ -303,10 +304,10 @@ public interface ContainerServices
 	 * after deactivation, an exception will be thrown. TODO: find a remedy
 	 * 
 	 * @param cbServant  must implement {@link alma.ACS.OffShootOperations}.
-	 * @throws ContainerException if something goes wrong, e.g., if the offshoot servant was not active.
+	 * @throws AcsJContainerServicesEx if something goes wrong, e.g., if the offshoot servant was not active.
 	 */
 	public void deactivateOffShoot(Servant cbServant) 
-			throws ContainerException; 
+			throws AcsJContainerServicesEx; 
 	
 
     /**
@@ -326,7 +327,7 @@ public interface ContainerServices
 	 * 
 	 * @param entity 	must be freshly created and 
 	 */
-	public void assignUniqueEntityId(EntityT entity) throws ContainerException;
+	public void assignUniqueEntityId(EntityT entity) throws AcsJContainerServicesEx;
 	
 	
 	/**
@@ -369,7 +370,7 @@ public interface ContainerServices
 		Class<T> transparentXmlIF,
 		org.omg.CORBA.Object componentReference,
 		Class flatXmlIF) 
-		throws ContainerException;
+		throws AcsJContainerServicesEx;
 
     
     /////////////////////////////////////////////////////////////

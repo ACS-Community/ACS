@@ -21,6 +21,8 @@
  */
 package alma.acs.container;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+
 /**
  * This class defines the more exotic methods from the container services interface,
  * which have been refactored out of <code>ContainerServices</code> into this separate interface.
@@ -65,5 +67,5 @@ public interface AdvancedContainerServices {
      * @deprecated  introduced in ACS 5.0.4 as a workaround until we have a proper concept of a "weak" component reference. 
      *              Then this method will be removed.
      */
-    public void forceReleaseComponent(String curl) throws ContainerException;
+    public void forceReleaseComponent(String curl) throws AcsJContainerServicesEx;
 }
