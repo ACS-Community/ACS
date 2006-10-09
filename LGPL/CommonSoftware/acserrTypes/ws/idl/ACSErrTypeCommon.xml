@@ -68,6 +68,7 @@
 		shortDescription="Bad parameter error"
 		description="Bad parameter error">
 		<Member name="Parameter" type="string" description="Name of the parameter"/>
+		<Member name="ParameterValue" type="string" description="Value of the above parameter"/>
 	</ErrorCode>
         
 	<ErrorCode name="UnexpectedException" 
