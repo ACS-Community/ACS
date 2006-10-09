@@ -424,45 +424,39 @@ public class MaciSupervisor implements IMaciSupervisor {
    }
    
 
-   public org.omg.CORBA.Object getComponent(String curl) throws NotConnectedToManagerException {
-      
-   	int hhhhh = myOwnMaciHandle();
+   public org.omg.CORBA.Object getComponent (String curl) throws NotConnectedToManagerException {
 
-	/**
-	 * @todo GCH 2006-10-09
-         *       Here we simply catch the exceptions
-	 *       as it was int the original code when the
-	 *       signature was simply returning a null object int case of error.
-	 *       The exceptions are then just logged.
-	 *       To be verified if this is the correct behavior
-	 *       or if we need to pass the exception to the caller level.
-	 */
-	try 
-	    {
-	    org.omg.CORBA.Object stub = myManagerReference().get_component(hhhhh, curl, true);
-            log.fine("successfully retrieved component '" + curl + "'");
-	    }
-	catch(CannotGetComponentEx e)
-	    {
-	    AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
-	    je.setCURL(curl);
-	    je.log(log);
-	    }
-	catch(ComponentNotAlreadyActivatedEx e)
-	    {
-	    AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
-	    je.setCURL(curl);
-	    je.log(log);
-	    }
-	catch(ComponentConfigurationNotFoundEx e)
-	    {
-	    AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
-	    je.setCURL(curl);
-	    je.log(log);
-	    }
+		Manager mgr = myManagerReference(); // may throw NotConnectedToManager
+		int hhhhh = myOwnMaciHandle(); // may throw NotConnectedToManager
 
-	return null; // It cannot get here, but the compiler wants it.
-   }
+		/**
+		 * @todo GCH 2006-10-09 Here we simply catch the exceptions as it was int the
+		 *       original code when the signature was simply returning a null object int
+		 *       case of error. The exceptions are then just logged. To be verified if this
+		 *       is the correct behavior or if we need to pass the exception to the caller
+		 *       level.
+		 */
+		try {
+			org.omg.CORBA.Object stub = mgr.get_component(hhhhh, curl, true);
+			log.fine("successfully retrieved component '" + curl + "'");
+			return stub;
+			
+		} catch (CannotGetComponentEx e) {
+			AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
+			je.setCURL(curl);
+			je.log(log);
+		} catch (ComponentNotAlreadyActivatedEx e) {
+			AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
+			je.setCURL(curl);
+			je.log(log);
+		} catch (ComponentConfigurationNotFoundEx e) {
+			AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
+			je.setCURL(curl);
+			je.log(log);
+		}
+
+		return null;
+	}
 
    public void forceReleaseComponent(String curl) {
    	
