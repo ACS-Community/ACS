@@ -2,10 +2,11 @@ package alma.acs.container;
 
 import java.util.logging.Logger;
 
-import org.omg.PortableServer.POA;
-
 import junit.framework.TestCase;
 
+import org.omg.PortableServer.POA;
+
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 
@@ -90,7 +91,7 @@ public class ComponentMapTest extends TestCase {
 		public DummyAcsCorba(Logger logger) {
 			super(logger);
 		}
-		public POA createPOAForComponent(String compName) throws ContainerException {
+		public POA createPOAForComponent(String compName) throws AcsJContainerServicesEx {
 			return null;
 		}
 		
