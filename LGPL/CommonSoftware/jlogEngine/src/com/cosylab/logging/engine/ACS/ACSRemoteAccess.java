@@ -41,6 +41,10 @@ import si.ijs.maci.Manager;
 
 import com.cosylab.logging.engine.RemoteAccess;
 
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+
 /**
  * This class implements methods for declaring the naming service 
  * and the notification channel to which the client is subscribed.
@@ -278,10 +282,23 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	
 	private NamingContext resolveNamingServiceContext(si.ijs.maci.Manager manager) {
 		engine.publishReport("Resolving Naming Service...");
-		org.omg.CORBA.IntHolder holder = new org.omg.CORBA.IntHolder();
-			
-		org.omg.CORBA.Object nameService = manager.get_service(0, NAME_SERVICE, false, holder);
-		if (nameService == null) throw new IllegalStateException("NameService obtained from the manager is null.");
+		org.omg.CORBA.Object nameService = null;
+		try
+		    {
+		    nameService = manager.get_service(0, NAME_SERVICE, false);
+		    }
+		catch(CannotGetComponentEx e)
+		    {
+		    throw new IllegalStateException("Failed to  obtaine NameService from the manager.");
+		    }
+		catch(ComponentNotAlreadyActivatedEx e)
+		    {
+		    throw new IllegalStateException("Failed to  obtaine NameService from the manager.");
+		    }
+		catch(ComponentConfigurationNotFoundEx e)
+		    {
+		    throw new IllegalStateException("Failed to  obtaine NameService from the manager.");
+		    }
 	
 		NamingContext namingContext = null;
 		try {
