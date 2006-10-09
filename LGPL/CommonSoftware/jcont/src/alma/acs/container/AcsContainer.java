@@ -45,6 +45,7 @@ import si.ijs.maci.Container;
 import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ManagerOperations;
+import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ComponentStates;
 import alma.acs.component.ComponentLifecycle;
@@ -193,12 +194,11 @@ public class AcsContainer extends ContainerPOA
         }
         
         try {
-            IntHolder status = new IntHolder();
             // manager's get_service contains get_component, so even if the CDB becomes a real component, we can leave this 
-            org.omg.CORBA.Object dalObj = m_managerProxy.get_service("CDB", true, status);
+            org.omg.CORBA.Object dalObj = m_managerProxy.get_service("CDB", true);
             cdb = DALHelper.narrow(dalObj);
-            if (cdb == null || status.value != ManagerOperations.COMPONENT_ACTIVATED) {
-                m_logger.log(Level.WARNING, "Failed to access the CDB. Status value was " + status.value);
+            if (cdb == null) {
+                m_logger.log(Level.WARNING, "Failed to access the CDB.");
             }
         }
         catch (Exception e) {
@@ -1194,6 +1194,73 @@ public class AcsContainer extends ContainerPOA
     }
 
 
+        /************************** LoggingConfigurable *************************/
+
+        /**
+	 * Gets the log levels of the default logging configuration.
+	 * These levels are used by all loggers that have not been configured individually.
+	 */
+        public LogLevels get_default_logLevels()
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Sets the log levels of the default logging configuration.
+             * These levels are used by all loggers that have not been configured individually.
+             */
+        public void set_default_logLevels(LogLevels levels)
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /** 
+             * Gets the names of all loggers, to allow configuring their levels individually.
+             * The names are those that appear in the log records in the field "SourceObject".
+             * This includes the container logger, ORB logger, component
+             * loggers, and (only C++) GlobalLogger. 
+             */
+        public String[] get_logger_names()
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Gets log levels for a particular named logger.
+             * If the returned field LogLevels.useDefault is true, then the
+             * logger uses the default levels, see get_default_logLevels();       
+             * otherwise the returned local and remote levels apply.
+             */
+        public LogLevels get_logLevels(String logger_name)
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Sets log levels for a particular named logger.
+             * If levels.useDefault is true, then the logger will be reset to
+             * using default levels;       
+             * otherwise it will use the supplied
+             * local and remote levels. 
+             */
+        public void set_logLevels(String logger_name, LogLevels levels)
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+       
+            /**
+             * Commands the container or manager to read in again the logging
+             * configuration from the CDB and to reconfigure the loggers
+             * accordingly. 
+             * This allows for persistent changes in the logging
+             * configuration to become effective, and also for changes of more
+             * advanced parameters. 
+             */
+        public void refresh_logging_config()
+	{
+	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+        /************************** END LoggingConfigurable *************************/
 
 
 
