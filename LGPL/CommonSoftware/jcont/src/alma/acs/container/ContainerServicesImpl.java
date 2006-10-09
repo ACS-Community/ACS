@@ -42,11 +42,6 @@ import com.cosylab.CDB.DALHelper;
 
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
-import si.ijs.maci.ComponentSpecIncompatibleWithActiveComponent;
-import si.ijs.maci.IncompleteComponentSpec;
-import si.ijs.maci.InvalidComponentSpec;
-import si.ijs.maci.ManagerOperations;
-import si.ijs.maci.NoDefaultComponent;
 
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
@@ -65,6 +60,22 @@ import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
+
+import alma.maciErrType.CannotGetServiceEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.NoDefaultComponentEx;
+import alma.maciErrType.IncompleteComponentSpecEx;
+import alma.maciErrType.CannotRegisterComponentEx;
+import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.InvalidComponentSpecEx;
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -348,29 +359,31 @@ public class ContainerServicesImpl implements ContainerServices
 			m_logger.fine("will retrieve remote component '" + curl + 
 							"' using ACS Manager#get_component with client handle " + m_clientHandle);
 		
-			IntHolder status = new IntHolder();
-			
-			// todo: think about timeouts
-			stub = m_acsManagerProxy.get_component(m_clientHandle, curl, true, status);
-		
-			if (status.value == ManagerOperations.COMPONENT_ACTIVATED)
-			{
-				m_logger.fine("component " + curl + " retrieved successfully.");
-			}
-			else if (status.value == ManagerOperations.COMPONENT_NONEXISTENT)
-			{
-				String msg = "component " + curl + " does not exist.";
-				m_logger.severe(msg);
-				throw new ContainerException(msg);
-			}
-			else if (status.value == ManagerOperations.COMPONENT_NOT_ACTIVATED)
-			{
-				String msg = "component " + curl + " could not be activated.";
-				m_logger.severe(msg);
-				throw new ContainerException(msg);
-			}
-		
-			m_usedComponentsMap.put(curl, stub);
+			/// @todo: think about timeouts, rewrite with exceptions
+			try 
+			    {
+			    stub = m_acsManagerProxy.get_component(m_clientHandle, curl, true);
+			    m_logger.fine("component " + curl + " retrieved successfully.");
+			    m_usedComponentsMap.put(curl, stub);
+			    }
+			catch (CannotGetComponentEx e)
+			    {
+			    String msg = "Failed to retrieve component " + curl;
+			    m_logger.severe(msg);
+			    throw new ContainerException(msg);
+			    }
+			catch (ComponentNotAlreadyActivatedEx e)
+			    {
+			    String msg = "Failed to retrieve component " + curl;
+			    m_logger.severe(msg);
+			    throw new ContainerException(msg);
+			    }
+			catch (ComponentConfigurationNotFoundEx e)
+			    {
+			    String msg = "Failed to retrieve component " + curl;
+			    m_logger.severe(msg);
+			    throw new ContainerException(msg);
+			    }
 		}
 		return stub;
 	}
@@ -388,12 +401,19 @@ public class ContainerServicesImpl implements ContainerServices
 			// the call
 			cInfo = m_acsManagerProxy.get_default_component(m_clientHandle, componentIDLType);
 		}
-		catch (NoDefaultComponent e) {
+		catch (NoDefaultComponentEx e) {
 			String msg = "failed to retrieve default component for type " + componentIDLType + 
 						" because no default component has been defined.";
 			m_logger.info(msg);
 			throw new ContainerException(msg, e);
 		}
+		catch (CannotGetComponentEx e) {
+			String msg = "failed to retrieve default component for type " + 
+			    componentIDLType;
+			m_logger.info(msg);
+			throw new ContainerException(msg, e);
+		}
+
 		catch (Throwable thr) {
 			String msg = "failed to retrieve default component for type " + componentIDLType +
 							" for unexpected reasons!";
@@ -526,19 +546,19 @@ public class ContainerServicesImpl implements ContainerServices
 			m_usedComponentsMap.put(cInfo.name, cInfo.reference);
 			m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
 		}
-		catch (IncompleteComponentSpec e)
+		catch (IncompleteComponentSpecEx e)
 		{
 			String msg = "failed to create dynamic component. component spec is incomplete.";
 			m_logger.warning(msg);
 			throw new ContainerException(msg, e);
 		}
-		catch (InvalidComponentSpec e)
+		catch (InvalidComponentSpecEx e)
 		{
 			String msg = "failed to create dynamic component. component spec is invalid.";
 			m_logger.warning(msg);
 			throw new ContainerException(msg, e);
 		}
-		catch (ComponentSpecIncompatibleWithActiveComponent e)
+		catch (ComponentSpecIncompatibleWithActiveComponentEx e)
 		{
 			String msg = "failed to create the dynamic component; " + 
 						"the component spec uniquely describes an existing component.";
@@ -566,20 +586,15 @@ public class ContainerServicesImpl implements ContainerServices
 		DAL dal = null;
 
         String errMsg = "Failed to get the reference to the CDB component/service.";
-        IntHolder status = new IntHolder();
         try
         {
             // manager's get_service contains get_component, so even if the CDB becomes a real component, we can leave this 
-            org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true, status);
+            org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true);
             dal = DALHelper.narrow(dalObj);
         }
         catch (Exception e)
         {
             throw new ContainerException(errMsg, e);
-        }
-        if (status.value != ManagerOperations.COMPONENT_ACTIVATED)
-        {
-            throw new ContainerException(errMsg + " Bad status '" + status.value + "' returned.");
         }
         
 		return dal;
