@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.cpp,v 1.13 2005/10/06 14:17:22 bjeram Exp $"
+* "@(#) $Id: taskStaticContainer.cpp,v 1.14 2006/10/09 09:08:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -296,7 +296,8 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
      compSpec->component_name = CORBA::string_dup(compName);
      compSpec->component_type = CORBA::string_dup("IDL:alma/ACS/Task:1.0"); //TBD:: IFR ?
      compSpec->component_code = CORBA::string_dup(libname);
-     compSpec->container_name = CORBA::string_dup(containerName_m.c_str());  
+     compSpec->container_name = CORBA::string_dup(containerName_m.c_str()); 
+/// @todo  get_dynamic_component can throw an exception which should be caught!
      ComponentInfo_var compInfo  = 
 	 container_m.getManager()->get_dynamic_component(container_m.getHandle(),
 							 compSpec.in(),
