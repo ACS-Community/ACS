@@ -42,6 +42,10 @@ import java.util.logging.Logger;
 
 import java.io.StringReader;
 
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+
 /**
  * ACSAlarmSystemInterfaceFactory extends the CERN AlarmSystemInterfaceFactory
  * to create sources with different implementations depending on the actual
@@ -122,17 +126,22 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * @param handle The manager handle
 	 */
 	private static DAL getDAL(Manager manager, int handle) throws ErrorGettingDALEx {
-		IntHolder status = new IntHolder();
 		DAL dal;
 		try {
-	        org.omg.CORBA.Object cdbObj = manager.get_service(handle, "CDB", true, status);
-	        if (cdbObj==null) {
-				throw new NullPointerException("Error getting the CDB from the manager");
-			} 
+	        org.omg.CORBA.Object cdbObj = manager.get_service(handle, "CDB", true);
 	        dal = DALHelper.narrow(cdbObj);
 	        if (dal==null) {
 	        	throw new NullPointerException("Error narrowing the DAL");
 	        }
+                } catch(CannotGetComponentEx e) {		    
+			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
+			throw dalEx.toErrorGettingDALEx();
+    	        } catch(ComponentNotAlreadyActivatedEx e) {
+			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
+			throw dalEx.toErrorGettingDALEx();
+	        } catch(ComponentConfigurationNotFoundEx e) {
+			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
+			throw dalEx.toErrorGettingDALEx();
 		} catch (Exception e) {
 			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
 			throw dalEx.toErrorGettingDALEx();
