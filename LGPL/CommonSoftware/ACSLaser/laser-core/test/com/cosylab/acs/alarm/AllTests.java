@@ -20,7 +20,7 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for com.cosylab.acs.alarm");
 		//$JUnit-BEGIN$
-		suite.addTest(new TestSuite(AlarmSourceTest.class));
+		//suite.addTest(new TestSuite(AlarmSourceTest.class));
 		suite.addTest(new TestSuite(ACSCategoryDAOTest.class));
 		suite.addTest(new TestSuite(AlarmListener.class));
 		//$JUnit-END$
