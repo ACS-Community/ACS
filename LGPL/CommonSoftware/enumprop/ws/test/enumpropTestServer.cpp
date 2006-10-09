@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.49 2006/09/29 10:09:50 bjeram Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.50 2006/10/09 06:07:18 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.49 2006/09/29 10:09:50 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.50 2006/10/09 06:07:18 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -74,21 +74,32 @@ class TestContainerServices : public maci::ContainerServices {
         }
     
         CORBA::Object* getCORBAComponent(const char* name)
+	    throw (maciErrType::CannotGetComponentEx)
         {
             return (CORBA::Object*)NULL;
         }
         
         CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
+	    throw(maciErrType::IncompleteComponentSpecEx, 
+		  maciErrType::InvalidComponentSpecEx, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+		  maciErrType::CannotGetComponentEx)
         {
             return (CORBA::Object*)NULL;
         }
         
         CORBA::Object* getCORBADefaultComponent(const char* idlType)
+	    throw (maciErrType::NoDefaultComponentEx, 
+		   maciErrType::CannotGetComponentEx)
         {
             return (CORBA::Object*)NULL;
         }
 
     virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+	    throw(maciErrType::IncompleteComponentSpecEx, 
+		  maciErrType::InvalidComponentSpecEx, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+		  maciErrType::CannotGetComponentEx)
 	{
 	    return (CORBA::Object*)NULL;
 	}
@@ -254,7 +265,7 @@ int main(int l_argc, char* l_argv[])
     int   devCount = l_argc-1;
 
     CORBA::String_var ior;
-    enumpropTestDeviceImpl *ep_servant;
+    enumpropTestDeviceImpl *ep_servant = NULL;
     ENUMPROP_TEST::enumpropTestDevice_var ep;
 
     int count = 0;

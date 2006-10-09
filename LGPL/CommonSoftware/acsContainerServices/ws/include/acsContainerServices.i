@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.4 2006/06/12 14:04:49 msekoran Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.5 2006/10/09 06:03:08 gchiozzi Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -32,10 +32,13 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include <ACSErrTypeCommon.h>
+
 using namespace maci;
 
 template<class T>
 T* ContainerServices::getComponent(const char *name)
+    throw (maciErrType::CannotGetComponentEx)
 { 
     CORBA::Object* obj =T::_nil();
     
@@ -44,9 +47,23 @@ T* ContainerServices::getComponent(const char *name)
     try 
     {
         obj = getCORBAComponent(name);
-    } catch (...) {
-        ACS_SHORT_LOG((LM_ERROR,"ContainerServices::getComponent(%s) failed",name));
-        return T::_nil();
+    }
+    catch (maciErrType::CannotGetComponentEx &ex) {
+	maciErrType::CannotGetComponentExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	lex.setCURL(name);
+	throw lex.getCannotGetComponentEx();
+    }
+    catch (...) {
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	maciErrType::CannotGetComponentExImpl lex(uex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	lex.setCURL(name);
+	throw lex.getCannotGetComponentEx();
     }
 
     // Narrow the object before returning to the caller
@@ -59,6 +76,10 @@ T* ContainerServices::getComponent(const char *name)
 
 template<class T> T* 
 ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
+    throw (maciErrType::IncompleteComponentSpecEx, 
+	   maciErrType::InvalidComponentSpecEx, 
+	   maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+	   maciErrType::CannotGetComponentEx)
 {
     CORBA::Object* obj =T::_nil();
     // Get the component as a CORBA object
@@ -66,11 +87,44 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
 	{
     	obj = getCORBADynamicComponent(compSpec,markAsDefault); 
 	} 
-    catch (...) 
-	{
-	ACS_SHORT_LOG((LM_ERROR,"ContainerServices::getDynamicComponent(...) failed"));
-        return T::_nil();
-	}
+    catch (maciErrType::IncompleteComponentSpecEx &ex) {
+	maciErrType::IncompleteComponentSpecExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getIncompleteComponentSpecEx();
+    }
+    catch (maciErrType::InvalidComponentSpecEx &ex) {
+	maciErrType::InvalidComponentSpecExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	throw lex.getInvalidComponentSpecEx();
+    }
+    catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &ex) {
+	maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getComponentSpecIncompatibleWithActiveComponentEx();
+    }
+    catch (maciErrType::CannotGetComponentEx &ex) {
+	maciErrType::CannotGetComponentExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getCannotGetComponentEx();
+    }
+    catch (...) {
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	maciErrType::CannotGetComponentExImpl lex(uex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getCannotGetComponentEx();
+    }
+
     // Narrow the object before returning to the caller
     if (CORBA::is_nil(obj)) 
 	{
@@ -81,6 +135,10 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
 
 template<class T> T* 
 ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
+    throw(maciErrType::IncompleteComponentSpecEx, 
+	  maciErrType::InvalidComponentSpecEx, 
+	  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+	  maciErrType::CannotGetComponentEx)
 {
     CORBA::Object* obj =T::_nil();
     // Get the component as a CORBA object
@@ -88,11 +146,45 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
 	{
     	obj = getCORBACollocatedComponent(compSpec,markAsDefault,targetComponent); 
 	} 
-    catch (...) 
-	{
-	ACS_SHORT_LOG((LM_ERROR,"ContainerServices::getCollocatedComponent(...) failed"));
-        return T::_nil();
-	}
+    catch (maciErrType::IncompleteComponentSpecEx &ex) {
+	maciErrType::IncompleteComponentSpecExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getIncompleteComponentSpecEx();
+    }
+    catch (maciErrType::InvalidComponentSpecEx &ex) {
+	maciErrType::InvalidComponentSpecExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	throw lex.getInvalidComponentSpecEx();
+    }
+    catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &ex) {
+	maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getComponentSpecIncompatibleWithActiveComponentEx();
+    }
+    catch (maciErrType::CannotGetComponentEx &ex) {
+	maciErrType::CannotGetComponentExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getCannotGetComponentEx();
+    }
+    catch (...) {
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	maciErrType::CannotGetComponentExImpl lex(uex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	// @todo lex.setCURL(compSpec.component_name);
+	throw lex.getCannotGetComponentEx();
+    }
+
+
     // Narrow the object before returning to the caller
     if (CORBA::is_nil(obj)) 
 	{
@@ -103,6 +195,8 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
 
 template<class T> T* 
 ContainerServices::getDefaultComponent(const char* idlType)
+    throw (maciErrType::NoDefaultComponentEx, 
+	   maciErrType::CannotGetComponentEx)
 {
     CORBA::Object* obj =T::_nil();
     // Get the component as a CORBA object
@@ -110,11 +204,28 @@ ContainerServices::getDefaultComponent(const char* idlType)
 	{
     	obj = getCORBADefaultComponent(idlType); 
 	} 
-    catch (...) 
-	{
-        ACS_SHORT_LOG((LM_ERROR,"ContainerServices::getDefaultComponent(%s) failed",idlType));
-        return T::_nil();
-	}
+    catch (maciErrType::NoDefaultComponentEx &ex) {
+	maciErrType::NoDefaultComponentExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	throw lex.getNoDefaultComponentEx();
+    }
+    catch (maciErrType::CannotGetComponentEx &ex) {
+	maciErrType::CannotGetComponentExImpl lex(ex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	throw lex.getCannotGetComponentEx();
+    }
+    catch (...) {
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	maciErrType::CannotGetComponentExImpl lex(uex,
+				   __FILE__, __LINE__,
+				   "ContainerServices::getComponent");
+	throw lex.getCannotGetComponentEx();
+    }
+
     // Narrow the object before returning to the caller
     if (CORBA::is_nil(obj)) 
 	{
