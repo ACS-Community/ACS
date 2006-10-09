@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.3 2006/06/13 13:01:07 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.4 2006/10/09 09:00:22 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -45,17 +45,27 @@ class StaticContainerServices: public maci::ContainerServices
  
   public:
  
-    CORBA::Object* getCORBAComponent(const char* name) { return CORBA::Object::_nil(); }
+    CORBA::Object* getCORBAComponent(const char* name) 
+	throw (maciErrType::CannotGetComponentEx) 
+	{ return CORBA::Object::_nil(); }
     
     /**
      * Implementation of acsContainerServices::getCORBADynamicComponent(const char* name)
      */
-    CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault) { return CORBA::Object::_nil(); }
+    CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault) 
+	throw (maciErrType::IncompleteComponentSpecEx, 
+	       maciErrType::InvalidComponentSpecEx, 
+	       maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+	       maciErrType::CannotGetComponentEx) 
+	{ return CORBA::Object::_nil(); }
     
     /**
      * Implementation of acsContainerServices::getCORBADefaultComponent(const char* name)
      */
-    CORBA::Object* getCORBADefaultComponent(const char* idlType) { return CORBA::Object::_nil(); }
+    CORBA::Object* getCORBADefaultComponent(const char* idlType) 
+	throw (maciErrType::NoDefaultComponentEx,
+	       maciErrType::CannotGetComponentEx) 
+	{ return CORBA::Object::_nil(); }
   
   /**
    * Gets the component info for the component
@@ -153,9 +163,21 @@ class StaticContainerServices: public maci::ContainerServices
    * @return the state manager
    * @see alma.ACS.ComponentStates
    */
-    maci::ComponentStateManager* getComponentStateManager(){ return &componentStateManager_m; }
+    maci::ComponentStateManager* getComponentStateManager()
+	throw (maciErrType::IncompleteComponentSpecEx,
+	       maciErrType::InvalidComponentSpecEx,
+	       maciErrType::ComponentSpecIncompatibleWithActiveComponentEx,
+	       maciErrType::CannotGetComponentEx)
+	{ 
+	    return &componentStateManager_m; 
+	}
 
-    virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+    virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, 
+						       bool, const char*)
+	throw (maciErrType::IncompleteComponentSpecEx, 
+	       maciErrType::InvalidComponentSpecEx,
+	       maciErrType::ComponentSpecIncompatibleWithActiveComponentEx,
+	       maciErrType::CannotGetComponentEx)
 	{
 	    return CORBA::Object::_nil();
 	}
