@@ -19,6 +19,10 @@ import si.ijs.acs.objectexplorer.engine.*;
 import si.ijs.maci.*;
 import javax.swing.*;
 
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+
 /**
  * Insert the type's description here.
  * Creation date: (1.11.2000 13:00:27)
@@ -1790,15 +1794,29 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			"BACIRemoteAccess::internalManagerConnect",
 			"Requesting component: '" + curl + "', activate = true");
 		notifier.reportMessage("Connecting to '" + curl + "'.");
-		IntHolder status = new IntHolder();
-		org.omg.CORBA.Object obj = manager.get_component(handle, curl, true, status);
-		notifier.reportDebug(
-			"BACIRemoteAccess::internalManagerConnect",
-			"Manager returns ObjectInfo code = " + status.value + ".");
-		if (obj == null || status.value != Manager.COMPONENT_ACTIVATED) {
-			notifier.reportError("Connection to component '" + curl + "' failed.");
-			return;
-		}
+
+		org.omg.CORBA.Object obj = null;
+		try
+		    {
+		    obj = manager.get_component(handle, curl, true);
+		    notifier.reportDebug("BACIRemoteAccess::internalManagerConnect",
+					 "Manager returns OK");
+		    }
+		catch(CannotGetComponentEx e)
+		    {
+		    notifier.reportError("Connection to component '" + curl + "' failed.");
+		    return;
+		    }
+		catch(ComponentNotAlreadyActivatedEx e)
+		    {
+		    notifier.reportError("Connection to component '" + curl + "' failed.");
+		    return;
+		    }
+		catch(ComponentConfigurationNotFoundEx e)
+		    {
+		    notifier.reportError("Connection to component '" + curl + "' failed.");
+		    return;
+		    }
 
 		baciNode.setCORBARef(obj);
 		Any any = orb.create_any();
