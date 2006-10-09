@@ -35,6 +35,7 @@ import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 import si.ijs.maci.ulongSeqHolder;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.util.ACSPorts;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotGetServiceEx;
@@ -112,9 +113,9 @@ public class AcsManagerProxy
 	 * Note that no login is done here, so call {@link #loginToManager(Client, boolean)} after this.
 	 * 
 	 * @return Manager 
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
-	public synchronized Manager getManager() throws ContainerException
+	public synchronized Manager getManager() throws AcsJContainerServicesEx
 	{
 		if (m_manager == null)
 		{
@@ -122,7 +123,7 @@ public class AcsManagerProxy
 			{
 				String msg = "call to getManager() fails while shutting down.";
 				m_logger.fine(msg);
-				throw new ContainerException(msg);
+				throw new AcsJContainerServicesEx(msg);
 			}
 			
 			m_logger.fine("Manager reference not available. Trying to resolve...");
@@ -182,7 +183,7 @@ public class AcsManagerProxy
 						loginToManager(false);
 						break RECONNECT; // managed to reconnect
 
-					} catch (ContainerException e) {
+					} catch (AcsJContainerServicesEx e) {
 
 						try {
 							sleep(5000); // sleep, then retry
@@ -232,12 +233,12 @@ public class AcsManagerProxy
 	 * 						as a CORBA service.
 	 * @param keepTrying  if true, this method will only return
 	 * 						when it has successfully contacted the manager service;
-	 * 					  if false, this method will simply throw a <code>ContainerException</code>
+	 * 					  if false, this method will simply throw a <code>AcsJContainerServicesEx</code>
 	 * 						if it fails to resolve the manager. 
-	 * @throws ContainerException  if anything goes wrong.
+	 * @throws AcsJContainerServicesEx  if anything goes wrong.
 	 */
 	private synchronized void findManager(String managerLoc, boolean keepTrying) 
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		do
 		{
@@ -248,7 +249,7 @@ public class AcsManagerProxy
 				m_manager = ManagerHelper.narrow(object);
 				if (m_manager == null)
 				{
-					throw new ContainerException("received null reference to ACS Manager.");
+					throw new AcsJContainerServicesEx("received null reference to ACS Manager.");
 				}
 				m_logger.finest("manager narrow successful.");
 				keepTrying = false; 
@@ -272,7 +273,7 @@ public class AcsManagerProxy
 				else
 				{
 					m_logger.log(Level.WARNING, msg + e.getMessage());
-					throw new ContainerException(msg, e);
+					throw new AcsJContainerServicesEx(msg, e);
 				}
 			}
 		}
@@ -285,9 +286,9 @@ public class AcsManagerProxy
 	 * @param managerClient  the IDL-defined client of the manager (see maci.idl), 
 	 * 						 of which the container is a subclass.
 	 * @param keepTrying  refers to multiple attempts for both finding the manager and logging in to the manager.  
-	 * @throws ContainerException 
+	 * @throws AcsJContainerServicesEx 
 	 */
-	public synchronized void loginToManager(Client managerClient, boolean keepTrying) throws ContainerException {
+	public synchronized void loginToManager(Client managerClient, boolean keepTrying) throws AcsJContainerServicesEx {
 		this.m_managerClient = managerClient; 
 		try {
 			loginToManager(keepTrying);
@@ -306,16 +307,16 @@ public class AcsManagerProxy
 	 * Only to be called from within this class (see connectorThread), when the  
 	 * 
 	 * @param keepTrying  used for the call to {@link #findManager(String, boolean)}.
-	 * @throws ContainerException
+	 * @throws AcsJContainerServicesEx
 	 */
 	private synchronized void loginToManager(boolean keepTrying) 
-		throws ContainerException
+		throws AcsJContainerServicesEx
 	{
 		if (m_shuttingDown)
 		{
 			String msg = "call to loginToManager(..) fails while shutting down.";
 			m_logger.fine(msg);
-			throw new ContainerException(msg);
+			throw new AcsJContainerServicesEx(msg);
 		}
 			
 		if (isLoggedIn(false))
@@ -347,7 +348,7 @@ public class AcsManagerProxy
 			m_mgrHandle = 0;
 			String msg = "Failed to login to manager.";
 			m_logger.log(Level.WARNING, msg);
-			throw new ContainerException(msg, e);
+			throw new AcsJContainerServicesEx(msg, e);
 		}
 
 		m_logger.fine("Manager login done, handle '" + m_mgrHandle + "' obtained.");
@@ -492,13 +493,20 @@ public class AcsManagerProxy
 		String type_wc,
 		boolean active_only)
 	{
+		ComponentInfo[] compInfos = null;
 		try {
-			return m_manager.get_component_info(m_mgrHandle, componentHandles, name_wc, type_wc, active_only);
-			
+			compInfos = m_manager.get_component_info(m_mgrHandle, componentHandles, name_wc, type_wc, active_only);			
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
 		}
+		
+		// not sure if compInfos == null can ever happen, but we don't want clients to check this case 
+		if (compInfos == null) {
+			throw new NullPointerException("Manager returned null ComponentInfo[]"); 
+		}
+		
+		return compInfos;
 	}
 
 
