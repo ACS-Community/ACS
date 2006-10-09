@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	ACS error system definitions for Java container exceptions.
+	These exceptions should be used in the Cotainer's interface to its components, 
+	or in the internal container implementation classes.
+	For the container's interface toward the manager, see maciErrType definitions.
+	
+	TODO: eventually consolidate the ContainerServices exceptions in the containers 
+	of the different programming languages, and move this file to a more central location.
+	
+	See http://almasw.hq.eso.org/almasw/bin/view/HLA/CompletionErrorTypes 
+-->
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	  xsi:noNamespaceSchemaLocation="ACSError.xsd" 
+	  name="JavaContainerError"
+	  type="6666"
+	  _prefix="alma">
+	  
+	<ErrorCode name="ContainerUnexpected" 
+			shortDescription="An unexpected error occured in the Java container." 
+			description="Any otherwise uncaught exception should be converted to (or wrapped by) this type, to ensure proper transport over CORBA.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>
+	
+	<ErrorCode name="ContainerError" 
+			shortDescription="Generic wrapper for underlying exception" 
+			description="The ContainerServices in the Java container use this type to wrap any other exceptions whose details are not likely to interest the calling component.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>
+	
+</Type>
+
