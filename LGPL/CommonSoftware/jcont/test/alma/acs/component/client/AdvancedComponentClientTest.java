@@ -2,13 +2,12 @@ package alma.acs.component.client;
 
 import java.util.logging.Logger;
 
-import alma.acs.container.ContainerException;
+import junit.framework.TestCase;
+
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.ClientLogManager;
 import alma.jconttest.ContainerServicesTester;
 import alma.jconttest.ContainerServicesTesterHelper;
-
-import junit.framework.TestCase;
 
 public class AdvancedComponentClientTest extends TestCase {
 
@@ -24,7 +23,7 @@ public class AdvancedComponentClientTest extends TestCase {
 		client = new AdvancedComponentClient(logger, managerLoc, clientName);		
 	}
 	
-	public void testCreateContainerServices() throws ContainerException {
+	public void testCreateContainerServices() throws Exception {
     	String localClientName = "sillyLocalClient";
     	ContainerServices newCS = client.createContainerServices(localClientName, logger);
     	assertEquals(newCS.getName(), localClientName);
