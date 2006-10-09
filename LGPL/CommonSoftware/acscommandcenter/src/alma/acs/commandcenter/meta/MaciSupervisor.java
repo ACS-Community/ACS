@@ -28,6 +28,12 @@ import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 import si.ijs.maci.ManagerOperations;
 
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+
 /**
  * @author mschilli
  */
@@ -421,21 +427,41 @@ public class MaciSupervisor implements IMaciSupervisor {
    public org.omg.CORBA.Object getComponent(String curl) throws NotConnectedToManagerException {
       
    	int hhhhh = myOwnMaciHandle();
-      IntHolder status = new IntHolder();
-      org.omg.CORBA.Object stub = myManagerReference().get_component(hhhhh, curl, true, status);
-      // log status of this activation attempt
-      switch (status.value) {
-         case ManagerOperations.COMPONENT_ACTIVATED : 
+
+	/**
+	 * @todo GCH 2006-10-09
+         *       Here we simply catch the exceptions
+	 *       as it was int the original code when the
+	 *       signature was simply returning a null object int case of error.
+	 *       The exceptions are then just logged.
+	 *       To be verified if this is the correct behavior
+	 *       or if we need to pass the exception to the caller level.
+	 */
+	try 
+	    {
+	    org.omg.CORBA.Object stub = myManagerReference().get_component(hhhhh, curl, true);
             log.fine("successfully retrieved component '" + curl + "'");
-            break;
-         case ManagerOperations.COMPONENT_NONEXISTENT : 
-            log.warning("not an existing component: '" + curl + "'");
-            break;
-         case ManagerOperations.COMPONENT_NOT_ACTIVATED : 
-            log.warning("could not activate component '" + curl + "'");
-            break;
-      }
-      return stub; // TODO(msc 2005-08): on error, we log a warning and return null - is that wise?
+	    }
+	catch(CannotGetComponentEx e)
+	    {
+	    AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
+	    je.setCURL(curl);
+	    je.log(log);
+	    }
+	catch(ComponentNotAlreadyActivatedEx e)
+	    {
+	    AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
+	    je.setCURL(curl);
+	    je.log(log);
+	    }
+	catch(ComponentConfigurationNotFoundEx e)
+	    {
+	    AcsJCannotGetComponentEx je = new AcsJCannotGetComponentEx(e);
+	    je.setCURL(curl);
+	    je.log(log);
+	    }
+
+	return null; // It cannot get here, but the compiler wants it.
    }
 
    public void forceReleaseComponent(String curl) {
