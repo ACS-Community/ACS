@@ -20,14 +20,14 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
@@ -63,8 +63,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
@@ -94,7 +94,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
-1 - ----------T--:--:--.--- [GlobalLogger - ConstructComponent::ConstructComponent(XXXXXXX...,MACI_EXCEPTION_COSTR,IDL:alma/MACI_TEST/DynamicTestClass:1.0,...)] Error creating  component (type=25, code=0),Component=MACI_EXCEPTION_COSTR
+1 - ----------T--:--:--.--- [GlobalLogger - ConstructComponent::ConstructComponent(XXXXXXX...,MACI_EXCEPTION_COSTR,IDL:alma/MACI_TEST/DynamicTestClass:1.0,...)] Error creating component (type=25, code=0),Component=MACI_EXCEPTION_COSTR
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Failed to create component object 'MACI_EXCEPTION_COSTR' using library 'maciDynComp'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -102,7 +102,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Failed to create 'curl:///MACI_EXCEPTION_COSTR', status: 1.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Failed to create 'curl:///MACI_EXCEPTION_COSTR'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_COSTR (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_INIT
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting device: 'curl:///MACI_EXCEPTION_INIT'. Creating it...
@@ -127,13 +127,13 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_INIT: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - ] Throwing an exception in initialize
+1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::initialize() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::activate_component: got an exception intializing MACI_EXCEPTION_INIT
 1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize] Life cycle error (type=28, code=0)
-1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::initialize() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_EXCEPTION_INIT'
-2 - ----------T--:--:--.--- [GlobalLogger - ] Failed to create 'curl:///MACI_EXCEPTION_INIT', status: 1.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Failed to create 'curl:///MACI_EXCEPTION_INIT'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_INIT (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_EXE
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting device: 'curl:///MACI_EXCEPTION_EXE'. Creating it...
@@ -163,7 +163,7 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_EXCEPTION_EXE'
-2 - ----------T--:--:--.--- [GlobalLogger - ] Failed to create 'curl:///MACI_EXCEPTION_EXE', status: 1.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Failed to create 'curl:///MACI_EXCEPTION_EXE'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_EXE (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_CLEAN
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting device: 'curl:///MACI_EXCEPTION_CLEAN'. Creating it...
@@ -194,9 +194,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_CLEAN: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - ] Throwing an exception in cleanUp
+1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::deactivate_component: got an exception executing MACI_EXCEPTION_CLEAN
 1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__cleanUp] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::cleanUp() test exception] Life cycle error (type=28, code=0)
-1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::deactivate_component: got an exception executing MACI_EXCEPTION_CLEAN
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_CLEAN: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_EXCEPTION_CLEAN' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
