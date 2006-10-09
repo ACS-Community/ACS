@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.40 2005/08/02 08:47:53 vwang Exp $"
+# "@(#) $Id: Makefile,v 1.41 2006/10/09 06:07:07 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -45,7 +45,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lenumpropStdStubs -lbaciErrTypeProperty -lbaciErrTypeDevIO
+USER_LIB = -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lenumpropStdStubs -lbaciErrTypeProperty -lbaciErrTypeDevIO -lmaciErrType
 
 #
 # MODULE CODE DESCRIPTION:

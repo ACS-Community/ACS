@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.106 2006/06/21 15:17:28 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.107 2006/10/09 06:06:40 gchiozzi Exp $" 
 #
 # Makefile of ........
 #
@@ -46,7 +46,7 @@ CPPUNIT_VER = 1.10.2
 CPPUNIT_TAR = 1.10.2
 
 USER_CFLAGS =
-USER_LIB = -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_CosProperty -lTAO_IFR_Client -lloki -lbaciErrTypeProperty -lbaciErrTypeDevIO
+USER_LIB = -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_CosProperty -lTAO_IFR_Client -lloki -lbaciErrTypeProperty -lbaciErrTypeDevIO -lmaciErrType
 
 # Program to build
 # Can be overwritten in the call
