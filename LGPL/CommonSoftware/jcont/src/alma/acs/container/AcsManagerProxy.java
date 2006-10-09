@@ -9,7 +9,7 @@
  *    License as published by the Free Software Foundation; either
  *    version 2.1 of the License, or (at your option) any later version.
  *
- *    This library is distributed in the hope that it will be useful,
+ *    This library is distributed in the hope thaowt it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *    Lesser General Public License for more details.
@@ -32,16 +32,27 @@ import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
-import si.ijs.maci.ComponentSpecIncompatibleWithActiveComponent;
-import si.ijs.maci.IncompleteComponentSpec;
-import si.ijs.maci.InvalidComponentSpec;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
-import si.ijs.maci.NoDefaultComponent;
 import si.ijs.maci.ulongSeqHolder;
 
 import alma.acs.util.ACSPorts;
 
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
+
+import alma.maciErrType.CannotGetServiceEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.NoDefaultComponentEx;
+import alma.maciErrType.IncompleteComponentSpecEx;
+import alma.maciErrType.CannotRegisterComponentEx;
+import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.InvalidComponentSpecEx;
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
 
 /**
  * Proxy class that encapsulates access to the ACS Manager.
@@ -509,11 +520,13 @@ public class AcsManagerProxy
 	 */
 	public Object get_service(
 		String service_url,
-		boolean activate,
-		IntHolder status)
+		boolean activate)
+	    throws CannotGetComponentEx,
+    	           ComponentNotAlreadyActivatedEx,
+	           ComponentConfigurationNotFoundEx
 	{
 		try {
-			return m_manager.get_service(m_mgrHandle, service_url, activate, status);
+			return m_manager.get_service(m_mgrHandle, service_url, activate);
 		
 		} catch (RuntimeException exc) {
 			handleException(exc);
@@ -536,6 +549,7 @@ public class AcsManagerProxy
 		String[] service_urls,
 		boolean activate,
 		ulongSeqHolder status)
+	    throws CannotGetServiceEx
 	{
 		try {
 			return m_manager.get_services(m_mgrHandle, service_urls, activate, status);
@@ -558,11 +572,13 @@ public class AcsManagerProxy
 	 * @return  the component reference (must still be narrowed using the appropriate Corba helper)
 	 * @see ContainerServices#getComponent(String)
 	 */
-	public Object get_component(int clientHandle, String component_url, boolean activate,
-			IntHolder status) 
+	public Object get_component(int clientHandle, String component_url, boolean activate)
+	    throws CannotGetComponentEx,
+		   ComponentNotAlreadyActivatedEx,
+		   ComponentConfigurationNotFoundEx
 	{
 		try {
-			return m_manager.get_component(clientHandle, component_url, activate, status);
+			return m_manager.get_component(clientHandle, component_url, activate);
 
 		} catch (RuntimeException exc) {
 			handleException(exc);
@@ -578,7 +594,8 @@ public class AcsManagerProxy
 	 * @see ContainerServices#getDefaultComponent(String)
 	 */
 	public ComponentInfo get_default_component(int clientHandle, String componentIDLType)
-		throws NoDefaultComponent
+	    throws NoDefaultComponentEx, 
+		   CannotGetComponentEx
 	{
 		try {
 			return m_manager.get_default_component(clientHandle, componentIDLType);
@@ -604,7 +621,10 @@ public class AcsManagerProxy
 	 * 				already active.
 	 */
 	public ComponentInfo get_dynamic_component(int clientHandle, ComponentSpec c, boolean mark_as_default) 
-		throws IncompleteComponentSpec, InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent 
+		throws IncompleteComponentSpecEx, 
+		       InvalidComponentSpecEx, 
+		       ComponentSpecIncompatibleWithActiveComponentEx, 
+		       CannotGetComponentEx
 	{
 		try {
 			return m_manager.get_dynamic_component(clientHandle, c, mark_as_default);
@@ -628,7 +648,10 @@ public class AcsManagerProxy
 	 * @throws ComponentSpecIncompatibleWithActiveComponent
 	 */
 	public ComponentInfo get_collocated_component(int clientHandle, ComponentSpec c, boolean mark_as_default, String target_component_url) 
-		throws IncompleteComponentSpec, InvalidComponentSpec, ComponentSpecIncompatibleWithActiveComponent 
+		throws IncompleteComponentSpecEx, 
+		       InvalidComponentSpecEx, 
+		       ComponentSpecIncompatibleWithActiveComponentEx, 
+		       CannotGetComponentEx
 {
 	try {
 		return m_manager.get_collocated_component(clientHandle, c, mark_as_default, target_component_url);
@@ -651,6 +674,7 @@ public class AcsManagerProxy
 	 * @return int
 	 */
 	public int register_component(String component_url, String type, Object component)
+	    throws CannotRegisterComponentEx
 	{
 		try {
 			return m_manager.register_component(m_mgrHandle, component_url, type, component);
