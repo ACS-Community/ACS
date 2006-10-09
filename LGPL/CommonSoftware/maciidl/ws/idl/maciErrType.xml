@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) 
+This has to be just temporary solution. 
+This file has to be moved into the TICS subsystem
+-->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="maciErrType" type="25" _prefix="alma">
+
+	<ErrorCode name="ComponentCreation"
+	    shortDescription="Error creating component"
+	    description="Error creating the component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotGetComponent"
+	    shortDescription="Error retrieving component"
+	    description="Error retrieving component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentNotAlreadyActivated"
+	    shortDescription="The requested Component had not been already activated at request time"
+	    description="The requested Component had not been already
+	    activated at request time. This was a precondition for the request to succeed">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentConfigurationNotFound"
+	    shortDescription="The configuration for the requested Component could not be found"
+	    description="The configuration for the requested Component could not be found">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="IncompleteComponentSpec"
+	           shortDescription="Thrown if the resulting structure is not complete."
+	           description="Thrown if the resulting structure is not complete.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="component_type"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+		<Member name="component_code"
+			type="string"
+			description="Executable code for the component (e.g. DLL, Java class)."
+		/>
+		<Member name="container_name"
+			type="string"
+			description="Container where the component is deployed."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentSpecIncompatibleWithActiveComponent"
+	    shortDescription="Thrown if the resulting structure is incompatible with a component of the same name already active."
+	     description="Thrown if the resulting structure is incompatible with a component of the same name already active. Additional data describes the active component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="component_type"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+		<Member name="component_code"
+			type="string"
+			description="Executable code for the component (e.g. DLL, Java class)."
+		/>
+		<Member name="container_name"
+			type="string"
+			description="Container where the component is deployed."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="InvalidComponentSpec"
+	           shortDescription="Thrown if there is no valid dynamic component found for given resulting structure."
+	           description="Thrown if there is no valid dynamic component found for given resulting structure.">
+	</ErrorCode>
+
+	<ErrorCode name="NoDefaultComponent"
+	           shortDescription="Thrown if no default component is found."
+	           description="Thrown if no default component is found.">
+	</ErrorCode>
+
+	<ErrorCode name="CannotGetService"
+	    shortDescription="Error retrieving service"
+	    description="Error retrieving service">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the sevice."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotActivateComponent"
+	    shortDescription="Error activating component"
+	    description="Error activating component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="component_type"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+		<Member name="component_code"
+			type="string"
+			description="Executable code for the component (e.g. DLL, Java class)."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotDeactivateComponent"
+	    shortDescription="Error deactivating component"
+	    description="Error deactivating component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotRestartComponent"
+	    shortDescription="Error restarting component"
+	    description="Error restarting component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotRegisterComponent"
+	    shortDescription="Error registering component"
+	    description="Error registering component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="component_type"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotUnregisterComponent"
+	    shortDescription="Error unregistering component"
+	    description="Error unregistering component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+
+</Type>

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2006/10/05 12:16:57 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/10/09 06:19:01 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -134,7 +134,7 @@ USER_IDL =
 #
 # ACS Error definition files.
 #
-ACSERRDEF = maciErrTypeComponent 
+ACSERRDEF = maciErrType
 
 #
 # Jarfiles and their directories

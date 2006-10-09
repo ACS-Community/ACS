@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciACSComponentDefines.h,v 1.17 2005/04/14 09:27:01 acaproni Exp $"
+* "@(#) $Id: maciACSComponentDefines.h,v 1.18 2006/10/09 06:12:04 gchiozzi Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -49,7 +49,7 @@
 
 #include <baciCharacteristicComponentImpl.h>
 #include <acserr.h>
-#include <maciErrTypeComponent.h>
+#include <maciErrType.h>
 
 /** \def MACI_DLL_SUPPORT_FUNCTIONS(Class, ...)
  *  MACI DLL Support Functions Macro
@@ -84,7 +84,7 @@ ACS_DLL_UNMANGLED_EXPORT PortableServer::Servant ConstructComponent( \
 	procName+=",";\
 	procName+=type_p;\
         procName+=",...)";\
-	maciErrTypeComponent::ComponentCreationExImpl compEx(ex,__FILE__,__LINE__,procName.c_str());\
+	maciErrType::ComponentCreationExImpl compEx(ex,__FILE__,__LINE__,procName.c_str());\
 	compEx.addData("Component", name_p);\
 	compEx.log();\
 	return 0; \
