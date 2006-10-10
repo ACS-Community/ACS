@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestServer.cpp,v 1.14 2006/08/08 11:27:02 bjeram Exp $"
+* "@(#) $Id: acscomponentTestServer.cpp,v 1.15 2006/10/10 06:37:18 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * rcirami 2002-09-24  created
 */
  
-static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.14 2006/08/08 11:27:02 bjeram Exp $";
+static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.15 2006/10/10 06:37:18 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -66,21 +66,32 @@ class TestContainerServices : public maci::ContainerServices {
         virtual ~TestContainerServices() {}
     
         CORBA::Object* getCORBAComponent(const char* name)
+	    throw (maciErrType::CannotGetComponentEx)
         {
             return (CORBA::Object*)NULL;
         }
         
         CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
+	    throw (maciErrType::IncompleteComponentSpecEx, 
+		   maciErrType::InvalidComponentSpecEx, 
+		   maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+		   maciErrType::CannotGetComponentEx) 
         {
             return (CORBA::Object*)NULL;
         }
         
         CORBA::Object* getCORBADefaultComponent(const char* idlType)
+	    throw (maciErrType::NoDefaultComponentEx, 
+		   maciErrType::CannotGetComponentEx)
         {
             return (CORBA::Object*)NULL;
         }
     
         CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+	    throw(maciErrType::IncompleteComponentSpecEx, 
+		  maciErrType::InvalidComponentSpecEx, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+		  maciErrType::CannotGetComponentEx)
 	{
 	    return (CORBA::Object*)NULL;
 	}
