@@ -27,11 +27,13 @@ import java.util.logging.Logger;
 import org.omg.PortableServer.Servant;
 
 import alma.ACS.ACSComponentOperations;
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.JavaContainerError.wrappers.AcsJJavaComponentHelperEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.logging.ClientLogManager;
+import alma.jconttest.DummyComponentPOATie;
+import alma.maciErrType.wrappers.AcsJComponentCreationEx;
 
 
 
@@ -46,7 +48,8 @@ import alma.acs.logging.ClientLogManager;
  * <p>
  * The methods that return a <code>Class</code>
  * object should be implemented like <code>return XxxPOATie.class;</code> so that the absence
- * of this class can be discovered at compile time. (so don't use <code>classForName</code>). 
+ * of this class can be discovered at compile time. 
+ * (Therefore don't use <code>classForName</code> which evades compile time checking.) 
  * 
  * @author hsommer
  */
@@ -55,13 +58,13 @@ public abstract class ComponentHelper
 	private ComponentLifecycle m_componentImpl;
 
 	// must be private since any subclass should get a different logger ("forComponent")
-	private Logger m_containerLogger;
+	private final Logger m_containerLogger;
 	
 	protected String componentInstanceName; 
 	
 	
 	/**
-     * Subclasses must override and call this constructor (<code>super(containerLogger)</code>).
+     * Subclasses must override and call this constructor ("<code>super(containerLogger)</code>").
 	 * @param containerLogger logger used by this base class.
 	 */
 	public ComponentHelper(Logger containerLogger)
@@ -94,40 +97,54 @@ public abstract class ComponentHelper
 	
 	/**
 	 * Gets the component implementation. 
-	 * Must be the same object that also implements the functional interface.
+	 * Must be the same object that also implements the functional interface
 	 * obtained from <code>getInternalInterface</code>. 
 	 * 
 	 * @return  The component implementation class that implements <code>ComponentLifecycle</code>
 	 *           and the functional interface.
- 	 * @throws AcsJContainerServicesEx  if the component implementation construction failed or 
+ 	 * @throws AcsJJavaComponentHelperEx  if the component implementation construction failed or 
  	 *                              if the component does not implement its declared functional interface. 
  	 */
-	protected final synchronized ComponentLifecycle getComponentImpl() throws AcsJContainerServicesEx
+	protected final synchronized ComponentLifecycle getComponentImpl() throws AcsJComponentCreationEx, AcsJJavaComponentHelperEx
 	{
 		if (m_componentImpl== null)
 		{
+			Class internalIF = null;
 			try {
 				m_componentImpl = _createComponentImpl();
+				internalIF = getInternalInterface();
 			} 
+			catch (AcsJComponentCreationEx ex) {
+				throw ex;
+			}
+			catch (AcsJJavaComponentHelperEx ex) {
+				throw ex;
+			}
 			catch (Throwable thr) {
-				throw new AcsJContainerServicesEx("failed to create component implementation.", thr);
+				// the ex type is slightly misleading if an overloaded 'getInternalInterface' throws something other than 
+				// the declared AcsJJavaComponentHelperEx
+				throw new AcsJComponentCreationEx(thr);
 			}
-			if (m_componentImpl == null)
-			{
-				throw new AcsJContainerServicesEx("failed to create component implementation: null");
+			
+			if (m_componentImpl == null) {
+				throw new AcsJComponentCreationEx("_createComponentImpl() returned null.");
 			}
-			else if (!getInternalInterface().isInstance(m_componentImpl))
-			{
-				throw new AcsJContainerServicesEx("component impl class '" + m_componentImpl.getClass().getName() + 
-						"' does not implement the specified functional IF " + getInternalInterface().getName());
+			
+			if (!internalIF.isInstance(m_componentImpl)) {
+				AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx();
+				ex.setContextInfo("component impl class '" + m_componentImpl.getClass().getName() + 
+						"' does not implement the specified functional IF " + internalIF.getName());
+				throw ex;
 			}
 			else if (!ACSComponentOperations.class.isInstance(m_componentImpl))
 			{
-				throw new AcsJContainerServicesEx("component impl class '" + m_componentImpl.getClass().getName() + 
+				AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx();
+				ex.setContextInfo("component impl class '" + m_componentImpl.getClass().getName() + 
 						"' does not implement the mandatory IF " + ACSComponentOperations.class.getName() +
 						". Check the IDL interface definition, and add ': ACS::ACSComponent'.");
-			}
-			m_containerLogger.finer("component implementation class '" + m_componentImpl.getClass().getName() + "' instantiated.");
+				throw ex;
+			}			
+			m_containerLogger.finer("component '" + componentInstanceName + "' (class '" + m_componentImpl.getClass().getName() + "') instantiated.");
 		}
 		return m_componentImpl;
 	}		
@@ -136,9 +153,10 @@ public abstract class ComponentHelper
 	 * Method _createComponentImpl to be provided by subclasses.
 	 * Must return the same object that also implements the functional component interface.
 	 * 
-	 * @return ComponentLifecycle
+	 * @return ComponentLifecycle  The component impl class that implements the ComponentLifecycle interface.
+	 * @throws AcsJComponentCreationEx  if the component implementation class could not be instantiated
 	 */
-	abstract protected ComponentLifecycle _createComponentImpl();
+	abstract protected ComponentLifecycle _createComponentImpl() throws AcsJComponentCreationEx;
 	
 	
 	/**
@@ -148,56 +166,64 @@ public abstract class ComponentHelper
 	 * 
 	 * @return the tie class.
 	 */
-	final Class<? extends Servant> getPOATieClass() throws AcsJContainerServicesEx
+	final Class<? extends Servant> getPOATieClass() throws AcsJJavaComponentHelperEx
 	{	
 		Class<? extends Servant> poaTieClass = null;
 		try {
 			poaTieClass = _getPOATieClass();
 		} 
-		catch (Exception ex) {
-			throw new AcsJContainerServicesEx("failed to obtain the POATie class from component helper.", ex);
+		catch (Throwable thr) {
+			AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx(thr);
+			ex.setContextInfo("failed to obtain the POATie class from component helper.");
+			throw ex;
 		}
-		if (poaTieClass == null)
-		{
-			throw new AcsJContainerServicesEx("received null as the POATie class from the component helper");
+		if (poaTieClass == null) {
+			AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx();
+			ex.setContextInfo("received null as the POATie class from the component helper.");
+			throw ex;
 		}
 		
 		// check inheritance stuff (Servant should be checked by compiler under JDK 1.5, but operations IF is unknown at ACS compile time)
-		if (!Servant.class.isAssignableFrom(poaTieClass))
-		{
-			throw new AcsJContainerServicesEx("received invalid poaTie that is not a subclass of Servant");
+		if (!Servant.class.isAssignableFrom(poaTieClass)) {
+			AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx();
+			ex.setContextInfo("received invalid POATie class that is not a subclass of org.omg.PortableServer.Servant");
+			throw ex;
 		}
-		if (!getOperationsInterface().isAssignableFrom(poaTieClass))
-		{
-			throw new AcsJContainerServicesEx("poaTie does not implement operations interface");
+		if (!getOperationsInterface().isAssignableFrom(poaTieClass)) {
+			AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx();
+			ex.setContextInfo("POATie class '" + poaTieClass + "' does not implement the declared operations interface '" + getOperationsInterface().getName() + "'.");
+			throw ex;
 		}
 		return poaTieClass;
 	}
 	
 	/**
 	 * This method must be provided by the component helper class.
-	 * 
-	 * @return Class
+	 * It must return the Class of the IDL-generated POA-Tie Servant, as in <br>
+	 * <code>return DummyComponentPOATie.class;</code>. 
 	 */
 	protected abstract Class<? extends Servant> _getPOATieClass();
 	
 	
 	/**
-	 * Gets the xxOperations interface as generated by the IDL compiler.
-	 * 
-	 * @return Class
-	 * @throws AcsJContainerServicesEx 
+	 * Gets the xxOperations interface as generated by the IDL compiler by calling {@link #_getOperationsInterface()}.
+	 * @throws AcsJJavaComponentHelperEx  if the subclass methdod throws something or returns <code>null</code>. 
 	 */
-	final Class<? extends ACSComponentOperations> getOperationsInterface() throws AcsJContainerServicesEx
+	final Class<? extends ACSComponentOperations> getOperationsInterface() throws AcsJJavaComponentHelperEx
 	{
 		Class<? extends ACSComponentOperations> opIF = null;
-		try
-		{
+		try {
 			opIF = _getOperationsInterface();
 		}
-		catch (Exception ex)
-		{
-			throw new AcsJContainerServicesEx("failed to retrieve 'operations' interface from component helper", ex);
+		catch (Throwable thr) {
+			AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx(thr);
+			ex.setContextInfo("failed to retrieve 'operations' interface from component helper");
+			throw ex;
+		}
+		if (opIF == null) {
+			AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx();
+			ex.setContextInfo("received null as the 'operations' IF class from the component helper.");
+			throw ex;
 		}
 		return opIF;
 	}
@@ -217,27 +243,25 @@ public abstract class ComponentHelper
 	 * Gets the component's implemented functional IF.
 	 * For instance, the method signatures can be the same as in the operations interface,
 	 * except that the internal interface uses xml binding classes
-	 * where the IDL generated operations interface only contains stringified XML.
+	 * where the IDL-generated operations interface only contains stringified XML.
 	 * <p>
-	 * To be overridden by the component helper class, if the InternalInterface differs from
+	 * To be overridden by the component helper class only if the InternalInterface differs from
 	 * the OperationsInterface.
 	 * 
 	 * @return Class  the Java Class of the internal interface. 
 	 */
-	protected Class<?> getInternalInterface() throws AcsJContainerServicesEx
-	{
+	protected Class<?> getInternalInterface() throws AcsJJavaComponentHelperEx {
 		return getOperationsInterface();
 	}	
-
 
 	
 	/**
 	 * Method getInterfaceTranslator. Called by the container framework.
 	 * @return Object
-	 * @throws AcsJContainerServicesEx
+	 * @throws AcsJJavaComponentHelperEx
 	 */
 	final Object getInterfaceTranslator()
-			throws AcsJContainerServicesEx
+			throws AcsJJavaComponentHelperEx
 	{
 		Object interfaceTranslator = null;
 		
@@ -248,18 +272,19 @@ public abstract class ComponentHelper
 				DynamicProxyFactory.getDynamicProxyFactory(m_containerLogger).createServerProxy(
 					getOperationsInterface(), m_componentImpl, getInternalInterface());
 		}
-		catch (DynWrapperException e) {
-			throw new AcsJContainerServicesEx(e);
+		catch (Throwable thr) {
+			throw new AcsJJavaComponentHelperEx(thr);
 		}
 		
 		try {
 			interfaceTranslator = _getInterfaceTranslator(defaultInterfaceTranslator);
 		} 
-		catch (Exception ex) {
-			throw new AcsJContainerServicesEx("failed to obtain the custom interface translator.", ex);
+		catch (Throwable thr) {
+			AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx(thr);
+			ex.setContextInfo("failed to obtain the custom interface translator.");
+			throw ex;
 		}
-		if (interfaceTranslator == null)
-		{
+		if (interfaceTranslator == null) {
 			// use default translator
 			interfaceTranslator = defaultInterfaceTranslator;
 		}
@@ -268,7 +293,7 @@ public abstract class ComponentHelper
 
 
 	/**
-	 * To be overridden by subclass if it wants its own interface translator to be used.
+	 * To be overridden by subclass only if it wants its own interface translator to be used.
 	 * <p>
 	 * The returned interface translator must implement the component's operations interface,
 	 * and must take care of translating <code>in</code>, <code>inout</code> parameters, 
@@ -302,7 +327,7 @@ public abstract class ComponentHelper
 	 * 										use to delegate some or all method invocations to.
 	 * @return  the custom translator, or null if the default translator should be used.
 	 */
-	protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws AcsJContainerServicesEx {
+	protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws AcsJJavaComponentHelperEx {
 		return null;
 	}
 	
