@@ -1007,6 +1007,7 @@ module maci {
 			);
 
 		/** Release components.
+		 * @deprecated
 		 */
 		void release_components (
 			in Handle id,	///< Identification of the caller.
