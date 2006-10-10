@@ -19,8 +19,9 @@ import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
-import si.ijs.maci.NoDefaultComponent;
-import si.ijs.maci.InvalidComponentSpec;
+
+import alma.maciErrType.InvalidComponentSpecEx;
+import alma.maciErrType.NoDefaultComponentEx;
 
 /**
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
@@ -287,8 +288,7 @@ public class ManagerDynComponentTest implements Runnable
 					
 					manager.restart_component(clientInfo.h, "invalid");
 			
-					IntHolder status = new IntHolder();
-					manager.get_component(clientInfo.h, "MOUNT1", true, status);
+					manager.get_component(clientInfo.h, "MOUNT1", true);
 					
 					manager.restart_component(clientInfo.h, "MOUNT1");
 					
@@ -299,7 +299,7 @@ public class ManagerDynComponentTest implements Runnable
 						manager.get_default_component(clientInfo.h, "invalid");
 						System.err.println("NoDefaultComponent exception expected.");
 					}
-					catch (NoDefaultComponent nde)
+					catch (NoDefaultComponentEx nde)
 					{
 						// this is OK
 					}
@@ -311,7 +311,7 @@ public class ManagerDynComponentTest implements Runnable
 						manager.get_dynamic_component(clientInfo.h, new ComponentSpec("*", "invalidType", "*", "*"), true);
 						System.err.println("InvalidComponentSpec exception expected.");
 					}
-					catch (InvalidComponentSpec ics)
+					catch (InvalidComponentSpecEx ics)
 					{
 						// this is OK
 					}
