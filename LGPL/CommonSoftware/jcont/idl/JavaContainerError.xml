@@ -6,7 +6,7 @@
 	or in the internal container implementation classes.
 	For the container's interface toward the manager, see maciErrType definitions.
 	
-	TODO: eventually consolidate the ContainerServices exceptions in the containers 
+	@TODO: eventually consolidate the ContainerServices exceptions in the containers 
 	of the different programming languages, and move this file to a more central location.
 	
 	See http://almasw.hq.eso.org/almasw/bin/view/HLA/CompletionErrorTypes 
@@ -23,6 +23,18 @@
 			description="The ContainerServices in the Java container use this type to wrap any other exceptions whose details are not likely to interest the calling component.">
 			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
 	</ErrorCode>
+
+	<ErrorCode name="JavaComponentHelper" 
+			shortDescription="Exception thrown by a Java component helper." 
+			description="Exception thrown by a Java component helper. Don't confuse this with a CORBA IDL generated helper.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>	
+	
+	<ErrorCode name="Container" 
+			shortDescription="Generic exception in the container implementation." 
+			description="Generic exception in the container implementation. Should not be directly visible outside.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>	
 	
 </Type>
 
