@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.112 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.113 2006/10/10 09:11:11 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 
 #include <acsexmplPowerSupplyImpl.h>
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.112 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.113 2006/10/10 09:11:11 gchiozzi Exp $")
 
 using namespace baci;
 
@@ -203,7 +203,7 @@ PowerSupply::resetAction (BACIComponent *cob_p,
 {
     ACS_DEBUG_PARAM("::PowerSupply::resetAction", "%s", getComponent()->getName());
     
-    completion.type=ACSErr::ACSErrTypeOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
 
     // simulate the PS turning off...
     try
@@ -224,7 +224,7 @@ PowerSupply::resetAction (BACIComponent *cob_p,
  
     ACE_OS::sleep(5);
 
-    // complete action requesting done invakation, 
+    // complete action requesting done invocation, 
     // otherwise return reqInvokeWorking and set descOut.estimated_timeout
     return reqInvokeDone;
 }
