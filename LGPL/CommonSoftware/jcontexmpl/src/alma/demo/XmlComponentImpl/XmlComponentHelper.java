@@ -30,6 +30,7 @@ import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.JContExmplErrTypeTest.XmlComponentErrorEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.JavaContainerError.wrappers.AcsJJavaComponentHelperEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 import alma.acs.entityutil.EntityDeserializer;
@@ -41,6 +42,7 @@ import alma.demo.SchedBlockHolder;
 import alma.demo.XmlComponentJ;
 import alma.demo.XmlComponentOperations;
 import alma.demo.XmlComponentPOATie;
+import alma.maciErrType.wrappers.AcsJComponentCreationEx;
 import alma.xmlentity.XmlEntityStruct;
 import alma.xmlentity.XmlEntityStructHolder;
 import alma.xmljbind.test.obsproposal.ObsProposal;
@@ -100,7 +102,7 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#getInternalInterface()
      */
-    protected Class<?> getInternalInterface() throws AcsJContainerServicesEx
+    protected Class<?> getInternalInterface() 
     {
         return XmlComponentJ.class;
     }
@@ -109,10 +111,14 @@ public class XmlComponentHelper extends ComponentHelper
     /**
      * @see alma.acs.container.ComponentHelper#_getInterfaceTranslator(java.lang.Object)
      */
-    protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws AcsJContainerServicesEx {
+    protected Object _getInterfaceTranslator(Object defaultInterfaceTranslator) throws AcsJJavaComponentHelperEx {
         XmlComponentJ impl = null;
         XmlComponentOperations opDelegate = null;
-        impl = (XmlComponentJ) getComponentImpl();
+        try {
+			impl = (XmlComponentJ) getComponentImpl();
+		} catch (AcsJComponentCreationEx e) {
+			throw new AcsJJavaComponentHelperEx(e);
+		}
         opDelegate = (XmlComponentOperations) defaultInterfaceTranslator;
         return new IFTranslator(impl, opDelegate, getComponentLogger());
     }
