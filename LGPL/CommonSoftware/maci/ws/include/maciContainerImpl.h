@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.35 2006/10/10 09:02:22 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.36 2006/10/10 14:40:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.35 2006/10/10 09:02:22 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.36 2006/10/10 14:40:19 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -615,8 +615,7 @@ public:
 };
 
 template<class T>
-T* ContainerImpl::get_object(const char *name, const char *domain, bool activate
-			     )
+T* ContainerImpl::get_object(const char *name, const char *domain, bool activate)
 {   
     T* object = T::_nil();
     
@@ -657,12 +656,11 @@ T* ContainerImpl::get_object(const char *name, const char *domain, bool activate
 
     try
 	{
-	CORBA::ULong status;
-	CORBA::Object_var obj = m_manager->get_component(m_handle, curl.c_str(), activate, status);
+	CORBA::Object_var obj = m_manager->get_component(m_handle, curl.c_str(), activate);
 	
-	if (CORBA::is_nil(obj.in()) || status!=maci::Manager::COMPONENT_ACTIVATED)
+	if (CORBA::is_nil(obj.in()))
 	    {
-	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s', status: %d.",  curl.c_str(), status));
+	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'.",  curl.c_str()));
 	    return T::_nil();
 	    }
 	object = T::_narrow(obj.in());
@@ -722,11 +720,11 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
     try
 	{
 	CORBA::ULong status;
-	CORBA::Object_var obj = m_manager->get_component(m_handle, curl.c_str(), activate, status);
+	CORBA::Object_var obj = m_manager->get_component(m_handle, curl.c_str(), activate);
 	
-	if (CORBA::is_nil(obj.in()) || status!=maci::Manager::COMPONENT_ACTIVATED)
+	if (CORBA::is_nil(obj.in()))
 	    {
-	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s', status: %d.",  curl.c_str(), status));
+	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'.",  curl.c_str()));
 	    return T::_nil();
 	    }
 	object = T::_narrow(obj.in());
