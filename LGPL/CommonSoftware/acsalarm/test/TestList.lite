@@ -2,4 +2,5 @@ SOURCE acsAlarmTATEnv
 PROLOGUE acsutilTATPrologue
 0 unitTest "unitTestDriver"
 1 TestAcsAlarmSending "TestAcsAlarmSending 100" 
+2 FactoryTestCase "FactoryTestCase"
 EPILOGUE acsutilTATEpilogue

@@ -707,5 +707,8 @@ int main(int argc, char *argv[])
 	CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
 	outputter.write(); 
 
+	// close the AlarmSystemInterfaceFactory 
+	ACSAlarmSystemInterfaceFactory::done();
+
 	return result.wasSuccessful() ? 0 : 1;
 }

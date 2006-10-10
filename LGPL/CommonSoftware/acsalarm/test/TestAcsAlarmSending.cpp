@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
 			// push the FaultState using the AlarmSystemInterface previously created
 			alarmSource->push(*fltstate);
 		}
+
+		ACSAlarmSystemInterfaceFactory::done();
 	} 
 	/* 
 	// TODO later:
