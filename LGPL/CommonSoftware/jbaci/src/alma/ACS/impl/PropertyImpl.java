@@ -24,13 +24,13 @@ package alma.ACS.impl;
 import org.omg.CORBA.Any;
 import org.omg.CosPropertyService.PropertySet;
 
+import com.cosylab.CDB.DAL;
+
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.PropertyDesc;
 import alma.ACS.PropertyOperations;
 import alma.ACS.jbaci.PropertyInitializationFailed;
-import alma.acs.container.ContainerException;
-
-import com.cosylab.CDB.DAL;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 
 /**
  * Implementation of <code>alma.ACS.Property</code>.
@@ -88,7 +88,7 @@ public class PropertyImpl implements PropertyOperations {
 			characteristicModelImpl = new CharacteristicModelImpl("alma/" + parentComponent.name(), dal);
 			// TODO remove this ugly crap
 			characteristicModelImpl.setFieldPrefix(name+"/");
-		} catch (ContainerException ce)
+		} catch (AcsJContainerServicesEx ce)
 		{
 			throw new PropertyInitializationFailed("Failed to create characteristic model.", ce);
 		}

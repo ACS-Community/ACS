@@ -38,9 +38,9 @@ import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.Property;
 import alma.ACS.PropertyDesc;
 import alma.ACS.PropertyHelper;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerException;
 import alma.acs.container.ContainerServices;
 
 /**
@@ -80,7 +80,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 			// create characteristic model
 			// TODO think of error handling; why creating model per instance...
 			characteristicModelImpl = new CharacteristicModelImpl("alma/" + m_instanceName, dal);
-		} catch (ContainerException ce)
+		} catch (AcsJContainerServicesEx ce)
 		{
 			throw new ComponentLifecycleException("Failed to create characteristic model.", ce);
 		}
