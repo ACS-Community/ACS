@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.12 2006/10/09 06:03:08 gchiozzi Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.13 2006/10/10 19:49:19 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -80,7 +80,7 @@ namespace maci {
          * @endhtmlonly
          */
         virtual CORBA::Object* getCORBAComponent(const char* name)
-	    throw (maciErrType::CannotGetComponentEx)
+	    throw (maciErrType::CannotGetComponentExImpl)
 		   =0;
         
         /**
@@ -92,10 +92,10 @@ namespace maci {
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::IncompleteComponentSpecEx, 
-		  maciErrType::InvalidComponentSpecEx, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-		  maciErrType::CannotGetComponentEx)
+	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+		  maciErrType::InvalidComponentSpecExImpl, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		  maciErrType::CannotGetComponentExImpl)
 		  =0;
 
         /**
@@ -108,10 +108,10 @@ namespace maci {
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	    throw(maciErrType::IncompleteComponentSpecEx, 
-		  maciErrType::InvalidComponentSpecEx, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-		  maciErrType::CannotGetComponentEx)
+	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+		  maciErrType::InvalidComponentSpecExImpl, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		  maciErrType::CannotGetComponentExImpl)
 	    =0;
         
         /**
@@ -122,8 +122,8 @@ namespace maci {
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	    throw (maciErrType::NoDefaultComponentEx, 
-		   maciErrType::CannotGetComponentEx)
+	    throw (maciErrType::NoDefaultComponentExImpl, 
+		   maciErrType::CannotGetComponentExImpl)
 	    =0; 
         
     public:
@@ -162,7 +162,7 @@ namespace maci {
          * @endhtmlonly
          */
         template<class T> T* getComponent(const char *name)	    
-	    throw (maciErrType::CannotGetComponentEx);
+	    throw (maciErrType::CannotGetComponentExImpl);
         
         /**
          * Gets a dynamic component
@@ -174,10 +174,10 @@ namespace maci {
          * @return The reference to the component
          */
         template<class T> T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::IncompleteComponentSpecEx, 
-		  maciErrType::InvalidComponentSpecEx, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-		  maciErrType::CannotGetComponentEx);
+	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+		  maciErrType::InvalidComponentSpecExImpl, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		  maciErrType::CannotGetComponentExImpl);
         /**
          * Gets a collocated component
          * This method uses templates, so no cast to the request object is required
@@ -189,10 +189,10 @@ namespace maci {
          * @return The reference to the component
          */
         template<class T> T* getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	    throw(maciErrType::IncompleteComponentSpecEx, 
-		  maciErrType::InvalidComponentSpecEx, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-		  maciErrType::CannotGetComponentEx);  
+	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+		  maciErrType::InvalidComponentSpecExImpl, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		  maciErrType::CannotGetComponentExImpl);  
     
         /**
          * Gets the default component specified by the IDL component type.
@@ -203,8 +203,8 @@ namespace maci {
          * @return The reference to the component
          */
         template<class T> T* getDefaultComponent(const char* idlType)	 
-	    throw (maciErrType::NoDefaultComponentEx, 
-		   maciErrType::CannotGetComponentEx);
+	    throw (maciErrType::NoDefaultComponentExImpl, 
+		   maciErrType::CannotGetComponentExImpl);
       
         /**
          * Gets the component info for the component
@@ -257,7 +257,8 @@ namespace maci {
          * <br><hr>
          * @endhtmlonly
          */
-        virtual CDB::DAL_ptr getCDB()=0;
+        virtual CDB::DAL_ptr getCDB()
+	    throw (acsErrTypeContainerServices::CanNotGetCDBExImpl)=0;
       
         /** Get the OffShoot POA
          * @return The offshoot POA
@@ -280,9 +281,8 @@ namespace maci {
          * @param cbServant the CORBA servant
          */
         virtual void deactivateOffShoot(PortableServer::Servant cbServant)
-          throw (
-           acsErrTypeContainerServices::OffShootDeactivationExImpl,
-           acsErrTypeContainerServices::OffShootPOAExImpl)=0;
+		   throw (acsErrTypeContainerServices::OffShootDeactivationExImpl,
+			  acsErrTypeContainerServices::OffShootPOAExImpl)=0;
       
         /**
          * Create the offshoot POA
