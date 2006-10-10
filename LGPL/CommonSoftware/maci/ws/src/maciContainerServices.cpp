@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.21 2006/10/09 06:15:23 gchiozzi Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.22 2006/10/10 09:02:22 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -166,7 +166,6 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 	throw lex.getCannotGetComponentEx();
     }
 
-//    return CORBA::Object::_nil();
 }
 
 CORBA::Object* 

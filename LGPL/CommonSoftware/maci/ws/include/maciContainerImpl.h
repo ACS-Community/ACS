@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.34 2006/10/09 10:45:31 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.35 2006/10/10 09:02:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.34 2006/10/09 10:45:31 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.35 2006/10/10 09:02:22 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -375,8 +375,8 @@ public:
    * getService template method
    */
     template<class T>
-    T* getService(const char *name, const char *domain, bool activate
-		  );
+    T* getService(const char *name, const char *domain, bool activate) 
+	throw (maciErrType::CannotGetServiceExImpl);
 
   /**
    * Releases the specified component.
@@ -751,7 +751,8 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
  * @todo should we throw exception here instead nil ?
  */
 template<class T>
-T* ContainerImpl::getService(const char *name, const char *domain, bool activate)
+T* ContainerImpl::getService(const char *name, const char *domain, bool activate) 
+    throw (maciErrType::CannotGetServiceExImpl)
 {   
     T* object = T::_nil();
     
@@ -760,9 +761,13 @@ T* ContainerImpl::getService(const char *name, const char *domain, bool activate
      */
     if(!name)
 	{
-	ACS_SHORT_LOG((LM_DEBUG, "Name parameter is null."));
-	return T::_nil();
-	}
+	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__, "ContainerImpl::getService");
+	nullEx.setVariable("(parameter) name");
+	maciErrType::CannotGetServiceExImpl ex(nullEx, __FILE__, __LINE__,
+					       "ContainerImpl::getService");
+	ex.setCURL("NULL");
+	throw ex;
+	}//if
     
     /**
      * First creates the CURL and query the Manager for the component
@@ -790,29 +795,58 @@ T* ContainerImpl::getService(const char *name, const char *domain, bool activate
 	
 	if (CORBA::is_nil(obj.in()))
 	    {
-	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s' (reference nil)",  curl.c_str()));
-	    return T::_nil();
-	    }
+	    maciErrType::CannotGetServiceExImpl ex(__FILE__, __LINE__, "ContainerImpl::getService");
+	    ex.setCURL(name);
+	    throw ex;
+	    }//if
 	object = T::_narrow(obj.in());
 	
 	return object;
 	}
-	catch( CORBA::Exception &ex ) // here we catch also ACS IDL exceptions
+    catch(maciErrType::CannotGetComponentEx &_ex)
 	{
-	ACE_PRINT_EXCEPTION(ex,
-			    "maci::ContainerImpl::getService");
-	return T::_nil();
+	 maciErrType::CannotGetServiceExImpl ex(_ex, __FILE__, __LINE__, "ContainerImpl::getService");
+	 ex.setCURL(name);
+	 throw ex;
+	}
+    catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
+	{
+	 maciErrType::CannotGetServiceExImpl ex(_ex, __FILE__, __LINE__, 
+						"ContainerImpl::getService");
+	 ex.setCURL(name);
+	 throw ex;
+	}
+    catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
+	{
+	maciErrType::CannotGetServiceExImpl ex(_ex, __FILE__, __LINE__, 
+					       "ContainerImpl::getService");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch( CORBA::SystemException &_ex )
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "ContainerServices::getService");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	maciErrType::CannotGetServiceExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+					       "ContainerImpl::getService");
+	ex.setCURL(name);
+	throw ex;
 	}
     catch(...)
 	{
-	return T::_nil();
-	}
-    return T::_nil();
-}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"ContainerServices::getService");
+	maciErrType::CannotGetServiceExImpl ex(uex, __FILE__, __LINE__,
+					       "ContainerImpl::getService");
+	ex.setCURL(name);
+	throw ex;
+	}//try-catch
+}//getService
 
-
-
- }; 
+}; 
 
 #endif // maciContainerImpl_h
 
