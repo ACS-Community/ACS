@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.6 2006/10/10 14:34:12 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/10/10 16:21:44 hsommer Exp $"
 #
 # Makefile of jbaci
 #
@@ -134,14 +134,14 @@ PANELS_L =
 #
 IDL_FILES = testSimpleMasterComponent
 IDL_TAO_FLAGS =
-USER_IDL =
+USER_IDL = 
 #
 # Jarfiles and their directories
 #
 JARFILES = jbaciTest
 jbaciTest_DIRS = alma
 jbaciTest_EXTRAS =
-USER_JFLAGS=-source 1.4
+USER_JFLAGS=
 
 #
 # man pages to be done
