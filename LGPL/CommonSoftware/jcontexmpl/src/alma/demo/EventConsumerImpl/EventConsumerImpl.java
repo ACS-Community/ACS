@@ -55,7 +55,6 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 			//Subscribe to a domain and event type.
 			m_consumer.addSubscription(alma.FRIDGE.temperatureDataBlockEvent.class, this);
 			m_consumer.consumerReady();
-//			System.out.println("Waiting for events...consumer");
 			m_logger.info("ConsumerComp is waiting for 'temperatureDataBlockEvent' events.");
 		}
 		catch (Exception e)
@@ -72,12 +71,11 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
      * This method will be called whenever a <code>temperatureDataBlockEvent</code> becomes available 
      * on the channel.
      * <p>
-     * Note that this method is found by the framework introspection, 
+     * Note that this method is found by the framework through introspection, 
      * see {@link Consumer#addSubscription(java.lang.Class, java.lang.Object)}.
      */
     public void receive(alma.FRIDGE.temperatureDataBlockEvent joe)
 	{
-//		System.out.println("The temp difference is:" + joe.absoluteDiff);
 	    m_logger.info("Received an event: the temp difference is: " + joe.absoluteDiff);
 	}
 
