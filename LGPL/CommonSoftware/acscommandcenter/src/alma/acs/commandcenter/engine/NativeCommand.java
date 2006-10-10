@@ -65,7 +65,7 @@ public class NativeCommand implements Runnable {
    protected OutputStreamWriter stdin;
 
    // there are N listeners for each command
-   protected Vector listeners = new Vector();
+   protected Vector<NativeCommand.Listener> listeners = new Vector<NativeCommand.Listener>();
 
    // the actual description of a native command
    protected String command;

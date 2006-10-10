@@ -49,8 +49,8 @@ class ToolInputPanel extends JPanel {
         return (answer == JOptionPane.OK_OPTION);
     }
 
-    public HashMap evaluate() {
-        HashMap ret = new HashMap();
+    public HashMap<String,String> evaluate() {
+        HashMap<String,String> ret = new HashMap<String,String>();
         for (int i = 0; i < this.getComponentCount() - 1; i++) {
             String name = ((JLabel) this.getComponent(i)).getText();
             String value = ((JTextField) this.getComponent(++i)).getText();

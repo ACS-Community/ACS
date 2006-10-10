@@ -895,7 +895,7 @@ public class CommandCenterGui {
 	
 	
 	/** for book-keeping, to allow later removal of actions from the tools menu */
-	protected Vector addedToolMenuItems = new Vector();
+	protected Vector<JMenuItem> addedToolMenuItems = new Vector<JMenuItem>();
 
 	/**
 	 * Adds an entry to the tools menu, on activation an input dialog is shown and
@@ -929,7 +929,7 @@ public class CommandCenterGui {
 					}
 					
 					// read results from dialog
-					Map map = tp.evaluate();
+					Map<String, String> map = tp.evaluate();
 					result.putAll(map);
 				}
 

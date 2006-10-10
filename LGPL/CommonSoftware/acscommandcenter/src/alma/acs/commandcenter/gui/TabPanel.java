@@ -717,7 +717,7 @@ public class TabPanel extends JPanel {
 				((JComponent) comps.elementAt(i)).setEnabled(true);
 		}
 
-		Vector comps = new Vector();
+		Vector<JComponent> comps = new Vector<JComponent>();
 
 		// use this to add swing components that will be automatically
 		// enabled/disabled according to the visibility of this dialog
@@ -771,7 +771,7 @@ public class TabPanel extends JPanel {
 		return ret;
 	}
 
-	protected Vector containerLines = new Vector();
+	protected Vector<ContainerLine> containerLines = new Vector<ContainerLine>();
 
 	/**
 	 * Adds a container element
@@ -901,7 +901,7 @@ public class TabPanel extends JPanel {
 		return (res == JOptionPane.YES_OPTION);
 	}
 
-	protected Vector buttonPairs = new Vector();
+	protected Vector<ButtonPair> buttonPairs = new Vector<ButtonPair>();
 
 	protected void makeButtonPair (JButton on, JButton off) {
 		// keep reference somewhere to prevent garbage collection
@@ -1015,7 +1015,7 @@ public class TabPanel extends JPanel {
 
 	protected class MyRadioButton extends JRadioButton implements ItemListener {
 
-		Vector comps = new Vector();
+		Vector<JComponent> comps = new Vector<JComponent>();
 
 		MyRadioButton(String text) {
 			super(text);

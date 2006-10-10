@@ -24,15 +24,16 @@ public class MapTableModel extends DefaultTableModel {
 		this.setData(m);
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void init(String keyColumnName, String valueColumnName) {
 		super.columnIdentifiers = new Vector(2);
 		super.columnIdentifiers.add(keyColumnName);
 		super.columnIdentifiers.add(valueColumnName);
 	}
-	
-	public void setData(Map m) {
-		
-		Vector data = new Vector(m.size());
+
+	public void setData (Map m) {
+
+		Vector<Vector> data = new Vector<Vector>(m.size());
 		Iterator it = m.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry)it.next();

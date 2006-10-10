@@ -67,7 +67,7 @@ public class Executor {
    ////////////////////////////////////////////////////////////////////
    
    
-   static protected Vector clients = new Vector();
+   static protected Vector<SshClient> clients = new Vector<SshClient>();
 
    /**
     * @return a ticket that can later be passed to remoteDown()
@@ -262,7 +262,7 @@ public class Executor {
    ////////////////////////////////////////////////////////////////////
    
    
-   static private Vector remoteNativeTasks = new Vector();
+   static private Vector<NativeCommand> remoteNativeTasks = new Vector<NativeCommand>();
    
    // PENDING(msc): return the task, so shutdown can do task.sendCommand("exit") ? 
    static private void remoteNative(String username, final String password, final String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {

@@ -446,13 +446,13 @@ public class CommandCenterLogic {
 	}
 	
 	
-	private List variablesDiscoveredOnTheFly = new LinkedList();
+	private List<String> variablesDiscoveredOnTheFly = new LinkedList<String>();
 
 	/**
 	 * For later use by whoever, could currently as well be "protected"
 	 */
-	public List giveProjectVariableNames() {
-		List ret = new LinkedList();
+	public List<String> giveProjectVariableNames() {
+		List<String> ret = new LinkedList<String>();
 		scanForVariables(project, ret);
 		ret.addAll(variablesDiscoveredOnTheFly);
 		return ret;
@@ -461,12 +461,12 @@ public class CommandCenterLogic {
 	
 	// --- Scanning through project for variables ---
 	
-	private void scanForVariables(Object[] xx, List l) {
+	private void scanForVariables(Object[] xx, List<String> l) {
 		for (int i = 0; i < xx.length; i++) {
 			scanForVariables(xx[i], l);
 		}
 	}
-	private void scanForVariables(Object x, List l) {
+	private void scanForVariables(Object x, List<String> l) {
 		Method[] mm = x.getClass().getDeclaredMethods();
 		for (int i = 0; i < mm.length; i++) {
 			Method m = mm[i];
@@ -492,7 +492,7 @@ public class CommandCenterLogic {
 			}
 		} 		
 	}
-	private void scanForVariables(String s, int i, List l) {
+	private void scanForVariables(String s, int i, List<String> l) {
 		int markerStart = s.indexOf("${", i);
 		
 		if (markerStart != -1) {

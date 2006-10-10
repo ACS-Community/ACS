@@ -13,7 +13,7 @@ public class Flow {
 
    protected final Node UNDEF = new Node("");
 
-   protected Map name2node = new HashMap();
+   protected Map<String,Node> name2node = new HashMap<String,Node>();
 
    protected Node node(String name) {
       Node node = (Node) name2node.get(name);
@@ -133,7 +133,7 @@ public class Flow {
 
    // ========== for use by listeners observing this flow =========
 
-   protected Vector listeners = new Vector();
+   protected Vector<FlowListener> listeners = new Vector<FlowListener>();
 
    public void addListener(FlowListener l) {
       listeners.add(l);

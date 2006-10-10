@@ -151,7 +151,7 @@ public class ProjectRunModel implements RunModel {
 	 */
 	public void readDefaultVariables() {
 		
-		Map m = Collections.synchronizedMap(new HashMap());
+		Map<String, Object> m = Collections.synchronizedMap(new HashMap<String, Object>());
 		
 		for (Iterator it = System.getProperties().entrySet().iterator(); it.hasNext() ;) {
 			Map.Entry e = (Map.Entry) it.next();
@@ -173,6 +173,7 @@ public class ProjectRunModel implements RunModel {
    /**
     * Use given properties table for variable resolution
     */
+	@SuppressWarnings("unchecked")
 	public void readVariables (Properties p) {
 		 Map m = Collections.synchronizedMap(new HashMap(p));
 		 variables = m;

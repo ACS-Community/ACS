@@ -193,14 +193,14 @@ public class ToolManager {
 	static {
 
 		extraTools = new AcsCommandCenterTools();
-		builtinTools = new HashMap();
+		builtinTools = new HashMap<String, Tool>();
 
 	}
 
 
 	static protected AcsCommandCenterTools extraTools;
 
-	static protected HashMap builtinTools;
+	static protected HashMap<String, Tool> builtinTools;
 
 
 	static protected String[] collectInsertions (Tool tool, RunModel runModel, Map input) throws Exception {

@@ -31,7 +31,7 @@ public class FeedbackTabs extends JTabbedPane {
         this.master = master;
     }
 
-    protected HashMap tabTitle2Listener = new HashMap();
+    protected HashMap<String, NativeCommand.Listener> tabTitle2Listener = new HashMap<String, NativeCommand.Listener>();
 
     public NativeCommand.Listener viewTab(String tabTitle) {
         // search specified tab
