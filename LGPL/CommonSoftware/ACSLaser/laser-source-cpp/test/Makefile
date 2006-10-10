@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2006/10/03 03:55:42 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.5 2006/10/10 06:30:08 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -35,7 +35,7 @@ USER_LIB = -lstdc++ -lxerces-c
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = testDriver testDriverAcs unitTestDriver 
+EXECUTABLES     = testDriver testDriverAcs unitTestDriver FactoryTestCase
 EXECUTABLES_L   = 
 
 # <brief description of xxxxx program>
@@ -49,6 +49,10 @@ testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs m
 # <brief description of xxxxx program>
 unitTestDriver_OBJECTS   = unitTestDriver 
 unitTestDriver_LIBS      = cppunit laserCppUtil logging maciClient maci acsXercesUtilities laserSource
+
+# <brief description of xxxxx program>
+FactoryTestCase_OBJECTS   = FactoryTestCase 
+FactoryTestCase_LIBS      = acsErrTypeAlarmSourceFactory cppunit logging acsAlSysSource laserCppUtil maciErrType cdb maci maciClient
 
 #
 # special compilation flags for single c sources

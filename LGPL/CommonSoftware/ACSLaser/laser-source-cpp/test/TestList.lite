@@ -3,4 +3,5 @@ PROLOGUE alarmTestPrologue
 0 unitTest unitTestDriver
 1 AlarmTestCern "testDriver 10"
 2 AlarmTestAcs "runAcsTest.sh 10"
+3 FactoryTestCase "FactoryTestCase"
 EPILOGUE alarmTestEpilogue
