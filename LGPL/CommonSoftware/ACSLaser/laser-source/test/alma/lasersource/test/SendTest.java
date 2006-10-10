@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.3 2006/09/27 11:05:46 acaproni Exp $
+ * @version $Id: SendTest.java,v 1.4 2006/10/10 09:43:59 acaproni Exp $
  * @since    
  */
 
@@ -108,7 +108,7 @@ public class SendTest extends TestCase {
         assertNotNull("Error getting the ContainerServices",m_contSvcs);
         ACSJMSTopicConnectionImpl.containerServices=m_contSvcs;
         
-        ACSAlarmSystemInterfaceFactory.init(m_client.getORB(),null,logger);
+        // Check if the CRN AS is in use
 		assertFalse("Using ACS implementation instead of CERN",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 		
 		m_consumer = new Consumer(m_channelName,m_client.getContainerServices());
