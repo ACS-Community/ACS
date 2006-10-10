@@ -20,4 +20,9 @@
 			description="CURL/Name of the component."
 		/>
 	</ErrorCode>
+	<ErrorCode 
+           name="CanNotGetCDB" 
+	   shortDescription="CDB can not be accessable" 
+	   description="CDB service is not accessable">
+	</ErrorCode>
 </Type>
