@@ -248,10 +248,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		
 		// TODO tmp
 		manager = ManagerHelper.narrow(orb.string_to_object("corbaloc::" + ACSPorts.getIP() + ":" + ACSPorts.getManagerPort()+ "/Manager"));
-		IntHolder statusHolder = new IntHolder();
-		org.omg.CORBA.Object obj = manager.get_component(0x05000000, COMPONENT_NAME, true, statusHolder);
-		if (statusHolder.value != Manager.COMPONENT_ACTIVATED)
-			fail("Failed to obtain component.");
+		org.omg.CORBA.Object obj = manager.get_component(0x05000000, COMPONENT_NAME, true);
 			
 		PowerSupply ps = PowerSupplyHelper.narrow(obj);
 		property = ps.readback();

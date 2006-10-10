@@ -30,6 +30,9 @@ import si.ijs.maci.ManagerHelper;
 
 import alma.acs.util.ACSPorts;
 import alma.acs.util.UTCUtility;
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 /**
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
@@ -325,10 +328,9 @@ public class BuildingTest implements Runnable
 				// get component
 				//
 				final String COMPONENT_NAME = "BUILDING1";
-				IntHolder status = new IntHolder();
-				org.omg.CORBA.Object obj = manager.get_component(clientInfo.h, COMPONENT_NAME, true, status);
-				if (status.value == Manager.COMPONENT_ACTIVATED && obj != null)
-				{
+				org.omg.CORBA.Object obj;
+				try {
+					obj = manager.get_component(clientInfo.h, COMPONENT_NAME, true);
 					Building building = BuildingHelper.narrow(obj);
 					ROstring version = building.version();
 					
@@ -342,9 +344,9 @@ public class BuildingTest implements Runnable
 					try { Thread.sleep(10000); } catch (InterruptedException ie) {};
 					
 					monitor.destroy();
-				}
-				else
+				} catch (Exception e) { // CannotGetComponentEx, ComponentConfigurationNotFoundEx
 					System.err.println("Failed to obtain component: " + COMPONENT_NAME);
+				}
 				
 				// release now
 				manager.release_components(clientInfo.h, new String[] { COMPONENT_NAME });
