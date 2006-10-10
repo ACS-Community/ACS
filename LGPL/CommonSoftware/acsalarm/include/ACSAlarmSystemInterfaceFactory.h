@@ -77,12 +77,18 @@ class ACSAlarmSystemInterfaceFactory
 	virtual ~ACSAlarmSystemInterfaceFactory();
 	
 	public:
+
 	/**
 	 * Init the object of the class: must be called before using the other
 	 * methods of this class otherwise an exception will be thrown.
 	 * Return true if the initialization went ok
 	 */
 	static bool init(maci::Manager_ptr manager);
+
+	/**
+	 * Getter for whether we're using the ACS Alarm system (true) or not (false).
+	 */
+	static bool usingACSAlarmSystem();
 		
 	/**
 	 * Release the resources: must be called when finished using the

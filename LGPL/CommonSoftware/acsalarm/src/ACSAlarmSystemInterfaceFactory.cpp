@@ -105,12 +105,15 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) {
 	    }
 	catch(...)
 	    {
-// if we get any exception from accessing CDB we use the default ACS alarm system
+       // if we get any exception from accessing CDB we use the default ACS alarm system
 	    *m_useACSAlarmSystem=true;
 	    }//try-catch	
 	} 
     else 
 	{
+	// if we were passed a NULL for the manager reference, this means we should use the ACS (logging) style for alarms
+	// this typically will only happen in test code within the acsalarm module, which due to build/dependency order issues
+	// cannot access things in the ACSLaser package (which is built later). 
 	m_useACSAlarmSystem = new bool();
 	*m_useACSAlarmSystem=true;
 	}//if-else
@@ -150,6 +153,23 @@ auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultS
 	}
 }
 	
+/**
+ * Getter for whether we're using the ACS Alarm system (true) or not (false).
+ */
+bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()
+{ 
+	bool retVal = true;
+	if(NULL == m_useACSAlarmSystem)
+	{ 
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem"); 
+	}
+	else	
+	{
+		retVal = *m_useACSAlarmSystem; 
+	}
+	return retVal;
+}
+
 auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultState() {
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
