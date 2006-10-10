@@ -40,6 +40,7 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumerHelper;
 import org.omg.CosNotifyChannelAdmin.SupplierAdmin;
 import org.omg.CosNotifyComm.InvalidEventType;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 
@@ -138,7 +139,7 @@ public class SimpleSupplier extends OSPushSupplierPOA implements CommonNC {
          
          m_proxyConsumer.connect_structured_push_supplier(mySps);
       }
-      catch (alma.acs.container.ContainerException e) {
+      catch (AcsJContainerServicesEx e) {
          // convert it to an ACS Error System Exception
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
       }

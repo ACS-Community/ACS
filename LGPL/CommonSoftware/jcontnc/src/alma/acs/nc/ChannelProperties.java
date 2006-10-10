@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.6 2006/09/25 08:51:37 cparedes Exp $
+ * @version $Id: ChannelProperties.java,v 1.7 2006/10/10 10:06:18 hsommer Exp $
  * @since
  */
 
@@ -57,12 +57,12 @@ import org.omg.CosNotification.StopTimeSupported;
 import org.omg.CosNotification.Timeout;
 
 import com.cosylab.CDB.DAO;
-import alma.cdbErrType.CDBXMLErrorEx;
-import alma.cdbErrType.WrongCDBDataTypeEx;
-import alma.cdbErrType.CDBFieldDoesNotExistEx;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
 
 /**
  * ChanncelProperties is a class designed to retrieve the various quality of
@@ -148,7 +148,7 @@ public class ChannelProperties {
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
       }
-      catch (alma.acs.container.ContainerException e) {
+      catch (AcsJContainerServicesEx e) {
          m_logger.log(Level.SEVERE, "CDB unavailable", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
@@ -201,7 +201,7 @@ public class ChannelProperties {
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
       }
-      catch (alma.acs.container.ContainerException e) {
+      catch (AcsJContainerServicesEx e) {
          m_logger.log(Level.SEVERE, "CDB unavailable", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }
@@ -295,7 +295,7 @@ public class ChannelProperties {
                + "' channel", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
       }
-      catch (alma.acs.container.ContainerException e) {
+      catch (AcsJContainerServicesEx e) {
          m_logger.log(Level.SEVERE, "CDB unavailable", e);
          throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
       }

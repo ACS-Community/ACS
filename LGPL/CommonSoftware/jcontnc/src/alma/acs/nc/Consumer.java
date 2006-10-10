@@ -41,10 +41,10 @@ import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 
+import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
-
-import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushConsumer;
@@ -261,7 +261,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC {
                .connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper
                      .narrow(m_corbaRef));
       }
-      catch (alma.acs.container.ContainerException e) {
+      catch (AcsJContainerServicesEx e) {
          // convert it to an ACS Error System Exception
          throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
       }
