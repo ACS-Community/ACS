@@ -1117,6 +1117,9 @@ module maci {
 
 		/** 
 		    Group request of dynamic components. 
+
+		    @deprecated This method is deprecated and will be
+		    removed.
 		*/
 		ComponentInfoSeq get_dynamic_components(
 			in Handle client,	///< Identification of the caller.
