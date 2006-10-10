@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.21 2006/10/09 06:13:00 gchiozzi Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.22 2006/10/10 19:51:44 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -76,32 +76,32 @@ class MACIContainerServices: public ContainerServices
      * Implementation of acsContainerServices::getCORBAComponent(const char* name)
      */
     CORBA::Object* getCORBAComponent(const char* name)
-	throw (maciErrType::CannotGetComponentEx);
+	throw (maciErrType::CannotGetComponentExImpl);
     
     /**
      * Implementation of acsContainerServices::getCORBADynamicComponent(const char* name)
      */
     CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault) 
-	throw(maciErrType::IncompleteComponentSpecEx, 
-	      maciErrType::InvalidComponentSpecEx, 
-	      maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-	      maciErrType::CannotGetComponentEx);
+	throw(maciErrType::IncompleteComponentSpecExImpl, 
+	      maciErrType::InvalidComponentSpecExImpl, 
+	      maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+	      maciErrType::CannotGetComponentExImpl);
     
     /**
      * Implementation of acsContainerServices::getCORBACollocatedComponent(...)
      */
     CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	throw(maciErrType::IncompleteComponentSpecEx, 
-	      maciErrType::InvalidComponentSpecEx, 
-	      maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-	      maciErrType::CannotGetComponentEx);
+	throw(maciErrType::IncompleteComponentSpecExImpl, 
+	      maciErrType::InvalidComponentSpecExImpl, 
+	      maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+	      maciErrType::CannotGetComponentExImpl);
     
     /**
      * Implementation of acsContainerServices::getCORBADefaultComponent(const char* name)
      */
     CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	throw (maciErrType::NoDefaultComponentEx, 
-	       maciErrType::CannotGetComponentEx); 
+	throw (maciErrType::NoDefaultComponentExImpl, 
+	       maciErrType::CannotGetComponentExImpl); 
   
  public:
 
@@ -156,7 +156,7 @@ class MACIContainerServices: public ContainerServices
    * <br><hr>
    * @endhtmlonly
    */
-  CDB::DAL_ptr getCDB();
+  CDB::DAL_ptr getCDB() throw(acsErrTypeContainerServices::CanNotGetCDBExImpl);
   
   /// Get the OffShoot POA
   /// @return The offshoot POA

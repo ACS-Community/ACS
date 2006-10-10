@@ -11,8 +11,8 @@
 1 - Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
@@ -111,6 +111,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
@@ -144,6 +145,8 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDefaultComponent...
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ContainerServices::getDefaultComponent] 
+1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADefaultComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -160,6 +163,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_DYN_TEST2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__initialize] 
@@ -193,6 +197,8 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDynamicComponent...
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ContainerServices::getDynamicComponent] 
+1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADynamicComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -209,6 +215,7 @@
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
@@ -243,6 +250,8 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getCollocatedComponent...
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ContainerServices::getCollocatedComponent] 
+1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBACollocatedComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -259,6 +268,7 @@
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
@@ -311,6 +321,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
@@ -332,6 +343,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_DYN_TEST2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__initialize] 

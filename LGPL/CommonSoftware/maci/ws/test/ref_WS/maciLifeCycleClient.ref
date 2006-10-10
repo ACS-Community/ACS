@@ -20,14 +20,14 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
@@ -63,8 +63,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
@@ -86,6 +86,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - ] MACI_EXCEPTION_COSTR will throw an exception if 1 is executed
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_COSTR - ] Throwing an exception in the constructor
 1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize(): exception in user initialize] Life cycle error (type=28, code=0)
@@ -122,14 +123,15 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - ] MACI_EXCEPTION_INIT will throw an exception if 2 is executed
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_INIT: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - ] Throwing an exception in initialize
+1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::initialize() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::activate_component: got an exception intializing MACI_EXCEPTION_INIT
-1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_EXCEPTION_INIT'
@@ -149,6 +151,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_EXE - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_EXE - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_EXCEPTION_EXE - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_EXE - ] MACI_EXCEPTION_EXE will throw an exception if 3 is executed
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_EXE: NEW -> INITIALIZING
@@ -179,6 +182,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - ] MACI_EXCEPTION_CLEAN will throw an exception if 4 is executed
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_CLEAN: NEW -> INITIALIZING
@@ -224,6 +228,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_ABORT - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_ABORT - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_EXCEPTION_ABORT - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_ABORT - ] MACI_EXCEPTION_ABORT will throw an exception if 5 is executed
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_ABORT: NEW -> INITIALIZING
