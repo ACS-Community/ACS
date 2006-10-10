@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Sample configuration of alarm sources.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<source-definitions 
+   xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<sources-to-create>
+		<source-definition name="ALARM_SYSTEM_SOURCES">
+			<connection-timeout>15</connection-timeout>
+			<description>The alarm source for all the sources</description>
+			<responsible-id>1</responsible-id>
+		</source-definition>
+	</sources-to-create>
+</source-definitions>
