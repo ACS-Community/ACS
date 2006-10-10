@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2005/01/31 21:45:24 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.6 2006/10/10 14:34:12 msekoran Exp $"
 #
 # Makefile of jbaci
 #
@@ -132,7 +132,7 @@ PANELS_L =
 #
 # IDL Files and flags
 #
-IDL_FILES =
+IDL_FILES = testSimpleMasterComponent
 IDL_TAO_FLAGS =
 USER_IDL =
 #
