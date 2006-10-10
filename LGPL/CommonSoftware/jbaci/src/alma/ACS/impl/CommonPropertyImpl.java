@@ -24,12 +24,13 @@ package alma.ACS.impl;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.PortableServer.Servant;
 
-import EDU.oswego.cs.dl.util.concurrent.WriterPreferenceReadWriteLock;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBvoid;
 import alma.ACS.Callback;
@@ -130,8 +131,8 @@ public abstract class CommonPropertyImpl
 	/**
 	 * Mnemonic variables lock.
 	 */
-	protected WriterPreferenceReadWriteLock mnemonicDataLock = 
-		new WriterPreferenceReadWriteLock();
+	protected ReadWriteLock mnemonicDataLock = 
+		new ReentrantReadWriteLock();
 
 	/**
 	 * Time "key" (Java) if when last mnemonic retrival. 
@@ -667,8 +668,8 @@ public abstract class CommonPropertyImpl
 		{
 		
 			// read mnemonic data lock
-			try	{ mnemonicDataLock.readLock().acquire(); }
-			catch (InterruptedException ie)	{ 
+			try	{ mnemonicDataLock.readLock().lock(); }
+			catch (Throwable th)	{ 
 				completionHolder.value = mnemonicCompletion; return mnemonicValue; /* return old */
 			}
 			try
@@ -682,7 +683,7 @@ public abstract class CommonPropertyImpl
 			}
 			finally
 			{
-				mnemonicDataLock.readLock().release();
+				mnemonicDataLock.readLock().unlock();
 			}
 			
 			// read value wait, if reading is already pending			
@@ -736,8 +737,8 @@ public abstract class CommonPropertyImpl
 		//
 		
 		// write mnemonic data lock
-		try	{ mnemonicDataLock.writeLock().acquire(); }
-		catch (InterruptedException ie)	{ return mnemonicValue; /* return old */ }
+		try	{ mnemonicDataLock.writeLock().lock(); }
+		catch (Throwable th)	{ return mnemonicValue; /* return old */ }
 		try
 		{
 			if (keyTime > mnemonicTime)
@@ -750,7 +751,7 @@ public abstract class CommonPropertyImpl
 		}
 		finally
 		{
-			mnemonicDataLock.writeLock().release();
+			mnemonicDataLock.writeLock().unlock();
 
 			// read value wait release
 			synchronized (mnemonicValueRetrival)

@@ -23,10 +23,6 @@ package alma.ACS.jbaci;
 
 import java.util.Date;
 
-import EDU.oswego.cs.dl.util.concurrent.DefaultChannelCapacity;
-import EDU.oswego.cs.dl.util.concurrent.Heap;
-import EDU.oswego.cs.dl.util.concurrent.ThreadFactoryUser;
-
 /**
  * BACI timer.
  * Based on <code>EDU.oswego.cs.dl.util.concurrent</code> (it was not approriate for BACI usage).
@@ -38,7 +34,7 @@ import EDU.oswego.cs.dl.util.concurrent.ThreadFactoryUser;
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
  */
-public class BACITimer extends ThreadFactoryUser  {
+public class BACITimer  {
 
 	/**
 	 * Singleton instance.
@@ -64,7 +60,7 @@ public class BACITimer extends ThreadFactoryUser  {
 	}
 
   /** tasks are maintained in a standard priority queue **/
-  protected final Heap heap_ = new Heap(DefaultChannelCapacity.get());
+  protected final Heap heap_ = new Heap(64);
 
   /**
    * Timer runnable interface.
@@ -216,7 +212,7 @@ public class BACITimer extends ThreadFactoryUser  {
 
   public synchronized void restart() {
 	if (thread_ == null) {
-	  thread_ = threadFactory_.newThread(runLoop_);
+	  thread_ = new Thread(runLoop_, this.getClass().getName());
 	  thread_.start();
 	}
 	else

@@ -21,9 +21,10 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.omg.CORBA.BooleanHolder;
 
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedLong;
 import alma.ACS.CBDescIn;
 import alma.ACS.Callback;
 import alma.ACS.jbaci.BACIExecutor;
@@ -52,14 +53,14 @@ public class CommonComparableMonitorImpl
 		/**
 		 * Key time to process, 0 means none.
 		 */
-		protected SynchronizedLong queuedKeyPoolTime = new SynchronizedLong(0);
+		protected AtomicLong queuedKeyPoolTime = new AtomicLong(0);
 
 		/**
 		 * @see alma.ACS.jbaci.BACITimer.TimerRunnable#timeout(long)
 		 */
 		public void timeout(long timeToRun) {
 			// if none is queued, initiate executor otherwise override old value 
-			if (queuedKeyPoolTime.set(timeToRun) == 0)
+			if (queuedKeyPoolTime.getAndSet(timeToRun) == 0)
 			{
 				BACIExecutor.getInstance().execute(this);
 			}
@@ -76,7 +77,7 @@ public class CommonComparableMonitorImpl
 		 */
 		public void run() {
 			// TODO should be better to ACK (set to 0) at the end?
-			long keyTime = queuedKeyPoolTime.set(0);
+			long keyTime = queuedKeyPoolTime.getAndSet(0);
 
 			// create new holder (done expeditiously)
 			CompletionHolder completionHolder = CompletionUtil.createCompletionHolder();

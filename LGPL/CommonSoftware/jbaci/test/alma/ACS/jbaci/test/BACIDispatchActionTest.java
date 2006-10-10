@@ -42,7 +42,6 @@ import alma.ACS.jbaci.BACIDispatchAction;
 import alma.ACS.jbaci.CallbackDispatcher;
 import alma.ACS.jbaci.CompletionUtil;
 import junit.framework.TestCase;
-import alma.acs.util.ACSPorts;
 
 /**
  * <code>BACIDispatchAction</code> test.

@@ -22,8 +22,8 @@
 package alma.PS;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedBoolean;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBvoid;
 import alma.ACS.impl.CharacteristicComponentImpl;
@@ -157,7 +157,7 @@ public class PowerSupplyImpl extends CharacteristicComponentImpl
 	/**
 	 * On/off state.
 	 */
-	protected SynchronizedBoolean onState = new SynchronizedBoolean(false);
+	protected AtomicBoolean onState = new AtomicBoolean(false);
 
 	/**
 	 * Implementation of 'on' method.
@@ -165,7 +165,7 @@ public class PowerSupplyImpl extends CharacteristicComponentImpl
 	 */
 	public synchronized void onImpl() throws AcsJException
 	{ 
-		if (onState.set(true) == true)
+		if (onState.getAndSet(true) == true)
 			throw new AcsJCouldntPerformActionEx("Already 'on'.");
 	}
 
@@ -175,7 +175,7 @@ public class PowerSupplyImpl extends CharacteristicComponentImpl
 	 */
 	public synchronized void offImpl() throws AcsJException
 	{ 
-		if (onState.set(false) == false)
+		if (onState.getAndSet(false) == false)
 			throw new AcsJCouldntPerformActionEx("Already 'off'.");
 	}
 

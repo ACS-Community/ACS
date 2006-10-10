@@ -21,9 +21,10 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.omg.CORBA.LongHolder;
 
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedLong;
 import alma.ACS.CBDescIn;
 import alma.ACS.Callback;
 import alma.ACS.MonitorOperations;
@@ -90,7 +91,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 	/**
 	 * Key time to process, 0 means none.
 	 */
-	protected SynchronizedLong queuedKeyTime = new SynchronizedLong(0);
+	protected AtomicLong queuedKeyTime = new AtomicLong(0);
 
 	/**
 	 * Default constructor.
@@ -259,7 +260,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 */
 	public void timeout(long timeToRun) {
 		// if none is queued, initiate executor otherwise override old value 
-		if (queuedKeyTime.set(timeToRun) == 0)
+		if (queuedKeyTime.getAndSet(timeToRun) == 0)
 		{
 			BACIExecutor.getInstance().execute(CommonMonitorImpl.this);
 		}
@@ -269,7 +270,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		long keyTime = queuedKeyTime.set(0);
+		long keyTime = queuedKeyTime.getAndSet(0);
 		retrieveValueAndDispatch(keyTime, false);
 	}
 

@@ -21,8 +21,9 @@
 
 package alma.ACS.jbaci;
 
-import EDU.oswego.cs.dl.util.concurrent.BoundedPriorityQueue;
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * BACI action executor (thread pool)
@@ -40,7 +41,7 @@ public class BACIExecutor {
 	/**
 	 * Thread pool.
 	 */
-	private PooledExecutor threadPool;
+	private ThreadPoolExecutor threadPool;
 
 	/**
 	 * Number of threads in thread pool.
@@ -57,13 +58,12 @@ public class BACIExecutor {
 	 */
 	protected BACIExecutor()
 	{
+        // TODO make PriorityBlockingQueue bounded!!! (to MAX_REQUESTS)
 		// TODO should I use PooledExecutorWithWaitInNewThreadWhenBlocked...
-		threadPool = new PooledExecutor(
-			new BoundedPriorityQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()));
-
-		// create threads
-		threadPool.setMinimumPoolSize(POOL_THREADS);
-		threadPool.createThreads(POOL_THREADS);
+		threadPool = new ThreadPoolExecutor(POOL_THREADS, POOL_THREADS,
+        								  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+        								  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()));
+		threadPool.prestartAllCoreThreads();
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class BACIExecutor {
 			threadPool.execute(action);
 			return true;	
 		}
-		catch (InterruptedException ie)
+		catch (Throwable th)
 		{
 			return false;
 		}

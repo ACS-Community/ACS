@@ -7,7 +7,6 @@ package test.jbaci;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
