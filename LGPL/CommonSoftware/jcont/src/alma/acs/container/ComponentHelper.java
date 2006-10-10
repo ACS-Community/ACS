@@ -32,7 +32,6 @@ import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.logging.ClientLogManager;
-import alma.jconttest.DummyComponentPOATie;
 import alma.maciErrType.wrappers.AcsJComponentCreationEx;
 
 
