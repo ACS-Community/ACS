@@ -37,9 +37,10 @@ import javax.jms.TopicSubscriber;
 
 import org.omg.CosPropertyService.Property;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerException;
 import alma.acs.container.ContainerServices;
 import alma.alarmsystem.Alarm;
 import alma.alarmsystem.AlarmServiceOperations;
@@ -169,7 +170,7 @@ public class LaserComponent extends ComponentImplBase
 		ConfigurationAccessor conf;
 		try {
 			conf = ConfigurationAccessorFactory.getInstance(cont);
-		} catch (ContainerException e) {
+		} catch (AcsJContainerServicesEx e) {
 			throw new ComponentLifecycleException("Failed to get CDB", e);
 		}
 
