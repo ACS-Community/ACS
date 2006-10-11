@@ -95,7 +95,7 @@ import alma.maciErrType.CannotUnregisterComponentEx;
  *	<LI>It provides information about the whole domain.</LI>
  *	</UL>
  *
- * This class implementes tyhe IDL interface of Manager and
+ * This class implementes the IDL interface of Manager and
  * acts like a proxy, by delegating all requests 
  * to an implementation of the com.cosulab.acs.maci.Manager interface.
  *

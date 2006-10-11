@@ -38,6 +38,17 @@ import com.cosylab.acs.maci.StatusSeqHolder;
 
 /**
  * CORBA Manager Proxy.
+ * This class is used by clients of remote Managers that want to use
+ * the acs.maci.Manager interface.
+ * In particular it used by the JManager application to implement 
+ * Manager federation.
+ * 
+ *  In this way we have simmetry:
+ *  - ManagerProxyImpl is used to convert the IDL interface of the Manager into acs.maci.Manager
+ *    on the servant/skeleton side
+ *  - ManagerProsy is used to convert from acs.maci.Manager into the IDL interface
+ *    on the client/stub side
+ *    
  * @todo not completely implemented
  * 
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
