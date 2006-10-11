@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;
@@ -102,10 +101,9 @@ public class TestUtil {
 	 * @return The reference to the DAL or NULL
 	 */
 	public static JDAL getDAL(Manager manager) {
-		IntHolder status = new IntHolder();
 		JDAL dal;
 		try {
-	        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false, status);
+	        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false);
 	        if (cdbObj==null) {
 				System.out.println("Error getting the CDB from the manager");
 				return null;
