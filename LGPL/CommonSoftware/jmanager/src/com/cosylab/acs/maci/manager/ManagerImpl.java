@@ -119,7 +119,9 @@ import com.cosylab.acs.maci.plug.ManagerProxy;
 import com.cosylab.util.WildcharMatcher;
 
 /**
- * This class is an implementation of MACI Manager.
+ * This class is an implementation of MACI com.cosylab.acs.maci.Manager.
+ * It provides the actual internal implementation of the Manager
+ * functionality in a way independent from the ACS maci Manager IDL interface.
  *
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
@@ -1365,7 +1367,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					try
 					{
 						// get names of all components
-						/*String[] ids =*/ componentsDAO.get_field_data(""); // TODO here to check if CDB is available
+						/*String[] ids =*/ componentsDAO.get_field_data(""); /// @TODO here to check if CDB is available
 					    String[] ids = getComponentsList();
 
 						// test names
@@ -1492,6 +1494,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 	/**
 	 * @see com.cosylab.acs.maci.Manager#getComponents(int, URI[], boolean, StatusSeqHolder)
+	 * @deprecated
 	 */
 	public Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses)
 		throws NoPermissionException
@@ -1505,14 +1508,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private Component getComponent(int id, URI curl, boolean activate, StatusHolder status, boolean allowServices)
 		throws NoPermissionException
 	{
-
+	
 		if (isDebug())
 			new MessageLogEntry(this, "getComponent", new Object[] { new Integer(id), curl,
 										new Boolean(activate), status, new Boolean(allowServices) }).dispatch();
-
+	
 		// check if null
 		checkCURL(curl);
-
+	
 		if (status == null)
 		{
 			// BAD_PARAM
@@ -1523,13 +1526,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		/****************************************************************/
-
+	
 		// extract name
 		String name = extractName(curl);
-
+	
 		// log info
 		String requestorName = null;
-
+	
 		if (id != 0)
 		{
 			requestorName = getRequestorName(id);
@@ -1537,12 +1540,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 			new MessageLogEntry(this, "getComponent", "Request for component '" + curl + "' issued.", LoggingLevel.INFO).dispatch();
-
-
+	
+	
 		// no login required for predefined objects (services)
-
+	
 		Component component = null;
-
+	
 		// "Manager" is a special service Component
 		if (allowServices && name.equals("Manager"))
 		{
@@ -1560,7 +1563,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);
 			else
 				status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
-
+	
 			component = new ServiceComponent(remoteDirectoryComponentReference);
 		}
 		else if (allowServices
@@ -1568,23 +1571,23 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		         && isServiceComponent(name))
 		{
 			Object obj = lookup(name, null);
-
+	
 			// set status
 			if (obj != null)
 				status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);
 			else
 				status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
-
+	
 			component = new ServiceComponent(obj);
 		}
 		else
 		{
 			// check handle and NONE permissions
 			securityCheck(id, AccessRights.NONE);
-
+	
 			component = internalRequestComponent(id, curl, status, activate);
 		}
-
+	
 		// log info
 		if (component != null && component.getObject() != null)
 		{
@@ -1607,27 +1610,28 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			else
 				new MessageLogEntry(this, "getComponent", "Failed to provide component '" + curl + "'.", LoggingLevel.INFO).dispatch();
 		}
-
+	
 		/****************************************************************/
-
+	
 		if (isDebug())
 			new MessageLogEntry(this, "getComponent", "Exiting.", Level.FINEST).dispatch();
-
+	
 		return component;
-
+	
 	}
 
 	/**
 	 * @see #getComponents
+	 * @deprecated
 	 */
 	private Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses, boolean allowServices)
 		throws NoPermissionException
 	{
-
+	
 		if (isDebug())
 			new MessageLogEntry(this, "getComponents", new Object[] { new Integer(id), curls,
 											new Boolean(activate), statuses, new Boolean(allowServices) }).dispatch();
-
+	
 		// check if null
 		if (curls == null)
 		{
@@ -1637,7 +1641,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			af.putValue("curls", curls);
 			throw af;
 		}
-
+	
 		if (statuses == null)
 		{
 			// BAD_PARAM
@@ -1646,18 +1650,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			af.putValue("statuses", statuses);
 			throw af;
 		}
-
+	
 		// check handle and NONE permissions
 		securityCheck(id, AccessRights.NONE);
-
+	
 		/****************************************************************/
-
+	
 		int obtained = 0;
-
+	
 		Component[] components = new Component[curls.length];
 		ComponentStatus[] componentStatuses = new ComponentStatus[curls.length];
 		statuses.setStatus(componentStatuses);
-
+	
 		for (int i = 0; i < curls.length; i++)
 		{
 			StatusHolder status = new StatusHolder();
@@ -1671,24 +1675,33 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				components[i] = null;
 				componentStatuses[i] = ComponentStatus.COMPONENT_NOT_ACTIVATED;
-
+	
 				CoreException ce = new CoreException(this, "Failed to get component '"+curls[i]+"'.", ex);
 				ce.caughtIn(this, "getComponents");
 				ce.putValue("curl", curls[i]);
 				// exception service will handle this
 			}
 		}
-
+	
 		new MessageLogEntry(this, "getComponents", obtained + " of " + curls.length +" components obtained.", LoggingLevel.INFO).dispatch();
-
+	
 		/****************************************************************/
-
+	
 		if (isDebug())
 			new MessageLogEntry(this, "getComponents", "Exiting.", Level.FINEST).dispatch();
-
+	
 		return components;
-
+	
 	}
+
+	/**
+	 * @see com.cosylab.acs.maci.Manager#getComponentNonStiky(int id, URI curl)
+	 */
+	public Component getComponentNonStiky(int id, URI curl) 
+		throws NoPermissionException
+			   {
+		       throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+			   }
 
 	/**
 	 * @see com.cosylab.acs.maci.Manager#makeComponentImmortal(int, java.net.URI, boolean)
@@ -5782,7 +5795,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (isOtherDomainComponent)
 		{
-			// TODO MF do the login?
+			// @todo MF do the login?
 		    try
 		    {
 			    String domainName = CURLHelper.createURI(name).getAuthority();
@@ -5880,7 +5893,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 			    URI curlName = CURLHelper.createURI(name);
 			    StatusHolder statusHolder = new StatusHolder();
-			    // TODO MF tmp (handle)
+			    // @todo MF tmp (handle)
 			    remoteManager.getComponent(INTERDOMAIN_MANAGER_HANDLE, curlName, true, statusHolder);
 
 			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_ACTIVATED)
@@ -5889,7 +5902,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				    String localName = curlName.getPath();
 					if (localName.charAt(0) == '/')
 					    localName = localName.substring(1);
-				    // TODO MF tmp (handle)
+				    /// @TODO MF tmp (handle)
 				    ComponentInfo[] infos = remoteManager.getComponentInfo(INTERDOMAIN_MANAGER_HANDLE, new int[0], localName, "*", true);
 				    if (infos != null && infos.length == 1)
 				    {
@@ -5978,11 +5991,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			new MessageLogEntry(this, "internalNoSyncRequestComponent", "Activated component '" + name + "' does not implement specified type '" + type + "'.", LoggingLevel.SEVERE).dispatch();
 		}
 
-		// TODO MF do the component handle mapping here (remember map and fix componentInfo),
+		// @todo MF do the component handle mapping here (remember map and fix componentInfo),
 		// component info (to get type and code, container - prefix name)
 		if (isOtherDomainComponent)
 		{
-		    // TODO MF tmp (for testing)
+		    // @todo MF tmp (for testing)
 		    componentInfo.setHandle(h | COMPONENT_MASK);
 		    componentInfo.setClients(new IntArray());
 		    componentInfo.setComponents(new IntArray(0));
@@ -6556,7 +6569,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
 			if (!isOtherDomainComponent)
 			{
-				// TODO or not: what about dynamic components - it is not possible
+				// @todo or not: what about dynamic components - it is not possible
 				// to specify it using ComponentSpec, also not fully recoverable
 				// when info is passed from the container
 				DAOProxy dao = getComponentsDAOProxy();
@@ -6627,7 +6640,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				Manager remoteManager = null;
 
-				// TODO MF do the login?
+				// @todo MF do the login?
 			    try
 			    {
 				    String domainName = CURLHelper.createURI(name).getAuthority();
@@ -6639,12 +6652,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					return;
 			    }
 
-				// TODO MF call release_component on other manager (logout?)
+				// @todo MF call release_component on other manager (logout?)
 			    // release component
 				try
 				{
 				    URI curlName = CURLHelper.createURI(name);
-				    // TODO MF tmp (handle)
+				    // @todo MF tmp (handle)
 				    remoteManager.releaseComponent(INTERDOMAIN_MANAGER_HANDLE, curlName);
 				}
 				catch (Exception ex)
@@ -7029,7 +7042,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	h		handle of the component to be restarting.
 	 * @return			Newly restarted component, <code>null</code> if failed.
 	 */
-	// TODO MF not supported
+	// @todo MF not supported
 	private Component internalNoSyncRestartComponent(int owner, int h)
 	{
 
@@ -7105,7 +7118,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (container != null)
 		{
-			// TODO what about notifying clients, marking component as unavailable...
+			// @todo what about notifying clients, marking component as unavailable...
 
 			// restart component
 			try
@@ -7120,7 +7133,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					throw re;
 				}
 
-				// TODO what about notifying clients, marking component as available, updating reference...
+				// @todo what about notifying clients, marking component as available, updating reference...
 
 			}
 			catch (Exception ex)
@@ -7150,7 +7163,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#getDefaultComponent(int, java.lang.String)
 	 */
-	// TODO MF not supported
+	// @todo MF not supported
 	public ComponentInfo getDefaultComponent(int id, String type)
 		throws NoPermissionException, NoDefaultComponentException
 	{
@@ -7216,7 +7229,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				try
 				{
 					// get names of all components
-					/*String[] ids =*/ componentsDAO.get_field_data("");  // TODO here to check if CDB is available
+					/*String[] ids =*/ componentsDAO.get_field_data("");  // @todo here to check if CDB is available
 				    String[] ids = getComponentsList();
 
 					// test names
@@ -7271,7 +7284,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 
-		// TODO MF if non-local do not make this check!!! type should be given for inter-domain...!!! do not bail in..
+		// @todo MF if non-local do not make this check!!! type should be given for inter-domain...!!! do not bail in..
 		// if found get the component
 		if (defaultComponentInfo != null)
 		{
@@ -7513,7 +7526,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#getCollocatedComponent(int, com.cosylab.acs.maci.ComponentSpec, boolean, URI)
 	 */
-	// TODO MF not supported
+	/// @todo MF not supported
 	public ComponentInfo getCollocatedComponent(int id, ComponentSpec componentSpec,
 			boolean markAsDefault, URI targetComponentURI)
 		throws NoPermissionException, IncompleteComponentSpecException,
@@ -7577,7 +7590,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************************************************************/
 
-		// TODO temporary quick implementation (does not look in the CDB if component is not activated)
+		/// @todo temporary quick implementation (does not look in the CDB if component is not activated)
 		String name = extractName(targetComponentURI);
 
 		int h = 0;
@@ -7674,7 +7687,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		String[] fieldIDs = null;
 		try
 		{
-			/*fieldIDs =*/ componentsDAO.get_field_data("");  // TODO here to check if CDB is available
+			/*fieldIDs =*/ componentsDAO.get_field_data("");  /// @todo here to check if CDB is available
 			fieldIDs = getComponentsList();
 		}
 		catch (Exception ex)
@@ -7696,7 +7709,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			int i = 0; int points = 0;
 			for (; i < len; i++)
 			{
-				// TODO not nice way, but necessary to have hierarchical names
+				/// @todo not nice way, but necessary to have hierarchical names
 				//String fieldValue = readStringCharacteristics(componentsDAO, fieldIDs[fi]+"/"+fieldNames[i], true);
 			    boolean processingNameField = "Name".equals(fieldNames[i]);
 				String fieldValue = null;
@@ -7947,7 +7960,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			synchronized (this)
 			{
-				// TODO not perfect
+				/// @todo not perfect
 			    if (result[0].equals(ComponentSpec.COMPSPEC_ANY))
 			        result[0] = result[1] + "_" + System.currentTimeMillis();
 			    else // ends with case
@@ -8035,7 +8048,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			        if (parentContext == null)
 			        {
 			            parentContext = remoteDirectory.createSubcontext(parent);
-					    // TODO temp. commented out
+					    /// @todo temp. commented out
 			            //generateHiearchyContexts(remoteDirectory, parent, parentContext);
 			        }
 
@@ -8057,7 +8070,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (name.endsWith(".D"))
 				{
 				    remoteDirectory.rebind(n, object);
-				    // TODO temp. commented out
+				    /// @todo temp. commented out
 				    //generateHiearchyContexts(remoteDirectory, name, (Context)remoteDirectory.lookup(name));
 				}
 				else
@@ -8091,7 +8104,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
      *
     private void generateHiearchyContexts(Context remoteDirectory, String parent, Context parentContext) throws NamingException
     {
-        // TODO CORBA specific
+        /// @todo CORBA specific
         if (remoteDirectory instanceof com.sun.jndi.cosnaming.CNCtx)
         {
             boolean isParentDomain = remoteDirectory.getNameInNamespace().length() == 0 ||
@@ -8818,7 +8831,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                     String componentName = prefix + subname;
 
                     // check if potentially valid ComponentInfo entry - read name
-                    // TODO this could be done better (to check if all attributes exist)
+                    /// @todo this could be done better (to check if all attributes exist)
                     if (readStringCharacteristics(dc, componentName + "/Name", true) != null)
                         componentList.add(componentName);
                 }
@@ -9246,7 +9259,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	    if (obj == null)
 	        return null;
 
-	    // TODO CORBA specific
+	    /// @todo CORBA specific
 	    Manager remoteManager = new ManagerProxy(obj);
 
 	    // store into cache
