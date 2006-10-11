@@ -55,9 +55,11 @@ public class JarOrderOptimizer implements Comparator<File>
 	 */
 	public static final String[] orderedAcsJarNames = {
 		"jcont.jar",
+		"JavaContainerError.jar",
 		"jACSUtil.jar",
 		"acsjlog.jar",
 		"maci.jar",
+		"maciErrType.jar",
 		"jacorb.jar",
 		"acscomponent.jar",
 		"jmanager.jar",
