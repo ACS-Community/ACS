@@ -11,10 +11,19 @@
       <_ Name="HangOnInit"  Code="acstestcompTimingExplorer"
                              Type="IDL:alma/acstestcomp/TimingExplorer:1.0"
                              Container="acstestcomp"/>
+      <_ Name="TimingExplorer_NODLL"  Code="acstestcompDllNotExist"
+                             Type="IDL:alma/acstestcomp/TimingExplorer:1.0"
+                             Container="acstestcomp"/>
+      <_ Name="TimingExplorer_NOCONT"  Code="acstestcompTimingExplorer"
+                             Type="IDL:alma/acstestcomp/TimingExplorer:1.0"
+                             Container="containerNotExist"/>
+      <_ Name="TimingExplorer_NOIDL"  Code="acstestcompTimingExplorer"
+                             Type="IDL:alma/acstestcomp/IdlNotExist:1.0"
+                             Container="acstestcomp"/>
       <_ Name="ERROR_EXP_OK"  Code="acstestcompErrorExplorer"
                              Type="IDL:alma/acstestcomp/ErrorExplorer:1.0"
                              Container="acstestcomp"/>
       <_ Name="ERROR_EXP_NO_CDB"  Code="acstestcompErrorExplorer"
                              Type="IDL:alma/acstestcomp/ErrorExplorer:1.0"
                              Container="acstestcomp"/>
-</Components>
+</Components>		     
