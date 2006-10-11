@@ -16,6 +16,7 @@ import abeans.core.IdentifierSupport;
 import abeans.core.defaults.MessageLogEntry;
 import abeans.framework.ReportEvent;
 import abeans.framework.ApplicationContext;
+import abeans.pluggable.acs.logging.LoggingLevel;
 
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerInfo;
@@ -94,8 +95,14 @@ import alma.maciErrType.CannotUnregisterComponentEx;
  *	<LI>It provides information about the whole domain.</LI>
  *	</UL>
  *
- * This class acts like a proxy and delegates all requests to the given implementation.
+ * This class implementes tyhe IDL interface of Manager and
+ * acts like a proxy, by delegating all requests 
+ * to an implementation of the com.cosulab.acs.maci.Manager interface.
  *
+ * @todo   Now the Manager interface does not use exceptions in many
+ *         methods when there is a failure, but it returns a nil object.
+ *         This class will have to be refactored when the Manager implementation
+ *         (only used internally) will be changed.
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
@@ -464,14 +471,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
 	 * @param component_url CURL of the Component whose reference is to be retrieved.
 	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
-	 * @return Reference to the Component. If the Component could not be activated, a nil reference is returned,
-	 *		  and the status contains an error code detailing the cause of failure (one of the COMPONENT_* constants).
+	 * @return Reference to the Component. If the Component could not be activated, an exception is throw.
 	 */
 	public Object get_component(int id, String component_url, boolean activate)
+	    throws CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
 	{
-	    IntHolder status = new IntHolder();
-
 		pendingRequests.increment();
 		try
 		{
@@ -490,13 +494,41 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 				uri = CURLHelper.createURI(component_url);
 			Component component = manager.getComponent(id, uri, activate, statusHolder);
 
-			// map status
-			status.value = mapStatus(statusHolder.getStatus());
-
 			// extract Component CORBA reference
 			if (component != null)
 				retVal = (Object)component.getObject();
 
+			/* This handles a failure in retrieving the component */
+			/**
+			 * @todo GCH 2006.10.11
+			 *       notice that we can get a ComponentStatus != COMPONENT_ACTIVATED
+			 *       also if the component is properly returned.
+			 *       There is an incoherence here in the interfaces that shall be resolved.
+			 *       We have to cleanup here or go back to return a status
+			 *       to the caller.
+			 *       My point is: the caller is interested in more than just 
+			 *       getting the component of an indication of failure if not?
+			 *       Is it interesting to know that the component was not activated,
+			 *       presumably because already active? 
+			 */ 
+			if (component == null || component.getObject() == null)
+			{
+			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED)
+			    {
+				AcsJComponentNotAlreadyActivatedEx ex = new AcsJComponentNotAlreadyActivatedEx();
+				throw ex.toComponentNotAlreadyActivatedEx();
+			    }
+			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NONEXISTANT)
+			    { 
+				AcsJComponentConfigurationNotFoundEx ex = new AcsJComponentConfigurationNotFoundEx();
+				throw ex.toComponentConfigurationNotFoundEx();
+			    }
+			    else
+			    { 
+				AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+				throw ex.toCannotGetComponentEx();
+			    }
+			}
 			if (isDebug())
 				new MessageLogEntry(this, "get_component", "Exiting.", Level.FINEST).dispatch();
 
@@ -559,12 +591,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 	}
 
-
-
-
-
-
-
 	/**
 	 * Get a Component, activating it if necessary.
 	 * The client represented by id (the handle)
@@ -590,6 +616,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
 	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
 	 * @see get_component
+	 * @deprecated
 	 * @return A sequence of requested components.
 	 */
 	public Object[] get_components(int id, String[] component_urls, boolean activate,	ulongSeqHolder status)
@@ -885,6 +912,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return Returns the handle of the newly created Component.
 	 */
 	public int register_component(int id, String component_url, String type, Object component)
+	throws CannotRegisterComponentEx
 	{
 		pendingRequests.increment();
 		try
@@ -1124,6 +1152,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *
 	 * @param id Identification of the caller. The caller must have previously gotten the Component through get_component.
 	 * @param component_url The CURL of the Component to be released.
+	 * @deprecated
 	 * @see release_component
 	 */
 	public void release_components(int id, String[] component_urls)
@@ -1357,6 +1386,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * a components_unavailable notification is issued to all of them, and the Component is unregistered.
 	 */
 	public void unregister_component(int id, int h)
+	throws CannotUnregisterComponentEx
 	{
 		pendingRequests.increment();
 		try
@@ -1435,30 +1465,36 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// transform to CORBA specific
 			com.cosylab.acs.maci.ComponentInfo info = manager.getDefaultComponent(id, type);
-			if (info != null)
+			if (info == null || info.getComponent() == null)
 			{
-				Object obj = null;
-				if (info.getComponent() != null)
-					obj = (Object)info.getComponent().getObject();
-				String[] interfaces;
-				if (info.getInterfaces() != null)
-					interfaces = info.getInterfaces();
-				else
-					interfaces = new String[0];
-					
-				retVal = new ComponentInfo(info.getType(),
-										    info.getCode(),
-											obj,
-											info.getName(),
-											info.getClients().toArray(),
-											info.getContainer(),
-											info.getContainerName(),
-										 	info.getHandle(),
-										 	mapAccessRights(info.getAccessRights()),
-										 	interfaces);
-			}
+                /**
+                 * @todo  How does this match with ABeans exception handling? See below
+                 *        This is also catched below and does not get propagated up.
+                 */ 
+				AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+				throw ex.toCannotGetComponentEx();
+			}				
+
+			Object obj = null;
+
+			obj = (Object)info.getComponent().getObject();
+			String[] interfaces;
+
+			if (info.getInterfaces() != null)
+				interfaces = info.getInterfaces();
 			else
-				retVal = invalidInfo;
+				interfaces = new String[0];
+				
+			retVal = new ComponentInfo(info.getType(),
+									    info.getCode(),
+										obj,
+										info.getName(),
+										info.getClients().toArray(),
+										info.getContainer(),
+										info.getContainerName(),
+									 	info.getHandle(),
+									 	mapAccessRights(info.getAccessRights()),
+									 	interfaces);
 
 			if (isDebug())
 				new MessageLogEntry(this, "get_default_component", "Exiting.", Level.FINEST).dispatch();
@@ -1474,7 +1510,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hndce);
 
 			// rethrow CORBA specific
-			throw new AcsJNoDefaultComponentEx(ndce.getMessage()).toNoDefaultComponentEx();
+			throw new AcsJNoDefaultComponentEx().toNoDefaultComponentEx();
 		}
 		catch (BadParametersException bpe)
 		{
@@ -1532,7 +1568,8 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public ComponentInfo get_dynamic_component(int id, si.ijs.maci.ComponentSpec c, boolean mark_as_default)
 		throws IncompleteComponentSpecEx, 
 	               InvalidComponentSpecEx, 
-	               ComponentSpecIncompatibleWithActiveComponentEx
+	               ComponentSpecIncompatibleWithActiveComponentEx,
+	               CannotGetComponentEx
 	{
 		pendingRequests.increment();
 
@@ -1563,30 +1600,33 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			    manager.getDynamicComponent(id, componentSpec, mark_as_default);
 
 			// transform to CORBA specific
-			if (info != null)
+			if (info == null || info.getComponent() == null)
 			{
-				Object obj = null;
-				if (info.getComponent() != null)
-					obj = (Object)info.getComponent().getObject();
-				String[] interfaces;
-				if (info.getInterfaces() != null)
-					interfaces = info.getInterfaces();
-				else
-					interfaces = new String[0];
-					
-				retVal = new ComponentInfo(info.getType(),
-							   info.getCode(),
-							   obj,
-							   info.getName(),
-							   info.getClients().toArray(),
-							   info.getContainer(),
-							   info.getContainerName(),
-							   info.getHandle(),
-							   mapAccessRights(info.getAccessRights()),
-							   interfaces);
-			}
+                /**
+                 * @todo  How does this match with ABeans exception handling? See below
+                 *        This is also catched below and does not get propagated up.
+                 */ 
+				AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+				throw ex.toCannotGetComponentEx();
+			}				
+			Object obj = null;
+			obj = (Object)info.getComponent().getObject();
+			String[] interfaces;
+			if (info.getInterfaces() != null)
+				interfaces = info.getInterfaces();
 			else
-				retVal = invalidInfo;
+				interfaces = new String[0];
+				
+			retVal = new ComponentInfo(info.getType(),
+						   info.getCode(),
+						   obj,
+						   info.getName(),
+						   info.getClients().toArray(),
+						   info.getContainer(),
+						   info.getContainerName(),
+						   info.getHandle(),
+						   mapAccessRights(info.getAccessRights()),
+						   interfaces);
 
 			if (isDebug())
 				new MessageLogEntry(this, "get_dynamic_component", "Exiting.", Level.FINEST).dispatch();
@@ -1615,7 +1655,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow ACS specific
 			AcsJIncompleteComponentSpecEx ex=
-			    new AcsJIncompleteComponentSpecEx(hicse.getMessage());
+			    new AcsJIncompleteComponentSpecEx();
 			ex.setCURL(hicse.getIncompleteSpec().getName());
 			ex.setcomponent_type(hicse.getIncompleteSpec().getType());
 			ex.setcomponent_code(hicse.getIncompleteSpec().getCode());
@@ -1629,7 +1669,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hincse);
 			
-			throw new AcsJInvalidComponentSpecEx(incse.getMessage()).toInvalidComponentSpecEx();
+			throw new AcsJInvalidComponentSpecEx().toInvalidComponentSpecEx();
 		}
 		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
 		{
@@ -1640,7 +1680,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow ACS specific
 			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
-			    new AcsJComponentSpecIncompatibleWithActiveComponentEx(ciace.getMessage());
+			    new AcsJComponentSpecIncompatibleWithActiveComponentEx();
 			ex.setCURL(ciace.getActiveComponentSpec().getName());
 			ex.setcomponent_type(ciace.getActiveComponentSpec().getType());
 			ex.setcomponent_code(ciace.getActiveComponentSpec().getCode());
@@ -1724,7 +1764,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 					//try
 					//{
 						if (components[i] != null)
-							// TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
+							/// @TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
 							componentSpecs[i] = new ComponentSpec(
 											//CURLHelper.createURI(components[i].component_name),
 											components[i].component_name,
@@ -1865,35 +1905,39 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			if (target_component != null)
 				targetComponentURI = CURLHelper.createURI(target_component);
 
-			// TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
+			/// @TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
 			ComponentSpec componentSpec = new ComponentSpec(c.component_name, c.component_type, c.component_code, c.container_name);
 			com.cosylab.acs.maci.ComponentInfo info = manager.getCollocatedComponent(id, componentSpec, mark_as_default, targetComponentURI);
 
 			// transform to CORBA specific
-			if (info != null)
+			if (info == null || info.getComponent() == null)
 			{
-				Object obj = null;
-				if (info.getComponent() != null)
-					obj = (Object)info.getComponent().getObject();
-				String[] interfaces;
-				if (info.getInterfaces() != null)
-					interfaces = info.getInterfaces();
-				else
-					interfaces = new String[0];
-					
-				retVal = new ComponentInfo(info.getType(),
-										   info.getCode(),
-											obj,
-											info.getName(),
-											info.getClients().toArray(),
-											info.getContainer(),
-											info.getContainerName(),
-											info.getHandle(),
-											mapAccessRights(info.getAccessRights()),
-											interfaces);
-			}
+                /**
+                 * @todo  How does this match with ABeans exception handling? See below
+                 *        This is also catched below and does not get propagated up.
+                 */ 
+				AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+				throw ex.toCannotGetComponentEx();
+			}				
+
+			Object obj = null;
+			obj = (Object)info.getComponent().getObject();
+			String[] interfaces;
+			if (info.getInterfaces() != null)
+				interfaces = info.getInterfaces();
 			else
-				retVal = invalidInfo;
+				interfaces = new String[0];
+				
+			retVal = new ComponentInfo(info.getType(),
+									   info.getCode(),
+										obj,
+										info.getName(),
+										info.getClients().toArray(),
+										info.getContainer(),
+										info.getContainerName(),
+										info.getHandle(),
+										mapAccessRights(info.getAccessRights()),
+										interfaces);
 
 			if (isDebug())
 				new MessageLogEntry(this, "get_collocated_component", "Exiting.", Level.FINEST).dispatch();
@@ -1921,7 +1965,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow ACS specific
 			AcsJIncompleteComponentSpecEx ex=
-			    new AcsJIncompleteComponentSpecEx(icse.getMessage());
+			    new AcsJIncompleteComponentSpecEx();
 			ex.setCURL(icse.getIncompleteSpec().getName());
 			ex.setcomponent_type(icse.getIncompleteSpec().getType());
 			ex.setcomponent_code(icse.getIncompleteSpec().getCode());
@@ -1935,7 +1979,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// exception service will handle this
 			reportException(hincse);
 			
-			throw new AcsJInvalidComponentSpecEx(incse.getMessage()).toInvalidComponentSpecEx();
+			throw new AcsJInvalidComponentSpecEx().toInvalidComponentSpecEx();
 		}
 		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
 		{
@@ -1946,7 +1990,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow ACS specific
 			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
-			    new AcsJComponentSpecIncompatibleWithActiveComponentEx(ciace.getMessage());
+			    new AcsJComponentSpecIncompatibleWithActiveComponentEx();
 			ex.setCURL(ciace.getActiveComponentSpec().getName());
 			ex.setcomponent_type(ciace.getActiveComponentSpec().getType());
 			ex.setcomponent_code(ciace.getActiveComponentSpec().getCode());
@@ -2014,9 +2058,8 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @see #get_component
 	 */
 	public Object get_service(int id, String service_url, boolean activate)
+	throws CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
 	{
-	        IntHolder status = new IntHolder();
-
 		pendingRequests.increment();
 		try
 		{
@@ -2035,18 +2078,23 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 				uri = CURLHelper.createURI(service_url);
 			Component component = manager.getService(id, uri, activate, statusHolder);
 
-			// map status
-			status.value = mapStatus(statusHolder.getStatus());
+			if (component == null || (Object)component.getObject() == null)
+			{
+                /**
+                 * @todo  How does this match with ABeans exception handling? See below
+                 *        This is also catched below and does not get propagated up.
+                 */ 
+				AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+				throw ex.toCannotGetComponentEx();
+			}				
 
-			// extract Component CORBA reference
-			if (component != null)
-				retVal = (Object)component.getObject();
-
+ 	        retVal = (Object)component.getObject();
+            
 			if (isDebug())
 				new MessageLogEntry(this, "get_service", "Exiting.", Level.FINEST).dispatch();
 
 			return retVal;
-		}
+		}		
 		catch (URISyntaxException usi)
 		{
 			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
