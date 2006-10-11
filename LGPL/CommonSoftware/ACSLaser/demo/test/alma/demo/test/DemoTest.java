@@ -7,7 +7,6 @@ import java.util.Iterator;
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
 
 import alma.acs.component.client.AdvancedComponentClient;
-import alma.acs.container.ContainerException;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.Consumer;
@@ -95,7 +94,7 @@ public class DemoTest {
 		AlarmService alarmSvc;
 		try {
 			alarmSvc = AlarmServiceHelper.narrow(m_contSvcs.getComponent("AlarmService"));
-		} catch (ContainerException ce) {
+		} catch (Exception ce) {
 			System.out.println("Error getting AlarmService: "+ce.getMessage());
 			ce.printStackTrace();
 			return;
@@ -108,7 +107,7 @@ public class DemoTest {
 		PS ps;
 		try {
 			ps = PSHelper.narrow(m_contSvcs.getComponent("ALARM_SOURCE_PS"));
-		} catch (ContainerException ce) {
+		} catch (Exception ce) {
 			System.out.println("Error getting PS: "+ce.getMessage());
 			ce.printStackTrace();
 			return;
@@ -122,7 +121,7 @@ public class DemoTest {
 		Mount mount;
 		try {
 			mount = MountHelper.narrow(m_contSvcs.getComponent("ALARM_SOURCE_MOUNT"));
-		} catch (ContainerException ce) {
+		} catch (Exception ce) {
 			System.out.println("Error getting Mount: "+ce.getMessage());
 			ce.printStackTrace();
 			return;
@@ -137,7 +136,7 @@ public class DemoTest {
 		Antenna antenna;
 		try {
 			antenna = AntennaHelper.narrow(m_contSvcs.getComponent("ALARM_SOURCE_ANTENNA"));
-		} catch (ContainerException ce) {
+		} catch (Exception ce) {
 			System.out.println("Error getting Antenna: "+ce.getMessage());
 			ce.printStackTrace();
 			return;
@@ -178,7 +177,7 @@ public class DemoTest {
 		Mount mount;
 		try {
 			mount = MountHelper.narrow(m_contSvcs.getComponent("ALARM_SOURCE_MOUNTCPP"));
-		} catch (ContainerException ce) {
+		} catch (Exception ce) {
 			System.out.println("Error getting Mount: "+ce.getMessage());
 			ce.printStackTrace();
 			return;
