@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.4 2006/10/09 09:00:22 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.5 2006/10/11 07:28:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -46,26 +46,32 @@ class StaticContainerServices: public maci::ContainerServices
   public:
  
     CORBA::Object* getCORBAComponent(const char* name) 
-	throw (maciErrType::CannotGetComponentEx) 
-	{ return CORBA::Object::_nil(); }
+	throw (maciErrType::CannotGetComponentExImpl) 
+	{ 
+	    return CORBA::Object::_nil(); 
+	}
     
     /**
      * Implementation of acsContainerServices::getCORBADynamicComponent(const char* name)
      */
     CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault) 
-	throw (maciErrType::IncompleteComponentSpecEx, 
-	       maciErrType::InvalidComponentSpecEx, 
-	       maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-	       maciErrType::CannotGetComponentEx) 
-	{ return CORBA::Object::_nil(); }
+	throw (maciErrType::IncompleteComponentSpecExImpl, 
+	       maciErrType::InvalidComponentSpecExImpl, 
+	       maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+	       maciErrType::CannotGetComponentExImpl) 
+	{ 
+	    return CORBA::Object::_nil(); 
+	}
     
     /**
      * Implementation of acsContainerServices::getCORBADefaultComponent(const char* name)
      */
     CORBA::Object* getCORBADefaultComponent(const char* idlType) 
-	throw (maciErrType::NoDefaultComponentEx,
-	       maciErrType::CannotGetComponentEx) 
-	{ return CORBA::Object::_nil(); }
+	throw (maciErrType::NoDefaultComponentExImpl,
+	       maciErrType::CannotGetComponentExImpl) 
+	{ 
+	    return CORBA::Object::_nil(); 
+	}
   
   /**
    * Gets the component info for the component
@@ -118,7 +124,7 @@ class StaticContainerServices: public maci::ContainerServices
    * <br><hr>
    * @endhtmlonly
    */
-    CDB::DAL_ptr getCDB();
+    CDB::DAL_ptr getCDB() throw (acsErrTypeContainerServices::CanNotGetCDBExImpl);
   
   /// Get the OffShoot POA
   /// @return The offshoot POA
@@ -174,10 +180,10 @@ class StaticContainerServices: public maci::ContainerServices
 
     virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, 
 						       bool, const char*)
-	throw (maciErrType::IncompleteComponentSpecEx, 
-	       maciErrType::InvalidComponentSpecEx,
-	       maciErrType::ComponentSpecIncompatibleWithActiveComponentEx,
-	       maciErrType::CannotGetComponentEx)
+	throw (maciErrType::IncompleteComponentSpecExImpl, 
+	       maciErrType::InvalidComponentSpecExImpl,
+	       maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
+	       maciErrType::CannotGetComponentExImpl)
 	{
 	    return CORBA::Object::_nil();
 	}

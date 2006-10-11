@@ -1,22 +1,22 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.cpp,v 1.4 2005/10/06 15:04:40 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.cpp,v 1.5 2006/10/11 07:28:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * bjeram  yyyy-mm-dd  created 
 */
 
+static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.5 2006/10/11 07:28:13 bjeram Exp $"; 
+static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 #include <acsutilPorts.h>
-
-static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.4 2005/10/06 15:04:40 bjeram Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
-
-
 #include "taskStaticContainerServices.h"
+
+using namespace acsErrTypeContainerServices;
 
 StaticContainerServices::StaticContainerServices(const maci::Handle componentHandle, 
 						ACE_CString& name,
@@ -30,10 +30,12 @@ StaticContainerServices::StaticContainerServices(const maci::Handle componentHan
 }//StaticContainerServices
 
 CDB::DAL_ptr StaticContainerServices::getCDB()
+    throw (acsErrTypeContainerServices::CanNotGetCDBExImpl)
 {
 
     ACE_TCHAR corbalocRef[230];
     ACE_TCHAR * envRef = ACE_OS::getenv ("DAL_REFERENCE");
+    ACS_TRACE("StaticContainerServices::getCDB");
     
     if (envRef && *envRef)
 	{
@@ -47,7 +49,13 @@ CDB::DAL_ptr StaticContainerServices::getCDB()
 	const char* hostname = 0;
 	hostname = ACSPorts::getIP();
 	if (hostname==0)
-	    return (CDB::DAL *)0;
+	    {
+	    ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "TestContainerServices::getCDB()");
+	    ex.setVariable("hostname");
+	    throw CanNotGetCDBExImpl(ex, __FILE__, __LINE__, 
+				     "StaticContainerServices::getCDB()");
+	    }//if
+
 	
 	
 	ACE_OS::sprintf(corbalocRef, "corbaloc::%s:%s/CDB", hostname, ACSPorts::getCDBPort().c_str());
@@ -64,13 +72,18 @@ CDB::DAL_ptr StaticContainerServices::getCDB()
 	dalObj = CDB::DAL::_narrow(obj.in());
 	if (CORBA::is_nil(dalObj.in())) 
 	    {
-	    ACS_SHORT_LOG((LM_INFO, "TestContainerServices::getCDB() - Failed to narrow CDB"));
-	    return (CDB::DAL *)0;
+	    throw CanNotGetCDBExImpl(__FILE__, __LINE__, 
+				     "StaticContainerServices::getCDB()");
 	    }
+	}
+    else
+	{
+	throw CanNotGetCDBExImpl(__FILE__, __LINE__, 
+				 "StaticContainerServices::getCDB()");
 	}
     
     return dalObj._retn();
-}
+}//getCDB
 
 
 /*___oOo___*/
