@@ -26,12 +26,11 @@ import java.util.logging.Level;
 import alma.ACS.ROdouble;
 import alma.ACS.ROdoubleHelper;
 import alma.ACS.ROdoublePOATie;
-import alma.ACS.RWdouble;
 import alma.ACS.impl.CharacteristicComponentImpl;
 import alma.ACS.impl.ROdoubleImpl;
 import alma.ACSCOURSE_MOUNT.Mount6J;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerException;
 import alma.acs.container.ContainerServices;
 import alma.acscourse.xmlbinding.myxmlconfigdata.MyNestedDataT;
 import alma.acscourse.xmlbinding.myxmlconfigdata.MyXmlConfigData;
@@ -123,7 +122,7 @@ public class Mount6Impl extends CharacteristicComponentImpl implements Mount6J
 			MyNestedDataT grandchildData = new MyNestedDataT();
 			childData.addSomeNestedData(grandchildData);
 		}
-		catch (ContainerException e)
+		catch (AcsJContainerServicesEx e)
 		{
 			m_logger.log(Level.SEVERE, "failed to create ObsProposal. ", e);
 		}
