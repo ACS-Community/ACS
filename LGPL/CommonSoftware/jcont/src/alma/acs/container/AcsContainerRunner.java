@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
@@ -137,7 +138,7 @@ public class AcsContainerRunner
 	 * @param args  command line args as given to <code>main</code>.
 	 * @throws AcsJContainerServicesEx  at the slightest provocation...
 	 */
-	private void run(String[] args) throws AcsJContainerServicesEx
+	private void run(String[] args) throws AcsJContainerEx
 	{
 		StopWatch containerStartWatch = new StopWatch();
 		
@@ -245,7 +246,7 @@ public class AcsContainerRunner
 	 * 
 	 * @param args		as received by main()
 	 */
-	void setOptions(String[] args) throws AcsJContainerServicesEx
+	void setOptions(String[] args) throws AcsJContainerEx
 	{
 		// -- prepare arg parser
 		CmdLineArgs cmdArgs = new CmdLineArgs();
@@ -327,9 +328,11 @@ public class AcsContainerRunner
                 initialSleeptimeMillis = starttimeDelayMillisProperty.intValue();
             }
 		}
-		catch (Exception ex)
+		catch (Throwable thr)
 		{
-			throw new AcsJContainerServicesEx("incorrect or missing arguments.", ex);
+			AcsJContainerEx ex = new AcsJContainerEx(thr);
+			ex.setContextInfo("incorrect or missing arguments.");
+			throw ex;
 		}
 		
 		
@@ -372,7 +375,7 @@ public class AcsContainerRunner
 		//
 	}
     
-    protected void checkReadyToRun() throws AcsJContainerServicesEx {
+    protected void checkReadyToRun() throws AcsJContainerEx {
         String msg = null;
         if (m_containerPort <= 0)
         {

@@ -88,8 +88,6 @@ public class AdvancedComponentClient extends ComponentClient {
 	        ContainerServicesImpl cs = new ContainerServicesImpl(acsManagerProxy, acsCorba.getRootPOA(), acsCorba, csLogger, clientHandle, clientName, null, threadFactory);
 	    	additionalContainerServices.put(cs, acsManagerProxy);
 	    	return cs;
-    	} catch (AcsJContainerServicesEx ex) {
-    		throw ex;
     	} catch (Throwable thr) {
     		throw new AcsJContainerServicesEx(thr);
     	}
@@ -102,7 +100,9 @@ public class AdvancedComponentClient extends ComponentClient {
      */
     public void destroyContainerServices(ContainerServices cs) throws AcsJContainerServicesEx {
     	if (!additionalContainerServices.containsKey(cs)) {
-    		throw new AcsJContainerServicesEx("The given ContainerServices object was not created by this AdvancedComponentClient!");
+    		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+    		ex.setContextInfo("The given ContainerServices object was not created by this AdvancedComponentClient!");
+    		throw ex;
     	}
     	try {
 			ContainerServicesImpl csImpl = (ContainerServicesImpl) cs;
@@ -113,7 +113,9 @@ public class AdvancedComponentClient extends ComponentClient {
 			acsManagerProxy.logoutFromManager();
 			additionalContainerServices.remove(cs);
 		} catch (Throwable thr) {
-			throw new AcsJContainerServicesEx("Failed to destroy additional container services instance", thr);
+    		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+    		ex.setContextInfo("Failed to destroy additional container services instance");
+    		throw ex;
 		}
     }
     

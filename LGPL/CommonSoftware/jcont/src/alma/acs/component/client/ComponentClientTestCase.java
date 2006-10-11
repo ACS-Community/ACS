@@ -285,10 +285,14 @@ public class ComponentClientTestCase extends TestCase
 	            initOk = logReceiver.initialize(acsCorba.getORB(), m_acsManagerProxy.getManager(), 20);
         	}
         	catch (Throwable thr) {
-        		throw new AcsJContainerServicesEx("Failed to obtain an initialized LogReceiver.", thr);
+        		AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+        		ex.setContextInfo("Failed to obtain an initialized LogReceiver.");
+        		throw ex;
         	}
             if (!initOk) {
-            	throw new AcsJContainerServicesEx("LogReceiver failed to initialize within 20 seconds.");
+        		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+        		ex.setContextInfo("LogReceiver failed to initialize within 20 seconds.");
+        		throw ex;
             }
         }
         return logReceiver;

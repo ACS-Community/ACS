@@ -45,6 +45,7 @@ import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
@@ -693,7 +694,11 @@ public class ContainerServicesImpl implements ContainerServices
 	throws AcsJContainerServicesEx
 	{
 		checkOffShootServant(cbServant);
-		acsCorba.deactivateOffShoot(cbServant, m_clientPOA);
+		try {
+			acsCorba.deactivateOffShoot(cbServant, m_clientPOA);
+		} catch (AcsJContainerEx e) {
+			throw new AcsJContainerServicesEx(e);
+		}
 	}
 
 	/**

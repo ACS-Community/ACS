@@ -30,6 +30,7 @@ import org.omg.PortableServer.Servant;
 import si.ijs.maci.ComponentInfo;
 
 import alma.ACS.ComponentStates;
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
@@ -106,7 +107,7 @@ public class ComponentAdapter
                     ClassLoader componentClassLoader,
 					Logger logger,
 					AcsCorba acsCorba)
-		throws AcsJContainerServicesEx
+		throws AcsJContainerEx
 	{
 		// store params
 		m_compInstanceName = compName;
@@ -139,7 +140,7 @@ public class ComponentAdapter
 	
 	
 	void activateComponent(Servant servant)
-		throws AcsJContainerServicesEx
+		throws AcsJContainerEx
 	{
 		if (m_containerLogger.isLoggable(Level.FINER)) {
 			m_containerLogger.finer("entering ComponentAdapter#activateComponent for " + m_compInstanceName);
@@ -147,16 +148,15 @@ public class ComponentAdapter
 
 		m_servant = servant;
 		
-		try 
-		{
+		try {
 			compServantManager = acsCorba.setServantManagerOnComponentPOA(m_componentPOA);
 			m_reference = acsCorba.activateComponent(servant, m_compInstanceName, m_componentPOA);
 		}
-		catch (Exception ex)
-		{
-			String msg = "failed to activate component " + 
-							m_compInstanceName + " of type " + m_component.getClass().getName();
-			throw new AcsJContainerServicesEx(msg, ex);
+		catch (Throwable thr) {
+			String msg = "failed to activate component " + m_compInstanceName + " of type " + m_component.getClass().getName();
+			AcsJContainerEx ex = new AcsJContainerEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
 		}	
 		
 		m_interfaces = _getInterfaces();		
@@ -273,7 +273,7 @@ public class ComponentAdapter
 	 * @throws AcsJContainerServicesEx
 	 */
 	void deactivateComponent()
-		throws AcsJContainerServicesEx
+		throws AcsJContainerEx
 	{
 		if (m_containerLogger.isLoggable(Level.FINER)) {			
 			m_containerLogger.finer("about to deactivate component " + m_compInstanceName);
@@ -323,7 +323,9 @@ public class ComponentAdapter
 		}
 		catch (Throwable thr) {
 			String msg = "an error occured while deactivating component " + m_compInstanceName;
-			throw new AcsJContainerServicesEx(msg, thr);
+			AcsJContainerEx ex = new AcsJContainerEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 
 		if (m_containerLogger.isLoggable(Level.FINER)) {
