@@ -4,7 +4,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Login in maciManager...
 1 - ----------T--:--:--.--- [GlobalLogger - ] Listing all componentes of type *TimingExplorer*
 1 - ----------T--:--:--.--- [GlobalLogger - ] HangOnInit (IDL:alma/acstestcomp/TimingExplorer:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] TimingExplorer_NOCONT (IDL:alma/acstestcomp/TimingExplorer:1.0)
 1 - ----------T--:--:--.--- [GlobalLogger - ] TimingExplorer (IDL:alma/acstestcomp/TimingExplorer:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] TimingExplorer_NODLL (IDL:alma/acstestcomp/TimingExplorer:1.0)
 1 - ----------T--:--:--.--- [GlobalLogger - ] Getting component TimingExplorer...
 1 - ----------T--:--:--.--- [GlobalLogger - ] ... got component TimingExplorer
 1 - ----------T--:--:--.--- [GlobalLogger - ] Call waitToReply...
