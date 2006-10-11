@@ -7,11 +7,11 @@
 package com.cosylab.acs.alarm;
 
 import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerException;
 
 import com.cosylab.acs.laser.dao.ACSCategoryDAOImpl;
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
+
 
 /**
  * @author Simon Belak
@@ -37,11 +37,7 @@ public class ACSCategoryDAOTest extends AlarmTestBase
 	public void init() throws Exception
 	{
 		ConfigurationAccessor conf;
-		try {
-			conf = ConfigurationAccessorFactory.getInstance(client.getContainerServices());
-		} catch (ContainerException e) {
-			throw new ComponentLifecycleException("Failed to get CDB", e);
-		}
+		conf = ConfigurationAccessorFactory.getInstance(client.getContainerServices());
 		
 		categoryDAO = new ACSCategoryDAOImpl();
 		categoryDAO.setConfAccessor(conf);
