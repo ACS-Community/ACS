@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.89 2006/10/09 06:16:06 gchiozzi Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.90 2006/10/11 20:13:35 bjeram Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.89 2006/10/09 06:16:06 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.90 2006/10/11 20:13:35 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -37,7 +37,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.89 2006/10/09 06:16:06 gchiozzi Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.90 2006/10/11 20:13:35 bjeram Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -264,6 +264,71 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
       char *domain, *componentName;
       if (resolveCURL (curl.c_str (), domain, componentName) == -1)
         return ERROR;
+      component = g_Client->getComponent(componentName,
+        (((domain != 0) && strlen(domain) == 0) ? NULL : domain),
+        activate);
+      if (domain != NULL) delete domain;
+      if (componentName != NULL) delete componentName;
+    }
+  else
+    {
+      ClientInfo ci;
+      MaciTestClass_ptr mtc;
+
+      if (g_Clients.find (requestor, ci) == 0)
+        {
+	// here we call direct the manger w/o doing error handling
+	component = g_Client->manager ()->get_component (ci.h, curl.c_str(), activate);
+          ACE_CHECK_RETURN (ERROR);
+        }
+      else if (g_TestClasses.find (requestor, mtc) == 0)
+        {
+          mtc->get_component (curl.c_str(), activate);
+          ACE_CHECK_RETURN (ERROR);
+        }
+      else
+        {
+          ACS_SHORT_LOG ((LM_INFO,
+                          "Unknown requesting object '%s'.",
+                          requestor.c_str()));
+          return ERROR;
+        }
+
+      ACS_SHORT_LOG ((LM_INFO,
+                      "Activating component '%s'",
+                      curl.c_str()));
+    }
+
+  MaciTestClass_ptr componentMTC = MaciTestClass::_narrow (component);
+  ACE_CHECK_RETURN (ERROR);
+
+  if ((componentMTC != NULL) && (g_TestClasses.bind (curl, componentMTC) != 0))
+    {
+      ACS_SHORT_LOG ((LM_ERROR,
+                      "Unable to save component info for '%s'",
+                      curl.c_str ()));
+    }
+
+  return SUCCESS;
+}
+
+int ProcessGet_Object(int argc, const ACE_TCHAR *argv[])
+{
+/// @todo this is test for old deprecated get_object which should be removed when we remove get_object
+  ACE_CString requestor = argv[1];
+  ACE_CString curl = argv[3];
+  bool activate = (argv[2][0] == '1') ? true : false;
+
+  ACS_SHORT_LOG((LM_INFO,
+                 "Getting component '%s' requested by '%s' (activation: %d)",
+                 curl.c_str(), requestor.c_str (), int(activate)));
+
+  CORBA::Object_ptr component = NULL;
+  if (requestor == "SimpleClient")
+    {
+      char *domain, *componentName;
+      if (resolveCURL (curl.c_str (), domain, componentName) == -1)
+        return ERROR;
       component = g_Client->get_object(componentName,
         (((domain != 0) && strlen(domain) == 0) ? NULL : domain),
         activate);
@@ -309,7 +374,7 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
     }
 
   return SUCCESS;
-}
+}//ProcessGet_Object
 
 int ProcessGetComponentInfo(int argc, const ACE_TCHAR *argv[]
 		      )
@@ -944,6 +1009,19 @@ CommandDef g_Commands[] =
       " order to have the Manager activate the component if it doesn't exist yet."
       " <name> is the CURL of the component, as passed to the Manager.",
       ProcessGetComponent
+    },
+    {
+      "get_object",
+      "<requestor>:<activate>:<name>",
+      "This is equivalent of getComponent,"
+      " but is uses old deprecated get_object instead getComponent."
+      "Get a component from the given domain with the given name. The <object>"
+      " argument specifies the name of the client on whose behalf the component"
+      " is acquired. If <object> is 'SimpleClient', the Simple Client"
+      " constructed with the 'init' command is used. Set <activate> to 1 in"
+      " order to have the Manager activate the component if it doesn't exist yet."
+      " <name> is the CURL of the component, as passed to the Manager.",
+      ProcessGet_Object
     },
     {
       "releaseComponent",

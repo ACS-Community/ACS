@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.40 2006/10/11 11:05:02 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.41 2006/10/11 20:13:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.40 2006/10/11 11:05:02 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.41 2006/10/11 20:13:35 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -352,11 +352,13 @@ public:
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state 
    * @return reference to the component. If the component could not be activated, a CORBA::Object::_nil() reference is returned.
+   * @deprecated getContainerService()->getComponent() should be used instead
    */
   virtual CORBA::Object_ptr get_object(const char *name, 
                                        const char *domain,
                                        bool activate
 			               );
+
   /**
    * get_object template method
    * @param name name of the component
@@ -364,10 +366,13 @@ public:
    * @param activate true to activate component, false to leave it in the current state 
    * @return reference to the component
    * it just redirect call to #getComponent, so #getComponent should be used instead
-   * @deprecated
+   * @deprecated getContainerService()->getComponent<T>() should be used instead
    */
     template<class T>
-    T* get_object(const char *name, const char *domain, bool activate);
+    T* get_object(const char *name, const char *domain, bool activate)
+	{
+	    return getComponent<T>(name, domain, activate);
+	}
 
     /**
      * getComponent template method
@@ -375,6 +380,7 @@ public:
      * @param doman domain name (could be 0)
      * @param activate true to activate component, false to leave it in the current state 
      * @return reference to the component
+     * @deprecated getContainerService()->getComponent<T>() should be used instead
    */
     template<class T>
     T* getComponent(const char *name, const char *domain, bool activate);
@@ -385,6 +391,7 @@ public:
      * @param doman domain name (could be 0)
      * @param activate true to activate service, false to leave it in the current state 
      * @return reference to the service
+     * @tod Could be this method decalred as deprecated since getContainerServices()->getComponent can be used instead ?
      */
     template<class T>
     T* getService(const char *name, const char *domain, bool activate) 
@@ -625,13 +632,6 @@ public:
     Logging::Logger::LoggerSmartPtr m_logger;
 
 };
-
-template<class T>
-T* ContainerImpl::get_object(const char *name, const char *domain, bool activate)
-{   
-    return getComponent<T>(name, domain, activate);
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /**

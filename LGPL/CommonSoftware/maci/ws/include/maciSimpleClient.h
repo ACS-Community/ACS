@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.92 2006/10/09 06:13:17 gchiozzi Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.93 2006/10/11 20:13:35 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -139,10 +139,19 @@ public:
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state 
    * @return reference to the component. If the component could not be activated, a CORBA::Object::_nil() reference is returned,
-   * @see template<class T> T* get_object
+   * @see template<class T> T* getComponent
    */
-  CORBA::Object_ptr get_object(const char *name, const char *domain, bool activate
-			       );
+  CORBA::Object_ptr getComponent(const char *name, const char *domain, bool activate);
+
+    /**
+     * It just redirect call to the #getComponent
+     * @deprecated get_object is deprecated and will be removed in future version of ACS
+     */
+  CORBA::Object_ptr get_object(const char *name, const char *domain, bool activate)
+	{
+	    return getComponent(name, domain, activate);
+	}
+
 
   /** 
    * Get a component, activating it if necessary and directly narrows it to the type
@@ -152,16 +161,25 @@ public:
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state 
-   * @return reference to the component. If the component could not be activated, a CORBA::Object::_nil() reference is returned,
+   * @return reference to the component. If the component could not be activated, a T::_nil() reference is returned,
    * For example:
    * @code
-   *    MACI_TEST::MaciTestClass_var maciTestDO = client.get_object<MACI_TEST::MaciTestClass>(argv[1], 0, true);
+   *    MACI_TEST::MaciTestClass_var maciTestDO = client.getComponent<MACI_TEST::MaciTestClass>(argv[1], 0, true);
    * @endcode
-   * @see get_object()
+   * @see getComponent()
    */
     template<class T>
-    T* get_object(const char *name, const char *domain, bool activate
-		  );
+    T* getComponent(const char *name, const char *domain, bool activate);
+
+    /**
+     * It just redirected call to #getComponent (template version)
+     * @deprecated the method is deprecated and will be removed in future version of ACS
+     */
+  template<class T>
+    T* get_object(const char *name, const char *domain, bool activate)
+	{
+	    return getComponent<T>(name, domain, activate);   
+	}
 
   /* ----------------------------------------------------------------*/
   /* ------------------ [ CORBA Client interface ] ------------------*/
@@ -286,8 +304,7 @@ private:
  */
 
 template<class T>
-T* SimpleClient::get_object(const char *name, const char *domain, bool activate
-			    )
+T* SimpleClient::getComponent(const char *name, const char *domain, bool activate)
 {
     T* object = T::_nil();
     
@@ -344,7 +361,7 @@ T* SimpleClient::get_object(const char *name, const char *domain, bool activate
     catch( CORBA::Exception &ex )
 	{
 	ACE_PRINT_EXCEPTION(ex,
-			    "maci::SimpleClient::get_object");
+			    "maci::SimpleClient::getComponent");
 	return T::_nil();
 	}
     catch(...)
@@ -352,8 +369,8 @@ T* SimpleClient::get_object(const char *name, const char *domain, bool activate
 	return T::_nil();
 	}
     return T::_nil();
-}
+}//getComponent<>
 
- }; 
+}; 
 
 #endif  /* maciSimpleClient_H */

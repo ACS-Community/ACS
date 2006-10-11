@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.94 2006/10/09 06:15:39 gchiozzi Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.95 2006/10/11 20:13:35 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -528,7 +528,7 @@ SimpleClient::handle()
 }
 
 CORBA::Object_ptr
-SimpleClient::get_object(const char *name,
+SimpleClient::getComponent(const char *name,
 			 const char *domain, 
 			 bool activate
 			 )
@@ -591,7 +591,7 @@ SimpleClient::get_object(const char *name,
   catch( CORBA::Exception &ex )
     {
       ACE_PRINT_EXCEPTION(ex,
-			  "maci::SimpleClient::get_object");
+			  "maci::SimpleClient::getComponent");
       return CORBA::Object::_nil();
     }
   catch(...)

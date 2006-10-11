@@ -2,7 +2,7 @@
 #
 #  MACI TEST SCRIPT
 #
-#  "@(#) $Id: maciTest.mts,v 1.80 2003/09/17 19:52:30 msekoran Exp $"
+#  "@(#) $Id: maciTest.mts,v 1.81 2006/10/11 20:13:35 bjeram Exp $"
 #
 #  Following is a sequence of commands that the maciTestClient is
 #  to execute. These commands test the Manager and Containers by
@@ -82,6 +82,10 @@ getComponent:SimpleClient:1:MACI05
 releaseComponents:SimpleClient:1:MACI02:MACI05
 getComponents:SimpleClient:1:MACI02
 releaseComponents:SimpleClient:1:MACI02
+
+# test for deprecated get_object
+#get_object:SimpleClient:1:MACI01
+#releaseComponent:SimpleClient:MACI01
 
 # unknown logout test
 logout:dummy
