@@ -6,6 +6,8 @@ import alma.acs.util.AcsLocations;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+
 /**
  * Singleton class to connect to and supply the AlarmService.
  * 
@@ -38,7 +40,7 @@ public class AlarmServiceSingleton {
 					instance = AlarmServiceHelper.narrow(client
 							.getContainerServices()
 							.getComponent("AlarmService"));
-				} catch (alma.acs.container.ContainerException ce) {
+				} catch (AcsJContainerServicesEx ce) {
 					System.out
 					.println("Exception getting the AlarmService component!");
 					ce.printStackTrace(System.out);
