@@ -64,7 +64,7 @@ public class Mount1Helper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	*/
-	protected Class _getPOATieClass()
+	protected Class<Mount1POATie> _getPOATieClass()
 	{
 		return Mount1POATie.class;
 	}
@@ -72,7 +72,7 @@ public class Mount1Helper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	*/
-	protected Class _getOperationsInterface()
+	protected Class<Mount1Operations> _getOperationsInterface()
 	{
 		return Mount1Operations.class;
 	}

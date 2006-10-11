@@ -66,7 +66,7 @@ public class Mount6Helper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	*/
-	protected Class _getPOATieClass()
+	protected Class<Mount6POATie> _getPOATieClass()
 	{
 		return Mount6POATie.class;
 	}
@@ -74,7 +74,7 @@ public class Mount6Helper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	*/
-	protected Class _getOperationsInterface()
+	protected Class<Mount6Operations> _getOperationsInterface()
 	{
 		return Mount6Operations.class;
 	}
@@ -82,7 +82,7 @@ public class Mount6Helper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getInternalInterface()
 	*/
-	protected Class getInternalInterface()
+	protected Class<Mount6J> getInternalInterface()
 	{
 		return Mount6J.class;
 	}
