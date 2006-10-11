@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.PortableServer.Servant;
 
 import com.cosylab.CDB.DAL;
@@ -44,21 +43,25 @@ import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerPOA;
-import si.ijs.maci.ManagerOperations;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ComponentStates;
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.classloader.AcsComponentClassLoader;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.config.LogConfig; 
+import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.util.StopWatch;
-
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.maciErrType.CannotActivateComponentEx;
+import alma.maciErrType.CannotDeactivateComponentEx;
+import alma.maciErrType.CannotRestartComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
 
 /**
  * The main container class that interfaces with the maci manager.
@@ -122,11 +125,11 @@ public class AcsContainer extends ContainerPOA
      * @param acsCorba
      * @param managerProxy
      * @param isEmbedded  true if this container runs within an application. Affects shutdown behavior.
-     * @throws AcsJContainerServicesEx  if anything goes wrong, or if another instance of this class
+     * @throws AcsJContainerEx  if anything goes wrong, or if another instance of this class
      *                              has already been created.
      */
     AcsContainer(String containerName, AcsCorba acsCorba, AcsManagerProxy managerProxy, boolean isEmbedded)
-        throws AcsJContainerServicesEx
+        throws AcsJContainerEx
     {
         if (s_instance == null) {
             m_containerName = containerName;
@@ -141,7 +144,9 @@ public class AcsContainer extends ContainerPOA
             s_instance = this;            
         }
         else {
-            throw new AcsJContainerServicesEx("illegal attempt to create more than one instance of " + AcsContainer.class.getName() + " inside one JVM.");
+        	AcsJContainerEx ex = new AcsJContainerEx();
+        	ex.setContextInfo("illegal attempt to create more than one instance of " + AcsContainer.class.getName() + " inside one JVM.");
+        	throw ex;
         }
     }
 
@@ -151,7 +156,7 @@ public class AcsContainer extends ContainerPOA
      * 
      * @throws AcsJContainerServicesEx
      */
-    void initialize() throws AcsJContainerServicesEx {
+    void initialize() throws AcsJContainerEx {
 		
     	loginToManager();
 		
@@ -174,7 +179,9 @@ public class AcsContainer extends ContainerPOA
 		try {
 			ACSAlarmSystemInterfaceFactory.init(m_acsCorba.getORB(), m_managerProxy.getManager(), m_managerProxy.getManagerHandle(),m_logger);
 		} catch (Throwable thr) {
-			throw new AcsJContainerServicesEx("Error initializing the alarm system factory", thr);
+			AcsJContainerEx ex = new AcsJContainerEx(thr);
+			ex.setContextInfo("Error initializing the alarm system factory");
+			throw ex;
 		}
 	}
     
@@ -217,27 +224,32 @@ public class AcsContainer extends ContainerPOA
 
     /**
      * To be called only once from the ctor.
-     * @throws AcsJContainerServicesEx
+     * @throws AcsJContainerEx
      */
-    private void registerWithCorba() throws AcsJContainerServicesEx
+    private void registerWithCorba() throws AcsJContainerEx
     {
         // activate the Container as a CORBA object.
         org.omg.CORBA.Object obj = m_acsCorba.activateContainer(this, m_containerName);
 
-        if (obj == null)
-        {
-            throw new AcsJContainerServicesEx("failed to register this AcsContainer with the ORB.");
+        if (obj == null) { 
+        	AcsJContainerEx ex = new AcsJContainerEx();
+        	ex.setContextInfo("failed to register this AcsContainer with the ORB.");
+        	throw ex;
         }
 
-        Container container = ContainerHelper.narrow(obj);
-        if (container == null)
-        {
-            throw new AcsJContainerServicesEx("failed to narrow the AcsContainer to a Container.");
-        }
-        else
-        {
-            m_logger.finer("AcsContainer successfully registered with the ORB as a Container");
-        }
+        Container container;
+		try {
+			container = ContainerHelper.narrow(obj);
+			if (container == null) {
+				throw new NullPointerException("Container CORBA-narrow returned a null.");
+			}
+		} catch (Throwable thr) {
+        	AcsJContainerEx ex = new AcsJContainerEx();
+        	ex.setContextInfo("failed to narrow the AcsContainer to CORBA type Container.");
+        	throw ex;
+		}
+
+		m_logger.finer("AcsContainer successfully registered with the ORB as a Container");
     }
 
 
@@ -250,8 +262,7 @@ public class AcsContainer extends ContainerPOA
      *
      * @throws AcsJContainerServicesEx
      */
-    protected void loginToManager() throws AcsJContainerServicesEx
-    {
+    protected void loginToManager() throws AcsJContainerEx {
         Container thisContainer = _this(m_acsCorba.getORB());
         m_managerProxy.loginToManager(thisContainer, true);
     }
@@ -291,6 +302,7 @@ public class AcsContainer extends ContainerPOA
      * @see si.ijs.maci.ContainerOperations#activate_component(int, String, String, String)
      */
     public ComponentInfo activate_component(int componentHandle, String compName, String exe, String type)
+    	throws CannotActivateComponentEx
     {
         ComponentInfo componentInfo = null;
 
@@ -310,8 +322,10 @@ public class AcsContainer extends ContainerPOA
                     return existingCompAdapter.getComponentInfo();
                 }
                 else if (!m_activeComponentMap.reserveComponent(componentHandle)) {
-                        throw new AcsJContainerServicesEx("Component with handle '" + componentHandle +
+                	AcsJContainerEx ex = new AcsJContainerEx();
+                	ex.setContextInfo("Component with handle '" + componentHandle +
                                 "' is already being activated by this container. Manager should have prevented double activation.");
+                	throw ex;
                 }
             }
 
@@ -374,11 +388,11 @@ public class AcsContainer extends ContainerPOA
             try {
                 servant = (Servant) poaTieCtor.newInstance(new Object[]{poaDelegate});
             }
-            catch (Exception ex)
-            {
-                String msg = "failed to instantiate the servant object for component " +
-                                compName + " of type " + compImpl.getClass().getName();
-                throw new AcsJContainerServicesEx(msg, ex);
+            catch (Throwable thr) {
+            	AcsJContainerEx ex = new AcsJContainerEx(thr);
+            	ex.setContextInfo("failed to instantiate the servant object for component " +
+                                compName + " of type " + compImpl.getClass().getName());
+                throw ex;
             }
 
             //
@@ -420,13 +434,14 @@ public class AcsContainer extends ContainerPOA
             if (compAdapter != null) {
                 try {
                     compAdapter.deactivateComponent();
-                } catch (AcsJContainerServicesEx ex) {
+                } catch (Exception ex) {
                     m_logger.log(Level.FINE, ex.getMessage(), ex);
                 }
             }
             m_activeComponentMap.remove(componentHandle);
-            // invalid info (replacement for null) -- TODO: change idl to throw corba exception
-            componentInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
+            
+            AcsJCannotActivateComponentEx ex = new AcsJCannotActivateComponentEx(thr);
+            throw ex.toCannotActivateComponentEx();
         }
         finally
         {
@@ -464,7 +479,6 @@ public class AcsContainer extends ContainerPOA
      * @return the adapter for an existing component according to the above rules, or <code>null</code> if none exists.
      */
     private ComponentAdapter getExistingComponent(int componentHandle, String name, String type)
-//      throws AcsJContainerServicesEx
     {
         // try same handle
         ComponentAdapter existingCompAdapter = m_activeComponentMap.get(componentHandle);
@@ -489,7 +503,11 @@ public class AcsContainer extends ContainerPOA
                             "Will deactivate existing component and load the requested.";
                 m_logger.warning(msgMismatch);
 
-                deactivate_components(new int[]{componentHandle});
+                try {
+					deactivate_components(new int[]{componentHandle});
+				} catch (CannotDeactivateComponentEx e) {
+					m_logger.log(Level.FINE, "Failed to deactivate existing component with handle " + componentHandle);
+				}
                 existingCompAdapter = null;
             }
         }
@@ -537,7 +555,7 @@ public class AcsContainer extends ContainerPOA
 
 
     private ComponentHelper createComponentHelper(String compName, String exe, ClassLoader compCL)
-        throws AcsJContainerServicesEx
+        throws AcsJContainerEx
     {
         m_logger.finer("creating component helper instance of type '" + exe + "' using classloader " + compCL.getClass().getName());
 
@@ -545,29 +563,36 @@ public class AcsContainer extends ContainerPOA
         try  {
             compHelperClass = Class.forName(exe, true, compCL);
         } catch (ClassNotFoundException ex) {
-            throw new AcsJContainerServicesEx("component helper class '" + exe + "' not found.", ex);
+        	AcsJContainerEx ex2 = new AcsJContainerEx(ex);
+        	ex2.setContextInfo("component helper class '" + exe + "' not found.");
+        	throw ex2;
         }
 
         if (!ComponentHelper.class.isAssignableFrom(compHelperClass)) {
-            throw new AcsJContainerServicesEx("component helper class '" + exe + "' does not inherit from required base class "
+        	AcsJContainerEx ex = new AcsJContainerEx();
+        	ex.setContextInfo("component helper class '" + exe + "' does not inherit from required base class "
                                             + ComponentHelper.class.getName());
+        	throw ex;
         }
 
         Constructor helperCtor = null;
         ComponentHelper compHelper = null;
         try {
             helperCtor = compHelperClass.getConstructor(new Class[]{Logger.class});
-        } catch (NoSuchMethodException e) {
-            String msg = "component helper class '" + exe + "' has no constructor " +
-            " that takes a java.util.Logger";
+        } catch (NoSuchMethodException ex) {
+            String msg = "component helper class '" + exe + "' has no constructor " + " that takes a java.util.Logger";
             m_logger.fine(msg);
-            throw new AcsJContainerServicesEx(msg, e);
+        	AcsJContainerEx ex2 = new AcsJContainerEx(ex);
+        	ex2.setContextInfo(msg);
+        	throw ex2;
         }
 
         try {
             compHelper = (ComponentHelper) helperCtor.newInstance(new Object[]{m_logger});
-        } catch (Exception e) {
-            throw new AcsJContainerServicesEx("component helper class '" + exe + "' could not be instantiated", e);
+        } catch (Throwable thr) {
+        	AcsJContainerEx ex = new AcsJContainerEx(thr);
+        	ex.setContextInfo("component helper class '" + exe + "' could not be instantiated");
+        	throw ex;
         }
         compHelper.setComponentInstanceName(compName);
 
@@ -622,7 +647,8 @@ public class AcsContainer extends ContainerPOA
      * @see ComponentAdapter#deactivateComponent()
      *
      */
-    public void deactivate_components(int[] handles)
+    public void deactivate_components(int[] handles) 
+    	throws CannotDeactivateComponentEx
     {
         logManagerRequest("received call to deactivate_components", handles);
 
@@ -670,7 +696,8 @@ public class AcsContainer extends ContainerPOA
         catch (Throwable thr)
         {
             m_logger.log(Level.SEVERE, "failed to deactivate at least one component!", thr);
-            // TODO: change idl to throw corba exception
+            AcsJCannotDeactivateComponentEx ex = new AcsJCannotDeactivateComponentEx(thr); 
+            throw ex.toCannotDeactivateComponentEx();
         }
     }
 
@@ -733,9 +760,28 @@ public class AcsContainer extends ContainerPOA
      * @see si.ijs.maci.ContainerOperations#restart_component(int)
      */
     public org.omg.CORBA.Object restart_component(int compHandle)
+    	throws CannotRestartComponentEx
     {
-        m_logger.warning("method restart_component not yet implemented.");
-        return null;
+    	String curl = null;
+    	try {
+			ComponentAdapter compAdapter = m_activeComponentMap.get(compHandle);
+			if (compAdapter != null) {
+				curl = compAdapter.getName();
+			}
+			
+			m_logger.warning("method restart_component not yet implemented.");
+			
+			AcsJCannotRestartComponentEx ex = new AcsJCannotRestartComponentEx();
+			ex.setCURL(curl);
+			throw ex;
+		} catch (AcsJCannotRestartComponentEx ex) {
+			throw ex.toCannotRestartComponentEx();
+		}
+		catch (Throwable thr) {
+			AcsJCannotRestartComponentEx ex = new AcsJCannotRestartComponentEx(thr);
+			ex.setCURL(curl);
+			throw ex.toCannotRestartComponentEx();
+		}
     }
 
 
@@ -805,10 +851,13 @@ public class AcsContainer extends ContainerPOA
         // shut down all active components
         if (gracefully)
         {
-            deactivate_components(null);
+            try {
+				deactivate_components(null);
+			} catch (CannotDeactivateComponentEx e) {
+				m_logger.log(Level.WARNING, "Failed to deactivate components for graceful shutdown");
+			}
         }
-        else
-        {
+        else {
             abortAllComponents(3000);
         }
         
@@ -1195,280 +1244,66 @@ public class AcsContainer extends ContainerPOA
     }
 
 
-        /************************** LoggingConfigurable *************************/
+    /////////////////////////////////////////////////////////////
+    // LoggingConfigurable interface
+    /////////////////////////////////////////////////////////////
 
-        /**
-	 * Gets the log levels of the default logging configuration.
-	 * These levels are used by all loggers that have not been configured individually.
+    /**
+	 * Gets the log levels of the default logging configuration. These levels
+	 * are used by all loggers that have not been configured individually.
 	 */
-        public LogLevels get_default_logLevels()
-	{
-	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	public LogLevels get_default_logLevels() {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
 	}
-       
-            /**
-             * Sets the log levels of the default logging configuration.
-             * These levels are used by all loggers that have not been configured individually.
-             */
-        public void set_default_logLevels(LogLevels levels)
-	{
-	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-	}
-       
-            /** 
-             * Gets the names of all loggers, to allow configuring their levels individually.
-             * The names are those that appear in the log records in the field "SourceObject".
-             * This includes the container logger, ORB logger, component
-             * loggers, and (only C++) GlobalLogger. 
-             */
-        public String[] get_logger_names()
-	{
-	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-	}
-       
-            /**
-             * Gets log levels for a particular named logger.
-             * If the returned field LogLevels.useDefault is true, then the
-             * logger uses the default levels, see get_default_logLevels();       
-             * otherwise the returned local and remote levels apply.
-             */
-        public LogLevels get_logLevels(String logger_name)
-	{
-	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-	}
-       
-            /**
-             * Sets log levels for a particular named logger.
-             * If levels.useDefault is true, then the logger will be reset to
-             * using default levels;       
-             * otherwise it will use the supplied
-             * local and remote levels. 
-             */
-        public void set_logLevels(String logger_name, LogLevels levels)
-	{
-	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-	}
-       
-            /**
-             * Commands the container or manager to read in again the logging
-             * configuration from the CDB and to reconfigure the loggers
-             * accordingly. 
-             * This allows for persistent changes in the logging
-             * configuration to become effective, and also for changes of more
-             * advanced parameters. 
-             */
-        public void refresh_logging_config()
-	{
-	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-	}
-        /************************** END LoggingConfigurable *************************/
 
+	/**
+	 * Sets the log levels of the default logging configuration. These levels
+	 * are used by all loggers that have not been configured individually.
+	 */
+	public void set_default_logLevels(LogLevels levels) {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
 
+	/**
+	 * Gets the names of all loggers, to allow configuring their levels
+	 * individually. The names are those that appear in the log records in the
+	 * field "SourceObject". This includes the container logger, ORB logger,
+	 * component loggers, and (only C++) GlobalLogger.
+	 */
+	public String[] get_logger_names() {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
 
-//  /**
-//   * This method is copied over from the Abeans implementation and kept around for future copy/paste.
-//   * Don't call it.
-//   */
-//  private void refreshState() //throws InitializationException
-//  {
-    //
-    //      if (java.beans.Beans.isDesignTime())
-    //      {
-    //          System.out.println("ACS connector> can NOT be initialized during design time!");
-    //          return;
-    //      }
-    //
-    //      getConnectorInformation().setDefaultProperties(props);
-    //      ORBdebug =
-    //          props.getProperty(ACSConnectorInformation.ACS_ORB_DEBUG).equals("true")
-    //              ? true
-    //              : false;
-    //      if (getIdentifier().isDebug())
-    //          new DebugEntry(this, "Connector properties are: " + props).dispatch();
-    //      m_managerLoc = props.getProperty(ACSConnectorInformation.ACS_MANAGER_CORBALOC);
-    //
-    //      String managerLoc1 =
-    //          System.getProperty(ACSConnectorInformation.ACS_MANAGER_CORBALOC);
-    //      if (managerLoc1 != null)
-    //      {
-    //          m_managerLoc = managerLoc1;
-    //          new DebugEntry(
-    //              this,
-    //              "Using Manager corbaloc provided directly to the JVM through -D option: '"
-    //                  + managerLoc1
-    //                  + "'.")
-    //              .dispatch();
-    //      }
-    //      else
-    //      {
-    //          /*      new DebugEntry(this, "Manager corbaloc is null!").dispatchError();
-    //                  throw new InitializationException("Manager corbaloc is null!");
-    //          */
-    //          ManagerDialog diag = new ManagerDialog();
-    //          if (m_managerLoc != null)
-    //              diag.setManagerFieldText(m_managerLoc);
-    //          diag.show();
-    //          m_managerLoc = diag.getManagerFieldText();
-    //      }
-    //      if (m_managerLoc == null || "".equals(m_managerLoc))
-    //          throw new InitializationException("'ManagerCORBALoc' property is not set. Aborting...");
-    //
-    //      // ORB stanza
-    //      java.util.Properties props1 = java.lang.System.getProperties();
-    //      props1.put("org.omg.CORBA.ORBClass", "com.ooc.CORBA.ORB");
-    //      props1.put("org.omg.CORBA.ORBSingletonClass", "com.ooc.CORBA.ORBSingleton");
-    //      if (ORBdebug)
-    //          props1.put("ooc.orb.trace.connections", "2");
-    //
-    //      java.lang.System.setProperties(props1);
-    //      orb = org.omg.CORBA.ORB.init(new String[0], props1);
-    //
-    //      new DebugEntry(this, "ORB initialized.").dispatch();
-    //
-    //      // POA stanza -- use RootPOA
-    //      POA rootPOA = null;
-    //      try
-    //      {
-    //          rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
-    //          new DebugEntry(this, "RootPOA initialized.").dispatch();
-    //      }
-    //      catch (org.omg.CORBA.ORBPackage.InvalidName in)
-    //      {
-    //          throw new InitializationException("Cannot resolve RootPOA: " + in);
-    //      }
-    //      POAManager manager = rootPOA.the_POAManager();
-    //      try
-    //      {
-    //          manager.activate();
-    //          orbThread = new Thread(this);
-    //          orbThread.start();
-    //      }
-    //      catch (Exception e)
-    //      {
-    //          throw new InitializationException("POAManager activation failed.", e);
-    //      }
-    //      /*  org.omg.CORBA.Object mgrfObj = orb.resolve_initial_reference("POAManagerFactory");
-    //          com.ooc.OBPortableServer.POAManagerFactory mgrFactory = com.ooc.OBPortableServer.POAMamangerFactoryHelper.narrow(mgrfObj);
-    //          POAManager myManager = mgrFactory.create_poa_manager("AbeansPOAManager");
-    //          Policy[] policies = new Policy[0];
-    //          POA myPOA = rootPOA.create_POA("AbeansPOA", myManager, policies);
-    //      */
-    //
-    //      connectToManager();
-    //      //  refreshDeviceLists();
-    //
-    //      //  initialize logging
-    //      org.omg.CORBA.IntHolder holder = new org.omg.CORBA.IntHolder();
-    //      try
-    //      {
-    //          log = LogHelper.narrow(getManager().get_COB(handle, "Log", true, holder));
-    //          logStatus = holder.value;
-    //      }
-    //      catch (Exception e)
-    //      {
-    //          new DebugEntry(
-    //              this,
-    //              "Failed to connect to log. Remote logging will be disabled: " + e)
-    //              .dispatchError();
-    //          logStatus = LOG_FAILED;
-    //      }
-    //
-    //      String domainFile = props.getProperty(ACSConnectorInformation.ACS_DOMAINS_FILE);
-    //      if (domainFile == null || "".equals(domainFile))
-    //      {
-    //          if (getIdentifier().isDebug())
-    //              new DebugEntry(
-    //                  this,
-    //                  "CORBA domains file does not exist. Using hard-coded defaults.")
-    //                  .dispatch();
-    //          useDefaultDomains();
-    //      }
-    //      else
-    //      {
-    //          StreamTokenizer tok = null;
-    //          try
-    //          {
-    //              tok = new StreamTokenizer(new BufferedReader(new FileReader(domainFile)));
-    //          }
-    //          catch (Exception e)
-    //          {
-    //              new DebugEntry(
-    //                  this,
-    //                  "CORBA domains file is configured but does not exist. Using hard-coded defaults.")
-    //                  .dispatch();
-    //              useDefaultDomains();
-    //          }
-    //          HashMap domainsmap = new HashMap();
-    //          ArrayList ordering = new ArrayList();
-    //          ArrayList currentList = null;
-    //          if (tok != null)
-    //          {
-    //              tok.eolIsSignificant(true);
-    //              tok.wordChars('*', '*');
-    //              tok.wordChars('_', '_');
-    //              tok.wordChars('?', '?');
-    //              int count = 0;
-    //              try
-    //              {
-    //                  while (tok.nextToken() != tok.TT_EOF)
-    //                  {
-    //                      if (tok.ttype == tok.TT_WORD)
-    //                      {
-    //                          if (count == 0)
-    //                          {
-    //                              if (domainsmap.get(tok.sval) != null)
-    //                                  throw new IllegalArgumentException("Two lines that begin with the same domain name cannot exist.");
-    //                              else
-    //                              {
-    //                                  currentList = new ArrayList();
-    //                                  domainsmap.put(tok.sval, currentList);
-    //                                  ordering.add(tok.sval);
-    //                              }
-    //                          }
-    //                          else
-    //                              currentList.add(tok.sval);
-    //                          count++;
-    //                      }
-    //                      else if (tok.ttype == tok.TT_EOL)
-    //                      {
-    //                          count = 0;
-    //                      }
-    //                  }
-    //                  domains = new String[ordering.size()];
-    //                  for (int i = 0; i < domains.length; i++)
-    //                      domains[i] = (String) ordering.get(i);
-    //                  //      domainsmap.keySet().toArray(domains);
-    //                  domainTags = new String[domains.length][];
-    //                  for (int i = 0; i < domains.length; i++)
-    //                  {
-    //                      ArrayList list = (ArrayList) domainsmap.get(domains[i]);
-    //                      domainTags[i] = new String[list.size()];
-    //                      list.toArray(domainTags[i]);
-    //                  }
-    //                  StringBuffer buf = new StringBuffer(500);
-    //                  for (int i = 0; i < domains.length; i++)
-    //                  {
-    //                      domains[i] = domains[i].replace('_', ' ');
-    //                      buf.append(domains[i]);
-    //                      buf.append(' ');
-    //                      //      System.out.println(domains[i]);
-    //                  }
-    //                  new DebugEntry(this, "User defined domains are: " + buf).dispatch();
-    //              }
-    //              catch (Exception e)
-    //              {
-    //                  new DebugEntry(
-    //                      this,
-    //                      "Error while parsing the domains file: "
-    //                          + e
-    //                          + " Hard-coded defaults will be used.")
-    //                      .dispatch();
-    //                  useDefaultDomains();
-    //              }
-    //          }
-    //      }
-//  }
+	/**
+	 * Gets log levels for a particular named logger. If the returned field
+	 * LogLevels.useDefault is true, then the logger uses the default levels,
+	 * see get_default_logLevels(); otherwise the returned local and remote
+	 * levels apply.
+	 */
+	public LogLevels get_logLevels(String logger_name) {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
 
+	/**
+	 * Sets log levels for a particular named logger. If levels.useDefault is
+	 * true, then the logger will be reset to using default levels; otherwise it
+	 * will use the supplied local and remote levels.
+	 */
+	public void set_logLevels(String logger_name, LogLevels levels) {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+
+	/**
+	 * Commands the container or manager to read in again the logging
+	 * configuration from the CDB and to reconfigure the loggers accordingly.
+	 * This allows for persistent changes in the logging configuration to become
+	 * effective, and also for changes of more advanced parameters.
+	 */
+	public void refresh_logging_config() {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+		
+	/** ************************ END LoggingConfigurable ************************ */
 
 
 }
