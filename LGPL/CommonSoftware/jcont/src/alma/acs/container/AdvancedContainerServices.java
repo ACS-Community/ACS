@@ -21,6 +21,8 @@
  */
 package alma.acs.container;
 
+import org.omg.CORBA.ORB;
+
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 
 /**
@@ -37,6 +39,16 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
  * created May 2, 2005 5:46:23 PM
  */
 public interface AdvancedContainerServices {
+	
+	/**
+	 * Provides explicit acces to the normally invisible ORB, for components that fulfill infrastructural tasks.
+	 * <p>
+	 * <b>Normal subsystem components must not use this method!</b> If they feel they should get access to the ORB, 
+	 * either ACS is missing a feature which should be reported, or there is a misunderstanding in how to develop software for Alma.
+	 * @return the ORB that connects the container and its componentsfor with other processes.
+	 */
+	public ORB getORB();
+	
     /**
      * Encapsulates {@link org.omg.CORBA.ORB#object_to_string(org.omg.CORBA.Object)}.
      * @param objRef the corba stub 

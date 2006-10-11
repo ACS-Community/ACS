@@ -43,19 +43,22 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     // logger used by this class
 	protected Logger logger;
     
-    
 	AdvancedContainerServicesImpl(ContainerServicesImpl containerServicesImpl, Logger logger) {
         this.containerServicesImpl = containerServicesImpl;
         this.logger = logger;
     }
 
     
+	public ORB getORB() {
+		return containerServicesImpl.getAcsCorba().getORB();
+	}
+    
 	/* (non-Javadoc)
 	 * @see alma.acs.container.ContainerServices#corbaObjectToString(org.omg.CORBA.Object)
 	 */
 	public String corbaObjectToString(org.omg.CORBA.Object objRef)
 	{
-		ORB orb = containerServicesImpl.getAcsCorba().getORB();
+		ORB orb = getORB(); 
 		String str = orb.object_to_string(objRef);
 		logger.finer("converted corba object reference of type " + objRef.getClass().getName() +
 						" to the string " + str);
@@ -67,7 +70,7 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
 	 */
 	public org.omg.CORBA.Object corbaObjectFromString(String strObjRef)
 	{
-		ORB orb = containerServicesImpl.getAcsCorba().getORB();
+		ORB orb = getORB();
 		org.omg.CORBA.Object objRef = orb.string_to_object(strObjRef);
 		logger.finer("converted corba object reference string " + strObjRef + 
 						" back to a corba object reference.");
@@ -81,12 +84,13 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
      * @return org.omg.CORBA.Any or null in case of error
      */
     public org.omg.CORBA.Any getAny() {
+    	ORB orb = getORB();
 		//sanity check to ensure the container/client has setup an ORB properly
-		if (containerServicesImpl.getAcsCorba().getORB() == null) {
+		if (orb == null) {
 			logger.warning("Failed to get a non-null ORB");
 			return null;
 		}
-		return containerServicesImpl.getAcsCorba().getORB().create_any();
+		return orb.create_any();
 	}
     
 
@@ -96,5 +100,7 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     public void forceReleaseComponent(String curl) throws AcsJContainerServicesEx {
     	containerServicesImpl.releaseComponent(curl, true);
     }
+
+
 }
 
