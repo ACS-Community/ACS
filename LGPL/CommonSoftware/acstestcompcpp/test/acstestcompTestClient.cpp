@@ -1,7 +1,10 @@
 /*
- * "@(#) $Id: acstestcompTestClient.cpp,v 1.1 2006/09/14 14:54:34 gchiozzi Exp $"
+ * "@(#) $Id: acstestcompTestClient.cpp,v 1.2 2006/10/11 15:03:43 gchiozzi Exp $"
  *
  * $Log: acstestcompTestClient.cpp,v $
+ * Revision 1.2  2006/10/11 15:03:43  gchiozzi
+ * Improved error handling.
+ *
  * Revision 1.1  2006/09/14 14:54:34  gchiozzi
  * First checkin of new module with CPP test components.
  *
@@ -90,13 +93,13 @@ int main(int argc, char* argv[])
 	    }
 	
 	// Now get the specific component we have requested on the command line.
-	ACS_SHORT_LOG((LM_INFO, "Getting component TimingExplorer..."));
+	ACS_SHORT_LOG((LM_INFO, "Getting component %s...", cobname));
 	acstestcomp::TimingExplorer_var component = 
-	    client.get_object<acstestcomp::TimingExplorer>("TimingExplorer", 0, true);
+	    client.get_object<acstestcomp::TimingExplorer>(cobname, 0, true);
 	
 	if (!CORBA::is_nil(component.in()))
 	    {
-	    ACS_SHORT_LOG((LM_INFO, "... got component TimingExplorer"));
+	    ACS_SHORT_LOG((LM_INFO, "... got component %s", cobname));
 
 	    /*
 	     * Calls the methods of the component
@@ -124,7 +127,7 @@ int main(int argc, char* argv[])
 	    } /* end if component reference OK */
 	else
 	    {
-	    ACS_SHORT_LOG((LM_INFO, "Component TimingExplorer is nil !!!"));
+	    ACS_SHORT_LOG((LM_INFO, "Component %s is nil !!!", cobname));
 	    }
 	} /* end main try */
     catch (...)
