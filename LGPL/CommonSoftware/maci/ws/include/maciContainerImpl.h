@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.39 2006/10/11 09:56:56 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.40 2006/10/11 11:05:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.39 2006/10/11 09:56:56 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.40 2006/10/11 11:05:02 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -670,12 +670,16 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
     
     try
 	{
-	CORBA::ULong status;
 	CORBA::Object_var obj = m_manager->get_component(m_handle, curl.c_str(), activate);
 	
 	if (CORBA::is_nil(obj.in()))
 	    {
 	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'.",  curl.c_str()));
+	    maciErrType::CannotGetComponentExImpl ex(__FILE__, __LINE__, 
+					"ContainerImpl::getComponent&lt;&gt;");
+	    ex.setCURL(name);
+	    ex.log();
+	    // @todo throw ex;
 	    return T::_nil();
 	    }
 	object = T::_narrow(obj.in());
@@ -684,7 +688,7 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
 	}
     catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
 	{
-	maciErrType::CannotGetServiceExImpl ex(_ex, __FILE__, __LINE__, 
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
 					       "maci::ContainerImpl::getComponent&lt;&gt;");
 	ex.setCURL(name);
 	ex.log();
@@ -693,7 +697,7 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
 	}
     catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
 	{
-	maciErrType::CannotGetServiceExImpl ex(_ex, __FILE__, __LINE__, 
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
 					       "maci::ContainerImpl::getComponent&lt;&gt;");
 	ex.setCURL(name);
 	ex.log();
@@ -707,7 +711,7 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
 	corbaProblemEx.setMinor(_ex.minor());
 	corbaProblemEx.setCompletionStatus(_ex.completed());
 	corbaProblemEx.setInfo(_ex._info().c_str());
-	maciErrType::CannotGetServiceExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+	maciErrType::CannotGetComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
 					       "ContainerImpl::getComponent&lt;&gt;");
 	ex.setCURL(name);
 	ex.log();
@@ -718,7 +722,7 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
 							"ContainerImpl::getComponent&lt;&gt;");
-	maciErrType::CannotGetServiceExImpl ex(uex, __FILE__, __LINE__,
+	maciErrType::CannotGetComponentExImpl ex(uex, __FILE__, __LINE__,
 					       "ContainerImpl::getComponent&lt;&gt;");
 	ex.setCURL(name);
 	ex.log();
