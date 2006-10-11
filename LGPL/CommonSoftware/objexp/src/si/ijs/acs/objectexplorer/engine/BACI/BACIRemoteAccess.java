@@ -1817,7 +1817,11 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		    notifier.reportError("Connection to component '" + curl + "' failed.");
 		    return;
 		    }
-
+		catch(Throwable e)
+		{
+		    notifier.reportError("Connection to component '" + curl + "' failed. Unknown exception");
+		    return;
+		}
 		baciNode.setCORBARef(obj);
 		Any any = orb.create_any();
 		any.insert_Object(obj);
