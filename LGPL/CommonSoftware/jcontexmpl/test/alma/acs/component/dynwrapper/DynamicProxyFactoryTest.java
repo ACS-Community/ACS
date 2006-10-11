@@ -223,7 +223,7 @@ public class DynamicProxyFactoryTest extends TestCase
 			
 			Throwable cause2 = cause.getCause();
 			assertTrue(cause2 instanceof MarshalException);
-			assertTrue(((MarshalException)cause2).getException() instanceof org.xml.sax.SAXException);
+			assertTrue(((MarshalException)cause2).getCause() instanceof org.xml.sax.SAXException);
 		}		
 	}
 
@@ -236,7 +236,7 @@ public class DynamicProxyFactoryTest extends TestCase
 	 */
 	private static class XmlTestComponent implements XmlComponentJ
 	{
-		private ArrayList m_schedBlockList = new ArrayList();
+		private ArrayList<SchedBlock> m_schedBlockList = new ArrayList<SchedBlock>();
 	
 		XmlTestComponent()
 		{
@@ -306,7 +306,7 @@ public class DynamicProxyFactoryTest extends TestCase
 		public SchedBlock[] getAllSchedBlocks()
 		{
 			System.out.println("received call to 'getAllSchedBlocks' in component implementation.");
-			return (SchedBlock[]) m_schedBlockList.toArray(new SchedBlock[0]);
+			return m_schedBlockList.toArray(new SchedBlock[0]);
 		}
 	
 		/**
@@ -318,7 +318,7 @@ public class DynamicProxyFactoryTest extends TestCase
 			Random random = new Random(System.currentTimeMillis());
 			int sbIndex = random.nextInt(m_schedBlockList.size());
 			
-			SchedBlock sb = (SchedBlock) m_schedBlockList.get(sbIndex);
+			SchedBlock sb = m_schedBlockList.get(sbIndex);
 			return sb;
 		}
 	
