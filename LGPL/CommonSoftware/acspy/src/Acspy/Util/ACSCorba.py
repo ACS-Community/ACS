@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.19 2006/04/07 22:43:22 dfugate Exp $
+# @(#) $Id: ACSCorba.py,v 1.20 2006/10/11 16:02:37 gchiozzi Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.19 2006/04/07 22:43:22 dfugate Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.20 2006/10/11 16:02:37 gchiozzi Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -348,7 +348,7 @@ class _Client (maci__POA.Client):
         '''
         result = None
         if self.mgr is not None:
-            (component, status) = self.mgr.get_service(self.token.h, curl, activate)
+            component = self.mgr.get_service(self.token.h, curl, activate)
       
         if component is not None:
             result = component

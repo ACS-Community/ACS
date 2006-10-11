@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.19 2006/09/28 14:30:47 gchiozzi Exp $
+# @(#) $Id: ContainerServices.py,v 1.20 2006/10/11 16:02:32 gchiozzi Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.19 2006/09/28 14:30:47 gchiozzi Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.20 2006/10/11 16:02:32 gchiozzi Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.19 2006/09/28 14:30:47 gchiozzi Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.20 2006/10/11 16:02:32 gchiozzi Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -212,7 +212,7 @@ class ContainerServices:
             #get the component from manager
             corba_obj = getManager().get_component(self.__handle,
                                                    comp_name,
-                                                   activate)[0]
+                                                   activate)
             
             #return the narrowed reference
             return self.__narrowComponentReference(corba_obj, comp_class)
