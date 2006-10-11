@@ -1,11 +1,14 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.2 2006/10/09 14:36:59 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/10/11 15:03:22 gchiozzi Exp $"
 #
 # Makefile of acstestcomp
 #
 # $Log: Makefile,v $
+# Revision 1.3  2006/10/11 15:03:22  gchiozzi
+# Added new test program.
+#
 # Revision 1.2  2006/10/09 14:36:59  bjeram
 # repalce maciErrTypeComponent with maciErrType
 #
@@ -63,13 +66,17 @@ USER_LIB = -lACE \
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = acstestcompTestClient 
+EXECUTABLES_L   = acstestcompTestClient acstestcompTestComponentActivationErrors
 
 #
 # <brief description of xxxxx program>
 acstestcompTestClient_OBJECTS   = acstestcompTestClient
 acstestcompTestClient_LDFLAGS =
 acstestcompTestClient_LIBS = acstestcompStubs  maciClient maciErrType acstime
+
+acstestcompTestComponentActivationErrors_OBJECTS   = acstestcompTestComponentActivationErrors
+acstestcompTestComponentActivationErrors_LDFLAGS =
+acstestcompTestComponentActivationErrors_LIBS = acstestcompStubs  maciClient maciErrType acstime
 
 #
 # special compilation flags for single c sources
