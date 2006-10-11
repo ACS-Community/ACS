@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.37 2006/10/10 19:51:44 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.38 2006/10/11 08:46:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.37 2006/10/10 19:51:44 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.38 2006/10/11 08:46:04 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -359,21 +359,33 @@ public:
 			               );
   /**
    * get_object template method
+   * @param name name of the component
+   * @param doman domain name (could be 0)
+   * @param activate true to activate component, false to leave it in the current state 
+   * @return reference to the component
+   * it just redirect call to #getComponent, so #getComponent should be used instead
+   * @deprecated
    */
     template<class T>
-    T* get_object(const char *name, const char *domain, bool activate
-		  );
+    T* get_object(const char *name, const char *domain, bool activate);
 
     /**
-   * getComponent template method
+     * getComponent template method
+     * @param name name of the component
+     * @param doman domain name (could be 0)
+     * @param activate true to activate component, false to leave it in the current state 
+     * @return reference to the component
    */
     template<class T>
-    T* getComponent(const char *name, const char *domain, bool activate
-		  );
+    T* getComponent(const char *name, const char *domain, bool activate);
 
     /**
-   * getService template method
-   */
+     * getService template method
+     * @param name name of the service
+     * @param doman domain name (could be 0)
+     * @param activate true to activate service, false to leave it in the current state 
+     * @return reference to the service
+     */
     template<class T>
     T* getService(const char *name, const char *domain, bool activate) 
 	throw (maciErrType::CannotGetServiceExImpl);
@@ -617,81 +629,20 @@ public:
 template<class T>
 T* ContainerImpl::get_object(const char *name, const char *domain, bool activate)
 {   
-    T* object = T::_nil();
-    
-    /**
-     * Check if <name> is null
-     */
-    if(!name)
-	{
-	ACS_SHORT_LOG((LM_DEBUG, "Name parameter is null."));
-	return T::_nil();
-	}
-    
-    /**
-     * First creates the CURL, if not already a CURL,
-     * and query the Manager for the component
-     */
-    char *curl_str = "curl://";
-    
-    ACE_CString curl = "";
-    if(strncmp(name, curl_str, strlen(curl_str)) != 0 )
-	{
-	curl += curl_str;
-	if (domain)
-	    curl += domain;
-	
-	curl += ACE_CString("/");
-	}
-    curl += name;
-    
-    ACS_SHORT_LOG((LM_DEBUG, "Getting device: '%s'. Creating it...",  curl.c_str()));
-    
-    // wait that m_handle become !=0
-    while (m_handle==0)
-	{
-	ACS_SHORT_LOG((LM_DEBUG, "Waiting for m_handle"));
-	ACE_OS::sleep(1);
-	}
-
-    try
-	{
-	CORBA::Object_var obj = m_manager->get_component(m_handle, curl.c_str(), activate);
-	
-	if (CORBA::is_nil(obj.in()))
-	    {
-	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'.",  curl.c_str()));
-	    return T::_nil();
-	    }
-	object = T::_narrow(obj.in());
-	
-	return object;
-	}
-    catch( CORBA::Exception &ex )
-	{
-	ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION,
-			    "maci::ContainerImpl::get_object");
-	return T::_nil();
-	}
-    catch(...)
-	{
-	return T::_nil();
-	}
-    return T::_nil();
+    return getComponent(name, domain, activate);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * @todo getComponent should throw an exception in case of error
+ */
 template<class T>
 T* ContainerImpl::getComponent(const char *name, const char *domain, bool activate)
 {   
     T* object = T::_nil();
-    
-    /**
-     * Check if <name> is null
-     */
-    if(!name)
+
+    if(!name) // Check if <name> is null
 	{
 	ACS_SHORT_LOG((LM_DEBUG, "Name parameter is null."));
 	return T::_nil();
@@ -716,7 +667,7 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
 	ACS_SHORT_LOG((LM_DEBUG, "Waiting for m_handle"));
 	ACE_OS::sleep(1);
 	}
-
+    
     try
 	{
 	CORBA::ULong status;
@@ -731,18 +682,50 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
 	
 	return object;
 	}
-    catch( CORBA::Exception &ex )
+    catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
 	{
-	ACE_PRINT_EXCEPTION(ex,
-			    "maci::ContainerImpl::getComponent");
+	maciErrType::CannotGetServiceExImpl ex(_ex, __FILE__, __LINE__, 
+					       "maci::ContainerImpl::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	ex.log();
+	/// @todo throw ex;
+	return T::_nil();
+	}
+    catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
+	{
+	maciErrType::CannotGetServiceExImpl ex(_ex, __FILE__, __LINE__, 
+					       "maci::ContainerImpl::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	ex.log();
+	/// @todo throw ex;
+	return T::_nil();
+	}
+    catch( CORBA::SystemException &_ex )
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "ContainerServices::getComponent&lt;&gt;");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	maciErrType::CannotGetServiceExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+					       "ContainerImpl::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	ex.log();
+	/// @todo throw ex;
 	return T::_nil();
 	}
     catch(...)
 	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"ContainerImpl::getComponent&lt;&gt;");
+	maciErrType::CannotGetServiceExImpl ex(uex, __FILE__, __LINE__,
+					       "ContainerImpl::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	ex.log();
+	/// @todo throw ex;
 	return T::_nil();
 	}
-    return T::_nil();
-}
+}//getComponent
 ////////////////////////////////////////////////////////////////////////////
 /** 
  * Implementation for getService template method
@@ -834,7 +817,7 @@ T* ContainerImpl::getService(const char *name, const char *domain, bool activate
     catch(...)
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
-							"ContainerServices::getService&lt;&gt;");
+							"ContainerImpl::getService&lt;&gt;");
 	maciErrType::CannotGetServiceExImpl ex(uex, __FILE__, __LINE__,
 					       "ContainerImpl::getService&lt;&gt;");
 	ex.setCURL(name);
