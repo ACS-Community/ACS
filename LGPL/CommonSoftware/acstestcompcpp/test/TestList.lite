@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.1 2006/09/14 14:54:34 gchiozzi Exp $"
+# "@(#) $Id: TestList.lite,v 1.2 2006/10/11 15:03:34 gchiozzi Exp $"
 #
 # TestList
 #
@@ -30,5 +30,10 @@
 # 
 SOURCE TATEnvironment
 PROLOGUE TATPrologue
-1 acstestcompTestClient "acstestcompTestClient"
+1 acstestcompTestClient "acstestcompTestClient TimingExplorer"
+2 acstestcompTestComponentActivationErrors_2 "acstestcompTestComponentActivationErrors TimingExplorer"
+3 acstestcompTestComponentActivationErrors_3 "acstestcompTestComponentActivationErrors TimingExplorer_NOIDL"
+4 acstestcompTestComponentActivationErrors_4 "acstestcompTestComponentActivationErrors TimingExplorer_NOCONT"
+5 acstestcompTestComponentActivationErrors_5 "acstestcompTestComponentActivationErrors TimingExplorer_NODLL"
+6 acstestcompTestComponentActivationErrors_6 "acstestcompTestComponentActivationErrors NOTHING_AT_ALL"
 EPILOGUE TATEpilogue
