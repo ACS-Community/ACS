@@ -18,8 +18,14 @@ import java.net.URI;
  *	<LI>It provides information about the whole domain.</LI>
  *	</UL>
  * 
+  * This interface defines a CORBA-independent interface for the Manager.
+ * In ACS, the acs.maci.plugManagerProxyImpl class implements the CORBA
+ * interface and delegates toan implementation of this Manager class
+ *  the real work. 
+ * 
  * NOTE: There is no <code>throws RemoteException</code> in the signature of the methods.
  * 
+ * @see acs.maci.plugManagerProxyImpl, acs.maci/plug.ManagerProxy, acs.maci.manager.ManagerImpl
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
@@ -132,6 +138,7 @@ public interface Manager
 	 * @param	status	Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
 	 * @return			A sequence of requested components.
 	 * @see getcomponent
+	 * @deprecated
 	 */
 	public Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses) throws NoPermissionException;
 
@@ -144,6 +151,7 @@ public interface Manager
 
 	/** 
 	 * Get services.
+	 * @deprecated
 	 * @see #get_service
 	 * @see #get_components
 	 */
@@ -214,6 +222,7 @@ public interface Manager
 	 * @param	id		Identification of the caller. The caller must have previously got the Component through get_component.
 	 * @param	curls	The CURL of the component to be released.
 	 * 
+	 * @deprecated
 	 * @see releasecomponent
 	 */
 	public void releaseComponents(int id, URI[] curls) throws NoPermissionException;
@@ -282,6 +291,7 @@ public interface Manager
 	 * @param	id 			Identification of the caller.
 	 * @param	components	Components to be obtained.
 	 * @return	<code>ComponentInfo[]</code> of requested components.
+	 * @deprecated
 	 * @see #getDynamicComponent
 	 */
 	public ComponentInfo[] getDynamicComponents(int id, ComponentSpec[] components) throws NoPermissionException;
@@ -300,4 +310,24 @@ public interface Manager
 			boolean markAsDefault, URI targetComponentURI)
 		throws NoPermissionException, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;
+
+	/** 
+	 * Get a component, activating it if necessary.
+	 * The client represented by id (the handle)
+	 * must have adequate access rights to access the component. This is untrue of components:
+	 * components always have unlimited access rights to other components.
+	 * 
+	 * @param	id		Identification of the caller. If this is an invalid handle,
+	 * 					or if the caller does not have enough access rights,
+	 * 					a <code>NoPermissionException</code> exception is raised.
+	 * @param	curl	CURL of the component whose reference is to be retrieved.
+	 * @param	activate	<code>true</code> if the Component is to be activated in case it does not exist.
+	 * 						If set to <code>false</code>, and the Component exist,
+	 * 						a <code>null</code> reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
+	 * @return			Reference to the Component. If the Component could not be activated, a nil reference is returned,
+	 *					and the status contains an error code detailing the cause of failure (one of the component_* constants).
+	 */
+	public Component getComponentNonStiky(int id, URI curl) 
+		throws NoPermissionException;
+
 }
