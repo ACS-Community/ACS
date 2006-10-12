@@ -134,6 +134,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	}
 
 	/**
+	 * Ping method so that clients can feel good about having an alive manager.
+	 * @see si.ijs.maci.ManagerOperations#ping()
+	 */
+	public boolean ping() {
+		return true;		
+	}
+	
+	
+	/**
 	 * Return the fully qualified name of the domain, e.g., "antenna1.alma.nrao".
 	 *
 	 * @return the fully qualified name of the domain
@@ -602,7 +611,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return Reference to the Component. If the Component could not be activated, a nil reference is returned,
 	 *		  and the status contains an error code detailing the cause of failure (one of the COMPONENT_* constants).
 	 */
-	public Object get_component_non_stiky(int id, String component_url)
+	public Object get_component_non_sticky(int id, String component_url)
 	{
 	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
 	}
