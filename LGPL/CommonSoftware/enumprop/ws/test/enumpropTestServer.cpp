@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.50 2006/10/09 06:07:18 gchiozzi Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.51 2006/10/12 06:54:56 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.50 2006/10/09 06:07:18 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.51 2006/10/12 06:54:56 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -74,32 +74,32 @@ class TestContainerServices : public maci::ContainerServices {
         }
     
         CORBA::Object* getCORBAComponent(const char* name)
-	    throw (maciErrType::CannotGetComponentEx)
+	    throw (maciErrType::CannotGetComponentExImpl)
         {
             return (CORBA::Object*)NULL;
         }
         
         CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::IncompleteComponentSpecEx, 
-		  maciErrType::InvalidComponentSpecEx, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-		  maciErrType::CannotGetComponentEx)
+	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+		  maciErrType::InvalidComponentSpecExImpl, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		  maciErrType::CannotGetComponentExImpl)
         {
             return (CORBA::Object*)NULL;
         }
         
         CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	    throw (maciErrType::NoDefaultComponentEx, 
-		   maciErrType::CannotGetComponentEx)
+	    throw (maciErrType::NoDefaultComponentExImpl, 
+		   maciErrType::CannotGetComponentExImpl)
         {
             return (CORBA::Object*)NULL;
         }
 
     virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
-	    throw(maciErrType::IncompleteComponentSpecEx, 
-		  maciErrType::InvalidComponentSpecEx, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-		  maciErrType::CannotGetComponentEx)
+	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+		  maciErrType::InvalidComponentSpecExImpl, 
+		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		  maciErrType::CannotGetComponentExImpl)
 	{
 	    return (CORBA::Object*)NULL;
 	}
@@ -123,6 +123,7 @@ class TestContainerServices : public maci::ContainerServices {
         void releaseAllComponents(){}
     
         CDB::DAL_ptr getCDB()
+	    throw (acsErrTypeContainerServices::CanNotGetCDBExImpl)
         {
 	    ACE_TCHAR corbalocRef[230];
 	    ACE_TCHAR * envRef = ACE_OS::getenv ("DAL_REFERENCE");
