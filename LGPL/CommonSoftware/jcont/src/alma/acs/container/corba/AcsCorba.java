@@ -386,7 +386,7 @@ public class AcsCorba
 			
 			m_containerPOA = m_rootPOA.create_POA("ContainerPOA", sharedPoaManager, contPolicies);
 			
-			if (m_containerPOA != null) {
+			if (m_containerPOA == null) {
 				throw new NullPointerException("ContainerPOA reference == null");
 			}
 			m_logger.finest("ContainerPOA created.");
@@ -438,7 +438,7 @@ public class AcsCorba
 
 			m_componentPOA = m_rootPOA.create_POA("ComponentPOA", sharedPoaManager, m_compPolicies);
 
-			if (m_componentPOA != null) {
+			if (m_componentPOA == null) {
 				throw new NullPointerException("ComponentPOA reference == null");
 			}
 			m_logger.finest("ComponentPOA created.");
