@@ -2,15 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/mail.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsjms.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jms.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/laserutil.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
-	<classpathentry kind="src" path="/laser-util"/>
-	<classpathentry kind="var" path="INTROOT/lib/jms.jar"/>
-	<classpathentry kind="src" path="/laser-source"/>
-	<classpathentry kind="var" path="ACSROOT/lib/mail.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/acsjms.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/AlarmService.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
