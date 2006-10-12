@@ -274,6 +274,7 @@ acsRequiredJars= [ \
 	   "logkit.jar",\
 	   "acsASsources.jar",\
 	   "cdbErrType.jar",\
+	   "JavaContainerError.jar",\
            "selector-1.1.jar"]
            
 # The properties for the Java Virtual Machine
