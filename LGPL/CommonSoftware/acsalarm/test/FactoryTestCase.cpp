@@ -14,6 +14,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #include <acsutilPorts.h>
 #include <stdlib.h>
+#include <MockManager.h>
 
 #define XML_HEADER_LENGTH 4
 #define XML_HEADER_LINE_ONE "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -45,6 +46,7 @@ class FactoryTestCase : public CPPUNIT_NS::TestFixture
 	CPPUNIT_TEST(testNoAlarmBranch);
 	CPPUNIT_TEST(testACSAlarmSystem);
 	CPPUNIT_TEST(testWrongImplementationProp);
+	CPPUNIT_TEST(testCERNAlarmSystem);
 	CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -55,6 +57,7 @@ class FactoryTestCase : public CPPUNIT_NS::TestFixture
 		
 	protected:
 		void testNoAlarmBranch();
+		void testCERNAlarmSystem();
 		void testACSAlarmSystem();
 		void testWrongImplementationProp();
 
@@ -97,6 +100,21 @@ void FactoryTestCase::clearCdbCache()
 }
 
 /**
+ * Check if the CERN implementation of the AS is choosen when
+ * there CERN is in the CDB
+ * 
+ * @throws Exception
+ */
+void FactoryTestCase::testCERNAlarmSystem() 
+{
+	configureAlarmBranch(cwd,"CERN");
+	clearCdbCache();
+	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (CERN case)", !ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
+}
+	
+
+/**
  * Check if the ACS implementation of the AS is choosen when
  * there is no Alarm branch in the CDB
  * 
@@ -105,7 +123,8 @@ void FactoryTestCase::clearCdbCache()
 void FactoryTestCase::testNoAlarmBranch() {
 	renameAlarmBranch(cwd);
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(NULL);
+	//ACSAlarmSystemInterfaceFactory::init(NULL);
+	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
 	replaceAlarmBranch(cwd);
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (no Alarms in CDB case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
@@ -119,7 +138,8 @@ void FactoryTestCase::testNoAlarmBranch() {
 void FactoryTestCase::testACSAlarmSystem() {
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(NULL);
+	//ACSAlarmSystemInterfaceFactory::init(NULL);
+	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (ACS case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
 
@@ -130,7 +150,8 @@ void FactoryTestCase::testACSAlarmSystem() {
 void FactoryTestCase::testWrongImplementationProp() {
 	configureAlarmBranch(cwd, "Wrong property");
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(NULL);
+	//ACSAlarmSystemInterfaceFactory::init(NULL);
+	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (wrong prop case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
 	
@@ -202,7 +223,7 @@ int main(int argc, char *argv[])
 	Logging::Logger::setGlobalLogger(new Logging::GenericLogger("testLogger"));
 
 	// initialize the AlarmSystemInterfaceFactory 
-	ACSAlarmSystemInterfaceFactory::init(NULL);
+	//ACSAlarmSystemInterfaceFactory::init(NULL);
 
 	// Create the event manager and test controller
 	CPPUNIT_NS::TestResult controller;
@@ -225,7 +246,7 @@ int main(int argc, char *argv[])
 	outputter.write(); 
 
 	// close the AlarmSystemInterfaceFactory 
-	ACSAlarmSystemInterfaceFactory::done();
+	//ACSAlarmSystemInterfaceFactory::done();
 
 	return result.wasSuccessful() ? 0 : 1;
 }
