@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;
@@ -94,12 +93,17 @@ public class TestUtil {
                 System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
                 System.exit(-1);
         }
-        
 		org.omg.CORBA.Object managerObj = getORB().string_to_object(managerLoc);
 		if (managerObj==null) {
 			return null;
-		} 
-		manager = ManagerHelper.narrow(managerObj);
+		}
+		try {
+			manager = ManagerHelper.narrow(managerObj);
+		} catch (Exception e) {
+			System.out.println("Error narrowing the manager: "+e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
         return manager;
 	}
 	
@@ -110,10 +114,12 @@ public class TestUtil {
 	 * @return The reference to the DAL or NULL
 	 */
 	public static JDAL getDAL(Manager manager) {
-		IntHolder status = new IntHolder();
+		if (manager==null) {
+			throw new IllegalArgumentException("getDAL received a null manager reference!");
+		}
 		JDAL dal;
 		try {
-	        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false, status);
+	        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false);
 	        if (cdbObj==null) {
 				System.out.println("Error getting the CDB from the manager");
 				return null;
