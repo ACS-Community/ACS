@@ -85,5 +85,11 @@
 		   details that can be better described by using
 		   another, more specific, ACS exception.">
 	</ErrorCode>
-	
+	<ErrorCode name="NotInitialized"
+		shortDescription="Not Initialized"
+		description="Generic Not Initialized Error">
+		<Member name="Name" 
+			type="string"
+			description="Name of the object that was not initalized"/>
+	</ErrorCode>
 </Type>
