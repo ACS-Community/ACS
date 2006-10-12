@@ -96,17 +96,25 @@ public class LogListener implements
 	}
 	
 	/**
+	 * Print only the messages received from the client
+	 * 
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void xmlEntryReceived(String str) {
-		System.out.println("RAW log: "+str);
+		if (str.indexOf("logClient.cpp")>=0) {
+			System.out.println("RAW log: "+str);
+		}
 	}
 	
 	/**
+	 * Print only the messages received from the client
+	 * 
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener
 	 */
 	public void logEntryReceived(ILogEntry log) {
-		System.out.println("Log recived: "+log.toString());
+		if (log.getField(ILogEntry.FIELD_FILE).toString().compareTo("logClient.cpp")==0) {
+			System.out.println("Log received: "+log.toString());
+		}
 	}
 	
 	/**
