@@ -756,6 +756,12 @@ module maci {
 		/** The fully qualified name of the domain, e.g., "antenna1.alma.nrao". */
 		readonly attribute string domain_name;
 
+		/**
+		   Allows operator/monitoring tools to check the status of the manager.
+		   The required return value is "true" (it is not entierely clear why these ping methods don't usually just return void).
+		 */
+		boolean ping();
+
 		/** 
 		    Login to MACI. 
 		    Containers, Clients and Administrative clients call 
@@ -887,24 +893,24 @@ module maci {
 
 
 		/** 
-		    Get a non-stiky reference to a component.
+		    Get a non-sticky reference to a component.
 
-		    A non-stiky reference does not bind the
-		    Manager to keep alive the Component and 
-		    the Client requesting for a non-stiky references
+		    A non-sticky reference does not bind the
+		    Manager to keep alive the Component, and 
+		    the Client requesting a non-sticky reference
 		    is not considered when checking for reference
 		    counts. 
 		    The Manager can deactivate Components
-		    independently from any non-stiky reference.
+		    independently from any non-sticky reference.
 
 		    This is typically used by "weak clients" like
 		    graphical user interfaces.
 
-                    Since a non-stiky reference is not considered in
+                    Since a non-sticky reference is not considered in
                     reference counting, it will also not activate
 		    the component if it is not already active.
 
-		    As a consequence, asking for a non-stiky reference
+		    As a consequence, asking for a non-sticky reference
                     to a not-active Component throws an exception.
   
 		    The client represented by id (the handle) must 
@@ -912,8 +918,8 @@ module maci {
 		    
 		    @return Reference to the component. 
 		*/
-		Object get_component_non_stiky (
-		        /**
+		Object get_component_non_sticky (
+			/**
 			   Identification of the caller. If this is an invalid handle, or if the
 			   caller does not have enough access rights, a
 			   CORBA::NO_PERMISSION exception is raised. 
