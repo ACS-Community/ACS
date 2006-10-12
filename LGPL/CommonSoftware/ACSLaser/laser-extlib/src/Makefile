@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:52:36 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/10/12 09:41:52 acaproni Exp $"
 #
 #
 
@@ -34,6 +34,7 @@
 # jar files to be installed
 #----------------------------
 INSTALL_FILES =  ../lib/AbsoluteLayout.jar \
+		 ../lib/concurrent.jar \
                  ../lib/boot.jar \
                  ../lib/core.jar \
                  ../lib/core-windows.jar \
