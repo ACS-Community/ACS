@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.6 2006/10/03 03:55:42 sharring Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.7 2006/10/12 18:17:29 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -212,14 +212,15 @@ int main(int argc, char *argv[])
 		std::cout << "disconnecting consumer" << std::endl;
 		std::cout << "received: " << m_simpConsumer_p->getEventsReceived() 
 			<< " events, and sent: " << sentEvtCount << " events" << std::endl;
-   	m_simpConsumer_p->disconnect();   
-		delete m_simpConsumer_p;
-		m_simpConsumer_p=0;
 	}
 	else
 	{
 		std::cout << "ERROR: never detected all the events before the timeout elapsed" << std::endl;
 	}
+
+	m_simpConsumer_p->disconnect();   
+	delete m_simpConsumer_p;
+	m_simpConsumer_p=0;
 
 	// release the component and logout from manager
 	client.manager()->release_component(client.handle(), "ALARM_SOURCE_MOUNTCPP");

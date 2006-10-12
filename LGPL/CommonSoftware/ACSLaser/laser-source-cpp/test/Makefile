@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2006/10/10 06:30:08 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.6 2006/10/12 18:17:29 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -35,7 +35,7 @@ USER_LIB = -lstdc++ -lxerces-c
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = testDriver testDriverAcs unitTestDriver FactoryTestCase
+EXECUTABLES     = testDriver testDriverAcs unitTestDriver 
 EXECUTABLES_L   = 
 
 # <brief description of xxxxx program>
@@ -44,15 +44,11 @@ testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maci
 
 # <brief description of xxxxx program>
 testDriverAcs_OBJECTS   = testDriverAcs
-testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs acsnc
+testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs acsnc 
 
 # <brief description of xxxxx program>
 unitTestDriver_OBJECTS   = unitTestDriver 
 unitTestDriver_LIBS      = cppunit laserCppUtil logging maciClient maci acsXercesUtilities laserSource
-
-# <brief description of xxxxx program>
-FactoryTestCase_OBJECTS   = FactoryTestCase 
-FactoryTestCase_LIBS      = acsErrTypeAlarmSourceFactory cppunit logging acsAlSysSource laserCppUtil maciErrType cdb maci maciClient
 
 #
 # special compilation flags for single c sources
@@ -71,7 +67,7 @@ LIBRARIES_L     =
 
 # <brief description of alsysTestMountImpl library>
 AlarmTestMountImpl_OBJECTS  = AlarmTestMountImpl
-AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory laserCppUtil
+AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory laserCppUtil maciErrTypeComponent
 
 #
 # Scripts (public and local)

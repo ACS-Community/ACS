@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriver.cpp,v 1.3 2006/09/26 06:43:00 sharring Exp $"
+* "@(#) $Id: testDriver.cpp,v 1.4 2006/10/12 18:17:29 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     
 	// set up a consumer to listen to the notification channel for alarms
 	int receivedEvtCount = 0;
-	nc::SimpleConsumer<com::cosylab::acs::jms::ACSJMSMessageEntity> *m_simpConsumer_p;
+	nc::SimpleConsumer<com::cosylab::acs::jms::ACSJMSMessageEntity> *m_simpConsumer_p = 0;
    ACS_NEW_SIMPLE_CONSUMER(m_simpConsumer_p, com::cosylab::acs::jms::ACSJMSMessageEntity, "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES", myHandlerFunction, (void*) & receivedEvtCount);
    m_simpConsumer_p->consumerReady();
 
@@ -84,18 +84,33 @@ int main(int argc, char *argv[])
 	client.run(tv);
 
 	int sentEvtCount = 0;
-	while(receivedEvtCount < numAlarmsToSend)
-	    {
-	    // generate an alarm
-	    if(sentEvtCount < numAlarmsToSend)
+	int MAX_TIME_TO_WAIT = 30;
+	int timeWaited = 0;
+	while(receivedEvtCount < numAlarmsToSend && (timeWaited < MAX_TIME_TO_WAIT))
+	{
+		// generate an alarm
+		if(sentEvtCount < numAlarmsToSend)
 		{
 			alarmTestMount->faultMount();
 			sentEvtCount++;
 		}
-	    ACE_Time_Value tv(1);
-	    client.run(tv);
+		ACE_Time_Value tv(1);
+		client.run(tv);
+		timeWaited++;
 	}
     
+	if(receivedEvtCount >= numAlarmsToSend)
+	{
+		std::cout << "disconnecting consumer" << std::endl;
+		std::cout << "received: " << receivedEvtCount << " events, and sent: " << sentEvtCount << " events" << std::endl;
+	}
+	else
+	{
+		std::cout << "ERROR: never detected all the events before the timeout elapsed" << std::endl;
+	}
+  	m_simpConsumer_p->disconnect();   
+	m_simpConsumer_p = 0;
+
 	// release the component and logout from manager
 	client.manager()->release_component(client.handle(), "ALARM_SOURCE_MOUNTCPP");
 	client.logout();

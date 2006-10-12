@@ -188,3 +188,5 @@
 1 -    </fault-states>
 1 - </ASI-message>
 1 - 
+1 - disconnecting consumer
+1 - received: 10 events, and sent: 10 events
