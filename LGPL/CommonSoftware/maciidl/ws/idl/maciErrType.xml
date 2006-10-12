@@ -90,8 +90,12 @@ This file has to be moved into the TICS subsystem
 	</ErrorCode>
 
 	<ErrorCode name="NoDefaultComponent"
-	           shortDescription="Thrown if no default component is found."
-	           description="Thrown if no default component is found.">
+		shortDescription="Thrown if no default component is found."
+		description="Thrown if no default component is found.">
+		<Member name="IDLType"
+			type="string"
+			description="The requested IDL type of the default component."
+		/>
 	</ErrorCode>
 
 	<ErrorCode name="CannotGetService"
