@@ -254,6 +254,7 @@ def usage():
 acsRequiredJars= [ \
            "jACSUtil.jar", \
            "acserrj.jar", \
+	   "acserr.jar",\
            "acsjlog.jar", \
            "concurrent.jar", \
            "backport-util-concurrent.jar", \
@@ -269,6 +270,10 @@ acsRequiredJars= [ \
            "commons-logging.jar", \
            "log4j-1.2.8.jar", \
            "jakarta-oro-2.0.5.jar", \
+	   "avalon-framework.jar",\
+	   "logkit.jar",\
+	   "acsASsources.jar",\
+	   "cdbErrType.jar",\
            "selector-1.1.jar"]
            
 # The properties for the Java Virtual Machine
