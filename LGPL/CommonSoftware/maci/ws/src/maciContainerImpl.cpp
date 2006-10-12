@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.74 2006/10/09 06:14:48 gchiozzi Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.75 2006/10/12 15:33:11 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.74 2006/10/09 06:14:48 gchiozzi Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.75 2006/10/12 15:33:11 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2408,7 +2408,7 @@ ContainerImpl::get_object(const char *name,
     }
   
   /**
-   * Get reference of device object
+   * Get reference of component object
    */
   
   /**
@@ -2428,7 +2428,7 @@ ContainerImpl::get_object(const char *name,
       }
   curl += name;
     
-  ACS_SHORT_LOG((LM_DEBUG, "Getting device: '%s'. Creating it...",  curl.c_str()));
+  ACS_SHORT_LOG((LM_DEBUG, "Getting component: '%s'. Creating it...",  curl.c_str()));
 
   // wait that m_handle become !=0
   while (m_handle==0)

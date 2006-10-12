@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.41 2006/10/11 20:13:35 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.42 2006/10/12 15:33:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.41 2006/10/11 20:13:35 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.42 2006/10/12 15:33:11 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -809,7 +809,7 @@ T* ContainerImpl::getService(const char *name, const char *domain, bool activate
     catch( CORBA::SystemException &_ex )
 	{
 	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
-							    "ContainerServices::getService&lt;&gt;");
+							    "ContainerImpl::getService&lt;&gt;");
 	corbaProblemEx.setMinor(_ex.minor());
 	corbaProblemEx.setCompletionStatus(_ex.completed());
 	corbaProblemEx.setInfo(_ex._info().c_str());

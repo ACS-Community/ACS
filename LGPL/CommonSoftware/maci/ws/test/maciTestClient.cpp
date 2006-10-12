@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.90 2006/10/11 20:13:35 bjeram Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.91 2006/10/12 15:33:11 bjeram Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.90 2006/10/11 20:13:35 bjeram Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.91 2006/10/12 15:33:11 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -23,6 +23,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <stdio.h>
 #include <stdlib.h>
 #include <acsutilPorts.h>
+#include <maciErrType.h>
 
 /*
  * Maximal length of a command passed to the MACI test client.
@@ -37,7 +38,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.90 2006/10/11 20:13:35 bjeram Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.91 2006/10/12 15:33:11 bjeram Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -247,8 +248,7 @@ int ProcessAdministrator(int argc, const ACE_TCHAR *argv[]
   return SUCCESS;
 }
 
-int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
-                  )
+int ProcessGetComponent(int argc, const ACE_TCHAR *argv[])
 {
   ACE_CString requestor = argv[1];
   ACE_CString curl = argv[3];
@@ -264,11 +264,21 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
       char *domain, *componentName;
       if (resolveCURL (curl.c_str (), domain, componentName) == -1)
         return ERROR;
-      component = g_Client->getComponent(componentName,
-        (((domain != 0) && strlen(domain) == 0) ? NULL : domain),
-        activate);
-      if (domain != NULL) delete domain;
-      if (componentName != NULL) delete componentName;
+      try
+	  {
+	  component = g_Client->getComponent(componentName,
+					     (((domain != 0) && strlen(domain) == 0) ? NULL : domain),
+					     activate);
+	  if (domain != NULL) delete domain;
+	  if (componentName != NULL) delete componentName;
+	  }
+      catch(maciErrType::CannotGetComponentExImpl &_ex)
+	  {
+	  _ex.log();
+	  if (domain != NULL) delete domain;
+	  if (componentName != NULL) delete componentName;
+	  return ERROR;
+	  }//try-catch
     }
   else
     {
@@ -277,23 +287,71 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
 
       if (g_Clients.find (requestor, ci) == 0)
         {
-	// here we call direct the manger w/o doing error handling
-	component = g_Client->manager ()->get_component (ci.h, curl.c_str(), activate);
-          ACE_CHECK_RETURN (ERROR);
+	try
+	    {
+	    component = g_Client->manager ()->get_component (ci.h, curl.c_str(), activate);
+	    }
+	catch(maciErrType::CannotGetComponentEx &_ex)
+	    {
+	    maciErrType::CannotGetComponentExImpl ex(_ex); 
+	    ex.log();
+	    return ERROR;
+	    }
+	catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
+	    {
+	    maciErrType::ComponentNotAlreadyActivatedExImpl ex(_ex);
+	    ex.log();
+	    return ERROR;
+	    }
+	catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
+	    {
+	    maciErrType::ComponentConfigurationNotFoundExImpl ex(_ex);
+	    ex.log();
+	    return ERROR;
+	    }
+	catch( CORBA::SystemException &_ex )
+	    {
+	    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+								"ProcessGetComponent");
+	    corbaProblemEx.setMinor(_ex.minor());
+	    corbaProblemEx.setCompletionStatus(_ex.completed());
+	    corbaProblemEx.setInfo(_ex._info().c_str());
+	    corbaProblemEx.log();
+	    return ERROR;
+	    }
+	catch(...)
+	    {
+	    ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							    "ProcessGetComponent");
+	    uex.log();
+	    return ERROR;
+	    }//try-catch
         }
       else if (g_TestClasses.find (requestor, mtc) == 0)
         {
-          mtc->get_component (curl.c_str(), activate);
-          ACE_CHECK_RETURN (ERROR);
+	try
+	    {
+	    mtc->get_component (curl.c_str(), activate);
+	    }
+	catch( CORBA::SystemException &_ex )
+	    {
+	    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+								"ProcessGetComponent");
+	    corbaProblemEx.setMinor(_ex.minor());
+	    corbaProblemEx.setCompletionStatus(_ex.completed());
+	    corbaProblemEx.setInfo(_ex._info().c_str());
+	    corbaProblemEx.log();
+	    return ERROR;
+	    }
         }
       else
         {
-          ACS_SHORT_LOG ((LM_INFO,
-                          "Unknown requesting object '%s'.",
-                          requestor.c_str()));
-          return ERROR;
+	ACS_SHORT_LOG ((LM_INFO,
+			"Unknown requesting object '%s'.",
+			requestor.c_str()));
+	return ERROR;
         }
-
+      
       ACS_SHORT_LOG ((LM_INFO,
                       "Activating component '%s'",
                       curl.c_str()));
@@ -310,7 +368,7 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[]
     }
 
   return SUCCESS;
-}
+}//ProcessGetComponent
 
 int ProcessGet_Object(int argc, const ACE_TCHAR *argv[])
 {
@@ -320,7 +378,7 @@ int ProcessGet_Object(int argc, const ACE_TCHAR *argv[])
   bool activate = (argv[2][0] == '1') ? true : false;
 
   ACS_SHORT_LOG((LM_INFO,
-                 "Getting component '%s' requested by '%s' (activation: %d)",
+                 "Getting component (using get_object) '%s' requested by '%s' (activation: %d)",
                  curl.c_str(), requestor.c_str (), int(activate)));
 
   CORBA::Object_ptr component = NULL;
@@ -329,11 +387,21 @@ int ProcessGet_Object(int argc, const ACE_TCHAR *argv[])
       char *domain, *componentName;
       if (resolveCURL (curl.c_str (), domain, componentName) == -1)
         return ERROR;
-      component = g_Client->get_object(componentName,
-        (((domain != 0) && strlen(domain) == 0) ? NULL : domain),
-        activate);
-      if (domain != NULL) delete domain;
-      if (componentName != NULL) delete componentName;
+      try
+	  {
+	  component = g_Client->get_object(componentName,
+					     (((domain != 0) && strlen(domain) == 0) ? NULL : domain),
+					     activate);
+	  if (domain != NULL) delete domain;
+	  if (componentName != NULL) delete componentName;
+	  }
+      catch(maciErrType::CannotGetComponentExImpl &_ex)
+	  {
+	  _ex.log();
+	  if (domain != NULL) delete domain;
+	  if (componentName != NULL) delete componentName;
+	  return ERROR;
+	  }//try-catch
     }
   else
     {
@@ -342,22 +410,71 @@ int ProcessGet_Object(int argc, const ACE_TCHAR *argv[])
 
       if (g_Clients.find (requestor, ci) == 0)
         {
-	component = g_Client->manager ()->get_component (ci.h, curl.c_str(), activate);
-          ACE_CHECK_RETURN (ERROR);
+	try
+	    {
+	    component = g_Client->manager ()->get_component (ci.h, curl.c_str(), activate);
+	    }
+	catch(maciErrType::CannotGetComponentEx &_ex)
+	    {
+	    maciErrType::CannotGetComponentExImpl ex(_ex); 
+	    ex.log();
+	    return ERROR;
+	    }
+	catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
+	    {
+	    maciErrType::ComponentNotAlreadyActivatedExImpl ex(_ex);
+	    ex.log();
+	    return ERROR;
+	    }
+	catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
+	    {
+	    maciErrType::ComponentConfigurationNotFoundExImpl ex(_ex);
+	    ex.log();
+	    return ERROR;
+	    }
+	catch( CORBA::SystemException &_ex )
+	    {
+	    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+								"ProcessGetComponent");
+	    corbaProblemEx.setMinor(_ex.minor());
+	    corbaProblemEx.setCompletionStatus(_ex.completed());
+	    corbaProblemEx.setInfo(_ex._info().c_str());
+	    corbaProblemEx.log();
+	    return ERROR;
+	    }
+	catch(...)
+	    {
+	    ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							    "ProcessGetComponent");
+	    uex.log();
+	    return ERROR;
+	    }//try-catch
         }
       else if (g_TestClasses.find (requestor, mtc) == 0)
         {
-          mtc->get_component (curl.c_str(), activate);
-          ACE_CHECK_RETURN (ERROR);
+	try
+	    {
+	    mtc->get_component (curl.c_str(), activate);
+	    }
+	catch( CORBA::SystemException &_ex )
+	    {
+	    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+								"ProcessGetComponent");
+	    corbaProblemEx.setMinor(_ex.minor());
+	    corbaProblemEx.setCompletionStatus(_ex.completed());
+	    corbaProblemEx.setInfo(_ex._info().c_str());
+	    corbaProblemEx.log();
+	    return ERROR;
+	    }
         }
       else
         {
-          ACS_SHORT_LOG ((LM_INFO,
-                          "Unknown requesting object '%s'.",
-                          requestor.c_str()));
-          return ERROR;
+	ACS_SHORT_LOG ((LM_INFO,
+			"Unknown requesting object '%s'.",
+			requestor.c_str()));
+	return ERROR;
         }
-
+      
       ACS_SHORT_LOG ((LM_INFO,
                       "Activating component '%s'",
                       curl.c_str()));
@@ -574,8 +691,16 @@ int ProcessGetComponents(int argc, const ACE_TCHAR *argv[]
 
   ulongSeq_var ulsStatus;
   ObjectSeq_var osComponents;
+  try
+      {
   osComponents = g_Client->manager ()->get_components (h, curls.in (), activate, ulsStatus.out());
-
+      }
+  catch(maciErrType::CannotGetComponentEx &_ex)
+      {
+      maciErrType::CannotGetComponentExImpl ex(_ex);
+       ex.log();
+       return ERROR;
+      }
   if (int(ulsStatus->length()) != argc-3)
     {
       ACS_SHORT_LOG((LM_ERROR, "Component status sequence length was %d, but %d was expected!",

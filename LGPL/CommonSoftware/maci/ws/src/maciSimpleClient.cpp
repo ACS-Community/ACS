@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.95 2006/10/11 20:13:35 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.96 2006/10/12 15:33:11 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -532,33 +532,33 @@ SimpleClient::getComponent(const char *name,
 			 const char *domain, 
 			 bool activate
 			 )
+ throw (maciErrType::CannotGetComponentExImpl)
 {
-  /**
-   * Check first if the client is initialized
-   */
-  if(!m_initialized)
-    {
-      ACS_SHORT_LOG((LM_DEBUG, "Client not initialized."));
-      return CORBA::Object::_nil();
-    }
+    if(!m_initialized)                   //  Check first if the client is initialized
+	{
+	ACSErrTypeCommon::NotInitializedExImpl notInitEx( __FILE__, __LINE__,
+							  "maci::SimpleCleint::getComponent");
+	notInitEx.setName("SimpleClient");
+	maciErrType::CannotGetComponentExImpl ex( notInitEx, __FILE__, __LINE__,
+						  "maci::SimpleCleint::getComponent");
+	name ? ex.setCURL(name) : ex.setCURL("NULL");
+	throw ex;
+	}//if
 
-  /**
-   * Check if <name> is null
-   */
-  if(!name)
-    {
-      ACS_SHORT_LOG((LM_DEBUG, "Name parameter is null."));
-      return CORBA::Object::_nil();
-    }
+    if(!name) //   Check if <name> is null
+	{
+	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
+						   "maci::SimpleCleint::getComponent");
+	nullEx.setVariable("(parameter) name");
+	maciErrType::CannotGetComponentExImpl ex(nullEx, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponent");
+	ex.setCURL("NULL");
+	throw ex;
+	}//if
   
-  /**
-   * Get reference of device object
-   */
-  
-  /**
-   * First creates the CURL, if not already a CURL,
-   * and query the Manager for the component
-   */
+	// Get reference of component object
+	// First creates the CURL, if not already a CURL,
+	// and query the Manager for the component
   char *curl_str = "curl://";
 
   ACE_CString curl = "";
@@ -567,43 +567,63 @@ SimpleClient::getComponent(const char *name,
       curl += curl_str;
       if (domain)
 	  curl += domain;
-  
+      
       curl += ACE_CString("/");
       }
   curl += name;
 
-  ACS_SHORT_LOG((LM_DEBUG, "Getting device: '%s'. Creating it...",  curl.c_str()));
+  ACS_SHORT_LOG((LM_DEBUG, "Getting component: '%s'. Creating it...",  curl.c_str()));
   
   try
     {
-      CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
-      
-
-      if (CORBA::is_nil(obj.in()))
+    /// @todo we have to find out why here is used get_service and not get_component
+    CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
+    
+    return obj._retn();
+    }
+  catch(maciErrType::CannotGetComponentEx &_ex)
+      {
+      maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponent");
+      ex.setCURL(name);
+      throw ex;
+      }
+    catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
 	{
-	  ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'",  curl.c_str()));
-	  return 0;
+	 maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+						"maci::SimpleCleint::getComponent");
+	 ex.setCURL(name);
+	 throw ex;
 	}
-  
-      return obj._retn();
-
-    }
-  catch( CORBA::Exception &ex )
-    {
-      ACE_PRINT_EXCEPTION(ex,
-			  "maci::SimpleClient::getComponent");
-      return CORBA::Object::_nil();
-    }
-  catch(...)
-    {
-      /*		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::SimpleClient::initCORBA",
-			(LM_ERROR, "Unexpected exception occure while destroying CORBA"));
-      */
-      return CORBA::Object::_nil();
-    }
-
-  return CORBA::Object::_nil();
-}
+    catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+					       "maci::SimpleCleint::getComponent");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch( CORBA::SystemException &_ex )
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "maci::SimpleCleint::getComponent");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	maciErrType::CannotGetComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponent");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"maci::SimpleCleint::getComponent");
+	maciErrType::CannotGetComponentExImpl ex(uex, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponent");
+	ex.setCURL(name);
+	throw ex;
+	}//try-catch
+}//getComponent
 
 
 /* ----------------------------------------------------------------*/
@@ -667,7 +687,7 @@ SimpleClient::components_unavailable (const maci::stringSeq & cob_names
   CORBA::ULong len = cob_names.length (); 
   
   for (unsigned int i=0; i < len; i++) {
-  ACS_SHORT_LOG((LM_DEBUG, "Unavailable component: '%s'.", cob_names[i]/*.in()*/));
+  ACS_SHORT_LOG((LM_DEBUG, "Unavailable component: '%s'.", cob_names[i]));
   }
 }
 

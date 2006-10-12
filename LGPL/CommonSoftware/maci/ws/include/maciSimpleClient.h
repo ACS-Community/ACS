@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.93 2006/10/11 20:13:35 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.94 2006/10/12 15:33:11 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -27,6 +27,8 @@
 #include <ace/SString.h>
 
 #include "maciSimpleClientThreadHook.h"
+#include <ACSErrTypeCommon.h>
+#include <maciErrType.h>
 
 namespace maci {
 
@@ -138,21 +140,23 @@ public:
    * @param name name of the component (e.g. MOUTN1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state 
-   * @return reference to the component. If the component could not be activated, a CORBA::Object::_nil() reference is returned,
+   * @return reference to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
    * @see template<class T> T* getComponent
    */
-  CORBA::Object_ptr getComponent(const char *name, const char *domain, bool activate);
+  CORBA::Object_ptr getComponent(const char *name, const char *domain, bool activate)
+      throw (maciErrType::CannotGetComponentExImpl);
 
     /**
      * It just redirect call to the #getComponent
      * @deprecated get_object is deprecated and will be removed in future version of ACS
      */
   CORBA::Object_ptr get_object(const char *name, const char *domain, bool activate)
+      throw (maciErrType::CannotGetComponentExImpl)
 	{
 	    return getComponent(name, domain, activate);
 	}
 
-
+   
   /** 
    * Get a component, activating it if necessary and directly narrows it to the type
    * declared in the template definition.
@@ -161,7 +165,7 @@ public:
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state 
-   * @return reference to the component. If the component could not be activated, a T::_nil() reference is returned,
+   * @return reference to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
    * For example:
    * @code
    *    MACI_TEST::MaciTestClass_var maciTestDO = client.getComponent<MACI_TEST::MaciTestClass>(argv[1], 0, true);
@@ -169,14 +173,16 @@ public:
    * @see getComponent()
    */
     template<class T>
-    T* getComponent(const char *name, const char *domain, bool activate);
+    T* getComponent(const char *name, const char *domain, bool activate)
+	throw (maciErrType::CannotGetComponentExImpl);
 
     /**
      * It just redirected call to #getComponent (template version)
      * @deprecated the method is deprecated and will be removed in future version of ACS
      */
   template<class T>
-    T* get_object(const char *name, const char *domain, bool activate)
+  T* get_object(const char *name, const char *domain, bool activate)
+      throw (maciErrType::CannotGetComponentExImpl)
 	{
 	    return getComponent<T>(name, domain, activate);   
 	}
@@ -305,26 +311,29 @@ private:
 
 template<class T>
 T* SimpleClient::getComponent(const char *name, const char *domain, bool activate)
+    throw (maciErrType::CannotGetComponentExImpl)
 {
-    T* object = T::_nil();
-    
-    /**
-     * Check first if the client is initialized
-     */
-    if(!m_initialized)
+    if(!m_initialized)     // Check first if the client is initialized
 	{
-	ACS_SHORT_LOG((LM_DEBUG, "Client not initialized."));
-	return T::_nil();
-	}
-    
-    /**
-     * Check if <name> is null
-     */
-    if(!name)
+	ACSErrTypeCommon::NotInitializedExImpl notInitEx( __FILE__, __LINE__,
+							  "maci::SimpleCleint::getComponent&lt;&gt;");
+	notInitEx.setName("SimpleClient");
+	maciErrType::CannotGetComponentExImpl ex( notInitEx, __FILE__, __LINE__,
+						  "maci::SimpleCleint::getComponent&lt;&gt;");
+	name ? ex.setCURL(name) : ex.setCURL("NULL");
+	throw ex;
+	}//if
+
+    if(!name)       // Check if <name> is null
 	{
-	ACS_SHORT_LOG((LM_DEBUG, "Name parameter is null."));
-	return T::_nil();
-	}
+	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
+						   "maci::SimpleCleint::getComponent&lt;&gt;");
+	nullEx.setVariable("(parameter) name");
+	maciErrType::CannotGetComponentExImpl ex(nullEx, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL("NULL");
+	throw ex;
+	}//if
     
     /**
      * First creates the CURL, if not already a CURL,
@@ -343,32 +352,56 @@ T* SimpleClient::getComponent(const char *name, const char *domain, bool activat
 	}
     curl += name;
     
-    ACS_SHORT_LOG((LM_DEBUG, "Getting device: '%s'. Creating it...",  curl.c_str()));
+    ACS_SHORT_LOG((LM_DEBUG, "Getting component: '%s'. Creating it...",  curl.c_str()));
     
     try
 	{
+	/// @todo why here is using get_service and not get_component ?
 	CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
-	
-	if (CORBA::is_nil(obj.in()))
-	    {
-	    ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'",  curl.c_str()));
-	    return T::_nil();
-	    }
-	object = T::_narrow(obj.in());
-	
-	return object;
+	return T::_narrow(obj.in());
 	}
-    catch( CORBA::Exception &ex )
+    catch(maciErrType::CannotGetComponentEx &_ex)
 	{
-	ACE_PRINT_EXCEPTION(ex,
-			    "maci::SimpleClient::getComponent");
-	return T::_nil();
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+						 "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+						 "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch( CORBA::SystemException &_ex )
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "maci::SimpleCleint::getComponent&lt;&gt;");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	maciErrType::CannotGetComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+						 "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
 	}
     catch(...)
 	{
-	return T::_nil();
-	}
-    return T::_nil();
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"maci::SimpleCleint::getComponent&lt;&gt;");
+	maciErrType::CannotGetComponentExImpl ex(uex, __FILE__, __LINE__,
+						 "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}//try-catch
 }//getComponent<>
 
 }; 

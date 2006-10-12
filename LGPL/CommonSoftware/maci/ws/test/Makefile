@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.93 2006/09/28 06:29:18 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.94 2006/10/12 15:33:11 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -36,7 +36,8 @@ PROG =
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES_L     = $(PROG) maciTestClient maciTestRegistrar \
-					maciContainerServicesClient maciLifeCycleClient
+			maciContainerServicesClient maciLifeCycleClient \
+			maciTestSimpleClient
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
@@ -53,6 +54,9 @@ maciContainerServicesClient_LIBS = maciClient
 
 maciLifeCycleClient_OBJECTS = maciLifeCycleClient maciTestC
 maciLifeCycleClient_LIBS = maciClient
+
+maciTestSimpleClient_OBJECTS =  maciTestSimpleClient maciTestC
+maciTestSimpleClient_LIBS = maciClient
 
 maciTestRegistrar_OBJECTS 	= maciTestRegistrar
 
