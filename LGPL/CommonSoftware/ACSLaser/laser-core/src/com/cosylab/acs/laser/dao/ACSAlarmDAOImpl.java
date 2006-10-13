@@ -57,6 +57,8 @@ import com.cosylab.acs.laser.dao.xml.LinksToCreate;
 import com.cosylab.acs.laser.dao.xml.Parent;
 import com.cosylab.acs.laser.dao.xml.ReductionDefinitions;
 import com.cosylab.acs.laser.dao.xml.ReductionLink;
+import com.cosylab.acs.laser.dao.xml.Thresholds;
+import com.cosylab.acs.laser.dao.xml.Threshold;
 
 class HardcodedBuilding extends Building
 {
@@ -283,6 +285,8 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		if (conf==null)
 			throw new IllegalStateException("Missing dal");
 		
+
+		Thresholds thresholds=null; 
 		String mama;
 		try {
 			mama=conf.getConfiguration(getAlarmListPath());
@@ -381,7 +385,6 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			} catch (Exception e) {
 				throw new RuntimeException("Couldn't read "+path, e);
 			}
-			
 			ReductionDefinitions rds;
 			try {
 				rds=(ReductionDefinitions) ReductionDefinitions.unmarshal(new StringReader(xml));
@@ -389,17 +392,19 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 				throw new RuntimeException("Couldn't parse "+path, e);
 			}
 			
+			// Read the links to create from the CDB
 			LinksToCreate ltc=rds.getLinksToCreate();
-			
+			//	Read the thresholds from the CDB
+			thresholds = rds.getThresholds();;
 			if (ltc!=null) { 
 				ReductionLink[] rls=ltc.getReductionLink();
 				for (int a=0; a<rls.length; a++) {
 					ReductionLink link=rls[a];
 					Parent p=link.getParent();
 					Child c=link.getChild();
-					if (p==null || c==null)
+					if (p==null || c==null) {
 						throw new RuntimeException("Missing child or parent in a reduction link");
-					
+					}
 					boolean isMulti;
 					if ("MULTIPLICITY".equals(link.getType())) {
 						isMulti=true;
@@ -446,6 +451,26 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 								parent.addNodeChild(aic);
 							}
 						}
+					}
+				}
+			}
+		}
+		
+		if (thresholds!=null && thresholds.getThresholdCount()>0) {
+			Threshold[] ta = thresholds.getThreshold();
+			for (int a=0; a<num; a++) {
+				System.out.println("Checking threshold for "+allAlarms[a].getAlarmId());
+				String aFF = allAlarms[a].getTriplet().getFaultFamily();
+				String aFM = allAlarms[a].getTriplet().getFaultMember();
+				Integer aFC= allAlarms[a].getTriplet().getFaultCode();
+				for (int t=0; t<ta.length; t++) {
+					String rFF=ta[t].getAlarmDefinition().getFaultFamily();
+					String rFM=ta[t].getAlarmDefinition().getFaultMember();
+					int rFC=ta[t].getAlarmDefinition().getFaultCode();
+					int thresholdVal = ta[t].getValue();
+					if (aFF.equals(rFF) && aFM.equals(rFM) && aFC==rFC) {
+						System.out.println("*** Setting threshold = "+thresholdVal+" to "+allAlarms[a].getAlarmId());
+						allAlarms[a].setMultiplicityThreshold(thresholdVal);
 					}
 				}
 			}
