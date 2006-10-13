@@ -44,6 +44,7 @@ import com.cosylab.logging.engine.RemoteAccess;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.NoPermissionEx;
 
 /**
  * This class implements methods for declaring the naming service 
@@ -287,9 +288,13 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		    {
 		    nameService = manager.get_service(0, NAME_SERVICE, false);
 		    }
+		catch(NoPermissionEx e)
+		    {
+		    throw new IllegalStateException("Failed to obtaine NameService from the manager. No permission");
+		    }
 		catch(CannotGetComponentEx e)
 		    {
-		    throw new IllegalStateException("Failed to  obtaine NameService from the manager.");
+		    throw new IllegalStateException("Failed to obtain NameService from the manager.");
 		    }
 		catch(ComponentNotAlreadyActivatedEx e)
 		    {
