@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.91 2006/10/12 15:33:11 bjeram Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.92 2006/10/13 10:43:13 bjeram Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.91 2006/10/12 15:33:11 bjeram Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.92 2006/10/13 10:43:13 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -38,7 +38,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.91 2006/10/12 15:33:11 bjeram Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.92 2006/10/13 10:43:13 bjeram Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -652,8 +652,15 @@ int ProcessReleaseComponent(int argc, const ACE_TCHAR *argv[]
       h = ci.h;
     }
 
-  g_Client->manager ()->release_component (h, GetCURL(curl).c_str());
-  ACE_CHECK_RETURN (ERROR);
+  try
+      {
+      g_Client->releaseComponent (GetCURL(curl).c_str());
+      }
+  catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+      {
+      _ex.log();
+      return ERROR;
+      }
 
   MaciTestClass_ptr mtp;
   g_TestClasses.unbind (argv[1], mtp);

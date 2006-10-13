@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciLifeCycleClient.cpp,v 1.5 2006/10/12 15:33:11 bjeram Exp $"
+* "@(#) $Id: maciLifeCycleClient.cpp,v 1.6 2006/10/13 10:43:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciLifeCycleClient.cpp,v 1.5 2006/10/12 15:33:11 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciLifeCycleClient.cpp,v 1.6 2006/10/13 10:43:13 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -81,7 +81,7 @@ int main (int argc, char **argv)
 	// Get the components that will throw exception
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI_EXCEPTION_COSTR"));
 	    MACI_TEST::DynamicTestClass_var costr = client.getComponent<MACI_TEST::DynamicTestClass>("MACI_EXCEPTION_COSTR", 0, true);
-	    client.manager()->release_component(client.handle(), "MACI_EXCEPTION_COSTR");
+	    client.releaseComponent( "MACI_EXCEPTION_COSTR");
 	    }
 	catch(maciErrType::CannotGetComponentExImpl &_ex)
 	    {
@@ -89,13 +89,18 @@ int main (int argc, char **argv)
 	    // the constructor          
 	    ACS_SHORT_LOG((LM_INFO,"Error getting %s (right behaviour)","MACI_EXCEPTION_COSTR"));
 	    _ex.log();
+	    }
+	catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	    {
+	    _ex.log();
 	    }//try-catch
+	
     
 	try
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI_EXCEPTION_INIT"));
 	    MACI_TEST::DynamicTestClass_var ini = client.getComponent<MACI_TEST::DynamicTestClass>("MACI_EXCEPTION_INIT", 0, true);
-	    client.manager()->release_component(client.handle(), "MACI_EXCEPTION_INIT");
+	    client.releaseComponent("MACI_EXCEPTION_INIT");
 	    }
 	catch(maciErrType::CannotGetComponentExImpl &_ex)
 	    {
@@ -103,19 +108,27 @@ int main (int argc, char **argv)
 	    // the initialize          
 	    ACS_SHORT_LOG((LM_INFO,"Error getting %s (right behaviour)","MACI_EXCEPTION_INIT"));
 	    _ex.log();
+	    }
+	catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	    {
+	    _ex.log();
 	    }//try-catch
 
 	try
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI_EXCEPTION_EXE"));
 	    MACI_TEST::DynamicTestClass_var exe = client.getComponent<MACI_TEST::DynamicTestClass>("MACI_EXCEPTION_EXE", 0, true);
-	    client.manager()->release_component(client.handle(), "MACI_EXCEPTION_EXE");
+	    client.releaseComponent("MACI_EXCEPTION_EXE");
 	    }
 	catch(maciErrType::CannotGetComponentExImpl &_ex)
 	    {
 	    // This is correct because the component launched an exception in
 	    // the execute          
 	    ACS_SHORT_LOG((LM_INFO,"Error getting %s (right behaviour)","MACI_EXCEPTION_EXE"));
+	    _ex.log();
+	    }
+	catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	    {
 	    _ex.log();
 	    }//try-catch
     
@@ -125,12 +138,16 @@ int main (int argc, char **argv)
 	    MACI_TEST::DynamicTestClass_var clean = client.getComponent<MACI_TEST::DynamicTestClass>("MACI_EXCEPTION_CLEAN", 0, true); 
 	    // Release the component (will trigger the component to launch an exception
 	    ACS_SHORT_LOG((LM_INFO,"Releasing MACI_EXCEPTION_CLEAN"));
-	    client.manager()->release_component(client.handle(), "MACI_EXCEPTION_CLEAN");
+	    client.releaseComponent("MACI_EXCEPTION_CLEAN");
 	    }
 	catch(maciErrType::CannotGetComponentExImpl &_ex)
 	    {
 	    // This is an error because the exception is launched deactivating the component          
 	    ACS_SHORT_LOG((LM_ERROR,"Error getting %s (wrong behaviour)","MACI_EXCEPTION_CLEAN"));
+	    _ex.log();
+	    }
+	catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	    {
 	    _ex.log();
 	    }//try-catch
 	
@@ -138,9 +155,13 @@ int main (int argc, char **argv)
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI_EXCEPTION_ABORT"));
 	    MACI_TEST::DynamicTestClass_var abort = client.getComponent<MACI_TEST::DynamicTestClass>("MACI_EXCEPTION_ABORT", 0, true);
-	    client.manager()->release_component(client.handle(), "MACI_EXCEPTION_ABORT");
+	    client.releaseComponent("MACI_EXCEPTION_ABORT");
 	    }
 	catch(maciErrType::CannotGetComponentExImpl &_ex)
+	    {
+	    _ex.log();
+	    }
+	catch(maciErrType::CannotReleaseComponentExImpl &_ex)
 	    {
 	    // This is an error 
 	    // At the present the aboutToAbort is never called

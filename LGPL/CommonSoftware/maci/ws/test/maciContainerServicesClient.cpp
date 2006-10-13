@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesClient.cpp,v 1.6 2006/06/12 14:06:36 msekoran Exp $"
+* "@(#) $Id: maciContainerServicesClient.cpp,v 1.7 2006/10/13 10:43:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.6 2006/06/12 14:06:36 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.7 2006/10/13 10:43:13 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -131,7 +131,7 @@ int main (int argc, char **argv)
     ACS_SHORT_LOG((LM_INFO,"All tests done."));
 	
 	// Release the component
-	client.manager()->release_component(client.handle(), componentName.c_str());
+	client.releaseComponent(componentName.c_str());
 	
 	// Logout from manager
     client.logout();

@@ -11,8 +11,8 @@
 1 - Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
@@ -98,6 +98,7 @@
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI01' activated.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing MACI01 (calling release_componen on manger)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI01 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01': calling cleanUp Lifecycle .
@@ -155,6 +156,8 @@
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing MACI01
+2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .

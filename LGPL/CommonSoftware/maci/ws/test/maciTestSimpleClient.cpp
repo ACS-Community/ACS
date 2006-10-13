@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciTestSimpleClient.cpp,v 1.1 2006/10/12 15:33:11 bjeram Exp $"
+* "@(#) $Id: maciTestSimpleClient.cpp,v 1.2 2006/10/13 10:43:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.1 2006/10/12 15:33:11 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.2 2006/10/13 10:43:13 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -45,15 +45,17 @@ int main (int argc, char **argv)
 	
 	try
 	    {
-	    // first we test old way
+	    // first we test old way of getting and releasing a component
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI01 (deprecated way)"));
 	    MACI_TEST::MaciTestClass_var costr = client.get_object<MACI_TEST::MaciTestClass>("MACI01", 0, true);
+	    ACS_SHORT_LOG((LM_INFO,"Releasing MACI01 (calling release_componen on manger)"));
 	    client.manager()->release_component(client.handle(), "MACI01");
 	    
 	    // .. and here new way
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI04"));
 	    costr = client.getComponent<MACI_TEST::MaciTestClass>("MACI04", 0, true);
-	    client.manager()->release_component(client.handle(), "MACI04");
+	    ACS_SHORT_LOG((LM_INFO,"Releasing MACI01"));
+	    client.releaseComponent("MACI04");
 	    }
 	catch(maciErrType::CannotGetComponentExImpl &_ex)
 	    {

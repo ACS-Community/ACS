@@ -11,8 +11,8 @@
 1 - Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
@@ -58,8 +58,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 of 0 components activated.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 components queued to be activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
@@ -400,6 +400,7 @@
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ComponentInfo, Type: IDL:alma/MACI_TEST/DynamicTestClass:1.0
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ComponentInfo, Code: maciDynComp
 2 - ----------T--:--:--.--- [GlobalLogger - ] All tests done.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI_CS_TEST'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_CS_TEST of type IDL:alma/MACI_TEST/ContainerServicesTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_CS_TEST': calling cleanUp Lifecycle .
