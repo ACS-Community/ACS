@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.92 2006/10/13 10:43:13 bjeram Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.93 2006/10/13 15:15:03 gchiozzi Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.92 2006/10/13 10:43:13 bjeram Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.93 2006/10/13 15:15:03 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -38,7 +38,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.92 2006/10/13 10:43:13 bjeram Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.93 2006/10/13 15:15:03 gchiozzi Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -844,7 +844,7 @@ int ProcessLogout(int argc, const ACE_TCHAR *argv[]
       g_Client->manager ()->logout (ci.h);
       
     }
-  catch (CORBA::NO_PERMISSION &no_permission)
+  catch (NoPermissionEx &no_permission)
     {
       ACS_LOG(LM_RUNTIME_CONTEXT, "ProcessLogout",
 	      (LM_ERROR, "No permission exception caught."));
