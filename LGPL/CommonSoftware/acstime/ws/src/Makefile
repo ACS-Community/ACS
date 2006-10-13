@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.21 2005/03/03 14:11:04 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.22 2006/10/13 06:35:08 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -98,7 +98,7 @@ _acstimeSWIG_OBJECTS   = $(shell if [ $(shell uname) = Linux ]; then echo 'acsti
 			 acstimeTimeUtil \
 			 acstimeDurationHelper acstimeEpochHelper \
 			 acstimeC acstimeS
-_acstimeSWIG_LIBS      = baci ACSTimeError
+_acstimeSWIG_LIBS      = baci ACSTimeError maciErrType
 
 
 
