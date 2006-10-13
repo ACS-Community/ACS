@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.95 2006/09/23 16:39:45 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.96 2006/10/13 06:47:17 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -22,7 +22,7 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-LINK_FILES = ../idl/maciErrTypeComponent.xml $(addsuffix .cpp, $(ManagerShutdown_OBJECTS) $(Container_OBJECTS))
+LINK_FILES = $(addsuffix .cpp, $(ManagerShutdown_OBJECTS) $(Container_OBJECTS))
 
 OPTIMIZE=0
 
@@ -116,7 +116,6 @@ tttlll_OBJECTS  =
 #
 IDL_FILES = 
 
-ACSERRDEF = maciErrTypeComponent 
 
 #
 # man pages to be done
