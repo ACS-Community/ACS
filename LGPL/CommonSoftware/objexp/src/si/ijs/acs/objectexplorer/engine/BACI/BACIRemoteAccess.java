@@ -22,6 +22,7 @@ import javax.swing.*;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.NoPermissionEx;
 
 /**
  * Insert the type's description here.
@@ -627,7 +628,13 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			notifier.reportDebug(
 				"BACIRemoteAccess::disconnect",
 				"Disconnecting from '" + target.getName() + "'.");
-			manager.release_component(handle, (String) baciNode.getUserObject());
+			try {
+			    manager.release_component(handle, (String) baciNode.getUserObject());
+			    }
+			catch (NoPermissionEx npe) {
+			notifier.reportError("Nopermission to release component",
+					     npe);
+			}
 		}
 		else
 		{
@@ -797,7 +804,13 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			"Querying manager for all instances of all types...");
 		long time1 = System.currentTimeMillis();
 		int[] handles = new int[0];
-		infos = manager.get_component_info(handle, handles, "*", "*", false);
+		try {
+	   	   infos = manager.get_component_info(handle, handles, "*", "*", false);
+  		}
+		catch (NoPermissionEx npe) {
+		   notifier.reportError("Nopermission to get component info",
+				     npe);
+		}
 		long time2 = System.currentTimeMillis();
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeRootNode",
@@ -1872,7 +1885,13 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				"Failed to connect to IR, releasing component on Manager, if needed.",
 				e);
 			if (manager != null && obj != null)
+			try {
 				manager.release_component(handle, curl);
+			    }
+			catch (NoPermissionEx npe) {
+			notifier.reportError("Nopermission to release component",
+					     npe);
+			}
 			throw new IllegalStateException("Failed to connect to IR: " + e);
 		}
 	}
