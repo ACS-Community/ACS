@@ -58,7 +58,7 @@ public class SubsysResourceMonitor {
 	/**
 	 * The delay between two monitoring calls to resource.
 	 */
-	public final int delaySeconds;
+	public final int defaultDelaySeconds;
 	
 	private final ScheduledThreadPoolExecutor scheduler;
 	private final Random random;
@@ -79,11 +79,12 @@ public class SubsysResourceMonitor {
     /**
      * @param logger  Logger to be used by this object
      * @param threadFactory  all threads for scheduling and calling the resources will be created by this factory.  
-     * @param delaySeconds  the delay between finishing one monitoring call and starting the next call to the same resource.
-     *                      Values <= 1 will be changed to == 1.
+     * @param defaultDelaySeconds  the default delay between finishing one monitoring call and starting the next call to the same resource.
+     *             Values &lt;= 1 will be changed to == 1. This default can be overridden in method 
+     *             {@link #monitorResource(alma.ACS.MasterComponentImpl.SubsysResourceMonitor.ResourceChecker, alma.ACS.MasterComponentImpl.SubsysResourceMonitor.ResourceErrorHandler, int)}.
      */
-    SubsysResourceMonitor(Logger logger, ThreadFactory threadFactory, int delaySeconds) {
-        this.delaySeconds = Math.max(1, delaySeconds);
+    SubsysResourceMonitor(Logger logger, ThreadFactory threadFactory, int defaultDelaySeconds) {
+        this.defaultDelaySeconds = Math.max(1, defaultDelaySeconds);
 		this.logger = logger;
 		monitorCallThreadPool = Executors.newCachedThreadPool(threadFactory);
         resourceRunners = new HashSet<ResourceCheckRunner>();
@@ -93,6 +94,16 @@ public class SubsysResourceMonitor {
 		random = new Random(System.currentTimeMillis());
 	}
 	
+    
+    /**
+     * Same as {@link #monitorResource(alma.ACS.MasterComponentImpl.SubsysResourceMonitor.ResourceChecker, alma.ACS.MasterComponentImpl.SubsysResourceMonitor.ResourceErrorHandler, int)},
+     * but with the default delay instead of a delay parameter.  
+     */
+    <T> void monitorResource(ResourceChecker<T> checker, ResourceErrorHandler<T> err) {
+    	monitorResource(checker, err, defaultDelaySeconds);
+    }
+    
+    
 	/**
 	 * Starts to periodically monitor the resource that <code>checker</code> contains.
 	 * The monitor delay length is given by {@link #delaySeconds}.
@@ -100,11 +111,12 @@ public class SubsysResourceMonitor {
 	 * In order to randomize check times even if many resources get signed up for monitoring one after the other, 
 	 * the initial delay before the first check is run is taken randomly between 1 second and the period time. 
 	 * @param checker
+	 * @param delaySeconds determines the delay between ending a check call and starting the next one. If &lt;1, then the default is used.
 	 * @throws IllegalStateException if {@link #destroy(long, TimeUnit)} has been called.
      * @throws IllegalArgumentException if any of the arguments are <code>null</code><code>, 
      *         or if checker.getResource()</code> or <code>checker.getResourceName()</code> returns <code>null</code>.
 	 */
-	<T> void monitorResource(ResourceChecker<T> checker, ResourceErrorHandler<T> err) {
+	<T> void monitorResource(ResourceChecker<T> checker, ResourceErrorHandler<T> err, int delaySeconds) {
 		if (isShuttingDown) {
 			throw new IllegalStateException("Resource monitor is already destroyed.");
 		}        
@@ -113,6 +125,9 @@ public class SubsysResourceMonitor {
         }
         if (err == null) {
             throw new IllegalArgumentException("ResourceErrorHandler must not be null");
+        }
+        if (delaySeconds < 1) {
+        	delaySeconds = defaultDelaySeconds;
         }
         synchronized (resourceRunners) {
             for (ResourceCheckRunner runner : resourceRunners) {
