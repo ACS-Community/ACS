@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.96 2006/10/13 06:47:17 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.97 2006/10/13 06:51:10 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -57,7 +57,7 @@ EXECUTABLES_L   =
 
 Container_OBJECTS = maciContainer maciContainerImpl maciHelper maciContainerThreadHook \
                     maciLibraryManager maciServantManager maciORBTask maciContainerServices \
-		    maciComponentStateManager ORBHelper
+		    maciComponentStateManager
 Container_LIBS = 
 
 ManagerShutdown_OBJECTS = maciManagerShutdown 
