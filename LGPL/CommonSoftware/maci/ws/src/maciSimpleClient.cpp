@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.97 2006/10/13 08:32:44 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.98 2006/10/13 10:42:36 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -536,6 +536,36 @@ SimpleClient::getComponent(const char *name,
     return getComponent<CORBA::Object>(name, domain, activate);
 }//getComponent
 
+long  SimpleClient::releaseComponent(const char* name)
+    throw (maciErrType::CannotReleaseComponentExImpl)
+{
+    ACS_SHORT_LOG((LM_DEBUG, "Releasing component: '%s'.",  name));
+    try
+	{
+	return manager()->release_component(m_handle, name);
+	}
+    catch( CORBA::SystemException &_ex )
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "maci::SimpleCleint::releaseComponent");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	maciErrType::CannotReleaseComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+						 "maci::SimpleCleint::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"maci::SimpleCleint::releaseComponent");
+	maciErrType::CannotReleaseComponentExImpl ex(uex, __FILE__, __LINE__,
+						 "maci::SimpleCleint::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
+	}//try-catch					}
+}//releaseComponent
 
 /* ----------------------------------------------------------------*/
 /* ------------------ [ CORBA Client interface ] ------------------*/

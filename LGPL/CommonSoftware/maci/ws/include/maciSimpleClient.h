@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.94 2006/10/12 15:33:11 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.95 2006/10/13 10:42:36 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -186,6 +186,16 @@ public:
 	{
 	    return getComponent<T>(name, domain, activate);   
 	}
+
+    /**
+     * Releases the componet.
+     * @param name component name
+     *  @return Number of clients that are still using the
+     * component after the operation completed. 
+     * @throw maciErrTyp::CannotReleaseComponentExImpl when there is a problem
+     */
+    long releaseComponent(const char* name)
+	throw (maciErrType::CannotReleaseComponentExImpl);
 
   /* ----------------------------------------------------------------*/
   /* ------------------ [ CORBA Client interface ] ------------------*/
