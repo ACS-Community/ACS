@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.34 2005/09/30 09:09:24 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.35 2006/10/13 06:39:03 bjeram Exp $" 
 #
 # Makefile of cdb
 #
@@ -59,7 +59,7 @@ EXECUTABLES_L   =
 # GCH: CCS database not used any more for the time being
 #cdb_OBJECTS_COMMON = cdbCCS cdbField cdb cdbIMDB cdbINIReader cdbDALaccess cdbDAOImpl cdbDAONode cdbDAOProxy
 cdb_OBJECTS_COMMON = cdbField cdb cdbIMDB cdbINIReader cdbDALaccess cdbDAOImpl cdbDAONode cdbDAOProxy
-cdb_OBJECTS   =  $(cdb_OBJECTS_COMMON) cdbErrType
+cdb_OBJECTS   =  $(cdb_OBJECTS_COMMON)
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
@@ -76,8 +76,6 @@ CSOURCENAMES = \
 	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
 
-
-ACSERRDEF = cdbErrType
 
 #
 # IDL FILES

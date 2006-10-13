@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.46 2006/09/25 08:36:59 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.47 2006/10/13 06:39:03 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -196,7 +196,6 @@ CSOURCENAMES = \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
 
 
-#ACSERRDEF = cdbErrType
 
 #
 # IDL FILES
