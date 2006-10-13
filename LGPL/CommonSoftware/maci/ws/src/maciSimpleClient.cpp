@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.96 2006/10/12 15:33:11 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.97 2006/10/13 08:32:44 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -529,100 +529,11 @@ SimpleClient::handle()
 
 CORBA::Object_ptr
 SimpleClient::getComponent(const char *name,
-			 const char *domain, 
-			 bool activate
-			 )
- throw (maciErrType::CannotGetComponentExImpl)
+			   const char *domain, 
+			   bool activate)
+    throw (maciErrType::CannotGetComponentExImpl)
 {
-    if(!m_initialized)                   //  Check first if the client is initialized
-	{
-	ACSErrTypeCommon::NotInitializedExImpl notInitEx( __FILE__, __LINE__,
-							  "maci::SimpleCleint::getComponent");
-	notInitEx.setName("SimpleClient");
-	maciErrType::CannotGetComponentExImpl ex( notInitEx, __FILE__, __LINE__,
-						  "maci::SimpleCleint::getComponent");
-	name ? ex.setCURL(name) : ex.setCURL("NULL");
-	throw ex;
-	}//if
-
-    if(!name) //   Check if <name> is null
-	{
-	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
-						   "maci::SimpleCleint::getComponent");
-	nullEx.setVariable("(parameter) name");
-	maciErrType::CannotGetComponentExImpl ex(nullEx, __FILE__, __LINE__,
-					       "maci::SimpleCleint::getComponent");
-	ex.setCURL("NULL");
-	throw ex;
-	}//if
-  
-	// Get reference of component object
-	// First creates the CURL, if not already a CURL,
-	// and query the Manager for the component
-  char *curl_str = "curl://";
-
-  ACE_CString curl = "";
-  if(strncmp(name, curl_str, strlen(curl_str)) != 0 )
-      {
-      curl += curl_str;
-      if (domain)
-	  curl += domain;
-      
-      curl += ACE_CString("/");
-      }
-  curl += name;
-
-  ACS_SHORT_LOG((LM_DEBUG, "Getting component: '%s'. Creating it...",  curl.c_str()));
-  
-  try
-    {
-    /// @todo we have to find out why here is used get_service and not get_component
-    CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
-    
-    return obj._retn();
-    }
-  catch(maciErrType::CannotGetComponentEx &_ex)
-      {
-      maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
-					       "maci::SimpleCleint::getComponent");
-      ex.setCURL(name);
-      throw ex;
-      }
-    catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
-	{
-	 maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
-						"maci::SimpleCleint::getComponent");
-	 ex.setCURL(name);
-	 throw ex;
-	}
-    catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
-	{
-	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
-					       "maci::SimpleCleint::getComponent");
-	ex.setCURL(name);
-	throw ex;
-	}
-    catch( CORBA::SystemException &_ex )
-	{
-	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
-							    "maci::SimpleCleint::getComponent");
-	corbaProblemEx.setMinor(_ex.minor());
-	corbaProblemEx.setCompletionStatus(_ex.completed());
-	corbaProblemEx.setInfo(_ex._info().c_str());
-	maciErrType::CannotGetComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
-					       "maci::SimpleCleint::getComponent");
-	ex.setCURL(name);
-	throw ex;
-	}
-    catch(...)
-	{
-	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
-							"maci::SimpleCleint::getComponent");
-	maciErrType::CannotGetComponentExImpl ex(uex, __FILE__, __LINE__,
-					       "maci::SimpleCleint::getComponent");
-	ex.setCURL(name);
-	throw ex;
-	}//try-catch
+    return getComponent<CORBA::Object>(name, domain, activate);
 }//getComponent
 
 
