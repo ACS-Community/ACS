@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2005/09/21 10:32:36 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/10/13 06:45:07 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -32,7 +32,7 @@
 #    None
 #------------------------------------------------------------------------
 # List of files to be linked
-LINK_FILES = $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES)))
+LINK_FILES = $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) ../idl/cdbErrType.xml
 #
 
 #
@@ -121,6 +121,8 @@ USER_IDL =
 # Configuration Database Files
 # ----------------------------
 CDB_SCHEMAS = 
+
+ACSERRDEF = cdbErrType
 
 #
 # man pages to be done
