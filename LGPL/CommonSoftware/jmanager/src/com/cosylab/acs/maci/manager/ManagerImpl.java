@@ -2475,8 +2475,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Used to store original values and then restored after called via shutdownImplementation.
 	 * Default values are values when called via shutdownImplemention.
 	 */
-	private int originalId = MANAGER_MASK;
-	private int originalContainers = 0;
+	private volatile int originalId = MANAGER_MASK;
+	private volatile int originalContainers = 0;
 
 	/**
 	 * @see com.cosylab.acs.maci.Manager#shutdown(int, int)
