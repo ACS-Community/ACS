@@ -783,14 +783,18 @@ module maci {
 		*/
 		ClientInfo login (
 			in Client reference	///< A reference to the Client.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
+
 
 		/** 
 		    Logout from MACI.
 		 */
 		void logout (
 			in Handle id	///< Handle of the Client that is logging out.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
+
 
 		/** 
 		    Register a CORBA object as a component, 
@@ -806,7 +810,8 @@ module maci {
 			in string type,
 			in Object c	///< Reference to the CORBA object (component).
 			)
-		    raises (maciErrType::CannotRegisterComponentEx);
+		    raises (maciErrType::NoPermissionEx,
+			    maciErrType::CannotRegisterComponentEx);
 
 		/** 
 		    Unregister a component from the Manager.
@@ -815,7 +820,8 @@ module maci {
 			in Handle id,	///< Identification of the caller. The caller must have the REGISTER_COMPONENT access right to perform this operation.
 			in Handle h	///< component's handle. The component must have been previously registered through the call to register_component. If there are clients still using this component, a components_unavailable notification is issued to all of them, and the component is unregistered.
 			)
-		    raises (maciErrType::CannotUnregisterComponentEx);
+		    raises (maciErrType::NoPermissionEx,
+			    maciErrType::CannotUnregisterComponentEx);
 
 		/** 
 		    Get a service, activating it if necessary (components). 
@@ -834,7 +840,7 @@ module maci {
 		        /**
 			   Identification of the caller. If this is an
 			   invalid handle, or if the caller does not have
-			   enough access rights, a CORBA::NO_PERMISSION
+			   enough access rights, a maciErrType::NoPermissionEx
 			   exception is raised. 
 			*/
 			in Handle id,
@@ -851,7 +857,8 @@ module maci {
 			*/
 			in boolean activate
 			)
-		    raises (maciErrType::CannotGetComponentEx,
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx,
 			    maciErrType::ComponentNotAlreadyActivatedEx,
 			    maciErrType::ComponentConfigurationNotFoundEx);
 
@@ -870,7 +877,7 @@ module maci {
 		        /**
 			   Identification of the caller. If this is an
 			   invalid handle, or if the caller does not have
-			   enough access rights, a CORBA::NO_PERMISSION
+			   enough access rights, a maciErrType::NoPermissionEx
 			   exception is raised. 
 			*/
 			in Handle id,
@@ -887,7 +894,8 @@ module maci {
 			*/
 			in boolean activate
 			)
-		    raises (maciErrType::CannotGetComponentEx,
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx,
 			    maciErrType::ComponentNotAlreadyActivatedEx,
 			    maciErrType::ComponentConfigurationNotFoundEx);
 
@@ -922,7 +930,7 @@ module maci {
 			/**
 			   Identification of the caller. If this is an invalid handle, or if the
 			   caller does not have enough access rights, a
-			   CORBA::NO_PERMISSION exception is raised. 
+			   maciErrType::NoPermissionEx exception is raised. 
 			 */
 			in Handle id,
 			/**
@@ -930,7 +938,8 @@ module maci {
 			 */
 			in CURL component_url
 			)
-		    raises (maciErrType::CannotGetComponentEx,
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx,
 			    maciErrType::ComponentNotAlreadyActivatedEx);
 
 		/** 
@@ -943,12 +952,13 @@ module maci {
 		    @return A sequence of requested services.
 		 */
 		ObjectSeq get_services (
-			in Handle id,	///< Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+			in Handle id,	///< Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 			in CURLSeq service_urls,	///< A sequence of CURLs of the services whose references are to be retrieved.
 			in boolean activate,	///< True if the services are to be activated in case they do not exist. If set to False, and the i-th service does not exist, the i-th element of the status is set to COMPONENT_NOT_ACTIVATED and the i-th reference in the result is set to nil.
 			out ulongSeq status	///< Statuses of individual requests -- one element per request. Can be one of COMPONENT_ACTIVATED, COMPONENT_NONEXISTENT and COMPONENT_NOT_ACTIVATED.
 			)
-		    raises (maciErrType::CannotGetServiceEx);
+		    raises (maciErrType::NoPermissionEx,
+			    maciErrType::CannotGetServiceEx);
 
 
 		/** 
@@ -961,26 +971,30 @@ module maci {
 		    @return A sequence of requested components.
 		 */
 		ObjectSeq get_components (
-			in Handle id,	///< Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+			in Handle id,	///< Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 			in CURLSeq component_urls,	///< A sequence of CURLs of the components whose references are to be retrieved.
 			in boolean activate,	///< True if the components are to be activated in case they do not exist. If set to False, and the i-th service does not exist, the i-th element of the status is set to COMPONENT_NOT_ACTIVATED and the i-th reference in the result is set to nil.
 			out ulongSeq status	///< Statuses of individual requests -- one element per request. Can be one of COMPONENT_ACTIVATED, COMPONENT_NONEXISTENT and COMPONENT_NOT_ACTIVATED.
 			)
-		    raises (maciErrType::CannotGetComponentEx);
+		    raises (maciErrType::NoPermissionEx,
+			    maciErrType::CannotGetComponentEx);
 
 
 		/** Change mortality state of an component. 
 		    Component must be already active, otherwise 
-		    CORBA::NO_RESOURCE exception will be thrown. 
+		    maciErrType::ComponentNotAlreadyActivatedEx exception will be thrown. 
 		    The caller must be an owner of an component or 
-		    have administator rights, otherwise CORBA::NO_PERMISSION 
+		    have administator rights, otherwise maciErrType::NoPermissionEx 
 		    exception will be thrown. 
 		*/
 		void make_component_immortal (
 			in Handle id,	///< Identification of the caller. The caller must be an owner of an component or have administator rights.
 			in CURL component_url,	///< The CURL of the component whose mortality to change.
 			in boolean immortal_state	///< New mortality state.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx,
+			    maciErrType::ComponentNotAlreadyActivatedEx);
+
 
 		/** 
 		    Release a component. 
@@ -1000,7 +1014,8 @@ module maci {
 		long release_component (
 			in Handle id,	///< Identification of the caller. The caller must have previously gotten the component through get_component.
 			in CURL component_url	///< The CURL of the component to be released.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
 
 		/** 
 		    Releases a component also if still referenced by other components/clients.
@@ -1010,7 +1025,8 @@ module maci {
 		long force_release_component (
 			in Handle id,	///< Identification of the caller.  
 			in CURL component_url	///< The CURL of the component to be (forcefully) released.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
 
 		/** Release components.
 		 * @deprecated
@@ -1018,7 +1034,8 @@ module maci {
 		void release_components (
 			in Handle id,	///< Identification of the caller.
 			in CURLSeq component_urls	///< CURLs of the components to be released.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
 
 		/** 
 		    Shutdown the Manager.
@@ -1049,7 +1066,8 @@ module maci {
 			in Handle id,	///< Identification of the caller.
 			in HandleSeq h,	///< Handles of the containers whose information is requested. If this is an empty sequence, the name_wc parameter is used.
 			in string name_wc	///< Wildcard that the container's name must match in order for its information to be returned.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
 
 		/** 
 		    Get all the information that the Manager has about its current
@@ -1068,7 +1086,8 @@ module maci {
 			in Handle id,	///< Identification of the caller.
 			in HandleSeq h,	///< Handles of the clients whose information is requested. If this is an empty sequence, the name_wc parameter is used.
 			in string name_wc	///< Wildcard that the client's name must match in order for its information to be returned.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
 
 		/** 
 		    Get all the information that the Manager has about components. To
@@ -1098,7 +1117,8 @@ module maci {
 			in string name_wc,	///< Wildcard that the component's name must match in order for its information to be returned.
 			in string type_wc,	///< Wildcard that the component's type must match in order for its information to be returned.
 			in boolean active_only
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
 
 		/** 
 		    Restarts a component. 
@@ -1107,7 +1127,8 @@ module maci {
 			in Handle client,	///< Identification of the caller.
 			in CURL component_url	///< CURL of the component to be restarted.
 			)
-		    raises (maciErrType::CannotGetComponentEx);
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx);
 
 		/** 
 		    Activation of dynamic component. 
@@ -1117,7 +1138,8 @@ module maci {
 			in ComponentSpec c,	///< Component to be obtained.
 			in boolean mark_as_default	///< Mark component as default component of its type.
 			)
-			raises (maciErrType::IncompleteComponentSpecEx, 
+			raises (maciErrType::NoPermissionEx, 
+				maciErrType::IncompleteComponentSpecEx, 
 				maciErrType::InvalidComponentSpecEx, 
 				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
 				maciErrType::CannotGetComponentEx);
@@ -1132,7 +1154,8 @@ module maci {
 			in Handle client,	///< Identification of the caller.
 			in ComponentSpecSeq components	///< Components to be obtained.
 			)
-			raises (maciErrType::IncompleteComponentSpecEx, 
+			raises (maciErrType::NoPermissionEx, 
+				maciErrType::IncompleteComponentSpecEx, 
 				maciErrType::InvalidComponentSpecEx, 
 				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
 				maciErrType::CannotGetComponentEx);
@@ -1147,7 +1170,8 @@ module maci {
 			in boolean mark_as_default,	///< Mark component as default component of its type.
 			in CURL target_component	///< CURL of the target component (where to activate component).
 			)
-			raises (maciErrType::IncompleteComponentSpecEx, 
+			raises (maciErrType::NoPermissionEx, 
+				maciErrType::IncompleteComponentSpecEx, 
 				maciErrType::InvalidComponentSpecEx, 
 				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
 				maciErrType::CannotGetComponentEx);
@@ -1159,7 +1183,8 @@ module maci {
 			in Handle client,	///< Identification of the caller.
 			in string component_type	///< Component IDL type (e.g. IDL:alma/PS/PowerSupply:1.0).
 			)
-			raises (maciErrType::NoDefaultComponentEx, 
+			raises (maciErrType::NoPermissionEx, 
+				maciErrType::NoDefaultComponentEx, 
 				maciErrType::CannotGetComponentEx);
 
 		/** 
@@ -1169,7 +1194,9 @@ module maci {
 			in Handle id,	///< Identification of the caller.
 			in string container_name,	///< Name of the container to be shutdown.
 			in unsigned long action         ///< The code to send to shutdown methods of the container. If 0, the container's disconnect method are is called instead.
-			);
+			)
+                    raises (maciErrType::NoPermissionEx);
+
 	};
 
 };

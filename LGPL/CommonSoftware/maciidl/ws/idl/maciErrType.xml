@@ -172,4 +172,13 @@ This file has to be moved into the TICS subsystem
 			description="CURL/Name of the component."
 		/>
 	</ErrorCode>
+
+        <ErrorCode name="NoPermission"
+            shortDescription="No permission"
+            description="No permission for attempted operation">
+                <Member name="reason"
+                        type="string"
+                        description="Description of a reason causing no permission exception."
+                />
+        </ErrorCode>
 </Type>
