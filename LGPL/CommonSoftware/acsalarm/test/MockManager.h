@@ -98,24 +98,24 @@ namespace maci
 			maciErrType::ComponentConfigurationNotFoundEx) { return CORBA::Object::_nil(); }
 
 		/** 
-		    Get a non-stiky reference to a component.
+		    Get a non-sticky reference to a component.
 
-		    A non-stiky reference does not bind the
+		    A non-sticky reference does not bind the
 		    Manager to keep alive the Component and 
-		    the Client requesting for a non-stiky references
+		    the Client requesting for a non-sticky references
 		    is not considered when checking for reference
 		    counts. 
 		    The Manager can deactivate Components
-		    independently from any non-stiky reference.
+		    independently from any non-sticky reference.
 
 		    This is typically used by "weak clients" like
 		    graphical user interfaces.
 
-                    Since a non-stiky reference is not considered in
+                    Since a non-sticky reference is not considered in
                     reference counting, it will also not activate
 		    the component if it is not already active.
 
-		    As a consequence, asking for a non-stiky reference
+		    As a consequence, asking for a non-sticky reference
                     to a not-active Component throws an exception.
   
 		    The client represented by id (the handle) must 
@@ -123,7 +123,7 @@ namespace maci
 		    
 		    @return Reference to the component. 
 		*/
-		virtual ::CORBA::Object_ptr get_component_non_stiky (maci::Handle id, const char * component_url)
+		virtual ::CORBA::Object_ptr get_component_non_sticky (maci::Handle id, const char * component_url)
       	throw (CORBA::SystemException, maciErrType::CannotGetComponentEx, maciErrType::ComponentNotAlreadyActivatedEx) { return CORBA::Object::_nil(); }
 
 		/** 
@@ -303,14 +303,15 @@ namespace maci
       	throw (CORBA::SystemException) {}
 
 
-		virtual maci::LoggingConfigurable::LogLevels get_default_logLevels() throw (CORBA::SystemException) {}
-		virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*) throw (CORBA::SystemException) {}
+		virtual maci::LoggingConfigurable::LogLevels get_default_logLevels() throw (CORBA::SystemException) { maci::LoggingConfigurable::LogLevels ll; return ll; }
+		virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*) throw (CORBA::SystemException) { maci::LoggingConfigurable::LogLevels ll; return ll; }
 		virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&) throw (CORBA::SystemException) {}
 		virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&) throw (CORBA::SystemException) {}
 		virtual void refresh_logging_config() throw (CORBA::SystemException) {}
 
 		virtual maci::stringSeq* get_logger_names() throw (CORBA::SystemException) { return NULL; }
 		virtual char* domain_name() throw (CORBA::SystemException) { return NULL; }
+  	        virtual CORBA::Boolean ping() throw (CORBA::SystemException) { return false; }
 
 	};
 }
