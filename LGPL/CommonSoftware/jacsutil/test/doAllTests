@@ -57,6 +57,7 @@ PROPS_CLASSLOADER="-Djava.system.class.loader=alma.acs.classloading.AcsSystemCla
 
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.classloading.TestMain myRunArg1
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.algorithms.TopologicalSortTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.jhelpgen.GenTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.DateConversionTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.XmlNormalizerTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.AcsLocationsTest
