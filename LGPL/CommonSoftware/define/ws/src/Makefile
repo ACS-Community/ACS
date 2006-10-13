@@ -59,7 +59,7 @@ ACSERRDEF = ArchiveIdentifierError
 # 
 # IDL Files and flags
 # 
-IDL_FILES = xmlentity archive_xmlstore_if archive_pingable_if
+IDL_FILES = xmlentity archive_pingable_if archive_xmlstore_if 
 IDL_TAO_FLAGS =
 USER_IDL =
 
