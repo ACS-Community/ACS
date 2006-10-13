@@ -22,5 +22,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
