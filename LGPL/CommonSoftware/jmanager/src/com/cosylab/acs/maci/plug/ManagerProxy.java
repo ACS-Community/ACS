@@ -10,13 +10,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URI;
 
-import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.Object;
 
 import abeans.core.Identifiable;
 import abeans.core.Identifier;
 import abeans.core.IdentifierSupport;
 import abeans.pluggable.RemoteException;
+import alma.maciErrType.NoPermissionEx;
 
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientInfo;
@@ -134,7 +134,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 			
 			return retVal;
 		}
-		catch (NO_PERMISSION npex)
+		catch (NoPermissionEx npex)
 		{
 		    NoPermissionException npe = new NoPermissionException(this, "Remote manager has thrown no permission exception.", npex);
 			npe.caughtIn(this, "getComponent");
@@ -183,7 +183,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 			
 			return retVal;
 		}
-		catch (NO_PERMISSION npex)
+		catch (NoPermissionEx npex)
 		{
 		    NoPermissionException npe = new NoPermissionException(this, "Remote manager has thrown no permission exception.", npex);
 			npe.caughtIn(this, "getComponentInfo");

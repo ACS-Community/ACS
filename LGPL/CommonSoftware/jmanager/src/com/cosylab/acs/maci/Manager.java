@@ -317,7 +317,7 @@ public interface Manager
 	 * must have adequate access rights to access the Component. This is untrue of components:
 	 * components always have unlimited access rights to other components.
 	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a <code>NoPermissionException</code> exception is raised.
 	 * @param component_url CURL of the Component whose reference is to be retrieved.
 	 * @return Reference to the Component.
 	 */

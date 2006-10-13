@@ -59,6 +59,7 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
@@ -170,6 +171,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *		  If access is denied to a subset of objects, the handles to those objects are set to 0.
 	 */
 	public ContainerInfo[] get_container_info(int id, int[] h, String name_wc)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -223,7 +225,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -263,6 +267,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *		  If access is denied to a subset of objects, the handles to those objects are set to 0.
 	 */
 	public ClientInfo[] get_client_info(int id, int[] h, String name_wc)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -317,7 +322,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -362,6 +369,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *		  If access is denied to a subset of objects, the handles to those objects are set to 0.
 	 */
 	public ComponentInfo[] get_component_info(int id, int[] h, String name_wc, String type_wc, boolean active_only)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -431,7 +439,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -465,13 +475,13 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * must have adequate access rights to access the Component. This is untrue of components:
 	 * components always have unlimited access rights to other components.
 	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param component_url CURL of the Component whose reference is to be retrieved.
 	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
 	 * @return Reference to the Component. If the Component could not be activated, an exception is throw.
 	 */
 	public Object get_component(int id, String component_url, boolean activate)
-	    throws CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
+	    throws NoPermissionEx, CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
 	{
 		pendingRequests.increment();
 		try
@@ -510,7 +520,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			 */ 
 			if (component == null || component.getObject() == null)
 			{
-			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED)
+			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED && !activate)
 			    	throw new AcsJComponentNotAlreadyActivatedEx();
 			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NONEXISTANT)
 			    	throw new AcsJComponentConfigurationNotFoundEx();
@@ -552,7 +562,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -607,12 +619,12 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * must have adequate access rights to access the Component. This is untrue of components:
 	 * components always have unlimited access rights to other components.
 	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param component_url CURL of the Component whose reference is to be retrieved.
 	 * @return Reference to the Component.
 	 */
 	public Object get_component_non_sticky(int id, String component_url)
-		throws CannotGetComponentEx, ComponentNotAlreadyActivatedEx
+		throws NoPermissionEx, CannotGetComponentEx, ComponentNotAlreadyActivatedEx
 	{
 		pendingRequests.increment();
 		try
@@ -671,7 +683,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -717,7 +731,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	/**
 	 * Used for retrieving several components with one call.
 	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param component_urls CURL of the components whose reference is to be retrieved.
 	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
 	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
@@ -726,6 +740,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return A sequence of requested components.
 	 */
 	public Object[] get_components(int id, String[] component_urls, boolean activate,	ulongSeqHolder status)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -804,7 +819,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -847,6 +864,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *			handles of all components previously hosted by the Container.)
 	 */
 	public ClientInfo login(Client reference)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -917,7 +935,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -951,6 +971,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param id Handle of the Client that is logging out
 	 */
 	public void logout(int id)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -979,7 +1000,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1018,7 +1041,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return Returns the handle of the newly created Component.
 	 */
 	public int register_component(int id, String component_url, String type, Object component)
-		throws CannotRegisterComponentEx
+		throws NoPermissionEx, CannotRegisterComponentEx
 	{
 		pendingRequests.increment();
 		try
@@ -1062,7 +1085,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1099,15 +1124,16 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 	/**
 	 * Change mortality state of an component.
-	 * Compnent must be already active, otherwise CORBA::NO_RESOURCE exception will be thrown.
+	 * Compnent must be already active, otherwise ComponentNotAlreadyActivatedEx exception will be thrown.
 	 * The caller must be an owner of an component or have administator rights,
-	 * otherwise CORBA::NO_PERMISSION exception will be thrown.
+	 * otherwise NoPermissionEx exception will be thrown.
 	 * 
 	 * @param id Identification of the caller. The caller must be an owner of an component or have administator rights.
 	 * @param component_url The CURL of the component whose mortality to change.
 	 * @param immortal_state New mortality state.
 	 **/
 	public void make_component_immortal(int id, String component_url, boolean immortal_state)
+		throws NoPermissionEx, ComponentNotAlreadyActivatedEx
 	{
 		pendingRequests.increment();
 		try
@@ -1150,8 +1176,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
+		// @todo 
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -1160,7 +1189,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnre);
 
 			// rethrow CORBA specific
-			throw new NO_RESOURCES(nre.getMessage());
+			throw new AcsJComponentNotAlreadyActivatedEx().toComponentNotAlreadyActivatedEx();
 		}
 		catch (Throwable ex)
 		{
@@ -1190,6 +1219,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *		  This is a useful debugging tool.
 	 */
 	public int release_component(int id, String component_url)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -1232,7 +1262,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1269,6 +1301,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @see release_component
 	 */
 	public void release_components(int id, String[] component_urls)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -1319,7 +1352,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1356,6 +1391,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 *		  This is a useful debugging tool.
 	 */
 	public int force_release_component(int id, String component_url)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -1398,7 +1434,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1462,6 +1500,10 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
+			// AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			// ex.setreason(npe.getMessage());
+			// throw ex.toNoPermissionEx();
+			// since shutdown is oneway no user exceptions are allowed
 			throw new NO_PERMISSION(npe.getMessage());
 		}
 		catch (NoResourcesException nre)
@@ -1499,7 +1541,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * a components_unavailable notification is issued to all of them, and the Component is unregistered.
 	 */
 	public void unregister_component(int id, int h)
-		throws CannotUnregisterComponentEx
+		throws NoPermissionEx, CannotUnregisterComponentEx
 	{
 		pendingRequests.increment();
 		try
@@ -1528,7 +1570,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1570,16 +1614,13 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return	<code>ComponentInfo</code> of requested component.
 	 */
     public ComponentInfo get_default_component(int id, String type)
-    	throws NoDefaultComponentEx, CannotGetComponentEx
+    	throws NoPermissionEx, NoDefaultComponentEx, CannotGetComponentEx
     {
 		pendingRequests.increment();
 		try
 		{
 			if (isDebug())
 				new MessageLogEntry(this, "get_default_component", new java.lang.Object[] { new Integer(id), type } ).dispatch();
-
-			// invalid info (replacement for null)
-			final ComponentInfo invalidInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
 
 			// returned value
 			ComponentInfo retVal = null;
@@ -1644,7 +1685,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1687,15 +1730,12 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return	<code>ComponentInfo</code> of requested component.
 	 */
 	public ComponentInfo get_dynamic_component(int id, si.ijs.maci.ComponentSpec c, boolean mark_as_default)
-		throws IncompleteComponentSpecEx, 
+		throws NoPermissionEx, IncompleteComponentSpecEx, 
 	               InvalidComponentSpecEx, 
 	               ComponentSpecIncompatibleWithActiveComponentEx,
 	               CannotGetComponentEx
 	{
 		pendingRequests.increment();
-
-		// invalid info (replacement for null)
-		final ComponentInfo invalidInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
 
 		try
 		{
@@ -1820,7 +1860,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1863,6 +1905,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @see #get_dynamic_component
 	 */
 	public ComponentInfo[] get_dynamic_components(int id, si.ijs.maci.ComponentSpec[] components)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -1960,7 +2003,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1999,15 +2044,12 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 */
 	public ComponentInfo get_collocated_component(int id, si.ijs.maci.ComponentSpec c,
 			boolean mark_as_default, String target_component)
-	    throws IncompleteComponentSpecEx,
+	    throws NoPermissionEx, IncompleteComponentSpecEx,
 	           InvalidComponentSpecEx,
 	           ComponentSpecIncompatibleWithActiveComponentEx, 
 	           CannotGetComponentEx
 	{
 		pendingRequests.increment();
-
-		// invalid info (replacement for null)
-		final ComponentInfo invalidInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
 
 		try
 		{
@@ -2131,7 +2173,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -2171,7 +2215,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * The client represented by id (the handle) must have adequate access rights to access the service.
 	 * NOTE: a component is also a service, i.e. a service activated by a container.
 	 * 
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param service_url CURL of the service whose reference is to be retrieved.
 	 * @param activate True if the component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
 	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
@@ -2180,7 +2224,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @see #get_component
 	 */
 	public Object get_service(int id, String service_url, boolean activate)
-		throws CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
+		throws NoPermissionEx, CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
 	{
 		pendingRequests.increment();
 		try
@@ -2239,7 +2283,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -2277,7 +2323,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	/**
 	 * Used for retrieving several services with one call.
 	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param service_urls CURL of the services whose reference is to be retrieved.
 	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
 	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
@@ -2285,6 +2331,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return A sequence of requested services.
 	 */
 	public Object[] get_services(int id, String[] service_urls, boolean activate, ulongSeqHolder status)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -2363,7 +2410,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -2398,6 +2447,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @return	CORBA reference of the restarted component, <code>null</code> if it fails.
 	 */
 	public Object restart_component(int id, String component_url)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -2452,7 +2502,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -2489,6 +2541,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param	action	The code to send to shutdown method of the container. If <code>0</code>, the Container's disconnect methods is called instead.
 	 */
 	public void shutdown_container(int id, String container_name, int action)
+		throws NoPermissionEx
 	{
 		pendingRequests.increment();
 		try
@@ -2517,7 +2570,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			reportException(hnpe);
 
 			// rethrow CORBA specific
-			throw new NO_PERMISSION(npe.getMessage());
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setreason(npe.getMessage());
+			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
