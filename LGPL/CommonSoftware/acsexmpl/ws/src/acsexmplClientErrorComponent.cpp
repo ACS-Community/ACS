@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.5 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.5 2006/10/13 14:04:27 bjeram Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -168,30 +168,41 @@ ClientErrorComponent::ClientErrorComponent(SimpleClient &client,
 {
     ACS_TRACE("ClientErrorComponent::ClientErrorComponent");
 
+    try
+	{
     /*
      * Get the specific component we have requested
      * Add exception handling.
      */
 
     foo_m = 
-	client_m.get_object<acsexmplErrorComponent::ErrorComponent>(errorComponent_m.c_str(), 0, true);    
-    if (CORBA::is_nil(foo_m.in()) == true)
-	{
-	throw ACSErrTypeCommon::CouldntAccessComponentExImpl(
-				   __FILE__, __LINE__,
-				   "ClientErrorComponent::ClientErrorComponent");
+	client_m.getComponent<acsexmplErrorComponent::ErrorComponent>(errorComponent_m.c_str(), 0, true);    
 	}
-}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	throw ACSErrTypeCommon::CouldntAccessComponentExImpl(_ex,
+							     __FILE__, __LINE__,
+							     "ClientErrorComponent::ClientErrorComponent");
+	
+	}//try-catch
+}//ClientErrorComponent
 
 ClientErrorComponent::~ClientErrorComponent()
 { 
     ACS_TRACE("ClientErrorComponent::~ClientErrorComponent");
 
+    try
+	{
    /*
      * Release the component
      */
-    client_m.manager()->release_component(client_m.handle(), errorComponent_m.c_str());
-}
+    client_m.releaseComponent( errorComponent_m.c_str());
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	}
+}//~ClientErrorComponent
 
 void ClientErrorComponent::TestOk() 
     throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)

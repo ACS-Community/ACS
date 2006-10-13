@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientDynamicComponent.cpp,v 1.7 2004/10/14 22:25:02 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClientDynamicComponent.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -78,13 +78,15 @@ it's a <a href="group__ACSEXMPLHWDOC.html">Hello World</a> component.
 #include <maciSimpleClient.h>
 #include "acsexmplHelloWorldC.h"
 
-ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClientDynamicComponent.cpp,v 1.7 2004/10/14 22:25:02 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClientDynamicComponent.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $")
 using namespace maci;
        
 /*******************************************************************************/
     
 int main(int argc, char *argv[])
 {
+    ComponentInfo_var cInfo;
+
     // Checks command-line arguments.
     if (argc < 2)
 	{
@@ -126,7 +128,7 @@ int main(int argc, char *argv[])
 	//The IDL ComponentInfo structure returned by the get_dynamic_component method
 	//contains tons of information about the newly created component and the most important
 	//field is "reference" (i.e., the unnarrowed dynamic component).
-	ComponentInfo_var cInfo  = client.manager()->get_dynamic_component(client.handle(),    //Must pass the client's handle
+	cInfo  = client.manager()->get_dynamic_component(client.handle(),    //Must pass the client's handle
 									   cSpec.in(),    //Pass the component specifications
 									   false);    //Inform manager this component is NOT the default for it's type!
  
@@ -145,18 +147,70 @@ int main(int argc, char *argv[])
 	    {
 	    ACS_SHORT_LOG((LM_ERROR, "Bad reference retrieved from manager"));
 	    }
-
-	//Must remember to release the dynamic component!
-	client.manager()->release_component(client.handle(), cInfo->name);	
-	
-	//Cleanly log out of manager.
-	client.logout();
+	}
+// first we catch CORBA user exception ...
+    catch( maciErrType::IncompleteComponentSpecEx &_ex)  // can be thrown by get_dynamic_component
+	{
+	// we convert CORBA exception to C++ local exception
+	maciErrType::IncompleteComponentSpecExImpl ex(_ex);
+	ex.log();
+	}
+    catch( maciErrType::InvalidComponentSpecEx &_ex) // can be thrown by get_dynamic_component
+	{
+	// we convert CORBA exception to C++ local exception
+	maciErrType::InvalidComponentSpecExImpl ex(_ex);
+	ex.log();
+	}
+    catch( maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &_ex) // can be thrown by get_dynamic_component
+	{
+	// we convert CORBA exception to C++ local exception
+	maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl ex(_ex);
+	ex.log();
+	}
+    catch( maciErrType::CannotGetComponentEx &_ex) // can be thrown by get_dynamic_component
+	{
+	// we convert CORBA exception to C++ local exception
+	maciErrType::CannotGetComponentExImpl ex(_ex);
+	ex.log();
+	}
+    catch( CORBA::SystemException &_ex )  // ... than CORBA system exception
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "main");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	corbaProblemEx.log();
+	return -1;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Something bad happened!"));
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
 	return -1;
+	}//try-catch
+
+	try
+	    {
+	    //Must remember to release the dynamic component!
+	    client.releaseComponent( cInfo->name);	
+	
+	    //Cleanly log out of manager.
+	    client.logout();
 	}
+	catch(maciErrType::CannotReleaseComponentExImpl &_ex) // this can be thrown by releaseComponent
+	    {
+	    _ex.log();
+	    return -1;
+	    }
+	catch(...)
+	    {
+	    ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							    "main");
+	    uex.log();
+	    return -1;
+	    }//try-catch
   
     //sleep for 3 sec to allow everytihng to cleanup and stabilize
     //so that the tests can be determinitstic.

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplClientWave.cpp,v 1.100 2006/03/24 13:03:00 vwang Exp $"
+* "@(#) $Id: acsexmplClientWave.cpp,v 1.101 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,7 @@ This example shows a client that:
 #include <acsThread.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmpClientWave, "$Id: acsexmplClientWave.cpp,v 1.100 2006/03/24 13:03:00 vwang Exp $")
+ACE_RCSID(acsexmpl, acsexmpClientWave, "$Id: acsexmplClientWave.cpp,v 1.101 2006/10/13 14:04:27 bjeram Exp $")
 using namespace ACS;
 using namespace maci;
 
@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
 	{
 	//Now gets the specific MOUNT we have requested on the command-line
 	ACS_SHORT_LOG((LM_INFO, "Getting component: %s", argv[1]));
-	MOUNT_ACS::Mount_var mount = client.get_object<MOUNT_ACS::Mount>(argv[1], 0, true);	    
+	MOUNT_ACS::Mount_var mount = client.getComponent<MOUNT_ACS::Mount>(argv[1], 0, true);	    
 	
 	//Prints the descriptor of the requested component
 	ACS_SHORT_LOG((LM_DEBUG, "Requesting descriptor()... "));
@@ -258,22 +258,38 @@ int main(int argc, char *argv[])
 	ACE_Time_Value tv(LENGTH);
 	client.run(tv);
 	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
+	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
-	}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
+	}//try-catch
     
     //Another try section where we release our component and logout from manager
     try
 	{
 	ACS_SHORT_LOG((LM_INFO,"Releasing..."));
-	client.manager()->release_component(client.handle(), argv[1]);	
+	client.releaseComponent(argv[1]);	
 	client.logout();
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
-	}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
+	}//try-catch
     
 
     //sleep for 3 sec to allow everytihng to cleanup and stabilyse

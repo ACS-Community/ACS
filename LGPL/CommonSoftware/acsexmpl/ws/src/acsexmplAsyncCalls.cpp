@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.3 2006/03/24 13:03:00 vwang Exp $"
+* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.4 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #include <iostream>
 #include <string>
 
-static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.3 2006/03/24 13:03:00 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.4 2006/10/13 14:04:27 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;
@@ -161,8 +161,13 @@ worker(void *threadParam_p) {
     myself_p->setStopped();
 }
 
-int main(int argc, char* argv[]) {
-	// Check the arguments in the command line
+int main(int argc, char* argv[]) 
+{
+    MOUNT_ACS::Mount_var mount;
+    BACIThreadManager threadManager;   // The thread manager is used to manage the thread
+    ThreadParamStruct param; // The parameter for the thread
+    
+    // Check the arguments in the command line
 	if (argc<2) {
 		std::cerr<<"Usage: "<<argv[0]<<" component azimuth elevation <options>\n";
 		return -1;
@@ -195,16 +200,19 @@ int main(int argc, char* argv[]) {
 	} else {
 		ACS_SHORT_LOG((LM_INFO,"Client logged in"));
 	}
-	
-	// Get the component
-	ACS_SHORT_LOG((LM_INFO,"Getting component %s",argv[1]));
-	MOUNT_ACS::Mount_var mount = mountClient.get_object<MOUNT_ACS::Mount>(argv[1],0,true);
-	
-	// The thread manager is used to manage the threads
-	BACIThreadManager threadManager;
-	
-	// The parameter for the thread
-	ThreadParamStruct param;
+
+	try
+	    {
+	    // Get the component
+	    ACS_SHORT_LOG((LM_INFO,"Getting component %s",argv[1]));
+	    mount = mountClient.getComponent<MOUNT_ACS::Mount>(argv[1], 0, true);
+	    }
+	catch(maciErrType::CannotGetComponentExImpl &_ex)
+	    {
+	    _ex.log();
+	    return -1;
+	    }
+
 	param.mount=mount.ptr();
 	param.az=destAz;
 	param.el=destEl;
@@ -236,20 +244,31 @@ int main(int argc, char* argv[]) {
 	threadManager.terminateAll();
 	
 	// Release the component
-	try {
-		ACS_SHORT_LOG((LM_INFO,"Releasing %s",argv[1]));
-		mountClient.manager()->release_component(mountClient.handle(),argv[1]);
-	} catch (...) {
-		ACS_SHORT_LOG((LM_ERROR,"Error releasing %s",argv[1]));
-	}
+	try 
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"Releasing %s",argv[1]));
+	    mountClient.releaseComponent(argv[1]);
+	    }
+	catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	    {
+	    _ex.log();
+	    return -1;
+	    }
 	
 	// logout the client
-	try {
-		ACS_SHORT_LOG((LM_INFO,"Logging out"));
-		mountClient.logout();
-	} catch (...) {
-		ACS_SHORT_LOG((LM_ERROR,"Error logging out the simple client object"));;
-	}
+	try 
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"Logging out"));
+	    mountClient.logout();
+	    } 
+	catch (...) 
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"Error logging out the simple client object"));
+	    ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							    "main");
+	    uex.log();
+	    return -1;
+	    }//try-catch
 
 	ACS_SHORT_LOG((LM_INFO,"Done"));
 	

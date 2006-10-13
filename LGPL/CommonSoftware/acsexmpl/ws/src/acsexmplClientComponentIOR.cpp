@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientComponentIOR.cpp,v 1.6 2004/10/14 22:25:02 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClientComponentIOR.cpp,v 1.7 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -86,7 +86,7 @@ This example shows a client that:
 
 #include <maciSimpleClient.h>
 
-ACE_RCSID(acsexmpl, acsexmplMaciIOR, "$Id: acsexmplClientComponentIOR.cpp,v 1.6 2004/10/14 22:25:02 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplMaciIOR, "$Id: acsexmplClientComponentIOR.cpp,v 1.7 2006/10/13 14:04:27 bjeram Exp $")
 using namespace maci;
 
 int main(int argc, char *argv[]) 
@@ -121,14 +121,7 @@ int main(int argc, char *argv[])
 	//Pay special attention that this reference is just a generic
 	//CORBA object at this point.
 	ACS_SHORT_LOG((LM_INFO, "Looking for Object '%s' ", argv[1]));
-        CORBA::Object_var obj =  client.get_object(argv[1], 0 , true);
-	
-	//A nil value implies the component is not known to manager.
-	if (CORBA::is_nil(obj.in()))
-            {
-            ACS_SHORT_LOG ((LM_INFO, "Cannot get Object"));
-            return -1;
-            } 
+        CORBA::Object_var obj =  client.getComponent(argv[1], 0 , true);
 	
 	//Get the stringified IOR of the component.  The IOR of CORBA objects
 	//can be considered to be a unique "phone number" used to access CORBA
@@ -141,9 +134,17 @@ int main(int argc, char *argv[])
 	ACS_SHORT_LOG ((LM_INFO, "IOR for %s is: %s", argv[1], mior.in()));
 	result = ACE_OS::printf ("%s", mior.in());
 	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
+	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Exception caught"));
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	
+	uex.log();
 	return -1;
 	}
 
@@ -156,13 +157,21 @@ int main(int argc, char *argv[])
     try
 	{
 	//All clients must cleanly release objects they activate!
-	client.manager()->release_component(client.handle(), argv[1]);
+	client.releaseComponent(argv[1]);
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
 	}
     catch(...)
 	{
-	//In this special case, just ignore it...
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
 	}
-
+    
     try
 	{
 	if (client.logout() == 0)

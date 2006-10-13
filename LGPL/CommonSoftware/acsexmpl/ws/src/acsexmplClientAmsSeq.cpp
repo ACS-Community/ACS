@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientAmsSeq.cpp,v 1.7 2004/10/14 22:25:02 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClientAmsSeq.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -88,7 +88,7 @@ This example shows a client that:
 #include <acsexmplAmsSeqC.h>
 
 
-ACE_RCSID(acsexmpl, acsexmplAmsSeqClient, "$Id: acsexmplClientAmsSeq.cpp,v 1.7 2004/10/14 22:25:02 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplAmsSeqClient, "$Id: acsexmplClientAmsSeq.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     try
 	{
 	//get a reference to the component
-	AMSSEQ::AmsTestSeq_var amsseq = client.get_object<AMSSEQ::AmsTestSeq>(argv[1], 0, true);
+	AMSSEQ::AmsTestSeq_var amsseq = client.getComponent<AMSSEQ::AmsTestSeq>(argv[1], 0, true);
 	
 
 	//Get the read-only sequence property from the component reference
@@ -196,22 +196,37 @@ int main(int argc, char *argv[])
 	//simply set the coefficient
 	amsseq->setCoeff();
 	}
-    
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
+	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
 	}    
     
     try
 	{
 	//must cleanly release the component and log out from manager	
 	ACS_SHORT_LOG((LM_INFO,"Releasing..."));
-	client.manager()->release_component(client.handle(), argv[1]);
+	client.releaseComponent(argv[1]);
 	client.logout();
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
 	}
     
     // sleep for 3 seconds so the modular test is deterministic

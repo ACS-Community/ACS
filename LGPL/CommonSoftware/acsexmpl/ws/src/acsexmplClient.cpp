@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClient.cpp,v 1.95 2004/10/14 22:25:02 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClient.cpp,v 1.96 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,7 +90,7 @@ obtained asynchronously and it's value is logged.
 
 #include "acsexmplCallbacks.h"
 
-ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClient.cpp,v 1.95 2004/10/14 22:25:02 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClient.cpp,v 1.96 2006/10/13 14:04:27 bjeram Exp $")
 using namespace maci;
        
 /*******************************************************************************/
@@ -142,72 +142,86 @@ int main(int argc, char *argv[])
 	
 	// Now get the specific component we have requested from the command-line
 	ACS_SHORT_LOG((LM_INFO, "Getting component: %s", argv[1]));
-	MOUNT_ACS::Mount_var mount = client.get_object<MOUNT_ACS::Mount>(argv[1], 0, true);
+
+	//getComponent can throw an exception if it fails
+	MOUNT_ACS::Mount_var mount = client.getComponent<MOUNT_ACS::Mount>(argv[1], 0, true);
 	
-
-	if (CORBA::is_nil(mount.in()) == false)
-	    { 
-	    //Prints the descriptor of the requested component
-	    ACS_SHORT_LOG((LM_DEBUG, "Requesting descriptor()... "));
-	    ACS::CharacteristicComponentDesc_var descriptor = mount->descriptor();
-	    ACS_SHORT_LOG((LM_DEBUG, "Got descriptor()."));
-	    ACS_SHORT_LOG((LM_INFO,"Descriptor:"));
-	    ACS_SHORT_LOG((LM_INFO,"\tname: %s", descriptor->name.in()));
+	
+	//Prints the descriptor of the requested component
+	ACS_SHORT_LOG((LM_DEBUG, "Requesting descriptor()... "));
+	ACS::CharacteristicComponentDesc_var descriptor = mount->descriptor();
+	ACS_SHORT_LOG((LM_DEBUG, "Got descriptor()."));
+	ACS_SHORT_LOG((LM_INFO,"Descriptor:"));
+	ACS_SHORT_LOG((LM_INFO,"\tname: %s", descriptor->name.in()));
+	
+	//Get the reference to the  actAz double property
+	ACS_SHORT_LOG((LM_INFO, "Getting component property: %s:actAz", argv[1]));
+	ACS::ROdouble_var actAz = mount->actAz();
 	    
-	    //Get the reference to the  actAz double property
-	    ACS_SHORT_LOG((LM_INFO, "Getting component property: %s:actAz", argv[1]));
-	    ACS::ROdouble_var actAz = mount->actAz();
+	if (actAz.ptr() != ACS::ROdouble::_nil())
+	    {
+	    //Get the current value of the property synchronously
+	    ACSErr::Completion_var completion;
+	    CORBA::Double val = actAz->get_sync(completion.out());
+	    ACS_SHORT_LOG((LM_INFO,"Value: %f", val));
 	    
- 	    if (actAz.ptr() != ACS::ROdouble::_nil())
-		{
-		//Get the current value of the property synchronously
-		ACSErr::Completion_var completion;
-		CORBA::Double val = actAz->get_sync(completion.out());
-		ACS_SHORT_LOG((LM_INFO,"Value: %f", val));
-
-    
-		//Create the CBdouble property
-		ACS_SHORT_LOG((LM_INFO, "Trying to narrow CB for actAz... "));
-		MyCBdouble myCallback("actAz");
-		//Activate it as a CORBA object
-		ACS::CBdouble_var cb = myCallback._this(); 
-		ACS_SHORT_LOG((LM_INFO, "OK"));
-	      
-		//Invoke the asynchronous method.
-		ACS_SHORT_LOG((LM_INFO, "Call get_async for actAz..."));
-		ACS::CBDescIn desc;
-		actAz->get_async(cb.in(), desc);    //returns control immediately
 	    
-		//Here some other useful things should be done
-		//while the asyncrhonous reply comes
-		//...
-		//...
-		//...
+	    //Create the CBdouble property
+	    ACS_SHORT_LOG((LM_INFO, "Trying to narrow CB for actAz... "));
+	    MyCBdouble myCallback("actAz");
+	    //Activate it as a CORBA object
+	    ACS::CBdouble_var cb = myCallback._this(); 
+	    ACS_SHORT_LOG((LM_INFO, "OK"));
 	    
-		//Enter main loop and stays there for a fixed amount of time (1s)
-		//This is done to give the asynchronous method a chance to finish.
-		ACE_Time_Value tv(1);
-		client.run(tv);
-		} 
-	    }
-
+	    //Invoke the asynchronous method.
+	    ACS_SHORT_LOG((LM_INFO, "Call get_async for actAz..."));
+	    ACS::CBDescIn desc;
+	    actAz->get_async(cb.in(), desc);    //returns control immediately
+	    
+	    //Here some other useful things should be done
+	    //while the asyncrhonous reply comes
+	    //...
+	    //...
+	    //...
+	    
+	    //Enter main loop and stays there for a fixed amount of time (1s)
+	    //This is done to give the asynchronous method a chance to finish.
+	    ACE_Time_Value tv(1);
+	    client.run(tv);
+	    }//if
+	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
-	}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
+	}//try-catch
   
     //Another try section where we release our component and logout from the Manager
     try
 	{
 	ACS_SHORT_LOG((LM_INFO,"Releasing..."));
-	client.manager()->release_component(client.handle(), argv[1]);	
+	client.releaseComponent( argv[1]);	
 	client.logout();
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
-	}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
+	}//try-catch
     
     
     //sleep for 3 sec to allow everytihng to cleanup and stabilize

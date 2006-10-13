@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientFridge.cpp,v 1.7 2004/10/14 22:25:02 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClientFridge.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ This example shows a client that:
 #include <acsexmplFridgeC.h>
 #include "acsexmplCallbacks.h"
 
-ACE_RCSID(acsexmpl, acsexmplFridgeClient, "$Id: acsexmplClientFridge.cpp,v 1.7 2004/10/14 22:25:02 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeClient, "$Id: acsexmplClientFridge.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $")
 using namespace maci;
     
 /*******************************************************************************/
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
     try
 	{
 	//Get the specific component we have requested on the command-line
-	FRIDGE::FridgeControl_var fridge = client.get_object<FRIDGE::FridgeControl>(argv[1], 0, true);
+	FRIDGE::FridgeControl_var fridge = client.getComponent<FRIDGE::FridgeControl>(argv[1], 0, true);
 	    
 	//Get one of the component's BACI properties
 	ACS::RWdouble_var refTemperature = fridge->refTemperature();
@@ -172,22 +172,38 @@ int main(int argc, char *argv[])
 	    ACE_OS::sleep(15);
 	    }
 	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
+	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"main"));
-	}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
+	}//try-catch
         
     try
 	{
 	//Must release components and logout from manager	
 	ACS_SHORT_LOG((LM_INFO,"Releasing..."));
-	client.manager()->release_component(client.handle(), argv[1]);
+	client.releaseComponent(argv[1]);
 	client.logout();
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
-	}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							    "main");
+	uex.log();
+	return -1;
+	}//try-catch
   
     // sleep for 3 sec.
     ACE_OS::sleep(3);

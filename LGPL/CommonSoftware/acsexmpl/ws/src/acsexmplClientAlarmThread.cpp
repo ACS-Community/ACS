@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.107 2006/03/24 13:03:00 vwang Exp $"
+* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.108 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,7 +93,7 @@ necessary for this alarm to "go off" are set using an ACS thread.
 
 #include <acsexmplPowerSupplyC.h>
 
-ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.107 2006/03/24 13:03:00 vwang Exp $")
+ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.108 2006/10/13 14:04:27 bjeram Exp $")
 
 using namespace ACS;
 using namespace maci;
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 	{
 	//Get reference to the component
 	ACS_SHORT_LOG((LM_INFO, "Getting component: %s", argv[1]));
-	PS::PowerSupply_var ps = client.get_object<PS::PowerSupply>(argv[1],0,true);
+	PS::PowerSupply_var ps = client.getComponent<PS::PowerSupply>(argv[1],0,true);
 	if (CORBA::is_nil(ps.in()) == true) 
 	{
 	   ACS_SHORT_LOG((LM_INFO, "Failed to get a reference to the PowerSupply component."));
@@ -249,6 +249,11 @@ int main(int argc, char *argv[])
 	ACS_SHORT_LOG((LM_INFO,"Alarm subscription deleted")); 
 	alarmSub->destroy();	
 	} 
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
+	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"Error!"));
@@ -259,13 +264,21 @@ int main(int argc, char *argv[])
     try
 	{
 	ACS_SHORT_LOG((LM_INFO,"Releasing..."));
-	client.manager()->release_component(client.handle(), argv[1]);
+	client.releaseComponent( argv[1]);
 	client.logout();
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "main"));
-	}
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"main");
+	uex.log();
+	return -1;
+	}//try-catch
     
     //sleep for 3 sec to allow everytihng to cleanup and stabilize
     //so that the tests can be determinitstic.

@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientHelloWorld.cpp,v 1.5 2005/12/15 00:02:38 dfugate Exp $"
+* "@(#) $Id: acsexmplClientHelloWorld.cpp,v 1.6 2006/10/13 14:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -87,15 +87,18 @@ This example shows a client that:
 #include <ACSErrTypeCommon.h>
 #include <acsutilTimeStamp.h>
 
-ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: acsexmplClientHelloWorld.cpp,v 1.5 2005/12/15 00:02:38 dfugate Exp $")
+ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: acsexmplClientHelloWorld.cpp,v 1.6 2006/10/13 14:04:27 bjeram Exp $")
 using namespace maci;
 
 /*******************************************************************************/
     
 int main(int argc, char *argv[])
 {
-    // Creates and initializes the SimpleClient object
     SimpleClient client;
+    acsexmplHelloWorld::HelloWorld_var foo;
+
+// Creates and initializes the SimpleClient object
+
     if (client.init(argc,argv) == 0)
 	{
 	return -1;
@@ -106,8 +109,17 @@ int main(int argc, char *argv[])
 	client.login();
 	}
    
-    //Get the specific component we have requested on the command-line
-    acsexmplHelloWorld::HelloWorld_var foo = client.get_object<acsexmplHelloWorld::HelloWorld>(argv[1], 0, true);
+    try
+	{
+	//Get the specific component we have requested on the command-line
+	foo = client.getComponent<acsexmplHelloWorld::HelloWorld>(argv[1], 0, true);
+	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
+	}
+    
     
     //Call the displayMessage() method existing in the interface for HelloWorld
     foo->displayMessage();
@@ -126,7 +138,16 @@ int main(int argc, char *argv[])
 	}
 
     //We release our component and logout from manager
-    client.manager()->release_component(client.handle(), argv[1]);
+    try
+	{
+	client.releaseComponent(argv[1]);
+	}
+    catch(maciErrType::CannotReleaseComponentExImpl &_ex)
+	{
+	_ex.log();
+	return -1;
+	}
+    
     client.logout();
     
     //Sleep for 3 sec to allow everytihng to cleanup and stablize
