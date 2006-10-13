@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acssimMasterCompTest.py,v 1.5 2006/04/03 19:44:14 dfugate Exp $
+# @(#) $Id: acssimMasterCompTest.py,v 1.6 2006/10/13 07:34:21 gchiozzi Exp $
 #------------------------------------------------------------------------------
 
 '''
@@ -36,15 +36,16 @@ compName = "MS1"
 
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
-comp = simpleClient.getComponent(compName)
 
-joe = comp._get_currentStateHierarchy().get_sync()[0]
 try:
+    comp = simpleClient.getComponent(compName)
+    joe = comp._get_currentStateHierarchy().get_sync()[0]
     joe = joe[len(joe)-1]
-except:
-    pass
-
-print "Value is:", joe
+    print "Value is:", joe
+except Exception, e:
+    # We simply print a message and let the exception 
+    print "An exception occurred!\n"
+    print e
 
 sleep(5)
 simpleClient.releaseComponent(compName)
