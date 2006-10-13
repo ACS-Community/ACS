@@ -27,8 +27,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the InterfaceRepository.
@@ -36,11 +36,11 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Manager.
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Centralized Logger.
@@ -103,11 +103,9 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] CORBA Problem (type=10, code=13),Info=system exception, ID 'IDL:omg.org/CORBA/UNKNOWN:1.0'
+2 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_COSTR
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_COSTR (right behaviour)
-2 - Unknown vendor minor code id (0), minor code = 0, completed = NO
-2 - ,CompletionStatus=1,Minor=0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_INIT
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_INIT'. Creating it...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
@@ -132,17 +130,15 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_INIT: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_INIT - ] Throwing an exception in initialize
-1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::initialize() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::activate_component: got an exception intializing MACI_EXCEPTION_INIT
+1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_EXCEPTION_INIT'
+2 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_INIT (right behaviour)
-2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] CORBA Problem (type=10, code=13),Info=system exception, ID 'IDL:omg.org/CORBA/UNKNOWN:1.0'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_INIT
-2 - Unknown vendor minor code id (0), minor code = 0, completed = NO
-2 - ,CompletionStatus=1,Minor=0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_EXE
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_EXE'. Creating it...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
@@ -173,10 +169,8 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_EXCEPTION_EXE'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_EXE (right behaviour)
-2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] CORBA Problem (type=10, code=13),Info=system exception, ID 'IDL:omg.org/CORBA/UNKNOWN:1.0'
+2 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_EXE
-2 - Unknown vendor minor code id (0), minor code = 0, completed = NO
-2 - ,CompletionStatus=1,Minor=0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_CLEAN
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_CLEAN'. Creating it...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
