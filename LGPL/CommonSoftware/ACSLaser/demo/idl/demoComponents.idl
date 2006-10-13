@@ -55,6 +55,12 @@ interface Antenna : ACS::ACSComponent
                 void terminate_faultAntenna(
                 );
         };
+
+interface MF : ACS::ACSComponent
+    {
+      void multiFault();
+      void terminate_multiFault();
+    };
 };
 
 #endif
