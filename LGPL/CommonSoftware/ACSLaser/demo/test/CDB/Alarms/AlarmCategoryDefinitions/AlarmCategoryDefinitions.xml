@@ -108,5 +108,53 @@
 				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MOUNTCPP" fault-code="1"/>
 			</alarm>
 		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="2"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="3"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="4"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="5"/>
+			</alarm>
+		</alarm-category-link>
+		<alarm-category-link>
+			<category>
+				<category-definition path="ROOT:SOURCE"/>
+			</category>
+			<alarm>
+				<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+			</alarm>
+		</alarm-category-link>
 	</category-links-to-create>
 </alarm-category-definitions>

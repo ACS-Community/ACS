@@ -40,4 +40,8 @@
 	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
 	   Code="alsysMountImpl" 
 	   Container="bilboContainer" />
+	<_ Name="MULTIPLE_FAILURES"
+	   Type="IDL:alma/alarmsystemdemo/MF:1.0"
+	   Code="alma.alarmsystemdemo.MFImpl.MFHelper" 
+	   Container="frodoContainer" />
 </Components>
