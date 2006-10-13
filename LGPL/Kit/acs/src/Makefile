@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.90 2006/09/28 11:01:24 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.91 2006/10/13 19:33:10 gchiozzi Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -71,7 +71,6 @@ acsReplace_TCLSH = tcl
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = acsConfigReport			
 PY_SCRIPTS         = acsConfigReport \
                      acsGetAllJars acsGetSpecificJars
 
