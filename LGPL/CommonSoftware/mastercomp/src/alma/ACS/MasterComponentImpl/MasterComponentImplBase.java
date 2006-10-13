@@ -93,7 +93,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		throws ComponentLifecycleException {
 
 		super.initialize(containerServices);
-		subsysComponentMonitor = new SubsysResourceMonitor(m_logger, containerServices.getThreadFactory());
+		subsysComponentMonitor = new SubsysResourceMonitor(m_logger, containerServices.getThreadFactory(), 10);
 		
 		try
 		{
@@ -135,7 +135,6 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	}
 	
 
-	
 	/**
 	 * Master component subclasses must call <code>super.cleanUp()</code> if they override this method!
 	 * @see alma.ACS.impl.CharacteristicComponentImpl#cleanUp()
@@ -240,8 +239,20 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	/**
 	 * Subclasses can request to have the "health" of a given subsystem component monitored,
 	 * and that the mastercomponent state be set to "Error" in case problems are detected with this component.
-	 * Note that this is a simplified version of {@link #monitorComponent(ACSComponent, ComponentErrorHandler)},
-	 * which does not require the subclass to provide an error handler.
+	 * It is then the responsibility of the operator or some other external actor to get the mastercomponent
+	 * out of this error state again. In other words, this method helps to detect problems,
+	 * but does not fix the problem itself.
+	 * <p>
+	 * Detected problems can be 
+	 * <ol>
+	 * <li>the component can not be reached at all within 10 seconds, or
+	 * <li>the method {@link alma.ACS.ACSComponentOperations#componentState() componentState} returns a state other than 
+	 *     {@link ComponentStates#COMPSTATE_OPERATIONAL OPERATIONAL}. 
+	 * </ol>
+	 * <p>
+	 * Note that this is a simplified version of {@link #monitorComponent(ACSComponent, ComponentErrorHandler)} and
+	 * does not require the subclass to provide an error handler. 
+	 * 
 	 * @since ACS 6.0
 	 */
 	protected final void monitorComponent(ACSComponent component) {
@@ -251,9 +262,14 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	/**
 	 * Subclasses can request to have the "health" of a given subsystem component monitored,
 	 * and that the provided <code>ResourceErrorHandler</code> be called in case problems are detected.
+	 * <p>
+	 * Unlike method {@link #monitorComponent(ACSComponent)}, this method gives full control over the reaction to 
+	 * a detected failure. The master component can thus ignore or try to fix the problem, or eventually also 
+	 * go to error state (by calling <code>doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR)</code>).
+	 * 
 	 * @param component  the component that should be monitored
-	 * @param err  a custom error handler. If <code>null</code>, then default error handler will be used,
-     *             and component will go to error state automatically.
+	 * @param err  a custom error handler. If <code>null</code>, then a default error handler will be used,
+     *             and the master component will go to error state automatically (same as using {@link #monitorComponent(ACSComponent)}).
 	 * @since ACS 6.0
 	 */
 	protected final <T extends ACSComponent> void monitorComponent(T component, SubsysResourceMonitor.ResourceErrorHandler<T> err) {
@@ -262,22 +278,35 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		}
 		
 		SubsysResourceMonitor.ResourceChecker<T> checker = new SubsysResourceMonitor.ComponentChecker<T>(component);
-		monitorResource(checker, err);
+		monitorResource(checker, err, -1);
 	}
 	
 	
 	/**
      * Subclasses can request to have the "health" of a given subsystem component monitored,
      * and that the provided <code>ResourceErrorHandler</code> be called in case problems are detected.
-     * @param component  the component that should be monitored
-     * @param err  a custom error handler. If <code>null</code>, then default error handler will be used,
-     *             and component will go to error state automatically.
-	 * @param <T>  The resource type 
-	 * @param checker  the checker that encapsulates the specifics of the methods to be checked.
-	 * @param err  custom error handler for this type of resource, or default handler if <code>null</code> is passed.
+     * <p>
+     * Compared with the methods that allow monitoring a component, this method offers more flexibility:
+     * any kind of resource can be monitored, for which a custom <code>ResourceChecker</code> must be provided.
+     * Examples of resources include an {@link alma.ACS.OffShoot "offshoot"} remote object, a database, 
+     * or a standalone-process such as Tomcat.    
+     * <p>
+     * This method also takes the delay between monitor calls as a parameter, to allow adjusting the frequency 
+     * of monitor calls on a per resource basis. Invalid values will result in the default delay being used.
+     * 
+	 * @param checker  The checker that encapsulates the specifics of the methods to be checked.
+     * @param err  A custom error handler. If <code>null</code>, then a default error handler will be used,
+     *             and the master component will go to error state automatically (see comment for method {@link #monitorComponent(ACSComponent)}.
+     * @param monitorDelaySeconds  The delay between two check calls. If <code>monitorDelaySeconds &lt 1</code>  
+     *                             then the default delay of 10 seconds will be used.           
+	 * @param <T>  The resource type. Used to enforce matching checker and error handler.
      * @since ACS 6.0
 	 */
-	protected final <T> void monitorResource(SubsysResourceMonitor.ResourceChecker<T> checker, SubsysResourceMonitor.ResourceErrorHandler<T> err) {
+	protected final <T> void monitorResource(
+			SubsysResourceMonitor.ResourceChecker<T> checker, 
+			SubsysResourceMonitor.ResourceErrorHandler<T> err,
+			int monitorDelaySeconds) 
+	{
         if (err == null) {
             // use default error handler that sets the subsystem state to ERROR
             err = new SubsysResourceMonitor.ResourceErrorHandler<T>() {
