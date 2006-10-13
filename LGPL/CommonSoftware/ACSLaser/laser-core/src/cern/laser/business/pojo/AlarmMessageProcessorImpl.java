@@ -45,6 +45,7 @@ public class AlarmMessageProcessorImpl {
   }
 
   public void notifyReductionRelatives(Alarm alarm) {
+	  System.out.println("*** Applying reduction rules");
     try {
       if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying reduction relatives for " + alarm.getTriplet() + "...");
       notifyNodeChildren(alarm);
@@ -53,6 +54,8 @@ public class AlarmMessageProcessorImpl {
       if (LOGGER.isDebugEnabled()) LOGGER.debug("notified");
     } catch (Exception e) {
       LOGGER.error("unable to notify reduction relatives for " + alarm.getTriplet(), e);
+      System.out.println("Exception: "+e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -220,8 +223,12 @@ public class AlarmMessageProcessorImpl {
   }
 
   public void updateMultiplicityNode(Alarm alarm) {
+	  System.out.println("*** updateMultiplicityNode for"+alarm.getAlarmId());
+	  System.out.println("*** \t num of children of this node: "+alarm.getMultiplicityChildren().length);
+	  System.out.println("*** \t threshold of this node: "+alarm.getMultiplicityThreshold());
     try {
       if (hasTooManyActiveMultiplicityChildren(alarm)) {
+    	  System.out.println("*** Too many active childs!");
         if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
           // activate multiplicity parent
           if (LOGGER.isDebugEnabled()) LOGGER.debug("activating multiplicity parent " + alarm.getTriplet());
@@ -234,6 +241,7 @@ public class AlarmMessageProcessorImpl {
           notifyReductionRelatives(alarm);
         }
       } else {
+    	  System.out.println("*** Few active childs!");
         if (alarm.getStatus().getActive().equals(Boolean.TRUE)) {
           // terminate multiplicity parent
           if (LOGGER.isDebugEnabled()) LOGGER.debug("terminating multiplicity parent " + alarm.getTriplet());
@@ -248,6 +256,9 @@ public class AlarmMessageProcessorImpl {
       }
     } catch (Exception e) {
       LOGGER.error("unable to update multiplicity node for " + alarm.getTriplet(), e);
+      System.err.println("unable to update multiplicity node for "+alarm.getTriplet());
+      System.err.println("Exception; "+e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -433,6 +444,7 @@ public class AlarmMessageProcessorImpl {
   }
 
   private void notifyNodeChildren(Alarm alarm) throws Exception {
+	System.out.println("*** Checking node reduction");
     String[] children = alarm.getNodeChildren();
     for (int i = 0; i < children.length; i++) {
       Alarm child = alarmCache.getCopy(children[i]);
@@ -455,18 +467,23 @@ public class AlarmMessageProcessorImpl {
 
   private void notifyMultiplicityChildren(Alarm alarm) throws Exception {
     String[] children = alarm.getMultiplicityChildren();
+    System.out.println("Alrm class "+alarm.getClass().getName());
+    System.out.println("*** Multiplicity reduction: notifying children "+children.length);
     for (int i = 0; i < children.length; i++) {
       Alarm child = alarmCache.getCopy(children[i]);
       if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying multiplicity child " + child.getTriplet());
+      System.out.println("*** notifying multiplicity child " + child.getTriplet());
       if (hasActiveMultiplicityParents(child)) {
         if (child.getStatus().getReduced().equals(Boolean.FALSE)) {
           LOGGER.info("reducing multiplicity child " + child.getTriplet());
+          System.out.println("*** reducing multiplicity child " + child.getTriplet());
           child.getStatus().setReduced(Boolean.TRUE);
           alarmCache.put(child);
         }
       } else {
         if (child.getStatus().getReduced().equals(Boolean.TRUE)) {
           LOGGER.info("unreducing multiplicity child " + child.getTriplet());
+          System.out.println("*** unreducing multiplicity child " + child.getTriplet());
           child.getStatus().setReduced(Boolean.FALSE);
           alarmCache.put(child);
         }
@@ -476,9 +493,11 @@ public class AlarmMessageProcessorImpl {
 
   private void notifyMultiplicityParents(Alarm alarm) throws Exception {
     String[] parents = alarm.getMultiplicityParents();
+    System.out.println("*** Multiplicity reduction: notifying parents "+parents.length);
     for (int i = 0; i < parents.length; i++) {
       Alarm parent = alarmCache.getCopy(parents[i]);
       if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying multiplicity parent " + parent.getTriplet());
+      System.out.println("*** notifying multiplicity parent " + parent.getTriplet());
       updateMultiplicityNode(parent);
     }
   }
