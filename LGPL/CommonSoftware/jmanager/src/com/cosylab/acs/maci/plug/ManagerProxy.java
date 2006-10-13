@@ -10,7 +10,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URI;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.Object;
 
@@ -276,10 +275,10 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
         return null;
     }
 
-	/** 
-     * @see com.cosylab.acs.maci.Manager#getService(int, java.net.URI, boolean, com.cosylab.acs.maci.StatusHolder)
+	/**
+	 * @see com.cosylab.acs.maci.Manager#getComponentNonSticky(int, java.net.URI)
 	 */
-	public Component getComponentNonStiky(int id, URI curl) 
+	public Component getComponentNonSticky(int id, URI curl) 
 		throws NoPermissionException
     {
         /// @todo Not implemented

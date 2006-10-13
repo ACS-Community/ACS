@@ -1695,13 +1695,59 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Manager#getComponentNonStiky(int id, URI curl)
+	 * @see com.cosylab.acs.maci.Manager#getComponentNonSticky(int id, URI curl)
 	 */
-	public Component getComponentNonStiky(int id, URI curl) 
+	public Component getComponentNonSticky(int id, URI curl) 
 		throws NoPermissionException
-			   {
-		       throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-			   }
+	{
+		if (isDebug())
+			new MessageLogEntry(this, "getComponentNonSticky", new Object[] { new Integer(id), curl }).dispatch();
+	
+		// check if null
+		checkCURL(curl);
+
+		/****************************************************************/
+	
+		// check handle and NONE permissions
+		securityCheck(id, AccessRights.NONE);
+
+		// extract name
+		String name = extractName(curl);
+	
+		// log info
+		String requestorName = getRequestorName(id);
+		new MessageLogEntry(this, "getComponentNonSticky", "'" + requestorName + "' requested non-sticky component '" + curl + "'.", LoggingLevel.INFO).dispatch();
+	
+		Component component = null;
+		synchronized (components)
+		{
+			int h = components.first();
+			while (h != 0)
+		    {
+		    	ComponentInfo ci = (ComponentInfo)components.get(h);
+				if (ci.getName().equals(name))
+				{
+					component = ci.getComponent();
+					break;
+				}
+				h = components.next(h);
+		    }
+		}
+	
+		// log info
+		if (component != null && component.getObject() != null)
+			new MessageLogEntry(this, "getComponentNonSticky", "Non-sticky component '" + curl + "' provided to '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+		else
+			new MessageLogEntry(this, "getComponentNonSticky", "Failed to provide non-sticky component '" + curl + "' to '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+	
+		/****************************************************************/
+	
+		if (isDebug())
+			new MessageLogEntry(this, "getComponentNonSticky", "Exiting.", Level.FINEST).dispatch();
+	
+		return component;
+	
+	}
 
 	/**
 	 * @see com.cosylab.acs.maci.Manager#makeComponentImmortal(int, java.net.URI, boolean)

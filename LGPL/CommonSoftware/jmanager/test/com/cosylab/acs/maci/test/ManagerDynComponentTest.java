@@ -4,7 +4,6 @@
 
 package com.cosylab.acs.maci.test;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;

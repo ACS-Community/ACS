@@ -25,7 +25,7 @@ import java.net.URI;
  * 
  * NOTE: There is no <code>throws RemoteException</code> in the signature of the methods.
  * 
- * @see acs.maci.plugManagerProxyImpl, acs.maci/plug.ManagerProxy, acs.maci.manager.ManagerImpl
+ * @see si.ijs.acs.maci.plug.ManagerProxyImpl, si.ijs.acs.maci.plug.ManagerProxy, acs.maci.manager.ManagerImpl
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
@@ -311,23 +311,17 @@ public interface Manager
 		throws NoPermissionException, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;
 
-	/** 
-	 * Get a component, activating it if necessary.
+	/**
+	 * Get a component, do not activate it and also do not do any reference counting.
 	 * The client represented by id (the handle)
-	 * must have adequate access rights to access the component. This is untrue of components:
+	 * must have adequate access rights to access the Component. This is untrue of components:
 	 * components always have unlimited access rights to other components.
-	 * 
-	 * @param	id		Identification of the caller. If this is an invalid handle,
-	 * 					or if the caller does not have enough access rights,
-	 * 					a <code>NoPermissionException</code> exception is raised.
-	 * @param	curl	CURL of the component whose reference is to be retrieved.
-	 * @param	activate	<code>true</code> if the Component is to be activated in case it does not exist.
-	 * 						If set to <code>false</code>, and the Component exist,
-	 * 						a <code>null</code> reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @return			Reference to the Component. If the Component could not be activated, a nil reference is returned,
-	 *					and the status contains an error code detailing the cause of failure (one of the component_* constants).
+	 *
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a CORBA::NO_PERMISSION exception is raised.
+	 * @param component_url CURL of the Component whose reference is to be retrieved.
+	 * @return Reference to the Component.
 	 */
-	public Component getComponentNonStiky(int id, URI curl) 
+	public Component getComponentNonSticky(int id, URI curl) 
 		throws NoPermissionException;
 
 }

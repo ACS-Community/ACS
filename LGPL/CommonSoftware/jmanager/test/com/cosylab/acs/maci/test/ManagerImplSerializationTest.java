@@ -218,7 +218,7 @@ public class ManagerImplSerializationTest extends TestCase {
 		assertEquals(clients.first(), 0); // not any more
 	}
 
-	public void testContainerDie() throws InitializationException {
+	public void testContainerDie() throws Throwable {
 		// should be something else then deafault because
 		// the default is in use by the Manager
 		Properties table = new Properties();

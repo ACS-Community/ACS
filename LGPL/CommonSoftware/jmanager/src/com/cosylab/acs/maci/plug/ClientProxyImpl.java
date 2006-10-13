@@ -17,7 +17,6 @@ import abeans.core.defaults.MessageLogEntry;
 import abeans.pluggable.RemoteException;
 import abeans.pluggable.acs.logging.LoggingLevel;
 
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import si.ijs.maci.Client;
