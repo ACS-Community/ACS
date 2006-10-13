@@ -164,5 +164,12 @@ This file has to be moved into the TICS subsystem
 		/>
 	</ErrorCode>
 
-
+	<ErrorCode name="CannotReleaseComponent"
+	    shortDescription="Error releasing component"
+	    description="Error releasing component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
 </Type>
