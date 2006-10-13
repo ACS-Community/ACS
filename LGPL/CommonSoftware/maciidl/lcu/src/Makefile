@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2005/01/21 12:31:10 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/10/13 06:53:47 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -32,7 +32,8 @@
 #    None
 #------------------------------------------------------------------------
 # List of files to be linked
-LINK_FILES = $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES)))
+LINK_FILES = $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) \
+	     $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF)))
 #
 
 #
@@ -108,6 +109,8 @@ TCL_LIBRARIES_L =
 #
 # <brief description of tttlll library>
 tttlll_OBJECTS  = 
+
+ACSERRDEF = maciErrType
 
 #
 # IDL Files and flags
