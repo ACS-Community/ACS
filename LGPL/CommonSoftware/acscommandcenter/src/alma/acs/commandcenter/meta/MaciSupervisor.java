@@ -31,9 +31,10 @@ import si.ijs.maci.ManagerOperations;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.NoPermissionEx;
 
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.NoPermissionEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * @author mschilli
@@ -232,8 +233,9 @@ public class MaciSupervisor implements IMaciSupervisor {
       log.fine("sending logout request to manager to log out container '" + info.name + "'");
       try {
          myManagerReference().logout(info.h);
-      } catch (AcsJNoPermissionEx e) {
-	   e.log(log);
+      } catch (NoPermissionEx e) {
+           AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+	   ex.log(log);
       }
    }
 
@@ -244,8 +246,9 @@ public class MaciSupervisor implements IMaciSupervisor {
       log.fine("sending logout request to manager to log out client '" + info.name + "'");
       try {
            myManagerReference().logout(info.h);
-      } catch (AcsJNoPermissionEx e) {
-	   e.log(log);
+      } catch (NoPermissionEx e) {
+           AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+	   ex.log(log);
       }
    }
 
@@ -411,7 +414,15 @@ public class MaciSupervisor implements IMaciSupervisor {
    	
       int hhhhh = myOwnMaciHandle();
       int[] containerHandles = new int[0]; // bug workaround, see above
-      return myManagerReference().get_container_info(hhhhh, containerHandles, name_wildcard);
+      ContainerInfo[] containerInfo = null;
+
+      try {
+         containerInfo = myManagerReference().get_container_info(hhhhh, containerHandles, name_wildcard);
+      } catch (NoPermissionEx e) {
+           AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+	   ex.log(log);
+      }
+      return containerInfo;
    }
 
    /**
@@ -420,7 +431,15 @@ public class MaciSupervisor implements IMaciSupervisor {
    public ClientInfo[] retrieveClientInfo() throws NotConnectedToManagerException{
 
    	int hhhhh = myOwnMaciHandle();
-      return myManagerReference().get_client_info(hhhhh, new int[0], "*");
+	ClientInfo[] clientInfo = null;
+
+	try {
+	   clientInfo = myManagerReference().get_client_info(hhhhh, new int[0], "*");
+	} catch (NoPermissionEx e) {
+	   AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+	   ex.log(log);
+	}
+	return clientInfo;
    }
 
    /**
@@ -429,7 +448,15 @@ public class MaciSupervisor implements IMaciSupervisor {
 	public ComponentInfo[] retrieveComponentInfo(int[] cobHandles, String name_wildcard, String type_wildcard, boolean active_only) throws NotConnectedToManagerException {
 
    	int hhhhh = myOwnMaciHandle();
-      return myManagerReference().get_component_info(hhhhh, cobHandles, name_wildcard, type_wildcard, active_only);
+	ComponentInfo[] componentInfo = null;
+
+	try {
+	   componentInfo = myManagerReference().get_component_info(hhhhh, cobHandles, name_wildcard, type_wildcard, active_only);
+	} catch (NoPermissionEx e) {
+           AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+	   ex.log(log);
+	}
+	return componentInfo;
    }
    
 
@@ -446,7 +473,15 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 *       level.
 		 */
 		try {
-			org.omg.CORBA.Object stub = mgr.get_component(hhhhh, curl, true);
+			org.omg.CORBA.Object stub = null;
+			try {
+			   stub = mgr.get_component(hhhhh, curl, true);
+			} catch (NoPermissionEx e) {
+			   AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+			ex.log(log);
+			}
+
+
 			log.fine("successfully retrieved component '" + curl + "'");
 			return stub;
 			
@@ -470,14 +505,27 @@ public class MaciSupervisor implements IMaciSupervisor {
    public void forceReleaseComponent(String curl) {
    	
    	int hhhhh = myOwnMaciHandle();
-   	myManagerReference().force_release_component(hhhhh, curl);
+
+	try {
+   	   myManagerReference().force_release_component(hhhhh, curl);
+	} catch (NoPermissionEx e) {
+           AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+	   ex.log(log);
+	}
+
    }
    
    
    public void releaseComponents(String[] curls) throws NotConnectedToManagerException {
    	
    	int hhhhh = myOwnMaciHandle();
-   	myManagerReference().release_components(hhhhh, curls);
+
+	try {
+   	   myManagerReference().release_components(hhhhh, curls);
+	} catch (NoPermissionEx e) {
+           AcsJNoPermissionEx ex = new AcsJNoPermissionEx(e);
+	   ex.log(log);
+	}
    }
    
    
