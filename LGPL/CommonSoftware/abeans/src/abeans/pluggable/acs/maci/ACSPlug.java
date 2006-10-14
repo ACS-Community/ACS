@@ -57,7 +57,7 @@ import alma.acs.util.ACSPorts;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
-
+import alma.maciErrType.NoPermissionEx;
 
 /**
  * Implementation of the <code>abeans.pluggable.Plug</code> that starts up and
@@ -714,7 +714,18 @@ public class ACSPlug extends Plug implements Configurable
 			new MessageLogEntry(this, "connectToManager", "Logging to the Manager '" + corbaloc + "'.", Level.INFO).dispatch();
 		
 		Client client = new Client(corbaloc);
-		ClientInfo clientInfo = manager.login(client._this(orb));
+		ClientInfo clientInfo = null;
+		try
+		    {
+		    clientInfo = manager.login(client._this(orb));
+		    }
+		catch (NoPermissionEx ex)
+		    {
+		    RemoteException re = new RemoteException(this, "No permission to login to the Manager '" + corbaloc + "'.");
+			re.caughtIn(this, "connectToManager");
+			throw re;
+		    }
+
 		if (clientInfo == null || clientInfo.h == 0)
 		{
 			RemoteException re = new RemoteException(this, "Failed to login to the Manager '" + corbaloc + "'.");
