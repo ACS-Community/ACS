@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.133 2006/09/29 05:43:36 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.134 2006/10/14 21:36:00 gchiozzi Exp $"
 #
 #
 
@@ -502,7 +502,9 @@ cvs-get-lgpl: cvs-tag cvs-get-version
 # This target gets from CVS a complete ACS code distribution 
 #
 NO-LGPL_FILES=Benchmark NO-LGPL
-cvs-get-no-lgpl: cvs-tag cvs-get-version cvs-get-lgpl
+cvs-get-no-lgpl: cvs-tag cvs-get-version cvs-get-lgpl cvs-get-no-lgpl-extract cvs-update-for-rtos31
+
+cvs-get-no-lgpl-extract: 
 	@  $(ECHO) "Extracting from CVS NO-LGPL files"; \
           if [ X$(ACS_TAG) != X ]; then \
              $(ECHO) "CVS tag is: $(ACS_TAG)"; \
@@ -515,13 +517,18 @@ cvs-get-no-lgpl: cvs-tag cvs-get-version cvs-get-lgpl
 #
 # This target gets from CVS the files that are specific for RH-9.
 # This includes the RTOS branch and the Kit with the Makefile 
+# The update is done only in the case we really are on RH-9
 #
+REDHAT_RELEASE := $(shell cat /etc/redhat-release)
+
 RH9-BRANCH=ACS-6_0-RTOS-3_1-B
 
 cvs-update-for-rtos31:
-	$(ECHO) "Updating from CVS using RTOS-3_1 tag $(RH9-BRANCH)" 
+     ifeq ("$(REDHAT_RELEASE)","Red Hat Linux release 9 (Shrike)")
+	@$(ECHO) "Updating from CVS using RTOS-3_1 tag $(RH9-BRANCH)" 
 	cvs -Q update -P -d -r $(RH9-BRANCH) LGPL/Kit 
 	cvs -Q update -P -d -r $(RH9-BRANCH) NO-LGPL/rtos
+     endif
 
 
 #
