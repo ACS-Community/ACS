@@ -33,6 +33,7 @@ import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.NoPermissionEx;
 
 /**
  * @author mschilli
@@ -229,7 +230,11 @@ public class MaciSupervisor implements IMaciSupervisor {
     */   
    public void logoutContainer(ContainerInfo info) throws NotConnectedToManagerException {
       log.fine("sending logout request to manager to log out container '" + info.name + "'");
-      myManagerReference().logout(info.h);
+      try {
+         myManagerReference().logout(info.h);
+      } catch (AcsJNoPermissionEx e) {
+	   e.log(log);
+      }
    }
 
    /**
@@ -237,7 +242,11 @@ public class MaciSupervisor implements IMaciSupervisor {
     */   
    public void logoutClient(ClientInfo info) throws NotConnectedToManagerException {
       log.fine("sending logout request to manager to log out client '" + info.name + "'");
-      myManagerReference().logout(info.h);
+      try {
+           myManagerReference().logout(info.h);
+      } catch (AcsJNoPermissionEx e) {
+	   e.log(log);
+      }
    }
 
    
