@@ -99,8 +99,7 @@ int main(int argc, char *argv[])
 	}
     
     //get the naming service to use with archive supplier's init method
-    CORBA::ULong status;
-    CORBA::Object_var nc_obj = client.manager()->get_service(client.handle(), "NameService", true, status);
+    CORBA::Object_var nc_obj = client.manager()->get_service(client.handle(), "NameService", true);
     CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(nc_obj.in());
     
     //initialize the singleton
