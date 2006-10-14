@@ -46,6 +46,7 @@ import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
 import alma.maciErrType.IncompleteComponentSpecEx;
 import alma.maciErrType.InvalidComponentSpecEx;
 import alma.maciErrType.NoDefaultComponentEx;
+import alma.maciErrType.NoPermissionEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotGetServiceEx;
 import alma.maciErrType.wrappers.AcsJCannotRegisterComponentEx;
@@ -55,6 +56,7 @@ import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponen
 import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * Proxy class that encapsulates access to the ACS Manager.
@@ -496,10 +498,13 @@ public class AcsManagerProxy
 		String name_wc,
 		String type_wc,
 		boolean active_only)
+	    throws AcsJNoPermissionEx
 	{
 		ComponentInfo[] compInfos = null;
 		try {
 			compInfos = m_manager.get_component_info(m_mgrHandle, componentHandles, name_wc, type_wc, active_only);			
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
@@ -532,13 +537,15 @@ public class AcsManagerProxy
 	 * 			(one of the component_* constants).
 	 */
 	public Object get_service(String service_url, boolean activate) 
-		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx
+	    throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.get_service(m_mgrHandle, service_url, activate);		
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (ComponentNotAlreadyActivatedEx ex) {
 			throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
 		} catch (CannotGetComponentEx ex) {
@@ -560,13 +567,15 @@ public class AcsManagerProxy
 	 * @return org.omg.CORBA.Object[]  A sequence of requested services.
 	 */
 	public Object[] get_services(String[] service_urls, boolean activate, ulongSeqHolder status)
-	    throws AcsJCannotGetServiceEx
+	    throws AcsJCannotGetServiceEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.get_services(m_mgrHandle, service_urls, activate, status);
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (CannotGetServiceEx ex) {
 			throw AcsJCannotGetServiceEx.fromCannotGetServiceEx(ex);
 		}			
@@ -585,13 +594,15 @@ public class AcsManagerProxy
 	 * @see ContainerServices#getComponent(String)
 	 */
 	public Object get_component(int clientHandle, String component_url, boolean activate)
-	    throws AcsJCannotGetComponentEx, AcsJComponentNotAlreadyActivatedEx, AcsJComponentConfigurationNotFoundEx
+	    throws AcsJCannotGetComponentEx, AcsJComponentNotAlreadyActivatedEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.get_component(clientHandle, component_url, activate);
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (ComponentNotAlreadyActivatedEx ex) {
 			throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
 		} catch (CannotGetComponentEx ex) {
@@ -609,13 +620,15 @@ public class AcsManagerProxy
 	 * @see ContainerServices#getDefaultComponent(String)
 	 */
 	public ComponentInfo get_default_component(int clientHandle, String componentIDLType)
-	    throws AcsJNoDefaultComponentEx, AcsJCannotGetComponentEx
+	    throws AcsJNoDefaultComponentEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.get_default_component(clientHandle, componentIDLType);
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (NoDefaultComponentEx ex) {
 			throw AcsJNoDefaultComponentEx.fromNoDefaultComponentEx(ex);
 		} catch (CannotGetComponentEx ex) {
@@ -638,7 +651,7 @@ public class AcsManagerProxy
 	 * 				already active.
 	 */
 	public ComponentInfo get_dynamic_component(int clientHandle, ComponentSpec c, boolean mark_as_default) 
-		throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx,  AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx
+	    throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx,  AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.get_dynamic_component(clientHandle, c, mark_as_default);
@@ -646,6 +659,8 @@ public class AcsManagerProxy
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (IncompleteComponentSpecEx ex) {
 			throw AcsJIncompleteComponentSpecEx.fromIncompleteComponentSpecEx(ex);
 		} catch (InvalidComponentSpecEx ex) {
@@ -670,7 +685,7 @@ public class AcsManagerProxy
 	 * @throws ComponentSpecIncompatibleWithActiveComponent
 	 */
 	public ComponentInfo get_collocated_component(int clientHandle, ComponentSpec c, boolean mark_as_default, String target_component_url) 
-		throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx
+	    throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.get_collocated_component(clientHandle, c, mark_as_default, target_component_url);
@@ -678,6 +693,8 @@ public class AcsManagerProxy
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (IncompleteComponentSpecEx ex) {
 			throw AcsJIncompleteComponentSpecEx.fromIncompleteComponentSpecEx(ex);
 		} catch (InvalidComponentSpecEx ex) {
@@ -701,7 +718,7 @@ public class AcsManagerProxy
 	 * @return int
 	 */
 	public int register_component(String component_url, String type, Object component)
-		throws AcsJCannotRegisterComponentEx
+	    throws AcsJCannotRegisterComponentEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.register_component(m_mgrHandle, component_url, type, component);
@@ -709,6 +726,8 @@ public class AcsManagerProxy
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (CannotRegisterComponentEx ex) {
 			throw AcsJCannotRegisterComponentEx.fromCannotRegisterComponentEx(ex);
 		}
@@ -731,6 +750,7 @@ public class AcsManagerProxy
 	 * 			after the operation completed. This is a useful debugging tool.
 	 */
 	public int release_component(int clientHandle, String component_url)
+	    throws AcsJNoPermissionEx
 	{
 		try {
 			int clientNumber = m_manager.release_component(clientHandle, component_url);
@@ -739,6 +759,8 @@ public class AcsManagerProxy
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		}
 	}
 
@@ -751,6 +773,7 @@ public class AcsManagerProxy
 	 * @see #release_component(int, String)
 	 */
 	public void release_components(int clientHandle, String[] component_urls)
+	    throws AcsJNoPermissionEx
 	{
 		try {
 			m_manager.release_components(clientHandle, component_urls);
@@ -758,6 +781,8 @@ public class AcsManagerProxy
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		}
 	}
 
@@ -765,7 +790,10 @@ public class AcsManagerProxy
 	 * @deprecated  remove this method once weak component references are implemented.
 	 * @since ACS 5.0.4
 	 */
-	public int force_release_component(int clientHandle, String curl) {
+	public int force_release_component(int clientHandle, String curl) 
+	    throws AcsJNoPermissionEx
+        {
+
 		try {
 			int clientNumber = m_manager.force_release_component(clientHandle, curl);
 			return clientNumber;
@@ -773,6 +801,8 @@ public class AcsManagerProxy
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		}
 	}
 

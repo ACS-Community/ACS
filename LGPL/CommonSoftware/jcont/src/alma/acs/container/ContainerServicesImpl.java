@@ -62,6 +62,8 @@ import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
 
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+
 /**
  * Implementation of the <code>ContainerServices</code> interface.
  * To be used by ACS components, as well as any other clients that need access
@@ -270,21 +272,25 @@ public class ContainerServicesImpl implements ContainerServices
 		m_logger.finer("about to call Manager#get_component_info with curlWildcard='" +
 		curlWildcard + "' and typeWildcard='" + typeWildcard + "'.");
 		
-		ComponentInfo[] components = m_acsManagerProxy.get_component_info(
-			new int[0], curlWildcard, typeWildcard, false );
-			
 		ArrayList<String> curls = new ArrayList<String>();
 		
-		if (components != null)
-		{
-			for (int i = 0; i < components.length; i++)
+		try {
+		    ComponentInfo[] components = m_acsManagerProxy.get_component_info(
+			new int[0], curlWildcard, typeWildcard, false );
+		    if (components != null)
 			{
-				curls.add(components[i].name);
+			for (int i = 0; i < components.length; i++)
+			    {
+			    curls.add(components[i].name);
+			    }
 			}
+		
+		    m_logger.finer("received " + curls.size() + " curls from get_component_info.");
 		}
-		
-		m_logger.finer("received " + curls.size() + " curls from get_component_info.");
-		
+		catch (AcsJNoPermissionEx npe) {
+		        /// @todo Should throws AcsJContainerException, but it is commented out
+			npe.log(m_logger);
+		}
 		return curls.toArray(new String[curls.size()]);
 	}
 
