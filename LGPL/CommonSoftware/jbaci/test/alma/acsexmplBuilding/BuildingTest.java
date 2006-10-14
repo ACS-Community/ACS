@@ -32,6 +32,8 @@ import alma.acs.util.UTCUtility;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.NoPermissionEx;
+
 /**
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
@@ -348,8 +350,12 @@ public class BuildingTest implements Runnable
 				}
 				
 				// release now
-				manager.release_components(clientInfo.h, new String[] { COMPONENT_NAME });
-
+				try {
+				   manager.release_components(clientInfo.h, new String[] { COMPONENT_NAME });
+				}  catch (Exception ex) {
+				   ex.printStackTrace();
+				   System.out.println("Failed to release component.");
+				}
 
 				logout(manager, clientInfo);
 			}
