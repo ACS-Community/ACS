@@ -19,6 +19,8 @@ import alma.alarmsystemdemo.Mount;
 import alma.alarmsystemdemo.MountHelper;
 import alma.alarmsystemdemo.PS;
 import alma.alarmsystemdemo.PSHelper;
+import alma.alarmsystemdemo.MF;
+import alma.alarmsystemdemo.MFHelper;
 import alma.acs.exceptions.AcsJException;
 
 import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
@@ -56,6 +58,11 @@ public class DemoTest {
 	private AdvancedComponentClient m_client;
 	private ContainerServices m_contSvcs;
 	private Consumer m_consumer = null;
+	
+	
+	// A reference to the ASC (used only to be sure it is running)
+	AlarmService alarmSvc=null;
+	
 	/**
 	 * Constructor
 	 *
@@ -75,34 +82,91 @@ public class DemoTest {
         	System.exit(-1);
         }
         m_contSvcs=m_client.getContainerServices();
+        connectSrcChannel();
+	}
+	
+	public void disconnect() {
+		m_consumer.disconnect();
+		m_consumer=null;
 	}
 	
 	/**
-	 * 1. Get the java components
-	 *    - AlarmSystem (not needed but in this way we are sure it is running)
-	 *    - PS
-	 *    - Mount
-	 *    - Antenna
+	 * Connect to the NC of the sources
 	 *
-	 * Call the fult method of the PS (it will generate a chain of failures
-	 * up to the Antenna)
-	 * Then it call the terminate_fault method of the PS (that will generate
-	 * a second chain of failures)
 	 */
-	public void testJavaComponents() {
-		// Get the AlarmService
-		AlarmService alarmSvc;
+	private void connectSrcChannel() {
+		// Connect to the NC used by the sources
+        try {
+        	m_consumer = new Consumer(srcChName,m_contSvcs);
+        } catch (Exception e) {
+        	logger.severe("Error instantiating the consumer: "+e.getMessage());
+        	e.printStackTrace();
+        	System.exit(-1);
+        }
+        try {
+        	m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
+        } catch (Exception e) {
+        	logger.severe("Error subscribing: "+e.getMessage());
+        	e.printStackTrace();
+        	System.exit(-1);
+        }
+		try {
+			m_consumer.consumerReady();
+		} catch (Exception e) {
+        	logger.severe("Error in consumerReady: "+e.getMessage());
+        	e.printStackTrace();
+        	System.exit(-1);
+        }
+		System.out.println("Connected to source channel");
+	}
+	
+	/**
+	 * Get the AS component.
+	 * The test does not need such component but this forces the AS to run.
+	 * 
+	 * @return If the reference to the AS is valid
+	 */
+	public boolean getAlarmServiceComponent() {
+		if (alarmSvc!=null) {
+			return true;
+		}
 		try {
 			alarmSvc = AlarmServiceHelper.narrow(m_contSvcs.getComponent("AlarmService"));
 		} catch (Exception ce) {
 			System.out.println("Error getting AlarmService: "+ce.getMessage());
 			ce.printStackTrace();
-			return;
+			return false;
 		}
 		if (alarmSvc==null) {
 			System.out.println("The AlarmService component is null!");
-			return;
+			return false;
 		}
+		return true;
+	}
+	
+	/**
+	 * Relese the ASC (if it is not null)
+	 *
+	 */
+	public void releaseAlarmServiceComponent() {
+		m_contSvcs.releaseComponent("AlarmService");
+		alarmSvc=null;
+	}
+	
+	/**
+	 * 1. Get the java components for the NODE reduction
+	 *    - AlarmSystem (not needed but in this way we are sure it is running)
+	 *    - PS
+	 *    - Mount
+	 *    - Antenna
+	 *
+	 * 2. Call the fult method of the PS (it will generate a chain of failures
+	 *    up to the Antenna)
+	 * 3. Call the terminate_fault method of the PS (that will generate
+	 *    a second chain of failures)
+	 */
+	public void testJavaNR() {
+		
 		// Get PS
 		PS ps;
 		try {
@@ -114,7 +178,6 @@ public class DemoTest {
 		}
 		if (ps==null) {
 			System.out.println("The PS component is null!");
-			m_contSvcs.releaseComponent("AlarmService");
 			return;
 		}
 		// Get Mount
@@ -128,7 +191,6 @@ public class DemoTest {
 		}
 		if (mount==null) {
 			System.out.println("The MOUNT component is null!");
-			m_contSvcs.releaseComponent("AlarmService");
 			m_contSvcs.releaseComponent("ALARM_SOURCE_PS");
 			return;
 		}
@@ -143,7 +205,6 @@ public class DemoTest {
 		}
 		if (antenna==null) {
 			System.out.println("The ANTENNA component is null!");
-			m_contSvcs.releaseComponent("AlarmService");
 			m_contSvcs.releaseComponent("ALARM_SOURCE_PS");
 			m_contSvcs.releaseComponent("ALARM_SOURCE_MOUNT");
 			return;
@@ -162,7 +223,44 @@ public class DemoTest {
 		m_contSvcs.releaseComponent("ALARM_SOURCE_ANTENNA");
 		m_contSvcs.releaseComponent("ALARM_SOURCE_MOUNT");
 		m_contSvcs.releaseComponent("ALARM_SOURCE_PS");
-		m_contSvcs.releaseComponent("AlarmService");
+		try {
+			Thread.sleep(30000);
+		} catch(InterruptedException ie) {}
+	}
+	
+	/**
+	 * 1. Get the component to test the Multiplicity reduction
+	 * 2. call the fault and the terminate methods to activate the reduction
+	 *    (the MR causes the generation of another alarm when the threshold is 
+	 *    passed)
+	 */
+	public void testJavaMR() {
+		// Get MF
+		MF mf;
+		try {
+			mf = MFHelper.narrow(m_contSvcs.getComponent("MULTIPLE_FAILURES"));
+		} catch (Exception ce) {
+			System.out.println("Error getting MF: "+ce.getMessage());
+			ce.printStackTrace();
+			return;
+		}
+		if (mf==null) {
+			System.out.println("The MF component is null!");
+			return;
+		}
+ 		// Call the fault of the MF
+		mf.multiFault();
+		
+		try {
+			Thread.sleep(30000);
+		} catch(InterruptedException ie) {}
+		// Call the terminate_fault
+		mf.terminate_multiFault();
+		try {
+			Thread.sleep(30000);
+		} catch(InterruptedException ie) {}
+		// Release the components
+		m_contSvcs.releaseComponent("MULTIPLE_FAILURES");
 		try {
 			Thread.sleep(30000);
 		} catch(InterruptedException ie) {}
@@ -240,7 +338,6 @@ public class DemoTest {
 	 * @see alma.acs.nc.Consumer
 	 */
 	public synchronized void receive(ACSJMSMessageEntity msg) {
-		logger.fine("Msg received");
 		ASIMessage asiMsg;
 		Collection faultStates;
 		try {
@@ -274,9 +371,22 @@ public class DemoTest {
 	 */
 	public static void main(String[] args) {
 		DemoTest test = new DemoTest();
-		System.out.println("Invoking methods on java components");
-		test.testJavaComponents();
+		// Check if the ASC is running
+		boolean alSvcRunning=test.getAlarmServiceComponent();
+		if (!alSvcRunning) {
+			System.out.println("The alarm service component is not running!");
+			System.out.println("Test aborted.");
+			return;
+		}
+		System.out.println("Invoking methods on java components (NODE REDUCTION)");
+		test.testJavaNR();
+		System.out.println("Invoking methods on java components (MULTIPLICITY REDUCTION)");
+		test.testJavaMR();
 		System.out.println("Invoking methods on C++ components");
 		test.testCppComponents();
+		// Disconnect from the source NC
+		test.disconnect();
+		// Release the ASC
+		test.releaseAlarmServiceComponent();
 	}
 }
