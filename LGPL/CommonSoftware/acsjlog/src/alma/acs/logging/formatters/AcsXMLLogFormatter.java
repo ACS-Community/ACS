@@ -212,6 +212,9 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 				for (Iterator iter = errorTraceProperties.keySet().iterator(); iter.hasNext();) {
 					String key = (String) iter.next();
 					String value = (String) errorTraceProperties.get(key);
+					if(value==null || value.length()==0) {
+					    value="N/A"; 
+                                        }
 				    sb.append("<Data Name=\"" + key + "\">" + maskMessage(value) + "</Data>");
 				}
 			}
