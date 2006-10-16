@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.23 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.24 2006/10/16 13:19:24 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.23 2006/09/01 02:20:55 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.24 2006/10/16 13:19:24 gchiozzi Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -349,7 +349,19 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	 (hash_iter.next (entry) != 0);
 	 hash_iter.advance ())
 	{
-	xml += "<Data Name=\"" + entry->ext_id_ + "\">" + entry->int_id_ + "</Data>";
+	if(entry->int_id_.length() == 0)
+	    {
+	    /*
+	     * Gianluca, Alessandro 2006-10-16
+	     * XercesJ complains if we leave an empty element.
+	     * Therefore we put the N/A string
+	     */
+	    xml += "<Data Name=\"" + entry->ext_id_ + "\">N/A</Data>";
+	    }
+	else
+	    {
+	    xml += "<Data Name=\"" + entry->ext_id_ + "\"><![CDATA["  + entry->int_id_ + "]]></Data>";
+	    }
 	}
     
     if (ACE_OS::strlen(log_record.msg_data()))
