@@ -75,6 +75,11 @@ To be used by applications that dynamically build a string or a printout
 of the value.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="initialize_devio" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>Nothing yet</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="units" type="xs:string" use="optional" default="-">
 					<xs:annotation>
 						<xs:documentation>A string representing the units (normally base SI units or combinations of SI units) of the quantity represented by the property. </xs:documentation>
