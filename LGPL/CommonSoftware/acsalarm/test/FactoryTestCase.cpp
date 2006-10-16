@@ -279,9 +279,3 @@ int main(int argc, char *argv[])
 
 	return result.wasSuccessful() ? 0 : 1;
 }
-
-// TODO - implement some tests similar to the following java code:
-#if 0
-{
-}
-#endif
