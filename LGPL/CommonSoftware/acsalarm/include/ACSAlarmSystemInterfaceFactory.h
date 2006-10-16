@@ -60,6 +60,11 @@ class ACSAlarmSystemInterfaceFactory
 // We would need to make static methods non-static to do so...
 {
 	private:
+
+	// used for the convenience method createAndSendAlarms, so that it need not create a new source
+	// for each time it is invoked
+	static auto_ptr<laserSource::ACSAlarmSystemInterface> sharedSource;
+
 	// It is true if ACS implementation for sources must be used,  and
 	// false means CERN implementation
 	// The pointer is null if it has not yet been initialized (this is done by the init method)
@@ -71,7 +76,6 @@ class ACSAlarmSystemInterfaceFactory
 	// Pointer to CERN alarm system object; will remain null if we are not using CERN implementation
 	static AbstractAlarmSystemInterfaceFactory * m_AlarmSystemInterfaceFactory_p;
 
-	private:
 	/** Default constructor.  */
 	ACSAlarmSystemInterfaceFactory();
 	virtual ~ACSAlarmSystemInterfaceFactory();
@@ -119,6 +123,10 @@ class ACSAlarmSystemInterfaceFactory
 	 */
 	static auto_ptr<laserSource::ACSFaultState>createFaultState();
 
+	/**
+	 * Experimental: Convenience API for creating/sending an alarm in a single step.
+	 */
+	static void createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, Properties & faultProperties);
 };
 
 #endif /*!ACS_ALARM_SYSTEM_INTERFACE_FACTORY_H*/

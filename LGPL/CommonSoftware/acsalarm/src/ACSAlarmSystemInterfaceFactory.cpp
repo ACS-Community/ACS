@@ -26,6 +26,7 @@
 #include "vltPort.h"
 
 #include "ConfigPropertyGetter.h"
+#include "faultStateConstants.h"
 
 static char *rcsId="@(#) $Id$"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
@@ -39,8 +40,10 @@ using namespace laserUtil;
 bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
 AbstractAlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
+auto_ptr<laserSource::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource(NULL);
 
 void ACSAlarmSystemInterfaceFactory::done() {
+	// TODO: mutual exclusion?
 	if (m_manager!=maci::Manager::_nil()) {
 		CORBA::release(m_manager);
 		m_manager=maci::Manager::_nil();
@@ -97,6 +100,7 @@ auto_ptr<laserSource::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::c
 
 bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) 
 {
+	// TODO - mutual exclusion?
 	if (manager!=maci::Manager::_nil()) 
 	{
 		m_manager=maci::Manager::_duplicate(manager);
@@ -186,3 +190,41 @@ auto_ptr<laserSource::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultS
 		return asIfAutoPtr;
 	}
 }
+
+void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, string & faultMember, 
+	int faultCode, bool active, Properties & faultProperties)
+{
+	// create the FaultState
+	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(faultFamily, faultMember, faultCode);
+
+	// set the fault state's descriptor
+	string stateString;
+	if (active) 
+	{
+		stateString = faultState::ACTIVE_STRING;
+	} 
+	else 
+	{
+		stateString = faultState::TERMINATE_STRING;
+	}
+	fltstate->setDescriptor(stateString);
+		
+	// create a Timestamp and use it to configure the FaultState
+	Timestamp * tstampPtr = new Timestamp();
+	auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
+	fltstate->setUserTimestamp(tstampAutoPtr);
+
+	// create a Properties object and configure it, then assign to the FaultState
+	Properties * propsPtr = new Properties(faultProperties);
+	auto_ptr<Properties> propsAutoPtr(propsPtr);
+	fltstate->setUserProperties(propsAutoPtr);
+
+	if(NULL == sharedSource.get())
+	{
+		// TODO: mutual exclusion for this instantiation?
+		sharedSource = ACSAlarmSystemInterfaceFactory::createSource();
+	}
+	// push the FaultState using the source
+	ACSAlarmSystemInterfaceFactory::sharedSource->push(*fltstate);
+}
+

@@ -31,15 +31,18 @@ int main(int argc, char *argv[])
 		printUsageAndExit();
 	}
 
+	// TEST 1: the "long hand" way to send alarms
 	int numAlarmsToSend = atoi(argv[1]);
+
+	// constants we will use when creating the fault
+	string family = "AlarmSource";
+	string member = "ALARM_SOURCE_MOUNT";
+	int code = 1;
+
+	std::cout << "Testing long-hand style of sending alarms" << std::endl;
 
 	//try 
 	{
-		// constants we will use when creating the fault
-		string family = "AlarmSource";
-		string member = "ALARM_SOURCE_MOUNT";
-		int code = 1;
-
 		// initialize the AlarmSystemInterfaceFactory 
 		ACSAlarmSystemInterfaceFactory::init(NULL);
 
@@ -73,7 +76,37 @@ int main(int argc, char *argv[])
 		}
 
 		ACSAlarmSystemInterfaceFactory::done();
-	} 
+	}
+	/* 
+	// TODO later:
+	catch (ASIException e) 
+	{
+		e.printStackTrace();
+	}
+	*/
+
+	std::cout << "Testing short-hand style of sending alarms" << std::endl;
+
+	// TEST 2: the "short hand" way to send alarms
+	//try 
+	{
+		// initialize the AlarmSystemInterfaceFactory 
+		ACSAlarmSystemInterfaceFactory::init(NULL);
+
+		// create a Properties object and configure it 
+		Properties props;
+		props.setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
+		props.setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
+		props.setProperty("TEST_PROPERTY", "TEST_VALUE");
+
+		for(int i = 0; i < numAlarmsToSend; i++)
+		{
+			// push the FaultState using the AlarmSystemInterface previously created
+			ACSAlarmSystemInterfaceFactory::createAndSendAlarm(family, member, code, faultState::ACTIVE_STRING, props);
+		}
+
+		ACSAlarmSystemInterfaceFactory::done();
+	}
 	/* 
 	// TODO later:
 	catch (ASIException e) 
