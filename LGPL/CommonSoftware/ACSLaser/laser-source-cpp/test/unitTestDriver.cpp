@@ -871,6 +871,7 @@ int main(int argc, char *argv[])
 	outputter.write(); 
 
 	client->logout();
+	delete client;
 	client = NULL;
 
 	return result.wasSuccessful() ? 0 : 1;

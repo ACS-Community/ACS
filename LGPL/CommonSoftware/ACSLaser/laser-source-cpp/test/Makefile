@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2006/10/12 18:17:29 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/10/16 12:14:46 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -67,7 +67,7 @@ LIBRARIES_L     =
 
 # <brief description of alsysTestMountImpl library>
 AlarmTestMountImpl_OBJECTS  = AlarmTestMountImpl
-AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory laserCppUtil maciErrTypeComponent
+AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory laserCppUtil maciErrType
 
 #
 # Scripts (public and local)

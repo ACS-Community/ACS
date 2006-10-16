@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.7 2006/10/12 18:17:29 sharring Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.8 2006/10/16 12:14:46 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -219,8 +219,6 @@ int main(int argc, char *argv[])
 	}
 
 	m_simpConsumer_p->disconnect();   
-	delete m_simpConsumer_p;
-	m_simpConsumer_p=0;
 
 	// release the component and logout from manager
 	client.manager()->release_component(client.handle(), "ALARM_SOURCE_MOUNTCPP");
