@@ -47,6 +47,8 @@ class FactoryTestCase : public CPPUNIT_NS::TestFixture
 	CPPUNIT_TEST(testACSAlarmSystem);
 	CPPUNIT_TEST(testWrongImplementationProp);
 	CPPUNIT_TEST(testCERNAlarmSystem);
+	CPPUNIT_TEST(testFaultStateCreation);
+	CPPUNIT_TEST(testAlarmSourceCreation);
 	CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -60,6 +62,8 @@ class FactoryTestCase : public CPPUNIT_NS::TestFixture
 		void testCERNAlarmSystem();
 		void testACSAlarmSystem();
 		void testWrongImplementationProp();
+		void testFaultStateCreation();
+		void testAlarmSourceCreation();
 
 	private:
 		char cwd[1024];
@@ -123,7 +127,6 @@ void FactoryTestCase::testCERNAlarmSystem()
 void FactoryTestCase::testNoAlarmBranch() {
 	renameAlarmBranch(cwd);
 	clearCdbCache();
-	//ACSAlarmSystemInterfaceFactory::init(NULL);
 	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
 	replaceAlarmBranch(cwd);
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (no Alarms in CDB case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
@@ -138,7 +141,6 @@ void FactoryTestCase::testNoAlarmBranch() {
 void FactoryTestCase::testACSAlarmSystem() {
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
-	//ACSAlarmSystemInterfaceFactory::init(NULL);
 	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (ACS case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
@@ -150,9 +152,36 @@ void FactoryTestCase::testACSAlarmSystem() {
 void FactoryTestCase::testWrongImplementationProp() {
 	configureAlarmBranch(cwd, "Wrong property");
 	clearCdbCache();
-	//ACSAlarmSystemInterfaceFactory::init(NULL);
 	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (wrong prop case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
+}
+
+/**
+ * Test the creation of a FaultState
+ * 
+ * @throws Exception
+ */
+void FactoryTestCase::testFaultStateCreation()
+{
+	configureAlarmBranch(cwd, "ACS");
+	clearCdbCache();
+	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState("Family", "Member", 0);
+	CPPUNIT_ASSERT_MESSAGE("Error creating a FS", (fltstate.get() != NULL));
+}
+
+/**
+ * Test the creation of a source (proxy)
+ * 
+ * @throws Exception
+ */
+void FactoryTestCase::testAlarmSourceCreation()
+{
+	configureAlarmBranch(cwd, "ACS");
+	clearCdbCache();
+	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource.get() != NULL));
 }
 	
 /**
@@ -254,30 +283,5 @@ int main(int argc, char *argv[])
 // TODO - implement some tests similar to the following java code:
 #if 0
 {
-	/**
-	 * Test the creation of a FaultState
-	 * 
-	 * @throws Exception
-	 */
-	public void testFaultStateCreation() throws Exception {
-		TestUtil.setupAlarmBranch(curDir,"ACS");
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
-		ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState("Family","Member",0);
-		assertNotNull("Error creating a FS",fs);
-	}
-	
-	/**
-	 * Test the creation of a source (proxy)
-	 * 
-	 * @throws Exception
-	 */
-	public void testAlarmSourceCreation() throws Exception {
-		TestUtil.setupAlarmBranch(curDir,"ACS");
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getORB(),TestUtil.getManager(),TestUtil.getLogger(this.getClass().getName()));
-		ACSAlarmSystemInterface proxy = ACSAlarmSystemInterfaceFactory.createSource("SourceName");
-		assertNotNull("Error creating an alarm source",proxy);
-	}
 }
 #endif
