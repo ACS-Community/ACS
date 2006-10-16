@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriver.cpp,v 1.4 2006/10/12 18:17:29 sharring Exp $"
+* "@(#) $Id: testDriver.cpp,v 1.5 2006/10/16 16:57:24 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -77,7 +77,8 @@ int main(int argc, char *argv[])
 	// set up a consumer to listen to the notification channel for alarms
 	int receivedEvtCount = 0;
 	nc::SimpleConsumer<com::cosylab::acs::jms::ACSJMSMessageEntity> *m_simpConsumer_p = 0;
-   ACS_NEW_SIMPLE_CONSUMER(m_simpConsumer_p, com::cosylab::acs::jms::ACSJMSMessageEntity, "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES", myHandlerFunction, (void*) & receivedEvtCount);
+   ACS_NEW_SIMPLE_CONSUMER(m_simpConsumer_p, com::cosylab::acs::jms::ACSJMSMessageEntity, 
+		"CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES", myHandlerFunction, (void*) & receivedEvtCount);
    m_simpConsumer_p->consumerReady();
 
 	ACE_Time_Value tv(30);

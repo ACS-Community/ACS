@@ -32,8 +32,12 @@ AlarmTestMountImpl::AlarmTestMountImpl(const ACE_CString &name,maci::ContainerSe
     ACSComponentImpl(name, containerServices)
 {
 	ACS_TRACE("::AlarmTestMount::AlarmTestMount");
+
 	// create the AlarmSystemInterface
 	alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+
+	// initialize the counter
+	counter = 0;
 }
 
 AlarmTestMountImpl::~AlarmTestMountImpl()
@@ -43,17 +47,26 @@ AlarmTestMountImpl::~AlarmTestMountImpl()
 
 void AlarmTestMountImpl::faultMount() throw (CORBA::SystemException ) 
 {
-	sendAlarm("AlarmSource", "ALARM_SOURCE_MOUNT", 1, true);
+	// alternate using the "short-hand" and the "long-hand" techniques for sending the alarm 
+	// so that we will have test coverage of both styles of sending an alarm
+	if((counter++ % 2) == 0) 
+	{
+		sendAlarmLongHand("AlarmSource", "ALARM_SOURCE_MOUNT", 1, true);
+	}
+	else 
+	{
+		sendAlarmShortHand("AlarmSource", "ALARM_SOURCE_MOUNT", 1, true);
+	}
 }
 
 void AlarmTestMountImpl::terminate_faultMount() throw (CORBA::SystemException ) 
 {
-	sendAlarm("AlarmSource", "ALARM_SOURCE_MOUNT", 1, false);
+	sendAlarmLongHand("AlarmSource", "ALARM_SOURCE_MOUNT", 1, false);
 }
 
-void AlarmTestMountImpl::sendAlarm(std::string family, std::string member, int code, bool active) 
+void AlarmTestMountImpl::sendAlarmLongHand(std::string family, std::string member, int code, bool active) 
 {
-	ACS_TRACE("::AlarmTestMount::sendAlarm entering");
+	ACS_TRACE("::AlarmTestMount::sendAlarmLongHand entering");
 
 	// create the FaultState
 	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
@@ -86,7 +99,22 @@ void AlarmTestMountImpl::sendAlarm(std::string family, std::string member, int c
 	// push the FaultState using the AlarmSystemInterface previously created
 	alarmSource->push(*fltstate);
 
-	ACS_TRACE("::AlarmTestMount::sendAlarm exiting");
+	ACS_TRACE("::AlarmTestMount::sendAlarmLongHand exiting");
+}
+
+void AlarmTestMountImpl::sendAlarmShortHand(std::string family, std::string member, int code, bool active) 
+{
+	ACS_TRACE("::AlarmTestMount::sendAlarmShortHand entering");
+
+	// create a Properties object and configure it, then assign to the FaultState
+	Properties props;
+	props.setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
+	props.setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
+	props.setProperty("TEST_PROPERTY", "TEST_VALUE");
+
+	ACSAlarmSystemInterfaceFactory::createAndSendAlarm(family, member, code, active, props);
+
+	ACS_TRACE("::AlarmTestMount::sendAlarmShortHand exiting");
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/

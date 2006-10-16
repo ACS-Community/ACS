@@ -41,29 +41,33 @@ namespace testalarmsystem
 	class AlarmTestMountImpl: public ACSComponentImpl,     
 			     public virtual POA_testalarmsystem::AlarmTestMount
 	{
-  	public:
-    /**
-     * Constructor
-     */
-    AlarmTestMountImpl(const ACE_CString &name,maci::ContainerServices * containerServices);
-    
-    /**
-     * Destructor
-     */
-    virtual ~AlarmTestMountImpl();
+		public:
+			/**
+			 * Constructor
+			 */
+			AlarmTestMountImpl(const ACE_CString &name,maci::ContainerServices * containerServices);
 
-    void faultMount() throw (CORBA::SystemException );
-    void terminate_faultMount() throw (CORBA::SystemException );
-    
-    /**
-     * Send an alarm active or inactive depending on the
-     * value of the parameter
-     */
-    void sendAlarm(std::string fFamily, std::string fMember, int code, bool active);
+			/**
+			 * Destructor
+			 */
+			virtual ~AlarmTestMountImpl();
 
-	private:
-	 // the AlarmSystemInterface
-	 auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource;
+			void faultMount() throw (CORBA::SystemException );
+			void terminate_faultMount() throw (CORBA::SystemException );
+    
+		private:
+
+			/**
+			 * Send an alarm active or inactive depending on the
+			 * value of the parameter
+			 */
+			void sendAlarmLongHand(std::string fFamily, std::string fMember, int code, bool active);
+			void sendAlarmShortHand(std::string fFamily, std::string fMember, int code, bool active);
+
+			// the AlarmSystemInterface
+			auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource;
+
+			int counter;
 	};
 };
 
