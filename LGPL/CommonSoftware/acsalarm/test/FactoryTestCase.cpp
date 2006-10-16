@@ -67,6 +67,7 @@ class FactoryTestCase : public CPPUNIT_NS::TestFixture
 
 	private:
 		char cwd[1024];
+		maci::MockManager * myMockMgr;
 		void configureAlarmBranch(string cdbdir, string alarmSystemImplementation);
 		void replaceAlarmBranch(string cdbdir);
 		void renameAlarmBranch(string cdbdir);
@@ -80,12 +81,14 @@ FactoryTestCase::FactoryTestCase()
 	if (getcwd(cwd,sizeof(cwd)) == (char *) NULL) {
 		ACS_SHORT_LOG((LM_ERROR, "FactoryTestCase::FactoryTestCase() - Failed to get current working dir"));
 	}
+	myMockMgr = new maci::MockManager();
 
 	ACS_TRACE("FactoryTestCase::FactoryTestCase exiting");
 }
 
 FactoryTestCase::~FactoryTestCase()
 {
+	delete myMockMgr;
 }
 
 void FactoryTestCase::setUp()
@@ -113,7 +116,7 @@ void FactoryTestCase::testCERNAlarmSystem()
 {
 	configureAlarmBranch(cwd,"CERN");
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (CERN case)", !ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
 	
@@ -127,7 +130,7 @@ void FactoryTestCase::testCERNAlarmSystem()
 void FactoryTestCase::testNoAlarmBranch() {
 	renameAlarmBranch(cwd);
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	replaceAlarmBranch(cwd);
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (no Alarms in CDB case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
@@ -141,7 +144,7 @@ void FactoryTestCase::testNoAlarmBranch() {
 void FactoryTestCase::testACSAlarmSystem() {
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (ACS case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
 
@@ -152,7 +155,7 @@ void FactoryTestCase::testACSAlarmSystem() {
 void FactoryTestCase::testWrongImplementationProp() {
 	configureAlarmBranch(cwd, "Wrong property");
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (wrong prop case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 }
 
@@ -165,7 +168,7 @@ void FactoryTestCase::testFaultStateCreation()
 {
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState("Family", "Member", 0);
 	CPPUNIT_ASSERT_MESSAGE("Error creating a FS", (fltstate.get() != NULL));
 }
@@ -179,7 +182,7 @@ void FactoryTestCase::testAlarmSourceCreation()
 {
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
-	ACSAlarmSystemInterfaceFactory::init(new maci::MockManager());
+	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource.get() != NULL));
 }
