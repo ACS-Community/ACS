@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTypelessPropertyImpl.cpp,v 1.11 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTypelessPropertyImpl.cpp,v 1.12 2006/10/16 07:56:40 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,6 +27,7 @@
 
 #include "baciDB.h"
 #include "baciTypelessPropertyImpl.h"
+#include <string.h>
 
 namespace baci {
 
@@ -68,6 +69,10 @@ bool TypelessPropertyImpl::readCharacteristics()
       units_m = str.in();
 
       resolution_m = dao->get_long("resolution");
+       
+       str = dao->get_string("initialize_devio");
+       if(strcmp(str.in(), "false") == 0 || strcmp(str.in(), "0") == 0 ) initializeDevIO_m = false;
+       else initializeDevIO_m = true;
 
       return true;
       }
@@ -98,6 +103,13 @@ TypelessPropertyImpl::format ()
   
   return CORBA::string_dup (format_m.c_str());
 }
+
+ CORBA::Boolean
+ TypelessPropertyImpl::initialize_devio ()
+   throw (CORBA::SystemException)
+ {
+  return initializeDevIO_m;
+
 
 char * 
 TypelessPropertyImpl::units ()

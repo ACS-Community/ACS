@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIO.h,v 1.98 2006/09/05 20:04:35 gchiozzi Exp $"
+* "@(#) $Id: baciDevIO.h,v 1.99 2006/10/16 07:56:40 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,13 +57,20 @@
 
 template <class T> class DevIO
 {
- public:
+public:
+  /**
+   * If true attempt to initialize the value at instanciation.
+   * The value is set by the attribute in the CDB, by default this is false.
+   */
+    bool m_initialize;
+ 
 
     /**
      * Standard constructor
      */
-    DevIO() {}
-
+    DevIO() {
+	m_initialize=false;
+	}
     /**
      * Destructor
      */
@@ -72,10 +79,14 @@ template <class T> class DevIO
     /**
      * The return value of initializeValue function tells the constructor of property if it has to set initial value of DevIO to default value or not. 
      * The default value of property is read from CDB. 
-     * This function has to be inmplemented in implementation of DevIO.
+     * InitializeValue: If true ACS will try to automatically set the
+     * value upon initialization.
+     * @return bool - If true attempt to initialize the value at instanciation.
      */
-    virtual bool initializeValue()=0;
 
+    virtual bool initializeValue(){
+	return m_initialize;
+    }
 
     /**
      * Method to read a value. It has to be override by implementation of DevIO

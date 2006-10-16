@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.107 2006/10/09 06:06:40 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.108 2006/10/16 07:56:40 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -110,7 +110,7 @@ baciTestCosProperty_LIBS	= baciTestUtils
 # Includes (.h) files (public and local)
 # ---------------------------------
 INCLUDES        = 
-INCLUDES_L      = baciTestClassImpl.h baciTestUtils.h baciTest.h
+INCLUDES_L      = baciTestDevIO.h baciTestClassImpl.h baciTestUtils.h baciTest.h
 
 #
 # Libraries (public and local)

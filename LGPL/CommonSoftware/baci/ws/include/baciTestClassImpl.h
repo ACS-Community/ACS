@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.h,v 1.109 2006/09/08 14:19:27 bjeram Exp $"
+* "@(#) $Id: baciTestClassImpl.h,v 1.110 2006/10/16 07:56:40 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -226,6 +226,13 @@ public:
     virtual CORBA::Boolean isPropertiesMonitoringActive() 
 	throw (CORBA::SystemException);
 
+  /**
+   * Property RWdoubleProps contains the actual RWdoubleWithDevIOProp of the 
+   * power supply.
+   */ 
+  virtual ACS::RWdouble_ptr RWdoubleWithDevIOProp (
+				     )
+    throw (CORBA::SystemException);
 
   /**
    * Property RWdoubleProps contains the actual RWdoubleProp of the 
@@ -372,6 +379,7 @@ private:
   ActionFunction m_actions[3];
 
   /// The smart pointers for (other) properties
+  SmartPropertyPointer<RWdouble>  m_RWdoubleWithDevIOProp_sp;
   SmartPropertyPointer<ROdouble>  m_ROdoubleProp_sp;
   SmartPropertyPointer<RWdouble>  m_RWdoubleProp_sp;
   SmartPropertyPointer<ROfloat>   m_ROfloatProp_sp;

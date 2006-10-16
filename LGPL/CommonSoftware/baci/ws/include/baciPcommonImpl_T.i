@@ -18,6 +18,7 @@
 */
 
 #include "baciPcommonImpl_T.h"
+#include <string.h>
 #include <sstream>
 
 using namespace baciErrTypeProperty;
@@ -88,7 +89,9 @@ PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent* compo
   if (devIO!=0)
     {
       devIO_mp = devIO;
-      deldevIO_m = flagdeldevIO; 
+      deldevIO_m = flagdeldevIO;
+ 
+      devIO_mp->m_initialize = initializeDevIO_m;
    }
   else
     {
@@ -288,6 +291,10 @@ bool PcommonImpl<ACS_P_TL>::readCharacteristics()
       str = dao->get_string("default_value");
       CDBconverter<TSM>::convertValue(str.in(), defaultValue_m);
 
+       str = dao->get_string("initialize_devio");
+       if(strcmp(str.in(),"false") == 0 || strcmp(str.in(),"0")==0) initializeDevIO_m = false;
+       else initializeDevIO_m = true;
+
       return true;
       }
   catch (ACSErr::ACSbaseExImpl& ex)
@@ -317,6 +324,13 @@ char* PcommonImpl<ACS_P_TL>::name ()
 {
 
   return CORBA::string_dup (property_mp->getName());
+}
+
+ template<ACS_P_C>
+ CORBA::Boolean PcommonImpl<ACS_P_TL>::initialize_devio ()
+   throw (CORBA::SystemException)
+ {
+  return  CORBA::Boolean(initializeDevIO_m);
 }
 
 template<ACS_P_C> 

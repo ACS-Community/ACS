@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTypelessPropertyImpl.h,v 1.12 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTypelessPropertyImpl.h,v 1.13 2006/10/16 07:56:40 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,9 @@ class baci_EXPORT TypelessPropertyImpl : public virtual POA_ACS::TypelessPropert
 	throw (
 	    CORBA::SystemException
 	    );
-    
+    virtual CORBA::Boolean initialize_devio ()
+       throw (CORBA::SystemException);
+ 
     virtual char * units (
 	)
 	throw (
@@ -85,6 +87,7 @@ class baci_EXPORT TypelessPropertyImpl : public virtual POA_ACS::TypelessPropert
   private:
 
  // Characteristics Typeless property
+  bool initializeDevIO_m;
   ACE_CString  desc_mription; 			
   ACE_CString  format_m; 				
   ACE_CString  units_m; 				

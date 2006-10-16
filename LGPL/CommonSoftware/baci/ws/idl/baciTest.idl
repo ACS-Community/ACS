@@ -25,6 +25,7 @@ interface BaciTestClass: ACS::CharacteristicComponent{                         /
   void turnOffMonitoring(); // @action 
   boolean isPropertiesMonitoringActive(); // @action 
 
+  readonly attribute ACS::RWdouble  RWdoubleWithDevIOProp;   // @Properties
   readonly attribute ACS::RWdouble  RWdoubleProp;   // @Properties
   readonly attribute ACS::ROdouble  ROdoubleProp;   // @Properties
   readonly attribute ACS::RWfloat   RWfloatProp;   // @Properties

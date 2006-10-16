@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestPropertySync.cpp,v 1.101 2006/09/26 06:26:32 cparedes Exp $"
+* "@(#) $Id: baciTestPropertySync.cpp,v 1.102 2006/10/16 07:56:40 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.101 2006/09/26 06:26:32 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.102 2006/10/16 07:56:40 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -300,6 +300,8 @@ int main (int argc, char **argv)
 	//--------------------------------------------------------------
         // testing property
 
+        ACS_SHORT_LOG((LM_INFO,"baciTestClient: Trying to get ACS::RWdouble RWdoubleWithDevIOProp..."));
+        testRW<CORBA::Double,ACS::RWdouble_var>(ps->RWdoubleWithDevIOProp(), atof(argv[1]));
         ACS_SHORT_LOG((LM_INFO,"baciTestClient: Trying to get ACS::RWdouble RWdoubleProp..."));
         testRW<CORBA::Double,ACS::RWdouble_var>(ps->RWdoubleProp(), atof(argv[1]));
 

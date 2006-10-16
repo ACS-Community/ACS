@@ -236,6 +236,9 @@ public:
     
     /* ----------------- [ TypelessProperty interface ] ----------------- */
     
+    virtual CORBA::Boolean initialize_devio ()
+	throw (CORBA::SystemException);
+    
     virtual char * description ()
 	throw (CORBA::SystemException);
     
@@ -345,6 +348,7 @@ public:
   /// Characteristics
   ///
  
+  bool initializeDevIO_m; 
   // Typeless property
   ACE_CString  description_m; 			
   ACE_CString  format_m; 				
