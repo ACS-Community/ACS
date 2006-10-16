@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClient.cpp,v 1.96 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClient.cpp,v 1.97 2006/10/16 08:42:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,7 +90,7 @@ obtained asynchronously and it's value is logged.
 
 #include "acsexmplCallbacks.h"
 
-ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClient.cpp,v 1.96 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClient.cpp,v 1.97 2006/10/16 08:42:39 bjeram Exp $")
 using namespace maci;
        
 /*******************************************************************************/
@@ -190,9 +190,19 @@ int main(int argc, char *argv[])
 	    client.run(tv);
 	    }//if
 	}
-    catch(maciErrType::CannotGetComponentExImpl &_ex)
+    catch(maciErrType::CannotGetComponentExImpl &_ex) // can be thrown by getComponent<..>(...)
 	{
 	_ex.log();
+	return -1;
+	}
+    catch( CORBA::SystemException &_ex ) // can be thrown by get_component_info
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "main");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	corbaProblemEx.log();
 	return -1;
 	}
     catch(...)

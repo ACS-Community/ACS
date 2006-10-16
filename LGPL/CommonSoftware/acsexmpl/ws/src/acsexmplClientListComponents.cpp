@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientListComponents.cpp,v 1.6 2004/10/14 22:25:02 gchiozzi Exp $"
+* "@(#) $Id: acsexmplClientListComponents.cpp,v 1.7 2006/10/16 08:42:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -78,7 +78,7 @@ This example shows a client that:
 
 #include <maciSimpleClient.h>
 
-ACE_RCSID(acsexmpl, acsexmplListCOBS, "$Id: acsexmplClientListComponents.cpp,v 1.6 2004/10/14 22:25:02 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplListCOBS, "$Id: acsexmplClientListComponents.cpp,v 1.7 2006/10/16 08:42:39 bjeram Exp $")
 using namespace maci;
 
 /*---------------------------------------------------------------------------------------*/
@@ -126,6 +126,16 @@ int main(int argc, char *argv[])
 	    ACS_SHORT_LOG ((LM_INFO, "Cannot logout"));
 	    return -1;
 	    }
+	}
+    catch( CORBA::SystemException &_ex ) // can be thrown by get_component_infos
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "main");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	corbaProblemEx.log();
+	return -1;
 	}
     catch(...)
 	{
