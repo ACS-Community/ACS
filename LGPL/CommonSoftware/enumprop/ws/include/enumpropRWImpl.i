@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropRWImpl.i,v 1.54 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: enumpropRWImpl.i,v 1.55 2006/10/16 07:55:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,6 +90,7 @@ RWEnumImpl<ACS_ENUM_T(T), SK>::RWEnumImpl(const ACE_CString& name, BACIComponent
 	{
 	devIO_mp = devIO;
 	deldevIO_m = flagdeldevIO;
+	devIO_mp->m_initialize = initializeDevIO_m;
 	if (devIO_mp->initializeValue()) 
 	    {
 	    ACS::Time timeStamp = getTimeStamp();
@@ -378,6 +379,10 @@ bool RWEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
       str = dao->get_string("units");
       units_m = str.in();
 
+      str = dao->get_string("initialize_devio");
+      if(strcmp(str.in(),"false") == 0 || strcmp(str.in(),"0")==0) initializeDevIO_m = false;
+	else initializeDevIO_m = true;
+
       m_resolution = dao->get_long("resolution");
 
       CORBA::Double dbl;
@@ -466,6 +471,13 @@ char *RWEnumImpl<ACS_ENUM_T(T), SK>::units ()
   throw (CORBA::SystemException)
 {
   return CORBA::string_dup (units_m.c_str());
+}
+
+template <ACS_ENUM_C>
+CORBA::Boolean RWEnumImpl<ACS_ENUM_T(T), SK>::initialize_devio ()
+  throw (CORBA::SystemException)
+{
+  return CORBA::Boolean(initializeDevIO_m);
 }
 
 template <ACS_ENUM_C>

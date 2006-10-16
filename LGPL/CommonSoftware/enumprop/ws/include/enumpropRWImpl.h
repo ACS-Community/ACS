@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropRWImpl.h,v 1.42 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: enumpropRWImpl.h,v 1.43 2006/10/16 07:55:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -249,6 +249,9 @@ public:
 	    CORBA::SystemException
 	  );
 	
+	virtual CORBA::Boolean initialize_devio () 
+		throw (CORBA::SystemException);	
+	
   /* -------------------- [ P interface ] -------------------- */
 
 	virtual ACS::TimeInterval default_timer_trigger (
@@ -407,6 +410,7 @@ private:
   ACE_CString  format_m; 				
   ACE_CString  units_m; 				
   ACS::pattern m_resolution; 			
+  bool initializeDevIO_m;   
 
   // P
   T	defaultValue_m; 			

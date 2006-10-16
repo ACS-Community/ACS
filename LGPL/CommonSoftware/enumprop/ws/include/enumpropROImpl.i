@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.52 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.53 2006/10/16 07:55:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -95,6 +95,7 @@ ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent
 	{
 	devIO_mp = devIO;
 	deldevIO_m = flagdeldevIO;
+	devIO_mp->m_initialize = initializeDevIO_m;
 	}
     else
 	{
@@ -413,6 +414,13 @@ char *ROEnumImpl<ACS_ENUM_T(T), SK>::units ()
   throw (CORBA::SystemException)
 {
   return CORBA::string_dup (units_m.c_str());
+}
+
+template <ACS_ENUM_C>
+CORBA::Boolean ROEnumImpl<ACS_ENUM_T(T), SK>::initialize_devio ()
+  throw (CORBA::SystemException)
+{
+  return CORBA::Boolean(initializeDevIO_m);
 }
 
 template <ACS_ENUM_C>
