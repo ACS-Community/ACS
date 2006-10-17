@@ -509,7 +509,7 @@ public class ObjectExplorer extends JFrame {
 			// user code begin {1}
 			// user code end
 			getOETree1().clearTree();
-			getOETreeByName().clearTree();
+			//getOETreeByName().clearTree();
 			// user code begin {2}
 			// user code end
 		} catch (java.lang.Throwable ivjExc) {
@@ -528,7 +528,7 @@ public class ObjectExplorer extends JFrame {
 			// user code begin {1}
 			// user code end
 			getOETree1().clearTree();
-			getOETreeByName().clearTree();
+			//getOETreeByName().clearTree();
 			// user code begin {2}
 			// user code end
 		} catch (java.lang.Throwable ivjExc) {
@@ -2171,7 +2171,7 @@ public class ObjectExplorer extends JFrame {
 		//TODO: finish this
 		getTreeHandlerBean1().setAccess(name);
 		getOETree1().clearTree();
-		getOETreeByName().clearTree();
+		//getOETreeByName().clearTree();
 	}
 	/**
 	 * Comment
