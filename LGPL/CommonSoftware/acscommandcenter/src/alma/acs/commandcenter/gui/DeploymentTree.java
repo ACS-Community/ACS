@@ -6,14 +6,16 @@ package alma.acs.commandcenter.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -28,7 +30,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -36,11 +37,24 @@ import javax.swing.tree.TreePath;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
-import alma.acs.commandcenter.meta.Firestarter;
+import alma.acs.commandcenter.meta.GuiMaciSupervisor;
 import alma.acs.commandcenter.meta.IMaciSupervisor;
-import alma.acs.commandcenter.meta.MaciSupervisorFactory;
-import alma.acs.commandcenter.meta.MaciSupervisor.SortingTreeNode;
+import alma.acs.commandcenter.meta.MaciInfo;
+import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
+import alma.acs.commandcenter.meta.IMaciSupervisor.CannotRetrieveManagerException;
+import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNoPermissionException;
+import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNotExistException;
+import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaTransientException;
+import alma.acs.commandcenter.meta.IMaciSupervisor.NotConnectedToManagerException;
+import alma.acs.commandcenter.meta.IMaciSupervisor.UnknownErrorException;
+import alma.acs.commandcenter.meta.MaciInfo.FolderInfo;
+import alma.acs.commandcenter.meta.MaciInfo.InfoDetail;
+import alma.acs.commandcenter.meta.MaciInfo.SortingTreeNode;
 import alma.acs.util.AcsLocations;
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.NoPermissionEx;
 
 /**
  * @author mschilli
@@ -55,15 +69,17 @@ public class DeploymentTree extends JTree {
 	protected ContextMenu folderComponentsContextMenu;
 
 	protected TreeEventForwarder treeEventForwarder;
+	protected List<ModelConverter> modelConverters;
 	protected Renderer cellRenderer;
+
 
 	// assigned on each invokation of show
 	protected DefaultMutableTreeNode target;
 	// assigned on each invokation of show
-	protected MaciSupervisorWrapper supervisor;
+	protected GuiMaciSupervisor selectedSupervisor;
 	// external logic that can create supervisor instances
 	protected DeploymentTreeController ctrl;
-	
+
 	public DeploymentTree(DeploymentTreeController ctrl) {
 
 		super(new DefaultMutableTreeNode("Deployment Info"));
@@ -74,9 +90,11 @@ public class DeploymentTree extends JTree {
 		this.setCellRenderer(cellRenderer = new Renderer());
 
 		// --- forward events from the MaciTree-Models
-		//     (there will be one for each macimanager) to our own, all-in-one TreeModel
+		// (there will be one for each macimanager) to our own, all-in-one TreeModel
 		DefaultTreeModel model = (DefaultTreeModel) this.getModel();
 		treeEventForwarder = new TreeEventForwarder(model);
+
+		modelConverters = new Vector<ModelConverter>();
 
 		// --- setup context menus
 		clientContextMenu = new ClientContextMenu();
@@ -85,6 +103,7 @@ public class DeploymentTree extends JTree {
 		componentContextMenu = new ComponentContextMenu();
 		folderContextMenu = new FolderContextMenu();
 		folderComponentsContextMenu = new FolderComponentsContextMenu();
+
 
 		this.addMouseListener(new MouseAdapter() {
 
@@ -95,7 +114,7 @@ public class DeploymentTree extends JTree {
 			}
 		});
 		this.getSelectionModel().addTreeSelectionListener(new SelectionListener());
-		
+
 		this.ctrl = ctrl;
 	}
 
@@ -115,13 +134,13 @@ public class DeploymentTree extends JTree {
 
 
 		// the supervisor (which is in the rootnode) for this subtree
-		supervisor = maciSupervisorWrapper(((DefaultMutableTreeNode) targetPath.getPathComponent(1)));
+		selectedSupervisor = maciSupervisor(((DefaultMutableTreeNode) targetPath.getPathComponent(1)));
 		// the node the mouse was clicked on
 		target = (DefaultMutableTreeNode) targetPath.getLastPathComponent();
 		Object userObject = target.getUserObject();
 
 		ContextMenu menu;
-		if (userObject instanceof MaciSupervisorWrapper) {
+		if (userObject instanceof IMaciSupervisor) {
 			menu = managerContextMenu;
 		} else if (userObject instanceof ContainerInfo) {
 			menu = containerContextMenu;
@@ -129,8 +148,8 @@ public class DeploymentTree extends JTree {
 			menu = clientContextMenu;
 		} else if (userObject instanceof ComponentInfo) {
 			menu = componentContextMenu;
-		} else if (userObject instanceof alma.acs.commandcenter.meta.MaciSupervisor.FolderInfo) {
-			String name = ((alma.acs.commandcenter.meta.MaciSupervisor.FolderInfo) userObject).name;
+		} else if (userObject instanceof FolderInfo) {
+			String name = ((FolderInfo) userObject).name;
 			if (name.equals("Components"))
 				menu = folderComponentsContextMenu;
 			else
@@ -142,12 +161,12 @@ public class DeploymentTree extends JTree {
 
 		menu.show(this, target, evt.getX(), evt.getY());
 	}
-	
-	// get the supervisor stored the tree node
-	protected MaciSupervisorWrapper maciSupervisorWrapper(DefaultMutableTreeNode managerNode) {
-		return (MaciSupervisorWrapper)managerNode.getUserObject();
+
+	// get the supervisor stored in the tree node
+	protected GuiMaciSupervisor maciSupervisor (DefaultMutableTreeNode managerNode) {
+		return (GuiMaciSupervisor) managerNode.getUserObject();
 	}
-	
+
 	protected DefaultMutableTreeNode getRoot () {
 		return (DefaultMutableTreeNode) super.getModel().getRoot();
 	}
@@ -156,58 +175,55 @@ public class DeploymentTree extends JTree {
 		return (DefaultTreeModel) super.getModel();
 	}
 
-	public void addManager (String managerHost, String managerPort) {
-		addManager(AcsLocations.convertToManagerLocation(managerHost, managerPort));
+
+	protected GuiMaciSupervisor getMaciSupervisor (String managerLoc) throws OrbInitException {
+		GuiMaciSupervisor mrf = ctrl.giveMaciSupervisor(managerLoc);
+		mrf.setConnectsAutomatically(false);
+		return mrf;
 	}
 
-	
-	public void addManager (String managerLoc) {
-		try {
-			
-			IMaciSupervisor mrf = ctrl.giveMaciSupervisor(managerLoc);
-			addManager(mrf);
-			
-		} catch (Exception e) {
-			String msg = "Failed to connect to manager at " + managerLoc + ".";
-			JOptionPane.showMessageDialog(this, msg, "Connect Failed", JOptionPane.INFORMATION_MESSAGE);
-		}
+	protected void startAndAddMaciSupervisor (GuiMaciSupervisor mrf) throws NoPermissionEx, CannotRetrieveManagerException,
+			CorbaTransientException, CorbaNotExistException, UnknownErrorException {
+		mrf.start(); // start is smart - can be called repeatedly
+		addManager(mrf);
 	}
 
-	
-	public void addManager (IMaciSupervisor mrf) {
-		
-		// create a wrapper around the given supervisor
-		MaciSupervisorWrapper mrfotogen = new MaciSupervisorWrapper(mrf);
-				
+	public void addManager (GuiMaciSupervisor mrfotogen) throws NoPermissionEx, CorbaTransientException, CorbaNotExistException,
+			UnknownErrorException {
+
 		// retrieve the tree-structured info that the manager offers as a TreeModel
-		DefaultTreeModel maciTree = mrfotogen.getMaciInfo();
-		
-		// if an exception occurred, the returned tree is null. stop.
-		if (maciTree == null) {
-			return;
+		MaciInfo maciInfo = null;
+		try {
+			maciInfo = mrfotogen.getMaciInfo();
+
+		} catch (NotConnectedToManagerException exc) {
+			// really shouldn't happen (the passed in supervisor is started)
+			throw new AssertionError("This supervisor has obviously not been started: " + mrfotogen);
 		}
-		// steal the root node from the TreeModel (we'll throw away the TreeModel)
-		DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) maciTree.getRoot();
-		
+
+		// no exception occurred, we have valid info
+
+		// the root of maciInfo is just a node with the boring string "Manager",
+		// the root of guiInfo will be a node holding the MaciSupervisor.
+		DefaultMutableTreeNode managerNode = new DefaultMutableTreeNode(mrfotogen);
+		DefaultTreeModel guiInfo = new DefaultTreeModel(managerNode);
+		ModelConverter mc = new ModelConverter(maciInfo, guiInfo);
+		modelConverters.add(mc);
+		maciInfo.addTreeModelListener(mc);
+
 		// have events forwarded from the TreeModel to our own all-in-one TreeModel
-		treeEventForwarder.addSource(maciTree);
-		
-		// we replace the current user object (which is just the boring string "Manager")
-		// with the MaciSupervisor instance. This will be our reference from now on.
-		managerNode.setUserObject(mrfotogen);
-		
+		treeEventForwarder.addSource(guiInfo);
+
 		// store the additional manager node in our tree
-		getRoot().add(managerNode);
-		
-		// force the model to publish an event
-		getTreeModel().nodeStructureChanged(getRoot());
+		getTreeModel().insertNodeInto(managerNode, getRoot(), getRoot().getChildCount());
+		// getRoot().add(managerNode);
+
+
+		// populate guitree, will make the tree display
+		mc.convertCompleteModel();
 	}
 
-	
-	public boolean removeManager (String managerHost, String managerPort, boolean dismissManager) {
-		return removeManager(AcsLocations.convertToManagerLocation(managerHost, managerPort), dismissManager);
-	}
-	
+
 	public boolean removeManager (String managerLoc, boolean dismissManager) {
 		DefaultMutableTreeNode managerNode = getManagerNode(managerLoc);
 
@@ -215,46 +231,34 @@ public class DeploymentTree extends JTree {
 			return false;
 		}
 
+		GuiMaciSupervisor ms = maciSupervisor(managerNode);
+
 		// make the MaciSupervisor forget its manager connection
 		if (dismissManager) {
-			maciSupervisorWrapper(managerNode).fullpower.dismissManager();
+			ms.dismissManager();
 		}
-		
+
+		for (ModelConverter mc : modelConverters) {
+			if (maciSupervisor(mc.managerNode()) == ms) {
+				mc.sourceModel.removeTreeModelListener(mc);
+				modelConverters.remove(mc);
+				break;
+			}
+		}
+
 		removeNode(managerNode);
 		return true;
 	}
 
 
-	public void refreshManager (String managerLoc) {
-		DefaultMutableTreeNode managerNode = getManagerNode(managerLoc);
-
-		if (managerNode == null) {
-			return;
-		}
-
-		refreshManagerNode(managerNode);
-	}
-
 	public void refreshManagers () {
 		// iterate over root's children
 		for (Enumeration en = getRoot().children(); en.hasMoreElements();) {
-			refreshManagerNode((DefaultMutableTreeNode) en.nextElement());
+			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
+			shieldedRefreshManager(maciSupervisor(managerNode));
 		}
 	}
 
-
-	protected void refreshManagerNode (DefaultMutableTreeNode managerNode) {
-
-		// update the tree node model
-		maciSupervisorWrapper(managerNode).getMaciInfo();
-
-		// make known by hand again
-		getTreeModel().nodeStructureChanged(managerNode);
-		// expand containers node
-		expandPath(new TreePath(new Object[]{getRoot(), managerNode, managerNode.getChildAt(0)}));
-		// expand cliental applications node
-		expandPath(new TreePath(new Object[]{getRoot(), managerNode, managerNode.getChildAt(1)}));
-	}
 
 
 	/**
@@ -267,7 +271,7 @@ public class DeploymentTree extends JTree {
 		for (Enumeration en = getRoot().children(); en.hasMoreElements();) {
 			// inspect each child
 			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
-			String managerLocation = maciSupervisorWrapper(managerNode).fullpower.getManagerLocation();
+			String managerLocation = maciSupervisor(managerNode).getManagerLocation();
 			// compare corbalocs
 			if (managerLocation.equals(toFind)) {
 				return managerNode;
@@ -276,14 +280,32 @@ public class DeploymentTree extends JTree {
 		return null;
 	}
 
-	protected void removeNode (DefaultMutableTreeNode node) {
 
-		// let mrfotogen clean up his things
-		// (2004-10-11): don't stop the manager here 
-		/*
-		 * if (node.getUserObject() instanceof MaciSupervisor)
-		 *    maciSupervisor(node).stop();
-		 */
+	/**
+	 * Little helper for the renderer. Just because it seems nice for the user. The
+	 * specified node must contain a ClientInfo user object.
+	 */
+	protected boolean isMyself (DefaultMutableTreeNode node) {
+		try {
+			// find manager node
+			DefaultMutableTreeNode n = node;
+			do {
+				n = (DefaultMutableTreeNode) n.getParent();
+			} while (!(n.getUserObject() instanceof IMaciSupervisor));
+			// compare handles
+			ClientInfo info = (ClientInfo) node.getUserObject();
+			return (maciSupervisor(n).myMaciHandle() == info.h);
+
+		} catch (Exception e) {
+			// instead of making the above code rock-stable, let's do it cheap
+			return false;
+		}
+	}
+
+	/**
+	 * Removes an arbitrary node from the gui
+	 */
+	protected void removeNode (DefaultMutableTreeNode node) {
 
 		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
 
@@ -302,9 +324,9 @@ public class DeploymentTree extends JTree {
 	 * Rearranges the node's children using the InfoDetail key.
 	 */
 	protected void sortNode (DefaultMutableTreeNode node, String key) {
-		// the nodes created by MaciSupervisor have a special capability: they can sort
-		// their kids
-		alma.acs.commandcenter.meta.MaciSupervisor.SortingTreeNode casted = (alma.acs.commandcenter.meta.MaciSupervisor.SortingTreeNode) node;
+		// the nodes created by MaciSupervisor have a special capability:
+		// they can sort their kids
+		SortingTreeNode casted = (SortingTreeNode) node;
 		casted.sortChildrenByInfoDetail(key);
 		// inform the model that something has changed
 		getTreeModel().nodeStructureChanged(casted);
@@ -315,68 +337,8 @@ public class DeploymentTree extends JTree {
 	 * Signals to the user that an action takes longer.
 	 */
 	protected void setBusy (boolean b) {
-		if (b) {
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		} else {
-			this.setCursor(Cursor.getDefaultCursor());
-		}
-	}
-
-
-	/**
-	 * @param caption
-	 * @return the input or <code>null</code> if cancelled
-	 */
-	protected String showInputDialog (String caption) {
-		return JOptionPane.showInputDialog(this, caption);
-	}
-
-
-	/**
-	 *  
-	 */
-	protected void seemsManagerIsDown (MaciSupervisorWrapper w) {
-
-		String managerLoc = w.fullpower.getManagerLocation();
-		String msg = "Seems the manager at " + managerLoc + " is down.\n" + "Ok to remove it from the View?";
-		int answer = JOptionPane.showConfirmDialog(this, msg, "Communication Failed", JOptionPane.YES_NO_OPTION);
-
-		if (answer == JOptionPane.OK_OPTION) {
-			removeManager(managerLoc, false);
-		}
-	}
-
-
-	protected void seemsManagerHasChangedOrHasCutConnection (MaciSupervisorWrapper w) {
-
-		String managerLoc = w.fullpower.getManagerLocation();
-		String msg = "Seems the manager at " + managerLoc + " has changed or\n" + "has cut the connection. Will try to reconnect.";
-		JOptionPane.showMessageDialog(this, msg, "Communication Failed", JOptionPane.INFORMATION_MESSAGE);
-
-		// need to call stop() although it will
-		// provoke another NO_PERMISSION exception
-		w.stop();
-
-		// dismiss old supervisor...
-		removeManager(managerLoc, false);
-
-		// ...and re-add it
-		addManager(managerLoc);
-	}
-
-
-	/**
-	 *  
-	 */
-	protected void seemsWeHaveDisconnected (MaciSupervisorWrapper w) {
-
-		String managerLoc = w.fullpower.getManagerLocation();
-		String msg = "I have no connection to the manager at " + managerLoc + ".\n" + "Do you want to connect now?";
-		int answer = JOptionPane.showConfirmDialog(this, msg, "Communication Failed", JOptionPane.YES_NO_OPTION);
-
-		if (answer == JOptionPane.OK_OPTION) {
-			addManager(managerLoc);
-		}
+		int cursor = (b) ? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR;
+		this.setCursor(Cursor.getPredefinedCursor(cursor));
 	}
 
 
@@ -387,172 +349,6 @@ public class DeploymentTree extends JTree {
 	// =========================================================
 	//
 
-	protected class MaciSupervisorWrapper {
-
-		protected IMaciSupervisor fullpower;
-
-		protected MaciSupervisorWrapper(IMaciSupervisor orig) {
-			this.fullpower = orig;
-		}
-
-		protected void handleException (Throwable exc) {
-
-			if (exc instanceof org.omg.CORBA.NO_PERMISSION) {
-				seemsManagerHasChangedOrHasCutConnection(this);
-
-			} else if (exc instanceof IllegalStateException) {
-				seemsWeHaveDisconnected(this);
-
-			} else if (exc instanceof org.omg.CORBA.OBJECT_NOT_EXIST) {
-				seemsManagerIsDown(this);
-
-			} else if (exc instanceof org.omg.CORBA.TRANSIENT) {
-				seemsManagerIsDown(this);
-
-			} else {
-				System.err.println("ERROR: couldn't refresh manager info for unknown reason.");
-				System.err.println("Please report the following lines to the Acs Team: "+exc);
-				System.err.println("---------------------------");
-				exc.printStackTrace(System.err);
-				System.err.println("---------------------------");
-			}
-				
-		}
-
-		public org.omg.CORBA.Object getComponent (String curl) {
-			try {
-				return fullpower.getComponent(curl);
-
-			} catch (Exception exc) {
-				handleException(exc);
-				return null;
-			}
-		}
-
-		
-		public void forceReleaseComponent (String curl) {
-			try {
-				fullpower.forceReleaseComponent(curl);
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public void disconnectContainer (String name) {
-			try {
-				fullpower.disconnectContainer(name);
-				
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public DefaultTreeModel getMaciInfo () throws RuntimeException {
-			try {
-				// throws RuntimeExceptions that wrap the actual exceptions
-				return fullpower.getMaciInfo();
-
-			} catch (RuntimeException exc) {
-				handleException(exc.getCause());
-				return null;
-			}
-		}
-
-		public void logoutClient (ClientInfo info) {
-			try {
-				fullpower.logoutClient(info);
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public void logoutContainer (ContainerInfo info) {
-			try {
-				fullpower.logoutContainer(info);
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public void pingContainer (String name) {
-			try {
-				fullpower.pingContainer(name);
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public ClientInfo[] retrieveClientInfo () {
-			try {
-				return fullpower.retrieveClientInfo();
-
-			} catch (Exception exc) {
-				handleException(exc);
-				return new ClientInfo[0];
-			}
-		}
-
-		public ComponentInfo[] retrieveComponentInfo (int[] cobHandles, String name_wildcard, String type_wildcard,
-				boolean active_only) {
-			try {
-				return fullpower.retrieveComponentInfo(cobHandles, name_wildcard, type_wildcard, active_only);
-
-			} catch (Exception exc) {
-				handleException(exc);
-				return new ComponentInfo[0];
-			}
-		}
-
-		public ContainerInfo[] retrieveContainerInfo (String name_wildcard) {
-			try {
-				return fullpower.retrieveContainerInfo(name_wildcard);
-
-			} catch (Exception exc) {
-				handleException(exc);
-				return new ContainerInfo[0];
-			}
-		}
-
-		public void shutdownContainer (String name) {
-			try {
-				fullpower.shutdownContainer(name);
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public void shutdownContainers () {
-			try {
-				fullpower.shutdownContainers();
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public void shutdownManager () {
-			try {
-				fullpower.shutdownManager();
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-
-		public void stop () {
-			try {
-				fullpower.stop();
-
-			} catch (Exception exc) {
-				handleException(exc);
-			}
-		}
-	}
 
 
 	/**
@@ -564,16 +360,16 @@ public class DeploymentTree extends JTree {
 		Border graylineBorder = new LineBorder(Color.gray, 1);
 		Border emptyBorder = new EmptyBorder(1, 1, 1, 1);
 		Color grayBackground = Color.lightGray;
-		
+
 		int[] currentlySelectedHandles = new int[]{};
 
 		public Component getTreeCellRendererComponent (JTree tree, Object value, boolean selected, boolean expanded, boolean leaf,
 				int row, boolean hasFocus) {
 
-			super.getTreeCellRendererComponent (tree, value, selected, expanded, leaf, row, hasFocus);
+			super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
 
 			this.setIcon(null);
-			
+
 			// ==== caption ====
 
 			String text; /* compiler will optimize the string operations */
@@ -584,8 +380,8 @@ public class DeploymentTree extends JTree {
 			if (userObject == null) {
 				text = "empty node (strange)";
 
-			} else if (userObject instanceof MaciSupervisorWrapper) {
-				String mgrLoc = maciSupervisorWrapper(node).fullpower.getManagerLocation();
+			} else if (userObject instanceof IMaciSupervisor) {
+				String mgrLoc = maciSupervisor(node).getManagerLocation();
 				String[] mgr = AcsLocations.convert(mgrLoc);
 				text = "Manager on " + mgr[0] + ", port " + mgr[1];
 
@@ -597,19 +393,20 @@ public class DeploymentTree extends JTree {
 			} else if (userObject instanceof ClientInfo) {
 				ClientInfo casted = (ClientInfo) userObject;
 				text = "'" + casted.name + "' [id " + casted.h + "]";
+				text += (isMyself(node)) ? " (myself)" : "";
 
 			} else if (userObject instanceof ComponentInfo) {
 				ComponentInfo casted = (ComponentInfo) userObject;
 				int nClients = (casted.clients != null) ? casted.clients.length : -1;
 				text = "'" + casted.name + "' [id " + casted.h + "] : " + nClients + " client" + ((nClients == 1) ? "" : "s");
 
-			} else if (userObject instanceof alma.acs.commandcenter.meta.MaciSupervisor.InfoDetail) {
+			} else if (userObject instanceof InfoDetail) {
 				/*
 				 * InfoDetail nodes are hanging below Components and Clients and Containers.
 				 * Thus, they all share the same visualization of, for instance, the info
 				 * detail "reference"
 				 */
-				alma.acs.commandcenter.meta.MaciSupervisor.InfoDetail casted = (alma.acs.commandcenter.meta.MaciSupervisor.InfoDetail) userObject;
+				InfoDetail casted = (InfoDetail) userObject;
 
 				if (casted.key.equals("container_name"))
 					text = "needs: " + casted.value;
@@ -623,9 +420,9 @@ public class DeploymentTree extends JTree {
 					text = casted.key + ": " + casted.value;
 
 
-			} else if (userObject instanceof alma.acs.commandcenter.meta.MaciSupervisor.FolderInfo) {
-				text = ((alma.acs.commandcenter.meta.MaciSupervisor.FolderInfo) userObject).name;
-				text = text + " ("+node.getChildCount()+")"; 
+			} else if (userObject instanceof FolderInfo) {
+				text = ((FolderInfo) userObject).name;
+				text = text + " (" + node.getChildCount() + ")";
 
 			} else
 				text = String.valueOf(node);
@@ -635,12 +432,13 @@ public class DeploymentTree extends JTree {
 
 			// ==== selection ====
 
-			/* We want the real selection blue, and the "deputy"-selections gray. 
-			 * Since our superclass implementation determines the selection background
-			 * in paint() and not in getRendererComponent(), we need to set the
+			/*
+			 * We want the real selection blue, and the "deputy"-selections gray. Since our
+			 * superclass implementation determines the selection background in paint() and
+			 * not in getRendererComponent(), we need to set the
 			 * "backgroundNonSelectionColor" property which is getting evaluated by paint()
 			 */
-			
+
 			Border border = null;
 
 			if (selected) {
@@ -649,9 +447,9 @@ public class DeploymentTree extends JTree {
 					currentlySelectedHandles = ((SortingTreeNode) node).representedHandles;
 				}
 			} else {
-				
+
 				Color backgroundNonSelectionColor = null;
-				
+
 				if (node instanceof SortingTreeNode) {
 					SortingTreeNode casted = (SortingTreeNode) node;
 					search: for (int i = 0; i < currentlySelectedHandles.length; i++) {
@@ -674,8 +472,6 @@ public class DeploymentTree extends JTree {
 
 			this.setBorder(border);
 
-
-
 			// === done ===
 
 			return this;
@@ -685,8 +481,6 @@ public class DeploymentTree extends JTree {
 
 	/**
 	 * Listens on selection-changes in the tree to trigger a repaint-event.
-	 * 
-	 * @author mschilli
 	 */
 	protected class SelectionListener implements TreeSelectionListener {
 
@@ -695,6 +489,100 @@ public class DeploymentTree extends JTree {
 			if (node instanceof SortingTreeNode)
 				cellRenderer.currentlySelectedHandles = ((SortingTreeNode) node).representedHandles;
 			repaint();
+		}
+
+	}
+
+	protected class ModelConverter implements TreeModelListener {
+
+		protected MaciInfo sourceModel;
+		protected DefaultTreeModel targetModel;
+
+		public ModelConverter(MaciInfo sourceModel, DefaultTreeModel targetModel) {
+			this.sourceModel = sourceModel;
+			this.targetModel = targetModel;
+		}
+
+		public DefaultMutableTreeNode managerNode () {
+			return (DefaultMutableTreeNode) targetModel.getRoot();
+		}
+
+		// --- conversion logic ---
+
+		public void treeNodesChanged (TreeModelEvent e) {}
+
+		public void treeNodesInserted (TreeModelEvent e) {}
+
+		public void treeNodesRemoved (TreeModelEvent e) {}
+
+		public void treeStructureChanged (TreeModelEvent e) {
+			convertCompleteModel();
+		}
+
+		protected void convertCompleteModel () {
+			/* System.err.println("MC: "+Thread.currentThread().getName()); */
+
+			final DefaultMutableTreeNode src = (DefaultMutableTreeNode) sourceModel.getRoot();
+			final DefaultMutableTreeNode trg = (DefaultMutableTreeNode) targetModel.getRoot();
+
+			/*
+			 * the model update will replace all the nodes: the tree will collapse, will jump
+			 * to first row, will forget the selection - quite annoying for the user.
+			 * therefore, we'll try to restore partially what the tree looked like
+			 */
+			final Rectangle viewBeforeUpdate = getVisibleRect();
+
+			// do a complete conversion of the whole model
+			Runnable r = new Runnable() {
+
+				public void run () {
+					trg.removeAllChildren();
+					convert(src, trg);
+					targetModel.nodeStructureChanged(trg);
+				}
+			};
+
+			/*
+			 * this is the main point of the whole model conversion business: modify the
+			 * jtree's tree model only in the swing thread. the maci info is modified by the
+			 * supervisor in whatever thread it uses. we listen to those changes and transfer
+			 * them to the tree's underlying tree model.... using the swing thread...
+			 */
+			runInSwingThread(r);
+
+			r = new Runnable() {
+
+				public void run () {
+					expandPath(new TreePath(new Object[]{getRoot(), trg, trg.getChildAt(0)}));
+					expandPath(new TreePath(new Object[]{getRoot(), trg, trg.getChildAt(1)}));
+					expandPath(new TreePath(new Object[]{getRoot(), trg, trg.getChildAt(2)}));
+					scrollRectToVisible(viewBeforeUpdate);
+				}
+			};
+			runInSwingThread(r);
+		}
+
+		@SuppressWarnings("unchecked")
+		// JDK library is not type-safe
+		private void convert (DefaultMutableTreeNode src, DefaultMutableTreeNode trg) {
+			List<DefaultMutableTreeNode> children = Collections.list((Enumeration<DefaultMutableTreeNode>) src.children());
+			for (DefaultMutableTreeNode subSrc : children) {
+				DefaultMutableTreeNode subTrg = (DefaultMutableTreeNode) subSrc.clone();
+				trg.add(subTrg);
+				convert(subSrc, subTrg);
+			}
+		}
+
+		// so much hassle... see above
+		private void runInSwingThread (Runnable r) {
+			if (SwingUtilities.isEventDispatchThread())
+				r.run();
+			else
+				try {
+					SwingUtilities.invokeAndWait(r);
+				} catch (Exception exc) {
+					// exc.printStackTrace();
+				}
 		}
 
 	}
@@ -725,6 +613,7 @@ public class DeploymentTree extends JTree {
 		// --- forwarding logic ---
 
 		synchronized public void treeStructureChanged (TreeModelEvent e) {
+			/* System.err.println("TEF: "+Thread.currentThread().getName()); */
 			forwardTarget.nodeStructureChanged((TreeNode) e.getTreePath().getLastPathComponent());
 		}
 
@@ -743,14 +632,14 @@ public class DeploymentTree extends JTree {
 	protected class ContextMenu extends JPopupMenu {
 
 		protected ContextMenu() {
-		// (Apr 15, 2004) msc: commented out
-		// When one removes a folder like "Containers", it disappears unrecoverable
-		// When one removes an element like "bilboContainer", it reappears with the next
-		// Maci-Refresh
-		// This asymetry is not user-friendly, the feature by itself is not so useful
-		// anyway.
-		// It has now gone to ManagerContextMenu.
-		//this.add(new RemoveFromViewAction());
+		/*
+		 * (Apr 15, 2004) msc: commented out When one removes a folder like "Containers", it
+		 * disappears unrecoverable When one removes an element like "bilboContainer", it
+		 * reappears with the next Maci-Refresh This asymetry is not user-friendly, the
+		 * feature by itself is not so useful anyway. It has now gone to ManagerContextMenu.
+		 * 
+		 * this.add(new RemoveFromViewAction());
+		 */
 		}
 
 		public void show (DeploymentTree tree, DefaultMutableTreeNode target, int x, int y) {
@@ -766,6 +655,7 @@ public class DeploymentTree extends JTree {
 			this.add(new ManagerRefreshAction());
 
 			this.add(new JPopupMenu.Separator());
+			this.add(new ManagerPingAction());
 			this.add(new ManagerShutdownAction());
 
 			this.add(new JPopupMenu.Separator());
@@ -825,7 +715,8 @@ public class DeploymentTree extends JTree {
 
 		protected ComponentContextMenu() {
 			super();
-			this.add(new ComponentActivateAction());
+			this.add(new ComponentRequestAction());
+			this.add(new ComponentReleaseAction());
 
 			this.add(new JPopupMenu.Separator());
 			this.add(new ComponentForceReleaseAction());
@@ -847,15 +738,24 @@ public class DeploymentTree extends JTree {
 		}
 
 		final public void actionPerformed (ActionEvent e) {
-			actionPerformed();
+			try {
+				actionPerformed();
+
+			} catch (Exception exc) {
+				/*
+				 * This catch-clause will rarely be executed: the menu-item actions mostly use
+				 * the shielded API which catches exceptions way before
+				 */
+				ErrorBox.showErrorDialog(DeploymentTree.this, "\"" + getValue(NAME) + "\" failed", exc);
+			}
 		}
 
 		protected abstract void actionPerformed ();
 	}
 
 	/**
-	 * Performs the work to be done NOT within event-dispatcher thread but within an extra
-	 * thread. Used for most actions in the context menus.
+	 * Performs the work to be done delayed but also within the event-dispatcher thread.
+	 * Used for most actions in the context menus.
 	 */
 	protected abstract class DelayedAction extends AbstractAction {
 
@@ -864,22 +764,29 @@ public class DeploymentTree extends JTree {
 		}
 
 		final public void actionPerformed (ActionEvent e) {
-			new Thread() { // TODO(msc): re-use threads
+			SwingUtilities.invokeLater(new Runnable() {
 
 				public void run () {
 					setBusy(true);
+
 					try {
 						actionPerformed();
-					} catch (RuntimeException e) {
-						throw e;
+
+					} catch (Exception exc) {
+						/*
+						 * This catch-clause will rarely be executed: the menu-item actions
+						 * mostly use the shielded API which catches exceptions way before
+						 */
+						ErrorBox.showErrorDialog(DeploymentTree.this, "\"" + getValue(NAME) + "\" failed", exc);
+
 					} finally {
 						setBusy(false);
 					}
 				}
-			}.start();
+			});
 		}
 
-		protected abstract void actionPerformed ();
+		protected abstract void actionPerformed () throws Exception;
 	}
 
 	protected class RemoveFromViewAction extends ImmediateAction {
@@ -900,7 +807,19 @@ public class DeploymentTree extends JTree {
 		}
 
 		public void actionPerformed () {
-			refreshManagerNode(target);
+			shieldedRefreshManager(selectedSupervisor);
+		}
+
+	}
+
+	protected class ManagerPingAction extends DelayedAction {
+
+		protected ManagerPingAction() {
+			super("Send Ping Request");
+		}
+
+		public void actionPerformed () {
+			shieldedPingManager(selectedSupervisor);
 		}
 
 	}
@@ -911,8 +830,8 @@ public class DeploymentTree extends JTree {
 			super("Send Shutdown Request");
 		}
 
-		public void actionPerformed () {
-			supervisor.shutdownManager();
+		public void actionPerformed () throws Exception {
+			shieldedShutdownManager(selectedSupervisor);
 		}
 	}
 
@@ -944,8 +863,8 @@ public class DeploymentTree extends JTree {
 			super("Send Ping Request");
 		}
 
-		public void actionPerformed () {
-			supervisor.fullpower.pingContainer((ContainerInfo) target.getUserObject());
+		public void actionPerformed () throws Exception {
+			selectedSupervisor.containerPing((ContainerInfo) target.getUserObject());
 		}
 	}
 
@@ -955,8 +874,8 @@ public class DeploymentTree extends JTree {
 			super("Send Shutdown Request");
 		}
 
-		public void actionPerformed () {
-			supervisor.fullpower.shutdownContainer((ContainerInfo) target.getUserObject());
+		public void actionPerformed () throws Exception {
+			selectedSupervisor.containerShutdown((ContainerInfo) target.getUserObject());
 		}
 	}
 
@@ -966,11 +885,10 @@ public class DeploymentTree extends JTree {
 			super("Send Message...");
 		}
 
-		public void actionPerformed () {
-			String msg = showInputDialog("Enter message text:");
+		public void actionPerformed () throws Exception {
+			String msg = JOptionPane.showInputDialog(DeploymentTree.this, "Enter message text:");
 			if (msg != null)
-				supervisor.fullpower.sendMessageToContainer((ContainerInfo) target.getUserObject(),
-						IMaciSupervisor.MSG_INFORMATION, msg);
+				selectedSupervisor.containerMessage((ContainerInfo) target.getUserObject(), IMaciSupervisor.MSG_INFORMATION, msg);
 		}
 	}
 
@@ -980,8 +898,8 @@ public class DeploymentTree extends JTree {
 			super("Send Ping Request");
 		}
 
-		public void actionPerformed () {
-			supervisor.fullpower.pingClient((ClientInfo) target.getUserObject());
+		public void actionPerformed () throws Exception {
+			selectedSupervisor.clientPing((ClientInfo) target.getUserObject());
 		}
 	}
 
@@ -991,8 +909,8 @@ public class DeploymentTree extends JTree {
 			super("Send Disconnect Request");
 		}
 
-		public void actionPerformed () {
-			supervisor.fullpower.disconnectContainer((ContainerInfo) target.getUserObject());
+		public void actionPerformed () throws Exception {
+			selectedSupervisor.containerDisconnect((ContainerInfo) target.getUserObject());
 		}
 	}
 
@@ -1002,8 +920,8 @@ public class DeploymentTree extends JTree {
 			super("Send Disconnect Request");
 		}
 
-		public void actionPerformed () {
-			supervisor.fullpower.disconnectClient((ClientInfo) target.getUserObject());
+		public void actionPerformed () throws Exception {
+			selectedSupervisor.clientDisconnect((ClientInfo) target.getUserObject());
 		}
 	}
 
@@ -1013,11 +931,10 @@ public class DeploymentTree extends JTree {
 			super("Send Message...");
 		}
 
-		public void actionPerformed () {
-			String msg = showInputDialog("Enter message text:");
+		public void actionPerformed () throws Exception {
+			String msg = JOptionPane.showInputDialog(DeploymentTree.this, "Enter message text:");
 			if (msg != null)
-				supervisor.fullpower.sendMessageToClient((ClientInfo) target.getUserObject(),
-						IMaciSupervisor.MSG_INFORMATION, msg);
+				selectedSupervisor.clientMessage((ClientInfo) target.getUserObject(), IMaciSupervisor.MSG_INFORMATION, msg);
 		}
 	}
 
@@ -1027,8 +944,8 @@ public class DeploymentTree extends JTree {
 			super("Have logged out by Manager");
 		}
 
-		public void actionPerformed () {
-			supervisor.logoutContainer((ContainerInfo) target.getUserObject());
+		public void actionPerformed () throws Exception {
+			shieldedLogoutContainer(selectedSupervisor, (ContainerInfo) target.getUserObject());
 		}
 	}
 
@@ -1038,42 +955,363 @@ public class DeploymentTree extends JTree {
 			super("Have logged out by Manager");
 		}
 
-		public void actionPerformed () {
-			supervisor.logoutClient((ClientInfo) target.getUserObject());
+		public void actionPerformed () throws Exception {
+			shieldedLogoutClient(selectedSupervisor, (ClientInfo) target.getUserObject());
 		}
 	}
 
-	protected class ComponentActivateAction extends DelayedAction {
+	protected class ComponentRequestAction extends DelayedAction {
 
-		protected ComponentActivateAction() {
-			super("Have activated by Manager");
+		protected ComponentRequestAction() {
+			super("Have activated");
 		}
 
-		public void actionPerformed () {
+		public void actionPerformed () throws Exception {
 			String name = ((ComponentInfo) target.getUserObject()).name;
-			supervisor.getComponent(name);
+			shieldedGetComponent(selectedSupervisor, name);
+		}
+	}
+
+	protected class ComponentReleaseAction extends DelayedAction {
+
+		protected ComponentReleaseAction() {
+			super("Release own reference");
+		}
+
+		public void actionPerformed () throws Exception {
+			String name = ((ComponentInfo) target.getUserObject()).name;
+			shieldedReleaseComponents(selectedSupervisor, new String[]{name});
 		}
 	}
 
 	protected class ComponentForceReleaseAction extends DelayedAction {
 
 		protected ComponentForceReleaseAction() {
-			super("Have system-widely deactivated by Manager");
+			super("Force system-wide deactivation");
 		}
 
-		public void actionPerformed () {
+		public void actionPerformed () throws Exception {
 			String name = ((ComponentInfo) target.getUserObject()).name;
-			supervisor.forceReleaseComponent(name);
+			shieldedForceReleaseComponent(selectedSupervisor, name);
 		}
 	}
 
-	
+
+
+	// 
+	// ======================= Shielded API =========================
+	// 
+
+	public void shieldedRefreshManager (GuiMaciSupervisor supervisor) {
+		try {
+			supervisor.getMaciInfo();
+
+		} catch (NoPermissionEx exc) {
+			mce.handleException(supervisor, exc);
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+	public void shieldedAddManager (String managerLoc) {
+		GuiMaciSupervisor supervisor = null;
+
+		try {
+			supervisor = getMaciSupervisor(managerLoc);
+
+		} catch (OrbInitException exc1) {
+			mce.handleException(exc1);
+		}
+
+		try {
+			startAndAddMaciSupervisor(supervisor);
+
+		} catch (CannotRetrieveManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (NoPermissionEx exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+
+
+	/**
+	 * Ping Manager (shielded)
+	 */
+	public void shieldedPingManager (GuiMaciSupervisor supervisor) {
+		try {
+			supervisor.managerPing();
+
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+	/**
+	 * Shutdown Manager (shielded)
+	 */
+	public void shieldedShutdownManager (GuiMaciSupervisor supervisor) {
+		try {
+			supervisor.managerShutdown();
+
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNoPermissionException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+	/**
+	 * Logout Container (shielded)
+	 */
+	public void shieldedLogoutContainer (GuiMaciSupervisor supervisor, ContainerInfo info) {
+		try {
+			supervisor.managerLogout(info);
+
+		} catch (NoPermissionEx exc) {
+			mce.handleException(supervisor, exc);
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+	/**
+	 * Logout Client (shielded)
+	 */
+	public void shieldedLogoutClient (GuiMaciSupervisor supervisor, ClientInfo info) {
+		try {
+			supervisor.managerLogout(info);
+
+		} catch (NoPermissionEx exc) {
+			mce.handleException(supervisor, exc);
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+
+	/**
+	 * Retrieve component (shielded)
+	 * 
+	 * @return component or <code>null</code>
+	 * 
+	 * @throws ComponentNotAlreadyActivatedEx
+	 * @throws CannotGetComponentEx
+	 * @throws ComponentConfigurationNotFoundEx
+	 */
+	public org.omg.CORBA.Object shieldedGetComponent (GuiMaciSupervisor supervisor, String curl)
+			throws ComponentNotAlreadyActivatedEx, CannotGetComponentEx, ComponentConfigurationNotFoundEx {
+		try {
+			return supervisor.managerGetComponent(curl);
+
+		} catch (NoPermissionEx exc) {
+			mce.handleException(supervisor, exc);
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+		return null;
+	}
+
+
+	/**
+	 * Release components (shielded)
+	 */
+	public void shieldedReleaseComponents (GuiMaciSupervisor supervisor, String[] curls) {
+		try {
+			supervisor.managerReleaseComponents(curls);
+
+		} catch (NoPermissionEx exc) {
+			mce.handleException(supervisor, exc);
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+
+	/**
+	 * Force-release component (shielded)
+	 */
+	public void shieldedForceReleaseComponent (GuiMaciSupervisor supervisor, String curl) {
+		try {
+			supervisor.managerForceReleaseComponent(curl);
+
+		} catch (NoPermissionEx exc) {
+			mce.handleException(supervisor, exc);
+		} catch (NotConnectedToManagerException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaTransientException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (CorbaNotExistException exc) {
+			mce.handleException(supervisor, exc);
+		} catch (UnknownErrorException exc) {
+			mce.handleException(supervisor, exc);
+		}
+	}
+
+
+	final protected ManagerConnectionExceptionHandler mce = new ManagerConnectionExceptionHandler();
+
+	protected class ManagerConnectionExceptionHandler {
+
+		protected void handleException (OrbInitException exc) {
+			String msg = "Failed to initialize local orb. This prevents all corba connectivity.";
+			ErrorBox.showErrorDialog(DeploymentTree.this, msg,	exc);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, NoPermissionEx exc) {
+			seemsManagerHasChangedOrHasCutConnection(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, CorbaNoPermissionException exc) {
+			seemsManagerHasChangedOrHasCutConnection(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, NotConnectedToManagerException exc) {
+			seemsWeHaveDisconnected(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, CannotRetrieveManagerException exc) {
+			seemsManagerDoesNotExist(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, CorbaNotExistException exc) {
+			seemsManagerDoesNotExist(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, CorbaTransientException exc) {
+			seemsManagerIsDown(ms);
+		}
+
+		protected void handleException (IMaciSupervisor ms, UnknownErrorException exc) {
+			String msg = "Unforeseen error talking to manager! Please report this to the Acs team.";
+			ErrorBox.showErrorDialog(DeploymentTree.this, msg,	exc);
+		}
+
+
+		protected void seemsManagerIsDown (GuiMaciSupervisor ms) {
+
+			String managerLoc = ms.getManagerLocation();
+			String msg = "Seems the manager at " + managerLoc + " is down.\n" + "Ok to remove it from the View?";
+			int answer = JOptionPane.showConfirmDialog(DeploymentTree.this, msg, "Communication Failed", JOptionPane.YES_NO_OPTION);
+
+			try {
+				if (answer == JOptionPane.OK_OPTION) {
+					removeManager(managerLoc, false);
+				}
+
+			} catch (Exception exc1) {
+				ErrorBox.showErrorDialog(DeploymentTree.this, "Failed to remove manager from view", exc1);
+			}
+		}
+
+		protected void seemsManagerHasChangedOrHasCutConnection (GuiMaciSupervisor ms) {
+
+			String managerLoc = ms.getManagerLocation();
+			String msg = "Seems the manager at " + managerLoc + " has changed or\n"
+					+ "has cut the connection. Will try to reconnect.";
+			JOptionPane.showMessageDialog(DeploymentTree.this, msg, "Communication Failed", JOptionPane.INFORMATION_MESSAGE);
+
+			try {
+				// dismiss old supervisor...
+				removeManager(managerLoc, true);
+				// ...and re-add it
+				ms.start();
+				addManager(ms);
+
+			} catch (Exception exc1) {
+				ErrorBox.showMessageDialog(DeploymentTree.this, "Failed to reconnect to manager", false);
+			}
+		}
+
+		protected void seemsWeHaveDisconnected (GuiMaciSupervisor ms) {
+
+			String managerLoc = ms.getManagerLocation();
+			String msg = "I have no connection to the manager at " + managerLoc + ".\n" + "Do you want to connect now?";
+			int answer = JOptionPane.showConfirmDialog(DeploymentTree.this, msg, "Communication Failed",
+					JOptionPane.YES_NO_OPTION);
+
+			try {
+				if (answer == JOptionPane.OK_OPTION) {
+					// dismiss supervisor...
+					removeManager(managerLoc, true);
+					// ...and re-add it
+					ms.start();
+					addManager(ms);
+				}
+
+			} catch (Exception exc1) {
+				ErrorBox.showMessageDialog(DeploymentTree.this, "Failed to connect to manager", false);
+			}
+		}
+
+		protected void seemsManagerDoesNotExist (GuiMaciSupervisor ms) {
+
+			String managerLoc = ms.getManagerLocation();
+			String msg = "No manager exists at " + managerLoc + ".\n" + "Do you want to retry to connect?";
+			for (;;) {
+				int answer = JOptionPane.showConfirmDialog(DeploymentTree.this, msg, "Communication Failed",
+						JOptionPane.YES_NO_OPTION);
+
+				try {
+					if (answer == JOptionPane.OK_OPTION) {
+						ms.start();
+						addManager(ms);
+					}
+					break;
+				} catch (Exception exc) {
+					continue;
+				}
+			}
+		}
+
+	}
+
 }
-
-///////////////////////////////////////////////////// //
-/// API / //
-///////////////////////////////////////////////////// //
-
-///////////////////////////////////////////////////// //
-/// Internal / //
-///////////////////////////////////////////////////// //
