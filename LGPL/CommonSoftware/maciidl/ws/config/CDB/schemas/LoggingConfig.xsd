@@ -11,7 +11,7 @@ The inherited 'minLogLevel' and 'minLogLevelLocal' are the default log levels fo
                 <xs:sequence>
                     <xs:element name="_" type="NamedLogger" minOccurs="0" maxOccurs="unbounded">
                         <xs:annotation>
-                            <xs:documentation>Optional configuration for specific loggers that should use different log levels than the default values from 'LoggingConfig'. The odd name '_' follows the CDB convention for 'map attributes' and allows easy access without iterating over a list of loggers.</xs:documentation>
+                            <xs:documentation>!!! CONFIGURATION OF NAMED LOGGERS NOT YET SUPPORTED IN ACS 6.0!!! Optional configuration for specific loggers that should use different log levels than the default values from 'LoggingConfig'. The odd name '_' follows the CDB convention for 'map attributes' and allows easy access without iterating over a list of loggers.</xs:documentation>
                         </xs:annotation>
                     </xs:element>
                 </xs:sequence>
