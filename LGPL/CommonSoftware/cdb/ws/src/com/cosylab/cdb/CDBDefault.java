@@ -69,7 +69,7 @@ public class CDBDefault {
 		try {
 			strIOR=null;
 			if (args.length < 2) {
-				System.out.println("Usage: cmd <idl_type> <instance_name> [-d|-k ior -h]");
+				System.out.println("Usage: cmd <idl_type> <instance_name> [-d ior -h]");
 				return;
 			}
 			
@@ -81,13 +81,13 @@ public class CDBDefault {
 			curl = curl_allComponents + "/" + in_name;
 
 			for (int i = 0; i < args.length; i++) {
-				if (args[i].equals("-k") || args[i].equals("-d")) {
+				if (args[i].equals("-d")) {
 					if (i < args.length - 1) {
 						strIOR = args[++i];
 					}
 				}
 				if (args[i].equals("-h")){
-					System.out.println("Usage: cmd idl_type instance_name [-d|-k -h]");
+					System.out.println("Usage: cmd idl_type instance_name [-d ior -h]");
 					return;
 				}
 			}

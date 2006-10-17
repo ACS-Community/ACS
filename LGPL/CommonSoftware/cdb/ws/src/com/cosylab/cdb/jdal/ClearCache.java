@@ -38,19 +38,19 @@ public class ClearCache {
 			String curl = null;
 			String strIOR = null;
 
-			if (args.length >= 1 && !args[0].equals("-k") && !args[0].equals("-d") ) {
+			if (args.length >= 1 && !args[0].equals("-d") ) {
 				curl = args[0];
 			}
 
 			// test for IOR in cmd line
 			for (int i = 0; i < args.length; i++) {
-				if (args[i].equals("-k") || args[i].equals("-d")) {
+				if (args[i].equals("-d")) {
 					if (i < args.length - 1) {
 						strIOR = args[++i];
 					}
 				}
 				if(args[i].equals("-h")){
-					System.out.println("Usage: cmd [curl] [-k|-d ior -h]");
+					System.out.println("Usage: cmd [curl] [-d ior -h]");
 					System.out.println("if curl is not set, is invoked for all curls");
 					return;
 				}

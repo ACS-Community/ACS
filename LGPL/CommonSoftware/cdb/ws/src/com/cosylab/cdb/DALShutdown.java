@@ -40,13 +40,13 @@ public class DALShutdown {
 			
 			// test for IOR in cmd line
 			for (int i = 0; i < args.length; i++) {
-				if (args[i].equals("-k") || args[i].equals("-d")) {
+				if (args[i].equals("-d")) {
 					if (i < args.length - 1) {
 						strIOR = args[++i];
 					}
 				}
 				if (args[i].equals("-h") || args[i].equals("-help")){
-					System.out.println("Usage: cmd [-k|-d ior -h|-help]");
+					System.out.println("Usage: cmd [-d ior -h|-help]");
 					return;
 				}
 			}

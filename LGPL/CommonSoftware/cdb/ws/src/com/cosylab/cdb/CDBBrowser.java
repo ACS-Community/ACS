@@ -129,13 +129,13 @@ public class CDBBrowser extends JApplet implements TreeSelectionListener {
 		CDBBrowser app = new CDBBrowser();
 		// test for IOR in cmd line
 		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("-k") || args[i].equals("-d")) {
+			if (args[i].equals("-d")) {
 				if (i < args.length - 1) {
 					app.setIOR(args[++i]);
 				}
 			}
 			if(args[i].equals("-h") || args[i].equals("-help")){
-				System.out.println("Usage: cmd [-d|-k -h|-help]");
+				System.out.println("Usage: cmd [-d ior -h|-help]");
 				return;
 			}
 		}

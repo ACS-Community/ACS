@@ -44,7 +44,7 @@ public class DALWrite {
 			String strIOR = null;
 
 			if (args.length < 3) {
-				System.out.println("Usage: cmd curl field value [-k|-d ior -h]");
+				System.out.println("Usage: cmd curl field value [-d ior -h]");
 				return;
 			}
 			String curl = args[0];
@@ -53,13 +53,13 @@ public class DALWrite {
 
 			// test for IOR in cmd line
 			for (int i = 3; i < args.length; i++) {
-				if (args[i].equals("-k") || args[i].equals("-d")) {
+				if (args[i].equals("-d")) {
 					if (i < args.length - 1) {
 						strIOR = args[++i];
 					}
 				}
 				if (args[i].equals("-h") || args[i].equals("-help")) {
-					System.out.println("Usage: cmd curl field value [-k|-d ior -h]");
+					System.out.println("Usage: cmd curl field value [-d ior -h]");
 					return;
 				}
 			}
