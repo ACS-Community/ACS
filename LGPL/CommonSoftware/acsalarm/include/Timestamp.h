@@ -6,7 +6,7 @@
 
 using std::string;
 
-namespace laserUtil
+namespace acsalarm
 {
 	/*
 	 * Utility class to hold a timestamp. This class is intended primarily for use 

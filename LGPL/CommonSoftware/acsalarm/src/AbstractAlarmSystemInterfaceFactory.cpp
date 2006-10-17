@@ -1,7 +1,7 @@
 #include "AbstractAlarmSystemInterfaceFactory.h"
 #include "ACSFaultState.h"
 
-using namespace laserSource;
+using namespace acsalarm;
 
 //TODO: add namespace
 
@@ -11,7 +11,7 @@ using namespace laserSource;
  * @param member the fault member.
  * @param code the fault code.
  */
-auto_ptr<laserSource::ACSFaultState> AbstractAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code)
+auto_ptr<ACSFaultState> AbstractAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code)
 {
 	ACSFaultState * fsPtr = new ACSFaultState(family, member, code);
 	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);
@@ -22,7 +22,7 @@ auto_ptr<laserSource::ACSFaultState> AbstractAlarmSystemInterfaceFactory::create
  * Create a fault state 
  * @return a new ACSFaultState instance
  */
-auto_ptr<laserSource::ACSFaultState> AbstractAlarmSystemInterfaceFactory::createFaultState()
+auto_ptr<ACSFaultState> AbstractAlarmSystemInterfaceFactory::createFaultState()
 {
 	ACSFaultState * fsPtr = new ACSFaultState();
 	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);

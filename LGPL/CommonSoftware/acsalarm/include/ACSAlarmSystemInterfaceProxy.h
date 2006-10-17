@@ -44,7 +44,7 @@ using namespace Logging;
  * Implementation of a source that log messages instead of sending msg
  * to the AlarmSrevice
  */
-class ACSAlarmSystemInterfaceProxy: public laserSource::ACSAlarmSystemInterface {
+class ACSAlarmSystemInterfaceProxy: public acsalarm::ACSAlarmSystemInterface {
 	private:
 		/**
 		 * The logger
@@ -62,19 +62,19 @@ class ACSAlarmSystemInterfaceProxy: public laserSource::ACSAlarmSystemInterface 
 	 	 * Push a fault state.
 	 	 * @param state the fault state change to push.
 	 	 */
-		virtual void push(laserSource::ACSFaultState & state);
+		virtual void push(acsalarm::ACSFaultState & state);
 	
 		/**
 	 	 * Push a collection of fault states.
 	 	 * @param states
 	 	 */
-		virtual void push(vector<laserSource::ACSFaultState> & states);
+		virtual void push(vector<acsalarm::ACSFaultState> & states);
 	
 		/**
 	 	 * Push the set of active fault states.
 	 	 * @param activeFaults the active fault states.
 	 	 */
-		virtual void pushActiveList(vector<laserSource::ACSFaultState> & activeFaults);
+		virtual void pushActiveList(vector<acsalarm::ACSFaultState> & activeFaults);
 };
 
 #endif 

@@ -66,8 +66,8 @@
 XERCES_CPP_NAMESPACE_USE
 using parameterSet::acsDOMErrorHandler;
 using parameterSet::StrX;
-using laserSource::ACSFaultState;
-using laserUtil::Properties;
+using acsalarm::ACSFaultState;
+using acsalarm::Properties;
 
 class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 {
@@ -348,7 +348,7 @@ void AcsAlarmTestCase::testFaultState()
 	const string descriptor(DESCRIPTOR_VALUE);
 
 	// create the ACSFaultState
-	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, CODE_VALUE);
+	auto_ptr<acsalarm::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, CODE_VALUE);
 
 	// test family getters
 	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::getFamily appears to be broken", (family == fltstate->getFamily()) );

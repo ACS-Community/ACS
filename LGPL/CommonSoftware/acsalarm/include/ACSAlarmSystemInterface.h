@@ -41,7 +41,7 @@
 
 using namespace std;
 
-namespace laserSource
+namespace acsalarm
 {
 	/**
  	 * Alarm System interface for C++ alarm generators 

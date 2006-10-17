@@ -42,7 +42,7 @@ ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): ACSAlar
  * Push a fault state.
  * @param state the fault state change to push.
  */
- void ACSAlarmSystemInterfaceProxy::push(laserSource::ACSFaultState & state) {
+ void ACSAlarmSystemInterfaceProxy::push(acsalarm::ACSFaultState & state) {
 	char msgA[16];
 	sprintf(msgA,"%d",state.getCode());
 	string msg="Alarm sent: <";
@@ -60,9 +60,9 @@ ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): ACSAlar
  * Push a collection of fault states.
  * @param states
  */
-void ACSAlarmSystemInterfaceProxy::push(vector<laserSource::ACSFaultState> & states) {
+void ACSAlarmSystemInterfaceProxy::push(vector<acsalarm::ACSFaultState> & states) {
 	for (unsigned int t=0; t<states.size(); t++) {
-		laserSource::ACSFaultState fs(states[t]);
+		acsalarm::ACSFaultState fs(states[t]);
 		push(fs);
 	}
 }
@@ -71,6 +71,6 @@ void ACSAlarmSystemInterfaceProxy::push(vector<laserSource::ACSFaultState> & sta
  * Push the set of active fault states.
  * @param activeFaults the active fault states.
  */
-void ACSAlarmSystemInterfaceProxy::pushActiveList(vector<laserSource::ACSFaultState> & activeFaults) {
+void ACSAlarmSystemInterfaceProxy::pushActiveList(vector<acsalarm::ACSFaultState> & activeFaults) {
 	push(activeFaults);
 }

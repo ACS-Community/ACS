@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-using namespace laserUtil;
+using namespace acsalarm;
 using std::stringstream;
 
 /**

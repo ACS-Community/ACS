@@ -10,8 +10,7 @@
 #include "faultStateConstants.h"
 //#include "asiConfigurationConstants.h"
 
-using namespace laserSource;
-using namespace laserUtil;
+using namespace acsalarm;
 
 void printUsageAndExit()
 {

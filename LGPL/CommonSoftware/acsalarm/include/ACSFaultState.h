@@ -7,10 +7,10 @@
 #include "Timestamp.h"
 
 using std::string;
-using laserUtil::Properties;
-using laserUtil::Timestamp;
+using acsalarm::Properties;
+using acsalarm::Timestamp;
 
-namespace laserSource 
+namespace acsalarm 
 {
 	/*
 	 * Class representing a single fault state for use by cpp alarm source clients 

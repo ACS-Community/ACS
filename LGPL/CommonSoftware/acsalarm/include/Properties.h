@@ -13,7 +13,7 @@ using std::vector;
 using std::auto_ptr;
 using std::invalid_argument;
 
-namespace laserUtil
+namespace acsalarm
 {
 	typedef map< string, string >::value_type PropertyMapEntryType;
 

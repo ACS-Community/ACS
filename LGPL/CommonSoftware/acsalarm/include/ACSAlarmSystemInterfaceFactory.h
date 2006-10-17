@@ -63,7 +63,7 @@ class ACSAlarmSystemInterfaceFactory
 
 	// used for the convenience method createAndSendAlarms, so that it need not create a new source
 	// for each time it is invoked
-	static auto_ptr<laserSource::ACSAlarmSystemInterface> sharedSource;
+	static auto_ptr<acsalarm::ACSAlarmSystemInterface> sharedSource;
 
 	// It is true if ACS implementation for sources must be used,  and
 	// false means CERN implementation
@@ -107,23 +107,23 @@ class ACSAlarmSystemInterfaceFactory
 	 * @param sourceName the source name.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<laserSource::ACSAlarmSystemInterface> createSource(string sourceName);
+	static auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource(string sourceName);
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<laserSource::ACSAlarmSystemInterface> createSource();
+	static auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource();
 	
 	/**
 	 * Create a fault state with the given family, member and code
 	 */
-	static auto_ptr<laserSource::ACSFaultState>createFaultState(string family, string member, int code);
+	static auto_ptr<acsalarm::ACSFaultState>createFaultState(string family, string member, int code);
 	
 	/**
 	 * Create a fault state 
 	 */
-	static auto_ptr<laserSource::ACSFaultState>createFaultState();
+	static auto_ptr<acsalarm::ACSFaultState>createFaultState();
 
 	/**
 	 * Experimental: Convenience API for creating/sending an alarm in a single step.

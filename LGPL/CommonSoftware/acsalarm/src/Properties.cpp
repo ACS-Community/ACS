@@ -3,7 +3,7 @@
 #include <logging.h>
 #include <string>
 
-using namespace laserUtil;
+using namespace acsalarm;
 using std::string;
 
 /*

@@ -1,7 +1,7 @@
 #ifndef UTIL_CONSTANTS_H
 #define UTIL_CONSTANTS_H
 
-namespace laserUtil 
+namespace acsalarm 
 {
 	// SOME USEFUL CONSTANTS
 	const char* const LESS_THAN_SIGN = "<";

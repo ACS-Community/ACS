@@ -3,8 +3,7 @@
 #include <sstream>
 
 using std::string;
-using namespace laserUtil;
-using namespace laserSource;
+using namespace acsalarm;
 using std::stringstream;
 
 /**

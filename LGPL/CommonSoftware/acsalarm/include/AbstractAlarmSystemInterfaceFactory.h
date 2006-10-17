@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AbstractAlarmSystemInterfaceFactory.h,v 1.3 2006/10/17 09:56:06 sharring Exp $"
+* "@(#) $Id: AbstractAlarmSystemInterfaceFactory.h,v 1.4 2006/10/17 12:46:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,23 +63,23 @@ class AbstractAlarmSystemInterfaceFactory
 	 * @param sourceName the source name.
 	 * @return the interface instance.
 	 */
-	virtual auto_ptr<laserSource::ACSAlarmSystemInterface> createSource(string sourceName) = 0;
+	virtual auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource(string sourceName) = 0;
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.
 	 */
-	virtual auto_ptr<laserSource::ACSAlarmSystemInterface> createSource() = 0;
+	virtual auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource() = 0;
 	
 	/**
 	 * Create a fault state with the given family, member and code
 	 */
-	virtual auto_ptr<laserSource::ACSFaultState>createFaultState(string family, string member, int code);
+	virtual auto_ptr<acsalarm::ACSFaultState>createFaultState(string family, string member, int code);
 	
 	/**
 	 * Create a fault state 
 	 */
-	virtual auto_ptr<laserSource::ACSFaultState>createFaultState();
+	virtual auto_ptr<acsalarm::ACSFaultState>createFaultState();
 };
 
 #endif /* !ABSTRACT_ALARM_SYSTEM_INTERFACE_FACTORY_H */
