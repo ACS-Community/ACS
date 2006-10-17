@@ -319,14 +319,13 @@ public class CDBDALTest extends TestCase implements ApplicationEngine
 				"description", "format", "units", "resolution", "bitDescription", "whenSet", "whenCleared",
 				"alarm_low_on", "alarm_low_off", "alarm_high_on", "alarm_high_off", "alarm_timer_trig",
 				"default_value", "min_step",
-				"archive_delta", "archive_priority", "archive_min_int", "archive_max_int",
+				"archive_delta", "initialize_devio", "archive_priority", "archive_min_int", "archive_max_int",
 				"default_timer_trig", "min_timer_trig"
 			};
 			s = dc.getStringSeqCharacteristic("status");
 			assertEquals(sref.length, s.length);
 			for (int i=0; i<s.length; i++)
 				assertTrue(s[i].equals(sref[i]));
-
 			// test string sequence - getValue
 			sref = new String[] { "current", "readback", "status" };
 			s = dc.getValue();
