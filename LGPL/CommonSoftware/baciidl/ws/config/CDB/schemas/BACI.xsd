@@ -77,7 +77,8 @@ of the value.</xs:documentation>
 				</xs:attribute>
 				<xs:attribute name="initialize_devio" type="xs:boolean" use="optional" default="0">
 					<xs:annotation>
-						<xs:documentation>Nothing yet</xs:documentation>
+						<xs:documentation>It is used to initialize the devIO of the property if it is true. It uses the "default_value" characteristic to initialize the devIO.
+The default it is false/0.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="units" type="xs:string" use="optional" default="-">
