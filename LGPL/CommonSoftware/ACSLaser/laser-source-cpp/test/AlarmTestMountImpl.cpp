@@ -69,7 +69,7 @@ void AlarmTestMountImpl::sendAlarmLongHand(std::string family, std::string membe
 	ACS_TRACE("::AlarmTestMount::sendAlarmLongHand entering");
 
 	// create the FaultState
-	auto_ptr<laserSource::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
+	auto_ptr<acsalarm::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
 
 	// set the fault state's descriptor
 	string stateString;

@@ -7,6 +7,8 @@
 #include "Timestamp.h"
 #include "ACSFaultState.h"
 
+using namespace acsalarm;
+
 namespace laserSource
 {
 	/*

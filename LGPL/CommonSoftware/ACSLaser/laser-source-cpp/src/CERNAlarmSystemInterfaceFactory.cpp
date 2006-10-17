@@ -6,8 +6,8 @@
 #include "asiConfigurationConstants.h"
 
 using asiConfigurationConstants::ALARM_SOURCE_NAME;
+using namespace acsalarm;
 using namespace laserSource;
-using namespace laserSourceCERN;
 
 /**
  * Constructor
@@ -48,7 +48,7 @@ void CERNAlarmSystemInterfaceFactory::done()
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<laserSource::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(string sourceName)
+auto_ptr<acsalarm::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
 	ACSAlarmSystemInterface * asIfProxyPtr = new CERNAlarmSystemInterfaceProxy(sourceName);
 	auto_ptr<ACSAlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
@@ -60,7 +60,7 @@ auto_ptr<laserSource::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<laserSource::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource()
+auto_ptr<acsalarm::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource()
 {
 	return createSource(ALARM_SOURCE_NAME);
 }

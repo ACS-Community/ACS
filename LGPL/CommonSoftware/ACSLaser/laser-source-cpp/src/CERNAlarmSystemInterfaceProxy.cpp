@@ -6,6 +6,7 @@
 #include "asiConfigurationConstants.h"
 #include <logging.h>
 
+using namespace acsalarm;
 using namespace laserSource;
 using asiConfigurationConstants::ALARM_SOURCE_NAME;
 

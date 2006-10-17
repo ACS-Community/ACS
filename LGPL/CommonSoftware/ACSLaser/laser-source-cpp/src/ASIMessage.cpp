@@ -2,7 +2,7 @@
 #include "utilConstants.h"
 #include <sstream>
 
-using namespace laserUtil;
+using namespace acsalarm;
 using namespace laserSource;
 using std::stringstream;
 

@@ -65,7 +65,7 @@ namespace testalarmsystem
 			void sendAlarmShortHand(std::string fFamily, std::string fMember, int code, bool active);
 
 			// the AlarmSystemInterface
-			auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource;
+			auto_ptr<acsalarm::ACSAlarmSystemInterface> alarmSource;
 
 			int counter;
 	};
