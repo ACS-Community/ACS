@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.63 2006/08/14 07:46:31 bjeram Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.64 2006/10/17 09:20:10 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -307,7 +307,7 @@ function timeoutExit
 
     if [ "X" != "X$CDB_PORT" ]
     then
-	cdbjDALShutdown -k corbaloc::$HOST:$CDB_PORT/CDB &> /dev/null || ACS_LOG_ERROR "Cannot kill the CDB"
+	cdbjDALShutdown -d corbaloc::$HOST:$CDB_PORT/CDB &> /dev/null || ACS_LOG_ERROR "Cannot kill the CDB"
     fi
 
     rm -rf $INSTANCE_DIR || ACS_LOG_ERROR "Cannot delete $INSTANCE_DIR"
