@@ -107,7 +107,6 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 *
 	 */
 	private void initGUI() {
-		System.out.println("Building the GUI");
 		logTA = new JTextArea("", 20, 60);
 		synchronized(logTA) {
 			logTA.setDocument(document);
