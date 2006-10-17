@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.64 2006/10/03 03:52:13 sharring Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.65 2006/10/17 11:19:10 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -102,8 +102,6 @@ class Helper
     resolveNamingService(CORBA::ORB_ptr orb_mp)
 	throw (CORBAProblemEx, CouldntCreateThreadEx);
     
-	static CosNaming::NamingContext_ptr resolveNamingServiceStatic(CORBA::ORB_ptr orb_mp, string channel) throw (CORBAProblemEx, CouldntCreateThreadEx);
-
     /**  
      *  This is used to determine if the notification channel we want to use has been registered
      *  with the Naming Service. If it has, we use that directly.
@@ -128,11 +126,6 @@ class Helper
     static char *
     extractStructName(const char* idlStruct);
     
-    /**
-     *  In case of standalone mode, this must be used!
-     */
-    static ORBHelper *orbHelper_mp;
-
   protected:
     /**
      * This method returns a constant character pointer to the "kind" of notification channel
@@ -247,6 +240,11 @@ class Helper
      *  Name of the notification channel.
      */
     char *channelName_mp;
+
+    /**
+     *  In case of standalone mode, this must be used!
+     */
+    ORBHelper *orbHelper_mp;
 
 
     /**
