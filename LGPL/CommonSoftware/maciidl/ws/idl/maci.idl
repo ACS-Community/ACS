@@ -165,6 +165,11 @@ module maci {
              * This allows for persistent changes in the logging
              * configuration to become effective, and also for changes of more
              * advanced parameters. 
+	     *
+	     * Notice that this is a oneway method and therefore 
+	     * there cannot be return values or user exceptions.
+	     * Only CORBA runtime exceptions due to communication
+	     * issues can be thrown
              */
             oneway void refresh_logging_config();
          };
@@ -287,6 +292,11 @@ module maci {
 	       Disconnect notification. The disconnect method is called by the
 	       Manager to notify the client that it will be unavailable and that the
 	       client should log off.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
 	   */
 	   oneway void disconnect ();
 
@@ -315,6 +325,11 @@ module maci {
 	   /** 
 	       The Manager and administrators use this method for sending textual
 	       messages to the client.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
 	   */
 	   oneway void message (
 	       in short type,	   ///< Can be either MSG_ERROR or MSG_INFORMATION.
@@ -346,6 +361,11 @@ module maci {
 	       currently in use by this client. For administrative clients,
 	       notification is issued for the change of availability of any component
 	       in the domain.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
 	   */
 	   oneway void components_available (
                /** 
@@ -362,6 +382,11 @@ module maci {
 	   /** 
 	       Notify client that some of the components currently in use by client
 	       have become unavailable.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
 	   */
 	   oneway void components_unavailable (
 	       in stringSeq component_names	///< CURLs of the unavailable components.
@@ -543,6 +568,11 @@ module maci {
 
 	    /** 
 		Shutdown the container.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
 	    */
 	    oneway void shutdown (
 		in unsigned long action	///< Action to take after
@@ -639,6 +669,11 @@ module maci {
 
 		/** 
 		    Notification that a client has just logged in.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
 		 */
 		oneway void client_logged_in (
 			in ClientInfo info	///< Information about the client that has just logged in. If the handle of the client (<TT>info.h</TT>) is 0, the Client failed to authenticate.
@@ -646,6 +681,11 @@ module maci {
 
 		/** 
 		    Notification that a client has just logged out.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
 		 */
 		oneway void client_logged_out (
 			in Handle h	///< Handle of the client that has logged out.
@@ -653,6 +693,11 @@ module maci {
 
 		/** 
 		    Notification that a container has just logged in.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
 		 */
 		oneway void container_logged_in (
 			in ContainerInfo info	///< Information about the container that has just logged in. If the handle of the container (<TT>info.h</TT>) is 0, the container failed to authenticate.
@@ -660,6 +705,11 @@ module maci {
 
 		/** 
 		    Notification that a client has just logged out.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
 		 */
 		oneway void container_logged_out (
 			in Handle h	///< Handle of the container that has logged out.
@@ -668,6 +718,11 @@ module maci {
 		/** 
 		    Notification that some components have just been 
 		    requested (through get_component or get_components).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
 		 */
 		oneway void components_requested (
 			in HandleSeq clients,	///< Handles of clients requesting components.
@@ -677,6 +732,11 @@ module maci {
 		/** 
 		    Notification that some components have just been 
 		    released (through release_component or release_components).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
 		 */
 		oneway void components_released (
 			in HandleSeq clients,	///< Handles of clients requesting components.
@@ -1043,6 +1103,11 @@ module maci {
 		    <B>Warning:</B> This call will also deactivate all
 		    components active in the system, including startup
 		    and immortal components. 
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
 		 */
 		oneway void shutdown (
 			in Handle id,	///< Identification of the caller. The caller must have the SHUTDOWN_SYSTEM access right.
