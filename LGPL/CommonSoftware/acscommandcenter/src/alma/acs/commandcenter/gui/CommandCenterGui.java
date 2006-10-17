@@ -72,6 +72,7 @@ import alma.acs.commandcenter.engine.ToolManager;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.commandcenter.util.VariableString.UnresolvableException;
+import alma.acs.util.AcsLocations;
 import alma.entity.xmlbinding.acscommandcenterproject.ContainerT;
 import alma.entity.xmlbinding.acscommandcenterproject.types.ModeType;
 import alma.entity.xmlbinding.acscommandcentertools.Tool;
@@ -103,7 +104,8 @@ public class CommandCenterGui {
 
 	protected TabPanel frontPanel;
 	protected FeedbackTabs feedbackTabs;
-	protected DeploymentTree deployTree;
+	public DeploymentTree deployTree;
+	protected JPanel deploymentInfoPanel;
 	protected NativeCommand.Listener taskListenerObjectExplorer;
 	protected NativeCommand.Listener taskListenerAdminClient;
 	protected NativeCommand.Listener taskListenerJlogClient;
@@ -120,8 +122,8 @@ public class CommandCenterGui {
 	protected BasicDialog managerLocationDialog2;
 	protected ManagerLocationPanel.ForContainers pnlManagerLocationForContainers;
 	
-	protected JSplitPane split1;
-	protected JSplitPane split2;
+	protected JSplitPane splitLeftRight; // split controls from tree 
+	protected JSplitPane splitTopBottom; // split upper-part from log-area 
 	
 
 	public CommandCenterGui(CommandCenterLogic controller) {
@@ -159,15 +161,15 @@ public class CommandCenterGui {
 			writeModelToFrontPanel();
 
 			// Splitter between tree and the rest
-			split1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-			split1.setOneTouchExpandable(true);
+			splitLeftRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+			splitLeftRight.setOneTouchExpandable(true);
 			JPanel p2 = new JPanel(new BorderLayout());
 			p2.setBorder(new EmptyBorder(10, 10, 10, 10));
 			p2.add(frontPanel, BorderLayout.NORTH);
-			split1.setLeftComponent(p2);
+			splitLeftRight.setLeftComponent(p2);
 
 			// Deployment Tree
-			JPanel deploymentInfoPanel = new JPanel(new BorderLayout());
+			deploymentInfoPanel = new JPanel(new BorderLayout());
 			deploymentInfoPanel.setBorder(new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder
 					.createBlackLineBorder(), " Deployment Info ")));
 
@@ -176,7 +178,7 @@ public class CommandCenterGui {
 
 			deploymentInfoPanel.add(addToDeployTree, BorderLayout.NORTH);
 			deploymentInfoPanel.add(new JScrollPane(deployTree), BorderLayout.CENTER);
-			split1.setRightComponent(deploymentInfoPanel);
+			splitLeftRight.setRightComponent(deploymentInfoPanel);
 
 			// Feedback Area
 			feedbackTabs = new FeedbackTabs(this, FeedbackTabs.BOTTOM);
@@ -281,34 +283,35 @@ public class CommandCenterGui {
 			dlgContainerLocation = new EditContainerSettingsDialog(this, "Choose where to run this Container",
 					"Choose where to run this container:                                      ", "Set");
 
-			split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, split1, feedbackTabs);
-			split2.setOneTouchExpandable(true);
-			frame.getContentPane().add(split2, BorderLayout.CENTER);
+			splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitLeftRight, feedbackTabs);
+			splitTopBottom.setOneTouchExpandable(true);
+			frame.getContentPane().add(splitTopBottom, BorderLayout.CENTER);
 
 		/* frame.getContentPane().add(feedbackArea, BorderLayout.SOUTH); */
 			doFrameTitle();
-			frame.pack();
-			if (controller.startupOptions.geometry != null) {
-				frame.setBounds(controller.startupOptions.geometry);
-			}
 			
-			if (controller.startupOptions.manager != null) {
-				deployTree.addManager(controller.startupOptions.manager);
-				//	fix/enforce locations of the dividers
-				split1.setDividerLocation(10);
-				split2.setDividerLocation(split2.getMaximumDividerLocation());
-			} else {
-				// fix/enforce locations of the dividers
-			/* split2.setDividerLocation(0.5D); */
-				split2.validate();
-				split1.setDividerLocation((int) (frame.getWidth() - deploymentInfoPanel.getPreferredSize().width * 1.1));
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void go () {
+	public void go (boolean admincMode) {
+		
+		frame.pack();
+
+		//	depending on admincMode we fix/enforce locations of the dividers
+		if (admincMode) {
+			splitLeftRight.setDividerLocation(10);
+			splitTopBottom.setDividerLocation(splitTopBottom.getMaximumDividerLocation());
+		} else {
+			splitTopBottom.validate();
+			splitLeftRight.setDividerLocation((int) (frame.getWidth() - deploymentInfoPanel.getPreferredSize().width * 1.1));
+		}
+		
+		if (controller.startupOptions.geometry != null) {
+			frame.setBounds(controller.startupOptions.geometry);
+		}
+		
 		frame.setVisible(true);
 	}
 
@@ -332,7 +335,7 @@ public class CommandCenterGui {
 		String port = controller.model.deriveMgrPortfromCommonSettings();
 
 		try {
-			deployTree.addManager(host, port);
+			deployTree.shieldedAddManager(AcsLocations.convertToManagerLocation(host, port));
 
 		} catch (Exception exc) {
 			log.warning("Couldn't add manager (" + host + "," + port + ") to deployment view due to " + exc);
@@ -352,14 +355,15 @@ public class CommandCenterGui {
 		String port = controller.model.deriveMgrPortfromCommonSettings();
 
 		try {
-			boolean ok = deployTree.removeManager(host, port, true);
+			String managerLoc = AcsLocations.convertToManagerLocation(host, port);
+			boolean ok = deployTree.removeManager(managerLoc, true);
 			if (!ok) {
 				log.info("Couldn't remove manager from deployment view: no such manager known: " + host + "," + port);
 			}
 
 		} catch (Exception exc) {
-			log.warning("Tried to remove manager (" + host + "," + port + ") from deployment view due to " + exc);
-			log.log(Level.FINER, "Tried to remove (" + host + "," + port + ") manager from deployment view", exc);
+			log.warning("Tried to remove manager (" + host + "," + port + ") from deployment view, failed due to " + exc);
+			log.log(Level.FINER, "Tried to remove (" + host + "," + port + ") manager from deployment view, failed", exc);
 		}
 	}
 
@@ -412,7 +416,7 @@ public class CommandCenterGui {
 	}
 
 	public void showUnresolvableVariableErrorDialog(String var) {
-		showErrorDialog(
+		ErrorBox.showErrorDialog(frame,
 				"Variable has been used but is undefined: "+var,
 				"Go to the Variables Editor now and define variable '"+var+"'.\n\n" +
 				"Tip: Define a Java system property '"+var+"' before running\n" +
@@ -420,34 +424,6 @@ public class CommandCenterGui {
 				"export JAVA_OPTIONS=\"$JAVA_OPTIONS -D"+var+"=YourValue\"");
 	}
 	
-	protected void showErrorDialog (String summary, Throwable detail) {
-		StringWriter w = new StringWriter(1024);
-		detail.printStackTrace(new PrintWriter(w, true));
-		showErrorDialog(summary, w.toString());
-	}
-
-	protected void showErrorDialog (String summary, String detail) {
-		JTextArea s = new JTextArea(summary);
-		s.setOpaque(false);
-		s.setEditable(false);
-		s.setLineWrap(true);
-		
-		JTextArea a = new JTextArea(6, 40);
-		Box c = Box.createVerticalBox();
-		c.add(s);
-		c.add(Box.createVerticalStrut(10));
-		c.add(new JScrollPane(a));
-		a.setText(detail);
-		a.setCaretPosition(0);
-		JOptionPane.showMessageDialog(frame, c, summary, JOptionPane.ERROR_MESSAGE);
-	}
-
-	protected void showMessageDialog (String message, boolean failure) {
-		int type = (failure) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE;
-		String title = (failure) ? "Error" : "Information";
-
-		JOptionPane.showMessageDialog(frame, message, title, type);
-	}
 
 	
 	// ============== Variables Management ===============
@@ -513,7 +489,7 @@ public class CommandCenterGui {
 					cdbChooser.setPage("http://www.eso.org/~mschilli/acc/cdb");
 				} catch (IOException exc) {
 					log.warning(exc.toString());
-					showErrorDialog("Could not load the Cdb page", exc.toString());
+					ErrorBox.showErrorDialog(frame, "Could not load the Cdb page", exc.toString());
 				}
 			}
 		}.start();
@@ -597,7 +573,7 @@ public class CommandCenterGui {
 							theURL = url;
 
 						} catch (Exception exc) {
-							showErrorDialog("Failed to download Cdb", exc.toString());
+							ErrorBox.showErrorDialog(frame, "Failed to download Cdb", exc.toString());
 						} finally {
 							// PENDING(msc): would be prettier to add an extra event handler
 							cdbChooserDialog.setVisible(false);
@@ -607,7 +583,7 @@ public class CommandCenterGui {
 				}.start();
 
 			} catch (Exception exc) {
-				showErrorDialog("A problem occurred", exc.toString());
+				ErrorBox.showErrorDialog(frame, "A problem occurred", exc.toString());
 			}
 		}
 
@@ -855,7 +831,7 @@ public class CommandCenterGui {
 			dialog.setTitle(title + "  -  " + url);
 			dialog.setVisible(true);
 		} catch (Exception exc) {
-			showMessageDialog("Cannot show the resource: " + exc, true);
+			ErrorBox.showMessageDialog(frame, "Cannot show the resource: " + exc, true);
 		}
 	}
 
@@ -869,7 +845,7 @@ public class CommandCenterGui {
 		
 			HelpSet helpSet = controller.getHelpSet();
 			if (helpSet == null) {
-				showMessageDialog("Online Help could not be loaded", true);
+				ErrorBox.showMessageDialog(frame, "Online Help could not be loaded", true);
 				return;
 			}
 			
@@ -995,7 +971,7 @@ public class CommandCenterGui {
 						
 					} catch (Throwable t) {
 						String name = "'"+getValue(Action.NAME)+"'";
-						showErrorDialog("Encountered an error while performing "+name, t);
+						ErrorBox.showErrorDialog(frame, "Encountered an error while performing "+name, t);
 						log.log(Level.INFO, "Error while performing "+name, t);
 					}
 				};
@@ -1185,12 +1161,12 @@ public class CommandCenterGui {
 				controller.removeExtraTools();
 				controller.installExtraTools(f.toURL());
 			} catch (Exception exc) {
-				showMessageDialog("The tools could not be installed. Check console for error output. ", true);
+				ErrorBox.showMessageDialog(frame, "The tools could not be installed. Check console for error output. ", true);
 				log.info("could not install tools: " + exc);
 				return;
 			}
 
-			showMessageDialog("The tools have been installed successfully. ", false);
+			ErrorBox.showMessageDialog(frame, "The tools have been installed successfully. ", false);
 		}
 	}
 

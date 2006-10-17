@@ -3,9 +3,8 @@
  */
 package alma.acs.commandcenter.gui;
 
-import java.util.logging.Logger;
-
-import alma.acs.commandcenter.meta.IMaciSupervisor;
+import alma.acs.commandcenter.meta.GuiMaciSupervisor;
+import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 
 
 
@@ -13,7 +12,7 @@ import alma.acs.commandcenter.meta.IMaciSupervisor;
 public interface DeploymentTreeController {
 
 	/** supervisor factory method used when adding managers */
-	public IMaciSupervisor giveMaciSupervisor(String managerLoc) throws Exception;
+	public GuiMaciSupervisor giveMaciSupervisor(String managerLoc) throws OrbInitException;
 
 }
 

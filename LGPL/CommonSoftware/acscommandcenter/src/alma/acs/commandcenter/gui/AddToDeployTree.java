@@ -16,6 +16,7 @@ import javax.swing.SpringLayout;
 
 import alma.acs.commandcenter.gui.CommandCenterGui.ActionBaseClass;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
+import alma.acs.util.AcsLocations;
 
 
 
@@ -72,6 +73,16 @@ class AddToDeployTree extends JPanel {
 		portF.setName("txt_Add_Mgr_Port");
 	}
 
+	
+	/**
+	 * Signals to the user that an action takes longer.
+	 */
+	protected void setBusy (boolean b) {
+		int cursor = (b)? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR; 
+		this.setCursor(Cursor.getPredefinedCursor(cursor));
+	}
+
+	
 	/**
 	 * An extension of {@link CommandCenterGui.ActionBaseClass} that
 	 * switches to the {@link Cursor#WAIT_CURSOR} cursor while the action
@@ -83,14 +94,15 @@ class AddToDeployTree extends JPanel {
 			master.super(name);
 		}
 		final protected void actionPerformed () throws Throwable {
-			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			setBusy(true);
+			deployTree.setBusy(true);
 			
 			try {
 				myActionPerformed();
-			} catch (Throwable t) {
-				throw t;
-			} finally {
-				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				
+			}  finally {
+				setBusy(false);
+				deployTree.setBusy(false);
 			}
 		}
 		abstract protected void myActionPerformed() throws Throwable;
@@ -114,7 +126,7 @@ class AddToDeployTree extends JPanel {
 			if (host.length() > 4 && host.substring(0,4).equalsIgnoreCase("IOR:")) {
 				// msc 2005-05: we allow (for now)
 				// to give an IOR in the host field
-				deployTree.addManager(host);
+				deployTree.shieldedAddManager(host);
 				return;
 			} 
 			
@@ -123,7 +135,7 @@ class AddToDeployTree extends JPanel {
 					return;
 			}
 						
-			deployTree.addManager(host, port);
+			deployTree.shieldedAddManager(AcsLocations.convertToManagerLocation(host, port));
 		}
 
 	}
@@ -142,23 +154,3 @@ class AddToDeployTree extends JPanel {
 	}
 
 }
-// //////////////////////////////////////////////////////
-// / ------------------- API ------------------------ ///
-// //////////////////////////////////////////////////////
-
-// //////////////////////////////////////////////////////
-// / ----------------- Internal --------------------- ///
-// //////////////////////////////////////////////////////
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//

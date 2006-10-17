@@ -4,7 +4,6 @@
  */
 package alma.acs.commandcenter.app;
 
-import java.util.List;
 import java.awt.Rectangle;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -15,24 +14,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.omg.CORBA.ORB;
 
 import alma.acs.commandcenter.CommandCenter;
 import alma.acs.commandcenter.engine.ExecuteAcs;
@@ -46,10 +47,12 @@ import alma.acs.commandcenter.engine.ExecuteTools.ToolStarter;
 import alma.acs.commandcenter.gui.CommandCenterGui;
 import alma.acs.commandcenter.gui.DeploymentTreeController;
 import alma.acs.commandcenter.meta.Firestarter;
+import alma.acs.commandcenter.meta.GuiMaciSupervisor;
 import alma.acs.commandcenter.meta.IMaciSupervisor;
-import alma.acs.commandcenter.meta.MaciSupervisorFactory;
+import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.util.ACSPorts;
+import alma.acs.util.AcsLocations;
 import alma.entity.xmlbinding.acscommandcenterproject.AcsCommandCenterProject;
 import alma.entity.xmlbinding.acscommandcenterproject.ContainerT;
 import alma.entity.xmlbinding.acscommandcentertools.AcsCommandCenterTools;
@@ -82,7 +85,7 @@ public class CommandCenterLogic {
 
 	public ExecuteTools executeTools;
 
-	public Firestarter firestarter;
+	public CustomFirestarter firestarter;
 	
 
 	protected CommandCenterGui gui;
@@ -112,7 +115,8 @@ public class CommandCenterLogic {
 		executeAcs = new ExecuteAcs(model);
 		executeTools = new ExecuteTools(model);
 
-		firestarter = new Firestarter("AcsCommandCenter");
+		firestarter = new CustomFirestarter("AcsCommandCenter", log);
+		
 		deploymentTreeControllerImpl = new DeploymentTreeControllerImpl();
 		
 		gui = new CommandCenterGui(this);
@@ -157,7 +161,12 @@ public class CommandCenterLogic {
 	}
 
 	public void go () {
-		gui.go();
+		boolean admincMode = (startupOptions.manager != null);
+		gui.go (admincMode);
+		
+		if (admincMode) {
+			gui.deployTree.shieldedAddManager(startupOptions.manager);
+		}		
 	}
 
 	public void stop () {
@@ -166,18 +175,14 @@ public class CommandCenterLogic {
 		 * don't function no longer anyhow (they disconnect for some reason).
 		 * thus we can well close all the open ssh-sessions.
 		 */
-		
-		// --- check for active ssh-clients
 		Executor.remoteDownAll();
 
-		if (supervisorFactory != null) {
-			try {
-				supervisorFactory.stop();
-			} catch (IllegalStateException e) {
-				log.info("problems disconnecting supervisor(s)");
-			}
-		}
-
+		if (deploymentTreeControllerImpl != null)
+			deploymentTreeControllerImpl.stop();
+		
+		if (firestarter != null)
+			firestarter.shutdown();
+		
 		gui.stop();
 		CommandCenter.exit(0);
 	}
@@ -637,22 +642,58 @@ public class CommandCenterLogic {
 	//  ======= DeploymentTreeController implementation ==========
 	//
 
+	/** Exists to provide access to ORB */
+	class CustomFirestarter extends Firestarter {
+		
+		protected CustomFirestarter(String clientName, Logger firestarterLog) {
+			super(clientName);
+			super.firestarterLog = firestarterLog;
+		}
+		public ORB giveOrb () throws OrbInitException {
+			return super.giveOrb();
+		}
+	}
+	
 	public DeploymentTreeControllerImpl deploymentTreeControllerImpl;
 	
 	public class DeploymentTreeControllerImpl implements DeploymentTreeController {
 
-		public IMaciSupervisor giveMaciSupervisor (String managerLoc) throws Exception {
-			if (supervisorFactory == null) {
-				firestarter.prepareSupervisorFactory(log);
-				supervisorFactory = firestarter.giveSupervisorFactory();
-			}
-			IMaciSupervisor mrf = supervisorFactory.giveMaciSupervisor(managerLoc, log);
-			return mrf;
+	   private Map<String, GuiMaciSupervisor> managerLoc2instance = new WeakHashMap<String, GuiMaciSupervisor>();
+
+		/**
+		 * Returns a MaciSupervisor from the cache, or creates a new one. It may not be started yet!
+		 */
+		synchronized public GuiMaciSupervisor giveMaciSupervisor(String managerLoc) throws OrbInitException {
+			
+			GuiMaciSupervisor ret = managerLoc2instance.get(managerLoc);
+
+			if (ret == null) {
+				ORB orb = firestarter.giveOrb();
+				ret = new GuiMaciSupervisor("AcsCommandCenter", managerLoc, orb, log);
+				managerLoc2instance.put(managerLoc, ret);
+	      }
+	      
+	      return ret;
 		}
+	   
+		/**
+		 * Stop all MaciSupervisors that we created.
+		 * @return true if all supervisors stopped gracefully  
+		 */
+	   synchronized public boolean stop() {
+	   	boolean ok = true;
+	   	
+	   	for (IMaciSupervisor s : managerLoc2instance.values()) {	
+	   		try {
+					s.stop();
+				} catch (Exception exc) {
+					ok = false;
+				}
+	   	}
+	   	return ok;
+	   }
+	   
 	}
-	
-	protected MaciSupervisorFactory supervisorFactory;
-	
 	
 }
 
