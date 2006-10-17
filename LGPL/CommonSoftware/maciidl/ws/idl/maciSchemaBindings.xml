@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EntitybuilderSettings>
+
+    <EntitySchema schemaName="CDB.xsd" xmlNamespace="urn:schemas-cosylab-com:CDB:1.0"/>
+    <EntitySchema schemaName="LoggingConfig.xsd" xmlNamespace="urn:schemas-cosylab-com:LoggingConfig:1.0"/>
+    <EntitySchema schemaName="Container.xsd" xmlNamespace="urn:schemas-cosylab-com:Container:1.0"/>
+
+    <XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:CDB:1.0" jPackage="alma.maci.cdbtypes"/>
+    <XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:LoggingConfig:1.0" jPackage="alma.maci.loggingconfig"/>
+    <XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:Container:1.0" jPackage="alma.maci.containerconfig"/>
+    
+</EntitybuilderSettings>
