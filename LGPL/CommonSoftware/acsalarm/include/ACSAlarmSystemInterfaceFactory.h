@@ -82,6 +82,8 @@ class ACSAlarmSystemInterfaceFactory
 	
 	public:
 
+	static maci::Manager_ptr getManager() { return m_manager; }
+
 	/**
 	 * Init the object of the class: must be called before using the other
 	 * methods of this class otherwise an exception will be thrown.

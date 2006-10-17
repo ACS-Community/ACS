@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AbstractAlarmSystemInterfaceFactory.h,v 1.2 2006/09/22 14:00:27 acaproni Exp $"
+* "@(#) $Id: AbstractAlarmSystemInterfaceFactory.h,v 1.3 2006/10/17 09:56:06 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -74,13 +74,12 @@ class AbstractAlarmSystemInterfaceFactory
 	/**
 	 * Create a fault state with the given family, member and code
 	 */
-	virtual auto_ptr<laserSource::ACSFaultState>createFaultState(string family, string member, int code) = 0;
+	virtual auto_ptr<laserSource::ACSFaultState>createFaultState(string family, string member, int code);
 	
 	/**
 	 * Create a fault state 
 	 */
-	virtual auto_ptr<laserSource::ACSFaultState>createFaultState() = 0;
-
+	virtual auto_ptr<laserSource::ACSFaultState>createFaultState();
 };
 
 #endif /* !ABSTRACT_ALARM_SYSTEM_INTERFACE_FACTORY_H */
