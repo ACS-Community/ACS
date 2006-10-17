@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2006/10/09 06:19:01 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/10/17 14:26:31 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -122,7 +122,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = Container Components Component HierarchicalComponent Manager
+CDB_SCHEMAS = Container Components Component HierarchicalComponent Manager LoggingConfig
 
 # 
 # IDL Files and flags
