@@ -357,7 +357,7 @@ public class Browser extends JFrame implements ActionListener
      */
     public static void main(String []args){
 	for(int i = 0; i < args.length; i ++){
-	    if(args[i].equals("-k") || args[i].equals("-d")){
+	    if(args[i].equals("-d")){
 		if(i < args.length -1){
 		    strIOR = args[++i];
 		}

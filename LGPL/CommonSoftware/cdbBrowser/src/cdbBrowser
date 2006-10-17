@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbBrowser,v 1.5 2006/07/13 09:04:13 cparedes Exp $"
+# "@(#) $Id: cdbBrowser,v 1.6 2006/10/17 09:22:15 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -51,15 +51,14 @@ function printUsage {
    echo "Usage: `basename $0` [OPTIONS] [PASS_OPTIONS [COMMAND_OPTIONS]]"
    echo "Options: "
    echo "   -d DAL_REFERENCE        uses explicity gived DAL_REFERENCE"
-   echo "   -k DAL_REFERENCE        uses explicity gived DAL_REFERENCE (obsolete)"
    echo "   -h | -help              prints this help and exits"
    echo ""
    echo "  PASS_OPTIONS             the literal string that indicates more options to be passed"
    echo "  COMMAND_OPTIONS          the options to be passed directly to the command"
    echo ""
    echo "Environment Variables:"
-   echo "  DAL_REFERENCE     | if the option -k is not set, then uses this variable"
-   echo "  MANAGER_REFERENCE | if the option -k is not set and DAL_REFERENCE is not "
+   echo "  DAL_REFERENCE     | if the option -d is not set, then uses this variable"
+   echo "  MANAGER_REFERENCE | if the option -d is not set and DAL_REFERENCE is not "
    echo "                      set, uses this to construct the dal reference"
    echo "  HOST              | if neither of the above is set, this is used to      "
    echo "                          create the value for the option -ORBInitRef"
@@ -84,7 +83,6 @@ set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
 while : 
 do
 	case "$1" in
-	-k)                 CL_DAL_REFERENCE=$2 ; shift ;;
 	-d)                 CL_DAL_REFERENCE=$2 ; shift ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
