@@ -104,7 +104,7 @@ public class XMLHandler extends DefaultHandler {
 			}
 			else {
 								pNode = new XMLTreeNode(m_parent);
-								if (raw.equalsIgnoreCase("_") && attrs.getLength() > 0) {
+								if (attrs.getLength() > 0 && (raw.equals("_") || raw.endsWith(":_"))) {
 										// in this case we will replace the element name with Name name, otherwise its first attribute is taken
 								    	raw = attrs.getValue("Name");
 								    	if (raw == null)
