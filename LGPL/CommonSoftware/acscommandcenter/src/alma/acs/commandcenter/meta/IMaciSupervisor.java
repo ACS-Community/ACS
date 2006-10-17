@@ -3,14 +3,19 @@
  */
 package alma.acs.commandcenter.meta;
 
-import javax.swing.tree.DefaultTreeModel;
 
+import org.omg.CORBA.NO_PERMISSION;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.TRANSIENT;
+
+import alma.maciErrType.NoPermissionEx;
 
 import si.ijs.maci.AdministratorPOA;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
+import si.ijs.maci.Manager;
 
 
 
@@ -20,12 +25,19 @@ public interface IMaciSupervisor {
 	static public final short MSG_ERROR = AdministratorPOA.MSG_ERROR;
 
 	/**
-	 * start() must be called after construction, before usage.
+	 * Start must be called after construction, before usage.
+	 * 
+	 * @return whether start worked
+	 * @throws CannotRetrieveManagerException 
+	 * @throws NoPermissionEx 
+	 * @throws CorbaTransientException 
+	 * @throws CorbaNotExistException 
+	 * @throws UnknownErrorException 
 	 */
-	public void start ();
+	public void start () throws CannotRetrieveManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException, UnknownErrorException;	
 
 	/**
-	 * Invoking this method is equal to invoking disconnect().
+	 * Stop this instance. It's possible to start again later on.
 	 */
 	public void stop ();
 
@@ -51,233 +63,101 @@ public interface IMaciSupervisor {
 	 */
 	public String getManagerLocation ();
 
-	/**
-	 *   
-	 */
-	public void shutdownManager () throws NotConnectedToManagerException ;
 
 	/**
-	 *   
-	 */
-	public void logoutContainer (ContainerInfo info) throws NotConnectedToManagerException ;
-
-	/**
-	 *   
-	 */
-	public void logoutClient (ClientInfo info) throws NotConnectedToManagerException ;
-
-	/**
-	 * Sends a shutdown request to every container. Note that the request is asynchronous: when this
-	 * method returns the container is likely to not have terminated yet.
+	 * Returns the handle given by the manager.
 	 * 
-	 * @since 3.0.2
+	 * @return the handle given by the manager.
+	 * @throws NotConnectedToManagerException if no handle available
 	 */
-	public void shutdownContainers ();
+	public int myMaciHandle() throws NotConnectedToManagerException;
+
 
 	/**
-	 * Resolves the specified name and forwards to {@link #shutdownContainer(ContainerInfo)}.
+	 * Returns a maciInfo instance as retrieved from the manager.
 	 * 
-	 * @param name the case-insensitive name (no wildcards) of a container
-	 * @since 3.0.2
-	 */
-	public void shutdownContainer (String name);
-
-	/**
-	 * Sends a shutdown request to the container described by the specified ContainerInfo. Note that
-	 * the request is asynchronous: when this method returns the container is likely to not have
-	 * terminated yet.
-	 * 
-	 * @since 3.1
-	 */
-	public void shutdownContainer (ContainerInfo info);
-
-	/**
-	 * Resolves the specified name and forwards to {@link #disconnectContainer(ContainerInfo)}.
-	 * 
-	 * @param name the case-insensitive name (no wildcards) of a container
-	 * @since 3.0.2
-	 */
-	public void disconnectContainer (String name);
-
-	/**
-	 * Sends a disconnect request to the container described by the specified ContainerInfo.
-	 * 
-	 * @since 3.1
-	 */
-	public void disconnectContainer (ContainerInfo info);
-
-	/**
-	 * Resolves the specified name and forwards to {@link #pingContainer(ContainerInfo)}.
-	 * 
-	 * @param name the case-insensitive name (no wildcards) of a container
-	 * @since 3.0.2
-	 */
-	public void pingContainer (String name);
-
-	/**
-	 * Sends a ping request to the container described by the specified ContainerInfo.
-	 * 
-	 * @since 3.1
-	 */
-	public void pingContainer (ContainerInfo info);
-
-	/**
-	 * @param info the ContainerInfo
-	 * @param msgType one of MSG_ERROR, MSG_INFORMATION
-	 * @param msg the message
-	 */
-	public void sendMessageToContainer (ContainerInfo info, short msgType, String msg);
-
-	/**
-	 * Sends a disconnect request to the client described by the specified ClientInfo.
-	 * 
-	 * @since 3.1
-	 */
-	public void disconnectClient (ClientInfo info);
-
-	/**
-	 * Sends a ping request to the client described by the specified ClientInfo.
-	 * 
-	 * @since 3.1
-	 */
-	public void pingClient (ClientInfo info);
-
-	/**
-	 * @param info the ClientInfo
-	 * @param msgType one of MSG_ERROR, MSG_INFORMATION
-	 * @param msg the message
-	 */
-	public void sendMessageToClient (ClientInfo info, short msgType, String msg);
-
-	/**
-	 * The containerHandles argument cannot be specified here. Reason: There's apparently a bug in
-	 * Manager.get_activator_info() in ACS2.x (nothing known about ACS3.x): The containerHandles
-	 * argument is not evaluated properly, instead empty (therefore useless) ContainerInfos are
-	 * returned.
-	 * 
-	 * @param name_wildcard not verified that it works as expected, recommended to use '*'.
-	 * @return
-	 */
-	public ContainerInfo[] retrieveContainerInfo (String name_wildcard) throws NotConnectedToManagerException ;
-
-	/**
+	 * @return maciInfo
 	 * @throws NotConnectedToManagerException 
-	 *   
+	 * @throws NoPermissionEx 
+	 * @throws UnknownErrorException 
+	 * @throws CorbaNotExistException 
+	 * @throws CorbaTransientException 
 	 */
-	public ClientInfo[] retrieveClientInfo () throws NotConnectedToManagerException;
+	public MaciInfo getMaciInfo () throws NoPermissionEx, NotConnectedToManagerException, CorbaTransientException, CorbaNotExistException, UnknownErrorException;
 
-	/**
-	 * @throws NotConnectedToManagerException 
-	 *   
-	 */
-	public ComponentInfo[] retrieveComponentInfo (int[] cobHandles, String name_wildcard, String type_wildcard, boolean active_only) throws NotConnectedToManagerException;
-	
-	
-	/**	
-	 * 
-	 * @param curl
-	 * @return
-	 * @throws NotConnectedToManagerException 
-	 */
-   public org.omg.CORBA.Object getComponent(String curl) throws NotConnectedToManagerException;
-
-   /**
-    * 
-    * @param curl
-    * @throws NotConnectedToManagerException
-    * @since Acs 5.0
-    */
-   public void forceReleaseComponent(String curl) throws NotConnectedToManagerException;
-
-	/**
-	 * 
-	 * @param curls
-	 * @throws NotConnectedToManagerException 
-	 */
-	public void releaseComponents(String[] curls) throws NotConnectedToManagerException;
-		
 	
 	/**
-	 * @return info about the container for a specified component
+	 * Base class of the exceptions we're creating ourselves.
 	 */
-	public ContainerInfo getContainerInfoForComponent (String componentName);
-
-	/**
-	 * The returned TreeModel's root is a TreeNode that is the root of a hierarchy that is a
-	 * combination of the info retrievable through the other get_XXX_info() methods.
-	 * 
-	 * The returned treeModel reference will never become invalid during the lifetime of this
-	 * MaciSupervisor instance (and it will be automatically updated when this instance is notified
-	 * by the manager that the MaciInfo has changed).
-	 * 
-	 * @throws RuntimeException containing the root cause
-	 */
-	public DefaultTreeModel getMaciInfo () throws RuntimeException;
-
-	
-	
-	public static class ComponentUnknownInLocalCacheException extends IllegalArgumentException {
-
-		protected ComponentUnknownInLocalCacheException() {
-			super();
-		}
-
-		protected ComponentUnknownInLocalCacheException(String s) {
+	public static class MaciSupervisorException extends Exception {
+		protected MaciSupervisorException(String s) {
 			super(s);
 		}
-		
-	}
+		protected MaciSupervisorException(String s, Throwable t) {
+			super(s, t);
+		}
+	} 
 	
-	public static class ContainerUnknownInLocalCacheException extends IllegalArgumentException {
-
-		protected ContainerUnknownInLocalCacheException() {
-			super();
-		}
-
-		protected ContainerUnknownInLocalCacheException(String s) {
-			super(s);
-		}
-		
-	}
-	
-
-	public static class ComponentNotActivatedInLocalCacheException extends IllegalArgumentException {
-
-		protected ComponentNotActivatedInLocalCacheException() {
-			super();
-		}
-
-		protected ComponentNotActivatedInLocalCacheException(String s) {
-			super(s);
-		}
-		
-	}
-	
-	
-	public static class NotConnectedToManagerException extends IllegalStateException {
-		
-		protected NotConnectedToManagerException() {
-			super();
-		}
-
+	/**
+	 * Can happen at every access to the manager. 
+	 */
+	public static class NotConnectedToManagerException extends MaciSupervisorException {
 		protected NotConnectedToManagerException(String s) {
 			super(s);
 		}
-		
 	}
 
-	
-	public static class LocalCacheEmptyException extends IllegalStateException {
-		
-		protected LocalCacheEmptyException() {
-			super();
+	/**
+	 * Can happen at every access to the manager. 
+	 */
+	public static class CorbaTransientException extends MaciSupervisorException {
+		protected CorbaTransientException (TRANSIENT exc) {
+			super("remote object has disappeared", exc);
 		}
+	}
 
-		protected LocalCacheEmptyException(String s) {
+	/**
+	 * Can happen when trying to shutdown the manager.
+	 * (all other manager methods allegedly will throw a NoPermissionEx but since
+	 * Manager::shutdown is oneway it is not possible to throw a UserException from
+	 * it, Mail Matej 2006-10-17)  
+	 */
+	public static class CorbaNoPermissionException extends MaciSupervisorException {
+		protected CorbaNoPermissionException (NO_PERMISSION exc) {
+			super("remote object refuses communication", exc);
+		}
+	}
+	
+	
+	/**
+	 * Can happen when trying to log in to the manager. 
+	 */
+	public static class CorbaNotExistException extends MaciSupervisorException {
+		protected CorbaNotExistException (OBJECT_NOT_EXIST exc) {
+			super("remote object doesn't exist", exc);
+		}
+	}
+	
+	/**
+	 * Can happen when trying to log in to the manager.
+	 */
+	public static class CannotRetrieveManagerException extends MaciSupervisorException {
+		public CannotRetrieveManagerException(String s) {
 			super(s);
 		}
-		
+		protected CannotRetrieveManagerException(String s, Throwable t) {
+			super(s, t);
+		}
 	}
+
+   // not sure i should use this
+	public static class UnknownErrorException extends MaciSupervisorException {
+		protected UnknownErrorException (RuntimeException exc) {
+			super("unknown error", exc);
+		}
+	}
+	
+	
 	
 	
 }
