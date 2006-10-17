@@ -65,6 +65,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
 import com.cosylab.logging.settings.ErrorLogDialog;
+import com.cosylab.logging.settings.ExpertPrefsDlg;
 import com.cosylab.logging.settings.LogTypeRenderer;
 import com.cosylab.logging.stats.StatsDlg;
 
@@ -169,6 +170,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
     private JMenu expertMenu; // Expert
     
     private JMenuItem suspendMI;
+    private JMenuItem prefsMI;
 
 	private JLabel ivjFilterStatus = null; // Not filtered
 	private JLabel ivjInfoStatus = null; // Additional info
@@ -379,6 +381,11 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             	}
             } else if (e.getSource()==LoggingClient.this.suspendMI) {
             	getEngine().setSupended(suspendMI.isSelected());
+            } else if (e.getSource()==LoggingClient.this.prefsMI) {
+            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(null,"Preferences",true);
+            	dlg.setVisible(true);
+            } else {
+            	System.err.println("Unrecognized ActionEvent");
             }
 		};
 
@@ -461,7 +468,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			}
 			
 			// Ensure the status of the item shown in the main panel
-			// is consistent with the menuite in View
+			// is consistent with the menu item in View
 			viewStatusAreaMI.setSelected(getStatusAreaPanel().isVisible());
 			viewDetailedInfoMI.setSelected(getDeatailedInfoPanel().isVisible());
 			viewToolbarMI.setSelected(toolBar.isVisible());
@@ -874,6 +881,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		getConnectMenuItem().addActionListener(eventHandler); // Connect/Disconnect
 		getLoadMenuItem().addActionListener(eventHandler); // Load File
 		getLoadURLMenuItem().addActionListener(eventHandler); // Load URL
+		getLoadDBMenuItem().addActionListener(eventHandler); // Load from database
 		getSaveFileMenuItem().addActionListener(eventHandler); // Save File As
 		getClearAllMenuItem().addActionListener(eventHandler); // ClearAll
 		getExitMenuItem().addActionListener(eventHandler); // Exit
@@ -972,8 +980,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         expertMenu.setText("Expert");
         suspendMI = new JCheckBoxMenuItem("Suspend",false);
         suspendMI.addActionListener(eventHandler);
-        suspendMI.addActionListener(eventHandler);
         expertMenu.add(suspendMI);
+        prefsMI = new JMenuItem("Preferences");
+        prefsMI.addActionListener(eventHandler);
+        expertMenu.add(prefsMI);
         loggingClientJMenuBar.add(expertMenu);
     }
     
