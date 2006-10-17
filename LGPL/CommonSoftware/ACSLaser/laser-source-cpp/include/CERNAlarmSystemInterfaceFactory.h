@@ -38,16 +38,6 @@ namespace laserSourceCERN
 		 * @return the interface instance.
 		 */
 		virtual auto_ptr<laserSource::ACSAlarmSystemInterface> createSource();
-	
-		/**
-		 * Create a fault state with the given family, member and code
-		 */
-		virtual auto_ptr<laserSource::ACSFaultState>createFaultState(string family, string member, int code);
-	
-		/**
-		 * Create a fault state 
-		 */
-		virtual auto_ptr<laserSource::ACSFaultState>createFaultState();
 	};
 };
 #endif /* ifndef CERN_ALARM_SYSTEM_INTERFACE_FACTORY_H */

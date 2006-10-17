@@ -5,6 +5,7 @@
 #include <orbsvcs/CosNamingC.h>
 #include <logging.h>
 #include <acsncHelper.h>
+#include <ACSAlarmSystemInterfaceFactory.h>
 
 using namespace laserAlarmPublisher;
 using nc::Helper;
@@ -34,7 +35,11 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier.");
 
 		// initialize the AlarmSupplier with the naming context
-		CosNaming::NamingContext_ptr naming_p = Helper::resolveNamingServiceStatic(NULL, string("AlarmSystem"));
+		maci::Manager_ptr mgr = ACSAlarmSystemInterfaceFactory::getManager();
+    	CORBA::Object_var namingObj = mgr->get_service(0, "NameService", true);
+		CosNaming::NamingContext_var naming_context = CosNaming::NamingContext::_narrow(namingObj.in());
+    	CosNaming::NamingContext_ptr naming_p = naming_context._retn();
+		
 		if(CORBA::is_nil(naming_p)) {
 			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was nil.");
 		}

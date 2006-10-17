@@ -65,30 +65,6 @@ auto_ptr<laserSource::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::
 	return createSource(ALARM_SOURCE_NAME);
 }
 
-/** Factory method for creating ACSFaultState instances.
- * @return a new ACSFaultState instance.
- * @param family the fault family.
- * @param member the fault member.
- * @param code the fault code.
- */
-auto_ptr<laserSource::ACSFaultState> CERNAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code)
-{
-	ACSFaultState * fsPtr = new ACSFaultState(family, member, code);
-	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);
-	return fsAutoPtr;
-}
-
-/**
- * Create a fault state 
- * @return a new ACSFaultState instance
- */
-auto_ptr<laserSource::ACSFaultState> CERNAlarmSystemInterfaceFactory::createFaultState()
-{
-	ACSFaultState * fsPtr = new ACSFaultState();
-	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);
-	return fsAutoPtr;
-}
-
 /*
  * Simple factory method to return an instance of CERNAlarmSystemInterfaceFactory as an entry point 
  * for clients of the shared library. 

@@ -79,13 +79,7 @@ void CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState> & states)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState>): entering.");
-	
-	vector<ACSFaultState> newStates;
-	for (unsigned int t=0; t<states.size(); t++) {
-		ACSFaultState* fs=(ACSFaultState*)&states[t];
-		newStates.push_back((ACSFaultState)*fs);
-	}
-	commonPush(newStates, true);
+	commonPush(states, false);
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState>): exiting.");
 }
 
@@ -122,7 +116,7 @@ void CERNAlarmSystemInterfaceProxy::pushActiveList(vector<ACSFaultState> & activ
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::pushActiveList(): entering.");
-	push(activeFaults);
+	commonPush(activeFaults, true);
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::pushActiveList(): exiting.");
 }
 
