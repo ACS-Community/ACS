@@ -953,10 +953,12 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         searchMenu.setName("SearchMenu");
         searchMenu.setText("Search");
         searchMenu.addMenuListener(eventHandler);
-        searchMenuItem = new JMenuItem("Search...");
+        ImageIcon searchIcon =new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
+        searchMenuItem = new JMenuItem("Search...",searchIcon);
         searchMenuItem.addActionListener(eventHandler);
         searchMenuItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         searchMenu.add(searchMenuItem);
+        
         searchNextMenuItem = new JMenuItem("Search Next");
         searchNextMenuItem.setAccelerator(KeyStroke.getKeyStroke('N',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         searchNextMenuItem.addActionListener(eventHandler);
