@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.3 2006/09/26 10:23:42 bjeram Exp $"
+* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.4 2006/10/17 12:47:37 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -109,7 +109,7 @@ class baci_EXPORT AlarmSystemMonitor : public EventStrategy
     
   protected:
     // The alarm system source
-    auto_ptr<laserSource::ACSAlarmSystemInterface> alarmSource_map;
+    auto_ptr<acsalarm::ACSAlarmSystemInterface> alarmSource_map;
 
     TPROP *property_mp;
     

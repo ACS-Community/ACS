@@ -59,7 +59,7 @@ void AlarmSystemMonitor<TPROP>::sendAlarm(std::string family, std::string member
 #ifdef MAKE_VXWORKS
 #else
 	// Create the fault state
-	auto_ptr<laserSource::ACSFaultState> fs  = ACSAlarmSystemInterfaceFactory::createFaultState(family,member,code);
+	auto_ptr<acsalarm::ACSFaultState> fs  = ACSAlarmSystemInterfaceFactory::createFaultState(family,member,code);
 	if (active) {
 		fs->setDescriptor(faultState::ACTIVE_STRING);
 	} else {
