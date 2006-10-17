@@ -524,27 +524,27 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * clients if the components have already failed. thus,
 		 * one exception handler for all retrievals is enough */
 		} catch (NotConnectedToManagerException exc) {
-			clearInfoDueToError(exc);
+			refreshNowFailed(exc);
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw exc;
 			
 		} catch (NoPermissionEx exc) {
-			clearInfoDueToError(exc);
+			refreshNowFailed(exc);
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw exc;
 			
 		} catch (org.omg.CORBA.TRANSIENT exc) {
-			clearInfoDueToError(exc);
+			refreshNowFailed(exc);
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw new CorbaTransientException(exc);
 
 		} catch (org.omg.CORBA.OBJECT_NOT_EXIST exc) {
-			clearInfoDueToError(exc);
+			refreshNowFailed(exc);
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw new CorbaNotExistException(exc);
 
 		} catch (RuntimeException exc) {
-			clearInfoDueToError(exc);
+			refreshNowFailed(exc);
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw new UnknownErrorException(exc);
 			
@@ -556,8 +556,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 	}
 
 	/** Helper for refreshNow() - i like when the nodes disappear in case of error */
-	protected void clearInfoDueToError(Exception exc) {
-		log.info("problems refreshing maci info: " + exc);
+	protected void refreshNowFailed(Exception exc) {
+		log.fine("problems refreshing maci info: " + exc);
 		maciInfo.componentNode.removeAllChildren();
 		maciInfo.containerNode.removeAllChildren();
 		maciInfo.clientNode.removeAllChildren();
