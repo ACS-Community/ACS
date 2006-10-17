@@ -56,13 +56,13 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	// The button to erase all the logs (i.e. the logs shown in the window and those
 	// flushed on the temporary file
 	private JButton cleanAllBtn;
-	private ImageIcon cleanIcon=new ImageIcon(ErrorLogDialog.class.getResource("/erase.gif"));
+	private ImageIcon cleanIcon=new ImageIcon(ErrorLogDialog.class.getResource("/delete.png"));
 	
 	// The button to save all the logs in a file (it saves the content of
 	// the temporary log file on disk and the content of the text area)
 	// The button is eabled only if some log has been flushed on disk
 	private JButton saveAllBtn;
-	private ImageIcon saveIcon=new ImageIcon(ErrorLogDialog.class.getResource("/save.gif"));
+	private ImageIcon saveIcon=new ImageIcon(ErrorLogDialog.class.getResource("/disk.png"));
 	
 	// The toolbar
 	private JToolBar toolBar;
@@ -416,8 +416,12 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 				}
 			};
 			try {
-				SwingUtilities.invokeAndWait(createObj);
-			} catch (Exception e) {}
+				SwingUtilities.invokeLater(createObj);
+			} catch (Throwable t) {
+				System.out.println("Error creating the dialog: "+t.getMessage());
+				t.printStackTrace();
+				return null;
+			}
 		}
 
 		return instance;

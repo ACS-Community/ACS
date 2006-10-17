@@ -112,6 +112,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	
 	private JMenuItem loadMenuItem = null; // Load File
 	private JMenuItem loadURLMenuItem = null; // Load from URL
+	private JMenuItem loadDBMenuItem = null; // Load from database
 	private JMenuItem saveFileMenuItem = null; // Save File As
 	private JMenuItem clearAllMenuItem = null; // Clear All
 	private JMenuItem exitMenuItem = null; // Exit
@@ -342,7 +343,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
             } else if (e.getSource()==viewErrorLogMI) {
-            	ErrorLogDialog.getErrorLogDlg().setVisible(true);
+            	if (ErrorLogDialog.getErrorLogDlg()!=null) {
+            		ErrorLogDialog.getErrorLogDlg().setVisible(true);
+            	}
             } else if (e.getSource()==LoggingClient.this.viewStatusAreaMI) {
             	getStatusAreaPanel().setVisible(viewStatusAreaMI.getState());
             	if (viewStatusAreaMI.getState()) {
@@ -563,16 +566,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * Returns the ExitMenuItem property value.
 	 * @return javax.swing.JMenuItem
 	 */
-	private javax.swing.JMenuItem getExitMenuItem()
+	private JMenuItem getExitMenuItem()
 	{
 		if (exitMenuItem == null)
 		{
 			try
 			{
-				exitMenuItem = new javax.swing.JMenuItem();
+				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/exit.png"));
+				exitMenuItem = new JMenuItem("Exit",icon);
 				exitMenuItem.setName("ExitMenuItem");
-				exitMenuItem.setText("Exit");
-
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -586,16 +588,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * @return javax.swing.JMenuItem
 	 */
 
-	private javax.swing.JMenuItem getSaveFileMenuItem()
+	private JMenuItem getSaveFileMenuItem()
 	{
 		if (saveFileMenuItem == null)
 		{
 			try
 			{
-				saveFileMenuItem = new javax.swing.JMenuItem();
+				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
+				saveFileMenuItem = new JMenuItem("Save File As",icon);
 				saveFileMenuItem.setName("SaveFileMenuItem");
-				saveFileMenuItem.setText("Save File As");
-
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -610,15 +611,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * Returns the ClearAllMenuItem property value.
 	 * @return javax.swing.JMenuItem
 	 */
-	private javax.swing.JMenuItem getClearAllMenuItem()
+	private JMenuItem getClearAllMenuItem()
 	{
 		if (clearAllMenuItem == null)
 		{
 			try
 			{
-				clearAllMenuItem = new javax.swing.JMenuItem();
+				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/delete.png"));
+				clearAllMenuItem = new JMenuItem("Clear All",icon);
 				clearAllMenuItem.setName("ClearAllMenuItem");
-				clearAllMenuItem.setText("Clear All");
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -674,16 +675,15 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * Returns the LoadMenuItem property value.
 	 * @return javax.swing.JMenuItem
 	 */
-	private javax.swing.JMenuItem getLoadMenuItem()
+	private JMenuItem getLoadMenuItem()
 	{
 		if (loadMenuItem == null)
 		{
 			try
 			{
-				loadMenuItem = new javax.swing.JMenuItem();
+				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/load.png"));
+				loadMenuItem = new JMenuItem("Load from File",icon);
 				loadMenuItem.setName("ivjLoadMenuItem");
-				loadMenuItem.setText("Load from File");
-
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -693,16 +693,35 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		}
 		return loadMenuItem;
 	}
+	
+	private JMenuItem getLoadDBMenuItem()
+	{
+		if (loadDBMenuItem == null)
+		{
+			try
+			{
+				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/database.png"));
+				loadDBMenuItem = new JMenuItem("Load from database",icon);
+				loadDBMenuItem.setName("ivjLoadDBMenuItem");
 
-	private javax.swing.JMenuItem getLoadURLMenuItem()
+			}
+			catch (java.lang.Throwable ivjExc)
+			{
+				handleException(ivjExc);
+			}
+		}
+		return loadDBMenuItem;
+	}
+
+	private JMenuItem getLoadURLMenuItem()
 	{
 		if (loadURLMenuItem == null)
 		{
 			try
 			{
-				loadURLMenuItem = new javax.swing.JMenuItem();
+				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/loadURL.png"));
+				loadURLMenuItem = new JMenuItem("Load from URL",icon);
 				loadURLMenuItem.setName("ivjLoadURLMenuItem");
-				loadURLMenuItem.setText("Load from URL");
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -791,17 +810,16 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * Returns the NewMenuItem property value.
 	 * @return javax.swing.JMenuItem
 	 */
-	private javax.swing.JMenuItem getConnectMenuItem()
+	private JMenuItem getConnectMenuItem()
 	{
 		if (connectMenuItem == null)
 		{
 			try
 			{
-				connectMenuItem = new javax.swing.JMenuItem();
+				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/link.png"));
+				connectMenuItem = new JMenuItem("Connect",icon);
 				connectMenuItem.setName("connectMenuItem");
 				connectMenuItem.setText("Connect");
-				connectMenuItem.setActionCommand("Connect");
-
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -885,12 +903,14 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         fileMenu.setText("File");
         fileMenu.addMenuListener(eventHandler);
         fileMenu.add(getConnectMenuItem());
-        autoReconnectMI = new JCheckBoxMenuItem("Auto reconnect",false);
+        ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/autoreconnect.png"));
+        autoReconnectMI = new JCheckBoxMenuItem("Auto reconnect",icon,false);
         autoReconnectMI.addActionListener(eventHandler);
         fileMenu.add(autoReconnectMI);
         fileMenu.addSeparator();
         fileMenu.add(getLoadMenuItem());
         fileMenu.add(getLoadURLMenuItem());
+        fileMenu.add(getLoadDBMenuItem());
         fileMenu.add(getSaveFileMenuItem());
         fileMenu.add(getClearAllMenuItem());
         fileMenu.addSeparator();
@@ -919,7 +939,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         viewMenu.addSeparator();
         viewMenu.add(setFiltersMenuItem());
         viewMenu.addSeparator();
-        statisticsMenuItem = new JMenuItem("Statistics");
+        ImageIcon statIcon =new ImageIcon(LogTypeHelper.class.getResource("/statistics.png"));
+        statisticsMenuItem = new JMenuItem("Statistics",statIcon);
         statisticsMenuItem.addActionListener(eventHandler);
         viewMenu.add(statisticsMenuItem);
         viewErrorLogMI = new JMenuItem("Error log");
@@ -1009,8 +1030,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         discardLevelCB.addActionListener(eventHandler);
         tbLevelPanel.add(discardLevelCB);
         
-        pauseIcon=new ImageIcon(LogTypeHelper.class.getResource("/pauseGreen.png"));
-        playIcon=new ImageIcon(LogTypeHelper.class.getResource("/playRed.png"));
+        pauseIcon=new ImageIcon(LogTypeHelper.class.getResource("/pause.png"));
+        playIcon=new ImageIcon(LogTypeHelper.class.getResource("/play.png"));
         pauseB = new JButton("<HTML><FONT size=-2>Pause</FONT>",pauseIcon);
         pauseBtnPaused=false;
         pauseB.addActionListener(eventHandler);
@@ -1020,7 +1041,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         userPanel.add(tbLevelPanel);
         
         // Add the  search button
-        ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.gif"));
+        ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
         searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT>",searchIcon);
         userPanel.add(searchBtn);
         searchBtn.addActionListener(eventHandler);
