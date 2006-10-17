@@ -39,7 +39,12 @@ public BACIInvocation(short type, String name, RemoteCall data, RemoteResponseCa
  * Creation date: (1.12.2000 1:42:37)
  */
 public void destroyDueToTimeout() {
-	ra.getNotifier().reportDebug("BACIInvocation::destroyDueToTimeout", "Destroying invocation for '" + getName() + "'.");
+	try {
+		ra.getNotifier().reportDebug("BACIInvocation::destroyDueToTimeout", "Destroying invocation for '" + getName() + "'.");
+	} catch (NullPointerException e) {
+		ra.getNotifier().reportDebug("BACIInvocation::destroyDueToTimeout", "Destroying invocation for '" + name + "'.");
+	}
+	
 	if (!isDestroyed()) getCallback().invocationDestroyed();
 }
 /**
@@ -79,6 +84,16 @@ public org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription getIFDesc() {
 public java.lang.String getName() {
 	return getInvocationRequest().getIntrospectable().getName()+" : "+name;
 }
+
+/**
+ * Get name to be displayed in the tree - used by DelegateInvocation
+ * @return
+ * @author rbertoncelj
+ */
+public java.lang.String getDisplayName() {
+	return name;
+}
+
 /**
  * Insert the method's description here.
  * Creation date: (7.11.2000 21:50:14)

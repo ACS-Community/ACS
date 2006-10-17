@@ -68,6 +68,7 @@ public void run() {
 		    if (op.getIntrospectable() instanceof OETreeNode && node.isControllable()) {
 			   OETreeNode parentNode=(OETreeNode)op.getIntrospectable();
 			   parent.nodeRequestListener.addNode(node,parentNode);
+			   //TODO update for secondary tree!!!
 		    }
 		  }
 		}

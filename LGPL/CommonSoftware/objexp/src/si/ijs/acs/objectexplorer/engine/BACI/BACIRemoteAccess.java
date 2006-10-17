@@ -1,23 +1,61 @@
 package si.ijs.acs.objectexplorer.engine.BACI;
 
-import org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription;
-import si.ijs.acs.objectexplorer.OETreeNode;
-import si.ijs.acs.objectexplorer.TreeHandlerBean;
-import si.ijs.acs.objectexplorer.NotificationBean;
-
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Properties;
+import java.util.TreeMap;
+import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.omg.PortableServer.*;
-import org.omg.CORBA.*;
+import javax.swing.Icon;
 
+import org.omg.CORBA.Any;
+import org.omg.CORBA.AttributeDescription;
+import org.omg.CORBA.Bounds;
+import org.omg.CORBA.Contained;
+import org.omg.CORBA.InterfaceDef;
+import org.omg.CORBA.InterfaceDefHelper;
+import org.omg.CORBA.NVList;
+import org.omg.CORBA.ORB;
+import org.omg.CORBA.OperationDef;
+import org.omg.CORBA.OperationDefHelper;
+import org.omg.CORBA.OperationDescription;
+import org.omg.CORBA.OperationMode;
+import org.omg.CORBA.ParameterDescription;
+import org.omg.CORBA.ParameterMode;
+import org.omg.CORBA.Repository;
+import org.omg.CORBA.RepositoryHelper;
+import org.omg.CORBA.Request;
+import org.omg.CORBA.TCKind;
+import org.omg.CORBA.TypeCode;
+import org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
+import org.omg.PortableServer.POAManager;
+
+import si.ijs.acs.objectexplorer.NotificationBean;
+import si.ijs.acs.objectexplorer.OETreeNode;
+import si.ijs.acs.objectexplorer.TreeHandlerBean;
+import si.ijs.acs.objectexplorer.engine.Attribute;
+import si.ijs.acs.objectexplorer.engine.Introspectable;
+import si.ijs.acs.objectexplorer.engine.IntrospectionInconsistentException;
+import si.ijs.acs.objectexplorer.engine.Invocation;
+import si.ijs.acs.objectexplorer.engine.Operation;
+import si.ijs.acs.objectexplorer.engine.RemoteAccess;
+import si.ijs.acs.objectexplorer.engine.RemoteException;
+import si.ijs.acs.objectexplorer.engine.RemoteResponseCallback;
+import si.ijs.maci.Client;
+import si.ijs.maci.ClientInfo;
+import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.Manager;
+import si.ijs.maci.ManagerHelper;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.logging.ClientLogManager;
-
-import si.ijs.acs.objectexplorer.engine.*;
-import si.ijs.maci.*;
-import javax.swing.*;
 
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
@@ -27,7 +65,7 @@ import alma.maciErrType.NoPermissionEx;
 /**
  * Insert the type's description here.
  * Creation date: (1.11.2000 13:00:27)
- * @author: 
+ * @author rbertoncelj
  */
 public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
@@ -166,7 +204,6 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			if (invoc == null)
 				throw new NullPointerException("invoc");
 			this.invoc = invoc;
-
 		}
 		public java.lang.String[] _all_interfaces(POA arg1, byte[] arg2) {
 			return allIDs;
@@ -247,10 +284,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				// since it is a container for values
 				synchronized(operationListDescriptions)
 				{
-					
+
 				        NVList list =
 					    (NVList) operationListDescriptions.get(opKey);
-	
+
 					if (list == null) {
 					    list = orb.create_operation_list((org.omg.CORBA.Object) odef);
 					    synchronized (operationListDescriptions) {
@@ -264,7 +301,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						operationListDescriptions.put(opKey, list);
 					    }
 					}
-	
+
 					request.arguments(list);
 					int size = list.count();
 					data = new java.lang.Object[size];
@@ -277,13 +314,13 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 							getIntrospector().extractAny(list.item(i).value());
 						names[i] = list.item(i).name();
 					}
-					
+
 					// check for error-type ACSCompletion-s
 					for (int i = 0; i < size; i++)
 						errorResponse |= checkFromACSCompletion(data[i]);
 
 				}
-				
+
 			} catch (Bounds b) {
 				getNotifier().reportError(
 					"The callback parameter list returned by the server and the IR data do not agree in length. Skipping.",
@@ -407,7 +444,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			}
 		}
 	}
-	private TreeHandlerBean treeHandler = null;
+	private TreeHandlerBean parent = null;
 	private NotificationBean notifier = null;
 	private ArrayList invocations = new ArrayList();
 	private Dispatcher dispatcher = null;
@@ -428,6 +465,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	public static final short PROPERTY = 3;
 	public static final short ATTRIBUTE = 4;
 	public static final short TRANSIENT = 5;
+	public static final short DUMMY = 6;
 	// default is 5s
 	public static /*final*/ int POLL_TIMEOUT = 5000;
 	public static final int POLL_SLEEP = 50;
@@ -442,26 +480,31 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	private HashMap attributeIntrospected = new HashMap();
 	private HashMap operationsIntrospected = new HashMap();
 	private boolean bufferDescs = true;
+	private Hashtable devices = null;
+	private boolean destroyed = true;
 	/**
 	 * ESORemoteAccess constructor comment.
 	 */
 	public BACIRemoteAccess(
-		TreeHandlerBean treeHandler,
-		NotificationBean notifier) {
+		TreeHandlerBean parent,
+		NotificationBean notifier,
+		Hashtable devices) {
 		super();
-
-		if (treeHandler == null)
-			throw new NullPointerException("treeHandler");
+		if (parent == null)
+			throw new NullPointerException("treeHandler*");
 		if (notifier == null)
 			throw new NullPointerException("notifier");
-
-		this.treeHandler = treeHandler;
+		if (devices == null)
+			throw new NullPointerException("devices");
+		this.parent = parent;
 		this.notifier = notifier;
+		this.devices = devices;
 		notifier.reportDebug(
 			"BACIRemoteAccess::BACIRemoteAccess",
 			"Constructed remote access.");
 
 	}
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (1.11.2000 13:00:27)
@@ -493,7 +536,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	 * Insert the method's description here.
 	 * Creation date: (1.11.2000 13:00:27)
 	 */
-	public void destroy() {
+	public synchronized void destroy() {
+		if (destroyed)
+			return;
+		destroyed = true;
 		synchronized (invocations) {
 			Iterator i = invocations.iterator();
 			while (i.hasNext()) {
@@ -502,7 +548,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					if (invoc.isControllable())
 						BACIIntrospector.destroyInvocation(invoc);
 				} catch (Exception e) {
-					// try others 
+					// try others
 				}
 			}
 			invocations.clear();
@@ -590,7 +636,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		BACIRemoteNode baciNode = (BACIRemoteNode) target;
 		if (baciNode.getCORBARef() == null)
 		{
-			System.out.println("baciNode.getCORBARef() == null");	 
+			System.out.println("baciNode.getCORBARef() == null");
 			return;
 		}
 		java.util.Enumeration e = baciNode.children();
@@ -619,7 +665,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			}
 		}
 		// todo: This looks like a very dirty patch.
-		//       we have to find out a clean way to rule out things that are not DOs and 
+		//       we have to find out a clean way to rule out things that are not DOs and
 		//       also not Components.
 	    //if (baciIntrospector.isDevice(baciNode.getCORBARef())) {
 		if (baciNode.isDevice()) {
@@ -632,8 +678,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			    manager.release_component(handle, (String) baciNode.getUserObject());
 			    }
 			catch (NoPermissionEx npe) {
-			notifier.reportError("Nopermission to release component",
-					     npe);
+				notifier.reportError("Nopermission to release component", npe);
 			}
 		}
 		else
@@ -643,11 +688,12 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 //				"===> NOT DISCONNECTING  " + target.getName() + "'.");
 		}
 	}
+
 	/**
-	 * Insert the method's description here.
+	 * Explodes the device node.
 	 * Creation date: (1.11.2000 17:01:09)
-	 * @return si.ijs.acs.objectexplorer.engine.OETreeDataNode[]
-	 * @param node si.ijs.acs.objectexplorer.engine.OETreeDataNode
+	 * @return si.ijs.acs.objectexplorer.engine.OETreeNode[]
+	 * @param node si.ijs.acs.objectexplorer.engine.BACI.BACIRemoteNode
 	 */
 	private synchronized OETreeNode[] explodeDeviceNode(BACIRemoteNode node) {
 		if (node == null)
@@ -656,26 +702,20 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			resolveManager();
 
 		BACIRemoteNode baciNode = (BACIRemoteNode) node;
-
 		connect(baciNode);
-		//	OperationDescription[] props1 = BACIIntrospector.getProperties(baciNode.desc.operations);
+
 		AttributeDescription[] props2 =
 			baciIntrospector.getProperties(baciNode.getIFDesc().attributes);
 		BACIRemoteNode[] retVal = new BACIRemoteNode[props2.length];
-		/*	for (int i = 0; i < props1.length; i++)
-			{
-				retVal[i] = new BACIRemoteNode(PROPERTY, props1[i].name, props1[i], treeHandler.getTree(), this);
+			for (int i = 0; i < props2.length; i++) {
+				retVal[i] = new BACIRemoteNode(
+						ATTRIBUTE,
+						props2[i].name,
+						props2[i],
+						parent.getTree(),
+						this);
 			}
-		*/
-		for (int i = 0; i < props2.length; i++) {
-			retVal[i] =
-				new BACIRemoteNode(
-					ATTRIBUTE,
-					props2[i].name,
-					props2[i],
-					treeHandler.getTree(),
-					this);
-		}
+
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeDeviceNode",
 			"Processing for node '" + node + "' complete.");
@@ -702,11 +742,6 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		for (int i = 0; i < infos.length; i++) {
 			String cmp = null;
 			String domain = BACICURLResolver.resolveDomain(infos[i].name);
-			//String cob = BACICURLResolver.resolveName(infos[i].name);
-
-			/*		if (infos[i].cob_curl.domain.endsWith("/")) cmp = infos[i].cob_curl.domain;
-					else cmp = infos[i].cob_curl.domain + "/";
-			*/
 			if (domain.endsWith("/"))
 				cmp = domain;
 			else
@@ -725,8 +760,9 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 								TYPE,
 								BACIIntrospector.fullTypeToType(infos[i].type),
 								BACIIntrospector.fullTypeToType(infos[i].type),
-								treeHandler.getTree(),
+								parent.getTree(),
 								getIcon(DOMAIN));
+
 					} catch (IntrospectionInconsistentException iie) {
 						notifier.reportError(
 							"Invalid IDL type '" + infos[i].type + "'.",
@@ -739,12 +775,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					tempTypes.put(infos[i].type, node);
 				}
 			} else {
-				//			String domain = infos[i].cob_curl.domain;
 				if (domain.startsWith("/"))
 					domain = domain.substring(1);
 				if (!domain.endsWith("/"))
 					domain = domain + "/";
-				//int index =	domain.substring(n.domainRemainder.length()).indexOf('/');
 				String dpart =
 					domain.substring(
 						n.domainRemainder.length(),
@@ -755,12 +789,14 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				if (node != null) {
 					node.childrenHolder.add(infos[i]);
 				} else {
+
+
 					node =
 						new BACITreeDataNode(
 							DOMAIN,
 							dpart,
 							infos[i],
-							treeHandler.getTree(),
+							parent.getTree(),
 							getIcon(DOMAIN));
 					node.childrenHolder = new ArrayList();
 					node.childrenHolder.add(infos[i]);
@@ -789,18 +825,34 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		return retVal;
 
 	}
+
+	private synchronized BACITreeDataNode[] explodeDomainNodeByName(BACITreeDataNode n) {
+		if (n == null)
+			throw new NullPointerException("node");
+		if (n.childrenHolder == null)
+			return new BACITreeDataNode[0];
+		BACITreeDataNode[] retVal = new BACITreeDataNode[n.childrenHolder.size()];
+		for (int i = 0; i < retVal.length; i++) {
+			retVal[i] = (BACITreeDataNode)n.childrenHolder.get(i);
+		}
+		notifier.reportDebug(
+			"BACIRemoteAccess::explodeDomainNodeByName",
+			"Processing for node '" + n + "' complete.");
+		return retVal;
+
+	}
+
 	/**
-	 * Insert the method's description here.
+	 * Explodes the root node and groups the devices by their types.
 	 * Creation date: (1.11.2000 17:00:46)
 	 * @return si.ijs.acs.objectexplorer.engine.OETreeDataNode[]
 	 */
-	private synchronized OETreeNode[] explodeRootNode() {
-
+	private synchronized OETreeNode[] explodeRootNodeByType() {
 		if (manager == null)
 			resolveManager();
 
 		notifier.reportDebug(
-			"BACIRemoteAccess::explodeRootNode",
+			"BACIRemoteAccess::explodeRootNodeByType",
 			"Querying manager for all instances of all types...");
 		long time1 = System.currentTimeMillis();
 		int[] handles = new int[0];
@@ -808,19 +860,48 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	   	   infos = manager.get_component_info(handle, handles, "*", "*", false);
   		}
 		catch (NoPermissionEx npe) {
-		   notifier.reportError("Nopermission to get component info",
-				     npe);
+		   notifier.reportError("Nopermission to get component info", npe);
 		}
 		long time2 = System.currentTimeMillis();
 		notifier.reportDebug(
-			"BACIRemoteAccess::explodeRootNode",
+			"BACIRemoteAccess::explodeRootNodeByType",
 			"Query OK. Completed in " + (time2 - time1) + " ms.");
 		TreeMap tempTypes = new TreeMap();
 		TreeMap tempDomains = new TreeMap();
+
+
+		devices.clear();
+		/*
+		 * Loop trough all the received devices and add any new devices that
+		 * are not yet stored in Hashtable.
+		 */
+		for (int i = 0; i< infos.length; i++) {
+			String curl = infos[i].name;
+			RemoteNodeCouple rnc = (RemoteNodeCouple)devices.get(curl); //check if RemoteNodeCouple already exists for this device
+			if (rnc != null) continue; //skip the device if it does (that should not ever happen actually...)
+			String cob = BACICURLResolver.resolveName(curl);
+			//System.out.println("DEBUG DEVICE: CURL: "+curl);
+			BACIRemoteNode device = new BACIRemoteNode(
+					DEVICE,
+					cob, //cob2,
+					curl,
+					parent.getTree(),
+					this);
+			device.childrenHolder = new ArrayList();
+
+			rnc = new RemoteNodeCouple(device, null);  //if not, create a new one and add it to Hashtable devices
+			String[] cobs = cob.split("/");
+			String cob2 = cobs[cobs.length-1];
+			rnc.deviceByName = new DelegateRemoteNode(cob2, parent, device);
+			devices.put(curl, rnc);
+		}
+
+		/*
+		 * now loop trough all the devices again and add them to the tree
+		 * TODO refacture to have only one "for loop" - add to hashtable and tree at the same time
+		 */
 		for (int i = 0; i < infos.length; i++) {
 			String domain = BACICURLResolver.resolveDomain(infos[i].name);
-			//String cob = BACICURLResolver.resolveName(infos[i].name);
-			//		if (domain == null || "".equals(domain) || "/".equals(domain))
 			if (domain.equals(BACICURLResolver.ROOT_DOMAIN)) {
 				BACITreeDataNode node =
 					(BACITreeDataNode) tempTypes.get(infos[i].type);
@@ -834,7 +915,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 								TYPE,
 								BACIIntrospector.fullTypeToType(infos[i].type),
 								BACIIntrospector.fullTypeToType(infos[i].type),
-								treeHandler.getTree(),
+								parent.getTree(),
 								getIcon(TYPE));
 					} catch (IntrospectionInconsistentException iie) {
 						notifier.reportError(
@@ -848,7 +929,6 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					tempTypes.put(infos[i].type, node);
 				}
 			} else {
-				//String domain = infos[i].cob_curl.domain;
 				if (domain.startsWith("/"))
 					domain = domain.substring(1);
 				int index = domain.indexOf('/');
@@ -867,7 +947,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 							DOMAIN,
 							dpart,
 							infos[i],
-							treeHandler.getTree(),
+							parent.getTree(),
 							getIcon(DOMAIN));
 					node.childrenHolder = new ArrayList();
 					node.childrenHolder.add(infos[i]);
@@ -894,11 +974,227 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			arrayDomains.length,
 			arrayTypes.length);
 		notifier.reportDebug(
-			"BACIRemoteAccess::explodeRootNode",
+			"BACIRemoteAccess::explodeRootNodeByType",
 			"Root nodes processing complete.");
 
 		return retVal;
 	}
+
+	/**
+	 * Explodes the root node and groups the devices by their parent devices.
+	 * Warning: explodeRootNodeByType() has to be called at least once before this method is called!
+	 * @return
+	 */
+	public synchronized OETreeNode[] explodeRootNodeByName() {
+		if (manager == null)
+			resolveManager();
+
+		notifier.reportDebug(
+			"BACIRemoteAccess::explodeRootNodeByName",
+			"Querying manager for all instances of all types...");
+		long time1 = System.currentTimeMillis();
+		int[] handles = new int[0];
+		try {
+	   	   infos = manager.get_component_info(handle, handles, "*", "*", false);
+  		}
+		catch (NoPermissionEx npe) {
+		   notifier.reportError("Nopermission to get component info", npe);
+		}
+		long time2 = System.currentTimeMillis();
+		notifier.reportDebug(
+			"BACIRemoteAccess::explodeRootNodeByName",
+			"Query OK. Completed in " + (time2 - time1) + " ms.");
+		TreeMap tempDomains = new TreeMap();
+		TreeMap tempDummies = new TreeMap();
+		Vector rootDummies = new Vector();
+
+		for (int i = 0; i < infos.length; i++) {
+			String curl = infos[i].name;
+			String domain = BACICURLResolver.resolveDomain(curl);
+			String cob = BACICURLResolver.resolveName(curl);
+			RemoteNodeCouple rnc = (RemoteNodeCouple)devices.get(curl);
+			if (rnc == null) {
+				notifier.reportError(
+						"BACIRemoteAccess::explodeRootNodeByName - Unexpected null pointer (rnc).");
+				continue;
+			}
+			if (rnc.deviceByName == null) {
+				notifier.reportError(
+						"BACIRemoteAccess::explodeRootNodeByName - Unexpected null pointer (rnc.deviceByName).");
+				continue;
+			}
+
+			String[] names = cob.split("/", 2);
+
+			if (domain.equals(BACICURLResolver.ROOT_DOMAIN)) {
+				BACITreeDataNode dummyNode = (BACITreeDataNode) tempDummies.get(names[0]);
+				if (names.length > 1) {
+					if (dummyNode == null) {
+						dummyNode = new BACITreeDataNode(DUMMY, names[0], BACICURLResolver.getFirstLevelCurl(curl), parent.getTreeByName(), getIcon(DOMAIN));
+						dummyNode.childrenHolder = new ArrayList();
+						tempDummies.put(names[0], dummyNode);
+						rootDummies.add(dummyNode);
+					}
+					String[] arrNames = names[1].split("/");
+					//System.out.println("DEBUG "+ names[1]);
+					getTreeForName(dummyNode, 0, arrNames);
+				} else {
+					if (dummyNode == null) {
+						tempDummies.put(names[0], rnc.deviceByName);
+					} else {
+						dummyNode.childrenHolder.add(0, rnc.deviceByName);
+					}
+				}
+			} else {
+				//TODO: Domain part not yet tested - should set up test environment with domains and do extensive testing.
+				if (domain.startsWith("/"))
+					domain = domain.substring(1);
+				int index = domain.indexOf('/');
+				String dpart = null;
+
+				if (index != -1)
+					dpart = domain.substring(0, index);
+				else
+					dpart = domain;
+
+				BACITreeDataNode node =
+					(BACITreeDataNode) tempDomains.get(dpart);
+				if (node == null) {
+					node =
+						new BACITreeDataNode(
+							DOMAIN,
+							dpart,
+							infos[i],
+							parent.getTreeByName(),
+							getIcon(DOMAIN));
+					node.childrenHolder = new ArrayList();
+					if (index != -1)
+						node.domainRemainder = dpart + "/";
+					else
+						node.domainRemainder = dpart;
+					tempDomains.put(dpart, node);
+				}
+
+				BACITreeDataNode dummyNode = (BACITreeDataNode) tempDummies.get(names[0]);
+				if (names.length > 1) {
+					if (dummyNode == null) {
+						dummyNode = new BACITreeDataNode(DUMMY, names[0], BACICURLResolver.getFirstLevelCurl(curl), parent.getTree(), getIcon(DOMAIN));
+						dummyNode.childrenHolder = new ArrayList();
+						node.childrenHolder.add(0, rnc.deviceByName);
+						rootDummies.add(dummyNode);
+					}
+					String[] arrNames = names[1].split("/");
+					//System.out.println("DEBUG "+ names[1]);
+					getTreeForName(dummyNode, 0, arrNames);
+				} else {
+					if (dummyNode == null) {
+						node.childrenHolder.add(0, rnc.deviceByName);
+					} else {
+						dummyNode.childrenHolder.add(0, rnc.deviceByName);
+					}
+				}
+			}
+		}
+		for (int i = 0; i < rootDummies.size(); i++) {
+			BACITreeDataNode tmpNode = (BACITreeDataNode)rootDummies.get(i);
+			for (int j = 0; j < tmpNode.childrenHolder.size(); j++) {
+				if (tmpNode.childrenHolder.get(j) instanceof BACIRemoteNode) {
+					continue;
+				} else {
+					removeSingleDeviceDummies(tmpNode, j, (BACITreeDataNode)tmpNode.childrenHolder.get(j));
+				}
+			}
+		}
+		BACITreeDataNode[] arrayDummies = new BACITreeDataNode[tempDummies.size()];
+		tempDummies.values().toArray(arrayDummies);
+		BACITreeDataNode[] arrayDomains =
+			new BACITreeDataNode[tempDomains.size()];
+		tempDomains.values().toArray(arrayDomains);
+		BACITreeDataNode[] retVal = new BACITreeDataNode[arrayDummies.length + arrayDomains.length];
+		System.arraycopy(arrayDomains, 0, retVal, 0, arrayDomains.length);
+		System.arraycopy(
+				arrayDummies,
+			0,
+			retVal,
+			arrayDomains.length,
+			arrayDummies.length);
+		notifier.reportDebug(
+			"BACIRemoteAccess::explodeRootNodeByName",
+			"Root nodes processing complete.");
+
+		return retVal;
+	}
+
+	/**
+	 * recursive function that builds the tree for the given dummy node's name.
+	 * @param root			dummy node to which the subtree will be attached
+	 * @param pathIndex		the subtree of which dummy should be found or created if not found
+	 * @param names			final dummy's name <code>"dummy1/dummy2/.../finaldummy"</code>, broken into array
+	 * 						<code>{"dummy1", "dummy2", ..., "finaldummy"}</code>
+	 * @return
+	 */
+	public BACITreeDataNode getTreeForName(BACITreeDataNode root, int pathIndex, String[] names) {
+		if (names == null) return null; //invalid name - do not continue
+		if (pathIndex == names.length) {
+			return root; //we're done processing because we reached the end of the names
+		}
+
+		/*
+		 * Loop trough all the children of the root node and process each one that is not already a device
+		 */
+		for (int i = 0; i < root.childrenHolder.size(); i++) {
+			BACITreeDataNode node = (BACITreeDataNode)root.childrenHolder.get(i);
+			if (node instanceof BACIRemoteNode) continue;
+			if (node.getName().compareTo(names[pathIndex]) == 0) {
+				return getTreeForName(node, ++pathIndex, names); //we found a node that corresponds to the name[pathIndex], let's process it
+			}
+		}
+
+		/*
+		 * if the for loop exits, it means that the dummy node for the name[pathIndex] does not exist, so we must create one
+		 */
+		String curl = (String)root.getUserObject() + "/" + names[pathIndex]; //we calculate the curl for the new dummy node
+		RemoteNodeCouple rnc = (RemoteNodeCouple)devices.get(curl); //get a device with the same curl if it exists
+
+		//add our new dummy node to it's parent
+		BACITreeDataNode newDummy = new BACITreeDataNode(DUMMY, names[pathIndex], curl, parent.getTreeByName(), getIcon(DOMAIN));
+		newDummy.childrenHolder = new ArrayList();
+
+		if (rnc != null && rnc.deviceByName != null) newDummy.childrenHolder.add(rnc.deviceByName); //also add the device node if it exists
+		root.childrenHolder.add(newDummy);
+
+		return getTreeForName(newDummy, ++pathIndex, names); //continue processing
+	}
+
+	/**
+	 * Replaces dummy nodes which have one device node in them with the device node itself
+	 * @param parent
+	 * @param index
+	 * @param node
+	 */
+	public void removeSingleDeviceDummies(BACITreeDataNode parent, int index, BACITreeDataNode node) {
+		if (node.childrenHolder.size() > 1) {
+			for (int i = 0; i < node.childrenHolder.size(); i++) {
+				BACITreeDataNode tmpNode = (BACITreeDataNode)node.childrenHolder.get(0);
+				if (tmpNode instanceof BACIRemoteNode) {
+					continue;
+				} else {
+					removeSingleDeviceDummies(node, i, tmpNode);
+				}
+			}
+		} else if (node.childrenHolder.size() == 1) {
+			BACITreeDataNode tmpNode = (BACITreeDataNode)node.childrenHolder.get(0);
+			if (tmpNode instanceof BACIRemoteNode) {
+				parent.childrenHolder.remove(index);
+				parent.childrenHolder.add(index, tmpNode);
+				return;
+			} else {
+				removeSingleDeviceDummies(node, 0, tmpNode);
+				return;
+			}
+		}
+	}
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (1.11.2000 15:17:19)
@@ -908,9 +1204,9 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		if (node == null) // root node - search for types
 			{
 			notifier.reportMessage("Querying root nodes.");
-			return explodeRootNode();
+			return explodeRootNodeByType();
 		} else {
-			switch (node.getNodeType()) {
+				switch (node.getNodeType()) {
 				case DOMAIN :
 					notifier.reportMessage(
 						"Querying domain node children of '"
@@ -929,9 +1225,15 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 							+ node.getName()
 							+ "'.");
 					return explodeDeviceNode((BACIRemoteNode) node);
+				case DUMMY :
+					notifier.reportMessage(
+						"Querying device node children of '"
+							+ node.getName()
+							+ "'.");
+					return explodeDummyNode((BACITreeDataNode) node);
 				default :
 					return new OETreeNode[0];
-			}
+				}
 		}
 	}
 	/**
@@ -945,28 +1247,43 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
 		if (node.childrenHolder == null || node.childrenHolder.size() == 0)
 			return new BACITreeDataNode[0];
-		BACIRemoteNode[] retVal =
-			new BACIRemoteNode[node.childrenHolder.size()];
-		//	node.childrenHolder.toArray(retVal);
+		BACIRemoteNode[] retVal = new BACIRemoteNode[node.childrenHolder.size()];
 		java.util.Collections.sort(node.childrenHolder);
 		for (int i = 0; i < retVal.length; i++) {
 			String curl = (String) node.childrenHolder.get(i);
 			String cob = BACICURLResolver.resolveName(curl);
 			if (cob == null)
 				throw new IllegalArgumentException("component name is null " + curl);
-			retVal[i] =
-				new BACIRemoteNode(
-					DEVICE,
-					cob,
-					curl,
-					treeHandler.getTree(),
-					this);
+			RemoteNodeCouple rnc = (RemoteNodeCouple)devices.get(curl);
+			if (rnc != null) {
+				retVal[i] = rnc.deviceByType;
+			} else {
+				retVal[i] = null;
+				notifier.reportError(
+				"BACIRemoteAccess::explodeTypeNode - Unexpected null pointer (rnc).");
+				continue;
+			}
 		}
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeTypeNode",
 			"Processing for node '" + node + "' complete.");
 		return retVal;
 	}
+
+	public synchronized OETreeNode[] explodeDummyNode(BACITreeDataNode node) {
+		if (node == null)
+			throw new NullPointerException("node");
+		if (node.childrenHolder == null) return new BACITreeDataNode[0];
+		BACITreeDataNode[] retVal = new BACITreeDataNode[node.childrenHolder.size()];
+		for (int i = 0; i < retVal.length; i++) {
+			retVal[i] = (BACITreeDataNode)node.childrenHolder.get(i);
+		}
+		notifier.reportDebug(
+			"BACIRemoteAccess::explodeDummyNode",
+			"Processing for node '" + node + "' complete.");
+		return retVal;
+	}
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (7.11.2000 22:32:06)
@@ -1318,6 +1635,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	 * @param op si.ijs.acs.objectexplorer.engine.Operation
 	 */
 	private Invocation internalInvokeInvocation(
+		//TODO update secondary tree???
 		BACIRemote target,
 		BACIOperation op,
 		java.lang.Object[] params,
@@ -1362,7 +1680,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				op.getName(),
 				null,
 				cb,
-				treeHandler.getTree(),
+				parent.getTree(),
 				this);
 		cbImpl.setInvocation(invoc);
 		invoc.setRemoteCall(internalInvokeTrivial(target, op, params));
@@ -1459,7 +1777,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 							+ "'. Introspection failed on typedef argument: "
 							+ e);
 				}
-				
+
 				Class[] paramTypes = { };
 				java.lang.Object[] paramVals = { };
 				try
@@ -1474,7 +1792,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 							+ ". Exception:"
 							+ e1);
 				}
-			} 
+			}
 			else
 				exceptions.add(exceptionsDesc[i].type);
 		}
@@ -1648,17 +1966,17 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				{
 					if (exceptionThrown instanceof org.omg.CORBA.UnknownUserException)
 					{
-		
+
 						// without ID int the CDROutputStream (value field)
 						Any exceptionValue = ((org.omg.CORBA.UnknownUserException)exceptionThrown).except;
 						java.lang.Object userException = baciIntrospector.extractAny(exceptionValue);
-						
+
 						exceptionThrown = (org.omg.CORBA.UserException) userException;
 					}
-					
+
 					// log ACS exception
 					logACSException(exceptionThrown);
-					
+
 					throw exceptionThrown;
 				}
 
@@ -1681,8 +1999,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				errorResponse = checkFromACSCompletion(oRet);
 				for (int i = 0; i < outs.length; i++)
 					errorResponse |= checkFromACSCompletion(outs[i]);
-				
-				
+
+
 				if (target instanceof Invocation
 					&& baciIntrospector.isInvocationDestroyMethod(op.getName()))
 					new CBTimer((BACIInvocation) target).start();
@@ -1693,7 +2011,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						+ "."
 						+ op.getName()
 						+ "()'.");
-				
+
 				BACIRemoteCall remoteCall = new BACIRemoteCall(
 					target,
 					(BACIOperation) op,
@@ -1702,7 +2020,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					outs);
 				remoteCall.setErrorResponse(errorResponse);
 				return remoteCall;
-				
+
 			} catch (Exception e) {
 				notifier.reportError(
 					"Exception during deferred remote invocation.",
@@ -1717,7 +2035,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		/* end DII stanza */
 
 	}
-	
+
 	/**
 	 * Logs ACSException.
 	 * @param exceptionThrown
@@ -1741,7 +2059,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				onlyClassName = wrapperName.substring(lastDotPos + 1);
 				wrapperName = wrapperName.substring(0, lastDotPos + 1) + "wrappers.AcsJ" + onlyClassName;
 			}
-			
+
 			// get Java exception wrapper and call log
 			// call <exceptionWrapperClass>.from<exceptionClassName>(caughException)
 			// and on given instance log
@@ -1749,13 +2067,13 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			try
 			{
 				wrapperClass = Class.forName(wrapperName);
-				
+
 				Method fromMethod = wrapperClass.getMethod("from" + onlyClassName, new Class[] { exceptionThrown.getClass() });
 				java.lang.Object newInstance = fromMethod.invoke(null, new java.lang.Object[] { exceptionThrown });
 
 				Method logMethod = wrapperClass.getMethod("log", new Class[] { Logger.class });
 				java.lang.Object retVal = logMethod.invoke(newInstance, new java.lang.Object[] { BACILogger.getLogger() });
-				
+
 			} catch (Throwable th)
 			{
 				notifier.reportDebug(
@@ -1769,7 +2087,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
 		}
 	}
-	
+
 	/**
 	 * Check if returned (out) parameter is type of ACSCompletion and
 	 * if error log it
@@ -1791,10 +2109,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (2.11.2000 0:34:52)
@@ -1802,7 +2120,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	 */
 	private void internalManagerConnect(BACIRemoteNode baciNode) {
 		/* we are connecting directly to the Manager to obtain the object reference */
-		String curl = (String) baciNode.getUserObject();
+		//System.out.println("DEBUG: imc "+baciNode);
+		String curl = (String)baciNode.getUserObject();
 		notifier.reportDebug(
 			"BACIRemoteAccess::internalManagerConnect",
 			"Requesting component: '" + curl + "', activate = true");
@@ -1835,6 +2154,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		    notifier.reportError("Connection to component '" + curl + "' failed. Unknown exception");
 		    return;
 		}
+
 		baciNode.setCORBARef(obj);
 		Any any = orb.create_any();
 		any.insert_Object(obj);
@@ -1864,7 +2184,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			String id = cobInfos[0].type;
 			//*** END GCH TEST CODE
 			//**** GCH Old direct request for get_interface() to NamedComponent
-			/* 
+			/*
 						String id =
 							alma.ACS.NamedComponentHelper.narrow(obj).get_interface();
 			*/
@@ -1884,23 +2204,29 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			notifier.reportError(
 				"Failed to connect to IR, releasing component on Manager, if needed.",
 				e);
-			if (manager != null && obj != null)
 			try {
-				manager.release_component(handle, curl);
-			    }
-			catch (NoPermissionEx npe) {
-			notifier.reportError("Nopermission to release component",
-					     npe);
+				if (manager != null && obj != null)
+					manager.release_component(handle, curl);
+			} catch (NoPermissionEx npe) {
+				notifier.reportError("No permission to release component", npe);
 			}
 			throw new IllegalStateException("Failed to connect to IR: " + e);
 		}
 	}
+
+	public void synchronizeInternalParentConnect(BACIRemoteNode baciNode) {
+		internalParentConnect(baciNode, false);
+	}
+	private void internalParentConnect(BACIRemoteNode baciNode) {
+		internalParentConnect(baciNode, true);
+	}
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (2.11.2000 0:35:23)
 	 * @param baciNode si.ijs.acs.objectexplorer.engine.BACI.BACIRemoteNode
 	 */
-	private void internalParentConnect(BACIRemoteNode baciNode) {
+	private void internalParentConnect(BACIRemoteNode baciNode, boolean doSync) {
 		/* we are using the parent to query the object as either an IDL attribute or
 			   Java property accessor design pattern (returns Object type, takes no parameters)
 		*/
@@ -1984,6 +2310,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					+ "' is null.");
 		/* end DII stanza */
 	}
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (1.11.2000 13:00:27)
@@ -2175,7 +2502,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		} catch (Exception e1) {
 			throw new RemoteException("Cannot login to the manager: " + e1);
 		}
-		
+
 		new Thread(new Runnable() {
 			public void run()
 			{
@@ -2190,12 +2517,12 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		}, "InitRemoteLogging").start();
 	}
 	/**
-	 * When an object implementing interface <code>Runnable</code> is used 
-	 * to create a thread, starting the thread causes the object's 
-	 * <code>run</code> method to be called in that separately executing 
-	 * thread. 
+	 * When an object implementing interface <code>Runnable</code> is used
+	 * to create a thread, starting the thread causes the object's
+	 * <code>run</code> method to be called in that separately executing
+	 * thread.
 	 * <p>
-	 * The general contract of the method <code>run</code> is that it may 
+	 * The general contract of the method <code>run</code> is that it may
 	 * take any action whatsoever.
 	 *
 	 * @see     java.lang.Thread#run()

@@ -9,6 +9,11 @@ import javax.swing.tree.*;
  * @author: Miha Kadunc
  */
 public class OETree extends JTree {
+	// ----- integer constants, prepresenting hierarchy types -----
+	public static final int HIERARCHY_BY_TYPE = 1;
+	public static final int	HIERARCHY_BY_NAME = 2;
+	// ----- * by rbertoncelj
+	
 	protected transient java.util.Vector aOETreeEventListener = null;
 	private NotificationBean notifier=null;
 /**

@@ -117,7 +117,7 @@ public OETree getParentTree() {
  * Insert the method's description here.
  * Creation date: (2.2.2002 17:12:58)
  */
-boolean isIntrospectable() {
+public boolean isIntrospectable() {
 	return introspectable;	
 }
 /**
