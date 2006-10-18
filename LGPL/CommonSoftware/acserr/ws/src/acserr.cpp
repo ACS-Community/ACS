@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.82 2006/10/18 14:09:39 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.83 2006/10/18 15:34:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.82 2006/10/18 14:09:39 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.83 2006/10/18 15:34:50 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -232,6 +232,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
 {
     unsigned int j;
     ACE_CString oldProcessName, oldThreadName;
+    Logging::BaseLog::Priority prio; 
 
     LoggingProxy::StackLevel (level);
     LoggingProxy::StackId (stackId);
@@ -254,13 +255,15 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
   ostr << c->shortDescription.in() << " (type=" << c->errorType << ", code=" << c->errorCode << ")" << std::ends;
   //set the logging proxy flags
   LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT);
-  ACS_CHECK_LOGGER;
  
+  prio = (priorty!=LM_ERROR) ? Logging::ace2acsPriority(priorty) :
+      Logging::BaseLog::Priority(1 << (c->severity+7));
 
+  ACS_CHECK_LOGGER;
   if (strlen(c->sourceObject.in())>0)
       {
       //just delegate
-      LOG_RECORD(Logging::ace2acsPriority(priorty), 
+      LOG_RECORD(prio, 
 		 ostr.str(), 
 		 c->file.in(), 
 		 c->lineNum, 
@@ -271,7 +274,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
   else
       {
       //just delegate
-      LOG_RECORD(Logging::ace2acsPriority(priorty), 
+      LOG_RECORD(prio,
 		 ostr.str(), 
 		 c->file.in(), 
 		 c->lineNum, 
