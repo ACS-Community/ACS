@@ -164,7 +164,7 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * 
 	 * @return The time frame selcted in the CB
 	 */
-	public long getTimeFrame() {
+	public int getTimeFrame() {
 		return ((UserPreferences.TimeOption)timeCB.getSelectedItem()).getTimeFrame();
 	}
 	
