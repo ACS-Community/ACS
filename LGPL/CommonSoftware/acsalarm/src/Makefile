@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2006/10/17 09:56:06 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.6 2006/10/18 12:55:53 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -61,16 +61,14 @@ INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = laserCppUtil acsAlSysSource 
+LIBRARIES       = acsAlSysSource 
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
 acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter ACSFaultState \
-	AbstractAlarmSystemInterfaceFactory
+	AbstractAlarmSystemInterfaceFactory Properties Timestamp
 acsAlSysSource_LIBS = acsutil expat maciStubs
-
-laserCppUtil_OBJECTS   = Properties Timestamp
 
 #
 # Scripts (public and local)

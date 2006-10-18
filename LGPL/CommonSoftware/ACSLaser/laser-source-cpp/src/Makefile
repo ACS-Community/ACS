@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2006/10/03 03:55:42 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.6 2006/10/18 12:55:53 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -60,17 +60,22 @@ INCLUDES        = ASIMessage.h CERNAlarmSystemInterfaceProxy.h \
 LIBRARIES       = laserSource laserAlarmPublisher laserAlarmCERN
 LIBRARIES_L     =
 
-# <brief description of laserSource library>
-laserSource_OBJECTS   = CERNAlarmSystemInterfaceProxy ASIMessage ASIConfiguration AlarmPublisher
+# laserSource is for generic code which can be reused by third parties;
+# it would be necessary to implement a concrete version of ACSAlarmSystemInterface (from acsalarm package)
+# with implementation for push, pushActiveList, etc (i.e. defining the abstract methods from the base class)
+# and also a concrete version of AbstractAlarmSystemInterfaceFactory (from acsalarm package) which has methods
+# to return an instance (of the other concrete class) when createSource is called
+laserSource_OBJECTS   = ASIMessage ASIConfiguration 
 
-# <brief description of laserAlarmPublisher library>
-laserAlarmPublisher_OBJECTS   = AcsAlarmPublisher AlarmSupplier
+# laserAlarmPublisher library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties, used for the DLL implementation
+# NOTE: we should consider getting rid of the DLL and migrating this code into laserAlarmCERN library, to have fewer libs.
+laserAlarmPublisher_OBJECTS   = AlarmPublisher AcsAlarmPublisher AlarmSupplier 
 laserAlarmPublisher_LIBS      = basenc ACSJMSMessageEntityStubs acsnc
 laserAlarmPublisher_LDFLAGS = --export-dynamic -dl -fpic
 
-# <brief description of laserAlarmCERN library>
-laserAlarmCERN_OBJECTS   = CERNAlarmSystemInterfaceFactory 
-laserAlarmCERN_LIBS = laserSource
+# laserAlarmCERN library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties
+laserAlarmCERN_OBJECTS   = CERNAlarmSystemInterfaceFactory CERNAlarmSystemInterfaceProxy 
+laserAlarmCERN_LIBS = laserSource laserAlarmPublisher
 laserAlarmCERN_LDFLAGS = --export-dynamic -dl -fpic
 
 #

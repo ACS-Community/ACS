@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2006/10/12 09:11:28 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.8 2006/10/18 12:55:53 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -39,14 +39,14 @@ EXECUTABLES     = TestAcsAlarmSending unitTestDriver FactoryTestCase
 EXECUTABLES_L   = 
 
 TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
-#TestAcsAlarmSending_LIBS      = laserCppUtil laserAlarmPublisher laserSource ACSJMSMessageEntityStubs
-TestAcsAlarmSending_LIBS      = laserCppUtil logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType
+#TestAcsAlarmSending_LIBS      = laserAlarmPublisher laserSource ACSJMSMessageEntityStubs
+TestAcsAlarmSending_LIBS      = logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType
 
 unitTestDriver_OBJECTS   = unitTestDriver 
-unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging laserCppUtil acsAlSysSource acsXercesUtilities maciErrType
+unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType
 
 FactoryTestCase_OBJECTS  = FactoryTestCase MockManager
-FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging laserCppUtil acsAlSysSource maciErrType 
+FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource maciErrType 
 
 #
 # special compilation flags for single c sources
