@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingACSStructuredPushSupplier.h,v 1.4 2006/07/19 16:57:28 dfugate Exp $"
+ * "@(#) $Id: loggingACSStructuredPushSupplier.h,v 1.5 2006/10/18 11:27:45 sharring Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -36,6 +36,10 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
 
+/**
+ * NOTE: This class contains quite a bit of duplicated code that could be reduced if it inherited
+ * from the basencSupplier class - however, due to build order dependency issues, this is not possible.
+ */
 class ACSStructuredPushSupplier : public POA_CosNotifyComm::StructuredPushSupplier,
 				  public PortableServer::RefCountServantBase
 {
