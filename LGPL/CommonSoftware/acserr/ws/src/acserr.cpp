@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.81 2006/10/04 10:32:41 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.82 2006/10/18 14:09:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.81 2006/10/04 10:32:41 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.82 2006/10/18 14:09:39 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -226,7 +226,9 @@ void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr
     m_current = &m_errorTraceRef;
 }
 
-void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level, char* stackId)
+void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, 
+			    int level, char* stackId,
+			    ACE_Log_Priority priorty)
 {
     unsigned int j;
     ACE_CString oldProcessName, oldThreadName;
@@ -258,7 +260,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level, char* stackId)
   if (strlen(c->sourceObject.in())>0)
       {
       //just delegate
-      LOG_RECORD(Logging::BaseLog::LM_ERROR, 
+      LOG_RECORD(Logging::ace2acsPriority(priorty), 
 		 ostr.str(), 
 		 c->file.in(), 
 		 c->lineNum, 
@@ -269,7 +271,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level, char* stackId)
   else
       {
       //just delegate
-      LOG_RECORD(Logging::BaseLog::LM_ERROR, 
+      LOG_RECORD(Logging::ace2acsPriority(priorty), 
 		 ostr.str(), 
 		 c->file.in(), 
 		 c->lineNum, 
@@ -283,7 +285,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, int level, char* stackId)
   LoggingProxy::ThreadName (oldThreadName.c_str());
 }//log
 
-void ErrorTraceHelper::log()
+void ErrorTraceHelper::log(ACE_Log_Priority priorty)
 {  
   unsigned int i=0;
   ACSErr::ErrorTrace *c = &m_errorTraceRef;
@@ -297,12 +299,12 @@ void ErrorTraceHelper::log()
 
   while (c->previousError.length()!=0){
     i++;
-    log (c, m_depth-i, uuidBuf);
+    log (c, m_depth-i, uuidBuf, priorty);
     c = &c->previousError[0];
   }
   i++;
-  log (c, m_depth-i, uuidBuf);
-}
+  log (c, m_depth-i, uuidBuf, priorty);
+}//log
 
 void ErrorTraceHelper::toString (ACSErr::ErrorTrace * c, int level, std::ostringstream &oss){
    
@@ -507,11 +509,11 @@ CompletionImpl::CompletionImpl(ACSErr::Completion* c, bool del) :
 	    if (del) delete c; 
 	}
 
-void CompletionImpl::log()
+void CompletionImpl::log(ACE_Log_Priority priorty)
 {
     if (!isErrorFree())
 	{
-	getErrorTraceHelper()->log();
+	getErrorTraceHelper()->log(priorty);
 	}
     else
 	{

@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.73 2006/10/04 11:30:58 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.74 2006/10/18 14:09:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,14 @@ class ErrorTraceHelper
 
   public:
 
-    void log();
+
+    /**
+     * Logs errortrace into the logging system.
+     * @param priorty: priorty with which the error trace will be logged
+     * If priorty is not specified the completuion/error trace will be logged with ERROR priorty.
+     */
+    void log(ACE_Log_Priority priorty=LM_ERROR);
+
     std::string toString();
 
     /**
@@ -390,7 +397,18 @@ class ErrorTraceHelper
     void fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr::Severity severity,
 	       const char* file, int line, const char* routine, const char* sd);
 
-    void log (ACSErr::ErrorTrace * c, int level, char *stackId);
+   /**
+     * Logs just a single part (item) of an errortrace into the logging system.
+     * This method is used internaly by the #log method
+     * @param c pointer to error trace structure
+     * @param level error trace level
+     * @param priorty: priorty with which the error trace will be logged
+     * If priorty is not specified the completuion/error trace will be logged with ERROR priorty.
+     */
+    void log (ACSErr::ErrorTrace * c,
+	      int level, char *stackId,
+	      ACE_Log_Priority priorty=LM_ERROR);
+
     void toString (ACSErr::ErrorTrace * c, int level, std::ostringstream& oss);
 
     ACSErr::ErrorTrace& m_errorTraceRef;
@@ -538,8 +556,10 @@ class CompletionImpl : public CompletionInit
     
     /**
      * Logs Completion/errortrace into the logging system
+     * @param priorty priorty with which the completion/error trace will be logged
+     * If priorty is not specified the completuion/error trace will be logged with ERROR priorty.
      */
-    void log();
+    void log(ACE_Log_Priority priorty=LM_ERROR);
 
     template<typename T>
     void addData (const char* name, T value)
