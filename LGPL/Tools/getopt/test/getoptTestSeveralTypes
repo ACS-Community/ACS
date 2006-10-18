@@ -1,0 +1,30 @@
+#! /bin/bash
+
+echo "getoptTestPrintArgs -a";
+getoptTestPrintArgs -a
+echo "################################################";
+
+echo "getoptTestPrintArgs";
+getoptTestPrintArgs
+echo "################################################";
+
+echo "getoptTestPrintArgs -b -multiple -arguments -z";
+getoptTestPrintArgs -b -multiple -arguments -z
+echo "################################################";
+
+echo "getoptTestPrintArgs -c text";
+getoptTestPrintArgs -c text
+echo "################################################";
+
+echo "getoptTestPrintArgs -a badtext";
+getoptTestPrintArgs -a badtext
+echo "################################################";
+
+echo "getoptTestPrintArgs -b more arguments not options -a";
+getoptTestPrintArgs -b more arguments not options -a
+echo "################################################";
+
+#option not parsed
+echo "getoptTestPrintArgs -n";
+getoptTestPrintArgs -n 
+echo "################################################";
