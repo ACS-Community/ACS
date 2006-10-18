@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2006/10/17 14:26:31 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2006/10/18 11:33:00 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -153,10 +153,12 @@ XML_IDL=
 # Java Component Helper Classes generation on/off
 #
 COMPONENT_HELPERS=
+
 #
 # Java Entity Classes generation on/off
 #
-XSDBIND=
+#XSDBIND = maciSchemaBindings
+
 #
 # Schema Config files for the above
 #
@@ -183,7 +185,7 @@ ASCII_TO_MIF =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+INSTALL_FILES = ../lib/maciSchemaBindings.jar
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
@@ -209,11 +211,23 @@ endif
 #
 # TARGETS
 # -------
+#all:	prepare_xsdbind do_all clean_xsdbind
 all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+prepare_xsdbind:
+	@echo " copying schema files from ../config/CDB/schemas to ../idl as an XSDBIND workaround . . ."
+	@cp -a ../config/CDB/schemas/LoggingConfig.xsd ../config/CDB/schemas/Container.xsd ../idl
+# this is a particular hack. The binding classes for CDB.xsd should be generated separately in module cdbidl 
+	@cp -a $(ACSROOT)/config/CDB/schemas/CDB.xsd ../idl	
+
+#clean : clean_xsdbind clean_all
+clean : clean_all
 	@echo " . . . clean done"
+
+clean_xsdbind:
+	@echo " will remove schema files copied for XSDBIND workaround . . ."
+	@rm -f ../idl/CDB.xsd ../idl/Container.xsd ../idl/LoggingConfig.xsd
 
 clean_dist : clean_all clean_dist_all 
 	@echo " . . . clean_dist done"
@@ -221,7 +235,7 @@ clean_dist : clean_all clean_dist_all
 man   : do_man 
 	@echo " . . . man page(s) done"
 
-install : install_all
+install: install_all
 	@echo " . . . installation done"
 
 
