@@ -43,7 +43,7 @@ namespace acsalarm
 	const char* const SOURCE_HOSTNAME_ELEMENT_NAME = "source-hostname";
 	const char* const FAULT_STATES_ELEMENT_NAME = "fault-states";
 
-   const char * const CERN_ALARM_SYSTEM_DLL_PATH = "liblaserAlarmCERN.so";
+   const char * const CERN_ALARM_SYSTEM_DLL_PATH = "liblaserSourceAcsSpecific.so";
    const char * const CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME = "getAlarmSystemInterfaceFactory";
 }
 #endif
