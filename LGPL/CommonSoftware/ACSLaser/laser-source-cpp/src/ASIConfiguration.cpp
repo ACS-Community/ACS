@@ -11,8 +11,6 @@ ASIConfiguration::ASIConfiguration()
 {
 	// TODO later: get this information from the CDB
 	asiVersion = ASI_VERSION;
-	publisherDLLPath = PUBLISHER_DLL_PATH;
-	publisherFactoryFunctionName = DLL_PUBLISHER_FACTORY_FUNCTION_NAME;
 	alarmsTopic = ALARMS_TOPIC;
 	backupDeliveryMode = BACKUP_DELIVERY_MODE;
 	backupPriority = BACKUP_PRIORITY;

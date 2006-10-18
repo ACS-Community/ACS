@@ -3,7 +3,6 @@
 
 #include "AlarmPublisher.h"
 #include "AlarmSupplier.h"
-#include <ace/Mutex.h>
 
 namespace laserAlarmPublisher
 {
@@ -16,30 +15,20 @@ namespace laserAlarmPublisher
 	class AcsAlarmPublisher: public AlarmPublisher
 	{
 		public:
-			/*
- 			 * Returns the singleton instance, creating it if necessary.
- 			 */
-			static AlarmPublisher* getInstance(string topicName);
+			AcsAlarmPublisher(string topicName);
+			virtual ~AcsAlarmPublisher();
 
 			/*
  			 * Method to publish an alarm to the laser alarm server.
 			 * @param msg the ASIMessage to publish.
 			 */
 			virtual bool publishAlarm(ASIMessage msg);
-			virtual ~AcsAlarmPublisher();
 	
 		private:
 			AlarmSupplier * getAlarmSupplier() { return alarmSupplier; }
 			void setAlarmSupplier(AlarmSupplier * supplier) { alarmSupplier = supplier; }
 
-			static AlarmPublisher * singletonInstance;
-			static AlarmSupplier * alarmSupplier;
-			static ACE_Mutex * singletonMutex;
-			static ACE_Mutex * alarmSupplierMutex;
-	
-			// private constructor for singleton enforcement
-			// TODO: also disable copy constructor, etc. to enforce singleton
-			AcsAlarmPublisher(string topicName);
+			AlarmSupplier * alarmSupplier;
 	};
 };
 

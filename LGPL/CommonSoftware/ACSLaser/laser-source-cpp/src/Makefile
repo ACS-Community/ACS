@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2006/10/18 12:55:53 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/10/18 17:12:23 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -57,26 +57,20 @@ INCLUDES        = ASIMessage.h CERNAlarmSystemInterfaceProxy.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = laserSource laserAlarmPublisher laserAlarmCERN
+LIBRARIES       = laserSource laserSourceAcsSpecific
 LIBRARIES_L     =
 
 # laserSource is for generic code which can be reused by third parties;
-# it would be necessary to implement a concrete version of ACSAlarmSystemInterface (from acsalarm package)
-# with implementation for push, pushActiveList, etc (i.e. defining the abstract methods from the base class)
-# and also a concrete version of AbstractAlarmSystemInterfaceFactory (from acsalarm package) which has methods
-# to return an instance (of the other concrete class) when createSource is called
+# it would be necessary to implement: 1) a concrete class extending ACSAlarmSystemInterface (found in acsalarm package)
+# with implementations for push, pushActiveList, etc (i.e. defining the abstract methods from the base class)
+# and 2) a second concrete class extending of AbstractAlarmSystemInterfaceFactory (found in acsalarm package) which has methods
+# to return an instance (of the first concrete class) when createSource is called
 laserSource_OBJECTS   = ASIMessage ASIConfiguration 
 
-# laserAlarmPublisher library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties, used for the DLL implementation
-# NOTE: we should consider getting rid of the DLL and migrating this code into laserAlarmCERN library, to have fewer libs.
-laserAlarmPublisher_OBJECTS   = AlarmPublisher AcsAlarmPublisher AlarmSupplier 
-laserAlarmPublisher_LIBS      = basenc ACSJMSMessageEntityStubs acsnc
-laserAlarmPublisher_LDFLAGS = --export-dynamic -dl -fpic
-
-# laserAlarmCERN library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties
-laserAlarmCERN_OBJECTS   = CERNAlarmSystemInterfaceFactory CERNAlarmSystemInterfaceProxy 
-laserAlarmCERN_LIBS = laserSource laserAlarmPublisher
-laserAlarmCERN_LDFLAGS = --export-dynamic -dl -fpic
+# laserSourceAcsSpecific library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties
+laserSourceAcsSpecific_OBJECTS   = CERNAlarmSystemInterfaceFactory CERNAlarmSystemInterfaceProxy AlarmPublisher AcsAlarmPublisher AlarmSupplier 
+laserSourceAcsSpecific_LIBS = laserSource basenc ACSJMSMessageEntityStubs acsnc
+laserSourceAcsSpecific_LDFLAGS = --export-dynamic -dl -fpic
 
 #
 # Scripts (public and local)

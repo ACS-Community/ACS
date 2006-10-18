@@ -5,6 +5,7 @@
 #include "CERNAlarmSystemInterfaceProxy.h"
 #include "asiConfigurationConstants.h"
 #include <logging.h>
+#include "AcsAlarmPublisher.h"
 
 using namespace acsalarm;
 using namespace laserSource;
@@ -122,66 +123,29 @@ void CERNAlarmSystemInterfaceProxy::pushActiveList(vector<ACSFaultState> & activ
 }
 
 /*
- * Sends a message to the alarm server, by loading a DLL that was specified in the configuration;
- * by doing this indirection, we facilitate the decoupling of the core laser cpp alarm source logic
- * from the actual communication mechanism, e.g. ACS/CORBA. Someone who wishes to use a different 
- * communication mechanism need only implement their own DLL and the remainder of this code can be
- * reused as-is without any changes.
+ * Sends a message to the alarm server.
  *
- * The name of the shared library is configurable, currently in
- * asiConfigurationConstants.h, referenced through the Configuration class method 
- * getPublisherDLLPath(), but eventually (TODO later:) to be moved to the CDB. 
- * The name of the entry point to the DLL is well defined, not configurable, and is 
- * referenced through the Configuration class method getPublisherFactoryFunctionPtr().
- * 
  * TODO later: "syncbuffer" for maintaining active list, etc.
  */
-bool CERNAlarmSystemInterfaceProxy::publishMessageDLL(ASIMessage msg)
+bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessageDLL(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): entering.");
 	bool retVal = false;
 
-	// Instantiate the laserPublisher via the DLL, if it has not already been instantiated
-	if(NULL == laserPublisher)
-	{
-		// create the topic on which to publish the alarm, by appending 
-		// the source name to the topic prefix provided by the configuration 
-		// (should look something like: CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES)
-		string topicName(configuration.getAlarmsTopic());
-		topicName.append(".");
-		topicName.append(msg.getSourceName());
+	// create the topic on which to publish the alarm, by appending 
+	// the source name to the topic prefix provided by the configuration 
+	// (should look something like: CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES)
+	string topicName(configuration.getAlarmsTopic());
+	topicName.append(".");
+	topicName.append(msg.getSourceName());
 
-		// get the pointer to the publish function from the loaded DLL
-		void *hndl = dlopen(configuration.getPublisherDLLPath().c_str(), RTLD_NOW|RTLD_GLOBAL);
-		if(hndl == NULL)
-		{
-			string errString = "CERNAlarmSystemInterfaceProxy::publishMessageDLL(): could not open DLL; error was:\n\n" + string(dlerror()); 
-			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
-			// TODO - throw an exception rather than returning...
-			return false;
-		}
-		void * publisherFactoryFunctionPtr = dlsym(hndl, configuration.getPublisherFactoryFunctionName().c_str());
-		laserPublisher = ((AlarmPublisher*(*)(string))(publisherFactoryFunctionPtr))(topicName);
+	AlarmPublisher *laserPublisher = new laserAlarmPublisher::AcsAlarmPublisher(topicName);
 
-		// check for success/failure
-		if (NULL != laserPublisher)
-		{
-			retVal = true;
-		}
-		else 
-		{
-			string errString = "CERNAlarmSystemInterfaceProxy::publishMessageDLL(): could not get publisher from DLL; error was:\n\n" + string(dlerror()); 
-			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
-			// TODO - throw an exception rather than returning...
-			return false;
-		}
-	}
-
-	// publish the alarm via the class/method loaded from the DLL
+	// publish the alarm 
 	laserPublisher->publishAlarm(msg);
 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessageDLL(): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): exiting.");
 	return retVal;
 }
 
@@ -223,7 +187,7 @@ void CERNAlarmSystemInterfaceProxy::commonPush(vector<ACSFaultState> & states, b
 	asiMessage.setVersion(configuration.getASIVersion());
 	
 	// publish the ASIMessage to the alarm server
-	publishMessageDLL(asiMessage);
+	publishMessage(asiMessage);
 
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::commonPush(): exiting.");
 }

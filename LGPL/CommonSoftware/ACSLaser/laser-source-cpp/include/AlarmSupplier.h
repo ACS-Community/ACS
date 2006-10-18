@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.h,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
+* "@(#) $Id: AlarmSupplier.h,v 1.3 2006/10/18 17:12:23 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,6 +57,11 @@ class AlarmSupplier : public BaseSupplier
 		AlarmSupplier(const char* channelName);
 
 		/**
+		 * Destructor.
+		 */
+		virtual ~AlarmSupplier();
+
+		/**
 		 * Method to publish an event to the LASER alarm server.
 		 */
 		void publishEvent(laserSource::ASIMessage &msg);
@@ -73,10 +78,6 @@ class AlarmSupplier : public BaseSupplier
 		 */
 		virtual const char* getEventType() { return "ACSJMSMessageEntity"; }
 
-		/**
-		 * Destructor.
-		 */
-		virtual ~AlarmSupplier();
 };
 
 

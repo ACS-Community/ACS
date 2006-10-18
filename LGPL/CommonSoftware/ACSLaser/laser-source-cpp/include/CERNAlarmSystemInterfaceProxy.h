@@ -41,8 +41,8 @@ namespace laserSource
 			void pushActiveList(vector<ACSFaultState> & activeFaults); // raises ASIException = 0;
 	
 		private:
-			// sends the message to the alarm server
-			bool publishMessageDLL(ASIMessage msg);
+			// sends the message to the alarm server using directly instantiated class
+			bool publishMessage(ASIMessage msg);
 
 			// initialization logic used by the constructors
 			void init();

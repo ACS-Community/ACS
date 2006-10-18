@@ -15,8 +15,6 @@ namespace laserSource
 	{
 		private:
 			string asiVersion;
-			string publisherDLLPath;
-			string publisherFactoryFunctionName;
 			string alarmsTopic;
 			int backupDeliveryMode;
 			int backupPriority;
@@ -31,12 +29,6 @@ namespace laserSource
 
 			string getASIVersion() { return asiVersion; }
 			void setASIVersion(string version) { asiVersion = version; }
-
-			string getPublisherFactoryFunctionName() { return publisherFactoryFunctionName; }
-			void setPublisherFactoryFunctionName(string name) { publisherFactoryFunctionName = name; }
-
-			string getPublisherDLLPath() { return publisherDLLPath; }
-			void setPublisherDLLPath(string path) { publisherDLLPath = path; }
 
 			string getAlarmsTopic() { return alarmsTopic; }
 			void setAlarmsTopic(string topic) { alarmsTopic = topic; }

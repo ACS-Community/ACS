@@ -25,8 +25,6 @@ namespace asiConfigurationConstants
 </ASI-configuration>
 */
    const char * const ASI_VERSION = "0.9";
-   const char * const PUBLISHER_DLL_PATH = "liblaserAlarmPublisher.so";
-   const char * const DLL_PUBLISHER_FACTORY_FUNCTION_NAME = "getAlarmPublisher";
    const char * const ALARMS_TOPIC = "CMW.ALARM_SYSTEM.ALARMS.SOURCES";
 	const char * const ALARM_SOURCE_NAME = "ALARM_SYSTEM_SOURCES";
 	const int BACKUP_DELIVERY_MODE = 0;
