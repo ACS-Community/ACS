@@ -25,12 +25,15 @@ public class QueryDlg extends JDialog implements ActionListener {
 	
 	private JButton submitBtn;
 	private JButton doneBtn;
+	
+	ArchiveConnectionManager archive;
 
 	/**
 	 * Empty constructor
 	 */
-	public QueryDlg() {
+	public QueryDlg(ArchiveConnectionManager archiveConn) {
 		super();
+		archive = archiveConn;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		initGUI();
 		setBounds(50,50,50,50);
