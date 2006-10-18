@@ -318,8 +318,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
             	getLCModel1().loadFromURL();
             } else if (e.getSource() == LoggingClient.this.getLoadDBMenuItem()) {
-                QueryDlg dlg = new QueryDlg(archive);
-                dlg.setVisible(true);
+            	if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
+            		QueryDlg dlg = new QueryDlg(archive);
+            		dlg.setVisible(true);
+            	}
             } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem()) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
@@ -490,6 +492,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			viewStatusAreaMI.setSelected(getStatusAreaPanel().isVisible());
 			viewDetailedInfoMI.setSelected(getDeatailedInfoPanel().isVisible());
 			viewToolbarMI.setSelected(toolBar.isVisible());
+			
+			// Enable diasble the menu to load from the DB
+			// if the DB is not available
+			loadDBMenuItem.setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
 		}
 		
 		public void menuDeselected(MenuEvent menuE) {
