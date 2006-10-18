@@ -64,7 +64,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		JRootPane mainPnl = this.getRootPane();
 		mainPnl.setLayout(new BorderLayout());
 		
-//		 Add the OK, CANCEL buttons
+		// Add the OK, CANCEL buttons
 		JPanel btnPnl = new JPanel();
 		btnPnl.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		BoxLayout boxLayout = new BoxLayout(btnPnl,BoxLayout.LINE_AXIS);
@@ -72,6 +72,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		btnPnl.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		submitBtn = new JButton("Submit");
 		submitBtn.addActionListener(this);
+		submitBtn.setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
 		doneBtn = new JButton("Cancel");
 		doneBtn.addActionListener(this);
 		btnPnl.add(submitBtn,BorderLayout.WEST);
