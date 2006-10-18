@@ -1,9 +1,12 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.3 2006/10/09 11:00:40 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/10/18 15:52:30 gchiozzi Exp $"
 #
 # $Log: Makefile,v $
+# Revision 1.4  2006/10/18 15:52:30  gchiozzi
+# Added schema file for ErrorExplorer.
+#
 # Revision 1.3  2006/10/09 11:00:40  bjeram
 # repalce maciErrTypeComponent with maciErrType
 #
@@ -146,7 +149,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = 
+CDB_SCHEMAS = ErrorExplorer 
 
 # 
 # IDL Files and flags
