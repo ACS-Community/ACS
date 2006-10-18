@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.160 2006/07/14 08:21:04 bjeram Exp $" 
+# "@(#) $Id: acsMakefile,v 1.161 2006/10/18 06:33:03 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1329,8 +1329,8 @@ endif
 
 
 ifeq ($(platform),Linux)
-CREATE_DIRS += src/.purify
-CREATE_DIRS += test/.purify
+CREATE_DIRS += src/.purifydir
+CREATE_DIRS += test/.purifydir
 endif
 
 directory_structure:
