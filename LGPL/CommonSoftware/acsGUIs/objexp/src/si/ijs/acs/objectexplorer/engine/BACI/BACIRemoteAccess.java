@@ -888,7 +888,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					parent.getTree(),
 					this);
 			device.childrenHolder = new ArrayList();
-
+			
 			rnc = new RemoteNodeCouple(device, null);  //if not, create a new one and add it to Hashtable devices
 			String[] cobs = cob.split("/");
 			String cob2 = cobs[cobs.length-1];
@@ -1023,18 +1023,22 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						"BACIRemoteAccess::explodeRootNodeByName - Unexpected null pointer (rnc.deviceByName).");
 				continue;
 			}
-
+			
 			String[] names = cob.split("/", 2);
 
 			if (domain.equals(BACICURLResolver.ROOT_DOMAIN)) {
 				BACITreeDataNode dummyNode = (BACITreeDataNode) tempDummies.get(names[0]);
 				if (names.length > 1) {
-					if (dummyNode == null) {
+					boolean doHierarchy = dummyNode instanceof BACIRemoteNode;
+					if (dummyNode == null || doHierarchy) {
+						BACITreeDataNode oldDummy = dummyNode;
 						dummyNode = new BACITreeDataNode(DUMMY, names[0], BACICURLResolver.getFirstLevelCurl(curl), parent.getTreeByName(), getIcon(DOMAIN));
 						dummyNode.childrenHolder = new ArrayList();
 						tempDummies.put(names[0], dummyNode);
 						rootDummies.add(dummyNode);
-					}
+						if (doHierarchy)
+							dummyNode.childrenHolder.add(oldDummy);	
+					} 
 					String[] arrNames = names[1].split("/");
 					//System.out.println("DEBUG "+ names[1]);
 					getTreeForName(dummyNode, 0, arrNames);
