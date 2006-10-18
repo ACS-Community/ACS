@@ -57,6 +57,10 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		public long getTimeFrame() {
 			return 1000*60*value;
 		}
+		
+		public boolean equals(int min) {
+			return value==min;
+		}
 	}
 	
 	/**
@@ -80,18 +84,29 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		public String toString() {
 			return label;
 		}
+		
+		public int getNumOfLogs() {
+			return value;
+		}
+		
+		public boolean equals(int val) {
+			return value==val;
+		}
 	}
 	
 	// The ok and cancel buttons
 	private JButton okBtn;
 	private JButton cancelBtn;
 	
+	// Say if the user pressed the OK or the Cancel button
+	private boolean okBtnPressed=false;
+	
 	// Options for the time frame 
 	private JComboBox timeCB;
-	TimeOption [] timeOptions = {
+	private TimeOption [] timeOptions = {
 		new TimeOption("Unlimited",0),
 		new TimeOption("1h",60),
-		new TimeOption("3h",180),
+		new TimeOption("3h",180), // Default in initCombos
 		new TimeOption("5h",300),
 		new TimeOption("12h",720),
 		new TimeOption("1d",1440)
@@ -99,10 +114,10 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	
 	// Options for the number of logs
 	private JComboBox numCB;
-	NumberOption[] numberOptions = {
+	private NumberOption[] numberOptions = {
 			new NumberOption("Unlimited",0),
 			new NumberOption("100K",100000),
-			new NumberOption("200K",200000),
+			new NumberOption("200K",200000), // Default in initCombos
 			new NumberOption("300K",300000),
 			new NumberOption("400K",400000)
 	};
@@ -110,13 +125,15 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * Constructor
 	 * 
 	 * @param owner The owner of the dialog
-	 * @param title The title
-	 * @param modal Modal type
+	 * @param initialNumOfLogs The initial value for the num of logs
+	 * @param initialTimeFrame The initial value for the time frame (minutes)
 	 */
-	public ExpertPrefsDlg(Frame owner, String title, boolean modal) {
-		super(owner, title, modal);
+	public ExpertPrefsDlg(Frame owner, int initialNumOfLogs, int initialTimeFrame) {
+		super(owner, "Preferences", true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		initGUI();
+		initCombos(initialNumOfLogs,initialTimeFrame);
+		setBounds(50,50,50,50);
 		pack();
 		setVisible(true);
 	}
@@ -127,6 +144,7 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==okBtn) {
+			okBtnPressed=true;
 			setVisible(false);
 			dispose();
 		} else if (e.getSource()==cancelBtn) {
@@ -158,7 +176,9 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		optionsPanel.add(numLbl,c);
 		// The panel with the controls
 		timeCB = new JComboBox(timeOptions);
+		timeCB.setEditable(false);
 		numCB  = new JComboBox(numberOptions);
+		numCB.setEditable(false);
 		c.gridx=1; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPanel.add(timeCB,c);
 		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
@@ -180,5 +200,54 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		btnPnl.add(Box.createRigidArea(new Dimension(10, 0)));
 		btnPnl.add(cancelBtn,BorderLayout.EAST);
 		mainPnl.add(btnPnl,BorderLayout.SOUTH);
+	}
+	
+	/**
+	 * Set the combos to their initial value
+	 * If the specified values do not exist, it selects a
+	 * default value
+	 * 
+	 * @param numbOfLogs The number of logs
+	 * @param timeFrame The number of minutes of the time frame
+	 */
+	private void initCombos(int numbOfLogs, int timeFrame) {
+		// Set the defaults 
+		numCB.setSelectedIndex(2);
+		timeCB.setSelectedIndex(2);
+		for (int t=0; t<numberOptions.length; t++) {
+			if (numberOptions[t].equals(numbOfLogs)) {
+				numCB.setSelectedItem(numberOptions[t]);
+			}
+		}
+		for (int t=0; t<timeOptions.length; t++) {
+			if (timeOptions[t].equals(timeFrame)) {
+				timeCB.setSelectedItem(timeOptions[t]);
+			}
+		}
+	}
+	
+	/**
+	 * Return true if the user pressed the Ok button
+	 * to approve the changes
+	 *
+	 */
+	public boolean okPressed() {
+		return okBtnPressed;
+	}
+	
+	/**
+	 * 
+	 * @return The time frame selcted in the CB
+	 */
+	public long getTimeFrame() {
+		return ((TimeOption)timeCB.getSelectedItem()).getTimeFrame();
+	}
+	
+	/**
+	 * 
+	 * @return The max number of logs selected in the CB
+	 */
+	public int getMaxNumOfLogs() {
+		return ((NumberOption)numCB.getSelectedItem()).getNumOfLogs();
 	}
 }
