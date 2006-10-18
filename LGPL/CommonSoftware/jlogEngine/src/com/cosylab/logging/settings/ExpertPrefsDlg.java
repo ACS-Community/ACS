@@ -20,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 
+import alma.acs.logging.preferences.UserPreferences;
+
 /**
  * A dialog to setup the preferences
  * 
@@ -28,71 +30,7 @@ import javax.swing.JRootPane;
  */
 public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	
-	/**
-	 * A class containing the options for the time
-	 */ 
-	private class TimeOption {
-		public String label;
-		public int value;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param lbl The label to show in the combo box
-		 * @param val The number of minutes
-		 */
-		public TimeOption(String lbl, int val) {
-			label=lbl;
-			value=val;
-		}
-		
-		public String toString() {
-			return label;
-		}
-		
-		/**
-		 * @return The number of microsecond of the timeframe
-		 *
-		 */
-		public long getTimeFrame() {
-			return 1000*60*value;
-		}
-		
-		public boolean equals(int min) {
-			return value==min;
-		}
-	}
 	
-	/**
-	 * A class containing the options for the number of logs
-	 */ 
-	private class NumberOption {
-		String label;
-		int value;
-		
-		/**
-		 * Constructor 
-		 * 
-		 * @param lbl The label to show
-		 * @param val The number of logs
-		 */
-		public NumberOption(String lbl, int val) {
-			label=lbl;
-			value=val;
-		}
-		
-		public String toString() {
-			return label;
-		}
-		
-		public int getNumOfLogs() {
-			return value;
-		}
-		
-		public boolean equals(int val) {
-			return value==val;
-		}
-	}
 	
 	// The ok and cancel buttons
 	private JButton okBtn;
@@ -103,24 +41,11 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	
 	// Options for the time frame 
 	private JComboBox timeCB;
-	private TimeOption [] timeOptions = {
-		new TimeOption("Unlimited",0),
-		new TimeOption("1h",60),
-		new TimeOption("3h",180), // Default in initCombos
-		new TimeOption("5h",300),
-		new TimeOption("12h",720),
-		new TimeOption("1d",1440)
-	};
 	
-	// Options for the number of logs
-	private JComboBox numCB;
-	private NumberOption[] numberOptions = {
-			new NumberOption("Unlimited",0),
-			new NumberOption("100K",100000),
-			new NumberOption("200K",200000), // Default in initCombos
-			new NumberOption("300K",300000),
-			new NumberOption("400K",400000)
-	};
+	
+	// Options for the max number of logs
+	private JComboBox maxLogNumCB;
+	
 	/**
 	 * Constructor
 	 * 
@@ -175,14 +100,14 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		c.gridx=0; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPanel.add(numLbl,c);
 		// The panel with the controls
-		timeCB = new JComboBox(timeOptions);
+		timeCB = new JComboBox(UserPreferences.timeOptions);
 		timeCB.setEditable(false);
-		numCB  = new JComboBox(numberOptions);
-		numCB.setEditable(false);
+		maxLogNumCB  = new JComboBox(UserPreferences.maxLogNumOptions);
+		maxLogNumCB.setEditable(false);
 		c.gridx=1; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPanel.add(timeCB,c);
 		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPanel.add(numCB,c);
+		optionsPanel.add(maxLogNumCB,c);
 		// Add the label and prefs panel
 		mainPnl.add(optionsPanel,BorderLayout.CENTER);
 		
@@ -212,16 +137,16 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 */
 	private void initCombos(int numbOfLogs, int timeFrame) {
 		// Set the defaults 
-		numCB.setSelectedIndex(2);
+		maxLogNumCB.setSelectedIndex(2);
 		timeCB.setSelectedIndex(2);
-		for (int t=0; t<numberOptions.length; t++) {
-			if (numberOptions[t].equals(numbOfLogs)) {
-				numCB.setSelectedItem(numberOptions[t]);
+		for (int t=0; t<UserPreferences.maxLogNumOptions.length; t++) {
+			if (UserPreferences.maxLogNumOptions[t].equals(numbOfLogs)) {
+				maxLogNumCB.setSelectedItem(UserPreferences.maxLogNumOptions[t]);
 			}
 		}
-		for (int t=0; t<timeOptions.length; t++) {
-			if (timeOptions[t].equals(timeFrame)) {
-				timeCB.setSelectedItem(timeOptions[t]);
+		for (int t=0; t<UserPreferences.timeOptions.length; t++) {
+			if (UserPreferences.timeOptions[t].equals(timeFrame)) {
+				timeCB.setSelectedItem(UserPreferences.timeOptions[t]);
 			}
 		}
 	}
@@ -240,7 +165,7 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * @return The time frame selcted in the CB
 	 */
 	public long getTimeFrame() {
-		return ((TimeOption)timeCB.getSelectedItem()).getTimeFrame();
+		return ((UserPreferences.TimeOption)timeCB.getSelectedItem()).getTimeFrame();
 	}
 	
 	/**
@@ -248,6 +173,6 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * @return The max number of logs selected in the CB
 	 */
 	public int getMaxNumOfLogs() {
-		return ((NumberOption)numCB.getSelectedItem()).getNumOfLogs();
+		return ((UserPreferences.NumberOption)maxLogNumCB.getSelectedItem()).getNumOfLogs();
 	}
 }
