@@ -1,0 +1,32 @@
+1 - getoptTestPrintArgs -a
+1 - argument 'a' well parsed
+1 - The rest of arguments are: ''
+1 - ################################################
+1 - getoptTestPrintArgs
+1 - The rest of arguments are: ''
+1 - ################################################
+1 - getoptTestPrintArgs -b -multiple -arguments -z
+1 - argument 'b' and '-multiple' well parsed
+1 - argument 'arguments' well parsed
+1 - argument 'z' well parsed
+1 - The rest of arguments are: ''
+1 - ################################################
+1 - getoptTestPrintArgs -c text
+1 - argument 'c' well parsed
+1 - The rest of arguments are: 'text'
+1 - ################################################
+1 - getoptTestPrintArgs -a badtext
+1 - argument 'a' well parsed
+1 - The rest of arguments are: 'badtext'
+1 - ################################################
+1 - getoptTestPrintArgs -b more arguments not options -a
+1 - argument 'b' and 'more' well parsed
+1 - The rest of arguments are: 'arguments not options -a'
+1 - ################################################
+1 - getoptTestPrintArgs -n
+1 - getoptTestPrintArgs: unrecognized option `-n'
+1 - Usage: getoptTestPrintArgs [OPTIONS]
+1 - Options: 
+1 -    -h | -help              prints this help and exits
+1 - 
+1 - ################################################
