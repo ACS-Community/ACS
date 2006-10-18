@@ -155,19 +155,22 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
     BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
     fepMap_m.find(flowName, fep);
 
-    if(fep == 0)
+    AVStreams::FlowEndPoint_ptr connFep = 0; 
+    connFep = fep->get_connected_fep();
+    if(fep == 0 || connFep == 0)
 	{
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
-	throw err;
+	//AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	//throw err;
+	cb_p = 0;
 	} 
    else
 	cb_p = fep->getBulkDataCallback();
 
-    if(cb_p == 0)
+    /*if(cb_p == 0)
 	{
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
-	}
+	}*/
 }
 
 
