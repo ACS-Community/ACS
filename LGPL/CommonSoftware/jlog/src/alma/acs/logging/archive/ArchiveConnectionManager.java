@@ -44,9 +44,9 @@ import java.util.logging.Logger;
 public class ArchiveConnectionManager {
 	
 	// The possible states of the database
-	private final int DATABASE_OK = 0;
-	private final int DATABASE_NOP = 1;
-	private final int DATABASE_WORKING =2;
+	public static final int DATABASE_OK = 0;
+	public static final int DATABASE_NOP = 1;
+	public static final int DATABASE_WORKING =2;
 	
 	// The status of the connection with the DB
 	// It can be DATABASE_OK, DATABASE_NOP, ...
@@ -112,6 +112,14 @@ public class ArchiveConnectionManager {
 	 */
 	private void showDBStatus(String msg) {
 		logging.showDBStatus(databaseStatusIcons[status],msg);
+	}
+	
+	/**
+	 * 
+	 * @return The status of the DB
+	 */
+	public int getDBStatus() {
+		return status;
 	}
 
 }
