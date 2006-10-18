@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_H
 #define RT_SUPPLIER_H
-/*    @(#) $Id: acsncRTSupplier.h,v 1.16 2006/09/01 02:20:54 cparedes Exp $
+/*    @(#) $Id: acsncRTSupplier.h,v 1.17 2006/10/18 11:06:40 sharring Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -59,16 +59,10 @@ class RTSupplier : public Supplier
     /**
      * Constructor
      * @param channlName The name of the channel events will be published to.
-     * @param threadPriority The priority of the thread that will actually
-     * publish events across the network.  This value must be between 0 
-     * (high priority) and 255 (lower priority). This parameter was only
-     * useful with VxWorks and is likely to be removed sometime in the near
-     * future as it no longer has any effect.
      * @param component A reference to a component is needed for the Event 
      * Description (which is normally hidden from Consumers).
      */
     RTSupplier(const char* channelName, 
-	       unsigned short threadPriority, 
 	       acscomponent::ACSComponentImpl* component);
     
     /**
@@ -129,14 +123,6 @@ class RTSupplier : public Supplier
      *  A queque of structured events.
      */
     std::queue<CosNotification::StructuredEvent>  unpublishedEvents_m;
-
-    /**
-     *  (Deprecated) thread priority.  This is the VxWorks task priority of the 
-     *  worker thread. It's provided to give the developer more control.
-     *  The only important thing to remeber is that it must be between 
-     *  0 (high priority) and 255 (lowest priority).
-     */
-    unsigned short threadPriority_m;
 
     /**
      * A CORBA any which is used to encode/store ICD style events. This has

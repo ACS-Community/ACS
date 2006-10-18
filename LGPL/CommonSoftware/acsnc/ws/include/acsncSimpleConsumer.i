@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.19 2006/09/01 02:20:54 cparedes Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.20 2006/10/18 11:06:40 sharring Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -32,17 +32,6 @@ namespace nc {
 template <class T>
 SimpleConsumer<T>::SimpleConsumer(const char* channelName) : 
     Consumer(channelName), 
-    templateFunction_mp(0) 
-{
-    // Always call init() in the constructors 
-    // of concrete Consumer() classes.
-    init();
-}
-//---------------------------------------------------------------
-template <class T>
-SimpleConsumer<T>::SimpleConsumer(const char* channelName, 
-			       CORBA::ORB_ptr orb) : 
-    Consumer(channelName, orb), 
     templateFunction_mp(0) 
 {
     // Always call init() in the constructors 

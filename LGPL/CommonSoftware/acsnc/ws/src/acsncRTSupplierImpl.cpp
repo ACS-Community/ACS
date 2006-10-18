@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.9 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.10 2006/10/18 11:06:40 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,19 +30,11 @@
 namespace nc {
 //-----------------------------------------------------------------------------
 RTSupplier::RTSupplier(const char* channelName, 
-		       unsigned short threadPriority, 
 		       acscomponent::ACSComponentImpl* component) : 
     Supplier(channelName, component),
-    threadManager_mp(0),
-    threadPriority_m(threadPriority)
+    threadManager_mp(0)
 {
     ACS_TRACE("RTSupplier::RTSupplier");
-    
-    //Sanity check
-    if (threadPriority_m>255)
-	{
-	threadPriority_m=255;
-	}
     
     //spawn the thread that ends up publishing events
     threadManager_mp = new BACIThreadManager();

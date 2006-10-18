@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.11 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.12 2006/10/18 11:06:40 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * david  25/09/02  created 
 */
 
-static char *rcsId="@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.11 2006/09/01 02:20:54 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.12 2006/10/18 11:06:40 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsncRTSupplierCompImpl.h"
@@ -39,7 +39,7 @@ RTSupplierCompImpl::RTSupplierCompImpl(const ACE_CString &name,
 				       maci::ContainerServices *cs) :
     acscomponent::ACSComponentImpl(name,cs)
 {
-    m_testSupplier_p = new nc::RTSupplier("blar", 255, this);
+    m_testSupplier_p = new nc::RTSupplier("blar", this);
 }
 /* ----------------------------------------------------------------*/
 RTSupplierCompImpl::~RTSupplierCompImpl()

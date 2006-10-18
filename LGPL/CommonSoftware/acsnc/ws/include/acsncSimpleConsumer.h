@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_H
 #define SIMPLE_CONSUMER_H
-/*    @(#) $Id: acsncSimpleConsumer.h,v 1.7 2006/09/01 02:20:54 cparedes Exp $
+/*    @(#) $Id: acsncSimpleConsumer.h,v 1.8 2006/10/18 11:06:40 sharring Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -64,13 +64,6 @@ template <class T> class SimpleConsumer : public Consumer
      * @param channelName The channel's name
      */
     SimpleConsumer(const char* channelName);
-    ///////////////////////////////////////////////////////////////
-    /**
-     * Deprecated constructor.
-     * @param channelName The channel's name
-     * @param orb An ORB that knows where the Naming Service is
-     */
-    SimpleConsumer(const char* channelName, CORBA::ORB_ptr orb);
     ///////////////////////////////////////////////////////////////
     /**
      * A special version of the addSubscription method. Not only
