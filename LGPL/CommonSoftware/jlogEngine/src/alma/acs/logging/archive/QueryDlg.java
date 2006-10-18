@@ -14,11 +14,15 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
+
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
  * A class to setup a query to submit to the DB
@@ -38,7 +42,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 	private JTextField from,to;
 	
 	// The min and max log type
-	private JTextField minType, maxType;
+	private JComboBox minLogLevelCB, maxLogLevelCB;
 	
 	// The process name for the query
 	private JTextField procName;
@@ -113,12 +117,22 @@ public class QueryDlg extends JDialog implements ActionListener {
 		to = new JTextField(20);
 		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(to,c);
-		minType = new JTextField(20);
+		// Build the renderer for the combo boxex
+        LogTypeRenderer rendererCB = new LogTypeRenderer();
+		minLogLevelCB = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO);
+		minLogLevelCB.setRenderer(rendererCB);
+		minLogLevelCB.setEditable(false);
+		minLogLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
 		c.gridx=1; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(minType,c);
-		maxType = new JTextField(20);
+		optionsPnl.add(minLogLevelCB,c);
+		maxLogLevelCB= new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY);
+		maxLogLevelCB.setEditable(false);
+		maxLogLevelCB.setRenderer(rendererCB);
+		maxLogLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
 		c.gridx=1; c.gridy=3; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(maxType,c);
+		optionsPnl.add(maxLogLevelCB,c);
 		procName = new JTextField(20);
 		c.gridx=1; c.gridy=4; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(procName,c);
