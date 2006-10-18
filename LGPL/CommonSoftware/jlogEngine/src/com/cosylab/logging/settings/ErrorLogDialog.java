@@ -142,7 +142,6 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		mainPnl.add(toolBar, BorderLayout.PAGE_START);
 		
 		rationalizeButtons();
-		System.out.println("GUI inited");
 	}
 	
 	/** 
