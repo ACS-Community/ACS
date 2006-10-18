@@ -56,6 +56,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.filechooser.FileFilter;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
+import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
@@ -314,8 +315,11 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 				getLCModel1().loadFromFile(null);
             } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
             	getLCModel1().loadFromURL();
-            } else if (e.getSource() == LoggingClient.this.getSaveFileMenuItem()) {
-                getLCModel1().saveFile();
+            } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
+            	getLCModel1().loadFromURL();
+            } else if (e.getSource() == LoggingClient.this.getLoadDBMenuItem()) {
+                QueryDlg dlg = new QueryDlg();
+                dlg.setVisible(true);
             } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem()) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
