@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: addDataTest.cpp,v 1.44 2006/02/14 23:48:52 bjeram Exp $"
+* "@(#) $Id: addDataTest.cpp,v 1.45 2006/10/18 14:11:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 using namespace ACSErrTypeTest;
 
-static char *rcsId="@(#) $Id: addDataTest.cpp,v 1.44 2006/02/14 23:48:52 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: addDataTest.cpp,v 1.45 2006/10/18 14:11:11 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 CORBA::ORB_var orb;
@@ -97,6 +97,10 @@ int main(int argc, char *argv[]) {
     ACE_DEBUG ((LM_DEBUG, "getData(NULL) %s", e.getData(NULL).c_str()));
 
     e.log();
+    // here we test also logging with priorty differnet than default (LM_ERROR)
+    // the detail of this can be seen in log file in tmp/
+    e.log(LM_DEBUG);
+    e.log(LM_INFO);
 
     LoggingProxy::done();
     delete m_logger;
