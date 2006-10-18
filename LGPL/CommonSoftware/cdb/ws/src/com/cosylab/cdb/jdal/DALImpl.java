@@ -280,7 +280,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 		else {
 			xmlSolver.startDocument();
-			xmlSolver.startElement(null, null, node.name, null);
+			xmlSolver.startElement(null, null, node.name, new org.xml.sax.helpers.AttributesImpl());
 		}
 		// and childs if exist
 		for (int i = 0; i < childs.length; i++) {
@@ -324,7 +324,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		xmlSolver.setAutoCloseStartingElement(false);
 		try {
 			//xmlSolver.startDocument();
-			//xmlSolver.startElement(null,null,"curl",null);
+			//xmlSolver.startElement(null,null,"curl",new org.xml.sax.helpers.AttributesImpl);
 			parseNode(curlNode, xmlSolver);
 			//xmlSolver.closeElement();
 			return xmlSolver;
