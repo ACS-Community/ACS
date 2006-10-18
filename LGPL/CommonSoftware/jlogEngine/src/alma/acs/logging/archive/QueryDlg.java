@@ -118,19 +118,14 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(to,c);
 		// Build the renderer for the combo boxex
-        LogTypeRenderer rendererCB = new LogTypeRenderer();
-		minLogLevelCB = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
-		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO);
-		minLogLevelCB.setRenderer(rendererCB);
-		minLogLevelCB.setEditable(false);
-		minLogLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		minLogLevelCB = new JComboBox();
+		setupTypeCB(minLogLevelCB);
+		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO+1);
 		c.gridx=1; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(minLogLevelCB,c);
-		maxLogLevelCB= new JComboBox(LogTypeHelper.getAllTypesDescriptions());
-		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY);
-		maxLogLevelCB.setEditable(false);
-		maxLogLevelCB.setRenderer(rendererCB);
-		maxLogLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		maxLogLevelCB= new JComboBox();
+		setupTypeCB(maxLogLevelCB);
+		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY+1);
 		c.gridx=1; c.gridy=3; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(maxLogLevelCB,c);
 		procName = new JTextField(20);
@@ -158,4 +153,20 @@ public class QueryDlg extends JDialog implements ActionListener {
 		mainPnl.add(optionsPnl,BorderLayout.CENTER);
 		mainPnl.add(btnPnl,BorderLayout.SOUTH);
 	}
+	
+	private void setupTypeCB(JComboBox box) {
+		//	Add the ComboBox for the log level
+        LogTypeRenderer discardRendererCB = new LogTypeRenderer();
+        String[] levelStr = new String[LogTypeHelper.getAllTypesDescriptions().length+1];
+        levelStr[0] = "None";
+        box.insertItemAt(levelStr[0],0);
+        for (int t=0; t<LogTypeHelper.getAllTypesDescriptions().length; t++) {
+        	levelStr[t+1]=LogTypeHelper.getAllTypesDescriptions()[t];
+        	box.insertItemAt(levelStr[t+1],t+1);
+        }
+        box.setMaximumRowCount(levelStr.length);
+        box.setEditable(false);
+        box.setRenderer(discardRendererCB);
+	}
+	
 }
