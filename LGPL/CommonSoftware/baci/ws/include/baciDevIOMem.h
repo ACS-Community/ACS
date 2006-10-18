@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIOMem.h,v 1.98 2006/09/05 20:04:35 gchiozzi Exp $"
+* "@(#) $Id: baciDevIOMem.h,v 1.99 2006/10/18 08:14:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,12 +48,6 @@
 template <class T> class DevIOMem : public DevIO<T>
 {
  public:
-    /**
-     * Constructor that accepts a generic pointer to the allocated memory
-     * \deprecated The method is deprecated because dangerous. Using the templated version is much safer
-     * \param value pointer to the allocated memory to be used for the data
-     */
-    DevIOMem(void *value) : value_m( *(static_cast<T*>(value)) ) {}  //deprecated  
 
     /**
      * Constructor that accepts a reference to an object of any type using templates.
@@ -75,20 +69,6 @@ template <class T> class DevIOMem : public DevIO<T>
 	{
 	    timestamp = getTimeStamp();
 	    value_m = value;
-	}
-
-// to be 100 % backward compatiblty we left also the old write and read methods
-// those two methods can be called from outside baci i.e. getDevIO()-> ...
-// they are deprecated and have to be deleted with next realease
-
-    virtual T read(int& errcode, ACS::Time& timestamp)
-	{
-	    return read(timestamp);
-	}
-
-    virtual void write(const T& value, int& errcode, ACS::Time& timestamp)
-	{
-	    write(value, timestamp);
 	}
 
   private:

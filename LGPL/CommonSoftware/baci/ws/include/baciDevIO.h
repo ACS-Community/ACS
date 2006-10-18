@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIO.h,v 1.99 2006/10/16 07:56:40 cparedes Exp $"
+* "@(#) $Id: baciDevIO.h,v 1.100 2006/10/18 08:14:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,73 +89,34 @@ public:
     }
 
     /**
-     * Method to read a value. It has to be override by implementation of DevIO
+     * Method to read a value. It has to be override by implementation of DevIO.
+     * If the method is not overriden, and it is called than 
+     * #ACSErrTypeCommon::NotImplementedExImpl exception is thrown!
      * \param timestamp timestamp of reading
      * \exception any of ACS exceptions can be thrown
      * \return read value
      */
     virtual T read(ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
 	{
-	    int errcode;
-	    T value = read(errcode, timestamp);
-	    if (errcode==0)
-		{
-		return value;
-		}
-	    else
-		{
-		baciErrTypeDevIO::ReadErrorExImpl ex(__FILE__, __LINE__, "DevIO<>::read(deprecated)");
-		ex.addData("Error Code from deprecated read", errcode);
-		throw ex;
-		}
+	    throw ACSErrTypeCommon::NotImplementedExImpl(__FILE__, __LINE__,
+							 "baci::DevIO<>::read");
 	}//read
     
     /**
      * Method to write a value. It has to be override by implementation of DevIO
+     * If the method is not overriden, and it is called than 
+     * #ACSErrTypeCommon::NotImplementedExImpl exception is thrown!
      * \param value value to be writen
      * \param timestamp timestamp of writing
      * \exception any of ACS exceptions can be thrown
      */
     virtual void write(const T& value, ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
 	{
-	    int errcode;
-	    write(value, errcode, timestamp);
-	    if (errcode!=0)
-		{
-		baciErrTypeDevIO::WriteErrorExImpl ex(__FILE__, __LINE__, "DevIO<>::write(deprecated)");
-		ex.addData("Error Code from deprecated write", errcode);
-		throw ex;
-		}
+	    throw ACSErrTypeCommon::NotImplementedExImpl(__FILE__, __LINE__,
+							 "baci::DevIO<>::write");		 
 	}//write
 
-    /**
-     * Method to read a value. It has to be override by implementation of DevIO
-     * \deprecated The method is deprecated
-     * \param errcode erro code. Old way. ACS Exceptions should be used.
-     * \param timestamp timestamp of reading
-     * \return read value
-     */
-    virtual T read(int& errcode, ACS::Time& timestamp)
-	{
-	    errcode = -1;
-	    timestamp = 0ULL;
-	    return T();
-	}
-
-    /**
-     * Method to write a value. It has to be override by implementation of DevIO
-     * \deprecated The method is deprecated
-     * \param value value to be writen
-     * \param errcode erro code. Old way. ACS Exceptions should be used.
-     * \param timestamp timestamp of writing
-     */
-    virtual void write(const T& value, int& errcode, ACS::Time& timestamp)
-	{
-	    do {/* null */} while (&value == 0); // suppress unused warining
-	    errcode = -1;
-	    timestamp = 0ULL;
-	}
-};
+};//DevIO<>
 
 #endif 
 
