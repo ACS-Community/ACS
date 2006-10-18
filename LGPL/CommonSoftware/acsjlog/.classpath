@@ -6,8 +6,16 @@
 	<classpathentry sourcepath="/ACSROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/cdbDAL.jar" kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/jACSUtil.jar" kind="var" path="INTROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry sourcepath="/ACSROOT/lib/acslog.jar" kind="var" path="ACSROOT/lib/acslog.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry sourcepath="lib/avalon-framework-4.2.0-src.zip" kind="lib" path="lib/avalon-framework-4.2.0.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/endorsed/xercesImpl.jar" kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
