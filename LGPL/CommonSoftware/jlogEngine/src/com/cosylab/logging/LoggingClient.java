@@ -55,6 +55,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.filechooser.FileFilter;
 
+import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
@@ -107,6 +108,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 {
 	// The loggingClient is a singleton
 	private static LoggingClient singleton=null;
+	
+	private ArchiveConnectionManager archive;
 	
 	// Create an instance of the preferences with default values
 	private UserPreferences userPreferences = new UserPreferences();
@@ -285,6 +288,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	private ImageIcon[] connectionStatusIcons; 
 	// The label where icon is shown
 	private JLabel connectionStatusLbl;
+	
+	// The label where the icon representing the status of the connection 
+	// with the DB is shown
+	private JLabel connectionDBLbl;
 	
 	class EventHandler
 		implements
@@ -516,6 +523,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	{
 		super();
 		initialize();
+		archive = new ArchiveConnectionManager(this);
 	}
 
     /**
@@ -1580,7 +1588,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		{
 			try
 			{
-				// Lad the icons for the status of the connection
+				// Load the icons for the status of the connection
 				connectionStatusIcons = new ImageIcon[5];
 				connectionStatusIcons[CONNECTED_ICON]=new ImageIcon(this.getClass().getResource("/console-connected.png"));
 				connectionStatusIcons[CONNECTING_ICON]=new ImageIcon(this.getClass().getResource("/console-connecting.png"));
@@ -1588,6 +1596,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 				connectionStatusIcons[SUSPENDED_ICON]=new ImageIcon(this.getClass().getResource("/console-suspended.png"));
 				connectionStatusIcons[DELAY_ICON]=new ImageIcon(this.getClass().getResource("/console-delay.png"));
 				connectionStatusLbl = new JLabel(connectionStatusIcons[CONNECTING_ICON]);
+				
+				// Create a label to show the status of the connection with the DB
+				connectionDBLbl = new JLabel();
 				
 				filterStatusPnl = new javax.swing.JPanel();
 				filterStatusPnl.setName("JPanel4");
@@ -1609,8 +1620,14 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		        progressBar.setVisible(false);
 		        filterStatusPnl.add(progressBar,constraintsProgressBar);
 				
+		        GridBagConstraints constraintsConnectionDBStatus = new GridBagConstraints();
+				constraintsConnectionDBStatus.gridx = 2;
+				constraintsConnectionDBStatus.gridy = 0;
+				constraintsConnectionDBStatus.insets = new Insets(1, 2, 1, 2);
+				filterStatusPnl.add(connectionDBLbl,constraintsConnectionDBStatus);
+		        
 				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
-				constraintsConnectionStatus.gridx = 2;
+				constraintsConnectionStatus.gridx = 3;
 				constraintsConnectionStatus.gridy = 0;
 				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
 				filterStatusPnl.add(connectionStatusLbl,constraintsConnectionStatus);
@@ -2128,7 +2145,16 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		autoReconnectMI.setEnabled(enabled);
 	}
 	
-	
+	/**
+	 * Update the GUI with the status of the DB connection
+	 * 
+	 * @param icon The icon 
+	 * @param msg A message to show as tooltip
+	 */
+	public void showDBStatus(ImageIcon icon,String msg) {
+		connectionDBLbl.setIcon(icon);
+		connectionDBLbl.setToolTipText(msg);
+	}
 	
 }
 
