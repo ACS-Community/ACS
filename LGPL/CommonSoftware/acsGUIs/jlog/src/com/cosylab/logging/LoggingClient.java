@@ -49,12 +49,13 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.filechooser.FileFilter;
+
+import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DetailedLogTable;
@@ -106,6 +107,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 {
 	// The loggingClient is a singleton
 	private static LoggingClient singleton=null;
+	
+	// Create an instance of the preferences with default values
+	private UserPreferences userPreferences = new UserPreferences();
 	
 	// Connect or disconnect text depending on the status of the connection
 	// The text is changed by checking the connection before displaying the menu
@@ -281,7 +285,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	private ImageIcon[] connectionStatusIcons; 
 	// The label where icon is shown
 	private JLabel connectionStatusLbl;
-
+	
 	class EventHandler
 		implements
 			java.awt.event.ActionListener,
@@ -382,10 +386,13 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             } else if (e.getSource()==LoggingClient.this.suspendMI) {
             	getEngine().setSupended(suspendMI.isSelected());
             } else if (e.getSource()==LoggingClient.this.prefsMI) {
-            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(null,"Preferences",true);
-            	dlg.setVisible(true);
+            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(LoggingClient.this,userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
+            	if (dlg.okPressed()) {
+            		userPreferences.setTimeFrame(dlg.getTimeFrame());
+            		userPreferences.setMaxLogs(dlg.getMaxNumOfLogs());
+            	}
             } else {
-            	System.err.println("Unrecognized ActionEvent");
+            	System.err.println("Unrecognized ActionEvent "+e);
             }
 		};
 
