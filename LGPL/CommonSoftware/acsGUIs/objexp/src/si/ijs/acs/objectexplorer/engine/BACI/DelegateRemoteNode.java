@@ -15,7 +15,9 @@ public class DelegateRemoteNode extends BACIRemoteNode {
 	public DelegateRemoteNode(String name, TreeHandlerBean parentTreeHandler, BACIRemoteNode remoteNode) {
 		super(remoteNode.getNodeType(), name, remoteNode.getUserObject(), parentTreeHandler.getTreeByName(), (BACIRemoteAccess)parentTreeHandler.getRemoteAccess());
 		this.remoteNode = remoteNode;
-		this.name = name;
+		this.name = name;	
+		// should be already initialized
+		this.childrenHolder = remoteNode.childrenHolder;
 	}
 	
 	public BACIRemoteNode getRemoteNode() {
