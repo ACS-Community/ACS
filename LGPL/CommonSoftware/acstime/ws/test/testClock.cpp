@@ -1,4 +1,4 @@
-// @(#) $Id: testClock.cpp,v 1.7 2006/09/01 02:20:54 cparedes Exp $
+// @(#) $Id: testClock.cpp,v 1.8 2006/10/19 07:52:23 bjeram Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -54,20 +54,7 @@ int main(int argc,char* argv[])
     try
 	{
 	// get reference to Clock device
-	CORBA::Object_var obj = ci.get_object("CLOCK1",0,true);
-	if(CORBA::is_nil(obj.in())) 
-	    {
-	    return -1;
-	    }
-
-	// narrow object to obtain Clock reference
-	acstime::Clock_var dev = acstime::Clock::_narrow(obj.in());
-	
-	if (CORBA::is_nil(dev.in())) 
-	    {
-	    std::cerr << "Nil Clock reference" << std::endl;
-	    return -1;
-	    }
+	acstime::Clock_var dev = ci.getComponent<acstime::Clock>("CLOCK1", 0, true);
 	
 	//---------------------------------------------------------------
 	const char *joe = "2003-3-11T5:36:10.955161";
@@ -86,9 +73,9 @@ int main(int argc,char* argv[])
 	     << dev->toISO8601(acstime::TSArray, tEpoch) << "!" << endl;
 	
 	}
-    catch( CORBA::Exception &ex )
+    catch( maciErrType::CannotGetComponentExImpl &_ex )
 	{
-	ACE_PRINT_EXCEPTION(ex,"Error!");
+	_ex.log();
         ci.logout();
 	return -1;
 	}
