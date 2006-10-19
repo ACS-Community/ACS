@@ -23,11 +23,12 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acssamp.idl,v 1.14 2003/10/13 12:18:01 pdimarca Exp $"
+* "@(#) $Id: acssamp.idl,v 1.15 2006/10/19 15:19:58 rcirami Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * oat       07/04/03  created
+* oat       03/10/06  update following C++ coding standard
 */
 
 #include <baci.idl>
@@ -35,8 +36,11 @@
 
 #pragma prefix "alma"
 
+/** @file acssamp.idl
+ *  Sampling System's IDL File.
+ */
 
-module ACSSamp
+module acssamp
 {
 
   /**
@@ -137,7 +141,7 @@ module ACSSamp
      * <br><hr>
      * @endhtmlonly
      */
-    void set_sampFrequency (in ACS::TimeInterval sFrequency);
+    void setFrequency (in ACS::TimeInterval sFrequency);
 
 
     /**      
@@ -152,7 +156,7 @@ module ACSSamp
      * <br><hr>
      * @endhtmlonly
      */
-    void get_sampFrequency (out ACS::TimeInterval sFrequency);
+    void getFrequency (out ACS::TimeInterval sFrequency);
 
 
 
@@ -168,7 +172,7 @@ module ACSSamp
      * <br><hr>
      * @endhtmlonly
      */
-    void set_reportRate (in ACS::TimeInterval rRate);
+    void setRate (in ACS::TimeInterval rRate);
 
 
     /**
@@ -183,7 +187,7 @@ module ACSSamp
      * <br><hr>
      * @endhtmlonly
      */
-    void get_reportRate (out ACS::TimeInterval rRate);
+    void getRate (out ACS::TimeInterval rRate);
 
 
     /** 
@@ -191,12 +195,12 @@ module ACSSamp
      * Every sample is composed by two values: a timestamp (time when
      * the sample occured) and a value.
      */
-    struct sampDataBlock
+    struct SampDataBlock
     {
       ACS::Time sampTime;
       any sampVal;
     };
-    typedef sequence<sampDataBlock> SampDataBlockSeq;
+    typedef sequence<SampDataBlock> SampDataBlockSeq;
 
 
     

@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampPerfClient.cpp,v 1.8 2006/06/22 12:55:41 gchiozzi Exp $"
+* "@(#) $Id: acssampPerfClient.cpp,v 1.9 2006/10/19 15:20:40 rcirami Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@
 using namespace std;
 using namespace maci;
 
-ACE_RCSID(acssampPerfClient, PerfClient, "$Id: acssampPerfClient.cpp,v 1.8 2006/06/22 12:55:41 gchiozzi Exp $")
+ACE_RCSID(acssampPerfClient, PerfClient, "$Id: acssampPerfClient.cpp,v 1.9 2006/10/19 15:20:40 rcirami Exp $")
     
 
 static int endme = 1;
@@ -100,7 +100,7 @@ class SamplerConsumer : public nc::Consumer
     CORBA::ULongLong diff;
 
 
-    ACSSamp::SampObj::SampDataBlockSeq *m_SampledData_p, m_SampledData;
+    acssamp::SampObj::SampDataBlockSeq *m_SampledData_p, m_SampledData;
     m_SampledData_p=&m_SampledData;
 
     notification.filterable_data[0].value >>= m_SampledData_p;
@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
 					 client.getORB());
     
 
-	myConsumer->addSubscription<ACSSamp::SampObj::SampDataBlockSeq>();
+	myConsumer->addSubscription<acssamp::SampObj::SampDataBlockSeq>();
 	myConsumer->consumerReady();
 
 	cout << "Infinite loop started; press Ctrl-C to stop it ..." << endl;

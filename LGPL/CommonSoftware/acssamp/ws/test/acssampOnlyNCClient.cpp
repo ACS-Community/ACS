@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampOnlyNCClient.cpp,v 1.15 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: acssampOnlyNCClient.cpp,v 1.16 2006/10/19 15:20:40 rcirami Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,7 +47,7 @@
 
 using namespace std;
  using namespace maci;
-ACE_RCSID(acssampOnlyNCClient, OnlyNCClient, "$Id: acssampOnlyNCClient.cpp,v 1.15 2006/09/01 02:20:55 cparedes Exp $")
+ACE_RCSID(acssampOnlyNCClient, OnlyNCClient, "$Id: acssampOnlyNCClient.cpp,v 1.16 2006/10/19 15:20:40 rcirami Exp $")
     
   
   
@@ -81,7 +81,7 @@ public:
     cout << "Event: domain = \n" << (const char *)notification.header.fixed_header.event_type.domain_name << endl;
     
 
-    ACSSamp::SampObj::SampDataBlockSeq *m_SampledData_p, m_SampledData;
+    acssamp::SampObj::SampDataBlockSeq *m_SampledData_p, m_SampledData;
     m_SampledData_p=&m_SampledData;
 
     notification.filterable_data[0].value >>= m_SampledData_p;
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 	myConsumer = new SamplerConsumer(fullNCname.c_str(),
 						       client.getORB());
     
-	myConsumer->addSubscription<ACSSamp::SampObj::SampDataBlockSeq>();
+	myConsumer->addSubscription<acssamp::SampObj::SampDataBlockSeq>();
 	myConsumer->consumerReady();
 	
 	ACE_Time_Value time(30,0);

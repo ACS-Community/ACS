@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampImpl.h,v 1.20 2006/09/01 02:20:55 cparedes Exp $"
+ * "@(#) $Id: acssampImpl.h,v 1.21 2006/10/19 15:19:34 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -50,10 +50,10 @@
  * but allows namespace support for compilers that do not have it 
  * natively (i.e., GCC 2.95 for VxWorks).
  */ 
- using namespace baci;
- using namespace std;
+using namespace baci;
+using namespace std;
 
- using namespace ACSErrTypeCommon;
+using namespace ACSErrTypeCommon;
 
 /** @file acssampImpl.h
  *  Header file for the factory object, which allows to create 
@@ -75,12 +75,10 @@
 
 
 class ACSSampImpl: public virtual CharacteristicComponentImpl,
-		   public virtual POA_ACSSamp::Samp
-{
-    
+		   public virtual POA_acssamp::Samp
+{    
   public:
     
-
     /**
      * Constructor
      * @param poa Poa which will activate this and also all other Components. 
@@ -88,9 +86,7 @@ class ACSSampImpl: public virtual CharacteristicComponentImpl,
      * configuration data for the DO in the Configuration Database.
      */
 
-    ACSSampImpl(
-		const ACE_CString& name,
-		maci::ContainerServices *containerServices);
+    ACSSampImpl(const ACE_CString& name, maci::ContainerServices *containerServices);
   
     /**
      * Destructor
@@ -120,11 +116,11 @@ class ACSSampImpl: public virtual CharacteristicComponentImpl,
      */
 
 
-    virtual ACSSamp::SampObj_ptr initSampObj(const char *name,
+    virtual acssamp::SampObj_ptr initSampObj(const char *name,
 					     const char *property,
 					     ACS::TimeInterval frequency,
 					     ACS::TimeInterval reportRate
-					     )
+	)
 	throw (CORBA::SystemException,OutOfBoundsEx,
 	       MemoryFaultEx,CORBAProblemEx,TypeNotSupportedEx,
 	       CouldntAccessPropertyEx,CouldntAccessComponentEx,
@@ -169,8 +165,7 @@ class ACSSampImpl: public virtual CharacteristicComponentImpl,
      */
     list<CORBA::Object_ptr> component_list;
 
-    BACIMutex m_samplingListMutex;
-
+    ACE_Recursive_Thread_Mutex m_samplingListMutex;
 };
 
 

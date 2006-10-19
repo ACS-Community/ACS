@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: acssampPerfServer.cpp,v 1.5 2006/09/01 02:20:55 cparedes Exp $"
+ * "@(#) $Id: acssampPerfServer.cpp,v 1.6 2006/10/19 15:20:40 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@
 #include <iostream>
 
 
-ACE_RCSID(acssampPerfServer, perfServer, "$Id: acssampPerfServer.cpp,v 1.5 2006/09/01 02:20:55 cparedes Exp $")
+ACE_RCSID(acssampPerfServer, perfServer, "$Id: acssampPerfServer.cpp,v 1.6 2006/10/19 15:20:40 rcirami Exp $")
 
 using namespace std;
  using namespace maci; 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 	{
 	
         // obtain the reference to the SAMP (factory) object
-        ACSSamp::Samp_var foo = client.get_object<ACSSamp::Samp>("SAMP1", 0, true);
+        acssamp::Samp_var foo = client.get_object<acssamp::Samp>("SAMP1", 0, true);
 
 	if (!CORBA::is_nil(foo.in()))
 	    {
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 	    ACS_SHORT_LOG((LM_DEBUG, "Got samp descriptor()."));
 
 	    // calls the initSampObj to create dynamically a new sampling object
-	    ACSSamp::SampObj_ptr fooNew = 
+	    acssamp::SampObj_ptr fooNew = 
 		foo->initSampObj("LAMP1","brightness",samplingFrequency,reportRate);
 
 	    ACS_SHORT_LOG((LM_INFO,"*** Start to sample ***"));

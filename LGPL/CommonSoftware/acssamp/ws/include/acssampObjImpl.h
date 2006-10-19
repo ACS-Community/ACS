@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampObjImpl.h,v 1.24 2004/09/03 07:21:44 bjeram Exp $"
+ * "@(#) $Id: acssampObjImpl.h,v 1.25 2006/10/19 15:19:34 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -53,13 +53,129 @@ using namespace baci;
 using namespace std;
 using namespace ACSErrTypeCommon;
 
-
 /** @file acssampObjImpl.h
  *  Header file for the sampling object. It contains all method dealing 
  *  with sampling setup, start, stop etc. of a user-defined property.
  *  The collected, buffered data, are then sent to the notification channel.
  *  
  */
+
+//forward declaration
+template<ACS_SAMP_C>
+class ACSSampObjImpl;
+
+template<ACS_SAMP_C>
+class SamplingThread : public ACS::Thread
+{
+  public:
+    SamplingThread(const ACE_CString& name,
+		   ACSSampObjImpl<ACS_SAMP_TL> *sampObj,
+		   const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
+		   const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
+	ACS::Thread(name)
+	{
+	    sampObj_p = sampObj;
+	}
+
+    ~SamplingThread()
+	{
+	}
+
+    virtual void run()
+	{
+// initialize thread
+	    if (ThreadBase::InitThread)
+		ThreadBase::InitThread(getName().c_str());
+
+	    //ACS_DEBUG_PARAM("acssamp::ACSSampObjImpl::sampThreadWorker","Starting thread %s",myself_p->getName().c_str());  
+	    //ACS_SHORT_LOG((LM_INFO,"ACSSamp Starting thread %s", getName().c_str()));
+
+	    while(check() && !sampObj_p->isInDestructState())
+		{
+
+		if(!isSuspended() && !sampObj_p->isInDestructState())
+		    {
+	
+		    //  ACS_DEBUG("acssamp::ACSSampObjImpl::sampThreadWorker","sampling ...");
+
+		    // perform the sampling
+		    sampObj_p->doSamp();
+
+		    sleep();
+		    }
+
+		}
+	    /*if (BACIThread::DoneThread) 
+	      {
+	      BACIThread::DoneThread();
+	      }*/
+ 
+	    // cleanup thread
+	    if (ThreadBase::DoneThread)
+		ThreadBase::DoneThread();
+
+	    setStopped();
+	}
+		
+  private:
+
+    ACSSampObjImpl<ACS_SAMP_TL> *sampObj_p;   
+};
+
+
+template<ACS_SAMP_C>
+class SamplingThreadFlush : public ACS::Thread
+{
+  public:
+    SamplingThreadFlush(const ACE_CString& name, 
+			ACSSampObjImpl<ACS_SAMP_TL> *sampObj,
+			const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
+			const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
+	ACS::Thread(name)
+	{
+	    sampObj_p = sampObj;
+	}
+
+    ~SamplingThreadFlush()
+	{
+	}
+
+    virtual void run()
+	{
+// initialize thread
+	    if (ThreadBase::InitThread)
+		ThreadBase::InitThread(getName().c_str());
+    
+
+	    ACS_DEBUG_PARAM("acssamp::ACSSampObjImpl::sampThreadFlush","Starting thread %s",getName().c_str());  
+      
+	    while(check() && !sampObj_p->isInDestructState())
+		{
+
+		if(!isSuspended() && !sampObj_p->isInDestructState())
+		    {
+	    
+		    //  ACS_DEBUG("acssamp::ACSSampObjImpl::sampThreadWorker","flushing on the NC ...");
+		    sampObj_p->flushSamp();
+		    sleep();
+		    }
+
+		}
+	    // cleanup thread
+	    if (ThreadBase::DoneThread)
+		ThreadBase::DoneThread();
+
+	    setStopped();
+
+	}
+		
+  private:
+
+    ACSSampObjImpl<ACS_SAMP_TL> *sampObj_p;   
+};
+
+
+
 
 /** @class ACSSampObjImpl
  *  This class implements all methods used to sample a specific
@@ -78,7 +194,7 @@ using namespace ACSErrTypeCommon;
  */
 
 template <ACS_SAMP_C>
-class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
+class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
                       public virtual PortableServer::RefCountServantBase
 {
   
@@ -193,8 +309,7 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void set_sampFrequency (ACS::TimeInterval sFrequency
-				     )
+    virtual void setFrequency (ACS::TimeInterval sFrequency)
 	throw (CORBA::SystemException);
   
 
@@ -211,8 +326,7 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void get_sampFrequency (ACS::TimeInterval_out sFrequency
-				     )
+    virtual void getFrequency (ACS::TimeInterval_out sFrequency)
 	throw (CORBA::SystemException);
 
 
@@ -230,13 +344,12 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void set_reportRate (ACS::TimeInterval rRate
-				  )
+    virtual void setRate (ACS::TimeInterval rRate)
 	throw (CORBA::SystemException);
   
 
 
-   /**
+    /**
      * Gets the report rate of an already activated 
      * sampling object.
      *
@@ -248,8 +361,7 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void get_reportRate (ACS::TimeInterval_out rRate
-				  )
+    virtual void getRate (ACS::TimeInterval_out rRate)
 	throw (CORBA::SystemException);
 
 
@@ -337,35 +449,13 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
      * Internal method to get the CORBA reference to the newly activated
      * CORBA object (i.e. this sampling object).
      *
-     * @return m_reference  reference to the CORBA object.
+     * @return reference_p  reference to the CORBA object.
      * @htmlonly
      * <br><hr>
      * @endhtmlonly
      */
-    CORBA::Object_ptr getCORBAReference() const { return m_reference; }
+    CORBA::Object_ptr getCORBAReference() const { return reference_p; }
 
-    /**
-     * Internal thread used to set the ticks for the sampling.
-     * Whenever it is called a value is sampled from the property.
-     *
-     * @return void.
-     * @htmlonly
-     * <br><hr>
-     * @endhtmlonly
-     */
-    static void sampThreadWorker(void *param_p);
-
-
-    /**
-     * Internal thread used to flush for the sampling.
-     * Whenever it is called values are flushed on the NC.
-     *
-     * @return void.
-     * @htmlonly
-     * <br><hr>
-     * @endhtmlonly
-     */
-    static void sampThreadFlush(void *param_pf);
 
     /**
      * Is the channel name of the notification channel onto which the data
@@ -381,7 +471,7 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual char * getChannelName ()
+    virtual char * getChannelName()
 	throw (CORBA::SystemException);
     
 
@@ -390,7 +480,7 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
      * Every sample is composed by two values: a timestamp (time when
      * the sample occured) and a value.
      */
-    struct sampData {
+    struct SampData {
 	ACS::Time timeStamp; 
 	Tval val;
     };
@@ -424,53 +514,50 @@ class ACSSampObjImpl: public virtual POA_ACSSamp::SampObj,
     /** BACI Component instance
      *  This is a reference to the factory CORBA object
      */
-    BACIComponent *m_cob;
-
+    BACIComponent *cob_p;
 
     /**
-     *  m_controlLoop_p is only started once the sampling object is initialized,
+     *  controlLoop_p is only started once the sampling object is initialized,
      *  through the call of method start. It determines the ticks, when the sampling 
      *  actually occurs; the thread is destroyed when the method destroy is called.
      */
-    BACIThread *m_controlLoop_p;
-
+    SamplingThread<ACS_SAMP_TL> *controlLoop_p;
 
     /**
-     *  m_flush_p is only started once the sampling object is initialized,
+     *  flush_p is only started once the sampling object is initialized,
      *  through the call of method start. It determines the time, when the sampling 
      *  are actually flushed on the NC; the thread is destroyed 
      *  when the method destroy is called.
      */
-    BACIThread *m_flush_p;
-
+    SamplingThreadFlush<ACS_SAMP_TL> *flush_p;
  
-    BACIThreadManager* threadManager;
+    ACS::ThreadManager *threadManager_p;
 
-    ACS::Property_var genProperty;
-    T_var propToSamp;
+    ACS::Property_var genProperty_p;
+
+    T_var propToSamp_p;
 
     /**
      *  Internal buffer containing all data, before the delivering to the
      *  notification channel.
      */
-    ACE_Message_Queue<ACE_SYNCH> *mq_;
+    ACE_Message_Queue<ACE_SYNCH> *mq_p;
 
-//  nc::SimpleSupplier<ACSSamp::SampObj::sampDataBlock> *m_SampSupplier_p;
+//  nc::SimpleSupplier<acssamp::SampObj::SampDataBlock> *sampSupplier_p;
 
-    nc::SimpleSupplier *m_SampSupplier_p;
+    nc::SimpleSupplier *sampSupplier_p;
 
-    CORBA::Object_ptr m_reference;
+    CORBA::Object_ptr reference_p;
 
-    ACSSampImpl * sampPtr;
-
+    ACSSampImpl *samp_p;
 };
 
 
 
-    /**
-     *  The actual implementation of this class (it is a template!)
-     */
-#include "acssampObjTemplateImpl.h"
+/**
+ *  The actual implementation of this class (it is a template!)
+ */
+#include "acssampObjImpl.i"
 
 
 #endif /*!_ACSAMP_OBJ_IMPL_H*/

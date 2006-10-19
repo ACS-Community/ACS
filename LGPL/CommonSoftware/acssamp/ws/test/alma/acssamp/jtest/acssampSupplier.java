@@ -40,7 +40,7 @@ package alma.acssamp.jtest;
 import java.util.logging.Logger;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServices;
-import alma.ACSSamp.*;
+import alma.acssamp.*;
 
 
 public class acssampSupplier extends ComponentClient

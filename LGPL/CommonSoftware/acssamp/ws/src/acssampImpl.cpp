@@ -17,7 +17,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampImpl.cpp,v 1.29 2006/08/08 11:25:17 bjeram Exp $"
+ * "@(#) $Id: acssampImpl.cpp,v 1.30 2006/10/19 15:20:19 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.29 2006/08/08 11:25:17 bjeram Exp $";
+static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.30 2006/10/19 15:20:19 rcirami Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <Request.h>
@@ -48,11 +48,11 @@ using namespace ACSErrTypeCommon;
 // ACSSampImpl Constructor
 //
 ACSSampImpl::ACSSampImpl(
-			 const ACE_CString &name, 
-			 maci::ContainerServices *containerServices) : 
+    const ACE_CString &name, 
+    maci::ContainerServices *containerServices) : 
     CharacteristicComponentImpl(name, containerServices)
 {
-    ACS_TRACE("ACSSamp::ACSSampImpl::ACSSampImpl");
+    ACS_TRACE("acssamp::ACSSampImpl::ACSSampImpl");
 }
 
 
@@ -62,9 +62,9 @@ ACSSampImpl::ACSSampImpl(
 ACSSampImpl::~ACSSampImpl()
 {
 
-    ACS_TRACE("ACSSamp::ACSSampImpl::~ACSSampImpl");
+    ACS_TRACE("acssamp::ACSSampImpl::~ACSSampImpl");
 
-    ACS_DEBUG_PARAM("ACSSamp::ACSSampImpl::~ACSSampImpl","Destroying %s", getComponent()->getName());
+    ACS_DEBUG_PARAM("acssamp::ACSSampImpl::~ACSSampImpl","Destroying %s", getComponent()->getName());
 
     // delete all allocated object, that were not correctly deallocated
     if(!component_list.empty())
@@ -75,7 +75,7 @@ ACSSampImpl::~ACSSampImpl()
 
 	    list<CORBA::Object_ptr>::iterator i = component_list.begin();
 	    
-	    ACSSamp::SampObj_var mySamp = ACSSamp::SampObj::_narrow(*i);
+	    acssamp::SampObj_var mySamp = acssamp::SampObj::_narrow(*i);
 	    if (!CORBA::is_nil(mySamp.in()))
 		{
 		mySamp->destroy();
@@ -100,35 +100,30 @@ ACSSampImpl::~ACSSampImpl()
 // is then used to correctly construct a new sampling object, which
 // in turn allows to control the sampling.
 //
-ACSSamp::SampObj_ptr
+acssamp::SampObj_ptr
 ACSSampImpl::initSampObj(const char* name, const char* property, 
 			 ACS::TimeInterval frequency, ACS::TimeInterval reportRate
-			 )
+    )
     throw (CORBA::SystemException, OutOfBoundsEx,
 	   MemoryFaultEx,CORBAProblemEx,TypeNotSupportedEx,
 	   CouldntAccessPropertyEx,CouldntAccessComponentEx,
 	   CouldntCreateObjectEx)
 
-{
-  
-    ACS_TRACE("ACSSamp::ACSSampImpl::initSampObj");
-
+{  
+    ACS_TRACE("acssamp::ACSSampImpl::initSampObj");
     ACS_SHORT_LOG((LM_INFO,"Starting SampObj creation ... "));
 
     // discover with DII, Component properties
   
-    ACSSamp::SampObj_var samp = ACSSamp::SampObj::_nil();
+    acssamp::SampObj_var samp = acssamp::SampObj::_nil();
 
     ACE_CString cobName=CORBA::string_dup(name);
     ACE_CString propName=CORBA::string_dup(property);
-    ACE_CString fullName=cobName+":"+propName;
-
-   
+    ACE_CString fullName=cobName + ":" + propName;
 
     try
 	{
-	CORBA::Object_var obj = 
-	    ContainerImpl::getContainer()->get_object(name, 0, true);
+	CORBA::Object_var obj = ContainerImpl::getContainer()->get_object(name, 0, true);
 
 	if (!CORBA::is_nil(obj.in()))
 	    {
@@ -146,8 +141,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 	    int errGuard = 1;
 
 	    while (ind < len)
-		{ 
-         
+		{          
                 // Is the name of the discovered component 
                 // the same, as what the user has request to sample?
                 // if yes then we proceed, otherwise we throw an exception
@@ -203,31 +197,30 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 
 		    if ( myPropIntf.find("RWdouble") != -1) 
 			{
-
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered RWdouble property type");
+			ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","discovered RWdouble property type");
 
                         // dynamically create a new sampling object
 			ACSSampObjImpl<ACS::RWdouble,ACS::RWdouble_var,CORBA::Double>* sampling = NULL;
 
 			try
 			    { 
-			    sampling=new ACSSampObjImpl<ACS::RWdouble,ACS::RWdouble_var,CORBA::Double>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
+			    sampling = new ACSSampObjImpl<ACS::RWdouble,ACS::RWdouble_var,CORBA::Double>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
 			    if (!sampling)
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
-				    MemoryFaultExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err.getMemoryFaultEx();
 				}
 
 			    sampling->initialize();
 
-			    samp =  ACSSamp::SampObj::_narrow(sampling->getCORBAReference());
+			    samp = acssamp::SampObj::_narrow(sampling->getCORBAReference());
 			    if (CORBA::is_nil(samp.in()))
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
-				    CORBAProblemExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err;
 				}
 			    }
@@ -243,29 +236,29 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 		    else if (myPropIntf.find("ROdouble") != -1)
 			{
 
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered ROdouble property type");
+			ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","discovered ROdouble property type");
 
 			ACSSampObjImpl<ACS::ROdouble,ACS::ROdouble_var,CORBA::Double>* sampling = NULL;
 
 			try
 			    { 
-			    sampling=new ACSSampObjImpl<ACS::ROdouble,ACS::ROdouble_var,CORBA::Double>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
+			    sampling = new ACSSampObjImpl<ACS::ROdouble,ACS::ROdouble_var,CORBA::Double>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
 			    if (!sampling)
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
-				    MemoryFaultExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err;
 				}
 
 			    sampling->initialize();
 
-			    samp =  ACSSamp::SampObj::_narrow(sampling->getCORBAReference());
+			    samp = acssamp::SampObj::_narrow(sampling->getCORBAReference());
 			    if (CORBA::is_nil(samp.in()))
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
-				    CORBAProblemExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err;
 				}
 			    }
@@ -281,29 +274,29 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 		    else if (myPropIntf.find("RWlong") != -1)
 			{
 
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered RWlong property type");
+			ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","discovered RWlong property type");
 
 			ACSSampObjImpl<ACS::RWlong,ACS::RWlong_var,CORBA::Long>* sampling = NULL;
 
 			try
 			    { 
-			    sampling=new ACSSampObjImpl<ACS::RWlong,ACS::RWlong_var,CORBA::Long>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
+			    sampling = new ACSSampObjImpl<ACS::RWlong,ACS::RWlong_var,CORBA::Long>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
 			    if (!sampling)
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
-				    MemoryFaultExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err;
 				}
 
 			    sampling->initialize();
 
-			    samp =  ACSSamp::SampObj::_narrow(sampling->getCORBAReference());
+			    samp = acssamp::SampObj::_narrow(sampling->getCORBAReference());
 			    if (CORBA::is_nil(samp.in()))
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
-				    CORBAProblemExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err;
 				}
 			    }
@@ -319,29 +312,29 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 		    else if (myPropIntf.find("ROlong") != -1)
 			{
 
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","discovered ROlong property type");
+			ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","discovered ROlong property type");
 
 			ACSSampObjImpl<ACS::ROlong,ACS::ROlong_var,CORBA::Long>* sampling = NULL;
 
 			try
 			    { 
-			    sampling=new ACSSampObjImpl<ACS::ROlong,ACS::ROlong_var,CORBA::Long>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
+			    sampling = new ACSSampObjImpl<ACS::ROlong,ACS::ROlong_var,CORBA::Long>(name,property,frequency,reportRate,getComponent(),cobProperty,this);
 			    if (!sampling)
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
-				    MemoryFaultExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err;
 				}
 
 			    sampling->initialize();
 
-			    samp =  ACSSamp::SampObj::_narrow(sampling->getCORBAReference());
+			    samp = acssamp::SampObj::_narrow(sampling->getCORBAReference());
 			    if (CORBA::is_nil(samp.in()))
 				{
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
-				    CORBAProblemExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 				throw err;
 				}
 			    }
@@ -356,9 +349,9 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 			}
 		    else 
 			{
-			ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","type not supported");
+			ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","type not supported");
 			TypeNotSupportedExImpl exc =
-			    TypeNotSupportedExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+			    TypeNotSupportedExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 			exc.addData("Type Name",myPropIntf.c_str());
 			throw exc;
 			}
@@ -372,9 +365,9 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 
 	    if (errGuard)
 		{
-		ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","property not found");
+		ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","property not found");
 		CouldntAccessPropertyExImpl exc =
-		    CouldntAccessPropertyExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+		    CouldntAccessPropertyExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 		exc.addData("Property Name",property);
 		throw exc;
 		}
@@ -382,50 +375,49 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 	    } 
 	else 
 	    {
-	    ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","component not found");
+	    ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","component not found");
 	    CouldntAccessComponentExImpl exc =
-		CouldntAccessComponentExImpl(__FILE__,__LINE__,"ACSSamp::ACSSampImpl::initSampObj");
+		CouldntAccessComponentExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 	    exc.addData("Component Name",name);
 	    throw exc;
 	    }
 	}
     catch (OutOfBoundsExImpl & exc)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Catched by ACSSamp::ACSSampImpl OutOfBoundsExImpl"));
+	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl OutOfBoundsExImpl"));
 	throw;
 	}
     catch (CouldntAccessComponentExImpl & exc)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Catched by ACSSamp::ACSSampImpl CouldntAccessComponentEx"));
+	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl CouldntAccessComponentEx"));
 //	exc.addData("Rethrow","again");
 	throw;
 	}
     catch (CouldntAccessPropertyExImpl & exc)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Catched by ACSSamp::ACSSampImpl CouldntAccessPropertyEx"));
+	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl CouldntAccessPropertyEx"));
 	throw;
 	}
     catch (CouldntCreateObjectExImpl & exc)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Catched by ACSSamp::ACSSampImpl CouldntCreateObjectEx"));
+	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl CouldntCreateObjectEx"));
 	throw;
 	}
-   catch (TypeNotSupportedExImpl & exc)
+    catch (TypeNotSupportedExImpl & exc)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Catched by ACSSamp::ACSSampImpl TypeNotSupportedEx"));
+	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl TypeNotSupportedEx"));
 	throw;
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Generic exception catched by ACSSamp::ACSSampImpl"));
+	ACS_SHORT_LOG((LM_INFO,"Generic exception catched by acssamp::ACSSampImpl"));
 	throw;
 	}
 
-    ACS_DEBUG("ACSSamp::ACSSampImpl::initSampObj","SampObj correctly created");
+    ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","SampObj correctly created");
     ACS_SHORT_LOG((LM_INFO," ... SampObj correctly created!"));
 
     return samp._retn();
-
 }
 
 
@@ -436,12 +428,10 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 void
 ACSSampImpl::addComponenttoList(CORBA::Object_ptr component_ref) 
 {
-
     ThreadSyncGuard guard(&m_samplingListMutex);
 
     component_list.push_back(component_ref);
-    ACS_DEBUG_PARAM("ACSSamp::ACSSampImpl::addComponenttoList","current number of SampObj: %d",component_list.size());
-
+    ACS_DEBUG_PARAM("acssamp::ACSSampImpl::addComponenttoList","current number of SampObj: %d",component_list.size());
 }
 
 
@@ -452,12 +442,10 @@ ACSSampImpl::addComponenttoList(CORBA::Object_ptr component_ref)
 void
 ACSSampImpl::removeComponentfromList(CORBA::Object_ptr component_ref) 
 {
-
     ThreadSyncGuard guard(&m_samplingListMutex);
 
     component_list.remove(component_ref);
-    ACS_DEBUG_PARAM("ACSSamp::ACSSampImpl::removeComponentfromList","remaining number of SampObj: %d",component_list.size());
-
+    ACS_DEBUG_PARAM("acssamp::ACSSampImpl::removeComponentfromList","remaining number of SampObj: %d",component_list.size());
 }
 
 
@@ -478,3 +466,6 @@ MACI_DLL_SUPPORT_FUNCTIONS(ACSSampImpl)
 
 
 
+    
+    
+    

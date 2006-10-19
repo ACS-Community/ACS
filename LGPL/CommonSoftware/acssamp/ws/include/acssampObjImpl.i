@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjTemplateImpl.h,v 1.31 2006/07/19 16:57:28 dfugate Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.1 2006/10/19 15:19:34 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -37,110 +37,6 @@ using namespace maci;
 using namespace std;
 using namespace ACSErrTypeCommon;
 
-// sampling thread
-
-template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::sampThreadWorker(void *param_p)
-{
-    if(!param_p)
-	{
-	return;
-	}
-
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::sampThreadWorker");
-    
-    BACIThreadParameter *baciParameter_p = (BACIThreadParameter *)param_p;
-    BACIThread *myself_p = baciParameter_p->getBACIThread();
-     
-    // Variables have to be passed explicitly 
-    ACSSampObjImpl *samp_p = (ACSSampObjImpl *)baciParameter_p->getParameter();
-    
-    if (BACIThread::InitThread) 
-	{
-	BACIThread::InitThread(myself_p->getName().c_str());
-	}
-
-    ACS_DEBUG_PARAM("ACSSamp::ACSSampObjImpl::sampThreadWorker","Starting thread %s",myself_p->getName().c_str());  
-    ACS_SHORT_LOG((LM_INFO,"ACSSamp Starting thread %s",myself_p->getName().c_str()));
-  
-
-    while(myself_p->check() && !samp_p->isInDestructState())
-	{
-
-	if(!myself_p->isSuspended() && !samp_p->isInDestructState())
-	    {
-	
-	    //  ACS_DEBUG("ACSSamp::ACSSampObjImpl::sampThreadWorker","sampling ...");
-
-            // perform the sampling
-	    samp_p->doSamp();
-
-	    myself_p->sleep();
-	    }
-
-	}
-    if (BACIThread::DoneThread) 
-	{
-	BACIThread::DoneThread();
-	}
-
-    delete baciParameter_p;
-    myself_p->setStopped();
-    
-}
-
-
-
-// flushing thread
-template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::sampThreadFlush(void *param_pf)
-{
-    if(!param_pf)
-	{
-	return;
-	}
-
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::sampThreadFlush");
-    
-    BACIThreadParameter *baciParameter_pf = (BACIThreadParameter *)param_pf;
-    BACIThread *myself_pf = baciParameter_pf->getBACIThread();
-     
-    // Variables have to be passed explicitly 
-    ACSSampObjImpl *samp_pf = (ACSSampObjImpl *)baciParameter_pf->getParameter();
-    
-    if (BACIThread::InitThread) 
-	{
-	BACIThread::InitThread(myself_pf->getName().c_str());
-	}
-
-    ACS_DEBUG_PARAM("ACSSamp::ACSSampObjImpl::sampThreadFlush","Starting thread %s",myself_pf->getName().c_str());  
-      
-    while(myself_pf->check() && !samp_pf->isInDestructState())
-	{
-
-	if(!myself_pf->isSuspended() && !samp_pf->isInDestructState())
-	    {
-	
-	    
-	    //  ACS_DEBUG("ACSSamp::ACSSampObjImpl::sampThreadWorker","flushing on the NC ...");
-	      samp_pf->flushSamp();
-	      myself_pf->sleep();
-
-	    }
-
-	}
-    if (BACIThread::DoneThread) 
-	{
-	BACIThread::DoneThread();
-	}
-
-    delete baciParameter_pf;
-    myself_pf->setStopped();
-    
-}
-
-
-
 
 //
 // ACSSampObjImpl Constructor
@@ -152,30 +48,28 @@ ACSSampObjImpl<ACS_SAMP_TL>::ACSSampObjImpl(const ACE_CString& _cobName,
 					    BACIComponent *_m_cob, ACS::Property_var _genProperty, 
 					    ACSSampImpl * _sampPtr) :
     cobName(_cobName),propertyName(_propertyName),sampFrequency(_sampFrequency),
-    sampReportRate(_sampReportRate),m_cob(_m_cob), genProperty(_genProperty),sampPtr(_sampPtr)
+    sampReportRate(_sampReportRate),cob_p(_m_cob), genProperty_p(_genProperty),samp_p(_sampPtr)
 
 {
-
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::ACSSampObjImpl");
+    ACS_TRACE("acssamp::ACSSampObjImpl::ACSSampObjImpl");
     
-    inDestructState=false;
+    inDestructState = false;
     
     ostringstream os;
     os << sampFrequency << "_" << sampReportRate;
     
     // this will be the name of the sampling object
-    sampObjName = cobName+"_"+propertyName+"_"+ACE_CString(os.str().c_str());
+    sampObjName = cobName+"_" + propertyName + "_" + ACE_CString(os.str().c_str());
 
     // this string will be the NC channel name
-    sampChannelName="NC_"+sampObjName;
-  
+    sampChannelName="NC_" + sampObjName;
+   
     // internal members initialization
-    m_controlLoop_p=BACIThread::NullBACIThread;
-    m_flush_p=BACIThread::NullBACIThread;
-    m_reference=CORBA::Object::_nil();
-    threadManager=NULL;
-    m_SampSupplier_p=NULL;
-
+    controlLoop_p = 0;
+    flush_p = 0;
+    reference_p = CORBA::Object::_nil();
+    threadManager_p = 0;
+    sampSupplier_p = 0;
 }
 
 
@@ -185,8 +79,7 @@ ACSSampObjImpl<ACS_SAMP_TL>::ACSSampObjImpl(const ACE_CString& _cobName,
 template <ACS_SAMP_C>
 ACSSampObjImpl<ACS_SAMP_TL>::~ACSSampObjImpl()
 {
-
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::~ACSSampObjImpl");
+    ACS_TRACE("acssamp::ACSSampObjImpl::~ACSSampObjImpl");
 
     // most of the things are handled in the destroy method
 
@@ -194,21 +87,20 @@ ACSSampObjImpl<ACS_SAMP_TL>::~ACSSampObjImpl()
     inDestructState = true;
     
     // stop threads
-    // m_cob->stopAllThreads();
+    // cob_p->stopAllThreads();
 
-    if (threadManager)
-	delete threadManager;
+    if (threadManager_p)
+	delete threadManager_p;
 
     // clean-up associated with internal buffer
-	if (mq_)
-	    delete mq_;
+    if (mq_p)
+	delete mq_p;
     
     // if the object is correctly destroyed, it will be removed from the
     // ACSSampImpl internal list
-    sampPtr->removeComponentfromList(m_reference);
+    samp_p->removeComponentfromList(reference_p);
 
     ACS_SHORT_LOG((LM_INFO,"ACSSamp deleting object %s",sampObjName.c_str()));
-
 }
 
 
@@ -223,12 +115,10 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
     throw (CORBA::SystemException, OutOfBoundsExImpl,MemoryFaultExImpl,
 	   CORBAProblemExImpl,CouldntCreateObjectExImpl)
 {
-
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::initialize");
+    ACS_TRACE("acssamp::ACSSampObjImpl::initialize");
 
     try
 	{
-
 	if (sampFrequency < 1 || sampReportRate < 1)
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"frequency or polling interval must be greater then 1"));
@@ -239,9 +129,9 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	    throw err;
 	    }
 
-       m_SampSupplier_p = new nc::SimpleSupplier(sampChannelName.c_str(), 0);
-//	m_SampSupplier_p = new nc::SimpleSupplier<ACSSamp::SampObj::SampDataBlockSeq>(sampNames);
-	if (!m_SampSupplier_p) 
+	sampSupplier_p = new nc::SimpleSupplier(sampChannelName.c_str(), 0);
+//	sampSupplier_p = new nc::SimpleSupplier<acssamp::SampObj::SampDataBlockSeq>(sampNames);
+	if (!sampSupplier_p) 
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to activate notification channel"));
 	    MemoryFaultExImpl err = MemoryFaultExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
@@ -249,8 +139,8 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	    throw err;
 	    }
 
-	threadManager = new BACIThreadManager();
-	if (!threadManager) 
+	threadManager_p = new ACS::ThreadManager();
+	if (!threadManager_p) 
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to activate thread manager"));
 	    MemoryFaultExImpl err = 
@@ -259,7 +149,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	    throw err;
 	    }
 
-	if( !(mq_ = new ACE_Message_Queue<ACE_SYNCH>(100000,1000) ))
+	if( !(mq_p = new ACE_Message_Queue<ACE_SYNCH>(100000,1000) ))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to activate message queue"));
 	    MemoryFaultExImpl err = 
@@ -268,8 +158,8 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	    throw err;
 	    }
       
-	propToSamp = T::_narrow(genProperty.in());
-	if (CORBA::is_nil(propToSamp.in()))
+	propToSamp_p = T::_narrow(genProperty_p.in());
+	if (CORBA::is_nil(propToSamp_p.in()))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to obtain property reference"));
 	    CORBAProblemExImpl err = 
@@ -278,11 +168,11 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	    }
 
 
- 	ACS_DEBUG_PARAM("ACSSamp::ACSSampObjImpl::initialize","activating CORBA object  %s",
+ 	ACS_DEBUG_PARAM("acssamp::ACSSampObjImpl::initialize","activating CORBA object  %s",
 			sampObjName.c_str());      
 
-	m_reference = BACI_CORBA::ActivateCORBAObject(this,sampObjName.c_str());
-	if (CORBA::is_nil(m_reference))
+	reference_p = BACI_CORBA::ActivateCORBAObject(this,sampObjName.c_str());
+	if (CORBA::is_nil(reference_p))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"XXXX Failed to activate CORBA object"));
 	    CouldntCreateObjectExImpl err =
@@ -298,28 +188,26 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
     // we catch everything and just rethrow
     catch(...)
 	{
-	if (threadManager)
-	    delete threadManager;	
+	if (threadManager_p)
+	    delete threadManager_p;	
 
         // clean-up associated with NC
-	if (m_SampSupplier_p)
+	if (sampSupplier_p)
 	    {
-	    m_SampSupplier_p->disconnect();
-	    m_SampSupplier_p=NULL;
+	    sampSupplier_p->disconnect();
+	    sampSupplier_p = 0;
 	    }
 
         // clean-up associated with internal buffer
-	if (mq_)
-	    delete mq_;
+	if (mq_p)
+	    delete mq_p;
 
  	throw;
 	}
  
-
-	// the object is correctly created; it will be inserted in
-        // the ACSSampImpl internal list of active objects
-	sampPtr->addComponenttoList(m_reference);
-    
+    // the object is correctly created; it will be inserted in
+    // the ACSSampImpl internal list of active objects
+    samp_p->addComponenttoList(reference_p);   
 }
 
 
@@ -328,45 +216,47 @@ template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::start ()
     throw (CORBA::SystemException)
 {
+    ACS_TRACE("acssamp::ACSSampObjImpl::start");
 
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::start");
-
-    //  ACS_SHORT_LOG((LM_INFO,"::SampObjImpl::start %s", m_cob->getName()));
+    //  ACS_SHORT_LOG((LM_INFO,"::SampObjImpl::start %s", cob_p->getName()));
     
-    DBConnector::writeCommand(m_cob->getName(), "start", getStringifiedTimeStamp());
+    DBConnector::writeCommand(cob_p->getName(), "start", getStringifiedTimeStamp());
     
-
     const TimeInterval responseTime=1*1000*1000*10;    // 1s
 
     ACE_CString sampThreadName = sampObjName + "_thread";
+
     ACE_CString flushThreadName = sampObjName + "_f_thread";
+   
+    ACSSampObjImpl<ACS_SAMP_TL> *selfPtr = this;
 
 // starting sampling thread    
-    if(!m_controlLoop_p)
+    if(!controlLoop_p)
 	{
-	m_controlLoop_p = threadManager->create(sampThreadName.c_str(), (void *)sampThreadWorker, (void *)this, responseTime, sampFrequency );
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::start","thread created");
+	controlLoop_p = threadManager_p->create<SamplingThread<ACS_SAMP_TL>, ACSSampObjImpl<ACS_SAMP_TL> *>(sampThreadName.c_str(), selfPtr, responseTime, sampFrequency);
+	ACS_DEBUG("acssamp::ACSSampObjImpl::start","thread created");
+	controlLoop_p->resume();
 	}
     else
 	{
-	m_controlLoop_p->resume();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::start","thread resumed");
+	controlLoop_p->resume();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::start","thread resumed");
 	}
 
 
 // starting flushing thread
-    if(!m_flush_p)
+    if(!flush_p)
         {
-	m_flush_p = threadManager->create(flushThreadName.c_str(), (void *)sampThreadFlush, (void *)this, responseTime, sampReportRate );
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::start","flush thread created");
+	flush_p = threadManager_p->create<SamplingThreadFlush<ACS_SAMP_TL>, ACSSampObjImpl<ACS_SAMP_TL> *>(flushThreadName.c_str(), selfPtr, responseTime, sampReportRate);
+	ACS_DEBUG("acssamp::ACSSampObjImpl::start","flush thread created");
 	}
     else
 	{
-	m_flush_p->resume();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::start","flush thread resumed");
+	flush_p->resume();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::start","flush thread resumed");
+	flush_p->resume();
 	}
 }
-
 
 
 // implementation of  stop() method
@@ -375,20 +265,20 @@ void ACSSampObjImpl<ACS_SAMP_TL>::stop ()
     throw (CORBA::SystemException)
 {
 
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::stop");
+    ACS_TRACE("acssamp::ACSSampObjImpl::stop");
     
-    DBConnector::writeCommand(m_cob->getName(), "stop", getStringifiedTimeStamp());
+    DBConnector::writeCommand(cob_p->getName(), "stop", getStringifiedTimeStamp());
     
-    if( m_controlLoop_p )
+    if( controlLoop_p )
 	{
-	m_controlLoop_p->stop();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::start","thread stopped");
+	controlLoop_p->stop();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::start","thread stopped");
 	}
 
-    if( m_flush_p )
+    if( flush_p )
 	{
-	m_flush_p->stop();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::stop","flush thread stopped");
+	flush_p->stop();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::stop","flush thread stopped");
 	}
     
 }
@@ -401,17 +291,17 @@ void ACSSampObjImpl<ACS_SAMP_TL>::suspend ()
     throw (CORBA::SystemException)
 {
 
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::suspend");
+    ACS_TRACE("acssamp::ACSSampObjImpl::suspend");
 
-    if( m_controlLoop_p )
+    if( controlLoop_p )
 	{
-	m_controlLoop_p->suspend();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::suspend","thread suspended");
+	controlLoop_p->suspend();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::suspend","thread suspended");
 	}
-    if( m_flush_p )
+    if( flush_p )
 	{
-	m_flush_p->suspend();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::suspend","flush thread suspended");
+	flush_p->suspend();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::suspend","flush thread suspended");
 	}
 
 }
@@ -423,17 +313,17 @@ void ACSSampObjImpl<ACS_SAMP_TL>::resume ()
     throw (CORBA::SystemException)
 {
 
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::resume");
+    ACS_TRACE("acssamp::ACSSampObjImpl::resume");
 
-    if( m_controlLoop_p )
+    if( controlLoop_p )
 	{
-	m_controlLoop_p->resume();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::resume","thread resumed");
+	controlLoop_p->resume();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::resume","thread resumed");
 	}
-    if( m_flush_p )
+    if( flush_p )
 	{
-	m_flush_p->resume();
-	ACS_DEBUG("ACSSamp::ACSSampObjImpl::resume","flush thread resumed");
+	flush_p->resume();
+	ACS_DEBUG("acssamp::ACSSampObjImpl::resume","flush thread resumed");
 	}
    
 }
@@ -446,38 +336,38 @@ void ACSSampObjImpl<ACS_SAMP_TL>::destroy()
     throw (CORBA::SystemException)
 {
 
-    ACS_TRACE("ACSSamp::ACSSampObjImpl::destroy");
+    ACS_TRACE("acssamp::ACSSampObjImpl::destroy");
 
     if (inDestructState) return;
     inDestructState = true;
 
-    if( m_controlLoop_p )
+    if( controlLoop_p )
 	{
-	m_controlLoop_p->terminate();
-	ACS_DEBUG_PARAM("ACSSamp::ACSSampObjImpl::destroy","thread %s destroyed",m_controlLoop_p->getName().c_str()); 
+	controlLoop_p->terminate();
+	ACS_DEBUG_PARAM("acssamp::ACSSampObjImpl::destroy","thread %s destroyed",controlLoop_p->getName().c_str()); 
 	}
 
-    if( m_flush_p )
+    if( flush_p )
 	{
-	m_flush_p->terminate();
-	ACS_DEBUG_PARAM("ACSSamp::ACSSampObjImpl::destroy","thread %s destroyed",m_flush_p->getName().c_str());
+	flush_p->terminate();
+	ACS_DEBUG_PARAM("acssamp::ACSSampObjImpl::destroy","thread %s destroyed",flush_p->getName().c_str());
 	}
 
     // clean-up associated with NC
-    if (m_SampSupplier_p)
+    if (sampSupplier_p)
 	{
-	m_SampSupplier_p->disconnect();
-	m_SampSupplier_p=0;
+	sampSupplier_p->disconnect();
+	sampSupplier_p = 0;
 	}
 
    
-    if (!CORBA::is_nil(m_reference))
+    if (!CORBA::is_nil(reference_p))
 	{
 	// this calls delete on this object, so DO NOT use any of its variables anymore
-	if (!BACI_CORBA::DestroyCORBAObject(m_reference))
+	if (!BACI_CORBA::DestroyCORBAObject(reference_p))
 	    {
-	    ACS_LOG(LM_RUNTIME_CONTEXT, "ACSSamp::ACSSampObjImpl::destroy",
-		    (LM_ERROR, "Failed to destroy CORBA object '%s', m_controlLoop_p->getName()"));
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "acssamp::ACSSampObjImpl::destroy",
+		    (LM_ERROR, "Failed to destroy CORBA object '%s', controlLoop_p->getName()"));
 	    }
 	else
 	    {
@@ -505,47 +395,43 @@ void ACSSampObjImpl<ACS_SAMP_TL>::setSampFrequency(const TimeInterval& _sampFreq
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::setReportRate(const TimeInterval& _sampReportRate)
 {
-    sampReportRate=_sampReportRate;
+    sampReportRate = _sampReportRate;
 }
 
 
-// implementation of  interface method set_sampFrequency
+// implementation of  interface method setFrequency
 template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::set_sampFrequency (ACS::TimeInterval sFrequency
-						     )
+void ACSSampObjImpl<ACS_SAMP_TL>::setFrequency (ACS::TimeInterval sFrequency)
     throw (CORBA::SystemException)
 {
     setSampFrequency(sFrequency);
 }
 
 
-// implementation of  interface method get_sampFrequency
+// implementation of  interface method getFrequency
 template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::get_sampFrequency (ACS::TimeInterval_out sFrequency
-						     )
+void ACSSampObjImpl<ACS_SAMP_TL>::getFrequency (ACS::TimeInterval_out sFrequency)
     throw (CORBA::SystemException)
 {
-    sFrequency=getSampFrequency();
+    sFrequency = getSampFrequency();
 }
 
 
-// implementation of  interface method set_ReportRate
+// implementation of  interface method setRate
 template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::set_reportRate (ACS::TimeInterval sRate
-						  )
+void ACSSampObjImpl<ACS_SAMP_TL>::setRate (ACS::TimeInterval sRate)
     throw (CORBA::SystemException)
 {
     setReportRate(sRate);
 }
 
 
-// implementation of  interface method get_reportRate
+// implementation of  interface method getRate
 template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::get_reportRate (ACS::TimeInterval_out sRate
-						  )
+void ACSSampObjImpl<ACS_SAMP_TL>::getRate (ACS::TimeInterval_out sRate)
     throw (CORBA::SystemException)
 {
-    sRate=getReportRate();
+    sRate = getReportRate();
 }
 
 
@@ -567,17 +453,16 @@ char * ACSSampObjImpl<ACS_SAMP_TL>::getChannelName ()
 // a temporary buffer.
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::doSamp()
-{
-    
-    sampData currentVal;
+{  
+    SampData currentVal;
 
-    if ( propToSamp.ptr() != T::_nil())
+    if ( propToSamp_p.ptr() != T::_nil())
 	{
 	/*
 	 * Get the current value of the property
 	 */
 	ACSErr::Completion_var completion;
-	currentVal.val = propToSamp->get_sync(completion.out());
+	currentVal.val = propToSamp_p->get_sync(completion.out());
 	currentVal.timeStamp = getTimeStamp();
 
 	// ACS_SHORT_LOG((LM_INFO,"Time: %u",currentVal.timeStamp));
@@ -592,7 +477,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::doSamp()
 
 	mb->copy((const char *) & currentVal, sizeof(currentVal));
 
-	if(mq_->enqueue_prio(mb) == -1)
+	if(mq_p->enqueue_prio(mb) == -1)
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"ACSSampObjImpl::doSamp error enqueueing ACE_Message_Block"));
 	    }
@@ -606,31 +491,30 @@ void ACSSampObjImpl<ACS_SAMP_TL>::doSamp()
 template <ACS_SAMP_C>
 void  ACSSampObjImpl<ACS_SAMP_TL>::flushSamp()
 {
-
-    if (mq_->is_empty())
+    if (mq_p->is_empty())
 	{
 	return;
 	}
 
-    //ACS_SHORT_LOG((LM_INFO,"Deque (0 = not empty) %d",mq_->is_empty()));
+    //ACS_SHORT_LOG((LM_INFO,"Deque (0 = not empty) %d",mq_p->is_empty()));
  
-    sampData data;
+    SampData data;
     ACE_Message_Block *mbf;
 
-    size_t len = mq_->message_length()/sizeof(data);
+    size_t len = mq_p->message_length()/sizeof(data);
 
     //ACS_SHORT_LOG((LM_INFO,"ACSSampObjImpl::flushSamp message len=%d",len));
 
     unsigned int index = 0;
     
-    ACSSamp::SampObj::SampDataBlockSeq_var theSeq = new ACSSamp::SampObj::SampDataBlockSeq(len);
+    acssamp::SampObj::SampDataBlockSeq_var theSeq = new acssamp::SampObj::SampDataBlockSeq(len);
     theSeq->length(len);
     
     while (len-- > 0)
 	{
 
         // extract data from the queue and store it in the sequence 
-	mq_->dequeue_head(mbf);
+	mq_p->dequeue_head(mbf);
 	ACE_OS::memmove((char *) &data,mbf->rd_ptr(),sizeof(data));
 	mbf->rd_ptr(sizeof(data));
      
@@ -644,8 +528,7 @@ void  ACSSampObjImpl<ACS_SAMP_TL>::flushSamp()
   
     mbf->release();
 
-    m_SampSupplier_p->publishData(theSeq.in());
- 
+    sampSupplier_p->publishData<acssamp::SampObj::SampDataBlockSeq>(theSeq.in());
 }
 
 

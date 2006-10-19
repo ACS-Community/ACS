@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.21 2004/12/01 09:25:57 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.22 2006/10/19 15:20:40 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -138,10 +138,10 @@ SCRIPTS_L       =
 #
 # TCL scripts (public and local)
 # ------------------------------
-TCL_SCRIPTS     = acssampTest
+#TCL_SCRIPTS     = acssampTest
 
-acssampTest_OBJECTS = acssampTest
-acssampTest_TCLSH   = expect
+#acssampTest_OBJECTS = acssampTest
+#acssampTest_TCLSH   = expect
 
 TCL_SCRIPTS_L   =
 
