@@ -85,7 +85,7 @@ XERCES_CPP_NAMESPACE_USE
 using parameterSet::acsDOMErrorHandler;
 using parameterSet::StrX;
 using acsalarm::FaultState;
-using laserSource::ASIMessage;
+using acsalarm::ASIMessage;
 
 class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 {

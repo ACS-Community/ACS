@@ -1,10 +1,12 @@
 #ifndef ACS_ALARM_PUBLISHER_H
 #define ACS_ALARM_PUBLISHER_H
 
-#include "AlarmPublisher.h"
+#include "AbstractAlarmPublisher.h"
 #include "AlarmSupplier.h"
 
-namespace laserAlarmPublisher
+//using laserSource::AbstractAlarmPublisher;
+
+namespace laserSource
 {
 	/*
 	 * Concrete alarm publisher which uses ACS Notification Channel 
@@ -12,7 +14,7 @@ namespace laserAlarmPublisher
 	 * The Notification-Service-related functionality is encapsulated in
 	 * a separate class (which is used by this class), AlarmSupplier. 
 	 */
-	class AcsAlarmPublisher: public AlarmPublisher
+	class AcsAlarmPublisher //: public AbstractAlarmPublisher
 	{
 		public:
 			AcsAlarmPublisher(string topicName);

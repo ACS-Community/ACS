@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.2 2006/09/25 08:52:37 acaproni Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.3 2006/10/19 17:50:02 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -60,7 +60,9 @@
 #include <logging.h>
 #include <string>
 
-static char *rcsId="@(#) $Id: AlarmSupplier.cpp,v 1.2 2006/09/25 08:52:37 acaproni Exp $"; 
+using acsalarm::ASIMessage;
+
+static char *rcsId="@(#) $Id: AlarmSupplier.cpp,v 1.3 2006/10/19 17:50:02 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -92,7 +94,7 @@ AlarmSupplier::~AlarmSupplier()
  * Method to publish an event over CORBA notification channel.
  * @param msg the ASIMessage to publish.
  */
-void AlarmSupplier::publishEvent(laserSource::ASIMessage &msg)
+void AlarmSupplier::publishEvent(ASIMessage &msg)
 { 
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): entering.");

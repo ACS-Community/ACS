@@ -4,8 +4,8 @@
 #include <dlfcn.h>
 #include "CERNAlarmSystemInterfaceProxy.h"
 #include "asiConfigurationConstants.h"
-#include <logging.h>
 #include "AcsAlarmPublisher.h"
+#include "logging.h"
 
 using namespace acsalarm;
 using namespace laserSource;
@@ -18,7 +18,6 @@ CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy()
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(): entering.");
-	laserPublisher = NULL;
 	setSourceName(ALARM_SOURCE_NAME);
 	init();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(): exiting.");
@@ -33,7 +32,6 @@ CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string theSourceNam
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string): entering.");
-	laserPublisher = NULL;
 	setSourceName(theSourceName);
 	string expectedSrcName(ALARM_SOURCE_NAME);
 	if(theSourceName != expectedSrcName)
@@ -60,66 +58,28 @@ CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy()
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy(): exiting.");
 }
 
-/**
- * Close and deallocate resources.
- */
+// initialization logic
+void CERNAlarmSystemInterfaceProxy::init()
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::init(): entering.");
+
+	// TODO later: portability/platform-specific issues with using gethostname()?
+	char name[MAXHOSTNAMELEN + 1];
+	gethostname(name, MAXHOSTNAMELEN);
+	string nameStr(name);
+	hostName = (nameStr);
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::init(): exiting.");
+}
+
+// cleanup logic
 void CERNAlarmSystemInterfaceProxy::close()
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::close(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::close(): exiting.");
-}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::close(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::close(): exiting.");
 
-/**
- * Push a collection of fault states.
- * @param states
- *
- * TODO later:
- * @throws ASIException if the fault state collection can not be pushed.
- */
-void CERNAlarmSystemInterfaceProxy::push(vector<FaultState> & states)
-{
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<FaultState>): entering.");
-	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<FaultState>): exiting.");
-}
-
-/**
- * Push a fault state.
- * @param state the fault state change to push.
- *
- * TODO later:
- * @throws ASIException if the fault state can not be pushed.
- */
-void CERNAlarmSystemInterfaceProxy::push(FaultState & state)
-{
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(FaultState): entering.");
-	// create a vector and populate with the (single) fault state, 
-	// to be passed to the buildMessageXML method
-
-	vector<FaultState> states;
-	FaultState* st=(FaultState*)&state;
-	states.push_back((FaultState)*st);
-
-	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(FaultState): exiting.");
-}
-
-/**
- * Push the set of active fault states.
- * @param activeFaults the active fault states.
- *
- * TODO later:
- * @throws ASIException if the fault state active list can not be pushed.
- */
-void CERNAlarmSystemInterfaceProxy::pushActiveList(vector<FaultState> & activeFaults)
-{
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::pushActiveList(): entering.");
-	commonPush(activeFaults, true);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::pushActiveList(): exiting.");
 }
 
 /*
@@ -133,76 +93,18 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): entering.");
 	bool retVal = false;
 
-	// create the topic on which to publish the alarm, by appending 
-	// the source name to the topic prefix provided by the configuration 
+	// create the topic on which to publish the alarm, by appending
+	// the source name to the topic prefix provided by the configuration
 	// (should look something like: CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES)
 	string topicName(configuration.getAlarmsTopic());
 	topicName.append(".");
 	topicName.append(msg.getSourceName());
 
-	AlarmPublisher *laserPublisher = new laserAlarmPublisher::AcsAlarmPublisher(topicName);
+	laserPublisher = new AcsAlarmPublisher(topicName);
 
 	// publish the alarm 
 	laserPublisher->publishAlarm(msg);
 
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): exiting.");
 	return retVal;
-}
-
-/**
- * Private method to push a collection of fault states, containing the
- * logic which is common to both the push() and pushActiveList() methods.
- *
- * @param states
- * @param backup whether we are sending 'backup' alarms or not. backup alarms
- *        are alarms in the active list that are sent on startup, when the source
- *        starts and periodically according to the expected backup frequency.
- *
- * TODO later:
- * @throws ASIException if the fault state collection can not be pushed.
- */
-void CERNAlarmSystemInterfaceProxy::commonPush(vector<FaultState> & states, bool backup)
-{
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::commonPush(): entering.");
-	// create the ASIMessage, supplying the faults which are to be published to the alarm server
-	vector<FaultState> * statesPtr = new vector<FaultState>(states);
-	auto_ptr<vector<FaultState> > statesAutoPtr(statesPtr); 
-	ASIMessage asiMessage(statesAutoPtr);
-
-	// populate the ASIMessage's source timestamp (with the current time)
-	auto_ptr<Timestamp> timestampPtr(new Timestamp());
-	asiMessage.setSourceTimestamp(timestampPtr);
-
-	// populate the ASIMessage's source name
-	asiMessage.setSourceName(sourceName);
-
-	// populate the ASIMessage's source hostname
-	asiMessage.setSourceHostname(hostname);
-
-	// set the ASIMessage's backup flag
-	asiMessage.setBackup(backup);
-
-	// set the ASIMessage's version
-	asiMessage.setVersion(configuration.getASIVersion());
-	
-	// publish the ASIMessage to the alarm server
-	publishMessage(asiMessage);
-
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::commonPush(): exiting.");
-}
-
-// initialization logic used by the constructors
-void CERNAlarmSystemInterfaceProxy::init()
-{
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::init(): entering.");
-
-	// TODO later: portability/platform-specific issues with using gethostname()?
-	char name[MAXHOSTNAMELEN + 1];
-	gethostname(name, MAXHOSTNAMELEN);
-	string nameStr(name);
-	hostname = (nameStr);
-
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::init(): exiting.");
 }

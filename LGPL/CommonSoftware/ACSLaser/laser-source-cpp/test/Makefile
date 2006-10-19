@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2006/10/18 12:55:53 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.9 2006/10/19 17:50:02 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -48,7 +48,7 @@ testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs m
 
 # <brief description of xxxxx program>
 unitTestDriver_OBJECTS   = unitTestDriver 
-unitTestDriver_LIBS      = cppunit logging maciClient maci acsXercesUtilities laserSource acsAlSysSource
+unitTestDriver_LIBS      = cppunit logging maciClient maci acsXercesUtilities acsAlSysSource
 
 #
 # special compilation flags for single c sources

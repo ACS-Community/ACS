@@ -5,7 +5,7 @@
 #include <acsncHelper.h>
 #include <ACSAlarmSystemInterfaceFactory.h>
 
-using namespace laserAlarmPublisher;
+using namespace laserSource;
 using nc::Helper;
 
 /*
@@ -63,13 +63,7 @@ bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): entering.");
-	if(NULL != getAlarmSupplier())
-	{
-		getAlarmSupplier()->publishEvent(msg);
-	} else {
-		// TODO: throw an exception here?
-		myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::publishAlarm(): alarm not published; alarm supplier is null.");
-	}
+	getAlarmSupplier()->publishEvent(msg);
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): exiting.");
 	return true;
 }

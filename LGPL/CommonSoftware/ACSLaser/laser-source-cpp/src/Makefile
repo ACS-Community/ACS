@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2006/10/18 17:12:23 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.8 2006/10/19 17:50:02 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -51,25 +51,17 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = ASIMessage.h CERNAlarmSystemInterfaceProxy.h \
-    AlarmPublisher.h AcsAlarmPublisher.h AlarmSupplier.h asiConfigurationConstants.h ASIConfiguration.h \
+INCLUDES        = CERNAlarmSystemInterfaceProxy.h AcsAlarmPublisher.h AlarmSupplier.h #AbstractAlarmPublisher.h
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = laserSource laserSourceAcsSpecific
+LIBRARIES       = laserSourceAcsSpecific
 LIBRARIES_L     =
 
-# laserSource is for generic code which can be reused by third parties;
-# it would be necessary to implement: 1) a concrete class extending ACSAlarmSystemInterface (found in acsalarm package)
-# with implementations for push, pushActiveList, etc (i.e. defining the abstract methods from the base class)
-# and 2) a second concrete class extending of AbstractAlarmSystemInterfaceFactory (found in acsalarm package) which has methods
-# to return an instance (of the first concrete class) when createSource is called
-laserSource_OBJECTS   = ASIMessage ASIConfiguration 
-
 # laserSourceAcsSpecific library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties
-laserSourceAcsSpecific_OBJECTS   = CERNAlarmSystemInterfaceFactory CERNAlarmSystemInterfaceProxy AlarmPublisher AcsAlarmPublisher AlarmSupplier 
-laserSourceAcsSpecific_LIBS = laserSource basenc ACSJMSMessageEntityStubs acsnc
+laserSourceAcsSpecific_OBJECTS   = CERNAlarmSystemInterfaceFactory CERNAlarmSystemInterfaceProxy AcsAlarmPublisher AlarmSupplier
+laserSourceAcsSpecific_LIBS = basenc ACSJMSMessageEntityStubs acsnc acsAlSysSource 
 laserSourceAcsSpecific_LDFLAGS = --export-dynamic -dl -fpic
 
 #

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.h,v 1.3 2006/10/18 17:12:23 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.h,v 1.4 2006/10/19 17:50:02 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@ class AlarmSupplier : public BaseSupplier
 		/**
 		 * Method to publish an event to the LASER alarm server.
 		 */
-		void publishEvent(laserSource::ASIMessage &msg);
+		void publishEvent(acsalarm::ASIMessage &msg);
 	
 	protected:
 
