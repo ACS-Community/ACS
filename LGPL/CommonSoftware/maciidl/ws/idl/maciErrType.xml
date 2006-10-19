@@ -122,6 +122,10 @@ This file has to be moved into the TICS subsystem
 			type="string"
 			description="Executable code for the component (e.g. DLL, Java class)."
 		/>
+		<Member name="DetailedReason"
+			type="string"
+			description="Detailed explanation of failure"
+		/>
 	</ErrorCode>
 
 	<ErrorCode name="CannotDeactivateComponent"
