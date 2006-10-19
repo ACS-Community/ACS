@@ -401,10 +401,12 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
+	 * Create an instance of the erro dialog singleton
 	 * 
+	 * @param wait Wait the creation of the dialog before returning
 	 * @return A reference to the Error log dialog
 	 */
-	public synchronized static ErrorLogDialog getErrorLogDlg() {
+	public synchronized static ErrorLogDialog getErrorLogDlg(boolean wait) {
 		// The dialog is created using the SwingUtilities.invokeAndWait
 		// It helps avoiding deadlocks
 		if (instance==null) {
@@ -414,7 +416,11 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 				}
 			};
 			try {
-				SwingUtilities.invokeLater(createObj);
+				if (wait) {
+					SwingUtilities.invokeAndWait(createObj);
+				} else {
+					SwingUtilities.invokeLater(createObj);
+				}
 			} catch (Throwable t) {
 				System.out.println("Error creating the dialog: "+t.getMessage());
 				t.printStackTrace();
