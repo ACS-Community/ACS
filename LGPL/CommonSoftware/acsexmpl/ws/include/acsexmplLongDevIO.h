@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplLongDevIO.h,v 1.7 2004/07/16 09:02:49 gchiozzi Exp $"
+* "@(#) $Id: acsexmplLongDevIO.h,v 1.8 2006/10/19 09:47:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -78,7 +78,7 @@ using namespace baci;
  * but do not want the property to be read-write where anyone can change it. Please see the
  * Ramped Power Supply example to see how this class is used in conjunction with BACI long
  * properties.
- * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.7 2004/07/16 09:02:49 gchiozzi Exp $"
+ * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.8 2006/10/19 09:47:40 bjeram Exp $"
  */
 class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
 {
@@ -123,11 +123,10 @@ class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
        @endhtmlonly
      */
     virtual CORBA::Long 
-    read(int& errcode, unsigned long long& timestamp)
+    read(unsigned long long& timestamp)
+	throw (ACSErr::ACSbaseExImpl)
 	{
-	    //Method is so simple no error can occur.
-	    errcode = 0;
-
+	
 	    //Must set the timestamp.  This value is in 100s of nanoseconds that have passed
 	    //since some date in the 1500s.  Most developers will just want to use the getTimeStamp
 	    //method, but you can find more information on the time defintion in the ACS Time 
@@ -156,11 +155,9 @@ class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
        @endhtmlonly
      */
     virtual void 
-    write(const CORBA::Long &value, int& errcode, unsigned long long& timestamp)
+    write(const CORBA::Long &value, unsigned long long& timestamp)
+	throw (ACSErr::ACSbaseExImpl)
 	{
-	    //Method is so simple no error can occur.
-	    errcode = 0;
-
 	    //Must set the timestamp.  This value is in 100s of nanoseconds that have passed
 	    //since some date in the 1500s (see ACS Time System documentation for specific details).  
 	    //Most developers will just want to use the getTimeStamp method.

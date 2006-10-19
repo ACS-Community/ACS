@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.6 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.7 2006/10/19 09:47:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ const static int MOVEFILTER_ACTION   = 0;
 const static int MOVESLOT_ACTION   = 1;
 const static int ADJUST_ACTION = 2;
 
-ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.6 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.7 2006/10/19 09:47:40 bjeram Exp $")
 
 using namespace baci;
 
@@ -218,9 +218,8 @@ void FilterWheel::updateWheel(int slot, int step)
 
     m_position_sp=new ROdouble(getContainerServices()->getName()+":position", getComponent());
     // Position is 0 at the beginning
-    int errcode;
     ACS::Time timestamp;
-    m_position_sp->getDevIO()->write(0.0, errcode, timestamp);
+    m_position_sp->getDevIO()->write(0.0, timestamp);
 
     // There are two ways to get an attribute of the component
     // 1. from the DAO of the component 
@@ -257,7 +256,7 @@ void FilterWheel::updateWheel(int slot, int step)
 	}
     if (descr!=NULL) 
     {
-    	m_desc_sp->getDevIO()->write(descr,errcode,timestamp);
+    	m_desc_sp->getDevIO()->write(descr, timestamp);
     }
 
     // 2
@@ -277,7 +276,7 @@ void FilterWheel::updateWheel(int slot, int step)
 	    {
 	    // Convert the string
 	    availSlots=atoi(val);
-	    m_slots_sp->getDevIO()->write(availSlots,errcode,timestamp);
+	    m_slots_sp->getDevIO()->write(availSlots, timestamp);
 	    }
 	}
     catch (...)
@@ -371,12 +370,11 @@ FilterWheel::adjustAction (
 
     int* steps = static_cast<int*>(const_cast<void *>(value_p->pointerValue()));
 
-    int errcode;
     ACS::Time timestamp;
     ACSErr::Completion_var compl;
     
     int newPosition=(int)m_position_sp->get_sync(compl)+*steps;
-    m_position_sp->getDevIO()->write(newPosition,errcode,timestamp);
+    m_position_sp->getDevIO()->write(newPosition, timestamp);
     ACS_SHORT_LOG((LM_INFO,"Wheel rotaed to step %d",newPosition));
 
     DBConnector::writeCommand(getComponent()->getName(), "move", getStringifiedTimeStamp());
@@ -431,7 +429,7 @@ FilterWheel::moveFilterAction (
 	    unsigned int step=m_wheelConfiguration[t].step;
 	    int errcode;
 	    ACS::Time timestamp;
-		m_position_sp->getDevIO()->write(step+delta,errcode,timestamp);
+		m_position_sp->getDevIO()->write(step+delta, timestamp);
 		ACS_SHORT_LOG((LM_INFO,"Wheel rotaed to step %d",step+delta));
 	}
     else
@@ -478,7 +476,7 @@ FilterWheel::moveSlotAction (
     unsigned int availableSlots = (unsigned int)m_slots_sp->get_sync(tempCompletion);
     if (*slot>=0 && *slot<(int)availableSlots)
     {
-        m_position_sp->getDevIO()->write(m_wheelConfiguration[*slot].step,errcode,timestamp);
+        m_position_sp->getDevIO()->write(m_wheelConfiguration[*slot].step, timestamp);
         ACS_SHORT_LOG((LM_INFO,"Wheel rotaed to step %d",m_wheelConfiguration[*slot].step));
     }
     else 
