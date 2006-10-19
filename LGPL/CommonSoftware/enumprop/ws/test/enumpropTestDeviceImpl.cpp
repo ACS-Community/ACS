@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.45 2006/09/26 12:10:49 bjeram Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.46 2006/10/19 08:24:02 bjeram Exp $
  */
 /*
 *    DeviceImpl.cpp - ALMA Device interface implementation.
@@ -109,12 +109,11 @@ ACSErr::Completion * enumpropTestDeviceImpl::enable ()
 		   )
 {
     
-    int errcode;
     ACSErr::Completion_var c = new Completion;
 
     printf("ENABLED\n");
     ENUMPROP_TEST::States st=ENUMPROP_TEST::ENABLED;
-    m_currentState->getDevIO()->write( st, errcode, c->timeStamp );
+    m_currentState->getDevIO()->write( st, c->timeStamp );
     return c._retn();
 }
  
@@ -125,13 +124,12 @@ ACSErr::Completion * enumpropTestDeviceImpl::disable ( )
 		   )
 {
     
-    int errcode;
     ACSErr::Completion_var c = new Completion;
 
     printf("DISABLE\n");
 
     ENUMPROP_TEST::States st = ENUMPROP_TEST::DISABLED;
-    m_currentState->getDevIO()->write( st, errcode, c->timeStamp );
+    m_currentState->getDevIO()->write( st, c->timeStamp );
     return c._retn();
 }
   
@@ -141,12 +139,11 @@ ACSErr::Completion * enumpropTestDeviceImpl::diagnose (  )
 		   )
 {
   
-  int errcode;
   ACSErr::Completion_var c = new Completion;
 
   printf("DIAGNOSE\n");
   ENUMPROP_TEST::States st = ENUMPROP_TEST::DIAGNOSE;
-  m_currentState->getDevIO()->write( st, errcode, c->timeStamp );
+  m_currentState->getDevIO()->write( st, c->timeStamp );
   return c._retn();
 }
 
@@ -155,13 +152,11 @@ ACSErr::Completion * enumpropTestDeviceImpl::shutdown ( )
 		   ENUMPROP_TEST::StateMachine::NoSuchTransition
 		   )
 {
-       
-    int errcode;
     ACSErr::Completion_var c = new Completion;
 
     printf("SHUTDOWN\n");
     ENUMPROP_TEST::States st =  ENUMPROP_TEST::SHUTDOWN;
-    m_currentState->getDevIO()->write( st, errcode, c->timeStamp );
+    m_currentState->getDevIO()->write( st, c->timeStamp );
     return c._retn();
 }
 
@@ -170,14 +165,12 @@ ACSErr::Completion * enumpropTestDeviceImpl::init ( )
 		   ENUMPROP_TEST::StateMachine::NoSuchTransition
 		   )
 {
-    
-    int errcode;
     ACSErr::Completion_var c = new Completion;
 
     printf("INITIALIZE\n");
 
     ENUMPROP_TEST::States st =  ENUMPROP_TEST::INITIALIZE;
-    m_currentState->getDevIO()->write( st, errcode, c->timeStamp );
+    m_currentState->getDevIO()->write( st, c->timeStamp );
     return c._retn();
 }
 
@@ -186,13 +179,11 @@ ACSErr::Completion * enumpropTestDeviceImpl::on ( )
 		   ENUMPROP_TEST::StateMachine::NoSuchTransition
 		   )
 {
-    
-    int errcode;
     ACSErr::Completion_var c = new Completion;
 
     printf("ON\n");
     ENUMPROP_TEST::States st = ENUMPROP_TEST::ON; 
-    m_currentState->getDevIO()->write( st, errcode, c->timeStamp );
+    m_currentState->getDevIO()->write( st, c->timeStamp );
     return c._retn();
 }
 
@@ -201,13 +192,11 @@ ACSErr::Completion * enumpropTestDeviceImpl::off ( )
 		   ENUMPROP_TEST::StateMachine::NoSuchTransition
 		   )
 {
-    
-      int errcode;
     ACSErr::Completion_var c = new Completion;
 
     printf("OFF\n");
     ENUMPROP_TEST::States st = ENUMPROP_TEST::OFF; 
-    m_currentState->getDevIO()->write( st, errcode, c->timeStamp );
+    m_currentState->getDevIO()->write( st, c->timeStamp );
     return c._retn(); 
 }
 
