@@ -505,7 +505,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		ret = ret && toY>=2000 && toY<2100;
 		ret = ret && fromM>=1 && fromM<=12;
 		ret = ret && toM>=1 && toM<=12;
-		ret = ret && fromD>+1 && fromD<=31;
+		ret = ret && fromD>=1 && fromD<=31;
 		ret = ret && toD>=1 && toD<=31;
 		
 		ret = ret && from_h>=0 && from_h<24;
