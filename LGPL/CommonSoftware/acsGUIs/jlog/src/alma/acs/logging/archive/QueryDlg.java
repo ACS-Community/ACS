@@ -9,6 +9,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Collection;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -38,8 +40,9 @@ public class QueryDlg extends JDialog implements ActionListener {
 	// The archive
 	private ArchiveConnectionManager archive;
 	
-	// The time limit for the query
-	private JTextField from,to;
+	// The time limits for the query
+	private JTextField fromYY, fromMM, fromDD, fromHr, fromMin, fromSec;
+	private JTextField toYY, toMM, toDD, toHr, toMin, toSec;
 	
 	// The min and max log type
 	private JComboBox minLogLevelCB, maxLogLevelCB;
@@ -55,6 +58,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 */
 	public QueryDlg(ArchiveConnectionManager archiveConn) {
 		super();
+		setTitle("Load from database");
 		archive = archiveConn;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		initGUI();
@@ -69,7 +73,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==submitBtn) {
-			System.out.println("Submitting a query");
+			submitQuery();
 		} else if (e.getSource()==doneBtn) {
 			setVisible(false);
 			dispose();
@@ -83,6 +87,9 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 *
 	 */
 	private void initGUI() {
+		// The actual time/date used to fill the time fields 
+		Calendar calendar = Calendar.getInstance();
+		
 		JRootPane mainPnl = this.getRootPane();
 		mainPnl.setLayout(new BorderLayout());
 		
@@ -110,29 +117,94 @@ public class QueryDlg extends JDialog implements ActionListener {
 		JLabel maxLogs = new JLabel("Max num of logs to load");
 		c.gridx=0; c.gridy=5; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(maxLogs,c);
+		
 		// Add the input widgets
-		from = new JTextField(20);
-		c.gridx=1; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(from,c);
-		to = new JTextField(20);
-		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(to,c);
+		fromYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
+		c.gridx=1; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(fromYY,c);
+		JLabel separatorF1 = new JLabel("-");
+		c.gridx=2; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(separatorF1,c);
+		fromMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
+		c.gridx=3; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(fromMM,c);
+		JLabel separatorF2 = new JLabel("-");
+		c.gridx=4; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(separatorF2,c);
+		fromDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
+		c.gridx=5; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(fromDD,c);
+		JLabel tlbl = new JLabel("T");
+		c.gridx=6; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(tlbl,c);
+		fromHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
+		c.gridx=7; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(fromHr,c);
+		JLabel comaF1Lbl = new JLabel(":");
+		c.gridx=8; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(comaF1Lbl,c);
+		fromMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
+		c.gridx=9; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(fromMin,c);
+		JLabel comaF2Lbl = new JLabel(":");
+		c.gridx=10; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(comaF2Lbl,c);
+		fromSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
+		c.gridx=11; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(0,0,0,0);
+		optionsPnl.add(fromSec,c);
+		
+		toYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
+		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
+		optionsPnl.add(toYY,c);
+		JLabel separatorTo1 = new JLabel("-");
+		c.gridx=2; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(separatorTo1,c);
+		toMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
+		c.gridx=3; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(toMM,c);
+		JLabel separatorTo2 = new JLabel("-");
+		c.gridx=4; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(separatorTo2,c);
+		toDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
+		c.gridx=5; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(toDD,c);
+		JLabel t2lbl = new JLabel("T");
+		c.gridx=6; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(t2lbl,c);
+		toHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
+		c.gridx=7; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(toHr,c);
+		JLabel comaTo1Lbl = new JLabel(":");
+		c.gridx=8; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(comaTo1Lbl,c);
+		toMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
+		c.gridx=9; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(toMin,c);
+		JLabel comaTo2Lbl = new JLabel(":");
+		c.gridx=10; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		optionsPnl.add(comaTo2Lbl,c);
+		toSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
+		c.gridx=11; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER;
+		optionsPnl.add(toSec,c);
+		
+		
+		
 		// Build the renderer for the combo boxex
 		minLogLevelCB = new JComboBox();
 		setupTypeCB(minLogLevelCB);
 		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO+1);
-		c.gridx=1; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
+		c.gridx=1; c.gridy=2; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(minLogLevelCB,c);
 		maxLogLevelCB= new JComboBox();
 		setupTypeCB(maxLogLevelCB);
 		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY+1);
-		c.gridx=1; c.gridy=3; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
+		c.gridx=1; c.gridy=3; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(maxLogLevelCB,c);
 		procName = new JTextField(20);
-		c.gridx=1; c.gridy=4; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
+		c.gridx=1; c.gridy=4; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(procName,c);
 		rowLimit = new JTextField(20);
-		c.gridx=1; c.gridy=5; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
+		c.gridx=1; c.gridy=5; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(rowLimit,c);
 		
 		// Add the OK, CANCEL buttons
@@ -167,6 +239,14 @@ public class QueryDlg extends JDialog implements ActionListener {
         box.setMaximumRowCount(levelStr.length);
         box.setEditable(false);
         box.setRenderer(discardRendererCB);
+	}
+	
+	/**
+	 * Submit a query to the archive and insert the logs in the main window
+	 *
+	 */
+	private void submitQuery() {
+		System.out.println("Submitting a query");
 	}
 	
 }
