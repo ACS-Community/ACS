@@ -36,6 +36,7 @@ import org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManager;
+import org.omg.CORBA.SystemException;
 
 import si.ijs.acs.objectexplorer.NotificationBean;
 import si.ijs.acs.objectexplorer.OETreeNode;
@@ -57,10 +58,15 @@ import si.ijs.maci.ManagerHelper;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.logging.ClientLogManager;
 
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.objexpErrType.wrappers.AcsJObjectExplorerReportEx;
+import alma.objexpErrType.wrappers.AcsJObjectExplorerInterfaceRepositoryAccessEx;
+import alma.objexpErrType.wrappers.AcsJObjectExplorerConnectEx;
+
 import alma.maciErrType.NoPermissionEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * Insert the type's description here.
@@ -514,23 +520,42 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		if (target == null)
 			throw new NullPointerException("target");
 
-		BACIRemoteNode baciNode = (BACIRemoteNode) target;
-		if (baciNode.getCORBARef() != null)
-			return;
-		if (!(baciNode.getParent() instanceof Introspectable)) {
-			internalManagerConnect(baciNode);
-			synchronized (connected) {
-				if (baciNode.getUserObject() instanceof String)
-					connected.add(baciNode.getUserObject());
+			
+		BACIRemoteNode baciNode = null;
+		try {
+			baciNode = (BACIRemoteNode) target;
+			if (baciNode.getCORBARef() != null)
+				return;
+			if (!(baciNode.getParent() instanceof Introspectable)) {
+				internalManagerConnect(baciNode);
+				synchronized (connected) {
+					if (baciNode.getUserObject() instanceof String)
+						connected.add(baciNode.getUserObject());
+				}
+			} else {
+				internalParentConnect(baciNode);
 			}
-		} else {
-			internalParentConnect(baciNode);
-		}
-		if (baciNode.getCORBARef() == null)
+			if (baciNode.getCORBARef() == null)
+				throw new AcsJNullPointerEx();
+		} catch (AcsJObjectExplorerConnectEx e) {
+		    logACSException(e);
 			throw new RemoteException(
-				"Tried to connect to '"
-					+ baciNode
-					+ "' but got null pointer reference.");
+					"Failed to connect to '" + baciNode + "'");
+		} catch (AcsJNullPointerEx e) {
+		    logACSException(e);
+		    /**
+		     * @todo GCH 2006.10.18
+		     *       Here we throw a local exception.
+		     *       If we do not do this, objexp does not work properly any more.
+		     *       But things should be different.
+		     *       The problem is that I did not understand what happens
+		     *       upstream this call if I do not throw the exception.
+		     *       In practice the only bad effect of throwing the exception 
+		     *       are error traces in the console that probably should not be there.
+		     */
+			throw new RemoteException(
+					"Failed to connect to '" + baciNode + "'");
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -2070,18 +2095,27 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			Class wrapperClass = null;
 			try
 			{
+				/*
+				 * This is just to probe if we have an ACS Exception.
+				 * All applications should deal with ACS Exception and we want 
+				 * to issue a warning if this is not the case.
+				 * In this case we get an exception and the trap will log the warning.
+				 */
 				wrapperClass = Class.forName(wrapperName);
-
 				Method fromMethod = wrapperClass.getMethod("from" + onlyClassName, new Class[] { exceptionThrown.getClass() });
 				java.lang.Object newInstance = fromMethod.invoke(null, new java.lang.Object[] { exceptionThrown });
 
-				Method logMethod = wrapperClass.getMethod("log", new Class[] { Logger.class });
-				java.lang.Object retVal = logMethod.invoke(newInstance, new java.lang.Object[] { BACILogger.getLogger() });
+				AcsJObjectExplorerReportEx objexpEx = new AcsJObjectExplorerReportEx(exceptionThrown);
+				objexpEx.log(BACILogger.getLogger());
 
 			} catch (Throwable th)
 			{
+				AcsJObjectExplorerReportEx notAnAcsEx = new AcsJObjectExplorerReportEx(exceptionThrown);
+				notAnAcsEx.setContext("Logging a User Exception that is NOT an ACS Exception");
+				notAnAcsEx.log(BACILogger.getLogger());
+
 				notifier.reportDebug(
-						"BACIRemoteAccess::internalInvokeTrivial",
+						"BACIRemoteAccess::logACSExcpetion",
 						"Failed to wrap user exception into native ACS Error System exception: "
 							+ th.getMessage()
 							+ " for '"
@@ -2089,6 +2123,33 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 							+ "'.");
 			}
 
+		} /* End if org.omg.CORBA.UserException */
+		else if (exceptionThrown instanceof alma.acs.exceptions.AcsJException)
+		{
+			AcsJObjectExplorerReportEx objexpEx = new AcsJObjectExplorerReportEx(exceptionThrown);
+			objexpEx.log(BACILogger.getLogger());
+		}
+		else if (exceptionThrown instanceof org.omg.CORBA.SystemException)
+		{
+			org.omg.CORBA.SystemException corbaSys = (org.omg.CORBA.SystemException)exceptionThrown;
+			AcsJCORBAProblemEx corbaProblemEx = new AcsJCORBAProblemEx(exceptionThrown);
+			corbaProblemEx.setMinor(corbaSys.minor);
+			corbaProblemEx.setCompletionStatus(corbaSys.completed.value());
+			corbaProblemEx.setInfo(corbaSys.toString());
+			AcsJObjectExplorerReportEx objexpEx = new AcsJObjectExplorerReportEx(corbaProblemEx);
+			objexpEx.log(BACILogger.getLogger());
+		}
+		else
+		{
+			AcsJUnexpectedExceptionEx unexpectedEx = new AcsJUnexpectedExceptionEx(exceptionThrown);
+			AcsJObjectExplorerReportEx objexpEx = new AcsJObjectExplorerReportEx(unexpectedEx);
+			objexpEx.log(BACILogger.getLogger());
+			notifier.reportDebug(
+					"BACIRemoteAccess::logACSException",
+					"Received an unexpected exception: "
+						+ " '"
+						+ exceptionThrown.getClass().getName()
+						+ "'.");
 		}
 	}
 
@@ -2122,7 +2183,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	 * Creation date: (2.11.2000 0:34:52)
 	 * @param node si.ijs.acs.objectexplorer.engine.BACI.BACIRemoteNode
 	 */
-	private void internalManagerConnect(BACIRemoteNode baciNode) {
+	private void internalManagerConnect(BACIRemoteNode baciNode) throws AcsJObjectExplorerConnectEx {
 		/* we are connecting directly to the Manager to obtain the object reference */
 		//System.out.println("DEBUG: imc "+baciNode);
 		String curl = (String)baciNode.getUserObject();
@@ -2138,84 +2199,85 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		    notifier.reportDebug("BACIRemoteAccess::internalManagerConnect",
 					 "Manager returns OK");
 		    }
-		catch(CannotGetComponentEx e)
-		    {
-		    notifier.reportError("Connection to component '" + curl + "' failed.");
-		    return;
-		    }
-		catch(ComponentNotAlreadyActivatedEx e)
-		    {
-		    notifier.reportError("Connection to component '" + curl + "' failed.");
-		    return;
-		    }
-		catch(ComponentConfigurationNotFoundEx e)
-		    {
-		    notifier.reportError("Connection to component '" + curl + "' failed.");
-		    return;
-		    }
+        /* 
+         * We wrap into a specific exception and report up
+         */
 		catch(Throwable e)
 		{
-		    notifier.reportError("Connection to component '" + curl + "' failed. Unknown exception");
-		    return;
+		    notifier.reportError("Connection to component '" + curl + "' failed.");
+		    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
+		    acsjex.setCurl(curl);
+		    throw acsjex;
 		}
 
-		baciNode.setCORBARef(obj);
-		Any any = orb.create_any();
-		any.insert_Object(obj);
-		/*	try
-			{
-				System.out.println(any.type().id());
-			} catch (Exception e)
-			{
-				System.out.println(e);
-			}
-		*/
+		String irfid = null;
 		try {
 			notifier.reportDebug(
 				"BACIRemoteAccess::internalManagerConnect",
 				"Querying component '" + curl + "' for CORBA type id.");
 
-			//*** todo: use ComponentInfo from previous call..
-			//*** GCH TEST CODE
 			ComponentInfo[] cobInfos =
 				manager.get_component_info(handle, new int[0], curl, "*", true);
 			if (cobInfos.length != 1) {
-				throw new IllegalStateException(
+			    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx();
+			    acsjex.setReason(
 					"Manager did not return valid ComponentInfo for '"
 						+ curl
 						+ "'.");
+			    throw acsjex;
 			}
-			String id = cobInfos[0].type;
-			//*** END GCH TEST CODE
-			//**** GCH Old direct request for get_interface() to NamedComponent
-			/*
-						String id =
-							alma.ACS.NamedComponentHelper.narrow(obj).get_interface();
-			*/
+			irfid = cobInfos[0].type;
+
 			notifier.reportDebug(
 				"BACIRemoteAccess::internalManagerConnect",
-				"component '" + curl + "' has id: " + id);
-
-			baciNode.setIFDesc(getIFDesc(id));
+				"component '" + curl + "' has id: " + irfid);
+		}
+		catch( Exception e)
+		{
+			notifier.reportError("Cannot retrieve Interface Repository ID for component '" 
+					+ curl + "'", e);
+		    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
+		    acsjex.setCurl(curl);
+		    throw acsjex;
+		}
+		
+		baciNode.setCORBARef(obj);
+		try {
+			baciNode.setIFDesc(getIFDesc(irfid));
 			if (baciNode.getIFDesc() != null)
 				notifier.reportDebug(
 					"BACIRemoteAccess::internalManagerConnect",
 					"IR Query OK.");
 			else
-				throw new IllegalStateException(
-					"IR interface data for '" + curl + "' is null.");
+			{
+			    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx();
+			    acsjex.setCurl(curl);
+			    acsjex.setReason(
+					"Cannot retrieve Interface Repository description for component for '"
+						+ curl
+						+ "'.");
+			    throw acsjex;
+			}
 		} catch (Exception e) {
 			notifier.reportError(
-				"Failed to connect to IR, releasing component on Manager, if needed.",
+				"Failed to retrieve interface description from IR, releasing component on Manager, if needed.",
 				e);
 			try {
 				if (manager != null && obj != null)
 					manager.release_component(handle, curl);
 			} catch (NoPermissionEx npe) {
 				notifier.reportError("No permission to release component", npe);
+			    AcsJNoPermissionEx acsjnpe = new AcsJNoPermissionEx(npe);
+			    logACSException(acsjnpe);
 			}
-			throw new IllegalStateException("Failed to connect to IR: " + e);
-		}
+		    AcsJObjectExplorerInterfaceRepositoryAccessEx acsjex = 
+		    	new AcsJObjectExplorerInterfaceRepositoryAccessEx(e);
+		    acsjex.setCurl(curl);
+		    acsjex.setIRid(irfid);    
+		    AcsJObjectExplorerConnectEx acsjex2 = new AcsJObjectExplorerConnectEx(acsjex);
+		    acsjex2.setCurl(curl);
+		    throw acsjex2;
+		}	
 	}
 
 	public void synchronizeInternalParentConnect(BACIRemoteNode baciNode) {
