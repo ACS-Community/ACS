@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.134 2006/10/14 21:36:00 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.135 2006/10/19 10:01:43 sturolla Exp $"
 #
 #
 
@@ -47,7 +47,7 @@ endif
 HAS_RTOS = $(shell if [ "X$(RTAI_HOME)" != X -a -d NO-LGPL/rtos ] ; then echo "TRUE"; else echo "FALSE"; fi)
 MODULE_PREFIX_RTOS = $(MODULE_PREFIX_NO-LGPL)/rtos
 ifeq ($(HAS_RTOS),TRUE)
-    MODULES_RTOS = lkm rtlog rtTest
+    MODULES_RTOS = lkm rtlog rtTest rtutil
 endif
 
 
