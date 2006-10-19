@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -25,7 +26,12 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
+import com.cosylab.logging.engine.ACS.ACSLogParser;
+import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
@@ -35,6 +41,9 @@ import com.cosylab.logging.settings.LogTypeRenderer;
  *
  */
 public class QueryDlg extends JDialog implements ActionListener {
+	
+	//	The listener for the logs read from the DB
+	private ACSRemoteLogListener logListener;
 	
 	private JButton submitBtn;
 	private JButton doneBtn;
@@ -59,12 +68,111 @@ public class QueryDlg extends JDialog implements ActionListener {
 	
 	// The max number of log to get from the DB
 	private JTextField rowLimit;
+	
+	private ACSLogParser parser = null;
+	
+	/**
+	 * A class with a thread to publish the logs to the listener
+	 * @author acaproni
+	 *
+	 */
+	private class LogsPublisher extends Thread {
+		Collection logsToFlush;
+		JButton subBtn;
+		
+		/**
+		 * Constructor 
+		 * 
+		 * @param logs The logs to publish
+		 * @param prsr The parser
+		 * @param btn The submit button to enable at the end of the flush
+		 */
+		public LogsPublisher(Collection logs, ACSLogParser prsr, JButton btn) {
+			if (logs==null || btn==null) {
+				throw new IllegalArgumentException("Invalid null argument in the constructor");
+			}
+			logsToFlush =logs;
+			subBtn=btn;
+		}
+		/**
+		 * The thread to publish the logs to the listener
+		 *
+		 */
+		public void run () {
+			System.out.println("Flushing logs");
+			if (logsToFlush==null || logsToFlush.size()==0) {
+				logsToFlush.clear();
+				logsToFlush=null;
+				subBtn.setEnabled(true);
+				return;
+			}
+			Iterator iter = logsToFlush.iterator();
+			while (iter.hasNext()) {
+				String str = (String)iter.next();
+				ILogEntry logEntry=null;
+				try {
+					logEntry = parser.parse(str);
+				} catch (Exception e) {
+					System.err.println("Exception parsing a log: "+e.getMessage());
+					System.out.println("Log Str: ["+str+"]");
+					StringBuilder strBuilder = new StringBuilder("\nError parsing the following Log:\n");
+					strBuilder.append(formatErrorMsg(str));
+					strBuilder.append("\n");
+					ErrorLogDialog.getErrorLogDlg(true).appendText(strBuilder.toString());
+					continue;
+				}
+				logListener.logEntryReceived(logEntry);
+			}
+			logsToFlush.clear();
+			logsToFlush=null;
+			subBtn.setEnabled(true);
+		}
+		
+		/**
+		 * Return a string formatted for JOptionPane making a word wrap
+		 * 
+		 * @param error The error i.e. the exception
+		 * @param msg The message to show
+		 * @return A formatted string
+		 */
+		private String formatErrorMsg(String msg) {
+			StringBuilder sb = new StringBuilder();
+			int count = 0;
+			for (int t=0; t<msg.length(); t++) {
+				char c = msg.charAt(t);
+				sb.append(c);
+				if (c=='\n') {
+					count=0;
+					continue;
+				}
+				if (++count >= 80 && c==' ') {
+					count=0;
+					sb.append('\n');
+				}
+			}
+			return sb.toString();
+		}
+	}
 
 	/**
 	 * Empty constructor
 	 */
-	public QueryDlg(ArchiveConnectionManager archiveConn) {
+	public QueryDlg(ArchiveConnectionManager archiveConn, ACSRemoteLogListener listener) {
 		super();
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null listener!");
+		}
+		try
+		{
+			parser = new ACSLogParserDOM();
+		}
+		catch (javax.xml.parsers.ParserConfigurationException pce)
+		{
+			System.out.println("Exception in QueryDlg constructor: " + pce);
+			pce.printStackTrace();
+			parser=null;
+		}
+		logListener=listener;
 		setTitle("Load from database");
 		archive = archiveConn;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -80,6 +188,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==submitBtn) {
+			submitBtn.setEnabled(false);
 			submitQuery();
 		} else if (e.getSource()==doneBtn) {
 			setVisible(false);
@@ -265,31 +374,62 @@ public class QueryDlg extends JDialog implements ActionListener {
 	private void submitQuery() {
 		if (!checkFields()) {
 			JOptionPane.showMessageDialog(this,"Error getting values from the form","Input error!",JOptionPane.ERROR_MESSAGE);
+			submitBtn.setEnabled(true);
 			return;
 		}
 		System.out.println("Submitting a query");
 		StringBuilder from=new StringBuilder(fromYY.getText());
 		from.append('-');
+		if (fromMM.getText().length()==1) {
+			from.append('0');
+		}
 		from.append(fromMM.getText());
 		from.append('-');
+		if (fromDD.getText().length()==1) {
+			from.append('0');
+		}
 		from.append(fromDD.getText());
 		from.append('T');
+		if (fromHr.getText().length()==1) {
+			from.append('0');
+		}
 		from.append(fromHr.getText());
 		from.append(':');
+		if (fromMin.getText().length()==1) {
+			from.append('0');
+		}
 		from.append(fromMin.getText());
 		from.append(':');
+		if (fromSec.getText().length()==1) {
+			from.append('0');
+		}
 		from.append(fromSec.getText());
 		
 		StringBuilder to=new StringBuilder(toYY.getText());
 		to.append('-');
+		if (toMM.getText().length()==1) {
+			to.append('0');
+		}
 		to.append(toMM.getText());
 		to.append('-');
+		if (toDD.getText().length()==1) {
+			to.append('0');
+		}
 		to.append(toDD.getText());
 		to.append('T');
+		if (toHr.getText().length()==1) {
+			to.append('0');
+		}
 		to.append(toHr.getText());
 		to.append(':');
+		if (toMin.getText().length()==1) {
+			to.append('0');
+		}
 		to.append(toMin.getText());
 		to.append(':');
+		if (toSec.getText().length()==1) {
+			to.append('0');
+		}
 		to.append(toSec.getText());
 		
 		short minType = (short)minLogLevelCB.getSelectedIndex();
@@ -309,6 +449,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		}
 		int maxRows = Integer.parseInt(rowLimit.getText());
 		
+		// The collection where the logs read from the DB are stored
 		Collection logs = null;
 		try {
 			logs = archive.getLogs(from.toString(),to.toString(),minType,maxType,routine,source,process,maxRows);
@@ -318,10 +459,14 @@ public class QueryDlg extends JDialog implements ActionListener {
 			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
 		}
 		System.out.println("Num. of logs read from DB: "+logs.size());
+		LogsPublisher flusher = new LogsPublisher(logs,parser,submitBtn);
+		flusher.start();
+		logs=null;
 	}
 	
 	/**
-	 * Check the fields in the GUI before executing a query
+	 * Check the fields in the GUI before executing a query.
+	 * It makes only some checks...
 	 * 
 	 * @return true if the vaules in the fields are ok
 	 */
@@ -340,20 +485,40 @@ public class QueryDlg extends JDialog implements ActionListener {
 			Pattern.matches("[0-9]+",toMin.getText()) &&
 			Pattern.matches("[0-9]+",toSec.getText()) &&
 			Pattern.matches("[0-9]+",rowLimit.getText());
-		ret = ret && Integer.parseInt(fromYY.getText())>0 &&
-			Integer.parseInt(fromMM.getText())>0 &&
-			Integer.parseInt(fromDD.getText())>0 &&
-			Integer.parseInt(fromHr.getText())>=0 &&
-			Integer.parseInt(fromMin.getText())>=0 &&
-			Integer.parseInt(fromSec.getText())>=0 &&
-			Integer.parseInt(toYY.getText())>0 &&
-			Integer.parseInt(toMM.getText())>0 &&
-			Integer.parseInt(toDD.getText())>0 &&
-			Integer.parseInt(toHr.getText())>=0 &&
-			Integer.parseInt(toMin.getText())>=0 &&
-			Integer.parseInt(toSec.getText())>=0 &&
-			Integer.parseInt(rowLimit.getText())>=0;
+			
+		int fromY, fromD,fromM, from_h,from_m,from_s;
+		int toY, toM, toD, to_h, to_m, to_s;
+		fromY = Integer.parseInt(fromYY.getText());
+		fromM= Integer.parseInt(fromMM.getText());
+		fromD=Integer.parseInt(fromDD.getText());
+		from_h=Integer.parseInt(fromHr.getText());
+		from_m=Integer.parseInt(fromMin.getText());
+		from_s=Integer.parseInt(fromSec.getText());
+		toY=Integer.parseInt(toYY.getText());
+		toM=Integer.parseInt(toMM.getText());
+		toD=Integer.parseInt(toDD.getText());
+		to_h=Integer.parseInt(toHr.getText());
+		to_m=Integer.parseInt(toMin.getText());
+		to_s=Integer.parseInt(toSec.getText());
+		
+		ret = ret && fromY>=2000 && fromY<2100;
+		ret = ret && toY>=2000 && toY<2100;
+		ret = ret && fromM>=1 && fromM<=12;
+		ret = ret && toM>=1 && toM<=12;
+		ret = ret && fromD>+1 && fromD<=31;
+		ret = ret && toD>=1 && toD<=31;
+		
+		ret = ret && from_h>=0 && from_h<24;
+		ret = ret && to_h>=0 && to_h<24;
+		ret = ret && from_m>=0 && from_m<60;
+		ret = ret && to_m>=0 && to_m<60;
+		ret = ret && from_s>=0 && from_s<60;
+		ret = ret && to_s>=0 && to_s<60;
+		
+			
         return ret;
 	}
+	
+	
 	
 }
