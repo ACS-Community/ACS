@@ -148,7 +148,7 @@ private javax.swing.JLabel getJLabel1() {
 private void handleException(java.lang.Throwable exception) {
 
 	/* Uncomment the following lines to print uncaught exceptions to stdout */
-	 System.out.println("--------- UNCAUGHT EXCEPTION ---------");
+	 System.out.println("--------- UNCAUGHT EXCEPTION in AccessDestroyWindow---------");
 	 exception.printStackTrace(System.out);
 }
 /**

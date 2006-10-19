@@ -1818,7 +1818,7 @@ public class ObjectExplorer extends JFrame {
 	private void handleException(Throwable exception) {
 		
 		/* Uncomment the following lines to print uncaught exceptions to stdout */
-		System.out.println("--------- UNCAUGHT EXCEPTION ---------");
+		System.out.println("--------- UNCAUGHT EXCEPTION in Object Explorer ---------");
 		exception.printStackTrace(System.out);
 	}
 	/**

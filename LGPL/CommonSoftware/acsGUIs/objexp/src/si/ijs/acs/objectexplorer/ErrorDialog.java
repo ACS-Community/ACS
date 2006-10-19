@@ -160,7 +160,7 @@ private javax.swing.JScrollPane getJScrollPane1() {
 private void handleException(Throwable exception) {
 
 	/* Uncomment the following lines to print uncaught exceptions to stdout */
-	 System.out.println("--------- UNCAUGHT EXCEPTION ---------");
+	 System.out.println("--------- UNCAUGHT EXCEPTION in Error Dialog ---------");
 	 exception.printStackTrace(System.out);
 }
 /**
