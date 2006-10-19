@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Container xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
-           xmlns="urn:schemas-cosylab-com:Container:1.0" 
+<Container xmlns="urn:schemas-cosylab-com:Container:1.0" 
+           xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
            xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
            CommandLine="" 
            Timeout="20.0" 
            UseIFR="1" 
            ManagerRetry="10" 
-           ManagerReference="" 
-           CacheSize="10" 
-           MinCachePriority="0" 
-           MaxCachePriority="31" 
-           CentralizedLogger="Log">
+           ManagerReference="">
   <Autoload>
-    <cdb:_ string="baci"/>
-    <cdb:_ string="acsdo"/>
+    <cdb:_ string="baci" />
+    <cdb:_ string="acsdo" />
   </Autoload>
+  <LoggingConfig 
+             centralizedLogger="Log" 
+             minLogLevel="0" 
+             dispatchPacketSize="10" 
+             immediateDispatchLevel="31">
+  </LoggingConfig>
 </Container>
+
