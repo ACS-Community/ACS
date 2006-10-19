@@ -92,4 +92,11 @@
 			type="string"
 			description="Name of the object that was not initalized"/>
 	</ErrorCode>
+	<ErrorCode name="CannotLoad"
+		shortDescription="Can not load error"
+		description="Generic can not load for ex. library, package, ...">
+		<Member name="ObjectName" 
+			type="string"
+			description="Name of the object that could not be loaded"/>
+	</ErrorCode>	
 </Type>
