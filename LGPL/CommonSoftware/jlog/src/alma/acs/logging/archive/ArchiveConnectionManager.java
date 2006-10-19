@@ -27,6 +27,7 @@ import com.cosylab.logging.LoggingClient;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 /**
@@ -169,6 +170,13 @@ public class ArchiveConnectionManager {
 			
 			System.out.println("\t\t(\n\tDatabase connection not available:\n"+t.getMessage());
 			t.printStackTrace();
+			return null;
+		}
+		// Check the return type
+		if (!ret.getReturnType().getName().equals("java.util.Collection")) {
+			System.out.println("The method returns "+ret.getReturnType().getName()+" instead of java.util.Collection");
+			System.out.println("Database connection not available");
+			return null;
 		}
 		return ret;
 	}
@@ -192,6 +200,38 @@ public class ArchiveConnectionManager {
 	 */
 	public int getDBStatus() {
 		return status;
+	}
+	
+	public Collection getLogs(
+			String from, 
+			String to, 
+			short minType, 
+			short maxType,
+			String routine,
+			String source,
+			String process,
+			int maxRows) throws Exception {
+		status = DATABASE_WORKING;
+		showDBStatus("Executing a query");
+		Object params[] = {
+			from, to,
+			minType, maxType,
+			routine,
+			source,
+			process,
+			maxRows
+		};
+		Object ret = null;
+		try {
+			ret = getLogMethod.invoke(archive,params);
+		} catch (Exception e) {
+			status = DATABASE_NOP;
+			showDBStatus("Database not responding.");
+			throw new Exception ("Error executing a query: databse not available.",e);
+		}
+		status=DATABASE_OK;
+		showDBStatus("Database ready");
+		return (Collection)ret;
 	}
 		
 }
