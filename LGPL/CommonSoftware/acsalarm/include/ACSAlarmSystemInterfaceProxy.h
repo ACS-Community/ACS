@@ -51,7 +51,7 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AbstractAlarmSystemInterfac
 		 */
 		LoggingProxy* m_logger;
 	
-                virtual void close() {}
+      virtual void close() {}
 	
 	public:
 	
@@ -75,6 +75,9 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AbstractAlarmSystemInterfac
 	 	 * @param activeFaults the active fault states.
 	 	 */
 		virtual void pushActiveList(vector<acsalarm::FaultState> & activeFaults);
+
+	protected:
+		virtual bool publishMessage(acsalarm::ASIMessage){ return true; /* NOOP: nothing needed here */ }
 };
 
 #endif 
