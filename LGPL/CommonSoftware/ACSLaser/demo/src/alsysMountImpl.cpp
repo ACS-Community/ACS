@@ -29,7 +29,7 @@
 #include "faultStateConstants.h"
 
 using namespace acscomponent;
-using acsalarm::AbstractAlarmSystemInterface
+using acsalarm::AbstractAlarmSystemInterface;
 
 Mount::Mount(const ACE_CString &name,maci::ContainerServices * containerServices) : 
     ACSComponentImpl(name, containerServices)
