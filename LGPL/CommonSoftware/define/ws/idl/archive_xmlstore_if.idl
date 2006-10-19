@@ -134,6 +134,11 @@ module xmlstore
 			
 		IdentifierRange getExistingRange(in URI identifier, in string user)
 			raises (NotFound);
+
+		/**
+		 * returns true if identifier is a syntactically correct UID, else false.
+		 */
+		boolean checkUIDsyntax(in URI identifier);
 	};
 	
 	/** 
