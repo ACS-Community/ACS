@@ -65,7 +65,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 					} catch (Exception e) {
 						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
 						strB.append("This log has been lost: "+log);
-						ErrorLogDialog.getErrorLogDlg().appendText(strB.toString());
+						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
 						engine.publishReport(strB.toString());
 						System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
 						System.err.println("An XML string that could not be parsed: " + log);

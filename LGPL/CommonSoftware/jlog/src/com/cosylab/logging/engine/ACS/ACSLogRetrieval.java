@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.8 2006/10/04 15:59:03 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.9 2006/10/19 13:07:45 acaproni Exp $
  * @since    
  */
 
@@ -197,7 +197,7 @@ public class ACSLogRetrieval extends Thread {
 					} catch (Exception e) {
 						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
 						strB.append("This log has been lost: "+tempStr);
-						ErrorLogDialog.getErrorLogDlg().appendText(strB.toString());
+						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
 						engine.publishReport(strB.toString());
 						System.err.println("error parsing a log "+e.getMessage());
 						e.printStackTrace();

@@ -735,7 +735,7 @@ public class IOLogsHelper extends Thread  {
 			StringBuilder strBuilder = new StringBuilder("\nError parsing the following Log:\n");
 			strBuilder.append(formatErrorMsg(logStr));
 			strBuilder.append("\n");
-			ErrorLogDialog.getErrorLogDlg().appendText(strBuilder.toString());
+			ErrorLogDialog.getErrorLogDlg(true).appendText(strBuilder.toString());
 			return;
 		}
 		logListener.logEntryReceived(log);

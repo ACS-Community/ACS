@@ -318,10 +318,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
             	getLCModel1().loadFromURL();
             } else if (e.getSource() == LoggingClient.this.getLoadDBMenuItem()) {
-            	if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
+            	//if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
             		QueryDlg dlg = new QueryDlg(archive);
             		dlg.setVisible(true);
-            	}
+            	//}
             } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem()) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
@@ -362,9 +362,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
             } else if (e.getSource()==viewErrorLogMI) {
-            	if (ErrorLogDialog.getErrorLogDlg()!=null) {
-            		ErrorLogDialog.getErrorLogDlg().setVisible(true);
-            	}
+            	if (ErrorLogDialog.getErrorLogDlg(false)!=null) 
+            		ErrorLogDialog.getErrorLogDlg(false).setVisible(true);
             } else if (e.getSource()==LoggingClient.this.viewStatusAreaMI) {
             	getStatusAreaPanel().setVisible(viewStatusAreaMI.getState());
             	if (viewStatusAreaMI.getState()) {
@@ -495,7 +494,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			
 			// Enable diasble the menu to load from the DB
 			// if the DB is not available
-			loadDBMenuItem.setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
+			//loadDBMenuItem.setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
 		}
 		
 		public void menuDeselected(MenuEvent menuE) {
