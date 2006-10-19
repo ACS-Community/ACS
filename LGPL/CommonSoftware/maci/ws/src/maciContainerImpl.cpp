@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.75 2006/10/12 15:33:11 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.76 2006/10/19 09:45:43 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.75 2006/10/12 15:33:11 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.76 2006/10/19 09:45:43 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -610,7 +610,7 @@ ContainerImpl::init(int argc, char *argv[])
 
       CORBA::ULong ul;
       unsigned long cacheSize = 5;
-      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "CacheSize", fld))
+      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/dispatchPacketSize", fld))
 	{
 	  if (fld.GetULong(ul))
 	      cacheSize = ul;
@@ -623,22 +623,19 @@ ContainerImpl::init(int argc, char *argv[])
 	}
 	
       unsigned long minCachePriority = 0;
-      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "MinCachePriority", fld))
+      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevel", fld))
 	{
 	  if (fld.GetULong(ul))
 	      minCachePriority = ul;
 	}
     
       unsigned long maxCachePriority = LM_MAX_PRIORITY;
-      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "MaxCachePriority", fld))
+      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/immediateDispatchLevel", fld))
 	{
 	  if (fld.GetULong(ul))
 	      maxCachePriority = ul;
 	}
     
-      //if (m_loggerProxy)
-      //delete m_loggerProxy;
-
       m_loggerProxy = new LoggingProxy(cacheSize, minCachePriority, maxCachePriority, 0);
       if (!m_loggerProxy)
 	ACS_SHORT_LOG((LM_WARNING, "Unable to create logging system. Using 'stdout'..."));
@@ -651,9 +648,6 @@ ContainerImpl::init(int argc, char *argv[])
       //
       // setup DLL manager
       //
-
-      //if (m_dllmgr) 
-      //delete m_dllmgr;
 
       ACS_NEW_RETURN(m_dllmgr, LibraryManager, false);
 
@@ -1062,7 +1056,7 @@ ContainerImpl::connect()
 	{
 
 	ACE_CString centralizedLogger("Log");			// default
-	if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "CentralizedLogger", fld))
+	if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/centralizedLogger", fld))
 	    fld.GetString(centralizedLogger);
 
           try
