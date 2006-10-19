@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.15 2005/01/31 19:46:16 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.16 2006/10/19 12:56:58 gchiozzi Exp $"
 #
 # Makefile of Object Explorer
 #
@@ -29,6 +29,8 @@ JARFILES = oe
 # following line to be used in the future
 oe_DIRS = si
 oe_EXTRAS = device.gif domain.gif invocation.gif property.gif type.gif
+
+ACSERRDEF = objexpErrType
 
 #
 # Scripts (public and local)
