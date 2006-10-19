@@ -103,15 +103,21 @@ public class TreeHandlerBean implements NodeRequestListener {
 				/*
 				 * Here we take care of treeByName - if we are exploding the root node, we have to call
 				 * RemoteAccess' special method for this, otherwise we just loop trough all the nodes that
-				 * were added to the treeByType and do some stuff - see the code below.
+				 * were added to the treeByType and do some stuff - see the code below. The point is that
+				 * we have to take care of adding attributes and other dinamically created nodes to the
+				 * treeByName - that ofcourse only happens if user expanded the device node or attribute
+				 * node, so we skip this step if root is TYPE or DOMAIN node.
 				 */
 				if (node == null) {
 					OETreeNode[] outNodes2 = ((BACIRemoteAccess)parent.remoteAccess).explodeRootNodeByName();
 					
 					parent.setNodesTreeByName(outNodes2, (OETreeNode)parent.treeByName.getModel().getRoot());
+				} else if (node.getNodeType() == BACIRemoteAccess.TYPE || node.getNodeType() == BACIRemoteAccess.DOMAIN) {
+					//System.out.println("DEBUG: Skipping TYPE or DOMAIN node ("+node+") synchronization.");
+					parent.getParent().setReady(true);
+					return;
 				} else {
 					if (rncRoot != null) {
-						
 						/*
 						 * create corresponding DelegateRemoteNode for each node from out_Nodes that is instance of BACIRemoteNode
 						 * and add it to the outNodeTreeByName so that they will be added to the treeByName later.
