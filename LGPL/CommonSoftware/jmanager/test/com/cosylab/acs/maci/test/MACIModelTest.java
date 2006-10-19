@@ -41,7 +41,7 @@ public class MACIModelTest extends TestCase
 	{
 		System.out.println(ComponentStatus.COMPONENT_ACTIVATED);
 		System.out.println(ComponentStatus.COMPONENT_NOT_ACTIVATED);
-		System.out.println(ComponentStatus.COMPONENT_NONEXISTANT);
+		System.out.println(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 	}
 	
 	/**
@@ -54,3 +54,4 @@ public class MACIModelTest extends TestCase
 	}
 
 }
+

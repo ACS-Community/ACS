@@ -122,7 +122,7 @@
 1 - 
 1 - .ComponentStatus = { name = 'COMPONENT_ACTIVATED', description = 'Component is activated.' }
 1 - ComponentStatus = { name = 'COMPONENT_NOT_ACTIVATED', description = 'Component is not activated.' }
-1 - ComponentStatus = { name = 'COMPONENT_NONEXISTANT', description = 'Component does not exists.' }
+1 - ComponentStatus = { name = 'COMPONENT_DOES_NO_EXIST', description = 'Component does not exists.' }
 1 - .MessageType = { name = 'MSG_INFORMATION', description = 'Informational message.' }
 1 - MessageType = { name = 'MSG_ERROR', description = 'Error message.' }
 1 - 
@@ -148,3 +148,4 @@
 1 - 
 1 - OK (1 test)
 1 - 
+

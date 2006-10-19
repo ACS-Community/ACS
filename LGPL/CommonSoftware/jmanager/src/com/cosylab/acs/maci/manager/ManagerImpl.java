@@ -1552,7 +1552,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (managerComponentReference != null)
 				status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);
 			else
-				status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 
 			component = new ServiceComponent(managerComponentReference);
 		}
@@ -1562,7 +1562,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (remoteDirectoryComponentReference != null)
 				status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);
 			else
-				status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 	
 			component = new ServiceComponent(remoteDirectoryComponentReference);
 		}
@@ -1576,7 +1576,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (obj != null)
 				status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);
 			else
-				status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 	
 			component = new ServiceComponent(obj);
 		}
@@ -5739,7 +5739,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// failed
 				new MessageLogEntry(this, "internalNoSyncRequestComponent", "Failed to reactivate dynamic component '"+componentInfo+"'.", LoggingLevel.ERROR).dispatch();
-				status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 				return null;
 			}
 			else
@@ -5774,7 +5774,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				else
 				{
 					// not found
-					status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					return null;
 				}
 
@@ -5786,7 +5786,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (code == null)
 				{
 					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Misconfigured CDB, there is no code of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
-					status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					return null;
 				}
 			}
@@ -5797,7 +5797,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (type == null)
 				{
 					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Misconfigured CDB, there is no type of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
-					status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					return null;
 				}
 			}
@@ -5808,7 +5808,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (containerName == null)
 				{
 					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Misconfigured CDB, there is no container of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
-					status.setStatus(ComponentStatus.COMPONENT_NONEXISTANT);
+					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					return null;
 				}
 			}
@@ -9605,3 +9605,4 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 	}
 }
+

@@ -2052,7 +2052,7 @@ public class ManagerImplTest extends TestCase
 			Component ref = manager.getComponent(info.getHandle(), dummyURI, true, status);
 			
 			assertEquals(null, ref);
-			assertEquals(ComponentStatus.COMPONENT_NONEXISTANT, status.getStatus());
+			assertEquals(ComponentStatus.COMPONENT_DOES_NO_EXIST, status.getStatus());
 		}
 		catch (Exception ex)
 		{
@@ -4100,3 +4100,4 @@ public class ManagerImplTest extends TestCase
 	}
 
 }
+

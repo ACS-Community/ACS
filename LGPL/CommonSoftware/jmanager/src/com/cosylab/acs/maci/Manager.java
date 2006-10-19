@@ -95,7 +95,7 @@ public interface Manager
 	 * @param	activate	<code>true</code> if the Component is to be activated in case it does not exist.
 	 * 						If set to <code>false</code>, and the Component exist,
 	 * 						a <code>null</code> reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param	status	Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
+	 * @param	status	Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
 	 * @return			Reference to the Component. If the Component could not be activated, a nil reference is returned,
 	 *					and the status contains an error code detailing the cause of failure (one of the component_* constants).
 	 */
@@ -135,7 +135,7 @@ public interface Manager
 	 * @param	activate	<code>true</code> if the Component is to be activated in case it does not exist.
 	 * 						If set to <code>false</code>, and the Component exist,
 	 * 						a <code>null</code> reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param	status	Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
+	 * @param	status	Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
 	 * @return			A sequence of requested components.
 	 * @see getcomponent
 	 * @deprecated
@@ -325,3 +325,4 @@ public interface Manager
 		throws NoPermissionException;
 
 }
+

@@ -522,7 +522,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			{
 			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED && !activate)
 			    	throw new AcsJComponentNotAlreadyActivatedEx();
-			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NONEXISTANT)
+			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_DOES_NO_EXIST)
 			    	throw new AcsJComponentConfigurationNotFoundEx();
 			    else
 			    	throw new AcsJCannotGetComponentEx();
@@ -734,7 +734,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param component_urls CURL of the components whose reference is to be retrieved.
 	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
+	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
 	 * @see get_component
 	 * @deprecated
 	 * @return A sequence of requested components.
@@ -2218,7 +2218,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param service_url CURL of the service whose reference is to be retrieved.
 	 * @param activate True if the component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
+	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
 	 * @return Reference to the service. If the service could not be obtained, a nil reference is returned,
 	 *		  and the status contains an error code detailing the cause of failure (one of the COMPONENT_* constants).
 	 * @see #get_component
@@ -2326,7 +2326,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
 	 * @param service_urls CURL of the services whose reference is to be retrieved.
 	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_NONEXISTANT and COMPONENT_NOT_ACTIVATED.
+	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
 	 * @see #get_service
 	 * @return A sequence of requested services.
 	 */
@@ -2674,7 +2674,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 */
 	public static int mapStatus(ComponentStatus status)
 	{
-		if (status == ComponentStatus.COMPONENT_NONEXISTANT)
+		if (status == ComponentStatus.COMPONENT_DOES_NO_EXIST)
 			return si.ijs.maci.Manager.COMPONENT_NONEXISTENT;
 		else if (status == ComponentStatus.COMPONENT_NOT_ACTIVATED)
 			return si.ijs.maci.Manager.COMPONENT_NOT_ACTIVATED;
@@ -2769,3 +2769,4 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	}
 
 }
+

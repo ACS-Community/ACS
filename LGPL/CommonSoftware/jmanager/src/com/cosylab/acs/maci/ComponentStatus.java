@@ -6,7 +6,7 @@ package com.cosylab.acs.maci;
 
 /**
  * Status of the Component object.
- * Can be one of: <code>COMPONENT_ACTIVATED</code>, <code>COMPONENT_NONEXISTANT</code> and <code>COMPONENT_NOT_ACTIVATED</code>.
+ * Can be one of: <code>COMPONENT_ACTIVATED</code>, <code>COMPONENT_DOES_NO_EXIST</code> and <code>COMPONENT_NOT_ACTIVATED</code>.
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
@@ -21,7 +21,7 @@ public final class ComponentStatus
 	/**
 	 * Status of non-existant Component.
 	 */
-	public static final ComponentStatus COMPONENT_NONEXISTANT = new ComponentStatus("COMPONENT_NONEXISTANT", "Component does not exists.");
+	public static final ComponentStatus COMPONENT_DOES_NO_EXIST = new ComponentStatus("COMPONENT_DOES_NO_EXIST", "Component does not exists.");
 
 	/**
 	 * Status of non-activated Component.
@@ -89,3 +89,4 @@ public final class ComponentStatus
 	}
 
 }
+

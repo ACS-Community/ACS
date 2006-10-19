@@ -106,7 +106,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	public static ComponentStatus mapStatusInverse(int status)
 	{
 		if (status == si.ijs.maci.Manager.COMPONENT_NONEXISTENT)
-			return ComponentStatus.COMPONENT_NONEXISTANT;
+			return ComponentStatus.COMPONENT_DOES_NO_EXIST;
 		else if (status == si.ijs.maci.Manager.COMPONENT_NOT_ACTIVATED)
 			return ComponentStatus.COMPONENT_NOT_ACTIVATED;
 		else if (status == si.ijs.maci.Manager.COMPONENT_ACTIVATED)
@@ -518,3 +518,4 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	}
 
 }
+
