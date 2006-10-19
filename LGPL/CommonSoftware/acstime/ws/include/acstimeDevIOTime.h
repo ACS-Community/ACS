@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDevIOTime.h,v 1.10 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acstimeDevIOTime.h,v 1.11 2006/10/19 07:52:08 bjeram Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -75,7 +75,6 @@ class DevIOTime : public DevIO<ACS::Time>
     /**
      * Retrieves the current time using ACE methods and then converts it 
      * to "ACS time".
-     * @param errorcode So simple there can be errors.
      * @param timestamp Time for an ACS Completion.
      * @return The ACS-ized time we just retrieved.
      * @htmlonly
@@ -83,9 +82,9 @@ class DevIOTime : public DevIO<ACS::Time>
        @endhtmlonly
      */     
     virtual ACS::Time 
-    read(int &errcode, ACS::Time &timestamp)
+    read(ACS::Time &timestamp)
+	throw (ACSErr::ACSbaseExImpl)
 	{
-	    errcode = 0;
 	    timestamp = getTimeStamp();
 	    
 	    acstime::Epoch retValue = TimeUtil::ace2epoch(ACE_OS::gettimeofday());
@@ -100,10 +99,10 @@ class DevIOTime : public DevIO<ACS::Time>
        @endhtmlonly
      */
     virtual void 
-    write(const ACS::Time &value, int &errcode, ACS::Time &timestamp)
+    write(const ACS::Time &value, ACS::Time &timestamp)
+	throw (ACSErr::ACSbaseExImpl)
 	{
 	    ACE_UNUSED_ARG(value);
-	    errcode = 0;
 	    timestamp = getTimeStamp();
 	}
 };

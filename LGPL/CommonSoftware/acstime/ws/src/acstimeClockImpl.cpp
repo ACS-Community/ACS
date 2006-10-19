@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeClockImpl.cpp,v 1.19 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acstimeClockImpl.cpp,v 1.20 2006/10/19 07:52:03 bjeram Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -147,18 +147,26 @@ ClockImpl::toISO8601(acstime::TimeSystem ts,
 		     const acstime::Epoch &timeValue)
     throw (CORBA::SystemException, ACSTimeError::ArgErrorEx)
 {
-    int errcode;
     ACS::Time timestamp;
-    EpochHelper *e_p = new EpochHelper(timeValue);
+    EpochHelper e_p(timeValue);
 
-    std::string tmpStr  = e_p->toString(ts, 
-				      "", 
-				      m_array2TAI->getDevIO()->read(errcode, timestamp), 
-				      m_TAI2UTC->getDevIO()->read(errcode, timestamp));
-    
-    delete e_p;
-    return CORBA::string_dup(tmpStr.c_str());
-}
+    try
+	{
+	std::string tmpStr  = e_p.toString(ts, 
+					   "", 
+					   m_array2TAI->getDevIO()->read(timestamp), 
+					   m_TAI2UTC->getDevIO()->read(timestamp));
+	
+	return CORBA::string_dup(tmpStr.c_str());
+	
+	}
+    catch(ACSErr::ACSbaseExImpl &_ex)
+	{
+	ACSTimeError::ArgErrorExImpl ex(_ex, __FILE__, __LINE__, 
+					"ClockImpl::toISO8601");
+	throw ex.getArgErrorEx();
+	}
+ }
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(ClockImpl)
