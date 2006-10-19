@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
@@ -50,6 +51,11 @@ public class QueryDlg extends JDialog implements ActionListener {
 	
 	// The process name for the query
 	private JTextField procName;
+	
+	// The name of the routine
+	private JTextField sourceName;
+	
+	private JTextField routineName;
 	
 	// The max number of log to get from the DB
 	private JTextField rowLimit;
@@ -115,8 +121,14 @@ public class QueryDlg extends JDialog implements ActionListener {
 		JLabel procNameLbl = new JLabel("Process name");
 		c.gridx=0; c.gridy=4; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(procNameLbl,c);
-		JLabel maxLogs = new JLabel("Max num of logs to load");
+		JLabel srcNameLbl = new JLabel("Source object");
 		c.gridx=0; c.gridy=5; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
+		optionsPnl.add(srcNameLbl,c);
+		JLabel routinNameLbl = new JLabel("Routine name");
+		c.gridx=0; c.gridy=6; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
+		optionsPnl.add(routinNameLbl,c);
+		JLabel maxLogs = new JLabel("Max num of logs to load");
+		c.gridx=0; c.gridy=7; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(maxLogs,c);
 		
 		// Add the input widgets
@@ -193,19 +205,25 @@ public class QueryDlg extends JDialog implements ActionListener {
 		// Build the renderer for the combo boxex
 		minLogLevelCB = new JComboBox();
 		setupTypeCB(minLogLevelCB);
-		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO+1);
+		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO);
 		c.gridx=1; c.gridy=2; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(minLogLevelCB,c);
 		maxLogLevelCB= new JComboBox();
 		setupTypeCB(maxLogLevelCB);
-		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY+1);
+		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY);
 		c.gridx=1; c.gridy=3; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(maxLogLevelCB,c);
-		procName = new JTextField(20);
+		procName = new JTextField("*",20);
 		c.gridx=1; c.gridy=4; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(procName,c);
-		rowLimit = new JTextField("10000",20);
+		sourceName = new JTextField("*",20);
 		c.gridx=1; c.gridy=5; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
+		optionsPnl.add(sourceName,c);
+		routineName = new JTextField("*",20);
+		c.gridx=1; c.gridy=6; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
+		optionsPnl.add(routineName,c);
+		rowLimit = new JTextField("10000",20);
+		c.gridx=1; c.gridy=7; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(rowLimit,c);
 		
 		// Add the OK, CANCEL buttons
@@ -230,12 +248,10 @@ public class QueryDlg extends JDialog implements ActionListener {
 	private void setupTypeCB(JComboBox box) {
 		//	Add the ComboBox for the log level
         LogTypeRenderer discardRendererCB = new LogTypeRenderer();
-        String[] levelStr = new String[LogTypeHelper.getAllTypesDescriptions().length+1];
-        levelStr[0] = "None";
-        box.insertItemAt(levelStr[0],0);
+        String[] levelStr = new String[LogTypeHelper.getAllTypesDescriptions().length];
         for (int t=0; t<LogTypeHelper.getAllTypesDescriptions().length; t++) {
-        	levelStr[t+1]=LogTypeHelper.getAllTypesDescriptions()[t];
-        	box.insertItemAt(levelStr[t+1],t+1);
+        	levelStr[t]=LogTypeHelper.getAllTypesDescriptions()[t];
+        	box.insertItemAt(levelStr[t],t);
         }
         box.setMaximumRowCount(levelStr.length);
         box.setEditable(false);
@@ -247,9 +263,61 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 *
 	 */
 	private void submitQuery() {
-		if (checkFields()) {
-			System.out.println("Submitting a query");
+		if (!checkFields()) {
+			JOptionPane.showMessageDialog(this,"Error getting values from the form","Input error!",JOptionPane.ERROR_MESSAGE);
+			return;
 		}
+		System.out.println("Submitting a query");
+		StringBuilder from=new StringBuilder(fromYY.getText());
+		from.append('-');
+		from.append(fromMM.getText());
+		from.append('-');
+		from.append(fromDD.getText());
+		from.append('T');
+		from.append(fromHr.getText());
+		from.append(':');
+		from.append(fromMin.getText());
+		from.append(':');
+		from.append(fromSec.getText());
+		
+		StringBuilder to=new StringBuilder(toYY.getText());
+		to.append('-');
+		to.append(toMM.getText());
+		to.append('-');
+		to.append(toDD.getText());
+		to.append('T');
+		to.append(toHr.getText());
+		to.append(':');
+		to.append(toMin.getText());
+		to.append(':');
+		to.append(toSec.getText());
+		
+		short minType = (short)minLogLevelCB.getSelectedIndex();
+		short maxType = (short)maxLogLevelCB.getSelectedIndex();
+		
+		String routine = routineName.getText();
+		if (routine.length()==0) {
+			routine ="*";
+		}
+		String source= sourceName.getText();
+		if (source.length()==0) {
+			source ="*";
+		}
+		String process = procName.getText();
+		if (process.length()==0) {
+			process ="*";
+		}
+		int maxRows = Integer.parseInt(rowLimit.getText());
+		
+		Collection logs = null;
+		try {
+			logs = archive.getLogs(from.toString(),to.toString(),minType,maxType,routine,source,process,maxRows);
+		} catch (Throwable t) {
+			System.out.println("Error executing the query: "+t.getMessage());
+			System.out.println("Database unavailable");
+			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
+		}
+		System.out.println("Num. of logs read from DB: "+logs.size());
 	}
 	
 	/**
@@ -258,28 +326,20 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 * @return true if the vaules in the fields are ok
 	 */
 	private boolean checkFields() {
-		Pattern numPattern;
-		try {
-			numPattern = Pattern.compile("[0-9]+");
-		} catch (Exception e) {
-			System.out.println("Error creating the pattern: "+e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
 		boolean ret = 
-			numPattern.matches("[0-9]+",fromYY.getText()) &&
-			numPattern.matches("[0-9]+",fromMM.getText()) &&
-			numPattern.matches("[0-9]+",fromMM.getText()) &&
-			numPattern.matches("[0-9]+",fromHr.getText()) &&
-			numPattern.matches("[0-9]+",fromMin.getText()) &&
-			numPattern.matches("[0-9]+",fromSec.getText()) &&
-			numPattern.matches("[0-9]+",toYY.getText()) &&
-			numPattern.matches("[0-9]+",toMM.getText()) &&
-			numPattern.matches("[0-9]+",toDD.getText()) &&
-			numPattern.matches("[0-9]+",toHr.getText()) &&
-			numPattern.matches("[0-9]+",toMin.getText()) &&
-			numPattern.matches("[0-9]+",toSec.getText()) &&
-			numPattern.matches("[0-9]+",rowLimit.getText());
+			Pattern.matches("[0-9]+",fromYY.getText()) &&
+			Pattern.matches("[0-9]+",fromMM.getText()) &&
+			Pattern.matches("[0-9]+",fromMM.getText()) &&
+			Pattern.matches("[0-9]+",fromHr.getText()) &&
+			Pattern.matches("[0-9]+",fromMin.getText()) &&
+			Pattern.matches("[0-9]+",fromSec.getText()) &&
+			Pattern.matches("[0-9]+",toYY.getText()) &&
+			Pattern.matches("[0-9]+",toMM.getText()) &&
+			Pattern.matches("[0-9]+",toDD.getText()) &&
+			Pattern.matches("[0-9]+",toHr.getText()) &&
+			Pattern.matches("[0-9]+",toMin.getText()) &&
+			Pattern.matches("[0-9]+",toSec.getText()) &&
+			Pattern.matches("[0-9]+",rowLimit.getText());
 		ret = ret && Integer.parseInt(fromYY.getText())>0 &&
 			Integer.parseInt(fromMM.getText())>0 &&
 			Integer.parseInt(fromDD.getText())>0 &&
