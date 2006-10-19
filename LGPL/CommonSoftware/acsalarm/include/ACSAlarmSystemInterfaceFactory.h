@@ -35,7 +35,7 @@
 #endif
 
 #include "AbstractAlarmSystemInterfaceFactory.h"
-#include "AlarmSystemInterface.h"
+#include "AbstractAlarmSystemInterface.h"
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSAlarmSystemInterfaceProxy.h"
 #include "utilConstants.h"
