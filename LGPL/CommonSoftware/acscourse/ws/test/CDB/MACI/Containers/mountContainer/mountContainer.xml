@@ -1,22 +1,26 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
    - History:
    -   Sat May 27 22:15:50 UTC 2006 modified by jDAL
 -->
-<Container xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
-        xmlns="urn:schemas-cosylab-com:Container:1.0"
-        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+<Container xmlns="urn:schemas-cosylab-com:Container:1.0" 
+        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
         CommandLine="" 
         Timeout="20.0" 
         UseIFR="1" 
         ManagerRetry="10" 
-        ManagerReference="" 
-        CacheSize="1" 
-        MinCachePriority="0" 
-        MaxCachePriority="31" 
-        CentralizedLogger="Log"  >
-	<Autoload>
-		<cdb:_ string="baci"/>
-	</Autoload>
+        ManagerReference="">
+  <Autoload>
+    <cdb:_ string="baci" />
+  </Autoload>
+  <LoggingConfig 
+          centralizedLogger="Log" 
+          minLogLevel="0" 
+          dispatchPacketSize="1" 
+          immediateDispatchLevel="31">
+  </LoggingConfig>
 </Container>
+
