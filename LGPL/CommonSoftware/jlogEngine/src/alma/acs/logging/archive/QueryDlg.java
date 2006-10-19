@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -203,7 +204,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		procName = new JTextField(20);
 		c.gridx=1; c.gridy=4; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(procName,c);
-		rowLimit = new JTextField(20);
+		rowLimit = new JTextField("10000",20);
 		c.gridx=1; c.gridy=5; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(rowLimit,c);
 		
@@ -246,7 +247,53 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 *
 	 */
 	private void submitQuery() {
-		System.out.println("Submitting a query");
+		if (checkFields()) {
+			System.out.println("Submitting a query");
+		}
+	}
+	
+	/**
+	 * Check the fields in the GUI before executing a query
+	 * 
+	 * @return true if the vaules in the fields are ok
+	 */
+	private boolean checkFields() {
+		Pattern numPattern;
+		try {
+			numPattern = Pattern.compile("[0-9]+");
+		} catch (Exception e) {
+			System.out.println("Error creating the pattern: "+e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+		boolean ret = 
+			numPattern.matches("[0-9]+",fromYY.getText()) &&
+			numPattern.matches("[0-9]+",fromMM.getText()) &&
+			numPattern.matches("[0-9]+",fromMM.getText()) &&
+			numPattern.matches("[0-9]+",fromHr.getText()) &&
+			numPattern.matches("[0-9]+",fromMin.getText()) &&
+			numPattern.matches("[0-9]+",fromSec.getText()) &&
+			numPattern.matches("[0-9]+",toYY.getText()) &&
+			numPattern.matches("[0-9]+",toMM.getText()) &&
+			numPattern.matches("[0-9]+",toDD.getText()) &&
+			numPattern.matches("[0-9]+",toHr.getText()) &&
+			numPattern.matches("[0-9]+",toMin.getText()) &&
+			numPattern.matches("[0-9]+",toSec.getText()) &&
+			numPattern.matches("[0-9]+",rowLimit.getText());
+		ret = ret && Integer.parseInt(fromYY.getText())>0 &&
+			Integer.parseInt(fromMM.getText())>0 &&
+			Integer.parseInt(fromDD.getText())>0 &&
+			Integer.parseInt(fromHr.getText())>=0 &&
+			Integer.parseInt(fromMin.getText())>=0 &&
+			Integer.parseInt(fromSec.getText())>=0 &&
+			Integer.parseInt(toYY.getText())>0 &&
+			Integer.parseInt(toMM.getText())>0 &&
+			Integer.parseInt(toDD.getText())>0 &&
+			Integer.parseInt(toHr.getText())>=0 &&
+			Integer.parseInt(toMin.getText())>=0 &&
+			Integer.parseInt(toSec.getText())>=0 &&
+			Integer.parseInt(rowLimit.getText())>=0;
+        return ret;
 	}
 	
 }
