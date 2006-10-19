@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.42 2006/10/12 15:33:11 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.43 2006/10/19 15:14:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.42 2006/10/12 15:33:11 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.43 2006/10/19 15:14:03 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -243,7 +243,8 @@ public:
 					const char * exe,
 					const char * type
 					)
-    throw (CORBA::SystemException);
+    throw (CORBA::SystemException,
+	   maciErrType::CannotActivateComponentEx);
 
   /**
    * Deactivate all components whose handles are given.

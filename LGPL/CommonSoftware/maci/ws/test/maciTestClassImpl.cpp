@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.94 2006/10/09 06:15:54 gchiozzi Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.95 2006/10/19 15:14:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.94 2006/10/09 06:15:54 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.95 2006/10/19 15:14:03 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -238,7 +238,8 @@ ConstructComponent(CORBA::ULong h,
 		  (LM_ERROR, "Failed to create/initialize component: '%s'", name));
 	  if (mtc)
 	      mtc->_remove_ref();
-	  return 0;
+	  throw ACSErrTypeCommon::CouldntCreateObjectExImpl(__FILE__, __LINE__, 
+							    "maciTestClassImpl::ConstructComponent");
 	}
       else
 	  return mtc;

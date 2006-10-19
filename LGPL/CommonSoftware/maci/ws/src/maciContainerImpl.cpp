@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.76 2006/10/19 09:45:43 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.77 2006/10/19 15:14:03 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.76 2006/10/19 09:45:43 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.77 2006/10/19 15:14:03 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1512,21 +1512,25 @@ ContainerImpl::activate_component (
 			     const char * type
 			     
 			     )
-  throw (CORBA::SystemException)
+  throw (CORBA::SystemException,
+	 maciErrType::CannotActivateComponentEx)
 {
-	
   ACS_TRACE("maci::ContainerImpl::activate_component");
+  ContainerComponentInfo info;
 
   if (m_shutdown)
-  {
-    throw CORBA::NO_RESOURCES();
-    return 0;
-  }
+      {
+      maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
+						    "maci::ContainerImpl::activate_component");
+      ex.setCURL(name);
+      ex.setcomponent_code(exe);
+      ex.setcomponent_type(type);
+      ex.log(LM_DEBUG);
+      throw ex.getCannotActivateComponentEx();
+      }//if
 
   // !!! there is a possibility of allowing creating two same components
   // but this won't happen since CORBA deny activation
-
-  ContainerComponentInfo info;
   info.info.h = h;
   info.lib = 0;
   info.info.reference = CORBA::Object::_nil();
@@ -1543,26 +1547,29 @@ ContainerImpl::activate_component (
     {
       if (CORBA::is_nil(currentInfo.info.reference.in()))
 	{
-	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-		  (LM_ERROR, "Component with handle %u (%s) is marked to be deactivated, but is still waiting for POA to etherealizate it...", h, name));
-
-	  // failed to create
-	  maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-	  *(infoCpy.ptr()) = info.info;
-	  return infoCpy._retn();
+	char re[100];
+	sprintf(re, "Component with handle %u is marked to be deactivated, but is still waiting for POA to etherealizate it...", h);
+	maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
+						  "maci::ContainerImpl::activate_component");
+	ex.setCURL(name);
+	ex.setDetailedReason(re);
+	ex.setcomponent_code(exe);
+	ex.setcomponent_type(type);
+	ex.log(LM_DEBUG);
+	throw ex.getCannotActivateComponentEx();
 	}
       else
 	{
-	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-		  (LM_ERROR, "component with handle %u (%s) already activated", h, name));
+	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
+		(LM_WARNING, "component with handle %u (%s) already activated", h, name));
 	
-	  if (ACE_OS::strcmp(currentInfo.info.name, name) == 0 &&
-	      ACE_OS::strcmp(currentInfo.info.type, type) == 0)
+	if (ACE_OS::strcmp(currentInfo.info.name, name) == 0 &&
+	    ACE_OS::strcmp(currentInfo.info.type, type) == 0)
 	    {
 	      // already activated, just copy info
-	      maci::ComponentInfo_var infoc = new maci::ComponentInfo();
-	      *(infoc.ptr()) = currentInfo.info;
-	      return infoc._retn();
+	    maci::ComponentInfo_var infoc = new maci::ComponentInfo();
+	    *(infoc.ptr()) = currentInfo.info;
+	    return infoc._retn();
 	    }
 	  else
 	    // this should never happen, Manager should know the state of Containers
@@ -1571,15 +1578,14 @@ ContainerImpl::activate_component (
 	    // component with this handle unusable...
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-		      (LM_ERROR, "Activated component with handle %u (%s) has different name or type that existant! Releasing that component and replacing it with the new one...", h, name));
-
+		      (LM_WARNING, "Activated component with handle %u (%s) has different name or type that existant! Releasing that component and replacing it with the new one...", h, name));
+	      
 	      maci::HandleSeq_var handles = new maci::HandleSeq(1);
 	      handles->length(1);
 	      handles[0] = h;
 
 	      deactivate_components(handles.in());
 	    }
-
 	}
     }
   else
@@ -1597,17 +1603,21 @@ ContainerImpl::activate_component (
 	  {
 
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-		    (LM_ERROR, "Activated component with specified %s name and type %s already exists! Fixing handle...", name, type));
+		    (LM_WARNING, "Activated component with specified %s name and type %s already exists! Fixing handle...", name, type));
 
 	    if (CORBA::is_nil(entry->int_id_.info.reference.in()))
 	      {
-		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-			(LM_ERROR, "Component with handle %u (%s) is marked to be deactivated, but is still waiting for POA to etherealizate it...", h, name));
+	      	char re[100];
+		sprintf(re, "Component with handle %u is marked to be deactivated, but is still waiting for POA to etherealizate it...", h);
 		
-		// failed to create
-		maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-		*(infoCpy.ptr()) = info.info;
-		return infoCpy._retn();
+		maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
+						  "maci::ContainerImpl::activate_component");
+		ex.setCURL(name);
+		ex.setDetailedReason(re);
+		ex.setcomponent_code(exe);
+		ex.setcomponent_type(type);
+		ex.log(LM_DEBUG);
+		throw ex.getCannotActivateComponentEx();
 	      }
 
 /* 
@@ -1622,21 +1632,25 @@ ContainerImpl::activate_component (
 	    // *(infoc.ptr()) = info.info;
 	    *(infoc.ptr()) = entry->int_id_.info;
 	    return infoc._retn();
-
 	  }
-    }
+    }//if-else
 
   int libHandle = 0;
   
   // load the executable
   if((libHandle = loadDLL(exe)) == 0)
     {
-      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-	      (LM_ERROR, "Error loading component library '%s' for type '%s'", exe, type));                 
-      maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-      *(infoCpy.ptr()) = info.info;
-      return infoCpy._retn();
-    }
+    ACSErrTypeCommon::CannotLoadExImpl lex(__FILE__, __LINE__, 
+					   "maci::ContainerImpl::activate_component");
+    lex.setObjectName(exe);
+    maciErrType::CannotActivateComponentExImpl ex(lex, __FILE__, __LINE__,
+						  "maci::ContainerImpl::activate_component");
+    ex.setCURL(name);
+    ex.setcomponent_code(exe);
+    ex.setcomponent_type(type);
+    ex.log(LM_DEBUG);
+    throw ex.getCannotActivateComponentEx();
+    }//if
 
 	
   // get entry point of the component DLL.
@@ -1644,13 +1658,20 @@ ContainerImpl::activate_component (
       (ConstructComponentFunc)m_dllmgr->getSymbol(libHandle, "ConstructComponent");
   if (ConstructComponent == 0)
     {
-      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-	      (LM_ERROR, "Component library '%s' does not implement 'ConstructComponent' entry point", exe));
-      m_dllmgr->unlock(libHandle);
-      maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-      *(infoCpy.ptr()) = info.info;
-      return infoCpy._retn();
-    }
+    char re[100];
+    sprintf (re, "ConstructComponent in library %s", exe);
+    ACSErrTypeCommon::NotImplementedExImpl nex(__FILE__, __LINE__, 
+					   "maci::ContainerImpl::activate_component");
+    nex.setFeature(re);
+    maciErrType::CannotActivateComponentExImpl ex(nex, __FILE__, __LINE__,
+						  "maci::ContainerImpl::activate_component");
+    ex.setCURL(name);
+    ex.setcomponent_code(exe);
+    ex.setcomponent_type(type);
+    ex.log(LM_DEBUG);
+    m_dllmgr->unlock(libHandle);
+    throw ex.getCannotActivateComponentEx();
+    }//if
   
   // Build the ContainerServices that has to be passed to the constructor of the
   // component
@@ -1660,50 +1681,69 @@ ContainerImpl::activate_component (
   ACE_CString cmpName(name);
   ContainerServices* acsCS = instantiateContainerServices(h,cmpName,poaContainer.in());
   if (acsCS==NULL) 
-  {
-    ACS_SHORT_LOG((LM_ERROR,"maci::ContainerImpl::activate_component: Error creating the ContainerServices"));
-    maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-    *(infoCpy.ptr()) = info.info;
-    return infoCpy._retn();
-  }
+      {
+      ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
+						 "maci::ContainerImpl::activate_component");
+      nullEx.setVariable("acsCS(ContainerServices)");
+      maciErrType::CannotActivateComponentExImpl ex(nullEx, __FILE__, __LINE__,
+						    "maci::ContainerImpl::activate_component");
+      ex.setCURL(name);
+      ex.setcomponent_code(exe);
+      ex.setcomponent_type(type);
+      ex.log(LM_DEBUG);
+      m_dllmgr->unlock(libHandle);
+      throw ex.getCannotActivateComponentEx();
+      }//if
   
   // construct the component
   PortableServer::Servant servant=0;
   
   try
-  {
-    servant = ConstructComponent(h, name, type, acsCS);
-  }
-  catch (ACSErr::ACSbaseExImpl ex)
-  {
-    // ACS exception
-    ACS_SHORT_LOG((
-        LM_ERROR,
-        "maci::ContainerImpl::activate_component: got an exception building %s",
-        name));
-    ex.log();
-    servant=0;
-  }
+      {
+      servant = ConstructComponent(h, name, type, acsCS);
+      }
+  catch (ACSErr::ACSbaseExImpl &_ex)
+      {
+      maciErrType::CannotActivateComponentExImpl ex(_ex, __FILE__, __LINE__,
+						    "maci::ContainerImpl::activate_component");
+      ex.setCURL(name);
+      servant = 0;
+      ex.setcomponent_code(exe);
+      ex.setcomponent_type(type);
+      ex.log(LM_DEBUG);
+      m_dllmgr->unlock(libHandle);
+      throw ex.getCannotActivateComponentEx();
+      }
   catch (...)
-  {
-    // Not ACS exception
-    ACS_SHORT_LOG((
-        LM_ERROR,
-        "maci::ContainerImpl::activate_component: got a NOT ACS exception building %s",
-        name));
-    servant=0;
-  }
+      {
+      ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+						      "maci::ContainerImpl::activate_component");
+      maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
+						    "maci::ContainerImpl::activate_component");
+      ex.setCURL(name);
+      ex.setcomponent_code(exe);
+      ex.setcomponent_type(type);
+      ex.log(LM_DEBUG);
+      servant = 0;
+      m_dllmgr->unlock(libHandle);
+      throw ex.getCannotActivateComponentEx();
+      }//try-catch
 
-  // in case of an error
+  // @todo this can be removed since there should not happend in case of an error
   if(servant == 0)
     {
-      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-	      (LM_ERROR, "Failed to create component object '%s' using library '%s'", name, exe));
+    ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
+					       "maci::ContainerImpl::activate_component");
+      nullEx.setVariable("servant");
+      maciErrType::CannotActivateComponentExImpl ex(nullEx, __FILE__, __LINE__,
+						    "maci::ContainerImpl::activate_component");
+      ex.setCURL(name);
+      ex.setcomponent_code(exe);
+      ex.setcomponent_type(type);
+      ex.log(LM_DEBUG);
       m_dllmgr->unlock(libHandle);
-      maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-      *(infoCpy.ptr()) = info.info;
-      return infoCpy._retn();
-    }
+      throw ex.getCannotActivateComponentEx();
+    }//if
 
   info.lib = libHandle;
   info.info.reference = activateCORBAObject(servant, name);
@@ -1711,16 +1751,18 @@ ContainerImpl::activate_component (
   // in case of an error
   if(CORBA::is_nil(info.info.reference.in()))
     {
-      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-	      (LM_ERROR, "Failed to activate component '%s'", name));
-
-      // destroy
-      delete servant;
-      m_dllmgr->unlock(libHandle);
-
-      maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-      *(infoCpy.ptr()) = info.info;
-      return infoCpy._retn();
+    maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
+						  "maci::ContainerImpl::activate_component");
+    ex.setCURL(name);
+    ex.setcomponent_code(exe);
+    ex.setcomponent_type(type);
+    ex.setDetailedReason("activateCORBAObject() failed");
+    ex.log(LM_DEBUG);
+          // destroy
+    delete servant;
+    m_dllmgr->unlock(libHandle);
+    
+    throw ex.getCannotActivateComponentEx();
     }
 
 
@@ -1735,92 +1777,50 @@ ContainerImpl::activate_component (
   if (acscomponent::ACSComponentImpl *tempComp = 
       dynamic_cast<acscomponent::ACSComponentImpl*>(servant)) 
       {
-      tempComp->getContainerServices()
-        ->getComponentStateManager()
-            ->setState(ACS::COMPSTATE_INITIALIZING); 
-            
       try
-      {
-        tempComp->__initialize();
-      }
-      catch (ACSErr::ACSbaseExImpl ex)
-      {
-        ACS_SHORT_LOG((
-            LM_ERROR,
-            "maci::ContainerImpl::activate_component: got an exception intializing %s",
-            name));
-        ex.log();
-        
-        info.info.reference = CORBA::Object::_nil();
-        deactivateCORBAObject(servant);
-        
-        maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-        *(infoCpy.ptr()) = info.info;
-        return infoCpy._retn();
-      }
+	  {
+	  ComponentStateManager *csm = tempComp->getContainerServices()->getComponentStateManager();
+	  csm->setState(ACS::COMPSTATE_INITIALIZING); 
+	  tempComp->__initialize();
+	  csm->setState(ACS::COMPSTATE_INITIALIZED);
+	  csm->setState(ACS::COMPSTATE_OPERATIONAL);
+	  tempComp->__execute();
+	  }
+      catch (ACSErr::ACSbaseExImpl &_ex)
+	  {
+	  maciErrType::CannotActivateComponentExImpl ex(_ex, __FILE__, __LINE__,
+							"maci::ContainerImpl::activate_component");
+	  ex.setCURL(name);
+	  ex.setcomponent_code(exe);
+	  ex.setcomponent_type(type);
+	  ex.log(LM_DEBUG);
+	  deactivateCORBAObject(servant);
+/// @todo should be here called unlock library
+	  m_dllmgr->unlock(libHandle);
+	  throw ex.getCannotActivateComponentEx();
+	  }
       catch (...)
-      {
-        ACS_SHORT_LOG((
-            LM_ERROR,
-            "maci::ContainerImpl::activate_component: got a NOT ACS exception intializing %s",
-            name));
-        
-        info.info.reference = CORBA::Object::_nil();
-        deactivateCORBAObject(servant);
-        
-        maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-        *(infoCpy.ptr()) = info.info;
-        return infoCpy._retn();
+	  {
+	  ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							  "maci::ContainerImpl::activate_component");
+	  maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
+							"maci::ContainerImpl::activate_component");
+	  ex.setCURL(name);
+	  ex.setcomponent_code(exe);
+	  ex.setcomponent_type(type);
+	  ex.log(LM_DEBUG);
+	  deactivateCORBAObject(servant);
+/// @todo should be here called unlock library
+	  m_dllmgr->unlock(libHandle);
+	  throw ex.getCannotActivateComponentEx();
+	  }//try-catch
       }
-      
-      tempComp->getContainerServices()
-        ->getComponentStateManager()
-            ->setState(ACS::COMPSTATE_INITIALIZED);
-      
-      tempComp->getContainerServices()
-        ->getComponentStateManager()
-            ->setState(ACS::COMPSTATE_OPERATIONAL);
-      try
-      {
-        tempComp->__execute();
-      }
-      catch (ACSErr::ACSbaseExImpl ex)
-      {
-        ACS_SHORT_LOG((
-            LM_ERROR,
-            "maci::ContainerImpl::activate_component: got an exception executing %s",
-            name));
-        ex.log();
-        
-        info.info.reference = CORBA::Object::_nil();
-        deactivateCORBAObject(servant);
-        
-        maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-        *(infoCpy.ptr()) = info.info;
-        return infoCpy._retn();
-      }
-      catch (...)
-      {
-        ACS_SHORT_LOG((
-            LM_ERROR,
-            "maci::ContainerImpl::activate_component: got a NOT ACS exception executing %s",
-            name));
-        
-        info.info.reference = CORBA::Object::_nil();
-        deactivateCORBAObject(servant);
-        
-        maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-        *(infoCpy.ptr()) = info.info;
-        return infoCpy._retn();
-      }
-      
-  }
   // We allow also compoennts not implementing the acscomponent::ACSComponentImpl
   // interface. 
   // In this case there is no life cycle handling
   // Warning: This might change in the future!
   else
-  {
+      {
       ACS_LOG(LM_RUNTIME_CONTEXT, 
 	      "maci::ContainerImpl::activate_component",
 	      (LM_INFO, "Component '%s' does not implement acscomponent::ACSComponentImpl", name));
@@ -1828,61 +1828,67 @@ ContainerImpl::activate_component (
 
   /// try to query IFR, if it is not available then
   /// return "IDL:omg.org/CORBA/Object:1.0"
-
   try
     {
-
       CORBA::InterfaceDef_var ifdef = CORBA::InterfaceDef::_nil();
       if (m_hasIFR)
 	{
 	  ifdef = servant->_get_interface ();
-	  
-	}
+	}//if
 	
       if (m_hasIFR && !CORBA::is_nil(ifdef.in()) )
 	{
-
 	  CORBA::InterfaceDef::FullInterfaceDescription_var desc = ifdef->describe_interface();
-
 	  info.info.interfaces.length(desc->base_interfaces.length()+1);
-
 	  CORBA::ULong i=0;
 	  for(; i < desc->base_interfaces.length(); i++)
-	    info.info.interfaces[i] = CORBA::string_dup(desc->base_interfaces[i].in());
+	      info.info.interfaces[i] = CORBA::string_dup(desc->base_interfaces[i].in());
 	  info.info.interfaces[i] = CORBA::string_dup(desc->id.in());
-
 	}
       else 
 	{
 	  info.info.interfaces.length(1);
 	  info.info.interfaces[0] = CORBA::string_dup("IDL:omg.org/CORBA/Object:1.0");
-	}
-
+	}//if-else
     }
-  catch( CORBA::Exception &ex )
+  catch( CORBA::SystemException &_ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "(maci::ContainerImpl::activate_component) Failed to retrieve interfaces");
-      info.info.interfaces.length(1);
-      info.info.interfaces[0] = CORBA::string_dup("IDL:omg.org/CORBA/Object:1.0");
+    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							"ContainerImpl::activate_component");
+    corbaProblemEx.setMinor(_ex.minor());
+    corbaProblemEx.setCompletionStatus(_ex.completed());
+    corbaProblemEx.setInfo(_ex._info().c_str());
+    corbaProblemEx.log(LM_WARNING);
+    
+// @todo: I do not know if here we have to throw an exception ?
+    info.info.interfaces.length(1);
+    info.info.interfaces[0] = CORBA::string_dup("IDL:omg.org/CORBA/Object:1.0");
     } 
 
   if (m_activeComponents.bind(h, info)==-1)
     {
       // failed to bind
-      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-	      (LM_ERROR, "Failed to bind component %s with handle %d to HashMap!", name, h));
-
-      // deactivate & destroy
-      info.info.reference = CORBA::Object::_nil();
-      deactivateCORBAObject(servant);
-
-      // Warning: memory leak here?! No lifecycle methods called here (and container services cleanup)
-      // also servant->_remove_ref(); should be called here?!
-
-      maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
-      *(infoCpy.ptr()) = info.info;
-      return infoCpy._retn();
-
+    char re[64];
+    sprintf(re, "Failed to bind the component with handle %d to HashMap!", h);
+    
+    // deactivate & destroy
+    info.info.reference = CORBA::Object::_nil();
+   
+    
+    maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
+						  "maci::ContainerImpl::activate_component");
+    ex.setCURL(name);
+    ex.setDetailedReason(re);
+    ex.setcomponent_code(exe);
+    ex.setcomponent_type(type);
+    ex.log(LM_DEBUG);
+    deactivateCORBAObject(servant);
+    m_dllmgr->unlock(libHandle);
+    // @todo unlock library ?
+    // @todo: Warning: memory leak here?! No lifecycle methods called here (and container services cleanup)
+    // also servant->_remove_ref(); should be called here?!
+    
+    throw ex.getCannotActivateComponentEx();
     }
   m_activeComponentList.insert(h);
 
@@ -1895,7 +1901,7 @@ ContainerImpl::activate_component (
   maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
   *(infoCpy.ptr()) = info.info;
   return infoCpy._retn();
-}
+}//activate_component
 
 
 // ************************************************************************

@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciACSComponentDefines.h,v 1.18 2006/10/09 06:12:04 gchiozzi Exp $"
+* "@(#) $Id: maciACSComponentDefines.h,v 1.19 2006/10/19 15:14:03 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -75,26 +75,7 @@ ACS_DLL_UNMANGLED_EXPORT PortableServer::Servant ConstructComponent( \
 { \
     ACE_UNUSED_ARG(type_p); \
     Class,##args* servant_p =0; \
-    try { \
 	servant_p = new Class,##args(name_p, containerServices); \
-    } catch (ACSErr::ACSbaseExImpl& ex) \
-    {\
-	std::string  procName="ConstructComponent::ConstructComponent(...,";\
-        procName+=name_p;\
-	procName+=",";\
-	procName+=type_p;\
-        procName+=",...)";\
-	maciErrType::ComponentCreationExImpl compEx(ex,__FILE__,__LINE__,procName.c_str());\
-	compEx.addData("Component", name_p);\
-	compEx.log();\
-	return 0; \
-    } \
-    catch (...)\
-    {\
-	ACS_LOG(LM_RUNTIME_CONTEXT, #Class #args"/ exception caught", \
-		(LM_ERROR, "Failed to create component - constructor returned 0!")); \
-	return 0; \
-    }\
     if (servant_p == 0) \
 	{ \
 		ACS_LOG(LM_RUNTIME_CONTEXT, #Class #args"/DLLOpen", \
