@@ -26,12 +26,12 @@
 #include "vltPort.h"
 
 #include "ACSAlarmSystemInterfaceProxy.h"
-#include "ACSFaultState.h"
+#include "FaultState.h"
 
 static char *rcsId="@(#) $Id$"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
-ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): ACSAlarmSystemInterface() {
+ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AbstractAlarmSystemInterface() {
 	setSourceName(name);
 	// Get the logger
 	m_logger = new LoggingProxy(0 ,0, 31);
@@ -42,7 +42,7 @@ ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): ACSAlar
  * Push a fault state.
  * @param state the fault state change to push.
  */
- void ACSAlarmSystemInterfaceProxy::push(acsalarm::ACSFaultState & state) {
+ void ACSAlarmSystemInterfaceProxy::push(acsalarm::FaultState & state) {
 	char msgA[16];
 	sprintf(msgA,"%d",state.getCode());
 	string msg="Alarm sent: <";
@@ -60,9 +60,9 @@ ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): ACSAlar
  * Push a collection of fault states.
  * @param states
  */
-void ACSAlarmSystemInterfaceProxy::push(vector<acsalarm::ACSFaultState> & states) {
+void ACSAlarmSystemInterfaceProxy::push(vector<acsalarm::FaultState> & states) {
 	for (unsigned int t=0; t<states.size(); t++) {
-		acsalarm::ACSFaultState fs(states[t]);
+		acsalarm::FaultState fs(states[t]);
 		push(fs);
 	}
 }
@@ -71,6 +71,6 @@ void ACSAlarmSystemInterfaceProxy::push(vector<acsalarm::ACSFaultState> & states
  * Push the set of active fault states.
  * @param activeFaults the active fault states.
  */
-void ACSAlarmSystemInterfaceProxy::pushActiveList(vector<acsalarm::ACSFaultState> & activeFaults) {
+void ACSAlarmSystemInterfaceProxy::pushActiveList(vector<acsalarm::FaultState> & activeFaults) {
 	push(activeFaults);
 }

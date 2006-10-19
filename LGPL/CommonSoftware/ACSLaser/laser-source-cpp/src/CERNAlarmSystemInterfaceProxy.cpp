@@ -77,12 +77,12 @@ void CERNAlarmSystemInterfaceProxy::close()
  * TODO later:
  * @throws ASIException if the fault state collection can not be pushed.
  */
-void CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState> & states)
+void CERNAlarmSystemInterfaceProxy::push(vector<FaultState> & states)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState>): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<FaultState>): entering.");
 	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState>): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(vector<FaultState>): exiting.");
 }
 
 /**
@@ -92,19 +92,19 @@ void CERNAlarmSystemInterfaceProxy::push(vector<ACSFaultState> & states)
  * TODO later:
  * @throws ASIException if the fault state can not be pushed.
  */
-void CERNAlarmSystemInterfaceProxy::push(ACSFaultState & state)
+void CERNAlarmSystemInterfaceProxy::push(FaultState & state)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(ACSFaultState): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(FaultState): entering.");
 	// create a vector and populate with the (single) fault state, 
 	// to be passed to the buildMessageXML method
 
-	vector<ACSFaultState> states;
-	ACSFaultState* st=(ACSFaultState*)&state;
-	states.push_back((ACSFaultState)*st);
+	vector<FaultState> states;
+	FaultState* st=(FaultState*)&state;
+	states.push_back((FaultState)*st);
 
 	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(ACSFaultState): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::push(FaultState): exiting.");
 }
 
 /**
@@ -114,7 +114,7 @@ void CERNAlarmSystemInterfaceProxy::push(ACSFaultState & state)
  * TODO later:
  * @throws ASIException if the fault state active list can not be pushed.
  */
-void CERNAlarmSystemInterfaceProxy::pushActiveList(vector<ACSFaultState> & activeFaults)
+void CERNAlarmSystemInterfaceProxy::pushActiveList(vector<FaultState> & activeFaults)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::pushActiveList(): entering.");
@@ -161,13 +161,13 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
  * TODO later:
  * @throws ASIException if the fault state collection can not be pushed.
  */
-void CERNAlarmSystemInterfaceProxy::commonPush(vector<ACSFaultState> & states, bool backup)
+void CERNAlarmSystemInterfaceProxy::commonPush(vector<FaultState> & states, bool backup)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::commonPush(): entering.");
 	// create the ASIMessage, supplying the faults which are to be published to the alarm server
-	vector<ACSFaultState> * statesPtr = new vector<ACSFaultState>(states);
-	auto_ptr<vector<ACSFaultState> > statesAutoPtr(statesPtr); 
+	vector<FaultState> * statesPtr = new vector<FaultState>(states);
+	auto_ptr<vector<FaultState> > statesAutoPtr(statesPtr); 
 	ASIMessage asiMessage(statesAutoPtr);
 
 	// populate the ASIMessage's source timestamp (with the current time)

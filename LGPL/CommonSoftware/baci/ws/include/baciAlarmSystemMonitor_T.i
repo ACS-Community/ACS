@@ -4,7 +4,7 @@
  *            Therefore I cut the calls out for the time being.
  */
 #ifndef MAKE_VXWORKS
-#include <ACSAlarmSystemInterface.h>
+#include <AlarmSystemInterface.h>
 #include <faultStateConstants.h>
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "acsErrTypeAlarmSourceFactory.h"
@@ -59,7 +59,7 @@ void AlarmSystemMonitor<TPROP>::sendAlarm(std::string family, std::string member
 #ifdef MAKE_VXWORKS
 #else
 	// Create the fault state
-	auto_ptr<acsalarm::ACSFaultState> fs  = ACSAlarmSystemInterfaceFactory::createFaultState(family,member,code);
+	auto_ptr<acsalarm::FaultState> fs  = ACSAlarmSystemInterfaceFactory::createFaultState(family,member,code);
 	if (active) {
 		fs->setDescriptor(faultState::ACTIVE_STRING);
 	} else {

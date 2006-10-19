@@ -32,7 +32,7 @@
 ///CORBA generated servant stub
 #include <testCppAlarmSourceComponentsS.h>
 
-#include "ACSAlarmSystemInterface.h"
+#include "AbstractAlarmSystemInterface.h"
 
 using namespace acscomponent;
 
@@ -65,7 +65,7 @@ namespace testalarmsystem
 			void sendAlarmShortHand(std::string fFamily, std::string fMember, int code, bool active);
 
 			// the AlarmSystemInterface
-			auto_ptr<acsalarm::ACSAlarmSystemInterface> alarmSource;
+			auto_ptr<acsalarm::AbstractAlarmSystemInterface> alarmSource;
 
 			int counter;
 	};

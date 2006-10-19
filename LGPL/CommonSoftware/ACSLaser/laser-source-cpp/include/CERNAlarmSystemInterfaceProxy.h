@@ -4,14 +4,15 @@
 #include "ASIMessage.h"
 #include "ASIConfiguration.h"
 #include "AlarmPublisher.h"
-#include "ACSAlarmSystemInterface.h"
-#include "ACSFaultState.h"
+#include "AbstractAlarmSystemInterface.h"
+#include "FaultState.h"
 
 using laserAlarmPublisher::AlarmPublisher;
+using acsalarm::AbstractAlarmSystemInterface;
 
 namespace laserSource
 {
-	class CERNAlarmSystemInterfaceProxy : public ACSAlarmSystemInterface
+	class CERNAlarmSystemInterfaceProxy : public AbstractAlarmSystemInterface
 	{
 		public:
 			CERNAlarmSystemInterfaceProxy();
@@ -24,21 +25,21 @@ namespace laserSource
 		 	* @param state the fault state change to push.
 		 	* @throws ASIException if the fault state can not be pushed.
 		 	*/
-			void push(ACSFaultState & state); //raises ASIException = 0;
+			void push(FaultState & state); //raises ASIException = 0;
 
 			/**
 		 	* Push a collection of fault states.
 		 	* @param states
 		 	* @throws ASIException if the fault state collection can not be pushed.
 		 	*/
-			void push(vector<ACSFaultState> & states); // raises ASIException = 0;
+			void push(vector<FaultState> & states); // raises ASIException = 0;
 
 			/**
 		 	* Push the set of active fault states.
 		 	* @param activeFaults the active fault states.
 		 	* @throws ASIException if the fault state active list can not be pushed.
 		 	*/
-			void pushActiveList(vector<ACSFaultState> & activeFaults); // raises ASIException = 0;
+			void pushActiveList(vector<FaultState> & activeFaults); // raises ASIException = 0;
 	
 		private:
 			// sends the message to the alarm server using directly instantiated class
@@ -58,7 +59,7 @@ namespace laserSource
  			 *
  			 * @throws ASIException if the fault state collection can not be pushed.
  			 */
-			void commonPush(vector<ACSFaultState> & states, bool backup);
+			void commonPush(vector<FaultState> & states, bool backup);
 
 			string hostname;
 			ASIConfiguration configuration;

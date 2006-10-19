@@ -35,7 +35,7 @@
 #endif
 
 #include "AbstractAlarmSystemInterfaceFactory.h"
-#include "ACSAlarmSystemInterface.h"
+#include "AlarmSystemInterface.h"
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSAlarmSystemInterfaceProxy.h"
 #include "utilConstants.h"
@@ -43,6 +43,8 @@
 #include "acsErrTypeAlarmSourceFactory.h"
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
+
+using acsalarm::AbstractAlarmSystemInterface;
 
 /**
  * The class to create sources and fault states.
@@ -63,7 +65,7 @@ class ACSAlarmSystemInterfaceFactory
 
 	// used for the convenience method createAndSendAlarms, so that it need not create a new source
 	// for each time it is invoked
-	static auto_ptr<acsalarm::ACSAlarmSystemInterface> sharedSource;
+	static auto_ptr<AbstractAlarmSystemInterface> sharedSource;
 
 	// It is true if ACS implementation for sources must be used,  and
 	// false means CERN implementation
@@ -107,23 +109,23 @@ class ACSAlarmSystemInterfaceFactory
 	 * @param sourceName the source name.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource(string sourceName);
+	static auto_ptr<AbstractAlarmSystemInterface> createSource(string sourceName);
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource();
+	static auto_ptr<AbstractAlarmSystemInterface> createSource();
 	
 	/**
 	 * Create a fault state with the given family, member and code
 	 */
-	static auto_ptr<acsalarm::ACSFaultState>createFaultState(string family, string member, int code);
+	static auto_ptr<acsalarm::FaultState>createFaultState(string family, string member, int code);
 	
 	/**
 	 * Create a fault state 
 	 */
-	static auto_ptr<acsalarm::ACSFaultState>createFaultState();
+	static auto_ptr<acsalarm::FaultState>createFaultState();
 
 	/**
 	 * Experimental: Convenience API for creating/sending an alarm in a single step.

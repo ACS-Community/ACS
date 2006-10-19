@@ -1,4 +1,4 @@
-#include <ACSFaultState.h>
+#include <FaultState.h>
 #include <ACSAlarmSystemInterfaceFactory.h>
 #include <faultStateConstants.h>
 #include <logging.h>
@@ -66,7 +66,7 @@
 XERCES_CPP_NAMESPACE_USE
 using parameterSet::acsDOMErrorHandler;
 using parameterSet::StrX;
-using acsalarm::ACSFaultState;
+using acsalarm::FaultState;
 using acsalarm::Properties;
 
 class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
@@ -347,18 +347,18 @@ void AcsAlarmTestCase::testFaultState()
 	const string family(FAMILY_VALUE);
 	const string descriptor(DESCRIPTOR_VALUE);
 
-	// create the ACSFaultState
-	auto_ptr<acsalarm::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, CODE_VALUE);
+	// create the FaultState
+	auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, CODE_VALUE);
 
 	// test family getters
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::getFamily appears to be broken", (family == fltstate->getFamily()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::getMember appears to be broken", (member == fltstate->getMember()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::getCode appears to be broken", (CODE_VALUE == fltstate->getCode()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::getFamily appears to be broken", (family == fltstate->getFamily()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::getMember appears to be broken", (member == fltstate->getMember()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::getCode appears to be broken", (CODE_VALUE == fltstate->getCode()) );
 
 	// test family setter
 	string newfamily = "newfamily";
 	fltstate->setFamily(newfamily);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setFamily appears to be broken", (newfamily == fltstate->getFamily()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setFamily appears to be broken", (newfamily == fltstate->getFamily()) );
 
 	// restore previous value
 	fltstate->setFamily(family);
@@ -366,7 +366,7 @@ void AcsAlarmTestCase::testFaultState()
 	// test member setter
 	string newmember = "newmember";
 	fltstate->setMember(newmember);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setMember appears to be broken", (newmember == fltstate->getMember()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setMember appears to be broken", (newmember == fltstate->getMember()) );
 
 	// restore previous value
 	fltstate->setMember(member);
@@ -374,20 +374,20 @@ void AcsAlarmTestCase::testFaultState()
 	// test code setter
 	int newcode = 2;
 	fltstate->setCode(newcode);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setCode appears to be broken", (newcode == fltstate->getCode()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setCode appears to be broken", (newcode == fltstate->getCode()) );
 
 	// restore previous value
 	fltstate->setCode(CODE_VALUE);
 
 	// test descriptor setter
 	fltstate->setDescriptor(descriptor);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setDescriptor appears to be broken", (descriptor == fltstate->getDescriptor()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setDescriptor appears to be broken", (descriptor == fltstate->getDescriptor()) );
 
 	// test timestamp getters/setters
 	Timestamp * tstampPtr = new Timestamp(SECONDS_VALUE, MICROSECONDS_VALUE);
 	auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
 	fltstate->setUserTimestamp(tstampAutoPtr);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setUserTimestamp appears to be broken", (*tstampPtr == fltstate->getUserTimestamp()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setUserTimestamp appears to be broken", (*tstampPtr == fltstate->getUserTimestamp()) );
 
 	// test properties getters/setters
 	Properties * propsPtr = new Properties();
@@ -396,44 +396,44 @@ void AcsAlarmTestCase::testFaultState()
 	propsPtr->setProperty(TEST_NAME_VALUE, TEST_VALUE_VALUE);
 	auto_ptr<Properties> propsAutoPtr(propsPtr);
 	fltstate->setUserProperties(propsAutoPtr);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setUserProperties appears to be broken", (*propsPtr == fltstate->getUserProperties()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setUserProperties appears to be broken", (*propsPtr == fltstate->getUserProperties()) );
 
 	// test activated by backup getters/setters
 	bool activatedByBackup = true;
 	fltstate->setActivatedByBackup(activatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setActivatedByBackup appears to be broken", (activatedByBackup == fltstate->getActivatedByBackup()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setActivatedByBackup appears to be broken", (activatedByBackup == fltstate->getActivatedByBackup()) );
 	activatedByBackup = false;
 	fltstate->setActivatedByBackup(activatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setActivatedByBackup appears to be broken", (activatedByBackup == fltstate->getActivatedByBackup()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setActivatedByBackup appears to be broken", (activatedByBackup == fltstate->getActivatedByBackup()) );
 
 	// test terminated by backup getters/setters
 	bool terminatedByBackup = true;
 	fltstate->setTerminatedByBackup(terminatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setTerminatedByBackup appears to be broken", (terminatedByBackup == fltstate->getTerminatedByBackup()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setTerminatedByBackup appears to be broken", (terminatedByBackup == fltstate->getTerminatedByBackup()) );
 	terminatedByBackup = false;
 	fltstate->setTerminatedByBackup(terminatedByBackup);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::setTerminatedByBackup appears to be broken", (terminatedByBackup == fltstate->getTerminatedByBackup()) );
+	CPPUNIT_ASSERT_MESSAGE("FaultState::setTerminatedByBackup appears to be broken", (terminatedByBackup == fltstate->getTerminatedByBackup()) );
 
 	// test toXML method
 	verifyFaultStateXML(fltstate->toXML());
 
 	// test assignment operator
-	ACSFaultState assignedFaultState = *fltstate;
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getFamily", 
+	FaultState assignedFaultState = *fltstate;
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getFamily", 
 		(assignedFaultState.getFamily() == fltstate->getFamily()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getMember", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getMember", 
 		(assignedFaultState.getMember() == fltstate->getMember()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getCode", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getCode", 
 		(assignedFaultState.getCode() == fltstate->getCode()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getDescriptor", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getDescriptor", 
 		(assignedFaultState.getDescriptor() == fltstate->getDescriptor()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getTerminatedByBackup", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getTerminatedByBackup", 
 		(assignedFaultState.getTerminatedByBackup() == fltstate->getTerminatedByBackup()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getActivatedByBackup", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getActivatedByBackup", 
 		(assignedFaultState.getActivatedByBackup() == fltstate->getActivatedByBackup()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getUserTimestamp", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getUserTimestamp", 
 		(assignedFaultState.getUserTimestamp() == fltstate->getUserTimestamp()) );
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::= (assignment operator) appears to be broken; getUserProperties", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getUserProperties", 
 		(assignedFaultState.getUserProperties() == fltstate->getUserProperties()) );
 }
 
@@ -459,7 +459,7 @@ void AcsAlarmTestCase::verifyFaultStateXML(string xmlData)
 	}
 	catch (const XMLException& toCatch)
 	{
-		ACS_LOG(LM_ERROR, "ACSFaultState::toXML", (LM_ERROR, 
+		ACS_LOG(LM_ERROR, "FaultState::toXML", (LM_ERROR, 
 			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
 	}
 }
@@ -505,7 +505,7 @@ void AcsAlarmTestCase::verifyFaultStateElement(DOMDocument * doc, bool propertie
 {
 	// Verify that the fault-state element exists
 	DOMNodeList * faultStateNodes = doc->getElementsByTagName(FAULT_STATE_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; no fault-state element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no fault-state element found", 
 		(NULL != faultStateNodes && faultStateNodes->getLength() == 1));
 
 	// verify that there are the expected attributes (family, member, code) on the fault-state element
@@ -514,32 +514,32 @@ void AcsAlarmTestCase::verifyFaultStateElement(DOMDocument * doc, bool propertie
 	{
 		// verify that there are 3 attributes in total
 		DOMNamedNodeMap * attributesMap = faultStateItem->getAttributes();
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; fault-state does not contain 3 attributes",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; fault-state does not contain 3 attributes",
 			(NULL!= attributesMap && attributesMap->getLength() == 3));
 
 		// check that the fault-state element has a "family" attribute
 		DOMNode * familyNode = attributesMap->getNamedItem(FAMILY_TAG_NAME);
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; fault-state does not contain 'family' attribute",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; fault-state does not contain 'family' attribute",
 			(NULL!= familyNode));
 
 		// verify that the value of family attribute is correct
 		const XMLCh * familyNodeValue = familyNode->getNodeValue();
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; value of fault-state 'family' is not correct",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; value of fault-state 'family' is not correct",
 			(NULL != familyNodeValue && XMLString::equals(familyNodeValue, FAMILY_VALUE_XMLCH)));
 
 		// check that the fault-state element has a "member" attribute
 		DOMNode * memberNode = attributesMap->getNamedItem(MEMBER_TAG_NAME);
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; fault-state does not contain 'member' attribute",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; fault-state does not contain 'member' attribute",
 			(NULL!= memberNode));
 
 		// verify that the value of member attribute is correct
 		const XMLCh * memberNodeValue = memberNode->getNodeValue();
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; value of fault-state 'member' is not correct",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; value of fault-state 'member' is not correct",
 			(NULL != memberNodeValue && XMLString::equals(memberNodeValue, MEMBER_VALUE_XMLCH)));
 
 		// check that the fault-state element has a "code" attribute
 		DOMNode * codeNode = attributesMap->getNamedItem(CODE_TAG_NAME);
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; fault-state does not contain 'code' attribute",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; fault-state does not contain 'code' attribute",
 			(NULL!= codeNode));
 
 		// verify that the value of code attribute is correct
@@ -547,7 +547,7 @@ void AcsAlarmTestCase::verifyFaultStateElement(DOMDocument * doc, bool propertie
 		char *codeNodeCharValue = XMLString::transcode(codeNodeValue);
 		int codeNodeValueInt = atoi(codeNodeCharValue);
 		XMLString::release(&codeNodeCharValue);
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; value of fault-state 'code' is not correct",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; value of fault-state 'code' is not correct",
 			(NULL != codeNodeValue && codeNodeValueInt == CODE_VALUE));
 	}
 
@@ -563,17 +563,17 @@ void AcsAlarmTestCase::verifyDescriptorElement(DOMDocument * doc)
 {
 	// Verify the descriptor element 
 	DOMNodeList * descriptorNodes = doc->getElementsByTagName(DESCRIPTOR_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; no descriptor element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no descriptor element found", 
 		(NULL != descriptorNodes && descriptorNodes->getLength() == 1));
 
 	// check value of descriptor
 	DOMNode * descriptorElementNode = descriptorNodes->item(0);
 	DOMNode * descriptorTextNode = descriptorElementNode->getFirstChild();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; descriptor value is not present or null",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; descriptor value is not present or null",
 		(NULL != descriptorTextNode));
 
 	const XMLCh * descriptorNodeValue = descriptorTextNode->getNodeValue();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; value of descriptor is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; value of descriptor is not correct",
 		(NULL != descriptorNodeValue && XMLString::equals(descriptorNodeValue, DESCRIPTOR_VALUE_XMLCH)));
 }
 
@@ -581,29 +581,29 @@ void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc)
 {
 	// Verify the user-properties element 
 	DOMNodeList * userPropertiesNodes = doc->getElementsByTagName(USER_PROPERTIES_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; no user-properties element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no user-properties element found", 
 		(NULL != userPropertiesNodes && userPropertiesNodes->getLength() == 1));
 
 	// check for 3 property sub-element(s)
 	DOMNodeList * propertyNodes = doc->getElementsByTagName(PROPERTY_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; did not find 3 property elements", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; did not find 3 property elements", 
 		(NULL != propertyNodes && propertyNodes->getLength() == 3));
 
 	// verify for each property element that it has the expected attributes
 	for(XMLSize_t i = 0; i < propertyNodes->getLength(); i++)
 	{
 		DOMNamedNodeMap * attributesMap = propertyNodes->item(i)->getAttributes();
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; property element does not contain 2 attributes",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; property element does not contain 2 attributes",
 			(NULL!= attributesMap && attributesMap->getLength() == 2));
 
 		// check that the property element has a "name" attribute
 		DOMNode * familyNode = attributesMap->getNamedItem(NAME_TAG_NAME);
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; property element does not contain 'name' attribute",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; property element does not contain 'name' attribute",
 			(NULL!= familyNode));
 
 		// check that the property element has a "value" attribute
 		DOMNode * valueNode = attributesMap->getNamedItem(VALUE_TAG_NAME);
-		CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; property element does not contain 'value' attribute",
+		CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; property element does not contain 'value' attribute",
 			(NULL!= valueNode));
 	}
 
@@ -611,38 +611,38 @@ void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc)
 	DOMNamedNodeMap * firstPropAttrMap = propertyNodes->item(0)->getAttributes();
 	DOMNode * prefixNameNode = firstPropAttrMap->getNamedItem(NAME_TAG_NAME);
 	const XMLCh * prefixNameNodeValue = prefixNameNode->getNodeValue();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; 1st property element, 'name' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 1st property element, 'name' attribute value is not correct",
 		(NULL!= prefixNameNodeValue && XMLString::equals(prefixNameNodeValue, PREFIX_NAME_VALUE_XMLCH)));
 		
 	DOMNamedNodeMap * secondPropAttrMap = propertyNodes->item(1)->getAttributes();
 	DOMNode * suffixNameNode = secondPropAttrMap->getNamedItem(NAME_TAG_NAME);
 	const XMLCh * suffixNameNodeValue = suffixNameNode->getNodeValue();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; 2nd property element, 'name' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 2nd property element, 'name' attribute value is not correct",
 		(NULL!= suffixNameNodeValue && XMLString::equals(suffixNameNodeValue, SUFFIX_NAME_VALUE_XMLCH)));
 
 	DOMNamedNodeMap * thirdPropAttrMap = propertyNodes->item(2)->getAttributes();
 	DOMNode * testPropNameNode = thirdPropAttrMap->getNamedItem(NAME_TAG_NAME);
 	const XMLCh * testPropNameNodeValue = testPropNameNode->getNodeValue();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; 3rd property element, 'name' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 3rd property element, 'name' attribute value is not correct",
 		(NULL!= testPropNameNodeValue && XMLString::equals(testPropNameNodeValue, TEST_NAME_VALUE_XMLCH)));
 
 	// for each property, check the 'value' attribute
 	DOMNamedNodeMap * firstAttrMap = propertyNodes->item(0)->getAttributes();
 	DOMNode * prefixValueNode = firstAttrMap->getNamedItem(VALUE_TAG_NAME);
 	const XMLCh * prefixValueNodeValue = prefixValueNode->getNodeValue();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; 1st property element, 'value' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 1st property element, 'value' attribute value is not correct",
 		(NULL!= prefixValueNodeValue && XMLString::equals(prefixValueNodeValue, PREFIX_VALUE_VALUE_XMLCH)));
 		
 	DOMNamedNodeMap * secondAttrMap = propertyNodes->item(1)->getAttributes();
 	DOMNode * suffixValueNode = secondAttrMap->getNamedItem(VALUE_TAG_NAME);
 	const XMLCh * suffixValueNodeValue = suffixValueNode->getNodeValue();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; 2nd property element, 'value' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 2nd property element, 'value' attribute value is not correct",
 		(NULL!= suffixValueNodeValue && XMLString::equals(suffixValueNodeValue, SUFFIX_VALUE_VALUE_XMLCH)));
 
 	DOMNamedNodeMap * thirdAttrMap = propertyNodes->item(2)->getAttributes();
 	DOMNode * testValueNode = thirdAttrMap->getNamedItem(VALUE_TAG_NAME);
 	const XMLCh * testValueNodeValue = testValueNode->getNodeValue();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; 3rd property element, 'value' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 3rd property element, 'value' attribute value is not correct",
 		(NULL!= testValueNodeValue && XMLString::equals(testValueNodeValue, TEST_VALUE_VALUE_XMLCH)));
 }
 
@@ -650,12 +650,12 @@ void AcsAlarmTestCase::verifyUserTimestampElement(DOMDocument * doc)
 {
 	// Verify the user-timestamp element 
 	DOMNodeList * userTimestampNodes = doc->getElementsByTagName(USER_TIMESTAMP_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; no user-properties element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no user-properties element found", 
 		(NULL != userTimestampNodes && userTimestampNodes->getLength() == 1));
 
 	// verify that there are 2 attributes
 	DOMNamedNodeMap * attributesMap = userTimestampNodes->item(0)->getAttributes();
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; user-timestamp element does not contain 2 attributes",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element does not contain 2 attributes",
 		(NULL!= attributesMap && attributesMap->getLength() == 2));
 
 	// check for seconds attribute
@@ -664,7 +664,7 @@ void AcsAlarmTestCase::verifyUserTimestampElement(DOMDocument * doc)
 	char *secondsCharValue = XMLString::transcode(secondsValue);
 	int secondsIntValue = atoi(secondsCharValue);
 	XMLString::release(&secondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; user-timestamp element, 'seconds' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element, 'seconds' attribute value is not correct",
 		(NULL!= secondsValue && secondsIntValue == SECONDS_VALUE));
 
 	// check for microseconds attribute
@@ -673,7 +673,7 @@ void AcsAlarmTestCase::verifyUserTimestampElement(DOMDocument * doc)
 	char *microsecondsCharValue = XMLString::transcode(microsecondsValue);
 	int microsecondsIntValue = atoi(microsecondsCharValue);
 	XMLString::release(&microsecondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("ACSFaultState::toXML appears to be broken; user-timestamp element, 'microseconds' attribute value is not correct",
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element, 'microseconds' attribute value is not correct",
 		(NULL!= microsecondsValue && microsecondsIntValue == MICROSECONDS_VALUE));
 
 }

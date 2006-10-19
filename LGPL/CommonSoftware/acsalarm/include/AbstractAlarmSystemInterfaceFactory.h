@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AbstractAlarmSystemInterfaceFactory.h,v 1.4 2006/10/17 12:46:26 sharring Exp $"
+* "@(#) $Id: AbstractAlarmSystemInterfaceFactory.h,v 1.5 2006/10/19 08:48:45 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,9 +34,11 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include "ACSAlarmSystemInterface.h"
-#include "ACSFaultState.h"
+#include "AbstractAlarmSystemInterface.h"
+#include "FaultState.h"
 #include "maciS.h"
+
+using acsalarm::AbstractAlarmSystemInterface;
 
 /**
  * The abstract base class (actually just an interface) to create sources and fault states.
@@ -63,23 +65,23 @@ class AbstractAlarmSystemInterfaceFactory
 	 * @param sourceName the source name.
 	 * @return the interface instance.
 	 */
-	virtual auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource(string sourceName) = 0;
+	virtual auto_ptr<AbstractAlarmSystemInterface> createSource(string sourceName) = 0;
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.
 	 */
-	virtual auto_ptr<acsalarm::ACSAlarmSystemInterface> createSource() = 0;
+	virtual auto_ptr<AbstractAlarmSystemInterface> createSource() = 0;
 	
 	/**
 	 * Create a fault state with the given family, member and code
 	 */
-	virtual auto_ptr<acsalarm::ACSFaultState>createFaultState(string family, string member, int code);
+	virtual auto_ptr<acsalarm::FaultState>createFaultState(string family, string member, int code);
 	
 	/**
 	 * Create a fault state 
 	 */
-	virtual auto_ptr<acsalarm::ACSFaultState>createFaultState();
+	virtual auto_ptr<acsalarm::FaultState>createFaultState();
 };
 
 #endif /* !ABSTRACT_ALARM_SYSTEM_INTERFACE_FACTORY_H */

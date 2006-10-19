@@ -16,31 +16,31 @@ namespace acsalarm
 	 * Class representing a single fault state for use by cpp alarm source clients 
 	 * which wish to send an alarm to the laser alarm server.
 	 */
-	class ACSFaultState
+	class FaultState
 	{	
 		public:
 
 			/**
 			 * Default constructor, values must be subsequently initialized using setters
 			 */
-			ACSFaultState();
+			FaultState();
 
 			/**
 			 * Copy constructor.
 			 */
-			ACSFaultState(const ACSFaultState &);
+			FaultState(const FaultState &);
 
 			/**
 			 * Constructor for initializing a fault state with values
 			 */
-			ACSFaultState(string family, string member, int code);
+			FaultState(string family, string member, int code);
 
 			/*
 			 * Destructor
 			 */
-			virtual ~ACSFaultState();
+			virtual ~FaultState();
 
-			ACSFaultState & operator=(const ACSFaultState & rhs);
+			FaultState & operator=(const FaultState & rhs);
  
 			/** 
 			 * Fault code accessor method.

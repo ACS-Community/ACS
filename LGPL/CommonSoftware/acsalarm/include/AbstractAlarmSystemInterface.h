@@ -1,5 +1,5 @@
-#ifndef ACS_ALARM_SYSTEM_INTERFACE_H
-#define ACS_ALARM_SYSTEM_INTERFACE_H
+#ifndef ALARM_SYSTEM_INTERFACE_H
+#define ALARM_SYSTEM_INTERFACE_H
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
 * (c) European Southern Observatory, 2006 
@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id$"
+* "@(#) $Id: AbstractAlarmSystemInterface.h,v 1.1 2006/10/19 08:48:45 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include "ACSFaultState.h"
+#include "FaultState.h"
 
 #include <vector>
 #include <string>
@@ -49,12 +49,12 @@ namespace acsalarm
  	 * @author sharring
  	 * Based on cern's java implementation
  	 */
-	class ACSAlarmSystemInterface
+	class AbstractAlarmSystemInterface
 	{
 		public:
 
-			ACSAlarmSystemInterface() {};
-			virtual ~ACSAlarmSystemInterface() {};
+			AbstractAlarmSystemInterface() {};
+			virtual ~AbstractAlarmSystemInterface() {};
 
 			/**
 		 	 * Set the source name.
@@ -78,21 +78,21 @@ namespace acsalarm
 		 	 * @param state the fault state change to push.
 		 	 * @throws ASIException if the fault state can not be pushed.
 		 	 */
-			virtual void push(ACSFaultState & state) = 0; //raises ASIException = 0;
+			virtual void push(FaultState & state) = 0; //raises ASIException = 0;
 
 			/**
 		 	 * Push a collection of fault states.
 		 	 * @param states
 		 	 * @throws ASIException if the fault state collection can not be pushed.
 		 	 */
-			virtual void push(vector<ACSFaultState> & states) = 0; // raises ASIException = 0;
+			virtual void push(vector<FaultState> & states) = 0; // raises ASIException = 0;
 
 			/**
 		 	 * Push the set of active fault states.
 		 	 * @param activeFaults the active fault states.
 		 	 * @throws ASIException if the fault state active list can not be pushed.
 		 	 */
-			virtual void pushActiveList(vector<ACSFaultState> & activeFaults) = 0; // raises ASIException = 0;
+			virtual void pushActiveList(vector<FaultState> & activeFaults) = 0; // raises ASIException = 0;
 
 		protected:
 

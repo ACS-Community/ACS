@@ -24,6 +24,7 @@
 #define XML_TAIL "</configuration-property>\n</alarm-system-configuration>\n"
 
 using namespace std;
+using acsalarm::AbstractAlarmSystemInterface;
 
 /**
  * NOTE: this tests the following scenarios: 
@@ -169,7 +170,7 @@ void FactoryTestCase::testFaultStateCreation()
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
 	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
-	auto_ptr<acsalarm::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState("Family", "Member", 0);
+	auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState("Family", "Member", 0);
 	CPPUNIT_ASSERT_MESSAGE("Error creating a FS", (fltstate.get() != NULL));
 }
 
@@ -183,7 +184,7 @@ void FactoryTestCase::testAlarmSourceCreation()
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
 	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
-	auto_ptr<acsalarm::ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+	auto_ptr<AbstractAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource.get() != NULL));
 }
 	

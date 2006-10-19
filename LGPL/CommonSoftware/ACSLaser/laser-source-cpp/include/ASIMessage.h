@@ -5,25 +5,26 @@
 #include <string>
 #include <vector>
 #include "Timestamp.h"
-#include "ACSFaultState.h"
+#include "FaultState.h"
 
-using namespace acsalarm;
+using acsalarm::FaultState;
+using acsalarm::Timestamp;
 
 namespace laserSource
 {
 	/*
-	 * The class which encapsulates the data for one or more fault states (ACSFaultState)
+	 * The class which encapsulates the data for one or more fault states (FaultState)
 	 * to be sent to the laser alarm server.
 	 */
 	class ASIMessage
 	{
 		public:
 			ASIMessage();
-			ASIMessage(auto_ptr<vector<ACSFaultState> > & faults);
+			ASIMessage(auto_ptr<vector<FaultState> > & faults);
 			virtual ~ASIMessage();
 
-			vector<ACSFaultState> & getFaultStates() { return *faultStates; }
-			void setFaultStates(auto_ptr<vector<ACSFaultState> > & faults) { faultStates = faults; }
+			vector<FaultState> & getFaultStates() { return *faultStates; }
+			void setFaultStates(auto_ptr<vector<FaultState> > & faults) { faultStates = faults; }
 
 			bool getBackup() { return backup; }
 			void setBackup(bool bkup) { backup = bkup; }
@@ -44,7 +45,7 @@ namespace laserSource
 			string toXML();
 
 		private:
-			auto_ptr<vector<ACSFaultState> > faultStates;
+			auto_ptr<vector<FaultState> > faultStates;
 			bool backup;
 			string version;
 			string sourceName;

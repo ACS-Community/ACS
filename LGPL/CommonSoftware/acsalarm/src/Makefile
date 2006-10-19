@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2006/10/18 12:55:53 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.7 2006/10/19 08:48:45 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -53,9 +53,9 @@ xxxxx_LIBS      =
 # ---------------------------------
 INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 					ACSAlarmSystemInterfaceProxy.h \
-					ACSFaultState.h \
-					ACSAlarmSystemInterface.h \
+					FaultState.h \
 					faultStateConstants.h \
+					AbstractAlarmSystemInterface.h \
 			      AbstractAlarmSystemInterfaceFactory.h Properties.h Timestamp.h utilConstants.h 
 
 #
@@ -66,7 +66,7 @@ LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter ACSFaultState \
+acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter FaultState \
 	AbstractAlarmSystemInterfaceFactory Properties Timestamp
 acsAlSysSource_LIBS = acsutil expat maciStubs
 

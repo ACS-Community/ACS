@@ -24,11 +24,12 @@
 #include <alsysMountImpl.h>
 
 #include "ACSAlarmSystemInterfaceFactory.h"
-#include "ACSAlarmSystemInterface.h"
-#include "ACSFaultState.h"
+#include "AbstractAlarmSystemInterface.h"
+#include "FaultState.h"
 #include "faultStateConstants.h"
 
 using namespace acscomponent;
+using acsalarm::AbstractAlarmSystemInterface
 
 Mount::Mount(const ACE_CString &name,maci::ContainerServices * containerServices) : 
     ACSComponentImpl(name, containerServices)
@@ -53,10 +54,10 @@ void Mount::sendAlarm(std::string family, std::string member, int code, bool act
 	// constants we will use when creating the fault
 
 		// create the AlarmSystemInterface
-		auto_ptr<acsalarm::ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
+		auto_ptr<AbstractAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
 
 		// create the FaultState
-		auto_ptr<acsalarm::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
+		auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
 
 		// set the fault state's descriptor
 		string stateString;

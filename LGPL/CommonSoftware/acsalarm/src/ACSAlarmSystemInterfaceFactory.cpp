@@ -32,7 +32,7 @@ static char *rcsId="@(#) $Id$";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ACSAlarmSystemInterfaceFactory.h"
-#include "ACSFaultState.h"
+#include "FaultState.h"
 #include <logging.h>
 
 using namespace acsalarm;
@@ -40,7 +40,7 @@ using namespace acsalarm;
 bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
 AbstractAlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
-auto_ptr<acsalarm::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource(NULL);
+auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource(NULL);
 
 void ACSAlarmSystemInterfaceFactory::done() {
 	// TODO: mutual exclusion?
@@ -66,7 +66,7 @@ void ACSAlarmSystemInterfaceFactory::done() {
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
+auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
 {
 	if (m_useACSAlarmSystem == NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
@@ -84,7 +84,7 @@ auto_ptr<acsalarm::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
+auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
@@ -93,7 +93,7 @@ auto_ptr<acsalarm::ACSAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::crea
 		return m_AlarmSystemInterfaceFactory_p->createSource(sourceName);
 	} else {
 		ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
-		auto_ptr<acsalarm::ACSAlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
+		auto_ptr<acsalarm::AbstractAlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 		return asIfAutoPtr;
 	}
 }
@@ -148,15 +148,15 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 	return true;
 }
 
-auto_ptr<acsalarm::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) {
+auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) {
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
 	}
 	if (!(*m_useACSAlarmSystem)) {
 		return m_AlarmSystemInterfaceFactory_p->createFaultState(family, member, code);
 	} else {
-		acsalarm::ACSFaultState * asFaultStatePtr = new acsalarm::ACSFaultState(family, member, code);
-		auto_ptr<acsalarm::ACSFaultState> asFaultStateAutoPtr(asFaultStatePtr);
+		acsalarm::FaultState * asFaultStatePtr = new acsalarm::FaultState(family, member, code);
+		auto_ptr<acsalarm::FaultState> asFaultStateAutoPtr(asFaultStatePtr);
 		return asFaultStateAutoPtr;
 	}
 }
@@ -178,15 +178,15 @@ bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()
 	return retVal;
 }
 
-auto_ptr<acsalarm::ACSFaultState>ACSAlarmSystemInterfaceFactory::createFaultState() {
+auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState() {
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
 	}
 	if (!(*m_useACSAlarmSystem)) {
 		return m_AlarmSystemInterfaceFactory_p->createFaultState();
 	} else {
-		acsalarm::ACSFaultState * asIfProxyPtr = new acsalarm::ACSFaultState();
-		auto_ptr<acsalarm::ACSFaultState> asIfAutoPtr(asIfProxyPtr);
+		acsalarm::FaultState * asIfProxyPtr = new acsalarm::FaultState();
+		auto_ptr<acsalarm::FaultState> asIfAutoPtr(asIfProxyPtr);
 		return asIfAutoPtr;
 	}
 }
@@ -195,7 +195,7 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	int faultCode, bool active, Properties & faultProperties)
 {
 	// create the FaultState
-	auto_ptr<acsalarm::ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(faultFamily, faultMember, faultCode);
+	auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(faultFamily, faultMember, faultCode);
 
 	// set the fault state's descriptor
 	string stateString;

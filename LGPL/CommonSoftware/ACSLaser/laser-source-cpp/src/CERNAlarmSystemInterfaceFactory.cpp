@@ -1,6 +1,5 @@
 
-#include "ACSFaultState.h"
-#include "ACSAlarmSystemInterface.h"
+#include "AbstractAlarmSystemInterface.h"
 #include "CERNAlarmSystemInterfaceProxy.h"
 #include "CERNAlarmSystemInterfaceFactory.h"
 #include "asiConfigurationConstants.h"
@@ -48,10 +47,10 @@ void CERNAlarmSystemInterfaceFactory::done()
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(string sourceName)
+auto_ptr<AbstractAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
-	ACSAlarmSystemInterface * asIfProxyPtr = new CERNAlarmSystemInterfaceProxy(sourceName);
-	auto_ptr<ACSAlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
+	AbstractAlarmSystemInterface * asIfProxyPtr = new CERNAlarmSystemInterfaceProxy(sourceName);
+	auto_ptr<AbstractAlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 	return asIfAutoPtr;
 }
 	
@@ -60,7 +59,7 @@ auto_ptr<acsalarm::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::cre
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::ACSAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource()
+auto_ptr<AbstractAlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource()
 {
 	return createSource(ALARM_SOURCE_NAME);
 }

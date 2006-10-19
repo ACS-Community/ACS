@@ -1,4 +1,4 @@
-#include "ACSFaultState.h"
+#include "FaultState.h"
 #include "utilConstants.h"
 #include <sstream>
 
@@ -9,7 +9,7 @@ using std::stringstream;
 /**
  * Default Constructor
  */
-ACSFaultState::ACSFaultState()
+FaultState::FaultState()
 {
 	auto_ptr<Timestamp> tstamp(new Timestamp());
 	setUserTimestamp(tstamp);
@@ -18,7 +18,7 @@ ACSFaultState::ACSFaultState()
 /**
  * Constructor for initializing a fault state with values
  */
-ACSFaultState::ACSFaultState(string theFamily, string theMember, int theCode)
+FaultState::FaultState(string theFamily, string theMember, int theCode)
 {
 	setFamily(theFamily);
 	setMember(theMember);
@@ -30,7 +30,7 @@ ACSFaultState::ACSFaultState(string theFamily, string theMember, int theCode)
 /**
  * Copy constructor.
  */
-ACSFaultState::ACSFaultState(const ACSFaultState & fltState)
+FaultState::FaultState(const FaultState & fltState)
 {
 	*this = fltState;
 }
@@ -38,14 +38,14 @@ ACSFaultState::ACSFaultState(const ACSFaultState & fltState)
 /**
  * Destructor
  */
-ACSFaultState::~ACSFaultState()
+FaultState::~FaultState()
 {
 }
 
 /*
  * Assignment operator
  */
-ACSFaultState & ACSFaultState::operator=(const ACSFaultState & rhs)
+FaultState & FaultState::operator=(const FaultState & rhs)
 {
 	setFamily(rhs.getFamily());
 	setCode(rhs.getCode());
@@ -89,7 +89,7 @@ ACSFaultState & ACSFaultState::operator=(const ACSFaultState & rhs)
  *     <user-timestamp seconds="1129902763" microseconds="105000"/>
  *  </fault-state>
  */
-string ACSFaultState::toXML(int amountToIndent)
+string FaultState::toXML(int amountToIndent)
 {
 	string retVal;
 

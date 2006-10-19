@@ -1,31 +1,31 @@
 #include "AbstractAlarmSystemInterfaceFactory.h"
-#include "ACSFaultState.h"
+#include "FaultState.h"
 
 using namespace acsalarm;
 
 //TODO: add namespace
 
-/** Factory method for creating ACSFaultState instances.
- * @return a new ACSFaultState instance.
+/** Factory method for creating FaultState instances.
+ * @return a new FaultState instance.
  * @param family the fault family.
  * @param member the fault member.
  * @param code the fault code.
  */
-auto_ptr<ACSFaultState> AbstractAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code)
+auto_ptr<FaultState> AbstractAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code)
 {
-	ACSFaultState * fsPtr = new ACSFaultState(family, member, code);
-	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);
+	FaultState * fsPtr = new FaultState(family, member, code);
+	auto_ptr<FaultState> fsAutoPtr(fsPtr);
 	return fsAutoPtr;
 }
 
 /**
  * Create a fault state 
- * @return a new ACSFaultState instance
+ * @return a new FaultState instance
  */
-auto_ptr<ACSFaultState> AbstractAlarmSystemInterfaceFactory::createFaultState()
+auto_ptr<FaultState> AbstractAlarmSystemInterfaceFactory::createFaultState()
 {
-	ACSFaultState * fsPtr = new ACSFaultState();
-	auto_ptr<ACSFaultState> fsAutoPtr(fsPtr);
+	FaultState * fsPtr = new FaultState();
+	auto_ptr<FaultState> fsAutoPtr(fsPtr);
 	return fsAutoPtr;
 }
 

@@ -2,10 +2,10 @@
 
 #include <logging.h>
 #include <loggingGenericLogger.h>
-#include "ACSAlarmSystemInterface.h"
+#include "AbstractAlarmSystemInterface.h"
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "Timestamp.h"
-#include "ACSFaultState.h"
+#include "FaultState.h"
 #include "Properties.h"
 #include "faultStateConstants.h"
 //#include "asiConfigurationConstants.h"
@@ -46,10 +46,10 @@ int main(int argc, char *argv[])
 		ACSAlarmSystemInterfaceFactory::init(NULL);
 
 		// create the AlarmSystemInterface
-		auto_ptr<ACSAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+		auto_ptr<AbstractAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 
 		// create the FaultState
-		auto_ptr<ACSFaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
+		auto_ptr<FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
 
 		// set the fault state's descriptor
 		string stateString = faultState::ACTIVE_STRING;
