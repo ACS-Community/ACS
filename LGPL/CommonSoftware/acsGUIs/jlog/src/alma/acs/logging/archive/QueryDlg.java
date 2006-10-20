@@ -4,6 +4,7 @@ package alma.acs.logging.archive;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
@@ -215,125 +217,121 @@ public class QueryDlg extends JDialog implements ActionListener {
 		GridBagConstraints c = new GridBagConstraints();
 		optionsPnl.setLayout(prefsLayout);
 		// Add all the labels
+		JLabel maxLogs = new JLabel("Max num of logs to load:");
+		c.gridx=0; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(10,5,5,5);
+		optionsPnl.add(maxLogs,c);
 		JLabel fromLbl = new JLabel("From:");
-		c.gridx=0; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(fromLbl,c);
-		JLabel toLbl = new JLabel("To");
 		c.gridx=0; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(toLbl,c);
-		JLabel minLogType = new JLabel("From type");
+		optionsPnl.add(fromLbl,c);
+		JLabel toLbl = new JLabel("To:");
 		c.gridx=0; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(minLogType,c);
-		JLabel maxLogType = new JLabel("To type");
+		optionsPnl.add(toLbl,c);
+		JLabel routinNameLbl = new JLabel("Routine name:");
 		c.gridx=0; c.gridy=3; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(maxLogType,c);
-		JLabel procNameLbl = new JLabel("Process name");
+		optionsPnl.add(routinNameLbl,c);
+		JLabel procNameLbl = new JLabel("Process name:");
 		c.gridx=0; c.gridy=4; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(procNameLbl,c);
-		JLabel srcNameLbl = new JLabel("Source object");
+		JLabel srcNameLbl = new JLabel("Source object:");
 		c.gridx=0; c.gridy=5; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(srcNameLbl,c);
-		JLabel routinNameLbl = new JLabel("Routine name");
+		JLabel minLogType = new JLabel("From type:");
 		c.gridx=0; c.gridy=6; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(routinNameLbl,c);
-		JLabel maxLogs = new JLabel("Max num of logs to load");
-		c.gridx=0; c.gridy=7; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(maxLogs,c);
+		optionsPnl.add(minLogType,c);
+		JLabel maxLogType = new JLabel("To type:");
+		c.gridx=0; c.gridy=7; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,10,5);
+		optionsPnl.add(maxLogType,c);
+		
 		
 		// Add the input widgets
 		fromYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
-		c.gridx=1; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,0);
 		optionsPnl.add(fromYY,c);
 		JLabel separatorF1 = new JLabel("-");
-		c.gridx=2; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=2; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,0,5,0);
 		optionsPnl.add(separatorF1,c);
 		fromMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
-		c.gridx=3; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=3; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(fromMM,c);
 		JLabel separatorF2 = new JLabel("-");
-		c.gridx=4; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=4; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(separatorF2,c);
 		fromDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
-		c.gridx=5; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=5; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(fromDD,c);
 		JLabel tlbl = new JLabel("T");
-		c.gridx=6; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=6; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(tlbl,c);
 		fromHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
-		c.gridx=7; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=7; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(fromHr,c);
 		JLabel comaF1Lbl = new JLabel(":");
-		c.gridx=8; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=8; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(comaF1Lbl,c);
 		fromMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
-		c.gridx=9; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=9; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(fromMin,c);
 		JLabel comaF2Lbl = new JLabel(":");
-		c.gridx=10; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(0,0,0,0);
+		c.gridx=10; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(comaF2Lbl,c);
 		fromSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
-		c.gridx=11; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(0,0,0,0);
+		c.gridx=11; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER;  
 		optionsPnl.add(fromSec,c);
 		
 		toYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
-		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
+		c.gridx=1; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,0);
 		optionsPnl.add(toYY,c);
 		JLabel separatorTo1 = new JLabel("-");
-		c.gridx=2; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=2; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,0,5,0);
 		optionsPnl.add(separatorTo1,c);
 		toMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
-		c.gridx=3; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=3; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(toMM,c);
 		JLabel separatorTo2 = new JLabel("-");
-		c.gridx=4; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=4; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(separatorTo2,c);
 		toDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
-		c.gridx=5; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=5; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(toDD,c);
 		JLabel t2lbl = new JLabel("T");
-		c.gridx=6; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=6; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(t2lbl,c);
 		toHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
-		c.gridx=7; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=7; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(toHr,c);
 		JLabel comaTo1Lbl = new JLabel(":");
-		c.gridx=8; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=8; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(comaTo1Lbl,c);
 		toMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
-		c.gridx=9; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=9; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(toMin,c);
 		JLabel comaTo2Lbl = new JLabel(":");
-		c.gridx=10; c.gridy=1; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		c.gridx=10; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(comaTo2Lbl,c);
 		toSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
-		c.gridx=11; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER;
+		c.gridx=11; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER;
 		optionsPnl.add(toSec,c);
 		
-		
-		
-		// Build the renderer for the combo boxex
-		minLogLevelCB = new JComboBox();
-		setupTypeCB(minLogLevelCB);
-		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO);
-		c.gridx=1; c.gridy=2; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(minLogLevelCB,c);
-		maxLogLevelCB= new JComboBox();
-		setupTypeCB(maxLogLevelCB);
-		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY);
+		rowLimit = new JTextField("10000",20);
+		c.gridx=1; c.gridy=0; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(10,5,5,5);
+		optionsPnl.add(rowLimit,c);
+		routineName = new JTextField("*",20);
 		c.gridx=1; c.gridy=3; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(maxLogLevelCB,c);
+		optionsPnl.add(routineName,c);
 		procName = new JTextField("*",20);
 		c.gridx=1; c.gridy=4; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(procName,c);
 		sourceName = new JTextField("*",20);
 		c.gridx=1; c.gridy=5; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(sourceName,c);
-		routineName = new JTextField("*",20);
+		minLogLevelCB = setupTypeCB(minLogLevelCB);
+		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO);
 		c.gridx=1; c.gridy=6; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(routineName,c);
-		rowLimit = new JTextField("10000",20);
-		c.gridx=1; c.gridy=7; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
-		optionsPnl.add(rowLimit,c);
+		optionsPnl.add(minLogLevelCB,c);
+		maxLogLevelCB= setupTypeCB(maxLogLevelCB);
+		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY);
+		c.gridx=1; c.gridy=7; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,10,5);
+		optionsPnl.add(maxLogLevelCB,c);
 		
 		// Add the OK, CANCEL buttons
 		JPanel btnPnl = new JPanel();
@@ -354,17 +352,16 @@ public class QueryDlg extends JDialog implements ActionListener {
 		mainPnl.add(btnPnl,BorderLayout.SOUTH);
 	}
 	
-	private void setupTypeCB(JComboBox box) {
-		//	Add the ComboBox for the log level
-        LogTypeRenderer discardRendererCB = new LogTypeRenderer();
-        String[] levelStr = new String[LogTypeHelper.getAllTypesDescriptions().length];
-        for (int t=0; t<LogTypeHelper.getAllTypesDescriptions().length; t++) {
-        	levelStr[t]=LogTypeHelper.getAllTypesDescriptions()[t];
-        	box.insertItemAt(levelStr[t],t);
-        }
-        box.setMaximumRowCount(levelStr.length);
-        box.setEditable(false);
-        box.setRenderer(discardRendererCB);
+	private JComboBox setupTypeCB(JComboBox box) {
+		JComboBox logLevelCB = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+        
+        // Build the renderer for the combo boxex
+        LogTypeRenderer rendererCB = new LogTypeRenderer();
+        
+        logLevelCB.setEditable(false);
+        logLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+        logLevelCB.setRenderer(rendererCB);
+		return logLevelCB;
 	}
 	
 	/**
