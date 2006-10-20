@@ -56,13 +56,12 @@ import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.entities.commonentity.EntityT;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 import alma.maciErrType.wrappers.AcsJmaciErrTypeEx;
 import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
-
-import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -217,7 +216,12 @@ public class ContainerServicesImpl implements ContainerServices
         return componentLogger;
 	}
 
+	
+	public void registerComponentListener(ComponentListener listener) {
+		// TODO Auto-generated method stub
+	}
 
+	
 	/**
 	 * @see alma.acs.container.ContainerServices#assignUniqueEntityId(EntityT)
 	 */
@@ -258,39 +262,50 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#findComponents(java.lang.String, java.lang.String)
 	 */
-	public String[] findComponents(String curlWildcard, String typeWildcard) //throws AcsJContainerServicesEx
+	public String[] findComponents(String curlWildcard, String typeWildcard) 
+		throws AcsJContainerServicesEx
 	{
-		if (curlWildcard == null)
-		{
+		if (curlWildcard == null) {
 			curlWildcard = "*";
 		}
-		if (typeWildcard == null)
-		{
+		if (typeWildcard == null) {
 			typeWildcard = "*";
 		}
 
-		m_logger.finer("about to call Manager#get_component_info with curlWildcard='" +
-		curlWildcard + "' and typeWildcard='" + typeWildcard + "'.");
+		String msgSpec = "curlWildcard='" + curlWildcard + "' and typeWildcard='" + typeWildcard + "'.";
+		if (m_logger.isLoggable(Level.FINER)) {
+			m_logger.finer("about to call Manager#get_component_info with " + msgSpec);
+		}
 		
+		ComponentInfo[] components = null;
+		try {
+			components = m_acsManagerProxy.get_component_info(new int[0], curlWildcard, typeWildcard, false );
+		} 
+		catch (AcsJNoPermissionEx ex) {
+		    m_logger.log(Level.FINE, "No permission to find components with " + msgSpec, ex);  
+		    AcsJContainerServicesEx ex2 = new AcsJContainerServicesEx(ex);
+		    ex2.setContextInfo(msgSpec);
+		    throw ex2;
+		}
+		catch (Throwable thr) {
+			m_logger.log(Level.FINE, "Unexpected failure calling 'get_component_info' with " + msgSpec, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msgSpec);
+			throw ex;
+		}		
+			
 		ArrayList<String> curls = new ArrayList<String>();
 		
-		try {
-		    ComponentInfo[] components = m_acsManagerProxy.get_component_info(
-			new int[0], curlWildcard, typeWildcard, false );
-		    if (components != null)
-			{
-			for (int i = 0; i < components.length; i++)
-			    {
-			    curls.add(components[i].name);
-			    }
+		if (components != null) {
+			for (int i = 0; i < components.length; i++) {
+				curls.add(components[i].name);
 			}
+		}
 		
-		    m_logger.finer("received " + curls.size() + " curls from get_component_info.");
+		if (m_logger.isLoggable(Level.FINER)) {
+			m_logger.finer("received " + curls.size() + " curls from get_component_info.");
 		}
-		catch (AcsJNoPermissionEx npe) {
-		        /// @todo Should throws AcsJContainerException, but it is commented out
-			npe.log(m_logger);
-		}
+		
 		return curls.toArray(new String[curls.size()]);
 	}
 
@@ -316,7 +331,7 @@ public class ContainerServicesImpl implements ContainerServices
 			ComponentInfo[] compInfos;
 			try {
 				compInfos = m_acsManagerProxy.get_component_info(new int[0], curl, "*", false);
-			} catch (Throwable thr) { // at most RuntimeException expected
+			} catch (Throwable thr) { 
 				m_logger.log(Level.FINE, "Unexpected failure calling 'get_component_info'.", thr);
 				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
 				ex.setContextInfo("CURL=" + curl);
@@ -391,6 +406,34 @@ public class ContainerServicesImpl implements ContainerServices
 		return stub;
 	}
 	
+	public org.omg.CORBA.Object getComponentNonSticky(String curl) 
+		throws AcsJContainerServicesEx
+	{
+		if (curl == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("curl"); 
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}
+
+		org.omg.CORBA.Object stub = null;
+		try {
+			stub = m_acsManagerProxy.get_component(m_clientHandle, curl, true);
+		    m_logger.fine("component " + curl + " retrieved successfully.");
+		    m_usedComponentsMap.put(curl, stub);
+		} catch (AcsJmaciErrTypeEx ex) {				
+		    String msg = "Failed to retrieve component " + curl;
+		    m_logger.log(Level.FINE, msg, ex); // only a low-level log because the client component is supposed to log the exception which contains all context data 
+		    throw new AcsJContainerServicesEx(ex);
+		} catch (Throwable thr) {
+		    String msg = "Failed to retrieve component " + curl + " for unexpected reasons.";
+		    m_logger.log(Level.FINE, msg, thr);  
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
+		}	
+		return stub;
+	}
 
 	/**
 	 * @see alma.acs.container.ContainerServices#getDefaultComponent(java.lang.String)
@@ -649,16 +692,16 @@ public class ContainerServicesImpl implements ContainerServices
 				Method implGetter = servant.getClass().getMethod("_delegate", (Class[]) null);
 				isTie = true;
 				Class operationsIF = implGetter.getReturnType();
-				Object offshootImpl = implGetter.invoke(servant, (Object[]) null);
+				java.lang.Object offshootImpl = implGetter.invoke(servant, (java.lang.Object[]) null);
 				// now we insert the interceptor between the tie skeleton and the impl.
 				// Offshoots have no name, so we construct one from the component name and the offshoot interface name
 				// 
 				String qualOffshootName = getName() + "/" + operationsIF.getName().substring(0, operationsIF.getName().length() - "Operations".length());
-				Object interceptingOffshootImpl = ContainerSealant.createContainerSealant(
+				java.lang.Object interceptingOffshootImpl = ContainerSealant.createContainerSealant(
 						operationsIF, offshootImpl, qualOffshootName, true, m_logger, 
 						Thread.currentThread().getContextClassLoader(), methodsExcludedFromInvocationLogging);
 				Method implSetter = servant.getClass().getMethod("_delegate", new Class[]{operationsIF});
-				implSetter.invoke(servant, new Object[]{interceptingOffshootImpl});
+				implSetter.invoke(servant, new java.lang.Object[]{interceptingOffshootImpl});
 				m_logger.fine("created sealant for offshoot " + qualOffshootName);
 			} catch (NoSuchMethodException e) {
 				// so this was not a Tie skeleton, even though its name ends misleadingly with "POATie"
@@ -823,6 +866,7 @@ public class ContainerServicesImpl implements ContainerServices
 	void setMethodsExcludedFromInvocationLogging(String[] methodsExcludedFromInvocationLogging) {
 		this.methodsExcludedFromInvocationLogging = methodsExcludedFromInvocationLogging;
 	}
+
 
 
 }
