@@ -35,7 +35,7 @@
 #endif
 
 #include <logging.h>
-#include "AbstractAlarmSystemInterface.h"
+#include "AlarmSystemInterface.h"
 #include "FaultState.h"
 
 using namespace Logging;
@@ -44,7 +44,7 @@ using namespace Logging;
  * Implementation of a source that log messages instead of sending msg
  * to the AlarmSrevice
  */
-class ACSAlarmSystemInterfaceProxy: public acsalarm::AbstractAlarmSystemInterface {
+class ACSAlarmSystemInterfaceProxy: public acsalarm::AlarmSystemInterface {
 	private:
 		/**
 		 * The logger
@@ -81,3 +81,4 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AbstractAlarmSystemInterfac
 };
 
 #endif 
+

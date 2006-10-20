@@ -34,8 +34,8 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include "AbstractAlarmSystemInterfaceFactory.h"
-#include "AbstractAlarmSystemInterface.h"
+#include "AlarmSystemInterfaceFactory.h"
+#include "AlarmSystemInterface.h"
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSAlarmSystemInterfaceProxy.h"
 #include "utilConstants.h"
@@ -44,7 +44,7 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
 
-using acsalarm::AbstractAlarmSystemInterface;
+using acsalarm::AlarmSystemInterface;
 
 /**
  * The class to create sources and fault states.
@@ -58,14 +58,14 @@ using acsalarm::AbstractAlarmSystemInterface;
  * 
  */
 class ACSAlarmSystemInterfaceFactory
-// TODO: Alessandro, can this class extend AbstractAlarmSystemInterfaceFactory? 
+// TODO: Alessandro, can this class extend AlarmSystemInterfaceFactory? 
 // We would need to make static methods non-static to do so...
 {
 	private:
 
 	// used for the convenience method createAndSendAlarms, so that it need not create a new source
 	// for each time it is invoked
-	static auto_ptr<AbstractAlarmSystemInterface> sharedSource;
+	static auto_ptr<AlarmSystemInterface> sharedSource;
 
 	// It is true if ACS implementation for sources must be used,  and
 	// false means CERN implementation
@@ -76,7 +76,7 @@ class ACSAlarmSystemInterfaceFactory
 	static maci::Manager_ptr m_manager;
 
 	// Pointer to CERN alarm system object; will remain null if we are not using CERN implementation
-	static AbstractAlarmSystemInterfaceFactory * m_AlarmSystemInterfaceFactory_p;
+	static AlarmSystemInterfaceFactory * m_AlarmSystemInterfaceFactory_p;
 
 	/** Default constructor.  */
 	ACSAlarmSystemInterfaceFactory();
@@ -109,13 +109,13 @@ class ACSAlarmSystemInterfaceFactory
 	 * @param sourceName the source name.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<AbstractAlarmSystemInterface> createSource(string sourceName);
+	static auto_ptr<AlarmSystemInterface> createSource(string sourceName);
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<AbstractAlarmSystemInterface> createSource();
+	static auto_ptr<AlarmSystemInterface> createSource();
 	
 	/**
 	 * Create a fault state with the given family, member and code
@@ -134,3 +134,4 @@ class ACSAlarmSystemInterfaceFactory
 };
 
 #endif /*!ACS_ALARM_SYSTEM_INTERFACE_FACTORY_H*/
+
