@@ -188,7 +188,7 @@ public class ACS6ContainerLoggingConfigConverter {
 	
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			System.out.println("usage: " + ACS6ContainerLoggingConfigConverter.class.getName() + " filename");
+			System.out.println("usage: acsStartJava -endorsed " + ACS6ContainerLoggingConfigConverter.class.getName() + " filename");
 			return;
 		}
 		File inputFile = null;
