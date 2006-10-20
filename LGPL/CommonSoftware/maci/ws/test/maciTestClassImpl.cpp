@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.95 2006/10/19 15:14:03 bjeram Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.96 2006/10/20 09:12:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.95 2006/10/19 15:14:03 bjeram Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.96 2006/10/20 09:12:13 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -244,22 +244,6 @@ ConstructComponent(CORBA::ULong h,
       else
 	  return mtc;
     }
-/*
-  else if (strcmp(type, "IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0") == 0)
-    {
-      MaciTestConstructableClass * mtcc = new MaciTestConstructableClass(poa, name);
-      if (!mtcc || mtcc->initialization())
-	{
-	  ACS_LOG(LM_RUNTIME_CONTEXT, "maciTestClassImpl::ConstructComponent",
-		  (LM_ERROR, "Failed to create/initialize component: '%s'", name));
-	  if (mtcc)
-	      mtcc->_remove_ref();
-	  return 0;
-	}
-      else
-	  return mtcc;
-    }
-*/
   else if (strcmp(type, "IDL:alma/MACI_TEST/MaciHierarchicalTestClass:1.0") == 0)
     {
       MaciHierarchicalTestClass * mhtc = new MaciHierarchicalTestClass(name,containerServices);
@@ -269,7 +253,8 @@ ConstructComponent(CORBA::ULong h,
 		  (LM_ERROR, "Failed to create/initialize component: '%s'", name));
 	  if (mhtc)
 	      mhtc->_remove_ref();
-	  return 0;
+	  throw ACSErrTypeCommon::CouldntCreateObjectExImpl(__FILE__, __LINE__, 
+							    "maciTestClassImpl::ConstructComponent");
 	}
       else
 	  return mhtc;
@@ -278,7 +263,9 @@ ConstructComponent(CORBA::ULong h,
     {
       ACS_LOG(LM_RUNTIME_CONTEXT, "maciTestClassImpl::ConstructComponent",
               (LM_ERROR, "Unknown component type: '%s'", type));
-      return 0;
+      	  return 0;
+	  throw ACSErrTypeCommon::CouldntCreateObjectExImpl(__FILE__, __LINE__, 
+							    "maciTestClassImpl::ConstructComponent");
     }
 }
 
