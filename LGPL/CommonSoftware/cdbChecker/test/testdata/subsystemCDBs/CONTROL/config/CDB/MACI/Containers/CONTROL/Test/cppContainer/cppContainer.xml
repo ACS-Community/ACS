@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-$Id: cppContainer.xml,v 1.1 2005/04/15 17:06:58 gchiozzi Exp $
+$Id: cppContainer.xml,v 1.2 2006/10/20 08:07:13 hsommer Exp $
 Copyright (C) 2004
 Associated Universities, Inc. Washington DC, USA.
 
@@ -26,11 +26,15 @@ Correspondence concerning ALMA should be addressed as follows:
 -->
 <Container xmlns="urn:schemas-cosylab-com:Container:1.0" 
            xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
-           xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
-           ServerThreads="5"> 
+           xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+           xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+           ServerThreads="5">
   <Autoload>
-    <cdb:_ string="baci"/>
-    <cdb:_ string="ambServerStubs"/>
-    <cdb:_ string="ambInterface"/>
-   </Autoload>
+    <cdb:_ string="baci" />
+    <cdb:_ string="ambServerStubs" />
+    <cdb:_ string="ambInterface" />
+  </Autoload>
+  <LoggingConfig>
+  </LoggingConfig>
 </Container>
+
