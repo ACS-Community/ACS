@@ -266,6 +266,19 @@ public interface ContainerServices
 	public void releaseComponent(String componentUrl);
 	
 	
+	public static interface ComponentListener {
+		void componentsAvailable(ComponentDescriptor[] comps); 
+		void componentsUnvailable(ComponentDescriptor[] comps); 
+	}
+	
+	/**
+	 * @param listener
+	 * @since ACS 6.0
+	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
+	 */
+	public void registerComponentListener(ComponentListener listener);
+	
+	
 	/////////////////////////////////////////////////////////////
 	// advanced stuff, only for special cases
 	/////////////////////////////////////////////////////////////
