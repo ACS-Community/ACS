@@ -10,8 +10,8 @@
 2 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
 2 - Manager reference narrowed.
-1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/CacheSize'
-2 - DAO:'MACI' Unable to return field: 'Containers/archiveContainer/CacheSize'
+1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+2 - DAO:'MACI' Unable to return field: 'Containers/archiveContainer/LoggingConfig/dispatchPacketSize'
 1 - Configuration information for container 'bilboContainer' not available.
 2 - Configuration information for container 'archiveContainer' not available.
 1 - Starting as dynamic container.
