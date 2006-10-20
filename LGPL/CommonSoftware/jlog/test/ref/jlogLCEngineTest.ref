@@ -1,4 +1,3 @@
-2 - Running logClient
 1 - Connection disconnected
 1 - Connecting
 1 - Status msg received: Connecting to ACS remote access...
@@ -1522,4 +1521,3 @@
 2 - ----------T--:--:--.--- [GlobalLogger] Test message 97
 2 - ----------T--:--:--.--- [GlobalLogger] Test message 98
 2 - ----------T--:--:--.--- [GlobalLogger] Test message 99
-2 - All done!
