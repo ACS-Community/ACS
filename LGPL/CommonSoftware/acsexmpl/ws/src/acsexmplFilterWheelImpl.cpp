@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.7 2006/10/19 09:47:40 bjeram Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.8 2006/10/20 11:24:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ const static int MOVEFILTER_ACTION   = 0;
 const static int MOVESLOT_ACTION   = 1;
 const static int ADJUST_ACTION = 2;
 
-ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.7 2006/10/19 09:47:40 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.8 2006/10/20 11:24:20 bjeram Exp $")
 
 using namespace baci;
 
@@ -427,7 +427,6 @@ FilterWheel::moveFilterAction (
 	if (found) {
 	    int delta=m_wheelConfiguration[t].delta;
 	    unsigned int step=m_wheelConfiguration[t].step;
-	    int errcode;
 	    ACS::Time timestamp;
 		m_position_sp->getDevIO()->write(step+delta, timestamp);
 		ACS_SHORT_LOG((LM_INFO,"Wheel rotaed to step %d",step+delta));
@@ -468,7 +467,6 @@ FilterWheel::moveSlotAction (
     
     int* slot = static_cast<int*>(const_cast<void *>(value_p->pointerValue()));
 
-    int errcode;
     ACS::Time timestamp;
     ACSErr::Completion_var compl;
     
