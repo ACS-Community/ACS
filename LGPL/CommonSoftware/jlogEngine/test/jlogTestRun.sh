@@ -1,4 +1,5 @@
 #!/bin/bash
+export ACS_TMP=$PWD/tmp
 . acsstartupAcsPorts
 
 export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
