@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciACSComponentDefines.h,v 1.19 2006/10/19 15:14:03 bjeram Exp $"
+* "@(#) $Id: maciACSComponentDefines.h,v 1.20 2006/10/20 08:39:32 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -74,25 +74,7 @@ ACS_DLL_UNMANGLED_EXPORT PortableServer::Servant ConstructComponent( \
                       maci::ContainerServices * containerServices) \
 { \
     ACE_UNUSED_ARG(type_p); \
-    Class,##args* servant_p =0; \
-	servant_p = new Class,##args(name_p, containerServices); \
-    if (servant_p == 0) \
-	{ \
-		ACS_LOG(LM_RUNTIME_CONTEXT, #Class #args"/DLLOpen", \
-			(LM_ERROR, "Failed to create component - constructor returned 0!")); \
-		return 0; \
-	} \
-    else if (servant_p->componentState() != ACS::COMPSTATE_NEW) \
-	{ \
-		ACS_LOG(LM_RUNTIME_CONTEXT, #Class #args"/DLLOpen", \
-			(LM_ERROR, "Failed to create component - initialization error!")); \
-		servant_p->_remove_ref(); \
-		return 0; \
-	} \
-    else \
-	{ \
-		return servant_p; \
-	} \
+    return new Class,##args(name_p, containerServices); \
 } \
 \
 ACS_DLL_UNMANGLED_EXPORT bool DLLOpen(int, char**) \

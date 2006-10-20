@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.77 2006/10/19 15:14:03 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.78 2006/10/20 08:39:32 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.77 2006/10/19 15:14:03 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.78 2006/10/20 08:39:32 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1732,17 +1732,19 @@ ContainerImpl::activate_component (
   // @todo this can be removed since there should not happend in case of an error
   if(servant == 0)
     {
+    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component", 
+	    (LM_WARNING, "The constructor of a component should not return 0, but an exception in case of an error ! Please change the code!")); 
     ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
 					       "maci::ContainerImpl::activate_component");
-      nullEx.setVariable("servant");
-      maciErrType::CannotActivateComponentExImpl ex(nullEx, __FILE__, __LINE__,
+    nullEx.setVariable("servant");
+    maciErrType::CannotActivateComponentExImpl ex(nullEx, __FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
-      ex.setCURL(name);
-      ex.setcomponent_code(exe);
-      ex.setcomponent_type(type);
-      ex.log(LM_DEBUG);
-      m_dllmgr->unlock(libHandle);
-      throw ex.getCannotActivateComponentEx();
+    ex.setCURL(name);
+    ex.setcomponent_code(exe);
+    ex.setcomponent_type(type);
+    ex.log(LM_DEBUG);
+    m_dllmgr->unlock(libHandle);
+    throw ex.getCannotActivateComponentEx();
     }//if
 
   info.lib = libHandle;
@@ -1779,6 +1781,15 @@ ContainerImpl::activate_component (
       {
       try
 	  {
+	  // first we have to check if we are in the right state
+	  if (tempComp->componentState() != ACS::COMPSTATE_NEW) 
+	      {
+	      acsErrTypeLifeCycle::WrongInitialStateExImpl ex(__FILE__, __LINE__,
+							      "maci::ContainerImpl::activate_component");
+	      ex.setComponentName(name);
+	      throw ex; // this exception will be caught few lines lower
+	      }//if
+	  
 	  ComponentStateManager *csm = tempComp->getContainerServices()->getComponentStateManager();
 	  csm->setState(ACS::COMPSTATE_INITIALIZING); 
 	  tempComp->__initialize();
@@ -1795,7 +1806,7 @@ ContainerImpl::activate_component (
 	  ex.setcomponent_type(type);
 	  ex.log(LM_DEBUG);
 	  deactivateCORBAObject(servant);
-/// @todo should be here called unlock library
+/// @todo should be here called unlock library ?
 	  m_dllmgr->unlock(libHandle);
 	  throw ex.getCannotActivateComponentEx();
 	  }
