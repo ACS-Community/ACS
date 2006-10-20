@@ -7,6 +7,7 @@
 package com.cosylab.acs.maci.test;
 
 import abeans.pluggable.RemoteException;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.Daemon;
@@ -45,9 +46,14 @@ public class TestDaemon implements Daemon {
 				try { Thread.sleep(1000); } catch (InterruptedException e) {}
 				
 				TestDynamicContainer tdc = new TestDynamicContainer(containerName, manager);
-				ClientInfo info = manager.login(tdc);
-				tdc.setHandle(info.getHandle());
-			}
+				try {
+					ClientInfo info = manager.login(tdc);
+					tdc.setHandle(info.getHandle());
+				} catch (AcsJNoPermissionEx e) {
+					// TODO 
+					e.printStackTrace();
+				}
+							}
 		}, "Conatiner starter").start();
 	}
 

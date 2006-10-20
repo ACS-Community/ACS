@@ -5,6 +5,7 @@
 package com.cosylab.acs.maci;
 
 import java.net.URI;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * Manager is the central point of interaction between the components 
@@ -49,7 +50,7 @@ public interface Manager
 	 * @return			A sequence of ContainerInfo structures containing the entire Manager's knowledge about the containers. 
 	 *					If access is denied to a subset of objects, the handles to those objects are set to 0.
 	 */
-	public ContainerInfo[] getContainerInfo(int id, int[] handles, String name_wc) throws NoPermissionException;
+	public ContainerInfo[] getContainerInfo(int id, int[] handles, String name_wc) throws AcsJNoPermissionEx;
 
 	/**
 	 * Get all the information that the Manager has about its known clients.
@@ -62,7 +63,7 @@ public interface Manager
 	 * @return			A sequence of ClientInfo structures containing the entire Manager's knowledge about the containers. 
 	 *					If access is denied to a subset of objects, the handles to those objects are set to 0.
 	 */
-	public ClientInfo[] getClientInfo(int id, int[] handles, String name_wc) throws NoPermissionException;
+	public ClientInfo[] getClientInfo(int id, int[] handles, String name_wc) throws AcsJNoPermissionEx;
 
 	/**
 	 * Get all the information that the Manager has about components.
@@ -80,7 +81,7 @@ public interface Manager
 	 * @return			A sequence of ComponentInfo structures containing the entire Manager's knowledge about the components.
 	 *					If access is denied to a subset of objects, the handles to those objects are set to 0.
 	 */
-	public ComponentInfo[] getComponentInfo(int id, int[] handles, String name_wc, String type_wc, boolean activeOnly) throws NoPermissionException;
+	public ComponentInfo[] getComponentInfo(int id, int[] handles, String name_wc, String type_wc, boolean activeOnly) throws AcsJNoPermissionEx;
 
 	/** 
 	 * Get a component, activating it if necessary.
@@ -90,7 +91,7 @@ public interface Manager
 	 * 
 	 * @param	id		Identification of the caller. If this is an invalid handle,
 	 * 					or if the caller does not have enough access rights,
-	 * 					a <code>NoPermissionException</code> exception is raised.
+	 * 					a <code>AcsJNoPermissionEx</code> exception is raised.
 	 * @param	curl	CURL of the component whose reference is to be retrieved.
 	 * @param	activate	<code>true</code> if the Component is to be activated in case it does not exist.
 	 * 						If set to <code>false</code>, and the Component exist,
@@ -99,7 +100,7 @@ public interface Manager
 	 * @return			Reference to the Component. If the Component could not be activated, a nil reference is returned,
 	 *					and the status contains an error code detailing the cause of failure (one of the component_* constants).
 	 */
-	public Component getComponent(int id, URI curl, boolean activate, StatusHolder status) throws NoPermissionException;
+	public Component getComponent(int id, URI curl, boolean activate, StatusHolder status) throws AcsJNoPermissionEx;
 
 	/** 
 	 * Restart a component.
@@ -107,30 +108,30 @@ public interface Manager
 	 * 
 	 * @param	id		Identification of the caller. If this is an invalid handle,
 	 * 					or if the caller does not have enough access rights,
-	 * 					a <code>NoPermissionException</code> exception is raised.
+	 * 					a <code>AcsJNoPermissionEx</code> exception is raised.
 	 * @param	curl	CURL of the component whose reference is to be restarted.
 	 * @return			Reference to the component. If the component could not be restarted, a nil reference is returned.
 	 */
-	public Component restartComponent(int id, URI curl) throws NoPermissionException;
+	public Component restartComponent(int id, URI curl) throws AcsJNoPermissionEx;
 
 	/**
 	 * Change mortality state of an component.
 	 * Compnent must be already active, otherwise <code>NoResourcesException</code> exception will be thrown.
 	 * The caller must be an owner of an component or have administator rights,
-	 * otherwise <code>NoPermissionException</code> exception will be thrown.
+	 * otherwise <code>AcsJNoPermissionEx</code> exception will be thrown.
 	 * 
 	 * @param id Identification of the caller. The caller must be an owner of an component or have administator rights.
 	 * @param curl The CURL of the component whose mortality to change.
 	 * @param immortalState New mortality state.
 	 **/
-	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws NoPermissionException;
+	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws AcsJNoPermissionEx;
 
 	/** 
 	 * Used for retrieving several components with one call. 
 	 * 
 	 * @param	id		Identification of the caller.
 	 * 					If this is an invalid handle, or if the caller does not have enough access rights,
-	 * 					a <code>NoPermissionException</code> exception is raised.
+	 * 					a <code>AcsJNoPermissionEx</code> exception is raised.
 	 * @param	curls	CURL of the components whose reference is to be retrieved.
 	 * @param	activate	<code>true</code> if the Component is to be activated in case it does not exist.
 	 * 						If set to <code>false</code>, and the Component exist,
@@ -140,14 +141,14 @@ public interface Manager
 	 * @see getcomponent
 	 * @deprecated
 	 */
-	public Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses) throws NoPermissionException;
+	public Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses) throws AcsJNoPermissionEx;
 
 	/** 
 	 * Get a service.
 	 * NOTE: a component is also a service, i.e. a service activated by a container.
 	 * @see #get_component
 	 */
-	public Component getService(int id, URI curl, boolean activate, StatusHolder status) throws NoPermissionException;
+	public Component getService(int id, URI curl, boolean activate, StatusHolder status) throws AcsJNoPermissionEx;
 
 	/** 
 	 * Get services.
@@ -155,7 +156,7 @@ public interface Manager
 	 * @see #get_service
 	 * @see #get_components
 	 */
-	public Component[] getServices(int id, URI[] curls, boolean activate, StatusSeqHolder statuses) throws NoPermissionException;
+	public Component[] getServices(int id, URI[] curls, boolean activate, StatusSeqHolder statuses) throws AcsJNoPermissionEx;
 
 	/**
 	 * Login to MACI. 
@@ -171,14 +172,14 @@ public interface Manager
 	 *			the client was using. (For containers, the components sequence contains
 	 *			handles of all components previously hosted by the Container.)
 	 */
-	public ClientInfo login(Client reference) throws NoPermissionException;
+	public ClientInfo login(Client reference) throws AcsJNoPermissionEx;
 
 	/**
 	 * Logout from MACI.
 	 * 
 	 * @param	id Handle of the Client that is logging out
 	 */
-	public void logout(int id) throws NoPermissionException;
+	public void logout(int id) throws AcsJNoPermissionEx;
 
 	/** 
 	 * Register a CORBA object as a component, assigning it a CURL and making it accessible through the Manager.
@@ -191,7 +192,7 @@ public interface Manager
 	 * @param	cob		Object to be registered as component.
 	 * @return			Returns the handle of the newly registered component.
 	 */
-	public int registerComponent(int id, URI curl, String type, Component cob) throws NoPermissionException;
+	public int registerComponent(int id, URI curl, String type, Component cob) throws AcsJNoPermissionEx;
 
 	/**
 	 * Release a component.
@@ -204,7 +205,7 @@ public interface Manager
 	 * @return			Number of clients that are still using the Component after the operation completed.
 	 *					This is a useful debugging tool.
 	 */
-	public int releaseComponent(int id, URI curl) throws NoPermissionException;
+	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx;
 
 	/**
 	 * Forcefully release a component.
@@ -214,7 +215,7 @@ public interface Manager
 	 * @return			Number of clients that are still using the Component after the operation completed.
 	 *					This is a useful debugging tool.
 	 */
-	public int forceReleaseComponent(int id, URI curl) throws NoPermissionException;
+	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx;
 
 	/**
 	 * Release components.
@@ -225,7 +226,7 @@ public interface Manager
 	 * @deprecated
 	 * @see releasecomponent
 	 */
-	public void releaseComponents(int id, URI[] curls) throws NoPermissionException;
+	public void releaseComponents(int id, URI[] curls) throws AcsJNoPermissionEx;
 
 	/**
 	 * Shutdown the Manager.
@@ -235,7 +236,7 @@ public interface Manager
 	 * @param	containers	The code to send to shutdown methods of all containers.
 	 * 						If <code>0</code>, the Container's shutdown methods are not called.
 	 */
-	public void shutdown(int id, int containers) throws NoPermissionException;
+	public void shutdown(int id, int containers) throws AcsJNoPermissionEx;
 
 	/**
 	 * Shutdown a container.
@@ -244,7 +245,7 @@ public interface Manager
 	 * @param	container_name	name of the container to shutdown.
 	 * @param	action	The code to send to shutdown method of the container. If <code>0</code>, the Container's disconnect methods is called instead.
 	 */
-	public void shutdownContainer(int id, String containerName, int action) throws NoPermissionException;
+	public void shutdownContainer(int id, String containerName, int action) throws AcsJNoPermissionEx;
 
 	/**
 	 * Unregister a component from the Manager.
@@ -256,7 +257,7 @@ public interface Manager
 	 * 					If there are clients still using this component, a <code>components_unavailable</code> notification is
 	 * 					issued to all of them, and the component is unregistered.
 	 */
-	public void unregisterComponent(int id, int handle) throws NoPermissionException;
+	public void unregisterComponent(int id, int handle) throws AcsJNoPermissionEx;
 
 
 	/** 
@@ -266,12 +267,12 @@ public interface Manager
 	 * 
 	 * @param	id		Identification of the caller. If this is an invalid handle,
 	 * 					or if the caller does not have enough access rights,
-	 * 					a <code>NoPermissionException</code> exception is raised.
+	 * 					a <code>AcsJNoPermissionEx</code> exception is raised.
 	 * @param	type	type of the component whose reference is to be restarted.
 	 * @return			<code>ComponentInfo</code> of the component. If no defualt component is found
 	 * 					<code>NoDefaultComponentException</code> exception is thrown.
 	 */
-	public ComponentInfo getDefaultComponent(int id, String type) throws NoPermissionException, NoDefaultComponentException;
+	public ComponentInfo getDefaultComponent(int id, String type) throws AcsJNoPermissionEx, NoDefaultComponentException;
 
 	/**
 	 * Activation of an dynamic component.
@@ -283,7 +284,7 @@ public interface Manager
 	 * 			If requested component collides with already activated component with the same name <code>ComponentSpecIncompatibleWithActiveComponentException</code> exception is thrown.
 	 */
 	public ComponentInfo getDynamicComponent(int id, ComponentSpec componentSpec, boolean markAsDefault)
-		throws NoPermissionException, IncompleteComponentSpecException,
+		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;
 
 	/**
@@ -294,7 +295,7 @@ public interface Manager
 	 * @deprecated
 	 * @see #getDynamicComponent
 	 */
-	public ComponentInfo[] getDynamicComponents(int id, ComponentSpec[] components) throws NoPermissionException;
+	public ComponentInfo[] getDynamicComponents(int id, ComponentSpec[] components) throws AcsJNoPermissionEx;
 
 	/**
 	 * Activation of an co-deployed component.
@@ -308,7 +309,7 @@ public interface Manager
 	 */
 	public ComponentInfo getCollocatedComponent(int id, ComponentSpec componentSpec,
 			boolean markAsDefault, URI targetComponentURI)
-		throws NoPermissionException, IncompleteComponentSpecException,
+		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;
 
 	/**
@@ -317,12 +318,12 @@ public interface Manager
 	 * must have adequate access rights to access the Component. This is untrue of components:
 	 * components always have unlimited access rights to other components.
 	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a <code>NoPermissionException</code> exception is raised.
+	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a <code>AcsJNoPermissionEx</code> exception is raised.
 	 * @param component_url CURL of the Component whose reference is to be retrieved.
 	 * @return Reference to the Component.
 	 */
 	public Component getComponentNonSticky(int id, URI curl) 
-		throws NoPermissionException;
+		throws AcsJNoPermissionEx;
 
 }
 

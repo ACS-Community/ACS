@@ -4,6 +4,8 @@
 package com.cosylab.acs.maci.test;
 
 import abeans.pluggable.RemoteException;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Manager;
 
@@ -60,8 +62,13 @@ public class TestDynamicContainer extends TestContainer {
 	 * @see com.cosylab.acs.maci.Container#shutdown(int)
 	 */
 	public void shutdown(int action) throws RemoteException {
-		if (manager != null)
-			manager.logout(handle);
+		try {
+			if (manager != null)
+				manager.logout(handle);
+		} catch (AcsJNoPermissionEx e) {
+			/// @TODO What do to here?
+			e.printStackTrace();
+		}
 	}
 
 }

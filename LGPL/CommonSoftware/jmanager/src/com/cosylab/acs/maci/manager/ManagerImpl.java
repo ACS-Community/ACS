@@ -82,7 +82,6 @@ import com.cosylab.acs.maci.InvalidComponentSpecException;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.NoDefaultComponentException;
-import com.cosylab.acs.maci.NoPermissionException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
@@ -117,6 +116,8 @@ import com.cosylab.acs.maci.manager.recovery.UnavailableComponentCommandPut;
 import com.cosylab.acs.maci.manager.recovery.UnavailableComponentCommandRemove;
 import com.cosylab.acs.maci.plug.ManagerProxy;
 import com.cosylab.util.WildcharMatcher;
+
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * This class is an implementation of MACI com.cosylab.acs.maci.Manager.
@@ -952,7 +953,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getContainerInfo(int, int[], String)
 	 */
 	public ContainerInfo[] getContainerInfo(int id, int[] handles, String name_wc)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getContainerInfo", new Object[] { new Integer(id), handles, name_wc }).dispatch();
@@ -1063,7 +1064,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getClientInfo(int, int[], String)
 	 */
 	public ClientInfo[] getClientInfo(int id, int[] handles, String name_wc)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getClientInfo", new Object[] { new Integer(id), handles, name_wc }).dispatch();
@@ -1196,7 +1197,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	// TODO MF all (using wildchars match for domain names) interdomain queries
 	public ComponentInfo[] getComponentInfo(int id, int[] handles, String name_wc, String type_wc, boolean activeOnly)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 
 		if (isDebug())
@@ -1469,7 +1470,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getService(int, java.net.URI, boolean, StatusHolder)
 	 */
 	public Component getService(int id,	URI curl, boolean activate,	StatusHolder status)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		return getComponent(id, curl, activate, status, true);
 	}
@@ -1478,7 +1479,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getServices(int, java.net.URI[], boolean, StatusSeqHolder)
 	 */
 	public Component[] getServices(int id, URI[] curls,	boolean activate, StatusSeqHolder statuses)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		return getComponents(id, curls, activate, statuses, true);
 	}
@@ -1487,7 +1488,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getComponent(int, URI, boolean, StatusHolder)
 	 */
 	public Component getComponent(int id, URI curl, boolean activate, StatusHolder status)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		return getComponent(id, curl, activate, status, false);
 	}
@@ -1497,7 +1498,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @deprecated
 	 */
 	public Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		return getComponents(id, curls, activate, statuses, false);
 	}
@@ -1506,7 +1507,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see #getComponent
 	 */
 	private Component getComponent(int id, URI curl, boolean activate, StatusHolder status, boolean allowServices)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 	
 		if (isDebug())
@@ -1625,7 +1626,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @deprecated
 	 */
 	private Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses, boolean allowServices)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 	
 		if (isDebug())
@@ -1698,7 +1699,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getComponentNonSticky(int id, URI curl)
 	 */
 	public Component getComponentNonSticky(int id, URI curl) 
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getComponentNonSticky", new Object[] { new Integer(id), curl }).dispatch();
@@ -1752,7 +1753,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#makeComponentImmortal(int, java.net.URI, boolean)
 	 */
-	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws NoPermissionException
+	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "makeComponentImmortal", new Object[] { new Integer(id), curl, new Boolean(immortalState) }).dispatch();
@@ -1834,7 +1835,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#login(Client)
 	 */
-	public ClientInfo login(Client reference) throws NoPermissionException
+	public ClientInfo login(Client reference) throws AcsJNoPermissionEx
 	{
 
 		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
@@ -1845,8 +1846,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (shutdown.get())
 		{
 			// already shutdown
-			NoPermissionException npe = new NoPermissionException(this, "Manager in shutdown state.");
-			npe.caughtIn(this, "login");
+			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setReason("Manager in shutdown state.");
 			throw npe;
 		}
 
@@ -1881,10 +1882,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				 reply.charAt(0) != 'S'))
 				{
 					// NO_PERMISSION
-					NoPermissionException af = new NoPermissionException(this, "Invalid response to 'Client::authenticate()' method. [A,C,S] are expected as first characters.");
-					af.caughtIn(this, "login");
-					af.putValue("reply", reply);
-					throw af;
+					AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+					npe.setReason("Invalid response to 'Client::authenticate()' method. [A,C,S] are expected as first characters.");
+					throw npe;
 				}
 
 			// get client's name
@@ -1914,13 +1914,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					else
 					{
 						// NO_PERMISSION
-						NoPermissionException af = new NoPermissionException(this, "Given reply to 'Client::authenticate()' method indicated container login, but given reference does not implement 'maci::Container' interface.");
-						af.caughtIn(this, "login");
-						// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-						af.putValue("reference", reference.toString());
-						af.putValue("referenceClass", reference.getClass());
-						af.putValue("reply", reply);
-						throw af;
+						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+						npe.setReason("Given reply to 'Client::authenticate()' method indicated container login, but given reference does not implement 'maci::Container' interface.");
+						throw npe;
 					}
 					break;
 
@@ -1938,13 +1934,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					else
 					{
 						// NO_PERMISSION
-						NoPermissionException af = new NoPermissionException(this, "Given reply to 'Client::authenticate()' method indicated administrator login, but given reference does not implement 'maci::Administrator' interface.");
-						af.caughtIn(this, "login");
-						// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-						af.putValue("reference", reference.toString());
-						af.putValue("referenceClass", reference.getClass());
-						af.putValue("reply", reply);
-						throw af;
+						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+						npe.setReason("Given reply to 'Client::authenticate()' method indicated administrator login, but given reference does not implement 'maci::Administrator' interface.");
+						throw npe;
 					}
 					break;
 
@@ -1953,7 +1945,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 
 		}
-		catch (NoPermissionException npe)
+		catch (AcsJNoPermissionEx npe)
 		{
 			throw npe;
 		}
@@ -1993,7 +1985,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#logout(int)
 	 */
-	public void logout(int id) throws NoPermissionException
+	public void logout(int id) throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "logout", new Object[] { new Integer(id) }).dispatch();
@@ -2029,7 +2021,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#registerComponent(int, URI, String, Component)
 	 */
 	public int registerComponent(int id, URI curl, String type, Component component)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 
 		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
@@ -2088,12 +2080,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					else
 					{
-						NoPermissionException af = new NoPermissionException(this, "Component with name '"+name+"' but different type already registered.");
-						af.caughtIn(this, "registerComponent");
-						af.putValue("curl", curl);
-						af.putValue("type", type);
-						af.putValue("registered_component_type", registeredComponentInfo.getType());
-						throw af;
+						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+						npe.setReason("Component with name '"+name+"' but different type already registered.");
+						throw npe;
 					}
 
 				}
@@ -2160,7 +2149,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#unregisterComponent(int, int)
 	 */
-	public void unregisterComponent(int id, int h) throws NoPermissionException
+	public void unregisterComponent(int id, int h) throws AcsJNoPermissionEx
 	{
 
 		if (isDebug())
@@ -2185,7 +2174,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#restartComponent(int, URI)
 	 */
-	public Component restartComponent(int id, URI curl) throws NoPermissionException
+	public Component restartComponent(int id, URI curl) throws AcsJNoPermissionEx
 	{
 
 		if (isDebug())
@@ -2219,7 +2208,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#releaseComponent(int, URI)
 	 */
-	public int releaseComponent(int id, URI curl) throws NoPermissionException
+	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx
 	{
 
 		if (isDebug())
@@ -2253,7 +2242,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#forceReleaseComponent(int, URI)
 	 */
-	public int forceReleaseComponent(int id, URI curl) throws NoPermissionException
+	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx
 	{
 
 		if (isDebug())
@@ -2295,7 +2284,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#releaseComponents(int, URI[])
 	 */
-	public void releaseComponents(int id, URI[] curls) throws NoPermissionException
+	public void releaseComponents(int id, URI[] curls) throws AcsJNoPermissionEx
 	{
 
 		if (isDebug())
@@ -2364,7 +2353,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#shutdownContainer(int, java.lang.String, int)
 	 */
 	public void shutdownContainer(int id, String containerName, int action)
-			throws NoPermissionException {
+			throws AcsJNoPermissionEx {
 
 		if (isDebug())
 			new MessageLogEntry(this, "shutdownContainer", new Object[] { new Integer(id), containerName, new Integer(action) }).dispatch();
@@ -2446,7 +2435,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Release components (using manager handle)
 	 * @param infos	components to release
 	 */
-	private void releaseComponents(ComponentInfo[] infos) {
+	private void releaseComponents(ComponentInfo[] infos) throws AcsJNoPermissionEx {
 		if (infos.length > 0)
 		{
 			// map strings to CURLs
@@ -2481,7 +2470,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#shutdown(int, int)
 	 */
-	public void shutdown(int id, int containers) throws NoPermissionException
+	public void shutdown(int id, int containers) throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "shutdown", new Object[] { new Integer(id), new Integer(containers) }).dispatch();
@@ -2526,8 +2515,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (shutdown.set(true))
 		{
 			// already shutdown
-			NoPermissionException npe = new NoPermissionException(this, "Manager already in shutdown state.");
-			npe.caughtIn(this, "shutdown");
+			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setReason("Manager already in shutdown state.");
 			throw npe;
 		}
 
@@ -2621,7 +2610,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	container	container that is logging in, non-<code>null</code>.
 	 * @return	ClientInfo	client info. of newly logged container
 	 */
-	private ClientInfo containerLogin(String name, String reply, Container container) throws NoPermissionException
+	private ClientInfo containerLogin(String name, String reply, Container container) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (reply != null);
@@ -3181,7 +3170,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	containerInfo	container info for which to perform merge, non-<code>null</code>.
 	 * @param	recoverContainer	if <code>true</code> manager state will be 'transferred' to container.
 	 */
-	private void containerInternalStateMerge(ContainerInfo containerInfo, boolean recoverContainer) throws NoPermissionException
+	private void containerInternalStateMerge(ContainerInfo containerInfo, boolean recoverContainer) throws AcsJNoPermissionEx
 	{
 		assert(containerInfo != null);
 
@@ -3237,10 +3226,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						 {
 						 	// bad info
 							// NO_PERMISSION
-							NoPermissionException af = new NoPermissionException(this, "Inconsistent container state - component information is not valid, rejecting container.");
-							af.caughtIn(this, "containerInternalStateMerge");
-							af.putValue("infos[i]", infos[i]);
-							throw af;
+						   	AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+						   	npe.setReason("Inconsistent container state - component information is not valid, rejecting container.");
+						   	throw npe;
 						 }
 
 					int handle = infos[i].getHandle() & HANDLE_MASK;
@@ -3257,14 +3245,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							{
 								// information does not match, reject container
 								// NO_PERMISSION
-								NoPermissionException af = new NoPermissionException(this, "Inconsistent container state - components information do not match, rejecting container.");
-								af.caughtIn(this, "containerInternalStateMerge");
-								// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-								af.putValue("containerInfo", containerInfo.toString());
-								af.putValue("infos[i]", infos[i]);
-								// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-								af.putValue("componentInfo", componentInfo == null ? "null" : componentInfo.toString());
-								throw af;
+						   		AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+						   		npe.setReason("Inconsistent container state - components information do not match, rejecting container.");
+						   		throw npe;
 							}
 
 					}
@@ -3280,13 +3263,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							{
 								// yes it does, reject container
 								// NO_PERMISSION
-								NoPermissionException af = new NoPermissionException(this, "Inconsistent container state - component with name '" +
-															componentInfo.getName() + "' already registered with different handle, rejecting container.");
-								af.caughtIn(this, "containerInternalStateMerge");
-								// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-								af.putValue("containerInfo", containerInfo.toString());
-								af.putValue("infos[i]", infos[i]);
-								throw af;
+							   	AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+							   	npe.setReason("Inconsistent container state - component with name '" +
+										componentInfo.getName() + "' already registered with different handle, rejecting container.");
+							   	throw npe;
 							}
 							h = components.next(h);
 					    }
@@ -3510,7 +3490,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	administrator	administrator that is logging in
 	 * @return	ClientInfo	client info. of newly logged administrator
 	 */
-	private ClientInfo administratorLogin(String name, String reply, Administrator administrator) throws NoPermissionException
+	private ClientInfo administratorLogin(String name, String reply, Administrator administrator) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (administrator != null);
@@ -3590,7 +3570,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	client	client that is logging in
 	 * @return	ClientInfo	client info. of newly logged client
 	 */
-	private ClientInfo clientLogin(String name, String reply, Client client) throws NoPermissionException
+	private ClientInfo clientLogin(String name, String reply, Client client) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (client != null);
@@ -5073,9 +5053,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 *
 	 * @param	id	handle to be checked.
 	 * @param	rights	checks if owner of the handle has this permissions granted, can be 0.
-	 * @throws	NoPermissionException	thrown if handle is not valid or handle owner has not enough permissions
+	 * @throws	AcsJNoPermissionEx	thrown if handle is not valid or handle owner has not enough permissions
 	 */
-	private void securityCheck(int id, int requiredRights) throws NoPermissionException
+	private void securityCheck(int id, int requiredRights) throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "securityCheck", new Object[] { new Integer(id), new Integer(requiredRights) }).dispatch();
@@ -5084,8 +5064,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (id != this.getHandle() && shutdown.get())
 		{
 			// already shutdown
-			NoPermissionException npe = new NoPermissionException(this, "Manager in shutdown state.");
-			npe.caughtIn(this, "securityCheck");
+			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setReason("Manager in shutdown state.");
 			throw npe;
 		}
 
@@ -5160,21 +5140,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (invalidHandle)
 		{
 			// NO_PERMISSION
-			NoPermissionException af = new NoPermissionException(this, "Invalid handle.");
-			af.caughtIn(this, "securityCheck");
-			af.putValue("id", new Integer(id));
-			throw af;
+			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setReason("Invalid handle.");
+			throw npe;
 		}
 
 		if ((grantedRights & requiredRights) != requiredRights)
 		{
 			// NO_PERMISSION
-			NoPermissionException af = new NoPermissionException(this, "Insufficient rights.");
-			af.caughtIn(this, "securityCheck");
-			af.putValue("id", new Integer(id));
-			af.putValue("grantedRights", new Integer(grantedRights));
-			af.putValue("requiredRights", new Integer(requiredRights));
-			throw af;
+			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setReason("Insufficient rights.");
+			throw npe;
 		}
 
 		if (isDebug())
@@ -6332,6 +6308,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
 	private int internalReleaseComponent(int owner, URI curl, boolean force)
+	   throws AcsJNoPermissionEx 
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalReleaseComponent", new Object[] { new Integer(owner), curl, new Boolean(force) }).dispatch();
@@ -6446,6 +6423,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
 	private int internalReleaseComponent(int owner, int h, boolean force)
+		   throws AcsJNoPermissionEx 
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalReleaseComponent", new Object[] { new Integer(owner), new Integer(h), new Boolean(force) }).dispatch();
@@ -6523,6 +6501,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
 	private int internalNoSyncReleaseComponent(int owner, int h, boolean force)
+	     throws AcsJNoPermissionEx 
 	{
 
 		if (isDebug())
@@ -6553,10 +6532,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (!force)
 				{
 					// not an owner
-					NoPermissionException npe = new NoPermissionException(this, "Unregistering component that client does not own.");
-					npe.caughtIn(this, "internalNoSyncReleaseComponent");
-					npe.putValue("h", new Integer(h));
-					npe.putValue("owner", new Integer(owner));
+					AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+					npe.setReason("Unregistering component that client does not own.");
 					throw npe;
 				}
 			}
@@ -6974,6 +6951,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return			Newly restarted component, <code>null</code> if failed.
 	 */
 	private Component internalRestartComponent(int owner, URI curl)
+	throws AcsJNoPermissionEx 
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalRestartComponent", new Object[] { new Integer(owner), curl }).dispatch();
@@ -7013,6 +6991,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return			Newly restarted component, <code>null</code> if failed.
 	 */
 	private Component internalRestartComponent(int owner, int h)
+	throws AcsJNoPermissionEx 
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalRestartComponent", new Object[] { new Integer(owner), new Integer(h) }).dispatch();
@@ -7090,6 +7069,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	// @todo MF not supported
 	private Component internalNoSyncRestartComponent(int owner, int h)
+	throws AcsJNoPermissionEx 
 	{
 
 		if (isDebug())
@@ -7117,10 +7097,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (!componentInfo.getClients().contains(owner))
 			{
 				// not an owner
-				NoPermissionException npe = new NoPermissionException(this, "Restarting component that client does not own.");
-				npe.caughtIn(this, "internalNoSyncRestartComponent");
-				npe.putValue("h", new Integer(h));
-				npe.putValue("owner", new Integer(owner));
+				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+				npe.setReason("Restarting component that client does not own.");
 				throw npe;
 			}
 
@@ -7211,7 +7189,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	// @todo MF not supported
 	public ComponentInfo getDefaultComponent(int id, String type)
-		throws NoPermissionException, NoDefaultComponentException
+		throws AcsJNoPermissionEx, NoDefaultComponentException
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getDefaultComponent", new Object[] { new Integer(id), type }).dispatch();
@@ -7448,7 +7426,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	// TODO MF not supported
 	public ComponentInfo getDynamicComponent(int id, ComponentSpec componentSpec, boolean markAsDefault)
-		throws NoPermissionException, IncompleteComponentSpecException,
+		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException
 	{
 		if (isDebug())
@@ -7518,7 +7496,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getDynamicComponents(int, com.cosylab.acs.maci.ComponentSpec[])
 	 */
 	public ComponentInfo[] getDynamicComponents(int id,	ComponentSpec[] components)
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getDynamicComponents", new Object[] { new Integer(id), components }).dispatch();
@@ -7575,7 +7553,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/// @todo MF not supported
 	public ComponentInfo getCollocatedComponent(int id, ComponentSpec componentSpec,
 			boolean markAsDefault, URI targetComponentURI)
-		throws NoPermissionException, IncompleteComponentSpecException,
+		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
 			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException
 	{
 		if (isDebug())
@@ -7851,7 +7829,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return	componentInfo	<code>ComponentInfo</code> of requested dynamic component.
 	 */
 	private ComponentInfo internalRequestDynamicComponent(int requestor, ComponentSpec componentSpec)
-		throws NoPermissionException, IncompleteComponentSpecException, InvalidComponentSpecException,
+		throws AcsJNoPermissionEx, IncompleteComponentSpecException, InvalidComponentSpecException,
 			   ComponentSpecIncompatibleWithActiveComponentException
 	{
 		if (isDebug())

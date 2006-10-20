@@ -226,7 +226,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -323,7 +323,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -440,7 +440,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -486,6 +486,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		pendingRequests.increment();
 		try
 		{
+			new MessageLogEntry(this, "get_component", "XXXXXXXX", Level.INFO).dispatch();
 			if (isDebug())
 				new MessageLogEntry(this, "get_component", new java.lang.Object[] { new Integer(id), component_url, new Boolean(activate) } ).dispatch();
 
@@ -521,11 +522,23 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			if (component == null || component.getObject() == null)
 			{
 			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED && !activate)
-			    	throw new AcsJComponentNotAlreadyActivatedEx();
+			    {
+			    	AcsJComponentNotAlreadyActivatedEx ex = new AcsJComponentNotAlreadyActivatedEx();
+			    	ex.setCURL(component_url);
+			    	throw ex;
+			    }
 			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_DOES_NO_EXIST)
-			    	throw new AcsJComponentConfigurationNotFoundEx();
+			    {
+			    	AcsJComponentConfigurationNotFoundEx ex = new AcsJComponentConfigurationNotFoundEx();
+			    	ex.setCURL(component_url);
+			    	throw ex;
+			    }
 			    else
-			    	throw new AcsJCannotGetComponentEx();
+			    {
+			    	AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+			    	ex.setCURL(component_url);
+			    	throw ex;
+			    }
 			}
 
 			if (isDebug())
@@ -563,7 +576,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -684,7 +697,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -820,7 +833,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -936,7 +949,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1001,7 +1014,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1086,7 +1099,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1177,7 +1190,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		// @todo 
@@ -1263,7 +1276,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1353,7 +1366,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1435,7 +1448,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1501,7 +1514,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			// AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			// ex.setreason(npe.getMessage());
+			// ex.setReason(npe.getMessage());
 			// throw ex.toNoPermissionEx();
 			// since shutdown is oneway no user exceptions are allowed
 			throw new NO_PERMISSION(npe.getMessage());
@@ -1571,7 +1584,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1686,7 +1699,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -1812,9 +1825,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			AcsJIncompleteComponentSpecEx ex=
 			    new AcsJIncompleteComponentSpecEx();
 			ex.setCURL(hicse.getIncompleteSpec().getName());
-			ex.setcomponent_type(hicse.getIncompleteSpec().getType());
-			ex.setcomponent_code(hicse.getIncompleteSpec().getCode());
-			ex.setcontainer_name(hicse.getIncompleteSpec().getContainer());
+			ex.setComponentType(hicse.getIncompleteSpec().getType());
+			ex.setComponentCode(hicse.getIncompleteSpec().getCode());
+			ex.setContainerName(hicse.getIncompleteSpec().getContainer());
 			throw ex.toIncompleteComponentSpecEx();
 		}
 		catch (InvalidComponentSpecException incse)
@@ -1837,9 +1850,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
 			    new AcsJComponentSpecIncompatibleWithActiveComponentEx();
 			ex.setCURL(ciace.getActiveComponentSpec().getName());
-			ex.setcomponent_type(ciace.getActiveComponentSpec().getType());
-			ex.setcomponent_code(ciace.getActiveComponentSpec().getCode());
-			ex.setcontainer_name(ciace.getActiveComponentSpec().getContainer());
+			ex.setComponentType(ciace.getActiveComponentSpec().getType());
+			ex.setComponentCode(ciace.getActiveComponentSpec().getCode());
+			ex.setContainerName(ciace.getActiveComponentSpec().getContainer());
 			throw ex.toComponentSpecIncompatibleWithActiveComponentEx();
 		}
 		catch (BadParametersException bpe)
@@ -1861,7 +1874,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -2004,7 +2017,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -2124,9 +2137,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			AcsJIncompleteComponentSpecEx ex=
 			    new AcsJIncompleteComponentSpecEx();
 			ex.setCURL(icse.getIncompleteSpec().getName());
-			ex.setcomponent_type(icse.getIncompleteSpec().getType());
-			ex.setcomponent_code(icse.getIncompleteSpec().getCode());
-			ex.setcontainer_name(icse.getIncompleteSpec().getContainer());
+			ex.setComponentType(icse.getIncompleteSpec().getType());
+			ex.setComponentCode(icse.getIncompleteSpec().getCode());
+			ex.setContainerName(icse.getIncompleteSpec().getContainer());
 			throw ex.toIncompleteComponentSpecEx();
 		}
 		catch (InvalidComponentSpecException incse)
@@ -2149,9 +2162,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
 			    new AcsJComponentSpecIncompatibleWithActiveComponentEx();
 			ex.setCURL(ciace.getActiveComponentSpec().getName());
-			ex.setcomponent_type(ciace.getActiveComponentSpec().getType());
-			ex.setcomponent_code(ciace.getActiveComponentSpec().getCode());
-			ex.setcontainer_name(ciace.getActiveComponentSpec().getContainer());
+			ex.setComponentType(ciace.getActiveComponentSpec().getType());
+			ex.setComponentCode(ciace.getActiveComponentSpec().getCode());
+			ex.setContainerName(ciace.getActiveComponentSpec().getContainer());
 			throw ex.toComponentSpecIncompatibleWithActiveComponentEx();
 
 		}
@@ -2174,7 +2187,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -2284,7 +2297,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -2411,7 +2424,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -2503,7 +2516,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
@@ -2571,7 +2584,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setreason(npe.getMessage());
+			ex.setReason(npe.getMessage());
 			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)

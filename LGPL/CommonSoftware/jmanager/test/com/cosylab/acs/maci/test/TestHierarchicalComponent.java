@@ -5,6 +5,7 @@ import java.net.URI;
 import abeans.core.defaults.MessageLogEntry;
 import abeans.pluggable.RemoteException;
 import abeans.pluggable.acs.logging.LoggingLevel;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Client;
@@ -114,8 +115,13 @@ public class TestHierarchicalComponent extends TestComponent
 		if (!activateOnActivation)
 			deactivateSubComponents();
 		
-		if (!passComponentHandle)
-			manager.logout(clientInfo.getHandle());
+		try {
+			if (!passComponentHandle)
+				manager.logout(clientInfo.getHandle());
+		} catch (AcsJNoPermissionEx e) {
+			/// @TODO What to do here?
+			e.printStackTrace();
+		}
 	}
 
 	/**

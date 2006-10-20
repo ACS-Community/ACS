@@ -31,9 +31,10 @@ import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.InvalidComponentSpecException;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
-import com.cosylab.acs.maci.NoPermissionException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
+
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * CORBA Manager Proxy.
@@ -90,7 +91,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#getClientInfo(int, int[], java.lang.String)
      */
     public ClientInfo[] getClientInfo(int id, int[] handles, String name_wc)
-            throws NoPermissionException
+            throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -119,7 +120,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#getComponent(int, java.net.URI, boolean, com.cosylab.acs.maci.StatusHolder)
      */
     public Component getComponent(int id, URI curl, boolean activate,
-            StatusHolder status) throws NoPermissionException
+            StatusHolder status) throws AcsJNoPermissionEx
     {
 		try
 		{
@@ -136,9 +137,8 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		}
 		catch (NoPermissionEx npex)
 		{
-		    NoPermissionException npe = new NoPermissionException(this, "Remote manager has thrown no permission exception.", npex);
-			npe.caughtIn(this, "getComponent");
-			npe.putValue("curl", curl);
+		    AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setReason("Remote manager has thrown no permission exception.");
 			throw npe;
 		}
 		catch (Exception ex)
@@ -155,7 +155,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public ComponentInfo[] getComponentInfo(int id, int[] handles,
             String name_wc, String type_wc, boolean activeOnly)
-            throws NoPermissionException
+            throws AcsJNoPermissionEx
     {
 		try
 		{
@@ -185,8 +185,8 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		}
 		catch (NoPermissionEx npex)
 		{
-		    NoPermissionException npe = new NoPermissionException(this, "Remote manager has thrown no permission exception.", npex);
-			npe.caughtIn(this, "getComponentInfo");
+		    AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setReason("Remote manager has thrown no permission exception.");
 			throw npe;
 		}
 		catch (Exception ex)
@@ -203,7 +203,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @deprecated
      */
     public Component[] getComponents(int id, URI[] curls, boolean activate,
-            StatusSeqHolder statuses) throws NoPermissionException
+            StatusSeqHolder statuses) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -213,7 +213,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#getContainerInfo(int, int[], java.lang.String)
      */
     public ContainerInfo[] getContainerInfo(int id, int[] handles,
-            String name_wc) throws NoPermissionException
+            String name_wc) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -223,7 +223,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#getDefaultComponent(int, java.lang.String)
      */
     public ComponentInfo getDefaultComponent(int id, String type)
-            throws NoPermissionException, NoDefaultComponentException
+            throws AcsJNoPermissionEx, NoDefaultComponentException
     {
         /// @todo Not implemented
         return null;
@@ -243,7 +243,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public ComponentInfo getDynamicComponent(int id,
             ComponentSpec componentSpec, boolean markAsDefault)
-            throws NoPermissionException, IncompleteComponentSpecException,
+            throws AcsJNoPermissionEx, IncompleteComponentSpecException,
             InvalidComponentSpecException,
             ComponentSpecIncompatibleWithActiveComponentException
     {
@@ -256,7 +256,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @deprecated
      */
     public ComponentInfo[] getDynamicComponents(int id,
-            ComponentSpec[] components) throws NoPermissionException
+            ComponentSpec[] components) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -267,7 +267,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public ComponentInfo getCollocatedComponent(int id,
             ComponentSpec componentSpec, boolean markAsDefault, URI targetComponentURI)
-            throws NoPermissionException, IncompleteComponentSpecException,
+            throws AcsJNoPermissionEx, IncompleteComponentSpecException,
             InvalidComponentSpecException,
             ComponentSpecIncompatibleWithActiveComponentException
     {
@@ -279,7 +279,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 * @see com.cosylab.acs.maci.Manager#getComponentNonSticky(int, java.net.URI)
 	 */
 	public Component getComponentNonSticky(int id, URI curl) 
-		throws NoPermissionException
+		throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -291,7 +291,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#getService(int, java.net.URI, boolean, com.cosylab.acs.maci.StatusHolder)
      */
     public Component getService(int id, URI curl, boolean activate,
-            StatusHolder status) throws NoPermissionException
+            StatusHolder status) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -302,7 +302,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @deprecated
      */
     public Component[] getServices(int id, URI[] curls, boolean activate,
-            StatusSeqHolder statuses) throws NoPermissionException
+            StatusSeqHolder statuses) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -311,7 +311,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     /**
      * @see com.cosylab.acs.maci.Manager#login(com.cosylab.acs.maci.Client)
      */
-    public ClientInfo login(Client reference) throws NoPermissionException
+    public ClientInfo login(Client reference) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -320,7 +320,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     /**
      * @see com.cosylab.acs.maci.Manager#logout(int)
      */
-    public void logout(int id) throws NoPermissionException
+    public void logout(int id) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
 
@@ -330,7 +330,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#registerComponent(int, java.net.URI, java.lang.String, com.cosylab.acs.maci.Component)
      */
     public int registerComponent(int id, URI curl, String type, Component cob)
-            throws NoPermissionException
+            throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return 0;
@@ -339,7 +339,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     /**
      * @see com.cosylab.acs.maci.Manager#releaseComponent(int, java.net.URI)
      */
-    public int releaseComponent(int id, URI curl) throws NoPermissionException
+    public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx
     {
 		try
 		{
@@ -359,7 +359,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @deprecated
      */
     public void releaseComponents(int id, URI[] curls)
-            throws NoPermissionException
+            throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
 
@@ -369,7 +369,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 * @see com.cosylab.acs.maci.Manager#forceReleaseComponent(int, java.net.URI)
 	 */
 	public int forceReleaseComponent(int id, URI curl)
-			throws NoPermissionException {
+			throws AcsJNoPermissionEx {
 		/// @todo Not implemented
 		return 0;
 	}
@@ -378,7 +378,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#restartComponent(int, java.net.URI)
      */
     public Component restartComponent(int id, URI curl)
-            throws NoPermissionException
+            throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -387,7 +387,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     /**
      * @see com.cosylab.acs.maci.Manager#shutdown(int, int)
      */
-    public void shutdown(int id, int containers) throws NoPermissionException
+    public void shutdown(int id, int containers) throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
 
@@ -397,7 +397,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      * @see com.cosylab.acs.maci.Manager#unregisterComponent(int, int)
      */
     public void unregisterComponent(int id, int handle)
-            throws NoPermissionException
+            throws AcsJNoPermissionEx
     {
         /// @todo Not implemented
 
@@ -407,7 +407,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 * @see com.cosylab.acs.maci.Manager#shutdownContainer(int, java.lang.String, int)
 	 */
 	public void shutdownContainer(int id, String containerName, int action)
-			throws NoPermissionException {
+			throws AcsJNoPermissionEx {
 		/// @todo Not implemented
 	}
 
@@ -415,7 +415,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 * @see com.cosylab.acs.maci.Manager#makeComponentImmortal(int, java.net.URI, boolean)
 	 */
 	public void makeComponentImmortal(int id, URI curl, boolean immortalState)
-			throws NoPermissionException {
+			throws AcsJNoPermissionEx {
 		/// @todo Not implemented
 	}
 	
