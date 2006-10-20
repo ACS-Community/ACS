@@ -32,9 +32,9 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.config.LogConfigData;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.engine.LogReceiver.DelayedLogEntry;
+import alma.maci.loggingconfig.LoggingConfig;
 
 /**
  * Tests the {@link alma.acs.logging.engine.LogReceiver} obtained 
@@ -77,8 +77,8 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
      * @throws Exception
      */
     public void testLogQueueNoDelay() throws Exception {
-    	LogConfigData logConfigData = ClientLogManager.getAcsLogManager().getLogConfig().getLogConfigData();
-    	assertTrue("For this test, even low-level logs must be sent off remotely.", logConfigData.getMinLogLevel() >= 2);    	
+    	LoggingConfig loggingConfig = ClientLogManager.getAcsLogManager().getLogConfig().getLoggingConfig();
+    	assertTrue("For this test, even low-level logs must be sent off remotely.", loggingConfig.getMinLogLevel() >= 2);    	
     	
         logReceiver.setDelayMillis(0);
         BlockingQueue<DelayedLogEntry> queue = logReceiver.getLogQueue();
@@ -98,7 +98,7 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
             // in spite of zero queue sorting delay, we need a long timeout 
             // to compensate travel delay when sending log records to Log service,
             // and then getting them back over the network.
-            long timeoutSec = 10L + logConfigData.getFlushPeriodSeconds();
+            long timeoutSec = 10L + loggingConfig.getFlushPeriodSeconds();
             while (true) {
 	            DelayedLogEntry delayedLogEntry = queue.poll(timeoutSec, TimeUnit.SECONDS);            
 	            if (delayedLogEntry != null) {
