@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2005/11/23 19:58:44 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.3 2006/10/20 12:20:59 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lbasenc
+USER_LIB = -lbasenc 
 
 #
 # MODULE CODE DESCRIPTION:
@@ -54,7 +54,12 @@ EXECUTABLES     =
 EXECUTABLES_L   = testSupplier
 
 testSupplier_OBJECTS = testSupplier
-testSupplier_LIBS    = acsnc
+#
+# @todo
+# Needed to satisfy circular dependency with acsnc.
+# To be cleaned up
+#
+testSupplier_LIBS    = baci maci acsnc
 
 #
 # <brief description of xxxxx program>
