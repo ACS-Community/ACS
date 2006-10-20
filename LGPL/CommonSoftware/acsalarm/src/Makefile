@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2006/10/19 17:48:58 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.9 2006/10/20 07:33:23 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -55,9 +55,9 @@ INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 					ACSAlarmSystemInterfaceProxy.h \
 					FaultState.h \
 					faultStateConstants.h \
-					AbstractAlarmSystemInterface.h \
-			      AbstractAlarmSystemInterfaceFactory.h Properties.h Timestamp.h utilConstants.h \
-					AbstractAlarmSystemInterface.h ASIMessage.h ASIConfiguration.h asiConfigurationConstants.h
+					AlarmSystemInterface.h \
+			      AlarmSystemInterfaceFactory.h Properties.h Timestamp.h utilConstants.h \
+					AlarmSystemInterface.h ASIMessage.h ASIConfiguration.h asiConfigurationConstants.h
 
 #
 # Libraries (public and local)
@@ -68,7 +68,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter FaultState \
-	AbstractAlarmSystemInterface AbstractAlarmSystemInterfaceFactory Properties Timestamp ASIMessage ASIConfiguration
+	AlarmSystemInterface AlarmSystemInterfaceFactory Properties Timestamp ASIMessage ASIConfiguration
 acsAlSysSource_LIBS = acsutil expat maciStubs
 
 #
@@ -213,3 +213,4 @@ install : install_all
 
 
 #___oOo___
+

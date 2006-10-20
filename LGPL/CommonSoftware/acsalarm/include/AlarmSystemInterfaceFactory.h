@@ -1,5 +1,5 @@
-#ifndef ABSTRACT_ALARM_SYSTEM_INTERFACE_FACTORY_H
-#define ABSTRACT_ALARM_SYSTEM_INTERFACE_FACTORY_H
+#ifndef ALARM_SYSTEM_INTERFACE_FACTORY_H
+#define ALARM_SYSTEM_INTERFACE_FACTORY_H
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
 * (c) European Southern Observatory, 2006 
@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.1 2006/10/20 07:33:23 gchiozzi Exp $"
+* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.2 2006/10/20 07:37:46 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,5 +84,5 @@ class AlarmSystemInterfaceFactory
 	virtual auto_ptr<acsalarm::FaultState>createFaultState();
 };
 
-#endif /* !ABSTRACT_ALARM_SYSTEM_INTERFACE_FACTORY_H */
+#endif /* !ALARM_SYSTEM_INTERFACE_FACTORY_H */
 

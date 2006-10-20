@@ -24,7 +24,7 @@
 #define XML_TAIL "</configuration-property>\n</alarm-system-configuration>\n"
 
 using namespace std;
-using acsalarm::AbstractAlarmSystemInterface;
+using acsalarm::AlarmSystemInterface;
 
 /**
  * NOTE: this tests the following scenarios: 
@@ -184,7 +184,7 @@ void FactoryTestCase::testAlarmSourceCreation()
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
 	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
-	auto_ptr<AbstractAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+	auto_ptr<AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource.get() != NULL));
 }
 	
@@ -283,3 +283,4 @@ int main(int argc, char *argv[])
 
 	return result.wasSuccessful() ? 0 : 1;
 }
+

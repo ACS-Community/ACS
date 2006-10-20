@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSystemInterface.h,v 1.1 2006/10/20 07:33:23 gchiozzi Exp $"
+* "@(#) $Id: AlarmSystemInterface.h,v 1.2 2006/10/20 07:37:46 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,12 +35,15 @@
 #endif
 
 #include "FaultState.h"
+#include "ASIMessage.h"
+#include "ASIConfiguration.h"
 
 #include <vector>
 #include <string>
 
 using std::string;
 using std::vector;
+using acsalarm::ASIConfiguration;
 
 namespace acsalarm
 {
@@ -69,34 +72,67 @@ namespace acsalarm
 			virtual string getSourceName() { return sourceName; }
 
 			/**
-		 	 * Close and deallocate resources.
+		 	 * Set the host name.
+		 	 * @param newHostName the source name.
+		 	 */	
+			virtual void setHostName(string newHostName) { hostName = newHostName; }
+
+			/**
+		 	 * Get the host name.
+		 	 * @return the host name.
 		 	 */
-			virtual void close() = 0;
+			virtual string getHostName() { return hostName; }
 
 			/**
 		 	 * Push a fault state.
 		 	 * @param state the fault state change to push.
 		 	 * @throws ASIException if the fault state can not be pushed.
 		 	 */
-			virtual void push(FaultState & state) = 0; //raises ASIException = 0;
+			virtual void push(FaultState & state); //raises ASIException = 0;
 
 			/**
 		 	 * Push a collection of fault states.
 		 	 * @param states
 		 	 * @throws ASIException if the fault state collection can not be pushed.
 		 	 */
-			virtual void push(vector<FaultState> & states) = 0; // raises ASIException = 0;
+			virtual void push(vector<FaultState> & states); // raises ASIException = 0;
 
 			/**
 		 	 * Push the set of active fault states.
 		 	 * @param activeFaults the active fault states.
 		 	 * @throws ASIException if the fault state active list can not be pushed.
 		 	 */
-			virtual void pushActiveList(vector<FaultState> & activeFaults) = 0; // raises ASIException = 0;
+			virtual void pushActiveList(vector<FaultState> & activeFaults); // raises ASIException = 0;
+
+			/**
+		 	 * Cleanup. Must be implemented by concrete sub classes; may be called by destructor or explicitly 
+			 * by client; it's up to you how you wish the cleanup process to be initiated.
+		 	 */
+			virtual void close() = 0;
 
 		protected:
+			/** Sends the message to the alarm server; concrete classes must override this and use the communication mechanism of their choice.
+			 *  For an example of a concrete class, see ACSLaser/laser-source-cpp/CERNAlarmSystemInterfaceProxy. 
+			 */
+			virtual bool publishMessage(ASIMessage msg) = 0;
 
 			string sourceName;
+			string hostName;
+			ASIConfiguration configuration;
+
+		private:
+			/**
+			 * Private method to push a collection of fault states, containing the
+			 * logic which is common to both the push() and pushActiveList() methods.
+			 *
+ 			 * @param states
+ 			 * @param backup whether we are sending 'backup' alarms or not. backup alarms
+ 			 *        are alarms in the active list that are sent on startup, when the source
+ 			 *        starts and periodically according to the expected backup frequency.
+ 			 *
+ 			 * @throws ASIException if the fault state collection can not be pushed.
+ 			 */
+			void commonPush(vector<FaultState> & states, bool backup);
 	};
 };
 #endif

@@ -39,8 +39,8 @@ using namespace acsalarm;
 
 bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
-AbstractAlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
-auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource(NULL);
+AlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
+auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource(NULL);
 
 void ACSAlarmSystemInterfaceFactory::done() {
 	// TODO: mutual exclusion?
@@ -66,7 +66,7 @@ void ACSAlarmSystemInterfaceFactory::done() {
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
+auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
 {
 	if (m_useACSAlarmSystem == NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
@@ -84,7 +84,7 @@ auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory:
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
+auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
@@ -93,7 +93,7 @@ auto_ptr<acsalarm::AbstractAlarmSystemInterface> ACSAlarmSystemInterfaceFactory:
 		return m_AlarmSystemInterfaceFactory_p->createSource(sourceName);
 	} else {
 		ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
-		auto_ptr<acsalarm::AbstractAlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
+		auto_ptr<acsalarm::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
 		return asIfAutoPtr;
 	}
 }
@@ -138,10 +138,10 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 			throw acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
 		}
 		// Call the well-defined entry point function of the DLL, to get an object 
-		// which implements the AbstractAlarmSystemInterfaceFactory interface, which will be used for publishing 
+		// which implements the AlarmSystemInterfaceFactory interface, which will be used for publishing 
 		// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
 		void * publisherFactoryFunctionPtr = dlsym(hndl, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
-		m_AlarmSystemInterfaceFactory_p = ((AbstractAlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
+		m_AlarmSystemInterfaceFactory_p = ((AlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
 		return m_AlarmSystemInterfaceFactory_p->init();
 	}
@@ -227,4 +227,5 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	// push the FaultState using the source
 	ACSAlarmSystemInterfaceFactory::sharedSource->push(*fltstate);
 }
+
 

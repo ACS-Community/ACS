@@ -31,7 +31,7 @@
 static char *rcsId="@(#) $Id$"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
-ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AbstractAlarmSystemInterface() {
+ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AlarmSystemInterface() {
 	setSourceName(name);
 	// Get the logger
 	m_logger = new LoggingProxy(0 ,0, 31);
@@ -74,3 +74,4 @@ void ACSAlarmSystemInterfaceProxy::push(vector<acsalarm::FaultState> & states) {
 void ACSAlarmSystemInterfaceProxy::pushActiveList(vector<acsalarm::FaultState> & activeFaults) {
 	push(activeFaults);
 }
+

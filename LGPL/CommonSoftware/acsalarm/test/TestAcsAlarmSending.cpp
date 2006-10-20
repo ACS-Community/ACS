@@ -2,7 +2,7 @@
 
 #include <logging.h>
 #include <loggingGenericLogger.h>
-#include "AbstractAlarmSystemInterface.h"
+#include "AlarmSystemInterface.h"
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "Timestamp.h"
 #include "FaultState.h"
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 		ACSAlarmSystemInterfaceFactory::init(NULL);
 
 		// create the AlarmSystemInterface
-		auto_ptr<AbstractAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+		auto_ptr<AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 
 		// create the FaultState
 		auto_ptr<FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
@@ -114,3 +114,4 @@ int main(int argc, char *argv[])
 	}
 	*/
 }
+

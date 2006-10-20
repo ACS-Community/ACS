@@ -1,4 +1,4 @@
-#include "AbstractAlarmSystemInterface.h" 
+#include "AlarmSystemInterface.h" 
 #include "logging.h"
 
 using namespace acsalarm;
@@ -10,12 +10,12 @@ using namespace acsalarm;
  * TODO later:
  * @throws ASIException if the fault state collection can not be pushed.
  */
-void AbstractAlarmSystemInterface::push(vector<FaultState> & states)
+void AlarmSystemInterface::push(vector<FaultState> & states)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::push(vector<FaultState>): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(vector<FaultState>): entering.");
 	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::push(vector<FaultState>): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(vector<FaultState>): exiting.");
 }
 
 /**
@@ -25,10 +25,10 @@ void AbstractAlarmSystemInterface::push(vector<FaultState> & states)
  * TODO later:
  * @throws ASIException if the fault state can not be pushed.
  */
-void AbstractAlarmSystemInterface::push(FaultState & state)
+void AlarmSystemInterface::push(FaultState & state)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::push(FaultState): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(FaultState): entering.");
 
 	// create a vector and populate with the (single) fault state, 
 	// to be passed to the buildMessageXML method
@@ -37,7 +37,7 @@ void AbstractAlarmSystemInterface::push(FaultState & state)
 	states.push_back((FaultState)*st);
 
 	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::push(FaultState): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(FaultState): exiting.");
 }
 
 /**
@@ -47,12 +47,12 @@ void AbstractAlarmSystemInterface::push(FaultState & state)
  * TODO later:
  * @throws ASIException if the fault state active list can not be pushed.
  */
-void AbstractAlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
+void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::pushActiveList(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::pushActiveList(): entering.");
 	commonPush(activeFaults, true);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::pushActiveList(): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::pushActiveList(): exiting.");
 }
 
 /**
@@ -67,10 +67,10 @@ void AbstractAlarmSystemInterface::pushActiveList(vector<FaultState> & activeFau
  * TODO later:
  * @throws ASIException if the fault state collection can not be pushed.
  */
-void AbstractAlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
+void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::commonPush(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::commonPush(): entering.");
 
 	// create the ASIMessage, supplying the faults which are to be published to the alarm server
 	vector<FaultState> * statesPtr = new vector<FaultState>(states);
@@ -96,5 +96,6 @@ void AbstractAlarmSystemInterface::commonPush(vector<FaultState> & states, bool 
 	// publish the ASIMessage to the alarm server
 	publishMessage(asiMessage);
 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::commonPush(): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::commonPush(): exiting.");
 }
+
