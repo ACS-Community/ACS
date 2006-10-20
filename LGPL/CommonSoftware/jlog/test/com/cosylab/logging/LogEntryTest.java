@@ -275,4 +275,31 @@ public class LogEntryTest extends junit.framework.TestCase
 			System.out.println("Exception: " + e);
 		}
 	}
+	
+	/**
+	 * This test tries to parse 2 logs with empty Data.
+	 * The former has a <Data .../> tag
+	 * The latter has a <Data ...></Data> tag
+	 * Both of the test should fail
+	 * 
+	 * @throws Exception
+	 */
+	public void testEmptyData() throws Exception {
+		String xml1="<Trace TimeStamp=\"2002-11-07T15:13:00.012\" File=\"maciHeartbeatController.cpp\" Line=\"64\"><Data Name=\"DataName\"/></Trace>";
+		String xml2="<Trace TimeStamp=\"2002-11-07T15:13:00.012\" File=\"maciHeartbeatController.cpp\" Line=\"64\"><Data Name=\"DataName\"></Data></Trace>";
+		ILogEntry log1 = null;
+		try {
+			logparser.parse(xml1);
+		} catch (Exception e) {
+			log1=null;
+		}
+		assertNull("The parser parsed a null Data: <Data.../>",log1);
+		ILogEntry log2 = null;
+		try {
+			logparser.parse(xml2);
+		} catch (Exception e) {
+			log2=null;
+		}
+		assertNull("The parser parsed a null Data: <Data...></Data>",log2);
+	}
 }
