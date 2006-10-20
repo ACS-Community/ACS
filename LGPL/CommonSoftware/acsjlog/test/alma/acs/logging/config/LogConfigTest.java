@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 import alma.acs.logging.ACSCoreLevel;
 import alma.acs.testsupport.TestLogger;
+import alma.maci.loggingconfig.LoggingConfig;
+import alma.maci.loggingconfig.NamedLogger;
 
 public class LogConfigTest extends TestCase {
 
@@ -73,40 +75,41 @@ public class LogConfigTest extends TestCase {
 
 	
 	/**
-	 * Tests the config values returned from {@link LogConfig#getLogConfigData()}
-	 * and {@link LogConfig#getLogConfigData(String)()} in the pristine state of our LogConfig object,
+	 * Tests the config values returned from {@link LogConfig#getLoggingConfig()}
+	 * and {@link LogConfig#getSpecialLoggerConfig(String)} in the pristine state of our LogConfig object,
 	 * that is, without CDB or other property information being considered.
 	 * <p>
 	 * Also asserts that none of these calls return the original object, 
 	 * but instead a copy of it. This indirectly exercises the equals method.
 	 */
 	public void testDefaultValues() throws Exception {
-		LogConfigData defaultLogConfig = logConfig.getLogConfigData();
-		assertEquals("Log", defaultLogConfig.getCentralizedLoggerName());
-		assertEquals(30, defaultLogConfig.getDispatchPacketSize());
-		assertEquals(ACSCoreLevel.ACS_LEVEL_DEBUG, defaultLogConfig.getMinLogLevel());
+		LoggingConfig defaultLogConfig = logConfig.getLoggingConfig();
+		assertEquals("Log", defaultLogConfig.getCentralizedLogger());
+		assertEquals(10, defaultLogConfig.getDispatchPacketSize());
+		assertEquals(ACSCoreLevel.ACS_LEVEL_TRACE, defaultLogConfig.getMinLogLevel());
 
-		int expectedMinLogLevelLocal = ACSCoreLevel.ACS_LEVEL_DEBUG;
+		int expectedMinLogLevelLocal = ACSCoreLevel.ACS_LEVEL_TRACE;
 		// TAT defines ACS_LOG_STDOUT, so the test must take this into account
-		Integer ACS_LOG_STDOUT = Integer.getInteger(LogConfigData.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
+		Integer ACS_LOG_STDOUT = Integer.getInteger(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
     	if (ACS_LOG_STDOUT != null) {
     		expectedMinLogLevelLocal = ACS_LOG_STDOUT.intValue();
     	}
 		assertEquals(expectedMinLogLevelLocal, defaultLogConfig.getMinLogLevelLocal());
 		
-		assertEquals(ACSCoreLevel.ACS_LEVEL_ALERT, defaultLogConfig.getExpeditedDispatchLevel());
+		assertEquals(ACSCoreLevel.ACS_LEVEL_ALERT, defaultLogConfig.getImmediateDispatchLevel());
 
-		LogConfigData defaultLogConfig2 = logConfig.getLogConfigData();
-		assertNotSame(defaultLogConfig, defaultLogConfig2);
+		LoggingConfig defaultLogConfig2 = logConfig.getLoggingConfig();
+//		assertNotSame(defaultLogConfig, defaultLogConfig2); // commented out because currently we don't copy/hide the instance
 		assertEquals(defaultLogConfig, defaultLogConfig2);
 
-		LogConfigData namedLogConfig1 = logConfig.getLogConfigData(null);
-		assertNotSame(defaultLogConfig, namedLogConfig1);
-		assertEquals(defaultLogConfig, namedLogConfig1);
+		NamedLogger namedLogConfig1 = logConfig.getSpecialLoggerConfig(null);
+		assertEquals(defaultLogConfig.getMinLogLevel(), namedLogConfig1.getMinLogLevel());
+		assertEquals(defaultLogConfig.getMinLogLevelLocal(), namedLogConfig1.getMinLogLevelLocal());
 		
-		LogConfigData namedLogConfig2 = logConfig.getLogConfigData("nonExistingLogger");
-		assertNotSame(defaultLogConfig, namedLogConfig2);
-		assertEquals(defaultLogConfig, namedLogConfig2);
+		NamedLogger namedLogConfig2 = logConfig.getSpecialLoggerConfig("nonExistingLogger");
+		assertNotSame(namedLogConfig1, namedLogConfig2); 
+		assertEquals(namedLogConfig1.getMinLogLevel(), namedLogConfig2.getMinLogLevel());
+		assertEquals(namedLogConfig1.getMinLogLevelLocal(), namedLogConfig2.getMinLogLevelLocal());
 	}
 	
 	
@@ -117,14 +120,19 @@ public class LogConfigTest extends TestCase {
 		String cdbContainerPath = "MACI/Containers/frodoContainer";
         String frodoContainerXml = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +  
-                    "<Container xmlns=\"urn:schemas-cosylab-com:Container:1.0\" " + 
-                               LogConfigData.CDBNAME_DISPATCH_PACKETSIZE + "=\"33\" " + 
-                               LogConfigData.CDBNAME_MIN_LOG_LEVEL + "=\"2\" " +
-                               LogConfigData.CDBNAME_MIN_LOG_LEVEL_LOCAL + "=\"3\" " +
-                               LogConfigData.CDBNAME_EXPEDITED_DISPATCH_LEVEL + "=\"7\" " + 
-                               LogConfigData.CDBNAME_CENTRALIZED_LOGGER + "=\"LogForFrodo\"> " + 
+                    "<Container xmlns=\"urn:schemas-cosylab-com:Container:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:log=\"urn:schemas-cosylab-com:LoggingConfig:1.0\">" + 
+                          "<LoggingConfig " +
+                          " minLogLevel=\"2\" " + 
+                          " minLogLevelLocal=\"3\" " +
+                          " centralizedLogger=\"LogForFrodo\" " +
+                          " maxLogQueueSize=\"200\" " +
+                          " immediateDispatchLevel=\"7\" " +
+                          " dispatchPacketSize=\"33\" " +
+                          " >" +
+                               //<log:_ Name="MyMuteComponent" minLogLevel="5" minLogLevelLocal="5" />
+                          "</LoggingConfig>" +
                     "</Container>";
-		
+        		
 		TestCDB testCDB = new TestCDB();
 		testCDB.addCurlToXmlMapping(cdbContainerPath, frodoContainerXml);
 		
@@ -132,8 +140,14 @@ public class LogConfigTest extends TestCase {
 		logConfig.setCDB(testCDB);
 		
 		logConfig.initialize();
+
+		LoggingConfig updatedConfig = logConfig.getLoggingConfig();
+		assertEquals("LogForFrodo", updatedConfig.getCentralizedLogger());
+		assertEquals(7, updatedConfig.getImmediateDispatchLevel());
+		assertEquals(33, updatedConfig.getDispatchPacketSize());		
+		assertEquals(10, updatedConfig.getFlushPeriodSeconds()); // was not in CDB, thus default should be used		
 		
-		// TODO: test logConfig.setCDBComponentPath() with some real XML added to the test CDB, once this is defined and implemented.
+		// TODO: test logConfig.setCDBComponentPath() with some real XML added to the test CDB, once this is implemented
 	}
 	
 	
@@ -144,13 +158,18 @@ public class LogConfigTest extends TestCase {
 		String cdbContainerPath = "MACI/Containers/frodoContainer";
         String frodoContainerXml = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +  
-                    "<Container xmlns=\"urn:schemas-cosylab-com:Container:1.0\" " + 
-                               LogConfigData.CDBNAME_MIN_LOG_LEVEL + "=\"NotANumber\" " +
-                               LogConfigData.CDBNAME_EXPEDITED_DISPATCH_LEVEL + "=\"\" " + // empty attr should be ignored w/o message
-                               "myMisfittingAttribute=\"ShouldNotMatterThough\" " + // again no message expected for this
-                               LogConfigData.CDBNAME_CENTRALIZED_LOGGER + "=\"LogForFrodo\"> " + 
-                    "</Container>";
-		
+            "<Container xmlns=\"urn:schemas-cosylab-com:Container:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:log=\"urn:schemas-cosylab-com:LoggingConfig:1.0\">" + 
+                  "<LoggingConfig " +
+                  " minLogLevel=\"NotANumber\" " + // should cause an error 
+                  " minLogLevelLocal=\"3\" " +
+                  " centralizedLogger=\"LogForFrodo\" " +
+                  " maxLogQueueSize=\"200\" " +
+                  " immediateDispatchLevel=\"\" " + // empty attr should be ignored w/o message
+                  " myMisfittingAttribute=\"ShouldNotMatterThough\" " + // again no err message expected for this
+                  " dispatchPacketSize=\"33\" " +
+                  " flushPeriodSeconds=\"5\" " +
+                  " />" +
+            "</Container>";
 		TestCDB testCDB = new TestCDB();
 		testCDB.addCurlToXmlMapping(cdbContainerPath, frodoContainerXml);
 		
@@ -162,9 +181,10 @@ public class LogConfigTest extends TestCase {
 			fail("LogConfigException was expected.");
 		}
 		catch (LogConfigException ex) {
-			assertEquals("Log config initialization at least partially failed. Problems during configuration: " + 
-					"Attribute MinCachePriority: ignored invalid value NotANumber. ", ex.getMessage());
-		}
+			assertEquals("Log config initialization at least partially failed. Failed to parse XML for CDB node MACI/Containers/frodoContainer into binding classes " + 
+					"(ex=org.exolab.castor.xml.MarshalException, msg='The following error occured while trying to unmarshal field _minLogLevel of class alma.maci.loggingconfig.LoggingConfig\n" +
+					"For input string: \"NotANumber\"'). ", ex.getMessage());
+		}		
 		
 		testCDB.setThrowException(true);
 		try {
@@ -172,8 +192,7 @@ public class LogConfigTest extends TestCase {
 			fail("LogConfigException was expected.");
 		}
 		catch (LogConfigException ex) {
-			assertEquals("Log config initialization at least partially failed. " + 
-					"Failed to read node MACI/Containers/frodoContainer from the CDB (msg='IDL:alma/cdbErrType/CDBRecordDoesNotExistEx:1.0'). ", ex.getMessage());
+			assertEquals("Log config initialization at least partially failed. Node MACI/Containers/frodoContainer does not exist in the CDB (msg='CDB record does not exist'). ", ex.getMessage());
 		}
 		
 	}

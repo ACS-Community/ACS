@@ -29,9 +29,10 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import alma.acs.logging.config.LogConfig;
-import alma.acs.logging.config.LogConfigData;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.LogParameterExtractor;
+import alma.maci.loggingconfig.NamedLogger;
+import alma.maci.loggingconfig.UnnamedLogger;
 
 /**
  * A <code>Logger</code> that attaches additional information to the produced <code>LogRecord</code>s.
@@ -135,10 +136,9 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
-    	LogConfigData logConfigData;
 		try {
-			logConfigData = logConfig.getLogConfigData(getName());
-	    	configureJDKLogger(this, logConfigData);
+			NamedLogger config = logConfig.getSpecialLoggerConfig(getName());
+	    	configureJDKLogger(this, config);
 		} catch (Exception e) {
 			info("Failed to configure logger.");
 		}
@@ -150,11 +150,11 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @param jdkLogger 
      * @param logConfigData
      */
-    static void configureJDKLogger(Logger jdkLogger, LogConfigData logConfigData) {
+    static void configureJDKLogger(Logger jdkLogger, UnnamedLogger loggerConfig) {
         int minLogLevelACS; // small integer level
         try {
         	// the logger must let through the lowest log level required for either local or remote logging.
-            minLogLevelACS = Math.min(logConfigData.getMinLogLevel(), logConfigData.getMinLogLevelLocal());
+            minLogLevelACS = Math.min(loggerConfig.getMinLogLevel(), loggerConfig.getMinLogLevelLocal());
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style 
             jdkLogger.setLevel(minLogLevelJDK);
         } catch (Exception ex) {

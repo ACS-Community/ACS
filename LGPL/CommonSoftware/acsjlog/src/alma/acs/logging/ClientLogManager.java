@@ -37,11 +37,11 @@ import org.omg.DsLogAdmin.LogHelper;
 import si.ijs.maci.Manager;
 
 import alma.acs.logging.config.LogConfig;
-import alma.acs.logging.config.LogConfigData;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
+import alma.maci.loggingconfig.LoggingConfig;
 
 
 /**
@@ -155,10 +155,10 @@ public class ClientLogManager implements LogConfigSubscriber
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
-    	LogConfigData confData = logConfig.getLogConfigData();
-        if (!confData.getCentralizedLoggerName().equals(logServiceName)) {
+    	LoggingConfig loggingConfig = logConfig.getLoggingConfig();
+        if (!loggingConfig.getCentralizedLogger().equals(logServiceName)) {
         	if (logServiceName == null) {
-        		logServiceName = confData.getCentralizedLoggerName();
+        		logServiceName = loggingConfig.getCentralizedLogger();
         	}
         	else {
         		m_internalLogger.warning("Dynamic switching of Log service not yet supported!");
@@ -166,10 +166,10 @@ public class ClientLogManager implements LogConfigSubscriber
         	}
         }
         
-        if (confData.getFlushPeriodSeconds() != flushPeriodSeconds) {
-        	flushPeriodSeconds = confData.getFlushPeriodSeconds();
+        if (loggingConfig.getFlushPeriodSeconds() != flushPeriodSeconds) {
+        	flushPeriodSeconds = loggingConfig.getFlushPeriodSeconds();
         	if (logQueue != null) {
-        		logQueue.setPeriodicFlushing(confData.getFlushPeriodSeconds());
+        		logQueue.setPeriodicFlushing(loggingConfig.getFlushPeriodSeconds());
         	}
         }
     }
@@ -327,11 +327,6 @@ public class ClientLogManager implements LogConfigSubscriber
             errMsg = null;
             count++;
             try {
-	        /**
-		   @todo: Here we should catch int a more precise 
-		   way the exceptions that can be thrown
-		   byte the various methods.
-		*/ 
                 logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
                 if (logService == null) {
                     errMsg = "Failed to obtain central log service '" + logServiceName + "': reference is 'null'. ";
@@ -496,7 +491,7 @@ public class ClientLogManager implements LogConfigSubscriber
             // this is a bit dirty: the local-only loggers are of the plain JDK Logger type which does not implement LogConfigSubscriber
             // and thus can't be configured in the normal way.
             // Nonetheless we want to configure its log level, for which we reuse code from AcsLogger
-            AcsLogger.configureJDKLogger(logger, logConfig.getLogConfigData());            
+            AcsLogger.configureJDKLogger(logger, logConfig.getLoggingConfig());            
         }
         return logger;
     }

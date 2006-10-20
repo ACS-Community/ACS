@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import alma.acs.logging.config.LogConfig;
-import alma.acs.logging.config.LogConfigData;
 import alma.acs.logging.config.LogConfigSubscriber;
+import alma.maci.loggingconfig.LoggingConfig;
 
 /**
  * The logging handler used by ACS for remote logging.
@@ -50,7 +50,7 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
 	 * Minimum level of log record to be sent off immediately, regardless of how many
      * other log records can be shipped together with it. 
 	 */
-	private int expeditedDispatchLevel;
+	private int immediateDispatchLevel;
 
     private boolean isClosed;
 
@@ -69,14 +69,15 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
-    	LogConfigData configData = logConfig.getLogConfigData();
-        expeditedDispatchLevel = configData.getExpeditedDispatchLevel();
+    	LoggingConfig defaultConfig = logConfig.getLoggingConfig();
+        immediateDispatchLevel = defaultConfig.getImmediateDispatchLevel();
         // all remote Loggers get their levels configured so that isLoggable() returns correct results
         // for both local and remote logging. 
         // In case the threshold for local logging is lower than for remote logging,
         // this handler still needs to filter out log records whose levels are in between the thresholds.
         try {
-            int minLogLevelACS = logConfig.getLogConfigData().getMinLogLevel();
+        	// @TODO check for special named logger value instead of using default  
+            int minLogLevelACS = defaultConfig.getMinLogLevel();
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
             if (minLogLevelJDK != null) {
             	setLevel(minLogLevelJDK);
@@ -117,7 +118,7 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
         logRecord.getSourceClassName();
 
         logQueue.log(logRecord);
-        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel() >= expeditedDispatchLevel) {
+        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel() >= immediateDispatchLevel) {
             if (DEBUG) {
                 System.out.println("flushing log queue because of log record with level " + logRecord.getLevel().getName());
             }

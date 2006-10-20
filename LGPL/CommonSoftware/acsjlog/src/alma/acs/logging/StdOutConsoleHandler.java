@@ -56,7 +56,7 @@ public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubs
      */
     public void configureLogging(LogConfig logConfig) {
         try {
-            int minLogLevelACS = logConfig.getLogConfigData().getMinLogLevelLocal();
+            int minLogLevelACS = logConfig.getLoggingConfig().getMinLogLevelLocal();
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
             if (minLogLevelJDK != null) {
             	setLevel(minLogLevelJDK);
