@@ -10,7 +10,7 @@
 1 - ----------T--:--:--.--- FINE [testContainer] AcsContainer 'testContainer' created.
 1 - ----------T--:--:--.--- FINE [testContainer] call to authenticate() answered with 'AR testContainer'.
 1 - ----------T--:--:--.--- FINE [testContainer] call to name() answered with 'testContainer'.
-1 - ----------T--:--:--.--- FINE [testContainer] Failed to configure logging (default values will be used). Reason: Log config initialization at least partially failed. Failed to read node MACI/Containers/testContainer from the CDB (msg='IDL:alma/cdbErrType/CDBRecordDoesNotExistEx:1.0'). 
+1 - ----------T--:--:--.--- FINE [testContainer] Failed to configure logging (default values will be used). Reason: Log config initialization at least partially failed. Node MACI/Containers/testContainer does not exist in the CDB (msg='CDB record does not exist'). 
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
