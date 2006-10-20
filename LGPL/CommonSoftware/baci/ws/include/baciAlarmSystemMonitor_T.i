@@ -17,17 +17,17 @@ AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispatcher 
 {
     ACS_TRACE("baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor");
 
-    try
-	{
+  
 /**
   * %todo GCH: Alarm System is not yet supportedin VxWorks
   *            Therefore I cut the calls out for the time being.
   */
 #ifndef MAKE_VXWORKS
+    try
+	{
 	this->alarmSource_map = ACSAlarmSystemInterfaceFactory::createSource(property_mp->name());
-#endif
 	} catch (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl &ex) {
-/* %tod: throw new exception
+/* %todo: throw new exception
 		 std::string procName="ROcommonImpl::ROcommonImpl(";
 		 procName+=name.c_str();
 		 procName+=",...)";
@@ -37,7 +37,7 @@ AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispatcher 
 */
 	throw;
 	}//try-catch
-
+#endif
 //    subscribe to event dispatcher
     eventDispatcher_mp->subscribe(this);
 }//AlarmSystemMonitor
