@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.78 2006/10/20 08:39:32 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.79 2006/10/20 12:46:14 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.78 2006/10/20 08:39:32 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.79 2006/10/20 12:46:14 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1523,8 +1523,8 @@ ContainerImpl::activate_component (
       maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
       ex.setCURL(name);
-      ex.setcomponent_code(exe);
-      ex.setcomponent_type(type);
+      ex.setComponentCode(exe);
+      ex.setComponentType(type);
       ex.log(LM_DEBUG);
       throw ex.getCannotActivateComponentEx();
       }//if
@@ -1553,8 +1553,8 @@ ContainerImpl::activate_component (
 						  "maci::ContainerImpl::activate_component");
 	ex.setCURL(name);
 	ex.setDetailedReason(re);
-	ex.setcomponent_code(exe);
-	ex.setcomponent_type(type);
+	ex.setComponentCode(exe);
+	ex.setComponentType(type);
 	ex.log(LM_DEBUG);
 	throw ex.getCannotActivateComponentEx();
 	}
@@ -1614,8 +1614,8 @@ ContainerImpl::activate_component (
 						  "maci::ContainerImpl::activate_component");
 		ex.setCURL(name);
 		ex.setDetailedReason(re);
-		ex.setcomponent_code(exe);
-		ex.setcomponent_type(type);
+		ex.setComponentCode(exe);
+		ex.setComponentType(type);
 		ex.log(LM_DEBUG);
 		throw ex.getCannotActivateComponentEx();
 	      }
@@ -1646,8 +1646,8 @@ ContainerImpl::activate_component (
     maciErrType::CannotActivateComponentExImpl ex(lex, __FILE__, __LINE__,
 						  "maci::ContainerImpl::activate_component");
     ex.setCURL(name);
-    ex.setcomponent_code(exe);
-    ex.setcomponent_type(type);
+    ex.setComponentCode(exe);
+    ex.setComponentType(type);
     ex.log(LM_DEBUG);
     throw ex.getCannotActivateComponentEx();
     }//if
@@ -1666,8 +1666,8 @@ ContainerImpl::activate_component (
     maciErrType::CannotActivateComponentExImpl ex(nex, __FILE__, __LINE__,
 						  "maci::ContainerImpl::activate_component");
     ex.setCURL(name);
-    ex.setcomponent_code(exe);
-    ex.setcomponent_type(type);
+    ex.setComponentCode(exe);
+    ex.setComponentType(type);
     ex.log(LM_DEBUG);
     m_dllmgr->unlock(libHandle);
     throw ex.getCannotActivateComponentEx();
@@ -1688,8 +1688,8 @@ ContainerImpl::activate_component (
       maciErrType::CannotActivateComponentExImpl ex(nullEx, __FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
       ex.setCURL(name);
-      ex.setcomponent_code(exe);
-      ex.setcomponent_type(type);
+      ex.setComponentCode(exe);
+      ex.setComponentType(type);
       ex.log(LM_DEBUG);
       m_dllmgr->unlock(libHandle);
       throw ex.getCannotActivateComponentEx();
@@ -1708,8 +1708,8 @@ ContainerImpl::activate_component (
 						    "maci::ContainerImpl::activate_component");
       ex.setCURL(name);
       servant = 0;
-      ex.setcomponent_code(exe);
-      ex.setcomponent_type(type);
+      ex.setComponentCode(exe);
+      ex.setComponentType(type);
       ex.log(LM_DEBUG);
       m_dllmgr->unlock(libHandle);
       throw ex.getCannotActivateComponentEx();
@@ -1721,8 +1721,8 @@ ContainerImpl::activate_component (
       maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
       ex.setCURL(name);
-      ex.setcomponent_code(exe);
-      ex.setcomponent_type(type);
+      ex.setComponentCode(exe);
+      ex.setComponentType(type);
       ex.log(LM_DEBUG);
       servant = 0;
       m_dllmgr->unlock(libHandle);
@@ -1740,8 +1740,8 @@ ContainerImpl::activate_component (
     maciErrType::CannotActivateComponentExImpl ex(nullEx, __FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
     ex.setCURL(name);
-    ex.setcomponent_code(exe);
-    ex.setcomponent_type(type);
+    ex.setComponentCode(exe);
+    ex.setComponentType(type);
     ex.log(LM_DEBUG);
     m_dllmgr->unlock(libHandle);
     throw ex.getCannotActivateComponentEx();
@@ -1756,8 +1756,8 @@ ContainerImpl::activate_component (
     maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
 						  "maci::ContainerImpl::activate_component");
     ex.setCURL(name);
-    ex.setcomponent_code(exe);
-    ex.setcomponent_type(type);
+    ex.setComponentCode(exe);
+    ex.setComponentType(type);
     ex.setDetailedReason("activateCORBAObject() failed");
     ex.log(LM_DEBUG);
           // destroy
@@ -1802,8 +1802,8 @@ ContainerImpl::activate_component (
 	  maciErrType::CannotActivateComponentExImpl ex(_ex, __FILE__, __LINE__,
 							"maci::ContainerImpl::activate_component");
 	  ex.setCURL(name);
-	  ex.setcomponent_code(exe);
-	  ex.setcomponent_type(type);
+	  ex.setComponentCode(exe);
+	  ex.setComponentType(type);
 	  ex.log(LM_DEBUG);
 	  deactivateCORBAObject(servant);
 /// @todo should be here called unlock library ?
@@ -1817,8 +1817,8 @@ ContainerImpl::activate_component (
 	  maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
 							"maci::ContainerImpl::activate_component");
 	  ex.setCURL(name);
-	  ex.setcomponent_code(exe);
-	  ex.setcomponent_type(type);
+	  ex.setComponentCode(exe);
+	  ex.setComponentType(type);
 	  ex.log(LM_DEBUG);
 	  deactivateCORBAObject(servant);
 /// @todo should be here called unlock library
@@ -1890,8 +1890,8 @@ ContainerImpl::activate_component (
 						  "maci::ContainerImpl::activate_component");
     ex.setCURL(name);
     ex.setDetailedReason(re);
-    ex.setcomponent_code(exe);
-    ex.setcomponent_type(type);
+    ex.setComponentCode(exe);
+    ex.setComponentType(type);
     ex.log(LM_DEBUG);
     deactivateCORBAObject(servant);
     m_dllmgr->unlock(libHandle);
