@@ -25,5 +25,5 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
-	<classpathentry kind="output" path="object"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
