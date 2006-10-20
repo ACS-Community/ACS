@@ -125,6 +125,8 @@ public class AdvancedComponentClient extends ComponentClient {
 	 * We try to not expose the ORB to applications. 
 	 *  
 	 * @return ORB
+	 * @deprecated with ACS 6.0, because of new method {@link alma.acs.container.AdvancedContainerServices#getORB()}
+	 *             which should be used instead.
 	 */
 	public ORB getORB() {
 		return acsCorba.getORB();
