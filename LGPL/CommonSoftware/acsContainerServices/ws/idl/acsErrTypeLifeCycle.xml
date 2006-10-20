@@ -15,4 +15,12 @@
 	 shortDescription="Stopping Threads Failed"
 	 description="Stopping Threads Failed"
 	/>
+	<ErrorCode name="WrongInitialState"
+	 shortDescription="Wrong Initial state of the component"
+	 description="Wrong Initial state of the component">
+		<Member name="ComponentName"
+			type="string"
+			description="Name of the component."
+		/>	
+	</ErrorCode>
 </Type>
