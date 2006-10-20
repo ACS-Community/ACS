@@ -149,4 +149,9 @@ public class IdentifierJMock implements IdentifierJ {
 		return uid;
 	}
 
+	public boolean checkUIDsyntax(String identifier) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
