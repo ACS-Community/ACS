@@ -16,8 +16,8 @@ import org.omg.CosNotification.*;
 import com.cosylab.gui.components.spikechart.TrendDataModel;
 
 import alma.acsnc.*;
-import alma.ACSSamp.*;
-import alma.ACSSamp.SampObjPackage.*;
+import alma.acssamp.*;
+import alma.acssamp.SampObjPackage.*;
 
 import abeans.models.acs.baci.util.*;
 
@@ -69,7 +69,7 @@ public class acssampGUIConsumer extends alma.acs.nc.Consumer {
        System.out.println("The type is: " +
                   structuredEvent.header.fixed_header.event_type.type_name);
        
-       sampDataBlock[] sampledData = SampDataBlockSeqHelper.extract(structuredEvent.filterable_data[0].value);
+       SampDataBlock[] sampledData = SampDataBlockSeqHelper.extract(structuredEvent.filterable_data[0].value);
        
        for (int i =0; i< sampledData.length; i++)
            {

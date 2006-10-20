@@ -37,7 +37,7 @@ import com.cosylab.abeans.*;
 import com.cosylab.abeans.plugins.*;
 import com.cosylab.gui.plugins.*;
 
-import alma.ACSSamp.abeans.*;
+import alma.acssamp.abeans.*;
 
 import alma.acs.component.client.ComponentClient;
 
@@ -139,7 +139,7 @@ public class acssampPanel extends AbeansLaunchable {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        samp1 = new alma.ACSSamp.abeans.Samp();
+        samp1 = new alma.acssamp.abeans.Samp();
         textComponent = new javax.swing.JTextField();
         textFrequency = new javax.swing.JTextField();
         textProperty = new javax.swing.JTextField();
@@ -445,7 +445,7 @@ public class acssampPanel extends AbeansLaunchable {
     private javax.swing.JLabel labelFrequency;
     private javax.swing.JLabel labelProperty;
     private javax.swing.JLabel labelRate;
-    private alma.ACSSamp.abeans.Samp samp1;
+    private alma.acssamp.abeans.Samp samp1;
     private com.cosylab.gui.components.spikechart.DecoratedChart spike1;
     private javax.swing.JTextField textComponent;
     private javax.swing.JTextField textFrequency;
