@@ -60,6 +60,8 @@ public class JarOrderOptimizer implements Comparator<File>
 		"acsjlog.jar",
 		"maci.jar",
 		"maciErrType.jar",
+		"maciSchemaBindings.jar", 
+		"castor.jar",
 		"jacorb.jar",
 		"acscomponent.jar",
 		"jmanager.jar",
@@ -83,7 +85,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"lc.jar", // cosylab logging client
 		"jdom.jar",
 		"acsASsources.jar",
-		"acsErrTypeAlarmSourceFactory.jar"
+		"acsErrTypeAlarmSourceFactory.jar" 
 	};
 	
 	/**
