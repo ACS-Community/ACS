@@ -425,8 +425,7 @@ public class AcsManagerProxy
 		{
 			try
 			{
-				// try something to see if the manager responds...
-				m_manager.get_client_info(m_mgrHandle, new int[]{m_mgrHandle}, "");
+				m_manager.ping();
 				m_responding = true;
 			}
 			catch (Throwable thr)
@@ -537,7 +536,7 @@ public class AcsManagerProxy
 	 * 			(one of the component_* constants).
 	 */
 	public Object get_service(String service_url, boolean activate) 
-	    throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
+		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
 		try {
 			return m_manager.get_service(m_mgrHandle, service_url, activate);		
@@ -612,11 +611,40 @@ public class AcsManagerProxy
 		}
 	}
 
+	
+	/**
+	 * Gets a component as a "weak client" who does not prevent component unloading in case
+	 * the other real clients release their references. 
+	 * Otherwise similar to <code>get_component</code> with <code>activate==false</code>. 
+	 * 
+	 * @param clientHandle
+	 * @param component_url
+	 * @return  the component reference (must still be narrowed using the appropriate Corba helper)
+	 * @throws AcsJComponentNotAlreadyActivatedEx  if the requested component has not already been activated by some other client 
+	 * @throws AcsJCannotGetComponentEx
+	 * @throws AcsJUnexpectedExceptionEx if the remote call failed with a (CORBA) runtime exception
+	 * @since ACS 6.0
+	 */
+	public Object getComponentNonSticky(int clientHandle, String component_url) 
+		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
+	{
+		try {
+			return m_manager.get_component_non_sticky(clientHandle, component_url);
+		} catch (RuntimeException rtex) {
+			handleRuntimeException(rtex);
+			throw rtex;
+		} catch (ComponentNotAlreadyActivatedEx ex) {
+			throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
+		} catch (CannotGetComponentEx ex) {
+			throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
+		}
+	}
 
 	/**
 	 * @param clientHandle  handle of requesting component or other kind of client
 	 * @param componentIDLType  the IDL type
-	 * @return @throws si.ijs.maci.NoDefaultComponent
 	 * @see ContainerServices#getDefaultComponent(String)
 	 */
 	public ComponentInfo get_default_component(int clientHandle, String componentIDLType)
