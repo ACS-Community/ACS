@@ -62,7 +62,7 @@ CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy()
 void CERNAlarmSystemInterfaceProxy::init()
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::init(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::init(): entering.");
 
 	// TODO later: portability/platform-specific issues with using gethostname()?
 	char name[MAXHOSTNAMELEN + 1];
@@ -70,15 +70,15 @@ void CERNAlarmSystemInterfaceProxy::init()
 	string nameStr(name);
 	hostName = (nameStr);
 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::init(): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::init(): exiting.");
 }
 
 // cleanup logic
 void CERNAlarmSystemInterfaceProxy::close()
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::close(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AbstractAlarmSystemInterface::close(): exiting.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::close(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::close(): exiting.");
 
 }
 
@@ -108,3 +108,4 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): exiting.");
 	return retVal;
 }
+

@@ -1,14 +1,14 @@
 #ifndef CERN_ALARM_SYSTEM_INTERFACE_FACTORY_H
 #define CERN_ALARM_SYSTEM_INTERFACE_FACTORY_H
 
-#include "AbstractAlarmSystemInterfaceFactory.h"
+#include "AlarmSystemInterfaceFactory.h"
 #include <logging.h>
 
-using acsalarm::AbstractAlarmSystemInterface;
+using acsalarm::AlarmSystemInterface;
 
 namespace laserSource
 {
-	class CERNAlarmSystemInterfaceFactory: public AbstractAlarmSystemInterfaceFactory
+	class CERNAlarmSystemInterfaceFactory: public AlarmSystemInterfaceFactory
 	{
 		public:
 		/** Default constructor/destructor */
@@ -33,13 +33,14 @@ namespace laserSource
 		 * @param sourceName the source name.
 		 * @return the interface instance.
 		 */
-		virtual auto_ptr<AbstractAlarmSystemInterface> createSource(string sourceName);
+		virtual auto_ptr<AlarmSystemInterface> createSource(string sourceName);
 		
 		/**
 		 * Create a new instance of an alarm system interface without binding it to any source.
 		 * @return the interface instance.
 		 */
-		virtual auto_ptr<AbstractAlarmSystemInterface> createSource();
+		virtual auto_ptr<AlarmSystemInterface> createSource();
 	};
 };
 #endif /* ifndef CERN_ALARM_SYSTEM_INTERFACE_FACTORY_H */
+

@@ -24,12 +24,12 @@
 #include <alsysMountImpl.h>
 
 #include "ACSAlarmSystemInterfaceFactory.h"
-#include "AbstractAlarmSystemInterface.h"
+#include "AlarmSystemInterface.h"
 #include "FaultState.h"
 #include "faultStateConstants.h"
 
 using namespace acscomponent;
-using acsalarm::AbstractAlarmSystemInterface;
+using acsalarm::AlarmSystemInterface;
 
 Mount::Mount(const ACE_CString &name,maci::ContainerServices * containerServices) : 
     ACSComponentImpl(name, containerServices)
@@ -54,7 +54,7 @@ void Mount::sendAlarm(std::string family, std::string member, int code, bool act
 	// constants we will use when creating the fault
 
 		// create the AlarmSystemInterface
-		auto_ptr<AbstractAlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
+		auto_ptr<AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
 
 		// create the FaultState
 		auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
@@ -93,3 +93,4 @@ void Mount::sendAlarm(std::string family, std::string member, int code, bool act
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(Mount)
 /* ----------------------------------------------------------------*/
+

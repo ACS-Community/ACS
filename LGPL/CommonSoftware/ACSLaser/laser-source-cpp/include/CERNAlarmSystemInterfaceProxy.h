@@ -1,15 +1,15 @@
 #ifndef ALARM_SYSTEM_INTERFACE_PROXY_H
 #define ALARM_SYSTEM_INTERFACE_PROXY_H
 
-#include "AbstractAlarmSystemInterface.h"
+#include "AlarmSystemInterface.h"
 #include "AcsAlarmPublisher.h"
 
-using acsalarm::AbstractAlarmSystemInterface;
+using acsalarm::AlarmSystemInterface;
 using laserSource::AcsAlarmPublisher;
 
 namespace laserSource
 {
-	class CERNAlarmSystemInterfaceProxy : public AbstractAlarmSystemInterface
+	class CERNAlarmSystemInterfaceProxy : public AlarmSystemInterface
 	{
 		public:
 			CERNAlarmSystemInterfaceProxy();
@@ -27,3 +27,4 @@ namespace laserSource
 	};
 };
 #endif
+
