@@ -1,10 +1,10 @@
 #ifndef ACS_ALARM_PUBLISHER_H
 #define ACS_ALARM_PUBLISHER_H
 
-#include "AbstractAlarmPublisher.h"
 #include "AlarmSupplier.h"
+#include "ASIMessage.h"
 
-//using laserSource::AbstractAlarmPublisher;
+using acsalarm::ASIMessage;
 
 namespace laserSource
 {
@@ -14,7 +14,7 @@ namespace laserSource
 	 * The Notification-Service-related functionality is encapsulated in
 	 * a separate class (which is used by this class), AlarmSupplier. 
 	 */
-	class AcsAlarmPublisher //: public AbstractAlarmPublisher
+	class AcsAlarmPublisher
 	{
 		public:
 			AcsAlarmPublisher(string topicName);
