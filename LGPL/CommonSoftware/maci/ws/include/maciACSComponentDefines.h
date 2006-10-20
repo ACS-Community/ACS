@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciACSComponentDefines.h,v 1.20 2006/10/20 08:39:32 bjeram Exp $"
+* "@(#) $Id: maciACSComponentDefines.h,v 1.21 2006/10/20 10:25:43 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -74,7 +74,9 @@ ACS_DLL_UNMANGLED_EXPORT PortableServer::Servant ConstructComponent( \
                       maci::ContainerServices * containerServices) \
 { \
     ACE_UNUSED_ARG(type_p); \
-    return new Class,##args(name_p, containerServices); \
+    Class,##args* servant_p =0; \
+    servant_p = new Class,##args(name_p, containerServices); \
+    return servant_p; \
 } \
 \
 ACS_DLL_UNMANGLED_EXPORT bool DLLOpen(int, char**) \
