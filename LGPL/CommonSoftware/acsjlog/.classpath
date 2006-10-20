@@ -17,5 +17,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
 	<classpathentry sourcepath="/ACSROOT/lib/endorsed/xercesImpl.jar" kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
