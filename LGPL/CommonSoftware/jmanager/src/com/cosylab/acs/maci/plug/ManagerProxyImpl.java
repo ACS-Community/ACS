@@ -995,6 +995,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// simply logout
 			manager.logout(id);
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			reportException(npe);
+
+			// rethrow adding context
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx(npe);
+			ex.setReason(npe.getReason());
+			throw ex.toNoPermissionEx();
+		}
 		catch (BadParametersException bpe)
 		{
 			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
@@ -1004,18 +1013,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "logout");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{

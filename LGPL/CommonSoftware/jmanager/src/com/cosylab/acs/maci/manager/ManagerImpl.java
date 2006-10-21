@@ -1994,6 +1994,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			new MessageLogEntry(this, "logout", "Client with handle '" + HandleHelper.toString(id) + "' is logging out.", LoggingLevel.DEBUG).dispatch();
 
 		// check handle, no special rights needed for logout
+                // AcsJNoPermissionEx flies directly up from securityCheck()
 		securityCheck(id, 0);
 
 		/****************************************************************/
