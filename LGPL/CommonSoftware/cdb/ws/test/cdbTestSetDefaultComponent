@@ -6,47 +6,57 @@ CDB_DIR=`pwd`/CDB-OLD
 #cdbjDALClearCache
 cdbTATPrologue $CDB_DIR
 
-#OLD FASHION Components
+#
+# 1 - OLD FASHION Components
+#
 diff CDB-OLD/CDB/MACI/Components/Components.xml Components_before.xml
 cdbSetDefaultComponent IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
 diff CDB-OLD/CDB/MACI/Components/Components.xml Components_after.xml
-#acsStop > acsStop.old.log 2>&1 
+
 cdbTATEpilogue > cdbTATEpilogue.log 2>&1
 cp Components_before.xml CDB-OLD/CDB/MACI/Components/Components.xml
 
-#cdbTATPrologue > cdbTATPrologue.log 2>&1
-
-#NEW Fashion Components
+#
+# 2 - NEW Fashion Components
+#
 CDB_DIR=`pwd`/CDB-NEW
-#acsStart > /dev/null 2>&1
-#cdbjDALClearCache
+
+
 cdbTATPrologue $CDB_DIR
 diff CDB-NEW/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_before.xml
 cdbSetDefaultComponent IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
 diff CDB-NEW/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_after.xml
-#acsStop > /dev/null 2>&1
+
 cdbTATEpilogue > cdbTATEpilogue.log 2>&1
 cp Generic_before.xml CDB-NEW/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml
 
+#
+# 3 - MIX Components
+#
 CDB_DIR=`pwd`/CDB-MIX
-#MIX Components
-#acsStart > /dev/null 2>&1
-#cdbjDALClearCache
+
 cdbTATPrologue $CDB_DIR
 
 diff CDB-MIX/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_before.xml
 cdbSetDefaultComponent IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
 diff CDB-MIX/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_after.xml
 
+#
+# 4 - MIX Components second example
+#
 diff CDB-MIX/CDB/MACI/Components/Components.xml Components_before.xml
 cdbSetDefaultComponent IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
 diff CDB-MIX/CDB/MACI/Components/Components.xml Components_after.xml
 
-#acsStop > /dev/null 2>&1
+
+#
+# Put back everything to status before the test
+#
 cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+
 cp Components_before.xml CDB-MIX/CDB/MACI/Components/Components.xml
 cp Generic_before.xml CDB-MIX/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml
 
-#cdbjDALClearCache
 cdbTATPrologue > cdbTATPrologue.log 2>&1
 
+# __oOo__

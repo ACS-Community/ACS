@@ -5,9 +5,9 @@
    -   Thu Apr 28 16:31:39 UTC 2005 modified by jDAL
 -->
 <FILTERWHEEL xmlns="urn:schemas-cosylab-com:FILTERWHEEL:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" FilterWheelDescription="Example of a dumb filter wheel" AvailableSlots="6">
-	<position description="position" />
-	<desc description="desc" />
-	<slots description="slots" />
+	<position />
+	<desc />
+	<slots />
 	<Filter>
 		<_ Name="Red" Delta="140" Slot="0" />
 		<_ Name="Green" Delta="-346" Slot="3" />
@@ -20,10 +20,4 @@
 		<cdb:_ long="53140"/>
 		<cdb:_ long="44325"/>
 	</SlotStep>
-<!-- Differs from the example: added for this test -->
-	<SlotPositions> <!-- Differs from the example: added for this -->
-	        <cdb:_ double="0.133"/>
-		<cdb:_ double="10.039"/>
-		<cdb:_ double="1320"/>
-	</SlotPositions>
 </FILTERWHEEL>

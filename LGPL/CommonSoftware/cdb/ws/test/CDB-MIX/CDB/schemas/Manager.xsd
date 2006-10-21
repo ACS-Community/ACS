@@ -1,32 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Klemen Âagar (.) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) -->
 <!--
-   - Configuration Database Schema for MACI Container
+   - Configuration Database Schema for MACI Manager
    -
    - Author: Klemen Zagar
    -
    - History:
    -   2002-09-06  KZ  Created
   -->
-<xs:schema targetNamespace="urn:schemas-cosylab-com:Manager:1.0"
- xmlns:xs="http://www.w3.org/2001/XMLSchema"
- xmlns="urn:schemas-cosylab-com:Manager:1.0"
- xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
-  <xs:element name="Manager" type="Manager"/>
-  <xs:complexType name="Manager">
-    <xs:sequence>
-      <xs:element name="Startup" type="cdb:Array"/>
-      <xs:element name="Execute" type="cdb:Array"/>
-      <xs:element name="ServiceComponents" type="cdb:Array"/>
-    </xs:sequence>
-    <xs:attribute name="CommandLine" type="xs:string" use="optional"/>
-    <xs:attribute name="Timeout" type="xs:double" use="optional" default="50.0"/>
-    <xs:attribute name="HeartbeatTimeout" type="xs:double" use="optional" default="2.0"/>
-    <xs:attribute name="CacheSize" type="xs:int" use="optional" default="10"/>
-    <xs:attribute name="MinCachePriority" type="xs:int" use="optional" default="0"/>
-    <xs:attribute name="MaxCachePriority" type="xs:int" use="optional" default="31"/>
-    <xs:attribute name="CentralizedLogger" type="xs:string" use="optional" default="Log"/>
-  </xs:complexType>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:Manager:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>This schema file describes the configuration for a Manager. 
+There might be slight differences in the meaning of some attributes 
+depending on the specific implementation of the Manager, 
+in particular depending on the implementation language. 
+See also the documentation of the specific implementation of 
+Manager for a list of supported and un-supported 
+configuration parameters.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:element name="Manager" type="Manager"/>
+	<xs:complexType name="Manager">
+		<xs:sequence>
+			<xs:element name="Startup" type="cdb:Array">
+				<xs:annotation>
+					<xs:documentation>This is a list of components to be activated automatically by the Manager as soon as their Container becomes available. This is a 'Manager centric' way to specify autostrart components. Another alternative way, more "Component-centric' is to set true the Autostrart attribute in the specification of the single component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Execute" type="cdb:Array">
+				<xs:annotation>
+					<xs:documentation>DEPRECATED. Unused. Was originally ment for starting up automatcally services when the Manger was started.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ServiceComponents" type="cdb:Array">
+				<xs:annotation>
+					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the meneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="CommandLine" type="xs:string" use="optional" default="">
+			<xs:annotation>
+				<xs:documentation>String passed to the container at startup as command line arguments.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Timeout" type="xs:double" use="optional" default="50.0">
+			<xs:annotation>
+				<xs:documentation>Standard timeout in seconds for remote (CORBA) calls. Every call will timeout after this period of time, ensuring protection from deadlock. Notice that ACS QoS features can be used to trim specific calls.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="HeartbeatTimeout" type="xs:double" use="optional" default="2.0">
+			<xs:annotation>
+				<xs:documentation>The Manager pings periodically the Containers to check they are healthy. This is an heatbit checking. The time interval for the heartbit check is specified here in seconds.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CacheSize" type="xs:int" use="optional" default="10">
+			<xs:annotation>
+				<xs:documentation>In order to improve performance and reduce network traffic, Containers do not send immediately logs to the logging system. This parameter specifies how many logs are cached before the cache is sent to the logging system. For debugging purposes it is often convenient to set the cache to 0, to avoid loosing logs when a Container crashes.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MinCachePriority" type="xs:int" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>All logs with priority lower that this value will be discarded and never send to the logging system. On a normally running system, priority is kept to INFO level (3) or higher to avoid flooding the logging system. While debugging it might be useful to increase the verbosity of the system  setting the priority to 0 or 1</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxCachePriority" type="xs:int" use="optional" default="31">
+			<xs:annotation>
+				<xs:documentation>All logs with priority higher than this value are sent immediately to the logging system, without waiting in the cache. This allows high priority message used to notify about malfunctioning to be propagate immediately. The befault value makes the error logs going directly to the logging system.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CentralizedLogger" type="xs:string" use="optional" default="Log">
+			<xs:annotation>
+				<xs:documentation>Name of the service representing the logging service. This is the name used to query the Manager for the reference to the logging service. In the current installations the default value is normally used. The value can be changed to distribute logs to different instances of the service in order to improve performance and scalability of the system. In the future it will be possible to federate instances of the logging service, but this is not implemented yet.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServerThreads" type="xs:int" use="optional" default="5">
+			<xs:annotation>
+				<xs:documentation>This is the number of threads allocate to the CORBA infrastructure for the handling of concurrent invocations. This value is normally sufficient, but it myght necessary to increase it for Containers with very many Components or when methods of Components take long time and build up complex chains of invocations. A typical manifestation of an insufficient number of threads is the deadlock followed by timeouts of actions in the Container.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
 </xs:schema>
-

@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 {
 #endif // defined( MAKE_VXWORKS )
 
-	LoggingProxy logger(0, 0, 31);
+    LoggingProxy logger(0, 0, 31);
     
     // initialize the rest of LoggingProxy
     LoggingProxy::ProcessName(argv[0]);
@@ -71,24 +71,30 @@ int main(int argc, char* argv[])
     	ACS_SHORT_LOG ((LM_INFO, "CORBA and POA initialized"));
     }
     
+
     ACS_SHORT_LOG ((LM_INFO, "Getting the DAL"));
     // Get the reference from the environment
     ACE_TCHAR * envRef = ACE_OS::getenv ("DAL_REFERENCE");
-	if (envRef && *envRef)
+    if (envRef && *envRef)
 	{
-		ACS_SHORT_LOG((LM_INFO,"DALReference obtained via environment: '%s'", envRef));
+	ACS_SHORT_LOG((LM_INFO,"DALReference obtained via environment: '%s'", envRef));
 	}
-	CORBA::Object_var dalObj = orb -> string_to_object(envRef);
-	CDB::DAL_var dal = CDB::DAL::_narrow(dalObj);
-	if (CORBA::is_nil(dal)) 
-    {
+    else
+	{
+    	ACS_SHORT_LOG ((LM_INFO, "The DALReference is NULL! Set it in the environment!"));
+    	exit(-1);
+	}
+    CORBA::Object_var dalObj = orb -> string_to_object(envRef);
+    CDB::DAL_var dal = CDB::DAL::_narrow(dalObj);
+    if (CORBA::is_nil(dal)) 
+	{
     	ACS_SHORT_LOG ((LM_INFO, "The DAL is NULL!"));
     	exit(-1);
-    }
+	}
     else
-    {
+	{
     	ACS_SHORT_LOG ((LM_INFO, "The DAL is here"));
-    }
+	}
     
     /////////////////////////////////////////////////////////////////////////////
     // The test starts here!
@@ -127,15 +133,6 @@ int main(int argc, char* argv[])
     	long temp = (lngSeq->operator[](t));
     	ACS_SHORT_LOG ((LM_INFO, "%ld> %ld",t,temp));
     }
-    ::CDB::doubleSeq* dblSeq = filteWheelNode.get_double_seq("SlotPositions");
-    length = dblSeq->length();
-    ACS_SHORT_LOG ((LM_INFO, "Found %ld double: ",length));
-    for (CORBA::ULong t=0; t<length; t++) 
-    {
-    	double temp = (dblSeq->operator[](t));
-    	ACS_SHORT_LOG ((LM_INFO, "%ld> %lf",t,temp));
-    }
-    
     // Get the attributes of position
     char* attrs = filteWheelNode.get_field_data("position");
     ACS_SHORT_LOG ((LM_INFO, "Attributes of position: %s",attrs));
