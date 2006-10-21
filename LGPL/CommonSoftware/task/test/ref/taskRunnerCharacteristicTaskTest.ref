@@ -1,5 +1,5 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
-1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOImpl] DAO:'MACI' Unable to return field: 'Containers/Container-XXXX/CacheSize'
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOImpl] DAO:'MACI' Unable to return field: 'Containers/Container-XXXX/LoggingConfig/dispatchPacketSize'
 1 - ----------T--:--:--.--- [Container-XXXX - ] Configuration information for container 'Container-XXXX' not available.
 1 - ----------T--:--:--.--- [Container-XXXX - maci::Container::init] Starting as dynamic container.
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOImpl] DAO:'MACI' Unable to return field: 'Containers/Container-XXXX/ManagerReference'
@@ -18,15 +18,15 @@
 1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connected to the Centralized Logger.
-1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Logged into the Manager.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'characteristicTaskTestImpl'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [TEST_TASK::actionThread - maci::ContainerImpl::initThread] Thread name: 'TEST_TASK::actionThread'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::activate_component] Component 'TEST_TASK' activated.
+1 - ----------T--:--:--.--- [TEST_TASK::actionThread - maci::ContainerImpl::initThread] Thread name: 'TEST_TASK::actionThread'
 1 - ----------T--:--:--.--- [TEST_TASK::monitorThread - maci::ContainerImpl::initThread] Thread name: 'TEST_TASK::monitorThread'
 1 - Hello World
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component TEST_TASK: OPERATIONAL -> DESTROYING
