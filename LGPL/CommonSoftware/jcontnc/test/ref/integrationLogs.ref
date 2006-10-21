@@ -1,3 +1,4 @@
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] initialize() called...
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Attempting to create the blarIL channel.
 1 - ----------T--:--:--.--- WARNING [IL_CONSUMERCOMP1] The 'blarIL' channel: the receiver object is incapable of handling 'org.omg.CosNotification.StructuredEvent' type of events! It must have a method 'public void receive(org.omg.CosNotification.StructuredEvent)'.
@@ -41,5 +42,5 @@
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] cleanUp() called...
-1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] A Consumer has disconnected from the 'blarIL' channel
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] cleanUp() called...
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] A Consumer has disconnected from the 'blarIL' channel

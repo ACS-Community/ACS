@@ -1,3 +1,4 @@
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [ABSTRACT_PUBLISHER] Attempting to create the AbstractNC_Channel channel.
 1 - Created NC Pulisher
 1 - Created NC Receiver
