@@ -30,8 +30,11 @@ import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -58,6 +61,9 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Toolkit;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.cosylab.logging.settings.UserInfoDlg;
@@ -183,6 +189,9 @@ public class LogEntryTable extends javax.swing.JTable
 		private JMenuItem copyAddInfo = new JMenuItem("to additionalInfo");
 		// The menu item to allow the user to add his information
 		private JMenuItem addUserInfo = new JMenuItem("add Info");
+		// The menu item to save selected logs
+		ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
+		private JMenuItem saveSelected = new JMenuItem("Save selected logs...",icon);
 		// The text to copy
 		private String textToCopy;
 		// The row and column under the mouse pointer
@@ -202,20 +211,26 @@ public class LogEntryTable extends javax.swing.JTable
 			setLabel("Paste");
 			
 			// Add the menu items
+			add(saveSelected);
+			addSeparator();
 			add(copyClipboard);
 			add(copyAddInfo);
 			addSeparator();
 			add(addUserInfo);
+			
 			// Hide the uneeded buttons
 			boolean singleLineSelected =
 				selectionModel.getMinSelectionIndex() == selectionModel.getMaxSelectionIndex(); 
 			copyAddInfo.setEnabled(singleLineSelected);
 			addUserInfo.setEnabled(singleLineSelected);
 			copyClipboard.setEnabled(true);
+			saveSelected.setEnabled(true);
+			
 			// Add the listeners
 			copyClipboard.addActionListener(this);
 			copyAddInfo.addActionListener(this);
 			addUserInfo.addActionListener(this);
+			saveSelected.addActionListener(this);
 			// Disable the menu items if the test is null or empty
 			if (textToCopy==null || textToCopy.length()==0) {
 				copyClipboard.setEnabled(false);
@@ -314,8 +329,54 @@ public class LogEntryTable extends javax.swing.JTable
 					
 					loggingClient.getJScrollPane2().setViewportView(loggingClient.getDataTable(logEntry));
 				}
+			} else if (e.getSource()==saveSelected) {
+				saveSelectedLogs();
 			} else {
-				// Unknown source ==> does nothing
+				System.err.println("Unhandled event "+e);
+			}
+		}
+		
+		/**
+		 * Save the selected logs into a file
+		 *
+		 */
+		private void saveSelectedLogs() {
+			// Build the text to save in the file
+			StringBuilder strBuffer = new StringBuilder();
+			if (!selectionModel.isSelectionEmpty()) {
+				for (int i=selectionModel.getMinSelectionIndex(); 
+					i<=selectionModel.getMaxSelectionIndex(); i++) {
+					if (!selectionModel.isSelectedIndex(i)) {
+						continue;
+					} else {
+						ILogEntry log = getLCModel().getVisibleLogEntry(i);
+						strBuffer.append(log.toXMLString());
+						strBuffer.append("\n");
+					}
+				}
+				if (strBuffer.length()==0) {
+					// Nothing to save
+					return;
+				}
+					
+			}
+			JFileChooser fc = new JFileChooser();
+			if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				FileOutputStream outFStream=null;
+				try {
+					outFStream = new FileOutputStream(file);
+				} catch (FileNotFoundException fnfe) {
+					JOptionPane.showMessageDialog(null,"Error creating "+file.getAbsolutePath()+":\n"+fnfe.getMessage(),"Error saving logs",JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				try {
+					outFStream.write(strBuffer.toString().getBytes());
+					outFStream.flush();
+					outFStream.close();
+				} catch (IOException ioe) {
+					JOptionPane.showMessageDialog(null,"Error saving "+file.getAbsolutePath()+":\n"+ioe.getMessage(),"Error saving logs",JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 	}
