@@ -1,4 +1,5 @@
 1 -  -- alma.nctest.clients.FridgeConsumer
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [FridgeConsumer] component 'FridgeConsumer' requested AdvancedContainerServices
 1 - Waiting for events...
 1 - The Java temperature difference is ---
