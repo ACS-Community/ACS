@@ -263,7 +263,7 @@ public class LogEntryTable extends javax.swing.JTable
 						if (!selectionModel.isSelectedIndex(i)) {
 							continue;
 						} else {
-							ILogEntry log = getLCModel().getVisibleLogEntry(row);
+							ILogEntry log = getLCModel().getVisibleLogEntry(i);
 							strBuffer.append(log.toXMLString());
 							strBuffer.append("\n");
 						}
