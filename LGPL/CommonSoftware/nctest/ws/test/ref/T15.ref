@@ -1,6 +1,7 @@
 1 -  -- alma.nctest.clients.FridgeConsumer
 2 - Getting the Supplier
 2 - Sending events
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 2 - Finished sending events
 1 - ----------T--:--:--.--- INFO [FridgeConsumer] component 'FridgeConsumer' requested AdvancedContainerServices
 1 - Waiting for events...
