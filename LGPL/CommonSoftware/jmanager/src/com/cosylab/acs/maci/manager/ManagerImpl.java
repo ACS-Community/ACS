@@ -613,27 +613,27 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Number of threads in thread pool (guarantees order of execution).
 	 */
-	private static final int POOL_THREADS = 10;
+	private transient int poolThreads = 10;
 
-	/*
+	/**
 	 * Lock timeout (deadlock detection time) in ms.
 	 */
-	private static long lockTimeout = 3 * Sync.ONE_MINUTE;	// 3 minutes
+	private transient long lockTimeout = 3 * 60000L;	// 3 minutes
 
 	/**
 	 * Client ping interval.
 	 */
-	private static final int	CLIENT_PING_INTERVAL = 60000;		// 60 secs
+	private transient int	clientPingInterval = 60000;		// 60 secs
 
 	/**
 	 * Administrator ping interval.
 	 */
-	private static final int	ADMINISTRATOR_PING_INTERVAL = 45000;		// 45 secs
+	private transient int	administratorPingInterval = 45000;		// 45 secs
 
 	/**
 	 * Container ping interval.
 	 */
-	private static final int	CONTAINER_PING_INTERVAL = 30000;		// 30 secs
+	private transient int	containerPingInterval = 30000;		// 30 secs
 
 	/**
 	 * Container rights.
@@ -785,6 +785,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (cdbAccess != null)
 			setCDBAccess(cdbAccess);
 
+		readManagerConfiguration();
+		
 		random = new Random();
 		heartbeatTask = new Timer(true);
 		delayedDeactivationTask = new Timer(true);
@@ -800,8 +802,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                 pendingContainerShutdown = Collections.synchronizedSet(new HashSet());
 
 		// create threads
-   		threadPool.setMinimumPoolSize(POOL_THREADS);
-		threadPool.createThreads(POOL_THREADS);
+   		threadPool.setMinimumPoolSize(poolThreads);
+		threadPool.createThreads(poolThreads);
 
 		// read CDB startup
 		try
@@ -854,7 +856,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// register container to the heartbeat manager
 			PingTimerTask task = new PingTimerTask(this, clientInfo);
 			containerInfo.setTask(task);
-			heartbeatTask.schedule(task, 0, CONTAINER_PING_INTERVAL);
+			heartbeatTask.schedule(task, 0, containerPingInterval);
 	    }
 
 	    // administrators
@@ -868,7 +870,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// register administrator to the heartbeat manager
 			PingTimerTask task = new PingTimerTask(this, adminInfo);
 			adminInfo.setTask(task);
-			heartbeatTask.schedule(task, 0, ADMINISTRATOR_PING_INTERVAL);
+			heartbeatTask.schedule(task, 0, administratorPingInterval);
 	    }
 
 	    // clients
@@ -882,7 +884,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// register client to the heartbeat manager
 			PingTimerTask task = new PingTimerTask(this, clientInfo);
 			clientInfo.setTask(task);
-			heartbeatTask.schedule(task, 0, CLIENT_PING_INTERVAL);
+			heartbeatTask.schedule(task, 0, clientPingInterval);
 	    }
 	}
 
@@ -2694,7 +2696,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// register container to the heartbeat manager
 				PingTimerTask task = new PingTimerTask(this, clientInfo);
 				containerInfo.setTask(task);
-				heartbeatTask.schedule(task, CONTAINER_PING_INTERVAL, CONTAINER_PING_INTERVAL);
+				heartbeatTask.schedule(task, containerPingInterval, containerPingInterval);
 
 				// !!! ACID - register AddContainerCommand
 				executeCommand(new ContainerCommandSet(handle, containerInfo));
@@ -3545,7 +3547,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// register administrator to the heartbeat manager
 			PingTimerTask task = new PingTimerTask(this, clientInfo);
 			clientInfo.setTask(task);
-			heartbeatTask.schedule(task, ADMINISTRATOR_PING_INTERVAL, ADMINISTRATOR_PING_INTERVAL);
+			heartbeatTask.schedule(task, administratorPingInterval, administratorPingInterval);
 
 			// !!! ACID - register AddAdministratorCommand
 			executeCommand(new AdministratorCommandSet(handle, clientInfo));
@@ -3623,7 +3625,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// register client to the heartbeat manager
 			PingTimerTask task = new PingTimerTask(this, clientInfo);
 			clientInfo.setTask(task);
-			heartbeatTask.schedule(task, CLIENT_PING_INTERVAL, CLIENT_PING_INTERVAL);
+			heartbeatTask.schedule(task, clientPingInterval, clientPingInterval);
 
 			// !!! ACID - register AddClientCommand
 			executeCommand(new ClientCommandSet(handle, clientInfo));
@@ -8746,13 +8748,44 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (managerDAO == null)
 			managerDAO = createDAO("MACI/Managers/Manager");
 
-		if (isDebug())
+		if (isDebug()) 
 			new MessageLogEntry(this, "getManagerDAOProxy", "Exiting.", Level.FINEST).dispatch();
 
 		return managerDAO;
 
 	}
 
+	/**
+	 * Read manager configuration.
+	 */
+	private void readManagerConfiguration()
+	{
+		if (isDebug())
+			new MessageLogEntry(this, "readManagerConfiguration", new Object[0] ).dispatch();
+
+		DAOProxy managerDAO = getManagerDAOProxy();
+		if (managerDAO == null)
+			return;
+			
+		clientPingInterval = (int)(readDoubleCharacteristics(managerDAO, "ClientPingInterval", clientPingInterval/(double)1000, true)*1000);
+		clientPingInterval = Math.max(1000, clientPingInterval);
+
+		administratorPingInterval = (int)(readDoubleCharacteristics(managerDAO, "AdministratorPingInterval", administratorPingInterval/(double)1000, true)*1000);
+		administratorPingInterval = Math.max(1000, administratorPingInterval);
+		
+		containerPingInterval = (int)(readDoubleCharacteristics(managerDAO, "ContainerPingInterval", containerPingInterval/(double)1000, true)*1000);
+		containerPingInterval = Math.max(1000, containerPingInterval);
+		
+		lockTimeout = (long)(readDoubleCharacteristics(managerDAO, "DeadlockTimeout", lockTimeout/(double)1000, true)*1000);
+		lockTimeout = Math.max(1000, lockTimeout);
+
+		poolThreads = readLongCharacteristics(managerDAO, "ServerThreads", poolThreads, true);
+		poolThreads = Math.max(3, poolThreads);
+
+		if (isDebug()) 
+			new MessageLogEntry(this, "readManagerConfiguration", "Exiting.", Level.FINEST).dispatch();
+	}
+	
 	/**
 	 * Destroys Manager DAO (CDB access).
 	 */
@@ -9064,6 +9097,45 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (isDebug())
 			new MessageLogEntry(this, "readLongCharacteristics", "Exiting.", Level.FINEST).dispatch();
+
+		return retVal;
+
+	}
+
+	/**
+	 * Reads DAO (CDB access) of double type.
+	 *
+	 * @param	path		path to be read non-<code>null</code>.
+	 * @param	dao			DAO on which to perform read request.
+	 * @param	silent		do not complain, if characteristics not found.
+	 * @return	double		value read, <code>0.0</code> on failure.
+	 */
+	private double readDoubleCharacteristics(DAOProxy dao, String path, double defaultValue, boolean silent)
+	{
+		assert (path != null);
+
+		if (isDebug())
+			new MessageLogEntry(this, "readDoubleCharacteristics", new Object[] { path }).dispatch();
+
+		double retVal = defaultValue;
+
+		try
+		{
+			retVal = dao.get_double(path);
+		}
+		catch (Throwable th)
+		{
+			CoreException ce = new CoreException(this, "Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
+			ce.caughtIn(this, "readLongCharacteristics");
+			ce.putValue("path", path);
+			if (silent)
+				new ExceptionIgnorer(ce);
+			// otherwise exception service will handle this
+			// new MessageLogEntry(this, "readLongCharacteristics", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+		}
+
+		if (isDebug())
+			new MessageLogEntry(this, "readDoubleCharacteristics", "Exiting.", Level.FINEST).dispatch();
 
 		return retVal;
 
