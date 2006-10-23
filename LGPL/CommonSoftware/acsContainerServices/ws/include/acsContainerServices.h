@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.13 2006/10/10 19:49:19 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.14 2006/10/23 09:05:04 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -314,7 +314,7 @@ namespace maci {
 	*        better return a reference counting Loki smart pointer,
 	*        but this requires changing the interfaces.
 	*/
-       virtual ACS::ThreadManager* getThreadManager(){ return ap_threadManager_m.get(); }
+       virtual ACS::ThreadManager* getThreadManager(){ return &threadManager_m; }
 
    private:
         ACE_CString m_componentName;
@@ -329,7 +329,7 @@ namespace maci {
 	* Thread Manager should be used for creating threads inside a component
 	*/
        // It could be that the manager should be moved to MACIContainerServices
-       auto_ptr<ACS::ThreadManager> ap_threadManager_m;
+       ACS::ThreadManager threadManager_m;
       
    };
    

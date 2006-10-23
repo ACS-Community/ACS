@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.cpp,v 1.8 2006/10/03 21:38:29 gchiozzi Exp $"
+ * "@(#) $Id: acsContainerServices.cpp,v 1.9 2006/10/23 09:05:04 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -33,10 +33,10 @@ using namespace maci;
 ContainerServices::ContainerServices(ACE_CString& compName, PortableServer::POA_ptr poa): 
     Logging::Loggable(compName.c_str()),
     m_componentName(compName),
-    m_poa(PortableServer::POA::_nil())
+    m_poa(PortableServer::POA::_nil()),
+    threadManager_m(getLogger())
 {
     ACS_TRACE("maci::ContainerServices::ContainerServices");
-    ap_threadManager_m = auto_ptr<ACS::ThreadManager>(new ACS::ThreadManager(getLogger()));
 
     // Save reference to the POA
     m_poa = PortableServer::POA::_duplicate(poa);
@@ -51,7 +51,7 @@ ContainerServices::~ContainerServices()
 }
 
 
-static char *rcsId="@(#) $Id: acsContainerServices.cpp,v 1.8 2006/10/03 21:38:29 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: acsContainerServices.cpp,v 1.9 2006/10/23 09:05:04 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
