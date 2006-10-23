@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.1 2006/10/19 15:19:34 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.2 2006/10/23 13:34:53 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -249,10 +249,10 @@ void ACSSampObjImpl<ACS_SAMP_TL>::start ()
         {
 	flush_p = threadManager_p->create<SamplingThreadFlush<ACS_SAMP_TL>, ACSSampObjImpl<ACS_SAMP_TL> *>(flushThreadName.c_str(), selfPtr, responseTime, sampReportRate);
 	ACS_DEBUG("acssamp::ACSSampObjImpl::start","flush thread created");
+	flush_p->resume();
 	}
     else
 	{
-	flush_p->resume();
 	ACS_DEBUG("acssamp::ACSSampObjImpl::start","flush thread resumed");
 	flush_p->resume();
 	}
