@@ -30,7 +30,7 @@ public class LogBufferedFileCache extends LogFileCache {
 	/** 
 	 * Buffers the logs to write block of logs at once
 	 * 
-	 * The buffer conatins an HashMap of logs with their indexes as keys
+	 * The buffer contains an HashMap of logs with their indexes as keys
 	 * (the same as replaced logs)
 	 * 
 	 * @author acaproni
@@ -66,14 +66,14 @@ public class LogBufferedFileCache extends LogFileCache {
 		 * The vectors with the positions of the logs in cache
 		 * @see LogFileCache.index
 		 */
-		private Vector<Long> indexes;
+		private Vector<LogFileCache.LogCacheInfo> indexes;
 		
 		/**
 		 * Constructor 
 		 * 
 		 * @param sz The max num of logs in the buffer (the size of the buffer)
 		 */
-		public WriteBuffer(RandomAccessFile theFile, Vector<Long> theIndex, int sz) {
+		public WriteBuffer(RandomAccessFile theFile, Vector<LogFileCache.LogCacheInfo> theIndex, int sz) {
 			if (theFile==null || theIndex==null || sz<=0) {
 				throw new IllegalArgumentException("Illegal argument in constructor");
 			}
@@ -108,21 +108,30 @@ public class LogBufferedFileCache extends LogFileCache {
 			// Get all the logs
 			String logsStr=charBuffer.toString();
 			// The length of the file
-			long pos;
+			long startingPos, endingPos;
 			// Write the charBuffer on disk
 			synchronized(fileOfLogs) {
 				try {
-					pos=fileOfLogs.length();
+					startingPos=fileOfLogs.length();
 					fileOfLogs.seek(fileOfLogs.length());
 					fileOfLogs.writeBytes(logsStr);
+					endingPos=fileOfLogs.length();
 				} catch (IOException ioe) {
 					throw new LogCacheException("Error flushing the buffer of logs",ioe);
 				}
 			}
-			// Add the indexes in the vector 
+			// Add the indexes in the vector
 			synchronized(index) {
 				for (int t=0; t<bufferIndex.size(); t++) {
-					index.add(pos+bufferIndex.get(t));
+					LogFileCache.LogCacheInfo info = new LogFileCache.LogCacheInfo();
+					info.deleted=false;
+					info.start=startingPos+bufferIndex.get(t);
+					if (t==bufferIndex.size()-1) {
+						info.end=endingPos;
+					} else {
+						info.end=startingPos+bufferIndex.get(t+1);
+					}
+					index.add(info);
 				}
 			}
 			// Clean up the buffer
@@ -175,7 +184,7 @@ public class LogBufferedFileCache extends LogFileCache {
 		 * @param newFile The new cache file
 		 * @param theIndex The new vector of positions
 		 */
-		public synchronized void clear(RandomAccessFile newFile, Vector<Long> newIndex) {
+		public synchronized void clear(RandomAccessFile newFile, Vector<LogFileCache.LogCacheInfo> newIndex) {
 			fileOfLogs=newFile;
 			indexes=newIndex;
 			clear();

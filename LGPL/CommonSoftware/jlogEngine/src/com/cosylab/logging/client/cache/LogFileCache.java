@@ -36,15 +36,74 @@ import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 /**
  * This class implements the cache in order to be able to manage
  * long log files.
- * It is implemented by a file of logs in XML format and an index of 
+ * It is implemented by a file of logs and an index of 
  * integers for each log entry in the file.
- * The cache is also used when receiving logs from the notification
- * channel.
+ * 
+ * Actually it is not possible to remove a log from the file. It is possible to delete
+ * a log from the index with the effect that the application "sees" less logs then those
+ * on disk.
+ * To effectively delete logs from disk we need some kind of garbage collector that
+ * removes the logs marked as delete from the file.
+ * This garbage collector is needed to avoid the file on disk grows indefinitely.
  * 
  * @author acaproni
  *
  */
 public class LogFileCache {
+	
+	/**
+	 * An entry in the cache on disk.
+	 * 
+	 * We need this object in order to be able to delete log from the cache.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	protected class LogCacheInfo {
+		// starting position in the file
+		public long start; 
+		// ending position in the file
+		public long end;
+		// true if the log has been deleted from cache
+		public boolean deleted;
+		
+		/**
+		 * Create LogCacheInfo marked as not deleted
+		 * 
+		 * @param startPos The starting position in the file on disk
+		 * @param endPos The ending position in the file on disk
+		 */
+		public LogCacheInfo(long startPos, long endPos) {
+			if (startPos>=endPos || startPos<0 || endPos<0) {
+				throw new IllegalArgumentException("Invalid positions for log ["+startPos+", "+endPos+"]");
+			}
+			start=startPos;
+			end=endPos;
+			deleted = false;
+		}
+		
+		/**
+		 * Create a LogCacheInfo object 
+		 * 
+		 * @param startPos The starting position in the file on disk
+		 * @param endPos The ending position in the file on disk
+		 * @param markAsDeleted If true the log is marked as deleted
+		 */
+		public  LogCacheInfo(long startPos, long endPos, boolean markAsDeleted) {
+			if (startPos>=endPos || startPos<0 || endPos<0) {
+				throw new IllegalArgumentException("Invalid positions for log ["+startPos+", "+endPos+"]");
+			}
+			start=startPos;
+			end=endPos;
+			deleted = false;
+		}
+
+		/**
+		 * Empty constructor
+		 */ 
+		public LogCacheInfo() {
+		}
+	}
 	
 	// The name of the log file of the cache
 	// This file is filled of logs when they arrive from the notification
@@ -58,7 +117,7 @@ public class LogFileCache {
 	
 	// The index is an array of integer that stores the starting
 	// position of each log entry in the logFile
-	protected Vector<Long> index = new Vector<Long>(256,16);
+	protected Vector<LogCacheInfo> index = new Vector<LogCacheInfo>(256,16);
 	
 	private StringBuilder sb=new StringBuilder();
 	private final String SEPARATOR = new String (""+((char)0));
@@ -218,25 +277,14 @@ public class LogFileCache {
 			throw new IndexOutOfBoundsException("Index out of bounds: "+idx);
 		}
 		
+		LogCacheInfo info=null;
 		// Get the position of the log in the file
-		Long initPos=null;
-		Long endPos=null;
 		synchronized(index) {
-			initPos= index.get(idx);
-			endPos=null;
-			if (idx==index.size()-1) {
-				try {
-					endPos=file.length();
-				} catch (IOException ioe) {
-					System.err.println("Error getting the length of the file");
-				}
-			} else {
-				endPos = index.get(idx+1);
-			}
+			info = index.get(idx);
 		}
 		
 		//System.out.println("Getting log ["+initPos+","+endPos+"]");
-		byte buffer[] = new byte[endPos.intValue()-initPos.intValue()];
+		byte buffer[] = new byte[(int)(info.end-info.start)];
 		
 		try {
 			// Move to the starting of the log and read the log
@@ -245,7 +293,7 @@ public class LogFileCache {
 			// because other thread can access the cache in the same moment
 			// (one of them might be the load)
 			synchronized(file) {
-				file.seek(initPos.longValue());
+				file.seek(info.start);
 				file.read(buffer);
 			}
 		} catch (IOException ioe) {
@@ -254,7 +302,6 @@ public class LogFileCache {
 		}
 		
 		String tempStr = new String(buffer);
-		//System.out.println("get Log returned: ["+tempStr+"]");
 		return tempStr;
 	}
 	
@@ -288,19 +335,21 @@ public class LogFileCache {
 		if (log==null) {
 			throw new LogCacheException("Trying to add a null log!");
 		}
-		String xml=toCacheString(log); 
-		long pos;
+		String xml=toCacheString(log);
+		long startingPos, endingPos;
 		synchronized(file) {
 			try {
-				pos=file.length();
+				startingPos=file.length();
 				file.seek(file.length());
 				file.writeBytes(xml);
+				endingPos=file.length();
 			} catch (IOException ioe) {
 				throw new LogCacheException("Error adding a log",ioe);
 			}
 		}
+		LogCacheInfo info = new LogCacheInfo(startingPos, endingPos);
 		synchronized(index) {
-			index.add(pos);
+			index.add(info);
 		}
 		return index.size()-1;
 	}
