@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIO.h,v 1.100 2006/10/18 08:14:16 bjeram Exp $"
+* "@(#) $Id: baciDevIO.h,v 1.101 2006/10/23 12:55:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,6 +42,7 @@
 #endif
 
 
+#include <ACSErrTypeCommon.h>
 #include "baciErrTypeDevIO.h"  // we have to include this that exceptions can be thrown in backward compatiblity support code
 // it can be removed when we remove "old" write and read
 
