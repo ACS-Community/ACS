@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.11 2006/06/12 14:06:36 msekoran Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.12 2006/10/23 15:39:24 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.11 2006/06/12 14:06:36 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.12 2006/10/23 15:39:24 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -217,6 +217,30 @@ void MaciContainerServicesTestClassImpl::getComponentTest()
 	 
 	 // Release the component
 	 getContainerServices()->releaseComponent(COMPNAME);
+}
+
+void MaciContainerServicesTestClassImpl::getComponentNonStickyTest() 
+	throw (CORBA::SystemException)
+{
+    try
+	{
+	 // 1st we have to activate the COMPNAME component
+	 MACI_TEST::DynamicTestClass_var comp = 
+	 	getContainerServices()->getComponent<MACI_TEST::DynamicTestClass>(COMPNAME);
+
+	 MACI_TEST::DynamicTestClass_var cns = 
+	     getContainerServices()->getComponentNonSticky<MACI_TEST::DynamicTestClass>(COMPNAME);
+	 // Execute a method on the remote component
+	 cns->whoami();
+	 
+	 // Release the component
+	 getContainerServices()->releaseComponent(COMPNAME);
+	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"getComponentTest: Error executing %s",COMPNAME));
+	_ex.log();
+	}
 }
 
 //--------------------------------------------------------------

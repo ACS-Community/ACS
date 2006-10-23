@@ -11,8 +11,8 @@
 1 - Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
@@ -156,7 +156,9 @@
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing MACI01
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI04
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component non sticky: 'MACI04'. Creating it...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing MACI04
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
@@ -185,6 +187,11 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI07
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component non sticky: 'MACI04'. Creating it...
+2 - ----------T--:--:--.--- [GlobalLogger - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2),javaex.class=alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx
+2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponentNonSticky&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI04
+2 - ----------T--:--:--.--- [GlobalLogger - ] Right behaviour: Got exception!
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciTestSimpleClient.cpp,v 1.2 2006/10/13 10:43:13 bjeram Exp $"
+* "@(#) $Id: maciTestSimpleClient.cpp,v 1.3 2006/10/23 15:39:24 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.2 2006/10/13 10:43:13 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.3 2006/10/23 15:39:24 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -54,7 +54,13 @@ int main (int argc, char **argv)
 	    // .. and here new way
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI04"));
 	    costr = client.getComponent<MACI_TEST::MaciTestClass>("MACI04", 0, true);
-	    ACS_SHORT_LOG((LM_INFO,"Releasing MACI01"));
+	  
+
+	    // test of getComponentNonSticky (it has to be activated be4)
+	    ACS_SHORT_LOG((LM_INFO,"Getting MACI04"));
+	    costr = client.getComponentNonSticky<MACI_TEST::MaciTestClass>("MACI04");
+
+	    ACS_SHORT_LOG((LM_INFO,"Releasing MACI04"));
 	    client.releaseComponent("MACI04");
 	    }
 	catch(maciErrType::CannotGetComponentExImpl &_ex)
@@ -71,6 +77,19 @@ int main (int argc, char **argv)
 	    corbaProblemEx.setInfo(_ex._info().c_str());
 	    corbaProblemEx.log();
 	}//try-catch
+
+// test error situation
+	try
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"Getting MACI07"));
+	    MACI_TEST::MaciTestClass_var co =
+		client.getComponentNonSticky<MACI_TEST::MaciTestClass>("MACI04");
+	    }
+	catch(maciErrType::CannotGetComponentExImpl &_ex)
+	    {
+	    ACS_SHORT_LOG((LM_INFO, "Right behaviour: Got exception!"));
+	    _ex.log();
+	    }//try-catch
 
 	client.logout();
 }//main

@@ -26,6 +26,9 @@ interface MaciTestClass : ACS::ACSComponent {
 interface ContainerServicesTestClass : ACS::ACSComponent {
   // Test the get component
   void getComponentTest();
+
+  // Test the get component in a non sticky way
+  void getComponentNonStickyTest();
   
   // Test the dynamic component activation
   void dynamicComponentTest();
