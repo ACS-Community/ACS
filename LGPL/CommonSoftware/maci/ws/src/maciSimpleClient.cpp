@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.98 2006/10/13 10:42:36 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.99 2006/10/23 15:39:00 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -535,6 +535,13 @@ SimpleClient::getComponent(const char *name,
 {
     return getComponent<CORBA::Object>(name, domain, activate);
 }//getComponent
+
+CORBA::Object_ptr
+SimpleClient::getComponentNonSticky(const char *name)
+    throw (maciErrType::CannotGetComponentExImpl)
+{
+    return getComponentNonSticky<CORBA::Object>(name);
+}//getComponentNonSticky
 
 long  SimpleClient::releaseComponent(const char* name)
     throw (maciErrType::CannotReleaseComponentExImpl)

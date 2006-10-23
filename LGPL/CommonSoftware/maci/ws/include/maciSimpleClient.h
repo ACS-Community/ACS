@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.95 2006/10/13 10:42:36 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.96 2006/10/23 15:39:00 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -186,6 +186,26 @@ public:
 	{
 	    return getComponent<T>(name, domain, activate);   
 	}
+    
+    /**
+     * Returns a non-sticky reference to a component
+     * @param name name (CURL) of the component 
+     * @return reference to the component
+     * for details see #get_component_non_sticky
+     */
+    CORBA::Object* getComponentNonSticky(const char *name)
+	throw (maciErrType::CannotGetComponentExImpl);
+
+     /**
+      * template version of #getComponentNonSticky
+     * Returns a non-sticky reference to a component
+     * @param name name (CURL) of the component 
+     * @return reference to the component
+     * for details see #get_component_non_sticky
+     */
+    template <class T>
+    T* getComponentNonSticky(const char *name)
+	throw (maciErrType::CannotGetComponentExImpl);
 
     /**
      * Releases the componet.
@@ -194,6 +214,7 @@ public:
      * component after the operation completed. 
      * @throw maciErrTyp::CannotReleaseComponentExImpl when there is a problem
      */
+
     long releaseComponent(const char* name)
 	throw (maciErrType::CannotReleaseComponentExImpl);
 
@@ -316,9 +337,8 @@ private:
  */
 
 /* 
- * Implementation for get_object template method
+ * Implementation for getComponent template method
  */
-
 template<class T>
 T* SimpleClient::getComponent(const char *name, const char *domain, bool activate)
     throw (maciErrType::CannotGetComponentExImpl)
@@ -413,6 +433,86 @@ T* SimpleClient::getComponent(const char *name, const char *domain, bool activat
 	throw ex;
 	}//try-catch
 }//getComponent<>
+
+/* 
+ * Implementation for getComponentNonSticky template method
+ */
+template<class T>
+T* SimpleClient::getComponentNonSticky(const char *name)
+    throw (maciErrType::CannotGetComponentExImpl)
+{
+    if(!m_initialized)     // Check first if the client is initialized
+	{
+	ACSErrTypeCommon::NotInitializedExImpl notInitEx( __FILE__, __LINE__,
+							  "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	notInitEx.setName("SimpleClient");
+	maciErrType::CannotGetComponentExImpl ex( notInitEx, __FILE__, __LINE__,
+						  "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	name ? ex.setCURL(name) : ex.setCURL("NULL");
+	throw ex;
+	}//if
+
+    if(!name)       // Check if <name> is null
+	{
+	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
+						   "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	nullEx.setVariable("(parameter) name");
+	maciErrType::CannotGetComponentExImpl ex(nullEx, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	ex.setCURL("NULL");
+	throw ex;
+	}//if
+    
+    ACS_SHORT_LOG((LM_DEBUG, "Getting component non sticky: '%s'. Creating it...",  name));
+    
+    try
+	{
+	CORBA::Object_var obj = manager()->get_component_non_sticky(m_handle, name);
+	return T::_narrow(obj.in());
+	}
+    catch(maciErrType::CannotGetComponentEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+						 "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch(maciErrType::NoPermissionEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
+						 "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch( CORBA::SystemException &_ex )
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	corbaProblemEx.setMinor(_ex.minor());
+	corbaProblemEx.setCompletionStatus(_ex.completed());
+	corbaProblemEx.setInfo(_ex._info().c_str());
+	maciErrType::CannotGetComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+						 "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+							"maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	maciErrType::CannotGetComponentExImpl ex(uex, __FILE__, __LINE__,
+						 "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}//try-catch
+}//getComponentNonSticky<>
 
 }; 
 

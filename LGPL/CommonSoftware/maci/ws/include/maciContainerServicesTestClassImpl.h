@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.11 2006/06/12 14:06:36 msekoran Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.12 2006/10/23 15:39:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -77,6 +77,9 @@ public:
   // Test the defaultComponent activation
   virtual void getComponentTest() throw (CORBA::SystemException);
   
+  // Test the getting a Component as Non Sticky 
+  virtual void getComponentNonStickyTest() throw (CORBA::SystemException);
+
   // Test the dynamic component activation
   virtual void dynamicComponentTest() throw (CORBA::SystemException); 
   

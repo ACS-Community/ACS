@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.14 2006/10/23 09:05:04 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.15 2006/10/23 15:38:21 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -82,7 +82,20 @@ namespace maci {
         virtual CORBA::Object* getCORBAComponent(const char* name)
 	    throw (maciErrType::CannotGetComponentExImpl)
 		   =0;
-        
+        /**
+         * Gets the specified component non sticky as a Corba object. 
+	 * for details about getting a component non sticky see #get_component_non_sticky
+         * 
+         * @param The name of the deployed component instance
+         * @return Reference to the component
+         * @htmlonly
+         * <br><hr>
+         * @endhtmlonly
+         */
+       virtual CORBA::Object* getCORBAComponentNonSticky(const char* name)
+	   throw (maciErrType::CannotGetComponentExImpl)
+	   =0;
+  
         /**
          * Gets a dynamic component as a Corba object. 
          * 
@@ -164,6 +177,20 @@ namespace maci {
         template<class T> T* getComponent(const char *name)	    
 	    throw (maciErrType::CannotGetComponentExImpl);
         
+       /**
+         * Gets the specified component as non sticky.
+	 * for the details of getting a componet non sticky see #get_component_non_sticky
+         * This method uses templates, so no cast to the request object is required
+         * 
+         * @param The name of the deployed component instance
+         * @return Reference to the component
+         * @htmlonly
+         * <br><hr>
+         * @endhtmlonly
+         */
+       template<class T> T* getComponentNonSticky(const char *name)
+	   throw (maciErrType::CannotGetComponentExImpl);
+
         /**
          * Gets a dynamic component
          * This method uses templates, so no cast to the request object is required

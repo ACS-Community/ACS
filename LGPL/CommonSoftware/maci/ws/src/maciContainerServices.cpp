@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.23 2006/10/10 19:51:44 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.24 2006/10/23 15:39:00 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -127,9 +127,23 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 	{
 	CORBA::Object_var obj = 
 	    m_manager->get_component(m_componentHandle, curl.c_str(), true);
-    
+	
 	m_usedComponents.push_back(name);
 	return CORBA::Object::_narrow(obj.in());
+	}
+    catch (maciErrType::NoPermissionEx &ex) 
+	{
+	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				     "MACIContainerServices::getCORBAComponent");
+	lex.setCURL(curl);
+	throw lex;
+	}
+    catch (maciErrType::ComponentNotAlreadyActivatedEx &ex) 
+	{
+	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				     "MACIContainerServices::getCORBAComponent");
+	lex.setCURL(curl);
+	throw lex;
 	}
     catch (maciErrType::CannotGetComponentEx &ex) 
 	{
@@ -140,8 +154,8 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 	}
     catch( maciErrType::ComponentConfigurationNotFoundEx &ex) 
 	{
-	ComponentConfigurationNotFoundExImpl lex(ex, __FILE__, __LINE__,
-						 "MACIContainerServices::getCORBAComponent");
+	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+						  "MACIContainerServices::getCORBAComponent");
 	lex.setCURL(curl);
 	throw lex;
 	}  
@@ -164,10 +178,81 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 							"MACIContainerServices::getCORBAComponent");
 	CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBAComponent");
-	lex.setCURL(name);
+	lex.setCURL(curl);
 	throw lex;
 	}//try-catch
 }//getCORBAComponent
+
+CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* name)
+    throw (maciErrType::CannotGetComponentExImpl)
+{   
+    ACE_TRACE("MACIContainerServices::getCORBAComponentNonSticky");
+    
+    if(!name)          // Check if <name> is null
+	{
+	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__, 
+						   "MACIContainerServices::getCORBAComponentNonSticky");
+	nullEx.setVariable("(parameter) name");
+	maciErrType::CannotGetComponentExImpl lex(__FILE__, __LINE__,
+						  "MACIContainerServices::getCORBAComponentNonSticky");
+	lex.setCURL("NULL");
+	throw lex;
+    }//if
+    
+    ACS_SHORT_LOG((LM_DEBUG, "Getting component non sticky: '%s'.",  name));
+    
+    try
+	{
+	CORBA::Object_var obj = 
+	    m_manager->get_component_non_sticky(m_componentHandle, name);
+    
+	m_usedComponents.push_back(name);
+	return CORBA::Object::_narrow(obj.in());
+	}
+    catch (maciErrType::CannotGetComponentEx &ex) 
+	{
+	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+						  "MACIContainerServices::getCORBAComponentNonSticky");
+	lex.setCURL(name);
+	throw lex;
+	}
+    catch (maciErrType::ComponentNotAlreadyActivatedEx &ex) 
+	{
+	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				     "MACIContainerServices::getCORBAComponentNonSticky");
+	lex.setCURL(name);
+	throw lex;
+	}
+    catch( maciErrType::NoPermissionEx &ex) 
+	{
+	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				     "MACIContainerServices::getCORBAComponentNonSticky");
+	lex.setCURL(name);
+	throw lex;
+	}  
+    catch( CORBA::SystemException &ex ) 
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "MACIContainerServices::getCORBAComponentNonSticky");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	
+	CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
+				     "MACIContainerServices::getCORBAComponentNonSticky");
+	lex.setCURL(name);
+	throw lex;
+	}
+    catch (...) 
+	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"MACIContainerServices::getCORBAComponentNonSticky");
+	CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
+				     "MACIContainerServices::getCORBAComponentNonSticky");
+	lex.setCURL(name);
+	throw lex;
+	}//try-catch
+}//getCORBAComponentNonSticky
 
 CORBA::Object* 
 MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)

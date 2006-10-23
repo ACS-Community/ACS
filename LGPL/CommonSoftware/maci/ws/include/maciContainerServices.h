@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.22 2006/10/10 19:51:44 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.23 2006/10/23 15:39:00 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -76,6 +76,12 @@ class MACIContainerServices: public ContainerServices
      * Implementation of acsContainerServices::getCORBAComponent(const char* name)
      */
     CORBA::Object* getCORBAComponent(const char* name)
+	throw (maciErrType::CannotGetComponentExImpl);
+
+    /**
+     * Implementation of acsContainerServices::getCORBAComponentNonSticky(const char* name)
+     */
+    CORBA::Object* getCORBAComponentNonSticky(const char* name)
 	throw (maciErrType::CannotGetComponentExImpl);
     
     /**

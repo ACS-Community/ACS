@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.6 2006/10/10 19:49:19 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.7 2006/10/23 15:38:21 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -68,6 +68,39 @@ T* ContainerServices::getComponent(const char *name)
 	throw lex;
 	}
 }//getComponent
+
+
+template<class T>
+T* ContainerServices::getComponentNonSticky(const char *name)
+    throw (maciErrType::CannotGetComponentExImpl)
+{ 
+    CORBA::Object* obj =T::_nil();
+    
+    ACS_SHORT_LOG((LM_INFO,"ContainerServices::getComponentNonSticky(%s)",name));
+  
+    try 
+	{
+	// Get the component as a CORBA object
+	obj = getCORBAComponent(name); // obj should not be nil, but if it is the narrow will fail
+	return T::_narrow(obj);   
+	}
+    catch (maciErrType::CannotGetComponentExImpl &ex) 
+	{
+	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				     "ContainerServices::getComponentNonSticky");
+	lex.setCURL(name);
+	throw lex;
+	}
+    catch (...) 
+	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ContainerServices::getComponentNonSticky");
+	CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
+				     "ContainerServices::getComponentNonSticky");
+	lex.setCURL(name);
+	throw lex;
+	}
+}//getComponentNonSticky
 
 template<class T> T* 
 ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
