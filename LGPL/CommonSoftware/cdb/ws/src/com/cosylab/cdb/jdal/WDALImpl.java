@@ -67,7 +67,10 @@ import alma.cdbErrType.wrappers.AcsJCDBRecordAlreadyExistsEx;
 import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBExceptionEx;
-//import alma.cdbErrType.wrappers.;
+
+import java.util.logging.Logger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
 
 /**
  * Implementation of Writable Data Access Layer (WDAL) interface.   Enables
@@ -83,7 +86,7 @@ public class WDALImpl extends WDALBaseImpl
 {
 	private POA poa = null;
 	private HashMap wdaoMap = new HashMap();
-
+	Logger m_logger;
 	/**
 	 * Constructor as it is for DAL
 	 *
@@ -95,6 +98,7 @@ public class WDALImpl extends WDALBaseImpl
 	{
 		super(args, orb, poa);
 		this.poa = poa;
+ 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB::WDALImpl", true);
 	}
 
 	/* (non-Javadoc)
@@ -134,7 +138,7 @@ public class WDALImpl extends WDALBaseImpl
 		} catch(Throwable t) {
 			String info = "WDAL::get_WDAO_Servant " + t;
 			CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
-			System.err.println(info);
+			m_logger.log(AcsLogLevel.WARNING, info);
 			throw xmlErr;
 		}
 	}
@@ -152,13 +156,14 @@ public class WDALImpl extends WDALBaseImpl
 	public void add_node(String curl, String xml)
 		throws CDBRecordAlreadyExistsEx, CDBXMLErrorEx, CDBExceptionEx
 	{
-		System.out.println("add_node " + curl);
+		m_logger.log(AcsLogLevel.INFO, "add_node " + curl);
 
 		// check if node is already there
 		if(nodeExists(curl)) {
-			System.err.println("Record already exists: " + curl);
+			m_logger.log(AcsLogLevel.SEVERE, "Record already exists: " + curl);
 			AcsJCDBRecordAlreadyExistsEx e2 = new AcsJCDBRecordAlreadyExistsEx();
 			e2.setCurl(curl);
+			e2.log(m_logger);
 			throw e2.toCDBRecordAlreadyExistsEx();
 		}
 
@@ -166,6 +171,7 @@ public class WDALImpl extends WDALBaseImpl
 		try{
 			validateXML(xml);
 		}catch(AcsJCDBXMLErrorEx e){
+			e.log(m_logger);
 			throw e.toCDBXMLErrorEx();
 		}
 		// recreate dir structure and put data content 
@@ -190,11 +196,11 @@ public class WDALImpl extends WDALBaseImpl
 	public void remove_node(String curl)
 		throws CDBRecordDoesNotExistEx, CDBRecordIsReadOnlyEx
 	{
-		System.out.println("remove_node " + curl);
+		m_logger.log(AcsLogLevel.INFO, "remove_node " + curl);
 
 		// check if node exisits
 		if(!nodeExists(curl)) {
-			System.err.println("Record does not exists: " + curl);
+			m_logger.log(AcsLogLevel.SEVERE, "Record does not exists: " + curl);
 			throw new CDBRecordDoesNotExistEx();
 		}
 
@@ -241,11 +247,11 @@ public class WDALImpl extends WDALBaseImpl
 		throws CDBRecordDoesNotExistEx, CDBFieldDoesNotExistEx, CDBRecordIsReadOnlyEx, 
 			CDBXMLErrorEx, CDBExceptionEx
 	{
-		System.out.println("set_DAO " + curl);
+		m_logger.log(AcsLogLevel.INFO, "set_DAO " + curl);
 
 		// check if node exisits
 		if(!nodeExists(curl)) {
-			System.err.println("Record does not exists: " + curl);
+			m_logger.log(AcsLogLevel.SEVERE, "Record does not exists: " + curl);
 			throw new CDBRecordDoesNotExistEx();
 		}
 
@@ -298,13 +304,13 @@ public class WDALImpl extends WDALBaseImpl
 			if(xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
 				CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
-				System.err.println(info);
+				m_logger.log(AcsLogLevel.SEVERE, info);
 				throw xmlErr;
 			}
 		} catch(Throwable t) {
 			String info = "SAXException " + t;
 			CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
-			System.err.println(info);
+			m_logger.log(AcsLogLevel.SEVERE, info);
 			throw xmlErr;
 		}
 	}
@@ -514,7 +520,7 @@ public class WDALImpl extends WDALBaseImpl
 			saxParser.parse(new InputSource(new StringReader(xml)), dalSolver);
 
 			if(dalSolver.m_errorString != null) {
-				System.err.println(dalSolver.m_errorString);
+				m_logger.log(AcsLogLevel.SEVERE, dalSolver.m_errorString);
 				AcsJCDBXMLErrorEx e2 = new AcsJCDBXMLErrorEx();
 				e2.setErrorString(dalSolver.m_errorString);	
 				throw e2;

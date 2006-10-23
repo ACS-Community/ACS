@@ -31,9 +31,13 @@ import org.omg.CORBA.*;
 import com.cosylab.CDB.*;
 import java.net.InetAddress;
 import alma.acs.util.ACSPorts;
+import java.util.logging.Logger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
 
 public class DALShutdown {
 	public static void main(String args[]) {
+	        Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DALShutdown", true);
 		try {
 			String curl;
 			String strIOR = null;
@@ -54,20 +58,21 @@ public class DALShutdown {
 				// use default
 				strIOR = "corbaloc::" + InetAddress.getLocalHost().getHostName() + ":" + ACSPorts.getCDBPort() + "/CDB";
 			}
-			System.out.println("Connecting with ior:" + strIOR);
+			m_logger.log(AcsLogLevel.INFO, "Connecting with ior:" + strIOR);
 
 			// create and initialize the ORB
 			ORB orb = ORB.init(args, null);
 
 			DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 
-			if (dal == null)
-				System.out.println("ERROR: Failed to resolve DAL reference.");
+			if (dal == null){
+				m_logger.log(AcsLogLevel.SEVERE, "Failed to resolve DAL reference.");
+			}
 			else
 				dal.shutdown();
 		}
 		catch (Exception e) {
-			System.out.println("ERROR : " + e);
+			m_logger.log(AcsLogLevel.SEVERE, ""+e);
 			e.printStackTrace(System.out);
 		}
 	}

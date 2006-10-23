@@ -11,6 +11,10 @@ import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJWrongCDBDataTypeEx;
 
+import java.util.logging.Logger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
+
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
  *    (c) European Southern Observatory, 2002
@@ -44,6 +48,7 @@ public class DAOImpl extends DAOPOA {
 	private XMLTreeNode m_rootNode = null;
 	private POA m_poa;
 	private boolean m_silent;
+	Logger m_logger;
 
 	public DAOImpl(String name, XMLTreeNode rootNode, POA poa) {
 		this(name, rootNode, poa, false);
@@ -54,6 +59,7 @@ public class DAOImpl extends DAOPOA {
 		m_rootNode = rootNode;
 		m_poa = poa;
 		m_silent = silent;
+ 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB::DAOImpl", true);
 	}
 
 	public void destroy() {
@@ -64,7 +70,7 @@ public class DAOImpl extends DAOPOA {
 			}
 		} catch (Exception e) {
 			if (!m_silent) {
-				System.err.println("Exception destroying object " + this +" : " + e);
+				m_logger.log(AcsLogLevel.SEVERE,"Exception destroying object "+ this +" : " + e);
 				e.printStackTrace();
 			}
 		}
@@ -110,7 +116,7 @@ public class DAOImpl extends DAOPOA {
 				(XMLTreeNode) pNode.m_subNodesMap.get(fieldName);
 			if (node == null) {
 				if (!m_silent)
-					System.err.println("DAO:'" + m_name + "' Unable to return field: '" + strFieldName + "'");
+					m_logger.log(AcsLogLevel.SEVERE, "DAO:'" + m_name + "' Unable to return field: '" + strFieldName + "'");
 				AcsJCDBFieldDoesNotExistEx e2 = new AcsJCDBFieldDoesNotExistEx();
 				e2.setFieldName(strFieldName);
 				throw e2;
@@ -118,7 +124,7 @@ public class DAOImpl extends DAOPOA {
 			value = node.getAttributeNames();
 		}
 		if (!m_silent)
-			System.err.println("DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);
+			m_logger.log(AcsLogLevel.SEVERE,"DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  
 		return value;
 	}
 
@@ -134,7 +140,7 @@ public class DAOImpl extends DAOPOA {
 			return Integer.parseInt(stringValue);
 		} catch (NumberFormatException nfe) {
 			if (!m_silent)
-				System.err.println("Failed to cast '" + stringValue + "' to long: " + nfe);
+				m_logger.log(AcsLogLevel.SEVERE, "Failed to cast '" + stringValue + "' to long: " + nfe); 
 			AcsJWrongCDBDataTypeEx e2 = new AcsJWrongCDBDataTypeEx(nfe);
 			e2.setValue(stringValue);
 			e2.setDataType("long");
@@ -153,7 +159,7 @@ public class DAOImpl extends DAOPOA {
 		try {
 			return Double.parseDouble(stringValue);
 		} catch (NumberFormatException nfe) {
-			System.err.println("Failed to cast '" + stringValue + "' to double: " + nfe);
+			m_logger.log(AcsLogLevel.SEVERE, "Failed to cast '" + stringValue + "' to double: " + nfe); 
 			AcsJWrongCDBDataTypeEx e2 = new AcsJWrongCDBDataTypeEx(nfe);
 			e2.setValue(stringValue);
 			e2.setDataType("double");
@@ -217,7 +223,7 @@ public class DAOImpl extends DAOPOA {
 
 		} catch (NumberFormatException nfe) {
 			if (!m_silent)
-				System.err.println(
+				m_logger.log(AcsLogLevel.SEVERE,
 						"Failed to cast element #"
 						+ list.size()
 						+ " of value '"
@@ -256,7 +262,7 @@ public class DAOImpl extends DAOPOA {
 
 		} catch (NumberFormatException nfe) {
 			if (!m_silent)
-				System.err.println(
+				m_logger.log(AcsLogLevel.SEVERE,
 					"Failed to cast element #"
 						+ list.size()
 						+ " of value '"

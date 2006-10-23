@@ -32,8 +32,13 @@ import com.cosylab.CDB.*;
 import java.net.InetAddress;
 import alma.acs.util.ACSPorts;
 
+import java.util.logging.Logger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
+
 public class ClearCache {
 	public static void main(String args[]) {
+		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("ClearCache", true);
 		try {
 			String curl = null;
 			String strIOR = null;
@@ -67,15 +72,15 @@ public class ClearCache {
 			
 			if( curl != null ) {
 				dal.clear_cache( curl );
-				System.out.println( "clear_cache is invoked for " + curl );
+				m_logger.log(AcsLogLevel.INFO, "clear_cache is invoked for " + curl );
 			} 
 			else {
 				dal.clear_cache_all();
-				System.out.println( "clear_cache is invoked for all curls" );
+				m_logger.log(AcsLogLevel.INFO, "clear_cache is invoked for all curls"  );
 			}
 		}
 		catch (Exception e) {
-			System.out.println("ERROR : " + e);
+			m_logger.log(AcsLogLevel.SEVERE, ""+ e);
 			e.printStackTrace(System.out);
 		}
 	}

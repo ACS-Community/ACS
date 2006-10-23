@@ -39,7 +39,6 @@ import javax.xml.parsers.*;
 import org.xml.sax.*;
 import java.util.Iterator;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.acs.util.ACSPorts;
@@ -48,13 +47,15 @@ import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
 
 public class DALRead {
 	static	int indent = 0;
 
 	public static void main(String args[]) {
 
-	        Logger m_logger = Logger.getLogger("DALRead");
+	        Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DALRead", true);
 
 		try {
 			String curl;
@@ -94,7 +95,7 @@ public class DALRead {
 
 			String xml = dal.get_DAO(curl);
 			if( rawOutput ) {
-				System.out.println("Curl data:\n" + xml);
+				m_logger.log(AcsLogLevel.INFO, "Curl data:\n" + xml);
 				return;
 			}
 
@@ -122,13 +123,15 @@ public class DALRead {
 		        AcsJCDBXMLErrorEx je = 
 			    AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(e);
 			String smsg = "XML Error \tCURL='" + je.getCurl()+"'\n\t\tFilename='"+je.getFilename()+"'\n\t\tNodename='"+je.getNodename()+"'\n\t\tMSG='"+je.getErrorString()+"'";
-			m_logger.log(Level.SEVERE, smsg, je);	
+			je.log(m_logger);
+			m_logger.log(AcsLogLevel.SEVERE, smsg, je);	
 		}
 		catch (CDBRecordDoesNotExistEx e) {
 		        AcsJCDBRecordDoesNotExistEx je = 
 			    AcsJCDBRecordDoesNotExistEx.fromCDBRecordDoesNotExistEx(e);
 			String smsg = "Record does not exist \tCURL='" + je.getCurl() + "'";
-			m_logger.log(Level.SEVERE, smsg, je);	
+			je.log(m_logger);
+			m_logger.log(AcsLogLevel.WARNING, smsg, je);	
 		}
 		catch (Exception e) {
 			e.printStackTrace();

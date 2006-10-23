@@ -25,7 +25,6 @@ package com.cosylab.cdb;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.util.Iterator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
@@ -43,6 +42,8 @@ import com.cosylab.cdb.jdal.XMLHandler;
 import com.cosylab.cdb.jdal.XMLTreeNode;
 
 import alma.acs.util.ACSPorts;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
 
 
 /**
@@ -73,7 +74,7 @@ public class CDBDefault {
 				return;
 			}
 			
-			m_logger = Logger.getLogger("CDBDefault");
+ 			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDBDefault", true);
 			String in_type = args[0];
 			String in_name = args[1];
 		
@@ -116,11 +117,11 @@ public class CDBDefault {
 			setDefault(xmlSolver.m_rootNode, in_type, in_name);
 		}
 		catch (AcsJCDBXMLErrorEx e) {
-			m_logger.log(Level.WARNING, "Xml Error", e);
+			m_logger.log(AcsLogLevel.WARNING, "Xml Error", e);
 			e.printStackTrace();
 		}
 		catch (Exception e) {
-			m_logger.log(Level.WARNING, "Error", e);
+			m_logger.log(AcsLogLevel.WARNING, "Error", e);
 			e.printStackTrace();
 		}
 	}
@@ -178,11 +179,11 @@ public class CDBDefault {
 				setDefault(value, in_type,in_name);
 			}
 		}catch(CDBXMLErrorEx e){
-			m_logger.log(Level.WARNING, "Xml Error", e);
+			m_logger.log(AcsLogLevel.WARNING, "Xml Error", e);
 			e.printStackTrace();
 		}
 		catch(Exception e){
-			m_logger.log(Level.WARNING, "Error", e);
+			m_logger.log(AcsLogLevel.WARNING, "Error", e);
 			e.printStackTrace();
 		}
 		

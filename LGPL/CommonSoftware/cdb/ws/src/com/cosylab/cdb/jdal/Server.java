@@ -42,6 +42,9 @@ import java.util.Properties;
 import java.io.*;
 
 import alma.acs.util.ACSPorts;
+import java.util.logging.Logger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
 
 public class Server {
 	
@@ -53,6 +56,7 @@ public class Server {
 	
 	public void run(String args[]) {
 		String iorFileName = null;
+		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("com.cosylab.cdb.jdal.Server", true);
 		try {
 		Properties properties = System.getProperties();
 			boolean useJacORB = false; // default is JDK ORB
@@ -71,8 +75,9 @@ public class Server {
 				    }
 				    }
 				if (args[i].equals("-orbacus")) {
-					System.err.println(
-						"ORBacus is no longer supported, switching to JacORB.");
+					m_logger.log(AcsLogLevel.WARNING, "ORBacus is no longer supported, switching to JacORB.");
+					//System.err.println(
+					//	"ORBacus is no longer supported, switching to JacORB.");
 					useJacORB = true;
 				}
 				if (args[i].equals("-jacorb")) {
@@ -92,7 +97,7 @@ public class Server {
 			if (useJacORB) {
 			if (Integer.getInteger("ACS.logstdout", 4) < 4)
 			    {
-			    System.out.println("DALfs will use JacORB ORB");
+			    m_logger.log(AcsLogLevel.INFO, "DALfs will use JacORB ORB");
 			    }
 				properties.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
 				properties.put(
@@ -204,12 +209,11 @@ public class Server {
                         // This situation occurrs when the NameSetvice initial reference
                         // is not set at all with the ORBInitRef.NameService property
 			catch (Exception e1) {
-				System.out.println("JDAL is NOT registered in the name service because of: " + e1);
+				m_logger.log(AcsLogLevel.WARNING, "JDAL is NOT registered in the name service because of: " + e1);
 			}
 			if (Integer.getInteger("ACS.logstdout", 4) < 4)
 			    {
-			System.out.println(
-				"JDAL is listening on " + ACSPorts.getIP() + ":" + portNumber + "/CDB");
+				m_logger.log(AcsLogLevel.INFO, "JDAL is listening on " + ACSPorts.getIP() + ":" + portNumber + "/CDB");
 			    }
 
 			// recover (notify) clients
@@ -225,14 +229,14 @@ public class Server {
 				iorFile.close();
 			}
 
-			System.out.println("JDAL is ready and waiting ...");
+			m_logger.log(AcsLogLevel.INFO, "JDAL is ready and waiting ...");
 
 			// wait for invocations from clients
 			orb.run();
-			System.out.println("JDAL exiting ORB loop ...");
+			m_logger.log(AcsLogLevel.INFO, "JDAL exiting ORB loop ...");
 
 		} catch (Exception e) {
-			System.err.println("ERROR: " + e);
+			m_logger.log(AcsLogLevel.SEVERE, "ERROR: " + e);
 			e.printStackTrace(System.out);
 		}
 	}
