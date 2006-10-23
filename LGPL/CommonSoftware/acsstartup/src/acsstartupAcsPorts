@@ -68,8 +68,12 @@ function getIP
 {
 #perhaps not the nicest way of doing this but it looks like
 #the safest mechanism
-python -c "import socket
-print str(socket.gethostbyname(socket.getfqdn()))"
+if [ "$ACS_HOST" ] 
+then
+    python -c "import socket; import os;  print str(socket.gethostbyname(os.environ['ACS_HOST']))"
+else
+    python -c "import socket; print str(socket.gethostbyname(socket.getfqdn()))"
+fi
 }
 #############################################################
 
