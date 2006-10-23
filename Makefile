@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.135 2006/10/19 10:01:43 sturolla Exp $"
+# "@(#) $Id: Makefile,v 1.136 2006/10/23 16:56:27 sturolla Exp $"
 #
 #
 
@@ -47,7 +47,7 @@ endif
 HAS_RTOS = $(shell if [ "X$(RTAI_HOME)" != X -a -d NO-LGPL/rtos ] ; then echo "TRUE"; else echo "FALSE"; fi)
 MODULE_PREFIX_RTOS = $(MODULE_PREFIX_NO-LGPL)/rtos
 ifeq ($(HAS_RTOS),TRUE)
-    MODULES_RTOS = lkm rtlog rtTest rtutil
+    MODULES_RTOS =  $(MODULE_PREFIX_NO-LGPL)/rtos
 endif
 
 
@@ -65,7 +65,7 @@ MODULES =  $(foreach kit, $(MODULES_KIT), $(MODULE_PREFIX)/Kit/$(kit)) \
            $(foreach acs, $(MODULES_ACS), $(MODULE_PREFIX)/CommonSoftware/$(acs)) \
 	   $(foreach bm, $(MODULES_BENCHMARK), Benchmark/$(bm)) \
            $(foreach nolgpl, $(MODULES_NO-LGPL), $(MODULE_PREFIX_NO-LGPL)/$(nolgpl)) \
-	   $(addprefix $(MODULE_PREFIX_RTOS)/, $(MODULES_RTOS)) \
+	   $(MODULES_RTOS) \
 	   $(addprefix $(MODULE_PREFIX_VW)/, $(MODULES_VW)) \
            $(MODULE_PREFIX)/acsBUILD
 
@@ -382,6 +382,8 @@ define test-one-module
 		elif [ -f $${member}/test/Makefile ]; then\
 			$(ECHO) "############ $${member}/test MAIN TEST ############" | tee -a $(startupDir)/test.log ;\
 			$(MAKE) -k -C $${member}/test/ test | tee -a $(startupDir)/test.log |  egrep  '(Nothing to|FAILED.|PASSED.|Error:)';\
+		elif [ -f $${member}/Makefile ]; then\
+			$(MAKE) -C $${member} $@ |  tee -a $(startupDir)/test.log;\
 		else\
 			$(ECHO) "######## ==> $${member} TEST DIRECTORY STRUCTURE NOT FOUND! CANNOT TEST ANYTHING!" | tee -a $(startupDir)/test.log ;\
 		fi
