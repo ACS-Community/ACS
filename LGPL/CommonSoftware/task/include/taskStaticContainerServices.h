@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.5 2006/10/11 07:28:13 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.6 2006/10/23 18:31:46 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -46,6 +46,12 @@ class StaticContainerServices: public maci::ContainerServices
   public:
  
     CORBA::Object* getCORBAComponent(const char* name) 
+	throw (maciErrType::CannotGetComponentExImpl) 
+	{ 
+	    return CORBA::Object::_nil(); 
+	}
+
+    CORBA::Object* getCORBAComponentNonSticky(const char* name) 
 	throw (maciErrType::CannotGetComponentExImpl) 
 	{ 
 	    return CORBA::Object::_nil(); 
