@@ -8,7 +8,8 @@
    - History:
    -   2002-09-06  KZ  Created
   -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:Manager:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" targetNamespace="urn:schemas-cosylab-com:Manager:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="urn:schemas-cosylab-com:LoggingConfig:1.0" schemaLocation="LoggingConfig.xsd"/>
 	<xs:annotation>
 		<xs:documentation>This schema file describes the configuration for a Manager. 
 There might be slight differences in the meaning of some attributes 
@@ -37,6 +38,13 @@ configuration parameters.</xs:documentation>
 					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the meneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+            <xs:element name="LoggingConfig" type="log:LoggingConfig" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>NOT YET SUPPORTED WITH ACS 6.0!!
+We add this LoggingConfig element anyhow to facilitate a backward-compatible change after ACS 6.0.
+Eventually this element should become mandatory (minOccurs="1"), and the logging attributes such as MinCachePriority should be removed.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
 		</xs:sequence>
 		<xs:attribute name="CommandLine" type="xs:string" use="optional" default="">
 			<xs:annotation>
