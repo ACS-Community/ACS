@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.51 2006/10/12 06:54:56 bjeram Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.52 2006/10/23 21:26:07 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.51 2006/10/12 06:54:56 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.52 2006/10/23 21:26:07 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -95,7 +95,7 @@ class TestContainerServices : public maci::ContainerServices {
             return (CORBA::Object*)NULL;
         }
 
-    virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
+        CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
 	    throw(maciErrType::IncompleteComponentSpecExImpl, 
 		  maciErrType::InvalidComponentSpecExImpl, 
 		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
@@ -103,6 +103,14 @@ class TestContainerServices : public maci::ContainerServices {
 	{
 	    return (CORBA::Object*)NULL;
 	}
+
+        CORBA::Object* getCORBAComponentNonSticky(const char*)
+	   throw (maciErrType::CannotGetComponentExImpl)
+	{
+	    return (CORBA::Object*)NULL;
+	}
+        
+
 
     public:
     

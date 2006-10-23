@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestContainerServices.h,v 1.3 2006/10/10 19:50:50 bjeram Exp $"
+* "@(#) $Id: baciTestContainerServices.h,v 1.4 2006/10/23 21:23:37 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -71,6 +71,15 @@ class TestContainerServices : public virtual maci::ContainerServices
 	{
 	    return (CORBA::Object*)0;
 	}
+
+        CORBA::Object* getCORBAComponentNonSticky(const char*)
+	   throw (maciErrType::CannotGetComponentExImpl)
+	{
+	    return (CORBA::Object*)NULL;
+	}
+        
+
+
   public:
     virtual maci::ComponentInfo getComponentDescriptor(const char* componentName)
 	throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
