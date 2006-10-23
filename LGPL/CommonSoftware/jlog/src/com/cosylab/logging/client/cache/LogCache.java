@@ -23,6 +23,7 @@ package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Date;
@@ -249,5 +250,39 @@ public class LogCache extends LogBufferedFileCache {
 	 */
 	public int getCacheSize() {
 		return actualCacheSize;
+	}
+	
+	/**
+	 * Calculate and return the time frame of the logs managed by the GUI
+	 * The time frame is the number of hours/minutes/seconds between the
+	 * newest and the oldest log in the GUI
+	 * 
+	 * I prefer to evaluate the frame instead of storing the min and max value
+	 * because it works even if one log is deleted from the cache.
+	 * 
+	 * @return The time frame
+	 */
+	public Calendar getTimeFrame() {
+		Calendar cal = Calendar.getInstance();
+		long min=Long.MAX_VALUE;
+		long max=-1;
+		synchronized (logTimes) {
+			int len =logTimes.size();
+			if (len<=1) {
+				cal.setTimeInMillis(0);
+				return cal;
+			}
+			for (int t=0; t<len; t++) {
+				long val = logTimes.get(t);
+				if (val>max) {
+					max=val;
+				}
+				if (val<min) {
+					min=val;
+				}
+			}
+		}
+		cal.setTimeInMillis(max-min);
+		return cal;
 	}
 }
