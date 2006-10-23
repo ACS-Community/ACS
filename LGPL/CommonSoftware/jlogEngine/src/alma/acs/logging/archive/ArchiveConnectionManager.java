@@ -115,9 +115,9 @@ public class ArchiveConnectionManager {
 			  Object obj = constructor.newInstance((Logger)null);
 			  return cl.cast(obj);
 		  } catch (Throwable t) {
-			  System.out.println("alma.archive.logging.ArchiveLoggingQuery not found:");
-			  System.out.println("\tDatabase connection not available "+t.getMessage());
-			  t.printStackTrace();
+			  //System.out.println("alma.archive.logging.ArchiveLoggingQuery not found:");
+			  //System.out.println("\tDatabase connection not available "+t.getMessage());
+			  //t.printStackTrace();
 			  return null;
 		  }
 	}
@@ -137,7 +137,7 @@ public class ArchiveConnectionManager {
 		try {
 			cl = Class.forName(ARCHIVE_CLASS_NAME);
 		} catch (ClassNotFoundException cnfe) {
-			System.out.println("Class not found: "+cnfe.getMessage());
+			//System.out.println("Class not found: "+cnfe.getMessage());
 			return null;
 		}
 		Class[] paramClasses=null;
@@ -154,8 +154,8 @@ public class ArchiveConnectionManager {
 					java.lang.Integer.TYPE //, int maxRow
 				};
 		} catch (Exception e) {
-			System.out.println("Error building the array of parameters:"+e.getMessage());
-			e.printStackTrace();
+			//System.out.println("Error building the array of parameters:"+e.getMessage());
+			//e.printStackTrace();
 			return null;
 		}
 		// Look for the given method
@@ -224,10 +224,10 @@ public class ArchiveConnectionManager {
 		Object ret = null;
 		try {
 			ret = getLogMethod.invoke(archive,params);
-		} catch (Exception e) {
+		} catch (Throwable t) {
 			status = DATABASE_NOP;
 			showDBStatus("Database not responding.");
-			throw new Exception ("Error executing a query: databse not available.",e);
+			throw new Exception ("Error executing a query: databse not available.",t);
 		}
 		status=DATABASE_OK;
 		showDBStatus("Database ready");
