@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.Calendar;
 
 import com.cosylab.logging.LoggingClient;
 
@@ -27,6 +28,7 @@ public class StatsDlg extends JDialog
 	private JLabel totNumOfLogsLbl = new JLabel("N/A");
 	private JLabel availMemLbl = new JLabel("N/A");
 	private JLabel usedMemLbl = new JLabel("N/A");
+	private JLabel timeFrameLbl = new JLabel("N/A");
 	
 	private JButton closeBtn = new JButton("Close");
 	private JButton refreshBtn = new JButton("Refresh");
@@ -59,7 +61,7 @@ public class StatsDlg extends JDialog
 		this.setBounds(50, 35, 100, 100);
 		JPanel mainPnl = new JPanel(new BorderLayout());
 		
-		JPanel valuesPnl = new JPanel(new GridLayout(3,1));
+		JPanel valuesPnl = new JPanel(new GridLayout(4,1));
 		
 		// Add the num of logs
 		JPanel numOfLogsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -78,6 +80,12 @@ public class StatsDlg extends JDialog
 		usedMemPnl.add(new JLabel("Used memory: "));
 		usedMemPnl.add(usedMemLbl);
 		valuesPnl.add(usedMemPnl);
+		
+		// Add the time frame
+		JPanel timeFramePnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		timeFramePnl.add(new JLabel("Time frame: "));
+		timeFramePnl.add(timeFrameLbl);
+		valuesPnl.add(timeFramePnl);
 		
 		mainPnl.add(valuesPnl,BorderLayout.CENTER);
 		
@@ -105,6 +113,18 @@ public class StatsDlg extends JDialog
 				long totMem = rt.totalMemory();
 				availMemLbl.setText(""+(freeMem/1024)+"Kb");
 		        usedMemLbl.setText(""+((totMem-freeMem)/1024)+"Kb");
+		        Calendar cal = logging.getLogEntryTable().getLCModel().getTimeFrame();
+		        StringBuilder str = new StringBuilder();
+		        str.append(cal.get(Calendar.DAY_OF_YEAR)-1);
+		        str.append("days - ");
+		        str.append(cal.get(Calendar.HOUR_OF_DAY));
+		        str.append(":");
+		        str.append(cal.get(Calendar.MINUTE));
+		        str.append(":");
+		        str.append(cal.get(Calendar.SECOND));
+		        str.append(".");
+		        str.append(cal.get(Calendar.MILLISECOND));
+		        timeFrameLbl.setText(str.toString());
 		        pack();
 			}
 		};
