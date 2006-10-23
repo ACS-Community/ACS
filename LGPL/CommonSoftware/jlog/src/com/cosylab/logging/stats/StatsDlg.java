@@ -113,6 +113,9 @@ public class StatsDlg extends JDialog
 				long totMem = rt.totalMemory();
 				availMemLbl.setText(""+(freeMem/1024)+"Kb");
 		        usedMemLbl.setText(""+((totMem-freeMem)/1024)+"Kb");
+/**
+ * @todo GCH 2006-10-23
+ * Commented out because the getTimeFrame method appears to be missing.
 		        Calendar cal = logging.getLogEntryTable().getLCModel().getTimeFrame();
 		        StringBuilder str = new StringBuilder();
 		        str.append(cal.get(Calendar.DAY_OF_YEAR)-1);
@@ -125,6 +128,7 @@ public class StatsDlg extends JDialog
 		        str.append(".");
 		        str.append(cal.get(Calendar.MILLISECOND));
 		        timeFrameLbl.setText(str.toString());
+*/
 		        pack();
 			}
 		};
