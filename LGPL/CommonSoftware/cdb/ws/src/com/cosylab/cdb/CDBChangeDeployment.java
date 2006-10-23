@@ -30,14 +30,12 @@ package com.cosylab.cdb;
 import org.omg.CORBA.*;
 import com.cosylab.CDB.*;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.net.InetAddress;
 
 import alma.acs.util.ACSPorts;
 import alma.cdbErrType.CDBXMLErrorEx;
-import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.AcsLogLevel;
 
 /**
  * Modify the component attributes, like Container and Code, given the name.
@@ -53,7 +51,7 @@ public class CDBChangeDeployment {
 				System.out.println("Usage: cmd instance_name newcontainer newcode");
 				return;
 			}
-			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDBChangeDeployment", true);
+			m_logger = Logger.getLogger("CDBChangeDeployment");
 			String in_name = args[0];
 			String new_container = args[1];
 			String new_code = args[2];
@@ -77,14 +75,11 @@ public class CDBChangeDeployment {
 			}
 		}
 		catch (CDBXMLErrorEx e) {
-			 AcsJCDBXMLErrorEx je =
-				AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(e);
-			m_logger.log(AcsLogLevel.SEVERE, "CDBXMLErrorEx Error", e);
-			je.log(m_logger);
+			m_logger.log(Level.WARNING, "CDBXMLErrorEx Error", e);
 			e.printStackTrace(System.out);
 		}
 		catch (Exception e) {
-			m_logger.log(AcsLogLevel.SEVERE, "Error", e);
+			m_logger.log(Level.WARNING, "Error", e);
 			e.printStackTrace(System.out);
 		}
 	}
