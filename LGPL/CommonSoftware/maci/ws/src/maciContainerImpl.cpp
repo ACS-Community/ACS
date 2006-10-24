@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.79 2006/10/20 12:46:14 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.80 2006/10/24 16:37:17 sharring Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.79 2006/10/20 12:46:14 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.80 2006/10/24 16:37:17 sharring Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1241,10 +1241,6 @@ ContainerImpl::done()
 
   ACSError::done();
 
-#ifndef MAKE_VXWORKS
-  ACSAlarmSystemInterfaceFactory::done();
-#endif
-
   if(m_dllmgr)
       {
       m_dllmgr->unload("baci");  // baci has to be unloaded earlier because of DLLClose
@@ -2104,7 +2100,10 @@ ContainerImpl::shutdown (
 			 )
   throw (CORBA::SystemException)
 {
-  
+#ifndef MAKE_VXWORKS
+  ACSAlarmSystemInterfaceFactory::done();
+#endif
+
   ACS_TRACE("maci::ContainerImpl::shutdown");
   
   if (m_shutdown) 
