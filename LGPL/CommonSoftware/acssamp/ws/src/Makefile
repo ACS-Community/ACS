@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.16 2006/10/19 15:20:19 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.17 2006/10/24 12:00:53 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -80,7 +80,7 @@ xxxxx_LIBS        =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = acssampImpl.h acssampObjImpl.h
+INCLUDES        = acssampImpl.h acssampObjImpl.h acssampObjImpl.i
 
 #
 # Libraries (public and local)
