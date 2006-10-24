@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.2 2006/10/23 13:34:53 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.3 2006/10/24 10:54:43 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -68,7 +68,7 @@ ACSSampObjImpl<ACS_SAMP_TL>::ACSSampObjImpl(const ACE_CString& _cobName,
     controlLoop_p = 0;
     flush_p = 0;
     reference_p = CORBA::Object::_nil();
-    threadManager_p = 0;
+    //threadManager_p = 0;
     sampSupplier_p = 0;
 }
 
@@ -89,8 +89,14 @@ ACSSampObjImpl<ACS_SAMP_TL>::~ACSSampObjImpl()
     // stop threads
     // cob_p->stopAllThreads();
 
-    if (threadManager_p)
-	delete threadManager_p;
+    //if (threadManager_p)
+    //delete threadManager_p;
+
+    if(controlLoop_p)
+	delete controlLoop_p;
+
+    if(flush_p)
+	delete flush_p;
 
     // clean-up associated with internal buffer
     if (mq_p)
@@ -139,7 +145,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	    throw err;
 	    }
 
-	threadManager_p = new ACS::ThreadManager();
+	/*threadManager_p = new ACS::ThreadManager();
 	if (!threadManager_p) 
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to activate thread manager"));
@@ -147,7 +153,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 		MemoryFaultExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
 	    err.addData("Thread Manager","not created");
 	    throw err;
-	    }
+	    }*/
 
 	if( !(mq_p = new ACE_Message_Queue<ACE_SYNCH>(100000,1000) ))
 	    {
@@ -188,8 +194,14 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
     // we catch everything and just rethrow
     catch(...)
 	{
-	if (threadManager_p)
-	    delete threadManager_p;	
+	//if (threadManager_p)
+	//delete threadManager_p;	
+
+	if(controlLoop_p)
+	    delete controlLoop_p;
+	
+	if(flush_p)
+	    delete flush_p;
 
         // clean-up associated with NC
 	if (sampSupplier_p)
@@ -233,7 +245,9 @@ void ACSSampObjImpl<ACS_SAMP_TL>::start ()
 // starting sampling thread    
     if(!controlLoop_p)
 	{
-	controlLoop_p = threadManager_p->create<SamplingThread<ACS_SAMP_TL>, ACSSampObjImpl<ACS_SAMP_TL> *>(sampThreadName.c_str(), selfPtr, responseTime, sampFrequency);
+	controlLoop_p = new SamplingThread<ACS_SAMP_TL>(sampThreadName, selfPtr, responseTime, sampFrequency);
+
+	//controlLoop_p = threadManager_p->create<SamplingThread<ACS_SAMP_TL>, ACSSampObjImpl<ACS_SAMP_TL> *>(sampThreadName.c_str(), selfPtr, responseTime, sampFrequency);
 	ACS_DEBUG("acssamp::ACSSampObjImpl::start","thread created");
 	controlLoop_p->resume();
 	}
@@ -247,7 +261,9 @@ void ACSSampObjImpl<ACS_SAMP_TL>::start ()
 // starting flushing thread
     if(!flush_p)
         {
-	flush_p = threadManager_p->create<SamplingThreadFlush<ACS_SAMP_TL>, ACSSampObjImpl<ACS_SAMP_TL> *>(flushThreadName.c_str(), selfPtr, responseTime, sampReportRate);
+	flush_p = new SamplingThreadFlush<ACS_SAMP_TL>(flushThreadName, selfPtr, responseTime, sampFrequency);
+
+	//flush_p = threadManager_p->create<SamplingThreadFlush<ACS_SAMP_TL>, ACSSampObjImpl<ACS_SAMP_TL> *>(flushThreadName.c_str(), selfPtr, responseTime, sampReportRate);
 	ACS_DEBUG("acssamp::ACSSampObjImpl::start","flush thread created");
 	flush_p->resume();
 	}
@@ -528,7 +544,11 @@ void  ACSSampObjImpl<ACS_SAMP_TL>::flushSamp()
   
     mbf->release();
 
+#ifdef MAKE_VXWORKS
+    sampSupplier_p->publishData(theSeq.in());
+#else
     sampSupplier_p->publishData<acssamp::SampObj::SampDataBlockSeq>(theSeq.in());
+#endif
 }
 
 

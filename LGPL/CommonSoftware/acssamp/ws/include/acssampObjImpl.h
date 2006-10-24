@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampObjImpl.h,v 1.25 2006/10/19 15:19:34 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.h,v 1.26 2006/10/24 10:54:43 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -531,7 +531,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      */
     SamplingThreadFlush<ACS_SAMP_TL> *flush_p;
  
-    ACS::ThreadManager *threadManager_p;
+    //ACS::ThreadManager *threadManager_p;
 
     ACS::Property_var genProperty_p;
 
