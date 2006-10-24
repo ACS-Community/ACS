@@ -64,6 +64,8 @@ void CERNAlarmSystemInterfaceProxy::init()
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::init(): entering.");
 
+	laserPublisher = NULL; 
+
 	// TODO later: portability/platform-specific issues with using gethostname()?
 	char name[MAXHOSTNAMELEN + 1];
 	gethostname(name, MAXHOSTNAMELEN);
@@ -100,6 +102,7 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 	topicName.append(".");
 	topicName.append(msg.getSourceName());
 
+	// TODO - can we avoid new'ing this each time?
 	laserPublisher = new AcsAlarmPublisher(topicName);
 
 	// publish the alarm 
