@@ -74,15 +74,15 @@ public class ComponentAdapter
 	// the servant manager for this component POA
 	private ComponentServantManager compServantManager;
 	
-	private AcsCorba acsCorba;
+	private final AcsCorba acsCorba;
 
-    private ClassLoader m_componentClassLoader;
+    private final ClassLoader m_componentClassLoader;
 	
-	private ComponentStateManagerImpl m_componentStateManager;
+	private final ComponentStateManagerImpl m_componentStateManager;
 
-	private ContainerServicesImpl m_containerServices;
+	private final ContainerServicesImpl m_containerServices;
     
-    private CleaningDaemonThreadFactory m_threadFactory;
+    private final CleaningDaemonThreadFactory m_threadFactory;
 	
 
     /**
@@ -138,6 +138,9 @@ public class ComponentAdapter
 					m_compHandle, m_compInstanceName, m_componentStateManager, m_threadFactory);
 	}
 	
+	ContainerServicesImpl getContainerServices() {
+		return m_containerServices;
+	}
 	
 	void activateComponent(Servant servant)
 		throws AcsJContainerEx
