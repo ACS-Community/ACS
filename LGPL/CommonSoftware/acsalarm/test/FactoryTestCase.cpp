@@ -255,9 +255,6 @@ int main(int argc, char *argv[])
 {
 	Logging::Logger::setGlobalLogger(new Logging::GenericLogger("testLogger"));
 
-	// initialize the AlarmSystemInterfaceFactory 
-	//ACSAlarmSystemInterfaceFactory::init(NULL);
-
 	// Create the event manager and test controller
 	CPPUNIT_NS::TestResult controller;
 
@@ -277,9 +274,6 @@ int main(int argc, char *argv[])
 	// Print test in a compiler compatible format.
 	CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
 	outputter.write(); 
-
-	// close the AlarmSystemInterfaceFactory 
-	//ACSAlarmSystemInterfaceFactory::done();
 
 	return result.wasSuccessful() ? 0 : 1;
 }
