@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Vector;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -224,19 +225,48 @@ public class ContainerServicesImpl implements ContainerServices
 	public void registerComponentListener(ComponentListener listener) {
 		compListener = listener;
 	}
-
-//	/**
-//	 * @return The ComponentListener or <code>null</code> if none has been registered
-//	 * @see #registerComponentListener(alma.acs.container.ContainerServices.ComponentListener)
-//	 */
-//	ComponentListener getComponentListener() {
-//		return compListener;
-//	}
-//	
 	
-	void fireComponentsAvailable(List<ComponentDescriptor> components) {
-		// m_usedComponentsMap to filter out those who where not 
+	/**
+	 */
+	void fireComponentsAvailable (List<ComponentDescriptor> compDescs) {
+		// find out which components are interesting for the client
+		List<ComponentDescriptor> interesting = new Vector<ComponentDescriptor>();
+		for (ComponentDescriptor cd : compDescs) {
+			if (m_usedComponentsMap.containsKey(cd.getName())) {
+				interesting.add(cd);
+			}
+		}
+		
+     	if (interesting.size() > 0 && compListener != null) {
+     		try {
+				compListener.componentsAvailable(interesting);
+			} catch (Throwable thr) {
+				m_logger.log(Level.INFO, "componentsAvailable implementation of client " + m_clientName + " failed", thr);
+			}
+     	}
 	}
+
+	/**
+	 */
+	void fireComponentsUnavailable (List<String> compNames) {
+		// find out which components are interesting for the client
+		List<String> interesting = new Vector<String>();
+		for (String cn : compNames) {
+			if (m_usedComponentsMap.containsKey(cn)) {
+				interesting.add(cn);
+			}
+		}
+		
+     	if (interesting.size() > 0 && compListener != null) {
+     		try {
+				compListener.componentsUnavailable(interesting);
+			} catch (Throwable thr) {
+				m_logger.log(Level.INFO, "componentsUnavailable implementation of client " + m_clientName + " failed", thr);
+			}
+     	}
+	}
+	
+
 	
 	/**
 	 * @see alma.acs.container.ContainerServices#assignUniqueEntityId(EntityT)
