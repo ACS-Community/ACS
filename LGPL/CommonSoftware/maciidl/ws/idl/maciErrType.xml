@@ -177,6 +177,15 @@ This file has to be moved into the TICS subsystem
 		/>
 	</ErrorCode>
 
+	<ErrorCode name="ComponentNotInUse"
+	    shortDescription="Component is not in use"
+	    description="Component is not in use">
+        <Member name="CURL"
+		type="string"
+		description="CURL/Name of the component not in use."
+	/>
+	</ErrorCode>
+
         <ErrorCode name="NoPermission"
             shortDescription="No permission"
             description="No permission for attempted operation">
