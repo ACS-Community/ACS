@@ -1146,8 +1146,7 @@ public class AcsContainer extends ContainerPOA
 
     /**
      * Notify client about the change (availability) of the components currently in use by this client.
-     * For administrative clients, notification is issued for the change of availability
-     * of any component in the domain.
+     * 
      * @see si.ijs.maci.ClientOperations#components_available(ComponentInfo[])
      */
     public void components_available(ComponentInfo[] components)
@@ -1162,21 +1161,16 @@ public class AcsContainer extends ContainerPOA
         }
         m_logger.fine(buff.toString());
 
-        // notify interested components        
-        List<ComponentDescriptor> compDescs = Collections.unmodifiableList(Arrays.asList(ComponentDescriptor.fromComponentInfoArray(components)));
+        // have containerservices instances notify their clients        
+        List<ComponentDescriptor> compDescs = ComponentDescriptor.fromComponentInfoArray(components);
         for (ComponentAdapter compAd : m_activeComponentMap.getAllComponentAdapters()) {
-        	ComponentListener compListener = compAd.getContainerServices().getComponentListener();
-        	if (compListener != null) {
-        		try {
-					compListener.componentsAvailable(compDescs);
-				} catch (Throwable thr) {
-					m_logger.log(Level.INFO, "Failed to notify component " + compAd.getName() + " of newly available components", thr);
-				}
-        	}
+      	  compAd.getContainerServices().fireComponentsAvailable(compDescs);
         }
     }
 
     /**
+     * Notify client that some of the components currently in use by client
+     * have become unavailable.
      * @see si.ijs.maci.ClientOperations#components_unavailable(String[])
      */
     public void components_unavailable(String[] component_names)
@@ -1191,8 +1185,11 @@ public class AcsContainer extends ContainerPOA
         }
         m_logger.fine(buff.toString());
 
-        // todo: forward the call to the affected components
-        // allow components to register callback handler for this, see ongoing discussions
+        // have containerservices instances notify their clients
+        List<String> compNames = Arrays.asList(component_names); 
+        for (ComponentAdapter compAd : m_activeComponentMap.getAllComponentAdapters()) {
+      	  compAd.getContainerServices().fireComponentsUnavailable(compNames);
+        }
     }
 
 
