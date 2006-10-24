@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.7 2006/10/23 15:38:21 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.8 2006/10/24 10:10:42 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -81,7 +81,7 @@ T* ContainerServices::getComponentNonSticky(const char *name)
     try 
 	{
 	// Get the component as a CORBA object
-	obj = getCORBAComponent(name); // obj should not be nil, but if it is the narrow will fail
+	obj = getCORBAComponentNonSticky(name); // obj should not be nil, but if it is the narrow will fail
 	return T::_narrow(obj);   
 	}
     catch (maciErrType::CannotGetComponentExImpl &ex) 
