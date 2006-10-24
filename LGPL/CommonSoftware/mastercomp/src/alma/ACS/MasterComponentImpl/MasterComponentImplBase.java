@@ -252,6 +252,9 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	 * <p>
 	 * Note that this is a simplified version of {@link #monitorComponent(ACSComponent, ComponentErrorHandler)} and
 	 * does not require the subclass to provide an error handler. 
+     * <p>
+     * Before a resource gets unloaded/released etc, its monitoring should be stopped to avoid false errors, 
+     * using {@link #stopMonitoringResource(String)} or {@link #stopMonitoringAllResources()}.  
 	 * 
 	 * @since ACS 6.0
 	 */
@@ -266,6 +269,9 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	 * Unlike method {@link #monitorComponent(ACSComponent)}, this method gives full control over the reaction to 
 	 * a detected failure. The master component can thus ignore or try to fix the problem, or eventually also 
 	 * go to error state (by calling <code>doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR)</code>).
+     * <p>
+     * Before a resource gets unloaded/released etc, its monitoring should be stopped to avoid false errors,
+     * using {@link #stopMonitoringResource(String)} or {@link #stopMonitoringAllResources()}.  
 	 * 
 	 * @param component  the component that should be monitored
 	 * @param err  a custom error handler. If <code>null</code>, then a default error handler will be used,
@@ -293,7 +299,10 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
      * <p>
      * This method also takes the delay between monitor calls as a parameter, to allow adjusting the frequency 
      * of monitor calls on a per resource basis. Invalid values will result in the default delay being used.
-     * 
+     * <p>
+     * Before a resource gets unloaded/released etc, its monitoring should be stopped to avoid false errors, 
+     * using {@link #stopMonitoringResource(String)} or {@link #stopMonitoringAllResources()}.  
+     *  
 	 * @param checker  The checker that encapsulates the specifics of the methods to be checked.
      * @param err  A custom error handler. If <code>null</code>, then a default error handler will be used,
      *             and the master component will go to error state automatically (see comment for method {@link #monitorComponent(ACSComponent)}.
@@ -333,6 +342,25 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		subsysComponentMonitor.monitorResource(checker, err);
 	}
 	
+	/**
+	 * Stops monitoring a resource.
+	 * It is important to stop monitoring resources before they get released, for example when shutting down.
+	 * @see #monitorComponent(ACSComponent)
+	 * @see #monitorComponent(ACSComponent, alma.ACS.MasterComponentImpl.SubsysResourceMonitor.ResourceErrorHandler)   
+	 * @see #monitorResource(alma.ACS.MasterComponentImpl.SubsysResourceMonitor.ResourceChecker, alma.ACS.MasterComponentImpl.SubsysResourceMonitor.ResourceErrorHandler, int)
+	 * @see #stopMonitoringAllResources()
+	 */
+	protected final void stopMonitoringResource(String resourceName) {
+		subsysComponentMonitor.stopMonitoring(resourceName);
+	}
+	
+	/**
+	 * Stops monitoring all resources that have been previously submitted for monitoring.
+	 * @see #stopMonitoringResource(String)
+	 */
+	protected final void stopMonitoringAllResources() {
+		subsysComponentMonitor.stopMonitoringAll();
+	}
 	
 	/**
 	 * Will be called by the state machine implementation for every state change.
