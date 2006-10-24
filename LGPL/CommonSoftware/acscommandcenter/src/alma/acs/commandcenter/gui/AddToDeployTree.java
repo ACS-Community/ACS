@@ -129,6 +129,13 @@ class AddToDeployTree extends JPanel {
 				deployTree.shieldedAddManager(host);
 				return;
 			} 
+
+			if (host.length() > 9 && host.substring(0,9).equalsIgnoreCase("corbaloc:")) {
+				// msc 2006-10: we allow (for now)
+				// to give an corbaloc in the host field
+				deployTree.shieldedAddManager(host);
+				return;
+			} 
 			
 			if (port == null || "".equals(port) || port.length() < 4) {
 					JOptionPane.showMessageDialog(deployTree, "The specified TCP Port is invalid");
