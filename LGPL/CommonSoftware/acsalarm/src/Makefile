@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.9 2006/10/20 07:33:23 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.10 2006/10/24 16:08:54 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -55,7 +55,6 @@ INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 					ACSAlarmSystemInterfaceProxy.h \
 					FaultState.h \
 					faultStateConstants.h \
-					AlarmSystemInterface.h \
 			      AlarmSystemInterfaceFactory.h Properties.h Timestamp.h utilConstants.h \
 					AlarmSystemInterface.h ASIMessage.h ASIConfiguration.h asiConfigurationConstants.h
 
