@@ -18,8 +18,9 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): entering.");
 
+
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): about to instantiate the alarm supplier.");
-	setAlarmSupplier(new AlarmSupplier(topicName.c_str()));
+	alarmSupplier = new AlarmSupplier(topicName.c_str());
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier.");
 
 	// initialize the AlarmSupplier with the naming context
@@ -34,7 +35,7 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 	else {
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was not nil.");
 	}
-	getAlarmSupplier()->init(naming_p);
+	alarmSupplier->init(naming_p);
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): init called on alarm supplier.");
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): exiting.");
 }
@@ -63,7 +64,7 @@ bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): entering.");
-	getAlarmSupplier()->publishEvent(msg);
+	alarmSupplier->publishEvent(msg);
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): exiting.");
 	return true;
 }

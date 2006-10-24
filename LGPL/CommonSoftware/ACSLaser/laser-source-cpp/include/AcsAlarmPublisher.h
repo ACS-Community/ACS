@@ -27,9 +27,6 @@ namespace laserSource
 			virtual bool publishAlarm(ASIMessage msg);
 	
 		private:
-			AlarmSupplier * getAlarmSupplier() { return alarmSupplier; }
-			void setAlarmSupplier(AlarmSupplier * supplier) { alarmSupplier = supplier; }
-
 			AlarmSupplier * alarmSupplier;
 	};
 };
