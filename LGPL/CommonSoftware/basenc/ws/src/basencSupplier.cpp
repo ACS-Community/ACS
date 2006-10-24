@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.6 2006/10/24 15:30:18 bjeram Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.7 2006/10/24 16:41:57 sharring Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -47,7 +47,6 @@ BaseSupplier::init(CosNaming::NamingContext_ptr nc_p)
     //connect the supplier admin which really means connect 
     //ourselves to the proxy consumer
     this->connect();
-    
 }
 //-----------------------------------------------------------------------------
 BaseSupplier::~BaseSupplier()
@@ -94,9 +93,9 @@ BaseSupplier::disconnect()
     //destroy it
     supplierAdmin->destroy();
 
-    //DWF-need some code here to remove our own CORBA servant???
+    // deactivate our own CORBA servant
     this->_default_POA()->deactivate_object(*(this->_default_POA()->servant_to_id(this)));
-                
+
     BaseHelper::disconnect();
 }
 //-----------------------------------------------------------------------------
