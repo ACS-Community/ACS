@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.5 2006/05/25 16:53:58 dfugate Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.6 2006/10/24 15:30:18 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -95,7 +95,8 @@ BaseSupplier::disconnect()
     supplierAdmin->destroy();
 
     //DWF-need some code here to remove our own CORBA servant???
-
+    this->_default_POA()->deactivate_object(*(this->_default_POA()->servant_to_id(this)));
+                
     BaseHelper::disconnect();
 }
 //-----------------------------------------------------------------------------
