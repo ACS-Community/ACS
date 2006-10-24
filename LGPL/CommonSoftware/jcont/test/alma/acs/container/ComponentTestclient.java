@@ -26,12 +26,16 @@ import org.omg.CORBA.StringHolder;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.jconttest.ContainerServicesTester;
 import alma.jconttest.ContainerServicesTesterHelper;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
+
+import java.util.List;
+
 
 /**
  * @author hsommer
@@ -125,4 +129,44 @@ public class ComponentTestclient extends ComponentClientTestCase
     	}
     }
 
+    
+    public void _testComponentListening () throws Exception {
+		try {
+			class CompLizzy implements ContainerServices.ComponentListener {
+				int nComponentsAvailable;
+				int nComponentsUnavailable;
+				public void componentsAvailable(List<ComponentDescriptor> comps) {nComponentsAvailable++;} 
+				public void componentsUnavailable(List<String> comps) {nComponentsUnavailable++;} 
+			}
+			CompLizzy lizzy = new CompLizzy();
+			
+    		getContainerServices().registerComponentListener(lizzy);
+    		
+    		// we shouldn't get notified as we're not a client of the component yet
+			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
+			assertEquals(0, lizzy.nComponentsAvailable);
+			assertEquals(0, lizzy.nComponentsUnavailable);
+
+
+			DummyComponent defaultDummy = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
+    		// from now on we should be notified
+			
+			// component already active, this call will kill it 
+    		m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
+//			assertEquals(0, lizzy.nComponentsAvailable);
+//			assertEquals(1, lizzy.nComponentsUnavailable);
+			
+			// this call will both activate and kill the component 
+			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
+//			assertEquals(1, lizzy.nComponentsAvailable);
+//			assertEquals(2, lizzy.nComponentsUnavailable);
+
+			
+		} catch (CouldntPerformActionEx ex) {
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+		}
+	}
+    
 }
+
+
