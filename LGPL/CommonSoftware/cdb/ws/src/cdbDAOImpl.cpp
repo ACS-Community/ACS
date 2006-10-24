@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.36 2006/09/26 06:26:32 cparedes Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.37 2006/10/24 09:44:48 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -496,7 +496,7 @@ CDB::stringSeq* DAOImpl::get_string_seq (
   for(StringArray::const_iterator aiter = ary->begin(); aiter != ary->end(); ++aiter) 
    {
       //retSeq[n++] = *aiter; //CORBA::long_dup( *aiter); //->c_str() );
-      int lng;
+      long lng;
       int parsed=sscanf(aiter->c_str(),"%ld",&lng);
       if (parsed==1) {
          retSeq[n++]=lng;
