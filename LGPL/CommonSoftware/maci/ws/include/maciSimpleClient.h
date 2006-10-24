@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.96 2006/10/23 15:39:00 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.97 2006/10/24 11:47:35 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -390,6 +390,13 @@ T* SimpleClient::getComponent(const char *name, const char *domain, bool activat
 	CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
 	return T::_narrow(obj.in());
 	}
+    catch(maciErrType::NoPermissionEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
+						 "maci::SimpleCleint::getComponent&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
     catch(maciErrType::CannotGetComponentEx &_ex)
 	{
 	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
@@ -470,6 +477,13 @@ T* SimpleClient::getComponentNonSticky(const char *name)
 	CORBA::Object_var obj = manager()->get_component_non_sticky(m_handle, name);
 	return T::_narrow(obj.in());
 	}
+    catch(maciErrType::NoPermissionEx &_ex)
+	{
+	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
+					       "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
+	ex.setCURL(name);
+	throw ex;
+	}
     catch(maciErrType::CannotGetComponentEx &_ex)
 	{
 	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
@@ -480,13 +494,6 @@ T* SimpleClient::getComponentNonSticky(const char *name)
     catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
 	{
 	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
-						 "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
-	ex.setCURL(name);
-	throw ex;
-	}
-    catch(maciErrType::NoPermissionEx &_ex)
-	{
-	maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
 						 "maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
 	ex.setCURL(name);
 	throw ex;

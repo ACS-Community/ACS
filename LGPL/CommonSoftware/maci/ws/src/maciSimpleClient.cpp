@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.99 2006/10/23 15:39:00 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.100 2006/10/24 11:47:35 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -550,6 +550,13 @@ long  SimpleClient::releaseComponent(const char* name)
     try
 	{
 	return manager()->release_component(m_handle, name);
+	}
+    catch (maciErrType::NoPermissionEx &_ex)
+	{
+	maciErrType::CannotReleaseComponentExImpl ex(_ex, __FILE__, __LINE__,
+						     "maci::SimpleCleint::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
 	}
     catch( CORBA::SystemException &_ex )
 	{

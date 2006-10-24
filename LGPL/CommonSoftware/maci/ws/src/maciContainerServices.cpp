@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.24 2006/10/23 15:39:00 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.25 2006/10/24 11:47:35 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -206,7 +206,7 @@ CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* na
 	CORBA::Object_var obj = 
 	    m_manager->get_component_non_sticky(m_componentHandle, name);
     
-	m_usedComponents.push_back(name);
+	m_usedComponents.push_back(name);  // @todo not really sure if we have to add non sticky component 
 	return CORBA::Object::_narrow(obj.in());
 	}
     catch (maciErrType::CannotGetComponentEx &ex) 
@@ -256,7 +256,8 @@ CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* na
 
 CORBA::Object* 
 MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw(maciErrType::IncompleteComponentSpecExImpl, 
+    throw(maciErrType::NoPermissionExImpl,
+	  maciErrType::IncompleteComponentSpecExImpl, 
 	  maciErrType::InvalidComponentSpecExImpl, 
 	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	  maciErrType::CannotGetComponentExImpl)
@@ -276,15 +277,20 @@ MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bo
        CORBA::Object_var obj = cInfo->reference;
        if (CORBA::is_nil(obj.in())) 
 	   {
-	   ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(
-	       __FILE__, __LINE__, 
-	       "MACIContainerServices::getCORBADynamicComponent");
+	   ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(__FILE__, __LINE__, 
+						       "MACIContainerServices::getCORBADynamicComponent");
 	   ex.setVariable("cInfo->reference");
-	   throw ex;
+	   throw ex; // it will be caught down
 	   }//if
        m_usedComponents.push_back(cInfo->name.in());
        return CORBA::Object::_narrow(obj.in());
        } 
+   catch (maciErrType::NoPermissionEx &ex) 
+       {
+       NoPermissionExImpl lex(ex, __FILE__, __LINE__,
+			      "MACIContainerServices::getCORBADynamicComponent");
+       throw lex;
+       }
    catch (maciErrType::IncompleteComponentSpecEx &ex) 
        {
        IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
@@ -345,7 +351,8 @@ MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bo
 
 CORBA::Object* 
 MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-    throw(maciErrType::IncompleteComponentSpecExImpl, 
+    throw(maciErrType::NoPermissionExImpl,
+	  maciErrType::IncompleteComponentSpecExImpl, 
 	  maciErrType::InvalidComponentSpecExImpl, 
 	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	  maciErrType::CannotGetComponentExImpl)
@@ -376,6 +383,12 @@ MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec,
        m_usedComponents.push_back(cInfo->name.in());
        return CORBA::Object::_narrow(obj.in());
        } 
+   catch (maciErrType::NoPermissionEx &_ex)
+       {
+       maciErrType::NoPermissionExImpl ex(__FILE__, __LINE__,
+		 "MACIContainerServices::getCORBACollocatedComponent");
+       throw ex;
+       }
    catch (maciErrType::IncompleteComponentSpecEx &ex) 
        {
        IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
@@ -436,7 +449,8 @@ MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec,
 
 CORBA::Object* 
 MACIContainerServices::getCORBADefaultComponent(const char* idlType)
-    throw (maciErrType::NoDefaultComponentExImpl, 
+    throw (maciErrType::NoPermissionExImpl,
+	   maciErrType::NoDefaultComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
 {
    ComponentInfo_var cInfo;
@@ -456,6 +470,11 @@ MACIContainerServices::getCORBADefaultComponent(const char* idlType)
     m_usedComponents.push_back(cInfo->name.in());
     return CORBA::Object::_narrow(obj.in());
     }
+   catch (maciErrType::NoPermissionEx &ex) 
+       {
+       throw NoPermissionExImpl (ex, __FILE__, __LINE__,
+				 "MACIContainerServices::getCORBADefaultComponent");
+       }
    catch (maciErrType::NoDefaultComponentEx &ex) 
        {
        throw NoDefaultComponentExImpl (ex, __FILE__, __LINE__,
@@ -573,42 +592,39 @@ MACIContainerServices::getCDB() throw (acsErrTypeContainerServices::CanNotGetCDB
       return dalObj._retn();   //bje: I do not know if this is OK, ...
       // ... since getCDB is local and not CORBA call so differen MM
       }
+  catch (maciErrType::NoPermissionEx &ex) 
+      {
+      throw CanNotGetCDBExImpl (ex, __FILE__, __LINE__,
+				"MACIContainerServices::getCDB");
+      }
   catch (maciErrType::CannotGetComponentEx &ex) 
-	{
-	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-						  "MACIContainerServices::getCDB");
-	lex.setCURL("CDB");
-	throw lex;
-	}
-    catch( maciErrType::ComponentConfigurationNotFoundEx &ex) 
-	{
-	ComponentConfigurationNotFoundExImpl lex(ex, __FILE__, __LINE__,
-						 "MACIContainerServices::getCDB");
-	lex.setCURL("CDB");
-	throw lex;
-	}  
-    catch( CORBA::SystemException &ex ) 
-	{
-	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
-							    "MACIContainerServices::getCDB");
-	corbaProblemEx.setMinor(ex.minor());
-	corbaProblemEx.setCompletionStatus(ex.completed());
-	corbaProblemEx.setInfo(ex._info().c_str());
-	
-	CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
-				     "MACIContainerServices::getCDB");
-	lex.setCURL("CDB");
-	throw lex;
-	}
-    catch (...) 
-	{
-	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"MACIContainerServices::getCDB");
-	CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "MACIContainerServices::getCDB");
-	lex.setCURL("CDB");
-	throw lex;
-	}//try-catch
+      {
+      throw CanNotGetCDBExImpl (ex, __FILE__, __LINE__,
+				"MACIContainerServices::getCDB");
+      }
+  catch( maciErrType::ComponentConfigurationNotFoundEx &ex) 
+      {
+      throw CanNotGetCDBExImpl (ex, __FILE__, __LINE__,
+				"MACIContainerServices::getCDB");
+      }  
+  catch( CORBA::SystemException &ex ) 
+      {
+      ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							  "MACIContainerServices::getCDB");
+      corbaProblemEx.setMinor(ex.minor());
+      corbaProblemEx.setCompletionStatus(ex.completed());
+      corbaProblemEx.setInfo(ex._info().c_str());
+      
+      throw CanNotGetCDBExImpl (corbaProblemEx, __FILE__, __LINE__,
+				"MACIContainerServices::getCDB");
+      }
+  catch (...) 
+      {
+      ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+						      "MACIContainerServices::getCDB");
+      throw CanNotGetCDBExImpl (uex, __FILE__, __LINE__,
+				"MACIContainerServices::getCDB");
+      }//try-catch
 }//getCDB
 
 ACS::OffShoot_ptr

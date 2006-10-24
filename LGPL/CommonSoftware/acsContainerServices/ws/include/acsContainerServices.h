@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.15 2006/10/23 15:38:21 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.16 2006/10/24 11:47:06 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -105,7 +105,8 @@ namespace maci {
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+	    throw(maciErrType::NoPermissionExImpl,
+		  maciErrType::IncompleteComponentSpecExImpl, 
 		  maciErrType::InvalidComponentSpecExImpl, 
 		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 		  maciErrType::CannotGetComponentExImpl)
@@ -121,7 +122,8 @@ namespace maci {
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+	    throw(maciErrType::NoPermissionExImpl,
+		  maciErrType::IncompleteComponentSpecExImpl, 
 		  maciErrType::InvalidComponentSpecExImpl, 
 		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 		  maciErrType::CannotGetComponentExImpl)
@@ -135,7 +137,8 @@ namespace maci {
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	    throw (maciErrType::NoDefaultComponentExImpl, 
+	    throw (maciErrType::NoPermissionExImpl,
+		   maciErrType::NoDefaultComponentExImpl, 
 		   maciErrType::CannotGetComponentExImpl)
 	    =0; 
         
@@ -201,7 +204,8 @@ namespace maci {
          * @return The reference to the component
          */
         template<class T> T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+	    throw(maciErrType::NoPermissionExImpl,
+		  maciErrType::IncompleteComponentSpecExImpl, 
 		  maciErrType::InvalidComponentSpecExImpl, 
 		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 		  maciErrType::CannotGetComponentExImpl);
@@ -216,7 +220,8 @@ namespace maci {
          * @return The reference to the component
          */
         template<class T> T* getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	    throw(maciErrType::IncompleteComponentSpecExImpl, 
+	    throw(maciErrType::NoPermissionExImpl,
+		  maciErrType::IncompleteComponentSpecExImpl, 
 		  maciErrType::InvalidComponentSpecExImpl, 
 		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 		  maciErrType::CannotGetComponentExImpl);  
@@ -230,7 +235,8 @@ namespace maci {
          * @return The reference to the component
          */
         template<class T> T* getDefaultComponent(const char* idlType)	 
-	    throw (maciErrType::NoDefaultComponentExImpl, 
+	    throw (maciErrType::NoPermissionExImpl,
+		   maciErrType::NoDefaultComponentExImpl, 
 		   maciErrType::CannotGetComponentExImpl);
       
         /**

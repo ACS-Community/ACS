@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.8 2006/10/24 10:10:42 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.9 2006/10/24 11:47:06 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -104,7 +104,8 @@ T* ContainerServices::getComponentNonSticky(const char *name)
 
 template<class T> T* 
 ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw (maciErrType::IncompleteComponentSpecExImpl, 
+    throw (maciErrType::NoPermissionExImpl,
+	   maciErrType::IncompleteComponentSpecExImpl, 
 	   maciErrType::InvalidComponentSpecExImpl, 
 	   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
@@ -119,6 +120,12 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
     	obj = getCORBADynamicComponent(compSpec,markAsDefault);   // obj should be null, but if it is  ..
 	return T::_narrow(obj);  // ... narrow will fail
 	} 
+    catch (maciErrType::NoPermissionExImpl &ex) 
+	{
+	maciErrType::NoPermissionExImpl	 lex(ex, __FILE__, __LINE__,
+					     "ContainerServices::getDynamicComponent");
+	throw lex;
+    }
     catch (IncompleteComponentSpecExImpl &ex) 
 	{
 	IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
@@ -159,7 +166,8 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
 
 template<class T> T* 
 ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-    throw(maciErrType::IncompleteComponentSpecExImpl, 
+    throw(maciErrType::NoPermissionExImpl,
+	  maciErrType::IncompleteComponentSpecExImpl, 
 	  maciErrType::InvalidComponentSpecExImpl, 
 	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	  maciErrType::CannotGetComponentExImpl)
@@ -174,6 +182,12 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
     	obj = getCORBACollocatedComponent(compSpec,markAsDefault,targetComponent); 
 	return T::_narrow(obj);
 	} 
+    catch (maciErrType::NoPermissionExImpl &ex) 
+	{
+	maciErrType::NoPermissionExImpl lex(ex, __FILE__, __LINE__,
+					    "ContainerServices::getCollocatedComponent");
+	throw lex;
+	}
     catch (maciErrType::IncompleteComponentSpecExImpl &ex) 
 	{
 	IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
@@ -214,7 +228,8 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
 
 template<class T> T* 
 ContainerServices::getDefaultComponent(const char* idlType)
-    throw (maciErrType::NoDefaultComponentExImpl, 
+    throw (maciErrType::NoPermissionExImpl,
+	   maciErrType::NoDefaultComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
 {
     CORBA::Object* obj =T::_nil();
@@ -227,6 +242,11 @@ ContainerServices::getDefaultComponent(const char* idlType)
     	obj = getCORBADefaultComponent(idlType); 
 	return T::_narrow(obj);
 	} 
+    catch(maciErrType::NoPermissionEx &_ex)
+	{
+	throw maciErrType::NoPermissionExImpl(__FILE__, __LINE__,
+				"ContainerServices::getDefaultComponent");	      
+	}
     catch (maciErrType::NoDefaultComponentExImpl &ex) 
 	{
 	NoDefaultComponentExImpl lex(ex,

@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.23 2006/10/23 15:39:00 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.24 2006/10/24 11:47:35 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -88,7 +88,8 @@ class MACIContainerServices: public ContainerServices
      * Implementation of acsContainerServices::getCORBADynamicComponent(const char* name)
      */
     CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault) 
-	throw(maciErrType::IncompleteComponentSpecExImpl, 
+	throw(maciErrType::NoPermissionExImpl,
+	      maciErrType::IncompleteComponentSpecExImpl, 
 	      maciErrType::InvalidComponentSpecExImpl, 
 	      maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	      maciErrType::CannotGetComponentExImpl);
@@ -97,7 +98,8 @@ class MACIContainerServices: public ContainerServices
      * Implementation of acsContainerServices::getCORBACollocatedComponent(...)
      */
     CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	throw(maciErrType::IncompleteComponentSpecExImpl, 
+	throw(maciErrType::NoPermissionExImpl,
+	      maciErrType::IncompleteComponentSpecExImpl, 
 	      maciErrType::InvalidComponentSpecExImpl, 
 	      maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	      maciErrType::CannotGetComponentExImpl);
@@ -106,7 +108,8 @@ class MACIContainerServices: public ContainerServices
      * Implementation of acsContainerServices::getCORBADefaultComponent(const char* name)
      */
     CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	throw (maciErrType::NoDefaultComponentExImpl, 
+	throw (maciErrType::NoPermissionExImpl,
+	       maciErrType::NoDefaultComponentExImpl, 
 	       maciErrType::CannotGetComponentExImpl); 
   
  public:
