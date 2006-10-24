@@ -11,8 +11,8 @@
 1 - Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
@@ -172,7 +172,7 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST1' activated.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
-1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - ] I am MACI_DYN_TEST1
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
@@ -198,6 +198,12 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
+1 - ----------T--:--:--.--- [GlobalLogger - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2),javaex.class=alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx
+1 - ----------T--:--:--.--- [GlobalLogger - MACIContainerServices::getCORBAComponentNonSticky] Error retrieving component (type=25, code=1),CURL=MACI_DYN_TEST1
+1 - ----------T--:--:--.--- [GlobalLogger - ContainerServices::getComponentNonSticky] Error retrieving component (type=25, code=1),CURL=MACI_DYN_TEST1
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ] getComponentNonStickyTest (MACI_DYN_TEST1): Got an exception (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDefaultComponent...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ContainerServices::getDefaultComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADefaultComponent] 

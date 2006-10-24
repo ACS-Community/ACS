@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.12 2006/10/23 15:39:24 bjeram Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.13 2006/10/24 10:09:57 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.12 2006/10/23 15:39:24 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.13 2006/10/24 10:09:57 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -238,9 +238,20 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickyTest()
 	}
     catch(maciErrType::CannotGetComponentExImpl &_ex)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"getComponentTest: Error executing %s",COMPNAME));
+	ACS_SHORT_LOG((LM_ERROR,"getComponentNonStickyTest: Error getting %s non sticky",COMPNAME));
 	_ex.log();
 	}
+// test w/o activating the component be4
+    try
+	{
+	MACI_TEST::DynamicTestClass_var cns = 
+	    getContainerServices()->getComponentNonSticky<MACI_TEST::DynamicTestClass>(COMPNAME);	
+	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	ACS_SHORT_LOG((LM_ERROR, "getComponentNonStickyTest (%s): Got an exception (right behaviour)", COMPNAME));
+	_ex.log();
+	}//try-catch
 }
 
 //--------------------------------------------------------------
