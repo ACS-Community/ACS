@@ -12,7 +12,6 @@
 	<classpathentry sourcepath="ACSROOT/lib/xmlentity.jar" kind="var" path="ACSROOT/lib/xmlentity.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsTestEntities.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/jManager.jar" kind="var" path="ACSROOT/lib/jManager.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry sourcepath="/ACSROOT/lib/acscomponent.jar" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
@@ -33,5 +32,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="lib" path="lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
