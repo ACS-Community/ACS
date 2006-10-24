@@ -1007,7 +1007,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         expertMenu.add(suspendMI);
         prefsMI = new JMenuItem("Preferences");
         prefsMI.addActionListener(eventHandler);
-        expertMenu.add(prefsMI);
+        //expertMenu.add(prefsMI);
         loggingClientJMenuBar.add(expertMenu);
     }
     
