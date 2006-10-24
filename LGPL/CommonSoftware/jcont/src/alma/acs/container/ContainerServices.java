@@ -21,6 +21,7 @@
  */
 package alma.acs.container;
 
+import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
@@ -267,11 +268,12 @@ public interface ContainerServices
 	
 	
 	public static interface ComponentListener {
-		void componentsAvailable(ComponentDescriptor[] comps); 
-		void componentsUnvailable(ComponentDescriptor[] comps); 
+		void componentsAvailable(List<ComponentDescriptor> comps); 
+		void componentsUnvailable(List<ComponentDescriptor> comps); 
 	}
 	
 	/**
+	 * Allows to register a callback object that gets notified whenever a component gets activated in the system.
 	 * @param listener
 	 * @since ACS 6.0
 	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
