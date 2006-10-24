@@ -119,6 +119,10 @@ public class ContainerServicesImpl implements ContainerServices
 
     private volatile String[] methodsExcludedFromInvocationLogging;
 
+    /**
+     * Optional callback object for component available/unavailable notification
+     */
+    private ComponentListener compListener;
 
 	/**
 	 * ctor.
@@ -218,9 +222,21 @@ public class ContainerServicesImpl implements ContainerServices
 
 	
 	public void registerComponentListener(ComponentListener listener) {
-		// TODO Auto-generated method stub
+		compListener = listener;
 	}
 
+//	/**
+//	 * @return The ComponentListener or <code>null</code> if none has been registered
+//	 * @see #registerComponentListener(alma.acs.container.ContainerServices.ComponentListener)
+//	 */
+//	ComponentListener getComponentListener() {
+//		return compListener;
+//	}
+//	
+	
+	void fireComponentsAvailable(List<ComponentDescriptor> components) {
+		// m_usedComponentsMap to filter out those who where not 
+	}
 	
 	/**
 	 * @see alma.acs.container.ContainerServices#assignUniqueEntityId(EntityT)
