@@ -297,7 +297,7 @@ public class ComponentClient
 		}
 		catch (Exception e)
 		{
-			System.err.println("Exception in tearDown: ");
+			System.err.println("Exception in " + m_clientName + "#" + "tearDown: ");
 			e.printStackTrace(System.err);
 			throw e;
 		}
