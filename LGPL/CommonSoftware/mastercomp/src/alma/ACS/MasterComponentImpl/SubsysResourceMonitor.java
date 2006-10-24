@@ -36,7 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACS.ACSComponent;
-import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 
 /**
@@ -130,20 +129,21 @@ public class SubsysResourceMonitor {
         	delaySeconds = defaultDelaySeconds;
         }
         synchronized (resourceRunners) {
-            for (ResourceCheckRunner runner : resourceRunners) {
-                ResourceChecker existingChecker = runner.getResourceChecker();
-                Object existingResource = existingChecker.getResource();
-                String existingResourceName = existingChecker.getResourceName();
-                if (existingResource == checker.getResource()) {
+            for (ResourceCheckRunner otherRunner : resourceRunners) {
+                ResourceChecker otherChecker = otherRunner.getResourceChecker();
+                Object otherResource = otherChecker.getResource();
+                String otherResourceName = otherChecker.getResourceName();
+                // @TODO: enforce that no 2 resources can have the same name (important for #stopResourceMonitoring)
+                if (otherResource == checker.getResource()) {
                     String msg = "Resource '" + checker.getResourceName() + "' is already being monitored. ";
-                    if (!existingResourceName.equals(checker.getResourceName())) {
-                        msg += "However it was known under the different name '" + existingResourceName + "'! ";
+                    if (!otherResourceName.equals(checker.getResourceName())) {
+                        msg += "However it was known under the different name '" + otherResourceName + "'! ";
                     }
                     msg += "Will re-schedule the monitoring now.";
                     logger.info(msg);
-                    Future future = runner.getScheduleFuture();
+                    Future future = otherRunner.getScheduleFuture();
                     future.cancel(true);
-                    resourceRunners.remove(existingChecker);
+                    resourceRunners.remove(otherChecker);
                     break;
                 }
             }
@@ -179,6 +179,62 @@ public class SubsysResourceMonitor {
         }
         return null;
     }
+    
+    /**
+     * Suspends monitoring of all resources until {@link #resume()} is called.
+     * Currently running monitor calls do not get stopped, only future calls are prevented.
+     * <p> 
+     * Note that the monitoring queue remains intact, while the monitor call itself becomes a no-op. 
+     */
+    public void suspend() {
+    	for (ResourceCheckRunner runner : resourceRunners) {
+			runner.suspend();
+		}
+    }
+    
+    /**
+     * Resumes monitoring of all resources.
+     * <p>
+     * This method has no effect if monitoring has not been previously suspended.
+     * @see #suspend()
+     */
+    public void resume() {
+    	for (ResourceCheckRunner runner : resourceRunners) {
+			runner.resume();
+		}
+    }
+    
+    
+    /**
+     * Stops monitoring a given resource.
+     * @param resourceName unique resource name
+     */
+    public void stopMonitoring(String resourceName) {
+    	synchronized (resourceRunners) {
+	    	for (ResourceCheckRunner runner : resourceRunners) {
+	    		if (resourceName.equals(runner.getResourceChecker().getResourceName())) {    			 
+	    			runner.suspend(); // to invalidate an ongoing monitor call
+	    			runner.getScheduleFuture().cancel(false);
+	    			resourceRunners.remove(runner);
+	    			// don't break here, just in case we have more than 1 resource of that name (which of course should not happen)
+	    		}
+	    	}
+    	}
+    }
+    
+    /**
+     * Stops monitoring all resources.
+     */
+    public void stopMonitoringAll() {
+    	synchronized (resourceRunners) {
+	    	for (ResourceCheckRunner runner : resourceRunners) {
+    			runner.suspend(); // to invalidate an ongoing monitor call
+    			runner.getScheduleFuture().cancel(false);
+	    	}
+			resourceRunners.clear();
+    	}    	
+    }
+    
     
 	/**
 	 * Cancels monitoring of all resources and leaves this object in an unusable state.
@@ -220,12 +276,14 @@ public class SubsysResourceMonitor {
         private final Logger logger;
     	private final ExecutorService threadPool;
         private Future scheduleFuture;
+        private volatile boolean isSuspended;
 		
 		ResourceCheckRunner(ResourceChecker<T> resourceChecker, ResourceErrorHandler<T> err, Logger logger, ExecutorService threadPool) {
 			this.resourceChecker = resourceChecker;
 			this.err = err;
             this.logger = logger;
     		this.threadPool = threadPool;
+    		isSuspended = false;
 		}
         
         /**
@@ -243,6 +301,11 @@ public class SubsysResourceMonitor {
         }
 		
 		public void run() {
+			
+			if (isSuspended) {
+				return;
+			}
+			
 			// run the check in a thread from the thread pool
 			Runnable timeoutCaller = new Runnable() {
 				public void run() {
@@ -281,6 +344,13 @@ public class SubsysResourceMonitor {
 			} catch (Throwable thr) { // ExecutionException or unexpected
 				callError = thr;
 			}
+			
+			// perhaps isSuspended was set while calling, so we check again
+			if (isSuspended) {
+				return;
+			}
+			
+			// analyze result and react
 			
 			boolean beyondRepair = false;
 			if (wasTimedOut) {
@@ -327,6 +397,12 @@ public class SubsysResourceMonitor {
             return resourceChecker;
         }
         
+        void suspend() {
+        	isSuspended = true;
+        }
+        void resume() {
+        	isSuspended = false;
+        }
 	}
 	
     
