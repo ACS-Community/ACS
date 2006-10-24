@@ -41,6 +41,7 @@ bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
 AlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
 auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource(NULL);
+void* ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
 
 void ACSAlarmSystemInterfaceFactory::done() {
 	// TODO: mutual exclusion?
@@ -53,6 +54,11 @@ void ACSAlarmSystemInterfaceFactory::done() {
 		m_AlarmSystemInterfaceFactory_p->done();
 		delete m_AlarmSystemInterfaceFactory_p;
 		m_AlarmSystemInterfaceFactory_p = NULL;
+	}
+	if(NULL != ACSAlarmSystemInterfaceFactory::dllHandle)
+	{
+		dlclose(ACSAlarmSystemInterfaceFactory::dllHandle);
+		ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
 	}
 	if(NULL != m_useACSAlarmSystem) 
 	{
@@ -130,8 +136,8 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 		// load the DLL and then set pointer m_AlarmSystemInterfaceFactory_p to point to the object
 		// that is returned from the DLL's entry point function. From then on, we can use the pointer/object directly.
-		void *hndl = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
-		if(hndl == NULL)
+		ACSAlarmSystemInterfaceFactory::dllHandle = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
+		if(ACSAlarmSystemInterfaceFactory::dllHandle == NULL)
 		{
 			string errString = "ACSAlarmSystemInterfaceFactory::init(): could not open DLL; error was:\n\n" + string(dlerror()); 
 			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
@@ -140,7 +146,7 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 		// Call the well-defined entry point function of the DLL, to get an object 
 		// which implements the AlarmSystemInterfaceFactory interface, which will be used for publishing 
 		// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
-		void * publisherFactoryFunctionPtr = dlsym(hndl, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
+		void * publisherFactoryFunctionPtr = dlsym(ACSAlarmSystemInterfaceFactory::dllHandle, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
 		m_AlarmSystemInterfaceFactory_p = ((AlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
 		return m_AlarmSystemInterfaceFactory_p->init();

@@ -63,6 +63,10 @@ class ACSAlarmSystemInterfaceFactory
 {
 	private:
 
+	// used for loading/unloading the DLL which is used to decouple (for build purposes) 
+	// the logic in ACSLaser/laser-source-cpp
+	static void *dllHandle;
+
 	// used for the convenience method createAndSendAlarms, so that it need not create a new source
 	// for each time it is invoked
 	static auto_ptr<AlarmSystemInterface> sharedSource;
