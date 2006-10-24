@@ -21,6 +21,9 @@
  */
 package alma.acs.component;
 
+import java.util.List;
+import java.util.Vector;
+
 import si.ijs.maci.ComponentInfo;
 
 /**
@@ -81,11 +84,11 @@ public class ComponentDescriptor
 	}
 	
 	
-	public static ComponentDescriptor[] fromComponentInfoArray(ComponentInfo[] compInfos) {
-        ComponentDescriptor[] compDescs = new ComponentDescriptor[compInfos.length];
-        for (int i = 0; i < compInfos.length; i++) {
-			compDescs[i] = new ComponentDescriptor(compInfos[i]);
+	public static List<ComponentDescriptor> fromComponentInfoArray (ComponentInfo[] compInfos) {
+		List<ComponentDescriptor> compDescs = new Vector<ComponentDescriptor>(compInfos.length);
+		for (ComponentInfo compInfo : compInfos) {
+			compDescs.add(new ComponentDescriptor(compInfo));
 		}
-        return compDescs;		
+		return compDescs;
 	}
 }
