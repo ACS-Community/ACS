@@ -23,6 +23,8 @@ package alma.acs.container;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -47,8 +49,10 @@ import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ComponentStates;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.concurrent.DaemonThreadFactory;
+import alma.acs.container.ContainerServices.ComponentListener;
 import alma.acs.container.classloader.AcsComponentClassLoader;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
@@ -1158,8 +1162,18 @@ public class AcsContainer extends ContainerPOA
         }
         m_logger.fine(buff.toString());
 
-        // todo: forward the call to the affected components
-        // allow components to register callback handler for this, see ongoing discussions
+        // notify interested components        
+        List<ComponentDescriptor> compDescs = Collections.unmodifiableList(Arrays.asList(ComponentDescriptor.fromComponentInfoArray(components)));
+        for (ComponentAdapter compAd : m_activeComponentMap.getAllComponentAdapters()) {
+        	ComponentListener compListener = compAd.getContainerServices().getComponentListener();
+        	if (compListener != null) {
+        		try {
+					compListener.componentsAvailable(compDescs);
+				} catch (Throwable thr) {
+					m_logger.log(Level.INFO, "Failed to notify component " + compAd.getName() + " of newly available components", thr);
+				}
+        	}
+        }
     }
 
     /**
