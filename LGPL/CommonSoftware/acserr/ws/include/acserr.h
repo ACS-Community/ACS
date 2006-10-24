@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.74 2006/10/18 14:09:35 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.75 2006/10/24 10:44:30 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -94,12 +94,26 @@ class ErrorTraceHelper
 
 
     /**
-     * Logs errortrace into the logging system.
+     * Logs the complete error trace into the logging system.
+     * For each such exception in the trace, a separate log entry 
+     * is created, in accordance with the ACS error logging specification.
      * @param priorty: priorty with which the error trace will be logged
-     * If priorty is not specified the completuion/error trace will be logged with ERROR priorty.
+     * If priorty is not specified the completion/error trace will 
+     * be logged with ERROR priorty.
+     * The priority can be used to log an important error trace at LM_DEBUG level
+     * before sending it to a remote client.
+     * The responsibility of ultimately decide is an error trace 
+     * shall be logged or closed is ultimately left to the higher level client,
+     * but a bad behaving client could "forget" to log.
+     * In order to make sure potentially critical information is not lost,
+     * the servant application can decide to log anyway the error trace
+     * as debug information before sending it to the client.
      */
     void log(ACE_Log_Priority priorty=LM_ERROR);
 
+    /**
+     * Returns a string describing the error on top of the error trace.  
+     */
     std::string toString();
 
     /**
