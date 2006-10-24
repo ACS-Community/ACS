@@ -28,5 +28,3 @@ auto_ptr<FaultState> AlarmSystemInterfaceFactory::createFaultState()
 	auto_ptr<FaultState> fsAutoPtr(fsPtr);
 	return fsAutoPtr;
 }
-
-
