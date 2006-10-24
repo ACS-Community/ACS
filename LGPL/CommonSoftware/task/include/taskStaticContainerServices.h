@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.6 2006/10/23 18:31:46 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.7 2006/10/24 15:26:57 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -113,7 +113,9 @@ class StaticContainerServices: public maci::ContainerServices
    * <br><hr>
    * @endhtmlonly
    */
-    void releaseComponent(const char *name){}
+    void releaseComponent(const char *name)
+	throw (maciErrType::CannotReleaseComponentExImpl)  
+	{}
   
   /**
    * Release all the components

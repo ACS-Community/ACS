@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.24 2006/10/24 11:47:35 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.25 2006/10/24 15:22:15 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -148,7 +148,8 @@ class MACIContainerServices: public ContainerServices
    * <br><hr>
    * @endhtmlonly
    */
-  void releaseComponent(const char *name);
+    void releaseComponent(const char *name)
+	throw (maciErrType::CannotReleaseComponentExImpl);
   
   /**
    * Release all the components

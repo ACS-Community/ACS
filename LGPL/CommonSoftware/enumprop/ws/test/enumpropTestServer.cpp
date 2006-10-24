@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.52 2006/10/23 21:26:07 gchiozzi Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.53 2006/10/24 15:23:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.52 2006/10/23 21:26:07 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.53 2006/10/24 15:23:14 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -126,7 +126,9 @@ class TestContainerServices : public maci::ContainerServices {
           return ACE_CString_Vector();
         }
     
-        void releaseComponent(const char *name){}
+        void releaseComponent(const char *name)
+	    throw (maciErrType::CannotReleaseComponentExImpl)  
+	{}
       
         void releaseAllComponents(){}
     

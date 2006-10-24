@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.25 2006/10/24 11:47:35 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.26 2006/10/24 15:22:15 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -205,8 +205,8 @@ CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* na
 	{
 	CORBA::Object_var obj = 
 	    m_manager->get_component_non_sticky(m_componentHandle, name);
-    
-	m_usedComponents.push_back(name);  // @todo not really sure if we have to add non sticky component 
+    // @todo not really sure if we have to add non sticky component 
+//	m_usedComponents.push_back(name);  
 	return CORBA::Object::_narrow(obj.in());
 	}
     catch (maciErrType::CannotGetComponentEx &ex) 
@@ -541,20 +541,61 @@ throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
 
 void 
 MACIContainerServices::releaseComponent(const char *name)
+    throw (maciErrType::CannotReleaseComponentExImpl)
 {
+    try
+	{
     // Check if the component is used
     std::vector<std::string>::iterator pos = findUsedComponent(name);
     if (pos==m_usedComponents.end()) 
-	{
-	ACS_SHORT_LOG((LM_ERROR,"Error releasing %s: component not used",name));
-	return;
+	{	
+	maciErrType::ComponentNotInUseExImpl ex(__FILE__, __LINE__,
+						     "MACIContainerServices::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
+	}//if
+    
+   
+	m_manager->release_component(m_componentHandle, name);
+	// Remove the component from the list of the used components
+	m_usedComponents.erase(pos);
 	}
-
-  // TODO exception hadning missing here (or should be done by caller)
-  m_manager->release_component(m_componentHandle, name);
-  // Remove the component from the list of the used components
-  m_usedComponents.erase(pos);
-}
+    catch (maciErrType::NoPermissionEx &_ex) 
+	{
+	maciErrType::CannotReleaseComponentExImpl ex(_ex, __FILE__, __LINE__,
+						     "MACIContainerServices::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch (ACSErr::ACSbaseExImpl &_ex) 
+	{
+	maciErrType::CannotReleaseComponentExImpl ex(_ex, __FILE__, __LINE__,
+						     "MACIContainerServices::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch( CORBA::SystemException &ex ) 
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							  "MACIContainerServices::releaseComponent");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+      	maciErrType::CannotReleaseComponentExImpl ex(corbaProblemEx,  __FILE__, __LINE__,
+						     "MACIContainerServices::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
+	}
+    catch (...) 
+	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"MACIContainerServices::releaseComponent");
+	maciErrType::CannotReleaseComponentExImpl ex(uex,  __FILE__, __LINE__,
+						     "MACIContainerServices::releaseComponent");
+	ex.setCURL(name);
+	throw ex;
+	}//try-catch
+}//releaseComponent
 
 void MACIContainerServices::releaseAllComponents()
 {

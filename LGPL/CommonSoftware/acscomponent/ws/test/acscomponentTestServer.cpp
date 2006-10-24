@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestServer.cpp,v 1.17 2006/10/23 21:18:57 gchiozzi Exp $"
+* "@(#) $Id: acscomponentTestServer.cpp,v 1.18 2006/10/24 15:21:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * rcirami 2002-09-24  created
 */
  
-static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.17 2006/10/23 21:18:57 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.18 2006/10/24 15:21:47 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -117,7 +117,9 @@ class TestContainerServices : public maci::ContainerServices {
           return ACE_CString_Vector();
         }
     
-        void releaseComponent(const char *name){}
+        void releaseComponent(const char *name)
+	    throw (maciErrType::CannotReleaseComponentExImpl) 
+	{}
       
         void releaseAllComponents(){}
     
