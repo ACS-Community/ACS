@@ -22,6 +22,7 @@
 package com.cosylab.logging;
 
 import java.net.URL;
+import java.util.Calendar;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -569,5 +570,13 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			throw new IllegalArgumentException(""+newLevel+" is not valid");
 		}
 		logLevel=newLevel;
+	}
+	
+	/**
+	 * @return The time frame of the log in cache
+	 * @see com.cosylab.logging.client.cache.LogCache
+	 */
+	public Calendar getTimeFrame() {
+		return allLogs.getTimeFrame();
 	}
 }
