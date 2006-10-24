@@ -269,11 +269,14 @@ public interface ContainerServices
 	
 	public static interface ComponentListener {
 		void componentsAvailable(List<ComponentDescriptor> comps); 
-		void componentsUnvailable(List<ComponentDescriptor> comps); 
+		void componentsUnavailable(List<String> compNames); 
 	}
 	
 	/**
-	 * Allows to register a callback object that gets notified whenever a component gets activated in the system.
+	 * Allows a client to register a callback object that gets notified when some  
+	 * component(s) in use by the client (= components the client requested previously)
+	 * dies or comes back to life.
+	 * 
 	 * @param listener
 	 * @since ACS 6.0
 	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
