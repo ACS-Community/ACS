@@ -79,4 +79,13 @@ public class ComponentDescriptor
 	{
 		return "ComponentDescriptor { name='" + getName() + "' type='" + getType() + "' }" ;
 	}
+	
+	
+	public static ComponentDescriptor[] fromComponentInfoArray(ComponentInfo[] compInfos) {
+        ComponentDescriptor[] compDescs = new ComponentDescriptor[compInfos.length];
+        for (int i = 0; i < compInfos.length; i++) {
+			compDescs[i] = new ComponentDescriptor(compInfos[i]);
+		}
+        return compDescs;		
+	}
 }
