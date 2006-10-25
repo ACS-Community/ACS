@@ -25,8 +25,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import de.bmiag.genfw.meta.ElementSet;
-import de.bmiag.genfw.meta.core.ModelElement;
+import org.openarchitectureware.core.meta.core.ElementSet;
+import org.openarchitectureware.meta.uml.ModelElement;
+
 
 /**
  * Only accepts <code>ModelElement</code>s that have a unique name.
@@ -61,17 +62,18 @@ public class UniqueNameModelElementSet extends ElementSet
 	/**
 	 * @see de.bmiag.genfw.meta.ElementSet#add(java.lang.Object)
 	 */
-	public void add(Object element) {
+	public boolean add(Object element) {
 	    if (element == null || element instanceof ElementSet || !(element instanceof ModelElement)) {
-	      super.add(element);
+	      return super.add(element);
 	    } 
 	    else {
-	    	String name = ((ModelElement) element).Name().Name();
+	    	String name = ((ModelElement) element).NameS();
 	    	if (name != null && !m_nameMap.containsKey(name)) {
 	    		m_nameMap.put(name, element);
-	    		super.add(element);
+	    		return super.add(element);
 	    	}
 	    }
+	    return false;
 	}
 
 	/**
