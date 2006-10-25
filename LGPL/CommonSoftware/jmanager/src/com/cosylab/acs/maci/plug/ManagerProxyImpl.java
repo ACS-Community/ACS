@@ -39,7 +39,6 @@ import com.cosylab.acs.maci.IncompleteComponentSpecException;
 import com.cosylab.acs.maci.InvalidComponentSpecException;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
-import com.cosylab.acs.maci.NoPermissionException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
@@ -217,18 +216,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_container_info");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -313,18 +300,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_client_info");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -430,18 +405,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_component_info");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -567,18 +530,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -687,18 +638,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_component_non_sticky");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -824,18 +763,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_components");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -939,18 +866,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "login");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1087,18 +1002,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "register_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -1178,18 +1081,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "make_component_immortal");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		// @todo 
 		catch (NoResourcesException nre)
 		{
@@ -1263,18 +1154,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "release_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1354,18 +1233,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "release_components");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -1436,18 +1303,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "force_release_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -1501,20 +1356,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "shutdown");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			// AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			// ex.setReason(npe.getMessage());
-			// throw ex.toNoPermissionEx();
-			// since shutdown is oneway no user exceptions are allowed
-			throw new NO_PERMISSION(npe.getMessage());
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1571,18 +1412,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "unregister_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1686,18 +1515,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_default_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -1862,18 +1679,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_dynamic_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -2004,18 +1809,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_dynamic_components");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -2175,18 +1968,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_collocated_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -2284,18 +2065,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_service");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
@@ -2412,18 +2181,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "get_services");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -2504,18 +2261,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
 		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "restart_component");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
-		}
 		catch (NoResourcesException nre)
 		{
 			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
@@ -2571,18 +2316,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoPermissionException npe)
-		{
-			NoPermissionException hnpe = new NoPermissionException(this, npe.getMessage(), npe);
-			hnpe.caughtIn(this, "shutdown_container");
-			// exception service will handle this
-			reportException(hnpe);
-
-			// rethrow CORBA specific
-			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
-			ex.setReason(npe.getMessage());
-			throw ex.toNoPermissionEx();
 		}
 		catch (NoResourcesException nre)
 		{
