@@ -1,4 +1,4 @@
-# @(#) $Id: ACSPorts.py,v 1.4 2005/10/17 15:55:43 dfugate Exp $
+# @(#) $Id: ACSPorts.py,v 1.5 2006/10/25 10:14:41 bjeram Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ACSPorts.py,v 1.4 2005/10/17 15:55:43 dfugate Exp $"
+# "@(#) $Id: ACSPorts.py,v 1.5 2006/10/25 10:14:41 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -34,7 +34,7 @@ TODO:
 - nada
 '''
 #------------------------------------------------------------------------------
-__revision__ = "$Id: ACSPorts.py,v 1.4 2005/10/17 15:55:43 dfugate Exp $"
+__revision__ = "$Id: ACSPorts.py,v 1.5 2006/10/25 10:14:41 bjeram Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os      import environ
 from socket  import getfqdn, gethostbyname
@@ -174,6 +174,12 @@ def getIP():
   
     Raises: Nothing
     '''
+    #first we check if we have ACS_HOST defined
+    try:
+        return str(gethostbyname(environ['ACS_HOST']))
+    except:
+        pass
+    
     #determine the local hosts IP address in string format
     localhost = ""
     localhost = str(gethostbyname(getfqdn()))
