@@ -181,6 +181,21 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 	}
 
 	
+	public void testGetComponentNonSticky(String curl) throws CouldntPerformActionEx {
+		String msg = "component '" + curl + "'";
+		m_logger.info("Received call to testGetComponentNonSticky for " + msg);
+		try {
+			org.omg.CORBA.Object compObj = m_containerServices.getComponentNonSticky(curl);
+			if (compObj == null) {
+				throw new NullPointerException("Got null reference for " + msg);
+			}
+			m_containerServices.releaseComponent(curl);
+		} catch (Throwable thr) {
+			throw (new AcsJCouldntPerformActionEx("testGetCollocatedComponent failed for " + msg, thr)).toCouldntPerformActionEx();
+		}		
+	}
+
+	
 	public void testForceReleaseComponent(String curl, boolean getOwnRef) throws CouldntPerformActionEx {
 		try {
 			if (getOwnRef) {
@@ -192,5 +207,6 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 			throw (new AcsJCouldntPerformActionEx("testForceReleaseComponent failed", thr)).toCouldntPerformActionEx();
 		}
 	}
+
 
 }
