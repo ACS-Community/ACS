@@ -4,14 +4,12 @@
 	<classpathentry kind="src" path="object/antbuild/src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry sourcepath="ACSROOT/lib/genfw.jar" kind="var" path="ACSROOT/lib/genfw.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/genfwutil.jar" kind="var" path="ACSROOT/lib/genfwutil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xmlParserAPIs.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/metacore.jar" kind="var" path="ACSROOT/lib/metacore.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.ant_1.6.1/lib/ant.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/concurrent.jar" kind="var" path="ACSROOT/lib/concurrent.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.ant_1.6.5/lib/ant.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ahclib-1.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/oaw411beta.jar"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
