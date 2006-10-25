@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.35 2006/06/07 16:51:49 dfugate Exp $"
+# "@(#) $Id: acsStart,v 1.36 2006/10/25 06:12:45 gchiozzi Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -213,7 +213,16 @@ ORBSRVC_PID=$!
 
 if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -c "ERROR" -p $ORBSRVC_PID
 then
-    ACS_LOG_ERROR "Detected the acsStartORBSRVC process has exited with an error!"
+    # GCH 2006.10.25
+    # Even if there is an error, we need to wait for the completion
+    # or the parallel startup processes.
+    # At this point we want to be sure that everything is clean
+    # and we try a stop to kill any leftover.
+    #
+    acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -p $ORBSRVC_PID
+    ACS_LOG_ERROR "Detected the acsStartORBSRVC process has exited with an error! Cleaning up."
+    acsStopORBSRVC 2>&1 | tee -a $ACSSTARTLOG
+    ACS_LOG_ERROR "acsStart aborted because of error in acsStartORBSRVC."
     exit $EC_FAILURE
 fi
 #------------------------------------------------------
