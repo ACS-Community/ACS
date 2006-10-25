@@ -128,11 +128,31 @@ public interface ContainerServices
 	 * 
 	 * @param componentUrl  the ACS CURL of the deployed component instance.
 	 * @return  the CORBA proxy for the component.
-	 * @throws ContainerServicesEx  if something goes wrong.
+	 * @throws AcsJContainerServicesEx  if something goes wrong.
 	 */
 	public org.omg.CORBA.Object getComponent(String componentUrl) 
 			throws AcsJContainerServicesEx;
 	
+	/**
+	 * Gets a non-sticky reference to a component.
+	 * This is typically used by "weak clients" such as graphical user interfaces that only want to observe the running system
+	 * without interfering with its functioning.
+	 * <p>
+	 * A non-sticky reference does not bind the Manager to keep alive the Component, and the Client requesting a non-sticky reference 
+	 * is not considered when checking for reference counts. 
+	 * The Manager can deactivate Components independently of any non-sticky reference.
+	 * Since a non-sticky reference is not considered in reference counting, it will also not activate the component if it is 
+	 * not already active. As a consequence, asking for a non-sticky reference to a not-active Component throws an exception. 
+	 * The client represented by id (the handle) must have adequate access rights to access the component.
+	 * @param curl the component URL (component instance name)
+	 * @return  the CORBA proxy for the component.
+	 * @throws AcsJContainerServicesEx if something goes wrong
+	 * @since ACS 6.0
+	 */
+	public org.omg.CORBA.Object getComponentNonSticky(String curl) 
+			throws AcsJContainerServicesEx;
+
+
 	/**
 	 * Gets the default component specified by the component type.
 	 * The type is the IDL type, such as <code>IDL:alma/PS/PowerSupply:1.0</code>.
@@ -148,7 +168,7 @@ public interface ContainerServices
 	 * Delegates to {@link si.ijs.maci.ManagerOperations#get_default_component}.
 	 * @param componentIDLType 
 	 * @return 
-	 * @throws ContainerServicesEx 
+	 * @throws AcsJContainerServicesEx 
 	 */
 	public org.omg.CORBA.Object getDefaultComponent(String componentIDLType) 
 			throws AcsJContainerServicesEx;
