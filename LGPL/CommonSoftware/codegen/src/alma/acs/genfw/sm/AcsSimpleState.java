@@ -24,10 +24,10 @@ package alma.acs.genfw.sm;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import de.bmiag.genfw.meta.ElementSet;
-import de.bmiag.genfw.meta.state.Event;
-import de.bmiag.genfw.meta.state.SimpleState;
-import de.bmiag.genfw.meta.state.Transition;
+import org.openarchitectureware.core.meta.core.ElementSet;
+import org.openarchitectureware.meta.uml.state.Event;
+import org.openarchitectureware.meta.uml.state.SimpleState;
+import org.openarchitectureware.meta.uml.state.Transition;
 
 /**
  * @author Heiko Sommer
@@ -52,12 +52,12 @@ public class AcsSimpleState extends SimpleState implements AcsState
 	}
 	
 	public ElementSet DistinctOutEvent() {
-		HashMap eventMap = new HashMap(); // key=(String)eventName, to avoid multiple instances
-		for (Iterator transitionIter = OutTransition.iterator(); transitionIter.hasNext();) {
+		HashMap<String, Event> eventMap = new HashMap<String, Event>(); // key=(String)eventName, to avoid multiple instances
+		for (Iterator transitionIter = OutTransition().iterator(); transitionIter.hasNext();) {
 			Transition tr = (Transition) transitionIter.next();
 			if (tr.hasTrigger()) {
 				Event ev = tr.Trigger();
-				eventMap.put(ev.Name().Name(), ev);
+				eventMap.put(ev.NameS(), ev);
 			}
 		}
 		ElementSet events = new ElementSet();

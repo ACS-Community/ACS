@@ -23,18 +23,19 @@ package alma.acs.genfw.sm;
 
 import java.util.Iterator;
 
+import org.openarchitectureware.core.constraint.DesignError;
+import org.openarchitectureware.core.meta.core.ElementSet;
+import org.openarchitectureware.meta.uml.state.Action;
+import org.openarchitectureware.meta.uml.state.ActionSequence;
+import org.openarchitectureware.meta.uml.state.CompositeState;
+import org.openarchitectureware.meta.uml.state.Entry;
+import org.openarchitectureware.meta.uml.state.State;
+import org.openarchitectureware.meta.uml.state.StateMachine;
+import org.openarchitectureware.meta.uml.state.StateVertex;
+import org.openarchitectureware.meta.uml.state.Transition;
+
 import alma.acs.genfw.UniqueNameModelElementSet;
 
-import de.bmiag.genfw.meta.DesignError;
-import de.bmiag.genfw.meta.ElementSet;
-import de.bmiag.genfw.meta.state.Action;
-import de.bmiag.genfw.meta.state.ActionSequence;
-import de.bmiag.genfw.meta.state.CompositeState;
-import de.bmiag.genfw.meta.state.Entry;
-import de.bmiag.genfw.meta.state.State;
-import de.bmiag.genfw.meta.state.StateMachine;
-import de.bmiag.genfw.meta.state.StateVertex;
-import de.bmiag.genfw.meta.state.Transition;
 
 /**
  * @author Heiko Sommer

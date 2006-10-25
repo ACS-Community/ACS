@@ -23,9 +23,10 @@ package alma.acs.genfw.sm;
 
 import java.util.Iterator;
 
-import de.bmiag.genfw.meta.DesignError;
-import de.bmiag.genfw.meta.state.State;
-import de.bmiag.genfw.meta.state.Transition;
+import org.openarchitectureware.core.constraint.DesignError;
+import org.openarchitectureware.meta.uml.state.State;
+import org.openarchitectureware.meta.uml.state.Transition;
+
 
 /**
  * Custom behavior common to AcsSimpleState and AcsCompositeState.
@@ -54,7 +55,7 @@ public class AcsStateDelegate extends State
 	static void checkCompletionTransition(State thisState) throws DesignError
 	{
 		Transition complTrans = null;
-		for (Iterator transitionIter = thisState.OutTransition.iterator(); transitionIter.hasNext();) {
+		for (Iterator transitionIter = thisState.OutTransition().iterator(); transitionIter.hasNext();) {
 			Transition tr = (Transition) transitionIter.next();
 			if (!tr.hasTrigger()) {
 				if (complTrans == null) {
@@ -70,7 +71,7 @@ public class AcsStateDelegate extends State
 	public static Transition getCompletionTransition(State thisState) throws DesignError
 	{
 		Transition complTrans = null;
-		for (Iterator transitionIter = thisState.OutTransition.iterator(); transitionIter.hasNext();) {
+		for (Iterator transitionIter = thisState.OutTransition().iterator(); transitionIter.hasNext();) {
 			Transition tr = (Transition) transitionIter.next();
 			if (!tr.hasTrigger()) {
 				complTrans = tr;

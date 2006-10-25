@@ -24,14 +24,15 @@ package alma.acs.genfw.sm;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import de.bmiag.genfw.meta.DesignError;
-import de.bmiag.genfw.meta.ElementSet;
-import de.bmiag.genfw.meta.state.CompositeState;
-import de.bmiag.genfw.meta.state.Event;
-import de.bmiag.genfw.meta.state.SimpleState;
-import de.bmiag.genfw.meta.state.State;
-import de.bmiag.genfw.meta.state.StateVertex;
-import de.bmiag.genfw.meta.state.Transition;
+import org.openarchitectureware.core.constraint.DesignError;
+import org.openarchitectureware.core.meta.core.ElementSet;
+import org.openarchitectureware.meta.uml.state.CompositeState;
+import org.openarchitectureware.meta.uml.state.Event;
+import org.openarchitectureware.meta.uml.state.SimpleState;
+import org.openarchitectureware.meta.uml.state.State;
+import org.openarchitectureware.meta.uml.state.StateVertex;
+import org.openarchitectureware.meta.uml.state.Transition;
+
 
 /**
  * @author Heiko Sommer
@@ -100,16 +101,16 @@ public class AcsCompositeState extends CompositeState implements AcsState
 	 * @return list of {@link Event} objects.
 	 */
 	public ElementSet DistinctDeepOutEvent() {
-		HashMap eventMap = new HashMap(); // key=(String)eventName, to avoid multiple instances
+		HashMap<String, Event> eventMap = new HashMap<String, Event>(); // key=(String)eventName, to avoid multiple instances
 		ElementSet states = DeepSubState();
 		states.add(this);
 		for (Iterator iter = states.iterator(); iter.hasNext();) {
 			State state = (State) iter.next();			
-			for (Iterator transitionIter = state.OutTransition.iterator(); transitionIter.hasNext();) {
+			for (Iterator transitionIter = state.OutTransition().iterator(); transitionIter.hasNext();) {
 				Transition tr = (Transition) transitionIter.next();
 				if (tr.hasTrigger()) {
 					Event ev = tr.Trigger();
-					eventMap.put(ev.Name().Name(), ev);
+					eventMap.put(ev.NameS(), ev);
 				}
 			}
 		}
@@ -127,7 +128,7 @@ public class AcsCompositeState extends CompositeState implements AcsState
 	 * @return list of {@link Event} objects.
 	 */
 	public ElementSet DistinctDeepInternalEvent() {
-		HashMap eventMap = new HashMap(); // key=(String)eventName, to avoid multiple instances
+		HashMap<String, Event> eventMap = new HashMap<String, Event>(); // key=(String)eventName, to avoid multiple instances
 		ElementSet states = DeepSubState();
 		states.add(this);
 		for (Iterator iter = states.iterator(); iter.hasNext();) {
@@ -136,7 +137,7 @@ public class AcsCompositeState extends CompositeState implements AcsState
 				Transition tr = (Transition) transitionIter.next();
 				if (tr.hasTrigger()) {
 					Event ev = tr.Trigger();
-					eventMap.put(ev.Name().Name(), ev);
+					eventMap.put(ev.NameS(), ev);
 				}
 			}
 		}

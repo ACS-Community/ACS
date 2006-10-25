@@ -21,7 +21,8 @@
  */
 package alma.acs.genfw.sm;
 
-import de.bmiag.genfw.meta.state.Transition;
+import org.openarchitectureware.meta.uml.state.Transition;
+
 
 /**
  * Pseudo "second base class" for {@link alma.acs.genfw.sm.AcsSimpleState} 
