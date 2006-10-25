@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.10 2006/10/24 16:08:54 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.11 2006/10/25 14:49:35 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -61,14 +61,18 @@ INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsAlSysSource 
+LIBRARIES       = alSysSource acsAlSysSource 
 LIBRARIES_L     =
 
-#
-# <brief description of lllll library>
-acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter FaultState \
-	AlarmSystemInterface AlarmSystemInterfaceFactory Properties Timestamp ASIMessage ASIConfiguration
-acsAlSysSource_LIBS = acsutil expat maciStubs
+# The alSysSource library is for all the 'generic' classes that are not coupled 
+# with ACS (except for logging) and can be reused by 3rd parties.
+alSysSource_OBJECTS = FaultState AlarmSystemInterface AlarmSystemInterfaceFactory Properties Timestamp ASIMessage ASIConfiguration
+acsAlSysSource_LIBS = 
+
+# The acsAlSysSource library is for classes that are coupled with ACS and are not to be reused by 3rd parties. This library
+# depends on the generic library, alSysSource.
+acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter 
+acsAlSysSource_LIBS = maciStubs alSysSource acsutil expat 
 
 #
 # Scripts (public and local)
