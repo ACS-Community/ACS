@@ -2,3 +2,4 @@ SOURCE acsAlarmTATEnv
 0 unitTest "unitTestDriver"
 1 TestAcsAlarmSending "TestAcsAlarmSending 100" 
 2 FactoryTestCase "testFactory.sh"
+3 unitTest2 "unitTestDriver2"

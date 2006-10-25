@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2006/10/18 12:55:53 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.9 2006/10/25 10:23:07 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -35,15 +35,17 @@ USER_LIB = -lstdc++ -lxerces-c
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = TestAcsAlarmSending unitTestDriver FactoryTestCase 
-EXECUTABLES_L   = 
+EXECUTABLES     = 
+EXECUTABLES_L   = TestAcsAlarmSending unitTestDriver unitTestDriver2 FactoryTestCase 
 
 TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
-#TestAcsAlarmSending_LIBS      = laserAlarmPublisher laserSource ACSJMSMessageEntityStubs
 TestAcsAlarmSending_LIBS      = logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType
 
 unitTestDriver_OBJECTS   = unitTestDriver 
 unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType
+
+unitTestDriver2_OBJECTS   = unitTestDriver2 MockManager
+unitTestDriver2_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType
 
 FactoryTestCase_OBJECTS  = FactoryTestCase MockManager
 FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource maciErrType 
