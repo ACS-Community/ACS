@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.20 2006/10/11 16:02:32 gchiozzi Exp $
+# @(#) $Id: ContainerServices.py,v 1.21 2006/10/25 14:09:49 bjeram Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.20 2006/10/11 16:02:32 gchiozzi Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.21 2006/10/25 14:09:49 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.20 2006/10/11 16:02:32 gchiozzi Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.21 2006/10/25 14:09:49 bjeram Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -343,6 +343,27 @@ class ContainerServices:
         comp_info = getManager().get_default_component(self.__handle,
                                                        str(comp_type))
         corba_obj = comp_info.reference
+        
+        return self.__narrowComponentReference(corba_obj, comp_class)
+    #--------------------------------------------------------------------------
+    def getComponentNonSticky(self, comp_name):
+        '''
+        Gets the component in a non stick way.
+        The comp_name is a name of the component.
+
+        Parameters:
+        - comp_name is the name of the component.
+        
+        Returns: a narrowed reference to the component or None if
+        that reference cannot be obtained.
+
+        Raises: ??? 
+        '''
+        #Import the correct Python CORBA stub for the developer.
+        comp_class = self.__importComponentStubs(comp_name)
+        
+        corba_obj = getManager().get_component_non_sticky(self.__handle,
+                                                          str(comp_name))
         
         return self.__narrowComponentReference(corba_obj, comp_class)
     #--------------------------------------------------------------------------
