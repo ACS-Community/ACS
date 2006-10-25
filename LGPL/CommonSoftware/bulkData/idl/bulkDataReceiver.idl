@@ -87,7 +87,7 @@ module bulkdata
 	 @endhtmlonly
 	*/
 	ACSErr::Completion getCbStatus(in unsigned long flowNumber)
-	    raises (ACSBulkDataError::AVInvalidFlowNumberEx);
+	    raises (ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
 
 	/**
 	 *  Set receiver timeout
@@ -97,7 +97,7 @@ module bulkdata
 	 @endhtmlonly
 	*/
 	void setTimeout(in unsigned long flowNumber, in unsigned long timeout)
-	    raises (ACSBulkDataError::AVInvalidFlowNumberEx);
+	    raises (ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
 
 	/**
 	 *  Set receiver name in receiver callback
@@ -126,7 +126,8 @@ module bulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void setReceiver(in BulkDataReceiverConfig receiverConfig);
+	void setReceiver(in BulkDataReceiverConfig receiverConfig)
+	    raises (ACSBulkDataError::AVFlowEndpointErrorEx);
 	};
 
 };

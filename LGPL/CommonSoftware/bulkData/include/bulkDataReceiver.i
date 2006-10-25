@@ -154,23 +154,30 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
 
     BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
     fepMap_m.find(flowName, fep);
-
-    AVStreams::FlowEndPoint_ptr connFep = 0; 
-    connFep = fep->get_connected_fep();
-    if(fep == 0 || connFep == 0)
+    if(fep == 0)
 	{
-	//AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
-	//throw err;
-	cb_p = 0;
-	} 
-   else
-	cb_p = fep->getBulkDataCallback();
-
-    /*if(cb_p == 0)
-	{
-	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
-	}*/
+	}
+    else
+	{
+	AVStreams::FlowEndPoint_ptr connFep = 0; 
+	connFep = fep->get_connected_fep();
+	if(connFep == 0)
+	    {
+	    //cb_p = 0;
+	    // To be verified what do to here
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	    throw err;
+	    } 
+	else
+	    cb_p = fep->getBulkDataCallback();
+	/*if(cb_p == 0)
+	  {
+	  AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	  throw err;
+	  }*/
+	}
 }
 
 
@@ -194,20 +201,30 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::UL
     flowName = vec[flowNumber].c_str();
 
     fepMap_m.find(flowName, fep);
-
     if(fep == 0)
 	{
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
-	} 
-    else
-	cb_p = fep->getBulkDataCallback();
-    
-    if(cb_p == 0)
-	{
-	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
-	throw err;
 	}
+    else
+	{
+	AVStreams::FlowEndPoint_ptr connFep = 0; 
+	connFep = fep->get_connected_fep();
+	if(connFep == 0)
+	    {
+	    //cb_p = 0;
+	    // To be verified what do to here
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	    throw err;
+	    } 
+	else
+	    cb_p = fep->getBulkDataCallback();
+	/*if(cb_p == 0)
+	  {
+	  AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	  throw err;
+	  }*/
+	}	
 }
 
 

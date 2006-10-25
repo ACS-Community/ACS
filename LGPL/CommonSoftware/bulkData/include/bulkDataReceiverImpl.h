@@ -120,10 +120,10 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
 	throw (CORBA::SystemException, AVCloseReceiverErrorEx);
 
     virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx);
 
     virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
+	throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx);
 
     virtual void setRecvName(const char *recvName) 
 	throw (CORBA::SystemException, AVInvalidFlowNumberEx);

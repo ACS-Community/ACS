@@ -138,7 +138,7 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 
 template<class TCallback>
 ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong flowNumber) 
-    throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+    throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::getCbStatus");
 	
@@ -151,6 +151,10 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
     catch(AVInvalidFlowNumberExImpl & ex)
 	{
 	throw ex.getAVInvalidFlowNumberEx();
+	}
+    catch(AVFlowEndpointErrorExImpl &ex)
+	{
+	throw ex.getAVFlowEndpointErrorEx();
 	}
 
     if(cb->isError())
@@ -187,7 +191,7 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-    throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+    throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx)
 {
     TCallback *cb = 0;
 
@@ -198,6 +202,10 @@ void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA:
     catch(AVInvalidFlowNumberExImpl & ex)
 	{
 	throw ex.getAVInvalidFlowNumberEx();
+	}
+    catch(AVFlowEndpointErrorExImpl &ex)
+	{
+	throw ex.getAVFlowEndpointErrorEx();
 	}
 
     cb->setFlowTimeout(timeout);

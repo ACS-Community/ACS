@@ -394,7 +394,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::closeReceiver(
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(const bulkdata::BulkDataReceiverConfig &receiverConfig)
-    throw (CORBA::SystemException)
+    throw (CORBA::SystemException, AVFlowEndpointErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::setReceiver");
 
@@ -405,8 +405,18 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 	{ 
 	ACE_CString flw = TAO_AV_Core::get_flowname(receiverConfig.fepsInfo[i]);
 
-	TReceiverCallback *cb = 0;	 
-	distributer.getReceiver()->getFlowCallback(flw, cb);
+	TReceiverCallback *cb = 0;
+
+	try
+	    {
+	    distributer.getReceiver()->getFlowCallback(flw, cb);
+	    }
+	catch(AVFlowEndpointErrorExImpl &ex)
+	    {
+	    ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerImpl::setReceiver exception catched !"));
+	    throw ex.getAVFlowEndpointErrorEx();
+	    }
+
 	if(cb == 0)
 	    {
 // TBD what to do
@@ -423,7 +433,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 
 template<class TReceiverCallback, class TSenderCallback>
 ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::getCbStatus(CORBA::ULong flowNumber) 
-    throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+    throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::getCbStatus");
     
@@ -437,6 +447,10 @@ ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>
     catch(AVInvalidFlowNumberExImpl & ex)
 	{
 	throw ex.getAVInvalidFlowNumberEx();
+	}
+    catch(AVFlowEndpointErrorExImpl &ex)
+	{
+	throw ex.getAVFlowEndpointErrorEx();
 	}
 
     if(cb->isTimeout() && cb->isWorking())
