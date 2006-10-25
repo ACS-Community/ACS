@@ -76,8 +76,7 @@ public interface AdvancedContainerServices {
      * 
      * @param curl  name (url) of the component that should be released.
      * @throws ContainerException if the forceful release failed, for example because the calling client (component) did not acquire a reference to the target component.
-     * @deprecated  introduced in ACS 5.0.4 as a workaround until we have a proper concept of a "weak" component reference. 
-     *              Then this method will be removed.
+     * @deprecated  Use {@link ContainerServices#getComponentNonSticky(String)} instead, which replaces this workaround since ACS 6.0. 
      */
     public void forceReleaseComponent(String curl) throws AcsJContainerServicesEx;
 }
