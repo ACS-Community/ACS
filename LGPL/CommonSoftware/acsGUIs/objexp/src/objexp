@@ -1,4 +1,5 @@
 #! /bin/sh
+. acsstartupAcsPorts
 #
 # The CLASSPATH should include all jar files in ../lib, 
 # $INTROOT/lib, $ACSROOT/lib, $VLTROOT/lib 
@@ -9,5 +10,6 @@
 # The most important is 
 #    -Dobjexp.pool_timeout=<time in ms>
 # to set DSI pool timeout.
+export HOST=`getIP`
 
-acsStartJava $* si.ijs.acs.objectexplorer.ObjectExplorer BACI
+acsStartJava $* -DOAIAddr=$HOST si.ijs.acs.objectexplorer.ObjectExplorer BACI 
