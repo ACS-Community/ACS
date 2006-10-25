@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyexmplTestPyContainer.py,v 1.7 2004/04/21 22:36:36 dfugate Exp $
+# @(#) $Id: acspyexmplTestPyContainer.py,v 1.8 2006/10/25 14:10:28 bjeram Exp $
 
 """
 Test very simple components.
@@ -43,6 +43,12 @@ try:
     test2 = simpleClient.getComponent("HELLODEMO2")
     print test2.sayHello()
     print test2.sayHelloWithParameters("I'm an 'inString'", 3.14)
+
+    print
+    print "Now test getting HELLODEMO2 non sticky"
+    test3 = simpleClient.getComponentNonSticky("HELLODEMO2")
+    print test3.sayHello()
+    print test3.sayHelloWithParameters("I'm an 'inString'", 3.14)
     
 except Exception, e:
     print "Test FAILED!!!"
