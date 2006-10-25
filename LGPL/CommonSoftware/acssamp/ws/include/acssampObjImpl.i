@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.3 2006/10/24 10:54:43 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.4 2006/10/25 13:06:36 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -544,11 +544,7 @@ void  ACSSampObjImpl<ACS_SAMP_TL>::flushSamp()
   
     mbf->release();
 
-#ifdef MAKE_VXWORKS
     sampSupplier_p->publishData(theSeq.in());
-#else
-    sampSupplier_p->publishData<acssamp::SampObj::SampDataBlockSeq>(theSeq.in());
-#endif
 }
 
 
