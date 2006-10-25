@@ -612,6 +612,24 @@ public class AcsManagerProxy
 	}
 
 	
+	public Object get_component_non_sticky(int clientHandle, String component_url)
+    	throws AcsJCannotGetComponentEx, AcsJComponentNotAlreadyActivatedEx, AcsJNoPermissionEx
+    {
+	try {
+		return m_manager.get_component_non_sticky(clientHandle, component_url);
+	} catch (RuntimeException exc) {
+		handleRuntimeException(exc);
+		throw exc;
+	} catch (NoPermissionEx ex) {
+		throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
+	} catch (ComponentNotAlreadyActivatedEx ex) {
+		throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
+	} catch (CannotGetComponentEx ex) {
+		throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
+	}
+}
+
+
 	/**
 	 * Gets a component as a "weak client" who does not prevent component unloading in case
 	 * the other real clients release their references. 
