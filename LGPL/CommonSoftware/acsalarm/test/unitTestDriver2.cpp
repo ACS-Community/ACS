@@ -1,5 +1,4 @@
 #include <FaultState.h>
-#include <ACSAlarmSystemInterfaceFactory.h>
 #include <faultStateConstants.h>
 #include <asiConfigurationConstants.h>
 #include <ASIMessage.h>
@@ -123,7 +122,6 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 
 		DOMBuilder  *parser;
 		acsDOMErrorHandler* errHandler;
-		maci::MockManager * myMockMgr;
 
 		// Constants
 		XMLCh* ASI_MESSAGE_TAG_NAME;
@@ -168,17 +166,14 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 
 AcsAlarmTestCase::AcsAlarmTestCase()
 {
-	myMockMgr = new maci::MockManager();
 }
 
 AcsAlarmTestCase::~AcsAlarmTestCase()
 {
-	delete myMockMgr;
 }
 
 void AcsAlarmTestCase::setUp()
 {
-	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	XMLPlatformUtils::Initialize();
 
 	bool doNamespaces = false;
