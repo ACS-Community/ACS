@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.3 2006/10/19 17:50:02 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.4 2006/10/25 10:11:12 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,12 +57,13 @@
 
 #include "AlarmSupplier.h"
 #include "ACSJMSMessageEntityC.h"
+#include "acsutilTimeStamp.h"
 #include <logging.h>
 #include <string>
 
 using acsalarm::ASIMessage;
 
-static char *rcsId="@(#) $Id: AlarmSupplier.cpp,v 1.3 2006/10/19 17:50:02 sharring Exp $"; 
+static char *rcsId="@(#) $Id: AlarmSupplier.cpp,v 1.4 2006/10/25 10:11:12 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -101,16 +102,22 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 
 	CosNotification::StructuredEvent event;
 	populateHeader(event);    
-	event.filterable_data.length(1);
 
+	// populate event's description; while this isn't needed per se (as in, it isn't really used anywhere),
+	// java consumers cannot receive events if this info isn't populated.
+	acsnc::EventDescription description;
+	description.timestamp = getTimeStamp();
+	description.count = 0;
+	description.name = CORBA::string_dup("AlarmSupplier");
+	event.remainder_of_body <<= description;
+
+	// populate event's filterable data with XML representation of the alarm
+	event.filterable_data.length(1);
 	com::cosylab::acs::jms::ACSJMSMessageEntity msgForNotificationChannel;
 	string xmlToSend = msg.toXML();
-
 	string xmlToLog = "AlarmSupplier::publishEvent()\n\nAbout to send XML of: \n\n" + xmlToSend + "\n\n";
 	myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, xmlToLog);
-
 	msgForNotificationChannel.text = CORBA::string_dup(xmlToSend.c_str());
-    
 	event.filterable_data[0].value <<= msgForNotificationChannel;
 	
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Preparing to send XML.");
