@@ -261,6 +261,7 @@ acsRequiredJars= [ \
            "jcont.jar" , \
            "jacorb.jar", \
            "maci.jar", \
+           "maciSchemaBindings.jar",\
            "jcontnc.jar", \
            "acsnc.jar", \
            "acscomponent.jar", \
