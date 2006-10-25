@@ -100,6 +100,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 	// sync'd map, key=curl, value=corbaStub
 	private final Map<String, org.omg.CORBA.Object> m_usedComponentsMap;
+	private final Map<String, org.omg.CORBA.Object> m_usedNonStickyComponentsMap;
 
 	// sync'd map, key=curl, value=ComponentDescriptor
 	private final Map<String, ComponentDescriptor> m_componentDescriptorMap;
@@ -157,6 +158,8 @@ public class ContainerServicesImpl implements ContainerServices
 		 
 		// should do for thread-safety as long as we don't iterate over it
 		m_usedComponentsMap = Collections.synchronizedMap(new HashMap<String, org.omg.CORBA.Object>());
+		m_usedNonStickyComponentsMap = Collections.synchronizedMap(new HashMap<String, org.omg.CORBA.Object>());
+		
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
         
         m_threadFactory = threadFactory;        
@@ -232,7 +235,7 @@ public class ContainerServicesImpl implements ContainerServices
 		// find out which components are interesting for the client
 		List<ComponentDescriptor> interesting = new Vector<ComponentDescriptor>();
 		for (ComponentDescriptor cd : compDescs) {
-			if (m_usedComponentsMap.containsKey(cd.getName())) {
+			if (m_usedComponentsMap.containsKey(cd.getName()) || m_usedNonStickyComponentsMap.containsKey(cd.getName())) {
 				interesting.add(cd);
 			}
 		}
@@ -252,7 +255,7 @@ public class ContainerServicesImpl implements ContainerServices
 		// find out which components are interesting for the client
 		List<String> interesting = new Vector<String>();
 		for (String cn : compNames) {
-			if (m_usedComponentsMap.containsKey(cn)) {
+			if (m_usedComponentsMap.containsKey(cn) || m_usedNonStickyComponentsMap.containsKey(cn) ) {
 				interesting.add(cn);
 			}
 		}
@@ -452,6 +455,7 @@ public class ContainerServicesImpl implements ContainerServices
 		return stub;
 	}
 	
+	
 	public org.omg.CORBA.Object getComponentNonSticky(String curl) 
 		throws AcsJContainerServicesEx
 	{
@@ -464,15 +468,15 @@ public class ContainerServicesImpl implements ContainerServices
 
 		org.omg.CORBA.Object stub = null;
 		try {
-			stub = m_acsManagerProxy.get_component(m_clientHandle, curl, true);
-		    m_logger.fine("component " + curl + " retrieved successfully.");
-		    m_usedComponentsMap.put(curl, stub);
+			stub = m_acsManagerProxy.get_component_non_sticky(m_clientHandle, curl);
+		    m_logger.fine("Non-sticky reference to component '" + curl + "' retrieved successfully.");
+		    m_usedNonStickyComponentsMap.put(curl, stub);
 		} catch (AcsJmaciErrTypeEx ex) {				
-		    String msg = "Failed to retrieve component " + curl;
+		    String msg = "Failed to retrieve non-sticky reference to component " + curl;
 		    m_logger.log(Level.FINE, msg, ex); // only a low-level log because the client component is supposed to log the exception which contains all context data 
 		    throw new AcsJContainerServicesEx(ex);
 		} catch (Throwable thr) {
-		    String msg = "Failed to retrieve component " + curl + " for unexpected reasons.";
+		    String msg = "Failed to retrieve non-sticky reference to component '" + curl + "' for unexpected reasons.";
 		    m_logger.log(Level.FINE, msg, thr);  
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
 			ex.setContextInfo(msg);
@@ -694,8 +698,14 @@ public class ContainerServicesImpl implements ContainerServices
 		
 		if (!m_usedComponentsMap.containsKey(curl)) 
 		{
-			m_logger.info("ignoring request by client '" + m_clientName + 
+			if (m_usedNonStickyComponentsMap.containsKey(curl)) {
+				m_logger.info("ignoring request by client '" + m_clientName + 
+						"' to release component '" + curl + "' because the reference is non-sticky and does not need to be released.");				
+			}
+			else {
+				m_logger.info("ignoring request by client '" + m_clientName + 
 									"' to release other component with unknown curl='" + curl + "'.");
+			}
 		}
 		else
 		{
