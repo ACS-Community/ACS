@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: demoTATEnvironment,v 1.1 2006/10/10 14:56:02 acaproni Exp $"
+# "@(#) $Id: demoTATEnvironment,v 1.2 2006/10/25 10:07:16 sharring Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -9,6 +9,8 @@
 
 set ACS_TMP $env(PWD)/tmp
 set env(ACS_TMP) $ACS_TMP
+set ACS_LOG_STDOUT 0
+set env(ACS_LOG_STDOUT) $ACS_LOG_STDOUT
 
 #
 # ___oOo___
