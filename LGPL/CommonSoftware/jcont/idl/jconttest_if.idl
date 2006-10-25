@@ -47,6 +47,13 @@ module jconttest
 		void testGetCollocatedComponent(in string curl, in string targetCurl) raises (ACSErrTypeCommon::CouldntPerformActionEx);
 		
 		/**
+		 * Will obtain a non-sticky reference to the given component using the ContainerServices.
+		 * This method throws an exception if the reference can't be obtained, which is expected to happen if the 
+		 * other component has not already been activated by some other client.
+		 */
+		void testGetComponentNonSticky(in string curl) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+
+		/**
 		 * Will obtain a reference to the given component (if getOwnRef is true) and then try to forcefully release that component.
 		 * The calling client is exepcted to already hold a reference to that component, as otherwise the 
 		 * component unloading would be trivial instead of forceful.
