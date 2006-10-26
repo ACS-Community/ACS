@@ -231,16 +231,26 @@ public class ContainerServicesImpl implements ContainerServices
 	
 	/**
 	 */
-	void fireComponentsAvailable (List<ComponentDescriptor> compDescs) {
+	public void fireComponentsAvailable (List<ComponentDescriptor> compDescs) {
+		if (compListener == null) {
+			return;
+		}
+		
 		// find out which components are interesting for the client
-		List<ComponentDescriptor> interesting = new Vector<ComponentDescriptor>();
-		for (ComponentDescriptor cd : compDescs) {
-			if (m_usedComponentsMap.containsKey(cd.getName()) || m_usedNonStickyComponentsMap.containsKey(cd.getName())) {
-				interesting.add(cd);
+		List<ComponentDescriptor> interesting = null;
+		if (compListener.includeForeignComponents()) {
+			interesting = compDescs;
+		}
+		else {
+			interesting = new Vector<ComponentDescriptor>();
+			for (ComponentDescriptor cd : compDescs) {
+				if (m_usedComponentsMap.containsKey(cd.getName()) || m_usedNonStickyComponentsMap.containsKey(cd.getName())) {
+					interesting.add(cd);
+				}
 			}
 		}
 		
-     	if (interesting.size() > 0 && compListener != null) {
+     	if (interesting.size() > 0) {
      		try {
 				compListener.componentsAvailable(interesting);
 			} catch (Throwable thr) {
@@ -251,12 +261,22 @@ public class ContainerServicesImpl implements ContainerServices
 
 	/**
 	 */
-	void fireComponentsUnavailable (List<String> compNames) {
+	public void fireComponentsUnavailable (List<String> compNames) {
+		if (compListener == null) {
+			return;
+		}
+		
 		// find out which components are interesting for the client
-		List<String> interesting = new Vector<String>();
-		for (String cn : compNames) {
-			if (m_usedComponentsMap.containsKey(cn) || m_usedNonStickyComponentsMap.containsKey(cn) ) {
-				interesting.add(cn);
+		List<String> interesting = null;
+		if (compListener.includeForeignComponents()) {
+			interesting = compNames;
+		}
+		else {
+			interesting = new Vector<String>();
+			for (String cn : compNames) {
+				if (m_usedComponentsMap.containsKey(cn) || m_usedNonStickyComponentsMap.containsKey(cn) ) {
+					interesting.add(cn);
+				}
 			}
 		}
 		
