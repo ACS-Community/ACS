@@ -12,6 +12,10 @@ This file has to be moved into the TICS subsystem
 			type="string"
 			description="CURL/Name of the component."
 		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
 	</ErrorCode>
 
 	<ErrorCode name="CannotGetComponent"
@@ -20,6 +24,10 @@ This file has to be moved into the TICS subsystem
 		<Member name="CURL"
 			type="string"
 			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
 		/>
 	</ErrorCode>
 
@@ -61,6 +69,10 @@ This file has to be moved into the TICS subsystem
 			type="string"
 			description="Container where the component is deployed."
 		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
 	</ErrorCode>
 
 	<ErrorCode name="ComponentSpecIncompatibleWithActiveComponent"
@@ -82,11 +94,19 @@ This file has to be moved into the TICS subsystem
 			type="string"
 			description="Container where the component is deployed."
 		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
 	</ErrorCode>
 
 	<ErrorCode name="InvalidComponentSpec"
 	           shortDescription="Thrown if there is no valid dynamic component found for given resulting structure."
 	           description="Thrown if there is no valid dynamic component found for given resulting structure.">
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
 	</ErrorCode>
 
 	<ErrorCode name="NoDefaultComponent"
@@ -124,7 +144,7 @@ This file has to be moved into the TICS subsystem
 		/>
 		<Member name="DetailedReason"
 			type="string"
-			description="Detailed explanation of failure"
+			description="Detailed explanation of failure (Optional)"
 		/>
 	</ErrorCode>
 
@@ -180,10 +200,10 @@ This file has to be moved into the TICS subsystem
 	<ErrorCode name="ComponentNotInUse"
 	    shortDescription="Component is not in use"
 	    description="Component is not in use">
-        <Member name="CURL"
-		type="string"
-		description="CURL/Name of the component not in use."
-	/>
+	         <Member name="CURL"
+		         type="string"
+		         description="CURL/Name of the component not in use."
+		 />
 	</ErrorCode>
 
         <ErrorCode name="NoPermission"
