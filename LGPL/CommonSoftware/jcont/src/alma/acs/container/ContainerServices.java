@@ -288,18 +288,34 @@ public interface ContainerServices
 	
 	
 	public static interface ComponentListener {
-		void componentsAvailable(List<ComponentDescriptor> comps); 
+		/**
+		 * Called to find out whether a filter should be applied 
+		 * such that only notifications arrive for components to which the caller holds a reference.
+		 */
+		boolean includeForeignComponents();
+		
+		/**
+		 * Called when components become available
+		 */
+		void componentsAvailable(List<ComponentDescriptor> comps);
+		
+		/**
+		 * Called when components become unavailable
+		 */
 		void componentsUnavailable(List<String> compNames); 
 	}
 	
 	/**
 	 * Allows a client to register a callback object that gets notified when some  
 	 * component(s) in use by the client (= components the client requested previously)
-	 * dies or comes back to life.
+	 * dies or comes back to life (with <code>ComponentListener#includeForeignComponents()==false</code>). 
+	 * <p>
+	 * If the client wants to get notified even for components that it does not hold a reference to,
+	 * then <code>ComponentListener#includeForeignComponents()</code> should return <code>true</code>.
 	 * 
 	 * @param listener
-	 * @since ACS 6.0
 	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
+	 * @since ACS 6.0
 	 */
 	public void registerComponentListener(ComponentListener listener);
 	
