@@ -181,7 +181,7 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 	}
 
 	
-	public void testGetComponentNonSticky(String curl) throws CouldntPerformActionEx {
+	public void testGetComponentNonSticky(String curl, boolean release) throws CouldntPerformActionEx {
 		String msg = "component '" + curl + "'";
 		m_logger.info("Received call to testGetComponentNonSticky for " + msg);
 		try {
@@ -189,9 +189,12 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 			if (compObj == null) {
 				throw new NullPointerException("Got null reference for " + msg);
 			}
-			m_containerServices.releaseComponent(curl);
+			if (release) {
+				// releasing a non-sticky component ref should be a no-op 
+				m_containerServices.releaseComponent(curl);
+			}
 		} catch (Throwable thr) {
-			throw (new AcsJCouldntPerformActionEx("testGetCollocatedComponent failed for " + msg, thr)).toCouldntPerformActionEx();
+			throw (new AcsJCouldntPerformActionEx("testGetComponentNonSticky failed for " + msg, thr)).toCouldntPerformActionEx();
 		}		
 	}
 
