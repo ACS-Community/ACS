@@ -21,6 +21,7 @@
  */
 package alma.acs.component.client;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -30,9 +31,11 @@ import org.omg.PortableServer.POA;
 
 import si.ijs.maci.Client;
 
+import alma.acs.component.ComponentDescriptor;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.CleaningDaemonThreadFactory;
+import alma.acs.container.ComponentAdapter;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
@@ -166,6 +169,7 @@ public class ComponentClient
 						throw new RuntimeException("disconnected from the manager");
 					}
 				};
+
 			m_managerClient = clImpl._this(acsCorba.getORB());
 		
 			m_acsManagerProxy = new AcsManagerProxy(managerLoc, acsCorba.getORB(), m_logger);
@@ -177,6 +181,8 @@ public class ComponentClient
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
 										m_clientName, null, m_threadFactory);
+			
+			clImpl.setContainerServices(m_containerServices);
 			
 			//	init the alarm system
 			try {

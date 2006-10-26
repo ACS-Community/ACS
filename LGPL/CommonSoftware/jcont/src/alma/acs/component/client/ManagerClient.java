@@ -21,10 +21,15 @@
  */
 package alma.acs.component.client;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
-import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ComponentInfo;
+
+import alma.acs.component.ComponentDescriptor;
+import alma.acs.container.ContainerServicesImpl;
 
 /**
  * Class to be used when logging in to the ACS Manager.
@@ -33,17 +38,26 @@ import si.ijs.maci.ClientPOA;
  */
 class ManagerClient extends ClientPOA
 {
-	private String m_clientName;
+	private final String m_clientName;
 
-	private Logger m_logger;
+	private final Logger m_logger;
 
+	/**
+	 * Optional container services, used for notification for components_available etc.
+	 * To be set by the client application, and later used by the methods which the manager calls 
+	 * (in other threads, thus this field should be volatile to ensure that a non-null value becomes visible)
+	 */
+	private volatile ContainerServicesImpl containerServices;
 
-	ManagerClient(String clientName, Logger logger)
-	{
+	
+	ManagerClient(String clientName, Logger logger) {
 		m_clientName = clientName;
 		m_logger = logger;
 	}
-	
+		
+	public void setContainerServices(ContainerServicesImpl containerServices) {
+		this.containerServices = containerServices;
+	}
 	
 	/**
 	 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
@@ -56,15 +70,23 @@ class ManagerClient extends ClientPOA
 	/**
 	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
 	 */
-	public void components_available(ComponentInfo[] components)
-	{
+	public void components_available(ComponentInfo[] components) {
+//		m_logger.fine("+++++++++++++++++++ comp available +++++++++++++++++++");
+		if (containerServices != null) {
+	        List<ComponentDescriptor> compDescs = ComponentDescriptor.fromComponentInfoArray(components);
+			containerServices.fireComponentsAvailable(compDescs);
+		}
 	}
 	
 	/**
 	 * @see si.ijs.maci.ClientOperations#components_unavailable(java.lang.String[])
 	 */
-	public void components_unavailable(String[] component_names)
-	{
+	public void components_unavailable(String[] component_names) {
+//		m_logger.fine("-------------------- comp unavailable --------------------");
+		if (containerServices != null) {
+	        List<String> compNames = Arrays.asList(component_names); 
+			containerServices.fireComponentsUnavailable(compNames);
+		}
 	}
 	
 	/**
