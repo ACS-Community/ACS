@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.44 2005/12/14 19:33:18 dfugate Exp $" 
+# "@(#) $Id: Makefile,v 1.45 2006/10/26 14:26:01 bjeram Exp $" 
 #
 # Makefile of logging
 #
@@ -70,6 +70,7 @@ EXECUTABLES_L   =
 loggingService_OBJECTS   = logging loggingXMLElement loggingXMLParser loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
                            loggingLoggingTSSStorage loggingLoggingProxy  \
 			   loggingACSLogger  loggingLogSvcHandler \
+                           loggingLoggable \
 			   loggingBaseLog loggingHandler loggingLogger loggingLogTrace loggingGetLogger loggingGenericLogger loggingStdoutHandler
 #
 # special compilation flags for single c sources
