@@ -34,6 +34,7 @@ import alma.ACS.ROstringSeq;
 import alma.ACSErr.ACSErrTypeOK;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ACSErrTypeOK.ACSErrOK;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJCompletion;
@@ -204,6 +205,27 @@ public class StateChangeListener extends CBstringSeqPOA
 
 
 	/**
+	 * Reads the current state hierarchy.
+	 * @return State hierarchy with outmost state first
+	 * @throws AcsJIllegalStateEventEx if the state can't be read ; @TODO: use better fitting ex (don't want to create one now right before the release)
+	 */
+	public String[] getCurrentState() throws AcsJIllegalStateEventEx { 
+		CompletionHolder ch = new CompletionHolder();
+		String[] statesHierarchy = statesProperty.get_sync(ch);
+		
+		AcsJCompletion statesSyncCompletion = AcsJCompletion.fromCorbaCompletion(ch.value);
+		if (statesSyncCompletion.isError() ||  
+		        statesSyncCompletion.getType() != ACSErrTypeOK.value ||
+		        statesSyncCompletion.getCode() != ACSErrOK.value ||
+		        statesHierarchy == null ) {		 
+		   throw new AcsJIllegalStateEventEx("Failed to retrieve current subsystem state.");
+		}
+		
+		return statesHierarchy;
+	}	
+
+	
+	/**
 	 * Helper method for the repeated task of getting the current state hierarchy and 
 	 * comparing it against the expected hierarchy.
 	 * @return true if the current state hierarchy is equal to <code>expectedHierarchy</code>.
@@ -211,17 +233,10 @@ public class StateChangeListener extends CBstringSeqPOA
 	public boolean verifyCurrentState(String[] expectedHierarchy) 
 	{ 
 	    boolean ret = false;
-		CompletionHolder ch = new CompletionHolder();
-		String[] actualHierarchy = statesProperty.get_sync(ch);
-		
-		AcsJCompletion statesSyncCompletion = AcsJCompletion.fromCorbaCompletion(ch.value);
-		if (statesSyncCompletion.isError() ||  
-		        statesSyncCompletion.getType() != ACSErrTypeOK.value ||
-		        statesSyncCompletion.getCode() != ACSErrOK.value ||
-		        actualHierarchy == null ) {		 
-		   logger.severe("failed to retrieve current state hierarchy!");
-		}
-		else {
+	    
+	    String[] actualHierarchy = null;
+	    try {
+	    	actualHierarchy = getCurrentState();
 			String expectedPath = AcsStateUtil.stateHierarchyNamesToString(expectedHierarchy);
 			String actualPath = AcsStateUtil.stateHierarchyNamesToString(actualHierarchy);
 			if (actualPath.equals(expectedPath)) {
@@ -230,9 +245,12 @@ public class StateChangeListener extends CBstringSeqPOA
 			}
 			else {
 				logger.info("current state hierarchy '" + actualPath + "' differs from expected '" + expectedPath + "'.");
-			}
-		}		
+			}	    	
+	    }
+	    catch (Exception ex) {
+	    	; // ret=false
+	    }
 		return ret;
-	}	
+	}		
 
 }
