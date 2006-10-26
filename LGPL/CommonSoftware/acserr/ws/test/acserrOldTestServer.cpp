@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrOldTestServer.cpp,v 1.8 2005/09/21 08:53:00 vwang Exp $"
+* "@(#) $Id: acserrOldTestServer.cpp,v 1.9 2006/10/26 13:36:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 * rlemke   30/08/01  integrated into tat 
 */
 
-static char *rcsId="@(#) $Id: acserrOldTestServer.cpp,v 1.8 2005/09/21 08:53:00 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acserrOldTestServer.cpp,v 1.9 2006/10/26 13:36:33 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrOldTestImpl.h"
@@ -53,6 +53,8 @@ void TerminationSignalHandler(int)
 #	include "acsutilArgUnpack.h"
 
 int acserrOldTestServer (char *szCmdLn){
+  ACE_OS_Object_Manager ace_os_object_manager;
+  ACE_Object_Manager ace_object_manager;
   int  argc;
   char *argv[100];
 

@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: userScript,v 1.43 2006/10/11 13:41:15 bjeram Exp $"
+# "@(#) $Id: userScript,v 1.44 2006/10/26 13:36:38 bjeram Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -45,7 +45,7 @@ lcubootAutoLoad 1,"libTAO_PortableServer.so"
 lcubootAutoLoad 1,"libTAO_ObjRefTemplate.so"
 #lcubootAutoLoad 1,"libTAO_IORInterceptor.so"
 #lcubootAutoLoad 1,"libTAO_IORTable.so"
-#lcubootAutoLoad 1,"libTAO_PI.so"
+lcubootAutoLoad 1,"libTAO_PI.so"
 lcubootAutoLoad 1,"libTAO_CosProperty.so"
 lcubootAutoLoad 1,"libTAO_Svc_Utils.so"
 lcubootAutoLoad 1,"libTAO_Messaging.so"
