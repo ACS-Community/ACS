@@ -35,6 +35,7 @@ import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -56,11 +57,13 @@ public class ComponentTestclient extends ComponentClientTestCase
 	protected void setUp() throws Exception
 	{
 		super.setUp();
+		
 		org.omg.CORBA.Object compObj = getContainerServices().getComponent(CONTSRVCOMP_INSTANCE);
 		assertNotNull(compObj);
 		m_contSrvTesterComp = ContainerServicesTesterHelper.narrow(compObj);
 	}
-
+	
+	
     public void testComponentName() {
 		StringHolder nameHolder = new StringHolder();
 		boolean ret = m_contSrvTesterComp.testComponentName(nameHolder);
@@ -88,15 +91,55 @@ public class ComponentTestclient extends ComponentClientTestCase
         assertTrue("test execution successful on the server component", ret);
     }
     
-    public void testGetCollocatedComponent() throws AcsJCouldntPerformActionEx {
+    public void testGetCollocatedComponent() throws Exception {
     	try {
 			// a new component in the same container as our main test component
 			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy1", CONTSRVCOMP_INSTANCE);
 			
 			// now we check whether a non-activated target component also works
-			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy2", "MyCollocationTargetDummy");			
+			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy2", "MyCollocationTargetDummy");
+			
     	} catch (CouldntPerformActionEx ex) {
     		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+    	}
+    }
+
+    public void testGetComponentNonSticky() throws Exception {
+		// without previous activation, the call should fail
+    	try {
+			m_contSrvTesterComp.testGetComponentNonSticky(DEFAULT_DUMMYCOMP_INSTANCE, false);
+			fail("Exception expected, since non-sticky comp ref should not have been available.");
+    	} catch (CouldntPerformActionEx ex) {
+    		;// expected
+    	}
+    	
+    	// now our test is the real client that activates the component beforehand
+    	getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+    	
+    	try {
+    		// this time the test comp should get the non-sticky ref
+    		m_contSrvTesterComp.testGetComponentNonSticky(DEFAULT_DUMMYCOMP_INSTANCE, false);
+    	} catch (CouldntPerformActionEx ex) {
+    		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+    	}
+
+    	try {
+    		// and the same thing again, but this time testing that releasing the non-sticky ref goes ok
+    		m_contSrvTesterComp.testGetComponentNonSticky(DEFAULT_DUMMYCOMP_INSTANCE, true);
+    	} catch (CouldntPerformActionEx ex) {
+    		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+    	}
+
+    	getContainerServices().releaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);  // returns only when comp has been unloaded
+    	
+    	try {
+			// with the target comp gone, this call should fail again
+    		m_contSrvTesterComp.testGetComponentNonSticky(DEFAULT_DUMMYCOMP_INSTANCE, true);
+			fail("Exception expected, since non-sticky comp ref should not have been available.");
+    	} catch (CouldntPerformActionEx ex) {
+    		// expected
+    		AcsJCouldntPerformActionEx jEx = AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+    		assertEquals("testGetComponentNonSticky failed for component 'DefaultDummyComp'", jEx.getMessage());
     	}
     }
 
@@ -130,37 +173,34 @@ public class ComponentTestclient extends ComponentClientTestCase
     }
 
     
-    public void _testComponentListening () throws Exception {
+    public void testComponentListening () throws Exception {
 		try {
-			class CompLizzy implements ContainerServices.ComponentListener {
-				int nComponentsAvailable;
-				int nComponentsUnavailable;
-				public void componentsAvailable(List<ComponentDescriptor> comps) {nComponentsAvailable++;} 
-				public void componentsUnavailable(List<String> comps) {nComponentsUnavailable++;} 
-			}
-			CompLizzy lizzy = new CompLizzy();
-			
-    		getContainerServices().registerComponentListener(lizzy);
+			BlockingComponentListener blockLizzy = new BlockingComponentListener(m_logger);
+    		getContainerServices().registerComponentListener(blockLizzy);
     		
     		// we shouldn't get notified as we're not a client of the component yet
 			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-			assertEquals(0, lizzy.nComponentsAvailable);
-			assertEquals(0, lizzy.nComponentsUnavailable);
+			Thread.sleep(2000); // to make sure we would have gotten the notification if there were any
+			assertEquals(0, blockLizzy.getAllCompsAvailable().size());
+			assertEquals(0, blockLizzy.getAllCompNamesUnavailable().size());
 
-
+			
 			DummyComponent defaultDummy = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
     		// from now on we should be notified
 			
-			// component already active, this call will kill it 
+			// component already active, this call will kill it . Should yield one notification
+    		blockLizzy.clearAndExpect(1);
     		m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-//			assertEquals(0, lizzy.nComponentsAvailable);
-//			assertEquals(1, lizzy.nComponentsUnavailable);
+    		blockLizzy.awaitNotifications(10, TimeUnit.SECONDS);
+			assertEquals(0, blockLizzy.getAllCompsAvailable().size());
+			assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
 			
-			// this call will both activate and kill the component 
+			// this call will both activate and kill the component . Should yield two notifications in total
+    		blockLizzy.clearAndExpect(2);
 			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-//			assertEquals(1, lizzy.nComponentsAvailable);
-//			assertEquals(2, lizzy.nComponentsUnavailable);
-
+    		blockLizzy.awaitNotifications(10, TimeUnit.SECONDS);
+			assertEquals(1, blockLizzy.getAllCompsAvailable().size());
+			assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
 			
 		} catch (CouldntPerformActionEx ex) {
 			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
