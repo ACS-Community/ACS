@@ -65,6 +65,7 @@ public class ComponentClientTestCase extends TestCase
 	protected String m_managerLoc;
 
 	// manager client object 
+	private ManagerClient managerClientImpl;
 	private Client m_managerClient;
 
 	private String m_namePrefix;
@@ -127,6 +128,7 @@ public class ComponentClientTestCase extends TestCase
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
 										this.getClass().getName(), null, m_threadFactory);
+			managerClientImpl.setContainerServices(m_containerServices);
             initRemoteLogging();
 		}
 		catch (Exception ex)
@@ -165,7 +167,7 @@ public class ComponentClientTestCase extends TestCase
 			m_managerLoc = "corbaloc::" + host + ":" + ACSPorts.getManagerPort() + "/Manager";
 		}
 					
-		ManagerClient clImpl = new ManagerClient(getFullName(), m_logger)
+		managerClientImpl = new ManagerClient(getFullName(), m_logger)
 			{
 				public void disconnect()
 				{
@@ -177,7 +179,7 @@ public class ComponentClientTestCase extends TestCase
 			};
 			
 		ORB orb = acsCorba.getORB();		
-		m_managerClient = clImpl._this(orb);		
+		m_managerClient = managerClientImpl._this(orb);		
 		m_acsManagerProxy = new AcsManagerProxy(m_managerLoc, orb, m_logger);
 		
 		m_acsManagerProxy.loginToManager(m_managerClient, false);
