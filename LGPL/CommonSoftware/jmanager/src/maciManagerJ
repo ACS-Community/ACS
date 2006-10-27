@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: maciManagerJ,v 1.33 2006/10/26 13:42:12 gchiozzi Exp $"
+# "@(#) $Id: maciManagerJ,v 1.34 2006/10/27 09:02:16 msekoran Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -168,6 +168,6 @@ fi
 #
 #
 acsStartJava -noClassLoader -noAutoClasspath \
-    -addToClasspath jManager.jar:jmanagerErrType.jar:maci.jar:jACSCommon.jar:cosyframework-core.jar:cosyframework-gui.jar:cosyicons.jar:prevayler-1.02.001.jar:concurrent.jar:activation.jar:cdbErrType.jar:acserr.jar:acserrj.jar:CDB.jar:cdbDAL.jar:cdbJDAL.jar:jACSUtil.jar:acscomponent.jar:acsjlog.jar:maciErrType.jar \
+    -addToClasspath jManager.jar:jmanagerErrType.jar:maci.jar:jACSCommon.jar:cosyframework-core.jar:cosyframework-gui.jar:cosyicons.jar:prevayler-1.02.001.jar:concurrent.jar:activation.jar:cdbErrType.jar:acserr.jar:acserrj.jar:CDB.jar:cdbDAL.jar:cdbJDAL.jar:jACSUtil.jar:acscomponent.jar:acsjlog.jar:maciErrType.jar:acsdaemon.jar:acsdaemonErrType.jar:ACSErrTypeCommon.jar \
     -Dabeans.home=$ACS_MANAGER_CONFIG -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE -DDAL.defaultReference=corbaloc::$HOST:$ACS_CDB_PORT/CDB -DOAPort=$ACS_MANAGER_PORT $ACS_FEDERATION com.cosylab.acs.maci.manager.app.Manager $1 $2 $3 $4 $5 $6 $7 $8 $9
 
