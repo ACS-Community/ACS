@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemonImpl.cpp,v 1.2 2006/06/23 12:23:05 msekoran Exp $"
+* "@(#) $Id: acsdaemonImpl.cpp,v 1.3 2006/10/27 09:19:20 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -208,8 +208,8 @@ ACSDaemonImpl::start_container (
 
     // execute: "acsStartContainer -<type> -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
-    char command[200];
-    snprintf(command, 200, "acsStartContainer -%s -b %d %s %s &", container_type, instance_number, container_name, cmdln);
+    char command[1000];
+    snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &", container_type, instance_number, container_name, cmdln);
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
