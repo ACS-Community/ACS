@@ -21,21 +21,19 @@
  */
 package alma.acs.container;
 
+import java.util.concurrent.TimeUnit;
+
 import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.StringHolder;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.jconttest.ContainerServicesTester;
 import alma.jconttest.ContainerServicesTesterHelper;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -191,14 +189,16 @@ public class ComponentTestclient extends ComponentClientTestCase
 			// component already active, this call will kill it . Should yield one notification
     		blockLizzy.clearAndExpect(1);
     		m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-    		blockLizzy.awaitNotifications(10, TimeUnit.SECONDS);
+            assertTrue("Failed to get expected notification from manager within 10 seconds", 
+                    blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
 			assertEquals(0, blockLizzy.getAllCompsAvailable().size());
 			assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
 			
 			// this call will both activate and kill the component . Should yield two notifications in total
     		blockLizzy.clearAndExpect(2);
 			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-    		blockLizzy.awaitNotifications(10, TimeUnit.SECONDS);
+            assertTrue("Failed to get expected notification from manager within 10 seconds",
+                    blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
 			assertEquals(1, blockLizzy.getAllCompsAvailable().size());
 			assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
 			
