@@ -5,7 +5,13 @@
 package com.cosylab.acs.maci;
 
 import java.net.URI;
+
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 /**
  * Manager is the central point of interaction between the components 
@@ -100,7 +106,7 @@ public interface Manager
 	 * @return			Reference to the Component. If the Component could not be activated, a nil reference is returned,
 	 *					and the status contains an error code detailing the cause of failure (one of the component_* constants).
 	 */
-	public Component getComponent(int id, URI curl, boolean activate, StatusHolder status) throws AcsJNoPermissionEx;
+	public Component getComponent(int id, URI curl, boolean activate, StatusHolder status) throws AcsJCannotGetComponentEx, AcsJNoPermissionEx;
 
 	/** 
 	 * Restart a component.
@@ -112,7 +118,8 @@ public interface Manager
 	 * @param	curl	CURL of the component whose reference is to be restarted.
 	 * @return			Reference to the component. If the component could not be restarted, a nil reference is returned.
 	 */
-	public Component restartComponent(int id, URI curl) throws AcsJNoPermissionEx;
+	public Component restartComponent(int id, URI curl) 
+	    throws AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/**
 	 * Change mortality state of an component.
@@ -124,7 +131,8 @@ public interface Manager
 	 * @param curl The CURL of the component whose mortality to change.
 	 * @param immortalState New mortality state.
 	 **/
-	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws AcsJNoPermissionEx;
+	public void makeComponentImmortal(int id, URI curl, boolean immortalState) 
+	    throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/** 
 	 * Used for retrieving several components with one call. 
@@ -148,7 +156,7 @@ public interface Manager
 	 * NOTE: a component is also a service, i.e. a service activated by a container.
 	 * @see #get_component
 	 */
-	public Component getService(int id, URI curl, boolean activate, StatusHolder status) throws AcsJNoPermissionEx;
+	public Component getService(int id, URI curl, boolean activate, StatusHolder status) throws AcsJCannotGetComponentEx, AcsJNoPermissionEx;
 
 	/** 
 	 * Get services.
@@ -192,7 +200,8 @@ public interface Manager
 	 * @param	cob		Object to be registered as component.
 	 * @return			Returns the handle of the newly registered component.
 	 */
-	public int registerComponent(int id, URI curl, String type, Component cob) throws AcsJNoPermissionEx;
+	public int registerComponent(int id, URI curl, String type, Component cob) 
+	throws AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/**
 	 * Release a component.
@@ -205,7 +214,7 @@ public interface Manager
 	 * @return			Number of clients that are still using the Component after the operation completed.
 	 *					This is a useful debugging tool.
 	 */
-	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx;
+	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/**
 	 * Forcefully release a component.
@@ -215,7 +224,7 @@ public interface Manager
 	 * @return			Number of clients that are still using the Component after the operation completed.
 	 *					This is a useful debugging tool.
 	 */
-	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx;
+	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/**
 	 * Release components.
@@ -257,7 +266,7 @@ public interface Manager
 	 * 					If there are clients still using this component, a <code>components_unavailable</code> notification is
 	 * 					issued to all of them, and the component is unregistered.
 	 */
-	public void unregisterComponent(int id, int handle) throws AcsJNoPermissionEx;
+	public void unregisterComponent(int id, int handle) throws AcsJNoPermissionEx, AcsJBadParameterEx;
 
 
 	/** 
@@ -272,7 +281,7 @@ public interface Manager
 	 * @return			<code>ComponentInfo</code> of the component. If no defualt component is found
 	 * 					<code>NoDefaultComponentException</code> exception is thrown.
 	 */
-	public ComponentInfo getDefaultComponent(int id, String type) throws AcsJNoPermissionEx, NoDefaultComponentException;
+	public ComponentInfo getDefaultComponent(int id, String type) throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, NoDefaultComponentException;
 
 	/**
 	 * Activation of an dynamic component.
@@ -284,8 +293,8 @@ public interface Manager
 	 * 			If requested component collides with already activated component with the same name <code>ComponentSpecIncompatibleWithActiveComponentException</code> exception is thrown.
 	 */
 	public ComponentInfo getDynamicComponent(int id, ComponentSpec componentSpec, boolean markAsDefault)
-		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
-			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;
+	throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
+	   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx;
 
 	/**
 	 * Group request of dynamic components.
@@ -309,8 +318,8 @@ public interface Manager
 	 */
 	public ComponentInfo getCollocatedComponent(int id, ComponentSpec componentSpec,
 			boolean markAsDefault, URI targetComponentURI)
-		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
-			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException;
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
+		   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx;
 
 	/**
 	 * Get a component, do not activate it and also do not do any reference counting.
@@ -323,7 +332,7 @@ public interface Manager
 	 * @return Reference to the Component.
 	 */
 	public Component getComponentNonSticky(int id, URI curl) 
-		throws AcsJNoPermissionEx;
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx;
 
 }
 

@@ -46,12 +46,13 @@ import com.cosylab.acs.maci.manager.CURLHelper;
 import com.cosylab.acs.maci.manager.ManagerImpl;
 
 import org.omg.CORBA.BAD_PARAM;
-import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.UNKNOWN;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotRegisterComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx;
 import alma.maciErrType.wrappers.AcsJComponentConfigurationNotFoundEx;
 import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
@@ -648,14 +649,14 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
-		} /*
+		} 
 		catch (AcsJCannotGetComponentEx cgce)
 		{
 			reportException(cgce);
 
 			// rethrow CORBA specific
 			throw cgce.toCannotGetComponentEx();
-		} */
+		}
 		catch (AcsJComponentNotAlreadyActivatedEx cnaae)
 		{
 			reportException(cnaae);
@@ -1011,14 +1012,21 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
-		} /*
-		catch (AcsJCannotRegisterComponentEx crce)
+		} 
+		catch (AcsJNoPermissionEx npe)
 		{
-			reportException(crce);
+			reportException(npe);
 
 			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			reportException(bpe);
+			AcsJCannotRegisterComponentEx crce = new AcsJCannotRegisterComponentEx(bpe);
+			// rethrow CORBA specific
 			throw crce.toCannotRegisterComponentEx();
-		} */
+		}
 		catch (Throwable ex)
 		{
 			CoreException hce = new CoreException(this, ex.getMessage(), ex);
@@ -2493,7 +2501,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 */
 	public boolean isDebug()
 	{
-		return true;
+		return false;
 	}
 
 	/**

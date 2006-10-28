@@ -57,22 +57,31 @@ import abeans.core.defaults.MessageLogEntry;
 import abeans.framework.ApplicationContext;
 import abeans.pluggable.RemoteException;
 import abeans.pluggable.acs.logging.LoggingLevel;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
+import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.cdb.CDBAccess;
 import com.cosylab.acs.cdb.DAOProxy;
 import com.cosylab.acs.cdb.DAOProxyConnectionListener;
 import com.cosylab.acs.maci.AccessRights;
-import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentSpecIncompatibleWithActiveComponentException;
-import com.cosylab.acs.maci.Container;
-import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.BadParametersException;
-import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentInfo;
-import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientInfo;
+import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.ComponentSpec;
+import com.cosylab.acs.maci.ComponentSpecIncompatibleWithActiveComponentException;
+import com.cosylab.acs.maci.ComponentStatus;
+import com.cosylab.acs.maci.Container;
+import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.HandleHelper;
@@ -87,6 +96,22 @@ import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
 import com.cosylab.acs.maci.Transport;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
+import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
+import com.cosylab.acs.maci.manager.recovery.AdministratorCommandDeallocate;
+import com.cosylab.acs.maci.manager.recovery.AdministratorCommandSet;
+import com.cosylab.acs.maci.manager.recovery.ClientCommandAllocate;
+import com.cosylab.acs.maci.manager.recovery.ClientCommandDeallocate;
+import com.cosylab.acs.maci.manager.recovery.ClientCommandSet;
+import com.cosylab.acs.maci.manager.recovery.ClientInfoCommandComponentAdd;
+import com.cosylab.acs.maci.manager.recovery.ClientInfoCommandComponentRemove;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandAckAlloc;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandAllocate;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandAllocateHandle;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandClientAdd;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandClientRemove;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandDeallocate;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandPreallocate;
+import com.cosylab.acs.maci.manager.recovery.ComponentCommandSet;
 import com.cosylab.acs.maci.manager.recovery.ComponentInfoCommandComponentAdd;
 import com.cosylab.acs.maci.manager.recovery.ComponentInfoCommandComponentRemove;
 import com.cosylab.acs.maci.manager.recovery.ContainerCommandAllocate;
@@ -95,29 +120,11 @@ import com.cosylab.acs.maci.manager.recovery.ContainerCommandSet;
 import com.cosylab.acs.maci.manager.recovery.ContainerCommandUpdate;
 import com.cosylab.acs.maci.manager.recovery.ContainerInfoCommandComponentAdd;
 import com.cosylab.acs.maci.manager.recovery.ContainerInfoCommandComponentRemove;
-import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
-import com.cosylab.acs.maci.manager.recovery.AdministratorCommandDeallocate;
-import com.cosylab.acs.maci.manager.recovery.AdministratorCommandSet;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandAckAlloc;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandAllocateHandle;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandClientAdd;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandDeallocate;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandSet;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandAllocate;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandPreallocate;
-import com.cosylab.acs.maci.manager.recovery.ComponentCommandClientRemove;
-import com.cosylab.acs.maci.manager.recovery.ClientCommandAllocate;
-import com.cosylab.acs.maci.manager.recovery.ClientCommandDeallocate;
-import com.cosylab.acs.maci.manager.recovery.ClientCommandSet;
-import com.cosylab.acs.maci.manager.recovery.ClientInfoCommandComponentAdd;
-import com.cosylab.acs.maci.manager.recovery.ClientInfoCommandComponentRemove;
 import com.cosylab.acs.maci.manager.recovery.DefaultComponentCommandPut;
 import com.cosylab.acs.maci.manager.recovery.UnavailableComponentCommandPut;
 import com.cosylab.acs.maci.manager.recovery.UnavailableComponentCommandRemove;
 import com.cosylab.acs.maci.plug.ManagerProxy;
 import com.cosylab.util.WildcharMatcher;
-
-import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * This class is an implementation of MACI com.cosylab.acs.maci.Manager.
@@ -1472,7 +1479,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getService(int, java.net.URI, boolean, StatusHolder)
 	 */
 	public Component getService(int id,	URI curl, boolean activate,	StatusHolder status)
-		throws AcsJNoPermissionEx
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 		return getComponent(id, curl, activate, status, true);
 	}
@@ -1490,7 +1497,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getComponent(int, URI, boolean, StatusHolder)
 	 */
 	public Component getComponent(int id, URI curl, boolean activate, StatusHolder status)
-		throws AcsJNoPermissionEx
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 		return getComponent(id, curl, activate, status, false);
 	}
@@ -1509,29 +1516,35 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see #getComponent
 	 */
 	private Component getComponent(int id, URI curl, boolean activate, StatusHolder status, boolean allowServices)
-		throws AcsJNoPermissionEx
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 	
 		if (isDebug())
 			new MessageLogEntry(this, "getComponent", new Object[] { new Integer(id), curl,
 										new Boolean(activate), status, new Boolean(allowServices) }).dispatch();
 	
+		// extract name
+		String name = extractName(curl);
+	
 		// check if null
-		checkCURL(curl);
+		try {
+			checkCURL(curl);
+		} catch (AcsJBadParameterEx e) {
+			AcsJCannotGetComponentEx ex2 = new AcsJCannotGetComponentEx(e);
+            ex2.setCURL(name);
+			throw ex2;
+		}
 	
 		if (status == null)
 		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'status' expected.");
-			af.caughtIn(this, "getComponent");
-			af.putValue("status", status);
-			throw af;
+			AcsJNullPointerEx ex = new AcsJNullPointerEx();
+			ex.setVariable("status");
+			AcsJCannotGetComponentEx ex2 = new AcsJCannotGetComponentEx(ex);
+            ex2.setCURL(name);
+			throw ex2;
 		}
 
 		/****************************************************************/
-	
-		// extract name
-		String name = extractName(curl);
 	
 		// log info
 		String requestorName = null;
@@ -1606,6 +1619,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			else
 				new MessageLogEntry(this, "getComponent", "Request for component '" + curl + "' completed sucessfully, but component not activated.", LoggingLevel.INFO).dispatch();
 		}
+		/**
+		 * @todo GCH 2006.09.25
+		 *       This last case should never happen, because 
+		 *       there should be and exception thrown instead.
+		 */
 		else
 		{
 			if (requestorName != null)
@@ -1619,6 +1637,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (isDebug())
 			new MessageLogEntry(this, "getComponent", "Exiting.", Level.FINEST).dispatch();
 	
+		if(component == null)
+		{
+			AcsJCannotGetComponentEx ex2 = new AcsJCannotGetComponentEx();
+			ex2.setCURL(name);
+			throw ex2;
+			
+		}
 		return component;
 	
 	}
@@ -1701,22 +1726,28 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#getComponentNonSticky(int id, URI curl)
 	 */
 	public Component getComponentNonSticky(int id, URI curl) 
-		throws AcsJNoPermissionEx
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getComponentNonSticky", new Object[] { new Integer(id), curl }).dispatch();
 	
+		// extract name
+		String name = extractName(curl);
+	
 		// check if null
-		checkCURL(curl);
+		try {
+			checkCURL(curl);
+		} catch (AcsJBadParameterEx e) {
+			AcsJCannotGetComponentEx ex2 = new AcsJCannotGetComponentEx(e);
+            ex2.setCURL(name);
+			throw ex2;
+		}
 
 		/****************************************************************/
 	
 		// check handle and NONE permissions
 		securityCheck(id, AccessRights.NONE);
 
-		// extract name
-		String name = extractName(curl);
-	
 		// log info
 		String requestorName = getRequestorName(id);
 		new MessageLogEntry(this, "getComponentNonSticky", "'" + requestorName + "' requested non-sticky component '" + curl + "'.", LoggingLevel.INFO).dispatch();
@@ -1755,21 +1786,28 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#makeComponentImmortal(int, java.net.URI, boolean)
 	 */
-	public void makeComponentImmortal(int id, URI curl, boolean immortalState) throws AcsJNoPermissionEx
+	public void makeComponentImmortal(int id, URI curl, boolean immortalState) 
+	    throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJBadParameterEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "makeComponentImmortal", new Object[] { new Integer(id), curl, new Boolean(immortalState) }).dispatch();
 
+		// extract name
+		String name = extractName(curl);
+
 		// check if null
-		checkCURL(curl);
+		// let same exception flying up
+		try {
+			checkCURL(curl);
+		} catch (AcsJBadParameterEx e) {
+			throw e;
+		}
 
 		// check handle and NONE permissions
 		securityCheck(id, AccessRights.NONE);
 
 		/****************************************************************/
 
-		// extract name
-		String name = extractName(curl);
 
 		int h;
 		ComponentInfo componentInfo = null;
@@ -2024,7 +2062,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @see com.cosylab.acs.maci.Manager#registerComponent(int, URI, String, Component)
 	 */
 	public int registerComponent(int id, URI curl, String type, Component component)
-		throws AcsJNoPermissionEx
+		throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
 
 		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
@@ -2032,21 +2070,35 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			new MessageLogEntry(this, "registerComponent", new Object[] { new Integer(id), curl, type, component == null ? "null" : component.toString() }).dispatch();
 
 		// check for null
-		if (curl == null || type == null || component == null)
+		if (curl == null )
 		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null parameters expected.");
-			af.caughtIn(this, "registerComponent");
-			af.putValue("id", new Integer(id));
-			af.putValue("curl", curl);
-			af.putValue("type", type);
-			// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-			af.putValue("component", component == null ? "null" : component.toString());
+			AcsJBadParameterEx af = new AcsJBadParameterEx();
+			af.setParameter("curl");
+			af.setParameterValue("null");
+			throw af;
+		}
+		if (type == null)
+		{
+			AcsJBadParameterEx af = new AcsJBadParameterEx();
+			af.setParameter("type");
+			af.setParameterValue("null");
+			throw af;
+		}
+		if (component == null)
+		{
+			AcsJBadParameterEx af = new AcsJBadParameterEx();
+			af.setParameter("component");
+			af.setParameterValue("null");
 			throw af;
 		}
 
 		// checks CURL, reject non-local domain curls
-		checkCURL(curl, false);
+        // Just rethrow the exception
+		try {
+			checkCURL(curl, false);
+		} catch (AcsJBadParameterEx e) {
+		    throw e;
+		}
 
 		// check handle and REGISTER_COMPONENT permissions
 		securityCheck(id, AccessRights.REGISTER_COMPONENT);
@@ -2152,7 +2204,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#unregisterComponent(int, int)
 	 */
-	public void unregisterComponent(int id, int h) throws AcsJNoPermissionEx
+	public void unregisterComponent(int id, int h) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
 
 		if (isDebug())
@@ -2177,15 +2229,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#restartComponent(int, URI)
 	 */
-	public Component restartComponent(int id, URI curl) throws AcsJNoPermissionEx
+	public Component restartComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
 
 		if (isDebug())
 			new MessageLogEntry(this, "restartComponent", new Object[] { new Integer(id), curl }).dispatch();
 
 		// checks CURL
+		// let same exception fly up
 		// TODO MF tmp, reject non-local domains
-		checkCURL(curl, false);
+		try {
+			checkCURL(curl, false);
+		} catch (AcsJBadParameterEx e) {
+			throw e;
+		}
 
 		// check handle and NONE permissions
 		securityCheck(id, AccessRights.NONE);
@@ -2211,14 +2268,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#releaseComponent(int, URI)
 	 */
-	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx
+	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
 
 		if (isDebug())
 			new MessageLogEntry(this, "releaseComponent", new Object[] { new Integer(id), curl }).dispatch();
 
 		// checks CURL
-		checkCURL(curl);
+		// throw up same exceptions
+		try {
+			checkCURL(curl);
+		} catch (AcsJBadParameterEx e) {
+			throw e;
+		}
 
 		// check handle and NONE permissions
 		securityCheck(id, AccessRights.NONE);
@@ -2245,14 +2307,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * @see com.cosylab.acs.maci.Manager#forceReleaseComponent(int, URI)
 	 */
-	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx
+	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
 
 		if (isDebug())
 			new MessageLogEntry(this, "forceReleaseComponent", new Object[] { new Integer(id), curl }).dispatch();
 
 		// checks CURL
-		checkCURL(curl);
+		// let same exception fly up
+		try {
+			checkCURL(curl);
+		} catch (AcsJBadParameterEx e) {
+			throw e;
+		}
 
 		// check handle and INTROSPECT_MANAGER permissions
 		// TODO not clean !!! admin permissions required
@@ -2845,7 +2912,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							URI curl = CURLHelper.createURI(startup[i]);
 
 							// check CURL
-							checkCURL(curl);
+							try {
+								checkCURL(curl);
+							} catch (RuntimeException e) {
+								// @todo Auto-generated catch block
+								e.printStackTrace();
+							}
 
 							activationRequestsList.add(curl);
 						}
@@ -2921,7 +2993,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							URI curl = CURLHelper.createURI(name);
 
 							// check CURL, no non-local curls
-							checkCURL(curl, false);
+							try {
+								checkCURL(curl, false);
+							} catch (RuntimeException e) {
+								// @todo Auto-generated catch block
+								e.printStackTrace();
+							}
 
 							activationRequestsList.add(curl);
 						}
@@ -5311,6 +5388,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return	component		retuested component.
 	 */
 	private Component internalRequestComponent(int requestor, URI curl, StatusHolder status)
+            throws AcsJCannotGetComponentEx
 	{
 		return internalRequestComponent(requestor, curl, status, true);
 	}
@@ -5321,9 +5399,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	curl	curl of the component to be requested.
 	 * @param	status	status of the component.
 	 * @param	activate	<code>true</code> if component has to be activated
-	 * @return	component		retuested component.
+	 * @return	component		requested component.
 	 */
 	private Component internalRequestComponent(int requestor, URI curl, StatusHolder status, boolean activate)
+            throws AcsJCannotGetComponentEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalRequestComponent", new Object[] { new Integer(requestor), curl, status, new Boolean(activate) }).dispatch();
@@ -5331,7 +5410,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// extract unique name
 		String name = extractName(curl);
 
-		checkCyclicDependency(requestor, name);
+		try {
+			checkCyclicDependency(requestor, name);
+		} catch (AcsJCyclicDependencyDetectedEx e) {
+			AcsJCannotGetComponentEx cgce = new AcsJCannotGetComponentEx(e);
+			cgce.setCURL(name);
+			throw cgce;
+		}
 
 		// try to acquire lock
 		boolean lockAcquired = acquireSynchronizationObject(name, getLockTimeout());
@@ -5347,6 +5432,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				} catch (InterruptedException ie) {
 					releaseRWLock = false;
 
+                    /// @todo GCH Remove runtime exception and use ACS
 					NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"'.");
 					nre.caughtIn(this, "internalRequestComponent");
 					nre.putValue("curl", curl);
@@ -5354,17 +5440,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					throw nre;
 				}
 
+				// Let AcsJCannotGetComponentEx fly up
 				ComponentInfo componentInfo = null;
 				try
 				{
 					componentInfo = internalNoSyncRequestComponent(requestor, name, null, null, null, RELEASE_TIME_UNDEFINED, status, activate);
 				}
-				catch(ComponentSpecIncompatibleWithActiveComponentException ciwace)
+				catch(AcsJComponentSpecIncompatibleWithActiveComponentEx ciwace)
 				{
 					status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
-					AssertionFailed af = new AssertionFailed(this, "Failed to request for component.", ciwace);
-					af.caughtIn(this, "internalRequestComponent");
-					// throw af;
+					AcsJCannotGetComponentEx cgce = new AcsJCannotGetComponentEx(ciwace);
+					cgce.setCURL(name);
+					throw cgce;
+					
 				}
 
 				if (componentInfo != null)
@@ -5430,6 +5518,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param requestedComponentName
 	 */
 	private void checkCyclicDependency(int requestor, String requestedComponentName)
+	    throws AcsJCyclicDependencyDetectedEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "checkCyclicDependency", new Object[] { new Integer(requestor), requestedComponentName }).dispatch();
@@ -5486,11 +5575,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				pathBuffer.append(((ComponentInfo)pathList.get(i)).getName()).append(" -> ");
 			pathBuffer.append(componentInfo.getName());
 
-			NoResourcesException nre = new NoResourcesException(this, "Cyclic dependency detected: ["+pathBuffer.toString()+"].");
-			nre.caughtIn(this, "checkCyclicDependency");
-			nre.putValue("requestedComponentName", requestedComponentName);
-			nre.putValue("requestor", new Integer(requestor));
-			throw nre;
+			// If we get to this point there is a cyclical dependency and we throw the exception
+			
+			// not an owner
+			AcsJCyclicDependencyDetectedEx cde = new AcsJCyclicDependencyDetectedEx();
+			cde.setCURL(requestedComponentName);
+			cde.setRequestor(new Integer(requestor));
+			throw cde;
 		}
 
 	}
@@ -5511,7 +5602,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								String name, String type, String code, String containerName,
 								int keepAliveTime,
 								StatusHolder status, boolean activate)
-		throws ComponentSpecIncompatibleWithActiveComponentException
+	    throws  AcsJCannotGetComponentEx, AcsJSyncLockFailedEx,
+	            AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
 
 		assert(name != null);
@@ -5522,7 +5614,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						new Object[] { new Integer(requestor), name, type, code, containerName, new Integer(keepAliveTime),
 									   status, new Boolean(activate) }).dispatch();
 
-		checkCyclicDependency(requestor, name);
+		try {
+			checkCyclicDependency(requestor, name);
+		} catch (AcsJCyclicDependencyDetectedEx e) {
+			AcsJCannotGetComponentEx cgce = new AcsJCannotGetComponentEx(e);
+			cgce.setCURL(name);
+			throw cgce;
+		}
 
 		// try to acquire lock
 		boolean lockAcquired = acquireSynchronizationObject(name, getLockTimeout());
@@ -5538,13 +5636,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				} catch (InterruptedException ie) {
 					releaseRWLock = false;
 
-					NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"'.");
-					nre.caughtIn(this, "internalRequestComponent");
-					nre.putValue("name", name);
-					nre.putValue("requestor", new Integer(requestor));
-					throw nre;
+					AcsJSyncLockFailedEx slfe = new AcsJSyncLockFailedEx();
+					slfe.setCURL(name);
+					slfe.setRequestor(new Integer(requestor));
+					throw slfe;
 				}
 
+				// AcsJComponentSpecIncompatibleWithActiveComponentEx flies up
 				return internalNoSyncRequestComponent(requestor, name, type, code, containerName, keepAliveTime, status, activate);
 			}
 			finally
@@ -5556,11 +5654,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
-			nre.caughtIn(this, "internalRequestComponent");
-			nre.putValue("name", name);
-			nre.putValue("requestor", new Integer(requestor));
-			throw nre;
+			AcsJSyncLockFailedEx slfe = new AcsJSyncLockFailedEx();
+			slfe.setCURL(name);
+			slfe.setRequestor(new Integer(requestor));
+			throw slfe;
 		}
 
 	}
@@ -5581,7 +5678,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								String name, String type, String code, String containerName,
 								int keepAliveTime,
 								StatusHolder status, boolean activate)
-		throws ComponentSpecIncompatibleWithActiveComponentException
+	    throws  AcsJCannotGetComponentEx,
+                AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
 
 		assert(name != null);
@@ -5640,15 +5738,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 																	componentInfo.getType(),
 																	componentInfo.getCode() != null ? componentInfo.getCode() : "<unknown>",
 																	containerInfo != null ? containerInfo.getName() : "<none>");
-						ComponentSpecIncompatibleWithActiveComponentException ciwace =
-							new ComponentSpecIncompatibleWithActiveComponentException(this,
-								"Requested and already activated component data with the same name are not compatible.",
-								activeComponentSpec);
-
-						ciwace.caughtIn(this, "internalNoSyncRequestComponent");
-						// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-						ciwace.putValue("componentInfo", componentInfo == null ? "null" : componentInfo.toString());
-						ciwace.putValue("activeComponentSpec", activeComponentSpec);
+						AcsJComponentSpecIncompatibleWithActiveComponentEx ciwace =
+							new AcsJComponentSpecIncompatibleWithActiveComponentEx();
 						throw ciwace;
 					}
 
@@ -6311,7 +6402,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
 	private int internalReleaseComponent(int owner, URI curl, boolean force)
-	   throws AcsJNoPermissionEx 
+	   throws AcsJNoPermissionEx, AcsJBadParameterEx 
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalReleaseComponent", new Object[] { new Integer(owner), curl, new Boolean(force) }).dispatch();
@@ -6426,7 +6517,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
 	private int internalReleaseComponent(int owner, int h, boolean force)
-		   throws AcsJNoPermissionEx 
+		   throws AcsJNoPermissionEx, AcsJBadParameterEx 
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalReleaseComponent", new Object[] { new Integer(owner), new Integer(h), new Boolean(force) }).dispatch();
@@ -6440,14 +6531,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (components.isAllocated(handle))
 				componentInfo = (ComponentInfo)components.get(handle);
 
-			if (componentInfo == null || componentInfo.getHandle() != h)
+			if (componentInfo == null)
 			{
 				// invalid Component handle
-				BadParametersException af = new BadParametersException(this, "Invalid component handle.");
-				af.caughtIn(this, "internalReleaseComponent");
-				af.putValue("h", new Integer(h));
-				af.putValue("owner", new Integer(owner));
-				throw af;
+				AcsJBadParameterEx ex = new AcsJBadParameterEx();
+				ex.setParameter("componentInfo");
+				ex.setParameterValue("null");
+				throw ex;			
+			}
+			if (componentInfo.getHandle() != h)
+			{
+				// invalid Component handle
+				AcsJBadParameterEx ex = new AcsJBadParameterEx();
+				ex.setParameter("h");
+				throw ex;			
 			}
 
 			name = componentInfo.getName();
@@ -7429,50 +7526,81 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	// TODO MF not supported
 	public ComponentInfo getDynamicComponent(int id, ComponentSpec componentSpec, boolean markAsDefault)
-		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
-			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
+			   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getDynamicComponent", new Object[] { new Integer(id), componentSpec, new Boolean(markAsDefault) }).dispatch();
 
-		// check if null
-		if (componentSpec == null)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' expected.");
-			af.caughtIn(this, "getDynamicComponent");
-			af.putValue("componentSpec", componentSpec);
-			throw af;
-		}
+		try {
+			// check if null
+			if (componentSpec == null)
+			{
+				AcsJNullPointerEx ex = new AcsJNullPointerEx();
+				ex.setVariable("componentSpec");
+				throw ex;
+			}
+			// check componentSpec components are null
+			if (componentSpec.getName() == null)
+				{
+					AcsJNullPointerEx ex = new AcsJNullPointerEx();
+					ex.setVariable("componentSpec.Name");
+					throw ex;
+				}
+			if (componentSpec.getType() == null)
+				{
+					AcsJNullPointerEx ex = new AcsJNullPointerEx();
+					ex.setVariable("componentSpec.Type");
+					throw ex;
+				}
+			if (componentSpec.getCode() == null)
+				{
+					AcsJNullPointerEx ex = new AcsJNullPointerEx();
+					ex.setVariable("componentSpec.Code");
+					throw ex;
+				}
+			if (componentSpec.getContainer() == null)
+				{
+					AcsJNullPointerEx ex = new AcsJNullPointerEx();
+					ex.setVariable("componentSpec.Container");
+					throw ex;
+				}
+			// check for empty componentSpec.name
+			if (componentSpec.getName().length() == 0)
+			{
+				AcsJBadParameterEx ex = new AcsJBadParameterEx();
+				ex.setParameter("componentSpec.Name");
+				ex.setParameterValue("EMPTY");
+				ex.setReason("Non empty Component Name expected");
+				throw ex;			
+			}
 
-		// check componentSpec components are null
-		if (componentSpec.getName() == null || componentSpec.getType() == null ||
-			componentSpec.getCode() == null || componentSpec.getContainer() == null)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' fields expected.");
-			af.caughtIn(this, "getDynamicComponent");
-			af.putValue("componentSpec", componentSpec);
-			throw af;
+		} catch (AcsJNullPointerEx e) {
+			AcsJInvalidComponentSpecEx ex = new AcsJInvalidComponentSpecEx(e);
+			throw ex;
 		}
-
-		// check for empty componentSpec.name
-		if (componentSpec.getName().length() == 0)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-empty 'componentSpec.name' field expected.");
-			af.caughtIn(this, "getDynamicComponent");
-			af.putValue("componentSpec", componentSpec);
-			throw af;
+		catch (AcsJBadParameterEx e) {
+			AcsJInvalidComponentSpecEx ex = new AcsJInvalidComponentSpecEx(e);
+			throw ex;
 		}
-
+		
 		// check handle and NONE permissions
+		// Throws AcsJNoPermissionEx that is let flying up
 		securityCheck(id, AccessRights.NONE);
 
 		/****************************************************************/
 
-		ComponentInfo componentInfo = internalRequestDynamicComponent(id, componentSpec);
-
+		// Same exceptions fly up
+		ComponentInfo componentInfo = null;
+		try {
+			componentInfo = internalRequestDynamicComponent(id, componentSpec);
+		} catch (AcsJSyncLockFailedEx e) {
+			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+			ex.setCURL(componentSpec.getName());
+			ex.setReason("Failed to get Synchronisation lock");
+			throw ex;
+		}
+		
 		// update default components table
 		if (componentInfo != null && markAsDefault)
 		{
@@ -7492,11 +7620,25 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (isDebug())
 			new MessageLogEntry(this, "getDynamicComponent", "Exiting.", Level.FINEST).dispatch();
 
+		if(componentInfo == null)
+		{
+		    /**
+             * @todo Is it OK to get here? Always? 
+             *       This is a place where we have to check carefully.
+             */
+			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+			ex.setCURL(componentSpec.getName());
+			throw ex;
+		}
+		
 		return componentInfo;
 	}
 
 	/**
 	 * @see com.cosylab.acs.maci.Manager#getDynamicComponents(int, com.cosylab.acs.maci.ComponentSpec[])
+	 * @todo this method still returns null in case of errors and only throws AcsJNoPermissions or
+	 *       a couple of runtime exceptions.
+	 *       Needs to be refactored or, probably better, deprecated.
 	 */
 	public ComponentInfo[] getDynamicComponents(int id,	ComponentSpec[] components)
 		throws AcsJNoPermissionEx
@@ -7556,77 +7698,96 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/// @todo MF not supported
 	public ComponentInfo getCollocatedComponent(int id, ComponentSpec componentSpec,
 			boolean markAsDefault, URI targetComponentURI)
-		throws AcsJNoPermissionEx, IncompleteComponentSpecException,
-			   InvalidComponentSpecException, ComponentSpecIncompatibleWithActiveComponentException
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
+			   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "getCollocatedComponent", new Object[] { new Integer(id), componentSpec, new Boolean(markAsDefault), targetComponentURI }).dispatch();
-
-		// check if null
-		if (componentSpec == null)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' expected.");
-			af.caughtIn(this, "getCollocatedComponent");
-			af.putValue("componentSpec", componentSpec);
-			throw af;
+		
+		try {
+			// check if null
+			if (componentSpec == null)
+			{
+				AcsJNullPointerEx ex = new AcsJNullPointerEx();
+				ex.setVariable("componentSpec");
+				throw ex;
+			}
+			// check componentSpec components are null
+			if (componentSpec.getName() == null)
+			{
+				AcsJNullPointerEx ex = new AcsJNullPointerEx();
+				ex.setVariable("componentSpec.Name");
+				throw ex;
+			}
+			if (componentSpec.getType() == null)
+			{
+				AcsJNullPointerEx ex = new AcsJNullPointerEx();
+				ex.setVariable("componentSpec.Type");
+				throw ex;
+			}
+			if (componentSpec.getCode() == null)
+			{
+				AcsJNullPointerEx ex = new AcsJNullPointerEx();
+				ex.setVariable("componentSpec.Code");
+				throw ex;
+			}
+			if (componentSpec.getContainer() == null)
+			{
+				AcsJNullPointerEx ex = new AcsJNullPointerEx();
+				ex.setVariable("componentSpec.Container");
+				throw ex;
+			}
+			// check for empty componentSpec.name
+			if (componentSpec.getName().length() == 0)
+			{
+				AcsJBadParameterEx ex = new AcsJBadParameterEx();
+				ex.setParameter("componentSpec.Name");
+				ex.setParameterValue("EMPTY");
+				ex.setReason("Non empty Component Name expected");
+				throw ex;			
+			}
+			// check if null
+			if (targetComponentURI == null)
+			{
+				AcsJNullPointerEx ex = new AcsJNullPointerEx();
+				ex.setVariable("targetComponentURI");
+				throw ex;
+			}
+			if (!componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY))
+			{
+				AcsJBadParameterEx ex = new AcsJBadParameterEx();
+				ex.setParameter("componentSpec.Container");
+				ex.setParameterValue("COMPSPEC_ANY");
+				ex.setReason("Explicit Container Name expected");
+				throw ex;			
+			}
+			
+		} catch (AcsJNullPointerEx e) {
+			AcsJInvalidComponentSpecEx ex = new AcsJInvalidComponentSpecEx(e);
+			throw ex;
 		}
-
-		// check componentSpec components are null
-		if (componentSpec.getName() == null || componentSpec.getType() == null ||
-			componentSpec.getCode() == null || componentSpec.getContainer() == null)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'componentSpec' fields expected.");
-			af.caughtIn(this, "getCollocatedComponent");
-			af.putValue("componentSpec", componentSpec);
-			throw af;
+		catch (AcsJBadParameterEx e) {
+			AcsJInvalidComponentSpecEx ex = new AcsJInvalidComponentSpecEx(e);
+			throw ex;
 		}
-
-		// check for empty componentSpec.name
-		if (componentSpec.getName().length() == 0)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-empty 'componentSpec.name' field expected.");
-			af.caughtIn(this, "getCollocatedComponent");
-			af.putValue("componentSpec", componentSpec);
-			throw af;
-		}
-
-		// check if null
-		if (targetComponentURI == null)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'targetComponentURI' expected.");
-			af.caughtIn(this, "getCollocatedComponent");
-			af.putValue("targetComponentURI", targetComponentURI);
-			throw af;
-		}
-
-		if (!componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY))
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "'" + ComponentSpec.COMPSPEC_ANY + "' value for 'componentSpec.container' field expected.");
-			af.caughtIn(this, "getCollocatedComponent");
-			af.putValue("componentSpec", componentSpec);
-			throw af;
-		}
-
+		
+		
 		// check handle and NONE permissions
+		// Throws AcsJNoPermissionEx that is let flying up
 		securityCheck(id, AccessRights.NONE);
-
+		
 		/****************************************************************/
-
+		
 		/// @todo temporary quick implementation (does not look in the CDB if component is not activated)
 		String name = extractName(targetComponentURI);
-
+		
 		int h = 0;
 		ComponentInfo targetComponentInfo = null;
 		synchronized (components)
 		{
 			h = components.first();
 			while (h != 0)
-		    {
+			{
 				ComponentInfo componentInfo = (ComponentInfo)components.get(h);
 				if (componentInfo.getName().equals(name))
 				{
@@ -7634,9 +7795,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					break;
 				}
 				h = components.next(h);
-		    }
+			}
 		}
-
+		
 		// if not found, check the CDB
 		if (targetComponentInfo == null)
 		{
@@ -7651,20 +7812,28 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 			componentSpec.setContainer(targetComponentInfo.getContainerName());
-
+		
 		// failed to detemine a target container
 		if (componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY))
 		{
-			IncompleteComponentSpecException icse = new IncompleteComponentSpecException(this,
-					"Failed to detemine a target container (determined by component '" + name + "').", componentSpec);
-			icse.caughtIn(this, "internalRequestDynamicComponent");
-			icse.putValue("getCollocatedComponent", componentSpec);
-			throw icse;
+			AcsJIncompleteComponentSpecEx ex = new AcsJIncompleteComponentSpecEx();
+			ex.setCURL(name);
+			ex.setContainerName(componentSpec.getContainer());
+			throw ex;
 		}
-
+		
 		// request for component
-		ComponentInfo componentInfo = internalRequestDynamicComponent(id, componentSpec);
-
+		// same exceptions are let flying up.
+		ComponentInfo componentInfo = null;
+		try {
+			componentInfo = internalRequestDynamicComponent(id, componentSpec);
+		} catch (AcsJSyncLockFailedEx e) {
+			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+			ex.setCURL(name);
+			ex.setReason("Failed to get Synchronisation lock");
+			throw ex;
+		}
+		
 		// update default components table
 		if (componentInfo != null && markAsDefault)
 		{
@@ -7674,16 +7843,23 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				executeCommand(new DefaultComponentCommandPut(componentInfo.getType(), componentInfo));
 				//defaultComponents.put(componentInfo.getType(), componentInfo.getName());
 			}
-
+			
 			new MessageLogEntry(this, "getCollocatedComponent", "'" + componentInfo.getName() +"' has been marked as a default component of type '" +
-																      componentInfo.getType() +"'.", LoggingLevel.INFO).dispatch();
+					componentInfo.getType() +"'.", LoggingLevel.INFO).dispatch();
 		}
-
+		
+		if(componentInfo == null)
+		{
+			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx();
+			ex.setCURL(name);
+			throw ex;
+		}
+		
 		/****************************************************************/
-
+		
 		if (isDebug())
 			new MessageLogEntry(this, "getCollocatedComponent", "Exiting.", Level.FINEST).dispatch();
-
+		
 		return componentInfo;
 	}
 
@@ -7832,8 +8008,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @return	componentInfo	<code>ComponentInfo</code> of requested dynamic component.
 	 */
 	private ComponentInfo internalRequestDynamicComponent(int requestor, ComponentSpec componentSpec)
-		throws AcsJNoPermissionEx, IncompleteComponentSpecException, InvalidComponentSpecException,
-			   ComponentSpecIncompatibleWithActiveComponentException
+		throws AcsJCannotGetComponentEx, 
+		       AcsJSyncLockFailedEx,
+		       AcsJNoPermissionEx, 
+		       AcsJIncompleteComponentSpecEx, 
+		       AcsJInvalidComponentSpecEx,
+			   AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "internalRequestDynamicComponent", new Object[] { new Integer(requestor), componentSpec }).dispatch();
@@ -7845,12 +8025,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//   *  |   *  | throw IncompleteComponentSpecException
 		if (unspecifiedName && unspecifiedType)
 		{
-			IncompleteComponentSpecException icse = new IncompleteComponentSpecException(this,
-								"'name' and 'type' cannot be both '" + ComponentSpec.COMPSPEC_ANY +"'.",
-								componentSpec);
-			icse.caughtIn(this, "internalRequestDynamicComponent");
-			icse.putValue("componentSpec", componentSpec);
-			throw icse;
+			AcsJInvalidComponentSpecEx ex = new AcsJInvalidComponentSpecEx();
+			ex.setReason("'name' and 'type' cannot be both '" + ComponentSpec.COMPSPEC_ANY +"'.");
+			throw ex;
 		}
 		// all fields are fully specified, no search needed
 		else if (!unspecifiedName && !unspecifiedType &&
@@ -7858,6 +8035,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			!componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY))
 		{
 			StatusHolder statusHolder = new StatusHolder();
+			
+			// We let exceptions occurring here fly up
 			return internalRequestComponent(requestor, componentSpec.getName(),
 							 			    componentSpec.getType(), componentSpec.getCode(),
 											componentSpec.getContainer(), RELEASE_IMMEDIATELY, statusHolder, true);
@@ -7940,12 +8119,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			if (failed)
 			{
-				InvalidComponentSpecException icse = new InvalidComponentSpecException(this,
-									"Requested ComponentSpec does not match any entry in the CDB.",
-									componentSpec);
-				icse.caughtIn(this, "internalRequestDynamicComponent");
-				icse.putValue("componentSpec", componentSpec);
-				throw icse;
+				AcsJInvalidComponentSpecEx ex = new AcsJInvalidComponentSpecEx();
+				ex.setReason("Requested ComponentSpec does not match any entry in the CDB.");
+				throw ex;
 			}
 		}
 
@@ -7973,13 +8149,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 				}
 
-				IncompleteComponentSpecException icse = new IncompleteComponentSpecException(this,
-									"'" + fieldNames[i] + "' equals '" + ComponentSpec.COMPSPEC_ANY +"'.",
-									new ComponentSpec(result[0], result[1], result[2], result[3]));
-				icse.caughtIn(this, "internalRequestDynamicComponent");
-				icse.putValue("result", result);
-				icse.putValue(fieldNames[i], result[i]);
-				throw icse;
+				AcsJIncompleteComponentSpecEx ex = new AcsJIncompleteComponentSpecEx();
+				ex.setReason("'" + fieldNames[i] + "' equals '" + ComponentSpec.COMPSPEC_ANY +"'.");
+				throw ex;
 			}
 
 		// generate name if necessary
@@ -8000,6 +8172,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		StatusHolder statusHolder = new StatusHolder();
+		
+		// Same exceptions are let flying up
 		return internalRequestComponent(requestor, result[0], result[1],
 									    result[2], result[3], RELEASE_IMMEDIATELY, statusHolder, true);
 	}
@@ -8516,7 +8690,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 *
 	 * @param	uri		uri to be check to be a valid curl
 	 */
-	private void checkCURL(URI curl) throws BadParametersException
+	private void checkCURL(URI curl) throws AcsJBadParameterEx
 	{
 	    checkCURL(curl, true);
 	}
@@ -8528,7 +8702,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	uri		uri to be check to be a valid curl
 	 * @param	allowNonLocalDomains	allow non-local domains
 	 */
-	private void checkCURL(URI curl, boolean allowNonLocalDomains) throws BadParametersException
+	private void checkCURL(URI curl, boolean allowNonLocalDomains) throws AcsJBadParameterEx
 	{
 		if (isDebug())
 			new MessageLogEntry(this, "checkCURL", new Object[] { curl, new Boolean(allowNonLocalDomains) }).dispatch();
@@ -8537,9 +8711,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (curl == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null CURL expected.");
-			af.caughtIn(this, "checkCURL");
-			af.putValue("curl", curl);
+			AcsJBadParameterEx af = new AcsJBadParameterEx();
+			af.setParameter("curl");
+			af.setParameterValue("null");
 			throw af;
 		}
 
@@ -8547,9 +8721,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			((curl.getScheme() != null && curl.getScheme().startsWith(CURL_URI_SCHEMA))))
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Invalid CURL '" + curl.toString() + "'.");
-			af.caughtIn(this, "checkCURL");
-			af.putValue("curl", curl);
+			AcsJBadParameterEx af = new AcsJBadParameterEx();
+			af.setParameter("curl");
+			af.setParameterValue(curl.toString());
 			throw af;
 		}
 
@@ -8558,10 +8732,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// BAD_PARAM
 		    String domain = curl.getAuthority();
-			BadParametersException af = new BadParametersException(this, "CURL does not belong to this domain ('"+domain+"' not one of '"+domains+"').");
-			af.caughtIn(this, "checkCURL");
-			af.putValue("domain", domain);
-			af.putValue("domains", domains);
+			AcsJBadParameterEx af = new AcsJBadParameterEx();
+			af.setParameter("curl");
+			af.setParameterValue("CURL does not belong to this domain ('"+domain+"' not one of '"+domains+"').");
 			throw af;
 		}
 
@@ -8588,6 +8761,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private String extractName(URI curl)
 	{
+		if(curl == null)
+			return "";
+		
 	    if (isLocalDomainCURL(curl))
 	    {
 		    String name = curl.getPath();
@@ -9400,7 +9576,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public boolean isDebug()
 	{
-		return true;
+		return false;
 	}
 
 	/**

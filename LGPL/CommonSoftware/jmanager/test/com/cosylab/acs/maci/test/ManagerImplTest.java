@@ -28,6 +28,11 @@ import abeans.models.meta.TargetPart;
 import abeans.pluggable.acs.CORBAService;
 import abeans.pluggable.acs.DefaultCORBAService;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.cdb.CDBAccess;
@@ -442,9 +447,7 @@ public class ManagerImplTest extends TestCase
 		try {
 			info = manager.login(client);
 		} catch (AcsJNoPermissionEx e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			fail();		}
 		try
 		{
 			manager.shutdownContainer(info.getHandle(), "test", 0);
@@ -640,7 +643,7 @@ public class ManagerImplTest extends TestCase
 		assertEquals(info, info2);
 
 		/* 
-		// THIS TAKES WAY TO MUCH TIME
+		// THIS TAKES WAY TOO MUCH TIME
 		// DoS attack, there should be no handle left...
 		try
 		{
@@ -704,7 +707,7 @@ public class ManagerImplTest extends TestCase
 		
 	}
 
-	public void testSequentalContainersLogin() {
+	public void testSequentialContainersLogin() {
 
 		int counter = 0;
 		final int SEQUENTAL_LOGINS = 100;
@@ -1222,54 +1225,48 @@ public class ManagerImplTest extends TestCase
 			try {
 				manager.registerComponent(0, null, null, null);
 				fail();
-			}
-			catch (BadParametersException bpe)
-			{
+			} 
+			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
-			//test invalid
+				System.out.println("This is OK");			
+			}	
+		    //test invalid
 			try {
 				manager.registerComponent(dummyHandle, null, type, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
-			{
+			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
+				System.out.println("This is OK");			
+			}	
 
 			//test invalid
 			try {
 				manager.registerComponent(dummyHandle, dummyURI, type, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
-			{
+			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
+				System.out.println("This is OK");			
+			}	
 			//test invalid
 			try {
 				manager.registerComponent(dummyHandle, null, null, new TestComponent(cobName));
 				fail();
 			}
-			catch (BadParametersException bpe)
-			{
+			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
+				System.out.println("This is OK");			
+			}	
 			
 			//register with empty curl
 			ClientInfo cinfo = manager.login(new TestClient(clientName));
 			try {
 				manager.registerComponent(cinfo.getHandle(),new URI(""),type,new TestComponent(cobName));
 				fail();
-			} catch (BadParametersException bpe) {
+			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());			
+				System.out.println("This is OK: empty URI");			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1278,9 +1275,9 @@ public class ManagerImplTest extends TestCase
 			try {
 				manager.registerComponent(cinfo.getHandle(),new URI("curl://other/KIKI"),type,new TestComponent(cobName));
 				fail();
-			} catch (BadParametersException bpe) {
+			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());			
+				System.out.println("This is OK: URI does not exist");			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1289,9 +1286,9 @@ public class ManagerImplTest extends TestCase
 			try {
 				manager.registerComponent(cinfo.getHandle(),new URI("KIKI://other/KIKI"),type,new TestComponent(cobName));
 				fail();
-			} catch (BadParametersException bpe) {
+			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());			
+				System.out.println("This is OK: invalid URI");			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1300,9 +1297,9 @@ public class ManagerImplTest extends TestCase
 			try {
 				manager.registerComponent(cinfo.getHandle(),new URI("KIKI://other/"),type,new TestComponent(cobName));
 				fail();
-			} catch (BadParametersException bpe) {
+			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());			
+				System.out.println("This is OK: invalid URI");			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1311,9 +1308,9 @@ public class ManagerImplTest extends TestCase
 			try {
 				manager.registerComponent(cinfo.getHandle(),new URI("curl://other/GIZMO1"),type,new TestComponent(cobName));
 				fail();
-			} catch (BadParametersException bpe) {
+			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());			
+				System.out.println("This is OK: invalid URI");			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1323,6 +1320,8 @@ public class ManagerImplTest extends TestCase
 				int handle = manager.registerComponent(cinfo.getHandle(),new URI("curl:///GIZMO1"),type,new TestComponent(cobName));
 				assertTrue(handle != 0);
 				assertTrue((handle & HandleConstants.COMPONENT_MASK) == HandleConstants.COMPONENT_MASK);
+			} catch (AcsJBadParameterEx bpe) {
+				fail();			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1331,6 +1330,8 @@ public class ManagerImplTest extends TestCase
 				int handle = manager.registerComponent(cinfo.getHandle(),new URI("curl:///GIZMO2"),type,new TestComponent(cobName));
 				assertTrue(handle != 0);
 				assertTrue((handle & HandleConstants.COMPONENT_MASK) == HandleConstants.COMPONENT_MASK);
+			} catch (AcsJBadParameterEx bpe) {
+				fail();			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1339,6 +1340,8 @@ public class ManagerImplTest extends TestCase
 				int handle = manager.registerComponent(cinfo.getHandle(),new URI("GIZMO3"),type,new TestComponent(cobName));
 				assertTrue(handle != 0);
 				assertTrue((handle & HandleConstants.COMPONENT_MASK) == HandleConstants.COMPONENT_MASK);
+			} catch (AcsJBadParameterEx bpe) {
+				fail();			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1353,6 +1356,8 @@ public class ManagerImplTest extends TestCase
 				assertTrue(handle2 != 0);
 				assertTrue((handle2 & HandleConstants.COMPONENT_MASK) == HandleConstants.COMPONENT_MASK);
 				assertEquals(handle1, handle2);
+			} catch (AcsJBadParameterEx bpe) {
+				fail();			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1368,6 +1373,8 @@ public class ManagerImplTest extends TestCase
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
+			} catch (AcsJBadParameterEx bpe) {
+				fail();			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1392,6 +1399,10 @@ public class ManagerImplTest extends TestCase
 			new ExceptionIgnorer(npe);
 			System.out.println("This is OK: "+npe.getReason());
 		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			fail();
+		}
 
 		//test invalid
 		try {
@@ -1402,6 +1413,10 @@ public class ManagerImplTest extends TestCase
 		{
 			new ExceptionIgnorer(npe);
 			System.out.println("This is OK: "+npe.getReason());
+		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			fail();
 		}
 
 		//test invalid
@@ -1414,6 +1429,10 @@ public class ManagerImplTest extends TestCase
 			new ExceptionIgnorer(npe);
 			System.out.println("This is OK: "+npe.getReason());
 		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			fail();
+		}
 
 		//test invalid
 		try {
@@ -1425,22 +1444,35 @@ public class ManagerImplTest extends TestCase
 			new ExceptionIgnorer(npe);
 			System.out.println("This is OK: "+npe.getReason());
 		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			fail();
+		}
 		
 		try {
 			//unregister valid
 			ClientInfo info = manager.login(new TestClient(anotherName));
-			int handle = manager.registerComponent(info.getHandle(),dummyURI,type,new TestComponent(cobName));		
-			manager.unregisterComponent(info.getHandle(),handle);
+			int handle=0;
+			try {
+				handle = manager.registerComponent(info.getHandle(),dummyURI,type,new TestComponent(cobName));
+			} catch (AcsJBadParameterEx e) {
+				fail();
+			}		
+			try {
+				manager.unregisterComponent(info.getHandle(),handle);
+			} catch (AcsJBadParameterEx e) {
+				fail();
+			}
 			
 			//duplicate unregistration		
 			try {
 				manager.unregisterComponent(info.getHandle(), handle);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJBadParameterEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: duplicate unregistration");
 			}
 
 			manager.logout(info.getHandle());
@@ -1959,18 +1991,23 @@ public class ManagerImplTest extends TestCase
 			// this will cause cyclic depedency...
 			try
 			{
+				StatusHolder status;
+				Component ref;
 				URI mount2URI = new URI("MOUNT2");	
-				StatusHolder status = new StatusHolder();
-				Component ref = manager.getComponent(info.getHandle(), mount2URI, true, status);
+				status = new StatusHolder();
+				ref = manager.getComponent(info.getHandle(), mount2URI, true, status);
 				
-				assertEquals(null, ref);
-				assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
+				fail();
+			} 
+			catch (AcsJCannotGetComponentEx e) {
+				new ExceptionIgnorer(e);
+				System.out.println("This is OK: cyclic dependency");
 			}
 			catch (Exception ex)
 			{
 				fail();
 			}
-			
+
 			long stopTime = System.currentTimeMillis();
 			
 			// cyclic dependency should be detected, not deadlock detected
@@ -1990,8 +2027,11 @@ public class ManagerImplTest extends TestCase
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info.getHandle(), mount3URI, true, status);
 				
-				assertEquals(null, ref);
-				assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
+				fail();
+			} 
+			catch (AcsJCannotGetComponentEx e) {
+				new ExceptionIgnorer(e);
+				System.out.println("This is OK: cyclic dependency");
 			}
 			catch (Exception ex)
 			{
@@ -2149,7 +2189,7 @@ public class ManagerImplTest extends TestCase
 				manager.getComponent(0, null, false, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
@@ -2160,19 +2200,19 @@ public class ManagerImplTest extends TestCase
 				manager.getComponent(Integer.MAX_VALUE, null, false, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			
 			try
 			{
 				StatusHolder status = null;
 				manager.getComponent(dummyHandle, dummyURI, false, status);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
@@ -2184,29 +2224,32 @@ public class ManagerImplTest extends TestCase
 				manager.getComponent(dummyHandle, null, false, status);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
-
-			TestAdministrator client = new TestAdministrator(administratorName);
-			ClientInfo info = manager.login(client);
+		
+		
+		TestAdministrator client = new TestAdministrator(administratorName);
+		ClientInfo info = manager.login(client);
+		
+		assertTrue(info.getHandle() != 0);
+		
+		// get unexistant
+		try
+		{
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), dummyURI, true, status);
 			
-			assertTrue(info.getHandle() != 0);
-			
-			// get unexistant
-			try
-			{
-				StatusHolder status = new StatusHolder();
-				Component ref = manager.getComponent(info.getHandle(), dummyURI, true, status);
-				
-				assertEquals(null, ref);
-				assertEquals(ComponentStatus.COMPONENT_DOES_NO_EXIST, status.getStatus());
-			}
-			catch (Exception ex)
-			{
+			fail();
+		} 
+		catch (AcsJCannotGetComponentEx e) {
+			new ExceptionIgnorer(e);
+			System.out.println("This is OK: component does not exist");
+		}
+		catch (Exception ex)
+		{
 				fail();
 			}
 			
@@ -2219,8 +2262,11 @@ public class ManagerImplTest extends TestCase
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info.getHandle(), mount, false, status);
 				
-				assertEquals(null, ref);
-				assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
+				fail();
+			} 
+			catch (AcsJCannotGetComponentEx e) {
+				new ExceptionIgnorer(e);
+				System.out.println("This is OK: component not activated");
 			}
 			catch (Exception ex)
 			{
@@ -2233,8 +2279,11 @@ public class ManagerImplTest extends TestCase
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info.getHandle(), mount, true, status);
 				
-				assertEquals(null, ref);
-				assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
+				fail();
+			} 
+			catch (AcsJCannotGetComponentEx e) {
+				new ExceptionIgnorer(e);
+				System.out.println("This is OK: component not activated");
 			}
 			catch (Exception ex)
 			{
@@ -2274,27 +2323,27 @@ public class ManagerImplTest extends TestCase
 			}
 
 			// test failed activation
-			URI mount2 = null;
-			try
-			{
+			try {
+				StatusHolder status;
+				Component ref;
+				URI mount2 = null;
 				mount2 = new URI("MOUNT2");
-				StatusHolder status = new StatusHolder();
-				Component ref = manager.getComponent(info.getHandle(), mount2, true, status);
-				
-				assertEquals(null, ref);
-				assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
-
-				// client should be owner of only one component
-				ClientInfo[] ci = manager.getClientInfo(info.getHandle(), new int[] { info.getHandle() }, null);
-				assertNotNull(ci);
-				assertEquals(1, ci.length);
-				// only mount 1
-				assertEquals(1, ci[0].getComponents().size());
-			}
-			catch (Exception ex)
-			{
+				status = new StatusHolder();
+				ref = manager.getComponent(info.getHandle(), mount2, true, status);				
+				fail();
+			} catch (AcsJCannotGetComponentEx e1) {
+				new ExceptionIgnorer(e1);
+				System.out.println("This is OK: "+e1.getReason());
+			} catch (URISyntaxException e1) {
 				fail();
 			}
+
+			// client should be owner of only one component
+			ClientInfo[] ci = manager.getClientInfo(info.getHandle(), new int[] { info.getHandle() }, null);
+			assertNotNull(ci);
+			assertEquals(1, ci.length);
+			// only mount 1
+			assertEquals(1, ci[0].getComponents().size());
 
 			// test failed activation (construct failure)
 			URI mount3 = null;
@@ -2304,8 +2353,11 @@ public class ManagerImplTest extends TestCase
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info.getHandle(), mount3, true, status);
 				
-				assertEquals(null, ref);
-				assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
+				fail();
+			} 
+			catch (AcsJCannotGetComponentEx e) {
+				new ExceptionIgnorer(e);
+				System.out.println("This is OK: component not activated");
 			}
 			catch (Exception ex)
 			{
@@ -2550,7 +2602,7 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			
 			try
 			{
 				manager.getDefaultComponent(Integer.MAX_VALUE, null);
@@ -2561,7 +2613,7 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			
 			try
 			{
 				manager.getDefaultComponent(dummyHandle, "dummyType");
@@ -2572,13 +2624,13 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
 			}
-
-
+			
+			
 			TestClient client = new TestClient(clientName);
 			ClientInfo info = manager.login(client);
-
+			
 			assertTrue(info.getHandle() != 0);
-
+			
 			try
 			{
 				manager.getDefaultComponent(info.getHandle(), null);
@@ -2589,7 +2641,7 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			
 			try
 			{
 				manager.getDefaultComponent(info.getHandle(), "invalid");
@@ -2600,15 +2652,15 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(ndce);
 				System.out.println("This is OK: "+ndce.getMessage());
 			}
-
+			
 			TestContainer container = new TestContainer("Container");
 			Map supportedComponents = new HashMap();
 			Component mount3COB = new TestComponent("MOUNT3");
 			supportedComponents.put("MOUNT3", mount3COB);
 			container.setSupportedComponents(supportedComponents);
-
+			
 			/*ClientInfo containerInfo = */manager.login(container);
-
+			
 			try
 			{
 				ComponentInfo componentInfo = manager.getDefaultComponent(info.getHandle(), "IDL:alma/MOUNT_ACS/Mount:1.0");
@@ -2625,9 +2677,9 @@ public class ManagerImplTest extends TestCase
 		} catch (NoDefaultComponentException e) {
 			fail();
 		}
-
+		
 	}
-
+	
 	/**
 	 * Test getDynamicComponent.
 	 */
@@ -2639,17 +2691,19 @@ public class ManagerImplTest extends TestCase
 				manager.getDynamicComponent(0, null, false);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
-			final ComponentSpec allAsterixCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-																	   ComponentSpec.COMPSPEC_ANY,
-																	   ComponentSpec.COMPSPEC_ANY, 
-																	   ComponentSpec.COMPSPEC_ANY);
-
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+		
+		final ComponentSpec allAsterixCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
+					ComponentSpec.COMPSPEC_ANY,
+					ComponentSpec.COMPSPEC_ANY, 
+					ComponentSpec.COMPSPEC_ANY);
+			
 			try
 			{
 				manager.getDynamicComponent(Integer.MAX_VALUE, allAsterixCompSpec, true);
@@ -2660,7 +2714,13 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
 			}
-
+			catch (AcsJInvalidComponentSpecEx bpe)
+			{
+				fail();
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
 			try
 			{
 				manager.getDynamicComponent(dummyHandle, allAsterixCompSpec, false);
@@ -2671,98 +2731,128 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
 			}
-
-
+			catch (AcsJInvalidComponentSpecEx bpe)
+			{
+				fail();
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
+			
 			TestClient client = new TestClient(clientName);
 			ClientInfo info = manager.login(client);
-
+			
 			assertTrue(info.getHandle() != 0);
-
+			
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(), null, true);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(), new ComponentSpec(null, null, null, null), false);
 				fail();
 			}
-			catch (BadParametersException ndce)
+			catch (AcsJInvalidComponentSpecEx ndce)
 			{
 				new ExceptionIgnorer(ndce);
 				System.out.println("This is OK: "+ndce.getMessage());
-			}
-
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(), allAsterixCompSpec, false);
 				fail();
 			}
-			catch (IncompleteComponentSpecException icse)
+			catch (AcsJInvalidComponentSpecEx bpe)
 			{
-				new ExceptionIgnorer(icse);
-				System.out.println("This is OK: "+icse.getMessage());
+				new ExceptionIgnorer(bpe);
+				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			catch (AcsJIncompleteComponentSpecEx icse)
+			{
+				fail();
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
 			final ComponentSpec nameTypeIncomplete = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-																	   ComponentSpec.COMPSPEC_ANY,
-																	   "PowerSupply", 
-																	   "IDL:acsexmpl/PS/PowerSupply:1.0");
-
+					ComponentSpec.COMPSPEC_ANY,
+					"PowerSupply", 
+			        "IDL:acsexmpl/PS/PowerSupply:1.0");
+			
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(), nameTypeIncomplete, false);
 				fail();
 			}
-			catch (IncompleteComponentSpecException icse)
+			catch (AcsJInvalidComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
 				System.out.println("This is OK: "+icse.getMessage());
 			}
-
+			catch (AcsJIncompleteComponentSpecEx bpe)
+			{
+				fail();
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
 			// decoy container
 			TestContainer container = new TestContainer("Container");
 			Map supportedComponents = new HashMap();
 			TestComponent mount1COB = new TestComponent("MOUNT1");
 			supportedComponents.put("MOUNT1", mount1COB);
 			container.setSupportedComponents(supportedComponents);
-
+			
 			/*ClientInfo containerInfo =*/ manager.login(container);
-
+			
 			
 			TestContainer dynContainer = new TestDynamicContainer("DynContainer");
-
+			
 			ClientInfo dynContainerInfo = manager.login(dynContainer);
-
+			
 			// wait containers to startup
 			try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
-
+			
 			// all dynamic case w/o container logged in
+            // Before ACS 6.0 this was expecting a null, now we get and exception
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("dynComponent", "java.lang.Object",
-																	  "java.lang.Object", "invalidContainer"), true);
-				assertEquals(null, componentInfo);
-			}
-			catch (Exception ex)
-			{
+						new ComponentSpec("dynComponent", "java.lang.Object",
+								"java.lang.Object", "invalidContainer"), true);
 				fail();
 			}
-
+			catch (AcsJCannotGetComponentEx ex)
+			{
+				new ExceptionIgnorer(ex);
+				System.out.println("This is OK: "+ex.getMessage());
+			}
+			catch (AcsJInvalidComponentSpecEx ex)
+			{
+				fail();
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
 			// all dynamic case
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("dynComponent", "java.lang.Object",
-																	  "java.lang.Object", "DynContainer"), true);
+						new ComponentSpec("dynComponent", "java.lang.Object",
+								"java.lang.Object", "DynContainer"), true);
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("dynComponent"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
@@ -2771,15 +2861,15 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
-
+			
+			
 			ClientInfo info2 = manager.login(new TestClient("TestClient2"));
-
+			
 			// obtain and release dynamic component in a normal way
 			try
 			{
 				URI dynURI = new URI("dynComponent");
-
+				
 				// obtain
 				StatusHolder status = new StatusHolder();
 				Component component = manager.getComponent(info2.getHandle(), dynURI, true, status);
@@ -2797,13 +2887,13 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
+			
 			// override container case
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("MOUNT2", ComponentSpec.COMPSPEC_ANY,
-																	  ComponentSpec.COMPSPEC_ANY, "DynContainer"), true);
+						new ComponentSpec("MOUNT2", ComponentSpec.COMPSPEC_ANY,
+								ComponentSpec.COMPSPEC_ANY, "DynContainer"), true);
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("MOUNT2"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
@@ -2812,21 +2902,25 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
+			
 			// override all other fields case but MOUNT2 is already activated
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(),
-											new ComponentSpec("MOUNT2", "java.lang.Object",
-															  "java.lang.Object", "DynContainer"), true);
+						new ComponentSpec("MOUNT2", "java.lang.Object",
+								"java.lang.Object", "DynContainer"), true);
 				fail();
 			}
-			catch (ComponentSpecIncompatibleWithActiveComponentException ciwace)
+			catch (AcsJComponentSpecIncompatibleWithActiveComponentEx ciwace)
 			{
 				new ExceptionIgnorer(ciwace);
 				System.out.println("This is OK: "+ciwace.getMessage());
 			}
-
+			catch (AcsJInvalidComponentSpecEx bpe)
+			{
+				fail();
+			}
+			
 			// ordinary activation case but MOUNT2 is already activated
 			URI mount2 = null;
 			try
@@ -2847,7 +2941,7 @@ public class ManagerImplTest extends TestCase
 			try
 			{
 				ComponentInfo componentInfo = manager.getDefaultComponent(info.getHandle(), "IDL:alma/MOUNT_ACS/Mount:1.0");
-
+				
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("MOUNT2"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
@@ -2856,15 +2950,19 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
+			
 			// release mount2
-			manager.releaseComponent(info.getHandle(), mount2);
+			try {
+				manager.releaseComponent(info.getHandle(), mount2);
+			} catch (AcsJBadParameterEx e) {
+				fail();
+			}
 			
 			// default component test, should still be overriden MOUNT2
 			try
 			{
 				ComponentInfo componentInfo = manager.getDefaultComponent(info.getHandle(), "IDL:alma/MOUNT_ACS/Mount:1.0");
-
+				
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("MOUNT2"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
@@ -2874,78 +2972,85 @@ public class ManagerImplTest extends TestCase
 				fail();
 			}
 			
-
+			
 			// release mount2
-			manager.releaseComponent(info.getHandle(), mount2);
-
-
-			// override test case but MOUNT1 is already activated (startup component)
-			// type override
-			try
-			{
-				manager.getDynamicComponent(info.getHandle(),
-											new ComponentSpec("MOUNT1",
-															  ComponentSpec.COMPSPEC_ANY,
-											 				  "java.lang.Object",
-															  ComponentSpec.COMPSPEC_ANY), true);
+			try {
+				manager.releaseComponent(info.getHandle(), mount2);
+			} catch (AcsJBadParameterEx e) {
 				fail();
 			}
-			catch (ComponentSpecIncompatibleWithActiveComponentException ciwace)
+			
+			
+			// override test case but MOUNT1 is already activated (startup component)
+			// type override
+			try {
+				manager.getDynamicComponent(info.getHandle(),
+						new ComponentSpec("MOUNT1",
+								ComponentSpec.COMPSPEC_ANY,
+								"java.lang.Object",
+								ComponentSpec.COMPSPEC_ANY), true);
+				fail();
+			}
+			catch (AcsJComponentSpecIncompatibleWithActiveComponentEx ciwace)
 			{
 				new ExceptionIgnorer(ciwace);
 				System.out.println("This is OK: "+ciwace.getMessage());
 			}
-
+			catch (AcsJInvalidComponentSpecEx ciwace)
+			{
+				fail();
+			}
+			
 			// * name generation test w/o CDB lookup
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-																	  "IDL:alma/PS/PowerSupply:1.0",
-																	  "java.lang.Object",
-																	  "DynContainer"), false);
+						new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
+								"IDL:alma/PS/PowerSupply:1.0",
+								"java.lang.Object",
+						"DynContainer"), false);
 				assertTrue(componentInfo != null);
 				//assertTrue(componentInfo.getName().startsWith("IDL:alma/PS/PowerSupply:1.0"));
 				assertTrue(componentInfo.getName().startsWith("IDL:alma_PS_PowerSupply:1.0"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
-
+				
 				manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
 			}
 			catch (Exception ex)
 			{
 				fail();
 			}
-
+			
 			// prefix* name generation test w/o CDB lookup
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("PREFIX"+ComponentSpec.COMPSPEC_ANY,
-																	  "IDL:alma/PS/PowerSupply:1.0",
-																	  "java.lang.Object",
-																	  "DynContainer"), false);
+						new ComponentSpec("PREFIX"+ComponentSpec.COMPSPEC_ANY,
+								"IDL:alma/PS/PowerSupply:1.0",
+								"java.lang.Object",
+						"DynContainer"), false);
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().startsWith("PREFIX"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
-
+				
 				manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
 			}
 			catch (Exception ex)
 			{
 				fail();
 			}
-
+			
 			// * name generation test w/o CDB lookup, * container -> should fail since there is no load balancing
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(),
-											new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-															  "IDL:alma/newDevice/newPowerSupply:1.0",
-															  "java.lang.Object",
-															  ComponentSpec.COMPSPEC_ANY), false);
+						new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
+								"IDL:alma/newDevice/newPowerSupply:1.0",
+								"java.lang.Object",
+								ComponentSpec.COMPSPEC_ANY), false);
 				fail();
 			}
-			catch (InvalidComponentSpecException icsex)
+			catch (AcsJInvalidComponentSpecEx icsex)
 			{
 				new ExceptionIgnorer(icsex);
 				System.out.println("This is OK: "+icsex.getMessage());
@@ -2954,20 +3059,20 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
+			
 			// (*, type) and name generation test w/ container override
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-																	  "IDL:alma/PS/PowerSupply:1.0",
-																	  ComponentSpec.COMPSPEC_ANY,
-															  		  "DynContainer"), true);
+						new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
+								"IDL:alma/PS/PowerSupply:1.0",
+								ComponentSpec.COMPSPEC_ANY,
+						"DynContainer"), true);
 				assertTrue(componentInfo != null);
 				//assertTrue(componentInfo.getName().startsWith("IDL:alma/PS/PowerSupply:1.0"));
 				assertTrue(componentInfo.getName().startsWith("IDL:alma_PS_PowerSupply:1.0"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
-
+				
 				manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
 			}
 			catch (Exception ex)
@@ -2975,110 +3080,115 @@ public class ManagerImplTest extends TestCase
 				fail();
 			}
 			
-
+			
 			// (name, type) - component with given name, name is exist in CDB; w/ container override
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("PBEND_B_02",
-																	  "IDL:alma/PS/PowerSupply:1.0",
-																	  ComponentSpec.COMPSPEC_ANY,
-																	  "DynContainer"), true);
+						new ComponentSpec("PBEND_B_02",
+								"IDL:alma/PS/PowerSupply:1.0",
+								ComponentSpec.COMPSPEC_ANY,
+						"DynContainer"), true);
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("PBEND_B_02"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
-
+				
 				manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
 			}
 			catch (Exception ex)
 			{
 				fail();
 			}
-
+			
 			// (name, type) - component with given name, name does not exist in CDB; w/ container override
 			try
 			{
 				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("NAME_OVERRIDE",
-																	  "IDL:alma/PS/PowerSupply:1.0",
-																	  ComponentSpec.COMPSPEC_ANY,
-																	  "DynContainer"), true);
-
+						new ComponentSpec("NAME_OVERRIDE",
+								"IDL:alma/PS/PowerSupply:1.0",
+								ComponentSpec.COMPSPEC_ANY,
+						"DynContainer"), true);
+				
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("NAME_OVERRIDE"));
 				assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
-
+				
 				manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
 			}
 			catch (Exception ex)
 			{
 				fail();
 			}
-
+			
 			// (name, type) - but type does not exist in CDB (there is not type override)
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("NAME_OVERRIDE",
-																	  "IDL:alma/PS/RampedPowerSupply:1.0",
-																	  ComponentSpec.COMPSPEC_ANY,
-																	  ComponentSpec.COMPSPEC_ANY), true);
+						new ComponentSpec("NAME_OVERRIDE",
+								"IDL:alma/PS/RampedPowerSupply:1.0",
+								ComponentSpec.COMPSPEC_ANY,
+								ComponentSpec.COMPSPEC_ANY), true);
 				fail();
 			}
-			catch (InvalidComponentSpecException icse)
+			catch (AcsJInvalidComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
 				System.out.println("This is OK: "+icse.getMessage());
-			}
-
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
+			
 			/*
-			// (name, type) - component with given name, name does not exist in CDB; any container
-			// other than "Container" container should be in the CDB
-			try
-			{
-				ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec("NAME_OVERRIDE",
-																	  "IDL:alma/PS/PowerSupply:1.0",
-																	  ComponentSpec.COMPSPEC_ANY,
-																	  ComponentSpec.COMPSPEC_ANY), true);
-
-				assertTrue(componentInfo != null);
-				assertTrue(componentInfo.getName().equals("NAME_OVERRIDE"));
-				//assertEquals(othercontainer.getHandle(), componentInfo.getContainer());
-
-				manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
-			}
-			catch (Exception ex)
-			{
-				fail();
-			}
-			*/
+			 // (name, type) - component with given name, name does not exist in CDB; any container
+			  // other than "Container" container should be in the CDB
+			   try
+			   {
+			   ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
+			   new ComponentSpec("NAME_OVERRIDE",
+			   "IDL:alma/PS/PowerSupply:1.0",
+			   ComponentSpec.COMPSPEC_ANY,
+			   ComponentSpec.COMPSPEC_ANY), true);
+			   
+			   assertTrue(componentInfo != null);
+			   assertTrue(componentInfo.getName().equals("NAME_OVERRIDE"));
+			   //assertEquals(othercontainer.getHandle(), componentInfo.getContainer());
+			    
+			    manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
+			    }
+			    catch (Exception ex)
+			    {
+			    fail();
+			    }
+			    */
 			
 			// (*, type) - but type does not exist in CDB (there is not type override)
 			try
 			{
 				manager.getDynamicComponent(info.getHandle(),
-													new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-																	  "IDL:alma/PS/RampedPowerSupply:1.0",
-																	  ComponentSpec.COMPSPEC_ANY,
-																	  ComponentSpec.COMPSPEC_ANY), true);
+						new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
+								"IDL:alma/PS/RampedPowerSupply:1.0",
+								ComponentSpec.COMPSPEC_ANY,
+								ComponentSpec.COMPSPEC_ANY), true);
 				fail();
 			}
-			catch (InvalidComponentSpecException icse)
+			catch (AcsJInvalidComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
 				System.out.println("This is OK: "+icse.getMessage());
-			}
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+			}		
 		} catch (AcsJNoPermissionEx e) {
 			fail("No permission");
-		} catch (IncompleteComponentSpecException e) {
-			fail();
-		} catch (InvalidComponentSpecException e) {
-			fail();
-		} catch (ComponentSpecIncompatibleWithActiveComponentException e) {
-			fail();
+			/**
+			 * @todo I would like to remove all these exceptions 
+		     *       and catch them above
+			 */ 
+		} catch (AcsJCannotGetComponentEx e) {
+			fail("AcsJCannotGetComponentEx");
+		} catch (AcsJIncompleteComponentSpecEx e) {
+			fail("AcsJIncompleteComponentSpecEx");
 		}
-
 	}
 
 	/**
@@ -3099,17 +3209,17 @@ public class ManagerImplTest extends TestCase
 				manager.getCollocatedComponent(0, null, false, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			
 			final ComponentSpec allAsterixCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-																	   ComponentSpec.COMPSPEC_ANY,
-																	   ComponentSpec.COMPSPEC_ANY, 
-																	   ComponentSpec.COMPSPEC_ANY);
-
+					ComponentSpec.COMPSPEC_ANY,
+					ComponentSpec.COMPSPEC_ANY, 
+					ComponentSpec.COMPSPEC_ANY);
+			
 			try
 			{
 				manager.getCollocatedComponent(Integer.MAX_VALUE, allAsterixCompSpec, true, dummyURI);
@@ -3120,7 +3230,7 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
 			}
-
+			
 			try
 			{
 				manager.getCollocatedComponent(dummyHandle, allAsterixCompSpec, false, dummyURI);
@@ -3131,63 +3241,63 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
 			}
-
-
+			
+			
 			TestClient client = new TestClient(clientName);
 			ClientInfo info = manager.login(client);
-
+			
 			assertTrue(info.getHandle() != 0);
-
+			
 			try
 			{
 				manager.getCollocatedComponent(info.getHandle(), null, true, dummyURI);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			
 			try
 			{
 				manager.getCollocatedComponent(info.getHandle(), allAsterixCompSpec, true, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
 				System.out.println("This is OK: "+bpe.getMessage());
 			}
-
+			
 			try
 			{
 				manager.getCollocatedComponent(info.getHandle(), new ComponentSpec(null, null, null, null), false, mountURI);
 				fail();
 			}
-			catch (BadParametersException ndce)
+			catch (AcsJInvalidComponentSpecEx ndce)
 			{
 				new ExceptionIgnorer(ndce);
 				System.out.println("This is OK: "+ndce.getMessage());
 			}
-
+			
 			
 			final ComponentSpec specifiedContainerCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
-					   ComponentSpec.COMPSPEC_ANY,
-					   ComponentSpec.COMPSPEC_ANY, 
-					   "someContainer");
-
+					ComponentSpec.COMPSPEC_ANY,
+					ComponentSpec.COMPSPEC_ANY, 
+			"someContainer");
+			
 			try
 			{
 				manager.getCollocatedComponent(info.getHandle(), specifiedContainerCompSpec, false, mountURI);
 				fail();
 			}
-			catch (BadParametersException ndce)
+			catch (AcsJInvalidComponentSpecEx ndce)
 			{
 				new ExceptionIgnorer(ndce);
 				System.out.println("This is OK: "+ndce.getMessage());
 			}
-
+			
 			
 			// containers
 			TestContainer container = new TestContainer("Container");
@@ -3199,23 +3309,23 @@ public class ManagerImplTest extends TestCase
 			TestComponent mountColl2COB = new TestComponent("MOUNT_COLLOCATED2");
 			supportedComponents.put("MOUNT_COLLOCATED2", mountCollCOB);
 			container.setSupportedComponents(supportedComponents);
-
+			
 			ClientInfo containerInfo = manager.login(container);
-
+			
 			
 			TestContainer dynContainer = new TestDynamicContainer("DynContainer");
-
+			
 			/*ClientInfo dynContainerInfo =*/ manager.login(dynContainer);
-
+			
 			// wait containers to startup
 			try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
-
+			
 			// standard case
 			try
 			{
 				ComponentInfo componentInfo = manager.getCollocatedComponent(info.getHandle(),
-													new ComponentSpec("MOUNT_COLLOCATED", "java.lang.Object",
-																	  "java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, mountURI);
+						new ComponentSpec("MOUNT_COLLOCATED", "java.lang.Object",
+								"java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, mountURI);
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("MOUNT_COLLOCATED"));
 				assertEquals(containerInfo.getHandle(), componentInfo.getContainer());
@@ -3224,15 +3334,15 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
+			
 			// from CDB
 			try
 			{
 				URI mount2URI = new URI("MOUNT2");
 				
 				ComponentInfo componentInfo = manager.getCollocatedComponent(info.getHandle(),
-													new ComponentSpec("MOUNT_COLLOCATED2", "java.lang.Object",
-																	  "java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, mount2URI);
+						new ComponentSpec("MOUNT_COLLOCATED2", "java.lang.Object",
+								"java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, mount2URI);
 				assertTrue(componentInfo != null);
 				assertTrue(componentInfo.getName().equals("MOUNT_COLLOCATED2"));
 				assertEquals(containerInfo.getHandle(), componentInfo.getContainer());
@@ -3241,18 +3351,18 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
+			
 			// from CDB, but there is not entry...
 			try
 			{
 				URI noEntryURI = new URI("noEntry");
 				
 				ComponentInfo componentInfo = manager.getCollocatedComponent(info.getHandle(),
-													new ComponentSpec("MOUNT_COLLOCATED3", "java.lang.Object",
-																	  "java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, noEntryURI);
+						new ComponentSpec("MOUNT_COLLOCATED3", "java.lang.Object",
+								"java.lang.Object", ComponentSpec.COMPSPEC_ANY), true, noEntryURI);
 				fail();
 			}
-			catch (IncompleteComponentSpecException icse)
+			catch (AcsJIncompleteComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
 				System.out.println("This is OK: "+icse.getMessage());
@@ -3262,44 +3372,50 @@ public class ManagerImplTest extends TestCase
 				ex.printStackTrace();
 				fail();
 			}
+		} catch (AcsJCannotGetComponentEx e) {
+			// @todo Auto-generated catch block
+			e.printStackTrace();
+		} catch (AcsJIncompleteComponentSpecEx e) {
+			// @todo Auto-generated catch block
+			e.printStackTrace();
+		} catch (AcsJInvalidComponentSpecEx e) {
+			// @todo Auto-generated catch block
+			e.printStackTrace();
+		} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
+			// @todo Auto-generated catch block
+			e.printStackTrace();
 		} catch (AcsJNoPermissionEx e) {
 			fail("No permission");
-		} catch (IncompleteComponentSpecException e) {
-			fail();
-		} catch (InvalidComponentSpecException e) {
-			fail();
-		} catch (ComponentSpecIncompatibleWithActiveComponentException e) {
-			fail();
-		}
+		}	
 		
 	}
 
 	public void testReleaseComponent()
 	{
-
+		
 		try {
 			try
 			{
 				manager.releaseComponent(0, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJBadParameterEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: null parameter");
 			}
-
+			
 			try
 			{
 				manager.releaseComponent(Integer.MAX_VALUE, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJBadParameterEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: null parameter");
 			}
-
+			
 			try
 			{
 				manager.releaseComponent(dummyHandle, dummyURI);
@@ -3310,105 +3426,137 @@ public class ManagerImplTest extends TestCase
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
 			}
+			catch (AcsJBadParameterEx bpe)
+			{
+				fail();
+			}
 		} catch (AcsJNoPermissionEx e) {
 			fail("No permission");
 		}
-
+		
 	}
 	
 	public void testMakeComponentMortal()
 	{
-
+		
+		try
+		{
+			manager.makeComponentImmortal(0, null, false);
+			fail();
+		}
+		catch (AcsJBadParameterEx bpe) {
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK");			
+		}
+		catch (AcsJCannotGetComponentEx bpe) {
+			fail();
+		}	
+		catch (AcsJNoPermissionEx e) {
+			fail("No permission");
+		}
+		
+		try
+		{
+			manager.makeComponentImmortal(Integer.MAX_VALUE, null, false);
+			fail();
+		}
+		catch (AcsJBadParameterEx bpe) {
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK");			
+		}	
+		catch (AcsJCannotGetComponentEx bpe) {
+			fail();
+		}
+		catch (AcsJNoPermissionEx e) {
+			fail("No permission");
+		}
+		
+		try
+		{
+			manager.makeComponentImmortal(dummyHandle, dummyURI, false);
+			fail();
+		}
+		catch (AcsJCannotGetComponentEx bpe) {
+			fail("CannotGetComponentE");
+		}	
+		catch (AcsJBadParameterEx bpe) {
+			fail("BadParameter");
+		}
+		catch (AcsJNoPermissionEx bpe) {
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK");			
+		}
+		
+		ClientInfo adminInfo = null;
+		ClientInfo info = null;
+		Component mount2 = null;
+		Component mount3 = null;
 		try {
-			try
-			{
-				manager.makeComponentImmortal(0, null, false);
-				fail();
-			}
-			catch (BadParametersException bpe)
-			{
-				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
-			try
-			{
-				manager.makeComponentImmortal(Integer.MAX_VALUE, null, false);
-				fail();
-			}
-			catch (BadParametersException bpe)
-			{
-				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
-			try
-			{
-				manager.makeComponentImmortal(dummyHandle, dummyURI, false);
-				fail();
-			}
-			catch (AcsJNoPermissionEx npe)
-			{
-				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
-			}
-
 			TestAdministrator adminClient = new TestAdministrator(administratorName);
-			ClientInfo adminInfo = manager.login(adminClient);
+			adminInfo = manager.login(adminClient);
 			
 			TestClient client = new TestClient(clientName);
-			ClientInfo info = manager.login(client);
-
+			info = manager.login(client);
+			
 			assertTrue(info.getHandle() != 0);
 			TestContainer container = new TestContainer("Container");
 			Map supportedComponents = new HashMap();
 			Component mount1 = new TestComponent("MOUNT1");
 			supportedComponents.put("MOUNT1", mount1);
-			Component mount2 = new TestComponent("MOUNT2");
+			mount2 = new TestComponent("MOUNT2");
 			supportedComponents.put("MOUNT2", mount2);
-			Component mount3 = new TestComponent("MOUNT3");
+			mount3 = new TestComponent("MOUNT3");
 			supportedComponents.put("MOUNT3", mount3);
 			container.setSupportedComponents(supportedComponents);
-
+			
 			ClientInfo containerInfo = manager.login(container);
-
-			URI mount2URL = null;
-			try
-			{
-				mount2URL = new URI("MOUNT2");
-				StatusHolder status = new StatusHolder();
-				Component ref = manager.getComponent(info.getHandle(), mount2URL, true, status);
-				
-				assertEquals(mount2, ref);
-			}
-			catch (Exception ex)
-			{
-				fail();
-			}
-
-			// admin will activate it
-			URI mount3URL = null;
-			try
-			{
-				mount3URL = new URI("MOUNT3");
-				StatusHolder status = new StatusHolder();
-				Component ref = manager.getComponent(adminInfo.getHandle(), mount3URL, true, status);
-				
-				assertEquals(mount3, ref);
-			}
-			catch (Exception ex)
-			{
-				fail();
-			}
-
-			try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
-
-			// test activated Components
-			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		} catch (AcsJNoPermissionEx e1) {
+			fail("No permission");
+		}
+		
+		URI mount2URL = null;
+		try
+		{
+			mount2URL = new URI("MOUNT2");
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), mount2URL, true, status);
+			
+			assertEquals(mount2, ref);
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+		
+		// admin will activate it
+		URI mount3URL = null;
+		try
+		{
+			mount3URL = new URI("MOUNT3");
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(adminInfo.getHandle(), mount3URL, true, status);
+			
+			assertEquals(mount3, ref);
+		}
+		catch (Exception ex)
+		{
+			fail();
+		}
+		
+		try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
+		
+		// test activated Components
+		ComponentInfo[] infos;
+		try {
+			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(3, infos.length);
-
-
-			// make mount2 immortal (as admin which has all the rights)
+		} catch (AcsJNoPermissionEx e1) {
+			fail("No permission");
+		}
+		
+		
+		// make mount2 immortal (as admin which has all the rights)
+		try {
 			manager.makeComponentImmortal(adminInfo.getHandle(), mount2URL, true);
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "MOUNT2", "*", true);
 			assertEquals(1, infos.length);
@@ -3418,36 +3566,82 @@ public class ManagerImplTest extends TestCase
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "MOUNT2", "*", true);
 			assertEquals(1, infos.length);
 			assertTrue(!infos[0].getClients().contains(manager.getHandle()));
-			
-			// client does not own it, no permission exception expected
-			try
-			{
-				manager.makeComponentImmortal(info.getHandle(), mount3URL, true);
-				fail();
-			}
-			catch (AcsJNoPermissionEx npe)
-			{
-				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
-			}
-
-			// normal op.
+		} catch (AcsJCannotGetComponentEx e) {
+			fail();
+		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			fail();
+		}
+		catch (AcsJNoPermissionEx bpe)
+		{
+			fail();
+		}
+		
+		// client does not own it, no permission exception expected
+		try
+		{
+			manager.makeComponentImmortal(info.getHandle(), mount3URL, true);
+			fail();
+		}
+		catch (AcsJCannotGetComponentEx npe)
+		{
+			fail();
+		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			fail();
+		}
+		catch (AcsJNoPermissionEx bpe)
+		{
+			new ExceptionIgnorer(bpe);
+			System.out.println("This is OK: "+bpe.getReason());
+		}
+		
+		// normal op.
+		try {
 			manager.makeComponentImmortal(info.getHandle(), mount2URL, true);
-
+		} 
+		catch (AcsJCannotGetComponentEx e) {
+			fail();
+		}
+		catch (AcsJBadParameterEx bpe) {
+			fail();
+		}
+		catch (AcsJNoPermissionEx bpe)	{
+			fail();
+		}
+		
+		try {
 			manager.releaseComponent(info.getHandle(), mount2URL);
-			
-
+		}
+		catch (AcsJBadParameterEx bpe) {
+			fail();
+		}
+		catch (AcsJNoPermissionEx bpe){
+			fail();
+		}
+		
+		
+		try {
 			// mount2 is immortal and stays active, has managers handle as an owner
 			infos = manager.getComponentInfo(adminInfo.getHandle(), new int[0], "MOUNT2", "*", true);
 			assertEquals(1, infos.length);
 			assertTrue(infos[0].getClients().contains(manager.getHandle()));
-
+			
 			// mount2 should be released now
-			manager.makeComponentImmortal(adminInfo.getHandle(), mount2URL, false);
+			try {
+				manager.makeComponentImmortal(adminInfo.getHandle(), mount2URL, false);
+			} catch (AcsJCannotGetComponentEx e) {
+				fail();
+			}
+			catch (AcsJBadParameterEx bpe) {
+				fail();
+			}
 			infos = manager.getComponentInfo(adminInfo.getHandle(), new int[0], "MOUNT2", "*", true);
 			assertEquals(0, infos.length);
 		} catch (AcsJNoPermissionEx e) {
-			fail("No permission");
+			fail();
 		}
 	}
 
@@ -3477,30 +3671,26 @@ public class ManagerImplTest extends TestCase
 		}
 
 		URI immortalURL = null;
-		try
-		{
+		try	{
 			immortalURL = new URI("IMMORTAL");
 			StatusHolder status = new StatusHolder();
 			Component ref = manager.getComponent(info.getHandle(), immortalURL, true, status);
 			
 			assertEquals(immortal, ref);
 		}
-		catch (Exception ex)
-		{
+		catch (Exception ex) {
 			fail();
 		}
 
 		URI persistentURL = null;
-		try
-		{
+		try 		{
 			persistentURL = new URI("PERSISTENT");
 			StatusHolder status = new StatusHolder();
 			Component ref = manager.getComponent(info.getHandle(), persistentURL, true, status);
 			
 			assertEquals(persistent, ref);
 		}
-		catch (Exception ex)
-		{
+		catch (Exception ex) {
 			fail();
 		}
 
@@ -3514,7 +3704,11 @@ public class ManagerImplTest extends TestCase
 			assertTrue(!infos[1].getClients().contains(manager.getHandle()));
 
 			// check immortality
-			manager.releaseComponent(info.getHandle(), immortalURL);
+			try {
+				manager.releaseComponent(info.getHandle(), immortalURL);
+			} catch (AcsJBadParameterEx e) {
+				fail();
+			}
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(2, infos.length);
 			assertTrue(infos[0].getClients().contains(manager.getHandle()));
@@ -3522,22 +3716,24 @@ public class ManagerImplTest extends TestCase
 			final int KEEP_ALIVE_TIME = 5000 + 2000;
 
 			// check keepAliveTime
-			manager.releaseComponent(info.getHandle(), persistentURL);
+			try {
+				manager.releaseComponent(info.getHandle(), persistentURL);
+			} catch (AcsJBadParameterEx e) {
+				fail();
+			}
 			// both alive
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(2, infos.length);
 
 			// another request for component
-			try
-			{
+			try {
 				persistentURL = new URI("PERSISTENT");
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info.getHandle(), persistentURL, true, status);
 				
 				assertEquals(persistent, ref);
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				fail();
 			}
 			
@@ -3551,7 +3747,12 @@ public class ManagerImplTest extends TestCase
 
 			
 			
-			manager.releaseComponent(info.getHandle(), persistentURL);
+			try {
+				manager.releaseComponent(info.getHandle(), persistentURL);
+			} 
+			catch (AcsJBadParameterEx e) {
+				fail();
+			}
 			// both alive
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(2, infos.length);
@@ -3572,37 +3773,34 @@ public class ManagerImplTest extends TestCase
 	{
 
 		try {
-			try
-			{
+			try	{
 				manager.forceReleaseComponent(0, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
-			{
+			catch (AcsJBadParameterEx bpe)	{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: null parameter");
 			}
 
-			try
-			{
+			try	{
 				manager.forceReleaseComponent(Integer.MAX_VALUE, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
-			{
+			catch (AcsJBadParameterEx bpe)	{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: null parameter");
 			}
 
-			try
-			{
+			try {
 				manager.forceReleaseComponent(dummyHandle, dummyURI);
 				fail();
 			}
-			catch (AcsJNoPermissionEx npe)
-			{
+			catch (AcsJNoPermissionEx npe)	{
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
+			}
+			catch (AcsJBadParameterEx bpe) {
+				fail();
 			}
 
 
@@ -3633,8 +3831,7 @@ public class ManagerImplTest extends TestCase
 
 			// client activate 
 			URI mount4 = null;
-			try
-			{
+			try {
 				mount4 = new URI("MOUNT4");
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info.getHandle(), mount4, true, status);
@@ -3642,22 +3839,19 @@ public class ManagerImplTest extends TestCase
 				assertEquals(mount4COB, ref);
 				assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				fail();
 			}
 
 			// client2 activate 
-			try
-			{
+			try	{
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info2.getHandle(), mount4, true, status);
 				
 				assertEquals(mount4COB, ref);
 				assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				fail();
 			}
 
@@ -3685,8 +3879,13 @@ public class ManagerImplTest extends TestCase
 			System.out.println("This is OK: Insufficient rights.");
 			
 			// test forceful release
-			int clients = manager.forceReleaseComponent(adminInfo.getHandle(), mount4);
-			assertEquals(2, clients);
+			int clients;
+			try {
+				clients = manager.forceReleaseComponent(adminInfo.getHandle(), mount4);
+				assertEquals(2, clients);
+			} catch (AcsJBadParameterEx e) {
+				fail();
+			}
 
 			// there should be only one component activated (MOUNT1)
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
@@ -3711,8 +3910,12 @@ public class ManagerImplTest extends TestCase
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(2, infos.length);
 
-			clients = manager.releaseComponent(adminInfo.getHandle(), mount4);
-			assertEquals(2, clients);
+			try {
+				clients = manager.releaseComponent(adminInfo.getHandle(), mount4);
+				assertEquals(2, clients);
+			} catch (AcsJBadParameterEx e) {
+				fail();
+			}
 			
 			// there should be two components activated (MOUNT1 and MOUNT4)
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
@@ -3740,10 +3943,10 @@ public class ManagerImplTest extends TestCase
 				manager.restartComponent(0, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJBadParameterEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: null parameter");
 			}
 
 			try
@@ -3751,10 +3954,10 @@ public class ManagerImplTest extends TestCase
 				manager.restartComponent(Integer.MAX_VALUE, null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJBadParameterEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: null parameter");
 			}
 
 			try
@@ -3766,6 +3969,10 @@ public class ManagerImplTest extends TestCase
 			{
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
+			}
+			catch (AcsJBadParameterEx bpe)
+			{
+				fail();
 			}
 
 
@@ -3779,10 +3986,10 @@ public class ManagerImplTest extends TestCase
 				manager.restartComponent(info.getHandle(), null);
 				fail();
 			}
-			catch (BadParametersException bpe)
+			catch (AcsJBadParameterEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: null parameter");
 			}
 
 
@@ -3792,6 +3999,10 @@ public class ManagerImplTest extends TestCase
 				mount = new URI("MOUNT3");
 				Component component = manager.restartComponent(info.getHandle(), mount);
 				assertEquals(null, component);
+			}
+			catch (AcsJBadParameterEx bpe)
+			{
+				fail();
 			}
 			catch (URISyntaxException usi)
 			{
@@ -3846,6 +4057,10 @@ public class ManagerImplTest extends TestCase
 			{
 				new ExceptionIgnorer(npe);
 				System.out.println("This is OK: "+npe.getReason());
+			}
+			catch (AcsJBadParameterEx bpe)
+			{
+				fail();
 			}
 		} catch (AcsJNoPermissionEx e) {
 			fail("No permission");
@@ -4306,32 +4521,27 @@ public class ManagerImplTest extends TestCase
 		daemon = new TestDaemon(manager, true);
 		transport.registerDeamon("test", daemon);
 
-		try
-		{
+		try {
 			StatusHolder status = new StatusHolder();
-			Component ref = manager.getComponent(info.getHandle(), curl, true, status);
-			
-			assertNull(ref);
-			assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
-		}
-		catch (Exception ex)
-		{
+			Component ref = manager.getComponent(info.getHandle(), curl, true, status);			
 			fail();
+		} catch (AcsJCannotGetComponentEx e) {
+			new ExceptionIgnorer(e);
+			System.out.println("This is OK: "+e.getReason());
 		}
 		
 		// no daemon case
 		transport.registerDeamon("test", null);
 
-		try
-		{
+		try {
 			StatusHolder status = new StatusHolder();
 			Component ref = manager.getComponent(info.getHandle(), curl, true, status);
 			
-			assertNull(ref);
-			assertEquals(ComponentStatus.COMPONENT_NOT_ACTIVATED, status.getStatus());
-		}
-		catch (Exception ex)
-		{
+			fail();
+		} catch (AcsJCannotGetComponentEx e) {
+			new ExceptionIgnorer(e);
+			System.out.println("This is OK: "+e.getReason());
+		} catch (AcsJNoPermissionEx e) {
 			fail();
 		}
 	}
