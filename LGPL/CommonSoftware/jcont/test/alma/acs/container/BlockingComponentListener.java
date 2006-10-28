@@ -51,7 +51,7 @@ public class BlockingComponentListener implements ContainerServices.ComponentLis
 	}
 
 	public void componentsAvailable(List<ComponentDescriptor> comps) {
-		logger.info("************* Got call to componentsUnavailable ***********");
+		logger.info("************* Got call to componentsAvailable ***********");
 		if (sync != null) {
 			sync.countDown();
 		}
