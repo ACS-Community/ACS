@@ -343,7 +343,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		Client client = new TestClient(clientName);		
@@ -361,7 +361,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		Administrator admin = new TestAdministrator("shutdownAdmin");		
@@ -382,7 +382,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		// already shutdown
@@ -394,7 +394,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		// already shutdown
@@ -406,7 +406,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		// tearDown should not shutdown
@@ -439,7 +439,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		Client client = new TestClient(clientName);		
@@ -456,7 +456,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		Administrator admin = new TestAdministrator("shutdownAdmin");		
@@ -529,7 +529,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 		
 		//manager.shutdownContainer(info2.getHandle(), "Container", /* special code */);
@@ -604,7 +604,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		// test invalid autheticate
@@ -616,7 +616,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 		
 		//test client login
@@ -792,7 +792,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		//test invalid
@@ -803,7 +803,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		//test invalid
@@ -814,7 +814,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 
 		//test client logout
@@ -899,7 +899,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 
 			/*
@@ -934,14 +934,14 @@ public class ManagerImplTest extends TestCase
 				fail();			
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			try{
 				manager.getClientInfo(anotherInfo.getHandle(),new int[0],clientName);
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			manager.logout(info.getHandle());
 			manager.logout(anotherInfo.getHandle());
@@ -956,7 +956,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());		
+				System.out.println("This is OK: "+npe.toString());		
 			}
 			manager.logout(info.getHandle());
 
@@ -971,7 +971,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());		
+				System.out.println("This is OK: "+npe.toString());		
 			}
 			manager.logout(info.getHandle());
 			manager.logout(anotherInfo.getHandle());
@@ -987,7 +987,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());		
+				System.out.println("This is OK: "+npe.toString());		
 			}
 			manager.logout(info.getHandle());
 			manager.logout(anotherInfo.getHandle());
@@ -1004,7 +1004,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());		
+				System.out.println("This is OK: "+npe.toString());		
 			}
 			manager.logout(info.getHandle());
 			manager.logout(anotherInfo.getHandle());
@@ -1019,7 +1019,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());		
+				System.out.println("This is OK: "+npe.toString());		
 			}
 			manager.logout(info.getHandle());
 			
@@ -1128,7 +1128,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 
 			/*
@@ -1161,14 +1161,14 @@ public class ManagerImplTest extends TestCase
 				fail();			
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			try{
 				manager.getClientInfo(info.getHandle(),new int[0],anotherName);
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			manager.logout(info.getHandle());
 			manager.logout(anotherInfo.getHandle());
@@ -1228,7 +1228,7 @@ public class ManagerImplTest extends TestCase
 			} 
 			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK");			
+				System.out.println("This is OK "+bpe.toString());			
 			}	
 		    //test invalid
 			try {
@@ -1237,7 +1237,7 @@ public class ManagerImplTest extends TestCase
 			}
 			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK");			
+				System.out.println("This is OK "+bpe.toString());			
 			}	
 
 			//test invalid
@@ -1247,7 +1247,7 @@ public class ManagerImplTest extends TestCase
 			}
 			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK");			
+				System.out.println("This is OK "+bpe.toString());			
 			}	
 			//test invalid
 			try {
@@ -1256,7 +1256,7 @@ public class ManagerImplTest extends TestCase
 			}
 			catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK");			
+				System.out.println("This is OK "+bpe.toString());			
 			}	
 			
 			//register with empty curl
@@ -1266,7 +1266,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: empty URI");			
+				System.out.println("This is OK: empty URI "+bpe.toString());			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1277,7 +1277,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: URI does not exist");			
+				System.out.println("This is OK: URI does not exist "+bpe.toString());			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1288,7 +1288,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: invalid URI");			
+				System.out.println("This is OK: invalid URI "+bpe.toString());			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1299,7 +1299,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: invalid URI");			
+				System.out.println("This is OK: invalid URI " +bpe.toString());			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1310,7 +1310,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJBadParameterEx bpe) {
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: invalid URI");			
+				System.out.println("This is OK: invalid URI "+bpe.toString());			
 			} catch (URISyntaxException e) {
 				fail();
 			}
@@ -1372,7 +1372,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJNoPermissionEx npe) {
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			} catch (AcsJBadParameterEx bpe) {
 				fail();			
 			} catch (URISyntaxException e) {
@@ -1397,7 +1397,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 		catch (AcsJBadParameterEx bpe)
 		{
@@ -1412,7 +1412,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 		catch (AcsJBadParameterEx bpe)
 		{
@@ -1427,7 +1427,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 		catch (AcsJBadParameterEx bpe)
 		{
@@ -1442,7 +1442,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx npe)
 		{
 			new ExceptionIgnorer(npe);
-			System.out.println("This is OK: "+npe.getReason());
+			System.out.println("This is OK: "+npe.toString());
 		}
 		catch (AcsJBadParameterEx bpe)
 		{
@@ -1472,7 +1472,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJBadParameterEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: duplicate unregistration");
+				System.out.println("This is OK: duplicate unregistration "+bpe.toString());
 			}
 
 			manager.logout(info.getHandle());
@@ -2001,7 +2001,7 @@ public class ManagerImplTest extends TestCase
 			} 
 			catch (AcsJCannotGetComponentEx e) {
 				new ExceptionIgnorer(e);
-				System.out.println("This is OK: cyclic dependency");
+				System.out.println("This is OK: cyclic dependency "+e.toString());
 			}
 			catch (Exception ex)
 			{
@@ -2031,7 +2031,7 @@ public class ManagerImplTest extends TestCase
 			} 
 			catch (AcsJCannotGetComponentEx e) {
 				new ExceptionIgnorer(e);
-				System.out.println("This is OK: cyclic dependency");
+				System.out.println("This is OK: cyclic dependency "+e.toString());
 			}
 			catch (Exception ex)
 			{
@@ -2192,7 +2192,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 			
 			try
@@ -2203,7 +2203,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 			
 			try
@@ -2215,7 +2215,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 			
 			try
@@ -2227,7 +2227,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJCannotGetComponentEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 		
 		
@@ -2246,7 +2246,7 @@ public class ManagerImplTest extends TestCase
 		} 
 		catch (AcsJCannotGetComponentEx e) {
 			new ExceptionIgnorer(e);
-			System.out.println("This is OK: component does not exist");
+			System.out.println("This is OK: component does not exist "+e.toString());
 		}
 		catch (Exception ex)
 		{
@@ -2266,7 +2266,7 @@ public class ManagerImplTest extends TestCase
 			} 
 			catch (AcsJCannotGetComponentEx e) {
 				new ExceptionIgnorer(e);
-				System.out.println("This is OK: component not activated");
+				System.out.println("This is OK: component not activated "+e.toString());
 			}
 			catch (Exception ex)
 			{
@@ -2283,7 +2283,7 @@ public class ManagerImplTest extends TestCase
 			} 
 			catch (AcsJCannotGetComponentEx e) {
 				new ExceptionIgnorer(e);
-				System.out.println("This is OK: component not activated");
+				System.out.println("This is OK: component not activated "+e.toString());
 			}
 			catch (Exception ex)
 			{
@@ -2333,7 +2333,7 @@ public class ManagerImplTest extends TestCase
 				fail();
 			} catch (AcsJCannotGetComponentEx e1) {
 				new ExceptionIgnorer(e1);
-				System.out.println("This is OK: "+e1.getReason());
+				System.out.println("This is OK: "+e1.toString());
 			} catch (URISyntaxException e1) {
 				fail();
 			}
@@ -2357,7 +2357,7 @@ public class ManagerImplTest extends TestCase
 			} 
 			catch (AcsJCannotGetComponentEx e) {
 				new ExceptionIgnorer(e);
-				System.out.println("This is OK: component not activated");
+				System.out.println("This is OK: component not activated "+e.toString());
 			}
 			catch (Exception ex)
 			{
@@ -2516,7 +2516,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 
 			try
@@ -2528,7 +2528,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 
 			try
@@ -2540,7 +2540,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 
 			try
@@ -2566,7 +2566,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			
 			try
@@ -2622,7 +2622,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			
 			
@@ -2694,9 +2694,9 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
-				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
+				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx "+ e.toString());
 			}		
 		
 		final ComponentSpec allAsterixCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
@@ -2712,7 +2712,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
@@ -2729,7 +2729,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
@@ -2752,7 +2752,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
 				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
 			}		
@@ -2765,7 +2765,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx ndce)
 			{
 				new ExceptionIgnorer(ndce);
-				System.out.println("This is OK: "+ndce.getMessage());
+				System.out.println("This is OK: "+ndce.toString());
 			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
 				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
 			}		
@@ -2778,7 +2778,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 			catch (AcsJIncompleteComponentSpecEx icse)
 			{
@@ -2800,7 +2800,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
-				System.out.println("This is OK: "+icse.getMessage());
+				System.out.println("This is OK: "+icse.toString());
 			}
 			catch (AcsJIncompleteComponentSpecEx bpe)
 			{
@@ -2838,7 +2838,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJCannotGetComponentEx ex)
 			{
 				new ExceptionIgnorer(ex);
-				System.out.println("This is OK: "+ex.getMessage());
+				System.out.println("This is OK: "+ex.toString());
 			}
 			catch (AcsJInvalidComponentSpecEx ex)
 			{
@@ -2914,7 +2914,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJComponentSpecIncompatibleWithActiveComponentEx ciwace)
 			{
 				new ExceptionIgnorer(ciwace);
-				System.out.println("This is OK: "+ciwace.getMessage());
+				System.out.println("This is OK: "+ciwace.toString());
 			}
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
@@ -2994,7 +2994,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJComponentSpecIncompatibleWithActiveComponentEx ciwace)
 			{
 				new ExceptionIgnorer(ciwace);
-				System.out.println("This is OK: "+ciwace.getMessage());
+				System.out.println("This is OK: "+ciwace.toString());
 			}
 			catch (AcsJInvalidComponentSpecEx ciwace)
 			{
@@ -3053,7 +3053,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx icsex)
 			{
 				new ExceptionIgnorer(icsex);
-				System.out.println("This is OK: "+icsex.getMessage());
+				System.out.println("This is OK: "+icsex.toString());
 			}
 			catch (Exception ex)
 			{
@@ -3133,7 +3133,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
-				System.out.println("This is OK: "+icse.getMessage());
+				System.out.println("This is OK: "+icse.toString());
 			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
 				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
 			}		
@@ -3174,7 +3174,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
-				System.out.println("This is OK: "+icse.getMessage());
+				System.out.println("This is OK: "+icse.toString());
 			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
 				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
 			}		
@@ -3212,7 +3212,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 			
 			final ComponentSpec allAsterixCompSpec = new ComponentSpec(ComponentSpec.COMPSPEC_ANY,
@@ -3228,7 +3228,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			
 			try
@@ -3239,7 +3239,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			
 			
@@ -3256,7 +3256,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 			
 			try
@@ -3267,7 +3267,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx bpe)
 			{
 				new ExceptionIgnorer(bpe);
-				System.out.println("This is OK: "+bpe.getMessage());
+				System.out.println("This is OK: "+bpe.toString());
 			}
 			
 			try
@@ -3278,7 +3278,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx ndce)
 			{
 				new ExceptionIgnorer(ndce);
-				System.out.println("This is OK: "+ndce.getMessage());
+				System.out.println("This is OK: "+ndce.toString());
 			}
 			
 			
@@ -3295,7 +3295,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJInvalidComponentSpecEx ndce)
 			{
 				new ExceptionIgnorer(ndce);
-				System.out.println("This is OK: "+ndce.getMessage());
+				System.out.println("This is OK: "+ndce.toString());
 			}
 			
 			
@@ -3365,7 +3365,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJIncompleteComponentSpecEx icse)
 			{
 				new ExceptionIgnorer(icse);
-				System.out.println("This is OK: "+icse.getMessage());
+				System.out.println("This is OK: "+icse.toString());
 			}
 			catch (Exception ex)
 			{
@@ -3424,7 +3424,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			catch (AcsJBadParameterEx bpe)
 			{
@@ -3595,7 +3595,7 @@ public class ManagerImplTest extends TestCase
 		catch (AcsJNoPermissionEx bpe)
 		{
 			new ExceptionIgnorer(bpe);
-			System.out.println("This is OK: "+bpe.getReason());
+			System.out.println("This is OK: "+bpe.toString());
 		}
 		
 		// normal op.
@@ -3797,7 +3797,7 @@ public class ManagerImplTest extends TestCase
 			}
 			catch (AcsJNoPermissionEx npe)	{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			catch (AcsJBadParameterEx bpe) {
 				fail();
@@ -3872,7 +3872,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			*/
 			// TODO tmp - due to Heiko's hack
@@ -3968,7 +3968,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			catch (AcsJBadParameterEx bpe)
 			{
@@ -4056,7 +4056,7 @@ public class ManagerImplTest extends TestCase
 			catch (AcsJNoPermissionEx npe)
 			{
 				new ExceptionIgnorer(npe);
-				System.out.println("This is OK: "+npe.getReason());
+				System.out.println("This is OK: "+npe.toString());
 			}
 			catch (AcsJBadParameterEx bpe)
 			{
@@ -4527,7 +4527,7 @@ public class ManagerImplTest extends TestCase
 			fail();
 		} catch (AcsJCannotGetComponentEx e) {
 			new ExceptionIgnorer(e);
-			System.out.println("This is OK: "+e.getReason());
+			System.out.println("This is OK: "+e.toString());
 		}
 		
 		// no daemon case
@@ -4540,7 +4540,7 @@ public class ManagerImplTest extends TestCase
 			fail();
 		} catch (AcsJCannotGetComponentEx e) {
 			new ExceptionIgnorer(e);
-			System.out.println("This is OK: "+e.getReason());
+			System.out.println("This is OK: "+e.toString());
 		} catch (AcsJNoPermissionEx e) {
 			fail();
 		}
