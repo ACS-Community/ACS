@@ -11,8 +11,8 @@
 1 - Field ':Appl_data:MACI/Containers/Container01.ManagerReference' empty or not set.
 1 - Manager hostname generated using localhost address: '---'
 1 - 
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
@@ -102,7 +102,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-2 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+2 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_COSTR,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_COSTR (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_COSTR
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_INIT
@@ -141,9 +141,9 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-2 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_INIT (right behaviour)
+2 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_INIT,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_INIT
+2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_INIT (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_EXE
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_EXE'. Creating it...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
@@ -171,8 +171,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_EXE: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_EXE - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_EXE - ] Throwing an exception in execute
-1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::execute() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__execute] Life cycle error (type=28, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::execute() test exception] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerImpl::activate_component] Error activating component (type=25, code=9)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
@@ -183,9 +183,9 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-2 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_EXE
+2 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_EXE,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_EXE (right behaviour)
+2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_EXCEPTION_EXE
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_CLEAN
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_CLEAN'. Creating it...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
@@ -221,9 +221,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_CLEAN: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - ] Throwing an exception in cleanUp
-1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::deactivate_component: got an exception executing MACI_EXCEPTION_CLEAN
 1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__cleanUp] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [GlobalLogger - DynamicTestClassImpl::cleanUp() test exception] Life cycle error (type=28, code=0)
+1 - ----------T--:--:--.--- [Container01 - ] maci::ContainerImpl::deactivate_component: got an exception executing MACI_EXCEPTION_CLEAN
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_EXCEPTION_CLEAN: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_EXCEPTION_CLEAN' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 

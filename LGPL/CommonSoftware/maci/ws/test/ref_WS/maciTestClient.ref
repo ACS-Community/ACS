@@ -39,8 +39,8 @@
 1 - 
 2 - 
 3 - 
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
@@ -88,8 +88,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 of 0 components activated.
-2 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+2 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container02 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::init] Destroy bootstrap ORB
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::initializeCORBA] 
@@ -202,8 +202,8 @@
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] 
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname generated using localhost address: '---'
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] 
-4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname obtained via command line: 'XXXXX'
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] 
+4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname obtained via command line: 'XXXXX'
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname obtained via command line: 'XXXXX'
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] 
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname obtained via environment: 'the.host.com'
@@ -217,13 +217,13 @@
 4 - 
 4 - 
 4 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::MACIHelper::resolveManager
-4 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] MACIHelper::resolveManager returned nil
+4 - system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
+4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 4 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
 4 - 
-4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-4 - 
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: ''
+4 - 
 4 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::MACIHelper::resolveManager
 4 - system exception, ID 'IDL:omg.org/CORBA/INV_OBJREF:1.0'
 4 - TAO exception, minor code = 11 (unknown location; EINVAL), completed = NO
@@ -241,13 +241,13 @@
 4 - ----------T--:--:--.--- 
 4 - ----------T--:--:--.--- Specify -m 1 when starting Naming_Service,
 4 - multicast discovery of NameService failed.
-4 - 
 4 - or see http://www.theaceorb.com/faq/#115
-4 - for using NameService without multicast.
-4 - 
 4 - 
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] Unable to resolve NameService reference using CORBA::ORB::resolve_intial_references().
+4 - for using NameService without multicast.
+4 - 
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
+4 - 
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] 
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] Resolving reference: 'corbaloc::---:----/NameService'
 4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference narrowed.
@@ -261,13 +261,13 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI01' requested by 'SimpleClient' (activation: 0)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI01'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI01,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI01
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'dummyDO' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///dummyDO'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=dummyDO,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=dummyDO
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI_FAKE' requested by 'SimpleClient' (activation: 1)
@@ -299,8 +299,8 @@
 1 - ----------T--:--:--.--- [MACI_FAKE - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
-1 - ----------T--:--:--.--- [GlobalLogger - maciTestClassImpl::ConstructComponent] Object couldn't be created (type=10, code=6)
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerImpl::activate_component] Error activating component (type=25, code=9)
+1 - ----------T--:--:--.--- [GlobalLogger - maciTestClassImpl::ConstructComponent] Object couldn't be created (type=10, code=6)
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciTestClass.so'
@@ -308,7 +308,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] maciTestClassImpl::DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
-4 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI_FAKE,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_FAKE
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI04' requested by 'SimpleClient' (activation: 1)
@@ -374,8 +374,8 @@
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI01' activated.
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI02' requested by 'SimpleClient' (activation: 1)
-4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI02'. Creating it...
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
+4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI02'. Creating it...
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - 		Clients: xxxxxx
@@ -443,9 +443,9 @@
 3 - ----------T--:--:--.--- [MACI03 - acscomponent::ACSComponentImpl::__execute] 
 3 - ----------T--:--:--.--- [MACI03 - acscomponent::ACSComponentImpl::execute] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::activate_component] Component 'MACI03' activated.
-4 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping for 1000 milliseconds (0)...
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
+4 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping for 1000 milliseconds (0)...
 4 - 		Clients: xxxxxx
 4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI_HIER' requested by 'SimpleClient' (activation: 1)
@@ -503,10 +503,6 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - 		Clients: xxxxxx
 4 - 		Components: XXXXX
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
-4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - 		Clients: xxxxxx
-4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing components in the name of 'SimpleClient'
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
@@ -514,25 +510,29 @@
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
+4 - ----------T--:--:--.--- [GlobalLogger - ] 
+4 - 		Clients: xxxxxx
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
+4 - 		Components: XXXXX
+4 - ----------T--:--:--.--- [GlobalLogger - ] 
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
+4 - 		Clients: xxxxxx
+4 - ----------T--:--:--.--- [GlobalLogger - ] 
+4 - 		Components: XXXXX
+4 - 		Clients: xxxxxx
+4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Activating component 'MACI01': COMPONENT_ACTIVATED.
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
-4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - 		Clients: xxxxxx
-4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - 		Components: XXXXX
-4 - 		Clients: xxxxxx
-4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Activating component 'MACI04': COMPONENT_ACTIVATED.
-4 - 		Clients: xxxxxx
 4 - ----------T--:--:--.--- [GlobalLogger - ] Activating component 'MACI01': COMPONENT_ACTIVATED.
-4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Unable to save component info for 'MACI01'
 4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component 'MACI01' requested by 'SimpleClient'
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'curl:///MACI01'.
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
+4 - ----------T--:--:--.--- [GlobalLogger - ] 
+4 - 		Clients: xxxxxx
+4 - 		Components: XXXXX
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI01 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01': calling cleanUp Lifecycle .
@@ -555,12 +555,12 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01' deactivated.
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting components for 'SimpleClient'
-4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
-4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_released
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - 		Clients: xxxxxx
+4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - 		Components: XXXXX
+4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -585,31 +585,31 @@
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI01' activated.
 4 - ----------T--:--:--.--- [GlobalLogger - ] Activating component 'MACI01': COMPONENT_ACTIVATED.
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
+4 - ----------T--:--:--.--- [GlobalLogger - ] 
+4 - 		Clients: xxxxxx
+4 - 		Components: XXXXX
+4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Unable to save component info for 'MACI01'
+4 - 		Clients: xxxxxx
 4 - ----------T--:--:--.--- [GlobalLogger - ] Activating component 'MACI04': COMPONENT_ACTIVATED.
+4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Unable to save component info for 'MACI04'
 4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing components in the name of 'SimpleClient'
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
-4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - 		Clients: xxxxxx
-4 - 		Clients: xxxxxx
-4 - 		Components: XXXXX
-4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI02' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI02'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - ] Unable to save component info for 'MACI02'
-4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component 'MACI02' requested by 'SimpleClient'
-4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
-4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'curl:///MACI02'.
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
+4 - ----------T--:--:--.--- [GlobalLogger - ] Unable to save component info for 'MACI02'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - 		Clients: xxxxxx
+4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component 'MACI02' requested by 'SimpleClient'
 4 - 		Components: XXXXX
+4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'curl:///MACI02'.
+4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI02 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI02': calling cleanUp Lifecycle .
@@ -730,8 +730,8 @@
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::etherealizeComponent] Component 'MACI02' etherealized.
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI02' deactivated.
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_released
 4 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component 'MACI05' requested by 'SimpleClient'
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_released
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - 		Clients: xxxxxx
@@ -764,13 +764,13 @@
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI05' deactivated.
-4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI02' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_released
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
+4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI02' requested by 'SimpleClient' (activation: 1)
 4 - 		Clients: xxxxxx
-4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI02'. Creating it...
+4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - 		Components: XXXXX
+4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI02'. Creating it...
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::activate_component] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::loadDLL] 
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -804,9 +804,9 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - 		Clients: xxxxxx
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI05' requested by 'SimpleClient' (activation: 1)
+4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI05'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::activate_component] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::loadDLL] 
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -854,13 +854,13 @@
 4 - 		Clients: xxxxxx
 4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
-4 - ----------T--:--:--.--- [GlobalLogger - ] 
-4 - 		Clients: xxxxxx
-4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::components_requested
 4 - ----------T--:--:--.--- [GlobalLogger - ] 
 4 - 		Clients: xxxxxx
+4 - ----------T--:--:--.--- [GlobalLogger - ] 
+4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestClientImpl::authenticate
+4 - 		Clients: xxxxxx
 4 - 		Components: XXXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestClientImpl::name
 4 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping for 10000 milliseconds (0)...
@@ -997,158 +997,158 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI01' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI01'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI01,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI01
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI10' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI10'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - get_service] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI10,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI10
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Shutting down Container '*'...
-4 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping for 8000 milliseconds (0)...
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::shutdown] 
+4 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping for 8000 milliseconds (0)...
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::shutdown] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::logout] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::logout] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::logout] Logging out from the Manager.
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::logout] Logging out from the Manager.
 4 - ----------T--:--:--.--- [GlobalLogger - ] Unavailable component: 'MACI02'.
-4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::container_logged_out: XXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Unavailable component: 'MACI05'.
+4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::container_logged_out: XXXX
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::logout] Logged out from the Manager.
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::container_logged_out: XXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Unavailable component: 'MACI03'.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_SUB' etherealized.
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::logout] Logged out from the Manager.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::shutdown] 1 components left unactivated (using reverse activation order).
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_SUB' deactivated.
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI05 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_SUB' etherealized.
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI05': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI03 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 2 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI05: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_SUB' deactivated.
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::deactivate_component] Component 'MACI03': calling cleanUp Lifecycle .
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 2 - ----------T--:--:--.--- [MACI05 - acscomponent::ACSComponentImpl::__cleanUp] 
 3 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI03: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 2 - ----------T--:--:--.--- [MACI05 - acscomponent::ACSComponentImpl::cleanUp] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 3 - ----------T--:--:--.--- [MACI03 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 2 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 3 - ----------T--:--:--.--- [MACI03 - acscomponent::ACSComponentImpl::cleanUp] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 2 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI05: DESTROYING -> DEFUNCT
 3 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI05' reference set to nil.
 3 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI03: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivateCORBAObject] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::deactivate_component] Component 'MACI03' reference set to nil.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::etherealizeComponent] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI05'
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 2 - ----------T--:--:--.--- [MACI05 - ] ::MaciTestClass::~MaciTestClass(MACI05)
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI03'
-1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 2 - ----------T--:--:--.--- [MACI05 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 3 - ----------T--:--:--.--- [MACI03 - ] ::MaciTestClass::~MaciTestClass(MACI03)
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 2 - ----------T--:--:--.--- [MACI05 - maci::MACIContainerServices::~MACIContainerServices] 
 3 - ----------T--:--:--.--- [MACI03 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 2 - ----------T--:--:--.--- [MACI05 - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 3 - ----------T--:--:--.--- [MACI03 - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 3 - ----------T--:--:--.--- [MACI03 - maci::ContainerServices::~ContainerServices] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 3 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 3 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::etherealizeComponent] Component 'MACI05' etherealized.
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI05' deactivated.
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI02 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::etherealizeComponent] Component 'MACI03' etherealized.
-2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI02': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI02': calling cleanUp Lifecycle .
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI02: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
-2 - ----------T--:--:--.--- [MACI02 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciTestClass.so'
+2 - ----------T--:--:--.--- [MACI02 - acscomponent::ACSComponentImpl::__cleanUp] 
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 2 - ----------T--:--:--.--- [MACI02 - acscomponent::ACSComponentImpl::cleanUp] 
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
-1 - ----------T--:--:--.--- [GlobalLogger - ] maciTestClassImpl::DLLClose
 2 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] maciTestClassImpl::DLLClose
 3 - ----------T--:--:--.--- [GlobalLogger - ] maciTestClassImpl::DLLClose
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 2 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI02: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivate_component] Component 'MACI02' reference set to nil.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::deactivate_component] Component 'MACI03' deactivated.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::shutdown] 0 components left unactivated (using reverse activation order).
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::etherealizeComponent] 
-3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::shutdown] Shutting down ORB
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::shutdown] 0 components left unactivated (using reverse activation order).
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI02'
+3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::shutdown] Shutting down ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::shutdown] Shutting down ORB
 2 - ----------T--:--:--.--- [MACI02 - ] ::MaciTestClass::~MaciTestClass(MACI02)
-3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::shutdown] Done
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::shutdown] Done
 2 - ----------T--:--:--.--- [MACI02 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 2 - ----------T--:--:--.--- [MACI02 - maci::MACIContainerServices::~MACIContainerServices] 
 2 - ----------T--:--:--.--- [MACI02 - maci::ContainerServices::~ContainerServices] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::shutdown] Done
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::shutdown] Done
 1 - ----------T--:--:--.--- [Container01 - ContainerImpl::run] Container stopping...
 3 - ----------T--:--:--.--- [Container03 - ContainerImpl::run] Container stopping...
 3 - ----------T--:--:--.--- [Container03 - ContainerImpl::run] Leaving ContainerImpl::run() method.
 1 - ----------T--:--:--.--- [Container01 - ContainerImpl::run] Leaving ContainerImpl::run() method.
-3 - ----------T--:--:--.--- [GlobalLogger - ] Stopping container... 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping container... 
-3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::doneCORBA] 
+3 - ----------T--:--:--.--- [GlobalLogger - ] Stopping container... 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::doneCORBA] 
+3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::doneCORBA] 
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
-3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Cannot find the library 'libbaci.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Cannot find the library 'libbaci.so'
+3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Cannot find the library 'libbaci.so'
 3 - ----------T--:--:--.--- [GlobalLogger - ] Container stopped.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Container stopped.
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::~ContainerImpl] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::~ContainerImpl] 
-3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::closeAllLibraries] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::closeAllLibraries] 
-3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::~LibraryManager] 
+3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::closeAllLibraries] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::~LibraryManager] 
+3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::~LibraryManager] 
 3 - ----------T--:--:--.--- [Container03 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::MACIContainerServices::~MACIContainerServices] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerServices::~ContainerServices] 
-3 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+3 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 3 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::etherealizeComponent] Component 'MACI02' etherealized.
