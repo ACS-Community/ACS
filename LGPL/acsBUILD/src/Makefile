@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.154 2006/08/31 12:45:04 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.155 2006/10/30 08:30:18 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -229,9 +229,9 @@ man_java:
 man_schema:
 	@echo "Generating schema documentation "
 	@mkdir -p $(VLTTOP)/man/schemas/src
-	@cp $(VLTTOP)/config/CDB/schemas/*.xsd $(VLTTOP)/idl/*.xsd $(VLTTOP)/man/schemas/src
-	@cp ../config/xsddocSchemaAntBuild.xml $(VLTTOP)/man/schemas/build.xml
-	@cd $(VLTTOP)/man/schemas; \
+	@cp -f $(VLTTOP)/config/CDB/schemas/*.xsd $(VLTTOP)/idl/*.xsd $(VLTTOP)/config/CDB/schemas/*.dtd $(VLTTOP)/man/schemas/src
+	@cp ../config/xsddocSchemaAntBuild.xml $(VLTTOP)/man/schemas/src/build.xml
+	@cd $(VLTTOP)/man/schemas/src; \
          export CLASSPATH=`searchFile lib/xsddoc.jar`/lib/xsddoc.jar:$(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/xalan_serializer.jar:$(CLASSPATH) ;\
          ant
 man_python:
