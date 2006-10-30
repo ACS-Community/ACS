@@ -50,23 +50,23 @@ public class BlockingComponentListener implements ContainerServices.ComponentLis
 		return false;
 	}
 
-	public void componentsAvailable(List<ComponentDescriptor> comps) {
+	public synchronized void componentsAvailable(List<ComponentDescriptor> comps) {
 		logger.info("************* Got call to componentsAvailable ***********");
-		if (sync != null) {
-			sync.countDown();
-		}
 		allCompsAvailable.addAll(comps);
-	}
-	
-	public void componentsUnavailable(List<String> compNames) {
-		logger.info("************* Got call to componentsUnavailable ***********");
 		if (sync != null) {
 			sync.countDown();
 		}
-		allCompNamesUnavailable.addAll(compNames);
 	}
 	
-	public void clearAndExpect(int nCalls) {
+	public synchronized void componentsUnavailable(List<String> compNames) {
+		logger.info("************* Got call to componentsUnavailable ***********");
+		allCompNamesUnavailable.addAll(compNames);
+		if (sync != null) {
+			sync.countDown();
+		}
+	}
+	
+	public synchronized void clearAndExpect(int nCalls) {
 		allCompsAvailable.clear();
 		allCompNamesUnavailable.clear();
 		sync = new CountDownLatch(nCalls);
@@ -74,6 +74,7 @@ public class BlockingComponentListener implements ContainerServices.ComponentLis
 	
 	/**
 	 * Waits until <code>nCalls</code> notifications have been received since the call to <code>clearAndExpect(nCalls)</code>.
+	 * @return true if the calls were received before the timeout (see {@link CountDownLatch#await(long, TimeUnit)}.
 	 */
 	public boolean awaitNotifications(long timeout, TimeUnit unit) throws InterruptedException {		
 		return sync.await(timeout, unit);
