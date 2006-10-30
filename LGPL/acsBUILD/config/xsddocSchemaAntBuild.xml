@@ -26,9 +26,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 <project name="xsddoc-test-schemas" default="xsddoc">
     <taskdef name="xsddoc" classname="net.sf.xframe.xsddoc.Task"/>
     <target name="xsddoc">
-       <xsddoc dir="src"
-               out="."
+       <xsddoc 
+               out=".."
                title="ACS schemas"
-               verbose="true"/>
+               verbose="true">
+          <fileset dir=".">
+             <include name="*.xsd"/>
+             <exclude name="ACSAlarmMessage.xsd"/>
+             <exclude name="VOTable.xsd"/>
+             <exclude name="sdmDataHeader.xsd"/>
+          </fileset>
+       </xsddoc>
     </target>
 </project>
