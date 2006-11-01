@@ -66,13 +66,13 @@ public class DALShutdown {
 			DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 
 			if (dal == null){
-				m_logger.log(AcsLogLevel.SEVERE, "Failed to resolve DAL reference.");
+				m_logger.log(AcsLogLevel.NOTICE, "Failed to resolve DAL reference.");
 			}
 			else
 				dal.shutdown();
 		}
 		catch (Exception e) {
-			m_logger.log(AcsLogLevel.SEVERE, ""+e);
+			m_logger.log(AcsLogLevel.NOTICE, ""+e);
 			e.printStackTrace(System.out);
 		}
 	}

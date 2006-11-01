@@ -80,7 +80,7 @@ public class ClearCache {
 			}
 		}
 		catch (Exception e) {
-			m_logger.log(AcsLogLevel.SEVERE, ""+ e);
+			m_logger.log(AcsLogLevel.NOTICE, ""+ e);
 			e.printStackTrace(System.out);
 		}
 	}

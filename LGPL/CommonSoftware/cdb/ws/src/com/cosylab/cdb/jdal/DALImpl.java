@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
@@ -34,6 +33,9 @@ import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
+
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -86,11 +88,12 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	private HashMap regListeners = new HashMap();
 	private boolean recoveryRead = true;
 	private DALNode rootNode = null; // used for node lisitng 
+	Logger m_logger;
 
 	DALImpl(String args[], ORB orb_val, POA poa_val) {
 		orb = orb_val;
 		poa = poa_val;
-
+	  	m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB::DALImpl", true);	
 		m_root = "CDB";
 
 		for (int i = 0; i < args.length; i++) {
@@ -108,7 +111,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		m_root = rootF.getAbsolutePath() + '/';
 		if (Integer.getInteger("ACS.logstdout", 4) < 4)
 		    {
-		    System.out.println("DAL root is: " + m_root);
+			m_logger.log(AcsLogLevel.INFO, "DAL root is: " + m_root);
 		    }
 		loadFactory();
 	}
@@ -121,8 +124,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				factory.setFeature(SCHEMA_VALIDATION_FEATURE_ID, true);
 			} catch (IllegalArgumentException x) {
 				// This can happen if the parser does not support JAXP 1.2
-				System.err.println("Check to see if parser conforms to JAXP 1.2 spec.");
-				System.err.println("Error is:" + x);
+				m_logger.log(AcsLogLevel.NOTICE, "Check to see if parser conforms to JAXP 1.2 spec.");
+				m_logger.log(AcsLogLevel.NOTICE, "Error is:" + x);
 				System.exit(1);
 			}
 			// Create the parser
@@ -131,12 +134,12 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			String allURIs = getSchemas();
 			if (Integer.getInteger("ACS.logstdout", 4) < 4)
 			    {
-			    System.out.println("- created parser "+saxParser.getClass().getName()+" with schema location: '" + allURIs +"'");//msc:added
+				m_logger.log(AcsLogLevel.INFO, "- created parser "+saxParser.getClass().getName()+" with schema location: '" + allURIs +"'");//msc:added
 			    }
 			if (allURIs != null) {
 				saxParser.setProperty(EXTERNAL_SCHEMA_LOCATION_PROPERTY_ID, allURIs);
 			} else {
-				System.out.println("Schema files: NO SCHEMAS!");
+				m_logger.log(AcsLogLevel.NOTICE,"Schema files: NO SCHEMAS!");
 			}
 
 		} catch (Throwable t) {
@@ -147,7 +150,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	/**
 	 * Recovery related implementation.
 	 * Load list of listeners from the recovery file and notifies them to clear cache.
-	 * WARNING: This method should be called when DAL POA is alrady initialized and active.
+	 * NOTICE: This method should be called when DAL POA is alrady initialized and active.
 	 * NOTE: Method execution depends on <code>recoveryRead</code> variable.
 	 */
 	public void recoverClients()
@@ -179,7 +182,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	  int dbg_nRoot = filePathMap.size();
 	  if (Integer.getInteger("ACS.logstdout", 4) < 4)
 	      {	  
-	      System.out.println("- found "+dbg_nRoot+" xsd-files in <-root>");//msc:added
+		m_logger.log(AcsLogLevel.INFO, "- found "+dbg_nRoot+" xsd-files in <-root>");//msc:added
 	      }
 		// then all given path if any
 		String pathList = System.getProperty("ACS.cdbpath");
@@ -192,7 +195,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	  if (Integer.getInteger("ACS.logstdout", 4) < 4)
 	      {
-	      System.out.println("- found "+(filePathMap.size()-dbg_nRoot)+" xsd-files in <ACS.cdbpath>");//msc:added
+		m_logger.log(AcsLogLevel.INFO,"- found "+(filePathMap.size()-dbg_nRoot)+" xsd-files in <ACS.cdbpath>");//msc:added  
 	      }
 		// from file list build return string
 		Iterator i = filePathMap.keySet().iterator();
@@ -274,7 +277,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				cdbxmlErr.setNodename(node.name);
 				cdbxmlErr.setCurl(node.getCurl());
 				cdbxmlErr.setErrorString(info);
-				System.err.println(info);
+				m_logger.log(AcsLogLevel.NOTICE,info); 
 				throw cdbxmlErr;
 			}
 		}
@@ -310,7 +313,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		//no Error throwed
 		DALNode curlNode = rootNode.findNode(curl);
 		if(curlNode == null) {
-			System.err.println("Record does not exists: " + curl);
+			m_logger.log(AcsLogLevel.NOTICE,"Record does not exists: " + curl);
 			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
 			    new AcsJCDBRecordDoesNotExistEx();
 			recordDoesNotExist.setCurl(curl);
@@ -337,7 +340,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		        //CDBXMLError xmlErr = new CDBXMLError(info);	
 			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(t);
 			cdbxmlErr.setErrorString(info);
-			System.err.println(info);
+			m_logger.log(AcsLogLevel.INFO,info); 
 			throw cdbxmlErr;
 		}
 	}
@@ -352,7 +355,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		String xmlPath = getRecordPath(curl);
 		File xmlFile = new File(xmlPath);
 		if (!xmlFile.exists()) {
-			if (!silent) System.err.println("Record does not exists: " + curl);
+			if (!silent) m_logger.log(AcsLogLevel.NOTICE,"Record does not exists: " + curl); 
 			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
 			    new AcsJCDBRecordDoesNotExistEx();
 			recordDoesNotExist.setCurl(curl);
@@ -364,7 +367,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			saxParser.parse(xmlFile, xmlSolver);
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
-				if (!silent) System.err.println(info);
+				if (!silent) m_logger.log(AcsLogLevel.NOTICE, info);
 				
 				//CDBXMLError xmlErr = new CDBXMLError(info);
 				AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx();
@@ -379,7 +382,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			throw cdbxmlErr;
 		} catch (Throwable t) {
 			String info = "SAXException " + t;
-			if (!silent) System.err.println(info);
+			if (!silent) m_logger.log(AcsLogLevel.NOTICE, info);
 			//CDBXMLError xmlErr = new CDBXMLError(info);
 			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(t);
 			cdbxmlErr.setCurl(curl);
@@ -396,15 +399,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			XMLHandler xmlSolver = loadRecords(curl, true);
 		if (xmlSolver == null)
 			return null;
-		System.out.println("Returning XML record for: " + curl);
-		//System.out.println(xmlSolver.m_xmlString.toString());
+		m_logger.log(AcsLogLevel.INFO, "Returning XML record for: " + curl);
 		return xmlSolver.m_xmlString.toString();
 		}catch(AcsJCDBXMLErrorEx e){
 			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";
-			Logger m_logger;
-			m_logger = Logger.getLogger("DAL");
-			 
-			m_logger.log(Level.SEVERE, smsg, e);	
+			m_logger.log(AcsLogLevel.NOTICE, smsg, e);	
 			throw e.toCDBXMLErrorEx();
 		}catch(AcsJCDBRecordDoesNotExistEx e){
 			throw e.toCDBRecordDoesNotExistEx();
@@ -433,10 +432,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			xmlSolver  = loadRecords(curl, false);
 		}catch(AcsJCDBXMLErrorEx e){
 			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";
-			Logger m_logger;
-			m_logger = Logger.getLogger("DAL");
-			 
-			m_logger.log(Level.SEVERE, smsg, e);	
+			m_logger.log(AcsLogLevel.NOTICE, smsg, e);	
 			throw e.toCDBXMLErrorEx();
 		}catch(AcsJCDBRecordDoesNotExistEx e){
 			throw e.toCDBRecordDoesNotExistEx();
@@ -471,14 +467,14 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				daoMap.put(curl, href);
 			}
 
-			System.out.println("Returning DAO servant for: " + curl);
+			m_logger.log(AcsLogLevel.INFO,"Returning DAO servant for: " + curl);
 			return href;
 
 		} catch (Throwable t) {
 			String info = "DAO::get_DAO_Servant " + t;
 			AcsJCDBXMLErrorEx xmlErr = new AcsJCDBXMLErrorEx(t);
 			xmlErr.setErrorString(info);
-			System.err.println(info);
+			m_logger.log(AcsLogLevel.NOTICE, info);
 			throw xmlErr.toCDBXMLErrorEx();
 		}
 	}
@@ -507,7 +503,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		if (listenersStorageFile != null)
 			return listenersStorageFile;
 		String filePath = FileHelper.getTempFileName("ACS_RECOVERY_FILE", "CDB_Recovery.txt");
-		System.out.println( "Recovery file: " + filePath );
+		m_logger.log(AcsLogLevel.INFO,  "Recovery file: " + filePath);
 		listenersStorageFile = new File(filePath);
 		// if file do not exists create a new one so we can set permission on it
 		if( !listenersStorageFile.exists() ) {
@@ -630,7 +626,6 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	public void listen_for_changes(String curl, int listenerID) {
-		//System.out.println("****add_change_listener " + listenerID + " for the " + curl);
 		synchronized (listenedCurls) {
 			ArrayList listeners = (ArrayList) listenedCurls.get(curl);
 			if (listeners == null) {
@@ -642,7 +637,6 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 	public void remove_change_listener(int listenerID) {
-		//System.out.println("/////remove_change_listener " + listenerID);
 		synchronized (listenedCurls) {
 			Iterator iter = listenedCurls.keySet().iterator();
 			// deattach this listener from its curls

@@ -117,11 +117,11 @@ public class CDBDefault {
 			setDefault(xmlSolver.m_rootNode, in_type, in_name);
 		}
 		catch (AcsJCDBXMLErrorEx e) {
-			m_logger.log(AcsLogLevel.WARNING, "Xml Error", e);
+			m_logger.log(AcsLogLevel.NOTICE, "Xml Error", e);
 			e.printStackTrace();
 		}
 		catch (Exception e) {
-			m_logger.log(AcsLogLevel.WARNING, "Error", e);
+			m_logger.log(AcsLogLevel.NOTICE, "Error", e);
 			e.printStackTrace();
 		}
 	}
@@ -179,11 +179,11 @@ public class CDBDefault {
 				setDefault(value, in_type,in_name);
 			}
 		}catch(CDBXMLErrorEx e){
-			m_logger.log(AcsLogLevel.WARNING, "Xml Error", e);
+			m_logger.log(AcsLogLevel.NOTICE, "Xml Error", e);
 			e.printStackTrace();
 		}
 		catch(Exception e){
-			m_logger.log(AcsLogLevel.WARNING, "Error", e);
+			m_logger.log(AcsLogLevel.NOTICE, "Error", e);
 			e.printStackTrace();
 		}
 		

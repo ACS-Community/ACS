@@ -33,11 +33,15 @@ import com.cosylab.CDB.*;
 import java.net.InetAddress;
 
 import alma.acs.util.ACSPorts;
+import java.util.logging.Logger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
 
 public class DALList {
 	static	int indent = 0;
 
 	public static void main(String args[]) {
+		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DALList", true);
 		try {
 			String strIOR = null;
 
@@ -69,7 +73,7 @@ public class DALList {
 
 			DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 			
-			System.out.println("Listing " + curl + ": " + dal.list_nodes(curl));
+			m_logger.log(AcsLogLevel.INFO, "Listing " + curl + ": " + dal.list_nodes(curl));
 
 		}
 		/*catch (XMLerror e) {
@@ -77,7 +81,7 @@ public class DALList {
 			e.printStackTrace(System.out);
 		}*/
 		catch (Exception e) {
-			System.out.println("ERROR : " + e);
+			m_logger.log(AcsLogLevel.NOTICE, "ERROR : " + e); 
 			e.printStackTrace(System.out);
 		}
 	}

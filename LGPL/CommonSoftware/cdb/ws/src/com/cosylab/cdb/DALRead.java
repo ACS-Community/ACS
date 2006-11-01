@@ -124,14 +124,14 @@ public class DALRead {
 			    AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(e);
 			String smsg = "XML Error \tCURL='" + je.getCurl()+"'\n\t\tFilename='"+je.getFilename()+"'\n\t\tNodename='"+je.getNodename()+"'\n\t\tMSG='"+je.getErrorString()+"'";
 			je.log(m_logger);
-			m_logger.log(AcsLogLevel.SEVERE, smsg, je);	
+			m_logger.log(AcsLogLevel.NOTICE, smsg, je);	
 		}
 		catch (CDBRecordDoesNotExistEx e) {
 		        AcsJCDBRecordDoesNotExistEx je = 
 			    AcsJCDBRecordDoesNotExistEx.fromCDBRecordDoesNotExistEx(e);
 			String smsg = "Record does not exist \tCURL='" + je.getCurl() + "'";
 			je.log(m_logger);
-			m_logger.log(AcsLogLevel.WARNING, smsg, je);	
+			m_logger.log(AcsLogLevel.NOTICE, smsg, je);	
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -38,6 +38,10 @@ import alma.cdbErrType.CDBFieldIsReadOnlyEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
 import com.cosylab.CDB.WDAOPOA;
 
+import java.util.logging.Logger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.AcsLogLevel;
+
 /**
  * @author dvitas
  *
@@ -47,6 +51,7 @@ import com.cosylab.CDB.WDAOPOA;
 public class WDAOImpl extends WDAOPOA {
 	private DAOImpl daoImpl = null;
 	private WDALImpl wdal = null; // used for saving - nicer if it is an interface
+	Logger m_logger;
 	/**
 	 * 
 	 */
@@ -54,6 +59,7 @@ public class WDAOImpl extends WDAOPOA {
 		super();
 		this.wdal = wdal;
 		this.daoImpl = daoImpl;
+ 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("WDAOImpl", true);
 	}
 	
 	/* (non-Javadoc)
@@ -204,8 +210,7 @@ public class WDAOImpl extends WDAOPOA {
 			byte[] thisId = poa.servant_to_id(this);
 			poa.deactivate_object(thisId);
 		} catch (Exception e) {
-			System.out.println(
-				"Exception destroying object " + this +" : " + e);
+			m_logger.log(AcsLogLevel.NOTICE,  "Exception destroying object " + this +" : " + e);
 			e.printStackTrace();
 		}
 	}
@@ -246,12 +251,12 @@ public class WDAOImpl extends WDAOPOA {
 		}
 		String currentValue = (String) pNode.m_fieldMap.get(fieldName);
 		if (currentValue == null) {
-			System.err.println("WDAO:'" + getName() + "' Unable to find field: '" + strFieldName + "'");
+			m_logger.log(AcsLogLevel.NOTICE, "WDAO:'" + getName() + "' Unable to find field: '" + strFieldName + "'");
 			AcsJCDBFieldDoesNotExistEx e = new AcsJCDBFieldDoesNotExistEx();
 			e.setFieldName(strFieldName);
 			throw e;
 		}
-		System.err.println("WDAO:'" + getName() + "' set '" + strFieldName + "'=" + value);
+		m_logger.log(AcsLogLevel.INFO,"WDAO:'" + getName() + "' set '" + strFieldName + "'=" + value);  
 		// set value in memory
 		pNode.m_fieldMap.put(fieldName, value);
 		// and on disk
