@@ -53,7 +53,6 @@
 5 - INFO - Starting Interface Repository
 5 - INFO - Starting Naming Service
 5 - INFO - Starting ACS Configuration Database
-5 - INFO -     CDB data is in:  /alma/ACS-x.y/acsdata/config/defaultCDB
 5 - INFO - Starting Notify Service
 5 - JDAL is ready and waiting
 5 - INFO - Starting Logging Notify Service
@@ -72,7 +71,6 @@
 1 - INFO - Starting Interface Repository
 1 - INFO - Starting Naming Service
 1 - INFO - Starting ACS Configuration Database
-1 - INFO -     CDB data is in:  /alma/ACS-x.y/acsdata/config/defaultCDB
 1 - INFO - Starting Notify Service
 1 - JDAL is ready and waiting
 1 - INFO - Starting Logging Notify Service

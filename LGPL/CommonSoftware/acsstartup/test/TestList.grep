@@ -15,4 +15,5 @@ service as:
 priority:
 warning, got duplicate tcp line
 Bound ID: InterfaceRepository
+CDB data is in:
 acserr.idl: No such file or directory
