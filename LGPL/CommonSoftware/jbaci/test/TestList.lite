@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.1 2004/04/10 21:14:33 msekoran Exp $"
+# "@(#) $Id: TestList.lite,v 1.2 2006/11/01 10:52:40 cparedes Exp $"
 #
 # TestList
 #
@@ -27,4 +27,11 @@
 # --------  --------  ----------------------------------------------
 # 
 # This is all need to run.
-allTests
+SOURCE jbaciTATEnvironment
+PROLOGUE jbaciTATPrologue
+#----------
+1 TEST01 "acsutilTATTestRunner dispatchActionTest" 
+2 TEST02 "acsutilTATTestRunner ROdoubleTest"
+#3 TEST03 "acsutilTATTestRunner BuildingTest"
+#----------
+EPILOGUE acsutilTATEpilogue 

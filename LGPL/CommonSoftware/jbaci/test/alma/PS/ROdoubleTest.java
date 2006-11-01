@@ -26,6 +26,7 @@ import alma.ACSErr.CompletionHolder;
 import alma.ACS.Monitordouble;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.ROdouble;
+import alma.ACS.RWdouble;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.doubleSeqHolder;
 import alma.acs.util.ACSPorts;
@@ -176,9 +177,10 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 	private POA rootPOA = null;
 
 	/**
-	 * Property to be tested.
+	 * property to be tested.
 	 */
-	private ROdouble property = null;
+	private ROdouble ROproperty = null;
+	private RWdouble RWproperty = null;
 
 	/**
 	 * Property to be tested.
@@ -250,7 +252,8 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		org.omg.CORBA.Object obj = manager.get_component(0x05000000, COMPONENT_NAME, true);
 			
 		PowerSupply ps = PowerSupplyHelper.narrow(obj);
-		property = ps.readback();
+		ROproperty = ps.readback();
+		RWproperty = ps.current();
 	}
 
 	/*
@@ -270,34 +273,34 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		assertEquals(1000.0, property.max_value(), 0.0);
 		*/
 
-		assertEquals("readback", property.name());
-		assertEquals(COMPONENT_NAME, property.characteristic_component_name());
+		assertEquals("readback", ROproperty.name());
+		assertEquals(COMPONENT_NAME, ROproperty.characteristic_component_name());
 
-		assertEquals("Readback", property.description());
-		assertEquals("%9.4f", property.format());
-		assertEquals("A", property.units());
-		assertEquals(65535, property.resolution());
+		assertEquals("Readback", ROproperty.description());
+		assertEquals("%9.4f", ROproperty.format());
+		assertEquals("A", ROproperty.units());
+		assertEquals(65535, ROproperty.resolution());
 
-		assertEquals(100000, property.min_timer_trigger());
-		assertEquals(0.0, property.default_value(), 0.0);
+		assertEquals(10000, ROproperty.min_timer_trigger());
+		assertEquals(0.0, ROproperty.default_value(), 0.0);
 		
-		assertEquals(0.01526, property.min_delta_trigger(), 0.0);
-		assertEquals(0.0, property.graph_min(), 0.0);
-		assertEquals(1000.0, property.graph_max(), 0.0);
-		assertEquals(0.01526, property.min_step(), 0.0);
+		assertEquals(0.01526, ROproperty.min_delta_trigger(), 0.0);
+		assertEquals(0.0, ROproperty.graph_min(), 0.0);
+		assertEquals(1000.0, ROproperty.graph_max(), 0.0);
+		assertEquals(0.01526, ROproperty.min_step(), 0.0);
 
-		assertEquals(10.0, property.alarm_low_on(), 0.0);
-		assertEquals(20.0, property.alarm_low_off(), 0.0);
-		assertEquals(990.0, property.alarm_high_on(), 0.0);
-		assertEquals(980.0, property.alarm_high_off(), 0.0);
-		
+		assertEquals(10.0, ROproperty.alarm_low_on(), 0.0);
+		assertEquals(20.0, ROproperty.alarm_low_off(), 0.0);
+		assertEquals(990.0, ROproperty.alarm_high_on(), 0.0);
+		assertEquals(980.0, ROproperty.alarm_high_off(), 0.0);
+	
 	}
 
 	public void testNewSubscriptionAlarm() {
 		try
 		{
 			CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
-			property.new_subscription_Alarm(null, descIn);
+			ROproperty.new_subscription_Alarm(null, descIn);
 			fail("NO_IMPLEMENT exception expected");
 		}
 		catch (NO_IMPLEMENT ex)
@@ -309,7 +312,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 	public void testGetSync() {
 		CompletionHolder completionHolder = new CompletionHolder();
 		// TODO check value
-		/*double value =*/ property.get_sync(completionHolder);
+		/*double value =*/ ROproperty.get_sync(completionHolder);
 		//assertEquals(property.default_value(), value, 0.0);
 		assertEquals(0, completionHolder.value.code);
 		assertEquals(0, completionHolder.value.type);
@@ -324,7 +327,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
 		synchronized(cb)
 		{
-			property.get_async(cb._this(orb), descIn);
+			ROproperty.get_async(cb._this(orb), descIn);
 			try
 			{
 				// wait for 5s
@@ -355,7 +358,37 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		assertTrue((UTCUtility.utcJavaToOmg(System.currentTimeMillis())-response.completion.timeStamp)<50000000);
 		
 	}
-
+/*	public void testSetAsync() {
+		
+		CBvoidImpl cb = new CBvoidImpl();
+		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
+		synchronized(cb)
+		{
+			RWproperty.set_async(500.0,cb._this(orb), descIn);
+			try
+			{
+				// wait for 5s
+				cb.wait(5000);
+			}
+			catch (InterruptedException ie) {}
+		}
+			
+		// only 1 response is expected
+		//assertEquals(1, cb.getResponseQueue().size());
+		//CBResponse response = (CBResponse)cb.getResponseQueue().firstElement();
+		
+		// check reponse type
+		//assertEquals(CBResponse.DONE_TYPE, response.type);
+		
+		// check value
+		// TODO check value
+		
+		CompletionHolder completionHolder = new CompletionHolder();
+		double value = ROproperty.get_sync(completionHolder);
+		assertEquals(500.0, value, 0.0);
+		
+	}
+*/
 	public void testGetHistory() {
 		
 		// wait until history fills
@@ -368,7 +401,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 
 		doubleSeqHolder dsh = new doubleSeqHolder();
 		TimeSeqHolder tsh = new TimeSeqHolder();
-		int len = property.get_history(5, dsh, tsh);
+		int len = ROproperty.get_history(5, dsh, tsh);
 		assertEquals(5, len);
 		assertEquals(dsh.value.length, tsh.value.length);
 		
@@ -386,7 +419,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		CBdoubleImpl cb = new CBdoubleImpl();
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
 
-		Monitordouble monitor = property.create_monitor(cb._this(orb), descIn);
+		Monitordouble monitor = ROproperty.create_monitor(cb._this(orb), descIn);
 		try
 		{
 			// 10.5 sec
@@ -416,7 +449,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		CBdoubleImpl cb = new CBdoubleImpl();
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
 
-		Monitordouble monitor = property.create_monitor(cb._this(orb), descIn);
+		Monitordouble monitor = ROproperty.create_monitor(cb._this(orb), descIn);
 		// disable on time trigger
 		monitor.set_timer_trigger(0);
 
@@ -436,7 +469,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		// TODO change value here... 
 		// ups RO monitor ;)
 		// !!! TMP - tested with backdoor via alarm_high_on()...
-		property.alarm_high_on();
+		ROproperty.alarm_high_on();
 		
 		try
 		{
@@ -452,7 +485,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		// disable test
 		monitor.set_value_trigger(0, false);
 
-		property.alarm_high_on();
+		ROproperty.alarm_high_on();
 		
 		try
 		{
@@ -462,7 +495,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 
 		monitor.set_value_trigger(0, true);
 
-		property.alarm_high_on();
+		ROproperty.alarm_high_on();
 
 		try
 		{
@@ -475,7 +508,7 @@ System.out.println("------");
 		// disable test
 		monitor.suspend();
 
-		property.alarm_high_on();
+		ROproperty.alarm_high_on();
 
 		try
 		{
@@ -489,7 +522,7 @@ System.out.println("------");
 
 System.out.println("------");
 
-property.alarm_high_on();
+ROproperty.alarm_high_on();
 
 		try
 		{
@@ -519,7 +552,7 @@ property.alarm_high_on();
 		try
 		{
 			CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
-			property.create_postponed_monitor(0, null, descIn);
+			ROproperty.create_postponed_monitor(0, null, descIn);
 			fail("NO_IMPLEMENT exception expected");
 		}
 		catch (NO_IMPLEMENT ex)
@@ -531,7 +564,7 @@ property.alarm_high_on();
 	public void testGetCharacteristicByName() throws NoSuchCharacteristic {
 		try
 		{
-			property.get_characteristic_by_name("format");
+			ROproperty.get_characteristic_by_name("format");
 			fail("NO_IMPLEMENT exception expected");
 		}
 		catch (NO_IMPLEMENT ex)
@@ -543,7 +576,7 @@ property.alarm_high_on();
 	public void testFindCharacteristic() {
 		try
 		{
-			property.find_characteristic("format");
+			ROproperty.find_characteristic("format");
 			fail("NO_IMPLEMENT exception expected");
 		}
 		catch (NO_IMPLEMENT ex)
@@ -555,7 +588,7 @@ property.alarm_high_on();
 	public void testGetAllCharacteristics() {
 		try
 		{
-			property.get_all_characteristics();
+			ROproperty.get_all_characteristics();
 			fail("NO_IMPLEMENT exception expected");
 		}
 		catch (NO_IMPLEMENT ex)

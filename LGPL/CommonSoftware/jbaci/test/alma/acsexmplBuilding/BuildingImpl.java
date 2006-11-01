@@ -38,7 +38,7 @@ public class BuildingImpl extends CharacteristicComponentImpl
 	implements BuildingOperations {
 
 	/**
-	 * Vesrion property.
+	 * Version property.
 	 */
 	protected ROstring version;
 
