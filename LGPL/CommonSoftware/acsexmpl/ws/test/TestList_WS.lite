@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: TestList_WS.lite,v 1.85 2005/03/31 18:15:16 dfugate Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.86 2006/11/01 10:09:50 cparedes Exp $"
 #
 # TestList
 #
@@ -44,5 +44,7 @@ PROLOGUE acsexmplTATPrologue
 14 acsexmplClientAlarmThread    "acsexmplTestRun.sh acsexmplClientAlarmThread PBUMP_B_01"
 
 15 acsexmplClientTower          "acsexmplTestRun.sh acsexmplClientTower TOWER1"
+
+16 acsexmplClientErrorComponent "acsexmplTestRun.sh acsexmplClientErrorComponent ERRORCOMP1"
 
 EPILOGUE acsutilTATEpilogue

@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.5 2006/11/01 10:09:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.4 2006/10/04 14:31:21 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.5 2006/11/01 10:09:50 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -326,7 +326,8 @@ ErrorComponent::buildErrorTrace(unsigned short depth)
 	    ACSErrTypeCommon::GenericErrorExImpl ex2(ex, 
 						     __FILE__, __LINE__, 
 						     "ErrorComponent::errorTrace");
-	    ex2.setErrorDesc("Generated multi level exception");
+
+	    ex2.setErrorDesc("Generated multi level exception level");
 	    throw ex2;
 	    }
 	catch(...) // This should never happen!!!!

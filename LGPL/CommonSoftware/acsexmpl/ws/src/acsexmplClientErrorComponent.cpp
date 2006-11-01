@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.5 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.6 2006/11/01 10:09:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.5 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.6 2006/11/01 10:09:50 cparedes Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -251,7 +251,7 @@ void ClientErrorComponent::TestReceiveRemoteException()
     ACS_SHORT_LOG((LM_INFO, "Example 1: Calls a method that throws an exception."));
     try
 	{
-	foo_m->badMethod(3);
+	foo_m->badMethod(5);
 	}
     catch(ACSErrTypeCommon::GenericErrorEx &ex)
 	{
@@ -399,6 +399,7 @@ int main(int argc, char *argv[])
     SimpleClient client;
     if (client.init(argc,argv) == 0)
 	{
+    	ACS_SHORT_LOG((LM_ERROR, "acsexmplClientErrorComponent::main, Failed to initialize"));
 	return -1;
 	}
     else
@@ -407,6 +408,7 @@ int main(int argc, char *argv[])
 	client.login();
 	}
 
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main")); 
     /**************************************************************************
      * Here we instantiate the object used to show examples of error handling.
      * Each method call demonstrate one aspect of error hanlding.
@@ -414,12 +416,17 @@ int main(int argc, char *argv[])
      */
     try
 	{
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, created instance of ClientErrorComponent"));
 	ClientErrorComponent clientErrorComponent(client, argv[1]);
 	
 	//Call the displayMessage() method existing in the interface for ErrorComponent
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling TestOk()"));
 	clientErrorComponent.TestOk();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling TestReceiveRemoteException()"));
 	clientErrorComponent.TestReceiveRemoteException();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling TestReceiveRemoteCompletion()"));
 	clientErrorComponent.TestReceiveRemoteCompletion();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling TestReceiveCorbaSystemException()"));
 	clientErrorComponent.TestReceiveCorbaSystemException();
 	}
     catch(ACSErr::ACSbaseExImpl ex)
