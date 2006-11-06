@@ -39,7 +39,7 @@ import junit.framework.TestSuite;
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
  */
-public class ROdoubleTest extends TestCase {
+public class PropertyDoubleTest extends TestCase {
 
 	/**
 	 * Callback response class. 
@@ -614,11 +614,11 @@ ROproperty.alarm_high_on();
 	*/
 
 	public static TestSuite suite() {
-		return new TestSuite(ROdoubleTest.class);
+		return new TestSuite(PropertyDoubleTest.class);
 	}
 
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(ROdoubleTest.class);
+		junit.textui.TestRunner.run(PropertyDoubleTest.class);
 		System.exit(0);
 	}
 

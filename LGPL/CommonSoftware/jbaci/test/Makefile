@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.8 2006/11/01 10:52:40 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.9 2006/11/06 08:06:01 cparedes Exp $"
 #
 # Makefile of jbaci
 #
@@ -86,7 +86,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = dispatchActionTest ROdoubleTest BuildingTest jbaciTATPrologue 
+SCRIPTS_L       = dispatchActionTest PropertyDoubleTest BuildingTest jbaciTATPrologue 
 
 #
 # TCL scripts (public and local)
