@@ -1,6 +1,6 @@
 1 - === Starting ROdoubleTest JUnit test
 1 -  --endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.PS.ROdoubleTest
 1 - INFO - Starting Java/abeans application: alma.acs.testsupport.tat.TATJUnitRunner alma.PS.ROdoubleTest
-1 - TEST_RUNNER_REPORT success/total: 11/11
+1 - TEST_RUNNER_REPORT success/total: 12/12
 1 - JUnit test run succeeded
 1 - === dispatchAction ROdouble test completed

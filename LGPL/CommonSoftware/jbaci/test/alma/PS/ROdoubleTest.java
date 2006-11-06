@@ -358,7 +358,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		assertTrue((UTCUtility.utcJavaToOmg(System.currentTimeMillis())-response.completion.timeStamp)<50000000);
 		
 	}
-/*	public void testSetAsync() {
+	public void testSetAsync() {
 		
 		CBvoidImpl cb = new CBvoidImpl();
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
@@ -384,11 +384,11 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		// TODO check value
 		
 		CompletionHolder completionHolder = new CompletionHolder();
-		double value = ROproperty.get_sync(completionHolder);
+		double value = RWproperty.get_sync(completionHolder);
 		assertEquals(500.0, value, 0.0);
 		
 	}
-*/
+
 	public void testGetHistory() {
 		
 		// wait until history fills
