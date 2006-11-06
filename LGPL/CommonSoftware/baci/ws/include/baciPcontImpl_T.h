@@ -28,6 +28,8 @@
 /** 
  * @file 
  * Header file for BACI Continued Property Template Class.
+ * This file add some functionality to baciPcommonImpl_T, to manage continued
+ * properties, adding some useful characteristics.
  */
 
 #ifndef __cplusplus

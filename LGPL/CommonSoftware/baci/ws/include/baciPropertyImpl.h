@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPropertyImpl.h,v 1.12 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciPropertyImpl.h,v 1.13 2006/11/06 07:54:17 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -30,7 +30,8 @@
 
 /** 
  * @file 
- * Header file for BACI Pattern Property Template Class.
+ * Header file for BACI Property Template Class.
+ * 
  */
 
 #ifndef __cplusplus

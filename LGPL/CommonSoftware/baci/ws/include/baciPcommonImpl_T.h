@@ -28,6 +28,9 @@
 /** 
  * @file 
  * Header file for BACI Common Property Template Class.
+ * Includes the basic and common functionality for all types of properties.
+ * Also includes the basic characteristics of all properties.
+ * This class also has the function to create the monitor.
  */
 
 

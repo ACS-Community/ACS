@@ -28,6 +28,7 @@
 /** 
  * @file 
  * Header file for BACI Read-only Sequence Common Class.
+ * 
  */
 
 #ifndef __cplusplus

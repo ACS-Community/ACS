@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPpatternImpl.h,v 1.17 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciPpatternImpl.h,v 1.18 2006/11/06 07:54:17 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -29,6 +29,8 @@
 /** 
  * @file 
  * Header file for BACI PPattern Template Class.
+ * Add some functionality to baciPcommonImpl_T to manage pattern
+ * properties (like strings), adding some useful characteristics.
  */
 
 #ifndef __cplusplus
