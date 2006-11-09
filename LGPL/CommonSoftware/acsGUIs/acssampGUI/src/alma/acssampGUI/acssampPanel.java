@@ -11,35 +11,32 @@
 */
 package alma.acssampGUI;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Collections;
-
-import com.cosylab.gui.components.spikechart.BaseChart;
+import com.cosylab.abeans.AbeansEngine;
+import com.cosylab.abeans.AbeansLaunchable;
+import com.cosylab.abeans.plugins.AbeansStandardActionsPlugIn;
+import com.cosylab.abeans.plugins.AbeansSystemMenuPlugIn;
+import com.cosylab.abeans.plugins.AboutPlugIn;
 import com.cosylab.gui.components.spikechart.DefaultChartDecorator;
 import com.cosylab.gui.components.spikechart.FancyTimeTrendFlavor;
-import com.cosylab.gui.components.spikechart.Interval;
 import com.cosylab.gui.components.spikechart.TrendDataModel;
 import com.cosylab.gui.framework.Desktop;
 import com.cosylab.gui.framework.Launcher;
 import com.cosylab.gui.framework.LauncherEnvironment;
+import com.cosylab.gui.plugins.CosyStandardActionsPlugIn;
+import com.cosylab.gui.plugins.VitragePlugIn;
 
 import abeans.pluggable.acs.ACSAbeansEngine;
 import abeans.pluggable.acs.maci.settings.ACSPlugSettingsPlugIn;
 
-import com.cosylab.abeans.*;
-import com.cosylab.abeans.plugins.*;
-import com.cosylab.gui.plugins.*;
-
-import alma.acssamp.abeans.*;
-
 import alma.acs.component.client.ComponentClient;
+import alma.acssamp.abeans.SampObj;
 
 /**
 * Template for ACS Visual Abeans Applications.
@@ -55,7 +52,7 @@ public class acssampPanel extends AbeansLaunchable {
    private acssampGUIConsumer ncObj;
    
    private TrendDataModel model;
-   private List listSampObj;
+   private List<String> listSampObj;
    
   /**
    * ACS Java client needed to configured ACS ORB.
@@ -401,7 +398,7 @@ public class acssampPanel extends AbeansLaunchable {
        
        //spike1.getViewManager().setYScale(new Interval(0.0,30.0,false));
                
-       listSampObj = new ArrayList();
+       listSampObj = new ArrayList<String>();
    }
    
    
@@ -415,26 +412,24 @@ public class acssampPanel extends AbeansLaunchable {
    /**
     * This method initializes the standard Abeans plugins.
     */
-   public void userInitializePlugIns()    {
-       try
-{
-    installPlugIn(AbeansSystemMenuPlugIn.class);
-    installPlugIn(CosyStandardActionsPlugIn.class);
-    installPlugIn(AboutPlugIn.class);
-    installPlugIn(AbeansStandardActionsPlugIn.class);
-    installPlugIn(VitragePlugIn.class);
-    installPlugIn(ACSPlugSettingsPlugIn.class);
-    
-    // uncomment following line(s) to get plugin(s) installed at startup
-    // installPlugIn(AbeansExceptionPanelPlugIn.class);
-    // installPlugIn(TreeBrowserPlugIn.class);
-    // installPlugIn(LoggingPlugIn.class);
-    // installPlugIn(ReportAreaPlugIn.class);
-       } catch (Exception e)
-{
-    e.printStackTrace();
-       }
-   }
+   public void userInitializePlugIns() {
+		try {
+			installPlugIn(AbeansSystemMenuPlugIn.class);
+			installPlugIn(CosyStandardActionsPlugIn.class);
+			installPlugIn(AboutPlugIn.class);
+			installPlugIn(AbeansStandardActionsPlugIn.class);
+			installPlugIn(VitragePlugIn.class);
+			installPlugIn(ACSPlugSettingsPlugIn.class);
+
+			// uncomment following line(s) to get plugin(s) installed at startup
+			// installPlugIn(AbeansExceptionPanelPlugIn.class);
+			// installPlugIn(TreeBrowserPlugIn.class);
+			// installPlugIn(LoggingPlugIn.class);
+			// installPlugIn(ReportAreaPlugIn.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonContinue;
