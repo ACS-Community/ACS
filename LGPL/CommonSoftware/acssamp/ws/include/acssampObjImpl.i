@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.4 2006/10/25 13:06:36 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.5 2006/11/10 13:13:18 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -534,7 +534,7 @@ void  ACSSampObjImpl<ACS_SAMP_TL>::flushSamp()
 	ACE_OS::memmove((char *) &data,mbf->rd_ptr(),sizeof(data));
 	mbf->rd_ptr(sizeof(data));
      
-//	cout << "VVVVVVVVVVVVVVVVV " << data.val << "   " << data.timeStamp << endl;
+ 	//cout << "VVVVVVVVVVVVVVVVV " << data.val << "   " << data.timeStamp << endl;
 
 	theSeq[index].sampTime=data.timeStamp;
 	theSeq[index].sampVal <<= data.val;
