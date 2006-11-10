@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.16 2006/05/25 22:07:15 dfugate Exp $
+# @(#) $Id: killACS.py,v 1.17 2006/11/10 10:49:15 sturolla Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -30,7 +30,7 @@ run as root as it will shutdown other users CDBs/Managers/etc. too.
 from os import environ, listdir, system
 from sys import argv
 
-from fcntl   import flock
+from fcntl   import fcntl
 from fcntl   import LOCK_EX
 from os.path import exists
 
@@ -48,7 +48,7 @@ if exists(ACS_INSTANCE_DIR):
         system('chmod 774 ' + ACS_INSTANCE_DIR + '.killACS.lock')
         
     lock_file = open(ACS_INSTANCE_DIR + '.killACS.lock', 'r')
-    flock(lock_file.fileno(), LOCK_EX)
+    fcntl(lock_file.fileno(), LOCK_EX)
     
 else:
     lock_file = None

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsContainersStatus.py,v 1.2 2006/07/12 21:36:02 dfugate Exp $
+# @(#) $Id: acsContainersStatus.py,v 1.3 2006/11/10 10:49:43 sturolla Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -39,7 +39,7 @@ from os      import environ
 from os      import chdir
 from os      import access, R_OK, W_OK, X_OK, F_OK
 from os.path import exists
-from fcntl   import flock
+from fcntl   import fcntl
 from fcntl   import LOCK_EX
 from sys     import stderr
 from sys     import exit
@@ -87,7 +87,7 @@ def getPortsFile():
     ret_val = open('USED_CONTAINER_PORTS', 'r')
     
     #lock it
-    flock(ret_val.fileno(), LOCK_EX)
+    fcntl(ret_val.fileno(), LOCK_EX)
     
     return ret_val
 
