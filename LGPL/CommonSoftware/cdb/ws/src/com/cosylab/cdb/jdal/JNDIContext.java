@@ -53,7 +53,7 @@ public class JNDIContext implements Context {
 
 	// statics
 	protected static ORB orb;
-	protected static JDAL dal;
+	protected static DAL dal;
 
 	// members
 	protected String name; // this name like MACI/Managers
@@ -63,7 +63,7 @@ public class JNDIContext implements Context {
 	 * Sets the dal.
 	 * @param dal The dal to set
 	 */
-	public static void setDal(JDAL dal) {
+	public static void setDal(DAL dal) {
 		JNDIContext.dal = dal;
 	}
 

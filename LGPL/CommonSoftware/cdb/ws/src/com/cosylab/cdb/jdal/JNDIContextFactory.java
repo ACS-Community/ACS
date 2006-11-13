@@ -51,7 +51,7 @@ public class JNDIContextFactory implements InitialContextFactory {
 		String[] argv = {};
 		ORB orb = ORB.init(argv, null);
 
-		JDAL dal = JDALHelper.narrow(orb.string_to_object(strIOR));
+		DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 
 		JNDIContext.setOrb(orb);
 		JNDIContext.setDal(dal);
