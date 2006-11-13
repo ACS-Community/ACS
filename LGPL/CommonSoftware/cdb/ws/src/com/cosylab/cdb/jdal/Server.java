@@ -230,6 +230,13 @@ public class Server {
 			}
 
 			m_logger.log(AcsLogLevel.INFO, "JDAL is ready and waiting ...");
+                        // GCH 2006-11-13
+                        // Here we put also a println to be sure that the message
+                        // ALWAYS appears on standart output, also if the logging level 
+                        // is put higher than INFO.
+                        // This is needed because the ACS startup scripts wait for this message
+                        // to declare complete the startup of the CDB. 
+			System.out.println("JDAL is ready and waiting ...");
 
 			// wait for invocations from clients
 			orb.run();
