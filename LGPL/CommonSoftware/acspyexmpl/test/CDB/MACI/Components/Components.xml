@@ -25,12 +25,20 @@
 	<_ Name="LAMPCB2" Code="demoImpl.LampCallback" Type="IDL:alma/demo/LampCallback:1.0" Container="pyContainer" />
 	<_ Name="ES1" Code="demoImpl.ErrorSystem" Type="IDL:alma/demo/ErrorSystem:1.0" Container="pyContainer" />
 	<_ Name="ES2" Code="demoImpl.ErrorSystem" Type="IDL:alma/demo/ErrorSystem:1.0" Container="pyContainer" />
-    <_ Name="ERRORCOMP1" 	    
-       Code="acsexmplErrorComponentImpl.ErrorComponent" 
-       Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
+        <_ Name="ERRORCOMP_PY" 	    
+           Code="acsexmplErrorComponentImpl.ErrorComponent" 
+           Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
 	   Container="pyErrContainer"/>
-	<_ Name="TEST_RPS_1"
-       Code="Acssim.Servants.Simulator"
-       Type="IDL:alma/RampedPS/RampedPowerSupply:1.0"
-       Container="pyContainer"/>
+         <_ Name="ERRORCOMP_CPP" 	    
+            Code="acsexmplErrorComponentImpl" 
+            Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
+            Container="cppContainer"/>
+         <_ Name="ERRORCOMP_JAVA" 
+            Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
+            Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 
+            Container="javaContainer" />
+	 <_ Name="TEST_RPS_1"
+            Code="Acssim.Servants.Simulator"
+            Type="IDL:alma/RampedPS/RampedPowerSupply:1.0"
+            Container="pyContainer"/>
 </Components>
