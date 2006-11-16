@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: ErrorComponent.py,v 1.3 2006/10/04 16:00:02 gchiozzi Exp $"
+# "@(#) $Id: ErrorComponent.py,v 1.4 2006/11/16 04:48:34 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -128,17 +128,18 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
         ex.addData("ErrorDesc", "An error trace with depth lower or equal to 1 was requested.")
         raise ex
     #------------------------------------------------------------------------------
-    def returnCompletion(self, depth):
+    def completionFromException(self, depth):
         '''
         Implementation of IDL method:
-            ACSErr::Completion returnCompletion(in short depth);
+            ACSErr::Completion completionFromException(in short depth);
         
         For details on what this method does, please see the IDL Doxygen
         documentation.
         '''
         #if the depth is <=0, a completion is returned signifying
         #there was no error
-        if depth <= 0:
+        self.logger.logInfo("ErrorComponent::completionFromException");
+	if depth <= 0:
             er = ACSErrTypeOKImpl.ACSErrOKCompletionImpl()
 
         #otherwise we must generate an exception of the requested

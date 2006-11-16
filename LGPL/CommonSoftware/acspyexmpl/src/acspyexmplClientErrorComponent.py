@@ -40,7 +40,7 @@ What can I gain from this example?
 '''
 
 from sys import argv
-
+import CORBA
 from Acspy.Clients.SimpleClient import PySimpleClient
 from Acspy.Common.TimeHelper    import getTimeStamp
 from Acspy.Common.EpochHelper   import EpochHelper
@@ -51,6 +51,7 @@ from Acspy.Common.Log           import acsPrintExcDebug
 import acsexmplErrorComponent
 import ACSErrTypeCommonImpl
 import ACSErrTypeCommon
+import ACSErrTypeOKImpl
 from Acspy.Common.Err import ACSError
 import acstime
 
@@ -207,20 +208,40 @@ class ClientErrorComponent:
         try:
             # OK Completion
             self.logger.logInfo("Example 2a: Calls a method that returns an OK completion.")
-            comp = self.foo.returnCompletion(0)
+            comp = self.foo.completionFromException(0)
+            #comp4 = ACSErrTypeOKImpl.ACSErrOKCompletionImpl(comp,0); 
             addComplHelperMethods(comp)
-            comp.log()
+            #addComplHelperMethods(comp4)
+	    #comp4.log()
+	    comp.log()
+	    if comp.isErrorFree() == 1:
+		 self.logger.logInfo("Completion Ok, without error trace")
+	    else:
+		 self.logger.logInfo("Completion with error trace (UNEXPECTED)")
+		 comp.log()
 
-            # ERROR completion with an error trace inside.
+	    # ERROR completion with an error trace inside.
             self.logger.logInfo("Example 2b: Calls a method that returns an Error completion.")
-            comp2 = self.foo.returnCompletion(3)
+            
+	    comp2 = self.foo.completionFromException(3)
             addComplHelperMethods(comp2)
-            comp2.log()
+            if comp2.isErrorFree() == 1:
+		 self.logger.logInfo("Completion Ok, without error trace (UNEXPECTED)")
+	    else:
+		 self.logger.logInfo("Completion with error trace")
+		 comp2.log()
         
-        except:
+        except CORBA.SystemException, ex:
+        
+            # Map......
+            acsPrintExcDebug()
+            displayMessageEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
+            displayMessageEx.setErrorDesc("completionFromException has thrown an UNEXPECTED CORBA exception")
+            displayMessageEx.log()
+	except:
             acsPrintExcDebug()
             badMethodEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
-            badMethodEx.setErrorDesc("returnCompletion has thrown an UNEXPECTED exception")
+            badMethodEx.setErrorDesc("completionFromException has thrown an UNEXPECTED exception")
             badMethodEx.log()
 
 #-----------------------------------------------------------------------------  
@@ -228,14 +249,18 @@ if __name__=="__main__":
     
     client = PySimpleClient()
 
+    print("starting acspyexmplClientErrorComponent")
     # Here we instantiate the object used to show examples of error handling.
     # Each method call demonstrate one aspect of error hanlding.
     # See the class documentation for details.
     try:
+	print("Creating ClientErrorComponent");
         clientErrorComponent = ClientErrorComponent(client, argv[1])
         
         #Call the displayMessage() method existing in the interface for ErrorComponent
-        clientErrorComponent.TestOk()
+        print("Calling TestOk()");
+	clientErrorComponent.TestOk()
+	print("Calling TestReceiveRemoteException()");
         clientErrorComponent.TestReceiveRemoteException()
         clientErrorComponent.TestReceiveRemoteCompletion()
     

@@ -28,7 +28,7 @@
     <_ Name="ERRORCOMP1" 	    
        Code="acsexmplErrorComponentImpl.ErrorComponent" 
        Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
-	   Container="pyContainer"/>
+	   Container="pyErrContainer"/>
 	<_ Name="TEST_RPS_1"
        Code="Acssim.Servants.Simulator"
        Type="IDL:alma/RampedPS/RampedPowerSupply:1.0"
