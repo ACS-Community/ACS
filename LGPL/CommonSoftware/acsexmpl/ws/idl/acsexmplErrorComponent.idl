@@ -22,17 +22,17 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplErrorComponent.idl,v 1.5 2006/10/04 14:31:21 gchiozzi Exp $"
+* "@(#) $Id: acsexmplErrorComponent.idl,v 1.6 2006/11/16 09:52:17 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * david 2002-09-26 added more comments
 */
 
-#pragma prefix "alma"
-
 #include <acscomponent.idl>
 #include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
 
 
 module acsexmplErrorComponent 
