@@ -1,0 +1,16 @@
+#! /bin/bash
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+
+cp -r case-files/alma/MOUNT99 CDB/alma
+cp -r case-files/MACI/Components/MOUNT99 CDB/MACI/Components
+
+acsStart > acsStart.log 2>&1
+sleep 2
+acsutilAwaitContainerStart -cpp Container > startContainer.log 2>&1
+sleep 2
+acsStop > acsStop.log 2>&1
+sleep 2
+
+rm -rf CDB/alma/MOUNT99 CDB/MACI/Components/MOUNT99
+
+cdbTATPrologue > cdbTATPrologue.log 2>&1
