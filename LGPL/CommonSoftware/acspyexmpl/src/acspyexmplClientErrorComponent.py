@@ -209,11 +209,9 @@ class ClientErrorComponent:
             # OK Completion
             self.logger.logInfo("Example 2a: Calls a method that returns an OK completion.")
             comp = self.foo.completionFromException(0)
-            #comp4 = ACSErrTypeOKImpl.ACSErrOKCompletionImpl(comp,0); 
+
             addComplHelperMethods(comp)
-            #addComplHelperMethods(comp4)
-	    #comp4.log()
-	    comp.log()
+
 	    if comp.isErrorFree() == 1:
 		 self.logger.logInfo("Completion Ok, without error trace")
 	    else:
