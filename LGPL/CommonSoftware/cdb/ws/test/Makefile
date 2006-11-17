@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.42 2006/11/16 04:43:58 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.43 2006/11/17 08:11:39 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -55,7 +55,7 @@ PROG =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES_L     = $(PROG) cdbTest nodeTest
+EXECUTABLES_L     = $(PROG) cdbTest nodeTest 
 
 #
 # <brief description of xxxxx program>
@@ -68,6 +68,7 @@ $(PROG)_LIBS               = C++
 nodeTest_OBJECTS		   = nodeTest
 cdbTest_OBJECTS            = cdbTest
 cdbTestServer_LIBS         = 
+
 
 #
 # Includes (.h) files (public and local)
@@ -90,7 +91,7 @@ JDALTests_DIRS = com
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = cdbTestJClient cdbTATHelper cdbTestSetDefaultComponent cdbTestClearCache cdbTATRead cdbXmlSpecialCharTest
+SCRIPTS_L         = cdbTestJClient cdbTATHelper cdbTestSetDefaultComponent cdbTestClearCache cdbTATRead cdbXmlSpecialCharTest cdbInitMount
 
 #
 # TCL scripts (public and local)

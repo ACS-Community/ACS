@@ -1,0 +1,11 @@
+1 - ----------T--:--:--.--- 'Python Client' requested component 'curl:///MOUNT99'.
+1 - ----------T--:--:--.--- Activating component 'MOUNT99' on container 'Container'.
+1 - ----------T--:--:--.--- 'MOUNT99' requested component 'curl:///CDB'.
+1 - ----------T--:--:--.--- Component 'curl:///CDB' provided to 'MOUNT99'.
+1 - ----------T--:--:--.--- INFO [CDB::DALImpl] Returning XML record for: alma/MOUNT99
+1 - ----------T--:--:--.--- Component 'MOUNT99' activated successfully.
+1 - ----------T--:--:--.--- Component 'curl:///MOUNT99' provided to 'Python Client'.
+1 - ----------T--:--:--.--- 'Python Client' requested release of component 'curl:///MOUNT99'.
+1 - ----------T--:--:--.--- Deactivating component 'MOUNT99' on container 'Container'.
+1 - ----------T--:--:--.--- Component 'curl:///MOUNT99' released by 'Python Client'.
+1 - ----------T--:--:--.--- Component 'MOUNT99' deactivated.

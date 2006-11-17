@@ -1,16 +1,20 @@
 #! /bin/bash
 cdbTATEpilogue > cdbTATEpilogue.log 2>&1
 
+
 cp -r case-files/alma/MOUNT99 CDB/alma
 cp -r case-files/MACI/Components/MOUNT99 CDB/MACI/Components
 
+ACS_LOG_STDOUT=4
 acsStart > acsStart.log 2>&1
-sleep 2
-acsutilAwaitContainerStart -cpp Container > startContainer.log 2>&1
-sleep 2
+sleep 10
+acsutilAwaitContainerStart -cpp Container 
+sleep 10
+cdbInitMount
+sleep 5
 acsStop > acsStop.log 2>&1
 sleep 2
-
+grep "MOUNT99" acsStart.log
 rm -rf CDB/alma/MOUNT99 CDB/MACI/Components/MOUNT99
 
 cdbTATPrologue > cdbTATPrologue.log 2>&1
