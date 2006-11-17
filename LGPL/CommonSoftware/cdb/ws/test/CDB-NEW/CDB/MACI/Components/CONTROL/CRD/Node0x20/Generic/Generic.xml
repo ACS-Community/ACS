@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='ISO-8859-1'?>
 <!--
 
 Copyright (C) 2005
@@ -28,3 +28,4 @@ Correspondence concerning ALMA should be addressed as follows:
    -   Thu Mar 09 12:54:21 UTC 2006 modified by jDAL
 -->
 <Component xmlns="urn:schemas-cosylab-com:Component:1.0" Name="CONTROL/CRD/Node0x20/Generic" Code="CRDImpl" Type="IDL:alma/Control/CRD:1.0" Container="CONTROL/Test/cppContainer" Default="false" />
+

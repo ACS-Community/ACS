@@ -1407,3 +1407,5 @@ The values defined for the Characteristics apply to each single element of the s
 		</xs:complexContent>
 	</xs:complexType>
 </xs:schema>
+
+

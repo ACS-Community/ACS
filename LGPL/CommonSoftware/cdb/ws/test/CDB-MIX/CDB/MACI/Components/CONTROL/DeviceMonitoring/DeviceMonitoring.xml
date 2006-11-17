@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: DeviceMonitoring.xml,v 1.1 2006/03/09 17:26:01 cparedes Exp $
+$Id: DeviceMonitoring.xml,v 1.2 2006/11/17 06:34:24 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -29,3 +29,4 @@ Correspondence concerning ALMA should be addressed as follows:
            Code="controlMonitorPoints"
            Type="IDL:alma/Control/DeviceMonitoringIF:1.0"
            Container="CONTROL/Test/cppContainer"/>
+

@@ -1,12 +1,20 @@
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 25,26d24
+1 - 68a67
+1 - > 
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 29d28
+1 - 31a31
+1 - > 
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 29d28
+1 - 31a31
+1 - > 
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 25,26d24
+1 - 68a67
+1 - > 

@@ -228,7 +228,7 @@ public class WDALImpl extends WDALBaseImpl
 	 * change parameter 'Timeot' in Manager we can pass as xml
 	 * <pre>
 	 * <code>
-	 *     <?xml version="1.0" encoding="UTF-8"?>
+	 *     <?xml version="1.0" encoding="ISO-8859-1"?>
 	 *  <Manager Timeout="50.0"/>
 	 * </code>
 	 * </pre>
@@ -592,7 +592,7 @@ public class WDALImpl extends WDALBaseImpl
 			}
 
 			try {
-				write("<?xml version='1.0' encoding='UTF-8'?>\n");
+				write("<?xml version='1.0' encoding='ISO-8859-1'?>\n");
 				writeComment();
 				writeNode(m_rootNode, 0);
 			} catch(IOException e) {

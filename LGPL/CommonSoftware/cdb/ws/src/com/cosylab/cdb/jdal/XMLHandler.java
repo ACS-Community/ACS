@@ -69,7 +69,7 @@ public class XMLHandler extends DefaultHandler {
 
 	public void startDocument() throws SAXException {
 		if (m_toString && !headerEmited) {
-			m_xmlString.append("<?xml version='1.0' encoding='UTF-8'?>\n");
+			m_xmlString.append("<?xml version='1.0' encoding='ISO-8859-1'?>\n");
 			headerEmited = true;
 		}
 		firstElement = true;

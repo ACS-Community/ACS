@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='ISO-8859-1'?>
 <!--
-$Id: Generic.xml,v 1.1 2006/03/09 17:26:01 cparedes Exp $
+$Id: Generic.xml,v 1.2 2006/11/17 06:34:25 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -28,3 +28,4 @@ Correspondence concerning ALMA should be addressed as follows:
    -   Tue Mar 07 15:42:05 UTC 2006 modified by jDAL
 -->
 <Component xmlns="urn:schemas-cosylab-com:Component:1.0" Name="CONTROL/SecondLO/Node0x42/Generic" Code="SecondLOImpl" Type="IDL:alma/Control/SecondLO:1.0" Container="CONTROL/Test/cppContainer" Default="true" />
+

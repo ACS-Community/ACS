@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='ISO-8859-1'?>
 <!--
    - History:
    -   Tue Feb 28 13:42:34 UTC 2006 modified by jDAL
@@ -64,3 +64,4 @@
 	<_ Name="XMLCOMP1" Code="alma.demo.XmlComponentImpl.XmlComponentHelper" Type="IDL:alma/demo/XmlComponent:1.0" Container="frodoContainer" Default="true" />
 	<_ Name="PYHELLODEMO1" Code="demoImpl.HelloDemo" Type="IDL:alma/demo/HelloDemo:1.0" Container="aragornContainer" Default="true" />
 </Components>
+
