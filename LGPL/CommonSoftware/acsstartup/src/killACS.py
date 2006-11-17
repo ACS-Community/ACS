@@ -1,6 +1,6 @@
-usr/bin/env python
+#!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.17 2006/11/10 10:49:15 sturolla Exp $
+# @(#) $Id: killACS.py,v 1.18 2006/11/17 08:12:34 gchiozzi Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
