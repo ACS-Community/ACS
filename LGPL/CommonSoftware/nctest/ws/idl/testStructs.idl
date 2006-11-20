@@ -1,0 +1,21 @@
+#ifndef _SIMPLE_ACS_TEST_IDL_
+#define _SIMPLE_ACS_TEST_IDL_
+
+
+#include <separateTypedef.idl>
+
+
+#pragma prefix "alma"
+
+module simpleAcsTest {
+
+    struct structOnlyStrings {
+		string   realstring;
+    };
+
+    struct structWithMyString {
+		string   realstring;
+		myString hiddenString;
+    };
+};
+#endif
