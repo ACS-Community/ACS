@@ -542,7 +542,7 @@ OpenIDE-Module-Layer: gp/example/sps/SPSModuleLayer.xml
   <section>
    <title>Exercise 14: Creating a Module with IDE Plug-in Module wizard</title>
     <description>
-      <p>This wizard can be found in the contextual menu <i>New->NetBeans Extensions->IDE Plug-in Module</i> (see below). It will take you in all stages of creating a module including creating the XML layer of the module, saying what menu, toolbar the module add. This wizard is well described in <i><a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook2.html#ch-hello-world">Chapter 5 : Developing Modules—the New Module Wizard</a></i> of the <i>Extending NetBeans</i> book.
+      <p>This wizard can be found in the contextual menu <i>New->NetBeans Extensions->IDE Plug-in Module</i> (see below). It will take you in all stages of creating a module including creating the XML layer of the module, saying what menu, toolbar the module add. This wizard is well described in <i><a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook2.html#ch-hello-world">Chapter 5 : Developing Modulesthe New Module Wizard</a></i> of the <i>Extending NetBeans</i> book.
         </p>
         <p align="center"><img src="images/create_IDE_plugin_module_menu.jpg"/>
         </p>

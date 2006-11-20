@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
 <document location="../">
   <head>
@@ -43,7 +43,7 @@
 				<li>Set user directory</li>
 				<ul>
 					<li>Defaults to <i>C:\Documents and Settings\extdev\.netbeans\3.4</i></li>
-					<li>Edit <i>C:\GPCourse\netbeans\bin\ide.cfg</i> and add <code>–userdir C:\GPCourse</code></li>
+					<li>Edit <i>C:\GPCourse\netbeans\bin\ide.cfg</i> and add <code>userdir C:\GPCourse</code></li>
 				</ul>
 			</ul>
 			</p>
@@ -94,7 +94,7 @@
 					<ul>
 						<li>In <i>C:\GPCourse\system</i> the <i>ide.log</i></li>
 						<li>In <i>Projects</i> directory, a <i>Default</i> folder.</li>
-						<li>The directory <i>C:\GPCourse\system\Projects\Windows</i> contains “save-on-exit” information about your windows. Its contents can be deleted to restore the default window settings.</li>
+						<li>The directory <i>C:\GPCourse\system\Projects\Windows</i> contains save-on-exit information about your windows. Its contents can be deleted to restore the default window settings.</li>
 					</ul>
 				</ul>		
 				<ul>
@@ -249,7 +249,7 @@ public Image getNodeIcon() {
 		<title>Customize the display name</title>
 			<code>
 public String getDisplayName() {
-  return “My example “ + getName();
+  return My example  + getName();
 }	 					
 			</code>
 		</codeDescription>
@@ -266,7 +266,7 @@ public String getDisplayName() {
 		<title>Customize the tooltip</title>
 			<code>
 public String getShortDescription() {
-  return “This is an example bean for the GP course”;	
+  return This is an example bean for the GP course;	
 }			
 			</code>
 		</codeDescription>
@@ -338,7 +338,7 @@ public String getNodeDefaultAction() {
 			<p>
 			<ul>
 	 			<li>Run
-	 			<p>When you right-click on a node you should see the actions you’ve added in the pop-up menu. And when you double-click the action you’ve chosen as the default action should be
+	 			<p>When you right-click on a node you should see the actions youve added in the pop-up menu. And when you double-click the action youve chosen as the default action should be
 performed.
 	 			</p>
 	 			</li>
@@ -421,3 +421,4 @@ public void smile() {
 	 </section>
 </section>
 </document>
+

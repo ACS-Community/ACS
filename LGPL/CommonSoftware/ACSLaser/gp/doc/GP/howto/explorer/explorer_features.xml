@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
 <document location="../../">
     <head>
@@ -41,7 +41,7 @@
         <anchor>simple_explorers</anchor>
         <title>Features of Simple Explorers</title>
         <description>
-            <p>Let’s look at a TreeExplorer (shown above) in more detail. The nodes visualized by the TreeExplorer have a number of visual features, namely:</p>
+            <p>Lets look at a TreeExplorer (shown above) in more detail. The nodes visualized by the TreeExplorer have a number of visual features, namely:</p>
             <ul>
                 <li>a <strong>name</strong> displayed in the text label, called "child XY" above,</li>
                 <li>an <strong>icon</strong>(in the images above the default icon for nodes),</li>
@@ -68,7 +68,7 @@
                 <img src="images/EditingListTableExplorer.jpg" width="263" height="134"/>
             </p>
             <p>Please note that only the two columns called "name" and "value" represent the table part. The left-most column of the ListTableExplorer above is actually the ListExplorer part. Pop-up menus only appear when the user right-clicks on the nodes of the explorer part.</p>
-            <p>Let’s now look at the features of the Table part of the TableExplorers, and how the can be configured. A few things can be configured regarding the table columns:</p>
+            <p>Lets now look at the features of the Table part of the TableExplorers, and how the can be configured. A few things can be configured regarding the table columns:</p>
             <ul>
                 <li>Hide/unhide table columns. The programmer can specify which properties shall be displayed in the table and which ones shall be hidden. This is done using a <A href="/howto/beans/beans_howto.html#PropertyInfoProperty">PropertyInfo</A>. </li>
                 <li>Column names. The headers of the table columns can be configured with user friendly display names. This is also done using a PropertyInfo.</li>
@@ -129,3 +129,4 @@
         </description>
     </section>
 </document>
+

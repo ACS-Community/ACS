@@ -31,7 +31,7 @@ The second wizard allows you to create the module jar without any extra step for
     <section>
         <title>Creating the module layer</title>
 <description>
-        <p>The primary way modules install their functionality into the NetBeans platform is via virtual files defined in the module’s XML filesystem layer (or module layer). This is a small XML document in the module’s JAR, conforming to the NetBeans filesystems DTD. It is declared in the module’s JAR manifest. Since NetBeans’ infrastructure allows files to actually map to Java class instances, what a module generally installs is class instances, using the .instance file convention described below. 
+        <p>The primary way modules install their functionality into the NetBeans platform is via virtual files defined in the modules XML filesystem layer (or module layer). This is a small XML document in the modules JAR, conforming to the NetBeans filesystems DTD. It is declared in the modules JAR manifest. Since NetBeans infrastructure allows files to actually map to Java class instances, what a module generally installs is class instances, using the .instance file convention described below. 
 </p>
     </description>
     <section>
@@ -74,7 +74,7 @@ icon and display name for the action on the menu, and whose <tt>actionPerformed(
 The files are put into folders in the system filesystem that have defined meanings to the system or to a module. The XML layer defines a hierarchy of files and folders which may or may not overlap with existing folders in the system filesystem. When a module is loaded, this small XML filesystem is merged with the system filesystem.
 </p>
 <p>
-Often a module needs to install objects that should be available to the runtime (such as action classes that define menu items to appear on the main menu), or to other modules (for example, services such as logging). The system filesystem provides a way to do this that allows loose coupling between the modules and the system—neither the runtime nor other modules need to have been coded to anticipate the presence of these specific objects.
+Often a module needs to install objects that should be available to the runtime (such as action classes that define menu items to appear on the main menu), or to other modules (for example, services such as logging). The system filesystem provides a way to do this that allows loose coupling between the modules and the systemneither the runtime nor other modules need to have been coded to anticipate the presence of these specific objects.
 </p>
 <p>
 When a module is removed, its XML layer is cleanly extracted from the system filesystem, and the objects, menu items, services and such that it contained simply disappear from the system.
@@ -85,7 +85,7 @@ When a module is removed, its XML layer is cleanly extracted from the system fil
         <title>Creating the module layer</title>
         <description>
 <p>
-The next step is to create the module’s XML layer. This is where you will specify locations where it should install items such as menus and toolbars. Right-click the package containing the module sources and choose New->NetBeans Extensions->Modules API->XML Layer (Empty) (see below).
+The next step is to create the modules XML layer. This is where you will specify locations where it should install items such as menus and toolbars. Right-click the package containing the module sources and choose New->NetBeans Extensions->Modules API->XML Layer (Empty) (see below).
 </p>
 <p align="center">
 <img src="images/create_empty_layer_menu.jpg"/>
@@ -199,7 +199,7 @@ OpenIDE-Module-Name: The SPS Demo module</code>
     <anchor>IDEPluginModuleWizard</anchor>
     <title>Creating a Module with IDE Plug-in Module wizard</title>
     <description>
-      <p>This wizard can be found in the contextual menu <i>New->NetBeans Extensions->IDE Plug-in Module</i> (see below). It will take you in all stages of creating a module including creating the XML layer of the module, saying what menu, toolbar the module add. This wizard is well described in "<a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook2.html#ch-hello-world">Chapter 5 : Developing Modules—the New Module Wizard</a>" of the "Extending NetBeans" book.
+      <p>This wizard can be found in the contextual menu <i>New->NetBeans Extensions->IDE Plug-in Module</i> (see below). It will take you in all stages of creating a module including creating the XML layer of the module, saying what menu, toolbar the module add. This wizard is well described in "<a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook2.html#ch-hello-world">Chapter 5 : Developing Modulesthe New Module Wizard</a>" of the "Extending NetBeans" book.
 </p>
 <p align="center">
 <img src="images/create_IDE_plugin_module_menu.jpg"/>
