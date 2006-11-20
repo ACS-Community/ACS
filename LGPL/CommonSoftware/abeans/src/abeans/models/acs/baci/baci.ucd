@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" size="1361,867" id="CSL01Matejjacscommon0" metadata="nsuml-1.4" initialized="true" showWireOptions="1" zoom="0.75">
   <children xsi:type="editmodel:ClassEditModel" location="400,77" size="152,85" targetConnections="//@children.1/@sourceConnections.0" id="CSL01Matejjacscommon501" runTimeClassModel="CSL01Matejjacscommon586;CSL01Matejjacscommon529;CSL01Matejjacscommon542;CSL01Matejjacscommon612;CSL01Matejjacscommon557;CSL01Matejjacscommon504;CSL01Matejjacscommon589;CSL01Matejjacscommon578;CSL01Matejjacscommon545;CSL01Matejjacscommon606;CSL01Matejjacscommon555;CSL01Matejjacscommon514;CSL01Matejjacscommon1085;CSL01Matejjacscommon597;CSL01Matejjacscommon608;CSL01Matejjacscommon594;CSL01Matejjacscommon549;CSL01Matejjacscommon568;CSL01Matejjacscommon563;CSL01Matejjacscommon1087;CSL01Matejjacscommon686;CSL01Matejjacscommon603;CSL01Matejjacscommon610;CSL01Matejjacscommon649;CSL01Matejjacscommon616;CSL01Matejjacscommon614;CSL01Matejjacscommon525;CSL01Matejjacscommon571;CSL01Matejjacscommon547;CSL01Matejjacscommon540;CSL01Matejjacscommon583">
     <children xsi:type="editmodel:CompartmentEditModel"/>
@@ -93,3 +93,4 @@
   </children>
   <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showInterfaceStereotype="true" showClassStereotype="true" showPackageStereotype="true"/>
 </editmodel:ClassDiagramEditModel>
+

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: MOUNT99.xml,v 1.1 2006/11/16 04:43:58 cparedes Exp $
+$Id: MOUNT99.xml,v 1.2 2006/11/20 06:35:36 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -30,3 +30,4 @@ Correspondence concerning ALMA should be addressed as follows:
            Type="IDL:alma/MOUNT_ACS/Mount:1.0" 
            Container="Container"
 	   Default="true"/>
+
