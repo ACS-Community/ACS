@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsd:schema targetNamespace="urn:schemas-cosylab-com:pset:1.0" 
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pset="urn:schemas-cosylab-com:pset:1.0">
 
@@ -158,3 +158,4 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 </xsd:schema>
+

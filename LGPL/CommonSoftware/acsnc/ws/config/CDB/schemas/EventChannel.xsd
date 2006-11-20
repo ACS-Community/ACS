@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by David Fugate (University of Calgary) -->
 <!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by David Fugate (E.S.O.) -->
 <?altova_samplexml blah.xml?>
@@ -137,7 +137,7 @@
 				will be applied whenever the number of events queued on behalf of the consumer
 				connected to the proxy supplier exceeds the MaxEventsPerConsumer setting for
 				that proxy supplier. Note that in these latter two cases, an event will only be
-				“discarded” with respect to its scheduled delivery to the consumer(s) on whose behalf
+				discarded with respect to its scheduled delivery to the consumer(s) on whose behalf
 				the policy is being applied. In other words, if the event targeted for discarding is
 				scheduled for delivery to any consumer(s) on whose behalf the discard policy was not
 				invoked, the event remains queued for those consumers.
@@ -168,7 +168,7 @@
 			<xs:annotation>
 				<xs:documentation>
 				The value portion of this attribute has two well-defined settings: 
-				“ BestEffort” (0) and  “Persistent” (1). If set to 0, event can be
+				 BestEffort (0) and  Persistent (1). If set to 0, event can be
 				treated as non-persistent and lost upon failure of the channel. At least
 				one attempt must be made to transmit the event to each registered
 				consumer, but in the case of a failure to send to any consumer, no
@@ -305,3 +305,4 @@
 	</xs:complexType>
 	<xs:element name="EventChannel" type="EventChannel"/>
 </xs:schema>
+

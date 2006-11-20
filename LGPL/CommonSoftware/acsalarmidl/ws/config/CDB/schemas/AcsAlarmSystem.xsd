@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
   - Alarm System Schema
   -
@@ -632,3 +632,4 @@
   </xs:complexType>
   
 </xs:schema>
+

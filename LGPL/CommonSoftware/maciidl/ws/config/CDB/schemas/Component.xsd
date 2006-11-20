@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Component:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" targetNamespace="urn:schemas-cosylab-com:Component:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="urn:schemas-cosylab-com:LoggingConfig:1.0" schemaLocation="LoggingConfig.xsd"/>
 	<xs:annotation>
@@ -60,3 +60,4 @@ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
 	</xs:complexType>
 	<xs:element name="Component" type="ComponentInfo"/>
 </xs:schema>
+

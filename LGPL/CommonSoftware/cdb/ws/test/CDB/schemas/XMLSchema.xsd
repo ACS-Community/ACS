@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='ISO-8859-1'?>
 <!-- XML Schema schema for XML Schemas: Part 1: Structures -->
 <!-- Note this schema is NOT the normative structures schema. -->
 <!-- The prose copy in the structures REC is the normative -->
@@ -2532,3 +2532,4 @@ use</xs:documentation>
   </xs:element>
 
 </xs:schema>
+

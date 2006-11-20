@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Klemen Âagar (.) -->
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Klemen agar (.) -->
 <!--
    - Configuration Database Schema for MACI Container
    -
@@ -28,4 +28,5 @@
 	</xs:element>
 
 </xs:schema>
+
 

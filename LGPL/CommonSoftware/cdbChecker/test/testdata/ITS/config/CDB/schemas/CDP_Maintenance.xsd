@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
    - Configuration Database Schema for the CDP_Maintenance interface
    -
@@ -22,3 +22,4 @@
   </xs:complexType>
   <xs:element name="CDP_Maintenance" type="CDP_Maintenance"/>
 </xs:schema>
+

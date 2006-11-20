@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
    - Example Configuration Database Schema for a Building
    -
@@ -75,3 +75,4 @@
 -->
   <xs:element name="Tower" type="Tower"/>
 </xs:schema>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) -->
 <!--
    - Configuration Database Schema for MACI Manager
@@ -108,3 +108,4 @@ Eventually this element should become mandatory (minOccurs="1"), and the logging
 		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
+

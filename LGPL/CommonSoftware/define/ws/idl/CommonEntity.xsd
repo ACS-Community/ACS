@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsd:schema xmlns:ent="Alma/CommonEntity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="Alma/CommonEntity" version="1">
 	
 	<!-- globally unique id for entity objects (formatted hex string "uid://X0000000000000000/X00000000") -->
@@ -79,3 +79,4 @@
 	</xsd:complexType>
 	
 </xsd:schema>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) -->
 <!--
    - Configuration Database Schema for MACI Container
@@ -28,4 +28,5 @@
     <xs:attribute name="ServerThreads" type="xs:int" use="optional" default="5"/>
   </xs:complexType>
 </xs:schema>
+
 

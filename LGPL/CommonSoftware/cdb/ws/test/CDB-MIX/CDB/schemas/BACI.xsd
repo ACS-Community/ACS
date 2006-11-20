@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Gianluca Chiozzi (E.S.O.) -->
 <!--
    - Configuration Database Schema for BACI Types
@@ -100,8 +100,8 @@ The specific usage must be documented case by case.</xs:documentation>
 				<xs:attribute name="archive_priority" type="xs:int" use="optional" default="3">
 					<xs:annotation>
 						<xs:documentation>
-The priority of the log entry that will carry the information required for archiving the parameter’s value.
-Default is 3 (LM_INFO). If the priority exceeds the value specified in the logging proxy’s MaxCachePriority,
+The priority of the log entry that will carry the information required for archiving the parameters value.
+Default is 3 (LM_INFO). If the priority exceeds the value specified in the logging proxys MaxCachePriority,
 the archiving data will be transmitted to the centralized logger immediately.
  If it is below MinCachePriority, the data will be ignored. 
  If it is somewhere in-between, it will be cached locally until a sufficient amount of log entries 
@@ -324,7 +324,7 @@ of a pattern.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Ppattern">
 		<xs:annotation>
-			<xs:documentation>“pattern” stands for an unsigned long. The typedef pattern is used because this type will mostly be used to encode a pattern of status bits. The type pattern can be used also for raw binary data. </xs:documentation>
+			<xs:documentation>pattern stands for an unsigned long. The typedef pattern is used because this type will mostly be used to encode a pattern of status bits. The type pattern can be used also for raw binary data. </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Ppattern_">
@@ -1407,3 +1407,4 @@ The values defined for the Characteristics apply to each single element of the s
 		</xs:complexContent>
 	</xs:complexType>
 </xs:schema>
+
