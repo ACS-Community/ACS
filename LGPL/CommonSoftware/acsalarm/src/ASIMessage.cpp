@@ -36,7 +36,7 @@ string ASIMessage::toXML()
 	string retVal;
 
 	// create the XML header
-	// e.g. <?xml version="1.0" encoding="UTF-8"?>
+	// e.g. <?xml version="1.0" encoding="ISO-8859-1"?>
 	retVal += XML_HEADER;
 	retVal += NEWLINE;
 

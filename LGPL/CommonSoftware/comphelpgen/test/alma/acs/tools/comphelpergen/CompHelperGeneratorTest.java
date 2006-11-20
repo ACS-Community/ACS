@@ -57,7 +57,7 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		// Xml String for PrimaryComponent
 
 		String firstComponentList =
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
 				+ "<ComponentHelperInfo outputRootDirectory=\""
 				+ outputRootDir
 				+ "\">\n"
@@ -92,7 +92,7 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		// Xml String for PrimaryXmlComponent
 
 		String firstXmlComponentList =
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
 				+ "<ComponentHelperInfo outputRootDirectory=\""
 				+ outputRootDir
 				+ "\">\n"
@@ -126,7 +126,7 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		// Xml String for PrimaryXmlComponent
 
 		String firstXmlComponentList =
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
 				+ "<ComponentHelperInfo outputRootDirectory=\""
 				+ "."
 				+ "\">\n"
@@ -158,7 +158,7 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		//	Xml String for SecondaryComponent and SecondaryXmlComponent
 
 		String firstMixedComponentList =
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
 				+ "<ComponentHelperInfo outputRootDirectory=\""
 				+ outputRootDir
 				+ "\">\n"

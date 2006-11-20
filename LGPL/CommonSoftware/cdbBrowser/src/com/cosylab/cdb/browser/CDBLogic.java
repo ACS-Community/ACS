@@ -436,7 +436,7 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
 			//
 			// send changed values to the WDAL
 			StringWriter sw = new StringWriter();
-			sw.write("<?xml version='1.0' encoding='UTF-8'?>\n");
+			sw.write("<?xml version='1.0' encoding='ISO-8859-1'?>\n");
 			sw.write("<curl ");
 			if(elementName.length() >0)
 				sw.write("><" + elementName +" ");
@@ -583,7 +583,7 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
 		String curl = getCurl();
 		CDBAddNodeDlg dlg = new CDBAddNodeDlg(Browser.getInstance());
 		dlg.setCurl(curl+"/");
-		dlg.setXML("<?xml version='1.0' encoding='UTF-8'?>\n<Node>\n</Node>");
+		dlg.setXML("<?xml version='1.0' encoding='ISO-8859-1'?>\n<Node>\n</Node>");
 
 		if(dlg.showModal() != JOptionPane.OK_OPTION)
 			return;

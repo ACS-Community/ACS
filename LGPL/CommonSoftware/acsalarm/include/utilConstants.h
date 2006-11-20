@@ -31,7 +31,7 @@ namespace acsalarm
 	const char* const FAULT_STATE_CODE_ATTRIBUTE_NAME = "code";
 	const char* const FAULT_STATE_DESCRIPTOR_ELEMENT_NAME = "descriptor";
 
-	const char* const XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	const char* const XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>";
 	const char* const ASI_MESSAGE_ELEMENT_NAME = "ASI-message";
 	const char* const XML_NAMESPACE_PREFIX =  "xmlns:xsi";
 	const char* const XML_SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";

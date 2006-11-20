@@ -185,7 +185,7 @@ public class ConfigurationDocumentationGenerator
 
 			// TODO add those
 			/*
-			<?xml version="1.0" encoding="UTF-8"?>
+			<?xml version="1.0" encoding="ISO-8859-1"?>
 			<?xml-stylesheet type="text/xsl" href="../../Common/Documentation/Normal.xsl"?>
 			 */ 
 			
