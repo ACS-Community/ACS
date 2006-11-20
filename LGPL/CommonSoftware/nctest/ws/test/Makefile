@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.11 2006/08/18 10:22:47 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.12 2006/11/20 17:06:47 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -113,7 +113,7 @@ PANELS_L =
 # 
 # IDL Files and flags
 # 
-IDL_FILES_L = nctestSpr2005067
+IDL_FILES_L = nctestSpr2005067 separateTypedef testStructs
 IDL_TAO_FLAGS =
 USER_IDL =
 
