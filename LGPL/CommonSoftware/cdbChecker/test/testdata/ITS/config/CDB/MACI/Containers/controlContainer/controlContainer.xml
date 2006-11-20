@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: controlContainer.xml,v 1.2 2006/10/20 07:51:28 hsommer Exp $
+$Id: controlContainer.xml,v 1.3 2006/11/20 05:40:14 cparedes Exp $
 Copyright (C) 2004
 Associated Universities, Inc. Washington DC, USA.
 
@@ -37,4 +37,5 @@ Correspondence concerning ALMA should be addressed as follows:
   <LoggingConfig>
   </LoggingConfig>
 </Container>
+
 

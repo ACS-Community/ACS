@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	  xsi:noNamespaceSchemaLocation="ACSError.xsd" 
 	  name="JContExmplErrTypeTest" 
@@ -13,3 +13,4 @@
 	<ErrorCode name="JContExmplErrTest4" shortDescription="Test error 4" description="Test error 4" _suppressExceptionGeneration="1"/>
 	<ErrorCode name="JContExmplErrTest5" shortDescription="Test error 5" description="Test error 5" _suppressExceptionGeneration="true"/>
 </Type>
+

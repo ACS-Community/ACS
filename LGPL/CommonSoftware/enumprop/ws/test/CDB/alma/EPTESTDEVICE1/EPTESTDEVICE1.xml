@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <EnumPropTestDevice
 xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
 xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
@@ -11,3 +11,4 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <currentStatesRW default_timer_trig="1.0" min_timer_trig="0.001" default_value="0" statesDescription="DISABLED,ENABLED,DIAGNOSE,SHUTDOWN,INITIALIZE,ON,OFF" condition="3, 2, 0, 0, 0, 0, 1, 1, 1" description="State" format="%d" units="w/o" resolution="7"/>
 
 </EnumPropTestDevice>
+

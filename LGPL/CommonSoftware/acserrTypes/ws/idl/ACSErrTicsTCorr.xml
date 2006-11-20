@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) 
 This file has to be moved into the TICS subsystem !
 -->
@@ -8,3 +8,4 @@ type="14" _prefix="alma">
      <ErrorCode name="AnyTICSTCorrError" shortDescription="Any TICS
      TCorr error" description="TICS TCorr error"/>
 </Type>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
   -->
 <MasterComponent 
@@ -10,3 +10,4 @@
     <currentStateHierarchy description="Current hierarchy of subsystem states, top-down" />
            
 </MasterComponent>
+

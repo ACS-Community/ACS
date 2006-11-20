@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <project version="@project.version@" default="@project.version@">
 	<product name="@project.name@">
 		<dependencies>
@@ -7,3 +7,4 @@
 		</dependencies>
 	</product>
 </project>
+

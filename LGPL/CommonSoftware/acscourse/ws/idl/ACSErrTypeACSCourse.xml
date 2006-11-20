@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeACSCourse" type="900906" _prefix="alma">
 	<Code name="Pointing" 
               shortDescription="Pointing" 
@@ -7,4 +7,5 @@
                    shortDescription="Target Not Found" 
                    description="Target Coulkdn't be found"/>
 </Type>
+
 

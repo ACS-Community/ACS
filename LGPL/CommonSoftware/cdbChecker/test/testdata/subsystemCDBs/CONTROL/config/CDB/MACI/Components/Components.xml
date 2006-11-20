@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: Components.xml,v 1.1 2005/04/15 17:06:45 gchiozzi Exp $
+$Id: Components.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
 Copyright (C) 2004, 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -94,3 +94,4 @@ Correspondence concerning ALMA should be addressed as follows:
      Container="idlSimPyContainer"
      Default="true"/>
 </Components>
+

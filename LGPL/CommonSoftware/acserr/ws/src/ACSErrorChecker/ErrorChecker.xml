@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 
 <ErrorChecker>
@@ -27,3 +27,4 @@
 	<SubSystem Name="ACS" ReportFormat="html" Min="0" Max="9999" BaseDir="/diska/home/almadev/CVSWORK/ACS/LGPL/CommonSoftware"/>
 	<!--SubSystem Name="ARCHIVE" ReportFormat="html" Min="60000" Max="69999" BaseDir="/home/acaproni/CVSWORK/ARCHIVE"/-->
 </ErrorChecker>
+

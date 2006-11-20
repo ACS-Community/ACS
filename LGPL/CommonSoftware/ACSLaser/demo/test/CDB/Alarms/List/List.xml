@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
   - Sample configuration of a fault state for the alarm system.
   -
@@ -35,3 +35,4 @@
 	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="5" />
 	<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
 </alarm-definition-list>
+

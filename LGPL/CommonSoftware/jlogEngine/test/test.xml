@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <Log>
 <Header Name="NameForXmlDocument" Type="LOGFILE" />
 <Info TimeStamp="2005-02-01T15:33:09.592" Routine="maci::ContainerImpl::init" Host="te1" Process="maciContainer" Thread="main" Context=""><![CDATA[Connecting to the Centralized Logger...]]></Info>
@@ -302,3 +302,4 @@
 <Info TimeStamp="2005-02-01T15:33:15.672" Routine="maci::ContainerImpl::message" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Message from manager received. Type: 20. Message: Startup statistics: 3 components queued to be activated.]]></Info>
 <Info TimeStamp="2005-02-01T15:33:15.673" Routine="maci::ContainerImpl::message" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Message from manager received. Type: 20. Message: Startup statistics: 3 of 3 components activated.]]></Info>
 </Log>
+

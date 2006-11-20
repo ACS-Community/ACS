@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-@(#) $Id: Default.xml,v 1.1 2005/04/15 17:04:57 gchiozzi Exp $
+@(#) $Id: Default.xml,v 1.2 2006/11/20 05:40:14 cparedes Exp $
 
 Copyright (C) 2004
 Associated Universities, Inc. Washington DC, USA.
@@ -71,3 +71,4 @@ Internet email: alma-sw-admin@nrao.edu
   <transactions/>
   <temperature/>
 </DigiClock>
+

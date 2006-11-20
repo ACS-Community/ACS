@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: CONTROL_AmbManager:ABM001.xml,v 1.1 2005/04/15 17:06:45 gchiozzi Exp $
+$Id: CONTROL_AmbManager:ABM001.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -29,3 +29,4 @@ Correspondence concerning ALMA should be addressed as follows:
            Code="ambManagerImpl"
            Type="IDL:alma/AMBMGR/AmbManager:1.0"
            Container="CONTROL/ABM001/cppContainer"/>
+

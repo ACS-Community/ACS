@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
@@ -48,4 +48,5 @@ Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0"
 Container="Container01"/>
 
 </Components>
+
 

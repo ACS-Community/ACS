@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
 <!-- type must be 0 otherwise we'll have problem with error libraries ((j)acserr)-->
 <Type 
@@ -12,3 +12,4 @@
 	 shortDescription="OK"
 	 description="OK"/>
 </Type>
+

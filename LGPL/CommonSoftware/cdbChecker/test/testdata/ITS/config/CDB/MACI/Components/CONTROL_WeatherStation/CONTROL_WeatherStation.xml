@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: CONTROL_WeatherStation.xml,v 1.1 2005/04/15 17:02:35 gchiozzi Exp $
+$Id: CONTROL_WeatherStation.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -35,4 +35,5 @@ Correspondence concerning ALMA should be addressed as follows:
        Type="IDL:alma/Control/WeatherStation:1.0"
        Container="controlContainer"
 />
+
 

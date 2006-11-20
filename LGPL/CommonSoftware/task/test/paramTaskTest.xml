@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <psetdef:pset xmlns:psetdef="urn:schemas-cosylab-com:psetdef:1.0" 
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
               xsi:schemaLocation="urn:schemas-cosylab-com:psetdef:1.0 psetdef.xsd">
@@ -138,3 +138,4 @@
 		<default>1.6</default>
 	</param>
 </psetdef:pset>
+

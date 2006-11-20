@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <plugin
    id="com.cosylab.abeans.vep"
    name="Abeans VE Plug-in"
@@ -65,3 +65,4 @@
    </extension>
    
 </plugin>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
    - Example Configuration Database Entry for a Fridge
    -
@@ -33,3 +33,4 @@
   <powerStatus description="powerStatus(0=on,1=off)" />
   <doorStatus description="doorStatus(0=open,1=close)" />
 </Fridge>
+

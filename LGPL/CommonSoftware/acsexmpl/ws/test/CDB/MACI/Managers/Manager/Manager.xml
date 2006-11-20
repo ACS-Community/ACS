@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='ISO-8859-1'?>
 <!--
    - History:
    -   Wed Apr 26 14:43:29 UTC 2006 modified by jDAL
@@ -29,3 +29,4 @@ CacheSize="0">
 		<cdb:_ string="PDB"/>
 	</ServiceComponents>
 </Manager>
+

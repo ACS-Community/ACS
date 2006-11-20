@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <Component  xmlns="urn:schemas-cosylab-com:Component:1.0"
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
@@ -9,3 +9,4 @@
        Type="IDL:alma/ACS/MasterComponent:1.0"
        Container="javaContainer"
 />
+

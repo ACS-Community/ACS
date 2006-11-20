@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
    - Example Configuration Database Entry for a Door
    -
@@ -44,3 +44,4 @@
             archive_min_int="5.0"
             archive_max_int="10.0"/>
 </Door>
+

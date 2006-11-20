@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <suite name="Suite">
     <test name="Login" robot="false">
         <!--  started recording Tue Nov 09 17:47:08 CET 2004  -->

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <!-- This XML file provides the partial implementation -->
 <!-- of the TEST_RPS_1 component.                      -->
 <!--                                                   -->
@@ -130,3 +130,4 @@ return my_event
 		</_almaEventResponse>
 
 </SimulatedComponent>
+

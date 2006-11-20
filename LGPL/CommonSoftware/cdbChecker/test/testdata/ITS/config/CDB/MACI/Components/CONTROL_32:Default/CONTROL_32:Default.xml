@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: CONTROL_32:Default.xml,v 1.1 2005/04/15 17:02:35 gchiozzi Exp $
+$Id: CONTROL_32:Default.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -29,4 +29,5 @@ Correspondence concerning ALMA should be addressed as follows:
            Code="CRDImpl" 
            Type="IDL:alma/Control/CRD:1.0" 
            Container="controlContainer"/>
+
 

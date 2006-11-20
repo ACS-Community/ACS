@@ -12,7 +12,7 @@
 1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 of 3 components activated.
 1 - HelloWorld
 1 - name is:  TESTCOMPONENT
-1 - getCDBRecord is:  <?xml version='1.0' encoding='UTF-8'?>
+1 - getCDBRecord is:  <?xml version='1.0' encoding='ISO-8859-1'?>
 1 - <Manager xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" CommandLine="" Timeout="50.0" HeartbeatTimeout="2.0" CacheSize="0" MinCachePriority="0" MaxCachePriority="31" CentralizedLogger="Log" ClientPingInterval="6.0E1" AdministratorPingInterval="4.5E1" ContainerPingInterval="3.0E1" ServerThreads="10" DeadlockTimeout="1.8E2">
 1 -   <Startup>
 1 -         <cdb:_ string="TESTCOMPONENT"></cdb:_>
@@ -54,7 +54,7 @@
 1 - HelloWorld
 1 - HelloWorld
 1 - name is:  TESTCOMPONENT1
-1 - getCDBRecord is:  <?xml version='1.0' encoding='UTF-8'?>
+1 - getCDBRecord is:  <?xml version='1.0' encoding='ISO-8859-1'?>
 1 - HelloWorld
 1 - <Manager xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" CommandLine="" Timeout="50.0" HeartbeatTimeout="2.0" CacheSize="0" MinCachePriority="0" MaxCachePriority="31" CentralizedLogger="Log" ClientPingInterval="6.0E1" AdministratorPingInterval="4.5E1" ContainerPingInterval="3.0E1" ServerThreads="10" DeadlockTimeout="1.8E2">
 1 -   <Startup>

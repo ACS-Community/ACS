@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <Log xmlns="urn:schemas-cosylab-com:logging:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-cosylab-com:logging:1.0 ../idl/loggingMI.xsd">
 	<Header Name="NameForXmlDocument" Type="LOGFILE"/>
 	<Trace TimeStamp="2004-07-22T12:12:27.768" File="/alma/ACS-3.1/ACSSW/include/enumpropROImpl.i" Line="111" Routine="ROEnumImpl::~ROEnumImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
@@ -505,3 +505,4 @@
 	<Info TimeStamp="2004-07-22T12:12:43.867" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="22" LogId="31670">Destroyed.</Info>
 	<Info TimeStamp="2004-07-22T12:12:43.869" File="abeans.engine.Database" Routine="destroy" Host="te22.hq.eso.org" Thread="27" LogId="31673">Database destroyed, internal data structures cleared.</Info>
 </Log>
+

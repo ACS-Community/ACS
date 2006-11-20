@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-@(#) $Id: Test.xml,v 1.1 2005/04/15 17:04:57 gchiozzi Exp $
+@(#) $Id: Test.xml,v 1.2 2006/11/20 05:40:14 cparedes Exp $
 
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
@@ -28,3 +28,4 @@ Internet email: alma-sw-admin@nrao.edu
 <LkmLoader xmlns="urn:schemas-cosylab-com:LkmLoader:1.0" 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       configuration_file="CAMBServerSim.lkm"/>
+
