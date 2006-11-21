@@ -35,6 +35,7 @@ import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
+import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyFilter.ConstraintExp;
@@ -61,7 +62,8 @@ import alma.acsnc.OSPushConsumerPOA;
  * 
  * @author dfugate
  */
-public class Consumer extends OSPushConsumerPOA implements CommonNC {
+public class Consumer extends OSPushConsumerPOA 
+{
    private static final String     RECEIVE_METHOD_NAME      = "receive";
 
    /**
@@ -131,9 +133,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC {
       configSubscriptions();
       configFilters();
 
-      if (m_helper.getChannelProperties().getIntegrationLogs(m_channelName) == true) {
-         m_integrationLogs = true;
-      }
+      isTraceEventsEnabled = m_helper.getChannelProperties().isTraceEventsEnabled(m_channelName);
    }
 
    /**
@@ -209,8 +209,7 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC {
       IntHolder consumerAdminID = new IntHolder();
 
       // get the Consumer admin object
-      m_consumerAdmin = getNotificationChannel().new_for_consumers(IFGOP,
-            consumerAdminID);
+      m_consumerAdmin = getNotificationChannel().new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminID);
       // sanity check
       if (m_consumerAdmin == null) {
          String reason = "The '" + m_channelName
@@ -588,14 +587,12 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC {
    public void push_structured_event(StructuredEvent structuredEvent)
          throws org.omg.CosEventComm.Disconnected {
       // time to get the event description
-      EventDescription eDescrip = EventDescriptionHelper
-            .extract(structuredEvent.remainder_of_body);
+      EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 
       Object convertedAny = null;
-      convertedAny = m_anyAide
-            .complexAnyToObject(structuredEvent.filterable_data[0].value);
+      convertedAny = m_anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
-      if (m_integrationLogs == true) {
+      if (isTraceEventsEnabled) {
          m_logger.log(Level.INFO, "Channel:" + m_channelName + ", Publisher:"
                + eDescrip.name + ", Event Type:"
                + structuredEvent.header.fixed_header.event_type.type_name);
@@ -626,6 +623,8 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC {
     *           acsnc.idl for the defintion.
     */
    protected void processEvent(Object corbaData, EventDescription eventDescrip) {
+	   
+	   m_logger.fine("Consumer#processEvent received an event of type " + eventDescrip.name);
       // Create the IDL class
       // The only reason we have to do this is in case the developer has
       // created
@@ -855,6 +854,6 @@ public class Consumer extends OSPushConsumerPOA implements CommonNC {
    /** Helper class used to manipulate CORBA anys */
    protected AnyAide                     m_anyAide          = null;
 
-   /** Requested by HLA/ITS. */
-   private boolean                       m_integrationLogs  = false;
+	/** Whether sending of events should be logged */
+   private boolean                       isTraceEventsEnabled  = false;
 }
