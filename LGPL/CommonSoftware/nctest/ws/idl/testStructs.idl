@@ -1,19 +1,19 @@
 #ifndef _SIMPLE_ACS_TEST_IDL_
 #define _SIMPLE_ACS_TEST_IDL_
 
-
+// As a little additional challenge, we include the string typedef 
+// from a separate file with the same module name
 #include <separateTypedef.idl>
-
 
 #pragma prefix "alma"
 
 module simpleAcsTest {
 
-    struct structOnlyStrings {
+    struct StructOnlyStrings {
 		string   realstring;
     };
 
-    struct structWithMyString {
+    struct StructWithMyString {
 		string   realstring;
 		myString hiddenString;
     };
