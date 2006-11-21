@@ -28,12 +28,14 @@ package alma.demo.EventSupplierImpl;
 
 import java.util.logging.Level;
 
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.FRIDGE.TemperatureStatus;
 import alma.FRIDGE.temperatureDataBlockEvent;
+import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.SimpleSupplier;
 import alma.demo.SupplierCompOperations;
 
@@ -58,7 +60,7 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
     		m_supplier = new SimpleSupplier(alma.FRIDGE.CHANNELNAME_FRIDGE.value,  //the channel's name 
     				m_containerServices);
     	}
-    	catch (AcsJException e) {
+    	catch (Exception e) {
     		throw new ComponentLifecycleException("failed to create SimpleSupplier for channel " + alma.FRIDGE.CHANNELNAME_FRIDGE.value, e);
     	}
     }
@@ -75,9 +77,9 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
     /**
      * The IDL-defined method that sends the <code>temperatureDataBlockEvent</code> fridge event a given number of times.
      */
-    public void sendEvents(short param)
+    public void sendEvents(short param) throws CouldntPerformActionEx
     {
-    	m_logger.info("Now sending " + param + " simplesupplier events...");
+    	m_logger.info("Now sending " + param + " temperatureDataBlockEvent events...");
         try {
             temperatureDataBlockEvent t_block = new temperatureDataBlockEvent(3.14F, TemperatureStatus.ATREF);
             for(short i=0; i<param; i++)
@@ -85,9 +87,22 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
                 m_supplier.publishEvent(t_block);
             }
         }
-        catch(Exception e) {
+        catch(Throwable thr) {
             m_logger.log(Level.WARNING, "failed to send temperatureDataBlockEvent. Will not try again.");
+            throw (new AcsJCouldntPerformActionEx(thr)).toCouldntPerformActionEx();
         }
     }
 
+    public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
+        try {
+        	m_logger.info("Now sending " + eventData.length + " NestedFridgeEvent events...");
+            for (NestedFridgeEvent event : eventData) {
+                m_supplier.publishEvent(event);
+			}
+        }
+        catch(Throwable thr) {
+            m_logger.log(Level.WARNING, "failed to send NestedFridgeEvent. Will not try again.");
+            throw (new AcsJCouldntPerformActionEx(thr)).toCouldntPerformActionEx();
+        }
+    }
 }
