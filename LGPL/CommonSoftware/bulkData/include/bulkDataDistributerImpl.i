@@ -5,17 +5,6 @@ BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::BulkDataDistributer
     ACS_TRACE("BulkDataDistributerImpl<>::BulkDataDistributerImpl");
 
     containerServices_p = containerServices;
-
-    dal_p = containerServices_p->getCDB();
-    if (CORBA::is_nil (dal_p))
-	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect dal_p nil"));
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVStreamEndpointErrorEx();
-	}
-
-    distributer.setContSvc(containerServices_p);
-
 }
 
 
@@ -23,6 +12,24 @@ template<class TReceiverCallback, class TSenderCallback>
 BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::~BulkDataDistributerImpl()
 {
     ACS_TRACE("BulkDataDistributerImpl<>::~BulkDataDistributerImpl");
+}
+
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::initialize()
+    throw (ACSErr::ACSbaseExImpl)
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::initialize");
+
+    dal_p = containerServices_p->getCDB();
+    if (CORBA::is_nil(dal_p))
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl<>::initialize error getting CDB reference"));
+	AVObjectNotFoundExImpl err = AVObjectNotFoundExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl<>::initialize");
+	err.log();
+	throw err;
+	}
+
+    distributer.setContSvc(containerServices_p);
 }
 
 
@@ -116,6 +123,13 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	distributer.setTimeout(timeout);
 
 	}
+    /*catch (ACSErr::ACSbaseExImpl &ex)
+	{
+	ex.log();
+	cout << "XXXXXXXXXXXXXXXXXXXXXDDDDDDDDDDDDD" << endl;
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
+	throw err.getAVConnectErrorEx();
+	}*/
 
     catch (AVInitErrorExImpl & ex)
 	{   

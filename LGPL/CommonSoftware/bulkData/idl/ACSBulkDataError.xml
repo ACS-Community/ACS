@@ -6,7 +6,7 @@
 	<ErrorCode name="AVStreamBindError" shortDescription="Stream bind error" description=""/>
 	<ErrorCode name="AVSendFrameError" shortDescription="Send frame error" description=""/>
 	<ErrorCode name="AVCouldNotOpenFile" shortDescription="Opening file error" description=""/>
-	<ErrorCode name="AVObjectNotFound" shortDescription="Founding object error" description=""/>
+	<ErrorCode name="AVObjectNotFound" shortDescription="Object not found" description=""/>
 	<ErrorCode name="AVInitError" shortDescription="Initialization error" description=""/>
 	<ErrorCode name="AVCallbackError" shortDescription="Callback error" description=""/>
 	<ErrorCode name="AVProtocolError" shortDescription="Data Protocol error" description=""/>

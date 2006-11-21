@@ -675,8 +675,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::initPartA()
 					 TAO_AV_CORE::instance()->poa ());
     if (result != 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::BulkDataSender endpoint_strategy failed !"));
-
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::initPartA endpoint_strategy init failed"));
 	AVInitErrorExImpl err = AVInitErrorExImpl(__FILE__,__LINE__,"BulkDataSender::initPartA");
 	throw err;
 	}

@@ -93,7 +93,10 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      */
     virtual ~BulkDataDistributerImpl();
 
-    void cleanUp();
+    virtual void initialize()
+	throw (ACSErr::ACSbaseExImpl);
+
+    virtual void cleanUp();
 
 
 /********************* Sender part ********************/
