@@ -26,95 +26,96 @@
  */
 package alma.demo.test.EventSupplierImpl;
 
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.FRIDGE.TemperatureStatus;
+import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.nc.SimpleSupplier;
+import alma.acsnc.EventDescription;
 import alma.demo.SupplierCompOperations;
 
-import alma.acsnc.EventDescription;
-
 /** Class designed for testing event suppliers.
+ * @TODO: consolidate with similar class in jcontexmpl
  * @author dfugate
  */
-public class EventSupplierImpl extends ComponentImplBase implements SupplierCompOperations
+public class EventSupplierImpl extends ComponentImplBase implements SupplierCompOperations 
 {
-   private SimpleSupplier m_supplier = null;
-   
-   /** Sends some events to an event channel.
-    * @param param number of events to send
-    */
-   public void sendEvents(short param)
-   {
-      System.out.println("Now sending simplesupplier events...");
-      try
-      {
-         //first send out some number of events.
-         EventDescription t_block = new EventDescription("no name", 32L, 64L);
-         for(short i=0; i<param; i++)
-         {
-            m_supplier.publishEvent(t_block);
-         }
-         
-         //next invoke some public methods to ensure they work
-         if (m_supplier.getHelper()==null)
-         {
-            System.out.println("Bad Helper!!!");
-         }
-         
-	 //fake a subscription change
-	 m_supplier.subscription_change(new org.omg.CosNotification.EventType[]
-	     {}, new org.omg.CosNotification.EventType[]
-	     {});
-         
-      }
-      catch(Exception e)
-      {
-         System.err.println(e);
-      }
-   }
-   
-   /** Disconnects the supplier. */
-   public void cleanUp()
-   {
-      m_logger.info("cleanUp() called...");
-      
-      try
-      {
-      
-      //fake a consumer disconnecting...
-      m_supplier.disconnect_structured_push_supplier();
-      m_supplier.disconnect();
-      }
-      catch(Exception e)
-      {
-       e.printStackTrace();  
-      }
-   }
-   
-   
-   /** Sets up the SimpleSupplier.
-    * @param containerServices Services to components.
-    * @throws ComponentLifecycleException Not thrown.
-    */
-   public void initialize(ContainerServices containerServices)
-   throws ComponentLifecycleException
-   {
-      super.initialize(containerServices);
-      m_logger.info("initialize() called...");
-      
-      try
-      {
-         //Instantiate our supplier
-         m_supplier = new SimpleSupplier("blar",  //the channel's name
-         m_containerServices);
-      }
-      catch(Exception e)
-      {
-         e.printStackTrace(System.err);
-      }
-   }
-}
+	private SimpleSupplier m_supplier = null;
 
+	
+
+	/** Sets up the SimpleSupplier.
+	 * @param containerServices Services to components.
+	 * @throws ComponentLifecycleException Not thrown.
+	 */
+	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
+		super.initialize(containerServices);
+
+		try {
+			//Instantiate our supplier
+			m_supplier = new SimpleSupplier("blar", //the channel's name
+					m_containerServices);
+			m_logger.info("SimpleSupplier for 'blar' channel created.");
+		} catch (Exception e) {
+			throw new ComponentLifecycleException(e);
+		}
+	}
+
+	
+	/** Sends some events to an event channel.
+	 * @param param number of events to send
+	 */
+	public void sendEvents(short param) {
+		System.out.println("Now sending simplesupplier events...");
+		try {
+			//first send out some number of events.
+			EventDescription t_block = new EventDescription("no name", 32L, 64L);
+			for (short i = 0; i < param; i++) {
+				m_supplier.publishEvent(t_block);
+			}
+
+			//next invoke some public methods to ensure they work
+			if (m_supplier.getHelper() == null) {
+				System.out.println("Bad Helper!!!");
+			}
+
+			//fake a subscription change
+			m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
+					new org.omg.CosNotification.EventType[] {});
+
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+	}
+
+	public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
+		try {
+			m_logger.info("Now sending " + eventData.length + " NestedFridgeEvent events...");
+			for (NestedFridgeEvent event : eventData) {
+				m_supplier.publishEvent(event);
+			}
+		} catch (Throwable thr) {
+			m_logger.log(Level.WARNING, "failed to send NestedFridgeEvent. Will not try again.");
+			throw (new AcsJCouldntPerformActionEx(thr)).toCouldntPerformActionEx();
+		}
+	}
+
+	/** Disconnects the supplier. */
+	public void cleanUp() {
+		m_logger.info("cleanUp() called...");
+
+		try {
+
+			//fake a consumer disconnecting...
+			m_supplier.disconnect_structured_push_supplier();
+			m_supplier.disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
