@@ -28,6 +28,8 @@ package alma.demo.test.EventILSupplierImpl;
 
 import java.util.logging.Logger;
 
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
@@ -116,5 +118,10 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
          e.printStackTrace(System.err);
       }
    }
+
+   public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
+	   throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+   }
+   
 }
 
