@@ -20,6 +20,9 @@
 package alma.demo.test.client;
 
 import java.util.logging.Logger;
+
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
 import alma.demo.SupplierComp;
 import alma.demo.ConsumerComp;
@@ -45,12 +48,12 @@ public class SupplierCDBChannelTest extends ComponentClient
 							     .getComponent("SUPPLIER_CDB_CHANNEL_COMP1"));
 	}
     
-    /**
-     * Calls sayHello() on the hello component.
-     */
-    public void doSomeStuff() 
-	{
-	    m_supplier.sendEvents((short)10);
+	public void doSomeStuff() throws AcsJCouldntPerformActionEx {
+		try {
+			m_supplier.sendEvents((short)10);
+		} catch (CouldntPerformActionEx e) {
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(e);
+		}
 	}
     
     public void cleanupNC() throws Exception 

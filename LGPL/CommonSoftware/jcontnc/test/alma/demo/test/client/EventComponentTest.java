@@ -20,6 +20,11 @@
 package alma.demo.test.client;
 
 import java.util.logging.Logger;
+
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.FRIDGE.TemperatureStatus;
+import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.client.ComponentClient;
 import alma.demo.SupplierComp;
 import alma.demo.ConsumerComp;
@@ -53,10 +58,26 @@ public class EventComponentTest extends ComponentClient
 	}
 
 	/**
-	 * Calls sayHello() on the hello component.
+	 * Gets the supplier component to send out events 
 	 */
-	public void doSomeStuff() {
-		m_supplier.sendEvents((short)10);
+	public void doSomeStuff() throws AcsJCouldntPerformActionEx {
+		try {
+			// get the supplier component to create 10 default events
+			m_supplier.sendEvents((short)10);
+
+			// Now give the supplier component a bunch of event structs to publish on the fridge channel
+			// Note that the event type is different from the above.
+            int nNestedEvents = 5;
+            NestedFridgeEvent[] nestedEvents = new NestedFridgeEvent[nNestedEvents];
+            for (int i = 0; i < nNestedEvents; i++) {
+            	nestedEvents[i] = new NestedFridgeEvent();
+            	nestedEvents[i].status = TemperatureStatus.ATREF;
+            }
+			m_supplier.sendEventsSpecial(nestedEvents);
+			
+		} catch (CouldntPerformActionEx e) {
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(e);
+		}
 	}
 
     public void cleanupNC() throws Exception {

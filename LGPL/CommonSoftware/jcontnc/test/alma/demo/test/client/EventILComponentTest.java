@@ -20,15 +20,14 @@
 package alma.demo.test.client;
 
 import java.util.logging.Logger;
+
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
 import alma.demo.SupplierComp;
 import alma.demo.ConsumerComp;
 
 /**
- * Client application that accesses the HelloDemo component. It demonstrates
- * how the class {@link ComponentClient}can be used as a base class.
- * 
- * @author hsommer Nov 21, 2002 5:53:05 PM
  */
 public class EventILComponentTest extends ComponentClient
 {
@@ -55,8 +54,12 @@ public class EventILComponentTest extends ComponentClient
 	/**
 	 * Calls sayHello() on the hello component.
 	 */
-	public void doSomeStuff() {
-		m_supplier.sendEvents((short)10);
+	public void doSomeStuff() throws AcsJCouldntPerformActionEx {
+		try {
+			m_supplier.sendEvents((short)10);
+		} catch (CouldntPerformActionEx e) {
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(e);
+		}
 	}
 
     public void cleanupNC() throws Exception {

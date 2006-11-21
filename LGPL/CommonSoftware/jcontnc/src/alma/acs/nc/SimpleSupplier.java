@@ -24,31 +24,38 @@
 // //////////////////////////////////////////////////////////////////////////////
 package alma.acs.nc;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.omg.CORBA.IntHolder;
-import org.omg.CosNotification.StructuredEvent;
+import org.omg.CosEventChannelAdmin.AlreadyConnected;
 import org.omg.CosNotification.EventHeader;
 import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.FixedEventHeader;
 import org.omg.CosNotification.Property;
+import org.omg.CosNotification.StructuredEvent;
+import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
+import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumer;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumerHelper;
 import org.omg.CosNotifyChannelAdmin.SupplierAdmin;
 import org.omg.CosNotifyComm.InvalidEventType;
+import org.omg.CosNotifyComm.StructuredPushSupplier;
+import org.omg.CosNotifyComm.StructuredPushSupplierHelper;
 
+import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
-
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
-import alma.acsnc.OSPushSupplier;
-import alma.acsnc.OSPushSupplierHelper;
 import alma.acsnc.OSPushSupplierPOA;
+
 
 // //////////////////////////////////////////////////////////////////////////////
 /**
@@ -56,410 +63,438 @@ import alma.acsnc.OSPushSupplierPOA;
  * publish events using the Java programming language. It supports publishing
  * events where the data is really a user-defined IDL struct.
  * 
+ * TODO (HSO): figure out if the CORBA impl is thread safe. Fix this class accordingly, 
+ * or document that it is not thread safe otherwise.
+ * 
  * @author dfugate
  */
-public class SimpleSupplier extends OSPushSupplierPOA implements CommonNC {
-   /**
-    * Creates a new instance of SimpleSupplier
-    * 
-    * @param cName
-    *           name of the notification channel events will be published to.
-    * @param services
-    *           This is used to get the name of the component and to access the
-    *           ACS logging system.
-    * @throws AcsJException
-    *            There are literally dozens of CORBA exceptions that could be
-    *            thrown by the SimpleSupplier class. Instead, these are
-    *            converted into an ACS Error System exception for the
-    *            developer's convenience.
-    */
-   public SimpleSupplier(String cName, ContainerServices services)
-         throws AcsJException {
-      
-      m_channelName = cName;
+public class SimpleSupplier extends OSPushSupplierPOA 
+{
+	/**
+	 * Creates a new instance of SimpleSupplier.
+	 * Make sure you call {@link #disconnect()} when you no longer need this event supplier object.
+	 * 
+	 * @param cName
+	 *           name of the notification channel events will be published to.
+	 * @param services
+	 *           This is used to get the name of the component and to access the
+	 *           ACS logging system.
+	 * @throws AcsJException
+	 *            There are literally dozens of CORBA exceptions that could be
+	 *            thrown by the SimpleSupplier class. Instead, these are
+	 *            converted into an ACS Error System exception for the
+	 *            developer's convenience.
+	 */
+	public SimpleSupplier(String cName, ContainerServices services) throws AcsJException 
+	{
+		// sanity check
+		if (cName == null) {
+			String reason = "Null reference obtained for the channel name!";
+			throw new AcsJBadParameterEx(reason);
+		}
 
-      m_logger = services.getLogger();
+		m_channelName = cName;
+		m_services = services;
+		m_logger = services.getLogger();
 
-      m_services = services;
+		m_anyAide = new AnyAide(services);
+		m_helper = new Helper(services);
+		isTraceEventsEnabled = m_helper.getChannelProperties().isTraceEventsEnabled(m_channelName);
+		
+		// get the channel and the Supplier admin object
+		m_channel = m_helper.getNotificationChannel(m_channelName, getChannelKind(), getNotificationFactoryName());
+		if (m_channel == null) {
+			String reason = "Null reference obtained for the notification channel " + m_channelName;
+			throw new AcsJCORBAReferenceNilEx(reason);
+		}
+		IntHolder ih = new IntHolder();
+		m_supplierAdmin = m_channel.new_for_suppliers(InterFilterGroupOperator.AND_OP, ih);
+		if (m_supplierAdmin == null) {
+			String reason = "Null reference obtained for the supplier admin for channel " + m_channelName;
+			throw new AcsJCORBAReferenceNilEx(reason);
+		}
 
-      m_anyAide = new AnyAide(services);
+		// Get the Consumer proxy to which the published events will be fed.
+		// The client type parameter selects a StructuredProxyPushConsumer (based on Structured Events),
+		// as opposed to ProxyPushConsumer (based on Anys), or SequenceProxyPushConsumer (based on sequences of Structured Events).
+		try {
+			IntHolder cp_ih = new IntHolder(); // to receive the unique ID assigned by the admin object (will be dicarded) 
+			org.omg.CORBA.Object tempCorbaObj = m_supplierAdmin.obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT, cp_ih);
+			if (tempCorbaObj == null) {
+				String reason = "Null reference obtained for the Proxy Push Consumer!";
+				throw new AcsJCORBAReferenceNilEx(reason);
+			}
+			m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(tempCorbaObj);
+		} 
+		catch (AdminLimitExceeded e) {
+			// convert it into an exception developers care about
+			throw new AcsJCORBAProblemEx(e);
+		}
 
-      // sanity check
-      if (m_channelName == null) {
-         String reason = "Null reference obtained for the channel name!";
-         throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
-      }
+		// must connect this StructuredPushSupplier to the proxy consumer, or events would never be sent anywhere.
+		// see 3.4.4.1 of Notification Service, v1.1
+		try {
+			StructuredPushSupplier thisSps = StructuredPushSupplierHelper.narrow(m_services.activateOffShoot(this));
+			m_proxyConsumer.connect_structured_push_supplier(thisSps);
+		} 
+		catch (AcsJContainerServicesEx e) {
+			// convert it to an ACS Error System Exception
+			throw new AcsJCORBAProblemEx(e);
+		} 
+		catch (AlreadyConnected e) {
+			// Think there is virtually no chance of this every happening but...
+			throw new AcsJCORBAProblemEx(e);
+		}
 
-      // naming service, POA, and Any generator
-      m_helper = new Helper(services);
+	}
 
-      // get the Supplier admin object
-      EventChannel ec = getNotificationChannel(cName);
-      IntHolder ih = new IntHolder();
-      m_supplierAdmin = ec.new_for_suppliers(IFGOP, ih);
-      
-      // sanity check
-      if (m_supplierAdmin == null) {
-         String reason = "Null reference obtained for the Supplier Admin!";
-         throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
-      }
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * User code <b>must call this method when the Supplier is no longer useful</b>.
+	 * Failure to do so can result in remote memory leaks. User should not call
+	 * this method multiple times either. Once disconnect has been called, all of
+	 * SimpleSupplier's methods will cease to function properly.
+	 */
+	public void disconnect() {
+		if (m_supplierAdmin == null) {
+			m_logger.info("Ignoring request to disconnect an unconnected SimpleSupplier for channel " + m_channelName);
+			return;
+		}
+		
+		String errMsg = "Failed to cleanly disconnect SimpleSupplier for channel '" + m_channelName + "': "; 
+		try {
+			// handle notification channel cleanup
+			m_proxyConsumer.disconnect_structured_push_consumer();
+		} 
+		catch (Throwable thr) {
+			m_logger.log(Level.WARNING, errMsg + "could not disconnect push consumer", thr);
+		}
+		
+		try {
+			m_supplierAdmin.destroy();
+		} 
+		catch (Throwable thr) {
+			m_logger.log(Level.WARNING, errMsg + "could not destroy supplier admin", thr);
+		}
 
-      // get the Consumer proxy
-      try {
-         IntHolder cp_ih = new IntHolder();
-         org.omg.CORBA.Object tempCorbaObj = null;
-         
-         tempCorbaObj = m_supplierAdmin.obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT, 
-                                                                          cp_ih);
-         if (tempCorbaObj == null) {
-            String reason = "Null reference obtained for the Proxy Push Consumer!";
-            throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
-         }
-         m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(tempCorbaObj);
-      }
-      catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
-         // convert it into an exception developers care about
-         throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e
-               .getMessage());
-      }
+		try {
+			// clean-up CORBA stuff
+			m_services.deactivateOffShoot(this);
+		} 
+		catch (Throwable thr) {
+			m_logger.log(Level.WARNING, errMsg + "could not deactivate the SimpleSupplier offshoot.", thr);
+		}
+		m_proxyConsumer = null;
+		m_supplierAdmin = null;
+	}
 
-      // Need Java container to provide access to it's rootPOA and/or ORB
-      // to get around this.
-      try {
-         ContainerServices cs = m_helper.getContainerServices();
-         alma.ACS.OffShoot myOS = null;
-         myOS = cs.activateOffShoot(this);
+	
+	// //////////////////////////////////////////////////////////////////////////
+// HSO: removed this because the channel is created anyway already in the ctor. For one release we keep the substitute method below.	
+//	/**
+//	 * This method gets a reference to the event channel. If it is not already
+//	 * registered with the naming service, it is created.
+//	 * 
+//	 * @return Reference to the event channel specified by channelName.
+//	 * @param channelName
+//	 *           Name of the event channel registered with the CORBA Naming
+//	 *           Service
+//	 * @throws AcsJException
+//	 *            Standard ACS Java exception.
+//	 */
+//	protected EventChannel getNotificationChannel(String channelName) throws AcsJException {
+//		if (m_channel == null) {
+//			m_channel = m_helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
+//		}
+//		return m_channel;
+//	}
 
-         // must connect the to the proxy consumer or events would never be
-         // sent anywhere.
-         m_corbaRef = OSPushSupplierHelper.narrow(myOS);
+	/**
+	 * @deprecated as of ACS 6.0.1. Use {@link #getNotificationChannel()} instead.
+	 */
+	protected EventChannel getNotificationChannel(String channelName) throws AcsJException {
+		if (!channelName.equals(m_channelName)) {
+			m_logger.warning("getNotificationChannel called for channel '" + channelName + "' while this SimpleSupplier was created for " + m_channelName);
+		}	
+		return m_channel;
+	}
+	
+	
+	protected void destroyNotificationChannel() throws AcsJException {
+		m_helper.destroyNotificationChannel(m_channelName, getChannelKind(), m_channel);
+	}
 
-         org.omg.CosNotifyComm.StructuredPushSupplier mySps = null;
-         mySps = org.omg.CosNotifyComm.StructuredPushSupplierHelper.narrow(m_corbaRef);
-         
-         m_proxyConsumer.connect_structured_push_supplier(mySps);
-      }
-      catch (AcsJContainerServicesEx e) {
-         // convert it to an ACS Error System Exception
-         throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
-      }
-      catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
-         // Think there is virtually no chance of this every happening but...
-         throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
-      }
+	
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * This method returns a constant character pointer to the "kind" of
+	 * notification channel as registered with the naming service (i.e., the kind
+	 * field of a CosNaming::Name) which is normally equivalent to
+	 * acscommon::NC_KIND. The sole reason this method is provided is to
+	 * accomodate subclasses which subscribe/publish non-ICD style events (ACS
+	 * archiving channel for example). In that case, the developer would override
+	 * this method.
+	 * 
+	 * @return string
+	 */
+	protected String getChannelKind() {
+		return alma.acscommon.NC_KIND.value;
+	}
 
-      //set integration logs
-      ChannelProperties channelProps = m_helper.getChannelProperties();
-      m_integrationLogs = channelProps.getIntegrationLogs(m_channelName);
-   }
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * This method returns a constant character pointer to the notification
+	 * channel domain which is normally equivalent to acscommon::ALMADOMAIN. The
+	 * sole reason this method is provided is to accomodate subclasses which
+	 * subscribe/publish non-ICD style events (ACS archiving channel for
+	 * example).In that case, the developer would override this method.
+	 * 
+	 * @return string
+	 */
+	protected String getChannelDomain() {
+		return alma.acscommon.ALMADOMAIN.value;
+	}
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * User code <b>call this method when the Supplier is no longer useful</b>.
-    * Failure to do so can result in remote memory leaks. User should not call
-    * this method multiple times either. Once disconnect has been called, all of
-    * SimpleSupplier's methods will cease to function properly.
-    */
-   public void disconnect() {
-      try {
-         // handle notification channel cleanup
-         m_proxyConsumer.disconnect_structured_push_consumer();
-         m_supplierAdmin.destroy();
+	/**
+	 * This method returns a the notify service name as registered with the CORBA
+	 * Naming Service. This is normally equivalent to acscommon::ALMADOMAIN. The
+	 * sole reason this method is provided is to accomodate subclasses which
+	 * subscribe/publish non-ICD style events (ACS archiving channel for
+	 * example).In that case, the developer would override this method.
+	 * 
+	 * @return string
+	 */
+	protected String getNotificationFactoryName() {
+		return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+	}
 
-         // clean-up CORBA stuff
-         getHelper().getContainerServices().deactivateOffShoot(this);
-         m_corbaRef = null;
-         m_proxyConsumer = null;
-         m_supplierAdmin = null;
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * Gets a reference to the event channel specified during construction.
+	 * 
+	 * @return Reference to the event channel.
+	 * @throws AcsJException
+	 *            Standard ACS Java exception.
+	 */
+	protected EventChannel getNotificationChannel() throws AcsJException {
+		return m_channel;
+	}
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * This method gets a reference to the event channel. If it is not already
-    * registered with the naming service, it is created.
-    * 
-    * @return Reference to the event channel specified by channelName.
-    * @param channelName
-    *           Name of the event channel registered with the CORBA Naming
-    *           Service
-    * @throws AcsJException
-    *            Standard ACS Java exception.
-    */
-   protected EventChannel getNotificationChannel(String channelName)
-         throws AcsJException {
-      if (m_channel == null) {
-         m_channel = getHelper().getNotificationChannel(channelName,
-               getChannelKind(), getNotificationFactoryName());
-      }
-      return m_channel;
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * This method gets called by the CORBA framework to notify us that the subscriber 
+	 * situation has changed. By default we ignore this information.
+	 * See 2.6.3 of Notification Service, v1.1
+	 * <p>
+	 * Override this method so your "smart" Supplier subclass can publish (or not
+	 * publish) events based on Consumer demands. Not very useful when there are
+	 * more than one Supplier instances for a given channel.
+	 * TODO (HSO): not clear what this comment means. Why should not multiple suppliers adjust the events they publish 
+	 *             to what the consumers want?
+	 *             Maybe the concern was meant for multiple consumers that have different needs? 
+	 *             See also method obtain_subscription_types.
+	 * 
+	 * This method becomes extremely useful if we could assume there is only one
+	 * supplier per channel. That is, the API could intelligently publish events
+	 * to a given domain/type only when there are consumers subscribed. However,
+	 * there are problems when there are multiple supplier instances for a
+	 * channel.
+	 * 
+	 * <b>Do not call it from your code!</b>
+	 * 
+	 * @param eventType
+	 *           Added subscription array.
+	 * @param eventType1
+	 *           Removed subscription array.
+	 * @throws InvalidEventType
+	 *            Throw this exception when a consumer subscribes (or
+	 *            unsubscribes) to a domain/type that does not exist.
+	 */
+	public void subscription_change(EventType[] eventType, EventType[] eventType1) throws InvalidEventType {
+		// This seems to have confused developers in the past so now just silently return.
+		// @TODO (HSO): corba spec suggests to raise the NO_IMPLEMENT exception
+		return;
+	}
 
-   }
+	/**
+	 * Override this method to do something when a consumer unsubscribes from the
+	 * channel. <b>Do not call it from your code!</b>
+	 * <p>
+	 * @TODO (HSO): The CORBA NC spec (3.3.10.1) says:
+	 *   The disconnect_structured_push_supplier operation is invoked to terminate a connection between the target StructuredPushSupplier 
+	 *   and its associated consumer. This operation takes no input parameters and returns no values. 
+	 *   The result of this operation is that the target StructuredPushSupplier will release all resources it had
+	 *   allocated to support the connection, and dispose its own object reference.
+	 * Is it really true what the log message says, that one of many consumers has disconnected, and we should continue for our other consumers?
+	 * It may be so, given that the life cycle of a SimpleSupplier seemss unaffected of consumers in the ACS NC design. 
+	 */
+	public void disconnect_structured_push_supplier() {
+		String msg = "A Consumer has disconnected from the '" + m_channelName + "' channel";
+		m_logger.info(msg);
+	}
 
-   protected void destroyNotificationChannel() throws AcsJException {
-      getHelper().destroyNotificationChannel(m_channelName, getChannelKind(),
-            m_channel);
-   }
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * Method which publishes an entire CORBA StructuredEvent without making any
+	 * modifications to it.
+	 * 
+	 * @param se A complete structured event
+	 * @throws AcsJException if the event cannot be published for some reason or another.
+	 */
+	protected void publishCORBAEvent(StructuredEvent se) throws AcsJException {
+		try {
+			// Publish directly the given event (see CORBA NC spec 3.3.7.1)
+			m_proxyConsumer.push_structured_event(se);
+		} catch (org.omg.CosEventComm.Disconnected e) {
+			// declared CORBA ex
+			String reason = "Failed to publish event on channel '" + m_channelName + "': org.omg.CosEventComm.Disconnected was thrown.";
+			AcsJCORBAProblemEx jex = new AcsJCORBAProblemEx();
+			jex.setInfo(reason);
+			throw jex;
+		} catch (org.omg.CORBA.SystemException ex) {
+			// CORBA runtime ex (with minor code)
+			String reason = "Failed to publish event on channel '" + m_channelName + "': " + ex.getClass().getName() + " was thrown.";
+			AcsJCORBAProblemEx jex = new AcsJCORBAProblemEx(ex);
+			jex.setMinor(ex.minor);
+			jex.setInfo(reason);
+			throw jex;
+		} catch (Throwable thr) {
+			// other ex
+			String reason = "Failed to publish event on channel '" + m_channelName + "'.";
+			AcsJUnexpectedExceptionEx jex = new AcsJUnexpectedExceptionEx(reason, thr);
+			throw jex;
+		}
+	}
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * This method returns a constant character pointer to the "kind" of
-    * notification channel as registered with the naming service (i.e., the kind
-    * field of a CosNaming::Name) which is normally equivalent to
-    * acscommon::NC_KIND. The sole reason this method is provided is to
-    * accomodate subclasses which subscribe/publish non-ICD style events (ACS
-    * archiving channel for example).In that case, the developer would override
-    * this method.
-    * 
-    * @return string
-    */
-   protected String getChannelKind() {
-      return alma.acscommon.NC_KIND.value;
-   }
+	/**
+	 * Method used to create a pre-filled CORBA event.
+	 * 
+	 * @param typeName
+	 *           The structured event's type_name.
+	 * @param eventName
+	 *           Name of the event.
+	 * @return A pre-filled CORBA event.
+	 */
+	protected StructuredEvent getCORBAEvent(String typeName, String eventName) {
+		// return value
+		StructuredEvent event = new StructuredEvent();
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * This method returns a constant character pointer to the notification
-    * channel domain which is normally equivalent to acscommon::ALMADOMAIN. The
-    * sole reason this method is provided is to accomodate subclasses which
-    * subscribe/publish non-ICD style events (ACS archiving channel for
-    * example).In that case, the developer would override this method.
-    * 
-    * @return string
-    */
-   protected String getChannelDomain() {
-      return alma.acscommon.ALMADOMAIN.value;
-   }
+		// event.header.fixed_header.event_type
+		EventType event_type = new EventType(getChannelDomain(), typeName);
 
-   /**
-    * This method returns a the notify service name as registered with the CORBA
-    * Naming Service. This is normally equivalent to acscommon::ALMADOMAIN. The
-    * sole reason this method is provided is to accomodate subclasses which
-    * subscribe/publish non-ICD style events (ACS archiving channel for
-    * example).In that case, the developer would override this method.
-    * 
-    * @return string
-    */
-   protected String getNotificationFactoryName() {
-      return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
-   }
+		//
+		FixedEventHeader fixed_header = new FixedEventHeader(event_type, eventName);
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * Gets a reference to the event channel specified during construction.
-    * 
-    * @return Reference to the event channel.
-    * @throws AcsJException
-    *            Standard ACS Java exception.
-    */
-   protected EventChannel getNotificationChannel() throws AcsJException {
-      if (m_channel == null) {
-         String reason = "Null reference obtained for the Notification Channel!";
-         throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
-      }
-      return m_channel;
-   }
+		// event.header.variable_header
+		Property[] variable_header = new Property[0];
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * Override this method so a "smart" Supplier subclass can publish (or not
-    * pubish) events based on Consumer demands. Not very useful when there are
-    * more than one Supplier instances for a given channel.
-    * 
-    * This method becomes extremely useful if we could assume there is only one
-    * supplier per channel. That is, the API could intelligently publish events
-    * to a given domain/type only when there are consumers subscribed. However,
-    * there are problems when there are multiple supplier instances for a
-    * channel.
-    * 
-    * <b>Do not call it from your code!</b>
-    * 
-    * @param eventType
-    *           Added subscription array.
-    * @param eventType1
-    *           Removed subscription array.
-    * @throws InvalidEventType
-    *            Throw this exception when a consumer subscribes (or
-    *            unsubscribes) to a domain/type that does not exist.
-    */
-   public void subscription_change(EventType[] eventType, EventType[] eventType1)
-         throws InvalidEventType {
-      // This seems to have confused developers in the past so now just silently
-      // return.
-      return;
-   }
+		// event.header
+		event.header = new EventHeader(fixed_header, variable_header);
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * Override this method to do something when a consumer unsubscribes from the
-    * channel. <b>Do not call it from your code!</b>
-    */
-   public void disconnect_structured_push_supplier() {
-      String msg = "A Consumer has disconnected from the '" + m_channelName
-            + "' channel";
-      m_logger.info(msg);
-   }
+		return event;
+	}
 
-   /**
-    * Method which publishes an entire CORBA StructuredEvent without making any
-    * modifications to it.
-    * 
-    * @param se
-    *           A complete structured event
-    * @throws AcsJException
-    *            if the event cannot be published for some reason or another.
-    */
-   protected void publishCORBAEvent(StructuredEvent se) throws AcsJException {
-      try {
-         m_proxyConsumer.push_structured_event(se);
-      }
-      catch (org.omg.CosEventComm.Disconnected e) {
-         String reason = "Eevent for the   '" + m_channelName
-               + "' channel cannot be published: ";
-         throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason
-               + e.getMessage());
-      }
-   }
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * Takes a generic Java object and tries to pack it into a CORBA Any and
+	 * publish it to the event channel. This will fail if the parameter is not
+	 * CORBA-generated from a user-defined IDL struct. In simple terms, trying to
+	 * publish native Java types is impossible because they have no CORBA mapping
+	 * to say Python or C++ types.
+	 * 
+	 * @param customStruct
+	 *           An instance of the IDL struct (Java class) to be published.
+	 * @throws AcsJException
+	 *            There are an enormous amount of possibilities pertaining to why
+	 *            an AcsJException would be thrown by publishEvent.
+	 */
+	public void publishEvent(Object customStruct) throws AcsJException {
+		// The Java class name without package becomes the name of the "event type".
+		String typeName = customStruct.getClass().getName().substring(
+				customStruct.getClass().getName().lastIndexOf('.') + 1);
 
-   /**
-    * Method used to return a pre-filled CORBA event.
-    * 
-    * @param typeName
-    *           The structured event's type_name.
-    * @param eventName
-    *           Name of the event.
-    * @return A pre-filled CORBA event.
-    * 
-    */
-   protected StructuredEvent getCORBAEvent(String typeName, String eventName) {
-      // return value
-      StructuredEvent event = new StructuredEvent();
+		// event to send
+		StructuredEvent event = getCORBAEvent(typeName, "");
 
-      // event.header.fixed_header.event_type
-      EventType event_type = new EventType(getChannelDomain(), typeName);
+		// Store the info for Exec/I&T into the event.
+		// create the any
+		event.remainder_of_body = m_services.getAdvancedContainerServices().getAny();
+		// get the useful data which includes the component's name, timestamp, and event count
+		EventDescription descrip = new EventDescription(m_services.getName(),
+				alma.acs.util.UTCUtility.utcJavaToOmg(System.currentTimeMillis()), m_count);
+		// store the IDL struct into the structured event
+		EventDescriptionHelper.insert(event.remainder_of_body, descrip);
 
-      //
-      FixedEventHeader fixed_header = new FixedEventHeader(event_type,
-            eventName);
+		// preallocate one name/value pair
+		event.filterable_data = new Property[1];
+		event.filterable_data[0] = new Property(
+				alma.acscommon.DEFAULTDATANAME.value, 
+				m_anyAide.complexObjectToCorbaAny(customStruct) );
 
-      // event.header.variable_header
-      Property[] variable_header = new Property[0];
+		if (isTraceEventsEnabled) {
+			m_logger.log(Level.INFO, "Channel:" + m_channelName + ", Event Type:" + typeName);
+		}
 
-      // event.header
-      event.header = new EventHeader(fixed_header, variable_header);
+		publishCORBAEvent(event);
+		m_count++;
+	}
 
-      return event;
-   }
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * Returns a reference to the Helper instance. Not too useful outside this
+	 * class.
+	 * 
+	 * @return Returns a reference to the Helper instance.
+	 * @deprecated as of ACS 6.0.1
+	 */
+	public alma.acs.nc.Helper getHelper() {
+		return m_helper;
+	}
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * Takes a generic Java object and tries to pack it into a CORBA Any and
-    * publish it to the event channel. This will fail if the parameter is not
-    * CORBA-generated from a user-defined IDL struct. In simple terms, trying to
-    * publish native Java types is impossible because they have no CORBA mapping
-    * to say Python or C++ types.
-    * 
-    * @param customStruct
-    *           An instance of the IDL struct (Java class) to be published.
-    * @throws AcsJException
-    *            There are an enormous amount of possibilities pertaining to why
-    *            an AcsJException would be thrown by publishEvent.
-    */
-   public void publishEvent(java.lang.Object customStruct) throws AcsJException {
-      // This is the name of the "event type".
-      String typeName = customStruct.getClass().getName().substring(
-            customStruct.getClass().getName().lastIndexOf('.') + 1);
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * Provides channel properties. 
+	 */
+	protected final Helper m_helper;
 
-      // event to send
-      StructuredEvent event = getCORBAEvent(typeName, "");
+	/** The event channel has exactly one name registered in the naming service. */
+	protected final String m_channelName;
 
-      // Store the info for Exec/I&T into the event.
-      // create the any
-      event.remainder_of_body = m_services.getAdvancedContainerServices()
-            .getAny();
-      // get the useful data which includes the component's name, timestamp,
-      // and event count
-      EventDescription descrip = new EventDescription(getHelper()
-            .getContainerServices().getName(), alma.acs.util.UTCUtility
-            .utcJavaToOmg(System.currentTimeMillis()), m_count);
-      // store the IDL struct into the structured event
-      EventDescriptionHelper.insert(event.remainder_of_body, descrip);
+	/**
+	 * Supplier Admin object is responsible for creating & managing proxy
+	 * consumers.
+	 */
+	protected SupplierAdmin m_supplierAdmin;
 
-      // preallocate one name/value pair
-      event.filterable_data = new Property[1];
-      event.filterable_data[0] = new Property(
-            alma.acscommon.DEFAULTDATANAME.value, m_anyAide
-                  .complexObjectToCorbaAny(customStruct));
+	/**
+	 * The proxy consumer object used by supplier to push events onto the
+	 * channel.
+	 */
+	protected StructuredProxyPushConsumer m_proxyConsumer;
 
-      if (m_integrationLogs == true) {
-         m_logger.log(Level.INFO, "Channel:" + m_channelName + ", Event Type:"
-               + typeName);
-      }
+	/**
+	 * The total number of successful events published by this particular supplier.
+	 * The current count is attached to the EventDescription that gets sent along as additional data (remainder_of_body). 
+	 */
+	protected volatile long m_count = 0;
 
-      publishCORBAEvent(event);
-      m_count++;
-   }
+//	/** CORBA reference to ourself (being visible as an OffShoot) */
+//	protected OSPushSupplier m_corbaRef;
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * Returns a reference to the Helper instance. Not too useful outside this
-    * class.
-    * 
-    * @return Returns a reference to the Helper instance.
-    */
-   public alma.acs.nc.Helper getHelper() {
-      return m_helper;
-   }
+	/** Channel we'll be sending events too*/
+	protected final EventChannel m_channel;
 
-   // //////////////////////////////////////////////////////////////////////////
-   /**
-    * Provides access to the naming service and a POA to activate this
-    * Supplier's stub. Supplier subclasses can use it to create additional
-    * Any's.
-    */
-   protected Helper                      m_helper          = null;
+	/** Standard logger*/
+	protected final Logger m_logger;
 
-   /** The event channel has exactly one name registered in the naming service. */
-   protected String                      m_channelName     = null;
+	/** To access the ORB among other things*/
+	protected final ContainerServices m_services;
 
-   /**
-    * Supplier Admin object is responsible for creating & managing proxy
-    * consumers.
-    */
-   protected SupplierAdmin               m_supplierAdmin   = null;
+	/** Helper class used to manipulate CORBA anys */
+	protected final AnyAide m_anyAide;
 
-   /**
-    * The proxy consumer object used by supplier to push events onto the
-    * channel.
-    */
-   protected StructuredProxyPushConsumer m_proxyConsumer   = null;
+	/** Whether sending of events should be logged */
+	private final boolean isTraceEventsEnabled;
 
-   /**
-    * The total number of successful events published by this particular
-    * supplier.
-    */
-   protected long                        m_count           = 0;
-
-   /** CORBA reference to ourself */
-   protected OSPushSupplier              m_corbaRef        = null;
-
-   /** Channel we'll be sending events too*/
-   protected EventChannel                m_channel         = null;
-
-   /** Standard logger*/
-   protected Logger                      m_logger          = null;
-
-   /** To access the ORB among other things*/
-   protected ContainerServices           m_services        = null;
-
-   /** Helper class used to manipulate CORBA anys */
-   protected AnyAide                     m_anyAide         = null;
-
-   /** Whether integration logs occur or not*/
-   private boolean                       m_integrationLogs = false;
-
-   // //////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////
 }
