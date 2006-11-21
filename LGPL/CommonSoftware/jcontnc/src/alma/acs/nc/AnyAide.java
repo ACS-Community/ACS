@@ -23,20 +23,23 @@
  */
 package alma.acs.nc;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.Any;
-
-import alma.acs.container.ContainerServices;
-import alma.acs.exceptions.AcsJException;
 
 import alma.ACS.doubleSeqHelper;
 import alma.ACS.floatSeqHelper;
 import alma.ACS.longSeqHelper;
 import alma.ACS.stringSeqHelper;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
+import alma.acs.container.ContainerServices;
+import alma.acs.exceptions.AcsJException;
 
 /**
  * Intended to be used as an aide to developers working with CORBA anys. If
@@ -48,6 +51,7 @@ import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
  * @version $Id$
  */
 class AnyAide {
+	
    /**
     * Standard constructor.
     * 
@@ -62,21 +66,35 @@ class AnyAide {
       m_logger = cs.getLogger();
    }
 
+   
    /**
     * Converts an array of simple type instances to a CORBA any.
     * 
     * @param objs
-    *           An array a CORBA simple types supported by BACI. For example,
+    *           An array of CORBA simple types supported by BACI. For example,
     *           double[], string[], etc.
     * @return A CORBA any with the array of simple types.
+    * 
     * @throws AcsJException
     *            Thrown when the array type is not supported.
+    * @deprecated use one of the type-safe methods such as {@link #doubleArrayToCorbaAny(double[])}. This method will be removed.
     */
    public Any arrayToCorbaAny(Object objs) throws AcsJException {
+	   return internalArrayToCorbaAny(objs);
+   }
+   
+   /**
+    * Moved here from the now-deprecated method arrayToCorbaAny.
+    * @Todo (HSO) refactor and spread code over type-safe methods.
+    */
+   protected Any internalArrayToCorbaAny(Object objs) throws AcsJException {
       Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
 
       // class object for the array
       Class cl = objs.getClass();
+      if (!cl.isArray()) {
+    	  throw new AcsJJavaAnyEx("Object of type " + cl.getName() + " is not an array.");
+      }
       // class object for the array elements
       Class objClass = cl.getComponentType();
       int length = Array.getLength(objs);
@@ -113,353 +131,394 @@ class AnyAide {
       return retVal;
    }
 
+   public Any doubleArrayToCorbaAny(double[] objs) throws AcsJException {
+	   return internalArrayToCorbaAny(objs); 
+   }
+
+   public Any floatArrayToCorbaAny(float[] objs) throws AcsJException {
+	   return internalArrayToCorbaAny(objs); 
+   }
+
+   public Any intArrayToCorbaAny(int[] objs) throws AcsJException {
+	   return internalArrayToCorbaAny(objs); 
+   }
+
+   public Any stringArrayToCorbaAny(String[] objs) throws AcsJException {
+	   return internalArrayToCorbaAny(objs); 
+   }
+
+   
    /**
-    * Converts a generic Java object to a CORBA. May fail.
-    * 
-    * @param obj
-    *           Object to be converted to a CORBA any
-    * @return A CORBA any with obj embedded within it.
-    * @throws AcsJException
-    *            Thrown if there's some problem converting the object to an any.
-    *            TODO: make sure this works with enumerations.
-    */
+	 * Converts a generic Java object to a CORBA. May fail.
+	 * 
+	 * @param obj
+	 *            Object to be converted to a CORBA any
+	 * @return A CORBA any with obj embedded within it.
+	 * @throws AcsJException
+	 *             Thrown if there's some problem converting the object to an
+	 *             any. TODO: make sure this works with enumerations.
+	 */
    public Any objectToCorbaAny(Object obj) throws AcsJException {
-      if (obj.getClass().isArray() == true) {
-         return arrayToCorbaAny(obj);
-      }
+		
+	   if (obj != null && obj.getClass().isArray()) {
+			return internalArrayToCorbaAny(obj);
+		}
 
-      Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
+		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
 
-      // null case
-      if (obj == null) {
-         retVal.insert_Object(null);
-      }
-      // check against string
-      else if (String.class.isInstance(obj) == true) {
-         retVal.insert_string((String) obj);
-      }
-      // check against double
-      else if (Double.class.isInstance(obj) == true) {
-         double value = ((Double) obj).doubleValue();
-         retVal.insert_double(value);
-      }
-      // check against long - CORBA long long and unsigned long long
-      else if (Long.class.isInstance(obj) == true) {
-         long value = ((Long) obj).longValue();
-         retVal.insert_longlong(value);
-      }
-      // check against integer - CORBA long or unsigned long
-      else if (Integer.class.isInstance(obj) == true) {
-         int value = ((Integer) obj).intValue();
-         retVal.insert_long(value);
-      }
-      // check against float
-      else if (Float.class.isInstance(obj) == true) {
-         float value = ((Float) obj).floatValue();
-         retVal.insert_float(value);
-      }
-      else {
-         // as a last ditch attempt, we assume the object
-         // is some sort of complex IDL struct/union/etc
-         // and that this method will work.
-         return complexObjectToCorbaAny(obj);
-      }
-      return retVal;
-   }
+		// null case
+		if (obj == null) {
+			retVal.insert_Object(null);
+		}
+		// check against string
+		else if (obj instanceof String) {
+			retVal.insert_string((String) obj);
+		}
+		// check against double
+		else if (obj instanceof Double) {
+			double value = ((Double) obj).doubleValue();
+			retVal.insert_double(value);
+		}
+		// check against long - CORBA long long and unsigned long long
+		else if (obj instanceof Long) {
+			long value = ((Long) obj).longValue();
+			retVal.insert_longlong(value);
+		}
+		// check against integer - CORBA long or unsigned long
+		else if (obj instanceof Integer) {
+			int value = ((Integer) obj).intValue();
+			retVal.insert_long(value);
+		}
+		// check against float
+		else if (obj instanceof Float) {
+			float value = ((Float) obj).floatValue();
+			retVal.insert_float(value);
+		} 
+		else {
+			// as a last ditch attempt, we assume the object
+			// is some sort of complex IDL struct/union/etc
+			// and that this method will work.
+			return complexObjectToCorbaAny(obj);
+		}
+		return retVal;
+	}
 
+	
    /**
-    * Converts a complex CORBA-based object to a CORBA any.
-    * 
-    * @param obj
-    *           A complex CORBA-based object such as a user-defined IDL struct.
-    * @return A CORBA any containing obj.
-    * @throws AcsJException
-    *            Thrown if any problem occurs with the conversion.
-    */
-   public Any complexObjectToCorbaAny(Object obj) throws AcsJException {
-      Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
+	 * Converts a complex CORBA-based object to a CORBA any.
+	 * 
+	 * @param obj
+	 *            A complex CORBA-based object such as a user-defined IDL struct.
+	 * @return A CORBA any containing obj.
+	 * @throws AcsJException
+	 *             if any problem occurs with the conversion.
+	 */
+	public Any complexObjectToCorbaAny(Object obj) throws AcsJException {
 
-      // ------
-      Class structHelperClass = null;
+		if (obj == null) {
+			throw new AcsJBadParameterEx("Method arg 'obj' was null");
+		}
+		
+		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
 
-      // first double-check that the Java Object they are attempting to
-      // publish is actually a CORBA type.
-      try {
-         // This is the CORBA helper class which is capable of
-         // inserting/extracting
-         // data from CORBA Anys.
-         structHelperClass = Class.forName(obj.getClass().getName() + "Helper");
-      }
-      catch (Exception e) {
-         m_logger.warning(e.getMessage());
-         // If what's above fails...then the developer has specified a native
-         // Java
-         // class which has nothing to do with CORBA.
-         String msg = "The non-CORBA class '" + obj.getClass().getName()
-               + "' cannot be converted to a CORBA any.";
-         throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotFoundEx(msg);
-      }
+		// ------
+		Class structHelperClass = null;
 
-      try {
-         // get at the static insert method defined for all IDL structures
-         // and sequences.
-         Method insert = structHelperClass.getMethod("insert", new Class[] {
-               org.omg.CORBA.Any.class, obj.getClass() });
+		// first double-check that the Java Object they are attempting to
+		// actually looks like a CORBA type.
+		try {
+			// This is the CORBA helper class which is capable of inserting/extracting data from CORBA Anys.
+			structHelperClass = Class.forName(obj.getClass().getName() + "Helper");
+		} 
+		catch (Exception e) {
+			// If what's above fails...then the developer has specified a native Java
+			// class which has nothing to do with CORBA.
+			String msg = "The non-CORBA class '" + obj.getClass().getName()
+					+ "' cannot be converted to a CORBA Any.";
+			m_logger.warning(msg);
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotFoundEx(msg);
+		}
 
-         // arguments to insert method are just the newly created Any and the
-         // IDL struct instance passed to this method.
-         Object[] args = { retVal, obj };
-         insert.invoke(null, args);
+		try {
+			// get at the static insert method defined for all IDL structures
+			// and sequences.
+			Method insert = structHelperClass.getMethod("insert", new Class[] { Any.class, obj.getClass() });
 
-         return retVal;
-      }
-      catch (java.lang.NoSuchMethodException e) {
-         m_logger.warning(e.getMessage());
-         String reason = "The '" + structHelperClass
-               + "' object is incompatiable with CORBA: ";
-         throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason
-               + e.getMessage());
-      }
-      catch (java.lang.IllegalAccessException e) {
-         m_logger.warning(e.getMessage());
-         String reason = "The '" + structHelperClass
-               + "' object is incompatiable with CORBA: ";
-         throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason
-               + e.getMessage());
-      }
-      catch (java.lang.reflect.InvocationTargetException e) {
-         m_logger.warning(e.getMessage());
-         String reason = "The '" + structHelperClass
-               + "' object is incompatiable with CORBA: ";
-         throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason
-               + e.getMessage());
-      }
-   }
+			// arguments to insert method are just the newly created Any and the
+			// IDL struct instance passed to this method.
+			Object[] args = { retVal, obj };
+			insert.invoke(null, args);
 
+			return retVal;
+		} 
+		catch (NoSuchMethodException e) {
+			// we got a Helper class, but it seems to be not the CORBA-generated kind
+			String reason = "Class '" + structHelperClass.getName() + "' associated with the given object of type '" 
+				+ obj.getClass().getName() + "' is incompatiable with CORBA: ";
+			throw new AcsJBadParameterEx(reason + e.getMessage());
+		} 
+		catch (java.lang.reflect.InvocationTargetException e) {
+			Throwable realEx = e.getCause();			
+			String reason = "Failed to insert the given CORBA object into a CORBA Any: the helper class insert method threw an exception.";
+			m_logger.log(Level.FINE, reason, realEx);
+			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason, realEx); // todo: NC-specific exception type
+		}
+		catch (Throwable thr) {
+			String reason = "Failed to insert the given CORBA object into a CORBA Any.";
+			m_logger.log(Level.FINE, reason, thr);
+			throw new AcsJUnexpectedExceptionEx(reason, thr);
+		}
+	}
+
+	
    /**
-    * Method which attempts to (and under normal circumstances should succeed)
-    * convert a CORBA any object to the corresponding Java object. For simple
-    * CORBA types such as long, this method will extract the long and embed it
-    * within a java.lang.Long object. In the event of failure, a null object is
-    * returned.
-    * 
-    * @param any
-    *           A CORBA any containing some sort of CORBA object
-    * @return the CORBA any converted into the corresponding Java type.
-    */
-   public Object corbaAnyToObject(Any any) {
-      // initialize the return value
-      Object returnValue = null;
+	 * Method which attempts to (and under normal circumstances should succeed)
+	 * convert a CORBA any object to the corresponding Java object. For simple
+	 * CORBA types such as long, this method will extract the long and embed it
+	 * within a java.lang.Long object. In the event of failure, a null object is
+	 * returned.
+	 * 
+	 * @param any
+	 *            A CORBA any containing some sort of CORBA object
+	 * @return the CORBA any converted into the corresponding Java type, or <code>null</code> if it failed.
+	 */
+	public Object corbaAnyToObject(Any any) {
 
-      // get the CORBA typecode enum.
-      // we need this to deal with the simple types
-      org.omg.CORBA.TCKind anyKind = any.type().kind();
-      String anyType = any.type().toString();
+		// @TODO check any==null
+		
+		// initialize the return value
+		Object returnValue = null;
 
-      // within this switch block, returnValue is set
-      // to be some real (native) Java object rather
-      // than a CORBA any type. at this time, ACS only
-      // support "BACI Value types" defined within
-      // $ACSROOT/include/baciValue.h (the "Type" enum).
-      switch (anyKind.value())
-      {
-      case org.omg.CORBA.TCKind._tk_null:
-         // this case is quite simple. A null
-         // CORBA reference is null in Java as
-         // well
-         returnValue = null;
-         break;
+		// get the CORBA typecode enum.
+		// we need this to deal with the simple types
+		org.omg.CORBA.TCKind anyKind = any.type().kind();
+		String anyType = any.type().toString();
 
-      case org.omg.CORBA.TCKind._tk_string:
-         // simple type in which we have an
-         // extract method
-         returnValue = any.extract_string();
-         break;
+		// within this switch block, returnValue is set
+		// to be some real (native) Java object rather
+		// than a CORBA any type. at this time, ACS only
+		// support "BACI Value types" defined within
+		// $ACSROOT/include/baciValue.h (the "Type" enum).
+		switch (anyKind.value()) {
+		case org.omg.CORBA.TCKind._tk_null:
+			// this case is quite simple. A null
+			// CORBA reference is null in Java as
+			// well
+			returnValue = null;
+			break;
 
-      case org.omg.CORBA.TCKind._tk_double:
-         // simple type in which we have an
-         // extract method
-         returnValue = new Double(any.extract_double());
-         break;
+		case org.omg.CORBA.TCKind._tk_string:
+			// simple type in which we have an
+			// extract method
+			returnValue = any.extract_string();
+			break;
 
-      case org.omg.CORBA.TCKind._tk_long:
-         // simple type in which we have an
-         // extract method
-         returnValue = new Integer(any.extract_long());
-         break;
+		case org.omg.CORBA.TCKind._tk_double:
+			// simple type in which we have an
+			// extract method
+			returnValue = new Double(any.extract_double());
+			break;
 
-      case org.omg.CORBA.TCKind._tk_alias:
-         if (anyType.compareTo("alma::ACS::Pattern") == 0) {
-            // simple type in which we have an
-            // extract method
-            returnValue = new Integer(any.extract_ulong());
-         }
-         else if (anyType.compareTo("sequence <double>") == 0) {
-            returnValue = doubleSeqHelper.extract(any);
-         }
-         // IDL://alma:ACS:longSeq:1.0
-         else if (anyType.compareTo("sequence <long>") == 0) {
-            returnValue = alma.ACS.longSeqHelper.extract(any);
-         }
-         // IDL://alma:ACS:strSeq:1.0
-         else if (anyType.compareTo("sequence <string>") == 0) {
-            returnValue = alma.ACS.stringSeqHelper.extract(any);
-         }
-         // IDL://alma:ACS:floatSeq:1.0
-         else if (anyType.compareTo("sequence <float>") == 0) {
-            returnValue = alma.ACS.floatSeqHelper.extract(any);
-         }
-         else {
-            m_logger.severe("Alias unexpected:" + anyType);
-         }
-         break;
+		case org.omg.CORBA.TCKind._tk_long:
+			// simple type in which we have an
+			// extract method
+			returnValue = new Integer(any.extract_long());
+			break;
 
-      case org.omg.CORBA.TCKind._tk_ulong:
-         // simple type in which we have an
-         // extract method
+		case org.omg.CORBA.TCKind._tk_alias:
+			if (anyType.compareTo("alma::ACS::Pattern") == 0) {
+				// simple type in which we have an
+				// extract method
+				returnValue = new Integer(any.extract_ulong());
+			} else if (anyType.compareTo("sequence <double>") == 0) {
+				returnValue = doubleSeqHelper.extract(any);
+			}
+			// IDL://alma:ACS:longSeq:1.0
+			else if (anyType.compareTo("sequence <long>") == 0) {
+				returnValue = alma.ACS.longSeqHelper.extract(any);
+			}
+			// IDL://alma:ACS:strSeq:1.0
+			else if (anyType.compareTo("sequence <string>") == 0) {
+				returnValue = alma.ACS.stringSeqHelper.extract(any);
+			}
+			// IDL://alma:ACS:floatSeq:1.0
+			else if (anyType.compareTo("sequence <float>") == 0) {
+				returnValue = alma.ACS.floatSeqHelper.extract(any);
+			} else {
+				m_logger.severe("Alias unexpected:" + anyType);
+			}
+			break;
 
-         returnValue = new Integer(any.extract_ulong());
-         break;
+		case org.omg.CORBA.TCKind._tk_ulong:
+			// simple type in which we have an
+			// extract method
 
-      // handle all sequences here
-      case org.omg.CORBA.TCKind._tk_sequence:
-         // IDL://alma:ACS:doubleSeq:1.0
-         if (anyType.compareTo("sequence <double>") == 0) {
-            returnValue = doubleSeqHelper.extract(any);
-         }
-         // IDL://alma:ACS:longSeq:1.0
-         else if (anyType.compareTo("sequence <long>") == 0) {
-            returnValue = alma.ACS.longSeqHelper.extract(any);
-         }
-         // IDL://alma:ACS:strSeq:1.0
-         else if (anyType.compareTo("sequence <string>") == 0) {
-            returnValue = alma.ACS.stringSeqHelper.extract(any);
-         }
-         // IDL://alma:ACS:floatSeq:1.0
-         else if (anyType.compareTo("sequence <float>") == 0) {
-            returnValue = alma.ACS.floatSeqHelper.extract(any);
-         }
-         // pretty severe situation if we cannot find
-         // the sequence type using normal BACI value types
-         else {
-            m_logger.severe("Sequence unexpected:" + anyType);
-         }
-         break;
+			returnValue = new Integer(any.extract_ulong());
+			break;
 
-      case org.omg.CORBA.TCKind._tk_longlong:
-         // simple type in which we have an
-         // extract method
-         returnValue = new Long(any.extract_longlong());
-         break;
+		// handle all sequences here
+		case org.omg.CORBA.TCKind._tk_sequence:
+			// IDL://alma:ACS:doubleSeq:1.0
+			if (anyType.compareTo("sequence <double>") == 0) {
+				returnValue = doubleSeqHelper.extract(any);
+			}
+			// IDL://alma:ACS:longSeq:1.0
+			else if (anyType.compareTo("sequence <long>") == 0) {
+				returnValue = alma.ACS.longSeqHelper.extract(any);
+			}
+			// IDL://alma:ACS:strSeq:1.0
+			else if (anyType.compareTo("sequence <string>") == 0) {
+				returnValue = alma.ACS.stringSeqHelper.extract(any);
+			}
+			// IDL://alma:ACS:floatSeq:1.0
+			else if (anyType.compareTo("sequence <float>") == 0) {
+				returnValue = alma.ACS.floatSeqHelper.extract(any);
+			}
+			// pretty severe situation if we cannot find
+			// the sequence type using normal BACI value types
+			else {
+				m_logger.severe("Sequence unexpected:" + anyType);
+			}
+			break;
 
-      case org.omg.CORBA.TCKind._tk_ulonglong:
-         // simple type in which we have an
-         // extract method
-         returnValue = new Long(any.extract_ulonglong());
-         break;
+		case org.omg.CORBA.TCKind._tk_longlong:
+			// simple type in which we have an
+			// extract method
+			returnValue = new Long(any.extract_longlong());
+			break;
 
-      case org.omg.CORBA.TCKind._tk_float:
-         // simple type in which we have an
-         // extract method
-         returnValue = new Float(any.extract_float());
-         break;
+		case org.omg.CORBA.TCKind._tk_ulonglong:
+			// simple type in which we have an
+			// extract method
+			returnValue = new Long(any.extract_ulonglong());
+			break;
 
-      case org.omg.CORBA.TCKind._tk_enum:
-         // very special case. at the moment,
-         // we just support enumerations defined within
-         // the uppermost IDL module
-         try {
-            String localHelperName = anyType + "Helper";
-            localHelperName = localHelperName.replaceAll("::", ".");
-            Class localHelper = Class.forName(localHelperName);
+		case org.omg.CORBA.TCKind._tk_float:
+			// simple type in which we have an
+			// extract method
+			returnValue = new Float(any.extract_float());
+			break;
 
-            // Extract method of helper class
-            // Need access to this to convert an Any to the Java language type.
-            Method extract = localHelper.getMethod("extract",
-                  new Class[] { org.omg.CORBA.Any.class });
-            Object[] args = { any };
-            returnValue = extract.invoke(null, args);
-         }
-         catch (Exception ex) {
-            m_logger.severe("Failed to extract enum!");
-            ex.printStackTrace();
-         }
-         break;
+		case org.omg.CORBA.TCKind._tk_enum:
+			// very special case. at the moment,
+			// we just support enumerations defined within
+			// the uppermost IDL module
+			try {
+				String localHelperName = anyType + "Helper";
+				localHelperName = localHelperName.replaceAll("::", ".");
+				Class localHelper = Class.forName(localHelperName);
 
-      // pretty bad if we get this far!
-      default:
-         m_logger.severe("Could not extract the any:" + anyType);
-         break;
-      }
+				// Extract method of helper class
+				// Need access to this to convert an Any to the Java language
+				// type.
+				Method extract = localHelper.getMethod("extract", new Class[] { org.omg.CORBA.Any.class });
+				Object[] args = { any };
+				returnValue = extract.invoke(null, args);
+			} catch (Exception ex) {
+				m_logger.severe("Failed to extract enum!");
+				ex.printStackTrace();
+			}
+			break;
 
-      return returnValue;
-   }
+		// pretty bad if we get this far!
+		default:
+			m_logger.severe("Could not extract the any:" + anyType);
+			break;
+		}
 
+		return returnValue;
+	}
+
+	
    /**
-    * Method used to convert an any with a complex user-defined struct embedded
-    * within it to it's corresponding Java type.
-    * 
-    * @param any
-    *           CORBA Any containing a complex, user-defined object within it
-    * @return the CORBA Any parameter converted to an object of the
-    *         corresponding Java type.
-    */
-   public Object complexAnyToObject(org.omg.CORBA.Any any) {
-      // initialize the return value
-      Object retValue = null;
+	 * Method used to convert an any with a complex user-defined struct embedded
+	 * within it to it's corresponding Java type.
+	 * 
+	 * @param any
+	 *            CORBA Any containing a complex, user-defined object within it
+	 * @return the CORBA Any parameter converted to an object of the
+	 *         corresponding Java type.
+	 */
+	public Object complexAnyToObject(org.omg.CORBA.Any any) 
+	{
+		// initialize the return value
+		Object retValue = null;
 
-      try {
-         // Create the IDL struct helper class
-         // With Java Anys, we can extract the name of the underlying object
-         // instance and
-         // from that all that needs to be done is to concatenate "Helper" to
-         // get.
+		try {
+			// Create the IDL struct helper class
+			// With Java Anys, we can extract the name of the underlying object
+			// instance and from that all that needs to be done is to concatenate "Helper" 
+			// to get.
+			String localHelperName = null;
+			org.omg.CORBA.TCKind kind = any.type().kind();
+			if (kind.equals(org.omg.CORBA.TCKind.tk_sequence)) {
+				org.omg.CORBA.TypeCode sequenceType = any.type().content_type();
+				localHelperName = sequenceType + "SeqHelper";
+				// NOTE: need to understand why the package is wrong here, e.g.
+				//
+				// We determined fully qualified class name as:
+				//
+				// alma.acssamp.SampObj.SampDataBlockSeqHelper
+				//
+				// but it should be:
+				//
+				// alma.acssamp.SampObjPackage.SampDataBlockSeqHelper
+				//
+				// i.e. the package is incorrect!
+				
+				// see "IDL to Java LanguageMapping Specification" version 1.2: 1.17 Mapping for Certain Nested Types
+			} 
+			else {
+				localHelperName = any.type() + "Helper";
+			}
+			localHelperName = localHelperName.replaceAll("::", ".");
+			System.out.println("STEVE:::AnyAide::complexAnyToObject: the class name is - " + localHelperName);
+			Class localHelper = Class.forName(localHelperName);
 
-         String localHelperName = any.type() + "Helper";
-         localHelperName = localHelperName.replaceAll("::", ".");
-         Class localHelper = Class.forName(localHelperName);
+			// Extract method of helper class
+			// Need access to this to convert an Any to the Java language type.
+			Method extract = localHelper.getMethod("extract", new Class[] { org.omg.CORBA.Any.class });
+			Object[] args = { any };
 
-         // Extract method of helper class
-         // Need access to this to convert an Any to the Java language type.
-         Method extract = localHelper.getMethod("extract",
-               new Class[] { org.omg.CORBA.Any.class });
-         Object[] args = { any };
+			retValue = extract.invoke(null, args);
+		} 
+		catch (ClassNotFoundException e) {
+			// should never happen...
+			String msg = "Failed to process an any because the helper class does not exist: ";
+			msg = msg + e.getMessage();
+			m_logger.warning(msg);
+		} 
+		catch (NoSuchMethodException e) {
+			// should never happen...
+			String msg = "Failed to process an any because the helper class does not provide";
+			msg = msg + " the 'extract' method: ";
+			msg = msg + e.getMessage();
+			m_logger.warning(msg);
+		} 
+		catch (IllegalAccessException e) {
+			// should never happen...
+			String msg = "Failed to process an any because: ";
+			msg = msg + e.getMessage();
+			m_logger.warning(msg);
+		} catch (InvocationTargetException e) {
+			// should never happen...
+			String msg = "Failed to process an any because: ";
+			msg = msg + e.getMessage();
+			m_logger.warning(msg);
+		} catch (org.omg.CORBA.TypeCodePackage.BadKind e) {
+			// should never happen...
+			String msg = "Failed to process an any because: ";
+			msg = msg + e.getMessage();
+			m_logger.warning(msg);
+		}
 
-         retValue = extract.invoke(null, args);
-      }
-      catch (java.lang.ClassNotFoundException e) {
-         // should never happen...
-         String msg = "Failed to process an any because the helper class does not exist: ";
-         msg = msg + e.getMessage();
-         m_logger.warning(msg);
-      }
-      catch (java.lang.NoSuchMethodException e) {
-         // should never happen...
-         String msg = "Failed to process an any because the helper class does not provide";
-         msg = msg + " the 'extract' method: ";
-         msg = msg + e.getMessage();
-         m_logger.warning(msg);
-      }
-      catch (java.lang.IllegalAccessException e) {
-         // should never happen...
-         String msg = "Failed to process an any because: ";
-         msg = msg + e.getMessage();
-         m_logger.warning(msg);
-      }
-      catch (java.lang.reflect.InvocationTargetException e) {
-         // should never happen...
-         String msg = "Failed to process an any because: ";
-         msg = msg + e.getMessage();
-         m_logger.warning(msg);
-      }
-
-      return retValue;
-   }
+		return retValue;
+	}
 
    /** reference to the container services */
-   private ContainerServices m_containerServices = null;
+   private final ContainerServices m_containerServices;
 
    /** our own logger */
-   private Logger            m_logger            = null;
+   private final Logger m_logger;
 
 }
