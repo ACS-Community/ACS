@@ -6,12 +6,10 @@ from Acspy.Clients.SimpleClient import PySimpleClient
 import ACS
 import time, os
 
-import acsexmplMount_idl
-
 simpleClient = PySimpleClient()
 cdb_mount = simpleClient.getComponent("COMP99") 
 
-sleep(5)
+sleep(10)
 
 simpleClient.releaseComponent("COMP99")
 
