@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.17 2005/11/08 18:10:43 dfugate Exp $"
+# "@(#) $Id: TestList.lite,v 1.18 2006/11/21 15:07:31 hsommer Exp $"
 #
 # TestList
 #
@@ -28,7 +28,7 @@
 # --------  --------  ----------------------------------------------
 # david 2002-04-15 created
 SOURCE jcontncTATEnvironment
-PROLOGUE acsutilTATPrologue
+PROLOGUE acsutilTATPrologue -l
 
 #Test a Consumer connecting to a non-existent channel that is later created by the Supplier
 1  consumerSimpleSupplier  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15" "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.EventComponentTest" 
