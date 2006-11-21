@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplFridge.midl,v 1.1 2005/04/11 13:40:10 gchiozzi Exp $"
+* "@(#) $Id: acsexmplFridge.midl,v 1.2 2006/11/21 14:51:16 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -83,6 +83,8 @@ module FRIDGE
      */
     const string CHANNELNAME_FRIDGE = "fridge";
 
+
+
     /** @interface FridgeControl
      *  Interface FridgeControl is a semi-complicated interface in the fact 
      *  that it utilizes enums along with double properties.
@@ -142,7 +144,19 @@ module FRIDGE
 	/** This property is the fridge's actual temperature.
 	 */
 	readonly attribute ACS::ROdouble currTemperature;      
+	
+    /**
+     * In order to test notification channel issues with scopes and Java packages etc, 
+     * we also define an event struct inside an interface.
+     */
+	struct NestedFridgeEvent
+	{
+		TemperatureStatus status;
 	};
+    typedef sequence<NestedFridgeEvent> NestedFridgeEventSeq;
+
+	};
+	
 };
 
 #endif
