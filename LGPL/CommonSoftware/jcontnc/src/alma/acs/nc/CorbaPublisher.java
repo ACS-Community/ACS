@@ -27,18 +27,11 @@
 //package alma.scheduling.define.nc;
 package alma.acs.nc;
 
-import alma.acs.exceptions.AcsJException;
-import alma.acs.container.ContainerServices;
-
 import org.omg.CORBA.portable.IDLEntity;
-/*
-import java.lang.reflect.*;
 
-import org.omg.CORBA.Any;
-import org.omg.CosNotification.*;
-import org.omg.CosNotifyComm.InvalidEventType;
-import org.omg.CosEventComm.Disconnected;
-*/
+import alma.acs.container.ContainerServices;
+import alma.acs.exceptions.AcsJException;
+
 /**
  * The CorbaPublisher class implements those methods needed to craft a publisher
  * that publishes events to a CORBA notification channel.
@@ -72,7 +65,7 @@ public class CorbaPublisher extends alma.acs.nc.SimpleSupplier {
         try {
             super.publishEvent(event);
         } catch(AcsJException e) {
-           //OK to swallow???
+           //@TODO OK to swallow???
         }
 	}
 	
