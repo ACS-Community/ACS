@@ -29,7 +29,7 @@ import org.omg.CosNotification.Property;
  * Used to supply (BACI property) events to the archiving notification channel.
  * 
  * @author dfugate
- * @version $Id: ArchiveSupplier.java,v 1.4 2006/03/09 21:52:10 dfugate Exp $
+ * @version $Id: ArchiveSupplier.java,v 1.5 2006/11/21 14:59:57 hsommer Exp $
  */
 public class ArchiveSupplier extends SimpleSupplier {
    /**
@@ -100,8 +100,8 @@ public class ArchiveSupplier extends SimpleSupplier {
       // preallocate one name/value pair
       event.filterable_data = new Property[1];
       event.filterable_data[0] = new Property(
-            alma.acscommon.DEFAULTDATANAME.value, m_anyAide
-                  .objectToCorbaAny(customStruct));
+            alma.acscommon.DEFAULTDATANAME.value, 
+            m_anyAide.objectToCorbaAny(customStruct) );
 
       publishCORBAEvent(event);
    }
