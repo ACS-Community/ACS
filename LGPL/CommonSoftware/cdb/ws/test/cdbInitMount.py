@@ -9,10 +9,10 @@ import time, os
 import acsexmplMount_idl
 
 simpleClient = PySimpleClient()
-cdb_mount = simpleClient.getComponent("MOUNT99") 
+cdb_mount = simpleClient.getComponent("COMP99") 
 
 sleep(5)
 
-simpleClient.releaseComponent("MOUNT99")
+simpleClient.releaseComponent("COMP99")
 
 

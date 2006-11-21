@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.43 2006/11/17 08:11:39 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.44 2006/11/21 06:53:19 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -55,7 +55,9 @@ PROG =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES_L     = $(PROG) cdbTest nodeTest 
+EXECUTABLES_L     = $(PROG) cdbTest nodeTest  
+
+
 
 #
 # <brief description of xxxxx program>
@@ -69,18 +71,20 @@ nodeTest_OBJECTS		   = nodeTest
 cdbTest_OBJECTS            = cdbTest
 cdbTestServer_LIBS         = 
 
+cdbTestCDBCompImpl_OBJECTS       = cdbTestCDBCompImpl
+cdbTestCDBCompImpl_LIBS          = cdbTestCDBCompStubs
 
 #
 # Includes (.h) files (public and local)
 # ---------------------------------
-INCLUDES        = 
-INCLUDES_L      = 
+INCLUDES        = cdbTestCDBCompImpl.h
+INCLUDES_L      =
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = 
-LIBRARIES_L     = 
+LIBRARIES       = cdbTestCDBCompImpl 
+LIBRARIES_L     =
 
 #
 # Jarfiles and their directories
@@ -141,7 +145,7 @@ CSOURCENAMES = \
 #
 # IDL FILES
 #
-IDL_FILES =
+IDL_FILES = cdbTestCDBComp
 
 #
 #>>>>> END OF standard rules
