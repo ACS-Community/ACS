@@ -268,7 +268,7 @@
 1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 14 
 1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap exit] 
 1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::run] The XML built from command line params is:
-1 - <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+1 - <?xml version="1.0" encoding="ISO-8859-1" standalone="yes" ?>
 1 - <pset:paramset xmlns:pset="urn:schemas-cosylab-com:pset:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-cosylab-com:pset:1.0 pset.xsd">
 1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::initialize] initialized XML platform
 1 -   <psetdef>paramTaskTest.xml</psetdef>
@@ -603,3 +603,4 @@
 1 - ----------T--:--:--.--- [Component-XXXX - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+

@@ -47,7 +47,7 @@ namespace parameterSet {
 	const char* const XML_SCHEMA_INSTANCE_PREFIX = "xsi";
 	const char* const XML_SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";
 	const char* const XML_SCHEMA_LOCATION_HINT_STRING = "schemaLocation";
-	const char* const XML_STANDARD_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	const char* const XML_STANDARD_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>";
 	const char* const QUOTE = "\"";
 	const char* const SPACE = " ";
 	const char* const EQUALS = "=";
@@ -96,3 +96,4 @@ namespace parameterSet {
 	const char* const SLASH_STRING = "/"; // TODO - portability issue for forward slash?
 }
 #endif /*!_PARAM_CONSTANTS_H */
+

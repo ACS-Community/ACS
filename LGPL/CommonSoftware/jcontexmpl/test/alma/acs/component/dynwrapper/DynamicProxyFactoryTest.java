@@ -121,7 +121,7 @@ public class DynamicProxyFactoryTest extends TestCase
 		
 		// send invalid xml
 		entStructObsProp.xmlString = 
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" +
 			"<ns1:ObsProposal xmlns:ns1=\"AlmaTest/ObsProposal\">" +
 			"	<ns1:ObsProposalEntity entityIdEncrypted=\"ljasd;ljfa;lsfd\"" +
 			"		entityId=\"uid://X0000000000000000/X00000001\" entityTypeName=\"ObsProposal\"/>" +
@@ -204,7 +204,7 @@ public class DynamicProxyFactoryTest extends TestCase
 		
 		// send invalid xml
 		entStructObsProp.xmlString = 
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" +
 //			"<ns1:ObsProposal xmlns:ns1=\"AlmaTest/ObsProposal\">" +
 			"	<ns1:ObsProposalEntity entityIdEncrypted=\"ljasd;ljfa;lsfd\"" +
 			"		entityId=\"uid://X0000000000000000/X00000001\" entityTypeName=\"ObsProposal\"/>" +
@@ -394,3 +394,4 @@ public class DynamicProxyFactoryTest extends TestCase
 	}
 
 }
+

@@ -131,7 +131,7 @@ public class XmlComponentClient extends ComponentClientTestCase
 	 */
 	private XmlEntityStruct createSchedBlockXml(boolean breakUnmarshaller) {
 		String sbXML =  
-		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+		"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" +
 		"<ns1:SchedBlock xmlns:ns1=\"AlmaTest/SchedBlock\">" +
 			"<ns1:SchedBlockEntity " +
 				"entityIdEncrypted=\"-- id encryption not yet implemented --\" " +
@@ -191,3 +191,4 @@ public class XmlComponentClient extends ComponentClientTestCase
 		assertTrue("must receive " + XmlComponentErrorEx.class.getName(), gotException);
 	}
 }
+

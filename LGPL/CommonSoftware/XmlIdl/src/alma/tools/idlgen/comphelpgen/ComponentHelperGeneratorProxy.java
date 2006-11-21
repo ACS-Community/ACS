@@ -45,7 +45,7 @@ import alma.tools.idlgen.IDLComponentTester;
  * module. The XML complies with the schema HelperInfo.xsd from the module comphelpgen 
  * which is listed here for convenience:
  * <pre>
- * &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+ * &lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
  * &lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified"&gt;
  * 	&lt;xs:element name="ComponentHelperInfo"&gt;
  * 		&lt;xs:complexType&gt;
@@ -235,3 +235,4 @@ public class ComponentHelperGeneratorProxy
 	
 	
 }
+

@@ -36,7 +36,7 @@ import alma.acs.logging.ClientLogManager;
 public class TestUtil {
 	
 	private static String XMLHead[] = {
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n",
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n",
 			"<alarm-system-configuration xmlns=\"urn:schemas-cosylab-com:AcsAlarmSystem:1.0\" \n\t\t",
 			"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> \n",
 			"\t<configuration-property name=\"Implementation\">"
@@ -192,3 +192,4 @@ public class TestUtil {
 	}
 
 }
+

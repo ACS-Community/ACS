@@ -261,7 +261,7 @@
 1 - 
 1 - toString:
 1 - 
-1 - <?xml version="1.0" encoding="UTF-8"?>
+1 - <?xml version="1.0" encoding="ISO-8859-1"?>
 1 - <pset:paramset xmlns:pset="urn:schemas-cosylab-com:pset:1.0"
 1 - 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 1 - 		xsi:schemaLocation="urn:schemas-cosylab-com:pset:1.0 pset.xsd">
@@ -349,3 +349,4 @@
 1 - 
 1 - </pset:paramset>
 1 - 
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
 <document location="../../">
     <head>
@@ -546,3 +546,4 @@ GP Layer has some standard predefine actions that are located in the package <co
       </section>
       </section>
 </document>
+

@@ -119,7 +119,7 @@ public class LogConfigTest extends TestCase {
 	public void testCDBValues() throws Exception {
 		String cdbContainerPath = "MACI/Containers/frodoContainer";
         String frodoContainerXml = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +  
+            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> " +  
                     "<Container xmlns=\"urn:schemas-cosylab-com:Container:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:log=\"urn:schemas-cosylab-com:LoggingConfig:1.0\">" + 
                           "<LoggingConfig " +
                           " minLogLevel=\"2\" " + 
@@ -157,7 +157,7 @@ public class LogConfigTest extends TestCase {
 	public void testInvalidCDB() throws Exception {
 		String cdbContainerPath = "MACI/Containers/frodoContainer";
         String frodoContainerXml = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +  
+            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> " +  
             "<Container xmlns=\"urn:schemas-cosylab-com:Container:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:log=\"urn:schemas-cosylab-com:LoggingConfig:1.0\">" + 
                   "<LoggingConfig " +
                   " minLogLevel=\"NotANumber\" " + // should cause an error 
@@ -198,3 +198,4 @@ public class LogConfigTest extends TestCase {
 	}
 	
 }
+

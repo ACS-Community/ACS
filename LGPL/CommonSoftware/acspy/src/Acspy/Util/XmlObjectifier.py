@@ -71,7 +71,7 @@ xmlObject = XmlObjectifier.XmlObject(fileName = '<file name>',
 
 This example XML document:
 
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by D. Muders (MPIfR) -->
 <TelCalResult xmlns="Alma/TelCalResult"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -388,3 +388,4 @@ if __name__ == '__main__':
     import interactive
     myXmlObject = XmlObject(fileName = '../../idl/MBFits.xml')
     scanStructure = myXmlObject.Scan()
+

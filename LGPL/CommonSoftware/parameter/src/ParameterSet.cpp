@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParameterSet.cpp,v 1.26 2006/09/26 19:23:11 sharring Exp $"
+* "@(#) $Id: ParameterSet.cpp,v 1.27 2006/11/21 02:07:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -164,7 +164,7 @@ string ParameterSet::toString()
 	string retVal;
 
 	// create the xml header:
-	// <?xml version="1.0" encoding="UTF-8"?>
+	// <?xml version="1.0" encoding="ISO-8859-1"?>
 	retVal.append(XML_STANDARD_HEADER);
 	retVal.append(NEWLINE);
 
@@ -2103,3 +2103,4 @@ void ParameterSet::setSchemaLocation(DOMBuilder * parser)
 	// else if none of the above environment variables was defined, 
 	// we will rely on the XML instance document's schemalocation hint
 }
+

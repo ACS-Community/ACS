@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <jardesc>
     <jar path="/alma/ACS-4.0/ACSSW/lib/dartboard.jar"/>
     <options overwrite="true" compress="true" exportErrors="false" exportWarnings="true" saveDescription="true" descriptionLocation="/mountguiexample/dartboard.jardesc" useSourceFolders="false" buildIfNeeded="true"/>
@@ -12,3 +12,4 @@
         <javaElement handleIdentifier="=mountguiexample/src&lt;dartboard"/>
     </selectedElements>
 </jardesc>
+

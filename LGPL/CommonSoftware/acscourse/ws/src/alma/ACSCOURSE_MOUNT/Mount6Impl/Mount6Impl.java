@@ -83,7 +83,7 @@ public class Mount6Impl extends CharacteristicComponentImpl implements Mount6J
 	 * Creates and returns binding classes which the container will automatically serialize to the following XML
 	 * string which can be seen for example in the objexp client. 
 	 * 	<verbatim>
-	 * 	  &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br>
+	 * 	  &lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;<br>
 	 * 	  &lt;ns1:MyXmlConfigData someAttribute=&quot;great attribute here!&quot; xmlns:ns1=&quot;AlmaTest/MyXmlConfigData&quot;&gt;<br>
 	 * 	  &lt;ns1:MyXmlConfigDataEntity<br>
 	 * 	  entityIdEncrypted=&quot;-- id encryption not yet implemented --&quot;<br>
@@ -148,3 +148,4 @@ public class Mount6Impl extends CharacteristicComponentImpl implements Mount6J
 		return m_cmdEl;
 	}
 }
+

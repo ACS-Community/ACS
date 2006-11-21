@@ -17,7 +17,7 @@
 #include <MockManager.h>
 
 #define XML_HEADER_LENGTH 4
-#define XML_HEADER_LINE_ONE "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+#define XML_HEADER_LINE_ONE "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
 #define XML_HEADER_LINE_TWO "<alarm-system-configuration xmlns=\"urn:schemas-cosylab-com:AcsAlarmSystem:1.0\" \n\t\t"
 #define XML_HEADER_LINE_THREE "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> \n"
 #define XML_HEADER_LINE_FOUR "\t<configuration-property name=\"Implementation\">"
@@ -277,4 +277,5 @@ int main(int argc, char *argv[])
 
 	return result.wasSuccessful() ? 0 : 1;
 }
+
 

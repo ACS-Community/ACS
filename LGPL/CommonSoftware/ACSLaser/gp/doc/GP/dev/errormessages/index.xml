@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
 <document location="../../">
   <head>
@@ -40,3 +40,4 @@ You may fing here a list of common error messages / problems you may encounter u
 		</description>
 	</section>
 </document>
+

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.cpp,v 1.22 2005/08/16 20:14:16 sharring Exp $"
+* "@(#) $Id: parameterTask.cpp,v 1.23 2006/11/21 02:07:55 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 
-static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.22 2005/08/16 20:14:16 sharring Exp $"; 
+static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.23 2006/11/21 02:07:55 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 XERCES_CPP_NAMESPACE_USE
@@ -221,15 +221,15 @@ string parameterTask::buildParameterSetXML(const string & xmlFileNamePrefix) thr
 			// construct the MemBufFormatTarget
 			XMLFormatTarget *myFormatTarget = new MemBufFormatTarget();
 
-			// set the encoding to be UTF-8
+			// set the encoding to be ISO-8859-1
 			XMLCh tempStr[100];
-			XMLString::transcode("UTF-8", tempStr, 99);
+			XMLString::transcode("ISO-8859-1", tempStr, 99);
 			domWriter->setEncoding(tempStr);
 
 			// serialize the document to an internal memory buffer
 			domWriter->writeNode(myFormatTarget, *doc);
 
-			// get the string which is encoded in UTF-8 from the MemBufFormatTarget
+			// get the string which is encoded in ISO-8859-1 from the MemBufFormatTarget
 			char* theXMLString_Encoded = (char*) 
   					((MemBufFormatTarget*)myFormatTarget)->getRawBuffer();
 
@@ -731,4 +731,5 @@ vector<string> parameterTask::parseStringArrayElement(const string & valueString
 	return retVal;
 }
 /*___oOo___*/
+
 

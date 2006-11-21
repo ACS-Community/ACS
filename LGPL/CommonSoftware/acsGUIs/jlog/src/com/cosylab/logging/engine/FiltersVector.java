@@ -373,7 +373,7 @@ public class FiltersVector extends Vector<Filter> {
 		DataOutputStream dataOutStream = new DataOutputStream(outStream);
 		
 		// Write the header of the new file
-		dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n");
 		dataOutStream.writeBytes("<FILTERS>\n");
 		// Write the list of filters as it is in the old file
 		FileInputStream inStream = new FileInputStream(oldFile);
@@ -424,7 +424,7 @@ public class FiltersVector extends Vector<Filter> {
 		f.createNewFile();
 		FileOutputStream outStream = new FileOutputStream(f);
 		DataOutputStream dataOutStream = new DataOutputStream(outStream);
-		dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n");
 		dataOutStream.writeBytes("<FILTERS>\n");
 		dataOutStream.writeBytes("<FILTER_LIST>\n");
 		for (int t=0; t<size(); t++) {
@@ -468,3 +468,4 @@ public class FiltersVector extends Vector<Filter> {
 	}
 
 }
+

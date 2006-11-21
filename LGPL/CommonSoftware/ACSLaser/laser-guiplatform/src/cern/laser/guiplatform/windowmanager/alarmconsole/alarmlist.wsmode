@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE mode PUBLIC
     "-//NetBeans//DTD Mode Properties 1.2//EN"
     "http://www.netbeans.org/dtds/mode-properties1_2.dtd">
@@ -19,3 +19,4 @@
     </ui-type>
 
 </mode>
+

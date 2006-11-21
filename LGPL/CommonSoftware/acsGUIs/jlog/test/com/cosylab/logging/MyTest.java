@@ -140,7 +140,7 @@ public class MyTest extends junit.framework.TestCase
 	public void save()
 	{
 		String contents =
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
 				+ "<Log>"
 				+ "<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />"
 				+ "<Debug TimeStamp=\"2002-11-07T15:13:20.651\" File=\"acsexmplDoorImpl.cpp\" Line=\"203\" Routine=\"Checking thread status: suspendCount = \" Host=\"te1\" Process=\"maciActivate\" Thread=\"doorControl\" Context=\"\">0</Debug>"
@@ -286,3 +286,4 @@ public class MyTest extends junit.framework.TestCase
 		}
 	}
 }
+

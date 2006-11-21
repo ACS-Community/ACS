@@ -874,7 +874,7 @@ public class IOLogsHelper extends Thread  {
 			throw new IllegalArgumentException("BufferedWriter and LogCache can't be null");
 		}
 		try {
-			outBW.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
+			outBW.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
 		} catch (Exception e) {
 			// I ignore this exception because it is not very important
 			// to have the header in the file (however another exception 
@@ -942,3 +942,4 @@ public class IOLogsHelper extends Thread  {
 	}
 	
 }
+
