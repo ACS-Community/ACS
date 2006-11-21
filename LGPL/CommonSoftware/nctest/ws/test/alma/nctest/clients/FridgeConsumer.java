@@ -26,8 +26,6 @@
  */
 package alma.nctest.clients;
 
-import alma.FRIDGE.temperatureDataBlockEvent;
-
 import alma.acs.component.client.ComponentClient;
 
 /** 
@@ -40,7 +38,9 @@ public class FridgeConsumer extends alma.acs.nc.Consumer
     /** 
      * Total number of events that have been consumed.
      */    
-    public int eventCount = 0;
+    int eventCount = 0;
+    
+    volatile boolean readyForShutdown = false;
 
     /** Creates a new instance of FridgeConsumer */
     public FridgeConsumer(alma.acs.container.ContainerServices services) throws Exception
@@ -56,78 +56,78 @@ public class FridgeConsumer extends alma.acs.nc.Consumer
      * 
      * @param corbaData CORBA data extracted from the event.
      */    
-    public void processEvent(Object corbaData)
-	{
-	    //Know how many events this instance has received.
-	    eventCount++;
-	    try
-		{
-		//Stop receiving events 
-		if (eventCount>5)
-		    {
-		    suspend();
-		    }
-		else
-		    {
-		    //Ensure we're getting the correct type of data from the CORBA Any.
-		    if(corbaData.getClass() == alma.FRIDGE.temperatureDataBlockEvent.class)
-			{
-			System.out.println("The temp difference is:" + ((alma.FRIDGE.temperatureDataBlockEvent)corbaData).absoluteDiff);
+    public void processEvent(Object corbaData) {
+		// Know how many events this instance has received.
+		eventCount++;
+		try {
+			// Stop receiving events
+			if (eventCount > 5) {
+				suspend();
+			} 
+			else {
+				// Ensure we're getting the correct type of data from the CORBA
+				// Any.
+				if (corbaData.getClass() == alma.FRIDGE.temperatureDataBlockEvent.class) {
+					System.out.println("The temp difference is: " + ((alma.FRIDGE.temperatureDataBlockEvent) corbaData).absoluteDiff);
+				} 
+				else {
+					System.err.println("The type of filterable_data[0] is not correct!");
+				}
 			}
-		    else
-			{
-			System.err.println("The type of filterable_data[0] is not correct!");
-			}
-		    }		
+		} 
+		catch (Exception e) {
+			System.err.println(e);
 		}
-	    catch(Exception e)
-		{
-		System.err.println(e);
+		finally {
+			if (eventCount > 5) {
+				readyForShutdown = true;
+			}
 		}
 	}
-    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    // //////////////////////////////////////////////////////////////////////////
     /** Illustrates a simple example outside of the component/container model.
      * @param args Not used!
      */    
-    public static void main(String[] args)
-    {
-	try 
-	    {
-	    //Setup an ACS Java client. This has little to do with the NC API
-	    String managerLoc = System.getProperty("ACS.manager");
-	    if (managerLoc == null) 
-		{
-		System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-		System.exit(-1);
+    public static void main(String[] args) {
+		try {
+			//Setup an ACS Java client. This has little to do with the NC API
+			String managerLoc = System.getProperty("ACS.manager");
+			if (managerLoc == null) {
+				System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
+				System.exit(-1);
+			}
+			
+			String clientName = "FridgeConsumer";
+			ComponentClient myClient = new ComponentClient(null, managerLoc, clientName);
+
+			FridgeConsumer joe = new FridgeConsumer(myClient.getContainerServices());
+
+			//Subscribe to an event type.
+			joe.addSubscription(alma.FRIDGE.temperatureDataBlockEvent.class);
+
+			//After consumerReady() is invoked, processEvent(...) is invoked
+			//by the notification channel.  That is, we have no control over when
+			//that method is called.
+			joe.consumerReady();
+
+			//Sleep until five events have been received... @todo: better sync using a CountDownLatch or similar instead of sleep&check
+			System.out.println("Waiting for events...");
+			while (!joe.readyForShutdown) {
+				Thread.sleep(1000);
+			}
+
+			//then destroy everything
+			joe.disconnect();
+			myClient.tearDown();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	    String clientName = "FridgeConsumer";
-	    ComponentClient myClient = new ComponentClient(null, managerLoc, clientName);
-	 
-	    FridgeConsumer joe = new FridgeConsumer(myClient.getContainerServices());
-
-	    //Subscribe to an event type.
-            joe.addSubscription(alma.FRIDGE.temperatureDataBlockEvent.class);
-
-            //After consumerReady() is invoked, processEvent(...) is invoked
-            //by the notification channel.  That is, we have no control over when
-            //that method is called.
-            joe.consumerReady();
-
-	    //Sleep until five events have been received...
-            System.out.println("Waiting for events...");
-	    while(joe.eventCount<=5)
-		{
-		Thread.sleep(1000);
-		}
-	    //then destroy everything
-	    joe.disconnect();
-	    myClient.tearDown();
-        }
-        catch(Exception e)
-	    {
-	    e.printStackTrace();
-	    }
-        System.out.println("Done...");
-    }
+		System.out.println("Done...");
+	}
+    
+    
     ////////////////////////////////////////////////////////////////////////////
 }
