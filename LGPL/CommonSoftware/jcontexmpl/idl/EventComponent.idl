@@ -22,9 +22,11 @@
 #ifndef _EVENTCOMPONENT_IDL_
 #define _EVENTCOMPONENT_IDL_
 
-#pragma prefix "alma"
-
 #include <acscomponent.idl>
+#include <ACSErrTypeCommon.idl>
+#include <acsexmplFridge.idl>
+
+#pragma prefix "alma"
 
 module demo
 {
@@ -33,8 +35,22 @@ module demo
      */
     interface SupplierComp : ACS::ACSComponent
     {
-        void sendEvents (in short numEvents);
+        /**
+         * Sends 'temperatureDataBlockEvent' events on the 'fridge' channel 
+         * (event and channel defined in module acsexmpl).
+         */
+        void sendEvents (in short numEvents) 
+        	raises (ACSErrTypeCommon::CouldntPerformActionEx);
+        	
+        /**
+         * Sends the given sequence of 'NestedFridgeEvent's on the 'fridge' channel.
+         * This method used an IDL event struct that is defined inside the IDL interface,
+         * to probe namespace/package issues.
+         */
+        void sendEventsSpecial (in FRIDGE::FridgeControl::NestedFridgeEventSeq eventData) 
+        	raises (ACSErrTypeCommon::CouldntPerformActionEx);        	
     };
+
 
     /**
      *
