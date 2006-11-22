@@ -3,15 +3,15 @@
 2 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] component 'ArchiveConsumerTest' requested AdvancedContainerServices
 2 - ----------T--:--:--.--- INFO [ArchiveSupplierTest] component 'ArchiveSupplierTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=Double, d(type)=class java.lang.Double
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=Float, d(type)=class java.lang.Float
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=Long, d(type)=class java.lang.Long
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=String, d(type)=class java.lang.String
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=Long, d(type)=class java.lang.Long
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=Long, d(type)=class java.lang.Long
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=String, d(type)=class java.lang.String
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=[D, d(type)=class [D
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=[F, d(type)=class [F
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=[I, d(type)=class [I
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=default, c=String;, d(type)=class [Ljava.lang.String;
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Double
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Float
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.String
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.String
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [D
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [F
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [I
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class [Ljava.lang.String;
 1 - Test passed!

@@ -31,7 +31,7 @@ import alma.acsnc.EventDescriptionHelper;
  * Used to supply (BACI property) events to the archiving notification channel.
  * 
  * @author dfugate
- * @version $Id: ArchiveSupplier.java,v 1.6 2006/11/22 08:14:30 cparedes Exp $
+ * @version $Id: ArchiveSupplier.java,v 1.7 2006/11/22 09:46:27 cparedes Exp $
  */
 public class ArchiveSupplier extends SimpleSupplier {
    /**
@@ -97,8 +97,9 @@ public class ArchiveSupplier extends SimpleSupplier {
       String typeName = customStruct.getClass().getName().substring(
             customStruct.getClass().getName().lastIndexOf('.') + 1);
       String containerName = getHelper().getContainerServices().getName();
-      String componentName = "default" ;
-      String eventName = containerName + ":" + componentName + ":" + typeName;
+      String param = "no_param" ;
+      String device = "no_device" ;
+      String eventName = containerName + ":" + device + ":" + param;
 
       // event to send
       StructuredEvent event = getCORBAEvent(typeName, eventName);
