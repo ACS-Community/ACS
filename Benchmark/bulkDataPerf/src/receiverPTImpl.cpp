@@ -30,8 +30,11 @@ void ReceiverPTImpl::setTestName(const char *name)
     struct tm *utc = ACE_OS::gmtime(&ut);
     ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H.%M.%S", utc);
 
+//    ReceiverPTCb::testName_m = ACE_CString(name) + "-" +
+//      this->name() + "-" + ctp +  ".dat";
+
     ReceiverPTCb::testName_m = ACE_CString(name) + "-" +
-      this->name() + "-" + ctp + ".dat";
+	this->name() + "-" + ctp;
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/

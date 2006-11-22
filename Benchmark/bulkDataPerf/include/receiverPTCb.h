@@ -39,6 +39,12 @@ class ReceiverPTCb : public BulkDataCallback
     long count;
     long size;
     CORBA::ULong count1_m;
+    CORBA::ULong count2_m;
+
+    CORBA::ULong count_tot;
+
+    CORBA::ULong cLoop;
+
  public:
     // to be done in differnt way !!!
     static ACE_CString testName_m;

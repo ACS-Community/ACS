@@ -1,0 +1,31 @@
+#ifndef _SENDER_PT_IDL_
+#define _SENDER_PT_IDL_
+
+
+#include <baci.idl>
+#include <ACSBulkDataError.idl>
+#include <AVStreams.idl>
+#include <bulkData.idl>
+#include <bulkDataReceiver.idl>
+#include <bulkDataSender.idl>
+
+#pragma prefix "alma"
+
+
+module TEST_M
+{
+    interface SenderPT : bulkdata::BulkDataSender
+  {
+  void startSendNew(in long flowNumber, in long size)
+      raises (ACSBulkDataError::AVStartSendErrorEx);
+
+  void paceDataNew(in long flowNumber, in long size)
+      raises (ACSBulkDataError::AVPaceDataErrorEx);
+
+  void stopSendNew(in long flowNumber)
+      raises (ACSBulkDataError::AVStopSendErrorEx);
+  };
+  
+};
+
+#endif

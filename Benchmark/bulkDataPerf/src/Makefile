@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2006/11/21 15:57:13 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.2 2006/11/22 15:35:03 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -56,17 +56,20 @@ USER_LIB = 	-lACE \
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =  sendDistRecvsPerfTest  senderReceiverPerfTest
+EXECUTABLES     =  sendDistRecvsPerfTest  senderReceiverPerfTest sendThreadDistRecvsPerfTest
 EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
 
 sendDistRecvsPerfTest_OBJECTS = sendDistRecvsPerfTest
-sendDistRecvsPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs
+sendDistRecvsPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs senderPTStubs
 
 senderReceiverPerfTest_OBJECTS = senderReceiverPerfTest
-senderReceiverPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs
+senderReceiverPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs senderPTStubs
+
+sendThreadDistRecvsPerfTest_OBJECTS = sendThreadDistRecvsPerfTest
+sendThreadDistRecvsPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs senderPTStubs
 
 
 #
@@ -81,13 +84,16 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = receiverPT
+LIBRARIES       = receiverPT senderPT
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
 receiverPT_OBJECTS   = receiverPTCb receiverPTImpl
 receiverPT_LIBS =  bulkDataReceiverStubs receiverPTStubs bulkDataStubs bulkDataCallback ACSBulkDataError
+
+senderPT_OBJECTS   = senderPTImpl
+senderPT_LIBS =  bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError senderPTStubs
 
 #
 # Scripts (public and local)
@@ -133,12 +139,12 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = 
+CDB_SCHEMAS = Receiver Sender 
 
 # 
 # IDL Files and flags
 # 
-IDL_FILES = receiverPT
+IDL_FILES = receiverPT senderPT
 IDL_TAO_FLAGS =
 USER_IDL =
 #
