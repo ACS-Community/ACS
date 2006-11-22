@@ -66,7 +66,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createSingleFlow()
     senderFeps_m.length(1);
 
     ACE_CString address = CORBA::string_dup("TCP");
-    const char  * locEntry = createFlowSpec(flowname, address);
+    const char *locEntry = createFlowSpec(flowname, address);
     senderFeps_m[0] = CORBA::string_dup(locEntry);
 }
 
@@ -95,6 +95,12 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const cha
 
     TAO_Tokenizer addressToken(fepsConfig, '/');
     int numOtherFeps = addressToken.num_tokens();
+    if(numOtherFeps > 9)
+	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createMultipleFlows too many flows specified - maximum 9"));
+	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataSender::createMultipleFlows");
+	throw err;	
+	}
 
     senderFeps_m.length(numOtherFeps);
 
@@ -128,7 +134,8 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const cha
 
 	addFepToSep(sepA_p.in(), fepObj_p.in());
 
-	const char  * locEntry = createFlowSpec(localStruct.fepsFlowname, localStruct.fepsProtocol);
+	const char *locEntry = createFlowSpec(localStruct.fepsFlowname, localStruct.fepsProtocol);
+
 	senderFeps_m[j] = CORBA::string_dup(locEntry);
 	}
 }
@@ -688,9 +695,9 @@ AVStreams::StreamEndPoint_A_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::cr
     ACE_TRACE("BulkDataSender<>::createSepA");
 
     TAO_StreamEndPoint_A *localSepA_p = new TAO_StreamEndPoint_A();
-    if(localSepA_p == NULL)
+    if(localSepA_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createSepA streamendpoint_a_ not initialized"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createSepA Stream Endpoint null"));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createSepA");
 	throw err;
 	}
@@ -700,7 +707,7 @@ AVStreams::StreamEndPoint_A_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::cr
     AVStreams::StreamEndPoint_A_var localSepObj_p = localSepA_p->_this();
     if (CORBA::is_nil(localSepObj_p.in()))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createSepA unable to activate sep_a object"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createSepA unable to activate Stream Endpoint"));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createSepA");
 	throw err;
 	}
@@ -715,17 +722,17 @@ AVStreams::FlowProducer_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::create
     ACE_TRACE("BulkDataSender<>::createFepProducerA");
 
     BulkDataFlowProducer<TSenderCallback> *localFepA_p = new BulkDataFlowProducer<TSenderCallback>(flowname.c_str(), protocols, format.c_str(), strctrl_p);
-    if(localFepA_p == NULL)
+    if(localFepA_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createFepProducerA flowproducer_a not initialized."));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createFepProducerA Flow Producer null"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createFepProducerA");
 	throw err;
 	}
 
-    AVStreams::FlowProducer_var localFepObj_p =  localFepA_p->_this(); 
+    AVStreams::FlowProducer_var localFepObj_p = localFepA_p->_this(); 
     if (CORBA::is_nil(localFepObj_p.in()))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createFepProducerA unable to activate fep_a object"));
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createFepProducerA unable to activate Flow Producer"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createFepProducerA");
 	throw err;
 	}
@@ -742,16 +749,16 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::addFepToSep(AVStreams::Stream
 {
     ACE_TRACE("BulkDataSender<>::addFepToSep");
 
-    try
+    CORBA::String_var s1 = locSepA_p->add_fep(locFepA_p);
+    
+    if(s1 == 0)
 	{
-	CORBA::String_var s1 = locSepA_p->add_fep(locFepA_p);      
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::addFepToSep Added flowendpoint named: %s", s1.in()));
-	}
-    catch(...)
-	{
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::addFepToSep Flow Endpoint cannot be created"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::addFepToSep");
 	throw err;
 	}
+
+    ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::addFepToSep Added flowendpoint named: %s", s1.in()));
 }
 
 
@@ -761,7 +768,7 @@ TAO_StreamCtrl * AcsBulkdata::BulkDataSender<TSenderCallback>::createStreamCtrl(
     ACE_TRACE("BulkDataSender<>::createStreamCtrl");
 
     TAO_StreamCtrl *locStrctrl_p = new TAO_StreamCtrl();
-    if(locStrctrl_p == NULL)
+    if(locStrctrl_p == 0)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createStreamCtrl locStrctrl_p not initialized."));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createStreamCtrl");
@@ -1058,12 +1065,24 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 
     for(CORBA::ULong i = 0; i < dim; i++)
 	{
-
 	TAO_Forward_FlowSpec_Entry senderEntry;
 	TAO_Forward_FlowSpec_Entry recvEntry;
 
-	senderEntry.parse(senderFeps_m[i]);
-	recvEntry.parse(recvFeps_p[i]);
+	int is = senderEntry.parse(senderFeps_m[i]);
+	if(is != 0)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::mergeFlowSpecs sender_protocols[%d] CDB entry not correct",i));
+	    AVStreamBindErrorExImpl err = AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+	    throw err;	
+	    }
+
+	int ir = recvEntry.parse(recvFeps_p[i]);
+	if(ir != 0)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::mergeFlowSpecs recv_protocols[%d] CDB entry not correct",i));
+	    AVStreamBindErrorExImpl err = AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+	    throw err;	
+	    }
 
 	//cout << "JJJJJJJJJJJJJJJJJJJJJJJ: " << entry.format() << endl;
 	//cout << "JJJJJJJJJJJJJJJJJJJJJJJ: " << entry.flowname() << endl;
@@ -1076,13 +1095,13 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 	peerAddr_p->addr_to_string(buf, BUFSIZ);
 	remoteAddress = buf;
 
-	const char  * locEntry = createFwdFlowSpec(flowname,
-						   direction,
-						   formatName,
-						   flowProtocol,
-						   carrierProtocol,
-						   localAddress,
-						   remoteAddress);
+	const char *locEntry = createFwdFlowSpec(flowname,
+						 direction,
+						 formatName,
+						 flowProtocol,
+						 carrierProtocol,
+						 localAddress,
+						 remoteAddress);
 
 	flowSpec_m[i] = CORBA::string_dup(locEntry);
 	}
