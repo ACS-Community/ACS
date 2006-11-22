@@ -8,7 +8,6 @@
            UseIFR="1" 
            ServerThreads="10"
            ManagerRetry="10" 
-           ServerThreads="10"
            ManagerReference="">
   <Autoload>
     <cdb:_ string="baci"/>

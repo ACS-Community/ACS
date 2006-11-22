@@ -8,4 +8,4 @@
    -   2004-11-23  oat  Created
      -   Wed Nov 15 08:46:29 UTC 2006 modified by jDAL
 -->
-<Receiver xmlns="urn:schemas-cosylab-com:Receiver:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" recv_protocols="TCP=192.168.1.1:5555" />
+<BulkDataReceiver xmlns="urn:schemas-cosylab-com:BulkDataReceiver:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" recv_protocols="TCP=192.168.1.1:5555" />

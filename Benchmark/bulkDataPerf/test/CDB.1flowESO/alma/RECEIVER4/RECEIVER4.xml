@@ -7,7 +7,7 @@
    - History:
    -   2004-11-23  oat  Created
   -->
-<Receiver xmlns="urn:schemas-cosylab-com:Receiver:1.0"
+<BulkDataReceiver xmlns="urn:schemas-cosylab-com:BulkDataReceiver:1.0"
 	  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
 	  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
