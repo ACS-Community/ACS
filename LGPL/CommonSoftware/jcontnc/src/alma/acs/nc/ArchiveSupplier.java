@@ -25,11 +25,13 @@ import alma.acs.exceptions.AcsJException;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotification.Property;
 
+import alma.acsnc.EventDescription;
+import alma.acsnc.EventDescriptionHelper;
 /**
  * Used to supply (BACI property) events to the archiving notification channel.
  * 
  * @author dfugate
- * @version $Id: ArchiveSupplier.java,v 1.5 2006/11/21 14:59:57 hsommer Exp $
+ * @version $Id: ArchiveSupplier.java,v 1.6 2006/11/22 08:14:30 cparedes Exp $
  */
 public class ArchiveSupplier extends SimpleSupplier {
    /**
@@ -88,21 +90,38 @@ public class ArchiveSupplier extends SimpleSupplier {
     *            There are an enormous amount of possibilities pertaining to why
     *            an AcsJException would be thrown by publishEvent.
     */
-   public void publishEvent(java.lang.Object customStruct) throws AcsJException {
+   public void publishEvent(java.lang.Object customStruct)throws AcsJException {
 
-      // This is the name of the "event type".
+    //the eventName consists of container named concatenated with the
+    //component and property names, delimited by ':'s.
       String typeName = customStruct.getClass().getName().substring(
             customStruct.getClass().getName().lastIndexOf('.') + 1);
+      String containerName = getHelper().getContainerServices().getName();
+      String componentName = "default" ;
+      String eventName = containerName + ":" + componentName + ":" + typeName;
 
       // event to send
-      StructuredEvent event = getCORBAEvent(typeName, "");
+      StructuredEvent event = getCORBAEvent(typeName, eventName);
 
-      // preallocate one name/value pair
-      event.filterable_data = new Property[1];
+      // Store the info for Exec/I&T into the event.
+      // create the any
+      event.remainder_of_body = m_services.getAdvancedContainerServices()
+            .getAny();
+      // get the useful data which includes the component's name, timestamp,
+      // and event count
+      EventDescription descrip = new EventDescription(containerName,
+	     alma.acs.util.UTCUtility
+            .utcJavaToOmg(System.currentTimeMillis()),1 );
+      // store the IDL struct into the structured event
+      EventDescriptionHelper.insert(event.remainder_of_body, descrip);
+      Long time_stamp = new Long(alma.acs.util.UTCUtility.utcJavaToOmg(System.currentTimeMillis()));      
+
+      event.filterable_data = new Property[2];
       event.filterable_data[0] = new Property(
-            alma.acscommon.DEFAULTDATANAME.value, 
-            m_anyAide.objectToCorbaAny(customStruct) );
-
+            "time_stamp",m_anyAide.objectToCorbaAny(time_stamp)); 
+	     
+      event.filterable_data[1] = new Property(
+            "value", m_anyAide.objectToCorbaAny(customStruct));
       publishCORBAEvent(event);
    }
 }

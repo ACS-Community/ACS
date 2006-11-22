@@ -19,7 +19,7 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: ArchiveConsumer.java,v 1.8 2006/03/09 21:52:10 dfugate Exp $
+ * @version $Id: ArchiveConsumer.java,v 1.9 2006/11/22 08:14:30 cparedes Exp $
  * @since
  */
 
@@ -149,8 +149,10 @@ public class ArchiveConsumer extends Consumer {
                .split(":");
 
          // extract the useful info
-         Long timeStamp = new Long(structuredEvent.filterable_data[0].value
-               .extract_ulonglong());
+         //Long timeStamp = new Long(structuredEvent.filterable_data[0].value
+         //      .extract_ulonglong());
+         Long timeStamp = (Long) m_anyAide
+               .corbaAnyToObject(structuredEvent.filterable_data[0].value);
          Object value = m_anyAide
                .corbaAnyToObject(structuredEvent.filterable_data[1].value);
 

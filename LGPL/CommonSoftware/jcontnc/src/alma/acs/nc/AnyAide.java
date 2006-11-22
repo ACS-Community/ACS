@@ -330,19 +330,19 @@ class AnyAide {
 				// simple type in which we have an
 				// extract method
 				returnValue = new Integer(any.extract_ulong());
-			} else if (anyType.compareTo("sequence <double>") == 0) {
+			} else if (anyType.compareTo("sequence <double>") == 0 || anyType.compareTo("alma::ACS::doubleSeq") == 0) {
 				returnValue = doubleSeqHelper.extract(any);
 			}
 			// IDL://alma:ACS:longSeq:1.0
-			else if (anyType.compareTo("sequence <long>") == 0) {
+			else if (anyType.compareTo("sequence <long>") == 0 || anyType.compareTo("alma::ACS::longSeq") == 0) {
 				returnValue = alma.ACS.longSeqHelper.extract(any);
 			}
 			// IDL://alma:ACS:strSeq:1.0
-			else if (anyType.compareTo("sequence <string>") == 0) {
+			else if (anyType.compareTo("sequence <string>") == 0 || anyType.compareTo("alma::ACS::stringSeq") == 0) {
 				returnValue = alma.ACS.stringSeqHelper.extract(any);
 			}
 			// IDL://alma:ACS:floatSeq:1.0
-			else if (anyType.compareTo("sequence <float>") == 0) {
+			else if (anyType.compareTo("sequence <float>") == 0 || anyType.compareTo("alma::ACS::floatSeq") == 0) {
 				returnValue = alma.ACS.floatSeqHelper.extract(any);
 			} else {
 				m_logger.severe("Alias unexpected:" + anyType);
