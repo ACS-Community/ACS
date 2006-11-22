@@ -82,6 +82,14 @@ public class Range
 	}
 
 	/**
+	 * 
+	 * @return number of UIDs in the range (no matter how many UIDs have been used so far)
+	 */
+	public long getLength() {
+		return maxDocumentid-minDocumentid+1;
+	}
+	
+	/**
 	 * A range can be either locked or unlocked. 
 	 * This immutable property was originally called "serialised" but was considered too confusing 
 	 * since this logical concept has nothing to do with technically serializing the castor class to XML.
