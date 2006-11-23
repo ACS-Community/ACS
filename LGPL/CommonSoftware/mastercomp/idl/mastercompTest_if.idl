@@ -23,9 +23,9 @@
 #ifndef _MASTERCOMP_TEST_IDL_
 #define _MASTERCOMP_TEST_IDL_
 
-#pragma prefix "alma"
-
 #include <mastercomp_if.idl>
+
+#pragma prefix "alma"
 
 
 module ACS

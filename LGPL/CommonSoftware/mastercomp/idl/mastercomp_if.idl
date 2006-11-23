@@ -23,11 +23,11 @@
 #ifndef _MASTERCOMP_IDL_
 #define _MASTERCOMP_IDL_
 
-#pragma prefix "alma"
-
 #include <acscomponent.idl>
 #include <baci.idl>
 #include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
 
 
 module ACS

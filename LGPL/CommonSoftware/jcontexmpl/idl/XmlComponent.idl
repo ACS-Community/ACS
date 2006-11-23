@@ -22,11 +22,11 @@
 #ifndef _XMLCOMPONENT_IDL_
 #define _XMLCOMPONENT_IDL_
 
-#pragma prefix "alma"
-
 #include <xmlentity.idl> 
 #include <acscomponent.idl>
 #include <JContExmplErrTypeTest.idl>
+
+#pragma prefix "alma"
 
 module demo
 {

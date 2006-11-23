@@ -22,11 +22,11 @@
  *    MA 02111-1307  USA
  */
 
-#pragma prefix "alma"
 #include <acserr.idl>
 #include <LampAccess.idl>
 #include <acscomponent.idl>
 
+#pragma prefix "alma"
 
 module demo
 { 

@@ -23,9 +23,9 @@
 #ifndef _HELLODEMO_IDL_
 #define _HELLODEMO_IDL_
 
-#pragma prefix "alma"
-
 #include <acscomponent.idl>
+
+#pragma prefix "alma"
 
 
 module demo

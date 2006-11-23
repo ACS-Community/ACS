@@ -22,10 +22,10 @@
 #ifndef _JCONTTEST_IDL_
 #define _JCONTTEST_IDL_
 
-#pragma prefix "alma"
-
 #include <acscomponent.idl>
 #include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
 
 // Module for test components. 
 // These are meant more for ACS internal tests rather than for demo purposes,
