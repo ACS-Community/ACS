@@ -11,7 +11,7 @@
 ' $Modtime: $
 ' $Archive: $
 '
-' $Revision: 1.1 $
+' $Revision: 1.2 $
 '
 ' This script can create a PDF file from a Word document provided that you
 ' have Adobe Acrobat Distiller installed.
@@ -102,8 +102,7 @@ Function DOC2PDF( sDocFile, sPDFFile )
   Dim wdoc ' As Word.Document
   Dim wdocs ' As Word.Documents
   Dim sPrevPrinter ' As String
-  Dim oDistiller ' As PDFDistiller.PDFDistiller.1
-
+  Dim oDistiller ' As PdfDistiller
   Set oDistiller = CreateObject("PDFDistiller.PDFDistiller.1")
   If oDistiller Is Nothing Then
     WScript.Echo "Error: Cannot create PDF document. Adobe Acrobat Distiller is not available! Quiting..."
@@ -160,11 +159,12 @@ Function DOC2PDF( sDocFile, sPDFFile )
 
   ' Debug output...
   'If bShowDebug Then
-  WScript.Echo " Distilling to '" + sPDFFile + "'"
+  WScript.Echo " Distilling file: '" + sTempFile + "' to: '" + sPDFFile + "'"
   'End If
 
   ' Distill the postscript file to PDF
-  oDistiller.FileToPDF sTempFile, sPDFFile, "Print"
+  oDistiller.FileToPDF sTempFile, sPDFFile, "Standard"
+
   Set oDistiller = Nothing
 
   ' Delete the temporary postscript file...
