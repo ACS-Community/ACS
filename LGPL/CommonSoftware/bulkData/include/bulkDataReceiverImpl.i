@@ -5,7 +5,6 @@ BulkDataReceiverImpl<TCallback>::BulkDataReceiverImpl(const ACE_CString& name,Co
     ACS_TRACE("BulkDataReceiverImpl<>::BulkDataReceiverImpl");
 
     containerServices_p=containerServices;
-
 }
 
 

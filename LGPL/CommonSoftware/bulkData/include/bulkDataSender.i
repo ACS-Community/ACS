@@ -97,7 +97,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const cha
     int numOtherFeps = addressToken.num_tokens();
     if(numOtherFeps > 9)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createMultipleFlows too many flows specified - maximum 9"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createMultipleFlows too many flows specified - maximum 9"));
 	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataSender::createMultipleFlows");
 	throw err;	
 	}
@@ -682,7 +682,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::initPartA()
 					 TAO_AV_CORE::instance()->poa ());
     if (result != 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::initPartA endpoint_strategy init failed"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::initPartA endpoint_strategy init failed"));
 	AVInitErrorExImpl err = AVInitErrorExImpl(__FILE__,__LINE__,"BulkDataSender::initPartA");
 	throw err;
 	}
@@ -697,7 +697,7 @@ AVStreams::StreamEndPoint_A_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::cr
     TAO_StreamEndPoint_A *localSepA_p = new TAO_StreamEndPoint_A();
     if(localSepA_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createSepA Stream Endpoint null"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createSepA Stream Endpoint null"));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createSepA");
 	throw err;
 	}
@@ -707,7 +707,7 @@ AVStreams::StreamEndPoint_A_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::cr
     AVStreams::StreamEndPoint_A_var localSepObj_p = localSepA_p->_this();
     if (CORBA::is_nil(localSepObj_p.in()))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createSepA unable to activate Stream Endpoint"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createSepA unable to activate Stream Endpoint"));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createSepA");
 	throw err;
 	}
@@ -724,7 +724,7 @@ AVStreams::FlowProducer_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::create
     BulkDataFlowProducer<TSenderCallback> *localFepA_p = new BulkDataFlowProducer<TSenderCallback>(flowname.c_str(), protocols, format.c_str(), strctrl_p);
     if(localFepA_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createFepProducerA Flow Producer null"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createFepProducerA Flow Producer null"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createFepProducerA");
 	throw err;
 	}
@@ -732,7 +732,7 @@ AVStreams::FlowProducer_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::create
     AVStreams::FlowProducer_var localFepObj_p = localFepA_p->_this(); 
     if (CORBA::is_nil(localFepObj_p.in()))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createFepProducerA unable to activate Flow Producer"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createFepProducerA unable to activate Flow Producer"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createFepProducerA");
 	throw err;
 	}
@@ -750,10 +750,9 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::addFepToSep(AVStreams::Stream
     ACE_TRACE("BulkDataSender<>::addFepToSep");
 
     CORBA::String_var s1 = locSepA_p->add_fep(locFepA_p);
-    
     if(s1 == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::addFepToSep Flow Endpoint cannot be created"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::addFepToSep Flow Endpoint cannot be created"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::addFepToSep");
 	throw err;
 	}
@@ -770,7 +769,7 @@ TAO_StreamCtrl * AcsBulkdata::BulkDataSender<TSenderCallback>::createStreamCtrl(
     TAO_StreamCtrl *locStrctrl_p = new TAO_StreamCtrl();
     if(locStrctrl_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::createStreamCtrl locStrctrl_p not initialized."));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createStreamCtrl locStrctrl_p not initialized."));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createStreamCtrl");
 	throw err;
 	}
@@ -1071,7 +1070,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 	int is = senderEntry.parse(senderFeps_m[i]);
 	if(is != 0)
 	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::mergeFlowSpecs sender_protocols[%d] CDB entry not correct",i));
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::mergeFlowSpecs sender_protocols[%d] CDB entry not correct",i));
 	    AVStreamBindErrorExImpl err = AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
 	    throw err;	
 	    }
@@ -1079,7 +1078,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 	int ir = recvEntry.parse(recvFeps_p[i]);
 	if(ir != 0)
 	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::mergeFlowSpecs recv_protocols[%d] CDB entry not correct",i));
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::mergeFlowSpecs recv_protocols[%d] CDB entry not correct",i));
 	    AVStreamBindErrorExImpl err = AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
 	    throw err;	
 	    }

@@ -23,7 +23,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::initialize()
     dal_p = containerServices_p->getCDB();
     if (CORBA::is_nil(dal_p))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl<>::initialize error getting CDB reference"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::initialize error getting CDB reference"));
 	AVObjectNotFoundExImpl err = AVObjectNotFoundExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl<>::initialize");
 	err.log();
 	throw err;
@@ -49,10 +49,9 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connect(bulkda
     ACS_TRACE("BulkDataDistributerImpl<>::connect");
 
     // single connect not allowed
-    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVFlowEndpointErrorExImpl SINGLE CONNECTION NOT ALLOWED"));
+    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::connect AVFlowEndpointErrorExImpl single connection not allowed"));
     AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
     throw err.getAVConnectErrorEx();
-
 }
 
 
@@ -311,51 +310,36 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
   
     char buf[BUFSIZ];
 
-    try
+    ACE_CString CDBpath="alma/";
+    CDBpath += name();
+
+    CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
+    if (CORBA::is_nil(dao_p))
 	{
-
-	ACE_CString CDBpath="alma/";
-	CDBpath += name();
-
-	CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
-	if (CORBA::is_nil (dao_p))
-	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl<>::openReceiver dao_p nil"));
-	    AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
-	    throw err.getAVStreamEndpointErrorEx();
-	    }
-
-	ACE_OS::strcpy(buf,dao_p->get_string("recv_protocols"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::openReceiver error getting DAO reference"));
+	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
+	throw err.getAVOpenReceiverErrorEx();	
 	}
-    catch(...)
+    
+    ACE_OS::strcpy(buf,dao_p->get_string("recv_protocols"));
+
+    AcsBulkdata::BulkDataReceiver<TReceiverCallback> *recv = distributer.getReceiver();
+    if(recv == 0)
 	{
-	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerImpl<>::openReceiver CDB failure."));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::openReceiver error getting receiver reference"));
 	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();	
 	}
 
     try
 	{
-	distributer.getReceiver()->initialize();
+	recv->initialize();
 
-	distributer.getReceiver()->createMultipleFlows(buf);
+	recv->createMultipleFlows(buf);
 	}
 
-    catch (AVInitErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl<>::openReceiver AVInitErrorEx exception catched !"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
-	throw err.getAVOpenReceiverErrorEx();
-	}
-    catch (AVStreamEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl<>::openReceiver AVStreamEndpointErrorEx exception catched !"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
-	throw err.getAVOpenReceiverErrorEx();
-	}
-    catch (AVFlowEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl<>::openReceiver AVFlowEndpointErrorEx exception catched !"));
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
 	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}

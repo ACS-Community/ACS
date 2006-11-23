@@ -102,14 +102,14 @@ namespace AcsBulkdata
 
 	virtual void multiDisconnect(const ACE_CString& receiverName);
 
-	virtual BulkDataReceiver<TReceiverCallback> * getReceiver() 
+	virtual BulkDataReceiver<TReceiverCallback> *getReceiver() 
 	    {
-		return & receiver_m;
+		return &receiver_m;
 	    }
 
-	virtual Sender_Map * getSenderMap() 
+	virtual Sender_Map *getSenderMap() 
 	    {
-		return & senderMap_m;
+		return &senderMap_m;
 	    }
 
 	virtual bool isRecvConnected (const ACE_CString& receiverName);

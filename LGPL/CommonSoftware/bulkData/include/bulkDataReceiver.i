@@ -55,7 +55,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
     fepsData.length(1);
 
     ACE_CString address = CORBA::string_dup("TCP");
-
     const char  * locEntry = createFlowSpec(flowName,address);
     fepsData[0] = CORBA::string_dup(locEntry);
 }
@@ -83,6 +82,12 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 
     TAO_Tokenizer addressToken(fepsConfig, '/');
     int numOtherFeps = addressToken.num_tokens();
+    if(numOtherFeps > 9)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createMultipleFlows too many flows specified - maximum 9"));
+	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+	throw err;	
+	}
 
     fepsData.length(numOtherFeps);
 
@@ -115,7 +120,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 	fepObj_p = createFepConsumerB(localStruct.fepsFlowname, defProt, localStruct.fepsFormat); 
 	addFepToSep(sepB_p.in(), fepObj_p.in());
 
-	const char  * locEntry = createFlowSpec(localStruct.fepsFlowname, localStruct.fepsProtocol);
+	const char *locEntry = createFlowSpec(localStruct.fepsFlowname, localStruct.fepsProtocol);
 	fepsData[j] = CORBA::string_dup(locEntry);
 	}
 }
@@ -275,8 +280,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initPartB()
 					  TAO_AV_CORE::instance()->poa());
     if (result != 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>:: initPartB reactiveStrategy failed !"));
-
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>:: initPartB reactiveStrategy failed"));
 	AVInitErrorExImpl err = AVInitErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::initPartB");
 	throw err;
 	}
@@ -289,19 +293,19 @@ AVStreams::StreamEndPoint_B_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>
     ACE_TRACE("BulkDataReceiver<>::createSepB");
 
     TAO_StreamEndPoint_B *localSepB_p = new TAO_StreamEndPoint_B();
-    if(localSepB_p == NULL)
+    if(localSepB_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::createSepB streamendpoint_b_ not initialized"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createSepB Stream Endpoint null"));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createSepB");
 	throw err;
 	}
 
     sepRefCount_p = localSepB_p;
 
-    AVStreams::StreamEndPoint_B_var localSepObj_p = localSepB_p->_this ();
+    AVStreams::StreamEndPoint_B_var localSepObj_p = localSepB_p->_this();
     if (CORBA::is_nil(localSepObj_p.in()))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::createSepB unable to activate sep_b object"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createSepB unable to activate Stream Endpoint"));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createSepB");
 	throw err;
 	}
@@ -316,17 +320,17 @@ AVStreams::FlowConsumer_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>::cr
     ACE_TRACE("BulkDataReceiver<>::createFepConsumerB");
 
     BulkDataFlowConsumer<TReceiverCallback> *localFepB_p = new BulkDataFlowConsumer<TReceiverCallback>(flowName.c_str(), protocols, format.c_str());
-    if(localFepB_p == NULL)
+    if(localFepB_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::createFepConsumerB flowconsumer_b not initialized."));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createFepConsumerB Flow Consumer null"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
 	throw err;
 	}
 
-    AVStreams::FlowConsumer_var localFepObj_p =  localFepB_p->_this(); 
-    if (CORBA::is_nil(localFepObj_p.in ()))
+    AVStreams::FlowConsumer_var localFepObj_p = localFepB_p->_this(); 
+    if (CORBA::is_nil(localFepObj_p.in()))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::createFepConsumerB unable to activate fep_b object"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createFepConsumerB unable to activate Flow Consumer"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
 	throw err;
 	}
@@ -342,16 +346,15 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::addFepToSep(AVStreams::St
 {
     ACE_TRACE("BulkDataReceiver<>::addFepToSep");
 
-    try
+    CORBA::String_var s1 = locSepB_p->add_fep(locFepB_p);
+    if(s1 == 0)
 	{
-	CORBA::String_var s1 = locSepB_p->add_fep(locFepB_p);
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::addFepToSep Added flowendpoint named: %s", s1.in() ));
-	}
-    catch(...)
-	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::addFepToSep Flow Endpoint cannot be created"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::addFepToSep");
 	throw err;
 	}
+
+    ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::addFepToSep Added flowendpoint named: %s", s1.in()));
 }
 
 

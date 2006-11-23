@@ -33,6 +33,12 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 {
     ACS_TRACE("BulkDataSenderImpl::connect");
 
+    if (CORBA::is_nil(receiverObj_p))
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect receiver reference null"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	throw err.getAVConnectErrorEx();
+	}
     receiverObj_m = bulkdata::BulkDataReceiver::_duplicate(receiverObj_p);
 
     char buf[BUFSIZ];
@@ -40,7 +46,7 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
     CDB::DAL_ptr dal_p = containerServices_p->getCDB();
     if (CORBA::is_nil (dal_p))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect error getting CDB reference"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect error getting CDB reference"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
@@ -51,7 +57,7 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
     CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
     if (CORBA::is_nil (dao_p))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect error getting DAO reference"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect error getting DAO reference"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
@@ -83,59 +89,21 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 	    const bulkdata::BulkDataReceiverConfig &rcvConf = *receiverConfig;
 	    distrObj_p->setReceiver(rcvConf);
 	    }
-
 	}
 
-    /*catch (AVInitErrorExImpl & ex)
-      {   
-      ACS_SHORT_LOG((LM_INFO, "BulkDataSenderImpl::connect AVInitErrorExImpl exception catched !"));
-      AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-      throw err.getAVConnectErrorEx();
-      }
-      catch (AVStreamEndpointErrorExImpl & ex)
-      {   
-      ACS_SHORT_LOG((LM_INFO, "BulkDataSenderImpl::connect AVStreamEndpointErrorExImpl exception catched !"));
-      AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-      throw err.getAVConnectErrorEx();
-      }
-      catch (AVFlowEndpointErrorExImpl & ex)
-      {   
-      ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVFlowEndpointErrorExImpl exception catched !"));
-      AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-      throw err.getAVConnectErrorEx();
-      }
-      catch (AVOpenReceiverErrorEx & ex)
-      {   
-      ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVOpenReceiverErrorEx exception catched !"));
-      AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-      throw err.getAVConnectErrorEx();
-      }
-      catch (AVReceiverConfigErrorEx & ex)
-      {   
-      ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVReceiverConfigErrorEx exception catched !"));
-      AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-      throw err.getAVConnectErrorEx();
-      }
-      catch (AVStreamBindErrorExImpl & ex)
-      {   
-      ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVStreamBindErrorExImpl exception catched !"));
-      AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-      throw err.getAVConnectErrorEx();
-      }
-      catch (AVInvalidFlowNumberEx & ex)
-      {
-      ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect AVInvalidFlowNumberExImpl exception catched !"));
-      AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-      throw err.getAVConnectErrorEx();
-      }*/
-    catch (ACSErr::ACSbaseExImpl &ex)
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	throw err.getAVConnectErrorEx();
+	}
+    catch(AVOpenReceiverErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::connect UNKNOWN exception"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect UNKNOWN exception"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
