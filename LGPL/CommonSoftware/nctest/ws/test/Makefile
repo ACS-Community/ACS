@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.12 2006/11/20 17:06:47 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.13 2006/11/24 13:48:23 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -79,7 +79,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = javaSupplierComponent
+PY_SCRIPTS_L       = javaSupplierComponent pyStructureEventTest
 
 PY_MODULES         =
 PY_MODULES_L       =
@@ -113,7 +113,7 @@ PANELS_L =
 # 
 # IDL Files and flags
 # 
-IDL_FILES_L = nctestSpr2005067 separateTypedef testStructs
+IDL_FILES_L = nctestSpr2005067 separateTypedef testStructs DataCaptureExample
 IDL_TAO_FLAGS =
 USER_IDL =
 
