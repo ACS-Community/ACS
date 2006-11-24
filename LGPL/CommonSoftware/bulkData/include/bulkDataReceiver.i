@@ -133,8 +133,9 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
     ACS_TRACE("BulkDataReceiver<>::getReceiverConfig");
 
     recvConfig_p = new bulkdata::BulkDataReceiverConfig;
-    if(recvConfig_p == NULL)
+    if(recvConfig_p == 0)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig error creating BulkDataReceiverConfig"));
 	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	throw err;
 	}
@@ -142,11 +143,19 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
     recvConfig_p->streamendpoint_B = getStreamEndPointB();
     if (CORBA::is_nil((recvConfig_p->streamendpoint_B).in()))
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig BulkDataReceiverConfig.streamendpoint_B null"));
 	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	throw err;
 	}
 
     recvConfig_p->fepsInfo = *(getFepsConfig());
+    // To be verified
+    if (&(recvConfig_p->fepsInfo) == 0)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig BulkDataReceiverConfig.fepsInfo null"));
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
+	throw err;
+	}
     
     return recvConfig_p._retn();
 }
@@ -280,7 +289,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initPartB()
 					  TAO_AV_CORE::instance()->poa());
     if (result != 0)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>:: initPartB reactiveStrategy failed"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::initPartB reactiveStrategy failed"));
 	AVInitErrorExImpl err = AVInitErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::initPartB");
 	throw err;
 	}

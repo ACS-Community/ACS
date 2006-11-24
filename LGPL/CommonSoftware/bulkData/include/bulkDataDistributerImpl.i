@@ -367,6 +367,12 @@ bulkdata::BulkDataReceiverConfig * BulkDataDistributerImpl<TReceiverCallback, TS
 	{
 	throw ex.getAVReceiverConfigErrorEx();
 	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::getReceiverConfig UNKNOWN exception"));
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::getReceiverConfig");
+	throw err.getAVReceiverConfigErrorEx();
+	}
 
     return receiverConfig;
 }

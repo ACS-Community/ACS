@@ -73,10 +73,12 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 	receiverObj_p->openReceiver();
 
 	bulkdata::BulkDataReceiverConfig *receiverConfig = receiverObj_p->getReceiverConfig();
+	// To be verified
 	if(receiverConfig == 0)
 	    {
-	    ACS_SHORT_LOG((LM_INFO, "BulkDataSenderImpl::connect AVReceiverConfigErrorExImpl - receiverConfig NULL"));
-	    throw AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect AVReceiverConfigErrorExImpl receiver config null"));
+	    AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect"); 	    
+	    throw err.getAVReceiverConfigErrorEx();
 	    }
 
 	sender.connectToPeer(receiverConfig);
@@ -97,6 +99,11 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 	throw err.getAVConnectErrorEx();
 	}
     catch(AVOpenReceiverErrorEx &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	throw err.getAVConnectErrorEx();
+	}
+    catch(AVReceiverConfigErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();

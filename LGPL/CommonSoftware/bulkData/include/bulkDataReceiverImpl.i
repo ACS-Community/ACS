@@ -111,6 +111,12 @@ bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverC
 	{
 	throw ex.getAVReceiverConfigErrorEx();
 	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::getReceiverConfig UNKNOWN exception"));
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
+	throw err.getAVReceiverConfigErrorEx();
+	}
 
     return receiverConfig;
 }
@@ -121,7 +127,6 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
     throw (CORBA::SystemException, AVCloseReceiverErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::close");
-
 
     try
 	{
