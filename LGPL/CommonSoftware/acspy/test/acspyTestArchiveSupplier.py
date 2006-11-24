@@ -21,37 +21,39 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestArchiveConsumer.py,v 1.4 2006/11/24 07:55:57 cparedes Exp $
+# @(#) $Id: acspyTestArchiveSupplier.py,v 1.1 2006/11/24 07:55:57 cparedes Exp $
 ###############################################################################
 '''
-Tests archive consumer
+Tests archive supplier
 '''
-from Acspy.Nc.ArchiveConsumer import ArchiveConsumer
+from Acspy.Nc.ArchiveSupplier import ArchiveSupplier
 from sys  import argv
 from time import sleep
 ###############################################################################
-count = 0
-magicNumber = int(argv[2])
 
-def myHandler(ts, device, parameter, value):
-    '''
-    '''
-    print "device=" + device +" parameter=" +parameter+" value="+ str(value)
-    global count 
-    if count < magicNumber:
-        count = count + 1
-    return
 
-#create the consumer
-myConsumer = ArchiveConsumer(myHandler)
-myConsumer.consumerReady()
-#give the consumer a chance to receive the events
-sleep(int(argv[1]))
+mySupplier = ArchiveSupplier()
+
+mySupplier.publishEvent(3.14)
+mySupplier.publishEvent(3.1)
+mySupplier.publishEvent(1)
+mySupplier.publishEvent(2)
+mySupplier.publishEvent(3)
+mySupplier.publishEvent(4)
+mySupplier.publishEvent("a string")
+
+doubleSeq = (3.14 , 2.1)
+mySupplier.publishEvent(doubleSeq)
+
+floatSeq = (3.1 , 8.1)
+mySupplier.publishEvent(floatSeq)
+
+longSeq = (1 , 7)
+mySupplier.publishEvent(longSeq)
+
+stringSeq = ("a" , "string")
+mySupplier.publishEvent(stringSeq)
 
 #shutdown everything cleanly
-myConsumer.disconnect()
+mySupplier.disconnect()
 
-if count==magicNumber:
-    print "Test passed!"
-else:
-    print "Test failed:", count

@@ -21,12 +21,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestArchiveConsumer.py,v 1.4 2006/11/24 07:55:57 cparedes Exp $
+# @(#) $Id: acspyTestArchiveConsumerPS.py,v 1.1 2006/11/24 07:55:57 cparedes Exp $
 ###############################################################################
 '''
 Tests archive consumer
 '''
 from Acspy.Nc.ArchiveConsumer import ArchiveConsumer
+from Acspy.Clients.SimpleClient import PySimpleClient
 from sys  import argv
 from time import sleep
 ###############################################################################
@@ -36,7 +37,6 @@ magicNumber = int(argv[2])
 def myHandler(ts, device, parameter, value):
     '''
     '''
-    print "device=" + device +" parameter=" +parameter+" value="+ str(value)
     global count 
     if count < magicNumber:
         count = count + 1
@@ -45,11 +45,16 @@ def myHandler(ts, device, parameter, value):
 #create the consumer
 myConsumer = ArchiveConsumer(myHandler)
 myConsumer.consumerReady()
+#activate the component which will publish the events automatically
+joe = PySimpleClient()
+ps = joe.getComponent("TEST_PS_1")
 #give the consumer a chance to receive the events
 sleep(int(argv[1]))
 
 #shutdown everything cleanly
 myConsumer.disconnect()
+joe.releaseComponent("TEST_PS_1")
+joe.disconnect()
 
 if count==magicNumber:
     print "Test passed!"

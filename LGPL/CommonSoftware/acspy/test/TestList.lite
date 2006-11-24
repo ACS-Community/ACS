@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.22 2006/03/03 17:18:43 dfugate Exp $"
+# "@(#) $Id: TestList.lite,v 1.23 2006/11/24 07:55:57 cparedes Exp $"
 #
 # TestList
 #
@@ -86,6 +86,7 @@ PROLOGUE acspyTATPrologue
 24 testILSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer cdb_channelIL 15 1" "@SLEEP 2" \
                             "acsutilTATTestRunner acspyTestSupplier cdb_channelIL 15"
 
-25 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumer 15 1"
+25 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumerPS 15 1"
+26 testArchiveSupplier    "acsutilTATTestRunner acspyTestArchiveConsumer 15 11" "@SLEEP 3" "acsutilTATTestRunner acspyTestArchiveSupplier"  "@SLEEP 13"
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue

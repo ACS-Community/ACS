@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.38 2006/02/17 06:48:09 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.39 2006/11/24 07:55:57 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -53,6 +53,8 @@ PY_SCRIPTS_L =	acspyTestACSComponent \
 		acspyTestDurationHelper \
 		acspyTestAutoload \
 		acspyTestArchiveConsumer \
+		acspyTestArchiveSupplier \
+		acspyTestArchiveConsumerPS \
 		acspyTestCompReload \
 		acspyTestSupplier acspyTestConsumer acspyTestQoSTimeout
 

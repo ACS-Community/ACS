@@ -1,0 +1,12 @@
+1 - device=no_device parameter=no_param value=3.14
+1 - device=no_device parameter=no_param value=3.1
+1 - device=no_device parameter=no_param value=1
+1 - device=no_device parameter=no_param value=2
+1 - device=no_device parameter=no_param value=3
+1 - device=no_device parameter=no_param value=4
+1 - device=no_device parameter=no_param value=a string
+1 - device=no_device parameter=no_param value=[3.1400000000000001, 2.1000000000000001]
+1 - device=no_device parameter=no_param value=[3.1000000000000001, 8.0999999999999996]
+1 - device=no_device parameter=no_param value=[1, 7]
+1 - device=no_device parameter=no_param value=['a', 'string']
+1 - Test passed!
