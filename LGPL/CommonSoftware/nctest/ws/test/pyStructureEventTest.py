@@ -6,11 +6,7 @@ import datacapEx
 from datacapEx import ExecBlockProcessedEvent, DataCapturerId, ExecBlockStartedEvent, ScanStartedEvent
 import asdmEX
 
-
-try:
-    s = Supplier('pyTest-NC')
-except Exception, e:
-    print_exec()
+s = Supplier('pyTest-NC')
 
 name = 'DATACAP1'
 s.publishEvent(name)
@@ -38,6 +34,11 @@ s.publishEvent(startExecBlock)
     
 endExecBlock   = datacapEx.ExecBlockEndedEvent(execBlockEntityRef,sbId,sessionId,arrayId,datacapEx.SUCCESS,time+10)
 s.publishEvent(endExecBlock)
+
+print "All structures successfully sent!!"
+s.destroyNotificationChannel()
+
+
 
 
 

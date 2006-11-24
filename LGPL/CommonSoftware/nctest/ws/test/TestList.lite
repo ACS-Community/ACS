@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.6 2006/08/18 10:22:47 gchiozzi Exp $"
+# "@(#) $Id: TestList.lite,v 1.7 2006/11/24 14:42:01 bjeram Exp $"
 #
 # TestList
 #
@@ -128,4 +128,7 @@ PROLOGUE nctestTATPrologue
 #DWF-todo
 26  T26  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCSupplier" "@SLEEP 5" "acsutilTATTestRunner javaSupplierComponent" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCClient" "@SLEEP 75"
 
+# Test sending complicated structures to NC from python
+27 pySupplierStruct "acsutilTATTestRunner pyStructureEventTest"
+ 
 EPILOGUE acsutilTATEpilogue
