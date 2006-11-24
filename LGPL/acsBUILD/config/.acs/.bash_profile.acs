@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.64 2006/08/31 09:20:07 gchiozzi Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.65 2006/11/24 10:16:06 bjeram Exp $"
 #
 #
 #
@@ -288,7 +288,14 @@ os_discovery
 # (kernel version < 2.4.20-28.9).
 # Comment it if you have a newer kernel.
 #
-#export LD_ASSUME_KERNEL=2.4.18 
+#export LD_ASSUME_KERNEL=2.4.18
+
+#
+# This is necessary that we can send structured events from Python (OMNIORB)
+# to TAO notification channel
+# For detils check: 
+# http://omniorb.sourceforge.net/omni40/omniORB/omniORB004.html#toc18
+export ORBuseTypeCodeIndirections=0
 
 #
 # Uncomment this to use at the same time 
