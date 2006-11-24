@@ -1,0 +1,132 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+ 
+#ifndef _DATACAPTURE_EX_IDL_
+#define _DATACAPTURE_EX_IDL_
+
+
+#include <acstime.idl>
+#pragma prefix "alma"
+
+module asdmEX
+{
+
+/*  form #include <asdmIDLTypes.idl>  in namespace  asdmIDLTypes */
+ struct IDLEntityRef {
+		string entityId;
+		string partId;
+		string entityTypeName;
+		string instanceVersion;
+	};
+};
+
+module datacapEx
+{
+
+/* from DataCapture.idl namespace offline */
+    typedef ACS::Time DCCTime;
+    typedef string ArrayId;
+
+enum Completion {
+    FAIL,
+    SUCCESS,
+    PARTIAL,
+    TIMEOUT
+  };
+
+// from CONTROL ICD
+enum ScanPurpose {
+    TARGET,     
+    CALIBRATION,	
+
+    // Calibration SubIntents
+    FOCUS, 
+    HOLOGRAPHY, 
+    POINTING, 
+    ATMOSPHERE, 
+    POINTINGMODEL, 
+    PHASECAL, 
+    AMPLICAL, 
+    DELAY, 
+    ANTENNAPOSITIONS,
+    PHASECURVE, 
+    AMPLICURVE, 
+    SKYDIP,
+    POLARIZATION,
+    BANDPASS,
+
+      LAST,        // End of a sequency (i.e. final optical pointing target)
+    OFFLINEPROCESSING      // Telcal ignores this scan
+  };
+  
+  typedef sequence < ScanPurpose > ScanPurposeSeq;
+  
+
+ struct DataCapturerId{
+     string name;
+     ArrayId array;
+     asdmEX::IDLEntityRef session;
+     asdmEX::IDLEntityRef schedBlock; 
+  };
+
+// structures from CONTROL
+  struct ScanStartedEvent {
+    asdmEX::IDLEntityRef execId;
+    ArrayId arrayName;
+    long scanNumber;
+    ScanPurposeSeq scanType;
+    ACS::Time startTime;
+  };
+
+  struct ExecBlockStartedEvent {
+    asdmEX::IDLEntityRef execId;
+    asdmEX::IDLEntityRef sbId;
+    asdmEX::IDLEntityRef sessionId;
+    ArrayId arrayName;
+    ACS::Time startTime;
+  };
+
+  struct ExecBlockEndedEvent {
+    asdmEX::IDLEntityRef execId;
+    asdmEX::IDLEntityRef sbId;
+    asdmEX::IDLEntityRef sessionId;
+    ArrayId arrayName;
+    Completion status;
+    ACS::Time endTime;
+  };
+  
+  struct ExecBlockProcessedEvent{
+    DataCapturerId workingDCId; 
+    string status; 
+    asdmEX::IDLEntityRef processedExecBlockId;  
+    DCCTime finishedAt;
+  };
+
+// structure that Sohaila had problem with
+struct DataCapturerStartedEvent{
+    DataCapturerId workingDCId;
+    string status;
+    DCCTime finishedAt;
+};
+
+};
+#endif
