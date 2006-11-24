@@ -472,7 +472,7 @@ class AnyAide {
 				localHelperName = any.type() + "Helper";
 			}
 			localHelperName = localHelperName.replaceAll("::", ".");
-			System.out.println("STEVE:::AnyAide::complexAnyToObject: the class name is - " + localHelperName);
+//			System.out.println("STEVE:::AnyAide::complexAnyToObject: the class name is - " + localHelperName);
 			Class localHelper = Class.forName(localHelperName);
 
 			// Extract method of helper class
