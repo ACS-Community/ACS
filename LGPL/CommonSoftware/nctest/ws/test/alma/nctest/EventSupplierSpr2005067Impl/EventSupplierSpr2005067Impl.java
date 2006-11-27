@@ -26,22 +26,18 @@
  */
 package alma.nctest.EventSupplierSpr2005067Impl;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
-
-import alma.acs.component.ComponentImplBase;
-import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerServices;
-import alma.acs.nc.SimpleSupplier;
-import alma.demo.SupplierCompOperations;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
-import alma.acs.exceptions.AcsJException;
-
-import alma.SPR2005067.CHANNELNAME_SPR2005067;
 import alma.SPR2005067.ControlSystemChangeOfStateEvent;
 import alma.SPR2005067.ControlSystemChangeOfStateEvent2;
+import alma.acs.component.ComponentImplBase;
+import alma.acs.component.ComponentLifecycleException;
+import alma.acs.container.ContainerServices;
+import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.SimpleSupplier;
+import alma.demo.SupplierCompOperations;
 
 /** Class designed for testing event suppliers.
  * @author dfugate
@@ -147,6 +143,13 @@ public class EventSupplierSpr2005067Impl
 	   }
    }
     
+   
+   public void sendEventsSpecial(alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent[] eventData) throws alma.ACSErrTypeCommon.CouldntPerformActionEx
+   {
+	   // todo
+   }
+   
+   
     /** Disconnects the supplier. */
    public void cleanUp()
    {
