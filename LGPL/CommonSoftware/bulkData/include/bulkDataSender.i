@@ -146,24 +146,39 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::connectToPeer(bulkdata::BulkD
 {
     ACS_TRACE("BulkDataSender<>::connectToPeer");   
 
-    setReceiverConfig(recvConfig_p);
-    //the_qos = create_QoS();
-
-    mergeFlowSpecs();
-
-    AVStreams::streamQoS_var theQos(new AVStreams::streamQoS);
-
-    CORBA::Boolean res = streamctrl_p->bind(sepA_p.in(),
-					    sepB_p.in(), 
-					    theQos.inout(), 
-					    flowSpec_m);
-    if (res == 0)
+    try
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::connectToPeer streamctrl_p->bind failed  "));
-	AVStreamBindErrorExImpl err = AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::connectToPeer");
+	setReceiverConfig(recvConfig_p);
+	//the_qos = create_QoS();
+	
+	mergeFlowSpecs();
+	
+	AVStreams::streamQoS_var theQos(new AVStreams::streamQoS);
+	
+	CORBA::Boolean res = streamctrl_p->bind(sepA_p.in(),
+						sepB_p.in(), 
+						theQos.inout(), 
+						flowSpec_m);
+	if (res == 0)
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::connectToPeer streams bind failed"));
+	    AVStreamBindErrorExImpl err = AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::connectToPeer");
+	    throw err;
+	    }
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSender::connectToPeer");
+	throw err;
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::connectToPeer UNKNOWN exception"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSender::connectToPeer");
 	throw err;
 	}
 
+    // it seems necessary beacuse the bind method is not compeltely synchronous, i.e. it exits even if the connection is not fully established. TBA
     ACE_OS::sleep(1);
 }
 
@@ -835,24 +850,30 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::setReceiverConfig(bulkdata::B
 {
     ACS_TRACE("BulkDataSender<>:::setReceiverConfig");   
 
-    if (recvConfig_p == 0)
-	{
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSender::setReceiverConfig");
-	throw err;
-	}
-    
-
     sepB_p = recvConfig_p->streamendpoint_B;
     if(CORBA::is_nil(sepB_p.in()))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::setReceiverConfig - sepB_p not resolved"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::setReceiverConfig Stream Endpoint not initialized"));
 	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSender::setReceiverConfig");
 	throw err;
 	}
 
     CORBA::ULong dim = recvConfig_p->fepsInfo.length();
-
+    if(dim == 0)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::setReceiverConfig Flow Specifications empty"));
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSender::setReceiverConfig");
+	throw err;
+	}
+    
     recvFeps_p = new AVStreams::flowSpec;
+    if (recvFeps_p == 0)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::setReceiverConfig error creating Flow Specifications"));
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSender::setReceiverConfig");
+	throw err;
+	}
+
     recvFeps_p->length(dim);
 
     for(CORBA::ULong i = 0; i < dim; i++)

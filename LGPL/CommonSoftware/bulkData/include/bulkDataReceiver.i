@@ -143,16 +143,18 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
     recvConfig_p->streamendpoint_B = getStreamEndPointB();
     if (CORBA::is_nil((recvConfig_p->streamendpoint_B).in()))
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig BulkDataReceiverConfig.streamendpoint_B null"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig Stream Endpoint not initilaized"));
 	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	throw err;
 	}
 
-    recvConfig_p->fepsInfo = *(getFepsConfig());
-    // To be verified
-    if (&(recvConfig_p->fepsInfo) == 0)
+    if((getFepsConfig())->length() > 0)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig BulkDataReceiverConfig.fepsInfo null"));
+	recvConfig_p->fepsInfo = *(getFepsConfig());
+	}
+    else
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig Flow Specifications empty"));
 	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	throw err;
 	}
