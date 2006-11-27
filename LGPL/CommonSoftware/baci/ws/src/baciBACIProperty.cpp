@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.cpp,v 1.6 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciBACIProperty.cpp,v 1.7 2006/11/27 10:01:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.6 2006/09/01 02:20:54 cparedes Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.7 2006/11/27 10:01:29 bjeram Exp $");
 
 namespace baci {
 
@@ -246,6 +246,8 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
   BACIMonitor* mon_p=0;
 
   ThreadSyncGuard guard(&monitorVectorMutex_m);
+
+  completion.type = ACSErr::ACSErrTypeMonitor;
 
   for (int n=0; n<getMonitorCount() && inDestructionState_m==false; n++) 
     {
