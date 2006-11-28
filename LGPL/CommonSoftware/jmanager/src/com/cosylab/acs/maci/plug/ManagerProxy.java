@@ -12,10 +12,6 @@ import java.net.URI;
 
 import org.omg.CORBA.Object;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
 import alma.maciErrType.NoPermissionEx;
 
 import com.cosylab.acs.maci.Client;
@@ -23,17 +19,18 @@ import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentSpecIncompatibleWithActiveComponentException;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.ContainerInfo;
-import com.cosylab.acs.maci.IncompleteComponentSpecException;
 import com.cosylab.acs.maci.IntArray;
-import com.cosylab.acs.maci.InvalidComponentSpecException;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
 
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
@@ -54,13 +51,13 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ManagerProxy extends CORBAReferenceSerializator implements Manager, Identifiable, Serializable
+public class ManagerProxy extends CORBAReferenceSerializator implements Manager, Serializable
 {
 
 	/**
-	 * Identifier.
+	 * Serial version UID.
 	 */
-	protected Identifier id = null;
+	private static final long serialVersionUID = 1616932223611613918L;
 
 	/**
 	 * CORBA reference.
@@ -143,8 +140,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'get_component()' method.", ex);
-			re.caughtIn(this, "getComponent");
+			//RemoteException re = new RemoteException("Failed to invoke 'get_component()' method.", ex);
 			//throw re;
 			return null;
 		}
@@ -191,8 +187,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'get_component_info()' method.", ex);
-			re.caughtIn(this, "getComponentInfo");
+			//RemoteException re = new RemoteException("Failed to invoke 'get_component_info()' method.", ex);
 			//throw re;
 			return null;
 		}
@@ -243,9 +238,8 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public ComponentInfo getDynamicComponent(int id,
             ComponentSpec componentSpec, boolean markAsDefault)
-            throws AcsJNoPermissionEx, IncompleteComponentSpecException,
-            InvalidComponentSpecException,
-            ComponentSpecIncompatibleWithActiveComponentException
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
+		   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx
     {
         /// @todo Not implemented
         return null;
@@ -267,9 +261,8 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
      */
     public ComponentInfo getCollocatedComponent(int id,
             ComponentSpec componentSpec, boolean markAsDefault, URI targetComponentURI)
-            throws AcsJNoPermissionEx, IncompleteComponentSpecException,
-            InvalidComponentSpecException,
-            ComponentSpecIncompatibleWithActiveComponentException
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
+		   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx
     {
         /// @todo Not implemented
         return null;
@@ -279,7 +272,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	 * @see com.cosylab.acs.maci.Manager#getComponentNonSticky(int, java.net.URI)
 	 */
 	public Component getComponentNonSticky(int id, URI curl) 
-		throws AcsJNoPermissionEx
+		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
     {
         /// @todo Not implemented
         return null;
@@ -347,8 +340,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'release_component()' method.", ex);
-			re.caughtIn(this, "releaseComponent");
+			//RemoteException re = new RemoteException("Failed to invoke 'release_component()' method.", ex);
 			//throw re;
 			return 0;
 		}
@@ -426,28 +418,6 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	public si.ijs.maci.Manager getManager()
 	{
 		return manager;
-	}
-
- 	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Manager CORBA Proxy", "Manager", Identifier.PLUG);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
 	}
 
     /**

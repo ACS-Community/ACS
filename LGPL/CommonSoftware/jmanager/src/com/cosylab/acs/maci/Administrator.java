@@ -4,8 +4,6 @@
  
 package com.cosylab.acs.maci;
 
-import abeans.pluggable.RemoteException;
-
 /**
  * Administrator is a special-purpose client that can monitor the functioning of the domain that it administers.
  * Monitoring includes obtaining the status of the MACI components (the Manager and Containers) as well

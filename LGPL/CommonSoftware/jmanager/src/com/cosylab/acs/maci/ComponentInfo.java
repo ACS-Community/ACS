@@ -16,6 +16,11 @@ public class ComponentInfo implements Serializable
 {
 
 	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -4376414924118239593L;
+
+	/**
 	 * Component's handle.
 	 * The handle is automatically assigned by the Manager.
 	 */

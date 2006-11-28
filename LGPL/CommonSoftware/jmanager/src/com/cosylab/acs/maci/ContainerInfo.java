@@ -16,6 +16,11 @@ public class ContainerInfo implements Serializable
 {
 	
 	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -2545764366629134129L;
+
+	/**
 	 * Container's handle (in the range 0x04000000 to 0x04FFFFFF).
 	 */
 	private int handle;

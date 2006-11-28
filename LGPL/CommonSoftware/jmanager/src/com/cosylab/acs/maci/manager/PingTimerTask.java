@@ -5,14 +5,7 @@
 package com.cosylab.acs.maci.manager;
 
 import java.util.TimerTask;
-import java.util.logging.Level;
-
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.core.defaults.ExceptionIgnorer;
-import abeans.pluggable.acs.logging.LoggingLevel;
+import java.util.logging.Logger;
 
 import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.HandleHelper;
@@ -35,7 +28,7 @@ import com.cosylab.acs.maci.RemoteTransientException;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class PingTimerTask extends TimerTask implements Identifiable
+public class PingTimerTask extends TimerTask 
 {
 
 	/**
@@ -61,30 +54,27 @@ public class PingTimerTask extends TimerTask implements Identifiable
 	private ClientInfo clientInfo;
 
 	/**
-	 * Identifier.
+	 * Logger.
 	 */
-	private transient Identifier id = null;
-
+	private Logger logger;
+	
 	/**
 	 * Constructs a ping task which monitors client's state.
 	 * @param	manager	manager to which the client is logged in
+	 * @param 	logger logger.
 	 * @param	clientInfo	info of the client to be monitored
 	 */
-	public PingTimerTask(Manager manager, ClientInfo clientInfo)
+	public PingTimerTask(Manager manager, Logger logger, ClientInfo clientInfo)
 	{
 		super();
 		
 		assert (manager != null);
+		assert (logger != null);
 		assert (clientInfo != null);
 		
 		this.manager = manager;
+		this.logger = logger;
 		this.clientInfo = clientInfo;
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "PingTimerTask", new Object[] { 
-				manager == null ? "null" : manager.toString(), 
-				clientInfo == null ? "null" : clientInfo.toString() }).dispatch(); 
 
 		this.transientCount = 0;
 	}
@@ -97,44 +87,17 @@ public class PingTimerTask extends TimerTask implements Identifiable
 		// do not throw any exceptions here...
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "logout", new Object[0]).dispatch(); 
-	
 			// cancel this task
 			cancel();
 			
 			// and logout
 			manager.logout(clientInfo.getHandle());
 	
-			if (isDebug())
-				new MessageLogEntry(this, "logout", "Exiting.", Level.FINEST).dispatch();
-				
 		}
-		catch (Exception ex)
+		catch (Throwable th)
 		{
+			// noop
 		}
-	}
-
-	/**
-	 * Override cancel metod adding trace logs.
-	 */
-	public boolean cancel()
-	{
-		boolean retVal = super.cancel();
-		// do not throw any exceptions here...
-		
-		// TODO it would be nice to release (set to null) clientInfo reference here
-		// but be careful when setting it to null
-
-		try
-		{
-			if (isDebug())
-				new MessageLogEntry(this, "cancel", new Object[0]).dispatch(); 
-	
-		}
-		catch (Exception ex) {}
-
-		return retVal;
 	}
 
 	/**
@@ -145,14 +108,12 @@ public class PingTimerTask extends TimerTask implements Identifiable
 		try
 		{
 			
-			if (isDebug())
-				new MessageLogEntry(this, "run", "Invoking ping on "+HandleHelper.toString(clientInfo.getHandle())+"].", LoggingLevel.DEBUG).dispatch();
+			logger.finer("Invoking ping on "+HandleHelper.toString(clientInfo.getHandle())+"].");
 
 			// malfunctioning client check
 			if (clientInfo.getClient().ping() == false)
 			{
-				if (isDebug())
-					new MessageLogEntry(this, "run", "Client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] announced itself as malfunctioning.", LoggingLevel.INFO).dispatch();
+				logger.info("Client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] announced itself as malfunctioning.");
 					
 				logout();
 			}
@@ -162,59 +123,39 @@ public class PingTimerTask extends TimerTask implements Identifiable
 		}
 		catch (RemoteTransientException rte)
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "run", "Invoking client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] ping method thrown transient exception.", rte, LoggingLevel.INFO).dispatch();
+			//logger.log(Level.INFO, "Invoking client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] ping method thrown transient exception.", rte);
 
 			// client not reachable
 			transientCount++;
 			if (transientCount >= MAX_TRANSIENT_COUNT)
+			{
+				logger.info("Client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] is unreachable, logging it out.");
 				logout();
+			}
 		
 		}
 		catch (RemoteTimeoutException rtoe)
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "run", "Invoking client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] ping method thrown timeout exception.", rtoe, LoggingLevel.INFO).dispatch();
-
+			//logger.log(Level.INFO, "Invoking client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] ping method thrown timeout exception.", rtoe);
+			
 			// client not reachable
 			transientCount++;
 			if (transientCount >= MAX_TRANSIENT_COUNT)
+			{
+				logger.info("Client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] ping method timed-out several times, logging it out.");
 				logout();
+			}
 		
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
-                        if (isDebug())
-                                new MessageLogEntry(this, "run", "Invoking client '"+clientInfo.getName()+"' ping method thrown an exception, logging it out.", ex, LoggingLevel.INFO).dispatch();
-			// we handled from exception
-			new ExceptionIgnorer(ex);
+			//logger.log(Level.INFO, "Invoking client '"+clientInfo.getName()+"' ping method thrown an exception, logging it out.", ex);
+			logger.info("Invoking client '"+clientInfo.getName()+"' ping method thrown an unknown exception, logging it out.");
 
 			// malfunctioning client
 			logout();
 		}
 
-	}
-
-	/*************************** [ Abeans methods ] ******************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("PingTimerTask for '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"]",
-										"PingTimerTask", Identifier.PLUG);
-		
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return true;
 	}
 
 	/**

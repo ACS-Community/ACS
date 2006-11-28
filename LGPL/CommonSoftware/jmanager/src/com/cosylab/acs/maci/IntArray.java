@@ -20,6 +20,11 @@ public class IntArray implements Serializable, Cloneable
 {
 
     /**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -8356201427005323616L;
+
+	/**
      * Default capacity for the array.
      */
     private static final int DEFAULT_CAPACITY = 10;

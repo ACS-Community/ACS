@@ -4,20 +4,17 @@
  
 package com.cosylab.acs.maci.plug;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
-import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Client;
+import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.MessageType;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * 
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ClientImpl implements Client, Identifiable
+public class ClientImpl implements Client
 {
 
 	/**
@@ -29,11 +26,6 @@ public class ClientImpl implements Client, Identifiable
 	 * Client handle.
 	 */
 	int handle;
-
-	/**
-	 * Identifier.
-	 */
-	private Identifier id = null;
 
 	/**
 	 * Implementation of <code>Client</code>.
@@ -131,16 +123,6 @@ public class ClientImpl implements Client, Identifiable
 	public void setName(String name)
 	{
 		this.name = name;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport(name, name, Identifier.PLUG);
-		return id;
 	}
 
 	/**

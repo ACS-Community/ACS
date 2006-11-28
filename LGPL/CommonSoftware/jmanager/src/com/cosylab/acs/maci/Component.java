@@ -4,8 +4,6 @@
  
 package com.cosylab.acs.maci;
 
-import abeans.pluggable.RemoteException;
-
 /**
  * Component interface.
  * 

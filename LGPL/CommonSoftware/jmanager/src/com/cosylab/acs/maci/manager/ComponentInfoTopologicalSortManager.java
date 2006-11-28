@@ -8,33 +8,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.logging.Level;
-
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.pluggable.RemoteException;
-import abeans.pluggable.acs.logging.LoggingLevel;
+import java.util.logging.Logger;
 
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.IntArray;
-
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-import EDU.oswego.cs.dl.util.concurrent.ReadWriteLock;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * Manages TS.
  */
-public class ComponentInfoTopologicalSortManager implements Runnable, Identifiable {
+public class ComponentInfoTopologicalSortManager implements Runnable {
 	
-	/**
-	 * Identifier.
-	 */
-	private Identifier id = null;
-
 	/**
 	 * Components data store.
 	 */
@@ -78,7 +67,12 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 	/**
 	 * Thread pool (guarantees order of execution).
 	 */
-	private PooledExecutor threadPool;
+	private ThreadPoolExecutor threadPool;
+
+	/**
+	 * Logger.
+	 */
+	private Logger logger;
 
 	/**
 	 * @param components
@@ -88,12 +82,14 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 											   HandleDataStore containers,
 											   ReadWriteLock activationPendingRWLock,
 											   Set pendingContainerShutdown,
-											   PooledExecutor threadPool) {
+											   ThreadPoolExecutor threadPool,
+											   Logger logger) {
 		this.components = components;
 		this.containers = containers;
 		this.activationPendingRWLock = activationPendingRWLock;
 		this.pendingContainerShutdown = pendingContainerShutdown;
 		this.threadPool = threadPool;
+		this.logger = logger;
 		
 		// make all containers dirty
 		synchronized (containers)
@@ -147,11 +143,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 				return;
 			
 			// aquire writer lock to prevent activation/deactivation
-			try {
-				activationPendingRWLock.writeLock().acquire();
-			} catch (InterruptedException e) {
-				return;
-			}
+			activationPendingRWLock.writeLock().lock();
 	
 			try 
 			{
@@ -217,7 +209,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 			}
 			finally 
 			{
-				activationPendingRWLock.writeLock().release();
+				activationPendingRWLock.writeLock().unlock();
 			}
 
 		}
@@ -229,11 +221,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 	public void requestTopologicalSort() {
 
 		// aquire writer lock to prevent activation/deactivation
-		try {
-			activationPendingRWLock.writeLock().acquire();
-		} catch (InterruptedException e) {
-			return;
-		}
+		activationPendingRWLock.writeLock().lock();
 
 		try 
 		{
@@ -253,7 +241,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 		}
 		finally 
 		{
-			activationPendingRWLock.writeLock().release();
+			activationPendingRWLock.writeLock().unlock();
 		}
 
 	}
@@ -327,8 +315,6 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 	 */
 	private void notifyContainerShutdownOrder(ContainerInfo containerInfo, int[] handles)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerShutdownOrder", new Object[] { containerInfo, handles }).dispatch(); 
 			
 		/**
 		 * Task thats invokes <code>Container#shutdown</code> method.
@@ -357,8 +343,8 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 					}
 					catch (RemoteException re)
 					{
-						new MessageLogEntry(ComponentInfoTopologicalSortManager.this, "notifyContainerShutdownOrder.ContainerSetShutdownOrderTask.run",
-											"RemoteException caught while invoking 'Container.set_component_shutdown_order' on "+containerInfo+".", re, LoggingLevel.ERROR).dispatch();
+						logger.log(Level.SEVERE, 
+								"RemoteException caught while invoking 'Container.set_component_shutdown_order' on "+containerInfo+".", re);
 					}
 				}
 			}
@@ -366,38 +352,8 @@ public class ComponentInfoTopologicalSortManager implements Runnable, Identifiab
 
 
 		// spawn new task which surely does not block
-		try
-		{
-			threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
-		}
-		catch (InterruptedException ie)
-		{
-			new MessageLogEntry(ComponentInfoTopologicalSortManager.this, "notifyContainerShutdownOrder",
-								"Interrupted execution of notification task for container '"+containerInfo+"'.", ie, LoggingLevel.ERROR).dispatch();
-		}
+		threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
 		
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerShutdownOrder", "Exiting.", Level.FINEST).dispatch();
 	}
 
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("ComponentInfoTopologicalSortManager", "ComponentInfoTopologicalSortManager", Identifier.PLUG);
-		
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return true;
-	}
-	
-	
 }

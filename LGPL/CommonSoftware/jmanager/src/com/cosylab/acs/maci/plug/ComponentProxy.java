@@ -15,12 +15,8 @@ import org.omg.CORBA.Object;
 import org.omg.CORBA.ObjectHelper;
 import org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
-
 import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * CORBA Component Proxy.
@@ -28,18 +24,18 @@ import com.cosylab.acs.maci.Component;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ComponentProxy extends CORBAReferenceSerializator implements Component, Identifiable, Serializable
+public class ComponentProxy extends CORBAReferenceSerializator implements Component, Serializable
 {
+
+	/**
+	 * Serial version UID.
+	 */
+	private static final long serialVersionUID = 4012133222547881699L;
 
 	/**
 	 * Default Component name.
 	 */
 	private static final String defaultName = "<unnamed>";
-
-	/**
-	 * Identifier.
-	 */
-	private Identifier id = null;
 
 	/**
 	 * Component name, can be <code>null</code>.
@@ -236,28 +232,6 @@ public class ComponentProxy extends CORBAReferenceSerializator implements Compon
 
 		checkConstructable();
     }
-
- 	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport(name, name, Identifier.PLUG);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
-	}
 
 	/**
 	 * Returns a single-line rendition of this instance into text.

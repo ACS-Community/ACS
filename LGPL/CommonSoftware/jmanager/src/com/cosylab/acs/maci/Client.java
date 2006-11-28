@@ -4,8 +4,6 @@
  
 package com.cosylab.acs.maci;
 
-import abeans.pluggable.RemoteException;
-
 /**
  * Every client of a Component service that is not itself a Component must implement an interface called Client.
  * The interface allows the client to act as a secure party in the communication with the components,

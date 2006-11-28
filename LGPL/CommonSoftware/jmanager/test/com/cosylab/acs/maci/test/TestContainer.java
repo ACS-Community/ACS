@@ -7,13 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import abeans.core.defaults.MessageLogEntry;
-import abeans.pluggable.RemoteException;
-import abeans.pluggable.acs.logging.LoggingLevel;
-
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * Test implementation of an container.
@@ -56,7 +53,7 @@ public class TestContainer extends TestClient implements Container {
 		String type)
 		throws RemoteException {
 
-		new MessageLogEntry(this, "Container '"+getName()+"': activating '"+name+"'.",LoggingLevel.DEBUG).dispatch();
+		//System.out.println("Container '"+getName()+"': activating '"+name+"'.");
 
 		if (supportedComponents.containsKey(name))
 		{
@@ -77,7 +74,7 @@ public class TestContainer extends TestClient implements Container {
 				{
 					tc.activate();
 				} catch (Exception ex) {
-					throw new RemoteException(this, "Failed to construct(), error: " + ex.toString(), ex);
+					throw new RemoteException("Failed to construct(), error: " + ex.toString(), ex);
 				}
 			}
 			
@@ -114,7 +111,7 @@ public class TestContainer extends TestClient implements Container {
 
 					ComponentInfo cobInfo = (ComponentInfo)activatedComponents.get(key);
 
-					new MessageLogEntry(this, "Container '"+getName()+"': deactivating '"+cobInfo.getName()+"'.",LoggingLevel.DEBUG).dispatch();
+					//System.out.println("Container '"+getName()+"': deactivating '"+cobInfo.getName()+"'.");
 
 					// simulate deactivation
 					try
@@ -260,7 +257,7 @@ public class TestContainer extends TestClient implements Container {
 
 				ComponentInfo cobInfo = (ComponentInfo)activatedComponents.get(key);
 
-				new MessageLogEntry(this, "Container '"+getName()+"': restarting '"+cobInfo.getName()+"'.", LoggingLevel.DEBUG).dispatch();
+				//System.out.println("Container '"+getName()+"': restarting '"+cobInfo.getName()+"'.");
 
 				// simulate restart
 				try

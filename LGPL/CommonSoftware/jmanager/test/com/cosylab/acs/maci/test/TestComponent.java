@@ -4,11 +4,8 @@
  
 package com.cosylab.acs.maci.test;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
 import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * Test implementation of Component.
@@ -16,13 +13,8 @@ import com.cosylab.acs.maci.Component;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class TestComponent implements Component, Identifiable
+public class TestComponent implements Component
 {
-
-	/**
-	 * Identifier.
-	 */
-	Identifier id;
 
 	/**
 	 * Component name.
@@ -90,8 +82,7 @@ public class TestComponent implements Component, Identifiable
 	{
 		if (simulateConstructFailure)
 		{
-			RemoteException re = new RemoteException(this, "Simulated exception.");
-			re.caughtIn(this, "construct");
+			RemoteException re = new RemoteException("Simulated exception.");
 			throw re;
 		}
 	}
@@ -103,8 +94,7 @@ public class TestComponent implements Component, Identifiable
 	{
 		if (simulateDestructFailure)
 		{
-			RemoteException re = new RemoteException(this, "Simulated exception.");
-			re.caughtIn(this, "destruct");
+			RemoteException re = new RemoteException("Simulated exception.");
 			throw re;
 		}
 	}
@@ -132,24 +122,6 @@ public class TestComponent implements Component, Identifiable
 	{
 		// dummy impl.
 		return this;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport(name, name, Identifier.APPLICATION);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
 	}
 
 	/**

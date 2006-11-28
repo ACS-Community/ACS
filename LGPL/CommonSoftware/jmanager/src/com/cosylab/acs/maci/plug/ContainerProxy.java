@@ -13,10 +13,8 @@ import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.IntArray;
+import com.cosylab.acs.maci.RemoteException;
 
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
 
 /**
  * CORBA Container Proxy.
@@ -26,6 +24,11 @@ import abeans.pluggable.RemoteException;
  */
 public class ContainerProxy extends ClientProxy implements Container
 {
+
+	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -7485420616224721204L;
 
 	/**
 	 * CORBA reference.
@@ -69,8 +72,7 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'activate_component()' method.", ex);
-			re.caughtIn(this, "activate_component");
+			RemoteException re = new RemoteException("Failed to invoke 'activate_component()' method.", ex);
 			throw re;
 		}
 	}
@@ -86,8 +88,7 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'deactivate_components()' method.", ex);
-			re.caughtIn(this, "deactivate_components");
+			RemoteException re = new RemoteException("Failed to invoke 'deactivate_components()' method.", ex);
 			throw re;
 		}
 	}
@@ -125,8 +126,7 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'get_component_info()' method.", ex);
-			re.caughtIn(this, "get_component_info");
+			RemoteException re = new RemoteException("Failed to invoke 'get_component_info()' method.", ex);
 			throw re;
 		}
 	}
@@ -144,8 +144,7 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'restart_component()' method.", ex);
-			re.caughtIn(this, "restart_component");
+			RemoteException re = new RemoteException("Failed to invoke 'restart_component()' method.", ex);
 			throw re;
 		}
 	}
@@ -161,8 +160,7 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'shutdown()' method.", ex);
-			re.caughtIn(this, "shutdown");
+			RemoteException re = new RemoteException("Failed to invoke 'shutdown()' method.", ex);
 			throw re;
 		}
 	}
@@ -178,8 +176,7 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'set_component_shutdown_order()' method.", ex);
-			re.caughtIn(this, "set_component_shutdown_order");
+			RemoteException re = new RemoteException("Failed to invoke 'set_component_shutdown_order()' method.", ex);
 			throw re;
 		}
 	}
@@ -218,28 +215,6 @@ public class ContainerProxy extends ClientProxy implements Container
 		return retVal;
 	}
 
-
- 	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Container CORBA Proxy", "Client", Identifier.PLUG);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
-	}
 
     /**
      * Save the state of the <tt>ContainerProxy</tt> instance to a stream (that

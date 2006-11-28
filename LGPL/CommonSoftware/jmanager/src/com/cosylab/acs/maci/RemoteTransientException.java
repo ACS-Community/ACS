@@ -4,8 +4,6 @@
  
 package com.cosylab.acs.maci;
 
-import abeans.pluggable.RemoteException;
-
 /**
  * Defined specialized <code>RemoteException</code>, this implementation
  * defines an transient remote exception (e.g. CORBA::TRANSIENT()).
@@ -19,4 +17,10 @@ import abeans.pluggable.RemoteException;
  */
 public class RemoteTransientException extends RemoteException
 {
+
+	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -1093411214533539296L;
+	
 }

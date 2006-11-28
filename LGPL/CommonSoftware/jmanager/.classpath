@@ -7,24 +7,24 @@
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/prevayler-1.02.001.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/activation.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jnlp.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyicons.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
-	<classpathentry kind="lib" path="lib/jmanagerErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jmanagerErrType.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jacscommon"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jacsutil"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

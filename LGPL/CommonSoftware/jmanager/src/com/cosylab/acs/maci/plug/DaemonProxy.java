@@ -10,11 +10,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import com.cosylab.acs.maci.Daemon;
+import com.cosylab.acs.maci.RemoteException;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
 import alma.acsdaemon.DaemonHelper;
 
 /**
@@ -23,13 +20,13 @@ import alma.acsdaemon.DaemonHelper;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, Identifiable, Serializable
+public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, Serializable
 {
 
 	/**
-	 * Identifier.
+	 * Serial version UID.
 	 */
-	protected Identifier id = null;
+	private static final long serialVersionUID = -5090533056497509226L;
 
 	/**
 	 * CORBA reference.
@@ -56,8 +53,7 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'start_container()' method.", ex);
-			re.caughtIn(this, "startContainer");
+			RemoteException re = new RemoteException("Failed to invoke 'start_container()' method.", ex);
 			throw re;
 		}
 	}
@@ -69,28 +65,6 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, I
 	public alma.acsdaemon.Daemon getDaemon()
 	{
 		return daemon;
-	}
-
-	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Daemon CORBA Proxy", "Daemon", Identifier.PLUG);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
 	}
 
     /**

@@ -13,10 +13,7 @@ import si.ijs.maci.Container;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.ClientInfo;
-
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * CORBA Administrator Proxy.
@@ -26,6 +23,11 @@ import abeans.pluggable.RemoteException;
  */
 public class AdministratorProxy extends ClientProxy implements Administrator
 {
+
+	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -4699536769730108070L;
 
 	/**
 	 * CORBA reference.
@@ -62,8 +64,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'containerLoggedIn()' method.", ex);
-			re.caughtIn(this, "containerLoggedIn");
+			RemoteException re = new RemoteException("Failed to invoke 'containerLoggedIn()' method.", ex);
 			throw re;
 		}
 	}
@@ -79,8 +80,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'containerLoggedOut()' method.", ex);
-			re.caughtIn(this, "containerLoggedOut");
+			RemoteException re = new RemoteException("Failed to invoke 'containerLoggedOut()' method.", ex);
 			throw re;
 		}
 	}
@@ -104,8 +104,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'clientLoggedIn()' method.", ex);
-			re.caughtIn(this, "clientLoggedIn");
+			RemoteException re = new RemoteException("Failed to invoke 'clientLoggedIn()' method.", ex);
 			throw re;
 		}
 	}
@@ -121,8 +120,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'clientLoggedOut()' method.", ex);
-			re.caughtIn(this, "clientLoggedOut");
+			RemoteException re = new RemoteException("Failed to invoke 'clientLoggedOut()' method.", ex);
 			throw re;
 		}
 	}
@@ -138,8 +136,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'components_released()' method.", ex);
-			re.caughtIn(this, "components_released");
+			RemoteException re = new RemoteException("Failed to invoke 'components_released()' method.", ex);
 			throw re;
 		}
 	}
@@ -156,8 +153,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'components_requested()' method.", ex);
-			re.caughtIn(this, "components_requested");
+			RemoteException re = new RemoteException("Failed to invoke 'components_requested()' method.", ex);
 			throw re;
 		}
 	}
@@ -172,29 +168,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		return administrator;
 	}
 
- 	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Administrator CORBA Proxy", "Client", Identifier.PLUG);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
-	}
-
-    /**
+     /**
      * Save the state of the <tt>ContainerProxy</tt> instance to a stream (that
      * is, serialize it).
      */

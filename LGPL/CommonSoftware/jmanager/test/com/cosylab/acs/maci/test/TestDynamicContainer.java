@@ -3,11 +3,11 @@
  */
 package com.cosylab.acs.maci.test;
 
-import abeans.pluggable.RemoteException;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * Test implementation of an container.

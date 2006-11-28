@@ -6,16 +6,10 @@ package com.cosylab.acs.maci.test;
 
 import java.util.HashMap;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.pluggable.RemoteException;
-import abeans.pluggable.acs.logging.LoggingLevel;
-
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.MessageType;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * Test client implementation.
@@ -23,13 +17,8 @@ import com.cosylab.acs.maci.MessageType;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class TestClient implements Client, Identifiable
+public class TestClient implements Client
 {
-	/**
-	 * Identifier.
-	 */
-	Identifier id = null;
-
 	/**
 	 * Client name.
 	 */
@@ -92,10 +81,12 @@ public class TestClient implements Client, Identifiable
 	 */
 	public void components_available(ComponentInfo[] cobs) throws RemoteException
 	{
+		/*
 		for (int i = 0; i < cobs.length; i++)
 		{
-			new MessageLogEntry(this, "components_available", "Available: "+cobs[i].getName(), LoggingLevel.INFO).dispatch();
+			System.out.println("Available: "+cobs[i].getName());
 		}
+		*/
 	}
 
 	/**
@@ -103,10 +94,12 @@ public class TestClient implements Client, Identifiable
 	 */
 	public void components_unavailable(String[] cobs) throws RemoteException
 	{
+		/*
 		for (int i = 0; i < cobs.length; i++)
 		{
-			new MessageLogEntry(this, "components_unavailable", "Unavailable: "+cobs[i], LoggingLevel.INFO).dispatch();
+			System.out.println("Unavailable: "+cobs[i]);
 		}
+		*/
 	}
 
 	/**
@@ -123,7 +116,9 @@ public class TestClient implements Client, Identifiable
 	public void message(MessageType type, String message)
 		throws RemoteException
 	{
-		new MessageLogEntry(this, "message", "Message received: " + message + " " + type, LoggingLevel.DEBUG).dispatch();
+		/*
+		System.out.println("Message received: " + message + " " + type);
+		*/
 	}
 
 	/**
@@ -194,24 +189,6 @@ public class TestClient implements Client, Identifiable
 	public HashMap getComponents()
 	{
 		return components;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport(name, name, Identifier.APPLICATION);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
 	}
 
 }

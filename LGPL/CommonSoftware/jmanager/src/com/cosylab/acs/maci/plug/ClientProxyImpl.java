@@ -5,17 +5,12 @@
 package com.cosylab.acs.maci.plug;
 
 import java.net.URI;
+import java.util.logging.Logger;
 
 import si.ijs.maci.ComponentInfo;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.MessageType;
-
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.pluggable.RemoteException;
-import abeans.pluggable.acs.logging.LoggingLevel;
+import com.cosylab.acs.maci.RemoteException;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
@@ -29,32 +24,35 @@ import si.ijs.maci.Manager;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ClientProxyImpl extends ClientPOA implements Identifiable
+public class ClientProxyImpl extends ClientPOA
 {
-
-	/**
-	 * Identifier.
-	 */
-	private Identifier id = null;
 
 	/**
 	 * <code>Client</code> implementation.
 	 */
-	ClientImpl client;
+	private ClientImpl client;
 
 	/**
 	 * CORBA reference of the <code>maci::Manager</code> this client is logged in.
 	 */
-	Manager manager;
+	private Manager manager;
+
+	/**
+	 * Logger.
+	 */
+	private Logger logger;
 
 	/**
 	 * CORBA proxy implementation of <code>Client</code>.
 	 * @param	name	name of the client
+	 * @param	logger 	logger.
 	 */
-	public ClientProxyImpl(String name)
+	public ClientProxyImpl(String name, Logger logger)
 	{
 		client = new ClientImpl(name);
+		this.logger = logger;
 	}
+	
 
 	/**
 	 * @see si.ijs.maci.ClientOperations#name()
@@ -173,26 +171,6 @@ public class ClientProxyImpl extends ClientPOA implements Identifiable
 		}
 	}
 
-	/*********************** Abeans methods ***********************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport(client.getName(), client.getName(), Identifier.PLUG);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return true;
-	}
-
 	/**
 	 * Returns a single-line rendition of this instance into text.
 	 * 
@@ -229,18 +207,16 @@ public class ClientProxyImpl extends ClientPOA implements Identifiable
 			{
 				client.setHandle(clientInfo.h);
 				
-				if (isDebug())
-					new MessageLogEntry(this, "login", "Successfully logged in to the Manager.", LoggingLevel.INFO).dispatch();
+				logger.info("Successfully logged in to the Manager.");
 				
 				return true;
 			}
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to login to the Manager.", ex);
-			re.caughtIn(this, "login");
-			// Exception service will handle this
-			//throw re;
+			//RemoteException re = new RemoteException("Failed to login to the Manager.", ex);
+		      // TODO log this
+
 			return false;
 		}
 		
@@ -261,15 +237,12 @@ public class ClientProxyImpl extends ClientPOA implements Identifiable
 			manager.logout(client.getHandle());
 			client.setHandle(0);
 
-			if (isDebug())
-				new MessageLogEntry(this, "logout", "Successfully logged out from the Manager.", LoggingLevel.INFO).dispatch();
+			logger.info("Successfully logged out from the Manager.");
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to logout from the Manager.", ex);
-			re.caughtIn(this, "logout");
-			// Exception service will handle this
-			//throw re;
+			//RemoteException re = new RemoteException("Failed to logout from the Manager.", ex);
+		      // TODO log this
 		}
 		
 	}
@@ -291,19 +264,15 @@ public class ClientProxyImpl extends ClientPOA implements Identifiable
 			
 			if (component != null)
 			{
-				if (isDebug())
-					new MessageLogEntry(this, "curl", "Successfully obtained Component '" + curl + "'.", LoggingLevel.INFO).dispatch();
+				logger.info("Successfully obtained Component '" + curl + "'.");
 					
 				return component;
 			}
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to obtain Component '" + curl + "'.", ex);
-			re.caughtIn(this, "getCOB");
-			re.putValue("curl", curl);
-			// Exception service will handle this
-			//throw re;
+			//RemoteException re = new RemoteException("Failed to obtain Component '" + curl + "'.", ex);
+		      // TODO log this
 		}
 		
 		return null;
@@ -324,11 +293,8 @@ public class ClientProxyImpl extends ClientPOA implements Identifiable
     }
     catch (Exception ex)
     {
-      RemoteException re = new RemoteException(this, "Failed to release Component '" + curl + "'.", ex);
-      re.caughtIn(this, "releaseComponent");
-      re.putValue("curl", curl);
-      // Exception service will handle this
-      //throw re;
+      //RemoteException re = new RemoteException("Failed to release component '" + curl + "'.", ex);
+      // TODO log this
     }
   }
 }

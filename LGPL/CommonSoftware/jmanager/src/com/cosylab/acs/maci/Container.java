@@ -4,8 +4,6 @@
  
 package com.cosylab.acs.maci;
 
-import abeans.pluggable.RemoteException;
-
 /**
  * Container is an agent of MACI that is installed on every computer of the control system.
  * There can be more than one Container living on the same computer, but there can be only one Container per process.

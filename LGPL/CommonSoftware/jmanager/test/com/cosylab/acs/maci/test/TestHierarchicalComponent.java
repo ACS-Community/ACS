@@ -2,15 +2,13 @@ package com.cosylab.acs.maci.test;
 
 import java.net.URI;
 
-import abeans.core.defaults.MessageLogEntry;
-import abeans.pluggable.RemoteException;
-import abeans.pluggable.acs.logging.LoggingLevel;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.StatusHolder;
 
 /**
@@ -60,7 +58,7 @@ public class TestHierarchicalComponent extends TestComponent
 			if (!activateOnActivation)
 				activateSubComponents();
 		} catch (Exception ex) {
-			throw new RemoteException(this, "Failed to construct(), error: " + ex.toString(), ex);
+			throw new RemoteException("Failed to construct(), error: " + ex.toString(), ex);
 		}
 	}
 
@@ -88,13 +86,13 @@ public class TestHierarchicalComponent extends TestComponent
 					manager.getComponent(this.getHandle(), new URI(subComponents[i]), true, status);
 				
 				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED) {
-					new MessageLogEntry(this, "Failed to activate component '"+subComponents[i]+"' - status: "+status.getStatus()+".", LoggingLevel.ERROR).dispatch();
-					throw new RemoteException(this, "Failed to activate component '"+subComponents[i]+"' - status: "+status.getStatus()+".");
+					//System.out.println("Failed to activate component '"+subComponents[i]+"' - status: "+status.getStatus()+".");
+					throw new RemoteException("Failed to activate component '"+subComponents[i]+"' - status: "+status.getStatus()+".");
 				}
 			}
 			catch (Exception ex)
 			{
-				new MessageLogEntry(this, "Failed to activate component '"+subComponents[i]+"'.", ex, LoggingLevel.ERROR).dispatch();
+				//System.out.println("Failed to activate component '"+subComponents[i]+"'.");
 				throw ex;
 			}
 		}

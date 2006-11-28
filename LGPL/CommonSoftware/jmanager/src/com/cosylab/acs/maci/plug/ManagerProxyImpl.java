@@ -6,16 +6,9 @@ package com.cosylab.acs.maci.plug;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
-
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
-import abeans.core.CoreException;
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.framework.ReportEvent;
-import abeans.framework.ApplicationContext;
+import java.util.logging.Logger;
 
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerInfo;
@@ -32,20 +25,18 @@ import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.BadParametersException;
 import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentSpecIncompatibleWithActiveComponentException;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.IncompleteComponentSpecException;
-import com.cosylab.acs.maci.InvalidComponentSpecException;
+import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
 import com.cosylab.acs.maci.manager.CURLHelper;
-import com.cosylab.acs.maci.manager.ManagerImpl;
 
 import org.omg.CORBA.BAD_PARAM;
+import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.UNKNOWN;
@@ -95,31 +86,42 @@ import alma.maciErrType.NoPermissionEx;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ManagerProxyImpl extends ManagerPOA implements Identifiable
+public class ManagerProxyImpl extends ManagerPOA 
 {
-	/**
-	 * Identifier.
-	 */
-	private Identifier id = null;
 
+	// TODO @todo revise...
+	private void reportException(Throwable th)
+	{
+		logger.log(Level.SEVERE, th.getMessage(), th);
+	}
+	
 	/**
 	 * Implementation of the manager to which all requests are delegated.
 	 */
 	private Manager manager;
 
 	/**
+	 * Logger.
+	 */
+	private Logger logger;
+
+	/**
 	 * Identifier.
 	 */
-	private SynchronizedInt pendingRequests = new SynchronizedInt(0);
+	private AtomicInteger pendingRequests = new AtomicInteger(0);
 
 	/**
 	 * Construct a new Manager which will <code>manager</code> implementation.
 	 * @param	manager		implementation of the manager, non-<code>null</code>.
+	 * @param	logger		logger.
 	 */
-	public ManagerProxyImpl(Manager manager)
+	public ManagerProxyImpl(Manager manager, Logger logger)
 	{
 		assert (manager != null);
+		assert (logger != null);
+
 		this.manager = manager;
+		this.logger = logger;
 	}
 
 	/**
@@ -138,16 +140,14 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 */
 	public String domain_name()
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
 			return manager.getDomain();
 		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "domain_name");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -155,7 +155,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -173,12 +173,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public ContainerInfo[] get_container_info(int id, int[] h, String name_wc)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_container_info", new java.lang.Object[] { new Integer(id), h, name_wc } ).dispatch();
-
 			// invalid info (replacement for null)
 			final ContainerInfo invalidInfo = new ContainerInfo("<invalid>", 0, null, new int[0]);
 
@@ -202,16 +199,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			else
 				retVal = new ContainerInfo[0];
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_container_info", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_container_info");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -219,19 +211,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_container_info");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_container_info");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -239,7 +234,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -257,11 +252,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public ClientInfo[] get_client_info(int id, int[] h, String name_wc)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_client_info", new java.lang.Object[] { new Integer(id), h, name_wc } ).dispatch();
 
 			// invalid info (replacement for null)
 			final ClientInfo invalidInfo = new ClientInfo(0, null, new int[0], "<invalid>", 0);
@@ -287,16 +280,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			else
 				retVal = new ClientInfo[0];
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_client_info", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_client_info");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -304,19 +292,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_client_info");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_client_info");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -324,7 +315,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -347,11 +338,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public ComponentInfo[] get_component_info(int id, int[] h, String name_wc, String type_wc, boolean active_only)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_component_info", new java.lang.Object[] { new Integer(id), h, name_wc, type_wc, new Boolean(active_only) } ).dispatch();
 
 			// invalid info (replacement for null)
 			final ComponentInfo invalidInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
@@ -392,16 +381,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			else
 				retVal = new ComponentInfo[0];
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_component_info", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_component_info");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -409,19 +393,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_component_info");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_component_info");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -429,7 +416,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -447,13 +434,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public Object get_component(int id, String component_url, boolean activate)
 	    throws NoPermissionEx, CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			new MessageLogEntry(this, "get_component", "XXXXXXXX", Level.INFO).dispatch();
-			if (isDebug())
-				new MessageLogEntry(this, "get_component", new java.lang.Object[] { new Integer(id), component_url, new Boolean(activate) } ).dispatch();
-
 			// returned value
 			Object retVal = null;
 
@@ -505,17 +488,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			    }
 			}
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_component", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "get_component");
-			hbpe.putValue("component_url", component_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -523,9 +500,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -533,9 +508,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -543,30 +516,35 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (AcsJCannotGetComponentEx cgce)
 		{
-			reportException(cgce);
+			//reportException(cgce);
 
 			// rethrow CORBA specific
 			throw cgce.toCannotGetComponentEx();
 		}
 		catch (AcsJComponentNotAlreadyActivatedEx cnaae)
 		{
-			reportException(cnaae);
+			//reportException(cnaae);
 
 			// rethrow CORBA specific
 			throw cnaae.toComponentNotAlreadyActivatedEx();
 		}
 		catch (AcsJComponentConfigurationNotFoundEx ccnfe)
 		{
-			reportException(ccnfe);
+			//reportException(ccnfe);
 
 			// rethrow CORBA specific
 			throw ccnfe.toComponentConfigurationNotFoundEx();
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -574,7 +552,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -591,12 +569,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public Object get_component_non_sticky(int id, String component_url)
 		throws NoPermissionEx, CannotGetComponentEx, ComponentNotAlreadyActivatedEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_component_non_sticky", new java.lang.Object[] { new Integer(id), component_url } ).dispatch();
-
 			// returned value
 			Object retVal = null;
 
@@ -614,17 +589,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			if (component == null)
 				throw new AcsJComponentNotAlreadyActivatedEx();
 			
-			if (isDebug())
-				new MessageLogEntry(this, "get_component_non_sticky", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "get_component_non_sticky");
-			hbpe.putValue("component_url", component_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -632,9 +601,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_component_non_sticky");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -642,9 +609,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_component_non_sticky");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -652,23 +617,28 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		} 
 		catch (AcsJCannotGetComponentEx cgce)
 		{
-			reportException(cgce);
+			//reportException(cgce);
 
 			// rethrow CORBA specific
 			throw cgce.toCannotGetComponentEx();
 		}
 		catch (AcsJComponentNotAlreadyActivatedEx cnaae)
 		{
-			reportException(cnaae);
+			//reportException(cnaae);
 
 			// rethrow CORBA specific
 			throw cnaae.toComponentNotAlreadyActivatedEx();
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_component_non_sticky");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -676,7 +646,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -695,12 +665,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public Object[] get_components(int id, String[] component_urls, boolean activate,	ulongSeqHolder status)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_components", new java.lang.Object[] { new Integer(id), component_urls, new Boolean(activate), status } ).dispatch();
-
 			// returned value
 			Object[] retVal = null;
 
@@ -721,10 +688,8 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 					}
 					catch (URISyntaxException usi)
 					{
-						BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-						hbpe.caughtIn(this, "get_components");
-						hbpe.putValue("component_urls[i]", component_urls[i]);
-						// exception service will handle this
+						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
+						reportException(hbpe);
 					}
 				}
 			}
@@ -749,16 +714,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			else
 				retVal = new Object[0];
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_components", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_components");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -766,19 +726,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_components");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_components");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -786,7 +749,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -807,12 +770,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public ClientInfo login(Client reference)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			// NOTE: do not log "reference" - prevents GC to finalize and terminate connection thread (JacORB)
-			if (isDebug())
-				new MessageLogEntry(this, "login", new java.lang.Object[] { reference == null ? "null" : reference.toString() } ).dispatch();
 
 			// client proxy
 			com.cosylab.acs.maci.Client clientProxy = null;
@@ -835,9 +795,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 				else
 				{
 					// this should never happen, but we are carefuly anyway
-					BadParametersException af = new BadParametersException(this, "Given reference does not implement 'maci::Client' interface.");
-					af.caughtIn(this, "login");
-					// exception service will handle this
+					BadParametersException af = new BadParametersException("Given reference does not implement 'maci::Client' interface.");
 					reportException(af);
 
 					throw new BAD_PARAM(af.getMessage());
@@ -860,9 +818,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "login");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -870,19 +826,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "login");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "login");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -890,7 +849,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -902,12 +861,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public void logout(int id)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "logout", new java.lang.Object[] { new Integer(id) } ).dispatch();
-
 			// simply logout
 			manager.logout(id);
 		}
@@ -922,9 +878,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "logout");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -932,9 +886,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "logout");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -942,9 +894,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "logout");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -952,7 +902,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -969,13 +919,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public int register_component(int id, String component_url, String type, Object component)
 		throws NoPermissionEx, CannotRegisterComponentEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			// NOTE: do not log "component" - prevents GC to finalize and terminate connection thread (JacORB)
-			if (isDebug())
-				new MessageLogEntry(this, "register_component", new java.lang.Object[] { new Integer(id), component_url, type, component == null ? "null" : component.toString() } ).dispatch();
-
 			// simply register
 			URI uri = null;
 			if (component_url != null)
@@ -984,10 +930,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "register_component");
-			hbpe.putValue("component_url", component_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -995,9 +938,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "register_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1005,9 +946,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "register_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -1029,9 +968,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "register_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1039,7 +976,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1056,12 +993,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public void make_component_immortal(int id, String component_url, boolean immortal_state)
 		throws NoPermissionEx, ComponentNotAlreadyActivatedEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "make_component_immortal", new java.lang.Object[] { new Integer(id), component_url, new Boolean(immortal_state) } ).dispatch();
-
 			// simply release Component
 			URI uri = null;
 			if (component_url != null)
@@ -1070,10 +1004,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "make_component_immortal");
-			hbpe.putValue("component_url", component_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1081,9 +1012,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "make_component_immortal");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1092,19 +1021,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		// @todo 
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "make_component_immortal");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new AcsJComponentNotAlreadyActivatedEx().toComponentNotAlreadyActivatedEx();
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "make_component_immortal");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1112,7 +1044,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1130,12 +1062,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public int release_component(int id, String component_url)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "release_component", new java.lang.Object[] { new Integer(id), component_url } ).dispatch();
-
 			// simply release Component
 			URI uri = null;
 			if (component_url != null)
@@ -1144,10 +1073,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "release_component");
-			hbpe.putValue("component_url", component_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1155,9 +1081,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "release_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1165,9 +1089,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "release_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -1175,9 +1097,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "release_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1185,7 +1105,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1200,12 +1120,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public void release_components(int id, String[] component_urls)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "release_components", new java.lang.Object[] { new Integer(id), component_urls } ).dispatch();
-
 			// map strings to CURLs
 			URI[] uris = null;
 			if (component_urls != null)
@@ -1220,10 +1137,8 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 					}
 					catch (URISyntaxException usi)
 					{
-						BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-						hbpe.caughtIn(this, "release_components");
-						hbpe.putValue("component_urls[i]", component_urls[i]);
-						// exception service will handle this
+						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
+						reportException(hbpe);
 					}
 				}
 			}
@@ -1233,9 +1148,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "release_components");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1243,19 +1156,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "release_components");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "release_components");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1263,7 +1179,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1278,12 +1194,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public int force_release_component(int id, String component_url)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "force_release_component", new java.lang.Object[] { new Integer(id), component_url } ).dispatch();
-
 			// simply release Component
 			URI uri = null;
 			if (component_url != null)
@@ -1292,10 +1205,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "force_release_component");
-			hbpe.putValue("component_url", component_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1303,9 +1213,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "force_release_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1313,19 +1221,30 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "force_release_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			reportException(bpe);
+			
+			// rethrow CORBA specific
+			//throw bpe.toBadParameterEx();
+			throw new BAD_PARAM(bpe.getMessage());
+		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "force_release_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1333,7 +1252,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1346,20 +1265,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	 */
 	public void shutdown(int id, int containers)
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "shutdown", new java.lang.Object[] { new Integer(id), new Integer(containers) } ).dispatch();
-
 			// simply shutdown
 			manager.shutdown(id, containers);
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "shutdown");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1367,19 +1281,23 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "shutdown");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			//throw npe.toNoPermissionEx();
+			throw new NO_PERMISSION(npe.getMessage());
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "shutdown");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1387,7 +1305,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 
 	}
@@ -1402,20 +1320,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public void unregister_component(int id, int h)
 		throws NoPermissionEx, CannotUnregisterComponentEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "unregister_component", new java.lang.Object[] { new Integer(id), new Integer(h) } ).dispatch();
-
 			// simply unregistercomponent
 			manager.unregisterComponent(id, h);
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "unregister_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1423,13 +1336,26 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "unregister_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
+		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			reportException(bpe);
+			
+			// rethrow CORBA specific
+			//throw bpe.toBadParameterEx();
+			throw new BAD_PARAM(bpe.getMessage());
+		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
 		} /*
 		catch (AcsJCannotUnregisterComponentEx cuce)
 		{
@@ -1440,9 +1366,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		} */
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "unregister_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1450,7 +1374,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1463,12 +1387,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
     public ComponentInfo get_default_component(int id, String type)
     	throws NoPermissionEx, NoDefaultComponentEx, CannotGetComponentEx
     {
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_default_component", new java.lang.Object[] { new Integer(id), type } ).dispatch();
-
 			// returned value
 			ComponentInfo retVal = null;
 
@@ -1498,17 +1419,12 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 									 	mapAccessRights(info.getAccessRights()),
 									 	interfaces);
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_default_component", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 
 		}
 		catch (NoDefaultComponentException ndce)
 		{
-			NoDefaultComponentException hndce = new NoDefaultComponentException(this, ndce.getMessage(), ndce);
-			hndce.caughtIn(this, "get_default_component");
-			// exception service will handle this
+			NoDefaultComponentException hndce = new NoDefaultComponentException(ndce.getMessage(), ndce);
 			reportException(hndce);
 
 			// rethrow CORBA specific
@@ -1516,9 +1432,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_default_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1526,26 +1440,29 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_default_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (AcsJCannotGetComponentEx cgce)
 		{
-			reportException(cgce);
+			//reportException(cgce);
 
 			// rethrow CORBA specific
 			throw cgce.toCannotGetComponentEx();
 		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_default_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1553,7 +1470,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1570,12 +1487,10 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	               ComponentSpecIncompatibleWithActiveComponentEx,
 	               CannotGetComponentEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_dynamic_component", new java.lang.Object[] { new Integer(id), c, new Boolean(mark_as_default) } ).dispatch();
 
 			// returned value
 			ComponentInfo retVal = null;
@@ -1618,16 +1533,13 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 						   mapAccessRights(info.getAccessRights()),
 						   interfaces);
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_dynamic_component", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 
 		}
 		/*
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			hbpe.caughtIn(this, "get_dynamic_component");
 			hbpe.putValue("c.component_name", c.component_name);
 			// exception service will handle this
@@ -1636,52 +1548,37 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			// rethrow CORBA specific
 			throw new BAD_PARAM(usi.getMessage());
 		}*/
-		catch (IncompleteComponentSpecException icse)
+		catch (AcsJInvalidComponentSpecEx ics)
 		{
-			IncompleteComponentSpecException hicse = new IncompleteComponentSpecException(this, icse.getMessage(), icse, icse.getIncompleteSpec());
-			hicse.caughtIn(this, "get_dynamic_component");
-			// exception service will handle this
-			reportException(hicse);
-
-			// rethrow ACS specific
-			AcsJIncompleteComponentSpecEx ex=
-			    new AcsJIncompleteComponentSpecEx();
-			ex.setCURL(hicse.getIncompleteSpec().getName());
-			ex.setComponentType(hicse.getIncompleteSpec().getType());
-			ex.setComponentCode(hicse.getIncompleteSpec().getCode());
-			ex.setContainerName(hicse.getIncompleteSpec().getContainer());
-			throw ex.toIncompleteComponentSpecEx();
-		}
-		catch (InvalidComponentSpecException incse)
-		{
-			InvalidComponentSpecException hincse = new InvalidComponentSpecException(this, incse.getMessage(), incse, incse.getInvalidSpec());
-			hincse.caughtIn(this, "get_dynamic_component");
-			// exception service will handle this
-			reportException(hincse);
+			//reportException(ics);
 			
-			throw new AcsJInvalidComponentSpecEx().toInvalidComponentSpecEx();
+			// rethrow CORBA specific
+			throw ics.toInvalidComponentSpecEx();
 		}
-		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
+		catch (AcsJIncompleteComponentSpecEx ics)
 		{
-			ComponentSpecIncompatibleWithActiveComponentException hciace = new ComponentSpecIncompatibleWithActiveComponentException(this, ciace.getMessage(), ciace, ciace.getActiveComponentSpec());
-			hciace.caughtIn(this, "get_dynamic_component");
-			// exception service will handle this
-			reportException(hciace);
-
-			// rethrow ACS specific
-			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
-			    new AcsJComponentSpecIncompatibleWithActiveComponentEx();
-			ex.setCURL(ciace.getActiveComponentSpec().getName());
-			ex.setComponentType(ciace.getActiveComponentSpec().getType());
-			ex.setComponentCode(ciace.getActiveComponentSpec().getCode());
-			ex.setContainerName(ciace.getActiveComponentSpec().getContainer());
-			throw ex.toComponentSpecIncompatibleWithActiveComponentEx();
+			//reportException(ics);
+			
+			// rethrow CORBA specific
+			throw ics.toIncompleteComponentSpecEx();
+		}
+		catch (AcsJComponentSpecIncompatibleWithActiveComponentEx cpiwac)
+		{
+			//reportException(cpiwac);
+			
+			// rethrow CORBA specific
+			throw cpiwac.toComponentSpecIncompatibleWithActiveComponentEx();
+		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_dynamic_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1689,9 +1586,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_dynamic_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -1706,9 +1601,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_dynamic_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1716,7 +1609,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1730,12 +1623,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public ComponentInfo[] get_dynamic_components(int id, si.ijs.maci.ComponentSpec[] components)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_dynamic_components", new java.lang.Object[] { new Integer(id), components } ).dispatch();
-
 			// invalid info (replacement for null)
 			final ComponentInfo invalidInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
 
@@ -1762,7 +1652,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 					/*}
 					catch (URISyntaxException usi)
 					{
-						BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
+						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 						hbpe.caughtIn(this, "get_dynamic_components");
 						hbpe.putValue("components[i].component_name", components[i].component_name);
 						// exception service will handle this
@@ -1803,16 +1693,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			else
 				retVal = new ComponentInfo[0];
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_dynamic_components", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_dynamic_components");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1820,19 +1705,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_dynamic_components");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_dynamic_components");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -1840,7 +1728,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1860,13 +1748,10 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	           ComponentSpecIncompatibleWithActiveComponentEx, 
 	           CannotGetComponentEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_collocated_component", new java.lang.Object[] { new Integer(id), c, new Boolean(mark_as_default), target_component } ).dispatch();
-
 			// returned value
 			ComponentInfo retVal = null;
 
@@ -1907,70 +1792,48 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 										mapAccessRights(info.getAccessRights()),
 										interfaces);
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_collocated_component", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "get_collocated_component");
-			hbpe.putValue("target_component", target_component);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 	
 			// rethrow CORBA specific
 			throw new BAD_PARAM(usi.getMessage());
 		}
-		catch (IncompleteComponentSpecException icse)
+		catch (AcsJInvalidComponentSpecEx ics)
 		{
-			IncompleteComponentSpecException hicse = new IncompleteComponentSpecException(this, icse.getMessage(), icse, icse.getIncompleteSpec());
-			hicse.caughtIn(this, "get_collocated_component");
-			// exception service will handle this
-			reportException(hicse);
-
-			// rethrow ACS specific
-			AcsJIncompleteComponentSpecEx ex=
-			    new AcsJIncompleteComponentSpecEx();
-			ex.setCURL(icse.getIncompleteSpec().getName());
-			ex.setComponentType(icse.getIncompleteSpec().getType());
-			ex.setComponentCode(icse.getIncompleteSpec().getCode());
-			ex.setContainerName(icse.getIncompleteSpec().getContainer());
-			throw ex.toIncompleteComponentSpecEx();
-		}
-		catch (InvalidComponentSpecException incse)
-		{
-			InvalidComponentSpecException hincse = new InvalidComponentSpecException(this, incse.getMessage(), incse, incse.getInvalidSpec());
-			hincse.caughtIn(this, "get_collocated_component");
-			// exception service will handle this
-			reportException(hincse);
+			//reportException(ics);
 			
-			throw new AcsJInvalidComponentSpecEx().toInvalidComponentSpecEx();
+			// rethrow CORBA specific
+			throw ics.toInvalidComponentSpecEx();
 		}
-		catch (ComponentSpecIncompatibleWithActiveComponentException ciace)
+		catch (AcsJIncompleteComponentSpecEx ics)
 		{
-			ComponentSpecIncompatibleWithActiveComponentException hciace = new ComponentSpecIncompatibleWithActiveComponentException(this, ciace.getMessage(), ciace, ciace.getActiveComponentSpec());
-			hciace.caughtIn(this, "get_collocated_component");
-			// exception service will handle this
-			reportException(hciace);
-
-			// rethrow ACS specific
-			AcsJComponentSpecIncompatibleWithActiveComponentEx ex=
-			    new AcsJComponentSpecIncompatibleWithActiveComponentEx();
-			ex.setCURL(ciace.getActiveComponentSpec().getName());
-			ex.setComponentType(ciace.getActiveComponentSpec().getType());
-			ex.setComponentCode(ciace.getActiveComponentSpec().getCode());
-			ex.setContainerName(ciace.getActiveComponentSpec().getContainer());
-			throw ex.toComponentSpecIncompatibleWithActiveComponentEx();
-
+			//reportException(ics);
+			
+			// rethrow CORBA specific
+			throw ics.toIncompleteComponentSpecEx();
+		}
+		catch (AcsJComponentSpecIncompatibleWithActiveComponentEx cpiwac)
+		{
+			//reportException(cpiwac);
+			
+			// rethrow CORBA specific
+			throw cpiwac.toComponentSpecIncompatibleWithActiveComponentEx();
+		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_collocated_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -1978,9 +1841,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_collocated_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -1988,16 +1849,14 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (AcsJCannotGetComponentEx cgce)
 		{
-			reportException(cgce);
+			//reportException(cgce);
 
 			// rethrow CORBA specific
 			throw cgce.toCannotGetComponentEx();
 		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_collocated_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -2005,7 +1864,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -2025,12 +1884,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public Object get_service(int id, String service_url, boolean activate)
 		throws NoPermissionEx, CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_service", new java.lang.Object[] { new Integer(id), service_url, new Boolean(activate) } ).dispatch();
-
 			// returned value
 			Object retVal = null;
 
@@ -2048,17 +1904,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 
  	        retVal = (Object)component.getObject();
             
-			if (isDebug())
-				new MessageLogEntry(this, "get_service", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}		
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "get_service");
-			hbpe.putValue("service_url", service_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -2066,9 +1916,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_service");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -2076,9 +1924,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_service");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
@@ -2086,16 +1932,21 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (AcsJCannotGetComponentEx cgce)
 		{
-			reportException(cgce);
+			//reportException(cgce);
 
 			// rethrow CORBA specific
 			throw cgce.toCannotGetComponentEx();
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_service");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -2103,7 +1954,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -2120,12 +1971,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public Object[] get_services(int id, String[] service_urls, boolean activate, ulongSeqHolder status)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "get_services", new java.lang.Object[] { new Integer(id), service_urls, new Boolean(activate), status } ).dispatch();
-
 			// returned value
 			Object[] retVal = null;
 
@@ -2146,10 +1994,8 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 					}
 					catch (URISyntaxException usi)
 					{
-						BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-						hbpe.caughtIn(this, "get_components");
-						hbpe.putValue("service_urls[i]", service_urls[i]);
-						// exception service will handle this
+						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
+						reportException(hbpe);
 					}
 				}
 			}
@@ -2174,16 +2020,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			else
 				retVal = new Object[0];
 
-			if (isDebug())
-				new MessageLogEntry(this, "get_services", "Exiting.", Level.FINEST).dispatch();
-
 			return retVal;
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "get_services");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -2191,19 +2032,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "get_services");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "get_services");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -2211,7 +2055,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -2224,12 +2068,9 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public Object restart_component(int id, String component_url)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "restart_component", new java.lang.Object[] { new Integer(id), component_url } ).dispatch();
-
 			// returned value
 			Object retVal = null;
 
@@ -2243,17 +2084,11 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 			if (component != null)
 				retVal = (Object)component.getObject();
 
-			if (isDebug())
-				new MessageLogEntry(this, "restart_component", "Exiting.", Level.FINEST).dispatch();
-				
 			return retVal;
 		}
 		catch (URISyntaxException usi)
 		{
-			BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-			hbpe.caughtIn(this, "restart_component");
-			hbpe.putValue("component_url", component_url);
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -2261,9 +2096,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "restart_component");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -2271,19 +2104,30 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "restart_component");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJBadParameterEx bpe)
+		{
+			reportException(bpe);
+			
+			// rethrow CORBA specific
+			//throw bpe.toBadParameterEx();
+			throw new BAD_PARAM(bpe.getMessage());
+		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "restart_component");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -2291,7 +2135,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -2306,20 +2150,15 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public void shutdown_container(int id, String container_name, int action)
 		throws NoPermissionEx
 	{
-		pendingRequests.increment();
+		pendingRequests.incrementAndGet();
 		try
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "shutdown_container", new java.lang.Object[] { new Integer(id), container_name, new Integer(action) } ).dispatch();
-
 			// simply shutdown the container
 			manager.shutdownContainer(id, container_name, action);
 		}
 		catch (BadParametersException bpe)
 		{
-			BadParametersException hbpe = new BadParametersException(this, bpe.getMessage(), bpe);
-			hbpe.caughtIn(this, "shutdown_container");
-			// exception service will handle this
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
 			reportException(hbpe);
 
 			// rethrow CORBA specific
@@ -2327,19 +2166,22 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		catch (NoResourcesException nre)
 		{
-			NoResourcesException hnre = new NoResourcesException(this, nre.getMessage(), nre);
-			hnre.caughtIn(this, "shutdown_container");
-			// exception service will handle this
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
 			reportException(hnre);
 
 			// rethrow CORBA specific
 			throw new NO_RESOURCES(nre.getMessage());
 		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
 		catch (Throwable ex)
 		{
-			CoreException hce = new CoreException(this, ex.getMessage(), ex);
-			hce.caughtIn(this, "shutdown_container");
-			// exception service will handle this
+			CoreException hce = new CoreException(ex.getMessage(), ex);
 			reportException(hce);
 
 			// rethrow CORBA specific
@@ -2347,7 +2189,7 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 		}
 		finally
 		{
-			pendingRequests.decrement();
+			pendingRequests.decrementAndGet();
 		}
 
 	}
@@ -2464,44 +2306,6 @@ public class ManagerProxyImpl extends ManagerPOA implements Identifiable
 	public int getNumberOfPendingRequests()
 	{
 		return pendingRequests.get();
-	}
-
- 	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	private void reportException(Exception ex)
-	{
-		ApplicationContext ctx = ((ManagerImpl)manager).getApplicationContext();
-		// if manager is not in destruction mode, report exception
-		if (ctx != null)
-		{
-			ReportEvent re = new ReportEvent(ctx, ex.getMessage());
-			re.setException(ex);
-			re.dispatch();
-		}
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Manager CORBA Proxy", "Manager", Identifier.PLUG);
-
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
 	}
 
 	/**

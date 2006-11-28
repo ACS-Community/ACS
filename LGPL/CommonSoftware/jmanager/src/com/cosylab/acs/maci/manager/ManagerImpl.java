@@ -23,7 +23,17 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -38,25 +48,6 @@ import org.prevayler.Prevayler;
 import org.prevayler.implementation.AbstractPrevalentSystem;
 import org.prevayler.implementation.SnapshotPrevayler;
 
-import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
-import EDU.oswego.cs.dl.util.concurrent.Mutex;
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-import EDU.oswego.cs.dl.util.concurrent.ReadWriteLock;
-import EDU.oswego.cs.dl.util.concurrent.ReaderPreferenceReadWriteLock;
-import EDU.oswego.cs.dl.util.concurrent.Sync;
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedBoolean;
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
-import abeans.core.AssertionFailed;
-import abeans.core.CoreException;
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.InitializationException;
-import abeans.core.defaults.ExceptionIgnorer;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.framework.ApplicationContext;
-import abeans.pluggable.RemoteException;
-import abeans.pluggable.acs.logging.LoggingLevel;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
 import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
@@ -78,20 +69,19 @@ import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentSpecIncompatibleWithActiveComponentException;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ContainerInfo;
+import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.HandleHelper;
-import com.cosylab.acs.maci.IncompleteComponentSpecException;
 import com.cosylab.acs.maci.IntArray;
-import com.cosylab.acs.maci.InvalidComponentSpecException;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
+import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
 import com.cosylab.acs.maci.Transport;
@@ -135,9 +125,19 @@ import com.cosylab.util.WildcharMatcher;
  * @version	@@VERSION@@
  * @see		Manager
  */
-public class ManagerImpl extends AbstractPrevalentSystem implements Manager, HandleConstants, Identifiable
+public class ManagerImpl extends AbstractPrevalentSystem implements Manager, HandleConstants
 {
+	/**
+	 * Serial versionUID
+	 */
+	private static final long serialVersionUID = 400178933049243893L;
 
+	// TODO @todo revise...
+	private void reportException(Throwable th)
+	{
+		logger.log(Level.SEVERE, th.getMessage(), th);
+	}
+	
 	/**
 	 * Synchronization helper class used for activation/deactivation synchronization.
 	 * This class enforces <code>attempt</code> method of acquiring the locks to prevent deadlocks.
@@ -170,12 +170,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		/**
 		 * Number of current locks.
 		 */
-		private SynchronizedInt references = new SynchronizedInt(1);
+		private AtomicInteger references = new AtomicInteger(1);
 
 		/**
 		 * Synchronization mutex.
 		 */
-		private Sync lock = new Mutex();
+		private Lock lock = new ReentrantLock();
 
 		/**
 		 * Constructor of <code>ReferenceCountingLock</code>.
@@ -189,7 +189,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		/**
 		 * Attempt to acquire lock.
 		 *
-		 * @param	msecs	the number of milleseconds to wait.
+		 * @param	msecs	the number of milliseconds to wait.
 		 * 					An argument less than or equal to zero means not to wait at all.
 		 * @return	<code>true</code> if acquired, <code>false</code> othwerwise.
 		 */
@@ -197,7 +197,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			try
 			{
-				return lock.attempt(msecs);
+				return lock.tryLock(msecs, TimeUnit.MILLISECONDS);
 			}
 			catch (InterruptedException ie)
 			{
@@ -210,7 +210,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		 */
 		public void release()
 		{
-			lock.release();
+			lock.unlock();
 		}
 
 		/**
@@ -230,7 +230,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		 */
 		public int increment()
 		{
-			return references.increment();
+			return references.incrementAndGet();
 		}
 
 		/**
@@ -240,7 +240,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		 */
 		public int decrement()
 		{
-			return references.decrement();
+			return references.decrementAndGet();
 		}
 
 	}
@@ -279,14 +279,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					internalRequestComponent(h, curls[i], status);
 
 					if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
-						new MessageLogEntry(ManagerImpl.this, "ManagerImpl.RequestComponentTask", "Failed to activate requested component '"+curls[i]+"', reason: '"+status.getStatus()+"'.", LoggingLevel.DEBUG).dispatch();
+						logger.fine("Failed to activate requested component '"+curls[i]+"', reason: '"+status.getStatus()+"'.");
 				}
 				catch (Throwable ex)
 				{
-					CoreException ce = new CoreException(ManagerImpl.this, "Failed to request component '"+curls[i]+"'.", ex);
-					ce.caughtIn(this, "ManagerImpl.RequestComponentTask");
-					ce.putValue("curl",  curls[i]);
-					// exception service will handle this
+					CoreException ce = new CoreException("Failed to request component '"+curls[i]+"'.", ex);
+					reportException(ce);
 				}
 			}
 		}
@@ -324,10 +322,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 				catch (Throwable ex)
 				{
-					CoreException ce = new CoreException(ManagerImpl.this, "Failed to release component with handle '"+handles[i]+"'.", ex);
-					ce.caughtIn(this, "ManagerImpl.ReleaseComponentTask");
-					ce.putValue("handle",  new Integer(handles[i]));
-					// exception service will handle this
+					CoreException ce = new CoreException("Failed to release component with handle '"+handles[i]+"'.", ex);
+					reportException(ce);
 				}
 			}
 		}
@@ -354,10 +350,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable th)
 			{
-				CoreException ce = new CoreException(ManagerImpl.this, "Failed to deactivate component '"+name+"'.", th);
-				ce.caughtIn(this, "ManagerImpl.DeactivateComponentTask");
-				ce.putValue("name",  name);
-				// exception service will handle this
+				CoreException ce = new CoreException("Failed to deactivate component '"+name+"'.", th);
+				reportException(ce);
 			}
 		}
 	}
@@ -396,10 +390,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable th)
 			{
-				CoreException ce = new CoreException(ManagerImpl.this, "Failed to shutdown container '"+containerName+"'.", th);
-				ce.caughtIn(this, "ManagerImpl.ShutdownContainerTask");
-				ce.putValue("containerName",  containerName);
-				// exception service will handle this
+				CoreException ce = new CoreException("Failed to shutdown container '"+containerName+"'.", th);
+				reportException(ce);
 			}
 		}
 	}
@@ -600,17 +592,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Shutdown status.
 	 */
-	private transient SynchronizedBoolean shutdown;
+	private transient AtomicBoolean shutdown;
 
 	/**
 	 * Thread pool (guarantees order of execution).
 	 */
-	private transient PooledExecutor threadPool;
-
-	/**
-	 * Identifier.
-	 */
-	private transient Identifier id = null;
+	private transient ThreadPoolExecutor threadPool;
 
 	/**
 	 * Default manager domain.
@@ -620,27 +607,27 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Number of threads in thread pool (guarantees order of execution).
 	 */
-	private transient int poolThreads = 10;
+	private transient int poolThreads;
 
 	/**
 	 * Lock timeout (deadlock detection time) in ms.
 	 */
-	private transient long lockTimeout = 3 * 60000L;	// 3 minutes
+	private transient long lockTimeout;
 
 	/**
 	 * Client ping interval.
 	 */
-	private transient int	clientPingInterval = 60000;		// 60 secs
+	private transient int	clientPingInterval;
 
 	/**
 	 * Administrator ping interval.
 	 */
-	private transient int	administratorPingInterval = 45000;		// 45 secs
+	private transient int	administratorPingInterval;
 
 	/**
 	 * Container ping interval.
 	 */
-	private transient int	containerPingInterval = 30000;		// 30 secs
+	private transient int	containerPingInterval;
 
 	/**
 	 * Container rights.
@@ -666,11 +653,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Shutdown implementation.
 	 */
 	private transient ManagerShutdown shutdownImplementation = null;
-
-	/**
-	 * Abeans application context where Manager lives in (used to access CDB).
-	 */
-	private transient ApplicationContext applicationContext = null;
 
 	/**
 	 * CDB access.
@@ -774,21 +756,24 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private transient ComponentInfoTopologicalSortManager topologySortManager;
 
 	/**
+	 * Logger.
+	 */
+	private transient Logger logger;
+
+	/**
 	 * Initializes Manager.
 	 * @param	prevayler			implementation of prevayler system
-	 * @param	applicationContext	abeans application context where Manager lives in
 	 * @param	context				remote directory implementation
 	 */
-	public void initialize(Prevayler prevayler, ApplicationContext applicationContext,
-						   CDBAccess cdbAccess, Context context)
-		throws InitializationException
+	public void initialize(Prevayler prevayler, CDBAccess cdbAccess, Context context, Logger logger)
 	{
 		this.prevayler = prevayler;
 		this.remoteDirectory = context;
-
-		if (applicationContext != null)
-			setApplicationContext(applicationContext);
-
+		this.logger = logger;
+		
+		// needs to be done here, since deserialization is used
+		initializeDefaultConfiguration();
+		
 		if (cdbAccess != null)
 			setCDBAccess(cdbAccess);
 
@@ -801,16 +786,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		containerLoggedInMonitor = new Object();
 
 		activationSynchronization = new HashMap();
-		activationPendingRWLock = new ReaderPreferenceReadWriteLock();
-		shutdown = new SynchronizedBoolean(false);
-		threadPool = new PooledExecutor(new LinkedQueue());
+		activationPendingRWLock = new ReentrantReadWriteLock(); // @todo ReaderPreferenceReadWriteLock();
+		shutdown = new AtomicBoolean(false);
+		
+		threadPool = new ThreadPoolExecutor(poolThreads, poolThreads,
+				  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+				  new LinkedBlockingQueue());
+
 		managerCache = new HashMap();
-                pendingActivations = new HashMap();
-                pendingContainerShutdown = Collections.synchronizedSet(new HashSet());
+
+		pendingActivations = new HashMap();
+		pendingContainerShutdown = Collections.synchronizedSet(new HashSet());
 
 		// create threads
-   		threadPool.setMinimumPoolSize(poolThreads);
-		threadPool.createThreads(poolThreads);
+		threadPool.prestartAllCoreThreads();
 
 		// read CDB startup
 		try
@@ -819,12 +808,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentSpec != null)
 			{
 				cdbActivation = new ComponentSpec(componentSpec);
-				new MessageLogEntry(this, "initialize", "Using CDB component specification: '" + cdbActivation + "'.", LoggingLevel.INFO).dispatch();
+				logger.info("Using CDB component specification: '" + cdbActivation + "'.");
 			}
 		}
 		catch (Throwable t)
 		{
-			new MessageLogEntry(this, "initialize", "Failed to parse '" + NAME_CDB_COMPONENTSPEC + "' variable, " + t.getMessage(), t, LoggingLevel.WARNING).dispatch();
+			logger.log(Level.WARNING, "Failed to parse '" + NAME_CDB_COMPONENTSPEC + "' variable, " + t.getMessage(), t);
 		}
 
 		// check load balancing strategy
@@ -836,7 +825,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// start topology sort manager
 		topologySortManager = new ComponentInfoTopologicalSortManager(
 				components, containers, activationPendingRWLock,
-				pendingContainerShutdown, threadPool);
+				pendingContainerShutdown, threadPool, logger);
+	}
+
+	/**
+	 * Initialize manager default configuration.
+	 */
+	private void initializeDefaultConfiguration()
+	{
+		poolThreads = 10;
+		lockTimeout = 3 * 60000L;	// 3 minutes
+		clientPingInterval = 60000;		// 60 secs
+		administratorPingInterval = 45000;		// 45 secs
+		containerPingInterval = 30000;		// 30 secs
 	}
 
 	/**
@@ -861,7 +862,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			ClientInfo clientInfo = containerInfo.createClientInfo();
 
 			// register container to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
 			containerInfo.setTask(task);
 			heartbeatTask.schedule(task, 0, containerPingInterval);
 	    }
@@ -875,7 +876,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			h = administrators.next(h);
 
 			// register administrator to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, adminInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, adminInfo);
 			adminInfo.setTask(task);
 			heartbeatTask.schedule(task, 0, administratorPingInterval);
 	    }
@@ -889,7 +890,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			h = clients.next(h);
 
 			// register client to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
 			clientInfo.setTask(task);
 			heartbeatTask.schedule(task, 0, clientPingInterval);
 	    }
@@ -914,17 +915,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				Constructor constructor = strategyClass.getConstructor((Class[])null);
 				if (constructor == null)
 					throw new IllegalArgumentException("Class '" + strategyClass.getName() + "' does have required default constructor.");
-				Object strategyObject = constructor.newInstance((Class)null);
+				Object strategyObject = constructor.newInstance((Object[])null);
 				if (!(strategyObject instanceof LoadBalancingStrategy))
 					throw new IllegalArgumentException("Class '" + strategyClass.getName() + "' does not implement '" + LoadBalancingStrategy.class.getName() + "' interface.");
 				loadBalancingStrategy = (LoadBalancingStrategy)strategyObject;
 
-				new MessageLogEntry(this, "checkLoadBalancingStrategy", "Using load balancing strategy: '" + strategyClass.getName() + "'.", LoggingLevel.INFO).dispatch();
+				logger.info("Using load balancing strategy: '" + strategyClass.getName() + "'.");
 			}
 		}
 		catch (Throwable t)
 		{
-			new MessageLogEntry(this, "checkLoadBalancingStrategy", "Failed to register '" + NAME_LOAD_BALANCING_STRATEGY + "' load balancing strategy: " + t.getMessage(), t, LoggingLevel.WARNING).dispatch();
+			logger.log(Level.WARNING, "Failed to register '" + NAME_LOAD_BALANCING_STRATEGY + "' load balancing strategy: " + t.getMessage(), t);
 		}
 	}
 
@@ -964,27 +965,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public ContainerInfo[] getContainerInfo(int id, int[] handles, String name_wc)
 		throws AcsJNoPermissionEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getContainerInfo", new Object[] { new Integer(id), handles, name_wc }).dispatch();
-
 		if (handles == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'handles' sequence expected.");
-			af.caughtIn(this, "getContainerInfo");
-			af.putValue("id", new Integer(id));
-			af.putValue("handles", handles);
-			af.putValue("name_wc", name_wc);
+			BadParametersException af = new BadParametersException("Non-null 'handles' sequence expected.");
 			throw af;
 		}
 		else if (handles.length == 0 && name_wc == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'names_wc' sequence expected.");
-			af.caughtIn(this, "getContainerInfo");
-			af.putValue("id", new Integer(id));
-			af.putValue("handles", handles);
-			af.putValue("name_wc", name_wc);
+			BadParametersException af = new BadParametersException("Non-null 'names_wc' sequence expected.");
 			throw af;
 		}
 
@@ -1000,7 +990,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			catch (Exception ex)
 			{
 				// BAD_PARAM
-				BadParametersException af = new BadParametersException(this, "Failed to compile 'names_wc' reqular expression string '"+name_wc+"'.");
+				BadParametersException af = new BadParametersException("Failed to compile 'names_wc' reqular expression string '"+name_wc+"'.");
 				af.caughtIn(this, "getContainerInfo");
 				af.putValue("name_wc", name_wc);
 				throw af;
@@ -1063,9 +1053,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************************************************************/
 
-		if (isDebug())
-			new MessageLogEntry(this, "getContainerInfo", "Exiting.", Level.FINEST).dispatch();
-
 		return info;
 	}
 
@@ -1075,27 +1062,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public ClientInfo[] getClientInfo(int id, int[] handles, String name_wc)
 		throws AcsJNoPermissionEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getClientInfo", new Object[] { new Integer(id), handles, name_wc }).dispatch();
 
 		if (handles == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'handles' sequence expected.");
-			af.caughtIn(this, "getClientInfo");
-			af.putValue("id", new Integer(id));
-			af.putValue("handles", handles);
-			af.putValue("name_wc", name_wc);
+			BadParametersException af = new BadParametersException("Non-null 'handles' sequence expected.");
 			throw af;
 		}
 		else if (handles.length == 0 && name_wc == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'names_wc' sequence expected.");
-			af.caughtIn(this, "getClientInfo");
-			af.putValue("id", new Integer(id));
-			af.putValue("handles", handles);
-			af.putValue("name_wc", name_wc);
+			BadParametersException af = new BadParametersException("Non-null 'names_wc' sequence expected.");
 			throw af;
 		}
 
@@ -1111,7 +1088,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			catch (Exception ex)
 			{
 				// BAD_PARAM
-				BadParametersException af = new BadParametersException(this, "Failed to compile 'names_wc' reqular expression string '"+name_wc+"'.");
+				BadParametersException af = new BadParametersException("Failed to compile 'names_wc' reqular expression string '"+name_wc+"'.");
 				af.caughtIn(this, "getClientInfo");
 				af.putValue("name_wc", name_wc);
 				throw af;
@@ -1195,9 +1172,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************************************************************/
 
-		if (isDebug())
-			new MessageLogEntry(this, "getClientInfo", "Exiting.", Level.FINEST).dispatch();
-
 		return info;
 	}
 
@@ -1209,30 +1183,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		throws AcsJNoPermissionEx
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentInfo", new Object[] { new Integer(id), handles, name_wc,
-																	type_wc, new Boolean(activeOnly) }).dispatch();
-
 		if (handles == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'handles' sequence expected.");
-			af.caughtIn(this, "getComponentInfo");
-			af.putValue("id", new Integer(id));
-			af.putValue("handles", handles);
-			af.putValue("name_wc", name_wc);
-			af.putValue("type_wc", type_wc);
+			BadParametersException af = new BadParametersException("Non-null 'handles' sequence expected.");
 			throw af;
 		}
 		else if (handles.length == 0 && (name_wc == null || type_wc == null))
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'names_wc' or' type_wc' sequence expected.");
-			af.caughtIn(this, "getComponentInfo");
-			af.putValue("id", new Integer(id));
-			af.putValue("handles", handles);
-			af.putValue("name_wc", name_wc);
-			af.putValue("type_wc", type_wc);
+			BadParametersException af = new BadParametersException("Non-null 'names_wc' or' type_wc' sequence expected.");
 			throw af;
 		}
 
@@ -1275,12 +1235,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                         throw new IllegalArgumentException("Wildchars not supported in domain names.");
                 } catch (URISyntaxException e) {
         			// BAD_PARAM
-        			BadParametersException af = new BadParametersException(this, "Invalid CURL syntax in 'names_wc'.");
-        			af.caughtIn(this, "getComponentInfo");
-        			af.putValue("id", new Integer(id));
-        			af.putValue("handles", handles);
-        			af.putValue("name_wc", name_wc);
-        			af.putValue("type_wc", type_wc);
+        			BadParametersException af = new BadParametersException("Invalid CURL syntax in 'names_wc'.");
         			throw af;
                 }
 
@@ -1297,9 +1252,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
         			    String domainName = curl.getAuthority();
         			    remoteManager = getManagerForDomain(domainName);
         			    if (remoteManager == null)
-        			        throw new AssertionFailed(this, "Failed to obtain manager for domain '" + domainName + "'.");
+        			        throw new CoreException("Failed to obtain manager for domain '" + domainName + "'.");
         		    } catch (Throwable th) {
-        				new MessageLogEntry(this, "getComponentInfo", "Failed to obtain non-local manager required by CURL '"+curl+"'.", th, LoggingLevel.WARNING).dispatch();
+        				logger.log(Level.WARNING, "Failed to obtain non-local manager required by CURL '"+curl+"'.", th);
         				return null;
         		    }
                 }
@@ -1328,14 +1283,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     			}
     			catch (Exception ex)
     			{
-    				RemoteException re = new RemoteException(this, "Failed to obtain component infos for CURL '"+curl+"' from remote manager.", ex);
-    				re.caughtIn(this, "getComponentInfo");
-    				re.putValue("id", new Integer(id));
-    				re.putValue("handles", handles);
-    				re.putValue("name_wc", name_wc);
-    				re.putValue("type_wc", type_wc);
-    				// exception service will handle this
-    				new MessageLogEntry(this, "getComponentInfo", re.getMessage(), LoggingLevel.ERROR).dispatch();
+    				RemoteException re = new RemoteException("Failed to obtain component infos for CURL '"+curl+"' from remote manager.", ex);
+    				reportException(re);
+    				logger.log(Level.SEVERE, re.getMessage(), ex);
     				return null;
     			}
 		    }
@@ -1387,7 +1337,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							String name = ids[i]; //readStringCharacteristics(componentsDAO, ids[i]+"/Name");
 							if (name == null)
 							{
-								new MessageLogEntry(this, "getComponentInfo", "Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.", LoggingLevel.WARNING).dispatch();
+								logger.warning("Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.");
 								continue;
 							}
 
@@ -1402,7 +1352,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								String type = readStringCharacteristics(componentsDAO, ids[i]+"/Type");
 								if (type == null)
 								{
-									new MessageLogEntry(this, "getComponentInfo", "Misconfigured CDB, there is no type of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+									logger.warning("Misconfigured CDB, there is no type of component '"+name+"' defined.");
 									continue;
 								}
 
@@ -1414,7 +1364,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 									String code = readStringCharacteristics(componentsDAO, ids[i]+"/Code");
 									if (code == null)
 									{
-										new MessageLogEntry(this, "getComponentInfo", "Misconfigured CDB, there is no code of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+										logger.warning("Misconfigured CDB, there is no code of component '"+name+"' defined.");
 										continue;
 									}
 
@@ -1427,7 +1377,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 									String container = readStringCharacteristics(componentsDAO, ids[i]+"/Container");
 									if (container == null)
 									{
-										new MessageLogEntry(this, "getComponentInfo", "Misconfigured CDB, there is no container name of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+										logger.warning("Misconfigured CDB, there is no container name of component '"+name+"' defined.");
 										continue;
 									}
 
@@ -1450,10 +1400,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (Exception ex)
 					{
-						CoreException ce = new CoreException(this, "Failed to obtain component data from the CDB.", ex);
-						ce.caughtIn(this, "getComponentInfo");
-						// exception service will handle this
-						// new MessageLogEntry(this, "getComponentInfo", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+						CoreException ce = new CoreException("Failed to obtain component data from the CDB.", ex);
+						reportException(ce);
 					}
 
 				}
@@ -1467,9 +1415,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentInfo", "Exiting.", Level.FINEST).dispatch();
 
 		return info;
 	}
@@ -1519,10 +1464,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 	
-		if (isDebug())
-			new MessageLogEntry(this, "getComponent", new Object[] { new Integer(id), curl,
-										new Boolean(activate), status, new Boolean(allowServices) }).dispatch();
-	
 		// extract name
 		String name = extractName(curl);
 	
@@ -1552,10 +1493,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (id != 0)
 		{
 			requestorName = getRequestorName(id);
-			new MessageLogEntry(this, "getComponent", "'" + requestorName + "' requested component '" + curl + "'.", LoggingLevel.INFO).dispatch();
+			logger.info("'" + requestorName + "' requested component '" + curl + "'.");
 		}
 		else
-			new MessageLogEntry(this, "getComponent", "Request for component '" + curl + "' issued.", LoggingLevel.INFO).dispatch();
+			logger.info("Request for component '" + curl + "' issued.");
 	
 	
 		// no login required for predefined objects (services)
@@ -1608,16 +1549,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (component != null && component.getObject() != null)
 		{
 			if (requestorName != null)
-				new MessageLogEntry(this, "getComponent", "Component '" + curl + "' provided to '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+				logger.info("Component '" + curl + "' provided to '" + requestorName + "'.");
 			else
-				new MessageLogEntry(this, "getComponent", "Component '" + curl + "' provided.", LoggingLevel.INFO).dispatch();
+				logger.info("Component '" + curl + "' provided.");
 		}
 		else if (status.getStatus() != ComponentStatus.COMPONENT_NOT_ACTIVATED)
 		{
 			if (requestorName != null)
-				new MessageLogEntry(this, "getComponent", "Request from '" + requestorName + "' for component '" + curl + "' completed sucessfully, but component not activated.", LoggingLevel.INFO).dispatch();
+				logger.info("Request from '" + requestorName + "' for component '" + curl + "' completed sucessfully, but component not activated.");
 			else
-				new MessageLogEntry(this, "getComponent", "Request for component '" + curl + "' completed sucessfully, but component not activated.", LoggingLevel.INFO).dispatch();
+				logger.info("Request for component '" + curl + "' completed sucessfully, but component not activated.");
 		}
 		/**
 		 * @todo GCH 2006.09.25
@@ -1627,15 +1568,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		else
 		{
 			if (requestorName != null)
-				new MessageLogEntry(this, "getComponent", "Failed to provide component '" + curl + "' to '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+				logger.info("Failed to provide component '" + curl + "' to '" + requestorName + "'.");
 			else
-				new MessageLogEntry(this, "getComponent", "Failed to provide component '" + curl + "'.", LoggingLevel.INFO).dispatch();
+				logger.info("Failed to provide component '" + curl + "'.");
 		}
 	
 		/****************************************************************/
-	
-		if (isDebug())
-			new MessageLogEntry(this, "getComponent", "Exiting.", Level.FINEST).dispatch();
 	
 		if(component == null)
 		{
@@ -1656,26 +1594,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		throws AcsJNoPermissionEx
 	{
 	
-		if (isDebug())
-			new MessageLogEntry(this, "getComponents", new Object[] { new Integer(id), curls,
-											new Boolean(activate), statuses, new Boolean(allowServices) }).dispatch();
-	
 		// check if null
 		if (curls == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null CURLs expected.");
-			af.caughtIn(this, "getComponents");
-			af.putValue("curls", curls);
+			BadParametersException af = new BadParametersException("Non-null CURLs expected.");
 			throw af;
 		}
 	
 		if (statuses == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'statuses' expected.");
-			af.caughtIn(this, "getComponents");
-			af.putValue("statuses", statuses);
+			BadParametersException af = new BadParametersException("Non-null 'statuses' expected.");
 			throw af;
 		}
 	
@@ -1704,19 +1634,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				components[i] = null;
 				componentStatuses[i] = ComponentStatus.COMPONENT_NOT_ACTIVATED;
 	
-				CoreException ce = new CoreException(this, "Failed to get component '"+curls[i]+"'.", ex);
-				ce.caughtIn(this, "getComponents");
-				ce.putValue("curl", curls[i]);
-				// exception service will handle this
+				CoreException ce = new CoreException("Failed to get component '"+curls[i]+"'.", ex);
+				reportException(ce);
 			}
 		}
 	
-		new MessageLogEntry(this, "getComponents", obtained + " of " + curls.length +" components obtained.", LoggingLevel.INFO).dispatch();
+		logger.info(obtained + " of " + curls.length +" components obtained.");
 	
 		/****************************************************************/
-	
-		if (isDebug())
-			new MessageLogEntry(this, "getComponents", "Exiting.", Level.FINEST).dispatch();
 	
 		return components;
 	
@@ -1728,8 +1653,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public Component getComponentNonSticky(int id, URI curl) 
 		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentNonSticky", new Object[] { new Integer(id), curl }).dispatch();
 	
 		// extract name
 		String name = extractName(curl);
@@ -1750,7 +1673,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		String requestorName = getRequestorName(id);
-		new MessageLogEntry(this, "getComponentNonSticky", "'" + requestorName + "' requested non-sticky component '" + curl + "'.", LoggingLevel.INFO).dispatch();
+		logger.info("'" + requestorName + "' requested non-sticky component '" + curl + "'.");
 	
 		Component component = null;
 		synchronized (components)
@@ -1770,14 +1693,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	
 		// log info
 		if (component != null && component.getObject() != null)
-			new MessageLogEntry(this, "getComponentNonSticky", "Non-sticky component '" + curl + "' provided to '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+			logger.info("Non-sticky component '" + curl + "' provided to '" + requestorName + "'.");
 		else
-			new MessageLogEntry(this, "getComponentNonSticky", "Failed to provide non-sticky component '" + curl + "' to '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+			logger.info("Failed to provide non-sticky component '" + curl + "' to '" + requestorName + "'.");
 	
 		/****************************************************************/
-	
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentNonSticky", "Exiting.", Level.FINEST).dispatch();
 	
 		return component;
 	
@@ -1789,8 +1709,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public void makeComponentImmortal(int id, URI curl, boolean immortalState) 
 	    throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJBadParameterEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "makeComponentImmortal", new Object[] { new Integer(id), curl, new Boolean(immortalState) }).dispatch();
 
 		// extract name
 		String name = extractName(curl);
@@ -1829,10 +1747,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// component not yet activated check
 			if (h == 0)
 			{
-				NoResourcesException af = new NoResourcesException(this, "Component not activated.");
-				af.caughtIn(this, "makeComponentImmortal");
-				af.putValue("id", new Integer(id));
-				af.putValue("curl", curl);
+				NoResourcesException af = new NoResourcesException("Component not activated.");
 				throw af;
 			}
 
@@ -1851,14 +1766,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					executeCommand(new ComponentCommandClientAdd(componentInfo.getHandle() & HANDLE_MASK, this.getHandle()));
 					//componentInfo.getClients().add(this.getHandle());
 				}
-				new MessageLogEntry(this, "makeComponentImmortal", "Component " + name + " was made immortal.", LoggingLevel.INFO).dispatch();
+				logger.info("Component " + name + " was made immortal.");
 			}
 		}
 
 		// this must be done outside component sync. block
 		if (!immortalState)
 		{
-			new MessageLogEntry(this, "makeComponentImmortal", "Component " + name + " was made mortal.", LoggingLevel.INFO).dispatch();
+			logger.info("Component " + name + " was made mortal.");
 
 			// finally, can happen that the manager is the only owner
 			// so release could be necessary
@@ -1867,9 +1782,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************************************************************/
 
-		if (isDebug())
-			new MessageLogEntry(this, "makeComponentImmortal", "Exiting.", Level.FINEST).dispatch();
-
 	}
 
 	/**
@@ -1877,10 +1789,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public ClientInfo login(Client reference) throws AcsJNoPermissionEx
 	{
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "login", new Object[] { reference == null ? "null" : reference.toString() }).dispatch();
 
 		// check if already shutdown
 		if (shutdown.get())
@@ -1894,8 +1802,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (reference == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'reference' expected.");
-			af.caughtIn(this, "login");
+			BadParametersException af = new BadParametersException("Non-null 'reference' expected.");
 			throw af;
 		}
 
@@ -1910,9 +1817,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (reply == null)
 			{
 				// BAD_PARAM
-				BadParametersException af = new BadParametersException(this, "Invalid response to 'Client::authenticate()' method - non-null string expected.");
-				af.caughtIn(this, "login");
-				af.putValue("reply", reply);
+				BadParametersException af = new BadParametersException("Invalid response to 'Client::authenticate()' method - non-null string expected.");
 				throw af;
 			}
 
@@ -1933,14 +1838,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (name == null)
 			{
 				// BAD_PARAM
-				BadParametersException af = new BadParametersException(this, "Invalid response to 'Client::name()' method - non-null string expected.");
-				af.caughtIn(this, "login");
-				af.putValue("name", name);
+				BadParametersException af = new BadParametersException("Invalid response to 'Client::name()' method - non-null string expected.");
 				throw af;
 			}
 
-			if (isDebug())
-				new MessageLogEntry(this, "login", "'"+name+"' is logging in.", LoggingLevel.DEBUG).dispatch();
+			logger.fine("'"+name+"' is logging in.");
 
 			// delegate
 			switch (reply.charAt(0))
@@ -1999,25 +1901,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		catch (RemoteException re)
 		{
-			AssertionFailed af = new AssertionFailed(this, "Exception caught while examining the client. Login rejected.", re);
-			af.caughtIn(this, "login");
-			// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-			af.putValue("reference", reference.toString());
-			throw af;
+			// TODO @todo exception
+			RuntimeException rt = new RuntimeException("Exception caught while examining the client. Login rejected.", re);
+			throw rt;
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
-			AssertionFailed af = new AssertionFailed(this, "Unexpected exception during login. Login rejected.", ex);
-			af.caughtIn(this, "login");
-			// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-			af.putValue("reference", reference.toString());
-			throw af;
+			// TODO @todo exception
+			RuntimeException rt = new RuntimeException("Unexpected exception during login. Login rejected.", ex);
+			throw rt;
 		}
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "login", "Exiting.", Level.FINEST).dispatch();
 
 		return info;
 	}
@@ -2027,11 +1922,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public void logout(int id) throws AcsJNoPermissionEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "logout", new Object[] { new Integer(id) }).dispatch();
 
-		if (isDebug())
-			new MessageLogEntry(this, "logout", "Client with handle '" + HandleHelper.toString(id) + "' is logging out.", LoggingLevel.DEBUG).dispatch();
+		logger.fine("Client with handle '" + HandleHelper.toString(id) + "' is logging out.");
 
 		// check handle, no special rights needed for logout
                 // AcsJNoPermissionEx flies directly up from securityCheck()
@@ -2054,8 +1946,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************************************************************/
 
-		if (isDebug())
-			new MessageLogEntry(this, "logout", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -2064,10 +1954,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public int registerComponent(int id, URI curl, String type, Component component)
 		throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "registerComponent", new Object[] { new Integer(id), curl, type, component == null ? "null" : component.toString() }).dispatch();
 
 		// check for null
 		if (curl == null )
@@ -2151,9 +2037,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//int handle = components.allocate();
 			if (handle == 0)
 			{
-				NoResourcesException af = new NoResourcesException(this, "Generation of new handle failed, too many components registred.");
-				af.caughtIn(this, "registerComponent");
-				af.putValue("curl", curl);
+				NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many components registred.");
 				throw af;
 			}
 
@@ -2191,12 +2075,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// NOTE: this could block since it is a remote call
 		bind(convertToHiearachical(name), "O", component);
 
-		new MessageLogEntry(this, "registerComponent", "Component '"+name+"' registered.", LoggingLevel.INFO).dispatch();
+		logger.info("Component '"+name+"' registered.");
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "registerComponent", "Exiting.", Level.FINEST).dispatch();
 
 		return h;
 	}
@@ -2207,9 +2088,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public void unregisterComponent(int id, int h) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "unregisterComponent", new Object[] { new Integer(id), new Integer(handle) }).dispatch();
-
 		// check handle and REGISTER_COMPONENT permissions
 		securityCheck(id, AccessRights.REGISTER_COMPONENT);
 
@@ -2217,12 +2095,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		internalReleaseComponent(this.getHandle(), h, false);
 
-		new MessageLogEntry(this, "unregisterComponent", "Component with handle '"+HandleHelper.toString(h)+"' unregistered.", LoggingLevel.INFO).dispatch();
+		logger.info("Component with handle '"+HandleHelper.toString(h)+"' unregistered.");
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "unregisterComponent", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -2231,9 +2106,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public Component restartComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
-
-		if (isDebug())
-			new MessageLogEntry(this, "restartComponent", new Object[] { new Integer(id), curl }).dispatch();
 
 		// checks CURL
 		// let same exception fly up
@@ -2252,14 +2124,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		Component component = internalRestartComponent(id, curl);
 
 		if (component != null)
-			new MessageLogEntry(this, "restartComponent", "Component '"+curl+"' restarted.", LoggingLevel.INFO).dispatch();
+			logger.info("Component '"+curl+"' restarted.");
 		else
-			new MessageLogEntry(this, "restartComponent", "Failed to restart component '"+curl+"'.", LoggingLevel.INFO).dispatch();
+			logger.info("Failed to restart component '"+curl+"'.");
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "restartComponent", "Exiting.", Level.FINEST).dispatch();
 
 		return component;
 
@@ -2270,9 +2139,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
-
-		if (isDebug())
-			new MessageLogEntry(this, "releaseComponent", new Object[] { new Integer(id), curl }).dispatch();
 
 		// checks CURL
 		// throw up same exceptions
@@ -2289,16 +2155,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		String requestorName = getRequestorName(id);
-		new MessageLogEntry(this, "releaseComponent", "'" + requestorName + "' requested release of component '" + curl + "'.", LoggingLevel.INFO).dispatch();
+		logger.info("'" + requestorName + "' requested release of component '" + curl + "'.");
 
 		int owners = internalReleaseComponent(id, curl, id == this.getHandle());
 
-		new MessageLogEntry(this, "releaseComponent", "Component '" + curl + "' released by '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+		logger.info("Component '" + curl + "' released by '" + requestorName + "'.");
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "releaseComponent", "Exiting.", Level.FINEST).dispatch();
 
 		return owners;
 
@@ -2309,9 +2172,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx
 	{
-
-		if (isDebug())
-			new MessageLogEntry(this, "forceReleaseComponent", new Object[] { new Integer(id), curl }).dispatch();
 
 		// checks CURL
 		// let same exception fly up
@@ -2336,16 +2196,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		String requestorName = getRequestorName(id);
-		new MessageLogEntry(this, "forceReleaseComponent", "'" + requestorName + "' requested forceful release of component '" + curl + "'.", LoggingLevel.INFO).dispatch();
+		logger.info("'" + requestorName + "' requested forceful release of component '" + curl + "'.");
 
 		int owners = internalReleaseComponent(id, curl, true);
 
-		new MessageLogEntry(this, "forceReleaseComponent", "Component '" + curl + "' forcefully released by '" + requestorName + "'.", LoggingLevel.INFO).dispatch();
+		logger.info("Component '" + curl + "' forcefully released by '" + requestorName + "'.");
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "forceReleaseComponent", "Exiting.", Level.FINEST).dispatch();
 
 		return owners;
 
@@ -2357,16 +2214,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public void releaseComponents(int id, URI[] curls) throws AcsJNoPermissionEx
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "releaseComponents", new Object[] { new Integer(id), curls }).dispatch();
-
 		// check if null
 		if (curls == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null CURLs expected.");
-			af.caughtIn(this, "releaseComponents");
-			af.putValue("curls", curls);
+			BadParametersException af = new BadParametersException("Non-null CURLs expected.");
 			throw af;
 		}
 
@@ -2386,19 +2238,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Exception ex)
 			{
-				CoreException ce = new CoreException(this, "Failed to release component '"+curls[i]+"'.", ex);
-				ce.caughtIn(this, "releaseComponents");
-				ce.putValue("curl", curls[i]);
-				// exception service will handle this
+				CoreException ce = new CoreException("Failed to release component '"+curls[i]+"'.", ex);
+				reportException(ce);
 			}
 		}
 
-		new MessageLogEntry(this, "releaseComponents", released + " of " + curls.length +" components released.", LoggingLevel.INFO).dispatch();
+		logger.info(released + " of " + curls.length +" components released.");
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "releaseComponents", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -2412,9 +2259,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (pendingContainerShutdown.contains(containerName))
 		{
 			// NO_RESOURCES
-			NoResourcesException nre = new NoResourcesException(this, "Container '" + containerName + "' is being shutdown.");
-			nre.caughtIn(this, "checkContainerState");
-			nre.putValue("containerName", containerName);
+			NoResourcesException nre = new NoResourcesException("Container '" + containerName + "' is being shutdown.");
 			throw nre;
 		}
 	}
@@ -2425,16 +2270,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public void shutdownContainer(int id, String containerName, int action)
 			throws AcsJNoPermissionEx {
 
-		if (isDebug())
-			new MessageLogEntry(this, "shutdownContainer", new Object[] { new Integer(id), containerName, new Integer(action) }).dispatch();
-
 		// check if null
 		if (containerName == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'containerName' expected.");
-			af.caughtIn(this, "shutdownContainer");
-			af.putValue("containerName", containerName);
+			BadParametersException af = new BadParametersException("Non-null 'containerName' expected.");
 			throw af;
 		}
 
@@ -2448,10 +2288,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (containerInfo == null || (container = containerInfo.getContainer()) == null)
 		{
 			// NO_RESOURCES
-			NoResourcesException nre = new NoResourcesException(this, "Container '" + containerName + "' not logged in.");
-			nre.caughtIn(this, "shutdownContainer");
-			nre.putValue("containerName", containerName);
-			nre.putValue("containerInfo", containerInfo);
+			NoResourcesException nre = new NoResourcesException("Container '" + containerName + "' not logged in.");
 			throw nre;
 		}
 
@@ -2467,10 +2304,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable th)
 			{
-				CoreException ce = new CoreException(this, "Failed to release components on container '" + containerName + "'.", th);
-				ce.caughtIn(this, "shutdownContainer");
-				ce.putValue("containerInfo", containerInfo);
-				// exception handler service will handle this
+				CoreException ce = new CoreException("Failed to release components on container '" + containerName + "'.", th);
+				reportException(ce);
 			}
 
 			// shutdown (or disconnect)
@@ -2484,9 +2319,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			catch (Throwable th)
 			{
 				// NO_RESOURCES
-				NoResourcesException nre = new NoResourcesException(this, "Failed to shutdown container '" + containerName + "'.", th);
-				nre.caughtIn(this, "shutdownContainer");
-				nre.putValue("containerInfo", containerInfo);
+				NoResourcesException nre = new NoResourcesException("Failed to shutdown container '" + containerName + "'.", th);
 				throw nre;
 			}
 
@@ -2497,8 +2330,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		/****************************************************************/
-		if (isDebug())
-			new MessageLogEntry(this, "shutdownContainer", "Exiting.", Level.FINEST).dispatch();
+
 	}
 
 	/**
@@ -2518,10 +2350,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (URISyntaxException usi)
 					{
-						BadParametersException hbpe = new BadParametersException(this, usi.getMessage(), usi);
-						hbpe.caughtIn(this, "releaseComponents");
-						hbpe.putValue("infos[i]", infos[i]);
-						// exception service will handle this
+						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
+						reportException(hbpe);
 					}
 				}
 
@@ -2542,8 +2372,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public void shutdown(int id, int containers) throws AcsJNoPermissionEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "shutdown", new Object[] { new Integer(id), new Integer(containers) }).dispatch();
 
 		// check handle and SHUTDOWN_SYSTEM permissions
 		securityCheck(id, AccessRights.SHUTDOWN_SYSTEM);
@@ -2582,7 +2410,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		/****************************************************************/
 
 		// check if already shutdown
-		if (shutdown.set(true))
+		if (shutdown.getAndSet(true))
 		{
 			// already shutdown
 			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
@@ -2592,10 +2420,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************************************************************/
 
-		new MessageLogEntry(this, "shutdown", "Manager is shutting down.", LoggingLevel.INFO).dispatch();
+		logger.info("Manager is shutting down.");
 
 
-		new MessageLogEntry(this, "shutdown", "Canceling heartbeat task.", LoggingLevel.TRACE).dispatch();
+		logger.finer("Canceling heartbeat task.");
 		// cancel hertbeat task
 		heartbeatTask.cancel();
 		topologySortManager.destroy();
@@ -2605,11 +2433,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		 * There probably should be several shutdown modes - from silent to whole system shutdown...
 		 * For the time being sileny mode is implemented.
 		 *
-		new MessageLogEntry(this, "shutdown", "Releasing immortal components.", LoggingLevel.TRACE).dispatch();
+		logger.finer("Releasing immortal components.");
 		/// !!! TBD
 
 
-		new MessageLogEntry(this, "shutdown", "Notifying clients and administrators to disconnect.", LoggingLevel.TRACE).dispatch();
+		logger.finer("Notifying clients and administrators to disconnect.");
 		notifyClientDisconnectShutdown();
 
 		*/
@@ -2617,7 +2445,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// if not "silent" shutdown
 		if (containers != 0)
 		{
-			new MessageLogEntry(this, "shutdown", "Releasing all components in the system.", LoggingLevel.TRACE).dispatch();
+			logger.finer("Releasing all components in the system.");
 			try
 			{
 				topologySortManager.requestTopologicalSort();
@@ -2625,13 +2453,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable th)
 			{
-				CoreException ce = new CoreException(this, "Failed to release all components in the system.", th);
-				ce.caughtIn(this, "shutdown");
-				// exception handler service will handle this
+				CoreException ce = new CoreException("Failed to release all components in the system.", th);
+				reportException(ce);
 			}
 		}
 
-		new MessageLogEntry(this, "shutdown", "Notifying containers to disconnect or shutdown.", LoggingLevel.TRACE).dispatch();
+		logger.finer("Notifying containers to disconnect or shutdown.");
 		notifyContainerDisconnectShutdown(containers);
 
 		// finalizeFearation
@@ -2639,14 +2466,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// process tasks in thread poll
 		// !!! NOTE: this could block (for a long time)
-		new MessageLogEntry(this, "shutdown", "Waiting tasks in thread poll to complete...", LoggingLevel.TRACE).dispatch();
-		threadPool.shutdownAfterProcessingCurrentlyQueuedTasks();
-		try
-		{
-			threadPool.awaitTerminationAfterShutdown(3000);
-		}
-		catch (InterruptedException ie) {}
-		threadPool.interruptAll();
+		logger.finer("Waiting tasks in thread poll to complete...");
+		threadPool.shutdown();
+        try {
+            if (!threadPool.awaitTermination(3, TimeUnit.SECONDS))
+            	threadPool.shutdownNow();
+        } catch (InterruptedException ie) { /* noop */ } 
 
 		// unbind Manager
 		unbind("Manager", null);
@@ -2654,19 +2479,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// remove Abeans DB connection
 		setCDBAccess(null);
 
-		setApplicationContext(null);
-
 		// release CDB DAO daos
 		destroyComponetsDAOProxy();
 		destroyContainersDAOProxy();
 		destroyManagerDAOProxy();
 
-		new MessageLogEntry(this, "shutdown", "Manager shutdown completed.", LoggingLevel.INFO).dispatch();
+		logger.info("Manager shutdown completed.");
 
 		/****************************************************************/
 
-		if (isDebug())
-			new MessageLogEntry(this, "shutdown", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/*****************************************************************************/
@@ -2685,10 +2506,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		assert (name != null);
 		assert (reply != null);
 		assert (container != null);
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "containerLogin", new Object[] { name, container == null ? "null" : container.toString() }).dispatch();
 
 		TimerTaskContainerInfo containerInfo = null;
 		ClientInfo clientInfo = null;
@@ -2743,9 +2560,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				if (handle == 0)
 				{
-					NoResourcesException af = new NoResourcesException(this, "Generation of new handle failed, too many containers logged in.");
-					af.caughtIn(this, "containerLogin");
-					af.putValue("name", name);
+					NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many containers logged in.");
 					throw af;
 				}
 
@@ -2761,7 +2576,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				clientInfo = containerInfo.createClientInfo();
 
 				// register container to the heartbeat manager
-				PingTimerTask task = new PingTimerTask(this, clientInfo);
+				PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
 				containerInfo.setTask(task);
 				heartbeatTask.schedule(task, containerPingInterval, containerPingInterval);
 
@@ -2785,26 +2600,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// do container post login activation in separate thread
 		final ContainerInfo finalInfo = containerInfo;
-		try
-		{
-			threadPool.execute(
+		threadPool.execute(
 				new Runnable() {
 					public void run()
 					{
 						containerPostLoginActivation(finalInfo, recoverContainer);
 					}
 				});
-		}
-		catch (InterruptedException ie)
-		{
-			new MessageLogEntry(ManagerImpl.this, "containerLogin",
-								"Interrupted execution of port activation task for container '"+containerInfo.getName()+"'.", ie, LoggingLevel.ERROR).dispatch();
-		}
 
-		new MessageLogEntry(this, "containerLogin", "Container '" + name + "' logged in.", LoggingLevel.INFO).dispatch();
-
-		if (isDebug())
-			new MessageLogEntry(this, "containerLogin", "Exiting.", Level.FINEST).dispatch();
+		logger.info("Container '" + name + "' logged in.");
 
 		return clientInfo;
 	}
@@ -2833,9 +2637,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// TODO what if it has already logged out?
 
-		if (isDebug())
-			new MessageLogEntry(this, "containerPostLoginActivation", new Object[0]).dispatch();
-
 		// CDB startup
 		if (cdbActivation != null && containerInfo.getName().equals(cdbActivation.getContainer()))
 		{
@@ -2848,21 +2649,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 										 cdbActivation.getCode(), cdbActivation.getContainer(), RELEASE_IMMEDIATELY, status, true);
 
 				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
-					new MessageLogEntry(ManagerImpl.this, "containerPostLoginActivation", "Failed to activate CDB, reason: '"+status.getStatus()+"'.", LoggingLevel.SEVERE).dispatch();
+					logger.severe("Failed to activate CDB, reason: '"+status.getStatus()+"'.");
 				else if (cdbInfo == null || cdbInfo.getHandle() == 0 || cdbInfo.getComponent() == null)
-					new MessageLogEntry(ManagerImpl.this, "containerPostLoginActivation", "Failed to activate CDB, invalid ComponentInfo returned: '"+cdbInfo+"'.", LoggingLevel.SEVERE).dispatch();
+					logger.severe("Failed to activate CDB, invalid ComponentInfo returned: '"+cdbInfo+"'.");
 				else
 				{
-					new MessageLogEntry(ManagerImpl.this, "containerPostLoginActivation", "CDB activated on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();
+					logger.info("CDB activated on container '" + containerInfo.getName() + "'.");
 				}
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				CoreException ce = new CoreException(this, "Failed to activate CDB on container '" + containerInfo.getName() + "'.", ex);
-				ce.caughtIn(this, "containerPostLoginActivation");
-				// exception service will handle this
-				// new MessageLogEntry(this, "containerPostLoginActivation", ce.getMessage(), ex, LoggingLevel.SEVERE).dispatch();
-				new MessageLogEntry(ManagerImpl.this, "containerPostLoginActivation", "Failed to activate CDB, reason: '"+ex.getMessage()+"'.", ex, LoggingLevel.SEVERE).dispatch();
+				logger.log(Level.SEVERE, "Failed to activate CDB on container '" + containerInfo.getName() + "'.", ex);
 			}
 		}
 
@@ -2899,7 +2696,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					String containerName = readStringCharacteristics(componentsDAO, startup[i]+"/Container");
 					if (containerName == null)
 					{
-						new MessageLogEntry(this, "containerPostLoginActivation", "Misconfigured CDB, there is no container of component '"+startup[i]+"' defined.", LoggingLevel.WARNING).dispatch();
+						logger.warning("Misconfigured CDB, there is no container of component '"+startup[i]+"' defined.");
 						continue;
 					}
 
@@ -2923,21 +2720,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (URISyntaxException usi)
 						{
-							CoreException ce = new CoreException(this, "Failed to create URI from component name '"+startup[i]+"'.", usi);
-							ce.caughtIn(this, "containerPostLoginActivation");
-							ce.putValue("startup[i]", startup[i]);
-							// exception handler service will take care of this exception
-							new MessageLogEntry(this, "containerPostLoginActivation", ce.getMessage(), ce, LoggingLevel.WARNING).dispatch();
+							logger.log(Level.WARNING, "Failed to create URI from component name '"+startup[i]+"'.", usi);
 						}
 					}
 				}
 			}
 			catch (Throwable th)
 			{
-				CoreException ce = new CoreException(this, "Failed to retrieve list of startup components.", th);
-				ce.caughtIn(this, "containerPostLoginActivation");
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "containerPostLoginActivation", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+				logger.log(Level.WARNING, "Failed to retrieve list of startup components.", th);
 			}
 
 		}
@@ -2964,7 +2754,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					String name = ids[i]; //readStringCharacteristics(componentsDAO, ids[i]+"/Name");
 					if (name == null)
 					{
-						new MessageLogEntry(this, "getComponentInfo", "Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.", LoggingLevel.WARNING).dispatch();
+						logger.warning("Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.");
 						continue;
 					}
 
@@ -2972,7 +2762,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					String autostart = readStringCharacteristics(componentsDAO, ids[i]+"/Autostart", true);
 					if (autostart == null)
 					{
-						new MessageLogEntry(this, "getComponentInfo", "Misconfigured CDB, there is no autostart attribute of component '"+ids[i]+"' defined.", LoggingLevel.WARNING).dispatch();
+						logger.warning("Misconfigured CDB, there is no autostart attribute of component '"+ids[i]+"' defined.");
 						continue;
 					}
 					else if (autostart.equalsIgnoreCase(TRUE_STRING) && !activationRequests.containsKey(name) /* TODO to be removed */ )
@@ -2981,7 +2771,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						String componentContainer = readStringCharacteristics(componentsDAO, ids[i]+"/Container", true);
 						if (componentContainer == null)
 						{
-							new MessageLogEntry(this, "getComponentInfo", "Misconfigured CDB, there is no container attribute of component '"+ids[i]+"' defined.", LoggingLevel.WARNING).dispatch();
+							logger.warning("Misconfigured CDB, there is no container attribute of component '"+ids[i]+"' defined.");
 							continue;
 						}
 						else if (!containerInfo.getName().equals(componentContainer))
@@ -3004,21 +2794,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (URISyntaxException usi)
 						{
-							CoreException ce = new CoreException(this, "Failed to create URI from component name '"+name+"'.", usi);
-							ce.caughtIn(this, "containerPostLoginActivation");
-							ce.putValue("name", name);
-							// exception handler service will take care of this exception
-							new MessageLogEntry(this, "containerPostLoginActivation", ce.getMessage(), ce, LoggingLevel.WARNING).dispatch();
+							logger.log(Level.WARNING, "Failed to create URI from component name '"+name+"'.", usi);
 						}
 					}
 				}
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				CoreException ce = new CoreException(this, "Failed to retrieve list of components.", ex);
-				ce.caughtIn(this, "containerPostLoginActivation");
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "containerPostLoginActivation", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+				logger.log(Level.WARNING, "Failed to retrieve list of components.", ex);
 			}
 
 		}
@@ -3061,7 +2844,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								String containerName = readStringCharacteristics(componentsDAO, name+"/Container");
 								if (containerName == null)
 								{
-									new MessageLogEntry(this, "containerPostLoginActivation", "Misconfigured CDB, there is no container of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+									logger.warning("Misconfigured CDB, there is no container of component '"+name+"' defined.");
 									//continue;
 								}
 								// if container name matches, add (override) activation request
@@ -3101,11 +2884,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 									}
 									catch (URISyntaxException usi)
 									{
-										CoreException ce = new CoreException(this, "Failed to create URI from component name '"+name+"'.", usi);
-										ce.caughtIn(this, "containerPostLoginActivation");
-										ce.putValue("name", name);
-										// exception handler service will take care of this exception
-										new MessageLogEntry(this, "containerPostLoginActivation", ce.getMessage(), ce, LoggingLevel.WARNING).dispatch();
+										logger.log(Level.WARNING, "Failed to create URI from component name '"+name+"'.", usi);
 									}
 								}
 							}
@@ -3114,12 +2893,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 				}
-				catch (Exception ex)
+				catch (Throwable ex)
 				{
-					CoreException ce = new CoreException(this, "Failed to obtain component data from the CDB.", ex);
-					ce.caughtIn(this, "containerPostLoginActivation");
-					// exception service will handle this
-					// new MessageLogEntry(this, "containerPostLoginActivation", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+					CoreException ce = new CoreException("Failed to obtain component data from the CDB.", ex);
+					reportException(ce);
 				}
 			}
 
@@ -3157,8 +2934,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		}
 
-		new MessageLogEntry(this, "containerPostLoginActivation", "Container '"+containerInfo.getName()+"' startup statistics: " +
-							activationRequestsList.size() + " components queued to be activated.", LoggingLevel.INFO).dispatch();
+		logger.info("Container '"+containerInfo.getName()+"' startup statistics: " +
+							activationRequestsList.size() + " components queued to be activated.");
 
 		// send message to the container
 		sendMessage(containerInfo.getContainer(), "Startup statistics: " + activationRequestsList.size() +
@@ -3180,21 +2957,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				internalRequestComponent(requestor, uri, status);
 
 				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
-					new MessageLogEntry(ManagerImpl.this, "containerPostLoginActivation", "Failed to reactivate requested component '"+uri+"', reason: '"+status.getStatus()+"'.", LoggingLevel.DEBUG).dispatch();
+					logger.fine("Failed to reactivate requested component '"+uri+"', reason: '"+status.getStatus()+"'.");
 				else
 					activated++;
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				CoreException ce = new CoreException(ManagerImpl.this, "Failed to request component '"+uri+"'.", ex);
-				ce.caughtIn(this, "containerPostLoginActivation");
-				ce.putValue("uri",  uri);
-				// exception service will handle this
+				CoreException ce = new CoreException("Failed to request component '"+uri+"'.", ex);
+				reportException(ce);
 			}
 		}
 
-		new MessageLogEntry(this, "containerPostLoginActivation", "Container '"+containerInfo.getName()+"' startup statistics: " +
-							activated + " of " + activationRequestsList.size() + " components activated.", LoggingLevel.INFO).dispatch();
+		logger.info("Container '"+containerInfo.getName()+"' startup statistics: " +
+							activated + " of " + activationRequestsList.size() + " components activated.");
 
 		// send message to the container
 		sendMessage(containerInfo.getContainer(), "Startup statistics: " + activated + " of " +
@@ -3205,9 +2980,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			containerLoggedInMonitor.notifyAll();
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "containerPostLoginActivation", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -3254,22 +3026,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert(containerInfo != null);
 
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "containerInternalStateMerge", new Object[] { containerInfo == null ? "null" : containerInfo.toString() , new Boolean(recoverContainer) }).dispatch();
-
 		// firstly, query containers state
 		ComponentInfo[] infos = null;
 		try
 		{
 			infos = containerInfo.getContainer().get_component_info(new int[0]);
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to query state of container '"+containerInfo.getName()+"'.", ex);
-			re.caughtIn(this, "containerInternalStateMerge");
-			// exception service will handle this
-			new MessageLogEntry(this, "containerInternalStateMerge", re.getMessage(), LoggingLevel.ERROR).dispatch();
+			logger.log(Level.SEVERE, "Failed to query state of container '"+containerInfo.getName()+"'.", ex);
 		}
 
 		boolean requireTopologySort = false;
@@ -3458,7 +3223,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					if (componentInfo == null)
 					{
 						// internal error, this should not happen
-						new MessageLogEntry(this, "containerInternalStateMerge", "Internal state is not consistent (no ComponentInfo).", LoggingLevel.CRITICAL).dispatch();
+						logger.severe("Internal state is not consistent (no ComponentInfo).");
 						continue;
 					}
 
@@ -3488,7 +3253,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				else
 				{
 					// internal error, this should not happen
-					new MessageLogEntry(this, "containerInternalStateMerge", "Internal state is not consistent.", LoggingLevel.CRITICAL).dispatch();
+					logger.severe("Internal state is not consistent.");
 				}
 
 			}
@@ -3499,8 +3264,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (requireTopologySort)
 			topologySortManager.notifyTopologyChange(containerInfo.getHandle());
 
-		if (isDebug())
-			new MessageLogEntry(this, "containerInternalStateMerge", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -3575,10 +3338,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		assert (name != null);
 		assert (administrator != null);
 
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "administratorLogin", new Object[] { name, administrator == null ? "null" : administrator.toString() }).dispatch();
-
 		TimerTaskClientInfo clientInfo = null;
 
 		synchronized (administrators)
@@ -3602,9 +3361,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//int handle = administrators.allocate();
 			if (handle == 0)
 			{
-				NoResourcesException af = new NoResourcesException(this, "Generation of new handle failed, too many administrators logged in.");
-				af.caughtIn(this, "administratorLogin");
-				af.putValue("name", name);
+				NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many administrators logged in.");
 				throw af;
 			}
 
@@ -3622,7 +3379,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 			// register administrator to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
 			clientInfo.setTask(task);
 			heartbeatTask.schedule(task, administratorPingInterval, administratorPingInterval);
 
@@ -3635,10 +3392,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the login
 		notifyClientLogin(clientInfo);
 
-		new MessageLogEntry(this, "administratorLogin", "Administrator '" + name + "' logged in.", LoggingLevel.INFO).dispatch();
-
-		if (isDebug())
-			new MessageLogEntry(this, "administratorLogin", "Exiting.", Level.FINEST).dispatch();
+		logger.info("Administrator '" + name + "' logged in.");
 
 		return clientInfo;
 	}
@@ -3654,10 +3408,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (name != null);
 		assert (client != null);
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "clientLogin", new Object[] { name, client == null ? "null" : client.toString() }).dispatch();
 
 		TimerTaskClientInfo clientInfo = null;
 
@@ -3682,9 +3432,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//int handle = clients.allocate();
 			if (handle == 0)
 			{
-				NoResourcesException af = new NoResourcesException(this, "Generation of new handle failed, too many clients logged in.");
-				af.caughtIn(this, "clientLogin");
-				af.putValue("name", name);
+				NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many clients logged in.");
 				throw af;
 			}
 
@@ -3700,7 +3448,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 			// register client to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
 			clientInfo.setTask(task);
 			heartbeatTask.schedule(task, clientPingInterval, clientPingInterval);
 
@@ -3713,10 +3461,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the login
 		notifyClientLogin(clientInfo);
 
-		new MessageLogEntry(this, "clientLogin", "Client '" + name + "' logged in.", LoggingLevel.INFO).dispatch();
-
-		if (isDebug())
-			new MessageLogEntry(this, "clientLogin", "Exiting.", Level.FINEST).dispatch();
+		logger.info("Client '" + name + "' logged in.");
 
 		return clientInfo;
 	}
@@ -3728,9 +3473,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void containerLogout(int id)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "containerLogout", new Object[] { new Integer(id) }).dispatch();
-
 		TimerTaskContainerInfo containerInfo = null;
 
 		synchronized (containers)
@@ -3785,10 +3527,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the logout
 		notifyContainerLogout(containerInfo);
 
-		new MessageLogEntry(this, "containerLogout", "Container '" + containerInfo.getName() + "' logged out.", LoggingLevel.INFO).dispatch();
+		logger.info("Container '" + containerInfo.getName() + "' logged out.");
 
-		if (isDebug())
-			new MessageLogEntry(this, "containerLogout", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -3826,8 +3566,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void clientLogout(int id)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "clientLogout", new Object[] { new Integer(id) }).dispatch();
 
 		TimerTaskClientInfo clientInfo = null;
 		int[] componentsArray = null;
@@ -3854,16 +3592,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		clientInfo.getTask().cancel();
 
 		// spawn another task which will release all clientInfo.getComponents()
-		try
-		{
-			threadPool.execute(new ReleaseComponentTask(clientInfo.getHandle(), componentsArray));
-		}
-		catch (InterruptedException ie)
-		{
-			new MessageLogEntry(ManagerImpl.this, "clientLogout",
-								"Interrupted execution of release task releasing components of client '"+clientInfo.getName()+"'.", ie, LoggingLevel.ERROR).dispatch();
-		}
-
+		threadPool.execute(new ReleaseComponentTask(clientInfo.getHandle(), componentsArray));
 
 		//internalReleaseComponents(components to be released, owners IntArray)
 		//internalReleaseComponents(clientInfo.getComponents(), clientInfo.getComponents())
@@ -3871,10 +3600,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the logout
 		notifyClientLogout(clientInfo);
 
-		new MessageLogEntry(this, "clientLogout", "Client '" + clientInfo.getName() + "' logged out.", LoggingLevel.INFO).dispatch();
+		logger.info("Client '" + clientInfo.getName() + "' logged out.");
 
-		if (isDebug())
-			new MessageLogEntry(this, "clientLogout", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -3883,8 +3610,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void administratorLogout(int id)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "administratorLogout", new Object[] { new Integer(id) }).dispatch();
 
 		TimerTaskClientInfo clientInfo = null;
 		int[] componentsArray = null;
@@ -3911,23 +3636,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		clientInfo.getTask().cancel();
 
 		// spawn another task which will release all clientInfo.getComponents()
-		try
-		{
-			threadPool.execute(new ReleaseComponentTask(clientInfo.getHandle(), componentsArray));
-		}
-		catch (InterruptedException ie)
-		{
-			new MessageLogEntry(ManagerImpl.this, "administratorLogout",
-								"Interrupted execution of release task releasing components of administrator '"+clientInfo.getName()+"'.", ie, LoggingLevel.ERROR).dispatch();
-		}
+		threadPool.execute(new ReleaseComponentTask(clientInfo.getHandle(), componentsArray));
 
 		// notify administrators about the logout
 		notifyClientLogout(clientInfo);
 
-		new MessageLogEntry(this, "administratorLogout", "Administrator '" + clientInfo.getName() + "' logged out.", LoggingLevel.INFO).dispatch();
+		logger.info("Administrator '" + clientInfo.getName() + "' logged out.");
 
-		if (isDebug())
-			new MessageLogEntry(this, "administratorLogout", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -3937,8 +3652,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private ClientInfo[] getAdministrators(int excludeHandle)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getAdministrators", new Object[] { new Integer(excludeHandle) }).dispatch();
 
 		// array of administrators to be notified
 		ClientInfo[] admins = null;
@@ -3976,9 +3689,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "getAdministrators", "Exiting.", Level.FINEST).dispatch();
-
 		return admins;
 	}
 
@@ -3988,8 +3698,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private ContainerInfo[] getContainersInfo()
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getContainers", new Object[0] ).dispatch();
 
 		// array of containers to be notified
 		ContainerInfo[] acts = null;
@@ -4024,9 +3732,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "getContainers", "Exiting.", Level.FINEST).dispatch();
-
 		return acts;
 	}
 
@@ -4036,8 +3741,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
      */
     private ClientInfo[] getClientInfo()
     {
-    	if (isDebug())
-    		new MessageLogEntry(this, "getClientInfo", new Object[0] ).dispatch();
 
 		ArrayList list = new ArrayList();
 
@@ -4074,9 +3777,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			list.toArray(infos);
     	}
 
-    	if (isDebug())
-    		new MessageLogEntry(this, "getClientInfo", "Exiting.", Level.FINEST).dispatch();
-
     	return infos;
     }
 
@@ -4093,9 +3793,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private ClientInfo[] getClients(int excludeHandle, int[] handles)
 	{
 		assert (handles != null);
-
-		if (isDebug())
-			new MessageLogEntry(this, "getClients", new Object[] { new Integer(excludeHandle), handles }).dispatch();
 
 		// array of clients to be notified
 		ClientInfo[] clients = null;
@@ -4132,9 +3829,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			clients = new ClientInfo[list.size()];
 			list.toArray(clients);
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "getClients", "Exiting.", Level.FINEST).dispatch();
 
 		return clients;
 	}
@@ -4233,10 +3927,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (clientInfo != null);
 
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "notifyClientLogin", new Object[] { clientInfo == null ? "null" : clientInfo.toString() }).dispatch();
-
 		// array of administrators to be notified
 		ClientInfo[] admins = getAdministrators(clientInfo.getHandle());
 
@@ -4270,8 +3960,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyClientLogin.ClientLoggedInTask.run",
-												"RemoteException caught while invoking 'Administrator.clientLoggedIn' on "+administratorInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.clientLoggedIn' on "+administratorInfo+".", re);
 						}
 					}
 				}
@@ -4280,22 +3969,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ClientLoggedInTask(admins[i], clientInfo));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyClientLogin",
-										"Interrupted execution of notification task for admin '"+admins[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ClientLoggedInTask(admins[i], clientInfo));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyClientLogin", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -4305,10 +3982,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void notifyContainerLogin(final ContainerInfo containerInfo)
 	{
 		assert (containerInfo != null);
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerLogin", new Object[] { containerInfo == null ? "null" : containerInfo.toString() }).dispatch();
 
 		// array of administrators to be notified
 		ClientInfo[] admins = getAdministrators(containerInfo.getHandle());
@@ -4343,8 +4016,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyContainerLogin.ContainerLoggedInTask.run",
-												"RemoteException caught while invoking 'Administrator.containerLoggedIn' on "+administratorInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.containerLoggedIn' on "+administratorInfo+".", re);
 						}
 					}
 				}
@@ -4353,22 +4025,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ContainerLoggedInTask(admins[i], containerInfo));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyContainerLogin",
-										"Interrupted execution of notification task for administrator '"+admins[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ContainerLoggedInTask(admins[i], containerInfo));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerLogin", "Exiting.", Level.FINEST).dispatch();
 	}
 
 
@@ -4380,10 +4040,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void notifyClientLogout(final ClientInfo clientInfo)
 	{
 		assert (clientInfo != null);
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "notifyClientLogout", new Object[] { clientInfo == null ? "null" : clientInfo.toString() }).dispatch();
 
 		// array of administrators to be notified
 		ClientInfo[] admins = getAdministrators(clientInfo.getHandle());
@@ -4418,8 +4074,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyClientLogout.ClientLoggedOutTask.run",
-												"RemoteException caught while invoking 'Administrator.clientLoggedOut' on "+administratorInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.clientLoggedOut' on "+administratorInfo+".", re);
 						}
 					}
 				}
@@ -4428,22 +4083,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ClientLoggedOutTask(admins[i], clientInfo));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyClientLogout",
-										"Interrupted execution of notification task for admin '"+admins[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ClientLoggedOutTask(admins[i], clientInfo));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyClientLogout", "Exiting.", Level.FINEST).dispatch();
 	}
 
 
@@ -4454,10 +4097,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void notifyContainerLogout(final ContainerInfo containerInfo)
 	{
 		assert (containerInfo != null);
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerLogout", new Object[] { containerInfo == null ? "null" : containerInfo.toString() }).dispatch();
 
 		// array of administrators to be notified
 		ClientInfo[] admins = getAdministrators(containerInfo.getHandle());
@@ -4492,8 +4131,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyContainerLogout.ContainerLoggedOutTask.run",
-												"RemoteException caught while invoking 'Administrator.containerLoggedOut' on "+administratorInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.containerLoggedOut' on "+administratorInfo+".", re);
 						}
 					}
 				}
@@ -4501,22 +4139,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ContainerLoggedOutTask(admins[i], containerInfo));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyContainerLogout",
-										"Interrupted execution of notification task for admin '"+admins[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ContainerLoggedOutTask(admins[i], containerInfo));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerLogout", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -4525,8 +4151,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void notifyContainerDisconnectShutdown(int code)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerDisconnectShutdown", new Object[] { new Integer(code) }).dispatch();
 
 		// array of containers to be notified
 		ContainerInfo[] acts = getContainersInfo();
@@ -4561,8 +4185,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyContainerDisconnectShutdown.ContainerShutdownTask.run",
-												"RemoteException caught while invoking 'Container.shutdown' on "+containerInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Container.shutdown' on "+containerInfo+".", re);
 						}
 					}
 				}
@@ -4593,8 +4216,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyContainerDisconnectShutdown.ContainerDisconnectTask.run",
-												"RemoteException caught while invoking 'Container.disconnect' on "+containerInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Container.disconnect' on "+containerInfo+".", re);
 						}
 					}
 				}
@@ -4603,26 +4225,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < acts.length; i++)
 			{
-				try
-				{
-					Runnable task;
-					if (code == 0)
-						task = new ContainerDisconnectTask(acts[i]);
-					else
-						task = new ContainerShutdownTask(acts[i], code);
-					threadPool.execute(task);
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyContainerDisconnectShutdown",
-										"Interrupted execution of notification task for container '"+acts[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
+				Runnable task;
+				if (code == 0)
+					task = new ContainerDisconnectTask(acts[i]);
+				else
+					task = new ContainerShutdownTask(acts[i], code);
+				threadPool.execute(task);
 			}
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerDisconnectShutdown", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -4632,9 +4244,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void notifyContainerShutdownOrder(ContainerInfo containerInfo, int[] handles)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerShutdownOrder", new Object[] { containerInfo, handles }).dispatch();
-
 		/**
 		 * Task thats invokes <code>Container#shutdown</code> method.
 		 */
@@ -4662,8 +4271,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (RemoteException re)
 					{
-						new MessageLogEntry(ManagerImpl.this, "notifyContainerShutdownOrder.ContainerSetShutdownOrderTask.run",
-											"RemoteException caught while invoking 'Container.set_component_shutdown_order' on "+containerInfo+".", re, LoggingLevel.ERROR).dispatch();
+						logger.log(Level.WARNING, "RemoteException caught while invoking 'Container.set_component_shutdown_order' on "+containerInfo+".", re);
 					}
 				}
 			}
@@ -4671,18 +4279,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 		// spawn new task which surely does not block
-		try
-		{
-			threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
-		}
-		catch (InterruptedException ie)
-		{
-			new MessageLogEntry(ManagerImpl.this, "notifyContainerShutdownOrder",
-								"Interrupted execution of notification task for container '"+containerInfo+"'.", ie, LoggingLevel.ERROR).dispatch();
-		}
+		threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyContainerShutdownOrder", "Exiting.", Level.FINEST).dispatch();
 	}
 
     /**
@@ -4690,8 +4288,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
      */
     private void notifyClientDisconnectShutdown()
     {
-    	if (isDebug())
-    		new MessageLogEntry(this, "notifyClientDisconnectShutdown", new Object[0]).dispatch();
 
     	// array of clients to be notified
     	ClientInfo[] clts = getClientInfo();
@@ -4724,8 +4320,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     					}
     					catch (RemoteException re)
     					{
-    						new MessageLogEntry(ManagerImpl.this, "notifyClientDisconnectShutdown.ClientDisconnectTask.run",
-    											"RemoteException caught while invoking 'Client.disconnect' on "+clientInfo+".", re, LoggingLevel.ERROR).dispatch();
+    						logger.log(Level.WARNING, "RemoteException caught while invoking 'Client.disconnect' on "+clientInfo+".", re);
     					}
     				}
     			}
@@ -4734,22 +4329,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     		// spawn new task which surely does not block
     		for (int i = 0; i < clts.length; i++)
     		{
-    			try
-    			{
-    				Runnable task = new ClientDisconnectTask(clts[i]);
-    				threadPool.execute(task);
-    			}
-    			catch (InterruptedException ie)
-    			{
-    				new MessageLogEntry(ManagerImpl.this, "notifyClientDisconnectShutdown",
-    									"Interrupted execution of notification task for client '"+clts[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-    			}
+   				Runnable task = new ClientDisconnectTask(clts[i]);
+   				threadPool.execute(task);
     		}
 
     	}
 
-    	if (isDebug())
-    		new MessageLogEntry(this, "notifyClientDisconnectShutdown", "Exiting.", Level.FINEST).dispatch();
     }
 
 
@@ -4763,9 +4348,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (requestors != null);
 		assert (components != null);
-
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentRequested", new Object[] { requestors, components }).dispatch();
 
 		// array of administrators to be notified
 		ClientInfo[] admins = getAdministrators(0);
@@ -4802,8 +4384,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyComponentRequested.ComponentRequestedTask.run",
-												"RemoteException caught while invoking 'Administrator.components_requested' on "+administratorInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.components_requested' on "+administratorInfo+".", re);
 						}
 					}
 				}
@@ -4812,22 +4393,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ComponentRequestedTask(admins[i], requestors, components));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyComponentRequested",
-										"Interrupted execution of notification task for admin '"+admins[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ComponentRequestedTask(admins[i], requestors, components));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentRequested", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -4839,9 +4408,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (requestors != null);
 		assert (components != null);
-
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentReleased", new Object[] { requestors, components }).dispatch();
 
 		// array of administrators to be notified
 		ClientInfo[] admins = getAdministrators(0);
@@ -4878,8 +4444,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyComponentReleased.ComponentReleasedTask.run",
-												"RemoteException caught while invoking 'Administrator.components_released' on "+administratorInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.components_released' on "+administratorInfo+".", re);
 						}
 					}
 				}
@@ -4888,22 +4453,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ComponentReleasedTask(admins[i], requestors, components));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyComponentReleased",
-										"Interrupted execution of notification task for admin '"+admins[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ComponentReleasedTask(admins[i], requestors, components));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentReleased", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -4916,10 +4469,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (clients != null);
 		assert (info != null);
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentAvailable", new Object[] { new Integer(excludeClient), clientHandles, info == null ? "null" : "non-null ComponentInfo[] array"}).dispatch();
 
 		// array of clients to be notified
 		ClientInfo[] clients = getClients(excludeClient, clientHandles);
@@ -4954,8 +4503,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyComponentAvailable.ComponentAvailableTask.run",
-												"RemoteException caught while invoking 'Client.components_available' on "+clientInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Client.components_available' on "+clientInfo+".", re);
 						}
 					}
 				}
@@ -4964,22 +4512,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < clients.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ComponentAvailableTask(clients[i], info));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyComponentAvailable",
-										"Interrupted execution of notification task for client '"+clients[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ComponentAvailableTask(clients[i], info));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentAvailable", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -4992,9 +4528,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (clients != null);
 		assert (names != null);
-
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentUnavailable", new Object[] { new Integer(excludeClient), clientHandles, names }).dispatch();
 
 		// array of clients to be notified
 		ClientInfo[] clients = getClients(excludeClient, clientHandles);
@@ -5029,8 +4562,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						catch (RemoteException re)
 						{
-							new MessageLogEntry(ManagerImpl.this, "notifyComponentUnavailable.ComponentUnavailableTask.run",
-												"RemoteException caught while invoking 'Client.components_unavailable' on "+clientInfo+".", re, LoggingLevel.ERROR).dispatch();
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Client.components_unavailable' on "+clientInfo+".", re);
 						}
 					}
 				}
@@ -5039,22 +4571,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < clients.length; i++)
-			{
-				try
-				{
-					threadPool.execute(new ComponentUnavailableTask(clients[i], names));
-				}
-				catch (InterruptedException ie)
-				{
-					new MessageLogEntry(ManagerImpl.this, "notifyComponentUnavailable",
-										"Interrupted execution of notification task for client '"+clients[i]+"'.", ie, LoggingLevel.ERROR).dispatch();
-				}
-			}
+				threadPool.execute(new ComponentUnavailableTask(clients[i], names));
 
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "notifyComponentUnavailable", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -5068,10 +4588,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		assert (client != null);
 		assert (message != null);
 		assert (messageType != null);
-
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "sendMessage", new Object[] { client == null ? "null" : client.toString(), message, messageType }).dispatch();
 
 		/**
 		 * Task thats invokes <code>Client#message</code> method.
@@ -5102,8 +4618,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (RemoteException re)
 					{
-						new MessageLogEntry(ManagerImpl.this, "sendMessage.ClientMessageTask.run",
-											"RemoteException caught while invoking 'Client.message' on "+client+".", re, LoggingLevel.ERROR).dispatch();
+						logger.log(Level.WARNING, "RemoteException caught while invoking 'Client.message' on "+client+".", re);
 					}
 				}
 			}
@@ -5111,18 +4626,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 		// spawn new task which surely does not block
-		try
-		{
-			threadPool.execute(new ClientMessageTask(client, message, messageType));
-		}
-		catch (InterruptedException ie)
-		{
-			new MessageLogEntry(ManagerImpl.this, "sendMessage",
-								"Interrupted execution of message task for client '"+client+"'.", ie, LoggingLevel.ERROR).dispatch();
-		}
+		threadPool.execute(new ClientMessageTask(client, message, messageType));
 
-		if (isDebug())
-			new MessageLogEntry(this, "sendMessage", "Exiting.", Level.FINEST).dispatch();
 	}
 
 
@@ -5137,8 +4642,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void securityCheck(int id, int requiredRights) throws AcsJNoPermissionEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "securityCheck", new Object[] { new Integer(id), new Integer(requiredRights) }).dispatch();
 
 		// check if already shutdown
 		if (id != this.getHandle() && shutdown.get())
@@ -5233,9 +4736,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			throw npe;
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "securityCheck", "Exiting.", Level.FINEST).dispatch();
-
 	}
 
 	/**
@@ -5246,8 +4746,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public ClientInfo getClientInfo(int id)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getClientInfo", new Object[] { new Integer(id) }).dispatch();
 
 		// parse handle part
 		int handle	= id & HANDLE_MASK;
@@ -5274,9 +4772,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				break;
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "getClientInfo", "Exiting.", Level.FINEST).dispatch();
-
 		return info;
 	}
 
@@ -5288,8 +4783,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private ContainerInfo getContainerInfo(int id)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getContainerInfo", new Object[] { new Integer(id) }).dispatch();
 
 		// parse handle part
 		int handle	= id & HANDLE_MASK;
@@ -5303,9 +4796,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				info = (ContainerInfo)containers.get(handle);
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "getContainerInfo", "Exiting.", Level.FINEST).dispatch();
-
 		return info;
 	}
 
@@ -5318,9 +4808,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private ContainerInfo getContainerInfo(String name)
 	{
 		assert(name != null);
-
-		if (isDebug())
-			new MessageLogEntry(this, "getContainerInfo", new Object[] { name }).dispatch();
 
 		// info to be returned
 		ContainerInfo info = null;
@@ -5341,9 +4828,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "getContainerInfo", "Exiting.", Level.FINEST).dispatch();
-
 		return info;
 	}
 
@@ -5355,8 +4839,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public ComponentInfo getComponentInfo(int id)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentInfo", new Object[] { new Integer(id) }).dispatch();
 
 		// parse handle part
 		int handle	= id & HANDLE_MASK;
@@ -5369,9 +4851,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (components.isAllocated(handle))
 				info = (ComponentInfo)components.get(handle);
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentInfo", "Exiting.", Level.FINEST).dispatch();
 
 		return info;
 	}
@@ -5404,8 +4883,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private Component internalRequestComponent(int requestor, URI curl, StatusHolder status, boolean activate)
             throws AcsJCannotGetComponentEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalRequestComponent", new Object[] { new Integer(requestor), curl, status, new Boolean(activate) }).dispatch();
 
 		// extract unique name
 		String name = extractName(curl);
@@ -5427,18 +4904,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// try to acquire activation readers lock first
 				// NOTE: the locks are NOT reentrant
-				try	{
-					activationPendingRWLock.readLock().acquire();
-				} catch (InterruptedException ie) {
-					releaseRWLock = false;
-
-                    /// @todo GCH Remove runtime exception and use ACS
-					NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"'.");
-					nre.caughtIn(this, "internalRequestComponent");
-					nre.putValue("curl", curl);
-					nre.putValue("requestor", new Integer(requestor));
-					throw nre;
-				}
+				activationPendingRWLock.readLock().lock();
 
 				// Let AcsJCannotGetComponentEx fly up
 				ComponentInfo componentInfo = null;
@@ -5463,16 +4929,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			finally
 			{
 				if (releaseRWLock)
-					activationPendingRWLock.readLock().release();
+					activationPendingRWLock.readLock().unlock();
 				releaseSynchronizationObject(name);
 			}
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
-			nre.caughtIn(this, "internalRequestComponent");
-			nre.putValue("curl", curl);
-			nre.putValue("requestor", new Integer(requestor));
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
 			throw nre;
 		}
 	}
@@ -5520,8 +4983,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void checkCyclicDependency(int requestor, String requestedComponentName)
 	    throws AcsJCyclicDependencyDetectedEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "checkCyclicDependency", new Object[] { new Integer(requestor), requestedComponentName }).dispatch();
 
 		// check only if component is requesting component
 		if ((requestor & TYPE_MASK) != COMPONENT_MASK)
@@ -5574,13 +5035,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = pathList.size()-1; i >= 0; i--)
 				pathBuffer.append(((ComponentInfo)pathList.get(i)).getName()).append(" -> ");
 			pathBuffer.append(componentInfo.getName());
-
+			// TODO @todo no pathBuffer is used, printed-out
+			
 			// If we get to this point there is a cyclical dependency and we throw the exception
 			
 			// not an owner
 			AcsJCyclicDependencyDetectedEx cde = new AcsJCyclicDependencyDetectedEx();
 			cde.setCURL(requestedComponentName);
-			cde.setRequestor(new Integer(requestor));
+			cde.setRequestor(requestor);
 			throw cde;
 		}
 
@@ -5609,11 +5071,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		assert(name != null);
 		assert(status != null);
 
-		if (isDebug())
-			new MessageLogEntry(this, "internalRequestComponent",
-						new Object[] { new Integer(requestor), name, type, code, containerName, new Integer(keepAliveTime),
-									   status, new Boolean(activate) }).dispatch();
-
 		try {
 			checkCyclicDependency(requestor, name);
 		} catch (AcsJCyclicDependencyDetectedEx e) {
@@ -5631,16 +5088,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// try to acquire activation readers lock first
 				// NOTE: the locks are NOT reentrant
-				try	{
-					activationPendingRWLock.readLock().acquire();
-				} catch (InterruptedException ie) {
-					releaseRWLock = false;
-
-					AcsJSyncLockFailedEx slfe = new AcsJSyncLockFailedEx();
-					slfe.setCURL(name);
-					slfe.setRequestor(new Integer(requestor));
-					throw slfe;
-				}
+				activationPendingRWLock.readLock().lock();
 
 				// AcsJComponentSpecIncompatibleWithActiveComponentEx flies up
 				return internalNoSyncRequestComponent(requestor, name, type, code, containerName, keepAliveTime, status, activate);
@@ -5648,7 +5096,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			finally
 			{
 				if (releaseRWLock)
-					activationPendingRWLock.readLock().release();
+					activationPendingRWLock.readLock().unlock();
 				releaseSynchronizationObject(name);
 			}
 		}
@@ -5656,7 +5104,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			AcsJSyncLockFailedEx slfe = new AcsJSyncLockFailedEx();
 			slfe.setCURL(name);
-			slfe.setRequestor(new Integer(requestor));
+			slfe.setRequestor(requestor);
 			throw slfe;
 		}
 
@@ -5684,11 +5132,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		assert(name != null);
 		assert(status != null);
-
-		if (isDebug())
-			new MessageLogEntry(this, "internalNoSyncRequestComponent",
-						new Object[] { new Integer(requestor), name, type, code, containerName, new Integer(keepAliveTime),
-									   status, new Boolean(activate) }).dispatch();
 
 		boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
 		boolean isDynamicComponent = isOtherDomainComponent ?
@@ -5733,13 +5176,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						(!reactivate && containerInfo != null &&
 						 containerName != null && !containerInfo.getName().equals(containerName)))
 					{
-						ComponentSpec activeComponentSpec = new ComponentSpec(
-																	componentInfo.getName(),
-																	componentInfo.getType(),
-																	componentInfo.getCode() != null ? componentInfo.getCode() : "<unknown>",
-																	containerInfo != null ? containerInfo.getName() : "<none>");
 						AcsJComponentSpecIncompatibleWithActiveComponentEx ciwace =
 							new AcsJComponentSpecIncompatibleWithActiveComponentEx();
+						ciwace.setCURL(componentInfo.getName());
+						ciwace.setComponentType(componentInfo.getType());
+						ciwace.setComponentCode(componentInfo.getCode() != null ? componentInfo.getCode() : "<unknown>");
+						ciwace.setContainerName(containerInfo != null ? containerInfo.getName() : "<none>");
 						throw ciwace;
 					}
 
@@ -5808,7 +5250,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				componentInfo.getDynamicContainerName() == null)
 			{
 				// failed
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", "Failed to reactivate dynamic component '"+componentInfo+"'.", LoggingLevel.ERROR).dispatch();
+				logger.severe("Failed to reactivate dynamic component '"+componentInfo+"'.");
 				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 				return null;
 			}
@@ -5855,7 +5297,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				code = readStringCharacteristics(dao, name+"/Code");
 				if (code == null)
 				{
-					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Misconfigured CDB, there is no code of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+					logger.warning("Misconfigured CDB, there is no code of component '"+name+"' defined.");
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					return null;
 				}
@@ -5866,7 +5308,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				type = readStringCharacteristics(dao, name+"/Type");
 				if (type == null)
 				{
-					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Misconfigured CDB, there is no type of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+					logger.warning("Misconfigured CDB, there is no type of component '"+name+"' defined.");
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					return null;
 				}
@@ -5877,7 +5319,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				containerName = readStringCharacteristics(dao, name+"/Container");
 				if (containerName == null)
 				{
-					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Misconfigured CDB, there is no container of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+					logger.warning("Misconfigured CDB, there is no container of component '"+name+"' defined.");
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					return null;
 				}
@@ -5917,9 +5359,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			    String domainName = CURLHelper.createURI(name).getAuthority();
 			    remoteManager = getManagerForDomain(domainName);
 			    if (remoteManager == null)
-			        throw new AssertionFailed(this, "Failed to obtain manager for domain '" + domainName + "'.");
+			        throw new CoreException("Failed to obtain manager for domain '" + domainName + "'.");
 		    } catch (Throwable th) {
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", "Failed to obtain non-local manager required by component '"+name+"'.", th, LoggingLevel.WARNING).dispatch();
+				logger.log(Level.WARNING, "Failed to obtain non-local manager required by component '"+name+"'.", th);
 				status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 				return null;
 		    }
@@ -5943,7 +5385,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// required container is not logged in
 			if (container == null)
 			{
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", "Container '"+containerName+"' required by component '"+name+"' is not logged in.", LoggingLevel.WARNING).dispatch();
+				logger.log(Level.WARNING, "Container '"+containerName+"' required by component '"+name+"' is not logged in.");
 				status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 				return null;
 			}
@@ -5965,11 +5407,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// failed to obtain handle
 			if (h == 0)
 			{
-				NoResourcesException af = new NoResourcesException(this, "Preallocation of new handle failed, too many registered components.");
-				af.caughtIn(this, "internalNonSyncRequestComponent");
-				af.putValue("h", new Integer(h));
-				af.putValue("name", name);
-				af.putValue("requestor", new Integer (requestor));
+				NoResourcesException af = new NoResourcesException("Preallocation of new handle failed, too many registered components.");
 				throw af;
 			}
 
@@ -6027,20 +5465,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					    componentInfo.setContainerName(CURL_URI_SCHEMA + curlName.getAuthority() + "/" + componentInfo.getContainerName());
 				    }
 				    //else
-				    //    throw new RemoteException(this, "Failed to obtain component info for '"+name+"' from remote manager.");
+				    //    throw new RemoteException("Failed to obtain component info for '"+name+"' from remote manager.");
 			    }
 			    //else
-			    //    throw new RemoteException(this, "Failed to obtain component '"+name+"' from remote manager, status: " + statusHolder.getStatus() + ".");
+			    //    throw new RemoteException("Failed to obtain component '"+name+"' from remote manager, status: " + statusHolder.getStatus() + ".");
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				RemoteException re = new RemoteException(this, "Failed to obtain component '"+name+"' from remote manager.", ex);
-				re.caughtIn(this, "internalNonSyncRequestComponent");
-				re.putValue("h", new Integer(h));
-				re.putValue("name", name);
-				re.putValue("requestor", new Integer (requestor));
-				// exception service will handle this
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+				RemoteException re = new RemoteException("Failed to obtain component '"+name+"' from remote manager.", ex);
+				logger.log(Level.WARNING, "Failed to obtain component '"+name+"' from remote manager.", re);
 			}
 		}
 		else
@@ -6050,21 +5483,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//
 
 			// log info
-			new MessageLogEntry(this, "internalNoSyncRequestComponent", "Activating component '"+name+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();
+			logger.info("Activating component '"+name+"' on container '" + containerInfo.getName() + "'.");
 
 			try
 			{
 				componentInfo = container.activate_component(h | COMPONENT_MASK, name, code, type);
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				RemoteException re = new RemoteException(this, "Failed to activate component '"+name+"' on container '"+containerName+"'.", ex);
-				re.caughtIn(this, "internalNonSyncRequestComponent");
-				re.putValue("h", new Integer(h));
-				re.putValue("name", name);
-				re.putValue("requestor", new Integer (requestor));
-				// exception service will handle this
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+				RemoteException re = new RemoteException("Failed to activate component '"+name+"' on container '"+containerName+"'.", ex);
+				logger.log(Level.SEVERE, re.getMessage());
 			}
 		}
 
@@ -6081,7 +5509,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// failed to activate
 		if (componentInfo == null || componentInfo.getHandle() == 0 || componentInfo.getComponent() == null)
 		{
-			new MessageLogEntry(this, "internalNoSyncRequestComponent", "Failed to activate component '"+name+"'.", LoggingLevel.ERROR).dispatch();
+			logger.severe("Failed to activate component '"+name+"'.");
 
 			synchronized (components)
 			{
@@ -6096,7 +5524,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// log info
-		new MessageLogEntry(this, "internalNoSyncRequestComponent", "Component '"+name+"' activated successfully.", LoggingLevel.INFO).dispatch();
+		logger.info("Component '"+name+"' activated successfully.");
 
 		//
 		// check type consistency
@@ -6104,7 +5532,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (!isOtherDomainComponent && !componentInfo.getComponent().doesImplement(type))
 		{
 			// just output SEVERE message
-			new MessageLogEntry(this, "internalNoSyncRequestComponent", "Activated component '" + name + "' does not implement specified type '" + type + "'.", LoggingLevel.SEVERE).dispatch();
+			logger.severe("Activated component '" + name + "' does not implement specified type '" + type + "'.");
 		}
 
 		// @todo MF do the component handle mapping here (remember map and fix componentInfo),
@@ -6146,7 +5574,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						executeCommand(new ComponentCommandDeallocate(h, true));
 						//components.deallocate(h, true);
 
-					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Container returned another handle than given, failed to fix handle since returned handle is already allocated.", LoggingLevel.ERROR).dispatch();
+					logger.severe("Container returned another handle than given, failed to fix handle since returned handle is already allocated.");
 
 					status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// component is activated, but cannot be managed by the Manager
 					return null;
@@ -6177,7 +5605,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					if (h == 0)
 					{
 						// failed to allocate new
-						new MessageLogEntry(this, "internalNoSyncRequestComponent", "Container returned another handle than given, failed to fix handle due to handle relocation failure.", LoggingLevel.ERROR).dispatch();
+						logger.severe("Container returned another handle than given, failed to fix handle due to handle relocation failure.");
 						status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// Component is activated, but cannot be managed by the Manager
 						return null;
 					}
@@ -6186,7 +5614,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						executeCommand(new ComponentCommandSet(h, existingData));
 						//components.set(h, existingData);
 
-					new MessageLogEntry(this, "internalNoSyncRequestComponent", "Container returned another handle than given, handle fixed.", LoggingLevel.WARNING).dispatch();
+					logger.severe("Container returned another handle than given, handle fixed.");
 				}
 
 			}
@@ -6266,16 +5694,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				componentInfo.getComponent().construct();
 				constructed = true;
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				RemoteException re = new RemoteException(this, "Failed to construct component '"+name+"', exception caught when invoking 'construct()' method.", ex);
-				re.caughtIn(this, "internalNonSyncRequestComponent");
-				re.putValue("h", new Integer(h));
-				re.putValue("name", name);
-				re.putValue("requestor", new Integer (requestor));
-				re.putValue("componentInfo", componentInfo.toString());
-				// exception service will handle this
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+				RemoteException re = new RemoteException("Failed to construct component '"+name+"', exception caught when invoking 'construct()' method.", ex);
+				logger.log(Level.SEVERE, re.getMessage(), re);
 
 			}
 
@@ -6300,14 +5722,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (Exception ex)
 					{
-						RemoteException re = new RemoteException(this, "Failed to deactivate component '"+name+"' on container '"+containerName+"'.", ex);
-						re.caughtIn(this, "internalNonSyncRequestComponent");
-						re.putValue("h", new Integer(h));
-						re.putValue("name", name);
-						re.putValue("requestor", new Integer (requestor));
-						re.putValue("componentInfo", componentInfo.toString());
-						// exception service will handle this
-						new MessageLogEntry(this, "internalNoSyncRequestComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+						RemoteException re = new RemoteException("Failed to deactivate component '"+name+"' on container '"+containerName+"'.", ex);
+						logger.log(Level.SEVERE, re.getMessage(), re);
 					}
 
 					status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
@@ -6374,20 +5790,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//
 		notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() });
 
-		if (isDebug())
-		{
-			if (reactivate)
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", "Component '"+name+"' reactivated.", LoggingLevel.DEBUG).dispatch();
-			else
-				new MessageLogEntry(this, "internalNoSyncRequestComponent", "Component '"+name+"' activated.", LoggingLevel.DEBUG).dispatch();
-		}
+		if (reactivate)
+			logger.fine("Component '"+name+"' reactivated.");
+		else
+			logger.fine("Component '"+name+"' activated.");
 
 		// notify about the change (only this-domain container which activated the component)...
 		if (containerInfo != null)
 			topologySortManager.notifyTopologyChange(containerInfo.getHandle());
-
-		if (isDebug())
-			new MessageLogEntry(this, "internalNonSyncRequestComponent", "Exiting.", Level.FINEST).dispatch();
 
 		status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);
 		return componentInfo;
@@ -6404,8 +5814,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private int internalReleaseComponent(int owner, URI curl, boolean force)
 	   throws AcsJNoPermissionEx, AcsJBadParameterEx 
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalReleaseComponent", new Object[] { new Integer(owner), curl, new Boolean(force) }).dispatch();
 
 		// resolve handle from curl
 		int h = 0;
@@ -6441,12 +5849,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void internalDeactivateComponent(String name)
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalDeactivateComponent", new Object[] { name }).dispatch();
-
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, 3*Sync.ONE_MINUTE);
+		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeout);
 		if (lockAcquired)
 		{
 			boolean releaseRWLock = false;
@@ -6479,31 +5884,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// try to acquire activation readers lock first
 				// NOTE: the locks are NOT reentrant
 				releaseRWLock = true;
-				try	{
-					activationPendingRWLock.readLock().acquire();
-				} catch (InterruptedException ie) {
-					releaseRWLock = false;
-
-					NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"'.");
-					nre.caughtIn(this, "internalDeactivateComponent");
-					nre.putValue("name", name);
-					throw nre;
-				}
+				activationPendingRWLock.readLock().lock();
 
 				internalNoSyncDeactivateComponent(componentInfo);
 			}
 			finally
 			{
 				if (releaseRWLock)
-					activationPendingRWLock.readLock().release();
+					activationPendingRWLock.readLock().unlock();
 				releaseSynchronizationObject(name);
 			}
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
-			nre.caughtIn(this, "internalDeactivateComponent");
-			nre.putValue("name", name);
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
 			throw nre;
 		}
 	}
@@ -6519,8 +5913,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private int internalReleaseComponent(int owner, int h, boolean force)
 		   throws AcsJNoPermissionEx, AcsJBadParameterEx 
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalReleaseComponent", new Object[] { new Integer(owner), new Integer(h), new Boolean(force) }).dispatch();
 
 		// extract name
 		String name = null;
@@ -6552,7 +5944,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, 3*Sync.ONE_MINUTE);
+		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeout);
 		if (lockAcquired)
 		{
 			boolean releaseRWLock = true;
@@ -6560,33 +5952,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// try to acquire activation readers lock first
 				// NOTE: the locks are NOT reentrant
-				try	{
-					activationPendingRWLock.readLock().acquire();
-				} catch (InterruptedException ie) {
-					releaseRWLock = false;
-
-					NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"'.");
-					nre.caughtIn(this, "internalReleaseComponent");
-					nre.putValue("owner", new Integer(owner));
-					nre.putValue("h", new Integer(h));
-					throw nre;
-				}
+				activationPendingRWLock.readLock().lock();
 
 				return internalNoSyncReleaseComponent(owner, h, force);
 			}
 			finally
 			{
 				if (releaseRWLock)
-					activationPendingRWLock.readLock().release();
+					activationPendingRWLock.readLock().unlock();
 				releaseSynchronizationObject(name);
 			}
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
-			nre.caughtIn(this, "internalReleaseComponent");
-			nre.putValue("owner", new Integer(owner));
-			nre.putValue("h", new Integer(h));
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
 			throw nre;
 		}
 
@@ -6604,9 +5983,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	     throws AcsJNoPermissionEx 
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "internalNoSyncReleaseComponent", new Object[] { new Integer(owner), new Integer(h), new Boolean(force) }).dispatch();
-
 		int handle = h & HANDLE_MASK;
 		int owners = 0;
 
@@ -6619,10 +5995,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentInfo == null || componentInfo.getHandle() != h)
 			{
 				// invalid component handle
-				BadParametersException af = new BadParametersException(this, "Invalid component handle.");
-				af.caughtIn(this, "internalNoSyncReleaseComponent");
-				af.putValue("h", new Integer(h));
-				af.putValue("owner", new Integer(owner));
+				BadParametersException af = new BadParametersException("Invalid component handle.");
 				throw af;
 			}
 
@@ -6712,11 +6085,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the release request
 		notifyComponentReleased(new int[] { owner }, new int[] { h });
 
-		if (isDebug())
-			new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Component '"+componentInfo.getName()+"' released.", LoggingLevel.DEBUG).dispatch();
-
-		if (isDebug())
-			new MessageLogEntry(this, "internalNoSyncReleaseComponent", "Exiting.", Level.FINEST).dispatch();
+		logger.fine("Component '"+componentInfo.getName()+"' released.");
 
 		// component deactivated
 		if (owners == 0 || force)
@@ -6769,9 +6138,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				    String domainName = CURLHelper.createURI(name).getAuthority();
 				    remoteManager = getManagerForDomain(domainName);
 				    if (remoteManager == null)
-				        throw new AssertionFailed(this, "Failed to obtain manager for domain '" + domainName + "'.");
+				        throw new CoreException("Failed to obtain manager for domain '" + domainName + "'.");
 			    } catch (Throwable th) {
-					new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Failed to obtain non-local manager required by component '"+name+"'.", th, LoggingLevel.WARNING).dispatch();
+					logger.log(Level.WARNING, "Failed to obtain non-local manager required by component '"+name+"'.", th);
 					return;
 			    }
 
@@ -6783,13 +6152,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				    // @todo MF tmp (handle)
 				    remoteManager.releaseComponent(INTERDOMAIN_MANAGER_HANDLE, curlName);
 				}
-				catch (Exception ex)
+				catch (Throwable th)
 				{
-					RemoteException re = new RemoteException(this, "Failed to release component '"+componentInfo.getName()+"' on remote manager.'", ex);
-					re.caughtIn(this, "internalNoSyncDeactivateComponent");
-					re.putValue("componentInfo", componentInfo.toString());
-					// exception service will handle this
-					new MessageLogEntry(this, "internalNoSyncDeactivateComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+					logger.log(Level.WARNING, "Failed to release component '"+componentInfo.getName()+"' on remote manager.'", th);
 				}
 
 			}
@@ -6832,7 +6197,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							containerName = containerInfo.getName();
 						else
 							containerName = HandleHelper.toString(componentInfo.getContainer());
-						new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.", LoggingLevel.WARNING).dispatch();
+						logger.warning("Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.");
 					}
 
 				}
@@ -6841,7 +6206,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 
 					// log info
-					new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.", LoggingLevel.INFO).dispatch();
+					logger.info("Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.");
 
 					// destruct
 					try
@@ -6850,11 +6215,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (Exception ex)
 					{
-						RemoteException re = new RemoteException(this, "Failed to destruct component '"+componentInfo.getName()+"', exception caught when invoking 'destruct()' method.", ex);
-						re.caughtIn(this, "internalNoSyncDeactivateComponent");
-						re.putValue("componentInfo", componentInfo.toString());
-						// exception service will handle this
-						new MessageLogEntry(this, "internalNoSyncDeactivateComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+						RemoteException re = new RemoteException("Failed to destruct component '"+componentInfo.getName()+"', exception caught when invoking 'destruct()' method.", ex);
+						logger.log(Level.SEVERE, re.getMessage(), re);
 					}
 
 					// deactivate component in anycase
@@ -6864,11 +6226,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (Exception ex)
 					{
-						RemoteException re = new RemoteException(this, "Failed to deactivate component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
-						re.caughtIn(this, "internalNoSyncDeactivateComponent");
-						re.putValue("componentInfo", componentInfo.toString());
-						// exception service will handle this
-						new MessageLogEntry(this, "internalNoSyncDeactivateComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+						RemoteException re = new RemoteException("Failed to deactivate component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
+						logger.log(Level.SEVERE, re.getMessage(), re);
 					}
 
 					// shutdown container if required (and necessary)
@@ -6891,7 +6250,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// log info
-		new MessageLogEntry(this, "internalNoSyncDeactivateComponent", "Component '"+componentInfo.getName()+"' deactivated.", LoggingLevel.INFO).dispatch();
+		logger.info("Component '"+componentInfo.getName()+"' deactivated.");
 
 		// release all subcomponents (just like client logoff)
 		// component should have already done this by itself, but take care of clean cleanup
@@ -6969,11 +6328,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		} catch (Throwable th)
 		{
-			RemoteException re = new RemoteException(this, "Failed to connect to ACS daemon on host '"+host+"'.", th);
-			re.caughtIn(this, "startUpContainer");
-			re.putValue("host", host);
-			// exception service will handle this
-			new MessageLogEntry(this, "startUpContainer", re.getMessage(), LoggingLevel.WARNING).dispatch();
+			RemoteException re = new RemoteException("Failed to connect to ACS daemon on host '"+host+"'.", th);
+			logger.log(Level.SEVERE, re.getMessage(), re);
 			return null;
 		}
 
@@ -7053,8 +6409,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private Component internalRestartComponent(int owner, URI curl)
 	throws AcsJNoPermissionEx 
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalRestartComponent", new Object[] { new Integer(owner), curl }).dispatch();
 
 		// resolve handle from curl
 		int h = 0;
@@ -7093,8 +6447,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private Component internalRestartComponent(int owner, int h)
 	throws AcsJNoPermissionEx 
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalRestartComponent", new Object[] { new Integer(owner), new Integer(h) }).dispatch();
 
 		// extract name
 		String name = null;
@@ -7108,10 +6460,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentInfo == null || componentInfo.getHandle() != h)
 			{
 				// invalid Component handle
-				BadParametersException af = new BadParametersException(this, "Invalid component handle.");
-				af.caughtIn(this, "internalRestartComponent");
-				af.putValue("h", new Integer(h));
-				af.putValue("owner", new Integer(owner));
+				BadParametersException af = new BadParametersException("Invalid component handle.");
 				throw af;
 			}
 
@@ -7120,7 +6469,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, 3*Sync.ONE_MINUTE);
+		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeout);
 		if (lockAcquired)
 		{
 			boolean releaseRWLock = true;
@@ -7128,33 +6477,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// try to acquire activation readers lock first
 				// NOTE: the locks are NOT reentrant
-				try	{
-					activationPendingRWLock.readLock().acquire();
-				} catch (InterruptedException ie) {
-					releaseRWLock = false;
-
-					NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"'.");
-					nre.caughtIn(this, "internalRestartComponent");
-					nre.putValue("owner", new Integer(owner));
-					nre.putValue("h", new Integer(h));
-					throw nre;
-				}
+				activationPendingRWLock.readLock().lock();
 
 				return internalNoSyncRestartComponent(owner, h);
 			}
 			finally
 			{
 				if (releaseRWLock)
-					activationPendingRWLock.readLock().release();
+					activationPendingRWLock.readLock().unlock();
 				releaseSynchronizationObject(name);
 			}
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException(this, "Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
-			nre.caughtIn(this, "internalRestartComponent");
-			nre.putValue("owner", new Integer(owner));
-			nre.putValue("h", new Integer(h));
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
 			throw nre;
 		}
 
@@ -7172,9 +6508,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	throws AcsJNoPermissionEx 
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "internalNoSyncRestartComponent", new Object[] { new Integer(owner), new Integer(h) }).dispatch();
-
 		int handle = h & HANDLE_MASK;
 
 		ComponentInfo componentInfo = null;
@@ -7186,10 +6519,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentInfo == null || componentInfo.getHandle() != h)
 			{
 				// invalid component handle
-				BadParametersException af = new BadParametersException(this, "Invalid component handle.");
-				af.caughtIn(this, "internalNoSyncRestartComponent");
-				af.putValue("h", new Integer(h));
-				af.putValue("owner", new Integer(owner));
+				BadParametersException af = new BadParametersException("Invalid component handle.");
 				throw af;
 			}
 
@@ -7232,7 +6562,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					containerName = containerInfo.getName();
 				else
 					containerName = HandleHelper.toString(componentInfo.getContainer());
-				new MessageLogEntry(this, "internalNoSyncRestartComponent", "Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.", LoggingLevel.WARNING).dispatch();
+				logger.warning("Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.");
 			}
 
 		}
@@ -7250,32 +6580,21 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				component = container.restart_component(componentInfo.getHandle());
 				if (component == null)
 				{
-					RemoteException re = new RemoteException(this, "Failed to restart component '"+componentInfo.getName()+"', 'null' returned.");
-					re.caughtIn(this, "internalNoSyncRestartComponent");
-					re.putValue("h", new Integer(h));
-					re.putValue("owner", new Integer(owner));
+					RemoteException re = new RemoteException("Failed to restart component '"+componentInfo.getName()+"', 'null' returned.");
 					throw re;
 				}
 
 				// @todo what about notifying clients, marking component as available, updating reference...
 
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				RemoteException re = new RemoteException(this, "Failed to restart component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
-				re.caughtIn(this, "internalNoSyncRestartComponent");
-				re.putValue("h", new Integer(h));
-				re.putValue("owner", new Integer(owner));
-				// exception service will handle this
-				new MessageLogEntry(this, "internalNoSyncRestartComponent", re.getMessage(), LoggingLevel.ERROR).dispatch();
+				RemoteException re = new RemoteException("Failed to restart component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
+				logger.log(Level.SEVERE, re.getMessage(), re);
 			}
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "internalNoSyncRestartComponent", "Component '"+componentInfo.getName()+"' restarted.", LoggingLevel.DEBUG).dispatch();
-
-		if (isDebug())
-			new MessageLogEntry(this, "internalNoSyncRestartComponent", "Exiting.", Level.FINEST).dispatch();
+		logger.fine("Component '"+componentInfo.getName()+"' restarted.");
 
 		return component;
 	}
@@ -7291,15 +6610,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public ComponentInfo getDefaultComponent(int id, String type)
 		throws AcsJNoPermissionEx, NoDefaultComponentException
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getDefaultComponent", new Object[] { new Integer(id), type }).dispatch();
 
 		if (type == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'type' expected.");
-			af.caughtIn(this, "getDefaultComponent");
-			af.putValue("type", type);
+			BadParametersException af = new BadParametersException("Non-null 'type' expected.");
 			throw af;
 		}
 
@@ -7308,14 +6623,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// check handle and NONE permissions
 		securityCheck(id, AccessRights.NONE);
 
-		new MessageLogEntry(this, "getDefaultComponent", "Getting default component for type '" + type + "'.", LoggingLevel.INFO).dispatch();
+		logger.info("Getting default component for type '" + type + "'.");
 
 		ComponentInfo componentInfo = internalRequestDefaultComponent(id, type);
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "getDefaultComponent", "Exiting.", Level.FINEST).dispatch();
 
 		return componentInfo;
 
@@ -7329,8 +6641,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private ComponentInfo internalRequestDefaultComponent(int requestor, String type) throws NoDefaultComponentException
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalRequestDefaultComponent", new Object[] { new Integer(requestor), type }).dispatch();
 
 		String defaultComponentName = null;
 		ComponentInfo defaultComponentInfo = null;
@@ -7363,7 +6673,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						String name = ids[i]; //readStringCharacteristics(componentsDAO, ids[i]+"/Name");
 						if (name == null)
 						{
-							new MessageLogEntry(this, "internalRequestDefaultComponent", "Misconfigured CDB, there is no type of component '"+ids[i]+"' defined.", LoggingLevel.WARNING).dispatch();
+							logger.warning("Misconfigured CDB, there is no type of component '"+ids[i]+"' defined.");
 							continue;
 						}
 
@@ -7375,7 +6685,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							String componentType = readStringCharacteristics(componentsDAO, ids[i]+"/Type");
 							if (type == null)
 							{
-								new MessageLogEntry(this, "internalRequestDefaultComponent", "Misconfigured CDB, there is no type of component '"+name+"' defined.", LoggingLevel.WARNING).dispatch();
+								logger.warning("Misconfigured CDB, there is no type of component '"+name+"' defined.");
 								continue;
 							}
 
@@ -7397,12 +6707,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 
 				}
-				catch (Exception ex)
+				catch (Throwable ex)
 				{
-					CoreException ce = new CoreException(this, "Failed to obtain component data from the CDB.", ex);
-					ce.caughtIn(this, "internalRequestDefaultComponent");
-					// exception service will handle this
-					// new MessageLogEntry(this, "internalRequestDefaultComponent", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+					CoreException ce = new CoreException("Failed to obtain component data from the CDB.", ex);
+					reportException(ce);
 				}
 			}
 		}
@@ -7419,10 +6727,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				ContainerInfo containerInfo = getContainerInfo(defaultComponentInfo.getContainer());
 				if (containerInfo == null)
 				{
-					AssertionFailed huse = new AssertionFailed(this, "Failed to return default component: '" + defaultComponentName + "', container with '" +
+					CoreException huse = new CoreException("Failed to return default component: '" + defaultComponentName + "', container with '" +
 																		HandleHelper.toString(defaultComponentInfo.getContainer()) + "' not logged in.");
-					huse.caughtIn(this, "internalRequestDefaultComponent");
-					huse.putValue("defaultComponentInfo", defaultComponentInfo.toString());
+					reportException(huse);
 					return null;
 				}
 
@@ -7431,12 +6738,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 																	   defaultComponentInfo.getCode(),	containerInfo.getName(), RELEASE_IMMEDIATELY, status, true);
 				if (componentInfo == null || status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
 				{
-					AssertionFailed huse = new AssertionFailed(this, "Failed to obtain default component: '" + defaultComponentName + "'.");
-					huse.caughtIn(this, "internalRequestDefaultComponent");
-					huse.putValue("defaultComponentInfo", defaultComponentInfo.toString());
-					// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-					huse.putValue("componentInfo", componentInfo == null ? "null" : componentInfo.toString());
-					huse.putValue("status", status.getStatus());
+					CoreException huse = new CoreException("Failed to obtain default component: '" + defaultComponentName + "'.");
+					reportException(huse);
 					// no error handling...
 					return null;
 				}
@@ -7446,10 +6749,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable t)
 			{
-				AssertionFailed huse = new AssertionFailed(this, "Failed to return default component: '" + defaultComponentName + "'.", t);
-				huse.caughtIn(this, "internalRequestDefaultComponent");
-				// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-				huse.putValue("defaultComponentInfo", defaultComponentInfo == null ? "null" : defaultComponentInfo.toString());
+				CoreException huse = new CoreException("Failed to return default component: '" + defaultComponentName + "'.", t);
+				reportException(huse);
 				return null;
 			}
 
@@ -7464,10 +6765,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (URISyntaxException use)
 			{
-				AssertionFailed huse = new AssertionFailed(this, "Failed to create CURL from default component name: '" + defaultComponentName + "'.", use);
-				huse.caughtIn(this, "internalRequestDefaultComponent");
-				huse.putValue("defaultComponentName", defaultComponentName);
-				// no error handling...
+				CoreException huse = new CoreException("Failed to create CURL from default component name: '" + defaultComponentName + "'.", use);
+				reportException(huse);
 				return null;
 			}
 
@@ -7479,13 +6778,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				Component component = internalRequestComponent(requestor, curl, status, true);
 				if (component == null || status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
 				{
-					AssertionFailed huse = new AssertionFailed(this, "Failed to obtain default component: '" + defaultComponentName + "'.");
-					huse.caughtIn(this, "internalRequestDefaultComponent");
-					huse.putValue("defaultComponentName", defaultComponentName);
-					// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-					huse.putValue("component", component == null ? "null" : component.toString());
-					huse.putValue("status", status.getStatus());
-					// no error handling...
+					CoreException huse = new CoreException("Failed to obtain default component: '" + defaultComponentName + "'.");
+					reportException(huse);
 					return null;
 				}
 
@@ -7493,11 +6787,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				ComponentInfo[] componentInfo = getComponentInfo(requestor, new int[0], defaultComponentName, type, true);
 				if (componentInfo == null || componentInfo.length != 1)
 				{
-					AssertionFailed huse = new AssertionFailed(this, "Failed to obtain activated default component ComponentInfo: '" + defaultComponentName + "'.");
-					huse.caughtIn(this, "internalRequestDefaultComponent");
-					// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-					huse.putValue("componentInfo", componentInfo == null ? "null" : componentInfo.toString());
-					// no error handling...
+					CoreException huse = new CoreException("Failed to obtain activated default component ComponentInfo: '" + defaultComponentName + "'.");
+					reportException(huse);
 					return null;
 				}
 				else
@@ -7506,17 +6797,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable t)
 			{
-				AssertionFailed huse = new AssertionFailed(this, "Failed to return default component: '" + defaultComponentName + "'.", t);
-				huse.caughtIn(this, "internalRequestDefaultComponent");
-				huse.putValue("defaultComponentName", defaultComponentName);
+				CoreException huse = new CoreException("Failed to return default component: '" + defaultComponentName + "'.", t);
+				reportException(huse);
 				return null;
 			}
 		}
 
 		// not found
-		NoDefaultComponentException ndce = new NoDefaultComponentException(this, "No default component for type '" + type + "' found.");
-		ndce.caughtIn(this, "internalRequestDefaultComponent");
-		ndce.putValue("type", type);
+		NoDefaultComponentException ndce = new NoDefaultComponentException("No default component for type '" + type + "' found.");
 		throw ndce;
 	}
 
@@ -7529,9 +6817,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
 			   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getDynamicComponent", new Object[] { new Integer(id), componentSpec, new Boolean(markAsDefault) }).dispatch();
-
 		try {
 			// check if null
 			if (componentSpec == null)
@@ -7611,14 +6896,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//defaultComponents.put(componentInfo.getType(), componentInfo.getName());
 			}
 
-			new MessageLogEntry(this, "getDynamicComponent", "'" + componentInfo.getName() +"' has been marked as a default component of type '" +
-																   componentInfo.getType() +"'.", LoggingLevel.INFO).dispatch();
+			logger.info("'" + componentInfo.getName() +"' has been marked as a default component of type '" + componentInfo.getType() +"'.");
 		}
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "getDynamicComponent", "Exiting.", Level.FINEST).dispatch();
 
 		if(componentInfo == null)
 		{
@@ -7643,15 +6924,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public ComponentInfo[] getDynamicComponents(int id,	ComponentSpec[] components)
 		throws AcsJNoPermissionEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getDynamicComponents", new Object[] { new Integer(id), components }).dispatch();
 
 		// check if null
 		if (components == null)
 		{
 			// BAD_PARAM
-			BadParametersException af = new BadParametersException(this, "Non-null 'components' expected.");
-			af.caughtIn(this, "getDynamicComponents");
+			BadParametersException af = new BadParametersException("Non-null 'components' expected.");
 			throw af;
 		}
 
@@ -7674,19 +6952,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				componentInfos[i] = null;
 
-				CoreException ce = new CoreException(this, "Failed to get dynamic component '"+components[i]+"'.", ex);
-				ce.caughtIn(this, "getDynamicComponents");
-				ce.putValue("components[i]", components[i]);
-				// exception service will handle this
+				CoreException ce = new CoreException("Failed to get dynamic component '"+components[i]+"'.", ex);
+				reportException(ce);
 			}
 		}
 
-		new MessageLogEntry(this, "getDynamicComponents", obtained + " of " + components.length +" dynamic components obtained.", LoggingLevel.INFO).dispatch();
+		logger.info(obtained + " of " + components.length +" dynamic components obtained.");
 
 		/****************************************************************/
-
-		if (isDebug())
-			new MessageLogEntry(this, "getDynamicComponents", "Exiting.", Level.FINEST).dispatch();
 
 		return componentInfos;
 
@@ -7701,8 +6974,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
 			   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "getCollocatedComponent", new Object[] { new Integer(id), componentSpec, new Boolean(markAsDefault), targetComponentURI }).dispatch();
 		
 		try {
 			// check if null
@@ -7844,8 +7115,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//defaultComponents.put(componentInfo.getType(), componentInfo.getName());
 			}
 			
-			new MessageLogEntry(this, "getCollocatedComponent", "'" + componentInfo.getName() +"' has been marked as a default component of type '" +
-					componentInfo.getType() +"'.", LoggingLevel.INFO).dispatch();
+			logger.info("'" + componentInfo.getName() +"' has been marked as a default component of type '" + componentInfo.getType() +"'.");
 		}
 		
 		if(componentInfo == null)
@@ -7856,9 +7126,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		
 		/****************************************************************/
-		
-		if (isDebug())
-			new MessageLogEntry(this, "getCollocatedComponent", "Exiting.", Level.FINEST).dispatch();
 		
 		return componentInfo;
 	}
@@ -7895,8 +7162,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		catch (Exception ex)
 		{
-			AssertionFailed af = new AssertionFailed(this, "Failed to retrieve data from CDB.", ex);
-			af.caughtIn(this, "searchDynamicComponent");
+			CoreException af = new CoreException("Failed to retrieve data from CDB.", ex);
+			reportException(af);
 			return null;
 		}
 
@@ -8015,8 +7282,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		       AcsJInvalidComponentSpecEx,
 			   AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "internalRequestDynamicComponent", new Object[] { new Integer(requestor), componentSpec }).dispatch();
 
 		boolean unspecifiedName = componentSpec.getName().endsWith(ComponentSpec.COMPSPEC_ANY);
 		boolean unspecifiedType = componentSpec.getType().equals(ComponentSpec.COMPSPEC_ANY);
@@ -8216,10 +7481,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (name.startsWith(CURL_URI_SCHEMA))
 		    return;
 
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "bind", new Object[] { name, object == null ? "null" : object.toString() }).dispatch();
-
 		if (remoteDirectory != null)
 		{
 		    try
@@ -8242,8 +7503,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			        }
 			        catch (NameNotFoundException nnfe)
 			        {
-			            // handle this exception
-			            new ExceptionIgnorer(nnfe);
+			        	// noop
 			        }
 
 			        if (parentContext == null)
@@ -8284,17 +7544,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (NamingException ne)
 			{
-				CoreException ce = new CoreException(this, "Failed to bind name '"+name+"' to the remote directory.", ne);
-				ce.caughtIn(this, "bind");
-				ce.putValue("name", name);
-				ce.putValue("type", type);
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "bind", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+				CoreException ce = new CoreException("Failed to bind name '"+name+"' to the remote directory.", ne);
+				logger.log(Level.FINE, ce.getMessage(), ce);
 			}
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "bind", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -8371,10 +7625,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (name.startsWith(CURL_URI_SCHEMA))
 		    return;
 
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "rebind", new Object[] { name, object == null ? "null" : object.toString() }).dispatch();
-
 		if (remoteDirectory != null)
 		{
 			try
@@ -8391,17 +7641,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (NamingException ne)
 			{
-				CoreException ce = new CoreException(this, "Failed to rebind name '"+name+"' to the remote directory.", ne);
-				ce.caughtIn(this, "rebind");
-				ce.putValue("name", name);
-				ce.putValue("type", type);
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "rebind", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+				CoreException ce = new CoreException("Failed to rebind name '"+name+"' to the remote directory.", ne);
+				logger.log(Level.FINE, ce.getMessage(), ce);
 			}
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "rebind", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -8440,9 +7684,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (name.startsWith(CURL_URI_SCHEMA))
 		    return null;
 
-		if (isDebug())
-			new MessageLogEntry(this, "lookup", new Object[] { name, type }).dispatch();
-
 		Object resolved = null;
 
 		if (remoteDirectory != null)
@@ -8461,17 +7702,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (NamingException ne)
 			{
-				CoreException ce = new CoreException(this, "Failed to lookup name '"+name+"' in the remote directory.", ne);
-				ce.caughtIn(this, "lookup");
-				ce.putValue("name", name);
-				ce.putValue("type", type);
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "lookup", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+				CoreException ce = new CoreException("Failed to lookup name '"+name+"' in the remote directory.", ne);
+				logger.log(Level.FINE, ce.getMessage(), ce);
 			}
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "lookup", "Exiting.", Level.FINEST).dispatch();
 
 		return resolved;
 	}
@@ -8510,9 +7744,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (name.startsWith(CURL_URI_SCHEMA))
 		    return;
 
-		if (isDebug())
-			new MessageLogEntry(this, "unbind", new Object[] { name, type }).dispatch();
-
 		if (remoteDirectory != null)
 		{
 			try
@@ -8536,17 +7767,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (NamingException ne)
 			{
-				CoreException ce = new CoreException(this, "Failed to unbind name '"+name+"' from the remote directory.", ne);
-				ce.caughtIn(this, "unbind");
-				ce.putValue("name", name);
-				ce.putValue("type", type);
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "unbind", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+				CoreException ce = new CoreException("Failed to unbind name '"+name+"' from the remote directory.", ne);
+				logger.log(Level.FINE, ce.getMessage(), ce);
 			}
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "unbind", "Exiting.", Level.FINEST).dispatch();
 	}
 
 	/**
@@ -8574,12 +7799,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			    }
 		    }
 	    } catch (Throwable th) {
-			CoreException ce = new CoreException(this, "Failed to unbind (potential) empty context for '"+name+"'.", th);
-			ce.caughtIn(this, "cleanupEmptyFContext");
-			ce.putValue("name", name);
-			ce.putValue("remoteDirectory", remoteDirectory);
-			// exception handler service will take care of this exception
-			new MessageLogEntry(this, "remoteDirectory", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+			CoreException ce = new CoreException("Failed to unbind (potential) empty context for '"+name+"'.", th);
+			logger.log(Level.FINE, ce.getMessage(), ce);
 	    }
 	}
 
@@ -8704,8 +7925,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void checkCURL(URI curl, boolean allowNonLocalDomains) throws AcsJBadParameterEx
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "checkCURL", new Object[] { curl, new Boolean(allowNonLocalDomains) }).dispatch();
 
 		// check if null
 		if (curl == null)
@@ -8737,9 +7956,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			af.setParameterValue("CURL does not belong to this domain ('"+domain+"' not one of '"+domains+"').");
 			throw af;
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "checkCURL", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -8786,9 +8002,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (name != null);
 
-		if (isDebug())
-			new MessageLogEntry(this, "isServiceComponent", new Object[] { name }).dispatch();
-
 		boolean retVal = false;
 
 		// get CDB access dao
@@ -8811,19 +8024,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				CoreException ce = new CoreException(this, "Failed to retrieve list of service components.", ex);
-				ce.caughtIn(this, "isServiceComponent");
-				ce.putValue("name", name);
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "isServiceComponent", ce.getMessage(), ce, LoggingLevel.DEBUG).dispatch();
+				CoreException ce = new CoreException("Failed to retrieve list of service components.", ex);
+				logger.log(Level.FINE, ce.getMessage(), ce);
 			}
 
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "isServiceComponent", "Exiting.", Level.FINEST).dispatch();
 
 		return retVal;
 	}
@@ -8918,14 +8125,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (System.getProperties().containsKey(NAME_CDB_DISABLE))
 			return null;
 
-		if (isDebug())
-			new MessageLogEntry(this, "getManagerDAOProxy", new Object[0] ).dispatch();
-
 		if (managerDAO == null)
 			managerDAO = createDAO("MACI/Managers/Manager");
-
-		if (isDebug()) 
-			new MessageLogEntry(this, "getManagerDAOProxy", "Exiting.", Level.FINEST).dispatch();
 
 		return managerDAO;
 
@@ -8936,9 +8137,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void readManagerConfiguration()
 	{
-		if (isDebug())
-			new MessageLogEntry(this, "readManagerConfiguration", new Object[0] ).dispatch();
-
 		DAOProxy managerDAO = getManagerDAOProxy();
 		if (managerDAO == null)
 			return;
@@ -8958,8 +8156,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		poolThreads = readLongCharacteristics(managerDAO, "ServerThreads", poolThreads, true);
 		poolThreads = Math.max(3, poolThreads);
 
-		if (isDebug()) 
-			new MessageLogEntry(this, "readManagerConfiguration", "Exiting.", Level.FINEST).dispatch();
 	}
 	
 	/**
@@ -8968,16 +8164,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private synchronized void destroyManagerDAOProxy()
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "destroyManagerDAOProxy", new Object[0] ).dispatch();
-
 		if (managerDAO != null)
 			destroyDAO(managerDAO);
 
 		managerDAO = null;
-
-		if (isDebug())
-			new MessageLogEntry(this, "destroyManagerDAOProxy", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -8990,9 +8180,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		if (System.getProperties().containsKey(NAME_CDB_DISABLE))
 			return null;
-
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentsDAOProxy", new Object[0] ).dispatch();
 
 		if (componentsDAO == null)
 		{
@@ -9013,9 +8200,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			    );
 			}
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "getComponentsDAOProxy", "Exiting.", Level.FINEST).dispatch();
 
 		return componentsDAO;
 
@@ -9073,17 +8257,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
         } catch (Throwable th)
         {
-            CoreException ce = new CoreException(this, "Failed to obtain list of all components.", th);
-			ce.caughtIn(this, "refreshComponentsList");
-			ce.putValue("dc", dc);
-			// exception handler service will take care of this exception
-			new MessageLogEntry(this, "refreshComponentsList", ce.getMessage(), ce, LoggingLevel.WARNING).dispatch();
+            CoreException ce = new CoreException("Failed to obtain list of all components.", th);
+			logger.log(Level.WARNING, ce.getMessage(), ce);
         }
 
         String[] retVal = new String[componentList.size()];
         componentList.toArray(retVal);
 
-		new MessageLogEntry(this, "refreshComponentsList", "Found " + retVal.length + " component entries in the configuration database.", LoggingLevel.INFO).dispatch();
+		logger.info("Found " + retVal.length + " component entries in the configuration database.");
 
         return retVal;
     }
@@ -9094,16 +8275,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private synchronized void destroyComponetsDAOProxy()
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "destroyComponetsDAOProxy", new Object[0] ).dispatch();
-
 		if (componentsDAO != null)
 			destroyDAO(componentsDAO);
 
 		componentsDAO = null;
-
-		if (isDebug())
-			new MessageLogEntry(this, "destroyComponetsDAOProxy", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -9117,14 +8292,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (System.getProperties().containsKey(NAME_CDB_DISABLE))
 			return null;
 
-		if (isDebug())
-			new MessageLogEntry(this, "getContainersDAOProxy", new Object[0] ).dispatch();
-
 		if (containersDAO == null)
 			containersDAO = createDAO("MACI/Containers");
-
-		if (isDebug())
-			new MessageLogEntry(this, "getContainersDAOProxy", "Exiting.", Level.FINEST).dispatch();
 
 		return containersDAO;
 
@@ -9136,16 +8305,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private synchronized void destroyContainersDAOProxy()
 	{
 
-		if (isDebug())
-			new MessageLogEntry(this, "destroyContainersDAOProxy", new Object[0] ).dispatch();
-
 		if (containersDAO != null)
 			destroyDAO(containersDAO);
 
 		containersDAO = null;
-
-		if (isDebug())
-			new MessageLogEntry(this, "destroyContainersDAOProxy", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -9159,9 +8322,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (entity != null);
 
-		if (isDebug())
-			new MessageLogEntry(this, "createDAO", new Object[] { entity }).dispatch();
-
 		DAOProxy dao = null;
 
 		// cdbAccess must be given
@@ -9173,16 +8333,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable th)
 			{
-				CoreException ce = new CoreException(this, "Failed to create DAO dao for '"+entity+"'.", th);
-				ce.caughtIn(this, "createDAO");
-				ce.putValue("entity", entity);
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "createDAO", ce.getMessage(), th, LoggingLevel.DEBUG).dispatch();
+				logger.fine("Failed to create DAO for '"+entity+"'.");
+				// TODO @todo logging?!
+				//CoreException ce = new CoreException("Failed to create DAO for '"+entity+"'.", th);
+				//logger.log(Level.FINE, ce.getMessage(), ce);
 			}
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "createDAO", "Exiting.", Level.FINEST).dispatch();
 
 		return dao;
 
@@ -9212,9 +8368,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (path != null);
 
-		if (isDebug())
-			new MessageLogEntry(this, "readStringCharacteristics", new Object[] { path }).dispatch();
-
 		String retVal = null;
 
 		try
@@ -9223,17 +8376,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		catch (Throwable th)
 		{
-			CoreException ce = new CoreException(this, "Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
-			ce.caughtIn(this, "readStringCharacteristics");
-			ce.putValue("path", path);
-			if (silent)
-				new ExceptionIgnorer(ce);
-			// otherwise exception service will handle this
-			// new MessageLogEntry(this, "readStringCharacteristics", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+			CoreException ce = new CoreException("Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
+			if (!silent)
+				reportException(ce);
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "readStringCharacteristics", "Exiting.", Level.FINEST).dispatch();
 
 		return retVal;
 
@@ -9251,9 +8397,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (path != null);
 
-		if (isDebug())
-			new MessageLogEntry(this, "readLongCharacteristics", new Object[] { path }).dispatch();
-
 		int retVal = defaultValue;
 
 		try
@@ -9262,17 +8405,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		catch (Throwable th)
 		{
-			CoreException ce = new CoreException(this, "Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
-			ce.caughtIn(this, "readLongCharacteristics");
-			ce.putValue("path", path);
-			if (silent)
-				new ExceptionIgnorer(ce);
-			// otherwise exception service will handle this
-			// new MessageLogEntry(this, "readLongCharacteristics", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+			CoreException ce = new CoreException("Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
+			if (!silent)
+				reportException(ce);
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "readLongCharacteristics", "Exiting.", Level.FINEST).dispatch();
 
 		return retVal;
 
@@ -9290,9 +8426,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		assert (path != null);
 
-		if (isDebug())
-			new MessageLogEntry(this, "readDoubleCharacteristics", new Object[] { path }).dispatch();
-
 		double retVal = defaultValue;
 
 		try
@@ -9301,17 +8434,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		catch (Throwable th)
 		{
-			CoreException ce = new CoreException(this, "Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
-			ce.caughtIn(this, "readLongCharacteristics");
-			ce.putValue("path", path);
-			if (silent)
-				new ExceptionIgnorer(ce);
-			// otherwise exception service will handle this
-			// new MessageLogEntry(this, "readLongCharacteristics", ce.getMessage(), ex, LoggingLevel.WARNING).dispatch();
+			CoreException ce = new CoreException("Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
+			if (!silent)
+				reportException(ce);
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "readDoubleCharacteristics", "Exiting.", Level.FINEST).dispatch();
 
 		return retVal;
 
@@ -9325,10 +8451,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void destroyDAO(DAOProxy dao)
 	{
 
-		// NOTE: do not log references - prevents GC to finalize and terminate connection thread (JacORB)
-		if (isDebug())
-			new MessageLogEntry(this, "destroyDAO", new Object[] { dao == null ? "null" : dao.toString() }).dispatch();
-
 		if (dao != null)
 		{
 			try
@@ -9337,16 +8459,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable th)
 			{
-				CoreException ce = new CoreException(this, "Failed to destroy DAO dao '"+dao+"'.", th);
-				ce.caughtIn(this, "destroyDAO");
-				// exception handler service will take care of this exception
-				new MessageLogEntry(this, "destroyDAO", ce.getMessage(), th, LoggingLevel.DEBUG).dispatch();
+				CoreException ce = new CoreException("Failed to destroy DAO dao '"+dao+"'.", th);
+				logger.log(Level.FINE, ce.getMessage(), th);
 			}
 
 		}
-
-		if (isDebug())
-			new MessageLogEntry(this, "destroyDAO", "Exiting.", Level.FINEST).dispatch();
 
 	}
 
@@ -9357,7 +8474,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Initialize manager federation.
 	 */
-	public void initializeFederation(Hashtable federationDirectoryProperties) throws InitializationException
+	public void initializeFederation(Hashtable federationDirectoryProperties) throws CoreException
 	{
 	    assert(federationDirectoryProperties != null);
 
@@ -9383,21 +8500,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 
 			if (givenDomainList.size() > 0)
-			    new MessageLogEntry(this, "initializeFederation", "Using domain list: " + givenDomainList + ".", LoggingLevel.INFO).dispatch();
+			    logger.info("Using domain list: " + givenDomainList + ".");
 
 		}
 		catch (Throwable t)
 		{
-			new MessageLogEntry(this, "initializeFederation", "Failed to parse domain list '" + NAME_DOMAIN_LIST + "' variable, " + t.getMessage(), t, LoggingLevel.WARNING).dispatch();
+			logger.log(Level.WARNING, "Failed to parse domain list '" + NAME_DOMAIN_LIST + "' variable, " + t.getMessage(), t);
 		}
 
 		// recovery data consistency check
 		if (domains.size() != 0 && !domains.equals(givenDomainList))
 		{
-		    InitializationException ie = new InitializationException(this, "Given domain list is not consistent with recovery data: " + givenDomainList + " != " + domains + ".");
-		    ie.caughtIn(this, "initializeFederation");
-		    ie.putValue("domains", domains);
-		    ie.putValue("givenDomainList", givenDomainList);
+		    CoreException ie = new CoreException("Given domain list is not consistent with recovery data: " + givenDomainList + " != " + domains + ".");
 		    throw ie;
 		}
 		else if (domains.size() == 0 && givenDomainList.size() != 0)
@@ -9407,7 +8521,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// no domain to control, no federation
 		if (domains.size() == 0)
 		{
-			new MessageLogEntry(this, "initializeFederation", "No domain list given, manager federation disabled.", LoggingLevel.WARNING).dispatch();
+			logger.config("No domain list given, manager federation disabled.");
 			return;
 		}
 
@@ -9417,7 +8531,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (remoteDirectoryComponentReference == null)
 		{
-			new MessageLogEntry(this, "initializeFederation", "No valid local domain naming service reference found, manager federation disabled.", LoggingLevel.WARNING).dispatch();
+			logger.warning("No valid local domain naming service reference found, manager federation disabled.");
 			return;
 		}
 
@@ -9428,14 +8542,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		String domainNS = System.getProperty(NAME_DOMAIN_DIRECTORY);
 		if (domainNS == null)
 		{
-			new MessageLogEntry(this, "initializeFederation", "No federation directory reference given, manager federation disabled.", LoggingLevel.WARNING).dispatch();
+			logger.warning("No federation directory reference given, manager federation disabled.");
 			return;
 		}
 		// set NS address
 		federationDirectoryProperties.put(Context.PROVIDER_URL, domainNS);
 
-		if (isDebug())
-			new MessageLogEntry(this, "initializeFederation", "Connecting to the federation directory with reference '"+domainNS+"'...", Level.INFO).dispatch();
+		logger.info("Connecting to the federation directory with reference '"+domainNS+"'...");
 
 		try
 		{
@@ -9443,17 +8556,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		catch (Throwable th)
 		{
-			if (isDebug())
-				new MessageLogEntry(this, "initializeFederation", "Failed to connect to the federation directory with reference '"+domainNS+"'...", Level.INFO).dispatch();
-
-			InitializationException cie = new InitializationException(this, "Failed to create initial context.", th);
-			cie.putValue("Context.PROVIDER_URL", domainNS);
-			// exception service will take care of this exception
+			logger.log(Level.INFO, "Failed to connect to the federation directory with reference '"+domainNS+"'...", th);
 			return;
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "initializeFederation", "Connected to the federation directory with reference '"+domainNS+"'.", Level.INFO).dispatch();
+		logger.info("Connected to the federation directory with reference '"+domainNS+"'.");
 
 		// register domains
 		Iterator iter = domains.iterator();
@@ -9464,7 +8571,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		federationEnabled = true;
 
-		new MessageLogEntry(this, "Manager federation enabled.", LoggingLevel.WARNING).dispatch();
+		logger.info("Manager federation enabled.");
 
 		// set domain name string (one name or set of names)
 		if (domains.size() == 1)
@@ -9554,29 +8661,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		while (iter.hasNext()) {
 		    unbind(federationDirectory, dottedToHierarchical(iter.next().toString()), null);
 		}
-	}
-
-	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Manager", "Manager", Identifier.PLUG);
-
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
 	}
 
 	/**
@@ -9679,30 +8763,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/*****************************************************************************/
 
 	/**
-	 * Returns the applicationContext.
-	 * @return ApplicationContext
-	 */
-	public ApplicationContext getApplicationContext()
-	{
-		return applicationContext;
-	}
-
-	/**
 	 * Returns the remoteDirectory.
 	 * @return Context
 	 */
 	public Context getRemoteDirectory()
 	{
 		return remoteDirectory;
-	}
-
-	/**
-	 * Sets the applicationContext.
-	 * @param applicationContext The applicationContext to set
-	 */
-	public void setApplicationContext(ApplicationContext applicationContext)
-	{
-		this.applicationContext = applicationContext;
 	}
 
 	/**

@@ -4,14 +4,8 @@
  
 package com.cosylab.acs.maci.manager.app;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.framework.FrameworkLayer;
-import abeans.pluggable.acs.logging.LoggingLevel;
+import java.util.logging.Level;
 
-import com.cosylab.abeans.AbeansEngine;
 import com.cosylab.acs.maci.manager.ManagerShutdown;
 
 /**
@@ -20,12 +14,8 @@ import com.cosylab.acs.maci.manager.ManagerShutdown;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class Manager implements Identifiable, ManagerShutdown
+public class Manager implements ManagerShutdown
 {
-	/**
-	 * Identifier.
-	 */
-	private Identifier id;
 
 	/**
 	 * Manager engine.
@@ -42,44 +32,19 @@ public class Manager implements Identifiable, ManagerShutdown
 	 */
 	public Manager()
 	{
-		getAbeansEngine().initialize();
+		getManagerEngine().initialize();
 
-		// userAllInitializationsDone() is called only by CosyPanel.initializeOwner(boolean) ?!!!
-		//engine.userAllInitializationsDone();
-		
-		if (isDebug())
-		    {
-			new MessageLogEntry(this, "Manager", "Manager Application initialized.", LoggingLevel.OFF).dispatch();
-		    }
-		
+		getManagerEngine().getLogger().log(Level.OFF, "Manager Application initialized.");
 	}
 
 	/**
-	 * @see com.cosylab.abeans.AbeansLaunchable#getAbeansEngine()
+	 * Get manager engine.
 	 */
-	public AbeansEngine getAbeansEngine()
+	public ManagerEngine getManagerEngine()
 	{
 		if (engine == null)
 			engine = new ManagerEngine(this);
 		return engine;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Manager", "Manager", "Manager", "Manager", Identifier.APPLICATION);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return true;
 	}
 
 	/**
@@ -104,14 +69,12 @@ public class Manager implements Identifiable, ManagerShutdown
 	}
 
 	/**
-	 * @see com.cosylab.gui.core.CosyPanel#internalDestroy()
 	 * This method is called within synchronized block.
 	 */
 	public void internalDestroy()
 	{
 		shuttingDown = true;
-		((ManagerEngine)getAbeansEngine()).userDestroy();
-		getAbeansEngine().destroy();
+		getManagerEngine().destroy();
 	}
 
  	/*****************************************************************************/
@@ -131,9 +94,6 @@ public class Manager implements Identifiable, ManagerShutdown
 			}
 		}
 
-		// disable Abeans shutdown hook
-		System.setProperty(FrameworkLayer.PROPERTY_DISABLE_SHUTDOWN_HOOK, "true");
-		
 		/*Manager manager =*/ new Manager();
 	}
 

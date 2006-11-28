@@ -5,15 +5,8 @@ import java.util.Properties;
 
 import com.cosylab.acs.maci.manager.HandleDataStore;
 import com.cosylab.acs.maci.manager.ManagerImpl;
-import com.cosylab.acs.maci.manager.app.ManagerEngine;
 import com.cosylab.acs.maci.plug.ClientProxyImpl;
 import com.cosylab.util.FileHelper;
-
-import abeans.core.InitializationException;
-import abeans.core.Root;
-import abeans.core.UnableToInstallComponentException;
-import abeans.pluggable.acs.CORBAService;
-import abeans.pluggable.acs.DefaultCORBAService;
 
 import junit.framework.TestCase;
 
@@ -40,19 +33,11 @@ public class ManagerImplSerializationTest extends TestCase {
 
 	class MyManager extends com.cosylab.acs.maci.manager.app.Manager {
 
-		private boolean shuttingDown = false;
-
 		public void internalDestroy() {
-			shuttingDown = true;
-			((ManagerEngine)getAbeansEngine()).userDestroy();
-			getAbeansEngine().destroy();
-			//System.exit(0);
+			super.internalDestroy();
 			notify();
 		}
 
-		public boolean isShutdownInProgress() {
-			return shuttingDown;
-		}
 	}
 	
 	public final String clientName = "testClient";
@@ -79,8 +64,6 @@ public class ManagerImplSerializationTest extends TestCase {
 		
 		// turn off flod of Abeans messages
 		Properties systemProps = System.getProperties(); 
-		systemProps.setProperty("abeans.core.defaults.ConsoleLoggingPolicy", "SEVERE");
-		systemProps.setProperty("abeans.pluggable.acs.logging.LoggingLevelPolicy", "WARNING");
 		
 		//systemProps.setProperty("ACS.tmp", ".");
 		//String namingReference = "iiop://" + InetAddress.getLocalHost().getHostName() + ":xxxx";
@@ -103,17 +86,6 @@ public class ManagerImplSerializationTest extends TestCase {
 
 		// get the manager up
 		myManager = new MyManager();
-                try {
-                        if (Root.getComponentManager().getComponent(CORBAService.class) == null)
-                                Root.getComponentManager().installComponent(DefaultCORBAService.class);
-                        orb =
-                                ((DefaultCORBAService) Root.getComponentManager().getComponent(CORBAService.class))
-                                        .getORB();
-                }
-                catch (UnableToInstallComponentException e) {
-                        e.printStackTrace();
-                        fail();
-                }
 
 		// get its reference 
 		try {
@@ -132,9 +104,8 @@ public class ManagerImplSerializationTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 
-		manager.shutdown(0x05000000, 0);
-
 		synchronized (myManager) {
+			manager.shutdown(0x05000000, 0);
 			myManager.wait();
 		}
 		orb = null;
@@ -154,7 +125,7 @@ public class ManagerImplSerializationTest extends TestCase {
 
 	public void testClientLogin() {
 		// login a client
-		ClientProxyImpl client = new ClientProxyImpl(clientName);
+		ClientProxyImpl client = new ClientProxyImpl(clientName, myManager.getManagerEngine().getLogger());
 		client.login(orb, manager);
 
 		// get object as it is stored in recovery store
@@ -174,7 +145,7 @@ public class ManagerImplSerializationTest extends TestCase {
 		assertEquals(clients.first(), 0);
 	}
 
-	public void testClientDie() throws InitializationException {
+	public void testClientDie() {
 		// should be something else then deafault because
 		// the default is in use by the Manager
 		Properties table = new Properties();
@@ -194,7 +165,7 @@ public class ManagerImplSerializationTest extends TestCase {
 			e.printStackTrace();
 		}
 		
-		ClientProxyImpl client = new ClientProxyImpl(clientName);
+		ClientProxyImpl client = new ClientProxyImpl(clientName, myManager.getManagerEngine().getLogger());
 		client.login(ourOrb, manager);
 		// just destroy its ORB
 		ourOrb.shutdown(true);

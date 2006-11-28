@@ -11,13 +11,10 @@ import java.io.Serializable;
 
 import org.omg.CORBA.Object;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.pluggable.RemoteException;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.MessageType;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * CORBA Client Proxy.
@@ -25,13 +22,13 @@ import com.cosylab.acs.maci.MessageType;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ClientProxy extends CORBAReferenceSerializator implements Client, Identifiable, Serializable
+public class ClientProxy extends CORBAReferenceSerializator implements Client, Serializable
 {
 
 	/**
-	 * Identifier.
+	 * Serial version UID.
 	 */
-	protected Identifier id = null;
+	private static final long serialVersionUID = 5300210586145192795L;
 
 	/**
 	 * CORBA reference.
@@ -60,8 +57,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'authenticate()' method.", ex);
-			re.caughtIn(this, "authenticate");
+			RemoteException re = new RemoteException("Failed to invoke 'authenticate()' method.", ex);
 			throw re;
 		}
 	}
@@ -115,8 +111,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'components_available()' method.", ex);
-			re.caughtIn(this, "components_available");
+			RemoteException re = new RemoteException("Failed to invoke 'components_available()' method.", ex);
 			throw re;
 		}
 	}
@@ -132,8 +127,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'components_unavailable()' method.", ex);
-			re.caughtIn(this, "components_unavailable");
+			RemoteException re = new RemoteException("Failed to invoke 'components_unavailable()' method.", ex);
 			throw re;
 		}
 	}
@@ -149,8 +143,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'disconnect()' method.", ex);
-			re.caughtIn(this, "disconnect");
+			RemoteException re = new RemoteException("Failed to invoke 'disconnect()' method.", ex);
 			throw re;
 		}
 	}
@@ -174,8 +167,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'message()' method.", ex);
-			re.caughtIn(this, "message");
+			RemoteException re = new RemoteException("Failed to invoke 'message()' method.", ex);
 			throw re;
 		}
 	}
@@ -191,8 +183,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'name()' method.", ex);
-			re.caughtIn(this, "name");
+			RemoteException re = new RemoteException("Failed to invoke 'name()' method.", ex);
 			throw re;
 		}
 	}
@@ -212,8 +203,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException(this, "Failed to invoke 'ping()' method.", ex);
-			re.caughtIn(this, "ping");
+			RemoteException re = new RemoteException("Failed to invoke 'ping()' method.", ex);
 			throw re;
 		}
 	}
@@ -227,28 +217,6 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
 		return client;
 	}
 
- 	/*****************************************************************************/
-	/*************************** [ Abeans methods ] ******************************/
-	/*****************************************************************************/
-
-	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null)
-			id = new IdentifierSupport("Client CORBA Proxy", "Client", Identifier.PLUG);
-		return id;
-	}
-
-	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
-	}
-
     /**
      * Save the state of the <tt>ClientProxy</tt> instance to a stream (that
      * is, serialize it).
@@ -258,8 +226,6 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, I
     {
         stream.writeObject(serialize(client));
     }
-
-
 
     /**
      * Reconstitute the <tt>ClientProxy</tt> instance from a stream (that is,

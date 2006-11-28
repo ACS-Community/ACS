@@ -6,6 +6,8 @@ package com.cosylab.acs.maci.manager.app;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 
@@ -17,26 +19,19 @@ import org.omg.PortableServer.POA;
 import org.prevayler.implementation.SnapshotPrevayler;
 import si.ijs.maci.ManagerHelper;
 
-import EDU.oswego.cs.dl.util.concurrent.Sync;
-import abeans.core.CoreException;
-import abeans.core.Root;
-import abeans.core.defaults.JavaMessageLog;
-import abeans.core.defaults.MessageLog;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.framework.ApplicationContext;
-import abeans.pluggable.RemoteDirectory;
-import abeans.pluggable.acs.CORBAService;
-import abeans.pluggable.acs.NamingServiceRemoteDirectory;
-import abeans.pluggable.acs.logging.LoggingLevel;
 
-import com.cosylab.abeans.AbeansEngine;
+import alma.acs.logging.ClientLogManager;
+
 import com.cosylab.acs.cdb.CDBAccess;
+import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.manager.ManagerImpl;
 import com.cosylab.acs.maci.manager.ManagerShutdown;
 import com.cosylab.acs.maci.plug.CORBAReferenceSerializator;
 import com.cosylab.acs.maci.plug.CORBATransport;
+import com.cosylab.acs.maci.plug.DefaultCORBAService;
 import com.cosylab.acs.maci.plug.ManagerProxyImpl;
+import com.cosylab.acs.maci.plug.NamingServiceRemoteDirectory;
 import com.cosylab.util.FileHelper;
 
 /**
@@ -45,7 +40,7 @@ import com.cosylab.util.FileHelper;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ManagerEngine extends AbeansEngine
+public class ManagerEngine 
 {
 	
 	/**
@@ -84,11 +79,6 @@ public class ManagerEngine extends AbeansEngine
 	private si.ijs.maci.Manager managerReference = null;
 
 	/**
-	 * <code>ApplicationContext</code> of <code>ManagerEngine</code>.
-	 */
-	private ApplicationContext applicationContext = null;
-
-	/**
 	 * Implementation of the shutdown method.
 	 */
 	private ManagerShutdown shutdownImplementation = null;
@@ -98,6 +88,17 @@ public class ManagerEngine extends AbeansEngine
 	 */
 	private String recoveryLocation = null;
 	
+	/**
+	 * Logger.
+	 * Default logger is global logger.
+	 */
+	private Logger logger = Logger.global;
+
+	/**
+	 * CORBA service.
+	 */
+	private DefaultCORBAService corbaService = null;
+
 	/**
 	 * Constructor for ManagerEngine.
 	 * 
@@ -110,99 +111,61 @@ public class ManagerEngine extends AbeansEngine
 	}
 
 	/**
-	 * @see com.cosylab.abeans.AbeansEngine#getName()
+	 * Destroy.
 	 */
-	public String getName()
-	{
-		return "Manager";
-	}
-
-	/**
-	 * @see com.cosylab.abeans.AbeansEngine#userFrameworkInitialize()
-	 */
-	public void userFrameworkInitialize()
-	{
-		applicationContext = getApplicationContext();
-	}
-
-	/**
-	 * @see com.cosylab.abeans.AbeansEngine#userDestroy()
-	 */
-	public void userDestroy()
+	public void destroy()
 	{
 		try
 		{
 			destroyManager();
 		}
-		catch (Exception ex)
+		catch (Throwable th)
 		{
-			new MessageLogEntry(this, "userDestroy", "Failed to deactivate Manager.", ex, LoggingLevel.WARNING).dispatch();
+			logger.log(Level.SEVERE,  "Failed to deactivate Manager.", th);
 		}
 	}
 
 	/**
-	 * @see com.cosylab.abeans.AbeansEngine#userAllInitializationsDone()
+	 * Initialize manager.
 	 */
-	public void userAllInitializationsDone()
+	public void initialize()
 	{
 		try
 		{
 			initializeManager();
 			initializeShutdownHook();
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
-			new MessageLogEntry(this, "userFrameworkInitialize", "FAILED TO INITIALIZE MANAGER.", ex, LoggingLevel.CRITICAL).dispatch();
-			ex.printStackTrace();
+			logger.log(Level.SEVERE, "FAILED TO INITIALIZE MANAGER.", ex);
 			if (!System.getProperty("ACS.noExit", "false").equalsIgnoreCase("true"))
 				System.exit(1);
 		}
 
-		new MessageLogEntry(this, "userAllInitializationsDone", "All initializations done.", LoggingLevel.INFO).dispatch();
-	}
-
-	/**
-	 * @see abeans.framework.ApplicationEngine#getModelName()
-	 */
-	public String getModelName()
-	{
-		// we use Channel model for CDB
-		//return "Channel";
-		return null;
+		logger.info("All initializations done.");
 	}
 
 	/**
 	 * Initialize and activate Manager.
 	 */
-	private void initializeManager() throws Exception
+	private void initializeManager() throws Throwable
 	{
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("Manager", true);
 		
-		new MessageLogEntry(this, "initializeManager", "Initializing Manager.", LoggingLevel.INFO).dispatch();
-		
-		// TODO remove when fixed memory leak workaround in AbeansLogger !!!
-		MessageLog messageLog =	(MessageLog)Root.getComponentManager().getComponent(MessageLog.class);
-		if (messageLog instanceof JavaMessageLog)
-			((JavaMessageLog)messageLog).getSystemLogger().clearBufferInto(null);
+		logger.info("Initializing Manager.");
 		
 		//
 		// CORBA
 		//
 
 		// obtain CORBA Service
-		CORBAService corbaService =	(CORBAService)Root.getComponentManager().getComponent(CORBAService.class);
-		if (corbaService == null)
-		{
-			CoreException ce = new CoreException(this, "Abeans CORBA Service is not installed.");
-			ce.caughtIn(this, "initializeManager");
-			throw ce;
-		}
+		corbaService = new DefaultCORBAService(logger);
 
 		// get ORB
 		ORB orb = corbaService.getORB();
 		if (orb == null)
 		{
-			CoreException ce = new CoreException(this,	"Abeans CORBA Service can not provide ORB.");
-			ce.caughtIn(this, "initializeManager");
+			CoreException ce = new CoreException("CORBA Service can not provide ORB.");
 			throw ce;
 		}
 		
@@ -210,8 +173,7 @@ public class ManagerEngine extends AbeansEngine
 		POA rootPOA = corbaService.getRootPOA();
 		if (rootPOA == null)
 		{
-			CoreException ce = new CoreException(this,	"Abeans CORBA Service can not provide RootPOA.");
-			ce.caughtIn(this, "initializeManager");
+			CoreException ce = new CoreException("CORBA Service can not provide RootPOA.");
 			throw ce;
 		}
 
@@ -219,16 +181,8 @@ public class ManagerEngine extends AbeansEngine
 		// Remote Directory
 		//
 		
-		RemoteDirectory remoteDirectory = (RemoteDirectory)Root.getComponentManager().getComponent(RemoteDirectory.class);
-		if (remoteDirectory == null) 
-		{
-			//CoreException ce = new CoreException(this, "Abeans Remote Directory is not installed.");
-			//ce.caughtIn(this, "initializeManager");
-			//new MessageLogEntry(this, "initializeManager", "Failed to connect to the Naming Service - disabling Naming Service Mapping.", ce, LoggingLevel.WARNING).dispatch();
-
-			new MessageLogEntry(this, "initializeManager", "Failed to connect to the Naming Service - disabling Naming Service Mapping.", LoggingLevel.WARNING).dispatch();
-		}
-
+		NamingServiceRemoteDirectory remoteDirectory = new NamingServiceRemoteDirectory(orb, logger);
+		
 		Context context = null;
 		if (remoteDirectory != null)
 			context = remoteDirectory.getContext();
@@ -302,16 +256,16 @@ public class ManagerEngine extends AbeansEngine
 
 	    	manager = (ManagerImpl)prevayler.system();
 
-		manager.initialize(prevayler, applicationContext, new CDBAccess(orb), context);
+		manager.initialize(prevayler, new CDBAccess(orb, logger), context, logger);
 		manager.setShutdownImplementation(shutdownImplementation);
 		
 		FileHelper.setFileAttributes( "g+w", recoveryLocation );
-		// create new task for snapshoot creation 
-		//new RecoverySnapshotTask(prevayler, 1*Sync.ONE_HOUR, recoveryLocation);
-		new RecoverySnapshotTask(prevayler, 1*Sync.ONE_MINUTE, recoveryLocation);
+		// create new task for snapshoot creation,
+		final long MINUTE_IN_MS = 60*1000;
+		new RecoverySnapshotTask(prevayler, 1*MINUTE_IN_MS, recoveryLocation);
 		
 		// initialize Manager CORBA Proxy (create servant)
-		managerProxy = new ManagerProxyImpl(manager);
+		managerProxy = new ManagerProxyImpl(manager, logger);
 
 		//activate object
 		managerPOA.activate_object_with_id( MANAGER_ID, managerProxy );
@@ -324,7 +278,7 @@ public class ManagerEngine extends AbeansEngine
 		String ior = orb.object_to_string(managerReference);
 
 		// notify user
-		new MessageLogEntry(this, "initializeManager", "Manager activated with " + ior, LoggingLevel.INFO).dispatch();
+		logger.info("Manager activated with " + ior);
 
 		// register special service components to the Manager
 		manager.setManagerComponentReference(managerReference);
@@ -335,7 +289,7 @@ public class ManagerEngine extends AbeansEngine
 		// register NameService
 		if (remoteDirectory != null)
 		{
-			String reference = ((NamingServiceRemoteDirectory)remoteDirectory).getReference();
+			String reference = remoteDirectory.getReference();
 			if (reference != null)
 			{
 				// convert iiop to corbaloc
@@ -377,7 +331,7 @@ public class ManagerEngine extends AbeansEngine
 	private void destroyManager() throws Exception
 	{
 		
-		new MessageLogEntry(this, "destroyManager", "Destroying Manager.", LoggingLevel.INFO).dispatch();
+		logger.info("Destroying Manager.");
 		
 		// firsty destroy Manager implementation (if necessary)		
 		if (!manager.isShuttingDown())
@@ -386,12 +340,10 @@ public class ManagerEngine extends AbeansEngine
 			{
 				manager.shutdown(HandleConstants.MANAGER_MASK, 0);
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
-				CoreException ce = new CoreException(this, "Failed to destroy manager.", ex);
-				ce.caughtIn(this, "destroyManager");
-	
-				new MessageLogEntry(this, "destroyManager", "Failed to destroy manager.", ce, LoggingLevel.WARNING).dispatch();
+				CoreException ce = new CoreException("Failed to destroy manager.", ex);
+				logger.log(Level.WARNING, "Failed to destroy manager.", ce);
 			}
 		}
 
@@ -401,6 +353,10 @@ public class ManagerEngine extends AbeansEngine
 			managerPOA.deactivate_object(MANAGER_ID);
 			managerPOA = null;
 		}
+
+		// destroy CORBA service
+		if (corbaService != null)
+			corbaService.destroy();
 		
 		// add rights to group in order to be able to start with '-n'
 		if (recoveryLocation != null)
@@ -449,5 +405,14 @@ public class ManagerEngine extends AbeansEngine
 			return managerProxy.getNumberOfPendingRequests();
 		else
 			return -1;
+	}
+	
+	/**
+	 * Get logger.
+	 * @return logger.
+	 */
+	public Logger getLogger()
+	{
+		return logger;
 	}
 }

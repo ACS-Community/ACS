@@ -6,12 +6,12 @@
  */
 package com.cosylab.acs.maci.test;
 
-import abeans.pluggable.RemoteException;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * @author msekoranja

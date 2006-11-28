@@ -10,35 +10,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JApplet;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.logging.Level;
+
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.framework.FrameworkLayer;
-import abeans.pluggable.acs.logging.LoggingLevel;
-
-import com.cosylab.abeans.AbeansEngine;
-import com.cosylab.abeans.AbeansLaunchable;
-import com.cosylab.abeans.AbeansLauncher;
-import com.cosylab.abeans.plugins.AbeansExceptionPanelPlugIn;
-import com.cosylab.abeans.plugins.AbeansStandardActionsPlugIn;
-import com.cosylab.abeans.plugins.AbeansSystemMenuPlugIn;
-import com.cosylab.abeans.plugins.AboutPlugIn;
-import com.cosylab.abeans.plugins.LoggingPlugIn;
-import com.cosylab.abeans.plugins.ReportAreaPlugIn;
-import com.cosylab.abeans.plugins.TreeBrowserPlugIn;
 import com.cosylab.acs.maci.manager.ManagerShutdown;
 import com.cosylab.acs.maci.manager.app.ManagerEngine;
-import com.cosylab.gui.framework.Desktop;
-import com.cosylab.gui.framework.Launcher;
-import com.cosylab.gui.framework.LauncherEnvironment;
-import com.cosylab.gui.plugins.CosyStandardActionsPlugIn;
 
 /**
  * Manager activation application and GUI implementation.
@@ -46,13 +27,12 @@ import com.cosylab.gui.plugins.CosyStandardActionsPlugIn;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class Manager extends AbeansLaunchable implements Identifiable, ManagerShutdown
+public class Manager extends JFrame implements ManagerShutdown 
 {
-
 	/**
-	 * Identifier.
+	 * Serial version UID.
 	 */
-	private Identifier id;
+	private static final long serialVersionUID = -1120227545786082722L;
 
 	/**
 	 * Manager engine.
@@ -89,51 +69,13 @@ public class Manager extends AbeansLaunchable implements Identifiable, ManagerSh
 	 */
 	public Manager()
 	{
-		super();
+		initialize();
 	}
 
 	/**
-	 * Constructor for Manager.
-	 * @param launcher
-	 * @param env
-	 * @param owner
+	 * Get manager engine.
 	 */
-	public Manager(Launcher launcher, LauncherEnvironment env, JFrame owner)
-	{
-		super(launcher, env, owner);
-	}
-
-	/**
-	 * Constructor for Manager.
-	 * @param launcher
-	 * @param env
-	 * @param desk
-	 * @param owner
-	 */
-	public Manager(
-		Launcher launcher,
-		LauncherEnvironment env,
-		Desktop desk,
-		JInternalFrame owner)
-	{
-		super(launcher, env, desk, owner);
-	}
-
-	/**
-	 * Constructor for Manager.
-	 * @param launcher
-	 * @param env
-	 * @param owner
-	 */
-	public Manager(Launcher launcher, LauncherEnvironment env, JApplet owner)
-	{
-		super(launcher, env, owner);
-	}
-
-	/**
-	 * @see com.cosylab.abeans.AbeansLaunchable#getAbeansEngine()
-	 */
-	public AbeansEngine getAbeansEngine()
+	public ManagerEngine getManagerEngine()
 	{
 		if (engine == null)
 			engine = new ManagerEngine(this);
@@ -141,73 +83,83 @@ public class Manager extends AbeansLaunchable implements Identifiable, ManagerSh
 	}
 
 	/**
-	 * @see abeans.core.Identifiable#getIdentifier()
+	 * Initialize.
 	 */
-	public Identifier getIdentifier()
+	protected void initialize()
 	{
-		if (id == null)
-			id = new IdentifierSupport("Manager", "Manager", "Manager", "Manager", Identifier.APPLICATION);
-		return id;
+		getManagerEngine().initialize();
+
+		initializeGUI();
+
+		getManagerEngine().getLogger().log(Level.OFF, "Manager Application initialized.");
 	}
 
 	/**
-	 * @see abeans.core.Identifiable#isDebug()
+	 * Initialize GUI.
 	 */
-	public boolean isDebug()
-	{
-		return true;
-	}
-
-	/**
-	 * @see com.cosylab.gui.core.CosyPanel#userAllInitializationsDone()
-	 */
-	protected void userAllInitializationsDone()
-	{
-		super.userAllInitializationsDone();
-		if (isDebug())
-			new MessageLogEntry(this, "userAllInitializationsDone", "Manager GUI Application initialized.", LoggingLevel.INFO).dispatch();
-
-		// start updater
-		if (guiUpdaterTimer != null)
-			guiUpdaterTimer.start();
-	}
-
-	/**
-	 * @see com.cosylab.gui.core.CosyPanel#userInitializeGUI()
-	 */
-	public void userInitializeGUI()
+	public void initializeGUI()
 	{
 		setSize(320, 200);
 		setLayout(new GridBagLayout());
+		setTitle("ACS Manager");
 		
 		add(getRequestsProgressBar(),
 			new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(40, 40, 40, 40), 0, 0));
 		
 		guiUpdaterTimer = new Timer(GUI_UPDATE_INTERVAL, new GUIUpdater());
-	}
+		guiUpdaterTimer.start();
+		
+		setLocationByPlatform(true);
+		setVisible(true);
+		toFront();
+		
+		addWindowListener(new WindowListener() {
 
-	/**
-	 * @see com.cosylab.gui.core.CosyPanel#userInitializePlugIns()
-	 */
-	public void userInitializePlugIns()
-	{
-		try
-		{
-			installPlugIn(AboutPlugIn.class);
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
+			 */
+			public void windowActivated(WindowEvent event) {
+			}
 
-			installPlugIn(ReportAreaPlugIn.class);
-			installPlugIn(AbeansExceptionPanelPlugIn.class);
-			installPlugIn(LoggingPlugIn.class);
-			installPlugIn(TreeBrowserPlugIn.class);
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
+			 */
+			public void windowClosed(WindowEvent event) {
+			}
 
-			installPlugIn(AbeansSystemMenuPlugIn.class);
-			installPlugIn(AbeansStandardActionsPlugIn.class);
-			installPlugIn(CosyStandardActionsPlugIn.class);
-		} catch (Exception ex)
-		{
-			new MessageLogEntry(this, "Failed to initialize plugins.", ex, LoggingLevel.ERROR).dispatch();
-		}
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
+			 */
+			public void windowClosing(WindowEvent event) {
+				destroy();
+			}
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.WindowEvent)
+			 */
+			public void windowDeactivated(WindowEvent event) {
+			}
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.WindowEvent)
+			 */
+			public void windowDeiconified(WindowEvent event) {
+			}
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
+			 */
+			public void windowIconified(WindowEvent event) {
+			}
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
+			 */
+			public void windowOpened(WindowEvent event) {
+			}
+			
+		});
 	}
 
 	/**
@@ -229,14 +181,15 @@ public class Manager extends AbeansLaunchable implements Identifiable, ManagerSh
 	}
 
 	/**
-	 * @see com.cosylab.gui.core.CosyPanel#internalDestroy()
-	 * This method is called within synchronized block.
+	 * Destroyed.
 	 */
-	public void internalDestroy()
+	public void destroy()
 	{
 		shuttingDown = true;
-		guiUpdaterTimer.stop();
-		super.internalDestroy();
+		if (guiUpdaterTimer != null)
+			guiUpdaterTimer.stop();
+		dispose();
+		getManagerEngine().destroy();
 	}
 
  	/*****************************************************************************/
@@ -255,7 +208,7 @@ public class Manager extends AbeansLaunchable implements Identifiable, ManagerSh
 		
 		public void actionPerformed(ActionEvent e) 
 		{
-			ManagerEngine engine = (ManagerEngine)getAbeansEngine();
+			ManagerEngine engine = getManagerEngine();
 			JProgressBar progressBar = getRequestsProgressBar();
 			
 			// update number of requests
@@ -310,10 +263,7 @@ public class Manager extends AbeansLaunchable implements Identifiable, ManagerSh
 			}
 		}
 
-		// disable Abeans shutdown hook
-		System.setProperty(FrameworkLayer.PROPERTY_DISABLE_SHUTDOWN_HOOK, "true");
-
-		AbeansLauncher.main( new String[] { Manager.class.getName() } );
+		new Manager();
 	}
 
 }

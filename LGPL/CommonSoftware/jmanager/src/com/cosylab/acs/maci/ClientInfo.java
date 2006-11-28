@@ -17,6 +17,11 @@ public class ClientInfo implements Serializable
 {
 
 	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = 860176672630128907L;
+
+	/**
 	 * Client's handle.
 	 * The range depends on the class of the client (a Component, regular client, administrator, ...).
 	 */

@@ -19,6 +19,11 @@ import com.cosylab.acs.maci.ClientInfo;
 public class TimerTaskContainerInfo extends ContainerInfo
 {
 
+	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -369707980739847536L;
+
 	transient private TimerTask task = null;
 
 	/**

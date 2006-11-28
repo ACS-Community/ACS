@@ -45,11 +45,21 @@ import java.io.Serializable;
 public class HandleDataStore implements Serializable
 {
 
+	/**
+	 * Serial version UID. 
+	 */
+	private static final long serialVersionUID = -6137572272422678754L;
+
 	/** 
 	 * Element of the <code>HandleDataStore</code>.
 	 */
 	private class Element implements Serializable
 	{
+		/**
+		 * Serial version UID. 
+		 */
+		private static final long serialVersionUID = -6225830724337396211L;
+
 		/**
 		 * Previous element with the same <code>free</code>.
 		 */

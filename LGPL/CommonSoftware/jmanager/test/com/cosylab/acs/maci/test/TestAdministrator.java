@@ -5,10 +5,10 @@ package com.cosylab.acs.maci.test;
 
 import java.util.ArrayList;
 
-import abeans.pluggable.RemoteException;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.ClientInfo;
+import com.cosylab.acs.maci.RemoteException;
 
 /**
  * description
