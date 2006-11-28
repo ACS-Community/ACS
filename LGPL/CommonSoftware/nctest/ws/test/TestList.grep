@@ -12,6 +12,10 @@ ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
 LogConfig was initialized, but not from CDB settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+www.jacorb.org
+The JacORB project
+\[jacorb@
 java -classpath
 Logging to ACS log server.
 RTContext:
@@ -26,20 +30,15 @@ lcuboot: open
 DAL root is
 java -classpath
 Time:
-XTRADYNE Technologies
-www.jacorb.org
 Connected to
 ACS abeans configuration directory:
 Using naming reference
 Retrying to connect to
 Abnormal connection termination
-POA RootPOA
-POA ManagerPOA
 Disconnected.
 export
 Local file logger
 offshoot
-alma.acs.component.client.ComponentClient
 StaticMethodLogger
 alma.nctest.FridgeConsumer
 Segmentation fault
@@ -49,9 +48,6 @@ Traceback \(most recent call last\)
 TypeError: 'NoneType' object is not callable
 Aborted
 terminate called after throwing an instance of 'omni_thread_fatal'
-\[jacorb\.poa\] INFO : Using server ID
-\[jacorb\.poa\] INFO : oid:
-\[jacorb\.poa\] INFO : POA
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 object is activated
 object is deactivated
