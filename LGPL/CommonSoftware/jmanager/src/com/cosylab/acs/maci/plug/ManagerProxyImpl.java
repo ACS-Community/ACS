@@ -869,7 +869,7 @@ public class ManagerProxyImpl extends ManagerPOA
 		}
 		catch (AcsJNoPermissionEx npe)
 		{
-			reportException(npe);
+			//reportException(npe);
 
 			// rethrow adding context
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx(npe);
@@ -954,7 +954,7 @@ public class ManagerProxyImpl extends ManagerPOA
 		} 
 		catch (AcsJNoPermissionEx npe)
 		{
-			reportException(npe);
+			//reportException(npe);
 
 			// rethrow CORBA specific
 			throw npe.toNoPermissionEx();
