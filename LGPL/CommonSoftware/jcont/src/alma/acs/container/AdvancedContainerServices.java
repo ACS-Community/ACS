@@ -45,7 +45,7 @@ public interface AdvancedContainerServices {
 	 * <p>
 	 * <b>Normal subsystem components must not use this method!</b> If they feel they should get access to the ORB, 
 	 * either ACS is missing a feature which should be reported, or there is a misunderstanding in how to develop software for Alma.
-	 * @return the ORB that connects the container and its componentsfor with other processes.
+	 * @return the ORB that connects the container and its components with other processes.
 	 */
 	public ORB getORB();
 	
@@ -66,6 +66,10 @@ public interface AdvancedContainerServices {
     /**
      * Returns a reference to a new CORBA Any. Int Java the only way to do 
      * this is through the ORB itself (i.e., the create_any method).
+     * <p>
+     * The notification channel module provides a convenience class for dealing with CORBA Anys,
+     * see {@link @see alma.acs.nc.AnyAide}.
+     * 
      * @return org.omg.CORBA.Any
      */
     public org.omg.CORBA.Any getAny();
