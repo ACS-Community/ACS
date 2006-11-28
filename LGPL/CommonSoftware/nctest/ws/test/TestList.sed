@@ -1,5 +1,5 @@
 s/The temperature difference is [-,0-9,e,E,+,.]*$/The Python temperature difference is ---/g
-s/The temp difference is:[-,0-9,e,E,+,.]*$/The Java temperature difference is ---/g
+s/The temp difference is: [-,0-9,e,E,+,.]*$/The Java temperature difference is ---/g
 s/::myHandlerFunction(...): [0-9,e,E,-,+,.]* is the tempdiff.$/The C++ temperature difference is ---/g
 s/instance at 0x[0-9,a-z,A-Z]*/instance at 0x----/g
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]/----------T--:--:--.---/g
