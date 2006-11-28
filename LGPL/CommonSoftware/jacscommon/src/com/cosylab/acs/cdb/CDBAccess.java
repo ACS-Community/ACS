@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -28,11 +28,6 @@ import com.cosylab.cdb.jdal.XMLHandler;
 import org.omg.CORBA.ORB;
 import org.xml.sax.InputSource;
 
-import abeans.core.Identifiable;
-import abeans.core.Identifier;
-import abeans.core.IdentifierSupport;
-import abeans.core.defaults.MessageLogEntry;
-import abeans.pluggable.RemoteException;
 import alma.acs.util.ACSPorts;
 
 /**
@@ -42,7 +37,7 @@ import alma.acs.util.ACSPorts;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class CDBAccess implements Identifiable
+public class CDBAccess
 {
 
 	/**
@@ -91,20 +86,15 @@ public class CDBAccess implements Identifiable
 	private ORB orb = null;
 
 	/**
+	 * Logger.
+	 */
+	private Logger logger = null;
+
+	/**
 	 * Listener for CDB change.
 	 */
 	private ChangeListener changeListener = null;
 
-	/**
-	 * Debug flag.
-	 */
-	private boolean debug = true;
-
-	/**
-	 * Class identifier.
-	 */
-	private Identifier id = null;
-	
 	/**
 	 * This private class will handle CDB restart or data change in the CDB.
 	 * 
@@ -162,7 +152,7 @@ public class CDBAccess implements Identifiable
 						internalConnect(connectable);
 						break;
 					}
-					catch (RemoteException e)
+					catch (Throwable th)
 					{
 						// if we cannot reestablish connection the exception will report elsewhere
 					}
@@ -258,39 +248,17 @@ public class CDBAccess implements Identifiable
 	/**
 	 * Constructor.
 	 * @param orb 	CORBA ORB.
+	 * @param logger logger.
 	 */
-	public CDBAccess(ORB orb)
+	public CDBAccess(ORB orb, Logger logger)
 	{
 		assert (orb != null);
+		assert (logger != null);
 		this.orb = orb;
+		this.logger = logger;
 
 		readConfiguration();
 		changeListener = new ChangeListener();
-	}
-
-	/**
-	 * Returns identifier for this class.
-	 * 
-	 * @return the identifier object for this instance
-	 * @see 	abeans.core.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		if (id == null) {
-			id = new IdentifierSupport("CDB Access", "CDB Access", Identifier.PLUG);
-		}
-		return id;
-	}
-
-	/**
-	 * Returns the value of debug flag.
-	 * 
-	 * @return <code>true</code>
-	 * @see	#setDebug
-	 */
-	public boolean isDebug()
-	{
-		return debug;
 	}
 
 	/**
@@ -298,9 +266,8 @@ public class CDBAccess implements Identifiable
 	 * 
 	 * @param	curl	DAO curl, non-<code>null</code>
 	 * @return	DAO proxy.
-	 * @throws	RemoteException	if the connection fails
 	 */
-	public DAOProxy createDAO(String curl) throws RemoteException
+	public DAOProxy createDAO(String curl) 
 	{
 		DAOProxy proxy = new DAOProxy(curl);
 		internalConnect(proxy);
@@ -313,7 +280,7 @@ public class CDBAccess implements Identifiable
 	 * @param	proxy	the proxy to connect, non-<code>null</code>
 	 * @throws	RemoteException	if the connection fails
 	 */
-	private void internalConnect(DAOProxy proxy) throws RemoteException
+	private void internalConnect(DAOProxy proxy) 
 	{
 
 		String curl = null;			
@@ -323,9 +290,8 @@ public class CDBAccess implements Identifiable
 			checkDALConnection();
 		}
 		catch (Throwable th) {
-			RemoteException re = new RemoteException(this, "Failed to obtain DAO for proxy '" + proxy + "'.", th);
-			re.putValue("proxy", proxy);
-			re.caughtIn(this, "internalConnect");
+			// TODO @todo replace
+			RuntimeException re = new RuntimeException("Failed to obtain DAO for proxy '" + proxy + "'.", th);
 			throw re;
 		}
 		
@@ -371,9 +337,8 @@ public class CDBAccess implements Identifiable
 			
 		} catch (Throwable th)
 		{
-			RemoteException re = new RemoteException(this, "Failed to obtain DAO object for proxy '" + proxy + "'.", th);
-			re.putValue("dalReference", dalReference);
-			re.caughtIn(this, "internalConnect");
+			// TODO @todo replace
+			RuntimeException re = new RuntimeException("Failed to obtain DAO object for proxy '" + proxy + "'.", th);
 			throw re;
 		}
 			
@@ -382,46 +347,44 @@ public class CDBAccess implements Identifiable
 			proxy.initialize(dao);
 		} catch (Throwable th)
 		{
-			RemoteException re = new RemoteException(this, "The proxy '" + proxy + "' rejects the DAO.", th);
-			re.putValue("proxy", proxy);
-			re.caughtIn(this, "internalConnect");
+			// TODO @todo replace
+			RuntimeException re = new RuntimeException("The proxy '" + proxy + "' rejects the DAO.", th);
 			throw re;
 		}
 
-		if (isDebug())
-			new MessageLogEntry(this, "internalConnect", "Connected to DAO '" + proxy.getCURL() + "'.", Level.CONFIG).dispatch();
+		logger.config("Connected to DAO '" + proxy.getCURL() + "'.");
 
 	}
 
 	/**
 	 * Checks connection status (if already connected) and connects if necessary.
-	 * @throws RemoteException
 	 */
-	private void checkDALConnection() throws RemoteException {
+	private void checkDALConnection() {
 		try
 		{
 			
 			if (dalReference == null)
 			{
 
-				if (isDebug())
-					new MessageLogEntry(this, "checkDALConnection", "Connecting to DAL '" + defaultDAL + "'...", Level.INFO).dispatch();
+				logger.info("Connecting to DAL '" + defaultDAL + "'...");
 		
 				// connect to DAL
 				dalReference = DALHelper.narrow(orb.string_to_object(defaultDAL));
 
 				if (dalReference == null)
-					throw new RemoteException(this, "Failed to connect to the DAL object with reference, got 'null' reference.");
+					// TODO @todo replace
+					throw new RuntimeException("Failed to connect to the DAL object with reference, got 'null' reference.");
 					
-				if (isDebug())
-					new MessageLogEntry(this, "checkDALConnection", "Connected to DAL '" + defaultDAL + "'.", Level.INFO).dispatch();
+				logger.info("Connected to DAL '" + defaultDAL + "'.");
 
 			}
 
 		} catch (Throwable th)
 		{
-			RemoteException re = new RemoteException(this, "Failed to connect to the DAL object with reference '" + defaultDAL + "'.", th);
-			re.caughtIn(this, "checkDALConnection");
+			logger.info("Failed to connect to DAL '" + defaultDAL + "'.");
+
+			// TODO @todo replace
+			RuntimeException re = new RuntimeException("Failed to connect to the DAL object with reference '" + defaultDAL + "'.", th);
 			throw re;
 		}
 	}
@@ -430,9 +393,8 @@ public class CDBAccess implements Identifiable
 	 * Sets the DAO of the proxy to <code>null</code>
 	 * 
 	 * @param	proxy	the proxy to disconnect, non-<code>null</code>
-	 * @throws	RemoteException	never thrown explicitly by this method
 	 */
-	private void internalDisconnect(DAOProxy proxy) throws RemoteException
+	private void internalDisconnect(DAOProxy proxy) 
 	{
 		assert (proxy != null);
 		
@@ -502,7 +464,7 @@ public class CDBAccess implements Identifiable
 		if(changeListener != null)
 			changeListener.destroy();
 		
-		// TODO should DAOProxies be destroyed too?
+		// TODO @todo should DAOProxies be destroyed too?
 	}
 	
 	/**
