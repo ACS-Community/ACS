@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.logging.Level;
@@ -315,7 +316,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 	 */
 	private void notifyContainerShutdownOrder(ContainerInfo containerInfo, int[] handles)
 	{
-			
+		
 		/**
 		 * Task thats invokes <code>Container#shutdown</code> method.
 		 */		
@@ -352,8 +353,12 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 
 
 		// spawn new task which surely does not block
-		threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
-		
+		try
+		{
+			threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
+		} catch (RejectedExecutionException ree) {
+			// noop (threadPool) most likely in shutdown state
+		}
 	}
 
 }
