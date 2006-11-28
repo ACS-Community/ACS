@@ -22,6 +22,7 @@
 package alma.acs.entityutil;
 
 import java.io.StringReader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.exolab.castor.xml.Unmarshaller;
@@ -108,12 +109,20 @@ public class EntityDeserializer
 	 * @param xmlString  the stringified xml. 
 	 * @param entityClass  the binding class of which we want an instance
 	 *                      filled with the xml data.
-	 * @param timestamp 
+	 * @param timestamp  the timestamp to be stored in the entity object, for later serialization.
 	 * @return  the binding class instance (should be casted by the caller).
+	 * @throws EntityException if the binding class instance can't be constructed from the xml. 
+	 *         Note that this exception is only logged at FINER level by this method, so make sure to log it appropriately.
 	 */
 	private Object deserializeEntity(String xmlString, Class entityClass, String timestamp)
 	throws EntityException
 	{
+		if (xmlString == null) 
+			throw new EntityException("xmlString was null.");
+			
+		if (entityClass == null) 
+			throw new EntityException("entityClass was null.");
+			
 		if (timestamp == null)
 			timestamp = "";
 		
@@ -127,9 +136,9 @@ public class EntityDeserializer
 		}
 		catch (Exception e)
 		{
-			String msg = "failed to parse serialized entity using binding class " + 
-			entityClass.getName();
-			m_logger.severe(msg);
+			String xmlStringStart = xmlString.substring(0, Math.min(512, xmlString.length())); // trim huge xml to avoid overly long log message
+			String msg = "Failed to parse xml into entity binding class '" + entityClass.getName() + "'. The xml data was " + xmlStringStart;
+			m_logger.log(Level.FINER, msg, e);
 			throw new EntityException(msg, e);
 		}
 		
