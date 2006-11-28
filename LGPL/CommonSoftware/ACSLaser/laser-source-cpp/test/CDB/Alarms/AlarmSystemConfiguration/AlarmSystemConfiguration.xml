@@ -3,4 +3,3 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
 	<configuration-property name="Implementation">CERN</configuration-property>
 </alarm-system-configuration>
-
