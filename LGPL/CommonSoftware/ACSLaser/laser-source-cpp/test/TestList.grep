@@ -15,6 +15,7 @@ StaticMethodLogger
 testFaultState
 testASIMessage
 hunk
+Hunk
 patch
 GlobalLogger
 Unavailable
