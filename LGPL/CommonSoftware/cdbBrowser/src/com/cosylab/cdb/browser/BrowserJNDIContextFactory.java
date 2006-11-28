@@ -46,7 +46,7 @@ public class BrowserJNDIContextFactory implements InitialContextFactory {
 	String[] argv = {};
 	ORB orb = ORB.init(argv, null);
 	
-	JDAL dal = JDALHelper.narrow(orb.string_to_object(strIOR));
+	DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 	
 	BrowserJNDIContext.setOrb(orb);
 	BrowserJNDIContext.setDal(dal);

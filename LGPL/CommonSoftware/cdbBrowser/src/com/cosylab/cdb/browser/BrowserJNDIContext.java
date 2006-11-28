@@ -37,7 +37,7 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
      * Sets the dal.
      * @param dal The dal to set
      */
-    public static void setDal(JDAL dal) {
+    public static void setDal(DAL dal) {
 	BrowserJNDIContext.dal = dal;
 	CDBLogic.setDAL(dal);
     }

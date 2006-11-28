@@ -41,13 +41,18 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
     /**
      *  Instance of the DAL server.
      */
-    private static JDAL dal;
+    private static DAL dal;
 
-	/**
-	 *  Reference to writable DAL interface if it is implemented by DAL
-	 */
-	static WDAL wdal = null;
+    /**
+     *  Reference to writable DAL interface if it is implemented by DAL
+     */
+    private static WDAL wdal = null;
 	
+    /**
+     *  Reference to JDAL interface if it is implemented by DAL
+     */
+    private static JDAL jdal = null;
+
     /**
      *  The string is used as a key for the hashMaps used to store the components.
      *  String is the full tree paht of the component.
@@ -186,16 +191,25 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
     /**
      *  Set the DAL server.
      */
-    public static void setDAL(JDAL dal){
+    public static void setDAL(DAL dal){
 	CDBLogic.dal = dal;
-		// check if it is writable DAL 
-		try {
-			wdal = WDALHelper.narrow(dal);
-		}
-		catch(Exception e) {
-			// no op
-		}
-    }
+	// check if it is writable DAL 
+	try {
+		wdal = WDALHelper.narrow(dal);
+	}
+	catch(Exception e) {
+		// no op
+	}
+		
+	// check if it is writable DAL 
+	try {
+		jdal = JDALHelper.narrow(dal);
+	}
+	catch(Exception e) {
+		// no op
+	}
+    
+     }
 
     /**
      *  Sets the key of all hash maps used to store the data.
@@ -529,11 +543,13 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
      *
      */
     public static void clearCache(){
-	if(dal instanceof JDAL){
-	    dal.clear_cache_all();
+	if(jdal != null){
+	    jdal.clear_cache_all();
 	    Browser.getInstance().display("MESSAGE: Clear Cache executed sucessfully", true);
-	}else
+	}else{
+	    
 	    Browser.getInstance().display("==> ERROR MESSAGE: Clear Cache was not executed.", true);
+	}
     }
 
     /**
