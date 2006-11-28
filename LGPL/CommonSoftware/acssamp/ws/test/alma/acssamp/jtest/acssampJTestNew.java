@@ -21,9 +21,6 @@ public class acssampJTestNew extends ComponentClient
 	    consumer = new acssampConsumerNew(ncChannel, csrv);
 	    try
 		{
-		//After consumerReady() is invoked, push_structured_event(...) is invoked
-		//by the notification channel.  That is, we have no control over when
-		//that method is called.
 		consumer.ready();
 		System.out.println("Waiting for events...");
 		}
@@ -45,12 +42,10 @@ public class acssampJTestNew extends ComponentClient
 		}
 	    
 	    String clientName = "acssampJTest1";
-	    double d;
 	    try
 		{
 		acssampJTestNew test = new acssampJTestNew(managerLoc, clientName);
-		for(long i = 0; i < 100000000; i++)
-		    d = i + i - (i/2.4);
+		Thread.sleep(10000);
 		}
 	    catch (Exception e)
 		{

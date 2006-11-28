@@ -40,11 +40,12 @@ public class acssampConsumerNew {
 
     public void receive(alma.acssamp.SampObjPackage.SampDataBlockSeqHelper evt)
 	{
-	    System.out.println("EEEEEEEEEEEEEEEEEEEEE");
+	    System.out.println("acssampConsumerNew::receive");
 	}
 
     public void disconnect()
 	{
+	    System.out.println("acssampConsumerNew::disconnect");
 	    m_consumer.disconnect();
 	}
 
@@ -52,6 +53,7 @@ public class acssampConsumerNew {
 	{
 	    try
 		{
+		System.out.println("acssampConsumerNew::ready");
 		m_consumer.consumerReady();
 		}
 	    catch(Exception e)
@@ -72,8 +74,6 @@ public class acssampConsumerNew {
 	{
  	    m_consumer = new Consumer(ncChannel, cServices);
 	    m_consumer.addSubscription(alma.acssamp.SampObjPackage.SampDataBlockSeqHelper.class,this);
-
 	}
-    
-
+   
 }
