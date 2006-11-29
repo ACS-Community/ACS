@@ -400,8 +400,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             } else if (e.getSource()==LoggingClient.this.prefsMI) {
             	ExpertPrefsDlg dlg = new ExpertPrefsDlg(LoggingClient.this,userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
             	if (dlg.okPressed()) {
-            		userPreferences.setTimeFrame(dlg.getTimeFrame());
             		userPreferences.setMaxLogs(dlg.getMaxNumOfLogs());
+            		userPreferences.setTimeFrame(dlg.getTimeFrame());
+            		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
+            		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
             	}
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
@@ -532,6 +534,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	{
 		super();
 		initialize();
+		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
+		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
 		archive = new ArchiveConnectionManager(this);
 	}
 
@@ -1007,7 +1011,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         expertMenu.add(suspendMI);
         prefsMI = new JMenuItem("Preferences");
         prefsMI.addActionListener(eventHandler);
-        //expertMenu.add(prefsMI);
+        expertMenu.add(prefsMI);
         loggingClientJMenuBar.add(expertMenu);
     }
     
@@ -1063,7 +1067,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         discardLevelCB.setSelectedIndex(DEFAULT_DISCARDLEVEL+1);
         discardLevelCB.setEditable(false);
         discardLevelCB.setRenderer(discardRendererCB);
-        discardLevelCB.addActionListener(eventHandler);
         tbLevelPanel.add(discardLevelCB);
         
         pauseIcon=new ImageIcon(LogTypeHelper.class.getResource("/pause.png"));
@@ -2163,6 +2166,13 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	public void showDBStatus(ImageIcon icon,String msg) {
 		connectionDBLbl.setIcon(icon);
 		connectionDBLbl.setToolTipText(msg);
+	}
+	
+	/**
+	 * @return A reference to the preferences 
+	 */
+	public UserPreferences getPrefs() {
+		return userPreferences;
 	}
 	
 }
