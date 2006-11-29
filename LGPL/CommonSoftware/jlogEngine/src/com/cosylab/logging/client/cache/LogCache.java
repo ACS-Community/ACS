@@ -24,9 +24,10 @@ package com.cosylab.logging.client.cache;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -38,35 +39,54 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * 
  * The cache stores the logs into an HashMap using their index as key
  * 
+ * The cache stores an array of the times and level of the logs
+ * to speed up the sorting done by the table.
+ * 
  * @author acaproni
  *
  */
 public class LogCache extends LogBufferedFileCache {
 
+	/**
+	 * The name of the property to set the size of the cache.
+	 * This is the size oif the logs buffered by LogCache
+	 */
 	public static final String CACHESIZE_PROPERTY_NAME = "jlog.cache.size";
+	/**
+	 * The default size of the buffer of logs
+	 */
 	public static final int DEFAULT_CACHESIZE = 16384;
-
+	
+	
+	/**
+	 * The size of the buffer of logs
+	 */
 	private int actualCacheSize;
 	
 	/**
 	 * The logs are stored into an HashMap.
-	 * The key is the index of the log
+	 * The key is the index of the log.
+	 * This choice make inefficient the deletion of a log.
+	 * In fact when a log is removed, the logs having a greater position 
+	 * are shifted one position toward 0 (newPos=oldPos-1) but it is not 
+	 * possible to change the key of an entry in the HashMap.
+	 * 
 	 */
 	private HashMap<Integer,ILogEntry> cache;
 	
 	/**
 	 * The following list used to keep ordered the indexes
 	 * in such a way it is fast to insert/remove logs in the cache.
-	 * The indexes contained in this object are the indexes in the cache hashmap
-	 * and the size of the HashMap and the LinkedList is always the same.
+	 * The indexes contained in this object are the indexes in the cache TreeMap
+	 * and the size of the TreeMap and the ArrayBlockingQueue is always the same.
 	 * 
 	 * The functioning is the following:
 	 *  - new elements are added in the tail
 	 *  - old elemnts are removed from the head
 	 *  - whenever an elements is accessed it is moved of one position
-	 *    toward the tail reducing the canche to be removed
+	 *    toward the tail reducing the chance to be removed
 	 *    The moving operation is performed swapping the accessed elements
-	 *    with its neighbor 
+	 *    with its neighborhood
 	 */
 	private ArrayBlockingQueue<Integer> manager = null;
 	
@@ -74,14 +94,14 @@ public class LogCache extends LogBufferedFileCache {
 	 * The aray with the level of each log in the cache
 	 * (useful for setting the log level)
 	 */
-	private ArrayList<Integer> logTypes = new ArrayList<Integer>(256);
+	private HashMap<Integer,Integer> logTypes = new HashMap<Integer,Integer>();
 	
 	/**
-	 * The array with the timestamp of each log in the cache
-	 * (useful for sorting)
+	 * The times of the logs
+	 * Integer is the key of the log, Long is its timestamp
 	 */
-	private ArrayList<Long> logTimes = new ArrayList<Long>(256);
-		
+	private HashMap<Integer,Long> logTimes = new HashMap<Integer,Long>();
+	
 	/**
 	 * Build a LogCache object
 	 * 
@@ -90,53 +110,6 @@ public class LogCache extends LogBufferedFileCache {
 	 */
 	public LogCache() throws LogCacheException {
 		this(getDefaultCacheSize()); 
-	}
-	
-	/** 
-	 * Adds a log in the cache.
-	 * It does nothing because the adding is done by its parent class.
-	 * What it does is to store the level of the log in the array
-	 * 
-	 * @param log The log to add in the cache
-	 * @return The position of the added log in the cache
-	 * @throws LogCacheException If an error happened while adding the log
-	 */
-	public int add(ILogEntry log) throws LogCacheException {
-		int pos = super.add(log);
-		if (pos!=logTypes.size()) {
-			throw new LogCacheException("Inconsistent state of the logLevels array");
-		}
-		synchronized (logTypes) {
-			logTypes.add((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
-		}
-		synchronized (logTimes) {
-			logTimes.add(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime());
-		}
-		return pos;
-	}
-
-	/** 
-	 * 
-	 * @param pos The position of the log
-	 * @return The type of the log in the given position
-	 */
-	public int getLogType(int pos) {
-		if (pos<0 || pos>=logTypes.size()) {
-			throw new IndexOutOfBoundsException(""+pos+" is not in the array ["+0+","+logTypes.size()+"]");
-		}
-		return logTypes.get(pos);
-	}
-	
-	/** 
-	 * 
-	 * @param pos The position of the log
-	 * @return The timestamp of the log in the given position
-	 */
-	public long getLogTimestamp(int pos) {
-		if (pos<0 || pos>=logTypes.size()) {
-			throw new IndexOutOfBoundsException(""+pos+" is not in the array ["+0+","+logTypes.size()+"]");
-		}
-		return logTimes.get(pos);
 	}
 	
 	/**
@@ -152,9 +125,54 @@ public class LogCache extends LogBufferedFileCache {
 		}
 		actualCacheSize = size;
 		System.out.println("Jlog will use cache for " + actualCacheSize + " log records.");		
-		cache = new HashMap<Integer,ILogEntry>(actualCacheSize);
+		cache = new HashMap<Integer,ILogEntry>();
 		manager = new ArrayBlockingQueue<Integer>(actualCacheSize, true);
 		clear();
+	}
+	
+	/** 
+	 * Adds a log in the cache.
+	 * It does nothing because the adding is done by its parent class.
+	 * What it does is to store the level and time of the log in the arrays
+	 * 
+	 * @param log The log to add in the cache
+	 * @return The key of the added log in the cache
+	 * @throws LogCacheException If an error happened while adding the log
+	 */
+	public synchronized int add(ILogEntry log) throws LogCacheException {
+		int key = super.add(log);
+		synchronized (logTypes) {
+			logTypes.put(key,((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE)));
+		}
+		synchronized (logTimes) {
+			logTimes.put(new Integer(key),new Long(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime()));
+		}
+		return key;
+	}
+
+	/** 
+	 * 
+	 * @param pos The key of the log
+	 * @return The type of the log with the given key
+	 */
+	public int getLogType(Integer key)  throws LogCacheException {
+		if (!logTypes.containsKey(key)) {
+			throw new LogCacheException("Error: getting the type of a deleted log "+key);
+		}
+		return logTypes.get(key);
+	}
+	
+	/** 
+	 * 
+	 * @param pos The key of the log
+	 * @return The timestamp of the log with the given key
+	 */
+	public long getLogTimestamp(Integer key) throws LogCacheException {
+		if (!logTimes.containsKey(key)) {
+			throw new LogCacheException("Error: getting the time of a deleted log "+key);
+		}
+		
+		return logTimes.get(key);
 	}
 	
 	/**
@@ -175,7 +193,7 @@ public class LogCache extends LogBufferedFileCache {
 	}
 	
 	/**
-	 * Return the log in the given position.
+	 * Return the log with the given key.
 	 * The method is synchronized because both the HashMap and
 	 * the LinkedList must be synchronized if there is a chance
 	 * to acces these objects from more then one thread in the same 
@@ -183,12 +201,15 @@ public class LogCache extends LogBufferedFileCache {
 	 * @see java.util.LinkedList
 	 * @see java.util.HashMap
 	 *  
-	 * @param pos The position of the log
+	 * @param pos The key of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public synchronized ILogEntry getLog(int pos) throws LogCacheException {
-		Integer position = new Integer(pos);
-		ILogEntry log = cache.get(position);
+	public synchronized ILogEntry getLog(int key) throws LogCacheException {
+		Integer position = new Integer(key);
+		ILogEntry log;
+		synchronized (cache) {
+			log = cache.get(position);
+		}
 		if (log!=null) {
 			// Hit! The log is in the cache
 			return log;
@@ -210,24 +231,25 @@ public class LogCache extends LogBufferedFileCache {
 		ILogEntry log = super.getLog(idx);
 		
 		// There is enough room in the lists?
-		if (cache.size()==actualCacheSize) {
-			// We need to create a room for the new element
-			try {
-				Integer itemToRemove = manager.take();
-				cache.remove(itemToRemove);
+		synchronized (cache) {
+			if (cache.size()==actualCacheSize) {
+				// We need to create a room for the new element
+				try {
+					Integer itemToRemove = manager.take();
+					cache.remove(itemToRemove);
+				}
+				catch(InterruptedException ex) {
+					throw new LogCacheException ("Interrupted while waiting to take from the Queue!");
+				}
 			}
-			catch(InterruptedException ex) {
-				throw new LogCacheException ("Interrupted while waiting to take from the Queue!");
-			}
+			// Add the log in the cache
+			cache.put(idx,log);
 		}
-		
-		// Add the log in the cache
-		cache.put(idx,log);
 		
 		// Append the index in the manager list
 		manager.add(idx);
 		
-		return log;
+		return log; 
 	}
 	
 	
@@ -236,10 +258,16 @@ public class LogCache extends LogBufferedFileCache {
 	 * 
 	 */
 	public synchronized void clear() throws LogCacheException {
-		cache.clear();
+		synchronized (cache) {
+			cache.clear();
+		}
 		manager.clear();
-		logTypes.clear();
-		logTimes.clear();
+		synchronized (logTypes) {
+			logTypes.clear();
+		}
+		synchronized (logTimes) {
+			logTimes.clear();
+		}
 		super.clear();
 	}
 	
@@ -272,17 +300,98 @@ public class LogCache extends LogBufferedFileCache {
 				cal.setTimeInMillis(0);
 				return cal;
 			}
-			for (int t=0; t<len; t++) {
-				long val = logTimes.get(t);
-				if (val>max) {
-					max=val;
+			Collection<Long> times = logTimes.values();
+			for (Long time : times) {
+				if (time>max) {
+					max=time;
 				}
-				if (val<min) {
-					min=val;
+				if (time<min) {
+					min=time;
 				}
 			}
 		}
 		cal.setTimeInMillis(max-min);
 		return cal;
 	}
+	
+	/**
+	 * Delete a log with the given key
+	 * 
+	 * @param pos The key of the log to delete
+	 */
+	public synchronized void deleteLog(Integer key) throws LogCacheException {
+		synchronized (cache) {
+			if (cache.containsKey(key)) {
+				cache.remove(key);
+				manager.remove(key);
+			}
+		}
+		synchronized (logTimes) {
+			logTimes.remove(key);
+		}
+		synchronized (logTypes) {
+			logTypes.remove(key);
+		}
+		super.deleteLog(key);
+	}
+	
+	/**
+	 * Delete a collection of logs
+	 * 
+	 * @param keys The keys of the logs to delete
+	 */
+	public synchronized void deleteLogs(Collection<Integer> keys) {
+		for (Integer key: keys) {
+			synchronized(cache) {
+				if (cache.containsKey(key)) {
+					cache.remove(key);
+					manager.remove(key);
+				}
+			}
+			synchronized (logTimes) {
+				logTimes.remove(key);
+			}
+			synchronized (logTypes) {
+				logTypes.remove(key);
+			}
+		}
+		super.deleteLogs(keys);
+	}
+	
+	/**
+	 * Returns a set of number of logs (i.e. their position in cache)
+	 * exceeding the given time frame.
+	 * This operation is quite slow because it requires a double scan of the 
+	 * logTimes array
+	 * 
+	 * @param timeframe The time frame to check in millisecond
+	 * @return A collection of number of logs exceedding the given timeframe
+	 */
+	public synchronized Collection<Integer> getLogExceedingTimeFrame(long timeframe) {
+		// Look for the newest log
+		// We can't assume the oldest is the latest inserted log because the user
+		// is allowed to load logs from different sources at any time. 
+		long newestTime=-1;
+		Collection<Long> times;
+		synchronized (logTimes) {
+			times = logTimes.values();
+			for (Long time: times) {
+				if (time>newestTime) {
+					newestTime=time;
+				}
+			}
+		}
+		long limit = newestTime-timeframe;
+		ArrayList<Integer>ret = new ArrayList<Integer>();
+		synchronized (logTimes) {
+			Set<Integer> keys = logTimes.keySet();
+			for (Integer key: keys) {
+				if (logTimes.get(key)>limit) {
+					ret.add(key);
+				}
+			}
+		}
+		return ret;
+	}
+	
 }

@@ -24,9 +24,13 @@ package com.cosylab.logging.client.cache;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -36,15 +40,20 @@ import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 /**
  * This class implements the cache in order to be able to manage
  * long log files.
- * It is implemented by a file of logs and an index of 
- * integers for each log entry in the file.
+ * It is implemented by a file of logs and a data structure to associate
+ * the position in a file (LogCacheInfo) to each log.
+ * Such data structure is realized by a TreeMap whith the key given by the (progressive,
+ * unique) number of a log.
+ * Whenever a log is deleted, it is moved from the index into the deletedLog data 
+ * structure and marked as deleted. 
  * 
- * Actually it is not possible to remove a log from the file. It is possible to delete
- * a log from the index with the effect that the application "sees" less logs then those
- * on disk.
+ * Actually it is not possible to remove a log from the file. 
  * To effectively delete logs from disk we need some kind of garbage collector that
  * removes the logs marked as delete from the file.
  * This garbage collector is needed to avoid the file on disk grows indefinitely.
+ * 
+ * Another potential problem is given by the integer identifier of the logs that 
+ * grows indefinitely. A temporary solution could be that of using long instad of integers.
  * 
  * @author acaproni
  *
@@ -60,11 +69,17 @@ public class LogFileCache {
 	 *
 	 */
 	protected class LogCacheInfo {
-		// starting position in the file
+		/**
+		 * Starting position in the file
+		 */ 
 		public long start; 
-		// ending position in the file
+		/**
+		 * Ending position in the file
+		 */ 
 		public long end;
-		// true if the log has been deleted from cache
+		/**
+		 * true if the log has been deleted from the cache
+		 */
 		public boolean deleted;
 		
 		/**
@@ -115,9 +130,23 @@ public class LogFileCache {
 	// are stored in the index)
 	protected RandomAccessFile file=null;
 	
-	// The index is an array of integer that stores the starting
-	// position of each log entry in the logFile
-	protected Vector<LogCacheInfo> index = new Vector<LogCacheInfo>(256,16);
+	// Each log is identified by a unique integer used as key to get the 
+	// log from the file (throw the index data structure)
+	// logID is incremented whenever a new log is added
+	//
+	// NOTE: in this implementation this value is incremented without taking
+	//       care of the logs deleted.
+	protected int logID=0;
+	
+	// The index of the log is a SortedMap havink the number identifying a log as key.
+	// Each entry is a LogCacheInfo containing the starting and ending position
+	// of the log in the file
+	protected TreeMap<Integer,LogCacheInfo> index = new TreeMap<Integer,LogCacheInfo>();
+	
+	// The deleted logs
+	// These logs are marked as deleted and will be definitely removed from the file by
+	// the garbage collector
+	protected TreeMap<Integer,LogCacheInfo> deletedLogIndex = new TreeMap<Integer,LogCacheInfo>();
 	
 	private StringBuilder sb=new StringBuilder();
 	private final String SEPARATOR = new String (""+((char)0));
@@ -142,14 +171,26 @@ public class LogFileCache {
 	
 	/**
 	 * 
-	 * @return The total number of logs in cache
+	 * @return The number of logs in cache
 	 */
-	public int getSize() {
+	public synchronized int getSize() {
 		int size;
 		synchronized(index) {
 			size=index.size();
 		}
 		return size;
+	}
+	
+	/**
+	 * 
+	 * @return The number of deleted logs
+	 */
+	public int getDeletedSize() {
+		int ret;
+		synchronized (deletedLogIndex) {
+			ret = deletedLogIndex.size();
+		}
+		return ret;
 	}
 	
 	/**
@@ -165,12 +206,18 @@ public class LogFileCache {
 			file = new RandomAccessFile(getFile(),"rw");
 		}
 		file.setLength(0);
-		// Clear the file to create the index
+		// Clear the index
 		synchronized(index) {
 			index.clear();
 		}
 		// Clear the map of the replaced logs
-		replacedLogs.clear();
+		synchronized(replacedLogs) {
+			replacedLogs.clear();
+		}
+		// Clear the deleted logs
+		synchronized (deletedLogIndex) {
+			deletedLogIndex.clear();
+		}
 	}
 	
 	/**
@@ -217,7 +264,7 @@ public class LogFileCache {
 	
 	
 	/**
-	 * Empty the cache reausing the same file
+	 * Empty the cache reusing the same file
 	 *
 	 */
 	public void clear() throws LogCacheException {
@@ -238,7 +285,7 @@ public class LogFileCache {
 	 * 
 	 * @throws IOException
 	 */
-	public void clear(boolean newFile, boolean keepOldFile) throws LogCacheException {
+	public synchronized void clear(boolean newFile, boolean keepOldFile) throws LogCacheException {
 		if (file==null) {
 			synchronized(index) {
 				index.clear();
@@ -262,6 +309,7 @@ public class LogFileCache {
 				throw new LogCacheException("Error initing the cache",ioe);
 			}
 		}
+		logID=0;
 	}
 	
 	/**
@@ -272,8 +320,7 @@ public class LogFileCache {
 	 * @return A String representing the log in the given position 
 	 */
 	private String getLogAsString(int idx) {
-		//System.out.println("getLogAsString("+idx+")");
-		if (idx<0 || idx>=getSize()) {
+		if (idx<0 || idx>=logID) {
 			throw new IndexOutOfBoundsException("Index out of bounds: "+idx);
 		}
 		
@@ -311,12 +358,26 @@ public class LogFileCache {
 	 * @param pos The position of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public ILogEntry getLog(int pos) throws LogCacheException {
-		// Check if the log is present in the list of the replaced logs
-		if (replacedLogs.containsKey(new Integer(pos))) {
-			return replacedLogs.get(new Integer(pos));
+	public synchronized ILogEntry getLog(Integer key) throws LogCacheException {
+		// Some check about the key
+		if (key<0 || key>=logID) {
+			throw new LogCacheException("Key "+key+" out of range [0,"+logID+"[");
 		}
-		String logStr = getLogAsString(pos); 
+		// Check if the log has been deleted
+		if (deletedLogIndex.containsKey(key)) {
+			throw new LogCacheException("Trying to access a deleted log "+key);
+		}
+		// Check if the log is in the index
+		if (!index.containsKey(key)) {
+			throw new LogCacheException("A log with the given key ("+key+") has not been found in the index");
+		}
+		// Check if the log is present in the list of the replaced logs
+		synchronized(replacedLogs) {
+			if (replacedLogs.containsKey(key)) {
+				return replacedLogs.get(key);
+			}
+		}
+		String logStr = getLogAsString(key); 
 		try {
 			return fromCacheString(logStr); 
 		} catch (Exception e) {
@@ -329,9 +390,9 @@ public class LogFileCache {
 	 * Append a log to the end of the cache
 	 * 
 	 * @param log The log to append in the cache
-	 * @return The position in the cache of the added log
+	 * @return The key in the cache of the added log
 	 */
-	public int add(ILogEntry log) throws LogCacheException {
+	public synchronized int add(ILogEntry log) throws LogCacheException {
 		if (log==null) {
 			throw new LogCacheException("Trying to add a null log!");
 		}
@@ -349,9 +410,9 @@ public class LogFileCache {
 		}
 		LogCacheInfo info = new LogCacheInfo(startingPos, endingPos);
 		synchronized(index) {
-			index.add(info);
+			index.put(logID,info);
 		}
-		return index.size()-1;
+		return logID++;
 	}
 
 	/**
@@ -359,10 +420,15 @@ public class LogFileCache {
 	 * NOTE: the new log is kept in memory
 	 
 	 * @param position The position of the log to replace
-	 * @param log The new log
+	 * @param log The key (identifier) ot the log
 	 */
-	public void replaceLog(int position, ILogEntry log) {
-		replacedLogs.put(new Integer(position),log);
+	public void replaceLog(Integer key, ILogEntry log) throws LogCacheException {
+		if (!index.containsKey(key)) {
+			throw new LogCacheException("Trying to replace a log not in cache");
+		}
+		synchronized(replacedLogs) {
+			replacedLogs.put(key,log);
+		}
 	}
 	
 	protected String toCacheString(ILogEntry log) {
@@ -477,5 +543,131 @@ public class LogFileCache {
         		logmessage,
         		srcObject,
         		addDatas);
+	}
+	
+	/**
+	 * Delete a log
+	 * The log is marked as deleted and moved from the index to 
+	 * the deleteLogIndex.
+	 * The log still exists in the file but is not accessible.
+	 * 
+	 * @param pos The key of the log to remove
+	 */
+	public synchronized void deleteLog(Integer key) throws LogCacheException {
+		if (key<0 || key>=logID) {
+			throw new LogCacheException("Key "+key+" out of range [0,"+logID+"]");
+		}
+		if (deletedLogIndex.containsKey(key)) {
+			throw new LogCacheException("The log "+key+" has already been deleted!");
+		}
+		if (!index.containsKey(key)) {
+			throw new LogCacheException("the log "+key+" is not in cache");
+		}
+		LogCacheInfo info;
+		// Remove the log from the index
+		synchronized (index) {
+			info = index.get(key);
+			info.deleted=true;
+			index.remove(key);
+		}
+		// Remove the log from the replacedLogs
+		synchronized(replacedLogs) {
+			replacedLogs.remove(key);
+		}
+		// Add the log to the list of deleted logs
+		synchronized(deletedLogIndex) {
+			deletedLogIndex.put(key,info);
+		}
+	}
+	
+	/**
+	 * Delete a set of logs
+	 * 
+	 * @param keys The keys of logs to delete
+	 */
+	public synchronized void deleteLogs(Collection<Integer> keys) {
+		if (keys==null) {
+			throw new IllegalArgumentException("Invalid null parameter");
+		}
+		Iterator<Integer> iter = keys.iterator();
+		while (iter.hasNext()) {
+			Integer key=iter.next();
+			LogCacheInfo info;
+			// Remove the log from the index
+			synchronized (index) {
+				info = index.get(key);
+				info.deleted=true;
+				index.remove(key);
+			}
+			// Remove the log from the replacedLogs
+			synchronized(replacedLogs) {
+				replacedLogs.remove(key);
+			}
+			// Add the log to the list of deleted logs
+			synchronized(deletedLogIndex) {
+				deletedLogIndex.put(key,info);
+			}
+		}
+	}
+	
+	/**
+	 * Return the key of the first valid log (FIFO).
+	 * The key of the first log is 0 but it can change if the log 0 has
+	 * been deleted.
+	 * 
+	 * @return The key of the first log
+	 *         null if the cache is empty
+	 */
+	public Integer getFirstLog() {
+		synchronized(index) {
+			if (index.size()==0) {
+				return null;
+			} else {
+				return index.firstKey();
+			}
+		}
+	}
+	
+	/**
+	 * Append at most n keys from the first valid logs to the collection.
+	 * First here means first in the FIFO policy.
+	 * 
+	 * The number of added keys can be less then n if the cache doesn't
+	 * contain enough logs.
+	 * 
+	 * @param n The desired number of keys of first logs
+	 * @param keys The collection to add they keys to
+	 * @return The number of keys effectively added
+	 */
+	public int getFirstLogs(int n, Collection<Integer> keys) {
+		if (n<=0 || keys==null) {
+			throw new IllegalArgumentException("Invalid number of requested key or null collection");
+		}
+		int ret=0;
+		Set<Integer> allTheKeys = index.keySet();
+		Iterator<Integer> iter = allTheKeys.iterator();
+		while (iter.hasNext() && ret<n) {
+			keys.add(iter.next());
+			ret++;
+		}
+		return ret;
+	}
+	
+	/**
+	 * Return the key of the last valid log (FIFO)
+	 * The key of the last log is the key of the last inserted log
+	 * but it can cheang if such log has been deleted
+	 * 
+	 * @return The key of the last inserted log
+	 *         null if th cache is empty
+	 */
+	public Integer getLastLog() {
+		synchronized(index) {
+			if (index.size()==0) {
+				return null;
+			} else {
+				return index.lastKey();
+			}
+		}
 	}
 }
