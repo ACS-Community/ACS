@@ -45,6 +45,8 @@ import javax.swing.table.TableModel;
 import javax.swing.ListSelectionModel;
 import javax.swing. DefaultListSelectionModel;
 
+import alma.acs.logging.preferences.UserPreferences;
+
 import com.cosylab.logging.client.EntryTypeRenderer;
 import com.cosylab.logging.client.ExpandButtonRenderer;
 import com.cosylab.logging.client.InfoRenderer;
