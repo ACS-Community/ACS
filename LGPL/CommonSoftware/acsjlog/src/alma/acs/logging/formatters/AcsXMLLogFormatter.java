@@ -58,9 +58,8 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 	public String format(LogRecord logRecord)
 	{
 		// log level 
-		Level level = logRecord.getLevel();
-		AcsLogLevel acsLevel = AcsLogLevel.getNativeLevel(level);
-		if (level.equals(Level.OFF) || acsLevel == null) {
+		AcsLogLevel acsLevel = AcsLogLevel.getNativeLevel(logRecord.getLevel());
+		if (acsLevel == null) {
 			return "";
 		}		
 		final int acsCoreLevel = acsLevel.getAcsLevel();
