@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.75 2006/10/24 10:44:30 gchiozzi Exp $"
+* "@(#) $Id: acserr.h,v 1.76 2006/11/29 16:17:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -388,7 +388,7 @@ class ErrorTraceHelper
    * Moves to the first (top) errortrace element and return its pointer (not copy).
    * @return pointer to the errortrace structure
    */
-  ACSErr::ErrorTrace *top(){ m_current = &m_errorTraceRef; return m_current;}
+  ACSErr::ErrorTrace *top(){ m_current = m_errorTracePtr; return m_current;}
 
    /**
    * Gets reference to errortrace structure. User must take care for makeing copy of structure or should use method returnErrorTrace 
@@ -425,7 +425,8 @@ class ErrorTraceHelper
 
     void toString (ACSErr::ErrorTrace * c, int level, std::ostringstream& oss);
 
-    ACSErr::ErrorTrace& m_errorTraceRef;
+    ACSErr::ErrorTrace *m_errorTracePtr;
+//& m_errorTraceRef;
     ACSErr::ErrorTrace *m_current;
     unsigned int m_depth;
     

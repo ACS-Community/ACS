@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrACSbaseExImpl.cpp,v 1.6 2006/07/26 11:27:26 bjeram Exp $"
+* "@(#) $Id: acserrACSbaseExImpl.cpp,v 1.7 2006/11/29 16:17:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-02-17  created 
 */
 
-static char *rcsId="@(#) $Id: acserrACSbaseExImpl.cpp,v 1.6 2006/07/26 11:27:26 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrACSbaseExImpl.cpp,v 1.7 2006/11/29 16:17:43 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrACSbaseExImpl.h"
@@ -73,10 +73,10 @@ ACSbaseExImpl& ACSbaseExImpl::operator=(const ACSbaseExImpl &t)
 {
     if (this != &t )
 	{
-	m_errorTraceRef =  m_errorTrace;
-	m_current = &m_errorTraceRef;
+	m_errorTracePtr =  &m_errorTrace;
+	m_current = m_errorTracePtr;
 	}
     return *this;
-}
+}//operator=
 
 /*___oOo___*/
