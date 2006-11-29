@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.cpp,v 1.23 2006/11/21 02:07:55 cparedes Exp $"
+* "@(#) $Id: parameterTask.cpp,v 1.24 2006/11/29 23:09:51 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,12 +39,12 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 
-static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.23 2006/11/21 02:07:55 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.24 2006/11/29 23:09:51 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 XERCES_CPP_NAMESPACE_USE
 using namespace ACS;
-using namespace parameterSet;
+using namespace Parameters;
 using std::domain_error;
 using std::endl;
 using std::string;

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.h,v 1.10 2005/07/29 22:04:27 sharring Exp $"
+* "@(#) $Id: parameterTask.h,v 1.11 2006/11/29 23:09:51 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,7 +42,7 @@
 #include <ParamSetDef.h>
 #include <task.h>
 
-using parameterSet::ParamSetDef;
+using Parameters::ParamSetDef;
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
 
 namespace ACS 

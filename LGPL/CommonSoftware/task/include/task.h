@@ -36,7 +36,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-using parameterSet::ParameterSet;
+using Parameters::ParameterSet;
 
 namespace ACS 
 {

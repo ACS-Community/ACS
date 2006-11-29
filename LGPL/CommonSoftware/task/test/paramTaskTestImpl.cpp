@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: paramTaskTestImpl.cpp,v 1.7 2005/07/29 21:42:11 sharring Exp $"
+* "@(#) $Id: paramTaskTestImpl.cpp,v 1.8 2006/11/29 23:09:51 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <iostream>
 #include <iterator>
 
-using namespace parameterSet;
+using namespace Parameters;
 using std::cout;
 using std::endl;
 
@@ -65,7 +65,7 @@ void paramTaskTestImpl::go(ParameterSet& pset, const TaskServices& taskServices)
 			// test string param
 			StringParam testStringVal = pset.getStringParam(STRING_PARAM_NAME);
 			cout << STRING_PARAM_NAME << " was: " << testStringVal.getValue() << endl; 
-			StringParam strP("newstring", STRING_PARAM_NAME);
+			StringParam strP(STRING_PARAM_NAME, "newstring");
 			pset.setParam(STRING_PARAM_NAME, strP);
 			testStringVal = pset.getStringParam(STRING_PARAM_NAME);
 			cout << STRING_PARAM_NAME << " now: " << testStringVal.getValue() << endl << endl; 

@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskRunner.cpp,v 1.11 2005/07/29 21:42:11 sharring Exp $"
+* "@(#) $Id: taskRunner.cpp,v 1.12 2006/11/29 23:09:51 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <vector>
 
 using namespace maci;
-using namespace parameterSet;
+using namespace Parameters;
 using std::string;
 
 int main(int argc, char *argv[])
@@ -183,3 +183,4 @@ int main(int argc, char *argv[])
     return 0;
 
 }
+
