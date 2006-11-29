@@ -1,5 +1,12 @@
 package com.cosylab.logging;
 
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
@@ -14,6 +21,8 @@ import com.cosylab.logging.engine.log.LogEntryXML;
  * @see junit.framework.TestCase
  */
 public class CacheTest extends junit.framework.TestCase {
+	
+	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
 	
 	// The cahce to stress
 
@@ -73,13 +82,24 @@ public class CacheTest extends junit.framework.TestCase {
 		ACSLogParser parser = new ACSLogParserDOM();
 		String logMsg = "Test log nr. ";
 		
+		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
+		SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
 		
 		cache.clear();
 		long logToInsert = 2*cache.getCacheSize(); 
 		for (int t=0; t<logToInsert; t++) {
+			Date dt = new Date(now+t*1000);
+			StringBuffer dateSB = new StringBuffer();
+			FieldPosition pos = new FieldPosition(0);
+			df.format(dt,dateSB,pos);
+			
 			String newLogMsg=logMsg+"t";
-			String logStr = "<Info TimeStamp=\"2005-11-29T15:33:09.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+newLogMsg+"]]></Info>";
-			ILogEntry newLog = parser.parse(logStr);
+			StringBuilder logStr = new StringBuilder("<Info TimeStamp=\"");
+			logStr.append(dateSB.toString());
+			logStr.append("\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[");
+			logStr.append(newLogMsg);
+			logStr.append("]]></Info>");
+			ILogEntry newLog = parser.parse(logStr.toString());
 			cache.add(newLog);
 		}
 		return logToInsert;
@@ -181,6 +201,111 @@ public class CacheTest extends junit.framework.TestCase {
 			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(ILogEntry.FIELD_LOGMESSAGE));
 			ILogEntry posLog = cache.getLog(pos);
 			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(ILogEntry.FIELD_LOGMESSAGE));
+		}
+	}
+	
+	/**
+	 * Check the calculation of the time frame 
+	 * 
+	 * @throws Exception
+	 */
+	public void testTimeFrameCalc() throws Exception {
+		ACSLogParser parser = new ACSLogParserDOM();
+		// Create some logs with a time frame of 10sec
+		String logStr1 = "<Info TimeStamp=\"2005-11-29T15:33:10.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test1]]></Info>";
+		String logStr2 = "<Info TimeStamp=\"2005-11-29T15:33:20.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test2]]></Info>";
+		String logStr3 = "<Info TimeStamp=\"2005-11-29T15:33:15.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test3]]></Info>";
+		String logStr4 = "<Info TimeStamp=\"2005-11-29T15:33:12.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test4]]></Info>";
+		cache.clear();
+		cache.add(parser.parse(logStr1));
+		cache.add(parser.parse(logStr2));
+		cache.add(parser.parse(logStr3));
+		cache.add(parser.parse(logStr4));
+		Calendar cal=cache.getTimeFrame();
+		assertEquals("The time frame is wrong",10*1000,cal.getTimeInMillis());
+	}
+	
+	/**
+	 * Check if the method returning the logs exceeding the time frame is
+	 * working as expected.
+	 * 
+	 * @throws Exception
+	 */
+	public void testLogExceedingTimeFrame() throws Exception {
+		ACSLogParser parser = new ACSLogParserDOM();
+		// Create some logs 
+		// The important fields here are the times (we'll test against a time frame of 30 secs)
+		// It is also important the message that is used to check wich messages
+		// are added in the collection and which not
+		String logStr1 = "<Info TimeStamp=\"2005-11-29T15:33:55.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test1]]></Info>";
+		String logStr2 = "<Info TimeStamp=\"2005-11-29T15:33:20.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test2]]></Info>";
+		String logStr3 = "<Info TimeStamp=\"2005-11-29T15:33:10.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test3]]></Info>";
+		String logStr4 = "<Info TimeStamp=\"2005-11-29T15:34:15.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test4]]></Info>";
+		String logStr5 = "<Info TimeStamp=\"2005-11-29T15:33:12.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test5]]></Info>";
+		String logStr6 = "<Info TimeStamp=\"2005-11-29T15:34:05.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test6]]></Info>";
+		String logStr7 = "<Info TimeStamp=\"2005-11-29T15:34:15.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test7]]></Info>";
+		String logStr8 = "<Info TimeStamp=\"2005-11-29T15:34:10.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test8]]></Info>";
+		String logStr9 = "<Info TimeStamp=\"2005-11-29T15:33:25.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test9]]></Info>";
+		cache.clear();
+		cache.add(parser.parse(logStr1));
+		cache.add(parser.parse(logStr2));
+		cache.add(parser.parse(logStr3));
+		cache.add(parser.parse(logStr4));
+		cache.add(parser.parse(logStr5));
+		cache.add(parser.parse(logStr6));
+		cache.add(parser.parse(logStr7));
+		cache.add(parser.parse(logStr8));
+		cache.add(parser.parse(logStr9));
+		assertEquals("Wrong cache size",9,cache.getSize());
+		// An array of boolean: the items marked as true should appear in the Collection
+		boolean[] b = {
+			true,
+			false,
+			false,
+			true,
+			false,
+			true,
+			true,
+			true,
+			false };
+		// Get the logs exceeding a time frame of 30 secs 
+		Collection<Integer> logs = cache.getLogExceedingTimeFrame(30*1000);
+		assertEquals("Wrong number of logs exceeding time frame",5,logs.size());
+		// Check if the logs returned by getLogExceedingTimeFrame are ok
+		boolean[] returned = new boolean[9];
+		for (int t=0; t<returned.length; t++) {
+			returned[t]=false; // Init all as false
+		}
+		// Mark as true the logs in the Collection
+		for (Integer logN: logs) {
+			ILogEntry log = cache.getLog(logN);
+			String msg = (String)log.getField(ILogEntry.FIELD_LOGMESSAGE);
+			msg=msg.replaceFirst("Test","");
+			Integer pos = Integer.parseInt(msg);
+			returned[pos-1]=true;
+		}
+		// Compare the expected array (b) with the returned values (returned)
+		for (int t=0; t<b.length; t++) {
+			assertEquals("The log "+t+" is/isn't in the Collection of logs",b[t],returned[t]);
+		}
+	}
+	
+	public void testGetFirstLog() throws Exception {
+		Integer firstLog = cache.getFirstLog();
+		assertEquals("The key of the first log is wrong",firstLog,new Integer(0));
+	}
+	
+	public void testGetLastLog() throws Exception {
+		Integer lastLog=cache.getLastLog();
+		assertEquals("The key of the last log is wrong",lastLog,new Integer((int)logsGenerated-1));
+	}
+	
+	public void testGetLogs() throws Exception {
+		ArrayList<Integer> keys = new ArrayList<Integer>();
+		int n = cache.getFirstLogs(1024,keys);
+		assertEquals("Wrong number of keys",1024,n);
+		for (Integer t=0; t<1024; t++) {
+			assertEquals("Wrong key",t,keys.get(t));
 		}
 	}
 }
