@@ -1415,9 +1415,6 @@
 1 - Thread: NNNmain
 1 - Log Message: Test message 99
 1 - 
-1 - Status msg received: Disconnecting from ACS remote access...
-1 - Status msg received: Disonnected from ACS remote access.
-1 - Connection disconnected
 2 - ----------T--:--:--.--- [GlobalLogger] Logging proxy successfully created.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to XXXXXX
 2 - ----------T--:--:--.--- [GlobalLogger] ManagerReference generated using localhost address: 'corbaloc::xxxxxxx:yyyy/Manager'
