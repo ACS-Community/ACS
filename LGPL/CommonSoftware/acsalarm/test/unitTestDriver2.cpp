@@ -82,8 +82,8 @@
 #endif 
  
 XERCES_CPP_NAMESPACE_USE
-using parameterSet::acsDOMErrorHandler;
-using parameterSet::StrX;
+using ParameterSet::acsDOMErrorHandler;
+using ParameterSet::StrX;
 using acsalarm::FaultState;
 using acsalarm::ASIMessage;
 
