@@ -106,7 +106,7 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
             return; // or throw an exc. 
         }
         
-		if (!isLoggable(logRecord)) {
+		if (!isLoggable(logRecord) || logRecord.getLevel().intValue() == Level.OFF.intValue()) { // abusing Level.OFF for a log call is not caught by the JDK!
             if (DEBUG) {
                 System.out.println("AcsLoggingHandler: ignoring record with msg='" + logRecord.getMessage() + 
                         "' because isLoggable() was false.");            
