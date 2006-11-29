@@ -26,6 +26,8 @@ public class StatsDlg extends JDialog
 	implements ActionListener {
 	
 	private JLabel totNumOfLogsLbl = new JLabel("N/A");
+	private JLabel visibleLogsLbl  = new JLabel("N/A");
+	private JLabel hiddenLogsLbl = new JLabel("N/A");
 	private JLabel availMemLbl = new JLabel("N/A");
 	private JLabel usedMemLbl = new JLabel("N/A");
 	private JLabel timeFrameLbl = new JLabel("N/A");
@@ -61,13 +63,25 @@ public class StatsDlg extends JDialog
 		this.setBounds(50, 35, 100, 100);
 		JPanel mainPnl = new JPanel(new BorderLayout());
 		
-		JPanel valuesPnl = new JPanel(new GridLayout(4,1));
+		JPanel valuesPnl = new JPanel(new GridLayout(6,1));
 		
 		// Add the num of logs
 		JPanel numOfLogsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		numOfLogsPnl.add(new JLabel("Total logs: "));
 		numOfLogsPnl.add(totNumOfLogsLbl);
 		valuesPnl.add(numOfLogsPnl);
+		
+		// Visible logs
+		JPanel visibleLogsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		visibleLogsPnl.add(new JLabel("Visible logs: "));
+		visibleLogsPnl.add(visibleLogsLbl);
+		valuesPnl.add(visibleLogsPnl);
+		
+		// Hidden logs
+		JPanel hiddenLogsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		hiddenLogsPnl.add(new JLabel("Hidden logs: "));
+		hiddenLogsPnl.add(hiddenLogsLbl);
+		valuesPnl.add(hiddenLogsPnl);
 		
 		// Add the available memory
 		JPanel availMemPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -108,14 +122,13 @@ public class StatsDlg extends JDialog
 		Runnable refresh = new Runnable() {
 			public void run() {
 				totNumOfLogsLbl.setText(""+logging.getLogEntryTable().getLCModel().totalLogNumber());
+				visibleLogsLbl.setText(""+logging.getLCModel1().getRowCount());
+				hiddenLogsLbl.setText(""+(logging.getLogEntryTable().getLCModel().totalLogNumber()-logging.getLCModel1().getRowCount()));
 				Runtime rt = Runtime.getRuntime();
 				long freeMem = rt.freeMemory();
 				long totMem = rt.totalMemory();
 				availMemLbl.setText(""+(freeMem/1024)+"Kb");
 		        usedMemLbl.setText(""+((totMem-freeMem)/1024)+"Kb");
-/**
- * @todo GCH 2006-10-23
- * Commented out because the getTimeFrame method appears to be missing.
 		        Calendar cal = logging.getLogEntryTable().getLCModel().getTimeFrame();
 		        StringBuilder str = new StringBuilder();
 		        str.append(cal.get(Calendar.DAY_OF_YEAR)-1);
@@ -128,7 +141,6 @@ public class StatsDlg extends JDialog
 		        str.append(".");
 		        str.append(cal.get(Calendar.MILLISECOND));
 		        timeFrameLbl.setText(str.toString());
-*/
 		        pack();
 			}
 		};
