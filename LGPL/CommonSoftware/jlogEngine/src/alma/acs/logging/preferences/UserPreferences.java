@@ -137,8 +137,8 @@ public class UserPreferences {
 	 *
 	 */
 	public UserPreferences() {
-		timeFrame = timeOptions[2].getTimeFrame();
-		maxNumOfLogs = maxLogNumOptions[2].getNumOfLogs();
+		timeFrame = timeOptions[0].getTimeFrame();
+		maxNumOfLogs = maxLogNumOptions[0].getNumOfLogs();
 	}
 	
 	/**
