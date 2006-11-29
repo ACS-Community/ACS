@@ -220,7 +220,7 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	/**
 	 * Maps any (JDK or ACS) level to an ACS native level.
 	 * @param level	any level
-	 * @return 		native level, can be <code>null</code> if no native levels found or Level.OFF.intValue()
+	 * @return 		native level, can be <code>null</code> if no native level is found or if level==Level.OFF
 	 */
 	public static AcsLogLevel getNativeLevel(Level level)
 	{
