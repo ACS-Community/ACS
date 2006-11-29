@@ -162,7 +162,7 @@ public class ManagerEngine
 		corbaService = new DefaultCORBAService(logger);
 
 		// get ORB
-		ORB orb = corbaService.getORB();
+		final ORB orb = corbaService.getORB();
 		if (orb == null)
 		{
 			CoreException ce = new CoreException("CORBA Service can not provide ORB.");
@@ -323,6 +323,15 @@ public class ManagerEngine
 		// set orb
 		federationDirectoryProperties.put("java.naming.corba.orb", orb);
 		manager.initializeFederation(federationDirectoryProperties);
+		
+		// initialize remote logging
+		new Thread(new Runnable() {
+			public void run()
+			{
+				ClientLogManager.getAcsLogManager().initRemoteLogging(orb, managerReference, manager.getHandle(), true);
+			}
+		}, "Remote logging initializer").start();
+		
 	}
 
 	/**

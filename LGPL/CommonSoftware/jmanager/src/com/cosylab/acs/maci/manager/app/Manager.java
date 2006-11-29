@@ -5,6 +5,9 @@
 package com.cosylab.acs.maci.manager.app;
 
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
+
+import alma.acs.logging.formatters.ConsoleLogFormatter;
 
 import com.cosylab.acs.maci.manager.ManagerShutdown;
 
@@ -34,7 +37,11 @@ public class Manager implements ManagerShutdown
 	{
 		getManagerEngine().initialize();
 
-		getManagerEngine().getLogger().log(Level.OFF, "Manager Application initialized.");
+		LogRecord record = new LogRecord(Level.INFO, "AcsManagerStatusMessage_ManagerStarted Manager Application initialized.");
+		record.setLoggerName(getManagerEngine().getLogger().getName());
+		String formattedString = new ConsoleLogFormatter().format(record);
+		System.out.println(formattedString);
+		//getManagerEngine().getLogger().log(Level.OFF, "AcsManagerStatusMessage_ManagerStarted Manager Application initialized.");
 	}
 
 	/**
