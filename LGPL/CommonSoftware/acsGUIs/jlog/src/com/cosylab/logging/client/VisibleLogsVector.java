@@ -1,5 +1,7 @@
 package com.cosylab.logging.client;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +10,7 @@ import java.util.Date;
 import com.cosylab.logging.LogTableDataModel;
 
 import com.cosylab.logging.client.cache.LogCache;
+import com.cosylab.logging.client.cache.LogCacheException;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
@@ -17,7 +20,7 @@ import com.cosylab.logging.LoggingClient;
  * The array of visible logs (i.e. all and only the logs shown in the table)
  * The logs filtered out are not present in this object (while they are 
  * in the list of logs, LogCache).
- * This class manage the ordering/sorting of logs.
+ * This class manages the ordering/sorting of logs.
  * Long lasting operations are executed asynchronously. 
  * While long operations are in progress, each new log to be inserted will be  
  * cached (into the buffer Vector) and added asynchronously by the thread.
@@ -30,8 +33,8 @@ import com.cosylab.logging.LoggingClient;
 public class VisibleLogsVector extends Thread {
 	
 	/**
-	 * NewLogGUIRefresher keep traks of the logs inserted and
-	 * shows all the logs at once in a separate thread by firinig
+	 * NewLogGUIRefresher keep track of the logs inserted and
+	 * show all the logs at once in a separate thread by firinig
 	 * the event to the table
 	 */
 	public class NewLogGUIRefresher extends Thread {
@@ -165,14 +168,34 @@ public class VisibleLogsVector extends Thread {
 		 * @return 
 		 */
 		private int fastCompare(int first, int second) {
-			long firstVal;
-			long secondVal;
+			long firstVal=0;
+			long secondVal=0;
 			if (fieldIndex==ILogEntry.FIELD_TIMESTAMP) {
-				firstVal=(Long)cache.getLogTimestamp(first);
-				secondVal=(Long)cache.getLogTimestamp(second);
+				try {
+					firstVal=(Long)cache.getLogTimestamp(first);
+				} catch (LogCacheException e) {
+					System.err.println("Error getting the time stamp of "+first);
+					e.printStackTrace();
+				}
+				try {
+					secondVal=(Long)cache.getLogTimestamp(second);
+				} catch (LogCacheException e) {
+					System.err.println("Error getting the time stamp of "+second);
+					e.printStackTrace();
+				}
 			} else {
-				firstVal=(Integer)cache.getLogType(first);
-				secondVal=(Integer)cache.getLogType(second);
+				try {
+					firstVal=(Integer)cache.getLogType(first);
+				} catch (LogCacheException e) {
+					System.err.println("Error getting the time stamp of "+first);
+					e.printStackTrace();
+				}
+				try {
+					secondVal=(Integer)cache.getLogType(second);
+				} catch (LogCacheException e) {
+					System.err.println("Error getting the time stamp of "+second);
+					e.printStackTrace();
+				}
 			}
 			if (firstVal==secondVal) {
 				return 0;
@@ -394,6 +417,10 @@ public class VisibleLogsVector extends Thread {
 	 * The vector of visible logs (i.e. the logs shown in the table)
 	 * The elements are odered.
 	 * 
+	 * visibleLogs[r]=c
+	 * means that the row number r of the table contains the log
+	 * in position c in the cache
+	 * 
 	 * The vector contains the index of each log in the LogCache.
 	 */
 	private Vector<Integer> visibleLogs;
@@ -451,7 +478,7 @@ public class VisibleLogsVector extends Thread {
 	/**
 	 * Add the log in the vector of the visible logs.
 	 * If there asynchronous operation in progress (ordering/sorting of logs)
-	 * then the log is in buffer and will be added by the thread when the
+	 * then the log is in buffered and will be added by the thread when the
 	 * ordering terminates.
 	 * 
 	 * @param index The index of the log to add
@@ -471,6 +498,51 @@ public class VisibleLogsVector extends Thread {
 	}
 	
 	/**
+	 * Remove the log with the given key from the vector
+	 * of visible ligs
+	 * 
+	 * @param key The key of the log to delete
+	 * @return The position in the table of the removed log
+	 *         -1 if the log is not visible
+	 */
+	public synchronized int  deleteLog(Integer key) {
+		if (key==null || key<0 || key>=cache.getSize()) {
+			throw new IllegalArgumentException("Trying to remve a log ("+key+") that is not in the cache [0,"+cache.getSize()+'[');
+		}
+		int posInVisibleLogs;
+		synchronized (visibleLogs) {
+			posInVisibleLogs = visibleLogs.indexOf(key);
+			if (posInVisibleLogs>=0) {
+				if (!visibleLogs.remove(key)) {
+					System.err.println("Error removing "+key+" from "+posInVisibleLogs);
+				}
+			}
+		}
+		return posInVisibleLogs;
+	}
+	
+	/**
+	 * Delete the rows containg thelg whose keys are
+	 * in the collection
+	 * 
+	 * @param keys The keys of the logs to delete
+	 */
+	public synchronized void deleteLogs(Collection<Integer> keys) {
+		if (keys==null) {
+			throw new IllegalArgumentException("Invalid null collection");
+		}
+		Iterator<Integer> iter = keys.iterator();
+		while (iter.hasNext()) {
+			Integer key = iter.next();
+			synchronized (visibleLogs) {
+				if (!visibleLogs.remove(key)) {
+					System.err.println("Error removing "+key);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Add the log to the vector of visible logs
 	 *
 	 */
@@ -478,8 +550,8 @@ public class VisibleLogsVector extends Thread {
 		if (!comparator.sortEnabled()) {
 			visibleLogs.add(index);
 			guiRefresher.update(index);
-			// Find the position where the log has to be inserted
 		} else {
+			// Find the position where the log has to be inserted
 			int pos = findPosLogarithmic(log);
 			visibleLogs.insertElementAt(index,pos);
 			guiRefresher.update(pos);
@@ -595,13 +667,23 @@ public class VisibleLogsVector extends Thread {
 		int minInter = 0;
 		int maxInter = visibleLogs.size()-1;
 		int middle=0;
-		long maxDate;
-		long minDate;
+		long maxDate=0;
+		long minDate=0;
 		boolean sortAscending = comparator.isSortAscending();
 		int iter = 0;
 		do {
-			maxDate = cache.getLogTimestamp(visibleLogs.get(maxInter));
-			minDate = cache.getLogTimestamp(visibleLogs.get(minInter));
+			try {
+				maxDate = cache.getLogTimestamp(visibleLogs.get(maxInter));
+			} catch (LogCacheException e) {
+				System.err.println("Error getting the time stamp of "+visibleLogs.get(maxInter));
+				e.printStackTrace();
+			}
+			try {
+				minDate = cache.getLogTimestamp(visibleLogs.get(minInter));
+			} catch (LogCacheException e) {
+				System.err.println("Error getting the time stamp of "+visibleLogs.get(minInter));
+				e.printStackTrace();
+			}
 			
 			if (maxInter-minInter<=1) {
 				if (sortAscending) {
@@ -624,7 +706,13 @@ public class VisibleLogsVector extends Thread {
 			}
 			
 			middle = minInter+(maxInter - minInter)/2;
-			long dateShift = date-cache.getLogTimestamp(visibleLogs.get(middle));
+			long dateShift=0;
+			try {
+				dateShift= date-cache.getLogTimestamp(visibleLogs.get(middle));
+			} catch (LogCacheException e) {
+				System.err.println("Error getting the time stamp of "+visibleLogs.get(middle));
+				e.printStackTrace();
+			}
 			if (sortAscending) {
 				if (dateShift>=0) {
 						minInter = middle;
@@ -710,13 +798,22 @@ public class VisibleLogsVector extends Thread {
 		int minInter = 0;
 		int maxInter = visibleLogs.size()-1;
 		int middle=0;
-		int maxType;
-		int minType;
+		int maxType=0;
+		int minType=0;
 		boolean sortAscending = comparator.isSortAscending();
 		do {
-			maxType = cache.getLogType(visibleLogs.get(maxInter));
-			minType = cache.getLogType(visibleLogs.get(minInter));
-
+			try {
+				maxType = cache.getLogType(visibleLogs.get(maxInter));
+			} catch (LogCacheException e) {
+				System.err.println("Error getting the type of "+visibleLogs.get(maxInter));
+				e.printStackTrace();
+			}
+			try {
+				minType = cache.getLogType(visibleLogs.get(minInter));
+			} catch (LogCacheException e) {
+				System.err.println("Error getting the type of "+visibleLogs.get(minInter));
+				e.printStackTrace();
+			}
 			if (maxInter-minInter<=1) {
 				if (sortAscending) {
 					if (type>maxType) {
@@ -738,7 +835,13 @@ public class VisibleLogsVector extends Thread {
 			}
 			
 			middle = minInter+(maxInter - minInter)/2;
-			int typeShift = type-cache.getLogType(visibleLogs.get(middle));
+			int typeShift=0;
+			try {
+				typeShift = type-cache.getLogType(visibleLogs.get(middle));
+			} catch (LogCacheException e) {
+				System.err.println("Error getting the type of "+visibleLogs.get(middle));
+				e.printStackTrace();
+			}
 			if (sortAscending) {
 				if (typeShift>=0) {
 						minInter = middle;
@@ -781,7 +884,7 @@ public class VisibleLogsVector extends Thread {
 			try {
 				log=cache.getLog(visibleLogs.get(pos));
 			} catch (Exception e) {
-				System.err.println("Exception caught: "+e.getMessage());
+				System.err.println("Exception caught getting log (visibleLogs position: "+pos+", cache pos:"+visibleLogs.get(pos)+"): "+e.getMessage());
 				e.printStackTrace(System.err);
 			}
 			return log;
@@ -929,4 +1032,18 @@ public class VisibleLogsVector extends Thread {
 	public void setRefreshInterval(Integer newInterv) {
 		guiRefresher.setRefreshInterval(newInterv);
 	}
+	
+	/**
+	 * Return the row containing a log with the given index in the cache
+	 * (i.e. it is the way to know in which row a log is visible)
+	 * 
+	 * @param entry The position of a log in the cache
+	 * @return The position (row) of the log in the table
+	 *         -1 if the entry is not in the table
+	 */
+	public int getRowOfEntry(Integer entry) {
+		return visibleLogs.indexOf(entry);
+	}
+	
+	
 }
