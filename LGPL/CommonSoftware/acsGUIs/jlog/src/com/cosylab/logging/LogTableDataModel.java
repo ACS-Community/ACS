@@ -22,7 +22,12 @@
 package com.cosylab.logging;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -56,12 +61,96 @@ import com.cosylab.logging.client.CustomFileChooser;
  */
 public class LogTableDataModel extends AbstractTableModel implements Runnable
 {
+	/**
+	 * The class contains a thread to delete asynchronously
+	 * the logs running at low priority.
+	 * The thread runs once awhile as specified by the TIME_INTERVAL 
+	 * local variable.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class LogDeleter extends Thread {
+		// The time interval between two iteration of the thread
+		private final int TIME_INTERVAL=60*1000;
+		
+		// The queue with the keys of the logs to delete
+		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
+		
+		/**
+		 * Add the key of a log to delete
+		 * 
+		 * @param key The key of the log to delete
+		 */
+		private void addLogToDelete(Integer key) {
+			if (logsToDelete.contains(key)) {
+				System.out.println("Rejected "+key);
+				return; 
+			}
+			try {
+				logsToDelete.put(key);
+			} catch (InterruptedException ie) {}
+			System.out.println("Added "+key);
+		}
+		
+		/** 
+		 * The thread to delete logs
+		 */
+		public void run() {
+			while (true) {
+				try {
+					Thread.sleep(TIME_INTERVAL);
+				} catch (InterruptedException e) {}
+				if (maxLog>0 && allLogs.getSize()>maxLog) {
+					System.out.println("LogDeleter.run: "+(allLogs.getSize()-maxLog)+" logs to delete");
+					ArrayList<Integer> keysToDelete = new ArrayList<Integer>();
+					int nKeys=allLogs.getFirstLogs(allLogs.getSize()-maxLog,keysToDelete);
+					for (int t=0; t<nKeys; t++) {
+						synchronized (LogTableDataModel.this) {
+							deleteLog(keysToDelete.get(t));
+						}
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Delete a log with the given key.
+		 *  
+		 * @param key The key of the log to delete
+		 */
+		private void deleteLog(Integer key) {
+			int posInTable=visibleLogs.deleteLog(key);
+			fireTableRowsDeleted(posInTable,posInTable);
+			try {
+				allLogs.deleteLog(key);
+			} catch (LogCacheException e) {
+				System.out.println("Error deleting a log from thread: "+e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
+		/**
+		 * Delete all the logs whoise keys are in the Collection
+		 * 
+		 * @param keys The collection of logs to delete
+		 */
+		private void deleteLogs(Collection<Integer> keys) {
+			if (keys==null) {
+				throw new IllegalArgumentException("The collection can't be null");
+			}
+			visibleLogs.deleteLogs(keys);
+			allLogs.deleteLogs(keys);
+			fireTableDataChanged();
+		}
+		
+	}
+	
 	private static final String BLANK_STRING = "";
 
 	//private final LogEntryComparator sortComparator = new LogEntryComparator(LogEntryXML.FIELD_STACKID, true);
 		
 	// Stores all the logs received.
-	// private final AbstractList allLogs = new ArrayList();
 	private LogCache allLogs = null ;
 	
 	// Stores the references to visible logs after the filters are applied
@@ -96,6 +185,25 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * i.e. to regenerate the list of visible logs 
 	 */
 	Thread invalidateThread = new Thread(this);
+	
+	/**
+	 * The max number of logs in cache 
+	 * This limit is not for the buffer but for the size of the whole cache
+	 * A value of 0 means unlimited 
+	 */
+	private int maxLog=0;
+	
+	/**
+	 * The time frame of the logs to keep in cache
+	 * This limit is not for the buffer but for the timeframe of the whole cache
+	 * A value of 0 means unlimited
+	 */
+	private long timeFrame=0;
+	
+	/**
+	 * The thread to delete the logs asynchronously
+	 */
+	private LogDeleter logDeleter;
 		
 	/**
 	 * Return number of columns in table
@@ -112,7 +220,12 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public synchronized void replaceLog(int pos, ILogEntry newEntry) {
 		// Replace the entry in the list of all the logs (allLogs)
-		allLogs.replaceLog(pos,newEntry);
+		try {
+			allLogs.replaceLog(pos,newEntry);
+		} catch (LogCacheException e) {
+			System.err.println("Error replacing log "+pos);
+			e.printStackTrace();
+		}
 		return;
 	}
 	
@@ -140,26 +253,20 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @param row int
 	 * @param column int
 	 */
-	public Object getValueAt(int row, int column) {
-		if (column == 0) {
-			return new Integer(0);
-		} else if (column==1) {
-				ILogEntry log = visibleLogs.get(row);
-				return new Boolean(log.hasDatas());
+	public synchronized Object getValueAt(int row, int column) {
+		ILogEntry log = getVisibleLogEntry(row);
+		if (log==null) {
+			return null;
 		} else {
-	
-			column=column-2;
-			
-			ILogEntry log = visibleLogs.get(row);
-		
-			if (log != null) {
+			if (column == 0) {
+				return new Integer(0);
+			} else if (column==1) {
+					return new Boolean(log.hasDatas());
+			} else {
+				column=column-2;
 				return log.getField(column);
 			}
-			
-		
-			return null;
 		}
-	
 	}
 	
 	/**
@@ -170,8 +277,15 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @return com.cosylab.logging.engine.LogEntryXML
 	 * @param row int
 	 */
-	public final ILogEntry getVisibleLogEntry(int row) {
-		return visibleLogs.get(row);	
+	public synchronized final ILogEntry getVisibleLogEntry(int row) {
+		ILogEntry ret= null;
+		try {
+			ret=visibleLogs.get(row);
+		} catch (Exception e) {
+			System.out.println("Exception caught "+e.getMessage());
+			e.printStackTrace();
+		}
+		return ret;
 	}
 	
 	/**
@@ -190,17 +304,52 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			System.exit(-1);
 		} 
 		visibleLogs = new VisibleLogsVector(allLogs,this);
-		//visibleLogs.setChangeCallback(this);
-	} 
+		logDeleter=new LogDeleter();
+		logDeleter.setPriority(Thread.MIN_PRIORITY);
+		logDeleter.start();
+	}
 	
+	/**
+	 * Set the max number of logs to keep in cache
+	 * This is the max number of logs stored in cache
+	 * (the visible logs can be less)
+	 * 
+	 * @param max The max number of logs
+	 *            0 means unlimited
+	 */
+	public void setMaxLog(int max) {
+		if (max<0) {
+			throw new IllegalArgumentException("Impossible to set the max log to "+max);
+		}
+		maxLog=max;
+		checkLogNumber();
+	}
+	
+	/**
+	 * Set the time frame of the logs in the cache
+	 * The time frame if the amount of time we want to keep in the table 
+	 * for example the last 2hr
+	 * (the visible logs can be less)
+	 * 
+	 * @param timeframe The time frame in milliseconds
+	 *                  0 means unlimited
+	 */
+	public void setTimeFrame(long timeframe) {
+		if (timeframe<0) {
+			throw new IllegalArgumentException("Impossible to set the time frame to "+timeframe);
+		}
+		timeFrame=timeframe;
+		checkTimeFrame();
+	}
 	
 	/**
 	 * Adds the log to the list. Logs are always appended at the end of the list.
 	 * 
 	 * @param log The log to add
 	 */
-	public void appendLog(ILogEntry log) {
+	public synchronized void appendLog(ILogEntry log) {
 		try {
+			//checkLogNumber();
 			int pos=allLogs.add(log);
 			visibleLogInsert(log,pos);
 		} catch (LogCacheException lce) {
@@ -499,8 +648,13 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @param pos The position of this log in the cache
 	 */
 	public void visibleLogInsert(ILogEntry log, int pos) {
-		if (allLogs.getLogType(pos)>=logLevel && filters.applyFilters(log)) {
-			visibleLogs.add(pos,log);
+		try {
+			if (allLogs.getLogType(pos)>=logLevel && filters.applyFilters(log)) {
+				visibleLogs.add(pos,log);
+			}
+		} catch (LogCacheException e) {
+			System.err.println("Error getting the log type "+pos);
+			e.printStackTrace();
 		}
 	}
 	
@@ -579,4 +733,115 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	public Calendar getTimeFrame() {
 		return allLogs.getTimeFrame();
 	}
+	
+	/**
+	 * Check if the number of logs in cache exceeds the maximum limit and
+	 * if it is the case, delete the logs (FIFO policy)
+	 */
+	private void checkLogNumber() {
+		while (allLogs.getSize()>maxLog && maxLog>0) {
+			//deleteLog(allLogs.getFirstLog());
+			logDeleter.addLogToDelete(allLogs.getFirstLog());
+		}
+	}
+	
+	/**
+	 * Check if the time frame of the logs in cache exceeds the limit and
+	 * if it is the case, deletes the oldest logs
+	 */
+	private void checkTimeFrame() {
+		Collection<Integer> logsToDelete = allLogs.getLogExceedingTimeFrame(timeFrame);
+		Collections.sort((List<Integer>)logsToDelete);
+		Collections.reverse((List<Integer>)logsToDelete);
+		
+		System.out.println("*** Checking time frame ****");
+		System.out.println("===> "+logsToDelete.size()+" logs to delete, cache size="+allLogs.getSize());
+		System.out.println("===> "+timeFrame+" timeframe");
+		if (logsToDelete!=null && logsToDelete.size()>0) {
+			for (Integer logNumber: logsToDelete) {
+				//deleteLog(logNumber);
+			}
+		}
+		System.out.println("cahche size after deletion "+allLogs.getSize());
+	}
+	
+	/**
+	 * check if each logs in the table has the same date of the related log in the cache
+	 *
+	 */
+	private void checkConsistency() {
+		System.out.print("Checking consistency... ");
+		for (int t=0; t<allLogs.getSize(); t++) {
+			int posInTable =visibleLogs.getRowOfEntry(t);
+			if (posInTable==-1) { 
+				continue;
+			}
+			// Get the date from the tale (visibleLogs)
+			ILogEntry logInTable;
+			try {
+				logInTable=visibleLogs.get(posInTable);
+			} catch (Exception e) {
+				System.out.println("Exception trying to get log in cache pos "+t);
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+				continue;
+			}
+			long dateInTable = ((java.util.Date)logInTable.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			
+			// Get the date from the cache (allLogs)
+			ILogEntry cacheLog=null;
+			try {
+				cacheLog = allLogs.getLog(t);
+			} catch (LogCacheException le) {
+				System.out.println("checkConsistency: Error geting log "+t);
+			}
+			long cacheDate=((java.util.Date)cacheLog.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			
+			if (cacheDate!=dateInTable) {
+				System.out.println("The date in cache (allLogs.get..) and that in the table (visibleLogs) differ:");
+				System.out.println("\tdate in cache: "+cacheDate+", date in table: "+dateInTable);
+			}
+			try {
+				if (dateInTable!=allLogs.getLogTimestamp(t)) {
+					System.out.println("Values differ in "+t);
+					return;
+				}
+			} catch (LogCacheException e) {
+				System.err.println("Error getting tyhe time stamp of "+t);
+				e.printStackTrace();
+			}
+			if (t%10000==0) {
+				System.out.print('.');
+			}
+		}
+		System.out.println("Ok and checking order!" );
+		checkOrder();
+	}
+	
+	private void checkOrder() {
+		System.out.print("Checking order (visibleLogs size "+visibleLogs.size()+")... ");
+		for (int t=0; t<visibleLogs.size()-1; t++) {
+			ILogEntry log1=visibleLogs.get(t);
+			ILogEntry log2=visibleLogs.get(t+1);
+			long date1 = ((java.util.Date)log1.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			long date2 = ((java.util.Date)log2.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			if (date1<date2) {
+				System.out.println(" Misaligned at "+t+" date@pos0="+date1+" date@pos1="+date2);
+				int start = (t-5<0)?0:t-5;
+				int end=(t+5<visibleLogs.size())?t+5:visibleLogs.size();
+				System.out.println("visibleLogs dump:");
+				for (int j=start; j<end; j++) {
+					ILogEntry l =visibleLogs.get(j);
+					long d =((java.util.Date)l.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+					System.out.println("\t"+j+": "+d);
+				}
+				System.exit(-1);
+			}
+			if (t%10000==0) {
+				System.out.print('*');
+			}
+		}
+		System.out.println("Ok");
+	}
+
 }
