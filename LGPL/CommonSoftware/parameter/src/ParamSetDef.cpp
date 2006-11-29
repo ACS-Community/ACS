@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParamSetDef.cpp,v 1.14 2006/09/26 19:23:11 sharring Exp $"
+* "@(#) $Id: ParamSetDef.cpp,v 1.15 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,7 +55,7 @@
 #endif 
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 XERCES_CPP_NAMESPACE_USE
 
 typedef map< string, IntParamDef >::value_type intParamDefValType;
@@ -72,7 +72,7 @@ typedef map< string, BoolParamDef >::value_type boolParamDefValType;
  * @param xmlFile the string containing a filename 
  * which contains the XML representation of the parameter set for a task.
  */
-ParamSetDef::ParamSetDef(string xmlFile)
+ParamSetDef::ParamSetDef(const string & xmlFile)
 {
 	XMLPlatformUtils::Initialize();
 	PARAMETER_TAG_NAME = XMLString::transcode(PARAMETER_TAG_NAME_STR);
@@ -1678,4 +1678,6 @@ void ParamSetDef::setSchemaLocation(DOMBuilder * parser)
 	// else if none of the above environment variables was defined, 
 	// we will rely on the XML instance document's schemalocation hint
 }
+
+
 

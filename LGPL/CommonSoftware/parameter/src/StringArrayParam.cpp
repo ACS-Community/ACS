@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: StringArrayParam.cpp,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: StringArrayParam.cpp,v 1.4 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <parameterConstants.h>
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
@@ -44,10 +44,8 @@ StringArrayParam::StringArrayParam()
 /**
  * Constructor.
  */
-StringArrayParam::StringArrayParam(vector<string> stringVals, string nameVal)
+StringArrayParam::StringArrayParam(const vector<string> & stringVals, const string & nameVal) : Param(nameVal), values_m(stringVals)
 {
-	values = stringVals;
-	name = nameVal;
 }
 
 /**
@@ -63,7 +61,7 @@ StringArrayParam::~StringArrayParam()
  */
 vector<string> StringArrayParam::getValues()
 {
-   return values;
+   return values_m;
 }
 
 /**
@@ -72,7 +70,8 @@ vector<string> StringArrayParam::getValues()
  */
 string StringArrayParam::getType()
 {
-	return STRING_ARRAY_PARAM_STRING;
+	string retVal(STRING_ARRAY_PARAM_STRING);
+	return retVal;
 }
 
 /**
@@ -87,7 +86,7 @@ string StringArrayParam::valueToString()
 	// a value XML entry for each one.
 	vector<string>::iterator iter;
 
-	for(iter = values.begin(); iter != values.end(); iter++)
+	for(iter = values_m.begin(); iter != values_m.end(); iter++)
 	{
 		// value stanza
 		//	e.g. <value>true</true>
@@ -108,3 +107,5 @@ string StringArrayParam::valueToString()
 
 	return retVal;
 }
+
+

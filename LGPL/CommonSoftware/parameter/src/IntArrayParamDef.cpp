@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: IntArrayParamDef.cpp,v 1.2 2005/01/24 23:03:09 sharring Exp $"
+* "@(#) $Id: IntArrayParamDef.cpp,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <IntArrayParamDef.h>
 
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
@@ -42,34 +42,30 @@ IntArrayParamDef::IntArrayParamDef()
 /**
  * Constructor.
  */
-IntArrayParamDef::IntArrayParamDef(string paramName, string helpText, string promptText, 
-	bool requiredBoolVal, auto_ptr< string > unitsText, auto_ptr< int > maxLenVal, auto_ptr< vector < int > > defaultVals)
+IntArrayParamDef::IntArrayParamDef(const string & paramName, const string & helpText, const string & promptText, 
+	bool requiredBoolVal, auto_ptr< string > unitsText, auto_ptr< int > maxLenVal, auto_ptr< vector < int > > defaultVals):
+		ParamDef(paramName, helpText, promptText, requiredBoolVal)
 {
-	name = paramName;	
-	help = helpText;
-	prompt = promptText;
-	required = requiredBoolVal;
-
 	if(NULL != unitsText.get()) {
-		units = *unitsText;
-		hasUnits = true;
+		units_m = *unitsText;
+		hasUnits_m = true;
 	}
 	else {
-		hasUnits = false;
+		hasUnits_m = false;
 	}
 	if(NULL != maxLenVal.get()) {
-		maxLen = *maxLenVal;
-		hasMaxLen = true;
+		maxLen_m = *maxLenVal;
+		hasMaxLen_m = true;
 	}
 	else {
-		hasMaxLen = false;
+		hasMaxLen_m = false;
 	}
 	if(NULL != defaultVals.get()) {
-		defaultValues = *defaultVals;
-		hasDefaultValues = true;
+		defaultValues_m = *defaultVals;
+		hasDefaultValues_m = true;
 	}
 	else {
-		hasDefaultValues = false;
+		hasDefaultValues_m = false;
 	}
 }
 
@@ -88,7 +84,7 @@ auto_ptr<string> IntArrayParamDef::getUnits()
 {
 	auto_ptr<string> retVal;
 	if(true == getHasUnits()) {
-		retVal.reset(new string(units));
+		retVal.reset(new string(units_m));
 	}
 	return retVal;
 }
@@ -101,7 +97,7 @@ auto_ptr<int> IntArrayParamDef::getMaxLen()
 {
 	auto_ptr<int> retVal;
 	if(true == getHasMaxLen()) {
-		retVal.reset(new int(maxLen));
+		retVal.reset(new int(maxLen_m));
 	}
 	return retVal;
 }
@@ -114,7 +110,7 @@ auto_ptr< vector<int> > IntArrayParamDef::getDefaultValues()
 {
 	auto_ptr<vector <int> > retVal;
 	if(true == getHasDefaultValues()) {
-		retVal.reset(new vector<int>(defaultValues));
+		retVal.reset(new vector<int>(defaultValues_m));
 	}
 	return retVal;
 }
@@ -125,7 +121,7 @@ auto_ptr< vector<int> > IntArrayParamDef::getDefaultValues()
  */
 bool IntArrayParamDef::getHasUnits()
 {
-	return hasUnits;
+	return hasUnits_m;
 }
 
 /*
@@ -134,7 +130,7 @@ bool IntArrayParamDef::getHasUnits()
  */
 bool IntArrayParamDef::getHasMaxLen()
 {
-	return hasMaxLen;
+	return hasMaxLen_m;
 }
 
 /*
@@ -143,5 +139,7 @@ bool IntArrayParamDef::getHasMaxLen()
  */
 bool IntArrayParamDef::getHasDefaultValues()
 {
-	return hasDefaultValues;
+	return hasDefaultValues_m;
 }
+
+

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ParameterSet.h,v 1.9 2005/09/08 23:58:15 sharring Exp $"
+* "@(#) $Id: ParameterSet.h,v 1.10 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@ using XERCES_CPP_NAMESPACE_QUALIFIER DOMBuilder;
 
 /** @file ParameterSet.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * ParameterSet class used to support OFFLINE tasks
@@ -304,8 +304,9 @@ namespace parameterSet {
 			XMLCh* DOUBLE_ARRAY_PARAM_TYPE;
 			XMLCh* STRING_ARRAY_PARAM_TYPE;
 
-			auto_ptr<ParamSetDef> parameterSetDef;
+			auto_ptr<ParamSetDef> ParameterSetDef;
 	};
 
 }
 #endif /*!_PARAMETER_SET_H*/
+

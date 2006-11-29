@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: Param.h,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: Param.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@ using std::string;
 
 /** @file Param.h */
 
-namespace parameterSet 
+namespace Parameters 
 {
 	/**
 	 * Param class - abstract base class used to store information about individual params within a ParameterSetDef
@@ -51,6 +51,11 @@ namespace parameterSet
 		 * Constructor
 		 */
 		Param();
+
+		/**
+		 * Constructor
+		 */
+		Param(const string & nameVal);
 	    
 		/**
 	 	 * Destructor
@@ -85,7 +90,9 @@ namespace parameterSet
 		 * they will all have such a method.
 		 */
 		virtual string valueToString() = 0;
-		string name;
+		string name_m;
 	};
 }
 #endif /*!_PARAM_H*/
+
+

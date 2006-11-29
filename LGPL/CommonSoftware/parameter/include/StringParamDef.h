@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: StringParamDef.h,v 1.2 2005/01/24 23:03:38 sharring Exp $"
+* "@(#) $Id: StringParamDef.h,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,12 +42,12 @@ using std::string;
 using std::vector;
 using std::auto_ptr;
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * StringParamDef class used to support OFFLINE tasks
 	 */
-	class StringParamDef: public parameterSet::ParamDef
+	class StringParamDef: public Parameters::ParamDef
 	{    
 	  public:
 	    /**
@@ -58,7 +58,7 @@ namespace parameterSet {
 	    /**
 	     * Constructor.
 	     */
-	    StringParamDef(string nameVal, string helpVal, string promptVal, 
+	    StringParamDef(const string & nameVal, const string & helpVal, const string & promptVal, 
 	       bool isRequired, auto_ptr< string > defaultVal, auto_ptr< vector < string > > validVals);
 	    
 	    /**
@@ -95,11 +95,14 @@ namespace parameterSet {
 	    bool getHasValidValues();
 
 	  private:
-	    string defaultValue;
-	    vector< string > validValues;
-	    bool hasDefault;
-	    bool hasValidValues;
+	    string defaultValue_m;
+	    vector< string > validValues_m;
+	    bool hasDefault_m;
+	    bool hasValidValues_m;
 	};
 
 }
 #endif /*!_STRING_PARAM_DEF_H*/
+
+
+

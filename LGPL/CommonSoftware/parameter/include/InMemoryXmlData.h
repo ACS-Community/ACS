@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: InMemoryXmlData.h,v 1.5 2005/08/18 17:18:53 sharring Exp $"
+* "@(#) $Id: InMemoryXmlData.h,v 1.6 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,7 +42,7 @@ using std::endl;
 using std::string;
 using XERCES_CPP_NAMESPACE_QUALIFIER XMLString;
 
-namespace parameterSet 
+namespace Parameters 
 {
 	//------------------------------------------------------------------------------
 	//
@@ -81,3 +81,4 @@ namespace parameterSet
 	};
 }
 #endif /*!_FILEINFO_H*/
+

@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: StringParamDef.cpp,v 1.2 2005/01/24 23:03:09 sharring Exp $"
+* "@(#) $Id: StringParamDef.cpp,v 1.3 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <StringParamDef.h>
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
@@ -44,27 +44,23 @@ StringParamDef::StringParamDef()
 /**
  * Constructor.
  */
-StringParamDef::StringParamDef(string nameVal, string helpVal, string promptVal, 
-	bool isRequired, auto_ptr< string > defaultVal, auto_ptr< vector < string > > validVals)
+StringParamDef::StringParamDef(const string & nameVal, const string & helpVal, const string & promptVal, 
+	bool isRequired, auto_ptr< string > defaultVal, auto_ptr< vector < string > > validVals): 
+		ParamDef(nameVal, helpVal, promptVal, isRequired)
 {
-	name = nameVal;	
-	help = helpVal;
-	prompt = promptVal;
-	required = isRequired;
-
 	if(NULL != defaultVal.get()) {
-		defaultValue = *defaultVal;
-		hasDefault = true;
+		defaultValue_m = *defaultVal;
+		hasDefault_m = true;
 	}
 	else {
-		hasDefault = false;
+		hasDefault_m = false;
 	}
 	if(NULL != validVals.get()) {
-		validValues = *validVals;
-		hasValidValues = true;
+		validValues_m = *validVals;
+		hasValidValues_m = true;
 	}
 	else {
-		hasValidValues = false;
+		hasValidValues_m = false;
 	}
 }
 
@@ -83,7 +79,7 @@ auto_ptr<string> StringParamDef::getDefault()
 {
 	auto_ptr<string> retVal;
 	if(true == getHasDefault()) {
-		retVal.reset(new string(defaultValue));
+		retVal.reset(new string(defaultValue_m));
 	}
 	return retVal;
 }
@@ -96,7 +92,7 @@ auto_ptr< vector< string > > StringParamDef::getValidValues()
 {
 	auto_ptr< vector <string> > retVal;
 	if(true == getHasValidValues()) {
-		retVal.reset(new vector< string >(validValues));
+		retVal.reset(new vector< string >(validValues_m));
 	}
 	return retVal;
 }
@@ -107,7 +103,7 @@ auto_ptr< vector< string > > StringParamDef::getValidValues()
  */
 bool StringParamDef::getHasDefault()
 {
-	return hasDefault;
+	return hasDefault_m;
 }
     
 /*
@@ -116,5 +112,5 @@ bool StringParamDef::getHasDefault()
  */
 bool StringParamDef::getHasValidValues()
 {
-	return hasValidValues;
+	return hasValidValues_m;
 }

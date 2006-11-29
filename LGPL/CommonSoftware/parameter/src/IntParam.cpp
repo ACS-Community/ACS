@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: IntParam.cpp,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: IntParam.cpp,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <parameterConstants.h>
 #include <sstream>
 
-using namespace parameterSet;
+using namespace Parameters;
 using std::stringstream;
 
 /**
@@ -45,17 +45,8 @@ IntParam::IntParam()
 /**
  * Constructor.
  */
-IntParam::IntParam(int intVal, string nameVal, auto_ptr<string> unitsVal)
+IntParam::IntParam(int intVal, const string & nameVal, auto_ptr<string> unitsVal): QuantityParam(nameVal, unitsVal), value_m(intVal)
 {
-	value = intVal;
-	name = nameVal;
-	if(NULL != unitsVal.get()) {
-		units = *unitsVal;
-		hasUnits = true;
-	}
-	else {
-		hasUnits = false;
-	}
 }
 
 /**
@@ -71,7 +62,7 @@ IntParam::~IntParam()
  */
 int IntParam::getValue()
 {
-   return value;
+   return value_m;
 }
 
 /**
@@ -80,7 +71,8 @@ int IntParam::getValue()
  */
 string IntParam::getType()
 {
-	return INT_PARAM_STRING;
+	string retVal(INT_PARAM_STRING);
+	return retVal;
 }
 
 /**
@@ -110,3 +102,5 @@ string IntParam::valueToString()
 
 	return retVal;
 }
+
+

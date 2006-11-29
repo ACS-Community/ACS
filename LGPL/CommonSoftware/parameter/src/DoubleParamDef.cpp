@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: DoubleParamDef.cpp,v 1.3 2005/01/26 04:36:41 sharring Exp $"
+* "@(#) $Id: DoubleParamDef.cpp,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <DoubleParamDef.h>
 
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
@@ -42,56 +42,52 @@ DoubleParamDef::DoubleParamDef()
 /**
  * Constructor.
  */
-DoubleParamDef::DoubleParamDef(string nameVal, string helpVal, string promptVal, bool isRequired, 
+DoubleParamDef::DoubleParamDef(const string & nameVal, const string & helpVal, const string & promptVal, bool isRequired, 
 	auto_ptr< double > defaultVal, auto_ptr< string > strDefault, auto_ptr< string > unitsVal, 
-	auto_ptr< double > maxVal, auto_ptr< double > minVal, auto_ptr< vector<double> > validVals)
+	auto_ptr< double > maxVal, auto_ptr< double > minVal, auto_ptr< vector<double> > validVals): 
+		ParamDef(nameVal, helpVal, promptVal, isRequired)
 {
-	name = nameVal;	
-	help = helpVal;
-	prompt = promptVal;
-	required = isRequired;
-
 	if(NULL != defaultVal.get()) {
-		defaultValue = *defaultVal;
-		hasDefault = true;
+		defaultValue_m = *defaultVal;
+		hasDefault_m = true;
 	}
 	else {
-		hasDefault = false;
+		hasDefault_m = false;
 	}
 	if(NULL != strDefault.get()) {
-		defaultString = *strDefault;
-		hasStringDefault = true;
+		defaultString_m = *strDefault;
+		hasStringDefault_m = true;
 	}
 	else {
-		hasStringDefault = false;
+		hasStringDefault_m = false;
 	}
 	if(NULL != unitsVal.get()) {
-		units = *unitsVal;
-		hasUnits = true;
+		units_m = *unitsVal;
+		hasUnits_m = true;
 	}
 	else {
-		hasUnits = false;
+		hasUnits_m = false;
 	}
 	if(NULL != maxVal.get()) {
-		max = *maxVal;
-		hasMax = true;
+		max_m = *maxVal;
+		hasMax_m = true;
 	}
 	else {
-		hasMax = false;
+		hasMax_m = false;
 	}
 	if(NULL != minVal.get()) {
-		min = *minVal;
-		hasMin = true;
+		min_m = *minVal;
+		hasMin_m = true;
 	}
 	else {
-		hasMin = false;
+		hasMin_m = false;
 	}
 	if(NULL != validVals.get()) {
-		validValues = *validVals;
-		hasValidValues = true;
+		validValues_m = *validVals;
+		hasValidValues_m = true;
 	}
 	else {
-		hasValidValues = false;
+		hasValidValues_m = false;
 	}
 }
 /**
@@ -109,7 +105,7 @@ auto_ptr<double> DoubleParamDef::getDefault()
 {
 	auto_ptr<double> retVal;
 	if(true == getHasDefault()) {
-		retVal.reset(new double(defaultValue));
+		retVal.reset(new double(defaultValue_m));
 	}
 	return retVal;
 }
@@ -122,7 +118,7 @@ auto_ptr<string> DoubleParamDef::getStringDefault()
 {
 	auto_ptr<string> retVal;
 	if(true == getHasStringDefault()) {
-		retVal.reset(new string(defaultString));
+		retVal.reset(new string(defaultString_m));
 	}
 	return retVal;
 }
@@ -135,7 +131,7 @@ auto_ptr< string > DoubleParamDef::getUnits()
 {
 	auto_ptr<string> retVal;
 	if(true == getHasUnits()) {
-		retVal.reset(new string(units));
+		retVal.reset(new string(units_m));
 	}
 	return retVal;
 }
@@ -148,7 +144,7 @@ auto_ptr<double> DoubleParamDef::getMax()
 {
 	auto_ptr<double> retVal;
 	if(true == getHasMax()) {
-		retVal.reset(new double(max));
+		retVal.reset(new double(max_m));
 	}
 	return retVal;
 }
@@ -161,7 +157,7 @@ auto_ptr<double> DoubleParamDef::getMin()
 {
 	auto_ptr<double> retVal;
 	if(true == getHasMin()) {
-		retVal.reset(new double(min));
+		retVal.reset(new double(min_m));
 	}
 	return retVal;
 }
@@ -174,7 +170,7 @@ auto_ptr< vector< double > > DoubleParamDef::getValidValues()
 {
 	auto_ptr<vector <double> > retVal;
 	if(true == getHasValidValues()) {
-		retVal.reset(new vector<double>(validValues));
+		retVal.reset(new vector<double>(validValues_m));
 	}
 	return retVal;
 }
@@ -185,7 +181,7 @@ auto_ptr< vector< double > > DoubleParamDef::getValidValues()
  */
 bool DoubleParamDef::getHasDefault()
 {
-	return hasDefault;
+	return hasDefault_m;
 }
 
 /*
@@ -194,7 +190,7 @@ bool DoubleParamDef::getHasDefault()
  */
 bool DoubleParamDef::getHasStringDefault()
 {
-	return hasStringDefault;
+	return hasStringDefault_m;
 }
 
 /*
@@ -203,7 +199,7 @@ bool DoubleParamDef::getHasStringDefault()
  */
 bool DoubleParamDef::getHasUnits()
 {
-	return hasUnits;
+	return hasUnits_m;
 }
 
 /*
@@ -212,7 +208,7 @@ bool DoubleParamDef::getHasUnits()
  */
 bool DoubleParamDef::getHasMax()
 {
-	return hasMax;
+	return hasMax_m;
 }
 
 /*
@@ -221,7 +217,7 @@ bool DoubleParamDef::getHasMax()
  */
 bool DoubleParamDef::getHasMin()
 {
-	return hasMin;
+	return hasMin_m;
 }
 
 /*
@@ -230,5 +226,7 @@ bool DoubleParamDef::getHasMin()
  */
 bool DoubleParamDef::getHasValidValues()
 {
-	return hasValidValues;
+	return hasValidValues_m;
 }
+
+

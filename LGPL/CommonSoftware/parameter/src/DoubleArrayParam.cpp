@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: DoubleArrayParam.cpp,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: DoubleArrayParam.cpp,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <parameterConstants.h>
 #include <sstream>
 
-using namespace parameterSet;
+using namespace Parameters;
 using std::stringstream;
 
 /**
@@ -45,17 +45,9 @@ DoubleArrayParam::DoubleArrayParam()
 /**
  * Constructor.
  */
-DoubleArrayParam::DoubleArrayParam(vector<double> vals, string nameVal, auto_ptr<string> unitsVal)
+DoubleArrayParam::DoubleArrayParam(const vector<double> & vals, const string & nameVal, auto_ptr<string> unitsVal) :
+	QuantityParam(nameVal, unitsVal), values_m(vals)
 {
-	name = nameVal;
-	values = vals;
-	if(NULL != unitsVal.get()) {
-		units = *unitsVal;
-		hasUnits = true;
-	}
-	else {
-		hasUnits = false;
-	}
 }
 
 /**
@@ -71,7 +63,7 @@ DoubleArrayParam::~DoubleArrayParam()
  */
 vector<double> DoubleArrayParam::getValues()
 {
-   return values;
+   return values_m;
 }
 
 /**
@@ -80,7 +72,8 @@ vector<double> DoubleArrayParam::getValues()
  */
 string DoubleArrayParam::getType()
 {
-	return DOUBLE_ARRAY_PARAM_STRING;
+	string retVal(DOUBLE_ARRAY_PARAM_STRING);
+	return retVal;
 }
 
 /**
@@ -95,7 +88,7 @@ string DoubleArrayParam::valueToString()
 	// a value XML entry for each one.
 	vector<double>::iterator iter;
 
-	for(iter = values.begin(); iter != values.end(); iter++)
+	for(iter = values_m.begin(); iter != values_m.end(); iter++)
 	{
 		// value stanza
 		//	e.g. <value>true</true>
@@ -118,3 +111,5 @@ string DoubleArrayParam::valueToString()
 
 	return retVal;
 }
+
+

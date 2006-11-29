@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: DoubleArrayParamDef.h,v 1.2 2005/01/24 23:03:38 sharring Exp $"
+* "@(#) $Id: DoubleArrayParamDef.h,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -45,12 +45,12 @@ using std::vector;
 
 using std::auto_ptr;
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * DoubleArrayParamDef class used to support OFFLINE tasks
 	 */
-	class DoubleArrayParamDef: public parameterSet::ParamDef
+	class DoubleArrayParamDef: public Parameters::ParamDef
 	{    
 	  public:
 	    /**
@@ -61,7 +61,7 @@ namespace parameterSet {
 	    /**
 	     * Constructor.
 	     */
-	    DoubleArrayParamDef(string paramName, string helpText, string promptText, 
+	    DoubleArrayParamDef(const string & paramName, const string & helpText, const string & promptText, 
 	       bool requiredBoolVal, auto_ptr< string > unitsText, auto_ptr< int > maxLen, auto_ptr< vector < double > > defaultVals);
 
 	    /**
@@ -112,14 +112,16 @@ namespace parameterSet {
 	    bool getHasDefaultValues();
 
 	  private:
-	    vector<double> defaultValues;
-	    int maxLen;
-	    string units;
+	    vector<double> defaultValues_m;
+	    int maxLen_m;
+	    string units_m;
 
-	    bool hasDefaultValues;
-	    bool hasMaxLen;
-	    bool hasUnits;
+	    bool hasDefaultValues_m;
+	    bool hasMaxLen_m;
+	    bool hasUnits_m;
 	};
 
 }
 #endif /*!_DOUBLE_ARRAY_PARAM_DEF_H*/
+
+

@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTest.cpp,v 1.2 2005/08/15 23:24:54 sharring Exp $"
+* "@(#) $Id: parameterTest.cpp,v 1.3 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 using std::string;
 using std::cout;
 using std::endl;
-using namespace parameterSet;
+using namespace Parameters;
 
 static const string BOOL_PARAM_NAME = "overwrite";
 static const string INT_PARAM_NAME = "testInt";
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 		// test string param
 		StringParam testStringVal = pset.getStringParam(STRING_PARAM_NAME);
 		cout << STRING_PARAM_NAME << " was: " << testStringVal.getValue() << endl; 
-		StringParam strP("newstring", STRING_PARAM_NAME);
+		StringParam strP(STRING_PARAM_NAME, "newstring");
 		pset.setParam(STRING_PARAM_NAME, strP);
 		testStringVal = pset.getStringParam(STRING_PARAM_NAME);
 		cout << STRING_PARAM_NAME << " now: " << testStringVal.getValue() << endl << endl; 

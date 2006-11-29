@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsDOMErrorHandler.cpp,v 1.1 2006/09/26 19:23:11 sharring Exp $"
+* "@(#) $Id: acsDOMErrorHandler.cpp,v 1.2 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 //  acsDOMHandlers: Overrides of the DOM ErrorHandler interface
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 XERCES_CPP_NAMESPACE_USE
 
 /**
@@ -85,3 +85,4 @@ bool acsDOMErrorHandler::handleError(const DOMError& domError)
 }
 
 //XERCES_CPP_NAMESPACE_END
+

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: StringArrayParamDef.h,v 1.2 2005/01/24 23:03:38 sharring Exp $"
+* "@(#) $Id: StringArrayParamDef.h,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,12 +43,12 @@ using std::auto_ptr;
 
 /** @file StringArrayParamDef.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * StringArrayParamDef class used to support OFFLINE tasks
 	 */
-	class StringArrayParamDef: public parameterSet::ParamDef
+	class StringArrayParamDef: public Parameters::ParamDef
 	{    
 	  public:
 	    /**
@@ -59,7 +59,7 @@ namespace parameterSet {
 	    /**
 	     * Constructor.
 	     */
-	    StringArrayParamDef(string paramName, string helpText, string promptText, 
+	    StringArrayParamDef(const string & paramName, const string  & helpText, const string & promptText, 
 	       bool requiredBoolVal, auto_ptr< int > maxLen, auto_ptr< vector < string > > defaultVals);
 
 	    /**
@@ -96,12 +96,15 @@ namespace parameterSet {
 	    bool getHasDefaultValues();
 
 	  private:
-	    vector<string> defaultValues;
-	    int maxLen;
+	    vector<string> defaultValues_m;
+	    int maxLen_m;
 
-	    bool hasDefaultValues;
-	    bool hasMaxLen;
+	    bool hasDefaultValues_m;
+	    bool hasMaxLen_m;
 	};
 
 }
 #endif /*!_STRING_ARRAY_PARAM_DEF_H*/
+
+
+

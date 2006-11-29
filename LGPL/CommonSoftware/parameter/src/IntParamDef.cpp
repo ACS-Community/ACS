@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: IntParamDef.cpp,v 1.2 2005/01/24 23:03:09 sharring Exp $"
+* "@(#) $Id: IntParamDef.cpp,v 1.3 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <vector>
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
@@ -46,56 +46,52 @@ IntParamDef::IntParamDef()
 /**
  * Constructor.
  */
-IntParamDef::IntParamDef(string nameVal, string helpVal, string promptVal, 
+IntParamDef::IntParamDef(const string & nameVal, const string & helpVal, const string & promptVal, 
 	bool isRequired, auto_ptr< int > defaultVal, auto_ptr< string > strDefault, auto_ptr< string > unitsVal, 
-	auto_ptr< int > maxVal, auto_ptr< int > minVal, auto_ptr< vector<int> > validVals)
+	auto_ptr< int > maxVal, auto_ptr< int > minVal, auto_ptr< vector<int> > validVals):
+		ParamDef(nameVal, helpVal, promptVal, isRequired)
 {
-	name = nameVal;	
-	help = helpVal;
-	prompt = promptVal;
-	required = isRequired;
-
 	if(NULL != defaultVal.get()) {
-		defaultValue = *defaultVal;
-		hasDefault = true;
+		defaultValue_m = *defaultVal;
+		hasDefault_m = true;
 	}
 	else {
-		hasDefault = false;
+		hasDefault_m = false;
 	}
 	if(NULL != strDefault.get()) {
-		stringDefault = *strDefault;
-		hasStringDefault = true;
+		stringDefault_m = *strDefault;
+		hasStringDefault_m = true;
 	}
 	else {
-		hasStringDefault = false;
+		hasStringDefault_m = false;
 	}
 	if(NULL != unitsVal.get()) {
-		units = *unitsVal;
-		hasUnits = true;
+		units_m = *unitsVal;
+		hasUnits_m = true;
 	}
 	else {
-		hasUnits = false;
+		hasUnits_m = false;
 	}
 	if(NULL != maxVal.get()) {
-		max = *maxVal;
-		hasMax = true;
+		max_m = *maxVal;
+		hasMax_m = true;
 	}
 	else {
-		hasMax = false;
+		hasMax_m = false;
 	}
 	if(NULL != minVal.get()) {
-		min = *minVal;
-		hasMin = true;
+		min_m = *minVal;
+		hasMin_m = true;
 	}
 	else {
-		hasMin = false;
+		hasMin_m = false;
 	}
 	if(NULL != validVals.get()) {
-		validValues = *validVals;
-		hasValidValues = true;
+		validValues_m = *validVals;
+		hasValidValues_m = true;
 	}
 	else {
-		hasValidValues = false;
+		hasValidValues_m = false;
 	}
 }
 
@@ -114,7 +110,7 @@ auto_ptr< int > IntParamDef::getDefault()
 {
 	auto_ptr<int> retVal;
 	if(true == getHasDefault()) {
-		retVal.reset(new int(defaultValue));
+		retVal.reset(new int(defaultValue_m));
 	}
 	return retVal;
 }
@@ -127,7 +123,7 @@ auto_ptr< string > IntParamDef::getStringDefault()
 {
 	auto_ptr<string> retVal;
 	if(true == getHasStringDefault()) {
-		retVal.reset(new string(stringDefault));
+		retVal.reset(new string(stringDefault_m));
 	}
 	return retVal;
 }
@@ -140,7 +136,7 @@ auto_ptr< string > IntParamDef::getUnits()
 {
 	auto_ptr<string> retVal;
 	if(true == getHasUnits()) {
-		retVal.reset(new string(units));
+		retVal.reset(new string(units_m));
 	}
 	return retVal;
 }
@@ -153,7 +149,7 @@ auto_ptr< int > IntParamDef::getMax()
 {
 	auto_ptr<int> retVal;
 	if(true == getHasMax()) {
-		retVal.reset(new int(max));
+		retVal.reset(new int(max_m));
 	}
 	return retVal;
 }
@@ -166,7 +162,7 @@ auto_ptr< int > IntParamDef::getMin()
 {
 	auto_ptr<int> retVal;
 	if(true == getHasMin()) {
-		retVal.reset(new int(min));
+		retVal.reset(new int(min_m));
 	}
 	return retVal;
 }
@@ -179,7 +175,7 @@ auto_ptr< vector<int> > IntParamDef::getValidValues()
 {
 	auto_ptr<vector <int> > retVal;
 	if(true == getHasValidValues()) {
-		retVal.reset(new vector<int>(validValues));
+		retVal.reset(new vector<int>(validValues_m));
 	}
 	return retVal;
 }
@@ -190,7 +186,7 @@ auto_ptr< vector<int> > IntParamDef::getValidValues()
  */
 bool IntParamDef::getHasDefault()
 {
-   return hasDefault;
+   return hasDefault_m;
 }
 
 /*
@@ -199,7 +195,7 @@ bool IntParamDef::getHasDefault()
  */
 bool IntParamDef::getHasStringDefault()
 {
-   return hasStringDefault;
+   return hasStringDefault_m;
 }
 
 /*
@@ -208,7 +204,7 @@ bool IntParamDef::getHasStringDefault()
  */
 bool IntParamDef::getHasUnits()
 {
-   return hasUnits;
+   return hasUnits_m;
 }
 
 /*
@@ -217,7 +213,7 @@ bool IntParamDef::getHasUnits()
  */
 bool IntParamDef::getHasMax()
 {
-   return hasMax;
+   return hasMax_m;
 }
 
 /*
@@ -226,7 +222,7 @@ bool IntParamDef::getHasMax()
  */
 bool IntParamDef::getHasMin()
 {
-   return hasMin;
+   return hasMin_m;
 }
 
 /*
@@ -235,5 +231,7 @@ bool IntParamDef::getHasMin()
  */
 bool IntParamDef::getHasValidValues()
 {
-   return hasValidValues;
+   return hasValidValues_m;
 }
+
+

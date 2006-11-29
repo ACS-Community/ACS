@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: BoolParamDef.cpp,v 1.2 2005/01/24 23:03:09 sharring Exp $"
+* "@(#) $Id: BoolParamDef.cpp,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <BoolParamDef.h>
 #include <iostream>
 
-using namespace parameterSet;
+using namespace Parameters;
 using namespace std;
 
 /**
@@ -44,19 +44,16 @@ BoolParamDef::BoolParamDef()
 /**
  * Constructor.
  */
-BoolParamDef::BoolParamDef(string nameVal, string helpVal, string promptVal, bool isRequired, auto_ptr< bool > defaultVal)
+BoolParamDef::BoolParamDef(const string & nameVal, const string & helpVal, const string & promptVal, bool isRequired, auto_ptr< bool > defaultVal) : 
+	ParamDef(nameVal, helpVal, promptVal, isRequired)
 {
-	name = nameVal;	
-	help = helpVal;
-	prompt = promptVal;
-	required = isRequired;
 	if(NULL != defaultVal.get()) {
-		hasDefault = true;
-		defaultValue = *defaultVal;
+		hasDefault_m = true;
+		defaultValue_m = *defaultVal;
 	}
 	else {
-		hasDefault = false;
-		defaultValue = false;
+		hasDefault_m = false;
+		defaultValue_m = false;
 	}
 }
 
@@ -73,7 +70,7 @@ BoolParamDef::~BoolParamDef()
  */
 bool BoolParamDef::getDefault()
 {
-   return defaultValue;
+   return defaultValue_m;
 }
 
 /*
@@ -82,6 +79,8 @@ bool BoolParamDef::getDefault()
  */
 bool BoolParamDef::getHasDefault()
 {
-   return hasDefault;
+   return hasDefault_m;
 }
+
+
 

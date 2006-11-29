@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ParamSetDef.h,v 1.7 2005/09/08 23:58:15 sharring Exp $"
+* "@(#) $Id: ParamSetDef.h,v 1.8 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,7 +63,7 @@ using XERCES_CPP_NAMESPACE_QUALIFIER DOMBuilder;
 
 /** @file ParamSetDef.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * ParamSetDef class used to support OFFLINE tasks
@@ -78,7 +78,7 @@ namespace parameterSet {
 		 * Constructor
 		 * @param xmlParamSetDef the parameter set definition as an XML string
 		 */
-		ParamSetDef(string xmlParamSetDef);
+		ParamSetDef(const string & xmlParamSetDef);
 		
 		/**
 		 * Destructor
@@ -219,3 +219,5 @@ namespace parameterSet {
 	};
 }
 #endif /*!_PARAM_SET_H*/
+
+

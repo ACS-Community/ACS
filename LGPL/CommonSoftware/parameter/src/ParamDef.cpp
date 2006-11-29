@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParamDef.cpp,v 1.2 2005/01/24 23:03:09 sharring Exp $"
+* "@(#) $Id: ParamDef.cpp,v 1.3 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,12 +30,20 @@
 
 #include <ParamDef.h>
 
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
  */
 ParamDef::ParamDef()
+{
+}
+
+/**
+ * Constructor.
+ */
+ParamDef::ParamDef(const string & nameVal, const string & helpVal, const string & promptVal, bool isRequired): 
+	required_m(isRequired), name_m(nameVal), help_m(helpVal), prompt_m(promptVal)
 {
 }
 
@@ -52,7 +60,7 @@ ParamDef::~ParamDef()
  */
 bool ParamDef::isRequired()
 {
-   return required;
+   return required_m;
 }
 
 /*
@@ -61,7 +69,7 @@ bool ParamDef::isRequired()
  */
 string ParamDef::getName()
 {
-   return name;
+   return name_m;
 }
 
 /*
@@ -70,7 +78,7 @@ string ParamDef::getName()
  */
 string ParamDef::getHelp()
 {
-   return help;
+   return help_m;
 }
     
 /*
@@ -79,5 +87,7 @@ string ParamDef::getHelp()
  */
 string ParamDef::getPrompt()
 {
-   return prompt;
+   return prompt_m;
 }
+
+

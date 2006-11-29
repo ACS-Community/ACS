@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDOMErrorHandler.h,v 1.1 2006/09/26 19:23:11 sharring Exp $"
+* "@(#) $Id: acsDOMErrorHandler.h,v 1.2 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMErrorHandler;
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMError;
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * acsDOMErrorHandler class - class to handle DOM parsing errors
@@ -66,3 +66,4 @@ namespace parameterSet {
 
 }
 #endif /*!_MYDOMERROR_HANDLER_H*/
+

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: StrX.h,v 1.3 2005/02/23 02:34:58 sharring Exp $"
+* "@(#) $Id: StrX.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 #include <iostream.h>
 #endif
 
-namespace parameterSet {
+namespace Parameters {
 
 	using XERCES_CPP_NAMESPACE_QUALIFIER XMLString;
 
@@ -107,7 +107,7 @@ namespace parameterSet {
 		XMLCh*  fUnicodeForm;
 	};
 
-	inline XERCES_STD_QUALIFIER ostream& operator<<(std::ostream& target, const parameterSet::StrX& toDump)
+	inline XERCES_STD_QUALIFIER ostream& operator<<(std::ostream& target, const Parameters::StrX& toDump)
 	{
 		if(NULL != toDump.localForm()) {
 			target << toDump.localForm();
@@ -120,3 +120,6 @@ namespace parameterSet {
 }
 
 #endif /*!_STR_X_H*/
+
+
+

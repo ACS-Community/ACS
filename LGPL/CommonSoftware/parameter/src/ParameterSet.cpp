@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParameterSet.cpp,v 1.27 2006/11/21 02:07:54 cparedes Exp $"
+* "@(#) $Id: ParameterSet.cpp,v 1.28 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,7 +57,7 @@
 #endif 
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 XERCES_CPP_NAMESPACE_USE
 
 typedef map< string, IntParam >::value_type intParamValType;
@@ -494,7 +494,7 @@ void ParameterSet::setParam(string paramName, IntParam value)
 		// check to make sure that value is valid
 		IntParamDef pDef;
 		try {
-			pDef = parameterSetDef->getIntParamDef(paramName);
+			pDef = ParameterSetDef->getIntParamDef(paramName);
 		}
 		catch(domain_error toCatch) {
 			// no param def for this parameter, rethrow as invalid arg error
@@ -552,7 +552,7 @@ void ParameterSet::setParam(string paramName, DoubleParam value)
       // check to make sure that value is valid
       DoubleParamDef pDef;
       try {
-         pDef = parameterSetDef->getDoubleParamDef(paramName);
+         pDef = ParameterSetDef->getDoubleParamDef(paramName);
       }
       catch(domain_error toCatch) {
          // no param def for this parameter, rethrow as invalid arg error
@@ -595,7 +595,7 @@ void ParameterSet::setParam(string paramName, StringParam value)
    {
 		// there was an existing entry, so save it in case we need to "roll back" due to error
       StringParam prevEntry = (*mapEntry).second;
-      previousValue.reset(new StringParam(prevEntry.getValue(), prevEntry.getName()));
+      previousValue.reset(new StringParam(prevEntry.getName(), prevEntry.getValue()));
       (*mapEntry).second = value;
    }
    else 
@@ -607,7 +607,7 @@ void ParameterSet::setParam(string paramName, StringParam value)
       // check to make sure that value is valid
       StringParamDef pDef;
       try {
-         pDef = parameterSetDef->getStringParamDef(paramName);
+         pDef = ParameterSetDef->getStringParamDef(paramName);
       }
       catch(domain_error toCatch) {
          // no param def for this parameter, rethrow as invalid arg error
@@ -686,7 +686,7 @@ void ParameterSet::setParam(string paramName, IntArrayParam value)
       // check to make sure that value is valid
       IntArrayParamDef pDef;
       try {
-         pDef = parameterSetDef->getIntArrayParamDef(paramName);
+         pDef = ParameterSetDef->getIntArrayParamDef(paramName);
       }
       catch(domain_error toCatch) {
          // no param def for this parameter, rethrow as invalid arg error
@@ -741,7 +741,7 @@ void ParameterSet::setParam(string paramName, DoubleArrayParam value)
       // check to make sure that value is valid
       DoubleArrayParamDef pDef;
       try {
-         pDef = parameterSetDef->getDoubleArrayParamDef(paramName);
+         pDef = ParameterSetDef->getDoubleArrayParamDef(paramName);
       }
       catch(domain_error toCatch) {
          // no param def for this parameter, rethrow as invalid arg error
@@ -796,7 +796,7 @@ void ParameterSet::setParam(string paramName, StringArrayParam value)
 		// check to make sure that value is valid
 		StringArrayParamDef pDef;
 		try {
-			pDef = parameterSetDef->getStringArrayParamDef(paramName);
+			pDef = ParameterSetDef->getStringArrayParamDef(paramName);
 		}
 		catch(domain_error toCatch) {
 			// no param def for this parameter, rethrow as invalid arg error
@@ -913,7 +913,7 @@ int ParameterSet::parseDOM(const char* xmlFile, InMemoryXmlData * xmlData) throw
 					const XMLCh * psetDefValue = psetDefTextNode->getNodeValue();
 					psetDefFileName = string(StrX(psetDefValue).localForm());
 					if(NULL != psetDefFileName.c_str()) {
-						parameterSetDef.reset(new ParamSetDef(psetDefFileName));
+						ParameterSetDef.reset(new ParamSetDef(psetDefFileName));
 					}
 				}
 				else {
@@ -1318,7 +1318,7 @@ void ParameterSet::handleStringParam(DOMElement *paramElem) throw(domain_error)
 	}
 
 	// add a new StringParam to the ParameterSet
-	StringParam newStringParam(paramValue, paramName);
+	StringParam newStringParam(paramName, paramValue);
 	setParam(paramName, newStringParam);
 	ACS_DEBUG("ParameterSet::handleStringParam", "inserted a string param into object model")
 }
@@ -1424,7 +1424,7 @@ void ParameterSet::processParamNodes(DOMNodeList *paramNodes) throw(domain_error
  */
 ParamSetDef* ParameterSet::getParamSetDef()
 {
-	return parameterSetDef.get();
+	return ParameterSetDef.get();
 }
 
 /**
@@ -1503,7 +1503,7 @@ void ParameterSet::validate() throw(invalid_argument)
 void ParameterSet::validateBoolParams() throw(invalid_argument)
 {
 	// for each bool parameter defined in psetdef
-	auto_ptr< vector<BoolParamDef> > boolParamDefs = parameterSetDef->getBoolParamDefs();
+	auto_ptr< vector<BoolParamDef> > boolParamDefs = ParameterSetDef->getBoolParamDefs();
 	for(unsigned int i = 0; i < boolParamDefs->size(); ++i)
 	{
 		BoolParamDef pDef = boolParamDefs->begin()[i];
@@ -1517,7 +1517,7 @@ void ParameterSet::validateBoolParams() throw(invalid_argument)
 void ParameterSet::validateIntParams() throw(invalid_argument)
 {
 	// for each int parameter defined in psetdef
-	auto_ptr< vector<IntParamDef> > paramDefs = parameterSetDef->getIntParamDefs();
+	auto_ptr< vector<IntParamDef> > paramDefs = ParameterSetDef->getIntParamDefs();
 	for(unsigned int i = 0; i < paramDefs->size(); ++i)
 	{
 		IntParamDef pDef = paramDefs->begin()[i];
@@ -1531,7 +1531,7 @@ void ParameterSet::validateIntParams() throw(invalid_argument)
 void ParameterSet::validateDoubleParams() throw(invalid_argument)
 {
 	// for each double parameter defined in psetdef
-	auto_ptr< vector<DoubleParamDef> > paramDefs = parameterSetDef->getDoubleParamDefs();
+	auto_ptr< vector<DoubleParamDef> > paramDefs = ParameterSetDef->getDoubleParamDefs();
 	for(unsigned int i = 0; i < paramDefs->size(); ++i)
 	{
 		DoubleParamDef pDef = paramDefs->begin()[i];
@@ -1545,7 +1545,7 @@ void ParameterSet::validateDoubleParams() throw(invalid_argument)
 void ParameterSet::validateStringParams() throw(invalid_argument)
 {
 	// for each string parameter defined in psetdef
-	auto_ptr< vector<StringParamDef> > stringParamDefs = parameterSetDef->getStringParamDefs();
+	auto_ptr< vector<StringParamDef> > stringParamDefs = ParameterSetDef->getStringParamDefs();
 	for(unsigned int i = 0; i < stringParamDefs->size(); ++i)
 	{
 		StringParamDef pDef = stringParamDefs->begin()[i];
@@ -1559,7 +1559,7 @@ void ParameterSet::validateStringParams() throw(invalid_argument)
 void ParameterSet::validateIntArrayParams() throw(invalid_argument)
 {
 	// for each int parameter defined in psetdef
-	auto_ptr< vector<IntArrayParamDef> > paramDefs = parameterSetDef->getIntArrayParamDefs();
+	auto_ptr< vector<IntArrayParamDef> > paramDefs = ParameterSetDef->getIntArrayParamDefs();
 	for(unsigned int i = 0; i < paramDefs->size(); ++i)
 	{
 		IntArrayParamDef pDef = paramDefs->begin()[i];
@@ -1573,7 +1573,7 @@ void ParameterSet::validateIntArrayParams() throw(invalid_argument)
 void ParameterSet::validateStringArrayParams() throw(invalid_argument)
 {
 	// for each string parameter defined in psetdef
-	auto_ptr< vector<StringArrayParamDef> > paramDefs = parameterSetDef->getStringArrayParamDefs();
+	auto_ptr< vector<StringArrayParamDef> > paramDefs = ParameterSetDef->getStringArrayParamDefs();
 	for(unsigned int i = 0; i < paramDefs->size(); ++i)
 	{
 		StringArrayParamDef pDef = paramDefs->begin()[i];
@@ -1587,7 +1587,7 @@ void ParameterSet::validateStringArrayParams() throw(invalid_argument)
 void ParameterSet::validateDoubleArrayParams() throw(invalid_argument)
 {
 	// for each double parameter defined in psetdef
-	auto_ptr< vector<DoubleArrayParamDef> > paramDefs = parameterSetDef->getDoubleArrayParamDefs();
+	auto_ptr< vector<DoubleArrayParamDef> > paramDefs = ParameterSetDef->getDoubleArrayParamDefs();
 	for(unsigned int i = 0; i < paramDefs->size(); ++i)
 	{
 		DoubleArrayParamDef pDef = paramDefs->begin()[i];

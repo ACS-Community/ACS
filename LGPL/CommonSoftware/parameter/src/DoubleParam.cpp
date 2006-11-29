@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: DoubleParam.cpp,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: DoubleParam.cpp,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <parameterConstants.h>
 #include <sstream>
 
-using namespace parameterSet;
+using namespace Parameters;
 using std::stringstream;
 
 /**
@@ -45,17 +45,8 @@ DoubleParam::DoubleParam()
 /**
  * Constructor.
  */
-DoubleParam::DoubleParam(double doubleVal, string nameVal, auto_ptr<string> unitsVal)
+DoubleParam::DoubleParam(double doubleVal, const string & nameVal, auto_ptr<string> unitsVal): QuantityParam(nameVal, unitsVal), value_m(doubleVal)
 {
-	value = doubleVal;
-	name = nameVal;
-	if(NULL != unitsVal.get()) {
-		units = *unitsVal;
-		hasUnits = true;
-	}
-	else {
-		hasUnits = false;
-	}
 }
 
 /**
@@ -66,12 +57,12 @@ DoubleParam::~DoubleParam()
 }
 
 /*
- * Accessor for the value.
- * @return the value as a double.
+ * Accessor for the value_m.
+ * @return the value_m as a double.
  */
 double DoubleParam::getValue()
 {
-   return value;
+   return value_m;
 }
 
 /**
@@ -80,11 +71,12 @@ double DoubleParam::getValue()
  */
 string DoubleParam::getType()
 {
-	return DOUBLE_PARAM_STRING;
+	string retVal(DOUBLE_PARAM_STRING);
+	return retVal;
 }
 
 /**
- * Used to create the value portion of the toString (XML) string.
+ * Used to create the value_m portion of the toString (XML) string.
  */
 string DoubleParam::valueToString()
 {
@@ -110,3 +102,5 @@ string DoubleParam::valueToString()
 
 	return retVal;
 }
+
+

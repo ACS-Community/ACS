@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: BoolParamDef.h,v 1.2 2005/01/24 23:03:38 sharring Exp $"
+* "@(#) $Id: BoolParamDef.h,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,12 +43,12 @@ using std::vector;
 
 /** @file BoolParamDef.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * BoolParamDef class used to support OFFLINE tasks
 	 */
-	class BoolParamDef: public parameterSet::ParamDef
+	class BoolParamDef: public Parameters::ParamDef
 	{    
 	  public:
 	    /**
@@ -59,8 +59,8 @@ namespace parameterSet {
 	    /**
 	     * Constructor
 	     */
-	     BoolParamDef::BoolParamDef(string nameVal, string helpVal, string promptVal, 
-		bool isRequired, auto_ptr< bool > defaultVal);
+		BoolParamDef::BoolParamDef(const string & nameVal, const string & helpVal, const string & promptVal, 
+			bool isRequired, auto_ptr< bool > defaultVal);
 
 	    /**
 	     * Destructor
@@ -80,8 +80,10 @@ namespace parameterSet {
 	    bool getHasDefault();
 	    
 	  private:
-	    bool defaultValue;
-	    bool hasDefault;
+	    bool defaultValue_m;
+	    bool hasDefault_m;
 	};
 }
 #endif /*!_BOOL_PARAM_DEF_H*/
+
+

@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: IntArrayParam.cpp,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: IntArrayParam.cpp,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <parameterConstants.h>
 #include <sstream>
 
-using namespace parameterSet;
+using namespace Parameters;
 using std::stringstream;
 
 /**
@@ -45,17 +45,8 @@ IntArrayParam::IntArrayParam()
 /**
  * Constructor.
  */
-IntArrayParam::IntArrayParam(vector<int> vals, string nameVal, auto_ptr<string> unitsVal)
+IntArrayParam::IntArrayParam(const vector<int> & vals, const string & nameVal, auto_ptr<string> unitsVal): QuantityParam(nameVal, unitsVal), values_m(vals)
 {
-	values = vals;
-	name = nameVal;
-	if(NULL != unitsVal.get()) {
-		units = *unitsVal;
-		hasUnits = true;
-	}
-	else {
-		hasUnits = false;
-	}
 }
 
 /**
@@ -71,7 +62,7 @@ IntArrayParam::~IntArrayParam()
  */
 vector<int> IntArrayParam::getValues()
 {
-   return values;
+   return values_m;
 }
 
 /**
@@ -80,7 +71,8 @@ vector<int> IntArrayParam::getValues()
  */
 string IntArrayParam::getType()
 {
-	return INT_ARRAY_PARAM_STRING;
+	string retVal(INT_ARRAY_PARAM_STRING);
+	return retVal;
 }
 
 /**
@@ -94,7 +86,7 @@ string IntArrayParam::valueToString()
 	// a value XML entry for each one.
 	vector<int>::iterator iter;
 
-	for(iter = values.begin(); iter != values.end(); iter++)
+	for(iter = values_m.begin(); iter != values_m.end(); iter++)
 	{
 		// generate the value stanza
 		//	e.g. <value>10</true>
@@ -117,3 +109,5 @@ string IntArrayParam::valueToString()
 
 	return retVal;
 }
+
+

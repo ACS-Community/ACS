@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: IntArrayParam.h,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: IntArrayParam.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,12 +43,12 @@ using std::auto_ptr;
 
 /** @file IntArrayParam.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * IntArrayParam class used to support OFFLINE tasks
 	 */
-	class IntArrayParam : public parameterSet::QuantityParam
+	class IntArrayParam : public Parameters::QuantityParam
 	{    
 	  public:
 	    /**
@@ -59,7 +59,7 @@ namespace parameterSet {
 	    /**
 	     * Constructor
 	     */
-	    IntArrayParam(vector<int> vals, string nameVal, auto_ptr<string> unitsVal);
+	    IntArrayParam(const vector<int> & vals, const string & nameVal, auto_ptr<string> unitsVal);
 	    
 	    /**
 	     * Destructor
@@ -87,9 +87,12 @@ namespace parameterSet {
 		virtual string valueToString();
 
 	  private:
-	    vector<int> values;
+	    vector<int> values_m;
 	};
 
 }
 
 #endif /*!_INT_ARRAY_PARAM_H*/
+
+
+

@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: StringArrayParamDef.cpp,v 1.2 2005/01/24 23:03:09 sharring Exp $"
+* "@(#) $Id: StringArrayParamDef.cpp,v 1.3 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <StringArrayParamDef.h>
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
@@ -44,27 +44,23 @@ StringArrayParamDef::StringArrayParamDef()
 /**
  * Constructor.
  */
-StringArrayParamDef::StringArrayParamDef(string paramName, string helpText, string promptText, 
-	bool requiredBoolVal, auto_ptr< int > maxLenVal, auto_ptr< vector < string > > defaultVals)
+StringArrayParamDef::StringArrayParamDef(const string & paramName, const string & helpText, const string & promptText, 
+	bool requiredBoolVal, auto_ptr< int > maxLenVal, auto_ptr< vector < string > > defaultVals): 
+		ParamDef(paramName, helpText, promptText, requiredBoolVal)
 {
-	name = paramName;
-	help = helpText;
-	prompt = promptText;
-	required = requiredBoolVal;
-
 	if(NULL != maxLenVal.get()) {
-		maxLen = *maxLenVal;
-		hasMaxLen = true;
+		maxLen_m = *maxLenVal;
+		hasMaxLen_m = true;
 	}
 	else {
-		hasMaxLen = false;
+		hasMaxLen_m = false;
 	}
 	if(NULL != defaultVals.get()) {
-		defaultValues = *defaultVals;
-		hasDefaultValues = true;
+		defaultValues_m = *defaultVals;
+		hasDefaultValues_m = true;
 	}
 	else {
-		hasDefaultValues = false;
+		hasDefaultValues_m = false;
 	}
 }
 
@@ -83,7 +79,7 @@ auto_ptr<int> StringArrayParamDef::getMaxLen()
 {
 	auto_ptr<int> retVal;
 	if(true == getHasMaxLen()) {
-		retVal.reset(new int(maxLen));
+		retVal.reset(new int(maxLen_m));
 	}
 	return retVal;
 }
@@ -96,7 +92,7 @@ auto_ptr< vector<string> > StringArrayParamDef::getDefaultValues()
 {
 	auto_ptr<vector <string> > retVal;
 	if(true == getHasDefaultValues()) {
-		retVal.reset(new vector<string>(defaultValues));
+		retVal.reset(new vector<string>(defaultValues_m));
 	}
 	return retVal;
 }
@@ -107,7 +103,7 @@ auto_ptr< vector<string> > StringArrayParamDef::getDefaultValues()
  */
 bool StringArrayParamDef::getHasMaxLen()
 {
-	return hasMaxLen;
+	return hasMaxLen_m;
 }
 
 /*
@@ -116,5 +112,5 @@ bool StringArrayParamDef::getHasMaxLen()
  */
 bool StringArrayParamDef::getHasDefaultValues()
 {
-	return hasDefaultValues;
+	return hasDefaultValues_m;
 }

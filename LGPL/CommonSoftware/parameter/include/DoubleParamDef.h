@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: DoubleParamDef.h,v 1.3 2005/01/26 04:35:10 sharring Exp $"
+* "@(#) $Id: DoubleParamDef.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,12 +43,12 @@ using std::vector;
 
 /** @file DoubleParamDef.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * DoubleParamDef class used to support OFFLINE tasks
 	 */
-	class DoubleParamDef: public parameterSet::ParamDef
+	class DoubleParamDef: public Parameters::ParamDef
 	{    
 	  public:
 	    /**
@@ -59,9 +59,9 @@ namespace parameterSet {
 	    /**
 	     * Constructor.
 	     */
-	    DoubleParamDef(string nameVal, string helpVal, string promptVal, 
-		bool isRequired, auto_ptr< double > defaultVal, auto_ptr< string > strDefault, auto_ptr< string > unitsVal, 
-		auto_ptr< double > maxVal, auto_ptr< double > minVal, auto_ptr< vector<double> > validVals);
+		DoubleParamDef(const string & nameVal, const string & helpVal,const  string & promptVal, 
+			bool isRequired, auto_ptr< double > defaultVal, auto_ptr< string > strDefault, auto_ptr< string > unitsVal, 
+			auto_ptr< double > maxVal, auto_ptr< double > minVal, auto_ptr< vector<double> > validVals);
 
 	    /**
 	     * Destructor
@@ -153,20 +153,22 @@ namespace parameterSet {
 	    bool getHasValidValues();
 
 	  private:
-	    double defaultValue;
-	    string defaultString;
-	    string units;
-	    double max;
-	    double min;
-	    vector<double> validValues;
+	    double defaultValue_m;
+	    string defaultString_m;
+	    string units_m;
+	    double max_m;
+	    double min_m;
+	    vector<double> validValues_m;
 
-	    bool hasDefault;
-	    bool hasStringDefault;
-	    bool hasUnits;
-	    bool hasMax;
-	    bool hasMin;
-	    bool hasValidValues;
+	    bool hasDefault_m;
+	    bool hasStringDefault_m;
+	    bool hasUnits_m;
+	    bool hasMax_m;
+	    bool hasMin_m;
+	    bool hasValidValues_m;
 	};
 
 }
 #endif /*!_DOUBLE_PARAM_DEF_H*/
+
+

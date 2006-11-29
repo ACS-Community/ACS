@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: IntParam.h,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: IntParam.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,12 +41,12 @@ using std::auto_ptr;
 
 /** @file IntParam.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * IntParam class used to support OFFLINE tasks
 	 */
-	class IntParam : public parameterSet::QuantityParam
+	class IntParam : public Parameters::QuantityParam
 	{    
 	  public:
 	    /**
@@ -57,7 +57,7 @@ namespace parameterSet {
 	    /**
 	     * Constructor
 	     */
-	    IntParam(int intVal, string nameVal, auto_ptr<string> unitsVal);
+	    IntParam(int intVal, const string & nameVal, auto_ptr<string> unitsVal);
 	    
 	    /**
 	     * Destructor
@@ -85,8 +85,11 @@ namespace parameterSet {
 		virtual string valueToString();
 
 	  private:
-	    int value;
+	    int value_m;
 	};
 
 }
 #endif /*!_INT_PARAM_H*/
+
+
+

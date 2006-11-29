@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: QuantityParam.h,v 1.1 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: QuantityParam.h,v 1.2 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,14 +41,14 @@ using std::auto_ptr;
 
 /** @file QuantityParam.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * QuantityParam class - abstract base class used to store information about params having units 
 	 * (e.g. Mhz, cm, seconds, etc.) within a ParameterSetDef as defined by the task author of a 
 	 * particular OFFLINE task.
 	 */
-	class QuantityParam : public parameterSet::Param
+	class QuantityParam : public Parameters::Param
 	{    
 		public:
 
@@ -56,6 +56,13 @@ namespace parameterSet {
 			 * Constructor
 			 */
 			QuantityParam();
+
+			/**
+			 * Constructor
+			 * @param name the name of the parameter
+			 * @unitsVal units for the quantity, if any
+			 */
+			QuantityParam(const string & nameVal, auto_ptr<string> unitsVal);
 	    
 			/**
 			 * Destructor
@@ -84,8 +91,11 @@ namespace parameterSet {
 			virtual string toString();
 
 		protected:
-			string units;
-			bool hasUnits;
+			string units_m;
+			bool hasUnits_m;
 	};
 }
 #endif /*!_QUANTITY_PARAM_H*/
+
+
+

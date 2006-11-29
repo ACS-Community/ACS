@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: DoubleArrayParam.h,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: DoubleArrayParam.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,12 +44,12 @@ using std::vector;
 
 /** @file DoubleArrayParam.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * DoubleArrayParam class used to support OFFLINE tasks
 	 */
-	class DoubleArrayParam : public parameterSet::QuantityParam
+	class DoubleArrayParam : public Parameters::QuantityParam
 	{    
 	  public:
 	    /**
@@ -60,7 +60,7 @@ namespace parameterSet {
 	    /**
 	     * Constructor
 	     */
-	    DoubleArrayParam(vector<double> vals, string nameVal, auto_ptr<string> unitsVal);
+	    DoubleArrayParam(const vector<double> & vals, const string & nameVal, auto_ptr<string> unitsVal);
 	    
 	    /**
 	     * Destructor
@@ -88,8 +88,10 @@ namespace parameterSet {
 		virtual string valueToString();
 
 	  private:
-	    vector<double> values;
+	    vector<double> values_m;
 	};
 
 }
 #endif /*!_DOUBLE_ARRAY_PARAM_H*/
+
+

@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: Param.cpp,v 1.4 2006/01/10 02:09:56 sharring Exp $"
+* "@(#) $Id: Param.cpp,v 1.5 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,12 +31,19 @@
 #include <Param.h>
 #include <parameterConstants.h>
 
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
  */
 Param::Param()
+{
+}
+
+/**
+ * Constructor
+ */
+Param::Param(const string & nameVal): name_m(nameVal)
 {
 }
 
@@ -53,7 +60,7 @@ Param::~Param()
  */
 string Param::getName()
 {
-   return name;
+   return name_m;
 }
 
 /**
@@ -111,3 +118,5 @@ string Param::toString()
 
 	return retVal;
 }
+
+

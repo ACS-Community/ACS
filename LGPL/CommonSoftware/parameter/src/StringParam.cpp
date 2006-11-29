@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: StringParam.cpp,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: StringParam.cpp,v 1.4 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <parameterConstants.h>
 
 using namespace std;
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
@@ -44,10 +44,8 @@ StringParam::StringParam()
 /**
  * Constructor.
  */
-StringParam::StringParam(string stringVal, string nameVal)
+StringParam::StringParam(const string & nameVal, const string & stringVal): Param(nameVal), value_m(stringVal)
 {
-	value = stringVal;
-	name = nameVal;
 }
 
 /**
@@ -63,7 +61,7 @@ StringParam::~StringParam()
  */
 string StringParam::getValue()
 {
-   return value;
+   return value_m;
 }
 
 /**
@@ -72,7 +70,8 @@ string StringParam::getValue()
  */
 string StringParam::getType()
 {
-	return STRING_PARAM_STRING;
+	string retVal(STRING_PARAM_STRING);
+	return retVal;
 }
 
 /**
@@ -98,3 +97,5 @@ string StringParam::valueToString()
 
 	return retVal;
 }
+
+

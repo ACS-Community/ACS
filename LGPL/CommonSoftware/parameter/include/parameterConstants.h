@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
-namespace parameterSet {
+namespace Parameters {
 	// SOME USEFUL CONSTANTS
 
 	// ParameterSet constants
@@ -96,4 +96,5 @@ namespace parameterSet {
 	const char* const SLASH_STRING = "/"; // TODO - portability issue for forward slash?
 }
 #endif /*!_PARAM_CONSTANTS_H */
+
 

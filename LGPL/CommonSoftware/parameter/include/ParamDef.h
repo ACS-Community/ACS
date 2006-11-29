@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ParamDef.h,v 1.2 2005/01/24 23:03:38 sharring Exp $"
+* "@(#) $Id: ParamDef.h,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@ using std::string;
 
 /** @file ParamDef.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * ParamDef class - abstract base class used to store information about individual params within a ParameterSetDef
@@ -52,6 +52,11 @@ namespace parameterSet {
 	     * Constructor
 	     */
 	    ParamDef();
+
+	    /**
+	     * Constructor
+	     */
+	    ParamDef(const string & nameVal, const string & helpVal, const string & promptVal, bool isRequired);
 	    
 	    /**
 	     * Destructor
@@ -83,11 +88,13 @@ namespace parameterSet {
 	    string getPrompt();
 	    
 	  protected:
-	    bool required;
-	    string name;
-	    string help;
-	    string prompt;
+	    bool required_m;
+	    string name_m;
+	    string help_m;
+	    string prompt_m;
 	};
 
 }
 #endif /*!_PARAM_DEF_H*/
+
+

@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: QuantityParam.cpp,v 1.2 2006/01/10 02:09:56 sharring Exp $"
+* "@(#) $Id: QuantityParam.cpp,v 1.3 2006/11/29 23:01:27 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,13 +33,27 @@
 #include <string>
 
 using std::string;
-using namespace parameterSet;
+using namespace Parameters;
 
 /**
  * Constructor.
  */
 QuantityParam::QuantityParam()
 {
+}
+
+/**
+ * Constructor.
+ */
+QuantityParam::QuantityParam(const string & nameVal, auto_ptr<string> unitsVal): Param(nameVal)
+{
+	if(NULL != unitsVal.get()) {
+		units_m = *unitsVal;
+		hasUnits_m = true;
+	}
+	else {
+		hasUnits_m = false;
+	}
 }
 
 /**
@@ -55,7 +69,7 @@ QuantityParam::~QuantityParam()
  */
 bool QuantityParam::getHasUnits()
 {
-   return hasUnits;
+   return hasUnits_m;
 }
 
 /*
@@ -66,7 +80,7 @@ auto_ptr< string > QuantityParam::getUnits()
 {
 	auto_ptr<string> retVal;
 	if(true == getHasUnits()) {
-		retVal.reset(new string(units));
+		retVal.reset(new string(units_m));
 	}
 	return retVal;
 }
@@ -144,3 +158,5 @@ string QuantityParam::toString()
 
 	return retVal;
 }
+
+

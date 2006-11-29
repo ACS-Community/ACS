@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: StringArrayParam.h,v 1.3 2005/08/15 23:26:53 sharring Exp $"
+* "@(#) $Id: StringArrayParam.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,12 +41,12 @@ using std::vector;
 
 /** @file StringArrayParam.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * StringArrayParam class used to support OFFLINE tasks
 	 */
-	class StringArrayParam : public parameterSet::Param
+	class StringArrayParam : public Parameters::Param
 	{    
 	  public:
 	    /**
@@ -57,7 +57,7 @@ namespace parameterSet {
 	    /**
 	     * Constructor
 	     */
-	    StringArrayParam(vector<string> stringVals, string nameVal);
+	    StringArrayParam(const vector<string> & stringVals, const string & nameVal);
 	    
 	    /**
 	     * Destructor
@@ -85,8 +85,11 @@ namespace parameterSet {
 		virtual string valueToString();
 
 	  private:
-	    vector<string> values;
+	    vector<string> values_m;
 	};
 
 }
 #endif /*!_STRING_ARRAY_PARAM_H*/
+
+
+

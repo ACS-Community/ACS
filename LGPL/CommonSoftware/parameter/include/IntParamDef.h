@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: IntParamDef.h,v 1.2 2005/01/24 23:03:38 sharring Exp $"
+* "@(#) $Id: IntParamDef.h,v 1.3 2006/11/29 23:01:26 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,12 +43,12 @@ using std::auto_ptr;
 
 /** @file IntParamDef.h */
 
-namespace parameterSet {
+namespace Parameters {
 
 	/**
 	 * IntParamDef class used to support OFFLINE tasks
 	 */
-	class IntParamDef: public parameterSet::ParamDef
+	class IntParamDef: public Parameters::ParamDef
 	{    
 	  public:
 	    /**
@@ -59,10 +59,10 @@ namespace parameterSet {
 	    /**
 	     * Constructor.
 	     */
-	    IntParamDef(string nameVal, string helpVal, string promptVal, 
-		bool isRequired, auto_ptr< int > defaultVal, auto_ptr< string > strDefault,
-		auto_ptr< string > unitsVal, auto_ptr< int > maxVal, auto_ptr< int > minVal, 
-		auto_ptr< vector<int> > validVals);
+	   IntParamDef(const string & nameVal, const string & helpVal, const string & promptVal, 
+			bool isRequired, auto_ptr< int > defaultVal, auto_ptr< string > strDefault,
+			auto_ptr< string > unitsVal, auto_ptr< int > maxVal, auto_ptr< int > minVal, 
+			auto_ptr< vector<int> > validVals);
 
 	    /**
 	     * Destructor
@@ -154,20 +154,23 @@ namespace parameterSet {
 	    bool getHasValidValues();
 
 	  private:
-	    string stringDefault;
-	    string units;
-	    int defaultValue;
-	    int max;
-	    int min;
-	    vector<int> validValues;
+	    string stringDefault_m;
+	    string units_m;
+	    int defaultValue_m;
+	    int max_m;
+	    int min_m;
+	    vector<int> validValues_m;
 
-	    bool hasDefault;
-	    bool hasStringDefault;
-	    bool hasMax;
-	    bool hasMin;
-	    bool hasValidValues;
-	    bool hasUnits;
+	    bool hasDefault_m;
+	    bool hasStringDefault_m;
+	    bool hasMax_m;
+	    bool hasMin_m;
+	    bool hasValidValues_m;
+	    bool hasUnits_m;
 	};
 
 }
 #endif /*!_INT_PARAM_DEF_H*/
+
+
+
