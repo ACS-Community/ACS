@@ -51,6 +51,22 @@
       <td valign="top"><a href="group__ACSEXMPLRPSDOC.html">Ramped Power Supply</a></td>
       <td valign="top">Simulates the behavior of a ramped power supply by inheriting from Power Supply's IDL interface and C++ implementation.</td>
     </tr>
+    <tr>
+      <td valign="top"><a href="group__ACSEXMPLSLOWMOUNTDOC.html">Slow Mount</a></td>
+      <td valign="top">Similar to Mount, but simulate the movements of the antenna in a 30 secs time interval.</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="group__ACSEXMPLLAMPWHEELDOC.html">Lamp Wheel</a></td>
+      <td valign="top">Simulates the behaviour of a generic lamp wheel, using an asynchronous method to rotate it.</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="group__ACSEXMPLFILTERWHEELDOC.html">Filter Wheel</a></td>
+      <td valign="top">Simulates the behaviour of a generic filter wheel.</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="group__ACSEXMPLERRORCOMPDOC.html">Error Component</a></td>
+      <td valign="top">Simple Component that throws few exceptions and completions to show the use.</td>
+    </tr>
   </tbody>
 </table>
 <br>
@@ -104,6 +120,14 @@
     <tr>
       <td valign="top"><a href="group__ACSEXMPLCLIENTCOMPONENTIORDOC.html">Client Component IOR</a></td>
       <td valign="top">Prints out the stringified IOR of a component specified from the command-line.</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="group__ACSEXMPLCLIENTASYNCCALLSDOC.html">Async Calls</a></td>
+      <td valign="top">Client that uses asynchronous calls.</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="group__ACSEXMPLCLIENTERROROCOMPDOC.html">Client Error Component</a></td>
+      <td valign="top">Client that uses the Error Component to catch exception/completion and their handling.</td>
     </tr>
   </tbody>
 </table>

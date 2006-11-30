@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.97 2005/04/14 09:35:59 acaproni Exp $"
+* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.98 2006/11/30 02:55:48 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,13 +59,6 @@ using namespace baci;
 
 /** @file acsexmplRampedPowerSupplyImpl.h
  */
-
-/**
- * One of these function IDs will be passed to invokeAction().
- */
-#define START_RAMPING 3
-#define STOP_RAMPING 4
-
 
 /** @defgroup ACSEXMPLRPSDOC Ramped Power Supply
  *  @{
@@ -121,7 +114,7 @@ defined in two separate IDLs.
  *  
  *  @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  *  Jozef Stefan Institute, Slovenia<br>
- *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.97 2005/04/14 09:35:59 acaproni Exp $"
+ *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.98 2006/11/30 02:55:48 cparedes Exp $"
  */
 class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's superclass is CharacteristicComponent
 					 public virtual POA_RampedPS::RampedPowerSupply    //CORBA servant stub
@@ -140,7 +133,13 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
      * Destructor
      */
     ~RampedPowerSupply();
-    
+
+/**
+ * One of these function IDs will be passed to invokeAction().
+ */
+    const static int START_RAMPING=3;
+    const static int STOP_RAMPING=4;
+
     /* --------------- [ Action implementator interface ] -------------- */   
     /**
      * Action dispatcher function

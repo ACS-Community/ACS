@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplSlowMountImpl.h,v 1.4 2005/04/14 09:35:59 acaproni Exp $"
+* "@(#) $Id: acsexmplSlowMountImpl.h,v 1.5 2006/11/30 02:55:48 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@ using namespace baci;
 /** @file acsexmplMountImpl.h
  */
 
-/** @defgroup ACSEXMPLMOUNTDOC Mount
+/** @defgroup ACSEXMPLSLOWMOUNTDOC Slow Mount
  *  @{
  * @htmlonly
 <hr size="2" width="100%">
@@ -97,7 +97,7 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
  * The Mount::invokeAction method is called by the asynchronous dispatcher whenever there is an
  * xxx pending action and it calls the xxxAction corresponding method.  Also, invokeAction calls 
  * these methods by simply using a function pointer (ActionFunction) instead of specifying each method.
- * @version "@(#) $Id: acsexmplSlowMountImpl.h,v 1.4 2005/04/14 09:35:59 acaproni Exp $"
+ * @version "@(#) $Id: acsexmplSlowMountImpl.h,v 1.5 2006/11/30 02:55:48 cparedes Exp $"
  */
 class acsexmpl_EXPORT SlowMount: public CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_MOUNT_ACS::Mount,   //CORBA servant stub

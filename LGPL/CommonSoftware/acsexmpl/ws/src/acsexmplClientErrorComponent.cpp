@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.6 2006/11/01 10:09:50 cparedes Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.7 2006/11/30 02:55:48 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,6 +54,7 @@
 <hr size="2" width="100%">
 <div align="left">
 <h2>Description</h2>
+Client that uses the Error Component to catch exception/completion and manage them.
 This example shows a client that:
 <ul>
   <li>logs into manager via SimpleClient</li>
@@ -89,7 +90,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.6 2006/11/01 10:09:50 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.7 2006/11/30 02:55:48 cparedes Exp $")
 using namespace maci;
 
 /*******************************************************************************/

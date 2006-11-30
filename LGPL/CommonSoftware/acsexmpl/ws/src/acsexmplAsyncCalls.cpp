@@ -16,14 +16,14 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.4 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.5 2006/11/30 02:55:48 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * acaproni  2004-08-09  created 
 */
 
-/** @file acsexmplAsynCalls
+/** @file ACSEXMPLCLIENTASYNCCALLSDOC acsexmplAsynCalls
  * @htmlonly
  * <br><br>
  * @endhtmlonly
@@ -54,7 +54,7 @@
 #include <iostream>
 #include <string>
 
-static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.4 2006/10/13 14:04:27 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.5 2006/11/30 02:55:48 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;

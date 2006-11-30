@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.3 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.4 2006/11/30 02:55:48 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@ typedef struct {
 /** @file acsexmplFilterWheelImpl.h
  */
 
-/** @defgroup ACSEXMPLFILTERWHEELDOC Filter
+/** @defgroup ACSEXMPLFILTERWHEELDOC Filter Wheel
  *  @{
  * @htmlonly
 <hr size="2" width="100%">
@@ -127,7 +127,7 @@ It also has three read-only properties: position, desc, slots.
  * as well as the CDB values are updated. 
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.3 2006/04/20 08:47:59 bjeram Exp $"
+ * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.4 2006/11/30 02:55:48 cparedes Exp $"
  */
 class acsexmpl_EXPORT FilterWheel: public CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplFilterWheel::FilterWheel,//CORBA servant stub
