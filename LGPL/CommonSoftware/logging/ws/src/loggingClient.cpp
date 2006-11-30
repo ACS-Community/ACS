@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.42 2005/12/12 21:13:10 dfugate Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.43 2006/11/30 16:32:25 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -29,6 +29,8 @@
 
 /// TBD: proper shutdown (disconnection of the consumers) && cleanup
 
+ #include <syslog.h>
+
 #include <vltPort.h>
 #include <loggingClient.h>
 
@@ -38,6 +40,7 @@
 
 #include <acsutilAnyAide.h>
 #include <acsutilTimeStamp.h>
+#include <acsutilPorts.h>
 
 Subscribe::Subscribe (void)
 {
@@ -323,6 +326,7 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 	{
 	ACE_OS::printf("%s\n", xmlLog);
 	ACE_OS::fflush (stdout);
+	writeSyslogMsg(xmlLog);
 	}
   }
   else if (ACE_OS::strcmp(domain_name, "Archiving")==0)
@@ -439,6 +443,8 @@ main (int argc, char *argv [])
       return 1;
     }
 
+  syslogFacility=getSyslogFacility();
+  
   Subscribe client;
   try
     {
@@ -478,11 +484,25 @@ main (int argc, char *argv [])
   return 0;
 }
 
+int getSyslogFacility() {
+	int instance = (int)ACSPorts::getBasePort();
+	switch (instance) {
+		case 0:
+			return LOG_LOCAL0|LOG_INFO;
+		case 1:
+			return LOG_LOCAL1|LOG_INFO;
+		case 2:
+			return LOG_LOCAL2|LOG_INFO;
+		case 3:
+			return LOG_LOCAL3|LOG_INFO;
+		case 4:
+			return LOG_LOCAL4|LOG_INFO;
+		default:
+			return LOG_LOCAL5|LOG_INFO;
+	}
+}
 
-
-
-
-
-
-
-
+// Write a message to the kernel log
+void writeSyslogMsg(const char* msg) {
+	syslog(syslogFacility,"%s",msg);
+}

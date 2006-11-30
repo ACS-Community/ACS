@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.36 2005/04/05 23:35:00 dfugate Exp $"
+* "@(#) $Id: loggingClient.h,v 1.37 2006/11/30 16:32:25 acaproni Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,6 +38,21 @@
 
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
+
+// The syslog facility to use while logging messages throwgh the
+// kernel logger
+// Its value depends on the running ACS_INSTANCE
+// For instance 0-4 we use LOG_LOCAL0 to LOG_LOCAL4
+// Messages for all the other instances are written in LOG_LOCAL5
+//
+// All the messages are logged at level LOG_INFO
+int syslogFacility;
+  	
+// Return the syslog facility depending on the running ACS instance
+int getSyslogFacility();
+
+// Write a message to the kernel log
+void writeSyslogMsg(const char* msg);
 
 class ACSStructuredPushConsumer;
 
@@ -165,6 +180,7 @@ class ACSStructuredPushConsumer : public POA_CosNotifyComm::StructuredPushConsum
     
     virtual void disconnect_structured_push_consumer ()
 	throw (CORBA::SystemException);
+		
 };
 
 #endif /* loggingClient_H */
