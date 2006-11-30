@@ -315,8 +315,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 				getLCModel1().loadFromFile(null);
             } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
             	getLCModel1().loadFromURL();
-            } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
-            	getLCModel1().loadFromURL();
+            } else if (e.getSource() == LoggingClient.this.getSaveFileMenuItem()) {
+            	getLCModel1().saveFile();
             } else if (e.getSource() == LoggingClient.this.getLoadDBMenuItem()) {
             	//if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
             		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this);
