@@ -25,9 +25,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Filter;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import alma.acs.logging.adapters.JacORBFilter;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.LogParameterExtractor;
@@ -46,7 +49,9 @@ import alma.maci.loggingconfig.UnnamedLogger;
  * created May 30, 2005 4:09:47 PM
  */
 public class AcsLogger extends Logger implements LogConfigSubscriber {
-    
+    // private in base class, need to redeclare here
+    protected static final int offValue = Level.OFF.intValue();
+
 	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. */
     private Set<String> loggerClassNames = new HashSet<String>();
         
@@ -71,7 +76,8 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     }
     
     /**
-     * Logs the given <code>LogRecord</code>.
+     * Logs the given <code>LogRecord</code>. 
+     * The record can be modified or dropped by the optional filters provided in {@link #addLogRecordFilter(alma.acs.logging.AcsLogger.LogRecordFilter)}. 
      * <p>
      * Adding of context information:
      * <ul>
@@ -91,6 +97,14 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @see java.util.logging.Logger#log(java.util.logging.LogRecord)
      */
     public void log(LogRecord record) {
+    	
+    	// filter by log level to avoid unnecessary retrieval of context data.
+    	// The same check will be repeated by the base class implementation of this method that gets called afterwards.
+    	int levelValue = getLevel().intValue();
+    	if (record.getLevel().intValue() < levelValue || levelValue == offValue) {
+    	    return;
+    	}
+    	
     	// modify the logger name if necessary
     	if (loggerName != null) {
     		record.setLoggerName(loggerName);
@@ -138,9 +152,17 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     public void configureLogging(LogConfig logConfig) {
 		try {
 			NamedLogger config = logConfig.getSpecialLoggerConfig(getName());
-	    	configureJDKLogger(this, config);
+	    	configureJDKLogger(this, config);	    	
 		} catch (Exception e) {
 			info("Failed to configure logger.");
+		}
+		
+		// forward log level to optional JacORB filter
+		// Perhaps this dependency is too dirty, then we need a more general
+		// filter registration mechanism parallel to what the JDK foresees.
+		Filter logFilter = getFilter();
+		if (logFilter != null && logFilter instanceof JacORBFilter) {
+			((JacORBFilter) logFilter).setLogLevel(getLevel());
 		}
     }
     
@@ -171,5 +193,5 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	 */
 	public void addLoggerClass(Class<?> loggerClass) {
 		loggerClassNames.add(loggerClass.getName());
-	}
+	}			
 }
