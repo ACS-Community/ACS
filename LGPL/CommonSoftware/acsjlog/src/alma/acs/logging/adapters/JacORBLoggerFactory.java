@@ -23,8 +23,8 @@
 package alma.acs.logging.adapters;
 
 import java.io.IOException;
+import java.util.logging.Filter;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
@@ -72,6 +72,9 @@ public class JacORBLoggerFactory implements LoggerFactory {
 	public org.apache.avalon.framework.logger.Logger getNamedLogger(String name) {
 		AcsLogger acsLogger = getDelegate();
 		acsLogger.addLoggerClass(Jdk14Logger.class);
+		JacORBFilter logFilter = new JacORBFilter();
+		logFilter.setLogLevel(acsLogger.getLevel()); // AcsLogger will later update the filter log level if there are changes
+		acsLogger.setFilter(logFilter);
 		org.apache.avalon.framework.logger.Logger wrapper = new Jdk14Logger(acsLogger);
 		return wrapper;
 	}
