@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,8 +23,10 @@ public class Util {
 
 	static List<File> findFiles (List<File> ret, File dir, final String... extensions) {
 		/* we're processing the real files in every dir first */
-		List<File> subdirs = new LinkedList<File>(); 
-		for (File f : dir.listFiles()) {
+		List<File> subdirs = new LinkedList<File>();
+		File[] ff = dir.listFiles();
+		Arrays.sort(ff, alphabeticSort);
+		for (File f : ff) {
 			if (f.isDirectory())
 				subdirs.add(f);
 			else 
@@ -37,13 +41,11 @@ public class Util {
 		return ret;
 	}
 
-	static String filenameToIdentifier (File f) {
-		String name = f.getPath();
-		name = name.replace("\\", "/");
-		//name = name.replaceAll("\\W+", "_");
-		//name = name.toLowerCase();
-		return name;
-	}
+	private static Comparator<File> alphabeticSort = new Comparator<File>() {
+		public int compare (File o1, File o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	};
 
 	/**
 	 * Reads in the file's contents, skipping all
@@ -94,14 +96,7 @@ public class Util {
 			} catch (Exception exc) {}
 		}
 	}
-	
-	static List<AnchorNode> depthFirst (AnchorNode n, List<AnchorNode> ret) {
-		ret.add(n);
-		for (AnchorNode m : n.children)
-			depthFirst(m, ret);
-		return ret;
-	}
-	
+		
 	
 }
 
