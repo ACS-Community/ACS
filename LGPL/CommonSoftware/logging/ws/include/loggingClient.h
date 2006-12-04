@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.37 2006/11/30 16:32:25 acaproni Exp $"
+* "@(#) $Id: loggingClient.h,v 1.38 2006/12/04 11:02:20 acaproni Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -50,6 +50,12 @@ int syslogFacility;
   	
 // Return the syslog facility depending on the running ACS instance
 int getSyslogFacility();
+
+// If true the output is redirected to the syslog
+bool toSyslog;
+
+// Read the command line params into local variables
+void getParams(int argc, char *argv []);
 
 // Write a message to the kernel log
 void writeSyslogMsg(const char* msg);

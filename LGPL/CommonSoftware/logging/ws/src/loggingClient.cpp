@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.43 2006/11/30 16:32:25 acaproni Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.44 2006/12/04 11:02:20 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -30,6 +30,7 @@
 /// TBD: proper shutdown (disconnection of the consumers) && cleanup
 
  #include <syslog.h>
+ #include <unistd.h>
 
 #include <vltPort.h>
 #include <loggingClient.h>
@@ -69,7 +70,9 @@ Subscribe::init (int argc, char *argv [])
   
 
   ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel...\n"));
-  resolve_notify_channel (argv[1]);
+  
+  	resolve_notify_channel (argv[argc-1]);
+  
   
 
   create_consumeradmin ();
@@ -324,9 +327,15 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
     notification.remainder_of_body >>= xmlLog;
     if (xmlLog)
 	{
-	ACE_OS::printf("%s\n", xmlLog);
-	ACE_OS::fflush (stdout);
-	writeSyslogMsg(xmlLog);
+		if (toSyslog) 
+		{
+			writeSyslogMsg(xmlLog);
+		} 
+		else 
+		{
+			ACE_OS::printf("%s\n", xmlLog);
+			ACE_OS::fflush (stdout);
+		}
 	}
   }
   else if (ACE_OS::strcmp(domain_name, "Archiving")==0)
@@ -431,25 +440,29 @@ void TerminationSignalHandler(int)
 int
 main (int argc, char *argv [])
 {
+  getParams(argc,argv);
   
   if (argc < 2 ||
-      (ACE_OS::strcmp(argv[1], acscommon::LOGGING_CHANNEL_NAME)!=0 &&
-      ACE_OS::strcmp(argv[1], acscommon::ARCHIVING_CHANNEL_NAME)!=0))
+      (ACE_OS::strcmp(argv[argc-1], acscommon::LOGGING_CHANNEL_NAME)!=0 &&
+      ACE_OS::strcmp(argv[argc-1], acscommon::ARCHIVING_CHANNEL_NAME)!=0))
     {
-      ACE_OS::printf("\n\tusage: %s <%s | %s> <ORB options>\n\n", 
+      ACE_OS::printf("\n\tusage: %s [-s] <%s | %s> <ORB options>\n", 
 		     argv[0], 
 		     acscommon::LOGGING_CHANNEL_NAME, 
 		     acscommon::ARCHIVING_CHANNEL_NAME);
+	  ACE_OS::printf("-s: write the logs into the syslog\n\n");
       return 1;
     }
 
-  syslogFacility=getSyslogFacility();
+	
+    if (toSyslog) {
+    	syslogFacility=getSyslogFacility();
+    }
   
   Subscribe client;
   try
     {
-      client.init (argc, argv
-                   ); // Init the Client
+      client.init (argc, argv); // Init the Client
       
 
       g_client = &client;
@@ -505,4 +518,16 @@ int getSyslogFacility() {
 // Write a message to the kernel log
 void writeSyslogMsg(const char* msg) {
 	syslog(syslogFacility,"%s",msg);
+}
+
+// Read the command line parameters and fill the loacl variables
+void getParams(int argc, char *argv []) {
+	toSyslog=false;
+	int c;
+	while ((c = getopt (argc, argv, "s")) != -1) {
+		switch(c) {
+			case 's': toSyslog=true; break;
+			default: break;
+		}
+	}
 }
