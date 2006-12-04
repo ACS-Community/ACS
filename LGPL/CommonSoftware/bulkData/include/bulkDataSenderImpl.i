@@ -102,6 +102,16 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
+    catch(AVFlowEndpointErrorEx &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	throw err.getAVConnectErrorEx();
+	}
+    catch(AVSetReceiverNameErrorEx &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	throw err.getAVConnectErrorEx();
+	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect UNKNOWN exception"));

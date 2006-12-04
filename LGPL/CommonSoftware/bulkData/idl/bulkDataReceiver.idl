@@ -108,7 +108,7 @@ module bulkdata
 	 @endhtmlonly
 	*/
 	void setRecvName(in string recvName)
-	    raises (ACSBulkDataError::AVInvalidFlowNumberEx);
+	    raises (ACSBulkDataError::AVSetReceiverNameErrorEx);
 	};
 
     /** @interface BulkDataReceiverDistr

@@ -222,7 +222,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	}
 
     virtual void setRecvName(const char *recvName) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	throw (CORBA::SystemException, AVSetReceiverNameErrorEx)
 	{
 	    //empty
 	}

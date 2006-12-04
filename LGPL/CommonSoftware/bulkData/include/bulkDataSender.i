@@ -95,9 +95,9 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const cha
 
     TAO_Tokenizer addressToken(fepsConfig, '/');
     int numOtherFeps = addressToken.num_tokens();
-    if(numOtherFeps > 9)
+    if(numOtherFeps > 19)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createMultipleFlows too many flows specified - maximum 9"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createMultipleFlows too many flows specified - maximum 19"));
 	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataSender::createMultipleFlows");
 	throw err;	
 	}

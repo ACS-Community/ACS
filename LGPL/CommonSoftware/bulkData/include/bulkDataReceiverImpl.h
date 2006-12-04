@@ -126,7 +126,7 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
 	throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx);
 
     virtual void setRecvName(const char *recvName) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx);
+	throw (CORBA::SystemException, AVSetReceiverNameErrorEx);
 
   protected: 
 

@@ -82,9 +82,9 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 
     TAO_Tokenizer addressToken(fepsConfig, '/');
     int numOtherFeps = addressToken.num_tokens();
-    if(numOtherFeps > 9)
+    if(numOtherFeps > 19)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createMultipleFlows too many flows specified - maximum 9"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createMultipleFlows too many flows specified - maximum 19"));
 	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
 	throw err;	
 	}
@@ -536,6 +536,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 	fepMap_m.find(flowName, fep);
 	if(fep == 0)
 	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::setReceiverName Flow Endpoint %s not found",flowName.c_str()));
 	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
 	    throw err;
 	    } 
@@ -544,6 +545,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 	    TReceiverCallback *cb_p = fep->getBulkDataCallback();
 	    if(cb_p == 0)
 		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::setReceiverName callback null"));
 		AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
 		throw err;
 		}
