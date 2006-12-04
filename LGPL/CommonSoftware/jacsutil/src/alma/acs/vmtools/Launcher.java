@@ -156,6 +156,7 @@ public class Launcher {
 		ret.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		ret.addWindowListener(new WindowAdapter() {
 
+			@Override
 			public void windowClosing (WindowEvent evt) {
 				int answer = JOptionPane.showConfirmDialog(ret, "Really close Acs VmTools?", "Close Window", JOptionPane.YES_NO_OPTION);
 				if (answer == JOptionPane.YES_OPTION) {

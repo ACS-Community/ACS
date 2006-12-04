@@ -55,6 +55,7 @@ public class SysPropEditor extends JPanel {
 		final JFrame f = new JFrame(SysPropEditor.class.getName());
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.addWindowListener(new WindowAdapter(){
+			@Override
 			public void windowClosing(WindowEvent evt){
 				int answer = JOptionPane.showConfirmDialog(f, "Really close?", "Close Window", JOptionPane.YES_NO_OPTION);
 				if (answer == JOptionPane.YES_OPTION) {
@@ -103,7 +104,7 @@ public class SysPropEditor extends JPanel {
 		
 		// get all sysprop names
 		Properties m = System.getProperties();
-		ArrayList names = new ArrayList(m.size());
+		ArrayList<String> names = new ArrayList<String>(m.size());
 		// filter names
 		Enumeration en = m.propertyNames();
 		while (en.hasMoreElements()) {
@@ -170,6 +171,7 @@ public class SysPropEditor extends JPanel {
 			return columnNames.length;
 		}
 		
+		@Override
 		public String getColumnName(int column) {
 			return columnNames[column];
 		}
@@ -182,11 +184,13 @@ public class SysPropEditor extends JPanel {
 			return data[row][column];
 		}
 
+		@Override
 		public boolean isCellEditable (int row, int column) {
 			return (column == 1); 
 		}
 		
-		 public void setValueAt (Object value, int row, int column) {
+		 @Override
+		public void setValueAt (Object value, int row, int column) {
 		    String cellValue = value.toString();
 		    data[row][column] = cellValue;
 		    fireTableCellUpdated (row, column);

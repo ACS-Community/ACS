@@ -76,6 +76,7 @@ public class LogManagerGui extends JPanel {
 		final JFrame f = new JFrame(LogManagerGui.class.getName());
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.addWindowListener(new WindowAdapter(){
+			@Override
 			public void windowClosing(WindowEvent evt){
 				int answer = JOptionPane.showConfirmDialog(f, "Really close?", "Close Window", JOptionPane.YES_NO_OPTION);
 				if (answer == JOptionPane.YES_OPTION) {
@@ -101,7 +102,7 @@ public class LogManagerGui extends JPanel {
 	static final Color BG_NORMAL = Color.white;
 	static final Color BG_SELECT = Color.lightGray;
 
-	static final HashMap level2color = new HashMap();
+	static final HashMap<Level, Color> level2color = new HashMap<Level, Color>();
 	static {
 		level2color.put(null, Color.magenta);
 		level2color.put(Level.OFF, Color.gray);
@@ -161,6 +162,7 @@ public class LogManagerGui extends JPanel {
 
 
 
+	@Override
 	public void setVisible (boolean b) {
 		if (b == true) {
 			populateModel();
@@ -176,7 +178,7 @@ public class LogManagerGui extends JPanel {
 	
 	public void populateModel (String[] nameFilter) {
 
-		HashMap reverse = new HashMap();
+		HashMap<Logger, TreeN> reverse = new HashMap<Logger, TreeN>();
 
 		if (model.root() != null) {
 			model.root().removeAllChildren();
@@ -307,7 +309,7 @@ public class LogManagerGui extends JPanel {
 	////////////////////////////////////////////////////////
 
 
-	static final Vector LEVELS = new Vector(Arrays.asList(new Object[]{
+	static final Vector<Level> LEVELS = new Vector<Level>(Arrays.asList(new Level[]{
 	//
 			Level.OFF,//
 			Level.SEVERE,//
@@ -368,7 +370,7 @@ public class LogManagerGui extends JPanel {
 		LoggerEditor() {
 			super(new BorderLayout());
 
-			Vector cmbBoxContents = new Vector(LEVELS);
+			Vector<Object> cmbBoxContents = new Vector<Object>(LEVELS);
 			cmbBoxContents.insertElementAt("(inherited)", 0);
 			text = new JComboBox(cmbBoxContents);
 			this.add(text, BorderLayout.NORTH);
@@ -544,6 +546,7 @@ public class LogManagerGui extends JPanel {
 
 	class TreeL extends MouseAdapter {
 
+		@Override
 		public void mouseClicked (MouseEvent e) {
 			if (!SwingUtilities.isRightMouseButton(e))
 				return;
