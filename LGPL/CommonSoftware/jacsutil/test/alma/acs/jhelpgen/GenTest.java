@@ -56,15 +56,15 @@ public class GenTest extends TestCase {
 		H1_c + " and stuff ";
  
 	
-	String[] expectedTree = new String[]{
-			H1_a,
-			   H2_a,
-			H1_b,
-			   H2_b,
-			      H3_c,
-			   H2_c,
-			         H4_a,
-			H1_c}; 
+	String[] expectedDom = new String[]{
+			"The h1_a",
+			   "The h2_a",
+			"The h1_b",
+			   "The h2_b",
+			      "The h3_c",
+			   "The h2_c",
+			         "The h4_a",
+			"The h1_c"}; 
 
 	
 	String expectedToc = 
@@ -83,42 +83,42 @@ public class GenTest extends TestCase {
 	
 	
 	String expectedMap = 
-		"<mapID target=\"h1_a\" url=\"h1_a\"" +
-		"<mapID target=\"h2_a\" url=\"h2_a\"" + 
-		"<mapID target=\"h1_b\" url=\"h1_b\"" + 
-		"<mapID target=\"h2_b\" url=\"h2_b\"" + 
-		"<mapID target=\"h3_c\" url=\"h3_c\"" + 
-		"<mapID target=\"h2_c\" url=\"h2_c\"" + 
-		"<mapID target=\"h4_a\" url=\"h4_a\"" + 
-		"<mapID target=\"h1_c\" url=\"h1_c\"";
+		"<mapID target=\"h1_a\" url=\"h1_a\"/>" +
+		"<mapID target=\"h2_a\" url=\"h2_a\"/>" + 
+		"<mapID target=\"h1_b\" url=\"h1_b\"/>" + 
+		"<mapID target=\"h2_b\" url=\"h2_b\"/>" + 
+		"<mapID target=\"h3_c\" url=\"h3_c\"/>" + 
+		"<mapID target=\"h2_c\" url=\"h2_c\"/>" + 
+		"<mapID target=\"h4_a\" url=\"h4_a\"/>" + 
+		"<mapID target=\"h1_c\" url=\"h1_c\"/>";
 	
 	
 	public void testHtmlToDom() throws Exception {
+		Gen gen = new Gen();
 		String contents = htmlContent;
-		String[] expected = expectedTree; 
 		
-		Gen.AnchorNode result = new Gen().htmlToDom(contents);
+		Gen.AnchorNode domRoot = gen.htmlToDom(contents);
 		
 		if (dbg)
-			Gui.showTree(result);
+			Gui.showTree(domRoot);
 
-		List<AnchorNode> result2 = Util.depthFirst(result, new Vector<AnchorNode>());
+		List<AnchorNode> result = domRoot.depthFirst(new Vector<AnchorNode>());
 		//	skip first node as it is the root node itself
-		result2.remove(0);
+		result.remove(0);
 		
-		assertEquals(expected.length, result2.size());
-		for (int i=0; i<result2.size(); i++)
-			assertEquals("node #"+i, expected[i], result2.get(i).heading);
+		assertEquals(expectedDom.length, result.size());
+		for (int i=0; i<result.size(); i++)
+			assertEquals("node #"+i, expectedDom[i], result.get(i).prettyName);
 	}	
 	
 	public void testDomToToc () throws Exception {
+		Gen gen = new Gen();
 		String contents = htmlContent;
-		String[] expected = expectedTree; 
 
-		Gen.AnchorNode root = new Gen().htmlToDom(contents);
+		Gen.AnchorNode domRoot = gen.htmlToDom(contents);
 		
 		StringBuilder result = new StringBuilder();
-		new Gen().domToToc(root.children, result);
+		gen.domToToc(domRoot.children, result);
 		
 		if (dbg) {
 			System.out.println(result);
@@ -130,12 +130,13 @@ public class GenTest extends TestCase {
 	}
 	
 	public void testDomToMap () throws Exception {
+		Gen gen = new Gen();
 		String contents = htmlContent;
 
-		Gen.AnchorNode root = new Gen().htmlToDom(contents);
+		Gen.AnchorNode domRoot = gen.htmlToDom(contents);
 		
 		StringBuilder result = new StringBuilder();
-		new Gen().domToMap(root.children, result);
+		gen.domToMap(domRoot.children, result);
 
 		if (dbg) {
 			System.out.println(result);
