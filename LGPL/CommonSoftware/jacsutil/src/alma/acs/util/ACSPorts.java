@@ -13,9 +13,8 @@
  */
 package alma.acs.util;
 
-import java.util.HashMap;
-import java.util.Vector;
 import java.net.InetAddress;
+import java.util.Vector;
 
 /**
  * Used to figure out the dynamic ports ACS is running under.
@@ -132,7 +131,7 @@ public class ACSPorts {
 	return globalInstanceForSystemProperty().giveIP();
     }
 
-   private static Vector instances = new Vector();
+   private static Vector<ACSPorts> instances = new Vector<ACSPorts>();
 
    /**
     * Returns an instance of this class that is configured for the specified basePort.
@@ -156,7 +155,7 @@ public class ACSPorts {
       for (int i=instances.size(); i<basePort+1; i++)
          instances.add(null);
 
-      ACSPorts instance = (ACSPorts) instances.get(basePort);
+      ACSPorts instance = instances.get(basePort);
       if (instance == null) {
          instance = new ACSPorts(basePort);
          instances.set(basePort, instance);
