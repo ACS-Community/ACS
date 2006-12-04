@@ -20,26 +20,36 @@ public class Gen {
 
 	public static void main (String[] args) {
 		try {
-			if (args.length < 2)
-				throw new Exception("too few arguments");
+			if (args.length < 1)
+				throw new IllegalArgumentException("too few arguments");
 			
-			String appName = args[0];
-			File tocFile = new File(appName + "TOC.xml");
-			File mapFile = new File(appName + "Map.jhm");
+			File helpDir = new File(args[0]);
+
+			if (!helpDir.isDirectory())
+				throw new IllegalArgumentException("not a directory: "+helpDir);
 			
 			List<File> fArgs = new LinkedList<File>();
-			for (int i=1; i<args.length; i++)
-				fArgs.add (new File(args[i]));
-
-			new Gen().go(tocFile, mapFile, fArgs);
+			if (args.length == 1)
+				fArgs.add (helpDir);
+			else
+				for (int i=1; i<args.length; i++) {
+					File f = new File(args[i]);
+					if (! f.getPath().startsWith(helpDir.getName()))
+						throw new IllegalArgumentException("toc-dir|toc-file must live under help-dir "+helpDir.getAbsolutePath()+": "+f.getAbsolutePath());
+					fArgs.add (f);
+				}
 			
+			new Gen().go(helpDir, fArgs);
+			
+		} catch (IllegalArgumentException e) {
+			System.err.println("Error: "+e.getMessage());
+			System.err.println("Usage: (this) help-dir {toc-dir|toc-file}+");
 		} catch (Exception e) {
 			System.err.println("Error: "+e);
-			System.err.println("Usage: (this) appName {dir|file}+");
 		}
 	}
 	
-	protected void go (File fToc, File fMap, List<File> fArgs) throws IOException {
+	protected void go (File helpDir, List<File> fArgs) throws IOException {
 		
 		StringBuilder sbToc = new StringBuilder();
 		StringBuilder sbMap = new StringBuilder();
@@ -51,33 +61,45 @@ public class Gen {
 			else
 				files.add(f);
 		
+		String firstFileId = null;
+		
 		for (File f : files) {
 			String fileContents = Util.readFile(f);
-			String fileId = Util.filenameToIdentifier(f);
+			String fileId = f.getPath().substring(helpDir.getName().length()+1).replace("\\", "/");
+
+			if (firstFileId == null)
+				firstFileId = fileId;
 			
 			AnchorNode root = htmlToDom(fileContents);
 			
 			// tweak anchors a little
-			List<AnchorNode> nn = Util.depthFirst (root, new Vector<AnchorNode>());
-			for (AnchorNode n : nn) {
+			for (AnchorNode n : root.depthFirst(new Vector<AnchorNode>()))
 				 n.anchorName = fileId +"#"+ n.anchorName;
-			}
-			
+
 			domToToc (root.children, sbToc);
 			domToMap (root.children, sbMap);
 		}
 		
+		
+		File fToc = new File(helpDir, "JavaHelpToc.xml");
+		File fMap = new File(helpDir, "JavaHelpMap.jhm");
+		File fSet = new File(helpDir, "JavaHelpSet.hs");
+		
 		String toc = finishToc(sbToc);
-		String map = finishMap(sbMap);
+		String map = finishMap(sbMap, firstFileId);
+		String set = finishHelpset(fToc.getName(), fMap.getName());
 
 		Util.writeFile(toc, fToc);
 		Util.writeFile(map, fMap);
+		Util.writeFile(set, fSet);
+
+		System.out.println("Created "+fToc.getName()+", "+fMap.getName()+", "+fSet.getName()+" in helpdir "+helpDir.getName());
 	}
 	
 	
 	protected AnchorNode htmlToDom (String contents) {
 		
-		AnchorNode root = new AnchorNode(0, "root", "", "");
+		AnchorNode root = new AnchorNode(0, "root", "");
 		AnchorNode latest = root;
 		
 		Pattern headingPattern = Pattern.compile("<[Hh]([1-6]).*?</[Hh]([1-6])>");
@@ -92,7 +114,7 @@ public class Gen {
 			if (am.find()) {
 				String anchor = am.group(1).trim();
 				String pretty = am.group(2).trim();
-				AnchorNode n = new AnchorNode(level, heading, anchor, pretty);
+				AnchorNode n = new AnchorNode(level, anchor, pretty);
 
 				// sort into tree
 				AnchorNode cand = latest;
@@ -113,7 +135,7 @@ public class Gen {
 	protected void domToMap (AnchorNode n, StringBuilder sb) {
 		sb.append("\n\t");
 		sb.append("<mapID target=\"").append(n.anchorName).append("\"");
-		sb.append(" url=\"").append(n.anchorName).append("\"");
+		sb.append(" url=\"").append(n.anchorName).append("\"/>");
 		domToMap (n.children, sb);
 	}
 
@@ -139,43 +161,46 @@ public class Gen {
 
 	protected String finishToc (StringBuilder sb) {
 		
-		String begin = 
-			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" +
-			"\n<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN\"" +
-			"\n         \"http://java.sun.com/products/javahelp/toc_1_0.dtd\">" +
-			"\n<toc version=\"1.0\" categoryclosedimage=\"chapter\" topicimage=\"topic\">" +
-			"\n\t<tocitem text=\"Help Topics\" image=\"toplevelfolder\">";
+		String begin = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
+				+ "\n<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN\""
+				+ "\n         \"http://java.sun.com/products/javahelp/toc_1_0.dtd\">"
+				+ "\n<toc version=\"1.0\" categoryclosedimage=\"_chapter\" topicimage=\"_topic\">";
 
-		String end = "\n\t</tocitem>\n</toc>";
+		String end = "\n</toc>";
 		
 		return begin + sb + end;
 	}
 
-	protected String finishMap (StringBuilder sb) {
+	protected String finishMap (StringBuilder sb, String introFileId) {
 		
-		String begin = 
-			"<?xml version='1.0' encoding='ISO-8859-1' ?>" +
-			"\n<!DOCTYPE map PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN\" " +
-			"\n         \"http://java.sun.com/products/javahelp/map_1_0.dtd\"> " +
-			"\n<map version=\"1.0\"> " +
-			"\n\t<mapID target=\"toplevelfolder\" url=\"images/toplevel.gif\" /> " +
-			"\n\t<mapID target=\"chapter\" url=\"images/chapTopic.gif\" /> " +
-			"\n\t<mapID target=\"topic\" url=\"images/topic.gif\" />" +
-			"\n";
+		String begin = "<?xml version='1.0' encoding='ISO-8859-1' ?>"
+				+ "\n<!DOCTYPE map PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN\" "
+				+ "\n         \"http://java.sun.com/products/javahelp/map_1_0.dtd\"> " + "\n<map version=\"1.0\"> "
+				+ "\n\t<mapID target=\"_toplevelfolder\" url=\"images/toplevel.gif\" /> "
+				+ "\n\t<mapID target=\"_chapter\" url=\"images/chapTopic.gif\" /> "
+				+ "\n\t<mapID target=\"_topic\" url=\"images/topic.gif\" />" + "\n"
+				+ "\n\t<mapID target=\"_intro\" url=\""+introFileId+"\" />";
 
 		String end = "\n</map>";
 		
 		return begin + sb + end;
 	}
 
-	protected String finishHelpset () {
-		String b = "<?xml version='1.0' encoding='ISO-8859-1' ?> <!DOCTYPE helpset PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp HelpSet Version 2.0//EN\" "+
-         "\"../dtd/helpset_2_0.dtd\"> <?MyFavoriteApplication this is data for my favorite application ?>" +
-
-"<helpset version=\"1.0\">  <!-- title -->  <title>Acs Command Center Online Help</title>" +
-  "<!-- maps -->  <maps>     <homeID>intro</homeID>     <mapref location=\"Map.jhm\"/>" +
-  "</maps>  <!-- views --> <view>    <name>TOC</name>    <label>Acs Command Center</label> " +
-  "  <type>javax.help.TOCView</type>    <data>AcsCommandCenterTOC.xml</data>  </view> </helpset>";
+	protected String finishHelpset (String fTocName, String fMapName) {
+		String b = "<?xml version='1.0' encoding='ISO-8859-1' ?> <!DOCTYPE helpset PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp HelpSet Version 2.0//EN\" "
+				+ "\"../dtd/helpset_2_0.dtd\"> <?MyFavoriteApplication this is data for my favorite application ?>"
+				+ "<helpset version=\"1.0\"> <title>Online Help</title>"
+				+ "\n<maps>"
+				+ "\n\t<homeID>_intro</homeID>"
+				+ "\n\t<mapref location=\""+fMapName+"\"/>"
+				+ "\n</maps>"
+				+ "\n<view>"
+				+ "\n\t<name>TOC</name>"
+				+ "\n\t<label>Online Help</label>"
+				+ " \n\t<type>javax.help.TOCView</type>"
+				+ "\n\t<data>"+fTocName+"</data>"
+				+ "\n</view>"
+				+ "\n</helpset>";
 		return b;
 	}
 	
@@ -183,15 +208,13 @@ public class Gen {
 	
 	protected class AnchorNode {
 		public int level;
-		public String heading;
 		public String anchorName;
 		public String prettyName;
 		public AnchorNode parent;
 		public List<AnchorNode> children = new Vector<AnchorNode>();
 
-		AnchorNode(int level, String heading, String anchorName, String prettyName) {
+		AnchorNode(int level, String anchorName, String prettyName) {
 			this.level = level;
-			this.heading = heading;
 			this.anchorName = anchorName;
 			this.prettyName = prettyName;
 		}
@@ -201,9 +224,16 @@ public class Gen {
 			children.add(n);
 		}
 		
+		List<AnchorNode> depthFirst (List<AnchorNode> ret) {
+			ret.add(this);
+			for (AnchorNode m : children)
+				m.depthFirst(ret);
+			return ret;
+		}
+		
 		@Override
 		public String toString() {
-			return "AnchorNode[level="+level+", anchor="+anchorName+", caption="+prettyName+", text=\""+heading+"\"]";
+			return "AnchorNode[level="+level+", anchor="+anchorName+", caption="+prettyName+"]";
 		}
 	}	
 }
