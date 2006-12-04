@@ -411,24 +411,37 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 
 	TReceiverCallback *cb = 0;
 
+	AcsBulkdata::BulkDataReceiver<TReceiverCallback> *recv = distributer.getReceiver();
+	if(recv == 0)
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::setReceiver error getting receiver reference"));
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataBulkDataDistributerImpl::setReceiver");
+	    throw err.getAVFlowEndpointErrorEx();
+	    }
 	try
 	    {
-	    distributer.getReceiver()->getFlowCallback(flw, cb);
+	    recv->getFlowCallback(flw, cb);
 	    }
-	catch(AVFlowEndpointErrorExImpl &ex)
+	catch(ACSErr::ACSbaseExImpl &ex)
 	    {
-	    ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerImpl::setReceiver exception catched !"));
-	    throw ex.getAVFlowEndpointErrorEx();
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataBulkDataDistributerImpl::setReceiver");
+	    throw err.getAVFlowEndpointErrorEx();
+	    }
+	catch(...)
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::setReceiver UNKNOWN exception"));
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataBulkDataDistributerImpl::setReceiver");
+	    throw err.getAVFlowEndpointErrorEx();
 	    }
 
 	if(cb == 0)
 	    {
-// TBD what to do
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl<>::setReceiver - distributer callback = 0"));
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::setReceiver distributor callback null"));
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataBulkDataDistributerImpl::setReceiver");
+	    throw err.getAVFlowEndpointErrorEx();
 	    } 
 	else
 	    {
-	    ACS_SHORT_LOG((LM_DEBUG,"BulkDataDistributerImpl<>::setReceiver - distributer callback OK"));
 	    cb->setDistributerImpl(this);
 	    }	    
 	}

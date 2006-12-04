@@ -87,7 +87,6 @@ TReceiverCallback* AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::getBulk
       throw err;
       }
 */
-
   return cb_p;
 }
 

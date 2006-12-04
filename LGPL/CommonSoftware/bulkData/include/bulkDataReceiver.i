@@ -172,6 +172,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
     fepMap_m.find(flowName, fep);
     if(fep == 0)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
 	}
@@ -183,6 +184,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
 	    {
 	    //cb_p = 0;
 	    // To be verified what do to here
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
 	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	    throw err;
 	    } 
@@ -219,6 +221,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::UL
     fepMap_m.find(flowName, fep);
     if(fep == 0)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
 	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
 	}
@@ -230,6 +233,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::UL
 	    {
 	    //cb_p = 0;
 	    // To be verified what do to here
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
 	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	    throw err;
 	    } 
