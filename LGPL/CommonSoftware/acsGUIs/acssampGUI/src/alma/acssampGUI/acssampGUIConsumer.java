@@ -42,13 +42,20 @@ public class acssampGUIConsumer extends alma.acs.nc.Consumer {
 		timeConverter = new TimeConverter();
 
 		try {
-			//Subscribe to events
-			EventType[] added = { new EventType(alma.acscommon.ALMADOMAIN.value, "SampDataBlockSeq") };
-			EventType[] removed = {};
 
+/* Commented out because int ACS 6.0 seems not working */
+//Subscribe to events
+//			EventType[] added = { new EventType(alma.acscommon.ALMADOMAIN.value, "SampDataBlockSeq") };
+//			EventType[] removed = {};
 			//really subscribe to the events
-			m_consumerAdmin.subscription_change(added, removed);
-		} catch (org.omg.CosNotifyComm.InvalidEventType e) {
+//			m_consumerAdmin.subscription_change(added, removed);
+//		} catch (org.omg.CosNotifyComm.InvalidEventType e) {
+
+/* this allows to subscribe to all events */
+		addSubscription(null);
+
+
+		} catch (Exception e) {
 			String msg = "'SampDataBlockSeq' event type is invalid for the '" + m_channelName + "' channel!";
 			System.err.println(msg);
 		}
