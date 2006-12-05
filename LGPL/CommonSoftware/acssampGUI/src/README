@@ -1,0 +1,30 @@
+Instruction for testing acssampGUI
+-------------------------------------------------
+
+1. compile acssamp both in src and test
+
+2. prepare the CDB
+
+cd <...>/acssamp/ws/test
+mkdir -p  CDB/MACI/Containers/Container
+cp ENVIRONMENTS/wsTat/Container.xml CDB/MACI/Containers/Container/Container.xml
+
+3. start ACS
+
+export ACS_CDB=<...>/acssamp/ws/test
+acsStart
+acsStartContainer -cpp Container
+
+4. start acssampGUI
+
+acsStartJava alma.acssampGUI.acssampPanel
+
+5. exercise the panel:
+ - press SAMPLE (a running graph should be displayed on the JChart)
+ - press PAUSE
+ - ecc
+
+Using ObjExp it is possible to change the value of the brightness;
+note that the panel (currently) does not scale automatically so limit the values between 0 and 1.
+
+
