@@ -15,7 +15,9 @@ public class acssampJTest extends ComponentClient
 	throws Exception
 	{
 	    super(null, managerLoc, clientName);
-	    String ncChannel = "NC_LAMP1_1000000_10000000";
+
+	    String ncChannel = "NC_LAMP1_brightness_1000000_10000000";
+
 	    ContainerServices csrv = getContainerServices();
 	    
 	    consumer = new acssampConsumer(ncChannel, csrv);
@@ -49,9 +51,11 @@ public class acssampJTest extends ComponentClient
 	    double d;
 	    try
 		{
-		acssampJTestNew test = new acssampJTestNew(managerLoc, clientName);
-		for(long i = 0; i < 100000000; i++)
-		    d = i + i - (i/2.4);
+
+		
+		acssampJTest test = new acssampJTest(managerLoc, clientName);
+
+		Thread.sleep(50000);
 		    
 		}
 	    catch (Exception e)

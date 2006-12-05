@@ -84,7 +84,7 @@ public class acssampSupplier extends ComponentClient
 		sampObj.start();
 		m_logger.info(" ACS sampling started");
 
-		Thread.sleep(5000);
+		Thread.sleep(60000);
 		sampObj.suspend();
 		m_logger.info("ACS sampling suspended");
 

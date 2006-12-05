@@ -46,18 +46,26 @@ public class acssampConsumer extends alma.acs.nc.Consumer {
 	
 	    try 
 		{
-		//Subscribe to events
-		EventType[] added = {new EventType(alma.acscommon.ALMADOMAIN.value, "SampDataBlockSeq")};
-		EventType[] removed = {};
-	    
-		//really subscribe to the events
-		m_consumerAdmin.subscription_change(added, removed);
+//Subscribe to events
+//		EventType[] added = {new EventType(alma.acscommon.ALMADOMAIN.value, "SampDataBlockSeq")};
+//		EventType[] removed = {};
+//really subscribe to the events
+//		m_consumerAdmin.subscription_change(added, removed);
+		
+// workaround for ACS 6.0
+		addSubscription(null);
+
 		}
-	    catch(org.omg.CosNotifyComm.InvalidEventType e)
+	    catch (Exception e) 
 		{
-		String msg = "'SampDataBlockSeq' event type is invalid for the '" + m_channelName + "' channel!";
+		String msg = "Failed to subscribe to archive events: ";
 		System.err.println(msg);
 		}
+//	    catch(org.omg.CosNotifyComm.InvalidEventType e)
+//		{
+//		String msg = "'SampDataBlockSeq' event type is invalid for the '" + m_channelName + "' channel!";
+//		System.err.println(msg);
+//		}
 	}
     
     public void push_structured_event(StructuredEvent structuredEvent) throws org.omg.CosEventComm.Disconnected {
