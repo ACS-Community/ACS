@@ -115,7 +115,7 @@ public class ProjectMaker {
 	}
 
 	
-	public AcsCommandCenterProject loadProject (File f) throws MarshalException, ValidationException, FileNotFoundException {
+	public AcsCommandCenterProject loadProject (File f) throws MarshalException, ValidationException, FileNotFoundException, IOException {
 		AcsCommandCenterProject project = readProject(f);
 		
 		if (isFromAnOutdatedVersion(project)) {
@@ -144,6 +144,8 @@ public class ProjectMaker {
 		// --- write to disk
 		BufferedWriter w = new BufferedWriter(new FileWriter(f));
 		p.marshal(w);
+		w.flush();
+		w.close();
 	}
 
 	
@@ -177,9 +179,10 @@ public class ProjectMaker {
 	}
 	
 	
-	protected AcsCommandCenterProject readProject (File f) throws FileNotFoundException, MarshalException, ValidationException {
+	protected AcsCommandCenterProject readProject (File f) throws FileNotFoundException, MarshalException, ValidationException, IOException {
 		BufferedReader r = new BufferedReader(new FileReader(f));
 		AcsCommandCenterProject p = AcsCommandCenterProject.unmarshalAcsCommandCenterProject(r);
+		r.close();
 		return p;
 	}
 
