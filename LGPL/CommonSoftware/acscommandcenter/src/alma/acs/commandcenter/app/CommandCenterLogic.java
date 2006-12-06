@@ -374,7 +374,7 @@ public class CommandCenterLogic {
 		}
 	}
 	
-	public AcsCommandCenterProject readProject (File f) throws FileNotFoundException, MarshalException, ValidationException {
+	public AcsCommandCenterProject readProject (File f) throws FileNotFoundException, MarshalException, ValidationException, IOException {
 		return projectMaker.readProject(f);
 	}
 	
