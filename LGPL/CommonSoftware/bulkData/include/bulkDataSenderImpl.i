@@ -44,7 +44,7 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
     char buf[BUFSIZ];
 
     CDB::DAL_ptr dal_p = containerServices_p->getCDB();
-    if (CORBA::is_nil (dal_p))
+    if (CORBA::is_nil(dal_p))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect error getting CDB reference"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
@@ -55,7 +55,7 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
     CDBpath += name();
 
     CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
-    if (CORBA::is_nil (dao_p))
+    if (CORBA::is_nil(dao_p))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect error getting DAO reference"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");

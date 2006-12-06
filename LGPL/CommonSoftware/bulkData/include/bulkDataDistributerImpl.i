@@ -63,35 +63,29 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 {
     ACS_TRACE("BulkDataDistributerImpl<>::multiConnect");
 
+    if (CORBA::is_nil(receiverObj_p))
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiConnect receiver reference null"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	throw err.getAVConnectErrorEx();
+	}
 
     char buf[BUFSIZ];
 
     CORBA::ULong timeout = 0; 
-    CDB::DAO_ptr dao_p = 0;
 
-    try
+    ACE_CString CDBpath="alma/";
+    CDBpath += name();
+
+    CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
+    if (CORBA::is_nil(dao_p))
 	{
-
-	ACE_CString CDBpath="alma/";
-	CDBpath += name();
-
-	dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
-	if (CORBA::is_nil (dao_p))
-	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect dao_p nil"));
-	    AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	    throw err.getAVStreamEndpointErrorEx();
-	    }
-
-	ACE_OS::strcpy(buf,dao_p->get_string("sender_protocols"));
-
-	}
-    catch(...)
-	{
-	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerImpl::connect CDB failure."));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiConnect error getting DAO reference"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
 	throw err.getAVConnectErrorEx();
 	}
+
+    ACE_OS::strcpy(buf,dao_p->get_string("sender_protocols"));
 
     // TBD; not used for now; waiting for requirements 
     try
@@ -105,32 +99,40 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
     
     try
 	{
-
 	receiverObj_p->openReceiver();
 
 	bulkdata::BulkDataReceiverConfig *receiverConfig = receiverObj_p->getReceiverConfig();
-	if(receiverConfig == 0)
-	    {
-	    ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerImpl::connect AVReceiverConfigErrorExImpl - receiverConfig NULL"));
-	    throw AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	    }
 
 	ACE_CString recvName = receiverObj_p->name();
 
 	distributer.multiConnect(receiverConfig,buf,recvName);
 
 	distributer.setTimeout(timeout);
-
 	}
-    /*catch (ACSErr::ACSbaseExImpl &ex)
+
+    catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	ex.log();
-	cout << "XXXXXXXXXXXXXXXXXXXXXDDDDDDDDDDDDD" << endl;
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	throw err.getAVConnectErrorEx();
+	}
+    /*catch(CORBA::UserException &ex) //is the base of the remote exceptions
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
 	throw err.getAVConnectErrorEx();
 	}*/
+    catch(AVOpenReceiverErrorEx &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	throw err.getAVConnectErrorEx();
+	}
+    catch(AVReceiverConfigErrorEx &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	throw err.getAVConnectErrorEx();
+	}
+    
 
-    catch (AVInitErrorExImpl & ex)
+    /*catch (AVInitErrorExImpl & ex)
 	{   
 	ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerImpl::connect AVInitErrorExImpl exception catched !"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
@@ -171,14 +173,13 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVStreamBindErrorExImpl exception catched !"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
 	throw err.getAVConnectErrorEx();
-	}
+	}*/
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect UNKNOWN exception"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiConnect UNKNOWN exception"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
 	throw err.getAVConnectErrorEx();
 	}
-
 }
 
 

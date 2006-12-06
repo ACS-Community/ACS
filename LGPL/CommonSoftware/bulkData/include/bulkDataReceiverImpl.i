@@ -30,36 +30,26 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
  
     char buf[BUFSIZ];
 
-    try
+    CDB::DAL_ptr dal_p = containerServices_p->getCDB();
+    if(CORBA::is_nil(dal_p))
 	{
-
-	CDB::DAL_ptr dal_p = containerServices_p->getCDB();
-	if (CORBA::is_nil (dal_p))
-	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverImpl<>::openReceiver dal_p nil"));
-	    AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
-	    throw err.getAVStreamEndpointErrorEx();
-	    }
-
-	ACE_CString CDBpath="alma/";
-	CDBpath += name();
-
-	CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
-	if (CORBA::is_nil (dao_p))
-	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverImpl<>::openReceiver dao_p nil"));
-	    AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
-	    throw err.getAVStreamEndpointErrorEx();
-	    }
-
-	ACE_OS::strcpy(buf,dao_p->get_string("recv_protocols"));
-	}
-    catch(...)
-	{
-	ACS_SHORT_LOG((LM_WARNING,"BulkDataReceiverImpl<>::openReceiver CDB failure."));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::openReceiver error getting DAL reference"));
 	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
-	throw err.getAVOpenReceiverErrorEx();	
+	throw err.getAVOpenReceiverErrorEx();
 	}
+
+    ACE_CString CDBpath="alma/";
+    CDBpath += name();
+
+    CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
+    if(CORBA::is_nil(dao_p))
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::openReceiver error getting DAO reference"));
+	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	throw err.getAVOpenReceiverErrorEx();
+	}
+    
+    ACE_OS::strcpy(buf,dao_p->get_string("recv_protocols"));
 
     try
 	{
@@ -67,28 +57,14 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
 
 	receiver.createMultipleFlows(buf);
 	}
-
-    catch (AVInitErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverImpl<>::openReceiver AVInitErrorEx exception catched !"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
-	throw err.getAVOpenReceiverErrorEx();
-	}
-    catch (AVStreamEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverImpl<>::openReceiver AVStreamEndpointErrorEx exception catched !"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
-	throw err.getAVOpenReceiverErrorEx();
-	}
-    catch (AVFlowEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverImpl<>::openReceiver AVFlowEndpointErrorEx exception catched !"));
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
 	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataReceiverImpl<>::openReceiver UNKNOWN exception"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl::openReceiver UNKNOWN exception"));
 	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
