@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.46 2006/10/19 08:24:02 bjeram Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.47 2006/12/06 16:04:34 bjeram Exp $
  */
 /*
 *    DeviceImpl.cpp - ALMA Device interface implementation.
@@ -28,6 +28,7 @@
 #include <baciS.h>
 #include <baciDB.h>
 #include <logging.h>
+#include <acsutil.h>
 
 #include "enumpropTestDeviceImpl.h"
   
@@ -225,4 +226,27 @@ void  enumpropTestDeviceImpl::serverShutdown ()
     BACI_CORBA::getORB()->shutdown(true);
     //LoggingProxy::done();
 #endif
+}
+
+// at this point we can not use  MACI_DLL_SUPPORT_FUNCTIONS
+// since it is not available yet
+
+ACS_DLL_UNMANGLED_EXPORT PortableServer::Servant ConstructComponent(CORBA::ULong, 
+							  const char * name_p, 
+							  const char * type_p, 
+							  maci::ContainerServices * containerServices) 
+{ 
+    ACE_UNUSED_ARG(type_p); 
+    enumpropTestDeviceImpl* servant_p =0; 
+    servant_p = new enumpropTestDeviceImpl(name_p, containerServices); 
+    return servant_p; 
+} 
+
+ACS_DLL_UNMANGLED_EXPORT bool DLLOpen(int, char**) 
+{ 
+    return true; 
+} 
+
+ACS_DLL_UNMANGLED_EXPORT void DLLClose() 
+{ 
 }

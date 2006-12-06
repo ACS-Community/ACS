@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.41 2006/10/09 06:07:07 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.42 2006/12/06 16:04:34 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -64,8 +64,8 @@ EXECUTABLES_L   = enumpropTestServer testClient testRWClient monitorTest alarmTe
 common_GENERATED = enumpropTestDeviceS enumpropTestDeviceC
 
 
-enumpropTestServer_OBJECTS = enumpropTestDeviceImpl enumpropTestServer $(common_GENERATED)
-enumpropTestServer_LIBS = acsContainerServices maci
+enumpropTestServer_OBJECTS =  enumpropTestServer
+enumpropTestServer_LIBS = acsContainerServices maci enumpropTestDevice  
 
 testClient_COMMON = testClient
 testClient_OBJECTS   = $(testClient_COMMON) $(common_GENERATED)
@@ -94,7 +94,9 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       =
-LIBRARIES_L     =
+LIBRARIES_L     = enumpropTestDevice
+enumpropTestDevice_OBJECTS = enumpropTestDeviceImpl 
+enumpropTestDevice_LIBS = enumpropTestDeviceStubs
 
 #
 # <brief description of lllll library>
