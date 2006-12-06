@@ -9,6 +9,10 @@
 	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar"/>
 	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/AcsCommandCenterEntities.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/maciErrType.jar" sourcepath="/INTROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/acserr.jar" sourcepath="INTROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/acserrj.jar" sourcepath="/INTROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/JavaContainerError.jar" sourcepath="/INTROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
