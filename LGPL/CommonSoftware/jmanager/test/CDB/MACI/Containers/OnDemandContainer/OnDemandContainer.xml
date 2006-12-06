@@ -12,7 +12,7 @@
   <Autoload>
     <cdb:_ string="baci" />
   </Autoload>
-  <DeployInfo Type="cpp" Host="test" Instance="0" Flags="-n" KeepAliveTime="0" />
+  <DeployInfo Type="cpp" Host="test" Instance="0" Flags="" KeepAliveTime="0" />
   <LoggingConfig 
            centralizedLogger="Log" 
            minLogLevel="0" 
