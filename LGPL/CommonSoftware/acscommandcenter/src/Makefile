@@ -84,7 +84,6 @@ INSTALL_FILES =      ../lib/j2ssh-core-0.2.6.jar \
 					 ../lib/JavaOnlyAcsConfig.jar \
 					 ../lib/jnlp.jar \
 					 ../lib/jta.jar \
-					 ../lib/jhall-2.0_02.jar \
 					 ../lib/AcsCommandCenterHelp.jar
 
 

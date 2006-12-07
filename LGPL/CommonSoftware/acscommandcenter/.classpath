@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry kind="lib" path="lib/jfcunit.jar"/>
 	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar"/>
-	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/AcsCommandCenterEntities.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/maciErrType.jar" sourcepath="/INTROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/acserr.jar" sourcepath="INTROOT/lib/acserr.jar"/>
