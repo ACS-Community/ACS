@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.15 2006/10/11 13:05:36 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.16 2006/12/07 17:01:17 mschilli Exp $"
 #
 # Makefile of ........
 #
@@ -27,6 +27,12 @@
 # --------  --------  ----------------------------------------------
 # gchiozzi 2003-05-17 created
 #
+
+
+#
+# 3rd party Install files
+#
+INSTALL_FILES = ../lib/jhall-2.0_02.jar
 
 #
 # Jarfiles and their directories
@@ -36,11 +42,12 @@ DEBUG = on
 
 JARFILES = jACSUtil
 jACSUtil_DIRS = com alma
+jACSUtil_EXTRAS = alma/acs/jhelpgen/content/*.gif
 
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = acsExtractJavaSources acsJarPackageInfo acsJarsearch acsJarSignInfo acsJarUnsign
+SCRIPTS         = acsExtractJavaSources acsJarPackageInfo acsJarsearch acsJarSignInfo acsJarUnsign acsJavaHelp
 
 #
 #>>>>> END OF standard rules

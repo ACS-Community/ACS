@@ -8,5 +8,6 @@
 	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xalan.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar"/>
 	<classpathentry kind="output" path="object"/>
 </classpath>
