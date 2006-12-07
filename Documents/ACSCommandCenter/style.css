@@ -16,19 +16,41 @@ ul{margin-bottom:0cm;}
 
 /* (msc:) our own style definitions */
 
-.indent1 {padding-left:40px}
-.indent2 {padding-left:60px}
+.indent1 {
+	padding-left:40px
+}
 
-p.caution {border-color:cornflowerblue; border-style:solid; border-width:2px; 
-margin-right:140px; padding:3px;}
+.indent2 {
+	padding-left:60px
+}
 
-div.hint {color:gainsboro; border-color:gainsboro; border-style:solid; border-width:2px; margin-
-right:140px; padding:3px;}
+p.caution {
+	border-color:cornflowerblue;
+	border-style:solid;
+	border-width:2px;
+	margin-right:140px;
+	padding:3px;
+}
 
-div.hilite {color:black; background-color:ghostwhite; font-weight:bold;}
+div.hint {
+	color:gainsboro; 
+	border-color:gainsboro;
+	border-style:solid;
+	border-width:2px;
+	margin-right:140px;
+	padding:3px;
+}
 
-//h2 {background-color:cornflowerblue; padding:2px; padding-left:5px;}
-//h3 {background-color:cornsilk; padding:2px; padding-left:5px;}
+div.hilite {color:black;
+	background-color:ghostwhite;
+	font-weight:bold;
+}
 
-h2 {font-weight:bold; font-style:italic; background-color:whitesmoke;}
-h3 {font-weight:bold; font-style:italic;}
+h2 {font-weight:bold;
+	font-style:italic;
+	background-color:whitesmoke;
+}
+
+h3 {font-weight:bold;
+	font-style:italic;
+}
