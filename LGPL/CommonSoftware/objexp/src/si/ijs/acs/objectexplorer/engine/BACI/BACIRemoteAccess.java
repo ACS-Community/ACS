@@ -656,14 +656,14 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		if (target == null)
 			throw new NullPointerException("target");
 
-		notifier.reportMessage(
-			"Disconnecting from '" + target.getName() + "'.");
 		BACIRemoteNode baciNode = (BACIRemoteNode) target;
 		if (baciNode.getCORBARef() == null)
 		{
 			// already disconnected
 			return;
 		}
+		notifier.reportMessage(
+			"Disconnecting from '" + target.getName() + "'.");
 		java.util.Enumeration e = baciNode.children();
 		while (e.hasMoreElements()) {
 			java.lang.Object next = e.nextElement();
@@ -698,12 +698,15 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				resolveManager();
 			notifier.reportDebug(
 				"BACIRemoteAccess::disconnect",
-				"Disconnecting from '" + target.getName() + "'.");
+				"Releasing component '" + target.getName() + "'.");
 			try {
 			    manager.release_component(handle, (String) baciNode.getUserObject());
+				notifier.reportDebug(
+						"BACIRemoteAccess::disconnect",
+						"Component '" + target.getName() + "' released.");
 			    }
 			catch (NoPermissionEx npe) {
-				notifier.reportError("Nopermission to release component", npe);
+				notifier.reportError("No permission to release component", npe);
 			}
 		}
 		else
@@ -712,6 +715,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 //				"BACIRemoteAccess::disconnect",
 //				"===> NOT DISCONNECTING  " + target.getName() + "'.");
 		}
+		notifier.reportMessage(
+				"Disconnected from '" + target.getName() + "'.");
 	}
 
 	/**
