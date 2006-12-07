@@ -5,19 +5,59 @@ package alma.acs.jhelpgen;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
+import javax.help.DefaultHelpBroker;
+import javax.help.HelpSet;
+import javax.help.HelpSetException;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-import alma.acs.jhelpgen.Gen.AnchorNode;
 
 
 
 
 public class Gui {
 
+	
+	// ====================================================
+	// Support for JavaHelp-enabled applications 
+	
+	protected URL helpsetURL;
+	protected DefaultHelpBroker helpBroker;
+	
+	public Gui (URL helpsetURL) throws Exception {
+		
+		this.helpsetURL = helpsetURL;
+		
+		HelpSet helpSet = new HelpSet(null, helpsetURL);
+		if (helpSet == null) {
+			throw new HelpSetException("Online Help could not be loaded from "+helpsetURL);
+		}
+		
+		helpBroker = (DefaultHelpBroker)helpSet.createHelpBroker();
+	}
+	
+	public void showHelpBrowser (String topic) {
+		helpBroker.setCurrentID(topic);
+		showHelpBrowser();
+	}
+	
+	public void showHelpBrowser () {
+		helpBroker.setDisplayed(true);
+	}
+
+	
+	
+	
+	// =======================================================
+	// Debugging Helpers for class Gen, not public
+	
+	private Gui() {
+		
+	}
+	
 	static void showTree(Gen.AnchorNode n) {
 		try {
 			Gui inst = new Gui();
