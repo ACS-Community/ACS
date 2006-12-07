@@ -2283,6 +2283,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		    acsjex2.setCurl(curl);
 		    throw acsjex2;
 		}	
+		notifier.reportMessage("Connected to '" + curl + "'.");
 	}
 
 	public void synchronizeInternalParentConnect(BACIRemoteNode baciNode) {
