@@ -8,12 +8,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-
-import alma.acs.jhelpgen.Gen.AnchorNode;
 
 
 
@@ -21,7 +20,16 @@ import alma.acs.jhelpgen.Gen.AnchorNode;
 public class Util {
 
 
-	static List<File> findFiles (List<File> ret, File dir, final String... extensions) {
+	/**
+	 * Returns all files and directories underneath the specified <code>dir</code>,
+	 * recursively. Files can be filtered by extensions.
+	 * 
+	 * @param ret results will be added to this list
+	 * @param dir the directory to search (recursively)
+	 * @param extensions only include files with these extensions 
+	 * @return
+	 */
+	public static List<File> findFiles (List<File> ret, File dir, final String... extensions) {
 		/* we're processing the real files in every dir first */
 		List<File> subdirs = new LinkedList<File>();
 		File[] ff = dir.listFiles();
@@ -53,6 +61,7 @@ public class Util {
 	 * 
 	 * @param f the file
 	 * @return the file contents (without line terminators)
+	 * @throws RuntimeException if something goes wrong
 	 */
 	static String readFile (File f) {
 		BufferedInputStream bis = null;
@@ -81,7 +90,14 @@ public class Util {
 		}
 	}
 
-	static void writeFile (String contents, File f) {
+	/**
+	 * Writes a string to a file.
+	 * 
+	 * @param contents the string to write
+	 * @param f the file to write
+	 * @throws RuntimeException if something goes wrong
+	 */
+	public static void writeFile (String contents, File f) {
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter(f);
@@ -94,6 +110,43 @@ public class Util {
 			try {
 				fw.close();
 			} catch (Exception exc) {}
+		}
+	}
+	
+	
+	/**
+	 * Reads a resource into a string.
+	 * 
+	 * @param name the resource's name
+	 * @return the resource's content
+	 * @throws RuntimeException if something goes wrong
+	 */
+	public static String readResource (String name) {
+		InputStream is = Util.class.getResourceAsStream(name);
+		if (is == null)
+			throw new RuntimeException("resource not found: "+name);
+		
+		BufferedInputStream bis = null;
+		try {
+			bis = new BufferedInputStream(is);
+			StringBuilder buf = new StringBuilder(4096);
+			int c;
+			while (true) {
+				c = bis.read();
+				if (c == -1)
+					break;
+				buf.append((char) c);
+			}
+
+			return buf.toString();
+
+		} catch (IOException e) {
+			throw new RuntimeException("couldn't read from resource: " + e);
+
+		} finally {
+			try {
+				bis.close();
+			} catch (Exception e1) {}
 		}
 	}
 		
