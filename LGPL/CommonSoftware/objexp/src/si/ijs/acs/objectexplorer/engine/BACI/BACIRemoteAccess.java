@@ -2264,6 +2264,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			    throw acsjex;
 			}
 		} catch (Exception e) {
+			baciNode.setCORBARef(null);
 			notifier.reportError(
 				"Failed to retrieve interface description from IR, releasing component on Manager, if needed.",
 				e);
