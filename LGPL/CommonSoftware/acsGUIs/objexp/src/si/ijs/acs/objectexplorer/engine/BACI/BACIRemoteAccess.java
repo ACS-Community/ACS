@@ -661,7 +661,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		BACIRemoteNode baciNode = (BACIRemoteNode) target;
 		if (baciNode.getCORBARef() == null)
 		{
-			System.out.println("baciNode.getCORBARef() == null");
+			// already disconnected
 			return;
 		}
 		java.util.Enumeration e = baciNode.children();

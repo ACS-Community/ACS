@@ -38,7 +38,7 @@ public void connect() {
  * Insert the method's description here.
  * Creation date: (7.11.2000 21:44:07)
  */
-public void disconnect() {
+public synchronized void disconnect() {
 	try
 	{
 		ra.disconnect(this);
@@ -61,7 +61,7 @@ public Attribute[] getAttributes() {
  * Creation date: (9.11.2000 21:47:30)
  * @return java.lang.Object
  */
-public org.omg.CORBA.Object getCORBARef() {
+public synchronized org.omg.CORBA.Object getCORBARef() {
 	return remote;
 }
 /**
@@ -69,7 +69,7 @@ public org.omg.CORBA.Object getCORBARef() {
  * Creation date: (9.11.2000 21:47:30)
  * @return org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription
  */
-public org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription getIFDesc() {
+public synchronized org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription getIFDesc() {
 	return desc;
 }
 /**
@@ -112,7 +112,7 @@ public boolean isConnected() {
  * Creation date: (9.11.2000 23:52:02)
  * @param ref org.omg.CORBA.Object
  */
-public void setCORBARef(org.omg.CORBA.Object ref) {
+public synchronized void setCORBARef(org.omg.CORBA.Object ref) {
 	this.remote = ref;
 }
 /**
@@ -120,7 +120,7 @@ public void setCORBARef(org.omg.CORBA.Object ref) {
  * Creation date: (9.11.2000 23:55:21)
  * @param desc org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription
  */
-public void setIFDesc(org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription desc) {
+public synchronized void setIFDesc(org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription desc) {
 	this.desc = desc;
 }
 
