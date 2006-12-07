@@ -1,5 +1,5 @@
 template<class TReceiverCallback, class TSenderCallback>
-AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::BulkDataDistributer() : timeout_m(0),numberOfFlows(0),offset(100),contSvc_p(0)
+AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::BulkDataDistributer() : sender_p(0),timeout_m(0),numberOfFlows(0),offset(100),contSvc_p(0)
 {
     ACE_TRACE("BulkDataDistributer<>::BulkDataDistributer");
 
@@ -16,8 +16,8 @@ AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::~BulkDataD
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{	
 	entry->int_id_->disconnectPeer();
-	BulkDataSender<TSenderCallback> * locSender_p = entry->int_id_;
-	if ( locSender_p != 0 )
+	BulkDataSender<TSenderCallback> *locSender_p = entry->int_id_;
+	if (locSender_p != 0)
 	    delete locSender_p;
 	}
 }
@@ -28,41 +28,54 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 {
     ACS_TRACE("BulkDataDistributer<>::multiConnect");
 
-
-    if ( isRecvConnected(receiverName) )
+    if(isRecvConnected(receiverName))
 	{
-	ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerImpl::connect AVReceiverConfigErrorExImpl - ALREADY CONNECTED"));
-	throw AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
+	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::multiConnect receiver %s already connected",receiverName.c_str()));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	throw err;
 	}
-
 
     sender_p = new BulkDataSender<TSenderCallback>;
     if(sender_p == 0)
 	{
-	ACS_SHORT_LOG((LM_INFO, "BulkDataDistributer::multiconnect sender NULL"));
+	ACS_SHORT_LOG((LM_ERROR, "BulkDataDistributer<>::multiConnect error creating sender"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	throw err;
 	}
 
-    sender_p->initialize();
-
-    sender_p->createMultipleFlows(fepsConfig);
-  
-    sender_p->connectToPeer(recvConfig_p);
-
-    senderMap_m.bind(receiverName,sender_p);
-
-
-    recvStatusMap_m.bind(receiverName,offset);
-
-    vector<string> flowNames = sender_p->getFlowNames();
-
-    numberOfFlows = flowNames.size();
-
-    vector<string>::size_type flwIdx;
-    for (flwIdx = 0; flwIdx < flowNames.size(); ++flwIdx)
+    try
 	{
-	CORBA::ULong currVal = (CORBA::ULong)flwIdx + offset + 1;
+	sender_p->initialize();
 
-	flowsStatusMap_m.bind(currVal,FLOW_AVAILABLE);
+	sender_p->createMultipleFlows(fepsConfig);
+  
+	sender_p->connectToPeer(recvConfig_p);
+
+	senderMap_m.bind(receiverName,sender_p);
+
+	recvStatusMap_m.bind(receiverName,offset);
+
+	vector<string> flowNames = sender_p->getFlowNames();
+	
+	numberOfFlows = flowNames.size();
+
+	vector<string>::size_type flwIdx;
+	for (flwIdx = 0; flwIdx < numberOfFlows; ++flwIdx)
+	    {
+	    CORBA::ULong currVal = (CORBA::ULong)flwIdx + offset + 1;	    
+	    flowsStatusMap_m.bind(currVal,FLOW_AVAILABLE);
+	    }
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	throw err;
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiConnect UNKNOWN exception"))
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	throw err;
 	}
 
     offset += 100;
@@ -137,11 +150,10 @@ bool AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::isRec
 {
     ACS_TRACE("BulkDataDistributer<>::isRecvConnected");
 
-    if ( senderMap_m.find(receiverName) == 0 )
+    if (senderMap_m.find(receiverName) == 0)
 	return true;
-
+    
     return false;
- 
 }
 
 

@@ -109,7 +109,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 
 	distributer.setTimeout(timeout);
 	}
-
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
@@ -130,51 +129,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
 	throw err.getAVConnectErrorEx();
 	}
-    
-
-    /*catch (AVInitErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerImpl::connect AVInitErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}
-    catch (AVStreamEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "BulkDataDistributerImpl::connect AVStreamEndpointErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}
-    catch (AVFlowEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVFlowEndpointErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}
-    catch (AVOpenReceiverErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVOpenReceiverErrorEx exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}
-    catch (AVReceiverConfigErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVReceiverConfigErrorEx exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}
-    catch (AVReceiverConfigErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVReceiverConfigErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}
-    catch (AVStreamBindErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connect AVStreamBindErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}*/
-    catch(...)
+   catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiConnect UNKNOWN exception"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
