@@ -82,9 +82,9 @@ public class Gen {
 		}
 		
 		
-		File fToc = new File(helpDir, "JavaHelpToc.xml");
-		File fMap = new File(helpDir, "JavaHelpMap.jhm");
-		File fSet = new File(helpDir, "JavaHelpSet.hs");
+		File fToc = new File(helpDir, Const.TOC_FILENAME);
+		File fMap = new File(helpDir, Const.MAP_FILENAME);
+		File fSet = new File(helpDir, Const.SET_FILENAME);
 		
 		String toc = finishToc(sbToc);
 		String map = finishMap(sbMap, firstFileId);
