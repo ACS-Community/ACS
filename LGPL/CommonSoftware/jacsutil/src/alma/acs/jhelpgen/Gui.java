@@ -49,6 +49,29 @@ public class Gui {
 	}
 
 	
+	// ====================================================
+	// Support for commandline invokation 
+
+	public static void main(String[] args) {
+      try {
+      	if (args.length < 1)
+      		throw new IllegalArgumentException("too few arguments");
+      	
+      	String name = "/"+args[0] + (args[0].endsWith("/")? "" : "/") + Const.SET_FILENAME;
+      	URL url = Gui.class.getResource(name);
+      	if (url == null)
+      		throw new Exception("helpset not found: "+name);
+      	
+         Gui inst = new Gui(url);
+         inst.showHelpBrowser();
+         
+		} catch (IllegalArgumentException e) {
+			System.err.println("Error: "+e.getMessage());
+			System.err.println("Usage: (this) help-dir");
+		} catch (Exception e) {
+			System.err.println("Error: "+e);
+		}
+	}
 	
 	
 	// =======================================================
