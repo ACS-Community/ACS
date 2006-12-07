@@ -50,6 +50,7 @@ public class Gen {
 	}
 	
 	protected void go (File helpDir, List<File> fArgs) throws IOException {
+		StringBuilder worklog = new StringBuilder();
 		
 		StringBuilder sbToc = new StringBuilder();
 		StringBuilder sbMap = new StringBuilder();
@@ -93,8 +94,27 @@ public class Gen {
 		Util.writeFile(map, fMap);
 		Util.writeFile(set, fSet);
 
-		System.out.println("Created "+fToc.getName()+", "+fMap.getName()+", "+fSet.getName()+" in helpdir "+helpDir.getName());
+		worklog.append("Created "+fToc.getPath()+"\n");
+		worklog.append("Created "+fMap.getPath()+"\n");
+		worklog.append("Created "+fSet.getPath()+"\n");
+
+		// copy images from our jar to helpdir
+		String[] imageNames = new String[]{"chapTopic.gif", "topic.gif", "toplevel.gif"};
+		File imageDir = new File(helpDir, "images");
+		imageDir.mkdir();
+		for (String imageName : imageNames) {
+			String imageContent = Util.readResource("/alma/acs/jhelpgen/content/" + imageName);
+			
+			File fImage = new File(imageDir, imageName);
+			Util.writeFile(imageContent, fImage);
+			
+			worklog.append("Created " + fImage.getPath()+"\n");
+		}
+
+		
+		System.out.println("\n" + worklog);
 	}
+
 	
 	
 	protected AnchorNode htmlToDom (String contents) {
@@ -160,7 +180,6 @@ public class Gen {
 	}
 
 	protected String finishToc (StringBuilder sb) {
-		
 		String begin = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
 				+ "\n<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN\""
 				+ "\n         \"http://java.sun.com/products/javahelp/toc_1_0.dtd\">"
@@ -172,7 +191,6 @@ public class Gen {
 	}
 
 	protected String finishMap (StringBuilder sb, String introFileId) {
-		
 		String begin = "<?xml version='1.0' encoding='ISO-8859-1' ?>"
 				+ "\n<!DOCTYPE map PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN\" "
 				+ "\n         \"http://java.sun.com/products/javahelp/map_1_0.dtd\"> " + "\n<map version=\"1.0\"> "
@@ -204,7 +222,7 @@ public class Gen {
 		return b;
 	}
 	
-	
+
 	
 	protected class AnchorNode {
 		public int level;
