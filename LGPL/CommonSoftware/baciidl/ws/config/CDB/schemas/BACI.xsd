@@ -270,7 +270,8 @@ Above this value alarm is cleared
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>The minimum time interval (in seconds and fractions of seconds) for the notification of changes in the alarm status.
-See the documentation of the specific implementation for details on the implications of thsi value.
+A value of 0.0 (default) means that alarm triggering is disabled.
+See the documentation of the specific implementation for details on the implications of this value.
 For example in the ACS CPP baci implementation, the value of a property is checked for its status with respect to the alarm configuration by an internal monitor defined with this time interval. This means that, depending on the underlying DevIO implementation, changes in the alarm status accurring during this time interval might get un-noticed.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
