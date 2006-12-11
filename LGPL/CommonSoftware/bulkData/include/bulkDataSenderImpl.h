@@ -103,9 +103,9 @@ class BulkDataSenderImpl : public CharacteristicComponentImpl,
 	throw (CORBA::SystemException, AVDisconnectErrorEx);
 
 
-    virtual AcsBulkdata::BulkDataSender<TSenderCallback> * getSender () 
+    virtual AcsBulkdata::BulkDataSender<TSenderCallback> *getSender() 
 	{
-	    return & sender;
+	    return &sender;
 	}
 
 
