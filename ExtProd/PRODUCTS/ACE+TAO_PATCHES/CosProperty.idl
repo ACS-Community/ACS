@@ -1,0 +1,16 @@
+// 
+// CosPropertyService.idl,v 1.21 2005/03/16 07:01:51 jtc Exp
+//
+
+#ifndef TAO_PROPERTY_IDL
+#define TAO_PROPERTY_IDL
+
+// Force the IDL compiler to include this file [it does not include
+// empty files]
+#pragma prefix "omg.org"
+ 
+#include "CosPropertyService.idl"
+ 
+#pragma prefix ""
+
+#endif /* TAO_PROPERTYSERVICE_IDL */

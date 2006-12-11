@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.21 2006/08/31 07:08:53 gchiozzi Exp $"
+# "@(#) $Id: buildTAO,v 1.22 2006/12/11 19:37:16 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -91,6 +91,8 @@ patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACErelpath.patch
 #patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACETAOVxWorks.patch
 echo "- TAOAV.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
+echo "- OmniOrb patch: CosProperty(Service).idl"
+cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/CosProperty*.idl $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/
 echo "done"
 echo ""
 
@@ -157,20 +159,6 @@ echo "building utilities"
 cd $ACE_ROOT/TAO/utils; make 
 echo "done"
 echo ""
-
-
-#
-# Here we apply another dirty patch
-#
-
-# This patch makes OMNIORB/Py happy
-# we just link old CosPropertyService.idl to the CosProperty.idl
-# originally CosPropertyService.idl includes CosProperty.idl
-# what Py/OMNIORB does not like
-cd $ACE_ROOT/TAO/orbsvcs/orbsvcs
-# first we remove old link
-rm CosPropertyService.idl
-ln -s CosProperty.idl CosPropertyService.idl
 
 
 #
