@@ -3,4 +3,7 @@
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeMonitor" type="1" _prefix="alma">
 	<Code name="ACSErrMonitorOnTimer" shortDescription="A regular timer monitor triggered the event." description="A regular timer monitor triggered the event."/>
 	<Code name="ACSErrMonitorOnValue" shortDescription="The value changed by a specified amount or more." description="The value changed by a specified amount or more."/>
+	  <ErrorCode name="ACSErrMonitorError"	
+		shortDescription="Error retreiving value for the monitor"
+		description="Error retreiving value for the monitor"/>	
 </Type>
