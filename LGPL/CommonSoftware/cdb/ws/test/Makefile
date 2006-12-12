@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.44 2006/11/21 06:53:19 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.45 2006/12/12 02:45:21 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -71,19 +71,17 @@ nodeTest_OBJECTS		   = nodeTest
 cdbTest_OBJECTS            = cdbTest
 cdbTestServer_LIBS         = 
 
-cdbTestCDBCompImpl_OBJECTS       = cdbTestCDBCompImpl
-cdbTestCDBCompImpl_LIBS          = cdbTestCDBCompStubs
 
 #
 # Includes (.h) files (public and local)
 # ---------------------------------
-INCLUDES        = cdbTestCDBCompImpl.h
+INCLUDES        =
 INCLUDES_L      =
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = cdbTestCDBCompImpl 
+LIBRARIES       = 
 LIBRARIES_L     =
 
 #
@@ -95,7 +93,7 @@ JDALTests_DIRS = com
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = cdbTestJClient cdbTATHelper cdbTestSetDefaultComponent cdbTestClearCache cdbTATRead cdbXmlSpecialCharTest cdbInitMount
+SCRIPTS_L         = cdbTestJClient cdbTATHelper cdbTestSetDefaultComponent cdbTestClearCache cdbTATRead
 
 #
 # TCL scripts (public and local)
@@ -145,7 +143,7 @@ CSOURCENAMES = \
 #
 # IDL FILES
 #
-IDL_FILES = cdbTestCDBComp
+IDL_FILES =
 
 #
 #>>>>> END OF standard rules

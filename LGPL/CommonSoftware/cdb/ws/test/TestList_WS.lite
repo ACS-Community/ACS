@@ -28,6 +28,5 @@ PROLOGUE cdbTATPrologue
 4 nodeTest	 "cdbTATHelper nodeTest"
 5 setDefaultComponent	 "cdbTATHelper cdbTestSetDefaultComponent"
 6 cdbTestRead "cdbTATRead"
-7 xmlSpecialCharTest "cdbXmlSpecialCharTest"
 
 EPILOGUE cdbTATEpilogue
