@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry sourcepath="lib/mastercomp_if.jar" kind="lib" path="lib/mastercomp_if.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/jbaci.jar" kind="var" path="ACSROOT/lib/jbaci.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/baci.jar" kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/acserr.jar" kind="var" path="ACSROOT/lib/acserr.jar"/>
@@ -24,5 +24,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
