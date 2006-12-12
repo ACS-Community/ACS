@@ -486,7 +486,7 @@ public class SubsysResourceMonitor {
          * Called when the resource could not be reached at all.
          * The resource object is passed to allow using one handler for many resources.
          * <p>
-         * The return value controls controls whether monitoring of this resource will be stopped:
+         * The return value controls whether monitoring of this resource will be stopped:
          * <ol>
          * <li><code>true</code> means that the error handler decided that this resource is unreachable beyond repair, 
          *     and that no further monitoring calls should be made.
