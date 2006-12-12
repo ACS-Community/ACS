@@ -236,6 +236,37 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	
 	/*********************** [ miscellaneous ] ***********************/
 	
+	protected class DefaultResourceErrorHandler<T> implements SubsysResourceMonitor.ResourceErrorHandler<T>
+	{
+		private final String resourceName;
+		private final boolean isComponent;
+		DefaultResourceErrorHandler(String resourceName, boolean isComponent) {
+			this.resourceName = resourceName;
+			this.isComponent = isComponent;
+		}
+        public boolean resourceUnreachable(T resource) {
+            try {
+           		m_logger.info( (isComponent ? "Component" : "Resource") + " '" + resourceName + "' is unreachable, will go to ERROR state.");
+                doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
+            } catch (Throwable thr) {
+                m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
+            }
+            // A component call has a CORBA timeout, so it would be safe to keep monitoring it; hanging threads will eventually terminate.
+            // For other resources (possibly non-CORBA connections) we would anyway have to give up to avoid threading issues.
+            // Here we chose to not check again even if it would be possible, because we already have gone into Error state
+            return true;
+        }
+        public void badState(T resource, String stateName) {
+            try {
+                m_logger.log(Level.INFO, "Found " + (isComponent ? "component" : "resource") + " '" + resourceName + 
+                		"' in bad state '" + stateName + "', will go to ERROR state.");
+                doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
+            } catch (Throwable thr) {
+                m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
+            }
+        }
+    };
+
 	/**
 	 * Subclasses can request to have the "health" of a given subsystem component monitored,
 	 * and that the mastercomponent state be set to "Error" in case problems are detected with this component.
@@ -284,6 +315,9 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		}
 		
 		SubsysResourceMonitor.ResourceChecker<T> checker = new SubsysResourceMonitor.ComponentChecker<T>(component);
+		if (err == null) {
+			err = new DefaultResourceErrorHandler<T>(checker.getResourceName(), true);
+		}
 		monitorResource(checker, err, -1);
 	}
 	
@@ -303,7 +337,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
      * Before a resource gets unloaded/released etc, its monitoring should be stopped to avoid false errors, 
      * using {@link #stopMonitoringResource(String)} or {@link #stopMonitoringAllResources()}.  
      *  
-	 * @param checker  The checker that encapsulates the specifics of the methods to be checked.
+	 * @param checker  The checker that encapsulates the specifics of the methods to be checked. Must not be <code>null</code>.
      * @param err  A custom error handler. If <code>null</code>, then a default error handler will be used,
      *             and the master component will go to error state automatically (see comment for method {@link #monitorComponent(ACSComponent)}.
      * @param monitorDelaySeconds  The delay between two check calls. If <code>monitorDelaySeconds &lt 1</code>  
@@ -316,28 +350,11 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 			SubsysResourceMonitor.ResourceErrorHandler<T> err,
 			int monitorDelaySeconds) 
 	{
+		if (checker == null) {
+			throw new IllegalArgumentException("Parameter 'checker' must not be null");
+		}
         if (err == null) {
-            // use default error handler that sets the subsystem state to ERROR
-            err = new SubsysResourceMonitor.ResourceErrorHandler<T>() {
-                public boolean resourceUnreachable(T resource) {
-                    try {
-                        m_logger.log(Level.INFO, "Found unreachable component, will go to ERROR state.");
-                        doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
-                    } catch (Throwable thr) {
-                        m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
-                    }
-                    // a component call has a CORBA timeout, so it's safe to keep monitoring it; hanging threads will eventually terminate.
-                    return false;
-                }
-                public void badState(T resource, String stateName) {
-                    try {
-                        m_logger.log(Level.INFO, "Found component in bad state '" + stateName + "', will go to ERROR state.");
-                        doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
-                    } catch (Throwable thr) {
-                        m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
-                    }
-                }
-            };
+			err = new DefaultResourceErrorHandler<T>(checker.getResourceName(), false);
         }
 		subsysComponentMonitor.monitorResource(checker, err);
 	}
