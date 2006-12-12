@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.cpp,v 1.7 2006/11/27 10:01:29 bjeram Exp $"
+* "@(#) $Id: baciBACIProperty.cpp,v 1.8 2006/12/12 16:33:15 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.7 2006/11/27 10:01:29 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.8 2006/12/12 16:33:15 bjeram Exp $");
 
 namespace baci {
 
@@ -229,8 +229,6 @@ void BACIProperty::removeMonitor(BACIMonitor* monitor)
 
 void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
 {
-  //ACS_TRACE("baci::BACIProperty::dispatchMonitors");
-
   if (component_mp->isInDestructionState()==true || inDestructionState_m==true) 
       {
       return;
@@ -240,14 +238,14 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
   TimeInterval lastPollTime = getLastPollTime();
   //Completion lastCompletion = getLastCompletion();
   
+  bool ok;
+
   TimeInterval monitorTriggerTime, monitorLastTime;
   BACIValue monitorTriggerValue;
   
   BACIMonitor* mon_p=0;
 
   ThreadSyncGuard guard(&monitorVectorMutex_m);
-
-  completion.type = ACSErr::ACSErrTypeMonitor;
 
   for (int n=0; n<getMonitorCount() && inDestructionState_m==false; n++) 
     {
@@ -299,10 +297,20 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
 		  }
 		  default: {}
 		  }
-	      
-	      completion.timeStamp = mon_p->getLastTime();
-	      completion.code = ACSErrTypeMonitor::ACSErrMonitorOnTimer;		//  time triggered
-	      bool ok = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, completion, archiver_p);
+
+	      if ( completion.previousError.length() == 0 ) // does completion contain an error ?
+		  {
+		  completion.timeStamp = mon_p->getLastTime();
+		  completion.type = ACSErr::ACSErrTypeMonitor;
+		  completion.code = ACSErrTypeMonitor::ACSErrMonitorOnTimer;	       //  time triggered
+		  ok = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, completion, archiver_p);
+		  }
+	      else
+		  {
+		    ACSErrTypeMonitor::ACSErrMonitorErrorCompletion c(completion, __FILE__, __LINE__, "BACIProperty::dispatchMonitors");
+		  ok = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, c, archiver_p);	  
+		  }//if-else
+		  
 	      if (ok==false && 
 		  component_mp->getCallback(mon_p->getCallbackID())->isOK()==false && 
 		  mon_p->isInDestructionState()==false) 
@@ -311,11 +319,9 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
 		  mon_p->internalDestroy(); 
 		  n--;
 		  continue;
-		  }
-	      
-	      
-	      }
-	  }
+		  }//if
+	      }//if
+	  }//if
       
 
 
@@ -338,8 +344,19 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
 		( (mon_p->isDeltaValueAndTimerInteraction()==false) || (lastPollTime-monitorLastTime)>=mon_p->getMinTriggerTime())
 		  ) 
 		{
-		  completion.code = ACSErrTypeMonitor::ACSErrMonitorOnValue;		//  value triggered
-		  bool ok = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, completion, archiver_p);
+		
+		if ( completion.previousError.length() == 0 ) // does completion contain an error ?
+		    {
+		    completion.type = ACSErr::ACSErrTypeMonitor;
+		    completion.code = ACSErrTypeMonitor::ACSErrMonitorOnValue;	 //  value triggered
+		    ok = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, completion, archiver_p);
+		    }
+		else
+		    {
+		    ACSErrTypeMonitor::ACSErrMonitorErrorCompletion c(completion, __FILE__, __LINE__, "BACIProperty::dispatchMonitors");
+		    ok  = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, c, archiver_p);	  
+		    }//if-else
+		
 		  if (ok==false && 
 		      component_mp->getCallback(mon_p->getCallbackID())->isOK()==false && 
 		      mon_p->isInDestructionState()==false) 
