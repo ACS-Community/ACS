@@ -2,7 +2,7 @@
 #******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: userScript,v 1.102 2006/04/05 13:54:53 bjeram Exp $"
+# "@(#) $Id: userScript,v 1.103 2006/12/13 11:34:00 bjeram Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -16,11 +16,14 @@ putenv LDString
 
 lcubootAutoLoad 1,"libACE.so"
 lcubootAutoLoad 1,"libTAO.so"
+lcubootAutoLoad 1,"libTAO_AnyTypeCode.so"
+lcubootAutoLoad 1,"libTAO_CodecFactory.so"
 lcubootAutoLoad 1,"libTAO_Valuetype.so"
-lcubootAutoLoad 1,"libTAO_ObjRefTemplate.so"
-lcubootAutoLoad 1,"libTAO_IORInterceptor.so"
 lcubootAutoLoad 1,"libTAO_PortableServer.so"
-lcubootAutoLoad 1,"libTAO_IORTable.so"
+lcubootAutoLoad 1,"libTAO_ObjRefTemplate.so"
+#lcubootAutoLoad 1,"libTAO_IORInterceptor.so"
+lcubootAutoLoad 1,"libTAO_PI.so"
+#lcubootAutoLoad 1,"libTAO_IORTable.so"
 lcubootAutoLoad 1,"libTAO_CosProperty.so"
 lcubootAutoLoad 1,"libTAO_Svc_Utils.so"
 lcubootAutoLoad 1,"libTAO_Messaging.so"
@@ -28,6 +31,12 @@ lcubootAutoLoad 1,"libTAO_CosNaming.so"
 lcubootAutoLoad 1,"libTAO_DynamicAny.so"
 lcubootAutoLoad 1,"libTAO_ETCL.so"
 lcubootAutoLoad 1,"libTAO_DsLogAdmin.so"
+lcubootAutoLoad 1,"libTAO_DsEventLogAdmin.so"
+lcubootAutoLoad 1,"libTAO_CosEvent_Skel.so"
+lcubootAutoLoad 1,"libTAO_CosEvent.so"
+lcubootAutoLoad 1,"libTAO_CosNotification_Skel.so"
+lcubootAutoLoad 1,"libTAO_DsLogAdmin_Serv.so"
+lcubootAutoLoad 1,"libTAO_CosNotification_Serv.so"
 lcubootAutoLoad 1,"libTAO_CosNotification.so"
 lcubootAutoLoad 1,"libTAO_IFR_Client.so"
 lcubootAutoLoad 1,"loki"

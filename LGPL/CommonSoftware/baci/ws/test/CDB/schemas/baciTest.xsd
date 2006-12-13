@@ -6,6 +6,26 @@
 		<xs:complexContent>
 			<xs:extension base="baci:CharacteristicComponent">
 				<xs:sequence>
+<xs:element name="RWdoubleWithErrorDevIOProp">	
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWdouble">
+									<xs:attribute name="description" type="xs:string" default="Current"/>
+									<xs:attribute name="default_value" type="xs:double" default="7.0"/>
+									<xs:attribute name="min_delta_trig" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:double" default="0"/>
+									<xs:attribute name="graph_max" type="xs:double" default="1000"/>
+									<xs:attribute name="min_step" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_value" type="xs:double" default="0.0"/>
+									<xs:attribute name="max_value" type="xs:double" default="1000.0"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+
 					<xs:element name="RWdoubleWithDevIOProp">
 						<xs:complexType>
 							<xs:complexContent>

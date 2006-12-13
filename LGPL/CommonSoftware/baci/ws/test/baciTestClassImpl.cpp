@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.cpp,v 1.114 2006/10/16 07:56:40 cparedes Exp $"
+* "@(#) $Id: baciTestClassImpl.cpp,v 1.115 2006/12/13 11:34:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,37 +34,9 @@
 * gchiozzi 2001-02-15 created standard header 
 */
 
-/************************************************************************
-*   NAME
-*   
-* 
-*   SYNOPSIS
-*   
-* 
-*   DESCRIPTION
-*
-*   FILES
-*
-*   ENVIRONMENT
-*
-*   COMMANDS
-*
-*   RETURN VALUES
-*
-*   CAUTIONS 
-*
-*   EXAMPLES
-*
-*   SEE ALSO
-*
-*   BUGS   
-* 
-*------------------------------------------------------------------------
-*/
-
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.114 2006/10/16 07:56:40 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.115 2006/12/13 11:34:00 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -74,6 +46,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciTestUtils.h>
 #include <baciTestDevIO.h>
+#include <baciTestErrorDevIO.h>
 
 #include <ACSErrTypeOK.h>
 #include <ACSErrTypeCommon.h>
@@ -97,6 +70,7 @@ BaciTestClassImpl::BaciTestClassImpl(const ACE_CString& name,
 				     bool monitoring) :
     CharacteristicComponentImpl(name, cs, monitoring),
     m_shutdown(0),
+    m_RWdoubleWithErrorDevIOProp_sp(new RWdouble(name+":RWdoubleWithErrorDevIOProp", getComponent(), new TestErrorDevIO()),this),
     m_RWdoubleWithDevIOProp_sp(new RWdouble(name+":RWdoubleWithDevIOProp", getComponent(), new TestDevIO()),this), 
     m_ROdoubleProp_sp(new ROdouble(name+":ROdoubleProp", getComponent()),this), 
     m_RWdoubleProp_sp(new RWdouble(name+":RWdoubleProp", getComponent()),this), 
@@ -346,6 +320,18 @@ BaciTestClassImpl::isPropertiesMonitoringActive() throw (CORBA::SystemException)
  
     return retVal;  
 } //isPropertiesMonitoringActive
+
+ACS::RWdouble_ptr
+BaciTestClassImpl::RWdoubleWithErrorDevIOProp ()
+    throw (CORBA::SystemException)
+{
+  if (m_RWdoubleWithErrorDevIOProp_sp==0)
+	  return ACS::RWdouble::_nil();
+
+  ACS::RWdouble_var prop = ACS::RWdouble::_narrow(m_RWdoubleWithErrorDevIOProp_sp->getCORBAReference()
+						  );
+  return prop._retn();
+}
 
 ACS::RWdouble_ptr
 BaciTestClassImpl::RWdoubleWithDevIOProp ()

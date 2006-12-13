@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestUtils.h,v 1.100 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciTestUtils.h,v 1.101 2006/12/13 11:34:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -101,8 +101,17 @@ class baciTestCBdouble: public virtual POA_ACS::CBdouble
 	{
 	    if (count>0)
 		{
-	    ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::working) desc.id_tag: %u Value: %f TimeStamp: %s", 
-			   prop.c_str(), (unsigned)desc.id_tag, value, getStringifiedUTC(c.timeStamp).c_str()));
+		CompletionImpl completion(c);
+		if (completion.isErrorFree())
+		    {
+		    ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::working) desc.id_tag: %u Value: %f TimeStamp: %s", 
+				   prop.c_str(), (unsigned)desc.id_tag, value, getStringifiedUTC(c.timeStamp).c_str()));
+		    }
+		else
+		    {
+		    ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::working) desc.id_tag: %u TimeStamp: %s containes an error", prop.c_str(), (unsigned)desc.id_tag, getStringifiedUTC(c.timeStamp).c_str()));
+		    completion.log();
+		    }//if-else
 		}
 	    count--;
 	}

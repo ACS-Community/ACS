@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestMonitor.cpp,v 1.99 2006/09/26 06:26:32 cparedes Exp $"
+* "@(#) $Id: baciTestMonitor.cpp,v 1.100 2006/12/13 11:34:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 * rlemke   30/08/01  integrated into tat
 */
  
-static char *rcsId="@(#) $Id: baciTestMonitor.cpp,v 1.99 2006/09/26 06:26:32 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestMonitor.cpp,v 1.100 2006/12/13 11:34:00 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -118,8 +118,7 @@ int main (int argc, char **argv)
 	
 
 	CORBA::String_var ior =
-	  BACI_CORBA::getORB()->object_to_string (ps.in ()
-						  );
+	  BACI_CORBA::getORB()->object_to_string (ps.in () );
 	
       
         ACS_SHORT_LOG((LM_INFO,"Connecting to: %s", ior.in ()));
@@ -130,7 +129,11 @@ int main (int argc, char **argv)
 	ACS_SHORT_LOG((LM_INFO,"Trying to get ROdoubleProp..."));
 	ACS::ROdouble *rb = ps->ROdoubleProp();
 	
-	
+	ACS_SHORT_LOG((LM_INFO,"Trying to get RWdoubleProp with ErrorDevIO ..."));
+	ACS::RWdouble *rwe = ps->RWdoubleWithErrorDevIOProp();
+
+	//-----------------------------------------------------------------
+
 	ACS_SHORT_LOG((LM_INFO,"Trying to narrow CB for ROdoubleProp... "));
 
 	baciTestCBdouble* mcb1 = new baciTestCBdouble("ROdoubleProp1s", 60);
@@ -251,6 +254,14 @@ int main (int argc, char **argv)
 	
 	mp3->set_timer_trigger(100000000);
 	
+        //--------------------------------------------------------------
+        // Testing error handling in Monitor
+	baciTestCBdouble* mcb_err = new baciTestCBdouble("RWdoublePropError", 4);
+	CBdouble_var cb_err = mcb_err->_this(); 
+	
+	ACS_SHORT_LOG((LM_INFO,"Trying to create monitor for RWdoublePropWithErrorDevIO..."));
+	desc.id_tag = 1;
+	ACS::Monitordouble_var md_err = rwe->create_monitor(cb_err.in(), desc);
 
 	//---------------------------------------------------------------
 
@@ -261,7 +272,8 @@ int main (int argc, char **argv)
 	int rep=5;
 	while ((rep>0) && 
 	       (mcb1->getCount()>0 || mcb5->getCount()>0 || mcb10->getCount()>0 ||
-		mcbp1->getCount()>0 || mcbp5->getCount()>0 || mcbp10->getCount()>0)
+		mcbp1->getCount()>0 || mcbp5->getCount()>0 || mcbp10->getCount()>0 ||
+		mcb_err->getCount()>0 )
 	    )
 	    {
 	    rep--;
@@ -287,6 +299,7 @@ int main (int argc, char **argv)
 
 	mp3->destroy();
 	
+	md_err->destroy();
 
 	tv.sec(3);
 	BACI_CORBA::getORB()->run(tv); 
