@@ -343,6 +343,14 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	}
 	
 	/**
+	 * 
+	 * @return true if the consumer is suspened
+	 */
+	public boolean isSuspended() {
+		return suspended;
+	}
+	
+	/**
 	 * Suspend the notification of the incoming logs
 	 * @see LCEngine
 	 * @param suspend If true suspend the notification of new logs
