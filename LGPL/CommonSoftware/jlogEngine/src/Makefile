@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.24 2006/07/21 07:21:33 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.25 2006/12/13 16:42:10 acaproni Exp $"
 #
 # Makefile of Java Logging Client
 #
@@ -52,7 +52,7 @@ lc_DIRS = com alma
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = jlog
+SCRIPTS         = jlog acsLogAssistant
 SCRIPTS_L       =
 
 
