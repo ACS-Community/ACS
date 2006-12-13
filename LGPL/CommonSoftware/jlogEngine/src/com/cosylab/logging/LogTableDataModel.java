@@ -350,8 +350,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	public synchronized void appendLog(ILogEntry log) {
 		try {
 			//checkLogNumber();
-			int pos=allLogs.add(log);
-			visibleLogInsert(log,pos);
+			int key=allLogs.add(log);
+			visibleLogInsert(log,key);
 		} catch (LogCacheException lce) {
 			System.err.println("Exception caught while inserting a new log entry in cache:");
 			System.err.println(lce.getLocalizedMessage());
