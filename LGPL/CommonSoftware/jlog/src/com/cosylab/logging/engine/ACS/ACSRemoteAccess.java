@@ -261,6 +261,14 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		return isInitialized;
 	}
 	
+	/**
+	 * 
+	 * @return true if the consumer is supended
+	 */
+	public boolean isSupended() {
+		return acsSPS.isSuspended();
+	}
+	
 	private si.ijs.maci.Manager resolveManagerReference() {
 		engine.publishReport("Resolving " + MANAGER_PROPERTY + " manager reference...");
 		org.omg.CORBA.Object obj = null;
