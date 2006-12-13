@@ -54,12 +54,6 @@ public class VisibleLogsVector extends Thread {
 		private int refreshInterv;
 		
 		/**
-		 * Indicate if the GUI has to be refreshed
-		 * @see setSupended()
-		 */
-		private boolean isSuspended=false;
-		
-		/**
 		 * Constructor
 		 *
 		 */
@@ -75,18 +69,6 @@ public class VisibleLogsVector extends Thread {
 		 */
 		public synchronized void clear() {
 			min=max=-1;
-		}
-		
-		/**
-		 * Suspend or reactivate the refresh
-		 * When is suspended, the object keeps track of the logs inserted
-		 * and will refresh the contetnt of the table only when it will be
-		 * reactivated
-		 * 
-		 * @param suspended If true suspend the refresh
-		 */
-		public synchronized void setSuspended(boolean suspended) {
-			isSuspended=suspended;
 		}
 		
 		/**
@@ -127,7 +109,7 @@ public class VisibleLogsVector extends Thread {
 				try {
 					Thread.sleep(refreshInterv);
 				} catch (InterruptedException ie) {}
-				if (min>=0 && max>=0 && !isSuspended) {
+				if (min>=0 && max>=0 && !isPaused) {
 					tableModel.fireTableRowsInserted(min,max);
 					min=max=-1;
 				}
@@ -345,17 +327,23 @@ public class VisibleLogsVector extends Thread {
 	public class LogOperationRequest {
 		public static final int TERMINATE =0; // Stops the thread
 		public static final int SETORDER = 1; // Reverse/reorder the logs
-		public static final int ADDLOG = 2; // Add a log
+		public static final int FLUSH_QUEUE = 2; // Add the logs in the queue 
 		
 		private int opType;
 		private int field; // Field for ordering
 		private boolean ascending; // Direction of ordering
 		
 		/**
-		 * Build an a termination request
+		 * Build  request for termination or to flush the logs
+		 * 
+		 * @param type The type of reuest.
+		 *             It can be TERMINATE or FLUSH_QUEUE
 		 */
-		public LogOperationRequest() {
-			opType=TERMINATE;
+		public LogOperationRequest(int type) {
+			if (type!=FLUSH_QUEUE && type!=TERMINATE) {
+				throw new IllegalArgumentException("Illegal operation requested");
+			}
+			opType=type;
 		}
 		
 		/**
@@ -455,6 +443,13 @@ public class VisibleLogsVector extends Thread {
 	 * The table model that owns this object (needed to notify changes)
 	 */
 	private LogTableDataModel tableModel;
+	
+	/**
+	 * Indicate if the GUI has to be refreshed or not (i.e. if it is paused or not)
+	 * 
+	 * @see setSupended()
+	 */
+	private boolean isPaused=false;
 
 	/**
 	 * Build a VisibleLogsVector object 
@@ -480,19 +475,21 @@ public class VisibleLogsVector extends Thread {
 	 * If there asynchronous operation in progress (ordering/sorting of logs)
 	 * then the log is in buffered and will be added by the thread when the
 	 * ordering terminates.
+	 * The same happens when the interface is paused and in that case
+	 * the flush is forced when the interface is unpaused (see suspendRefresh)
 	 * 
-	 * @param index The index of the log to add
+	 * @param key The key of the log in the cache
 	 * @param log The log to add
 	 */
-	public synchronized void add(Integer index, ILogEntry log) {
+	public synchronized void add(Integer key, ILogEntry log) {
 		synchronized (asyncOps) {
-			if (asyncOps.size()==0) {
-				addLogToVector(index, log);
+			if (asyncOps.size()==0 && !isPaused) {
+				addLogToVector(key, log);
 				return;
 			} 
 		} 
 		synchronized(buffer) {
-			buffer.add(new AddLogItem(index,log));
+			buffer.add(new AddLogItem(key,log));
 		}
 
 	}
@@ -955,7 +952,7 @@ public class VisibleLogsVector extends Thread {
 	}
 	
 	/**
-	 * The thread for async long lasting op.
+	 * The thread for async long lasting ops.
 	 * At the end of each operation, it check if there are
 	 * new logs to add in the buffer Vector.
 	 * The ordering of logs is not performed in mutual exclusion i.e.
@@ -965,6 +962,7 @@ public class VisibleLogsVector extends Thread {
 	public void run() {
 		LogOperationRequest request = null;
 		AddLogItem item = null;
+		int flushLimit=0;
 		while (true) {
 			synchronized (asyncOps) {
 				if (asyncOps.size()>0) {
@@ -978,7 +976,7 @@ public class VisibleLogsVector extends Thread {
 			if (request!=null) {
 				if (request.getType()==LogOperationRequest.TERMINATE) {
 							return;
-				} else {
+				} else if (request.getType()==LogOperationRequest.SETORDER) {
 					LoggingClient.getInstance().getLogEntryTable().getTableHeader().setEnabled(false);
 					LoggingClient.getInstance().setEnabledGUIControls(false);
 					sort(request.getOrderingField(),request.orderDirection());
@@ -987,13 +985,30 @@ public class VisibleLogsVector extends Thread {
 					LoggingClient.getInstance().getLogEntryTable().getTableHeader().resizeAndRepaint();
 				}
 			}
-			// There are new logs to add?
-			synchronized(buffer) {
-				while (buffer.size()>0) {
+			
+			// If the queue of logs is not empty, flush the logs
+			// This is done by the  LogOperationRequest.FLUSH_QUEUE request but
+			// in the queue there are also logs added during slow operation like
+			// a sort.
+			// For this reason it is not a good idea to execute the flush only
+			// after a LogOperationRequest.FLUSH_QUEUE is issued.
+			// It mean that LogOperationRequest.FLUSH_QUEUE is used to force the
+			// flush of the queue asynchronously (for example when the interface
+			// is unpaused)
+			flushLimit=0;
+			while (buffer.size()>0) {
+				synchronized(buffer) {
 					item = buffer.remove(0);
-					addLogToVector(item.index,item.log);
+				}
+				addLogToVector(item.index,item.log);
+				// Sleep a little bit to give other threads a chance to run
+				if (++flushLimit%5000==0) {
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException e) {}
 				}
 			}
+			
 			if (request!=null) {
 				synchronized (asyncOps) {
 					asyncOps.remove(0);
@@ -1012,14 +1027,25 @@ public class VisibleLogsVector extends Thread {
 	/**
 	 * If true the notification of the changes in the table is not
 	 * sent to the table: all the logs that arrive when suspended
-	 * are stored in the vector but not shown in the table until
+	 * are stored in a vector and not shown in the table until
 	 * the suspenction is deactivated. In that moment, all the new
 	 * logs will be displayed.
 	 * 
+	 * If the interface is un-paused (i.e. pause is true) then a
+	 * LogOperationRequest is created to flush the logs asynchronously
+	 * 
 	 * @param suspend If true the new logs received are not shown in the table
 	 */
-	public void suspendRefresh(boolean suspend) {
-		guiRefresher.setSuspended(suspend);
+	public void suspendRefresh(boolean pause) {
+		isPaused=pause;
+		if (!isPaused) {
+			synchronized (asyncOps) {
+				asyncOps.add(new LogOperationRequest(LogOperationRequest.FLUSH_QUEUE));
+			}
+			synchronized(this) {
+				notifyAll();
+			}
+		}
 	}
 	
 	/**
