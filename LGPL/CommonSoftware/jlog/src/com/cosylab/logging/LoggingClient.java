@@ -305,6 +305,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		{
 			if (e.getSource() == LoggingClient.this.getConnectMenuItem()) {
 				if (connectMenuItem.getText().compareTo("Connect")==0) {
+					// Check and eventually un-suspend the engine
+					suspendMI.setSelected(false);
+					getEngine().setSupended(suspendMI.isSelected());
+					// Connect the the channel
 					connect();
 				} else {
 					LoggingClient.this.autoReconnectMI.setState(false);
