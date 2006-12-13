@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.h,v 1.12 2005/02/17 23:59:54 dfugate Exp $"
+* "@(#) $Id: acslogSvcImpl.h,v 1.13 2006/12/13 16:38:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -87,6 +87,10 @@ public:
   void logError (const ACSErr::ErrorTrace &c
 		 
 		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+
+  void logErrorWithPriority (const ACSErr::ErrorTrace &c,
+			    ACSLog::Priorities p
+      ) throw ( CORBA::SystemException, ACSErr::ACSException );
   
   void logCritical (acscommon::TimeStamp time,
 		 const char * msg,

@@ -51,7 +51,7 @@ module ACSLog {
   /**
      Log messages priorities
    */
-  enum Priorties {
+  enum Priorities {
     ACS_LOG_TRACE,  
     ACS_LOG_DEBUG,  
     ACS_LOG_INFO,  
@@ -141,10 +141,15 @@ module ACSLog {
     void logWarning(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
 
     /**
-       logs error stack (trace) of the Completion.
+       logs error stack (trace) of a Completion or an ACS exception.
     */
     void logError(in ACSErr::ErrorTrace c) raises (ACSErr::ACSException);
-    
+
+    /**
+       logs error stack (trace) of a Completion or an ACS exception with certain priorty.
+    */
+    void logErrorWithPriority(in ACSErr::ErrorTrace c, in Priorities p) raises (ACSErr::ACSException);
+
     /**
        logs CRITICAL message.
        If all rtCont string members are NULL than no run-time context information will be logged.

@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.15 2006/04/04 19:01:07 dfugate Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.16 2006/12/13 16:38:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.15 2006/04/04 19:01:07 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.16 2006/12/13 16:38:11 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
@@ -107,6 +107,13 @@ void ACSLogImpl::logError (const ACSErr::ErrorTrace & et)
   ErrorTraceHelper err(const_cast<ACSErr::ErrorTrace &>(et));
   err.log();
 }
+
+void ACSLogImpl::logErrorWithPriority(const ACSErr::ErrorTrace &et, ACSLog::Priorities p) 
+    throw ( CORBA::SystemException, ACSErr::ACSException )
+{
+  ErrorTraceHelper err(const_cast<ACSErr::ErrorTrace &>(et));
+  err.log(ACE_Log_Priority(1 << (p -1)));   // here we assume that enums in IDL starts from 0 
+}//logErrorWithPriorty
 
 void ACSLogImpl::logCritical (acscommon::TimeStamp time,
 			      const char * msg,
