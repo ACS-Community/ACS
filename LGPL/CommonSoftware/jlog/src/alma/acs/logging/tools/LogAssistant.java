@@ -71,27 +71,8 @@ public class LogAssistant {
 	private boolean outputAsCSV=false;
 	
 	// The index and order of the cols to write if the output is CSV
-	// FIELD_TIMESTAMP = 0;
-	// FIELD_ENTRYTYPE = 1;
-    // FIELD_SOURCEOBJECT=2;
-	// FIELD_FILE = 3;
-	// FIELD_LINE = 4;
-	// FIELD_ROUTINE = 5;
-	// FIELD_HOST = 6;
-	// FIELD_PROCESS = 7;
-	// FIELD_CONTEXT = 8;
-	// FIELD_THREAD = 9;
-	// FIELD_LOGID = a;
-	// FIELD_PRIORITY = b;
-	// FIELD_URI = c;
-	// FIELD_STACKID = d;
-	// FIELD_STACKLEVEL = e;
-	// FIELD_LOGMESSAGE=f
-	// ADDITIONAL DATA=g
-	//
-	// For example if cols==0f1 the the output will contain entries with like that: 
-	// timestamp, message, log type
-	private String cols="01234567890abcdefg"; // Show all the cols for default
+	// see CSVConverter
+	private String cols=null;
 	
 	/**
 	 * Constructor
@@ -236,9 +217,8 @@ public class LogAssistant {
 			if (val==null || val.length<1) {
 				throw new IllegalStateException("Wrong or missing time (minutes)");
 			} 
-			Pattern p = Pattern.compile("[0-9a-g]*");
-			if (!Pattern.matches("[0-9a-g]*",val[0])) {
-				throw new IllegalStateException("Wrong fomat for columns: [0-9a-g]*");
+			if (!Pattern.matches("[0-9a-g]+",val[0])) {
+				throw new IllegalStateException("Wrong format for columns: [0-9a-g]+");
 			}
 			cols=val[0];
 		}
