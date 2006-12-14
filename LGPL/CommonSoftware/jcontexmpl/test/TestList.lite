@@ -30,4 +30,5 @@ SOURCE jcontexmplTATEnvironment
 PROLOGUE jcontexmplTATPrologue
 1 xmlCompTest "acsutilTATTestRunner xmlCompTest"
 2 dynwrapperTest "acsutilTATTestRunner dynwrapperTest"
+3 errorCompTest "acsutilTATTestRunner errorComponentTest"
 EPILOGUE acsutilTATEpilogue
