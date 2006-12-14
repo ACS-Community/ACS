@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ESTestImpl.cpp,v 1.15 2006/12/14 08:35:29 bjeram Exp $"
+* "@(#) $Id: ESTestImpl.cpp,v 1.16 2006/12/14 14:29:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * almamgr  20/06/01  created 
 */
 
-static char *rcsId="@(#) $Id: ESTestImpl.cpp,v 1.15 2006/12/14 08:35:29 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: ESTestImpl.cpp,v 1.16 2006/12/14 14:29:08 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ESTestImpl.h"
@@ -47,7 +47,7 @@ ACSErr::Completion * ESTestImpl::test ( CORBA::Long depth, CORBA::Boolean err )
  CompletionImpl *e = f1 (depth-1, err);
 
   ACSErrTest0Completion *comp= new ACSErrTest0Completion(e, __FILE__, __LINE__, "acserrTestImpl::test", ACSErr::Alert);
-  comp->log();
+  comp->log(LM_DEBUG);
   
   return comp->returnCompletion();
 }//test  

@@ -24,11 +24,11 @@
 3 - Test #2
 2 - ACS Notify Push Subscriber Client is running...
 3 - Test #3
-2 - <Alert TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::test" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger" StackId="XXXXXXXX" StackLevel="2"><![CDATA[Test error 0 (type=900902, code=1)]]></Alert>
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::test" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 0 (type=900902, code=1)]]></Debug>
 3 - Test #4
-2 - <Error TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (1)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger" StackId="XXXXXXXX" StackLevel="1"><Data Name="isErr"><![CDATA[true]]></Data><Data Name="depth"><![CDATA[0]]></Data><![CDATA[Test error 2 (type=900902, code=3)]]></Error>
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (1)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><Data Name="isErr"><![CDATA[true]]></Data><Data Name="depth"><![CDATA[0]]></Data><![CDATA[Test error 2 (type=900902, code=3)]]></Debug>
 3 - Test #5 (Debug)
-2 - <Error TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (0)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger" StackId="XXXXXXXX" StackLevel="0"><Data Name="End of call's chain">N/A</Data><![CDATA[Test error 1 (type=900902, code=2)]]></Error>
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (0)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><Data Name="End of call's chain">N/A</Data><![CDATA[Test error 1 (type=900902, code=2)]]></Debug>
 3 - Test #6 (Info)
 2 - <Alert TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::test" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger" StackId="XXXXXXXX" StackLevel="2"><![CDATA[Test error 0 (type=900902, code=1)]]></Alert>
 3 - Test #7 (Notice)
@@ -63,6 +63,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] POA Manager -> activate
 1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Writing ior to the file: s1 .... 
 1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Waiting for requests ...
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900902, code=2),End of call's chain=
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900902, code=3),isErr=true,depth=0
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900902, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900902, code=3)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900902, code=1)
