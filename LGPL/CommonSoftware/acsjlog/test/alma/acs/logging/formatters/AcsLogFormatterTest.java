@@ -29,7 +29,7 @@ import java.util.logging.LogRecord;
 import alma.acs.logging.AcsLogLevel;
 
 /**
- * Note that <code>LogRecord</code>s are usually constructed inside on of the log methods of class <code>Logger</code>;
+ * Note that <code>LogRecord</code>s are usually constructed inside of the log methods of class <code>Logger</code>;
  * if we create them with <code>new</code> in the test routines, the class name and method name can't be figured out
  * by <code>LogRecord#inferCaller</code> -- this failure has nothing to do with the normal limitations of this "best effort" feature.
  */
@@ -41,7 +41,7 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 	 * Method testFormat.
 	 */
 	public void testFormat()
-	{ // format(LogRecord logRecord)
+	{ 
 	    String msg = "my <<< georgious >>> \\log message";
 		LogRecord logRecord = new LogRecord(Level.INFO, msg);
 		String logXML = acsLogFormatter.format(logRecord);
@@ -58,13 +58,13 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 	 * Assures that an exception which gets passed to the log method will show up as a <code>&lt;Data&gt;</code> element in the XML. 
 	 */
 	public void testLogException()
-	{ // format(LogRecord logRecord)
+	{
 	    String msg = "A darn NPE occured, see stack trace";
 		LogRecord logRecord = new LogRecord(Level.WARNING, msg);
 		logRecord.setThrown(new NullPointerException("test NPE"));
 		String logXML = acsLogFormatter.format(logRecord);
 //		System.out.println(logXML);
-		assertTrue(logXML.indexOf("<Data Name=\"LoggedException\">java.lang.NullPointerException: test NPE") > 0);
+		assertTrue(logXML.indexOf("<Data Name=\"LoggedException\"><![CDATA[java.lang.NullPointerException: test NPE") > 0);
 	}
 
 	
@@ -73,14 +73,14 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 	 * and compares it to the string representing the formatted log record.
 	 */
 	public void testGetLevel()
-	{ // not a method. Part of format
+	{ 
 		LogRecord logRecord = new LogRecord(Level.INFO, "INFO");
 		Level level = logRecord.getLevel();
 		String expected = AcsLogLevel.getNativeLevel(level).getEntryName();
 		String act = acsLogFormatter.format(logRecord);
 		int timestamp = act.indexOf(" TimeStamp");
 		String actual = act.substring(1, timestamp);
-		assertEquals("not equal.", expected, actual);
+		assertEquals(expected, actual);
 	}
 
 	public void testFormatter()
@@ -89,7 +89,9 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 		System.out.println(acsLogFormatter.format(record));
 
 		record = new LogRecord(AcsLogLevel.DEBUG, "DEBUG message");
-		System.out.println(acsLogFormatter.format(record));
+		record.setParameters(new Object[] {""}); // a stupid empty parameter that should show up as "N/A" to work around a xerces parser bug		
+		String logXML = acsLogFormatter.format(record);
+		assertTrue(logXML.endsWith("<![CDATA[DEBUG message]]><Data Name=\"LoggedParameter\"><![CDATA[N/A]]></Data></Debug>"));
 
 		// test additional properties
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -105,6 +107,9 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 		nv.put("name2", "value2");
 		map.put("Data", nv);
 
+		
+		// TODO: put asserts on these otherwise useless ancient test pieces below 
+		
 		Map<String, String> nv2 = new HashMap<String, String>();
 		nv2.put("attribute1", "value1");
 		nv2.put("attribute2", "value2");
