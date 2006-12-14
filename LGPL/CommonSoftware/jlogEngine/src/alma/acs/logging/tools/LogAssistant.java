@@ -306,7 +306,8 @@ public class LogAssistant {
 	 */
 	private void extractLogs() {
 		try {
-			LogFileExtractor extractor = new LogFileExtractor(sourceFileName,destFileName,startDate,endDate,filterFileName);
+			LogFileExtractor extractor = 
+				new LogFileExtractor(sourceFileName,destFileName,startDate,endDate,filterFileName,outputAsCSV,cols);
 			extractor.extract();
 		} catch (Exception e) {
 			System.err.println("Error extracting: "+e.getMessage());
@@ -319,7 +320,7 @@ public class LogAssistant {
 	 */
 	private void splitFile() {
 		try {
-			LogFileSplitter fileSplitter = new LogFileSplitter(sourceFileName,destFileName,num,minutes);
+			LogFileSplitter fileSplitter = new LogFileSplitter(sourceFileName,destFileName,num,minutes,outputAsCSV,cols);
 			fileSplitter.split();
 		} catch (Exception e) {
 			System.err.println("Error splitting: "+e.getMessage());
@@ -346,7 +347,7 @@ public class LogAssistant {
 		System.out.println("\t\t-num|-n  <num>: split by number of logs");
 		System.out.println("\t-help|-h: print this help\n");
 		System.out.println("options:");
-		System.out.println("\t-csv|-c: write the output as CVS");
+		System.out.println("\t-csv|-c: write the output as CSV");
 		System.out.println("\t-col|-l columns: select the columns to write in the csv (only if csv output is selected)");
 		System.out.println("src: source file");
 		System.out.println("dest: output file");
