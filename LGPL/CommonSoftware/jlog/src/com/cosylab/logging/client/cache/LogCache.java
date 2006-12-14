@@ -204,18 +204,17 @@ public class LogCache extends LogBufferedFileCache {
 	 * @param pos The key of the log
 	 * @return The LogEntryXML or null in case of error
 	 */
-	public synchronized ILogEntry getLog(int key) throws LogCacheException {
-		Integer position = new Integer(key);
+	public synchronized ILogEntry getLog(Integer key) throws LogCacheException {
 		ILogEntry log;
 		synchronized (cache) {
-			log = cache.get(position);
+			log = cache.get(key);
 		}
 		if (log!=null) {
 			// Hit! The log is in the cache
 			return log;
 		} else {
 			// Oops we need to read a log from disk!
-			return loadNewLog(position);
+			return loadNewLog(key);
 		}
 	}
 	
