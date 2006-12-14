@@ -253,7 +253,10 @@ public class CompHelperClass
 	private String getImports()
 	{
 		StringBuffer stringBuffer = new StringBuffer();
+		
 		stringBuffer.append("import java.util.logging.Logger;\n\n");
+		stringBuffer.append("import org.omg.PortableServer.Servant;\n");
+		stringBuffer.append("import alma.ACS.ACSComponentOperations;\n");
 		stringBuffer.append("import alma.acs.component.ComponentLifecycle;\n");
 		stringBuffer.append("import alma.acs.container.Component" + m_helperSuffix + ";\n");
 		stringBuffer.append("import " + m_idlPackage + "." + m_operationsClass + ";\n");
