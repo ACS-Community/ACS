@@ -74,6 +74,15 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	private final int OUTPUT_BUFFER_SIZE=8192;
 	private BufferedWriter outF=null;
 	
+	// If true the output is written as CSV
+	private boolean writeAsCSV = false;
+	
+	// The converter from ILogEntry to CSV
+	CSVConverter csv;
+	
+	// The fields and thier positions in the CSV
+	private String cols=null;
+	
 	/**
 	 * Constructor
 	 * The parameters defines the criteria. They can be null (but not all null of
@@ -86,14 +95,18 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	 * @param startDate The start date of logs (can be null)
 	 * @param endDate The end date of the logs (can be null) 
 	 * @param filterName The name of a file of filters to apply to select
-	 *                   logs (can be null) 
+	 *                   logs (can be null)
+	 * @param csvFormat if true the output is written as CSV instead of XML
+	 * @param cols The fields to write in the CSV
 	 */
 	public LogFileExtractor(
 			String inputFile, 
 			String outputFile, 
 			Date startDate, 
 			Date endDate, 
-			String filterName) {
+			String filterName,
+			boolean csvFormat,
+			String cols) {
 		if (startDate==null && endDate==null && filterName==null) {
 			throw new IllegalArgumentException("No criteria for extraction");
 		}
@@ -119,6 +132,11 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 			}
 			filters = new FiltersVector();
 			filters.loadFilters(f,true,null);
+		}
+		writeAsCSV=csvFormat;
+		if (writeAsCSV) {
+			this.cols=cols;
+			csv = new CSVConverter(cols);
 		}
 		
 		// Create the parser
@@ -153,7 +171,22 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 			matches = filters.applyFilters(log);
 		}
 		if (matches) {
-			System.out.println(xmlLogString);
+			if (writeAsCSV) {
+				try {
+					outF.write(
+							csv.convert(log));
+				} catch (IOException e) {
+					System.err.println("Error writing a log: "+e.getMessage());
+					System.exit(-1);
+				}
+			} else {
+				try {
+					outF.write(xmlLogString);
+				} catch (IOException e) {
+					System.err.println("Error writing a log: "+e.getMessage());
+					System.exit(-1);
+				}
+			}
 		}
 	}
 	
@@ -183,7 +216,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 			throw new IllegalArgumentException("Wrong dest file name");
 		}
 		String temp = destFileName.toLowerCase();
-		if (!temp.endsWith(".xml")) {
+		if (!temp.endsWith(".xml") && !writeAsCSV) {
 			destFileName=destFileName.concat(".xml");
 		}
 		FileWriter outFile=null;
@@ -203,7 +236,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	 * constructor
 	 */
 	public void extract() throws Exception {
-		openDestFile();
+		outF=openDestFile();
 		// Sttart the loading
 		LogFile.IOAction action = logReader.getLoadAction(inFileName);
 		logReader.submitAsyncAction(action);

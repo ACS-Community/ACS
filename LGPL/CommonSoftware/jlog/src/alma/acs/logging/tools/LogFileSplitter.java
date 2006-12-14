@@ -24,6 +24,7 @@ package alma.acs.logging.tools;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -78,8 +79,16 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 	private BufferedWriter outF=null;
 	
 	// The format of the date in the name of the file
-	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
-	private SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+	private SimpleDateFormat dateFormat = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+	
+//	 If true the output is written as CSV
+	private boolean writeAsCSV = false;
+	
+	// The converter from ILogEntry to CSV
+	private CSVConverter csv;
+	
+	// The fields and thier positions in the CSV
+	private String cols=null;
 	
 	/**
 	 * Constructor
@@ -88,8 +97,16 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 	 * @param outputFiles The names of the files created splitting
 	 * @param num The number of logs per file (can be null)
 	 * @param mins The minutes of the logs per file (can be null)
+	 * @param csvFormat if true the output is written as CSV instead of XML
+	 * @param cols The fields to write in the CSV
 	 */
-	public LogFileSplitter(String inputFile, String outputFiles, Integer num, Integer mins) {
+	public LogFileSplitter(
+			String inputFile, 
+			String outputFiles, 
+			Integer num, 
+			Integer mins,
+			boolean csvFormat,
+			String cols) {
 		if (inputFile==null || outputFiles==null) {
 			throw new IllegalArgumentException("The sorce and dest file name can't be null");
 		}
@@ -124,6 +141,12 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 			time=mins*60*1000;
 		}
 		
+		writeAsCSV=csvFormat;
+		if (writeAsCSV) {
+			this.cols=cols;
+			csv = new CSVConverter(this.cols);
+		}
+		
 		logReader = new LogFile(this,this);
 	}
 	
@@ -148,6 +171,7 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 	 * @param xmlLogString The XML log read
 	 */
 	public void xmlEntryReceived(String xmlLogString) {
+		ILogEntry log = null;
 		if (number!=null ) {
 			// Number criteria
 			if (outF==null || ++logsRead>number) {
@@ -157,7 +181,6 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 			}
 		} else {
 			// Time criteria
-			ILogEntry log = null;
 			try {
 				log = parser.parse(xmlLogString);
 			} catch (Exception e) {
@@ -172,12 +195,31 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 				outF=getOutputFile(destFileName,index++,(Date)log.getField(ILogEntry.FIELD_TIMESTAMP));
 			}
 		}
-		try {
-			outF.write(xmlLogString);
-		} catch (IOException e) {
-			System.err.println("Error writing a log: "+e.getMessage());
-			System.exit(-1);
+		if (writeAsCSV) {
+			if (log == null) {
+				try {
+					log = parser.parse(xmlLogString);
+				} catch (Exception e) {
+					System.err.println("Error parsing a log: " + e.getMessage());
+					System.err.println("The log that caused the exception: "+ xmlLogString);
+					System.exit(-1);
+				}
+			}
+			try {
+				outF.write(csv.convert(log));
+			} catch (IOException e) {
+				System.err.println("Error writing a log: " + e.getMessage());
+				System.exit(-1);
+			}
+		} else {
+			try {
+				outF.write(xmlLogString);
+			} catch (IOException e) {
+				System.err.println("Error writing a log: " + e.getMessage());
+				System.exit(-1);
+			}
 		}
+		
 	}
 	
 	public void operationTerminated(int id) {
@@ -215,9 +257,13 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 		name.append(idx);
 		if (startingDate!=null) {
 			name.append('-');
-			name.append(startingDate.getTime()); 
+			StringBuffer buffer = new StringBuffer();
+			dateFormat.format(startingDate,buffer, new FieldPosition(0));
+			name.append(buffer.toString()); 
 		}
-		name.append(".xml");
+		if (!writeAsCSV) {
+			name.append(".xml");
+		} 
 		// Create and return the file
 		FileWriter outFile=null;
 		try {
