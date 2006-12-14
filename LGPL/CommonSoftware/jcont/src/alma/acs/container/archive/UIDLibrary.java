@@ -194,14 +194,15 @@ public class UIDLibrary
 	 *        to create the required XML binding class aware interface from the plain-Corba <code>Identifier</code> object 
 	 *        (<code>identRaw</code>) that is obtained, for example, by <br>
 	 *        <code>IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"))</code>.
+	 * @param printLogs Emit logs, iff set to true.
 	 * @return the UID of the range, which can be used for example as an argument in {@link #assignUniqueEntityId(EntityT, URI)}.
 	 * @throws UniqueIdException  if the range cannot be obtained from the archive. 
 	 */
-	public URI getNewRestrictedRange(int size, String user, IdentifierJ identifier) throws AcsJRangeUnavailableEx, AcsJIdentifierUnexpectedEx {
+	public URI getNewRestrictedRange(int size, String user, IdentifierJ identifier, boolean printLogs) throws AcsJRangeUnavailableEx, AcsJIdentifierUnexpectedEx {
 		Range range = null;
 		try
 		{
-			logger.finest("UIDLibrary: Fetching a restricted range");
+			if (printLogs) logger.finest("UIDLibrary: Fetching a restricted range");
 			IdentifierRange idRange = identifier.getNewRestrictedRange(size, user);
 			range = new Range(idRange);
 		}
@@ -215,14 +216,20 @@ public class UIDLibrary
 			ex.setContextInfo("Cannot store new range. URI occupied. This should never have happened by design!!");
 			throw ex;
 		}
-		logger.finest("UIDLibrary: Storing Range under: "+ uri.toASCIIString());
+		if (printLogs) logger.finest("UIDLibrary: Storing Range under: "+ uri.toASCIIString());
 		
 		idRanges.put(uri,range);
 		
 		return uri;
 	}
-	
-	
+
+    /**
+     * convenience method for the above, printLogs is set to true
+     **/
+    public URI getNewRestrictedRange(int size, String user, IdentifierJ identifier) throws AcsJRangeUnavailableEx, AcsJIdentifierUnexpectedEx {
+	return getNewRestrictedRange(size, user, identifier, true);
+    }
+
 	/**
 	 * Assigns a uid to the EntityT from the specified range.
 	 * This is not permitted with a locked Range object.
@@ -234,11 +241,12 @@ public class UIDLibrary
 	 * 
 	 * @param entity  
 	 * @param uri  the UID of the Range object
+	 * @param printLogs set to true, iff logs should be printed
 	 */
-	public void assignUniqueEntityId(EntityT entity, URI uri) throws AcsJRangeUnavailableEx, AcsJUidAlreadyExistsEx, AcsJRangeLockedEx, AcsJRangeExhaustedEx
+	public void assignUniqueEntityId(EntityT entity, URI uri, boolean printLogs) throws AcsJRangeUnavailableEx, AcsJUidAlreadyExistsEx, AcsJRangeLockedEx, AcsJRangeExhaustedEx
 	{
 		if (idRanges.containsKey(uri)){
-			if (logger.isLoggable(Level.FINEST)) {
+			if (printLogs && logger.isLoggable(Level.FINEST)) {
 				logger.finest("UIDLibrary: Assigning ID to entity from range " + uri.toASCIIString());
 			}
 			Range r = idRanges.get(uri);
@@ -250,8 +258,13 @@ public class UIDLibrary
 			throw ex;
 		}
 	}
-	
-	
+    /**
+     * convenience method for the above, printLogs is set to true
+     **/	
+    public void assignUniqueEntityId(EntityT entity, URI uri) throws AcsJRangeUnavailableEx, AcsJUidAlreadyExistsEx, AcsJRangeLockedEx, AcsJRangeExhaustedEx {
+	assignUniqueEntityId(entity, uri, true);
+    }
+
 	/**
 	 * Fetch an existing range from the archive and deserialise, only certain
 	 * operations will be permitted.
