@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Formatter;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import alma.acs.logging.ACSCoreLevel;
@@ -210,17 +209,15 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 			if (errorTraceProperties != null) {
 				for (Iterator iter = errorTraceProperties.keySet().iterator(); iter.hasNext();) {
 					String key = (String) iter.next();
-					String value = (String) errorTraceProperties.get(key);
-					if(value==null || value.length()==0) {
-					    value="N/A"; 
-                                        }
+					String value = maskEmptyDataContent((String) errorTraceProperties.get(key));
 				    sb.append("<Data Name=\"" + key + "\">" + maskMessage(value) + "</Data>");
 				}
 			}
 			// other
 			Object[] params = logParamExtractor.getNonPropertiesMapParameters();
 			for (int i = 0; i < params.length; i++) {
-			    sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(params[i].toString()) + "</Data>");
+				String value = maskEmptyDataContent(params[i].toString());
+			    sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(value) + "</Data>");
 			}
 		}
 		catch (Exception e) {
@@ -258,6 +255,17 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 	    return XmlNormalizer.normalize(attributeValue);
 	}
 
+	/**
+	 * If a Data element has empty content (resulting in <Data></Data>), 
+	 * then the xerces parser would throw an exception. 
+	 * As a workaround, we replace the empty string with "N/A". 
+	 */
+	private String maskEmptyDataContent(String content) {
+		if (content == null || content.length() == 0) {
+			return "N/A";
+		}
+		return content;
+	}
     
 	/**
 	 * Method getHost. Returns the host on which the system is run.
