@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: errorServer.cpp,v 1.12 2005/09/21 14:17:31 vwang Exp $"
+* "@(#) $Id: errorServer.cpp,v 1.13 2006/12/14 08:35:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,13 +26,13 @@
 * almamgr  20/06/01  created
 */
 
-static char *rcsId="@(#) $Id: errorServer.cpp,v 1.12 2005/09/21 14:17:31 vwang Exp $"; 
+static char *rcsId="@(#) $Id: errorServer.cpp,v 1.13 2006/12/14 08:35:29 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ESTestImpl.h"
 #include <orbsvcs/CosNamingC.h>
 #include <orbsvcs/orbsvcs/DsLogAdminC.h>
-
+#include <acsutilPorts.h>
 
 #ifdef MAKE_VXWORKS
 #	include "rebootLib.h"
@@ -77,21 +77,29 @@ int acslogErrorServer (char *szCmdLn){
 
   try
     {
+
       //Naming Service 
       ACS_DEBUG (" acslogErrorServer", "Resolving  Naming service ... ");
-      CORBA::Object_var naming_obj =
-	orb->resolve_initial_references ("NameService");
+      ACE_CString nameService;
+      nameService +="corbaloc::";
+      nameService += ACSPorts::getIP();
+      nameService += ":"; 
+      nameService += ACSPorts::getNamingServicePort().c_str();
+      nameService += "/"; 
+      nameService += acscommon::NAMING_SERVICE_NAME;
+
+      CORBA::Object_var naming_obj = orb->string_to_object(nameService.c_str());
       if (!CORBA::is_nil (naming_obj.in ()))
 	{
 	  CosNaming::NamingContext_var naming_context =
 	    CosNaming::NamingContext::_narrow (naming_obj.in ());
 	  ACS_DEBUG ("acslogErrorServer", "Naming Service resolved !");
 
-	  ACS_DEBUG ("acslogErrorServer", "Resolving Logging Service from Naming service .... ");
 	  CosNaming::Name name;
 	  name.length(1);
 	  name[0].id = CORBA::string_dup("Log");
 	  CORBA::Object_var log_obj = naming_context->resolve(name);
+
 	  if (!CORBA::is_nil (log_obj.in()))
 	    {
 	      DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(log_obj.in());
@@ -103,6 +111,7 @@ int acslogErrorServer (char *szCmdLn){
 	    {
 	      ACS_DEBUG ("acslogErrorServer", "Failed to initialise the Logging Service!");
 	    }
+
 	}
       else
 	{

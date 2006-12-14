@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAcsLog.cpp,v 1.16 2005/09/21 14:17:39 vwang Exp $"
+* "@(#) $Id: testAcsLog.cpp,v 1.17 2006/12/14 08:35:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,14 +28,14 @@
 // Uncomment this if you are using the VLT environment
 // #include "vltPort.h"
 
+static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.17 2006/12/14 08:35:29 bjeram Exp $"; 
+static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <SString.h>
 #include <acsutilPorts.h>
-
-static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.16 2005/09/21 14:17:39 vwang Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+#include <acserr.h>
 
 #include "acslogS.h"
 #include "ESTestC.h"
@@ -51,10 +51,13 @@ int main(int argc, char *argv[])
   ACE_CString argStr;
   for (int i=argc-1; i>=0; i--)
 	argStr = ACE_CString(argv[i])+ " " + argStr;
-  if (argStr.find ("-ORBInitRef ACSLogSvc=")==ACE_CString::npos){
-    const char *hn = ACSPorts::getIP();
-    argStr = argStr + "-ORBInitRef ACSLogSvc=iiop://"+hn+":4011/ACSLogSvc";
-  }
+  if (argStr.find ("-ORBInitRef ACSLogSvc=")==ACE_CString::npos)
+      {
+      const char *hn = ACSPorts::getIP();
+      std::string port = ACSPorts::getLogPort();
+	  
+      argStr = argStr + "-ORBInitRef ACSLogSvc=iiop://"+hn+":"+port.c_str()+"/ACSLogSvc";
+      }//if
 
   ACE_OS::printf ("Cmd Line: %s\n", argStr.c_str());
 
@@ -93,11 +96,16 @@ int main(int argc, char *argv[])
       ESTest_var test = ESTest::_narrow (testObj.in());
 
       ACE_OS::printf ("Invoking remote call on error server to get error stack ...\n");
-      ACSErr::ErrorTrace *c = test->test (2, 1/*true*/);
+      ACSErr::CompletionImpl c = test->test (2, 1/*true*/);
 
       ACE_OS::printf ("Logging error stack using ACS Log Svc ... \n");
-      log->logError(*c);
-  }
+      log->logError(c.getErrorTraceHelper()->getErrorTrace());
+      
+      ACE_OS::printf ("Logging error stack using ACS Log Svc with different priorities \n");
+      log->logErrorWithPriority(c.getErrorTraceHelper()->getErrorTrace(), ACSLog::ACS_LOG_DEBUG);
+
+      log->logErrorWithPriority(c.getErrorTraceHelper()->getErrorTrace(), ACSLog::ACS_LOG_INFO);
+    }
   catch( CORBA::Exception &ex )
     {    
       ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");

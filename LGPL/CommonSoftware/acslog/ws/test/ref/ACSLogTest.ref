@@ -1,0 +1,33 @@
+1 - Initialising ORB ... 
+1 - ORB initialsed !
+2 - Resolve AcsLogSvc reference!
+1 - Creating logging proxy ... 
+2 - Connected to object !
+2 - 
+2 - Getting error server test object reference ... 
+2 - Narrowing it .... 
+2 - Invoking remote call on error server to get error stack ...
+2 - Logging error stack using ACS Log Svc ... 
+2 - Logging error stack using ACS Log Svc with different priorities 
+2 - Test #1
+2 - Test #2
+2 - Test #3
+2 - Test #4
+2 - Test #5 (Debug)
+2 - Test #6 (Info)
+2 - Test #7 (Notice)
+2 - Test #8 (Warning)
+2 - Test #9 (Critical)
+2 - Test #10 (Alert)
+2 - Test #11 (Emergency)
+1 - ----------T--:--:--.--- [GlobalLogger -  acslogErrorServer] Logging proxy successfully created !
+1 - ----------T--:--:--.--- [GlobalLogger -  acslogErrorServer] Resolving  Naming service ... 
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Naming Service resolved !
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Logging Service resolved !
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Creating test object ...
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] POA Manager -> activate
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Writing ior to the file: s1 .... 
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Waiting for requests ...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900902, code=2),End of call's chain=
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900902, code=3),isErr=true,depth=0
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900902, code=1)

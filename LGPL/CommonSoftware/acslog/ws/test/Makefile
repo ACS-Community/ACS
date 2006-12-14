@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.17 2006/12/14 08:35:29 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.18 2006/12/14 08:38:42 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -85,7 +85,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = allTests
+SCRIPTS_L       = 
 
 #
 # TCL scripts (public and local)

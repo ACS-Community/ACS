@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.1 2004/04/29 08:30:41 gchiozzi Exp $"
+# "@(#) $Id: TestList.lite,v 1.2 2006/12/14 08:35:29 bjeram Exp $"
 #
 # TestList
 #
@@ -27,4 +27,9 @@
 # --------  --------  ----------------------------------------------
 # 
 # This is all need to run.
-allTests
+SOURCE acslogTATEnv
+PROLOGUE acsutilTATPrologue
+
+1 ACSLogTest "acsutilTATTestRunner acslogErrorServer s1" "@SLEEP 10" "acsutilTATTestRunner acslogTest s1"
+
+EPILOGUE acsutilTATEpilogue
