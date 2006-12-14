@@ -22,25 +22,28 @@
 package alma.acs.logging.tools;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
+import java.io.FileWriter;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
-
-import javax.swing.JOptionPane;
 
 import alma.acs.util.StopWatch;
 
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.stats.ResourceChecker;
 
 /**
- * This class read/write a log file.
- * The load/save are performed asynchronously: it calls listeners to notify 
- * about events.
+ * This class read/write to/from a log file.
+ * 
+ * The load/save are performed asynchronously by a separate thread.
+ * The callers are notified through events.
+ * 
+ * If an exception occurs during I/O, the operation terminates and the
+ * exception is sent to the listeners (errorDetected). 
  * 
  * @author acaproni
  *
@@ -209,24 +212,65 @@ public class LogFile extends Thread {
 		// The identifier of this actiion
 		public int UID;
 		
+		// The logs to save
+		public Collection<ILogEntry> logs;
+		
 		// Type of async operations
 		public static final int TERMINATE=0;
 		public static final int LOAD=1;
 		public static final int SAVE=2;
 		
 		/**
-		 * Constructor 
+		 * Constructor for loading
 		 * 
 		 * @param src The name of the source file
 		 * @param dest The name of the dest file
 		 * @param type The type of the async operation
 		 * @param uid The identifier of this action
 		 */
-		private IOAction(String src, String dest, int type,int uid) {
+		private IOAction(String src, int uid) {
+			if (src==null || src.length()==0) {
+				throw new IllegalArgumentException("Invalid source name");
+			}
 			srcFileName=src;
-			destFileName=dest;
-			this.type=type;
+			destFileName=null;
+			logs=null;
+			this.type=LOAD;
 			this.UID=uid;
+		}
+		
+		/**
+		 * Constructor for termination
+		 * 
+		 * @param uid The identifier of this action
+		 */
+		private IOAction(int uid) {
+			this.UID=uid;
+			this.type=TERMINATE;
+			srcFileName=null;
+			destFileName=null;
+			logs=null;
+		}
+		
+		/**
+		 * Constructor for saving
+		 * 
+		 * @param dest The name of the destination
+		 * @param logs The map of the logs to save
+		 * @param uid The identifier of this action
+		 */
+		private IOAction(String dst, Collection<ILogEntry> logs, int uid) {
+			if (dst==null || dst.length()==0) {
+				throw new IllegalArgumentException("Invalid destination name");
+			}
+			if (logs==null || logs.size()==0) {
+				throw new IllegalArgumentException("No logs to save");
+			}
+			srcFileName=null;
+			destFileName=dst;
+			type=SAVE;
+			UID=uid;
+			this.logs=logs;
 		}
 		
 	}
@@ -243,7 +287,8 @@ public class LogFile extends Thread {
 	// The listener to notify when the async operation is finished
 	private AsynchronousOperationListener asyncListener;
 	
-	private final int READ_BUFFER_SIZE = 32768;
+	// Buffer length for I/O
+	private final int BUFFER_SIZE = 32768;
 	
 	/**
 	 * Constructor
@@ -285,10 +330,12 @@ public class LogFile extends Thread {
 		long end = inFile.length();
 		long bytesRead=0;
 		
+		asyncListener.operationProgress(start,end,bytesRead,action.UID);
+		
 		// The update is done every 3 secs
 		long lastUpdate=0;
 		
-		BufferedReader inF = new BufferedReader(new FileReader(inFile),READ_BUFFER_SIZE);
+		BufferedReader inF = new BufferedReader(new FileReader(inFile),BUFFER_SIZE);
 		
 		// The last tag found
 		String tag=null;
@@ -321,51 +368,44 @@ public class LogFile extends Thread {
 		 */
 		int bytesInBuffer=0;
 		
-		try {
-			StopWatch stopWatch = new StopWatch();
-		
-			while (true) {
-				// Read a block from the file if the buffer is empty
-				if (bytesInBuffer==0) {
-					bytesInBuffer = inF.read(buf,0,size);
+		StopWatch stopWatch = new StopWatch();
+	
+		while (true) {
+			// Read a block from the file if the buffer is empty
+			if (bytesInBuffer==0) {
+				bytesInBuffer = inF.read(buf,0,size);
+			}
+			if (bytesInBuffer<=0) { // EOF
+				break;
+			}
+			bytesInBuffer--;
+			actualPos=(actualPos+1)%size;
+			chRead=buf[actualPos];
+			
+			bytesRead++;
+			buffer.append((char)chRead);
+			if (chRead == '>') {
+				tag = buffer.getOpeningTag();
+				if (tag.length()>0) {
+					//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
+					buffer.trim(tag);
 				}
-				if (bytesInBuffer<=0) { // EOF
-					break;
-				}
-				bytesInBuffer--;
-				actualPos=(actualPos+1)%size;
-				chRead=buf[actualPos];
-				
-				bytesRead++;
-				buffer.append((char)chRead);
-				if (chRead == '>') {
-					tag = buffer.getOpeningTag();
-					if (tag.length()>0) {
-						//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
-						buffer.trim(tag);
-					}
-					if (buffer.hasClosingTag(tag)) {
-						//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
-						logListener.xmlEntryReceived(buffer.toString());
-						buffer.clear();
-						logRecordsRead++;
-					}
-				}
-				if (System.currentTimeMillis()-lastUpdate>3000) {
-					asyncListener.operationProgress(start,end,bytesRead,action.UID);
-					lastUpdate=System.currentTimeMillis();
+				if (buffer.hasClosingTag(tag)) {
+					//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
+					logListener.xmlEntryReceived(buffer.toString());
+					buffer.clear();
+					logRecordsRead++;
 				}
 			}
-			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
-						stopWatch.getLapTimeMillis()/1000 + " seconds.");
-			System.out.println(ResourceChecker.getMemoryStatusMessage());
-			asyncListener.operationTerminated(action.UID);
-		} catch (IOException ioe) {
-			System.err.println("Exception loading the logs: "+ioe.getMessage());
-			ioe.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
-			return ;
+			if (System.currentTimeMillis()-lastUpdate>3000) {
+				asyncListener.operationProgress(start,end,bytesRead,action.UID);
+				lastUpdate=System.currentTimeMillis();
+			}
 		}
+		asyncListener.operationProgress(start,end,bytesRead,action.UID);
+		System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
+					stopWatch.getLapTimeMillis()/1000 + " seconds.");
+		System.out.println(ResourceChecker.getMemoryStatusMessage());
 	}
 	
 	/**
@@ -373,13 +413,38 @@ public class LogFile extends Thread {
 	 * 
 	 * @param action The action describing the requested save
 	 */
-	private void write(IOAction action) {
+	private void write(IOAction action) throws Exception {
 		if (action.type!=IOAction.SAVE) {
 			throw new IllegalStateException("Trying to save but the action is not SAVE");
 		}
 		if (action.destFileName==null && action.destFileName.length()==0) {
 			throw new IllegalArgumentException("Invalid dest name");
 		}
+		if (action.logs==null || action.logs.size()==0) {
+			throw new IllegalArgumentException("No logs to save");
+		}
+		FileWriter writer = new FileWriter(action.destFileName,false);
+		BufferedWriter outF = new BufferedWriter(writer,BUFFER_SIZE);
+		long start = 0;
+		long end = action.logs.size();
+		long current = 0;
+		
+		// The update is repeated every 3 secs
+		long lastUpdate=0;
+		
+		outF.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
+		for (ILogEntry log: action.logs) {
+			outF.write((log.toXMLString()+"\n").toCharArray());
+			current++;
+			if (System.currentTimeMillis()-lastUpdate>3000) {
+				asyncListener.operationProgress(start,end,current,action.UID);
+				lastUpdate=System.currentTimeMillis();
+			}
+		}
+		asyncListener.operationProgress(start,end,current,action.UID);
+		outF.write("</Log>");
+		outF.flush();
+		outF.close();
 	}
 	
 	/**
@@ -390,18 +455,18 @@ public class LogFile extends Thread {
 	 * @return The IOAction for this operation
 	 */
 	public IOAction getLoadAction(String src) {
-		return new IOAction(src,null,IOAction.LOAD,actionID++);
+		return new IOAction(src, actionID++);
 	}
 	
 	/**
 	 * Create an action for saving
 	 * 
 	 * @param dest The name of the dest file
-	 * @param keys The keys of the logs to save
+	 * @param logs The logs to save
 	 * @return The IOAction for this operation 
 	 */
-	public IOAction getSaveAction(String dest, Collection keys) {
-		return new IOAction(null,dest,IOAction.SAVE,actionID++);
+	public IOAction getSaveAction(String dest, Collection<ILogEntry> logs) {
+		return new IOAction(dest,logs,actionID++);
 	}
 	
 	/**
@@ -410,7 +475,7 @@ public class LogFile extends Thread {
 	 * @return The IOAction for this operation
 	 */
 	public IOAction getTerminationAction() {
-		return new IOAction(null,null,IOAction.TERMINATE,actionID++);
+		return new IOAction(actionID++);
 	}
 	
 	/**
@@ -439,15 +504,35 @@ public class LogFile extends Thread {
 			if (action == null) {
 				continue;
 			}
-			if (action.type == IOAction.TERMINATE) {
-				return;
-			} else if (action.type==IOAction.LOAD) {
-				try {
-					read(action);
-				} catch (Exception e) {
+			asyncListener.operationStarted(action.UID);
+			switch (action.type) {
+				case IOAction.TERMINATE: {
+					asyncListener.operationTerminated(action.UID);
+					return;
+				}
+				case IOAction.LOAD: {
+					try {
+						read(action);
+					} catch (Exception e) {
+						asyncListener.errorDetected(e,action.UID);
+					}
+					break;
+				}
+				case IOAction.SAVE: {
+					try {
+						write(action);
+					} catch (Exception e) {
+						asyncListener.errorDetected(e,action.UID);
+					}
+					break;
+				}
+				default: {
+					Exception e = new Exception("Invalid action requested ("+action.type+")");
 					asyncListener.errorDetected(e,action.UID);
+					break;
 				}
 			}
+			asyncListener.operationTerminated(action.UID);
 		}
 	}
 	
