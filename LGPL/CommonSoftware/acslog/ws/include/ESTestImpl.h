@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ESTestImpl.h,v 1.10 2003/10/23 08:18:17 acaproni Exp $"
+* "@(#) $Id: ESTestImpl.h,v 1.11 2006/12/14 08:35:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,21 +42,20 @@
 class ESTestImpl : public POA_ESTest {
 public:
   ESTestImpl(ESTest* dest, const char *sn);
-  ACSErr::ErrorTrace * test (  CORBA::Long depth,
-				    CORBA::Boolean err
-				    
-				   ) throw ( CORBA::SystemException);
+  ACSErr::Completion * test (  CORBA::Long depth,
+			       CORBA::Boolean err
+      ) throw ( CORBA::SystemException);
   
     
   void testExceptions ( CORBA::Long depth,
-			CORBA::Boolean err
-			
-			) throw ( CORBA::SystemException,
-					    ACSErr::ACSException  );
-
-  ACSError* f1 (int depth, bool iserr);
+			CORBA::Boolean err)
+      throw ( CORBA::SystemException,
+	      ACSErrTypeTest::ACSErrTest0Ex,
+	      ACSErr::ACSException  );
+    
+    CompletionImpl* f1 (int depth, bool iserr);
   
-  void f2(int depth, bool isErr);
+    void f2(int depth, bool isErr);
 protected:
   ESTest_var dest;
   int depth;

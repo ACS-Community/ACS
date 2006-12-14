@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.16 2005/01/31 21:45:24 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.17 2006/12/14 08:35:29 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -56,11 +56,12 @@ EXECUTABLES     =
 EXECUTABLES_L   = acslogTest  acslogErrorServer
 #
 # <brief description of xxxxx program>
-acslogTest_OBJECTS   = testAcsLog acslogC acslogS ESTestC ESTestS
+acslogTest_OBJECTS   = testAcsLog
 xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
+acslogTest_LIBS      = acslogStubs ESTestStubs ACSErrTypeTest
 
-acslogErrorServer_OBJECTS    = errorServer ESTestS ESTestC ESTestImpl
+acslogErrorServer_OBJECTS    = errorServer ESTestImpl
+acslogErrorServer_LIBS = ESTestStubs ACSErrTypeTest
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -177,9 +178,13 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) *~ ref/*~
+	$(RM) sed.scan
+	$(RM) tmp tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

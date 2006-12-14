@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ESTestImpl.cpp,v 1.14 2005/09/21 14:17:24 vwang Exp $"
+* "@(#) $Id: ESTestImpl.cpp,v 1.15 2006/12/14 08:35:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * almamgr  20/06/01  created 
 */
 
-static char *rcsId="@(#) $Id: ESTestImpl.cpp,v 1.14 2005/09/21 14:17:24 vwang Exp $"; 
+static char *rcsId="@(#) $Id: ESTestImpl.cpp,v 1.15 2006/12/14 08:35:29 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ESTestImpl.h"
@@ -39,121 +39,150 @@ ESTestImpl::ESTestImpl(ESTest* dest, const char* sn){
   srvName = sn;
 }
 
-ACSErr::ErrorTrace * ESTestImpl::test ( CORBA::Long depth, CORBA::Boolean err )
+ACSErr::Completion * ESTestImpl::test ( CORBA::Long depth, CORBA::Boolean err )
     throw ( CORBA::SystemException)
 {
   this->depth = depth;
-  ACSError *er = f1 (depth-1, err);
-  ACE_OS::printf ("-------------------------------------------------------\n");
-  ACE_OS::printf ("Error log for %s: \n", srvName);
-  er->log();
-  ACE_OS::printf ("-------------------------------------------------------\n");
 
-  return er->returnErrorTrace();
-}  
+ CompletionImpl *e = f1 (depth-1, err);
 
-ACSError* ESTestImpl::f1 (int depth, bool iserr){
+  ACSErrTest0Completion *comp= new ACSErrTest0Completion(e, __FILE__, __LINE__, "acserrTestImpl::test", ACSErr::Alert);
+  comp->log();
+  
+  return comp->returnCompletion();
+}//test  
+
+CompletionImpl* ESTestImpl::f1 (int depth, bool iserr)
+{
   char errString[64];
-  ACSError *er, *res;
+ char routine[32];
+  CompletionImpl *er=0, *res=0;
+
+  if (depth>0)
+      {
+      sprintf (routine, "acserrTestImpl::f1 (%d)", depth);
+      sprintf (errString, "error %d", depth);
+      er = f1 (--depth, iserr) ;
+      res = new ACSErrTest2Completion(er, __FILE__, __LINE__, routine); 
+
+      res->addData ("depth", depth);
+      res->addData ("isErr", iserr ? "true" : "false");
+      return res;
+      }
+  else
+      {
+      if (dest.in()!=NULL )
+	  {
+	  //res = new ACSError (dest->test (this->depth, iserr), true);
+	  res->addData ("remote call", "");
+	  return res;
+	  }
+      else
+          {
+
+	  res = new ACSErrTest1Completion(__FILE__, __LINE__, "acserrTestImpl::f1 (0)");
+	  res->addData ("End of call's chain", "");
+	  return res;
+	  }
+      }//if-else
+}//f1
+    
+void ESTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
+    throw ( CORBA::SystemException,
+	    ACSErrTypeTest::ACSErrTest0Ex,
+	    ACSErr::ACSException  )
+{
+    this->depth = depth;
+    try
+	{
+	f2 (depth-1, err);
+	}
+    catch (ACSErr::ACSException &ex)
+	{
+	throw ACS_EXCEPTION(ex, ACSErr::ACSErrTypeTest, ACSErrTypeTest::ACSErrTest2, "acserrTestImpl::testException");
+	}
+    catch (ACSErrTest1ExImpl &_ex)
+	{
+	_ex.log();
+	ACSErrTest0ExImpl ex(_ex, __FILE__,  __LINE__, "acserrTestImpl::testExceptions");
+
+	throw ex.getACSErrTest0Ex();
+	}
+}//testException
+
+void ESTestImpl::f2(int depth, bool isErr)
+{
+
+char errString[64];
 
   if (depth>0) {
-    sprintf (errString, "error %d", depth);
-    er = f1 (--depth, iserr) ;
-    res = new ACS_ERROR(er, ACSErr::ACSErrTypeTest, ACSErrTest1, "ESTestImpl::f1");
-    //res = ((er->isOK() && !iserr) ?   er : new ACS_ERROR(er, ACSErrTypeTest, 1, "ESTestImpl::f1") );
-    sprintf (errString, "%d", depth);
-    res->addData ("depth", errString);
-    res->addData ("isErr", iserr ? "true" : "false");
-    return res;
-    //return ((er->isOK() && !iserr) ?   er : new ACSError (er, errString, 1, __FILE__, __LINE__) );
+
+    try
+    {
+      f2 (depth-1, isErr) ;
+    }
+    catch (ACSErr::ACSException &ex)
+    {
+
+      if (isErr) 
+      {
+        sprintf (errString, "exception %d", depth);
+        ACSError res = ACS_ERROR(ex, ACSErr::ACSErrTypeTest, ACSErrTypeTest::ACSErrTest1, "acserrTestImpl::f2");
+        res.addData ("depth", depth);
+        res.addData ("isErr", isErr ? "true" : "false");
+      
+        throw ACS_EXCEPTION(res); 
+      }
+      else
+      {
+        //ACSErrTest0ExImpl (__FILE__, __LINE__, "acserrTestImpl::f2");
+        ACSError er(ex);	
+        throw ACS_EXCEPTION(er);
+      }//if-else  
+
+    } // catch ACSException
+    catch (ACSErrTest1ExImpl &ex)
+    {
+
+      char strDepth[3]; sprintf (strDepth, "%d", depth);
+      ACE_CString routine =  "acserrTestImpl::f2 ("; routine+= strDepth; 
+      routine+= ")";
+
+      ACSErrTest1ExImpl res(ex, __FILE__,  __LINE__, routine.c_str());
+      res.addData ("depth", depth);
+      res.addData ("isErr", isErr ? "true" : "false");
+      
+      throw res;
+  
+    } // catch ACSErrTest1ExImpl
   }
-  else{
-    if (dest.in()!=NULL ){
-      ACE_OS::printf ("Makeing remote call ... \n");
-      res = new ACSError (dest->test (this->depth, iserr), true);
-      res->addData ("remote call", "");
-      return res;
+  else
+  {
+    if (dest.in()!=NULL )
+    {
+      try
+      {
+        dest->testExceptions (this->depth, isErr);
+      }
+      catch (ACSErr::ACSException &ex)
+      {
+        ACSError res (ex);
+        res.addData ("remote call", "");
+	throw ACS_EXCEPTION(res);
+      }
+      
     }
     else
     {
-    res = new ACS_ERROR(ACSErr::ACSErrTypeTest, ACSErrTest0, "ESTestImpl::f1");
-//      res = (iserr ? new ACS_ERROR_BEGIN("error 0", 1, "ESTestImpl::f1") : new ACS_NO_ERROR("ESTestImpl::f1"));
-      res->addData ("End of call's chain", "");
-      return res;
-    }
-  }
-}
-    
-void ESTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
-    throw ( CORBA::SystemException, ACSErr::ACSException )
-{
-
-  this->depth = depth;
-  try
-    {
-      f2 (depth-1, err);
-      
-    }
-  catch (ACSErr::ACSException &ex)
-    {
-      ACE_OS::printf("---------------------------------------------------\n");
-      ACSError res = ACS_ERROR(ex, ACSErr::ACSErrTypeTest, ACSErrTest1, "ESTestImpl::testException");
-      ACE_OS::printf ("Error log (exceptions) for %s: \n", srvName);
-      res.log();
-      ACE_OS::printf ("-------------------------------------------------------\n"); 
-      throw ACS_EXCEPTION(res);
-    }
-}
-
-void ESTestImpl::f2(int depth, bool isErr){
-  char errString[64];
-
- if (depth>0) {
-
-    try
+      if (isErr)
       {
-	f2 (depth-1, isErr) ;
-      }
-    catch (ACSErr::ACSException &ex)
-      {
-	if (isErr) {
-	  sprintf (errString, "exception %d", depth);
-	  ACSError res = ACS_ERROR(ex, ACSErr::ACSErrTypeTest, ACSErrTest1, "ESTestImpl::f2");
-	  sprintf (errString, "%d", depth);
-	  res.addData ("depth", errString);
-	  res.addData ("isErr", isErr ? "true" : "false");
-
-	  throw ACS_EXCEPTION(res);
-	}
-	else{
-	  ACSError er(ex);	
-	  throw ACS_EXCEPTION(er);
-	}//if-else  
-      }
-  }
- else{
-   if (dest.in()!=NULL ){
-     ACE_OS::printf ("Makeing remote call ... \n");
-     try
-       {
-	 dest->testExceptions (this->depth, isErr);
-       }
-     catch (ACSErr::ACSException &ex)
-       {
-	 ACSError res (ex);
-	 res.addData ("remote call", "");
-	 throw ACS_EXCEPTION(res);
-       }
-
-   }else{
-     if (isErr){
-       ACSError res = ACS_ERROR(ACSErr::ACSErrTypeTest, ACSErrTest3, "ESTestImpl::f2");
-       res.addData ("End of call's chain", "");
-       throw ACS_EXCEPTION(res); 
-     }//if
-   }
- }
-}
+        char routine[32];
+        sprintf (routine, "acserrTestImpl::f2 (%d)", depth);
+        throw  ACSErrTest1ExImpl(__FILE__,  __LINE__, routine);
+      }//if isErr
+    } // else if dest.in()
+  } //else if  depth
+}//f2
 /*___oOo___*/
 
 
