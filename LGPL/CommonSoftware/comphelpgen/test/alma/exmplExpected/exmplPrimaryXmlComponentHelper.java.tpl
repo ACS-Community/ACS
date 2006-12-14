@@ -23,6 +23,9 @@
 package alma.exmplCompHelpGen.PrimaryXmlComponentImpl;
 
 import java.util.logging.Logger;
+
+import org.omg.PortableServer.Servant;
+import alma.ACS.ACSComponentOperations;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 import alma.exmplCompHelpGen.PrimaryXmlComponentOperations;
