@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestError.py,v 1.18 2006/04/26 20:39:52 dfugate Exp $
+# @(#) $Id: acspyTestError.py,v 1.19 2006/12/14 11:41:45 bjeram Exp $
 ###############################################################################
 """
 Tests the Python Error system.
@@ -30,6 +30,7 @@ Tests the Python Error system.
 import ACSErrTypePythonNative
 import ACSErrTypePythonNativeImpl
 import ACSErr
+import  ACSLog
 from Acspy.Common.Err import pyExceptionToCORBA
 
 ###############################################################################
@@ -110,6 +111,7 @@ if __name__ == "__main__":
     print "Grep me out", helperException.getErrorTrace()
     print "Grep me out", helperException.getNext()
     helperException.log()
+    helperException.log(ACSLog.ACS_LOG_DEBUG)
     print "Grep me out", helperException.isOK()
     helperException.addData("name", "value")
     print "getData('no data set'):", helperException.getData("no data set")

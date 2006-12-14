@@ -29,6 +29,7 @@ __revision__ = "$Id$"
 #------------------------------------------------------------------------------
 import ACSErr
 import acstime
+import ACSLog
 
 from Acspy.Common.Log        import getLogger
 from Acspy.Common.Log        import stdoutOk
@@ -84,11 +85,12 @@ class ErrorTraceHelper:
             return None
         
     #--------------------------------------------------------------------------
-    def log(self):
+    def log(self, priority = ACSLog.ACS_LOG_ERROR):
         '''
         Logs errortrace information into the ACS logging system.
 
-        Parameters: None
+        Parameters:
+        - priorty which will be used for logging the error
 
         Returns: Nothing
 
@@ -102,7 +104,7 @@ class ErrorTraceHelper:
         if stdoutOk(logging.ERROR):
             self.Print()
             
-        getLogger("Acspy.Common.Err.ErrorTraceHelper").logErrorTrace(self.getErrorTrace())
+        getLogger("Acspy.Common.Err.ErrorTraceHelper").logErrorTrace(self.getErrorTrace(), priority)
         
     #--------------------------------------------------------------------------
     def errorTraceToString(self, error_trace, ws):

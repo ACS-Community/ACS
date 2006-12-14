@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.17 2006/11/16 13:43:13 gchiozzi Exp $
+# @(#) $Id: Err.py,v 1.18 2006/12/14 11:41:44 bjeram Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,10 +27,11 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.17 2006/11/16 13:43:13 gchiozzi Exp $"
+__revision__ = "$Id: Err.py,v 1.18 2006/12/14 11:41:44 bjeram Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
+import ACSLog
 
 from Acspy.Common.Log        import getLogger
 from Acspy.Common.TimeHelper import TimeUtil
@@ -185,7 +186,7 @@ def addComplHelperMethods(compl_obj):
         
     compl_obj.__dict__['isErrorFree'] = _isErrorFree
     #------------------------------------
-    def _log():
+    def _log(priority = ACSLog.ACS_LOG_ERROR):
         '''
         Logs the Completion.
         '''

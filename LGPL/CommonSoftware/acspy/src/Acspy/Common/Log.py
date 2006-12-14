@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.20 2006/04/21 20:55:38 dfugate Exp $
+# @(#) $Id: Log.py,v 1.21 2006/12/14 11:41:45 bjeram Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.20 2006/04/21 20:55:38 dfugate Exp $"
+__revision__ = "$Id: Log.py,v 1.21 2006/12/14 11:41:45 bjeram Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -343,12 +343,13 @@ class Logger(logging.Logger):
         '''
         self.log(LEVELS[ACSLog.ACS_LOG_DEBUG], xml)
     #------------------------------------------------------------------------
-    def logErrorTrace(self, errortrace):
+    def logErrorTrace(self, errortrace, priority = ACSLog.ACS_LOG_ERROR):
         '''
         Log an error stack trace.
 
         Parameter:
         - errortrace (top of error stack)
+        - priorty value of logging priorty
 
         Returns: Nothing
 
@@ -356,11 +357,11 @@ class Logger(logging.Logger):
         '''
         #ok to send it directly
         if ACSHANDLER.logSvc!=None:
-            ACSHANDLER.logSvc.logError(errortrace)
+            ACSHANDLER.logSvc.logErrorWithPriority(errortrace, priority)
 
             #could have old errors cached up
             for et in self.error_trace_list:
-                ACSHANDLER.logSvc.logError(et)
+                ACSHANDLER.logSvc.logErrorWithPriority(et, priority)
 
             #zero the list
             self.error_trace_list = []
