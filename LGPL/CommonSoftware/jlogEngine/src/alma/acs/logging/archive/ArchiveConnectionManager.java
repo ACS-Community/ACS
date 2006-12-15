@@ -213,15 +213,9 @@ public class ArchiveConnectionManager {
 			int maxRows) throws Exception {
 		status = DATABASE_WORKING;
 		showDBStatus("Executing a query");
-                /*
-		 * GCH 2006-12-14
-		 * I add here .000 because the archive seem
-		 * capable only of handling complete timestamps, 
-		 * with milliseconds.
-                 * This should be fixed.
-		 */
+
 		Object params[] = {
-		        from + ".000", to +".000",
+		        from, to,
 			minType, maxType,
 			routine,
 			source,
@@ -232,10 +226,10 @@ public class ArchiveConnectionManager {
 		try {
 			ret = getLogMethod.invoke(archive,params);
 		} catch (Throwable t) {
-			status = DATABASE_NOP;
-			showDBStatus("Database not responding.");
+			status = DATABASE_OK;
+			showDBStatus("Database ready.");
 			System.out.println("Exception thrown: "+t);
-			throw new Exception ("Error executing a query: databse not available.",t);
+			throw new Exception ("Error executing a query.",t);
 		}
 		status=DATABASE_OK;
 		showDBStatus("Database ready");
