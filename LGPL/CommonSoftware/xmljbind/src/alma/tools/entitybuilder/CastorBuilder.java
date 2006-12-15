@@ -24,6 +24,8 @@ package alma.tools.entitybuilder;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.exolab.castor.builder.FieldInfoFactory;
@@ -37,10 +39,10 @@ import org.exolab.castor.xml.schema.reader.SchemaUnmarshaller;
 public class CastorBuilder
 {
     /**
-     * @param args  <code>args[0]</code> xml config file (with path) complying to EntitybuilderSettings.xsd;
-     *               for the schemas that need code generation;
-     *               <code>args[1]</code> output directory under which the generated Java files will be put.        
-     *               <code>args[2..n]</code> -I schemaIncludeDirectory (optional)
+     * @param args  <code>args[0]</code>: xml config file (with path) complying to EntitybuilderSettings.xsd;
+     *               for the schemas that need code generation; <br>
+     *               <code>args[1]</code>: output directory under which the generated Java files will be put. <br>        
+     *               <code>args[2..n]</code>: -I schemaIncludeDirectory (optional)
      */
     public static void main(String[] args) 
     {
@@ -76,7 +78,7 @@ public class CastorBuilder
     /**
      * Parses the arguments given to <code>main</code> and then hands over control to method <code>run</code>. 
      * @param args as in main
-     * @param configFileConcat space-separated list of xsd binding config files to be used.
+     * @param configFileConcat space-separated list of xsd binding config files for included schemas.
      * @throws BindingException 
      * @throws FileNotFoundException 
      */
@@ -93,7 +95,7 @@ public class CastorBuilder
         File javaOutputDir = new File(args[1]);
         
         // -- config files for included schemas
-        ArrayList otherConfigFileNames = new ArrayList();
+        ArrayList<String> otherConfigFileNames = new ArrayList<String>();
         if (configFileConcat != null)
         {
             StringTokenizer includeSchemasConfigFilesTok = new StringTokenizer(configFileConcat, " ");
@@ -111,7 +113,7 @@ public class CastorBuilder
         }
 
         // include directories (both schema files and config files)     
-        ArrayList includeDirs = new ArrayList();
+        ArrayList<File> includeDirs = new ArrayList<File>();
         boolean pendingInclude = false;
         for (int argInd = 2; argInd < args.length; argInd++)
         {
@@ -139,10 +141,7 @@ public class CastorBuilder
             }                   
         }
         
-        run(schemaDir, primaryConfigFile, 
-                    (String[]) otherConfigFileNames.toArray(new String[otherConfigFileNames.size()]),
-                    (File[]) includeDirs.toArray(new File[includeDirs.size()]),
-                    javaOutputDir );
+        run(schemaDir, primaryConfigFile, otherConfigFileNames, includeDirs, javaOutputDir );
     }
 
         
@@ -164,22 +163,26 @@ public class CastorBuilder
 	 * @throws BindingException 
 	 * @throws FileNotFoundException 
 	 */
-	public void run(File schemaDir, File primaryConfigFile, String[] otherConfigFileNames, File[] includeDirs, File javaOutputDir) throws BindingException, FileNotFoundException 
+	public void run(File schemaDir, File primaryConfigFile, List<String> otherConfigFileNames, List<File> includeDirs, File javaOutputDir) throws BindingException, FileNotFoundException 
 	{
 		// the xml config file that knows the schemas that should be compiled 
 		if (!primaryConfigFile.exists()) {
 			throw new FileNotFoundException(
 				"invalid configuration file: " + primaryConfigFile.getAbsolutePath());
 		}
-        String[] allConfigFileNames = new String[otherConfigFileNames.length + 1];
-        allConfigFileNames[0] = primaryConfigFile.getName();
-        System.arraycopy(otherConfigFileNames, 0, allConfigFileNames, 1, otherConfigFileNames.length);
+        List<String> allConfigFileNames = new ArrayList<String>();
+        allConfigFileNames.add(primaryConfigFile.getName());
+        allConfigFileNames.addAll(otherConfigFileNames);
 
+        List<File> allIncludeDirs = new ArrayList<File>();
         // the ALMA Makefile explicitly lists the local schema directory as an include dir, 
         // but it does not hurt to try adding it anyway
-        File[] allIncludeDirs = new File[includeDirs.length + 1];
-        allIncludeDirs[0] = schemaDir;
-        System.arraycopy(includeDirs, 0, allIncludeDirs, 1, includeDirs.length);
+        allIncludeDirs.add(schemaDir);
+        // in some cases the schema dir may be different from the primary config file's directory.
+        // Thus we add the latter explicity, because otherwise the config file would no longer be found.
+        allIncludeDirs.add(primaryConfigFile.getParentFile());
+        // and of course we must add the explicitly given include dirs
+        allIncludeDirs.addAll(includeDirs);
 
         if (!javaOutputDir.exists()) {
             System.out.println("will create output directory " + javaOutputDir.getAbsolutePath());
