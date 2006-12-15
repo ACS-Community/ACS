@@ -453,7 +453,6 @@ public class QueryDlg extends JDialog implements ActionListener {
 		} catch (Throwable t) {
 			System.out.println("Error executing the query: "+t.getMessage());
 			t.printStackTrace(System.err);
-			System.out.println("Database unavailable");
 			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
 		}
 		if (logs!=null) {
