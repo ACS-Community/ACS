@@ -454,6 +454,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			System.out.println("Error executing the query: "+t.getMessage());
 			t.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
+			submitBtn.setEnabled(true);
 		}
 		if (logs!=null) {
 			System.out.println("Num. of logs read from DB: "+logs.size());
