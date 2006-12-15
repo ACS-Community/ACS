@@ -41,19 +41,19 @@ import alma.acs.testsupport.TestLogger;
  */
 public class XsdFileFinder extends AcsFileFinder
 {
-	private List xsdConfigFileNames;
+	private List<String> xsdConfigFileNames;
     private boolean verbose;
 
     /**
 	 * @param dirs the directories to search for files in
      * @param xsdConfigFileNames the path-free names of xsd config files to use, such as "systementities.xml" 
 	 */
-	public XsdFileFinder(File[] dirs, String[] xsdConfigFileNames) {
+	public XsdFileFinder(List<File> dirs, List<String> xsdConfigFileNames) {
         // todo-: the base class should be changed to not always call scanDirs(..) in the ctor.
         // then our filename filter could be smarter and only allow the known xsdConfigFileNames 
         // instead of any .xml file. Not a big deal though since we handle this in a second step filtering.
-		super(dirs, new XsdConfigFileNameFilter(), TestLogger.getLogger("xmljbind-XsdFileFinder", Level.FINER));
-        this.xsdConfigFileNames = Arrays.asList(xsdConfigFileNames);
+		super(dirs.toArray(new File[dirs.size()]), new XsdConfigFileNameFilter(), TestLogger.getLogger("xmljbind-XsdFileFinder", Level.FINER));
+        this.xsdConfigFileNames = xsdConfigFileNames;
 	}
 
 	public String getClasspath() {
@@ -99,9 +99,8 @@ public class XsdFileFinder extends AcsFileFinder
 
     
     public File[] getAllXsdConfigFiles() {
-        ArrayList files = new ArrayList();
-        for (Iterator iter = xsdConfigFileNames.iterator(); iter.hasNext();) {
-            String xsdConfigFileName = (String) iter.next();
+        ArrayList<File> files = new ArrayList<File>();
+        for (String xsdConfigFileName : xsdConfigFileNames) {
             File configFile = resolveXsdConfigFile(xsdConfigFileName);
             if (configFile != null) {
                 files.add(configFile);
@@ -110,7 +109,7 @@ public class XsdFileFinder extends AcsFileFinder
                 m_logger.warning("Binding configuration file '" + xsdConfigFileName + "' not found. Will try to continue without.");
             }
         }
-        return (File[]) files.toArray(new File[files.size()]);
+        return files.toArray(new File[files.size()]);
     }
     
     
