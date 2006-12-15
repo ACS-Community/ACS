@@ -452,13 +452,16 @@ public class QueryDlg extends JDialog implements ActionListener {
 			logs = archive.getLogs(from.toString(),to.toString(),minType,maxType,routine,source,process,maxRows);
 		} catch (Throwable t) {
 			System.out.println("Error executing the query: "+t.getMessage());
+			t.printStackTrace(System.err);
 			System.out.println("Database unavailable");
 			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
 		}
-		System.out.println("Num. of logs read from DB: "+logs.size());
-		LogsPublisher flusher = new LogsPublisher(logs,parser,submitBtn);
-		flusher.start();
-		logs=null;
+		if (logs!=null) {
+			System.out.println("Num. of logs read from DB: "+logs.size());
+			LogsPublisher flusher = new LogsPublisher(logs,parser,submitBtn);
+			flusher.start();
+			logs=null;
+		}
 	}
 	
 	/**
