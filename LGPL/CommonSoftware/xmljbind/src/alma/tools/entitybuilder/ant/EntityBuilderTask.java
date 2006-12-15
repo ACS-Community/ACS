@@ -39,16 +39,16 @@ public class EntityBuilderTask extends Task
 {
 	private String javaOutputDir;
 	private File xsdBindConfigFile;
-	private List xsdIncludedConfigFileList;	
-	private List xsdIncludeDirList;
+	private List<XsdIncludedConfigFile> xsdIncludedConfigFileList;	
+	private List<XsdIncludeDir> xsdIncludeDirList;
 
 	private boolean verbose;
 
 	
 	public EntityBuilderTask() {
 		super();
-		xsdIncludedConfigFileList = new ArrayList();
-		xsdIncludeDirList = new ArrayList();
+		xsdIncludedConfigFileList = new ArrayList<XsdIncludedConfigFile>();
+		xsdIncludeDirList = new ArrayList<XsdIncludeDir>();
 		verbose = false;
 	}
 	
@@ -65,13 +65,13 @@ public class EntityBuilderTask extends Task
 			mainArgs[1] = javaOutputDir;
 
 			for (int x = 0; x < xsdIncludeDirList.size(); x++) {
-				mainArgs[2+x] = "-I" + ((XsdIncludeDir) xsdIncludeDirList.get(x)).getDir().getAbsolutePath(); 
+				mainArgs[2+x] = "-I" + xsdIncludeDirList.get(x).getDir().getAbsolutePath(); 
 			}			
 
 			// optional config files for included XSD files (to get their java packages right)
 			String xsdBindConfIncluded = "";
 			for (int x = 0; x < xsdIncludedConfigFileList.size(); x++) {
-				xsdBindConfIncluded += ((XsdIncludedConfigFile) xsdIncludedConfigFileList.get(x)).getFilename() + " ";
+				xsdBindConfIncluded += xsdIncludedConfigFileList.get(x).getFilename() + " ";
 			}			
 			System.setProperty("ACS.schemaconfigfiles", xsdBindConfIncluded);
 
