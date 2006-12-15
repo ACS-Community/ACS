@@ -11,7 +11,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
 	<classpathentry kind="lib" path="src/lc.jar.extras"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
