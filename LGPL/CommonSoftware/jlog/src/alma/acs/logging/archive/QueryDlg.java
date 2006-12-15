@@ -449,7 +449,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		// The collection where the logs read from the DB are stored
 		Collection logs = null;
 		try {
-			logs = archive.getLogs(from.toString(),to.toString(),minType,maxType,routine,source,process,maxRows);
+			logs = archive.getLogs(from.toString()+".000",to.toString()+".000",minType,maxType,routine,source,process,maxRows);
 		} catch (Throwable t) {
 			System.out.println("Error executing the query: "+t.getMessage());
 			t.printStackTrace(System.err);
