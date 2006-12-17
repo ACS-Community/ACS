@@ -24,8 +24,6 @@ package alma.tools.entitybuilder;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -33,7 +31,7 @@ import alma.acs.makesupport.AcsFileFinder;
 import alma.acs.testsupport.TestLogger;
 
 /**
- * Finds XML schema files (.xsd) and xsd-bindingclass-config files (.xml) 
+ * Finds xsd-bindingclass-config files (.xml) 
  * in the wicked depth of overlayed ACS directories such as INTROOT/idl and ACSROOT/idl.
  *  
  * @author hsommer
@@ -56,27 +54,27 @@ public class XsdFileFinder extends AcsFileFinder
         this.xsdConfigFileNames = xsdConfigFileNames;
 	}
 
-	public String getClasspath() {
-		String cp = "";
-		for (Iterator iter = m_fileMap.values().iterator(); iter.hasNext();)
-		{
-			File jarfile = (File) iter.next();
-			cp += jarfile.getAbsolutePath() + File.pathSeparator;
-		}
-		return cp;
-	}
-
-	/**
-     * Finds an XML schema file given its file name without path.
-     * @return the file, or null if it's not found.
-	 */
-	public File resolveXsdFile(String xsdFileName) {
-        File schema = (File) m_fileMap.get(xsdFileName);
-        if (verbose) {
-            m_logger.fine("requested=" + xsdFileName + "; resolved=" + schema);
-        }
-        return schema;
-    }
+//	public String getClasspath() {
+//		String cp = "";
+//		for (Iterator iter = m_fileMap.values().iterator(); iter.hasNext();)
+//		{
+//			File jarfile = (File) iter.next();
+//			cp += jarfile.getAbsolutePath() + File.pathSeparator;
+//		}
+//		return cp;
+//	}
+	
+//	/**
+//     * Finds an XML schema file given its file name without path.
+//     * @return the file, or null if it's not found.
+//	 */
+//	public File resolveXsdFile(String xsdFileName) {
+//        File schema = (File) m_fileMap.get(xsdFileName);
+//        if (verbose) {
+//            m_logger.fine("requested=" + xsdFileName + "; resolved=" + schema);
+//        }
+//        return schema;
+//    }
 
     /**
      * Finds a config file for XML schema binding class generation, given its file name without path.
@@ -115,7 +113,7 @@ public class XsdFileFinder extends AcsFileFinder
     
 	public static class XsdConfigFileNameFilter implements FilenameFilter {
 		public boolean accept(File dir, String name) {
-			return ( name.toLowerCase().endsWith("xml") || name.toLowerCase().endsWith("xsd"));
+			return ( name.toLowerCase().endsWith("xml") );
 		}
 
 	}
