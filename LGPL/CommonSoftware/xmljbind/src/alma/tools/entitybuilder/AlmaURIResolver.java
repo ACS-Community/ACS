@@ -22,6 +22,7 @@
 package alma.tools.entitybuilder;
 
 import java.io.File;
+import java.util.Map;
 
 import org.exolab.castor.net.URIException;
 import org.exolab.castor.net.URILocation;
@@ -40,12 +41,11 @@ public class AlmaURIResolver implements URIResolver
 {
 	private static boolean DEBUG = false;
 	
-	private XsdFileFinder xsdFileFinder;
+	private Map<String, File> schemaName2File;
 
-    public AlmaURIResolver(XsdFileFinder xsdFileFinder) {
-        this.xsdFileFinder = xsdFileFinder;
+    public AlmaURIResolver(Map<String, File> schemaName2File) {
+        this.schemaName2File = schemaName2File;
     }
-
     
     /**
      * @param href the (schema) file name etc.
@@ -56,7 +56,7 @@ public class AlmaURIResolver implements URIResolver
             System.out.println("resolve called with href=" + href + ", documentBase=" + documentBase);
         }
         
-        File schemaFile = xsdFileFinder.resolveXsdFile(href);
+        File schemaFile = schemaName2File.get(href);
         if (schemaFile == null) {
             throw new URIException("schema file '" + href + "' not found!");
         }
