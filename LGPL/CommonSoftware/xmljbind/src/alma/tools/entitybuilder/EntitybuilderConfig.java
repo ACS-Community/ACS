@@ -25,9 +25,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.exolab.castor.xml.Unmarshaller;
 import org.xml.sax.InputSource;
@@ -42,15 +47,15 @@ import alma.tools.entitybuilder.generated.XmlNamespace2JPackage;
  */
 public class EntitybuilderConfig
 {
-//	public static final String ENTITYBUILDER_CONFIG_XML = "EntitybuilderConfig.xml";
-	
 	private EntitybuilderSettings m_entitybuilderSettings;
 	
-    /** key = (String) schema file name w/o path, value = (String) Java package */
-    private Map m_schema2pckMap = new HashMap();
+    /** key = schema file name w/o path, value = Java package */
+    private Map<String, String> m_schema2pckMap = new HashMap<String, String>();
 
-    /** key = (String) xsd namespace, value = (String) Java package */
-	private Map m_ns2pckMap = new HashMap();
+    /** key = xsd namespace, value = Java package */
+	private Map<String, String> m_ns2pckMap = new HashMap<String, String>();
+	
+	private Map<String, File> m_schemaName2File = new HashMap<String, File>();
 
 
 	/**
@@ -60,35 +65,44 @@ public class EntitybuilderConfig
 	public void load(File configFile, File[] includeConfigFiles)
 			throws BindingException
 	{	
-//		if (m_entitybuilderSettings != null)
-//			return;
-		
 		m_entitybuilderSettings = parseConfigFile(configFile);
-		storePckgMappings(m_entitybuilderSettings);
+		storePckgMappings(m_entitybuilderSettings, configFile.getParentFile());
 		
-		for (int i = 0; i < includeConfigFiles.length; i++)
-		{
-			EntitybuilderSettings ebs = parseConfigFile(includeConfigFiles[i]);
-			storePckgMappings(ebs);
+		for (File includeConfigFile : includeConfigFiles) {
+			EntitybuilderSettings ebs = parseConfigFile(includeConfigFile);
+			storePckgMappings(ebs, includeConfigFile.getParentFile());
 		}        
 	}
 
-    private void storePckgMappings(EntitybuilderSettings ebs)
+    private void storePckgMappings(EntitybuilderSettings ebs, File schemaBaseDir)
 	{
-		XmlNamespace2JPackage[] mappings = ebs.getXmlNamespace2JPackage();
-		for (int j = 0; j < mappings.length; j++)
-		{
-			String namespace = mappings[j].getXmlNamespace();
-			String jPackage = mappings[j].getJPackage();
+		for (XmlNamespace2JPackage mapping : ebs.getXmlNamespace2JPackage()) {
+			String namespace = mapping.getXmlNamespace();
+			String jPackage = mapping.getJPackage();
 			m_ns2pckMap.put(namespace, jPackage);
 		}
         
-        EntitySchema[] schemas = ebs.getEntitySchema();
-        for (int i = 0; i < schemas.length; i++) {
-            String schemaName = schemas[i].getSchemaName();
-            String namespace = schemas[i].getXmlNamespace();
-            String jPackage = (String) m_ns2pckMap.get(namespace); 
+        for (EntitySchema schema : ebs.getEntitySchema()) {
+            String schemaName = schema.getSchemaName();
+            String namespace = schema.getXmlNamespace();
+            String jPackage = m_ns2pckMap.get(namespace); 
             m_schema2pckMap.put(schemaName, jPackage);
+            
+            String relPath = schema.getRelativePathSchemafile();
+			if (relPath.trim().length() == 0 || relPath.equals(".")) {
+				relPath = File.separator;
+			}
+			else {
+				relPath = File.separator + relPath + File.separator;
+			}
+			String absPathName = schemaBaseDir.getAbsolutePath() + relPath + schema.getSchemaName();
+			File schemaFile = new File(absPathName);
+			if (schemaFile.exists()) {
+	            m_schemaName2File.put(schemaName, schemaFile);
+			}
+			else {
+				System.err.println("specified schema file '" + absPathName + "' does not exist; will be ignored.");
+			}            
         }
 	}
 
@@ -98,12 +112,12 @@ public class EntitybuilderConfig
      */
     public String[] getAllNamespaces()
     {
-        return (String[]) m_ns2pckMap.keySet().toArray(new String[1]);
+        return m_ns2pckMap.keySet().toArray(new String[1]);
     }
     
     public String getJPackageForNamespace(String ns) 
     {
-        String jPackage = (String) m_ns2pckMap.get(ns);
+        String jPackage = m_ns2pckMap.get(ns);
         return jPackage;
     }
     
@@ -114,12 +128,12 @@ public class EntitybuilderConfig
      */
     public String[] getAllSchemaNames()
     {
-        return (String[]) m_schema2pckMap.keySet().toArray(new String[1]);
+        return m_schema2pckMap.keySet().toArray(new String[1]);
     }
     
     public String getJPackageForSchema(String schemaName) 
     {
-        String jPackage = (String) m_schema2pckMap.get(schemaName);
+        String jPackage = m_schema2pckMap.get(schemaName);
         return jPackage;
     }
     
@@ -127,40 +141,30 @@ public class EntitybuilderConfig
 	/**
      * Gets all schema files which should be run explicitly through the code generator.
      * Schema files that are only used indirectly (include, import) are not returned.
-     * 
-     * todo: return only schema names and let caller handle the path resolution (e.g. using XsdFileFinder)
-	 * @param schemaDir
 	 */
-	public File[] getSchemaFiles(File schemaDir)
-	{
-		Enumeration schemaEnum = m_entitybuilderSettings.enumerateEntitySchema();
-		ArrayList schemaList = new ArrayList();
-		while (schemaEnum.hasMoreElements())
-		{
-			EntitySchema schema = (EntitySchema) schemaEnum.nextElement();
-			String relPath = schema.getRelativePathSchemafile();
-			if (relPath.trim().length() == 0 || relPath.equals("."))
-			{
-				relPath = File.separator;
-			}
-			else
-			{
-				relPath = File.separator + relPath + File.separator;
-			}
-			String absPathName = schemaDir.getAbsolutePath() + relPath + schema.getSchemaName();
-			File schemaFile = new File(absPathName);
-			if (schemaFile.exists())
-			{
+	public List<File> getPrimarySchemaFiles() throws BindingException {
+		ArrayList<File> schemaList = new ArrayList<File>();
+		for (EntitySchema schema : m_entitybuilderSettings.getEntitySchema()) {
+			File schemaFile = m_schemaName2File.get(schema.getSchemaName());
+			if (schemaFile != null) {
 				schemaList.add(schemaFile);
 			}
-			else
-			{
-				System.err.println("specified schema file " + absPathName + " does not exist; will be ignored.");
+			else {
+				String msg = "specified schema file " + schema.getSchemaName() + " does not exist.";
+				System.err.println(msg + " Will be ignored.");
+//				throw new BindingException(msg; will be ignored.);
 			}
 		}
-		return (File[]) schemaList.toArray(new File[0]);
+		return schemaList;
 	}
 
+    public List<File> getAllSchemaFiles() {
+    	return new ArrayList<File>(m_schemaName2File.values());
+    }
+    
+    public Map<String, File> getSchemaName2File() {
+    	return Collections.unmodifiableMap(m_schemaName2File);
+    }
 
     private EntitybuilderSettings parseConfigFile(File configFile) throws BindingException
     {
