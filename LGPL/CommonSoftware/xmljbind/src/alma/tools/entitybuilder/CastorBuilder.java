@@ -24,7 +24,6 @@ package alma.tools.entitybuilder;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -150,7 +149,7 @@ public class CastorBuilder
 	/**
      * Runs the Castor code generator.
      * 
-	 * @param schemaDir directory where the xsd files are, for which code will be generated
+	 * @param schemaDir (base) directory where the xsd files are, for which code will be generated.
 	 * @param primaryConfigFile config file for the schema code generation. 
      *          Currently must be in the directory <code>schemaDir</code>.
 	 * @param otherConfigFileNames Names without paths of schema code generation config files.
@@ -191,14 +190,16 @@ public class CastorBuilder
         XsdFileFinder xsdFileFinder = new XsdFileFinder(allIncludeDirs, allConfigFileNames);
         xsdFileFinder.setVerbose(false);
         
-        AlmaURIResolver uriResolver = new AlmaURIResolver(xsdFileFinder);
+        EntitybuilderConfig ebc = new EntitybuilderConfig();
+        ebc.load(primaryConfigFile, xsdFileFinder.getAllXsdConfigFiles());
+
+        // From the config files, the ebc has now learned about all schemas. 
+        // We pass that knowledge to the AlmaURIResolver which will later find schema files for the Castor generator.
+        AlmaURIResolver uriResolver = new AlmaURIResolver(ebc.getSchemaName2File());
         // Currently the URI resolver can be passed to SchemaUnmarshaller only through a ALMA patch in module Tools/castor;
         // this is needed to search for imported/included schemas.
         // Hopefully later castor will allow to pass in a URIResolver via SourceGenerator.
-        SchemaUnmarshaller.setDefaultURIResolver(uriResolver);        
-        
-        EntitybuilderConfig ebc = new EntitybuilderConfig();
-        ebc.load(primaryConfigFile, xsdFileFinder.getAllXsdConfigFiles());
+        SchemaUnmarshaller.setDefaultURIResolver(uriResolver);       
         
         // Create Castor source generator and configure it
         
@@ -214,16 +215,11 @@ public class CastorBuilder
         }
 
         // set all schema file to package mappings (also for included/imported schemas) -- Castor wants it both ways... 
-        String[] allSchemaNames = ebc.getAllSchemaNames();
-        for (int i = 0; i < allSchemaNames.length; i++) {
-            String jPackage = ebc.getJPackageForSchema(allSchemaNames[i]);
-            File schemaFileWithPath = xsdFileFinder.resolveXsdFile(allSchemaNames[i]);
-            if (schemaFileWithPath == null) {
-            	throw new FileNotFoundException(
-        				"Schema file '" + allSchemaNames[i] + "' is used in mappings but does not exist!");
-            }
+        for (File schemaFile : ebc.getAllSchemaFiles()) {
+        	String schemaName = schemaFile.getName();
+            String jPackage = ebc.getJPackageForSchema(schemaName);
 //            System.out.println("SourceGenerator#setLocationPackageMapping: " + schemaFileWithPath.getAbsolutePath() + " -> " + jPackage);
-            sgen.setLocationPackageMapping(schemaFileWithPath.getAbsolutePath(), jPackage);
+            sgen.setLocationPackageMapping(schemaFile.getAbsolutePath(), jPackage);
         }
         
 		// adjust options here 
@@ -242,12 +238,11 @@ public class CastorBuilder
 		
 		
         // schema files that need code generation
-		File[] schemaFiles = ebc.getSchemaFiles(schemaDir);
+		List<File> schemaFiles = ebc.getPrimarySchemaFiles();
 		
-		for (int i = 0; i < schemaFiles.length; i++)
-		{
-			String schemaPackage = ebc.getJPackageForSchema(schemaFiles[i].getName());
-			generate(sgen, schemaFiles[i], schemaPackage); 
+		for (File schemaFile : schemaFiles) {
+			String schemaPackage = ebc.getJPackageForSchema(schemaFile.getName());
+			generate(sgen, schemaFile, schemaPackage); 
 		}
 
 		System.out.println("schema compile done!\n");
