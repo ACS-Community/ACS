@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2006/09/25 08:38:55 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.4 2006/12/18 12:37:59 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -138,7 +138,8 @@ COMPONENT_HELPERS=
 #
 # Java Entity Classes generation on/off
 #
-XSDBIND=
+XSDBIND = cdbSchemaBindings
+
 #
 # Schema Config files for the above
 #
