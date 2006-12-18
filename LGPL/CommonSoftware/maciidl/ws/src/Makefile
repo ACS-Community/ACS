@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2006/10/18 11:33:00 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.6 2006/12/18 12:43:11 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -157,12 +157,13 @@ COMPONENT_HELPERS=
 #
 # Java Entity Classes generation on/off
 #
-#XSDBIND = maciSchemaBindings
-
+XSDBIND = maciSchemaBindings
 #
 # Schema Config files for the above
 #
-XSDBIND_INCLUDE=
+XSDBIND_INCLUDE=cdbSchemaBindings
+
+
 # man pages to be done
 # --------------------
 MANSECTIONS =
