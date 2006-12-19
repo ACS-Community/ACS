@@ -270,6 +270,17 @@ Above this value alarm is cleared
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>The minimum time interval (in seconds and fractions of seconds) for the notification of changes in the alarm status.
+Is the time you want the alarm system to check for the value of the property.
+It might be the same as default_timer_trig, but depending on you application and on the criticality
+of the property they might be different.
+For example:
+   - If a property is normally changing slowly, but it is critical
+     to see as soon as possible an alarm if it goes out of range, I would normally
+     put alarm_timer_trig = 0.1 default_timer_trig
+   - The opposite might also happen, if you care for seeing fine variations, for example to plot them,
+     but not much for alarms because the change is in small steps and the critical 
+     range band before you get damage
+     is quite large, you can have the alarm_timer_trig = 10 default_timer_trig 
 A value of 0.0 (default) means that alarm triggering is disabled.
 See the documentation of the specific implementation for details on the implications of this value.
 For example in the ACS CPP baci implementation, the value of a property is checked for its status with respect to the alarm configuration by an internal monitor defined with this time interval. This means that, depending on the underlying DevIO implementation, changes in the alarm status accurring during this time interval might get un-noticed.</xs:documentation>
