@@ -75,8 +75,8 @@ public class Consumer extends OSPushConsumerPOA
    private static final long       DEFAULT_MAX_PROCESS_TIME = 2000;
 
    // /maps event names to the maximum amount of time allowed for
-   // /receiver methods to complete
-   protected HashMap               m_handlerTimeoutMap      = null;
+   // /receiver methods to complete. Time is given in floating point seconds.
+   protected HashMap<String, Double> m_handlerTimeoutMap;
 
    // /helper object contain yields various info about the
    // /notification channel
@@ -108,8 +108,7 @@ public class Consumer extends OSPushConsumerPOA
 
       m_channelInfo = new ChannelInfo(services);
 
-      m_handlerTimeoutMap = m_channelInfo
-            .getEventHandlerTimeoutMap(channelName);
+      m_handlerTimeoutMap = m_channelInfo.getEventHandlerTimeoutMap(channelName);
 
       // sanity check
       if (m_channelName == null) {
@@ -344,22 +343,21 @@ public class Consumer extends OSPushConsumerPOA
     * invoke the receiver object's "receive" method using the (IDL struct) data
     * extracted from the CORBA event.
     * 
-    * @param structClassName
-    *           Type of event to subscribe to (i.e.,
-    *           alma.CORR.DataStruct.class).
+    * @param structClass
+    *           Type of event to subscribe to (i.e., alma.CORR.DataStruct.class).
     * @param receiver
     *           An object which implements a method called "receive". The
-    *           "receive" method must accept an instance of a structClassName
+    *           "receive" method must accept an instance of a structClass
     *           object as its sole parameter.
     * @throws AcsJException
     *            Thrown if there is some CORBA problem.
     */
-   public void addSubscription(Class structClassName, Object receiver)
+   public void addSubscription(Class structClass, Object receiver)
          throws AcsJException {
       // check to ensure receiver is capable to processing the event
       Class receiverClass = receiver.getClass();
       Method receiveMethod = null;
-      Class[] parm = { structClassName };
+      Class[] parm = { structClass };
       try {
          receiveMethod = receiverClass.getMethod(RECEIVE_METHOD_NAME, parm);
       }
@@ -367,9 +365,9 @@ public class Consumer extends OSPushConsumerPOA
          // Well the method doesn't exist...that sucks!
          String reason = "The '" + m_channelName
                + "' channel: the receiver object is incapable of handling '"
-               + structClassName.getName() + "' type of events! "
+               + structClass.getName() + "' type of events! "
                + "It must have a method 'public void " + RECEIVE_METHOD_NAME
-               + "(" + structClassName.getName() + ")'.";
+               + "(" + structClass.getName() + ")'.";
          m_logger.log(Level.WARNING, reason, err);
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
       }
@@ -379,7 +377,7 @@ public class Consumer extends OSPushConsumerPOA
          String reason = "The '"
                + m_channelName
                + "' channel: the receiver method of the object is protected/private for '"
-               + structClassName.getName() + "' type of events!";
+               + structClass.getName() + "' type of events!";
          m_logger.log(Level.WARNING, reason, err);
          throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
       }
@@ -391,15 +389,15 @@ public class Consumer extends OSPushConsumerPOA
          // easier (i.e., developer need not keep track of receiver
          // objects that would otherwise have to be passed
          // back to the removeSubscription method
-         if (m_handlerFunctions.containsKey(structClassName.getName()) == true) {
+         if (m_handlerFunctions.containsKey(structClass.getName())) {
             // throw an exception
             throw new AcsJJavaAnyEx("Type already subscribed to.");
          }
-         m_handlerFunctions.put(structClassName.getName(), receiver);
+         m_handlerFunctions.put(structClass.getName(), receiver);
       }
 
       // Next call the real addSubscription method.
-      this.addSubscription(structClassName);
+      this.addSubscription(structClass);
    }
 
    /**
@@ -413,34 +411,32 @@ public class Consumer extends OSPushConsumerPOA
     *            Thrown if there is some CORBA problem (like this consumer has
     *            never subscribed to the IDL struct).
     */
-   public void removeSubscription(Class structClassName) throws AcsJException {
+   public void removeSubscription(Class structClass) throws AcsJException {
       String type = "*";
       String domain = "*";
 
       // If the developer is not unsubscribing from everything...
-      if (structClassName != null) {
+      if (structClass != null) {
          // get the type/domain to unsubscribe from
-         type = structClassName.getName().substring(
-               structClassName.getName().lastIndexOf('.') + 1);
+         type = structClass.getName().substring(
+               structClass.getName().lastIndexOf('.') + 1);
          domain = getChannelDomain();
 
          // Remove the handler function if there is one...
          synchronized (m_handlerFunctions) {
-            if (m_handlerFunctions.containsKey(structClassName.getName()) == true) {
+            if (m_handlerFunctions.containsKey(structClass.getName())) {
                // remove the subscription from the hash
-               m_handlerFunctions.remove(structClassName.getName());
+               m_handlerFunctions.remove(structClass.getName());
             }
             else {
-
                throw new AcsJJavaAnyEx(
                      "Unsubscribing from '"
-                           + structClassName.getName()
+                           + structClass.getName()
                            + "' type of event when not actually subscribed to this type.");
             }
          }
       }
-      // they're removing all subscriptions so let's clear
-      // the hash
+      // they're removing all subscriptions so let's clear the hash
       else {
          m_handlerFunctions.clear();
       }
@@ -598,9 +594,7 @@ public class Consumer extends OSPushConsumerPOA
                + structuredEvent.header.fixed_header.event_type.type_name);
       }
 
-      // only called when the correct receiver was not found or failed for
-      // some
-      // reason or another.
+      // only called when the correct receiver was not found or failed for some reason or another.
       if (convertedAny != null) {
          processEvent(convertedAny, eDescrip);
       }
@@ -635,24 +629,20 @@ public class Consumer extends OSPushConsumerPOA
       String eventName = corbaData.getClass().getName();
 
       // figure out how much time this event has to be processed
-      if (m_handlerTimeoutMap.containsKey(eventName) == false) {
+      if (!m_handlerTimeoutMap.containsKey(eventName)) {
          // setup a timeout if it's undefined
-         m_handlerTimeoutMap.put(eventName,
-               new Double(DEFAULT_MAX_PROCESS_TIME));
+         m_handlerTimeoutMap.put(eventName, new Double(DEFAULT_MAX_PROCESS_TIME));
       }
-      Double maxProcessTimeDouble = (Double) m_handlerTimeoutMap.get(eventName);
-      long maxProcessTime = (long) maxProcessTimeDouble.doubleValue();
+      Double maxProcessTimeDouble = m_handlerTimeoutMap.get(eventName);
+      long maxProcessTime = (long) maxProcessTimeDouble.doubleValue(); // @TODO: the cast is stupid if time is actually given in fractional seconds.
 
       // Here we search the hash of registered receiver objects.
-      // If a receiver capable of processing this event is found, it is
-      // invoked.
-      // Otherwise the developer should have overriden the process event
-      // method.
-      if (m_handlerFunctions.containsKey(corbaData.getClass().getName()) == true)
+      // If a receiver capable of processing this event is found, it is invoked.
+      // Otherwise the developer should have overriden the process event method.
+      if (m_handlerFunctions.containsKey(eventName)) {
          try {
             // get the receive method
-            Method handlerFunction = m_handlerFunctions.get(
-                  corbaData.getClass().getName()).getClass().getMethod(
+            Method handlerFunction = m_handlerFunctions.get(eventName).getClass().getMethod(
                   RECEIVE_METHOD_NAME, parm);
             // get the parameters of this method...
             Class[] tArray = handlerFunction.getParameterTypes();
@@ -663,13 +653,13 @@ public class Consumer extends OSPushConsumerPOA
                // parameters are the IDL struct
                Object[] arg = { corbaData };
 
-               // finally we can invoke the "receive" method on the receiver
-               // object
-               // start the time
+               // finally we can invoke the "receive" method on the receiver object and start the timing
                profiler_m.reset();
-               handlerFunction.invoke(m_handlerFunctions.get(corbaData
-                     .getClass().getName()), arg);
-               // get the execution time of "receive'
+               handlerFunction.invoke(m_handlerFunctions.get(corbaData.getClass().getName()), arg);
+               
+               // get the execution time of 'receive'.
+               // @TODO: it looks like a bug to compare profiled milliseconds with fractional seconds,
+               // unless the comments in ChannelInfo about time given in seconds are wrong!
                long timeToRun = profiler_m.getLapTimeMillis();
 
                // warn the end-user if the receiver is taking too long
@@ -688,7 +678,10 @@ public class Consumer extends OSPushConsumerPOA
             e.printStackTrace();
             // if there's an exception in this case, we don't really care!
          }
-
+      }
+      else {
+    	  //m_logger.fine("Did not find a handler for event " + eventName);
+      }
       // If this isn't overriden, just pass it on down the chain.
       profiler_m.reset();
       this.processEvent(corbaData);
@@ -837,7 +830,7 @@ public class Consumer extends OSPushConsumerPOA
     * Contains a list of handler/receiver functions to be invoked when an event
     * of a particular type is received.
     */
-   protected HashMap                     m_handlerFunctions = new HashMap();
+   protected HashMap<String, Object> m_handlerFunctions = new HashMap<String, Object>();
 
    /**
     * The consumer admin object used by consumers to get a reference to the

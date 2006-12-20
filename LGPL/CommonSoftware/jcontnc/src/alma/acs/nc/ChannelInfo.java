@@ -84,16 +84,15 @@ public class ChannelInfo {
 
    /**
     * The following returns a map where each key is the name of an event and the
-    * value is the maximum amount of time an event receiver has to process the
-    * event before a warning message is logged.
+    * value is the maximum amount of time (in floating point seconds) an event receiver has 
+    * to process the event before a warning message is logged.
     * 
-    * @param channelName -
-    *           name of the channel
+    * @param channelName name of the channel
     * @return HashMap described above
     */
-   public HashMap getEventHandlerTimeoutMap(String channelName) {
+   public HashMap<String, Double> getEventHandlerTimeoutMap(String channelName) {
       // initialize the return value
-      HashMap retVal = new HashMap();
+      HashMap<String, Double> retVal = new HashMap<String, Double>();
 
       // data access object to traverse the ACS CDB
       DAO dao = null;
@@ -104,8 +103,7 @@ public class ChannelInfo {
       // get the dao for the channel...
       // ...if this fails, just return.
       try {
-         dao = m_services.getCDB().get_DAO_Servant(
-               "MACI/Channels/" + channelName);
+         dao = m_services.getCDB().get_DAO_Servant("MACI/Channels/" + channelName);
       }
       catch (Exception e) {
          m_logger.finer("No CDB entry found for '" + channelName + "' channel");
