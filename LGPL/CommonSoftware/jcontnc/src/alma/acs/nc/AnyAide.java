@@ -432,7 +432,7 @@ class AnyAide {
 	
    /**
 	 * Method used to convert an any with a complex user-defined struct embedded
-	 * within it to it's corresponding Java type.
+	 * within it to its corresponding Java type.
 	 * 
 	 * @param any
 	 *            CORBA Any containing a complex, user-defined object within it
@@ -443,7 +443,7 @@ class AnyAide {
 	{
 		// initialize the return value
 		Object retValue = null;
-
+		Class localHelper = null;
 		try {
 			// Create the IDL struct helper class
 			// With Java Anys, we can extract the name of the underlying object
@@ -452,28 +452,32 @@ class AnyAide {
 			String localHelperName = null;
 			org.omg.CORBA.TCKind kind = any.type().kind();
 			if (kind.equals(org.omg.CORBA.TCKind.tk_sequence)) {
+				// the event data is a sequence instead of a single value or struct. Need to get the underlying type
 				org.omg.CORBA.TypeCode sequenceType = any.type().content_type();
-				localHelperName = sequenceType + "SeqHelper";
-				// NOTE: need to understand why the package is wrong here, e.g.
-				//
-				// We determined fully qualified class name as:
-				//
-				// alma.acssamp.SampObj.SampDataBlockSeqHelper
-				//
-				// but it should be:
-				//
-				// alma.acssamp.SampObjPackage.SampDataBlockSeqHelper
-				//
-				// i.e. the package is incorrect!
 				
-				// see "IDL to Java LanguageMapping Specification" version 1.2: 1.17 Mapping for Certain Nested Types
+				// @TODO check if the following applies also for sequences of primitive types, 
+				//       or if there is a rule that we always must have structs as event data 
+				//       (which is implied by always calling complexAnyToObject in push_structured_event) 
+				
+				// Derive the Java package from the id. 
+				// Note that we can't use the TypeCode#toString() method which gives a nice qualified name for JacORB, but perhaps not for other ORB impls.
+				// First assume that the type is not defined nested inside an interface 
+				String qualHelperClassName = corbaStructToJavaClass(sequenceType.id(), false) + "SeqHelper";
+				try {
+					localHelper = Class.forName(qualHelperClassName);
+				} catch (ClassNotFoundException ex) {
+					// it could be that we are dealing with a sequence of nested structs
+					qualHelperClassName = corbaStructToJavaClass(sequenceType.id(), true) + "SeqHelper";
+					localHelper = Class.forName(qualHelperClassName);						
+				}
 			} 
 			else {
+				// @TODO: check the effect of nested event structs (defined inside an interface), whether "Package" must be inserted.
+				// If necessary, also call method corbaStructToJavaClass to find the correct class name
 				localHelperName = any.type() + "Helper";
+				localHelperName = localHelperName.replaceAll("::", ".");
+				localHelper = Class.forName(localHelperName);
 			}
-			localHelperName = localHelperName.replaceAll("::", ".");
-//			System.out.println("STEVE:::AnyAide::complexAnyToObject: the class name is - " + localHelperName);
-			Class localHelper = Class.forName(localHelperName);
 
 			// Extract method of helper class
 			// Need access to this to convert an Any to the Java language type.
@@ -515,6 +519,35 @@ class AnyAide {
 		return retValue;
 	}
 
+	/**
+	 * Derives the qualified Java class name for an IDL-defined struct from the Corba ID of that struct.
+	 * 
+	 * @param isNestedStruct  if true, "Package" will be inserted according to 
+	 *                        <i>"IDL to Java LanguageMapping Specification" version 1.2: 1.17 Mapping for Certain Nested Types</i> apply.
+	 */
+	protected String corbaStructToJavaClass(String id, boolean isNestedStruct) 
+			throws IllegalArgumentException 
+	{
+		String prefix = "IDL:";
+		String suffix = ":1.0";
+		if (!id.startsWith(prefix) || !id.endsWith(suffix)) {
+			throw new IllegalArgumentException("Struct ID is expected to start with 'IDL:' and end with ':1.0'");
+		}
+		String qualNameWithSlashes = id.substring(prefix.length(), id.length() - suffix.length());
+		String qualName = qualNameWithSlashes.replace('/', '.');
+		if (isNestedStruct) {
+			int lastDotIndex = qualName.lastIndexOf('.');
+			if (lastDotIndex > 0) {
+				String className = qualName.substring(lastDotIndex + 1);
+				String jPackage = qualName.substring(0, lastDotIndex);
+				jPackage += "Package."; // defined in IDL-Java mapping spec
+				qualName = jPackage + className;
+			}
+		}
+		return qualName;
+	}
+	
+	
    /** reference to the container services */
    private final ContainerServices m_containerServices;
 
