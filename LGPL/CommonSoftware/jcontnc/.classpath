@@ -25,5 +25,11 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplFridge.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
