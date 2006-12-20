@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.47 2006/10/13 06:39:03 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.48 2006/12/20 09:29:44 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -108,7 +108,7 @@ cdb_LIBS      = cdbDALStubs ACSErrTypeCommon ACSErrTypeCORBA cdbErrType
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = cdbjDAL cdbjDALShutdown cdbjDALClearCache cdbRead cdbTATPrologue cdbTATEpilogue cdbSetDefaultComponent cdbChangeComponentDeployment  
+SCRIPTS         = cdbjDAL cdbjDALShutdown cdbjDALClearCache cdbRead cdbWrite cdbTATPrologue cdbTATEpilogue cdbSetDefaultComponent cdbChangeComponentDeployment  
 
 SCRIPTS_L       =
 

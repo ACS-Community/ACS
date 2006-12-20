@@ -103,31 +103,34 @@ public class XMLHandler extends DefaultHandler {
 				m_parent = m_rootNode;
 			}
 			else {
-								pNode = new XMLTreeNode(m_parent);
-								if (attrs.getLength() > 0 && (raw.equals("_") || raw.endsWith(":_"))) {
-										// in this case we will replace the element name with Name name, otherwise its first attribute is taken
-								    	raw = attrs.getValue("Name");
-								    	if (raw == null)
-								    	    raw = attrs.getValue(0);
-										if( markArrays > 0 ) { // ad an array marker
-											if(!m_parent.m_subNodesMap.containsKey(XMLTreeNode.ARRAY_MARKER))
-												m_parent.m_subNodesMap.put(XMLTreeNode.ARRAY_MARKER, new XMLTreeNode(pNode));
-											if(markArrays == 2) { // add node to the array - used by diff check where we must distinguish between original array elements and merged ones 
-												XMLTreeNode arrNode = (XMLTreeNode)m_parent.m_subNodesMap.get(XMLTreeNode.ARRAY_MARKER); 
-												arrNode.m_subNodesMap.put(String.valueOf(arrNode.m_subNodesMap.size()), pNode);
-											}
-										}
-								}
+				pNode = new XMLTreeNode(m_parent);
+				if (attrs.getLength() > 0 && (raw.equals("_") || raw.endsWith(":_"))) {
+					// in this case we will replace the element name with Name name, otherwise its first attribute is taken
+					if(raw.indexOf(':') >= 0) m_parent.m_nameSpace = raw.substring(0,raw.indexOf(':'));
+					//System.out.println("CARLI: raw=" + raw );
+					//System.out.println("CARLI: namespace=" + m_parent.m_nameSpace );
+					raw = attrs.getValue("Name");
+					if (raw == null)
+					    raw = attrs.getValue(0);
+						if( markArrays > 0 ) { // ad an array marker
+							if(!m_parent.m_subNodesMap.containsKey(XMLTreeNode.ARRAY_MARKER))
+								m_parent.m_subNodesMap.put(XMLTreeNode.ARRAY_MARKER, new XMLTreeNode(pNode));
+							if(markArrays == 2) { // add node to the array - used by diff check where we must distinguish between original array elements and merged ones 
+								XMLTreeNode arrNode = (XMLTreeNode)m_parent.m_subNodesMap.get(XMLTreeNode.ARRAY_MARKER); 
+								arrNode.m_subNodesMap.put(String.valueOf(arrNode.m_subNodesMap.size()), pNode);
+							}
+						}
+				}
 
-								if (m_parent.m_subNodesMap.get(raw) != null) {
-										elementID++;
-										pNode.m_name = raw + elementID;
-								}
-								else {
-										pNode.m_name = raw;
-								}
-								m_parent.m_subNodesMap.put(pNode.m_name, pNode);
-								m_parent = pNode;
+				if (m_parent.m_subNodesMap.get(raw) != null) {
+					elementID++;
+					pNode.m_name = raw + elementID;
+				}
+				else {
+					pNode.m_name = raw;
+				}
+				m_parent.m_subNodesMap.put(pNode.m_name, pNode);
+				m_parent = pNode;
 			}
 			if (raw.equalsIgnoreCase("cdb:_"))
 				inArray = true; // special case when array is found

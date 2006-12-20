@@ -38,12 +38,14 @@ public class XMLTreeNode {
 	LinkedHashMap m_subNodesMap;
 	LinkedHashMap m_fieldMap;
 	String m_name;
+	String m_nameSpace;
 	boolean m_isArray;
 
 	XMLTreeNode(XMLTreeNode pParent) {
 		m_parent = pParent;
 		m_subNodesMap = new LinkedHashMap();
 		m_fieldMap = new LinkedHashMap();
+		m_nameSpace = "";
 		m_isArray = false;
 	}
 	public String getAttributeValues() {

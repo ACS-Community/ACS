@@ -494,6 +494,7 @@ public class WDALImpl extends WDALBaseImpl
 		xmlHandler.writeXML(sw);
 	//	try{	
 			// now check that everything conforms to the schema
+			//System.out.println("CARLI: el xml: " + sw.toString());
 			validateXML(sw.toString());
 			// ok it is safe now to write it to disk
 			writeXmlData(curl, sw.toString());
@@ -703,7 +704,10 @@ public class WDALImpl extends WDALBaseImpl
 			// is map element?
 			if(node.m_parent != null &&
 			   node.m_parent.m_subNodesMap.containsKey(XMLTreeNode.ARRAY_MARKER))
-				write("<_");
+				if(node.m_parent.m_nameSpace.equals(""))
+					write("<_");
+				else
+					write("<"+node.m_parent.m_nameSpace+":_");
 			else
 				write("<" + node.m_name);
 
