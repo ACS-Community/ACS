@@ -1,4 +1,4 @@
-# @(#) $Id: ACSEventAdminGUI.py,v 1.14 2005/11/02 21:52:22 dfugate Exp $
+# @(#) $Id: ACSEventAdminGUI.py,v 1.15 2006/12/21 01:55:43 sharring Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ACSEventAdminGUI.py,v 1.14 2005/11/02 21:52:22 dfugate Exp $"
+# "@(#) $Id: ACSEventAdminGUI.py,v 1.15 2006/12/21 01:55:43 sharring Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -493,11 +493,11 @@ class ACSEventAdminGUI(CBstring):
         #save the events to the text file specified in the GUI
         filename = asksaveasfilename()
         if filename!=():
-            #open it
-            temp_file = open(filename, "w")
-            #write everything from the widget
-            for element in self.ebST.get():
-                temp_file.write(element)
+            # open the file
+            temp_file = file(filename, "w")
+            # write the events to the file, adding a new line after each event
+            temp_file.writelines('\n'.join(self.ebST.get()))
+            # close the file
             temp_file.close()
     #------------------------------------------------------------------------------
     def clearEvents(self):
