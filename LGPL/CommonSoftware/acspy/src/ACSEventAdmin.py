@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# @(#) $Id: ACSEventAdmin.py,v 1.10 2006/12/22 22:58:53 sharring Exp $
+# @(#) $Id: ACSEventAdmin.py,v 1.11 2006/12/22 23:34:43 sharring Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -32,7 +32,7 @@ TODO:
 - This CVS module probably is not the best place for this package...
 - Modular test!
 '''
-__version__ = "$Id: ACSEventAdmin.py,v 1.10 2006/12/22 22:58:53 sharring Exp $"
+__version__ = "$Id: ACSEventAdmin.py,v 1.11 2006/12/22 23:34:43 sharring Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time       import sleep
 from thread     import start_new_thread
@@ -443,6 +443,25 @@ class ACSEventAdmin(PySimpleClient):
 import Tkinter
 import Pmw
 from optparse import OptionParser
+import signal
+
+#-----------------------------------------------------------------------------
+def signalHandler(signum, frame):
+   '''
+      Method to handle signals and make sure everything is cleaned up properly.
+   
+     Parameters:
+     - signum the signal number
+     - frame the frame object 
+
+     Returns: Nothing
+
+     Raises: ???
+   '''
+   global widget
+   global eventAdmin
+   widget.stopArchiving()
+   eventAdmin.disconnect()
 
 #------------------------------------------------------------------------------
 #--Main 
@@ -466,6 +485,12 @@ if __name__ == '__main__':
    exitButton = Tkinter.Button(root, text = 'Exit', command = root.destroy)
    exitButton.pack(side = 'bottom')
    widget = ACSEventAdminGUI(root, eventAdmin, options.filename)
+
+   # install the signal handler(s)
+   signal.signal(signal.SIGTERM, signalHandler)
+   signal.signal(signal.SIGABRT, signalHandler)
+   signal.signal(signal.SIGQUIT, signalHandler)
+   signal.signal(signal.SIGHUP, signalHandler)
 
    #run the widget until the end-user clicks the Exit button
    root.mainloop()

@@ -1,4 +1,4 @@
-# @(#) $Id: ACSEventAdminGUI.py,v 1.16 2006/12/22 22:58:53 sharring Exp $
+# @(#) $Id: ACSEventAdminGUI.py,v 1.17 2006/12/22 23:34:43 sharring Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ACSEventAdminGUI.py,v 1.16 2006/12/22 22:58:53 sharring Exp $"
+# "@(#) $Id: ACSEventAdminGUI.py,v 1.17 2006/12/22 23:34:43 sharring Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -458,6 +458,7 @@ class ACSEventAdminGUI(CBstring):
         if self.archiveEventsFile != None:
            self.archiveEventsFile.write(dataLine)
            self.archiveEventsFile.write("\n")
+           self.archiveEventsFile.flush()
     
         #save the original output for use with the cache
         try:
