@@ -1,4 +1,4 @@
-# @(#) $Id: ACSEventAdminGUI.py,v 1.15 2006/12/21 01:55:43 sharring Exp $
+# @(#) $Id: ACSEventAdminGUI.py,v 1.16 2006/12/22 22:58:53 sharring Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ACSEventAdminGUI.py,v 1.15 2006/12/21 01:55:43 sharring Exp $"
+# "@(#) $Id: ACSEventAdminGUI.py,v 1.16 2006/12/22 22:58:53 sharring Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -170,7 +170,7 @@ class ACSEventAdminGUI(CBstring):
     ACSEventAdminGUI, derived from the IDL interface CBstring, is the primary GUI panel
     used with the ACSEventAdmin IDL interface.
     '''
-    def __init__(self, parent, eventAdminRef):
+    def __init__(self, parent, eventAdminRef, filename):
         '''
         Standard Constructor
 
@@ -182,7 +182,12 @@ class ACSEventAdminGUI(CBstring):
 
         Raises: ???
         '''
-        
+
+        self.archiveEventsFile = None 
+
+        if filename != None:
+           self.archiveEventsFile = file(filename, "w")
+
         #call superclass constructor
         CBstring.__init__(self)
         
@@ -448,6 +453,12 @@ class ACSEventAdminGUI(CBstring):
 
         #output the line to the GUI
         self.ebST.insert('end', dataLine)
+
+        #if we are logging events to a file, save the event
+        if self.archiveEventsFile != None:
+           self.archiveEventsFile.write(dataLine)
+           self.archiveEventsFile.write("\n")
+    
         #save the original output for use with the cache
         try:
             self.outputEventMap[dataLine] = EVENT_CACHE[orig_val]
@@ -482,7 +493,7 @@ class ACSEventAdminGUI(CBstring):
     #------------------------------------------------------------------------------
     def saveEvents(self):
         '''
-        Saves the entire list of all known events to a given text file.
+        Prompts user for a filename, then saves the entire list of all known events to the given text file.
 
         Parameters: None
 
@@ -499,6 +510,7 @@ class ACSEventAdminGUI(CBstring):
             temp_file.writelines('\n'.join(self.ebST.get()))
             # close the file
             temp_file.close()
+    
     #------------------------------------------------------------------------------
     def clearEvents(self):
         '''
@@ -570,6 +582,15 @@ class ACSEventAdminGUI(CBstring):
 
         return
         
+    #------------------------------------------------------------------------------
+    def stopArchiving(self):
+        '''
+        Can be called to stop the archiving to a file.
+        '''
+        if self.archiveEventsFile != None:
+           self.archiveEventsFile.close()
+           self.archiveEventsFile = None
+
     #------------------------------------------------------------------------------
     def submit(self):
         '''

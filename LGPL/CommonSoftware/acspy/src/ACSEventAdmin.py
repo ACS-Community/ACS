@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# @(#) $Id: ACSEventAdmin.py,v 1.9 2005/11/02 02:55:50 dfugate Exp $
+# @(#) $Id: ACSEventAdmin.py,v 1.10 2006/12/22 22:58:53 sharring Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -32,7 +32,7 @@ TODO:
 - This CVS module probably is not the best place for this package...
 - Modular test!
 '''
-__version__ = "$Id: ACSEventAdmin.py,v 1.9 2005/11/02 02:55:50 dfugate Exp $"
+__version__ = "$Id: ACSEventAdmin.py,v 1.10 2006/12/22 22:58:53 sharring Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time       import sleep
 from thread     import start_new_thread
@@ -440,26 +440,35 @@ class ACSEventAdmin(PySimpleClient):
             self.channels[channelName] = tDict
 
 #------------------------------------------------------------------------------
-#--Main 
-#------------------------------------------------------------------------------
 import Tkinter
 import Pmw
+from optparse import OptionParser
 
+#------------------------------------------------------------------------------
+#--Main 
+#------------------------------------------------------------------------------
 if __name__ == '__main__':
-    #use PySimpleClient to get  a default ACSEventAdmin component
-    eventAdmin = ACSEventAdmin()
-    #eventAdmin = PySimpleClient()
+   usage = "acseventbrowser [options]"
+   parser = OptionParser(usage)
+   parser.add_option("-f", "--file", dest="filename", help="save events to FILE", metavar="FILE")
+   #parser.add_option("-n", "--noGUI", action="store_true", dest="hideGUI", help="don't show (i.e. hide) the GUI")
+   (options, args) = parser.parse_args()
+
+   #use PySimpleClient to get  a default ACSEventAdmin component
+   eventAdmin = ACSEventAdmin()
     
-    #main widget
-    root = Tkinter.Tk()
-    Pmw.initialise(root)
-    root.title("ACS Event Adminstrator")
+   #main widget
+   root = Tkinter.Tk()
+   Pmw.initialise(root)
+   root.title("ACS Event Adminstrator")
 
-    #make sure everything can shutdown properly
-    exitButton = Tkinter.Button(root, text = 'Exit', command = root.destroy)
-    exitButton.pack(side = 'bottom')
-    widget = ACSEventAdminGUI(root, eventAdmin)
+   #make sure everything can shutdown properly
+   exitButton = Tkinter.Button(root, text = 'Exit', command = root.destroy)
+   exitButton.pack(side = 'bottom')
+   widget = ACSEventAdminGUI(root, eventAdmin, options.filename)
 
-    #run the widget until the end-user clicks the Exit button
-    root.mainloop()
-    eventAdmin.disconnect()
+   #run the widget until the end-user clicks the Exit button
+   root.mainloop()
+
+   widget.stopArchiving()
+   eventAdmin.disconnect()
