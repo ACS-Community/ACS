@@ -6,7 +6,6 @@ cp -r case-files/MACI/Containers/OnDemandContainer $CDB_DIR/CDB/MACI/Containers
 
 CDB_DIR=`pwd`/CDB-MIX
 
-cdbTATPrologue $CDB_DIR
 
 ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
 
@@ -14,6 +13,8 @@ CDB_PORT=`sed -n 1'p' $ACS_TMP/.cdbport`
 
 #setup the Container to change and save the old one
 cp -r case-files/MACI/Containers/OnDemandContainer $CDB_DIR/CDB/MACI/Containers
+
+cdbTATPrologue $CDB_DIR
 
 #perform the operation
 #cdbWrite MACI/Containers/OnDemandContainer/LoggingConfig minLogLevel 1 -d corbaloc\:\:$HOST\:$CDB_PORT/CDB
