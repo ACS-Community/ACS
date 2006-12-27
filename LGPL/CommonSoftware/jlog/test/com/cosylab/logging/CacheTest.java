@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
@@ -26,11 +27,11 @@ public class CacheTest extends junit.framework.TestCase {
 	
 	// The cahce to stress
 
-	LogCache cache;
+	private LogCache cache;
 	
 	// Number of logs generated dynamically
 	// Its value is returned by the fillCache methods
-	long logsGenerated; 
+	private long logsGenerated; 
 
 	public CacheTest(String str) {
 		super(str);
@@ -307,5 +308,22 @@ public class CacheTest extends junit.framework.TestCase {
 		for (Integer t=0; t<1024; t++) {
 			assertEquals("Wrong key",t,keys.get(t));
 		}
+	}
+	
+	/**
+	 * Test the keys returned by keyset
+	 * 
+	 * @throws Exception
+	 */
+	public void testKeySet() throws Exception {
+		// Check the number of the keys
+		assertEquals("The logs in cache and the number of keys differ",cache.getSize(),cache.keySet().size());
+		// Get all the logs with the keys returned by keySet
+		Set<Integer> keys = cache.keySet();
+		for (Integer key: keys) {
+			ILogEntry log = cache.getLog(key);
+			assertNotNull("Got a null log!",log);
+		}
+		
 	}
 }
