@@ -1,7 +1,26 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
 package alma.acs.jlog.test;
 
-import java.text.FieldPosition;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -15,10 +34,7 @@ import com.cosylab.logging.client.cache.LogBufferedFileCache;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.client.cache.LogFileCache;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import junit.framework.TestCase;
 
@@ -31,15 +47,6 @@ import junit.framework.TestCase;
  */
 public class DeleteLogTest extends TestCase {
 	
-	// The header and footer to create log to fill the caches
-	private final String logHeaderStr = " TimeStamp=\"";
-	private final String logBodyStr = "\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[";
-	private final String logFooterStr = "]]></";
-	
-	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
-	
-	private ACSLogParser parser = new ACSLogParserDOM();
-	
 	/**
 	 * Constructor
 	 *
@@ -49,11 +56,11 @@ public class DeleteLogTest extends TestCase {
 	}
 	
 	public void setUp() throws Exception {
-		
+		super.setUp();
 	}
 	
 	public void tearDown() throws Exception {
-		
+		super.tearDown();
 	}
 	
 	/**
@@ -68,7 +75,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testLogFileCacheDelete() throws Exception {
 		// Create and populate the cache
-		Collection<ILogEntry> c = generateLog(512);
+		Collection<ILogEntry> c = CacheUtils.generateLog(512);
 		LogFileCache cache;
 		try {
 			cache= new LogFileCache();
@@ -130,7 +137,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testDeleteAllFromLogFileCache() throws Exception {
 		//	Create and populate the cache
-		Vector<ILogEntry> v = (Vector<ILogEntry>)generateLog(512);
+		Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLog(512);
 		HashMap<Integer,ILogEntry> logs = new  HashMap<Integer,ILogEntry>();
 		LogFileCache cache;
 		try {
@@ -179,7 +186,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testDeleteAllFromLogCache() throws Exception {
 		//	Create and populate the cache
-		Vector<ILogEntry> v = (Vector<ILogEntry>)generateLog(512);
+		Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLog(512);
 		HashMap<Integer,ILogEntry> logs = new  HashMap<Integer,ILogEntry>();
 		LogCache cache;
 		try {
@@ -251,7 +258,7 @@ public class DeleteLogTest extends TestCase {
 		//   - testN=0: all the logs are in the buffer
 		//   - testN=1: the logs are part in the buffer and part on disk
 		for (int testN=0; testN<2; testN++) {
-			Vector<ILogEntry> v = (Vector<ILogEntry>)generateLog(512);
+			Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLog(512);
 			HashMap<Integer,ILogEntry> logs = new  HashMap<Integer,ILogEntry>();
 			LogBufferedFileCache cache;
 			try {
@@ -300,7 +307,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testLogBufferedFileCacheDelete() throws Exception {
 		//	Create and populate the cache
-		Collection<ILogEntry> c = generateLog(512);
+		Collection<ILogEntry> c = CacheUtils.generateLog(512);
 		LogBufferedFileCache cache;
 		try {
 			cache= new LogBufferedFileCache(c.size()+1); // Enough room for all the logs in the collection
@@ -344,130 +351,9 @@ public class DeleteLogTest extends TestCase {
 		assertEquals("Wrong content",logNum,101);
 	}
 	
-	/**
-	 * Generate a set of logs to be used for testing
-	 * Each log has 
-	 *    - a different time stamp.
-	 *    - the message contains the position of the log in the Collection
-	 *    - the log type is random (all types but Trace used because trace
-	 *      has no body)
-	 *
-	 * @param numOfLogs The number of logs to put in the collection
-	 * @return The collection with the logs
-	 */
-	private Collection<ILogEntry> generateLog(int numOfLogs) throws Exception {
-		Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
-		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
-		SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
-		Vector<ILogEntry> v = new Vector<ILogEntry>(numOfLogs);
-		for (int t=0; t<numOfLogs; t++) {
-			Date dt = new Date(now+t*1000);
-			StringBuffer dateSB = new StringBuffer();
-			FieldPosition pos = new FieldPosition(0);
-			df.format(dt,dateSB,pos);
-
-			StringBuilder logStr = new StringBuilder("<");
-			int type = rnd.nextInt(LogTypeHelper.getNumberOfTypes());
-			if (type==0) {
-				type=LogTypeHelper.ENTRYTYPE_INFO;
-			}
-			logStr.append(LogTypeHelper.getLogTypeDescription(type));
-			logStr.append(logHeaderStr);
-			logStr.append(dateSB.toString());
-			logStr.append(logBodyStr);
-			logStr.append(t);
-			logStr.append(logFooterStr);
-			logStr.append(LogTypeHelper.getLogTypeDescription(type));
-			logStr.append('>');
-			ILogEntry log = parser.parse(logStr.toString());
-			v.add(log);
-		}
-		assertTrue("Wrong number of logs generated [expected "+numOfLogs+", in collection "+v.size()+"]",v.size()==numOfLogs);
-		return v;
-	}
 	
-	/**
-	 * Generate a random collection of keys.
-	 * 
-	 * The size of the collection can be random or fixed.
-	 * If it is random then the exact parameter must be false; in that case
-	 * the number of elements returned is limited by size (inclusive)
-	 * The number of elements in the collection is fixed if the exact parameter
-	 * is true; in that case the number of elements returned is specified in size.
-	 * 
-	 * If the size is random, the returned collection can be empty.
-	 * 
-	 * If common is not null, each generated key must also be present in common.
-	 * For this to work, the size of common is an upper limit for the size of the 
-	 * returned collection.
-	 * 
-	 * @param size The upper limit of the number of elements in the collection 
-	 * 			   or the number of elements in the returned collection depending
-	 * 			   on the value of the exact parameter 
-	 * @param exact If true the size of the returned collection is equal to
-	 * 				size otherwise size is the maximum limit
-	 * @param minValue The minimum allowed value of the keys in the collection (inclusive)
-	 * @param maxValue The maximum allowed value of the keys in the collection (inclusive)
-	 * @param common A collection of keys 
-	 *               They key in the returned collection must be present
-	 *               in common too
-	 *               If common is null the keys are generated without constraints 
-	 * @return A posible empty collection of keys
-	 */
-	private Collection<Integer> generateKeys(
-			int size, 
-			boolean exact, 
-			int minValue,
-			int maxValue, 
-			Collection<Integer> common) {
-		if (size<=0) {
-			throw new IllegalArgumentException("Invalid size");
-		}
-		if (minValue<0 && maxValue<0) {
-			throw new IllegalArgumentException("Illegal min/max value below 0");
-		}
-		if (minValue>=maxValue) {
-			throw new IllegalArgumentException("minValue greater or equal to maxValue");
-		}
-		if (exact && size>common.size()) {
-			throw new IllegalArgumentException("Impossible to generate the keys against the passed collection");
-		}
-		int desiredLength=0;
-		Random rnd = new Random(System.currentTimeMillis());
-		if (!exact) {
-			// size is an upper limit (inclusive)
-			while (desiredLength==0) {
-				desiredLength=rnd.nextInt(size+1);
-			}
-		} else {
-			desiredLength=size;
-		}
-		if (maxValue-minValue+1<desiredLength) {
-			throw new IllegalArgumentException("Conflict between params: impossible to generate the keys with the given min/max");
-		}
-		Vector<Integer> v = new Vector<Integer>(desiredLength);
-		if (desiredLength==common.size()) {
-			// we have to return a collection with the same elements
-			// contained in common
-			for (Integer key: common) {
-				v.add(key);
-			}
-		} else {
-			Integer key=-1;
-			while (v.size()<desiredLength) {
-				// Generate the new key
-				while (key<minValue || key>maxValue) {
-					key = rnd.nextInt(maxValue+1);
-					if ((common!=null && !common.contains(key)) || v.contains(key)) {
-						key=-1;
-					}
-				}
-				v.add(key);
-				key=-1;
-			}
-		}
-		return v;
-	}
+	
+	
 	
 	/**
 	 * Test the deletion of logs in the LogFileCache
@@ -481,7 +367,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testLogCacheDelete() throws Exception {
 		// Create and populate the cache
-		Collection<ILogEntry> c = generateLog(512);
+		Collection<ILogEntry> c = CacheUtils.generateLog(512);
 		LogCache cache;
 		try {
 			cache= new LogCache(128);
@@ -545,7 +431,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testContent() throws Exception {
 		LogCache cache = new LogCache();
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		for (ILogEntry temp : c) {
 			cache.add(temp); 
 		}
@@ -568,7 +454,7 @@ public class DeleteLogTest extends TestCase {
 		// First test the LogFileCache
 		LogFileCache cache = new LogFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		for (ILogEntry temp : c) {
 			cache.add(temp); 
 		}
@@ -587,7 +473,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testGetFirstLogLogBufferedFileCache() throws Exception{
 		// First test the LogFileCache
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		LogBufferedFileCache cache = new LogBufferedFileCache(2049);
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
 		for (ILogEntry temp : c) {
@@ -611,7 +497,7 @@ public class DeleteLogTest extends TestCase {
 		// First test the LogFileCache
 		LogFileCache cache = new LogFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		for (ILogEntry temp : c) {
 			cache.add(temp); 
 		}
@@ -630,7 +516,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testGetLastLogLogBufferedFileCache() throws Exception{
 		// First test the LogFileCache
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		LogBufferedFileCache cache = new LogBufferedFileCache(2049);
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
 		for (ILogEntry temp : c) {
@@ -655,7 +541,7 @@ public class DeleteLogTest extends TestCase {
 		// Fills the cache
 		LogFileCache cache = new LogFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		Vector<Integer> keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -693,7 +579,7 @@ public class DeleteLogTest extends TestCase {
 		// Remove a random collection
 		keysInCache.remove(new Integer(0));
 		keysInCache.remove(new Integer(4095));
-		Collection<Integer> keys = generateKeys(4094,false,1,4094,keysInCache);
+		Collection<Integer> keys = CacheUtils.generateKeys(4094,false,1,4094,keysInCache);
 		int oldSz=cache.getSize();
 		cache.deleteLogs(keys);
 		assertEquals("Wrong size after deletion",oldSz-keys.size(),cache.getSize());
@@ -723,7 +609,7 @@ public class DeleteLogTest extends TestCase {
 		
 		// Create a new cache to test the deletion of the whole cache
 		cache = new LogFileCache();
-		c = (Vector<ILogEntry>)generateLog(1024);
+		c = (Vector<ILogEntry>)CacheUtils.generateLog(1024);
 		keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -744,7 +630,7 @@ public class DeleteLogTest extends TestCase {
 		// Fills the cache
 		LogBufferedFileCache cache = new LogBufferedFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		Vector<Integer> keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -782,7 +668,7 @@ public class DeleteLogTest extends TestCase {
 		// Remove a random collection
 		keysInCache.remove(new Integer(0));
 		keysInCache.remove(new Integer(4095));
-		Collection<Integer> keys = generateKeys(4095,false,1,4094,keysInCache);
+		Collection<Integer> keys = CacheUtils.generateKeys(4095,false,1,4094,keysInCache);
 		int oldSz=cache.getSize();
 		cache.deleteLogs(keys);
 		assertEquals("Wrong size after deletion",oldSz-keys.size(),cache.getSize());
@@ -812,7 +698,7 @@ public class DeleteLogTest extends TestCase {
 		
 		// Create a new cache to test the deletion of the whole cache
 		cache = new LogBufferedFileCache();
-		c = (Vector<ILogEntry>)generateLog(1024);
+		c = (Vector<ILogEntry>)CacheUtils.generateLog(1024);
 		keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -833,7 +719,7 @@ public class DeleteLogTest extends TestCase {
 		// Fills the cache
 		LogCache cache = new LogCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
 		Vector<Integer> keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -871,7 +757,7 @@ public class DeleteLogTest extends TestCase {
 		// Remove a random collection
 		keysInCache.remove(new Integer(0));
 		keysInCache.remove(new Integer(4095));
-		Collection<Integer> keys = generateKeys(4095,false,1,4094,keysInCache);
+		Collection<Integer> keys = CacheUtils.generateKeys(4095,false,1,4094,keysInCache);
 		int oldSz=cache.getSize();
 		cache.deleteLogs(keys);
 		assertEquals("Wrong size after deletion",oldSz-keys.size(),cache.getSize());
@@ -901,7 +787,7 @@ public class DeleteLogTest extends TestCase {
 		
 		// Create a new cache to test the deletion of the whole cache
 		cache = new LogCache();
-		c = (Vector<ILogEntry>)generateLog(1024);
+		c = (Vector<ILogEntry>)CacheUtils.generateLog(1024);
 		keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
