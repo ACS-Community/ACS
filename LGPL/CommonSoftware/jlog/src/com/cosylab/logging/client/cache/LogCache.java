@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -45,7 +46,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * @author acaproni
  *
  */
-public class LogCache extends LogBufferedFileCache {
+public class LogCache extends LogBufferedFileCache implements ILogMap {
 
 	/**
 	 * The name of the property to set the size of the cache.
@@ -140,12 +141,12 @@ public class LogCache extends LogBufferedFileCache {
 	 * @throws LogCacheException If an error happened while adding the log
 	 */
 	public synchronized int add(ILogEntry log) throws LogCacheException {
-		int key = super.add(log);
+		Integer key = super.add(log);
 		synchronized (logTypes) {
 			logTypes.put(key,((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE)));
 		}
 		synchronized (logTimes) {
-			logTimes.put(new Integer(key),new Long(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime()));
+			logTimes.put(key,new Long(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime()));
 		}
 		return key;
 	}
@@ -393,4 +394,19 @@ public class LogCache extends LogBufferedFileCache {
 		return ret;
 	}
 	
+	/**
+	 * The keys in the map
+	 * 
+	 * @return The keys in the map
+	 */
+	public Set<Integer> keySet() {
+		return logTimes.keySet();
+	}
+	
+	/**
+	 * Return an iterator over the logs in cache
+	 */
+	public Iterator<ILogEntry> iterator() {
+		return new LogIterator(this);
+	}
 }

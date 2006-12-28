@@ -19,7 +19,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
  *  
  * @author acaproni
  */
-public class LogBufferedFileCache extends LogFileCache {
+public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	
 	public static final String WRITEBUFFERSIZE_PROPERTY_NAME = "jlog.cache.writebuffersize";
 	public static final int DEFAULT_WRITEBUFFERSIZE = 8192;
@@ -399,5 +399,23 @@ public class LogBufferedFileCache extends LogFileCache {
 		} else {
 			return Math.max(cacheLastLog,bufferLastLog);
 		}
+	}
+	
+	/**
+	 * Return a set with all the keys of the logs in cache
+	 * 
+	 * @return The keys of the logs in cache
+	 */
+	public Set<Integer> keySet() {
+		Set<Integer> keys = super.keySet();
+		keys.addAll(buffer.keySet());
+		return keys;
+	}
+	
+	/**
+	 * Return an iterator over the logs in cache
+	 */
+	public Iterator<ILogEntry> iterator() {
+		return new LogIterator(this);
 	}
 }

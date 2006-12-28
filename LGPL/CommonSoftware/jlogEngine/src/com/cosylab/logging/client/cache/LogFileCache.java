@@ -58,7 +58,7 @@ import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
  * @author acaproni
  *
  */
-public class LogFileCache {
+public class LogFileCache implements ILogMap {
 	
 	/**
 	 * An entry in the cache on disk.
@@ -669,5 +669,21 @@ public class LogFileCache {
 				return index.lastKey();
 			}
 		}
+	}
+	
+	/**
+	 * Return a set with all the keys of the logs in cache
+	 * 
+	 * @return The keys of the logs in cache
+	 */
+	public Set<Integer> keySet() {
+		return index.keySet();
+	}
+	
+	/**
+	 * Return an iterator over the logs in cache
+	 */
+	public Iterator<ILogEntry> iterator() {
+		return new LogIterator(this);
 	}
 }
