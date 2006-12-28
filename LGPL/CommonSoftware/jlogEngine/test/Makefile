@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.26 2006/11/29 12:04:16 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.27 2006/12/28 09:44:36 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -84,6 +84,7 @@ SCRIPTS_L       = 	jlogTest1 \
 					jlogLogEntryTest \
 					jlogTestCache \
 					jlogTestDelete \
+					jlogTestIterator \
 					jlogTestXMLParser \
 					jlogTestEngine \
 					jlogTATPrologue \
