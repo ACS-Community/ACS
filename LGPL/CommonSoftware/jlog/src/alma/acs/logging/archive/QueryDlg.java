@@ -1,4 +1,24 @@
-
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
 package alma.acs.logging.archive;
 
 import java.awt.BorderLayout;
@@ -27,6 +47,8 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+
+import alma.acs.logging.dialogs.LoadSwitchesPanel;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
@@ -72,7 +94,12 @@ public class QueryDlg extends JDialog implements ActionListener {
 	// The max number of log to get from the DB
 	private JTextField rowLimit;
 	
+	// The parser
 	private ACSLogParser parser = null;
+	
+	// The switches to clear the table and disconnect from the NC 
+	// before submitting a query
+	private LoadSwitchesPanel guiSwitches;
 	
 	/**
 	 * A class with a thread to publish the logs to the listener
@@ -208,6 +235,8 @@ public class QueryDlg extends JDialog implements ActionListener {
 	private void initGUI() {
 		// The actual time/date used to fill the time fields 
 		Calendar calendar = Calendar.getInstance();
+		
+		guiSwitches = new LoadSwitchesPanel();
 		
 		JRootPane mainPnl = this.getRootPane();
 		mainPnl.setLayout(new BorderLayout());
@@ -349,6 +378,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		btnPnl.add(Box.createRigidArea(new Dimension(10, 0)));
 		btnPnl.add(doneBtn,BorderLayout.EAST);
 		// Add the subpanels
+		mainPnl.add(guiSwitches,BorderLayout.NORTH);
 		mainPnl.add(optionsPnl,BorderLayout.CENTER);
 		mainPnl.add(btnPnl,BorderLayout.SOUTH);
 	}
@@ -376,6 +406,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			return;
 		}
 		LoggingClient.getInstance().reportStatus("Submitting a query");
+		guiSwitches.execute(); // Clear the logs and disconnect from the NC
 		StringBuilder from=new StringBuilder(fromYY.getText());
 		from.append('-');
 		if (fromMM.getText().length()==1) {
