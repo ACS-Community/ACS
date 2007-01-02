@@ -28,6 +28,7 @@ import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
@@ -374,7 +375,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			submitBtn.setEnabled(true);
 			return;
 		}
-		System.out.println("Submitting a query");
+		LoggingClient.getInstance().reportStatus("Submitting a query");
 		StringBuilder from=new StringBuilder(fromYY.getText());
 		from.append('-');
 		if (fromMM.getText().length()==1) {
@@ -451,13 +452,14 @@ public class QueryDlg extends JDialog implements ActionListener {
 		try {
 			logs = archive.getLogs(from.toString()+".000",to.toString()+".000",minType,maxType,routine,source,process,maxRows);
 		} catch (Throwable t) {
-			System.out.println("Error executing the query: "+t.getMessage());
+			System.err.println("Error executing the query: "+t.getMessage());
 			t.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
 			submitBtn.setEnabled(true);
+			LoggingClient.getInstance().reportStatus("Query terminated with error");
 		}
 		if (logs!=null) {
-			System.out.println("Num. of logs read from DB: "+logs.size());
+			LoggingClient.getInstance().reportStatus("Num. of logs read from DB: "+logs.size());
 			LogsPublisher flusher = new LogsPublisher(logs,parser,submitBtn);
 			flusher.start();
 			logs=null;
