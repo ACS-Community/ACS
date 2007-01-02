@@ -1030,7 +1030,7 @@ public class LogEntryTable extends javax.swing.JTable
 		if (fcd.showModal() == FilterChooserDialog.MODAL_OK)
 		{
 			ltdm.getFilters().setFilters(fcd.getFilters(), fcd.getChecked());
-			firePropertyChange("filterString", "", getFilterString());
+			updateFilteredString();
 			ltdm.invalidateVisibleLogs();
 		}
 	}
@@ -1083,6 +1083,17 @@ public class LogEntryTable extends javax.swing.JTable
 	public void setShortDateFormat(boolean shortFormat) {
 		dateRenderer.setShortDateFormat(shortFormat);
 		this.repaint();
+	}
+	
+	/**
+	 * Fire a property change event that triggers a refresh
+	 * in the string displayed at the bottom of the main 
+	 * GUI (LoggingClient)
+	 * 
+	 *
+	 */
+	public void updateFilteredString() {
+		firePropertyChange("filterString", "", getFilterString());
 	}
 	
 }
