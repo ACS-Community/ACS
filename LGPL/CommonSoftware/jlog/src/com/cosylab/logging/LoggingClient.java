@@ -304,17 +304,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		public void actionPerformed(java.awt.event.ActionEvent e)
 		{
 			if (e.getSource() == LoggingClient.this.getConnectMenuItem()) {
-				if (connectMenuItem.getText().compareTo("Connect")==0) {
-					// Check and eventually un-suspend the engine
-					suspendMI.setSelected(false);
-					getEngine().setSupended(suspendMI.isSelected());
-					// Connect the the channel
-					connect();
-				} else {
-					LoggingClient.this.autoReconnectMI.setState(false);
-					LoggingClient.this.engine.enableAutoReconnection(false);
-					disconnect();
-				}
+				connect(connectMenuItem.getText().compareTo("Connect")==0);
             } else if (e.getSource() == LoggingClient.this.getLoadMenuItem()) {
 				getLCModel1().loadFromFile(null);
             } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
@@ -322,10 +312,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             } else if (e.getSource() == LoggingClient.this.getSaveFileMenuItem()) {
             	getLCModel1().saveFile();
             } else if (e.getSource() == LoggingClient.this.getLoadDBMenuItem()) {
-            	//if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
+            	if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
             		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this);
             		dlg.setVisible(true);
-            	//}
+            	}
             } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem()) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
@@ -541,6 +531,26 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
 		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
 		archive = new ArchiveConnectionManager(this);
+	}
+	
+	/**
+	 * Connect or disconnect the engine to the NC
+	 * 
+	 * @param connect If true the engine is connected
+	 *                otherwise it is disconnected
+	 */
+	public void connect(boolean connectEngine) {
+		if (connectEngine) {
+			// Check and eventually un-suspend the engine
+			suspendMI.setSelected(false);
+			getEngine().setSupended(suspendMI.isSelected());
+			// Connect the the channel
+			connect();
+		} else {
+			LoggingClient.this.autoReconnectMI.setState(false);
+			LoggingClient.this.engine.enableAutoReconnection(false);
+			disconnect();
+		}
 	}
 
     /**
