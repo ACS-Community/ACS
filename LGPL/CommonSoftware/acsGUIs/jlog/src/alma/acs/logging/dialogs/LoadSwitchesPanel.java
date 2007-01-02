@@ -67,7 +67,22 @@ public class LoadSwitchesPanel extends JPanel {
 	private void initGUI() {
 		clearLogsCB = new JCheckBox("Clear log table",true);
 		disconnectCB = new JCheckBox("Disconnect",true);
+		checkControlsState();
+
+		setLayout(new FlowLayout(FlowLayout.LEFT));
+		add(clearLogsCB);
+		add(disconnectCB);
 		
+		// Add a border
+		TitledBorder border = BorderFactory.createTitledBorder("GUI setup");
+		this.setBorder(border);
+	}
+	
+	/**
+	 * Enable/disable the check boxes depending on the number
+	 * of logs in the table and the connection status.
+	 */
+	public void checkControlsState() {
 		// Clear and disable the disconnectCB if the engine is already
 		// disconnected
 		if (!LoggingClient.getInstance().isConnected()) {
@@ -80,14 +95,6 @@ public class LoadSwitchesPanel extends JPanel {
 			clearLogsCB.setEnabled(false);
 			clearLogsCB.setSelected(false);
 		}
-		
-		setLayout(new FlowLayout(FlowLayout.LEFT));
-		add(clearLogsCB);
-		add(disconnectCB);
-		
-		// Add a border
-		TitledBorder border = BorderFactory.createTitledBorder("GUI setup");
-		this.setBorder(border);
 	}
 	
 	/**
