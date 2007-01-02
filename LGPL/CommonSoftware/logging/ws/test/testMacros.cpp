@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testMacros.cpp,v 1.7 2007/01/02 15:35:22 bjeram Exp $"
+* "@(#) $Id: testMacros.cpp,v 1.8 2007/01/02 16:12:07 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -151,7 +151,8 @@ int main(int argc, char *argv[])
   
   //Test Levels
     ACS_LOG( LM_FULL_INFO, "main",
-	     (LM_TRACE, "Test of LM_TRACE log")); ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_TRACE, "Test of LM_TRACE log")); 
+    ACS_LOG( LM_FULL_INFO, "main",
 	     (LM_ERROR, "Test of LM_ERROR log"));
     ACS_LOG( LM_FULL_INFO, "main",
 	     (LM_DEBUG, "Test of LM_DEBUG log"));
@@ -161,8 +162,6 @@ int main(int argc, char *argv[])
 	     (LM_NOTICE, "Test of LM_NOTICE log"));
     ACS_LOG( LM_FULL_INFO, "main",
 	     (LM_WARNING, "Test of LM_WARNING log"));
-    ACS_LOG( LM_FULL_INFO, "main",
-	     (LM_ERROR, "Test of LM_ERROR log"));
     ACS_LOG( LM_FULL_INFO, "main",
 	     (LM_CRITICAL, "Test of LM_CRITICAL log"));
     ACS_LOG( LM_FULL_INFO, "main",

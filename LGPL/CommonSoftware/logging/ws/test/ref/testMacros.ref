@@ -11,7 +11,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_INFO log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_NOTICE log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_WARNING log
-1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_ERROR log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_CRITICAL log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_ALERT log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_EMERGENCY log
