@@ -495,6 +495,8 @@ public class QueryDlg extends JDialog implements ActionListener {
 			flusher.start();
 			logs=null;
 		}
+		// Update the state of the switches
+		guiSwitches.checkControlsState();
 	}
 	
 	/**
