@@ -1290,7 +1290,11 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	}
 	
 	/**
-	 * Adds filtering.
+	 * The method is executed when the filter property ("filterString") changes.
+	 * 
+	 * This property has to be changed in the LogEntryTable but the listener is 
+	 * in LoggingClient to update the GUI .
+	 * 
 	 * @param arg1 java.beans.PropertyChangeEvent
 	 */
 
@@ -1298,7 +1302,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	{
 		try
 		{
-
 			getFilterStatus().setText(String.valueOf(getLogEntryTable().getFilterString()));
 
 		}
@@ -1948,6 +1951,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			File fileToLoad=fileChooserDlg.getSelectedFile();
 			if (fileToLoad!=null) {
 				tableModel.getFilters().loadFilters(fileToLoad,eraseOldFilters,null);
+				logEntryTable.updateFilteredString();
 				//tableModel.setMaxHistory(history);
 				tableModel.invalidateVisibleLogs();
 				filterFileName=fileToLoad.getAbsolutePath();
