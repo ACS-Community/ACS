@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testMacros.cpp,v 1.6 2006/09/28 15:43:45 gchiozzi Exp $"
+* "@(#) $Id: testMacros.cpp,v 1.7 2007/01/02 15:35:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -147,5 +147,28 @@ int main(int argc, char *argv[])
     LoggingProxy::AddData("testTooLongValue", tooLongAddData_p);
     ACS_SHORT_LOG((LM_ERROR, "add data for this log message should be too long (max is 255 characters)"));
 
+  //--------------------------------------------------------------------
+  
+  //Test Levels
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_TRACE, "Test of LM_TRACE log")); ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_ERROR, "Test of LM_ERROR log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_DEBUG, "Test of LM_DEBUG log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_INFO, "Test of LM_INFO log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_NOTICE, "Test of LM_NOTICE log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_WARNING, "Test of LM_WARNING log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_ERROR, "Test of LM_ERROR log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_CRITICAL, "Test of LM_CRITICAL log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_ALERT, "Test of LM_ALERT log"));
+    ACS_LOG( LM_FULL_INFO, "main",
+	     (LM_EMERGENCY, "Test of LM_EMERGENCY log"));
+    
     return 0;
 }
