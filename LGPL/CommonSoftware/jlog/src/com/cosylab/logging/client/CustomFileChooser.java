@@ -4,10 +4,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JDialog;
 import javax.swing.JComponent;
 import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import alma.acs.logging.dialogs.LoadSwitchesPanel;
 
 import com.cosylab.logging.LoggingClient;
 
@@ -38,6 +42,9 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 	 */
 	private JCheckBox viewHiddenFiles = new JCheckBox("Show hidden files",false);
 	
+	// The switches to clear the logs and disconnect the engine from the NC
+	private LoadSwitchesPanel guiSwitches;
+	
 	/**
 	 * Constructor: build and show the modal dialog
 	 *  
@@ -57,8 +64,12 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 	private void initialize(File curDir) {
 		rootPane.setLayout(new BorderLayout());
 		
+		guiSwitches = new LoadSwitchesPanel();
+		JPanel pnl = new JPanel(new BorderLayout());
 		viewHiddenFiles.addActionListener(this);
-		rootPane.add(viewHiddenFiles,BorderLayout.NORTH);
+		pnl.add(guiSwitches,BorderLayout.NORTH);
+		pnl.add(viewHiddenFiles,BorderLayout.SOUTH);
+		rootPane.add(pnl,BorderLayout.NORTH);
 		
 		fc = new JFileChooser(curDir);
 		fc.setFileHidingEnabled(!viewHiddenFiles.isSelected());
@@ -96,6 +107,7 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 				selectedFile=fc.getSelectedFile();
 				setVisible(false);
 				dispose();
+				guiSwitches.execute();
 			} else if (evt.getActionCommand().equals("CancelSelection")) {
 				selectedFile=null;
 				setVisible(false);
