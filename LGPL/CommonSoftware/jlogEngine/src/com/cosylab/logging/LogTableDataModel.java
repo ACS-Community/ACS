@@ -38,6 +38,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import alma.acs.logging.dialogs.LoadURLDlg;
+
 import com.cosylab.logging.client.VisibleLogsVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.FiltersVector;
@@ -431,43 +433,40 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	}
 
 	public void loadFromURL() {
-			java.io.BufferedReader in = null;
-			String urlStr=null;
-			try {
-				urlStr = "http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml";
-				
-				urlStr = (String) JOptionPane.showInputDialog(
-	                    null,
-	                    "URL for log file:",
-	                    urlStr);
-				
-				if (urlStr != null && urlStr.trim().length()>0) {
-					URL url = new URL(urlStr);
-					in = new java.io.BufferedReader(new java.io.InputStreamReader(url.openStream()),16384);
-					
-					isSuspended = true;
-					clearAll();
-			
-					getIOHelper().loadLogs(
-							in,
-							LoggingClient.getInstance(),
-							allLogs,
-							true,
-							0);
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				JOptionPane.showInternalMessageDialog(null, "Exception reading "+ex.getMessage(),"Error reading "+urlStr,JOptionPane.ERROR_MESSAGE);
-			}
-			isSuspended = false;
+		LoadURLDlg urlDlg = new LoadURLDlg(LoggingClient.getInstance(),"http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml");
+		urlDlg.setVisible(true);
+		URL url = urlDlg.getURL();
+		if (url==null) {
+			// The user pressed Cancel
+			return;
 		}
+		System.out.println("URL: "+url.toString());
+		
+		java.io.BufferedReader in = null;
+		try {
+			in = new java.io.BufferedReader(new java.io.InputStreamReader(url.openStream()), 16384);
+
+			isSuspended = true;
+			clearAll();
+
+			getIOHelper().loadLogs(in, LoggingClient.getInstance(),
+				allLogs, true, 0);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			JOptionPane.showInternalMessageDialog(null, "Exception reading "
+					+ ex.getMessage(), "Error reading " + url.toString(),
+					JOptionPane.ERROR_MESSAGE);
+		}
+		isSuspended = false;
+	}
 	
 	
 	/**
-	 * Loads logs from a file.
-	 * If the name of the file is null, a dialog to choose the file is shown.
+	 * Loads logs from a file. If the name of the file is null, a dialog to
+	 * choose the file is shown.
 	 * 
-	 * @param filename The name of the file to load
+	 * @param filename
+	 *            The name of the file to load
 	 */
 	public void loadFromFile(String fileName) {
 		if (fileName==null) {
