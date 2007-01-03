@@ -1,4 +1,4 @@
-# @(#) $Id: ACSPorts.py,v 1.5 2006/10/25 10:14:41 bjeram Exp $
+# @(#) $Id: ACSPorts.py,v 1.6 2007/01/03 12:20:32 msekoran Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ACSPorts.py,v 1.5 2006/10/25 10:14:41 bjeram Exp $"
+# "@(#) $Id: ACSPorts.py,v 1.6 2007/01/03 12:20:32 msekoran Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -34,7 +34,7 @@ TODO:
 - nada
 '''
 #------------------------------------------------------------------------------
-__revision__ = "$Id: ACSPorts.py,v 1.5 2006/10/25 10:14:41 bjeram Exp $"
+__revision__ = "$Id: ACSPorts.py,v 1.6 2007/01/03 12:20:32 msekoran Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os      import environ
 from socket  import getfqdn, gethostbyname
@@ -162,6 +162,18 @@ def getCDBPort():
     Raises: Nothing
     '''  
     return str(getBasePort()*100 + 3000 + 12)
+#----------------------------------------------------------------------------
+def getDaemonPort():
+    '''
+    Returns the port the ACS Daemon is running on.
+    
+    Parameters: None
+    
+    Return: port the ACS Daemon is running on
+    
+    Raises: Nothing
+    '''  
+    return str(3000 + 13)
 #----------------------------------------------------------------------------
 def getIP():
     '''
