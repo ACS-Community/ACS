@@ -102,4 +102,24 @@ public interface ILogMap {
 	 * @return an Iterator over the elements in this map
 	 */
 	public Iterator<ILogEntry> iterator();
+	
+	/**
+	 * Return the key of the last valid log (FIFO)
+	 * The key of the last log is the key of the last inserted log
+	 * but it can cheang if such log has been deleted
+	 * 
+	 * @return The key of the last inserted log
+	 *         null if th cache is empty
+	 */
+	public Integer getLastLog();
+	
+	/**
+	 * Return the key of the first valid log (FIFO).
+	 * The key of the first log is 0 but it can change if the log 0 has
+	 * been deleted.
+	 * 
+	 * @return The key of the first log
+	 *         null if the cache is empty
+	 */
+	public Integer getFirstLog();
 }
