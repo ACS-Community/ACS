@@ -256,6 +256,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
     private ImageIcon pauseIcon;
     private ImageIcon playIcon;
     
+    // The button to delete the logs
+    private JButton clearLogsBtn;
+    
     // The search button in the toolbar
     private JButton searchBtn;
     
@@ -316,7 +319,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this);
             		dlg.setVisible(true);
             	}
-            } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem()) {
+            } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem() || e.getSource()==clearLogsBtn) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
 				connExit(e);
@@ -1083,6 +1086,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         discardLevelCB.setRenderer(discardRendererCB);
         tbLevelPanel.add(discardLevelCB);
         
+        // Add the pause button
         pauseIcon=new ImageIcon(LogTypeHelper.class.getResource("/pause.png"));
         playIcon=new ImageIcon(LogTypeHelper.class.getResource("/play.png"));
         pauseB = new JButton("<HTML><FONT size=-2>Pause</FONT>",pauseIcon);
@@ -1090,20 +1094,31 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         pauseB.addActionListener(eventHandler);
         tbLevelPanel.add(pauseB);
         
+        //  Add the  search button
+        ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
+        searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT>",searchIcon);
+        searchBtn.addActionListener(eventHandler);
+        tbLevelPanel.add(searchBtn);
+        
+        // Add the button to delete logs
+        ImageIcon iconClear =new ImageIcon(LogTypeHelper.class.getResource("/delete.png"));
+        clearLogsBtn = new JButton("<HTML><FONT size=-2>Delete logs</FONT>",iconClear);
+        clearLogsBtn.addActionListener(eventHandler);
+        tbLevelPanel.add(clearLogsBtn);
         
         userPanel.add(tbLevelPanel);
         
-        // Add the  search button
-        ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
-        searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT>",searchIcon);
-        userPanel.add(searchBtn);
-        searchBtn.addActionListener(eventHandler);
-        
-    
-        
         toolBarPanel.add(userPanel,BorderLayout.WEST);
         
+        // Rationalize the sizes ...
+        Dimension d = discardLevelCB.getPreferredSize();
+        d.height=searchBtn.getPreferredSize().height;
+        discardLevelCB.setPreferredSize(d);
+        d= logLevelCB.getPreferredSize();
+        d.height=searchBtn.getPreferredSize().height;
+        logLevelCB.setPreferredSize(d);
         
+        // Add the toolbar
         toolBar.add(toolBarPanel);
     }
 
