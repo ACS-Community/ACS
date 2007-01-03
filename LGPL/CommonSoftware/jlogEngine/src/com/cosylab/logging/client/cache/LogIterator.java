@@ -23,7 +23,6 @@ package com.cosylab.logging.client.cache;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
@@ -35,20 +34,15 @@ public class LogIterator implements Iterator<ILogEntry> {
 	private ILogMap logs = null;
 	
 	/**
-	 * The keys of the logs in the map
-	 */
-	private Set<Integer> keys = null;
-	
-	/**
-	 * The iterator over the keys in the map
-	 */
-	private Iterator<Integer> keyIterator =null;
-	
-	/**
 	 * The key read with the last call to next()
 	 * This value is needed to implement the remove()
 	 */
-	private Integer lastKey=null;
+	private Integer lastReadKey=null;
+	
+	// The first and last key in the map
+	// Both of them can change if the map of logs changes while iterating
+	private Integer firstKey=null;
+	private Integer lastKey= null;
 	
 	/**
 	 * Constructor
@@ -60,33 +54,46 @@ public class LogIterator implements Iterator<ILogEntry> {
 			throw new IllegalArgumentException("The map of logs can't be null");
 		}
 		this.logs=logs;
-		keys = logs.keySet();
-		if (keys!=null) {
-			keyIterator = keys.iterator();
-		}
 	}
 
 	/**
 	 * @see java.util.Iterator
 	 */
 	public boolean hasNext() {
-		return keyIterator.hasNext();
+		if (logs.getSize()==0) {
+			return false;
+		} else if (lastReadKey==null) {
+			return true;
+		} else {
+			lastKey=logs.getLastLog();
+			return lastReadKey<lastKey;
+		}
 	}
 
 	/**
 	 * @see java.util.Iterator
 	 */
 	public ILogEntry next() {
-		lastKey = keyIterator.next();
-		if (lastKey==null) {
-			throw new NoSuchElementException("No log for null key ");
+		if (lastReadKey==null) {
+			firstKey = logs.getFirstLog();
+			try {
+				lastReadKey=firstKey;
+				return logs.getLog(firstKey);
+			} catch (LogCacheException e) {
+				throw new NoSuchElementException("Log not found");
+			}
 		}
-		try {
-			ILogEntry log = logs.getLog(lastKey);
-			return log;
-		} catch (LogCacheException e) {
-			throw new NoSuchElementException("No log for key "+lastKey);
+		for (Integer t = lastReadKey+1; t<=logs.getLastLog(); t++) {
+			if (logs.keySet().contains(t)) {
+				lastReadKey=t;
+				try {
+					return logs.getLog(lastReadKey);
+				} catch (LogCacheException e) {
+					throw new NoSuchElementException("Log not found");
+				}
+			}
 		}
+		throw new NoSuchElementException("No more elements");
 	}
 
 	/**
@@ -96,18 +103,14 @@ public class LogIterator implements Iterator<ILogEntry> {
 	 * @see java.util.Iterator
 	 */
 	public void remove() {
-		if (lastKey==null) {
-			throw new IllegalStateException("No log to remove (key is null)");
+		if (lastReadKey==null) {
+			throw new IllegalStateException("No log to remove (call next before remove)");
 		} else {
 			try {
-				logs.deleteLog(lastKey);
+				logs.deleteLog(lastReadKey);
 			} catch (LogCacheException e) {
-				System.err.println("The log is not in the cache.");
-				System.err.println("Probably the cache has been modified while reading");
-				e.printStackTrace();
+				throw new IllegalStateException("Log with key "+lastReadKey+" already deleted");
 			}
-			// Set the key to null to avoid to delete the same log again
-			lastKey=null;
 		}
 	}
 
