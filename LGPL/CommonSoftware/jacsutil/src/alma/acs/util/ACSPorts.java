@@ -122,6 +122,12 @@ public class ACSPorts {
       return globalInstanceForSystemProperty().giveCDBPort();
    }
 
+   /**
+    * @return the port the ACS deamon is running on.
+    */
+   public static String getDaemonPort() {
+      return globalInstanceForSystemProperty().giveDaemonPort();
+   }
 
     /**
      * @return the stringified IP or "localhost" if an error 
@@ -249,7 +255,14 @@ public class ACSPorts {
       return String.valueOf(basePort * 100 + 3000 + 12);
    }
 
-    /**
+   /**
+    * @return the port the ACS daemon is running on.
+    */
+   public String giveDaemonPort() {
+      return String.valueOf(3000 + 13);
+   }
+
+   /**
      * @return this host's IP address
      */
     public String giveIP() {
