@@ -6,6 +6,7 @@ package com.cosylab.acs.maci.plug;
 
 import org.omg.CORBA.ORB;
 
+import alma.acs.util.ACSPorts;
 import alma.acsdaemon.DaemonHelper;
 
 import com.cosylab.acs.maci.Daemon;
@@ -36,8 +37,7 @@ public class CORBATransport implements Transport {
 	 */
 	public Daemon getDaemon(String host) {
 		
-		// TODO always on the same port?
-		String daemonCORBALOC = "corbaloc::" + host + ":3013" + "/ACSDaemon";
+		String daemonCORBALOC = "corbaloc::" + host + ":" + ACSPorts.getDaemonPort() + "/ACSDaemon";
 
 		org.omg.CORBA.Object obj = orb.string_to_object(daemonCORBALOC);
 		alma.acsdaemon.Daemon daemon = DaemonHelper.narrow(obj);
