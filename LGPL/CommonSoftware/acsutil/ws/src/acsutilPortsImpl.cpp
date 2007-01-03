@@ -136,7 +136,7 @@ std::string
 ACSPorts::getDaemonPort()
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 13) << ends;
+    realOutput << setw(4) << setfill('0') << (3000 + 13) << ends;
     return realOutput.str();
 }
 
