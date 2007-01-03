@@ -595,10 +595,21 @@ public class TreeHandlerBean implements NodeRequestListener {
 				return;
 			if ((node.getUserObject() instanceof String)
 					&& (node.getUserObject().equals("root"))) {
+
+				// only OETree1 can can trigger search
+				if (node.getParentTree() == treeByName)
+					return;
+
 				notifier.reportMessage("Initializing " + accessType
 						+ " engine. Please wait...");
 				notifier.reportDebug("TreeHandlerBean::setAccess",
 						"Selected engine: " + accessType);
+				
+				// clear treeByName
+				treeByName.clearTree();
+				invList.clear();
+				devices.clear();
+				
 				setAccess(node);
 			} else {
 				(new SubNodesSearching(this, node)).start();
