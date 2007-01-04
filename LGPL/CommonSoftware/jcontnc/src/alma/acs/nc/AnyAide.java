@@ -24,12 +24,12 @@
 package alma.acs.nc;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.Any;
+import org.omg.CORBA.portable.IDLEntity;
 
 import alma.ACS.doubleSeqHelper;
 import alma.ACS.floatSeqHelper;
@@ -51,14 +51,20 @@ import alma.acs.exceptions.AcsJException;
  * @version $Id$
  */
 class AnyAide {
-	
+
+	/** reference to the container services */
+	private final ContainerServices m_containerServices;
+
+	/** our own logger */
+	private final Logger m_logger;
+
    /**
     * Standard constructor.
     * 
     * @param cs
     *           Container services reference of the component.
     */
-   public AnyAide(ContainerServices cs) {
+	public AnyAide(ContainerServices cs) {
       // save a local reference
       m_containerServices = cs;
 
@@ -78,6 +84,10 @@ class AnyAide {
     * @throws AcsJException
     *            Thrown when the array type is not supported.
     * @deprecated use one of the type-safe methods such as {@link #doubleArrayToCorbaAny(double[])}. This method will be removed.
+    * 		HSO-20061221: It actually seems that this method is never used outside of this package. 
+    *           Probably it was more useful before we got the restriction that only IDL-defined structs can be sent as event data
+    *           Thus we could also have the replacement methods like doubleArrayToCorbaAny with less than public visibility. 
+    * (an inferred rule which I have not seen stated clearly).  
     */
    public Any arrayToCorbaAny(Object objs) throws AcsJException {
 	   return internalArrayToCorbaAny(objs);
@@ -149,11 +159,11 @@ class AnyAide {
 
    
    /**
-	 * Converts a generic Java object to a CORBA. May fail.
+	 * Converts a generic Java object to a CORBA Any. May fail.
 	 * 
 	 * @param obj
 	 *            Object to be converted to a CORBA any
-	 * @return A CORBA any with obj embedded within it.
+	 * @return A CORBA any with obj's data embedded within it.
 	 * @throws AcsJException
 	 *             Thrown if there's some problem converting the object to an
 	 *             any. TODO: make sure this works with enumerations.
@@ -194,11 +204,14 @@ class AnyAide {
 			float value = ((Float) obj).floatValue();
 			retVal.insert_float(value);
 		} 
-		else {
+		else if (obj instanceof IDLEntity) {
 			// as a last ditch attempt, we assume the object
 			// is some sort of complex IDL struct/union/etc
 			// and that this method will work.
-			return complexObjectToCorbaAny(obj);
+			return complexObjectToCorbaAny((IDLEntity)obj);
+		}
+		else {
+			throw new AcsJBadParameterEx("Bad arg of type " + obj.getClass().getName());
 		}
 		return retVal;
 	}
@@ -213,7 +226,7 @@ class AnyAide {
 	 * @throws AcsJException
 	 *             if any problem occurs with the conversion.
 	 */
-	public Any complexObjectToCorbaAny(Object obj) throws AcsJException {
+	public Any complexObjectToCorbaAny(IDLEntity obj) throws AcsJException {
 
 		if (obj == null) {
 			throw new AcsJBadParameterEx("Method arg 'obj' was null");
@@ -411,7 +424,7 @@ class AnyAide {
 				// Extract method of helper class
 				// Need access to this to convert an Any to the Java language
 				// type.
-				Method extract = localHelper.getMethod("extract", new Class[] { org.omg.CORBA.Any.class });
+				Method extract = localHelper.getMethod("extract", new Class[] { Any.class });
 				Object[] args = { any };
 				returnValue = extract.invoke(null, args);
 			} catch (Exception ex) {
@@ -431,25 +444,30 @@ class AnyAide {
 
 	
    /**
-	 * Method used to convert an any with a complex user-defined struct embedded
-	 * within it to its corresponding Java type.
+	 * Extracts from a Corba Any the embedded user-defined event data.
+	 * The returned data can be either
+	 * <ol>
+	 * <li>a class implementing <code>IDLEntity</code> if an IDL-defined struct was sent, or
+	 * <li>an array of IDL-defined structs
+	 * </ol>
+	 * Other non-IDL defined classes or primitive types are not allowed as event data 
+	 * (not totally sure but it seems like that, HSO 2006-12).
 	 * 
-	 * @param any
-	 *            CORBA Any containing a complex, user-defined object within it
+	 * @param any CORBA Any containing a complex, user-defined object within it
 	 * @return the CORBA Any parameter converted to an object of the
-	 *         corresponding Java type.
+	 *         corresponding Java type, or <code>null</code> if the conversion failed.
 	 */
-	public Object complexAnyToObject(org.omg.CORBA.Any any) 
+	public Object complexAnyToObject(Any any) 
 	{
 		// initialize the return value
 		Object retValue = null;
 		Class localHelper = null;
+		// Create the IDL struct helper class
+		// With Java Anys, we can extract the name of the underlying object
+		// instance and from that all that needs to be done is to concatenate "Helper" 
+		// to get.
+		String qualHelperClassName = null;
 		try {
-			// Create the IDL struct helper class
-			// With Java Anys, we can extract the name of the underlying object
-			// instance and from that all that needs to be done is to concatenate "Helper" 
-			// to get.
-			String localHelperName = null;
 			org.omg.CORBA.TCKind kind = any.type().kind();
 			if (kind.equals(org.omg.CORBA.TCKind.tk_sequence)) {
 				// the event data is a sequence instead of a single value or struct. Need to get the underlying type
@@ -462,7 +480,7 @@ class AnyAide {
 				// Derive the Java package from the id. 
 				// Note that we can't use the TypeCode#toString() method which gives a nice qualified name for JacORB, but perhaps not for other ORB impls.
 				// First assume that the type is not defined nested inside an interface 
-				String qualHelperClassName = corbaStructToJavaClass(sequenceType.id(), false) + "SeqHelper";
+				qualHelperClassName = corbaStructToJavaClass(sequenceType.id(), false) + "SeqHelper";
 				try {
 					localHelper = Class.forName(qualHelperClassName);
 				} catch (ClassNotFoundException ex) {
@@ -474,48 +492,39 @@ class AnyAide {
 			else {
 				// @TODO: check the effect of nested event structs (defined inside an interface), whether "Package" must be inserted.
 				// If necessary, also call method corbaStructToJavaClass to find the correct class name
-				localHelperName = any.type() + "Helper";
-				localHelperName = localHelperName.replaceAll("::", ".");
-				localHelper = Class.forName(localHelperName);
+				qualHelperClassName = any.type() + "Helper";
+				qualHelperClassName = qualHelperClassName.replaceAll("::", ".");
+				localHelper = Class.forName(qualHelperClassName);
 			}
 
 			// Extract method of helper class
 			// Need access to this to convert an Any to the Java language type.
-			Method extract = localHelper.getMethod("extract", new Class[] { org.omg.CORBA.Any.class });
+			Method extract = localHelper.getMethod("extract", new Class[] { Any.class });
 			Object[] args = { any };
 
 			retValue = extract.invoke(null, args);
 		} 
 		catch (ClassNotFoundException e) {
 			// should never happen...
-			String msg = "Failed to process an any because the helper class does not exist: ";
-			msg = msg + e.getMessage();
-			m_logger.warning(msg);
+			String msg = "Failed to extract the event struct data from a CORBA Any because the helper class '" + 
+							qualHelperClassName + "' does not exist.";
+			m_logger.log(Level.WARNING, msg, e);
 		} 
 		catch (NoSuchMethodException e) {
 			// should never happen...
-			String msg = "Failed to process an any because the helper class does not provide";
-			msg = msg + " the 'extract' method: ";
-			msg = msg + e.getMessage();
-			m_logger.warning(msg);
+			String msg = "Failed to process an any because the helper class '" + qualHelperClassName + "' does not provide the 'extract' method.";
+			m_logger.log(Level.WARNING, msg, e);
 		} 
-		catch (IllegalAccessException e) {
+//		catch (ClassCastException e) {
+//			// should never happen...
+//			String msg = "Failed to process an any because the contained data does not seem to come from an IDL struct.";
+//			m_logger.log(Level.WARNING, msg, e);
+//		} 
+		catch (Throwable thr) { // IllegalAccessException, InvocationTargetException, TypeCodePackage.BadKind or any other throwable
 			// should never happen...
-			String msg = "Failed to process an any because: ";
-			msg = msg + e.getMessage();
-			m_logger.warning(msg);
-		} catch (InvocationTargetException e) {
-			// should never happen...
-			String msg = "Failed to process an any because: ";
-			msg = msg + e.getMessage();
-			m_logger.warning(msg);
-		} catch (org.omg.CORBA.TypeCodePackage.BadKind e) {
-			// should never happen...
-			String msg = "Failed to process an any because: ";
-			msg = msg + e.getMessage();
-			m_logger.warning(msg);
+			String msg = "Failed to process an any because of unexpected problem.";
+			m_logger.log(Level.WARNING, msg, thr);
 		}
-
 		return retValue;
 	}
 
@@ -548,10 +557,5 @@ class AnyAide {
 	}
 	
 	
-   /** reference to the container services */
-   private final ContainerServices m_containerServices;
-
-   /** our own logger */
-   private final Logger m_logger;
 
 }
