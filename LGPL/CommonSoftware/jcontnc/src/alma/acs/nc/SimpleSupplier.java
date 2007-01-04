@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.IntHolder;
+import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosEventChannelAdmin.AlreadyConnected;
 import org.omg.CosNotification.EventHeader;
 import org.omg.CosNotification.EventType;
@@ -62,8 +63,15 @@ import alma.acsnc.OSPushSupplierPOA;
  * SimpleSupplier is the standard class to be used with the event channel API to
  * publish events using the Java programming language. It supports publishing
  * events where the data is really a user-defined IDL struct.
- * 
- * TODO (HSO): figure out if the CORBA impl is thread safe. Fix this class accordingly, 
+ * <p>
+ * Design note on CORBA usage (generally not relevant to ACS NC users): 
+ * the IDL-struct-data is wrapped by a corba Any, but then pushed on the notification channel inside a "Structured Event" 
+ * (with the Any object in StructuredEvent#filterable_data[0]).
+ * Don't confuse this with Corba's option of sending events directly as Anys. 
+ * As of 2006-12, HSO is not sure why this complex design was chosen, instead of using structured events without the Any wrapping inside. 
+ * Possibly it offers some flexibility for generic consumer tools written in languages that have no introspection. 
+ * <p>
+ * @TODO (HSO): figure out if the CORBA impl is thread safe. Fix this class accordingly, 
  * or document that it is not thread safe otherwise.
  * 
  * @author dfugate
@@ -408,7 +416,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 *            There are an enormous amount of possibilities pertaining to why
 	 *            an AcsJException would be thrown by publishEvent.
 	 */
-	public void publishEvent(Object customStruct) throws AcsJException {
+	public void publishEvent(IDLEntity customStruct) throws AcsJException {
 		// The Java class name without package becomes the name of the "event type".
 		String typeName = customStruct.getClass().getName().substring(
 				customStruct.getClass().getName().lastIndexOf('.') + 1);
@@ -477,9 +485,6 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 * The current count is attached to the EventDescription that gets sent along as additional data (remainder_of_body). 
 	 */
 	protected volatile long m_count = 0;
-
-//	/** CORBA reference to ourself (being visible as an OffShoot) */
-//	protected OSPushSupplier m_corbaRef;
 
 	/** Channel we'll be sending events too*/
 	protected final EventChannel m_channel;
