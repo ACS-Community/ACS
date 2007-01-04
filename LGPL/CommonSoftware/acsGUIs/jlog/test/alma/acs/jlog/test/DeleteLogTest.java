@@ -75,7 +75,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testLogFileCacheDelete() throws Exception {
 		// Create and populate the cache
-		Collection<ILogEntry> c = CacheUtils.generateLog(512);
+		Collection<ILogEntry> c = CacheUtils.generateLogs(512);
 		LogFileCache cache;
 		try {
 			cache= new LogFileCache();
@@ -137,7 +137,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testDeleteAllFromLogFileCache() throws Exception {
 		//	Create and populate the cache
-		Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLog(512);
+		Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLogs(512);
 		HashMap<Integer,ILogEntry> logs = new  HashMap<Integer,ILogEntry>();
 		LogFileCache cache;
 		try {
@@ -186,7 +186,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testDeleteAllFromLogCache() throws Exception {
 		//	Create and populate the cache
-		Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLog(512);
+		Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLogs(512);
 		HashMap<Integer,ILogEntry> logs = new  HashMap<Integer,ILogEntry>();
 		LogCache cache;
 		try {
@@ -258,7 +258,7 @@ public class DeleteLogTest extends TestCase {
 		//   - testN=0: all the logs are in the buffer
 		//   - testN=1: the logs are part in the buffer and part on disk
 		for (int testN=0; testN<2; testN++) {
-			Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLog(512);
+			Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLogs(512);
 			HashMap<Integer,ILogEntry> logs = new  HashMap<Integer,ILogEntry>();
 			LogBufferedFileCache cache;
 			try {
@@ -307,7 +307,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testLogBufferedFileCacheDelete() throws Exception {
 		//	Create and populate the cache
-		Collection<ILogEntry> c = CacheUtils.generateLog(512);
+		Collection<ILogEntry> c = CacheUtils.generateLogs(512);
 		LogBufferedFileCache cache;
 		try {
 			cache= new LogBufferedFileCache(c.size()+1); // Enough room for all the logs in the collection
@@ -367,7 +367,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testLogCacheDelete() throws Exception {
 		// Create and populate the cache
-		Collection<ILogEntry> c = CacheUtils.generateLog(512);
+		Collection<ILogEntry> c = CacheUtils.generateLogs(512);
 		LogCache cache;
 		try {
 			cache= new LogCache(128);
@@ -431,7 +431,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testContent() throws Exception {
 		LogCache cache = new LogCache();
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		for (ILogEntry temp : c) {
 			cache.add(temp); 
 		}
@@ -454,7 +454,7 @@ public class DeleteLogTest extends TestCase {
 		// First test the LogFileCache
 		LogFileCache cache = new LogFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		for (ILogEntry temp : c) {
 			cache.add(temp); 
 		}
@@ -473,7 +473,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testGetFirstLogLogBufferedFileCache() throws Exception{
 		// First test the LogFileCache
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		LogBufferedFileCache cache = new LogBufferedFileCache(2049);
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
 		for (ILogEntry temp : c) {
@@ -497,7 +497,7 @@ public class DeleteLogTest extends TestCase {
 		// First test the LogFileCache
 		LogFileCache cache = new LogFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		for (ILogEntry temp : c) {
 			cache.add(temp); 
 		}
@@ -516,7 +516,7 @@ public class DeleteLogTest extends TestCase {
 	 */
 	public void testGetLastLogLogBufferedFileCache() throws Exception{
 		// First test the LogFileCache
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		LogBufferedFileCache cache = new LogBufferedFileCache(2049);
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
 		for (ILogEntry temp : c) {
@@ -541,7 +541,7 @@ public class DeleteLogTest extends TestCase {
 		// Fills the cache
 		LogFileCache cache = new LogFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		Vector<Integer> keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -609,7 +609,7 @@ public class DeleteLogTest extends TestCase {
 		
 		// Create a new cache to test the deletion of the whole cache
 		cache = new LogFileCache();
-		c = (Vector<ILogEntry>)CacheUtils.generateLog(1024);
+		c = (Vector<ILogEntry>)CacheUtils.generateLogs(1024);
 		keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -630,7 +630,7 @@ public class DeleteLogTest extends TestCase {
 		// Fills the cache
 		LogBufferedFileCache cache = new LogBufferedFileCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		Vector<Integer> keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -698,7 +698,7 @@ public class DeleteLogTest extends TestCase {
 		
 		// Create a new cache to test the deletion of the whole cache
 		cache = new LogBufferedFileCache();
-		c = (Vector<ILogEntry>)CacheUtils.generateLog(1024);
+		c = (Vector<ILogEntry>)CacheUtils.generateLogs(1024);
 		keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -719,7 +719,7 @@ public class DeleteLogTest extends TestCase {
 		// Fills the cache
 		LogCache cache = new LogCache();
 		assertNull("Error getting the first log from an empty cache",cache.getFirstLog());
-		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLog(4096);
+		Vector<ILogEntry> c = (Vector<ILogEntry>)CacheUtils.generateLogs(4096);
 		Vector<Integer> keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
@@ -787,7 +787,7 @@ public class DeleteLogTest extends TestCase {
 		
 		// Create a new cache to test the deletion of the whole cache
 		cache = new LogCache();
-		c = (Vector<ILogEntry>)CacheUtils.generateLog(1024);
+		c = (Vector<ILogEntry>)CacheUtils.generateLogs(1024);
 		keysInCache = new Vector<Integer>(c.size());
 		for (ILogEntry temp : c) {
 			Integer key=cache.add(temp);
