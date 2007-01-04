@@ -27,8 +27,6 @@ import alma.acs.nc.ArchiveSupplier;
 /**
  * Client application that accesses the HelloDemo component. It demonstrates
  * how the class {@link ComponentClient}can be used as a base class.
- * 
- * @author hsommer Nov 21, 2002 5:53:05 PM
  */
 public class ArchiveSupplierTest extends ComponentClient
 {
