@@ -27,6 +27,10 @@
 <style type="text/css">
 <!--
 .style2 {color: #FF0000}
+.style3 {
+	font-weight: bold;
+	font-style: italic;
+}
 -->
 </style></head>
 
@@ -575,7 +579,7 @@
   
 <div class="Section1">
     <h2 class="MsoNormal">Advanced track</h2>
-    <p class="MsoNormal">In the advanced track we plan to have the days split normally in two sections:</p>
+    <p class="MsoNormal">In the advanced track we plan to have the days split normally in two/three sections:</p>
     <ul>
       <li>Advanced lesson topics<br>
       One section will go in depth with important ACS topics.<br>
@@ -583,55 +587,9 @@
       <li>Design workshop.<br>
       One section will see a group presenting the design/architecture for one of their subsystems or a problem to discuss.<br>
       The participants will discuss together and with the help of the ACS team we will come with a solution that uses at the best the features and facilities provided by ACS.<br>
-      This will be great opportunity for different groups to compare the approach they have taken to solve their problems and to get fresh ideas from other groups. </li>
-    </ul>
-  <p class="style2"><strong><em>You are all invited to propose topics for the two types of sections as soon as possible, so that material can be prepared in advance. </em></strong></p>
-    <p><em>Here a preliminary list of topics for lessons (we should agree on 5 or 6 topics at most):</em></p>
-    <ul>
-      <li><em>ACS Logging, Errors and Alarm Systems.<br>
-      Usage and guedilines.</em></li>
-      <li><em>Multi-threading with ACS libraries in CPP and/or Java.<br>
-        Management of multiple threads.<br>
-        Component's threads.<br>
-        Synchronisation.</em></li>
-      <li><em>Understanding ACS Properties: creating DevIOs, monitoring, alarms </em></li>
-      <li><em>Using the ACS Bulk Data to transfer big amounts of data (images, scientific data) (constraints: can be only Wednesday orThursday)</em></li>
-      <li><em>Using the ACS Notification Channel </em></li>
-      <li><em>ACS Code Generation. The ACS Generator</em></li>
-      <li><em>ACS IDL Simulator</em></li>
-      <li><em> Real time control with ACS:</em>
-        <ul>
-          <li><em>RTAI support (B.Jeram) </em></li>
-          <li><em>Building a kernel module (T.Juerges) </em></li>
-          <li><em>Other options: VxWork</em></li>
-        </ul>
-      </li>
-      <li><em>Generalized TCS (gTCS) (from R.Lemke)<br>
-      What would interest me are the following questions:
-      </em>
-        <ul>
-        <li><em>  Where is the border line between real time and non real time OS (minimal
-      real time, or simply everything in RT)? <br>
-      Here it would be good if all
-      available TCS system could be presented and it should made clear where the
-      line is.</em></li>
-        <li><em> What should be supported in the initial gTCS IDL?</em></li>
-        <li><em> Where will be the different modes (scanning, pointing corrections,
-          guiding) implemented (all in one IDL, or different modules, what are the
-          real time requirements?)?        </em></li>
-        <li><em> Is there an acceptance from the other teams? Would they allow to test out
-            the gTCS, or even maybe adapt it to their running systems?
-            
-          <br>
-        Of cause we should iterate.</em></li>
-      </ul>
-      </li>
-      <li><em>Design discussions:</em>
-        <ul>
-          <li>Architecture and design of the ATM (atmospheric) software for ALMA</li>
-        </ul>
-      </li>
-    </ul>
+      This will be great opportunity for different groups to compare the approach they have taken to solve their problems and to get fresh ideas from other groups.</li>
+  </ul>
+    <p>The selection of topics is flexible and we can also split the class in two separate groups if we have highly relevant topics that are of interest only to a subset of the participants. </p>
     <p class="MsoNormal"><b><span style="font-size: 11pt;">&nbsp;</span></b><b><span
 
  style="font-size: 11pt;">Tuesday the 16<sup>th</sup>: </span></b></p>
@@ -645,8 +603,14 @@
           </tr>
           <tr>
             <td valign="top">09:00<br>
-          --:--</td>
-            <td valign="top">ACS Logging and Error Systems </td>
+              09:30</td>
+            <td align="left" valign="top" class="MsoNormalTable"><p class="MsoNormal">What ACS nightmares did you have? Questions and answers.</p></td>
+            <td align="left" valign="top" class="MsoNormalTable">This should be a little discussion at the start of each course day.</td>
+          </tr>
+          <tr>
+            <td valign="top">09:30<br>
+          12:00</td>
+            <td valign="top">ACS Logging and Error Systems: usage and applications</td>
             <td valign="top">&nbsp;</td>
           </tr>
           <tr>
@@ -656,10 +620,16 @@
             <td valign="top">&nbsp;</td>
           </tr>
           <tr>
-            <td valign="top">09:00<br>
-    --:--</td>
-            <td valign="top">ACS Logging and Error Systems </td>
+            <td valign="top">13:00<br>
+    15:00</td>
+            <td valign="top">ACS Alarm System: usage and applications </td>
             <td valign="top">&nbsp;</td>
+          </tr>
+          <tr>
+            <td valign="top">15:00<br>
+              17:30</td>
+            <td valign="top"><em>Design workshop.</em></td>
+            <td valign="top"><em>A group proposes a tipoic to be discussed: the design and/or the architecture or an applications or an implementation problem to be analyzed together.</em></td>
           </tr>
           <tr>
             <td valign="top">17:30</td>
@@ -682,8 +652,19 @@
           </tr>
           <tr>
             <td valign="top">09:00<br>
-          --:--</td>
-            <td valign="top">&nbsp;</td>
+    09:30</td>
+            <td align="left" valign="top" class="MsoNormalTable"><p class="MsoNormal">What ACS nightmares did you have? Questions and answers.</p></td>
+            <td align="left" valign="top" class="MsoNormalTable">This should be a little discussion at the start of each course day.</td>
+          </tr>
+          <tr>
+            <td valign="top">09:30<br>
+12:00</td>
+            <td valign="top"><p>Multi-threading with ACS libraries in CPP and/or Java.</p>
+              <ul>
+                <li> Management of multiple threads.</li>
+                <li> Component's threads.</li>
+                <li> Synchronisation.</li>
+            </ul></td>
             <td valign="top">&nbsp;</td>
           </tr>
           <tr>
@@ -693,10 +674,17 @@
             <td valign="top">&nbsp;</td>
           </tr>
           <tr>
-            <td valign="top">09:00<br>
-    --:--</td>
-            <td valign="top">ACS Logging and Error Systems </td>
+            <td valign="top">13:00<br>
+    15:00</td>
+            <td valign="top">Using the ACS Bulk Data to transfer big amounts of data (images, scientific data) (constraints: can be only Wednesday orThursday)</td>
             <td valign="top">&nbsp;</td>
+          </tr>
+          <tr>
+            <td valign="top">15:00<br>
+17:30</td>
+            <td valign="top"><em>Design workshop.<br>
+            Architecture and design of the ATM (atmospheric) software for ALMA            </em></td>
+            <td valign="top"><em>A group proposes a tipoic to be discussed: the design and/or the architecture or an applications or an implementation problem to be analyzed together.</em></td>
           </tr>
           <tr>
             <td valign="top">17:30</td>
@@ -718,8 +706,14 @@
             </tr>
             <tr>
               <td valign="top">09:00<br>
-          --:--</td>
-              <td valign="top">&nbsp;</td>
+    09:30</td>
+              <td align="left" valign="top" class="MsoNormalTable"><p class="MsoNormal">What ACS nightmares did you have? Questions and answers.</p></td>
+              <td align="left" valign="top" class="MsoNormalTable">This should be a little discussion at the start of each course day.</td>
+            </tr>
+            <tr>
+              <td valign="top">09:30<br>
+12:00</td>
+              <td valign="top">Using the ACS Notification Channel </td>
               <td valign="top">&nbsp;</td>
             </tr>
             <tr>
@@ -729,10 +723,21 @@
               <td valign="top">&nbsp;</td>
             </tr>
             <tr>
-              <td valign="top">09:00<br>
-    --:--</td>
-              <td valign="top">ACS Logging and Error Systems </td>
+              <td valign="top">13:00<br>
+    15:00</td>
+              <td valign="top"> Real time control with ACS:
+                <ul>
+                  <li>RTAI support (B.Jeram) </li>
+                  <li>Building a kernel module (T.Juerges) </li>
+                  <li>Other options: VxWork</li>
+              </ul></td>
               <td valign="top">&nbsp;</td>
+            </tr>
+            <tr>
+              <td valign="top">15:00<br>
+17:30</td>
+              <td valign="top"><em>Design workshop.</em></td>
+              <td valign="top"><em>A group proposes a tipoic to be discussed: the design and/or the architecture or an applications or an implementation problem to be analyzed together.</em></td>
             </tr>
             <tr>
               <td valign="top">17:30</td>
@@ -755,8 +760,22 @@
             </tr>
             <tr>
               <td valign="top">09:00<br>
-          --:--</td>
+    09:30</td>
+              <td align="left" valign="top" class="MsoNormalTable"><p class="MsoNormal">What ACS nightmares did you have? Questions and answers.</p></td>
+              <td align="left" valign="top" class="MsoNormalTable">This should be a little discussion at the start of each course day.</td>
+            </tr>
+            <tr>
+              <td valign="top">09:30<br>
+11:00</td>
+              <td valign="top"><p>Testing strategies in distributed and asynchronous systems </p>
+              </td>
               <td valign="top">&nbsp;</td>
+            </tr>
+            <tr>
+              <td valign="top">11:00<br>
+    12:00</td>
+              <td valign="top"><p>Understanding ACS Properties: creating DevIOs, monitoring, alarms </p>
+              </td>
               <td valign="top">&nbsp;</td>
             </tr>
             <tr>
@@ -766,9 +785,18 @@
               <td valign="top">&nbsp;</td>
             </tr>
             <tr>
-              <td valign="top">09:00<br>
-    --:--</td>
-              <td valign="top">ACS Logging and Error Systems </td>
+              <td valign="top">13:00<br>
+17:30</td>
+              <td valign="top">Generalized TCS (gTCS) (from R.Lemke)<br>
+What would interest me are the following questions: 
+                <ul>
+                  <li> Where is the border line between real time and non real time OS (minimal real time, or simply everything in RT)? <br>
+    Here it would be good if all available TCS system could be presented and it should made clear where the line is.</li>
+                  <li> What should be supported in the initial gTCS IDL?</li>
+                  <li> Where will be the different modes (scanning, pointing corrections, guiding) implemented (all in one IDL, or different modules, what are the real time requirements?)? </li>
+                  <li> Is there an acceptance from the other teams? Would they allow to test out the gTCS, or even maybe adapt it to their running systems? <br>
+    Of cause we should iterate.</li>
+              </ul></td>
               <td valign="top">&nbsp;</td>
             </tr>
             <tr>
@@ -785,8 +813,12 @@
         </table>
       </div>
     </div>
-    <p class="MsoNormal">&nbsp; </p>
-    <h2 class="MsoNormal">&nbsp;</h2>
+    <p class="style3">Here are a few other topics that could be interesting for a discussion. <br>
+    Please let us have as soon a possible  further suggestions and proposals for the design workshops:</p>
+    <ul>
+      <li><strong><em>ACS Code Generation. The ACS Generator</em></strong></li>
+      <li><strong><em>ACS IDL Simulator</em></strong></li>
+    </ul>
     <p class="MsoNormal"><b><span
 
  style="font-size: 11pt;">-----------------------</span></b><b><span
@@ -794,7 +826,7 @@
  style="font-size: 11pt;">&nbsp;</span></b></p>
     <h2 class="H2">Course examples</h2>
     <p>During the whole course, the presentations will mostly develop one single example 
-      (a telescope Mount).</p>
+      (a telescope Mount or something similar).</p>
     <p>The code for the example is in the ACS CVS archive under: ACS/LGPL/CommonSoftware/acscourse.</p>
     <p>You can fing here:</p>
 </div>
