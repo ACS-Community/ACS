@@ -1,4 +1,8 @@
-1 - 
-1 - 
-1 - OK (12 tests)
-1 - 
+3,4c3,5
+< 1 - 
+< 1 - OK (12 tests)
+---
+> 1 - .
+> 1 -  -- junit.textui.TestRunner com.cosylab.logging.engine.ACS.ACSLogParserTest
+> 1 - OK (1 test)
+
