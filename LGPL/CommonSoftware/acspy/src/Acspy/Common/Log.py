@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.21 2006/12/14 11:41:45 bjeram Exp $
+# @(#) $Id: Log.py,v 1.22 2007/01/04 16:08:12 bjeram Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,12 +42,13 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.21 2006/12/14 11:41:45 bjeram Exp $"
+__revision__ = "$Id: Log.py,v 1.22 2007/01/04 16:08:12 bjeram Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
 from inspect   import stack
 import sys
+import math
 import logging
 from traceback import print_exc
 #--ACS Imports-----------------------------------------------------------------
@@ -83,15 +84,15 @@ LEVELS = { ACSLog.ACS_LOG_TRACE     : logging.TRACE,
            }
 
 # List of standard log message severities in ranked order
-SEVERITIES = { 0x0002 : ACSLog.ACS_LOG_TRACE,
-               0x0004 : ACSLog.ACS_LOG_DEBUG,
-               0x0010 : ACSLog.ACS_LOG_INFO,
-               0x0020 : ACSLog.ACS_LOG_NOTICE,
-               0x0040 : ACSLog.ACS_LOG_WARNING,
-               0x0200 : ACSLog.ACS_LOG_ERROR,
-               0x0400 : ACSLog.ACS_LOG_CRITICAL,
-               0x1000 : ACSLog.ACS_LOG_ALERT,
-               0x2000 : ACSLog.ACS_LOG_EMERGENCY
+SEVERITIES = { 002 : ACSLog.ACS_LOG_TRACE,
+               004 : ACSLog.ACS_LOG_DEBUG,
+               010 : ACSLog.ACS_LOG_INFO,
+               020 : ACSLog.ACS_LOG_NOTICE,
+               040 : ACSLog.ACS_LOG_WARNING,
+               0200 : ACSLog.ACS_LOG_ERROR,
+               0400 : ACSLog.ACS_LOG_CRITICAL,
+               01000 : ACSLog.ACS_LOG_ALERT,
+               02000 : ACSLog.ACS_LOG_EMERGENCY
                }
                
 #------------------------------------------------------------------------------
@@ -123,9 +124,9 @@ STDOUTHANDLER.setFormatter(ACSFORMATTER)
     
 #determine ACS_LOG_STDOUT
 if environ.has_key('ACS_LOG_STDOUT'):
-    ACS_LOG_STDOUT = max(0, int(environ['ACS_LOG_STDOUT']))
+    ACS_LOG_STDOUT = pow(2, max(0, int(environ['ACS_LOG_STDOUT'])-1))
 else:
-    ACS_LOG_STDOUT = 0x0010
+    ACS_LOG_STDOUT = 010
 
 #set the filtering level for the stdout handler
 STDOUTHANDLER.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
@@ -140,7 +141,9 @@ def stdoutOk(log_priority):
     '''
     lvl = LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]]
 
-    if lvl < log_priority:
+    return (lvl <= log_priority)
+
+    if lvl <= log_priority:
         return 1
     else:
         return 0
