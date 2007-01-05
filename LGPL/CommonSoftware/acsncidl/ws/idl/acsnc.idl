@@ -86,6 +86,14 @@ module acsnc
      */
     const string FILTER_LANGUAGE_NAME = "ETCL";
 
+    /**
+     * The prefix used to derive the event type from the IDL struct name
+     * in (the only partially supported) cases where the event data is not a single struct 
+     * but instead a sequence of such structs.
+     */
+    const string SEQUENCE_EVENT_TYPE_PREFIX = "_SequenceOf_";
+
+
     ////////////////////////////////////////////////////////////////////////
     /** @interface ACSEventAdmin
      *  A high-level interface designed to manipulate the CORBA notification
@@ -215,15 +223,15 @@ module acsnc
     
     /**
      * The only reason this interface is being defined is because the ACS Java implementation
-     * has a limitation where only IDL interface implementations derived from ACS::OffShoots
-     * can be activated by the ContainerServices.
+     * ensures that only IDL interface implementations derived from ACS::OffShoots
+     * can be activated as CORBA objects by the ContainerServices.
      */
     interface OSPushSupplier : CosNotifyComm::StructuredPushSupplier, ACS::OffShoot {};
 
     /**
      * The only reason this interface is being defined is because the ACS Java implementation
-     * has a limitation where only IDL interface implementations derived from ACS::OffShoots
-     * can be activated by the ContainerServices.
+     * ensures that only IDL interface implementations derived from ACS::OffShoots
+     * can be activated as CORBA objects by the ContainerServices.
      */
     interface OSPushConsumer : CosNotifyComm::StructuredPushConsumer, ACS::OffShoot {};
 };
