@@ -123,7 +123,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	private JMenuItem loadURLMenuItem = null; // Load from URL
 	private JMenuItem loadDBMenuItem = null; // Load from database
 	private JMenuItem saveFileMenuItem = null; // Save File As
-	private JMenuItem clearAllMenuItem = null; // Clear All
+	private JMenuItem clearLogsMI = null; // Clear All
 	private JMenuItem exitMenuItem = null; // Exit
 	
 	/**
@@ -319,7 +319,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this);
             		dlg.setVisible(true);
             	}
-            } else if (e.getSource() == LoggingClient.this.getClearAllMenuItem() || e.getSource()==clearLogsBtn) {
+            } else if (e.getSource() == LoggingClient.this.getClearLogsMI() || e.getSource()==clearLogsBtn) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
 				connExit(e);
@@ -461,7 +461,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		public void menuSelected(MenuEvent menuE) {
 			// Some menus are disabled when loading/saving
 			boolean enableMenu = !getLCModel1().IOInProgress();
-			clearAllMenuItem.setEnabled(enableMenu);
+			clearLogsMI.setEnabled(enableMenu);
 			if (getEngine().isConnected()) {
 				connectMenuItem.setText("Disconnect");
 			} else {
@@ -663,22 +663,22 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * Returns the ClearAllMenuItem property value.
 	 * @return javax.swing.JMenuItem
 	 */
-	private JMenuItem getClearAllMenuItem()
+	private JMenuItem getClearLogsMI()
 	{
-		if (clearAllMenuItem == null)
+		if (clearLogsMI == null)
 		{
 			try
 			{
 				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/delete.png"));
-				clearAllMenuItem = new JMenuItem("Clear All",icon);
-				clearAllMenuItem.setName("ClearAllMenuItem");
+				clearLogsMI = new JMenuItem("Clear logs",icon);
+				clearLogsMI.setName("ClearAllMenuItem");
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
 				handleException(ivjExc);
 			}
 		}
-		return clearAllMenuItem;
+		return clearLogsMI;
 	}
 
 	/**
@@ -928,7 +928,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		getLoadURLMenuItem().addActionListener(eventHandler); // Load URL
 		getLoadDBMenuItem().addActionListener(eventHandler); // Load from database
 		getSaveFileMenuItem().addActionListener(eventHandler); // Save File As
-		getClearAllMenuItem().addActionListener(eventHandler); // ClearAll
+		getClearLogsMI().addActionListener(eventHandler); // ClearAll
 		getExitMenuItem().addActionListener(eventHandler); // Exit
 
 		getFieldsMenuItem().addActionListener(eventHandler); // Fields
@@ -965,7 +965,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         fileMenu.add(getLoadURLMenuItem());
         fileMenu.add(getLoadDBMenuItem());
         fileMenu.add(getSaveFileMenuItem());
-        fileMenu.add(getClearAllMenuItem());
+        fileMenu.add(getClearLogsMI());
         fileMenu.addSeparator();
         fileMenu.add(getExitMenuItem());
         loggingClientJMenuBar.add(fileMenu);
@@ -1102,7 +1102,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
         
         // Add the button to delete logs
         ImageIcon iconClear =new ImageIcon(LogTypeHelper.class.getResource("/delete.png"));
-        clearLogsBtn = new JButton("<HTML><FONT size=-2>Delete logs</FONT>",iconClear);
+        clearLogsBtn = new JButton("<HTML><FONT size=-2>Clear logs</FONT>",iconClear);
         clearLogsBtn.addActionListener(eventHandler);
         tbLevelPanel.add(clearLogsBtn);
         
@@ -2184,7 +2184,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		fieldsMenuItem.setEnabled(enabled);
 		loadMenuItem.setEnabled(enabled);
 		loadURLMenuItem.setEnabled(enabled);
-		clearAllMenuItem.setEnabled(enabled);
+		clearLogsMI.setEnabled(enabled);
 		saveFileMenuItem.setEnabled(enabled);
 		connectMenuItem.setEnabled(enabled);
 		autoReconnectMI.setEnabled(enabled);
