@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.24 2006/10/16 13:19:24 gchiozzi Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.25 2007/01/05 09:30:26 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.24 2006/10/16 13:19:24 gchiozzi Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.25 2007/01/05 09:30:26 bjeram Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -91,12 +91,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     unsigned int flags = (*tss)->flags();
     unsigned long priority = getPriority(log_record);
     
-    // if priority less tha minCachePriority do not cache or log
-    if (priority < m_minCachePriority) 
-	{
-	return;
-	}
-
+   
     ACE_TCHAR timestamp[24];
     formatISO8601inUTC(log_record.time_stamp(), timestamp);
     
@@ -191,9 +186,15 @@ LoggingProxy::log(ACE_Log_Record &log_record)
                 }
             ACE_OS::printf ("\n");
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
-	    }
+	    }//if-else
+	}//if
+
+    // if priority less tha minCachePriority do not cache or log
+    if (priority < m_minCachePriority) 
+	{
+	return;
 	}
-   
+    
     //
     // format XML
     //
