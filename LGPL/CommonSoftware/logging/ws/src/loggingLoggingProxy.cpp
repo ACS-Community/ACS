@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.25 2007/01/05 09:30:26 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.26 2007/01/05 10:19:08 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.25 2007/01/05 09:30:26 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.26 2007/01/05 10:19:08 bjeram Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -330,9 +330,9 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}
     
     // priority
-    if (priority != log_record.priority())
+    if (priority != log_record.priority()+1)
 	{
-	ACE_OS::sprintf(line, " Priority=\"%lu\"", priority+1); //align to ACS priorty
+	ACE_OS::sprintf(line, " Priority=\"%lu\"", priority); //align to ACS priorty
 	xml += line;
 	}
     
@@ -399,7 +399,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     */
     
     // sent record directly to centralized logger
-    if (!m_noLogger && (m_cacheDisabled || (priority+1 > m_maxCachePriority)))
+    if (!m_noLogger && (m_cacheDisabled || (priority > m_maxCachePriority)))
 	{
 	CORBA::Any record;
 	record <<= xml.c_str();
@@ -1089,12 +1089,13 @@ LoggingProxy::done() {
 unsigned long
 LoggingProxy::getPriority(ACE_Log_Record &log_record)
 {
-  // ACE default
-  unsigned long priority = log_record.priority();
-  unsigned long flag_prio = (*tss)->flags() & 0x0F;
-  if (flag_prio)
-    priority = flag_prio;
+    // ACE default
+// here we have to add 1 to align ACE and ACS priorities. In past it was OK due to a bug in ACE
+    unsigned long priority = log_record.priority()+1; 
+    unsigned long flag_prio = (*tss)->flags() & 0x0F;
+    if (flag_prio)
+	priority = flag_prio;
 
-  return priority;
+    return priority;
 }
 

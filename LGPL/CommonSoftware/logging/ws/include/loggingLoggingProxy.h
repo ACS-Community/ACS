@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.16 2006/09/28 15:43:45 gchiozzi Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.17 2007/01/05 10:19:12 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -104,7 +104,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.16 2006/09/28 15:43:45 gchiozzi Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.17 2007/01/05 10:19:12 bjeram Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -250,7 +250,9 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// returns ACE_LOG_MSG to default state
     static void done();
     
-    /// Returns priority of the record (default or overriden)
+    /// Returns priority of the record (default or overriden). 
+    /// It returns ACS priority which is ACE priority increased by 1. 
+    /// in the past ACE and ACS priorities were aligned, due a bug in ACS's log2! 
     static unsigned long getPriority(ACE_Log_Record &log_record);
     
     /// Checks xml if it is XML and "DTD" string and send it to centralized logger. Thread safe!
