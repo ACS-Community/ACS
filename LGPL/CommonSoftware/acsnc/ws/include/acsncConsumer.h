@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.65 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.66 2007/01/05 17:03:39 hsommer Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -231,7 +231,7 @@ class Consumer :
 		}
 	    else
 		{
-		std::string etName= "_SequqnceOf_";
+		std::string etName= acsnc::SEQUENCE_EVENT_TYPE_PREFIX; //_SequenceOf_
 		CORBA::Any a;
 		a._tao_set_typecode(any.type()->content_type());
 		etName+=a.type()->name();
@@ -270,7 +270,7 @@ class Consumer :
 		}
 	    else
 		{
-		std::string etName= "_SequqnceOf_";
+		std::string etName= acsnc::SEQUENCE_EVENT_TYPE_PREFIX; //_SequenceOf_"
 		CORBA::Any a;
 		a._tao_set_typecode(any.type()->content_type());
 		etName+=a.type()->name();
