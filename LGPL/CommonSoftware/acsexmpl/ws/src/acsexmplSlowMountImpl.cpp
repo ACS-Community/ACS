@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplSlowMountImpl.cpp,v 1.11 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplSlowMountImpl.cpp,v 1.12 2007/01/08 13:53:49 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <time.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplSlowMountImpl, "$Id: acsexmplSlowMountImpl.cpp,v 1.11 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplSlowMountImpl, "$Id: acsexmplSlowMountImpl.cpp,v 1.12 2007/01/08 13:53:49 gchiozzi Exp $")
 using namespace baci;
 
 /**
@@ -142,9 +142,7 @@ SlowMount::obstarAction (BACIComponent *cob_p,
     
     DBConnector::writeCommand(getComponent()->getName(), "obstar", getStringifiedTimeStamp());
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
     
     // if OK action will be destroyed and we do not need it anymore
     if (param_p!=0) 
@@ -244,9 +242,7 @@ SlowMount::objfixAction (BACIComponent *cob_p,
     	m_actEl_sp->getDevIO()->write(param_p->elev, timestamp);
     }
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
     
     // Check if the antenna is position
     if (actAz==param_p->az && actEl==param_p->elev) {

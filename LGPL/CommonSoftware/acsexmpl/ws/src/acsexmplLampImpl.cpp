@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplLampImpl.cpp,v 1.99 2005/04/19 14:36:46 acaproni Exp $"
+* "@(#) $Id: acsexmplLampImpl.cpp,v 1.100 2007/01/08 13:53:49 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,7 +47,7 @@
 const static int ON_ACTION  = 0;
 const static int OFF_ACTION = 1;
 
-ACE_RCSID(acsexmpl, acsexmplLampImpl, "$Id: acsexmplLampImpl.cpp,v 1.99 2005/04/19 14:36:46 acaproni Exp $")
+ACE_RCSID(acsexmpl, acsexmplLampImpl, "$Id: acsexmplLampImpl.cpp,v 1.100 2007/01/08 13:53:49 gchiozzi Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -117,9 +117,7 @@ Lamp::onAction (BACIComponent *cob_p,
     
     DBConnector::writeCommand(getComponent()->getName(), "on", getStringifiedTimeStamp());
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
     
     // complete action requesting done invocation, 
     // otherwise return reqInvokeWorking and set descOut.estimated_timeout
@@ -141,9 +139,7 @@ Lamp::offAction (BACIComponent *cob_p,
     
     DBConnector::writeCommand(getComponent()->getName(), "off", getStringifiedTimeStamp());
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
     
     // complete action requesting done invakation, 
     // otherwise return reqInvokeWorking and set descOut.estimated_timeout

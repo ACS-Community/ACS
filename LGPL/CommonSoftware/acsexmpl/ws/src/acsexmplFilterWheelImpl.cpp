@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.8 2006/10/20 11:24:20 bjeram Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.9 2007/01/08 13:53:49 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ const static int MOVEFILTER_ACTION   = 0;
 const static int MOVESLOT_ACTION   = 1;
 const static int ADJUST_ACTION = 2;
 
-ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.8 2006/10/20 11:24:20 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.9 2007/01/08 13:53:49 gchiozzi Exp $")
 
 using namespace baci;
 
@@ -379,9 +379,7 @@ FilterWheel::adjustAction (
 
     DBConnector::writeCommand(getComponent()->getName(), "move", getStringifiedTimeStamp());
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
 
     // if OK action will be destroyed and we do not need it anymore
     if (steps!=0) 
@@ -438,9 +436,7 @@ FilterWheel::moveFilterAction (
     
     DBConnector::writeCommand(getComponent()->getName(), "move", getStringifiedTimeStamp());
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
 
     // if OK action will be destroyed and we do not need it anymore
     if (name!=0) 
@@ -484,9 +480,7 @@ FilterWheel::moveSlotAction (
 
     DBConnector::writeCommand(getComponent()->getName(), "move", getStringifiedTimeStamp());
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
 
     // if OK action will be destroyed and we do not need it anymore
     if (slot!=0) 

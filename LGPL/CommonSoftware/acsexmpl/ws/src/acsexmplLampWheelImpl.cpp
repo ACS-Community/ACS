@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.18 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.19 2007/01/08 13:53:49 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
  */
 const static int MOVE_ACTION  = 0;
 
-ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.18 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.19 2007/01/08 13:53:49 gchiozzi Exp $")
 
 using namespace baci;
 
@@ -435,9 +435,7 @@ LampWheel::moveAction (BACIComponent *cob_p,
     
     DBConnector::writeCommand(getComponent()->getName(), "move", getStringifiedTimeStamp());
     
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
 
     // if OK action will be destroyed and we do not need it anymore
     if (slot_p!=0) 
