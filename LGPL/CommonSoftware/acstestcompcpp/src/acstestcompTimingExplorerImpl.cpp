@@ -1,7 +1,11 @@
 /*
- * "@(#) $Id: acstestcompTimingExplorerImpl.cpp,v 1.1 2006/09/28 16:02:57 gchiozzi Exp $"
+ * "@(#) $Id: acstestcompTimingExplorerImpl.cpp,v 1.2 2007/01/08 16:00:06 gchiozzi Exp $"
  *
  * $Log: acstestcompTimingExplorerImpl.cpp,v $
+ * Revision 1.2  2007/01/08 16:00:06  gchiozzi
+ * Replaced obsolete (and incomplete) ACS Completion initiallization with
+ * initialization from construction of completion generated type.
+ *
  * Revision 1.1  2006/09/28 16:02:57  gchiozzi
  * Added second test component.
  * Some cleanup and refactoring.
@@ -83,9 +87,7 @@ class MultipleReplyThread :public ACS::Thread
 	    
 	    try
 		{
-		completion.timeStamp=getTimeStamp();
-		completion.type=ACSErr::ACSErrTypeOK;
-		completion.code=ACSErrTypeOK::ACSErrOK;
+		completion = ACSErrTypeOK::ACSErrOKCompletion();
 		
 		if(iterationsDone_m < threadData_m->iterations)
 		    {

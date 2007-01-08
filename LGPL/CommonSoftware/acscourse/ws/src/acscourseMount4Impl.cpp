@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount4Impl.cpp,v 1.8 2006/06/22 16:26:30 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount4Impl.cpp,v 1.9 2007/01/08 16:01:19 gchiozzi Exp $"
 *
 */
  
@@ -161,9 +161,8 @@ Mount4Impl::objfixAction (BACIComponent *cob_p,
     ACS_SHORT_LOG((LM_INFO, "Executed asynchronous objfix command. Az: %f, El: %f", 
 		   param_p->az, param_p->elev));
 
-    completion.timeStamp=getTimeStamp();
-    completion.type=ACSErr::ACSErrTypeOK;
-    completion.code=ACSErrTypeOK::ACSErrOK;
+    completion = ACSErrTypeOK::ACSErrOKCompletion();
+
     
     // if OK action will be destroyed and we do not need it anymore
     if (param_p!=0) 
