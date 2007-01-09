@@ -307,10 +307,11 @@ public class SubsysResourceMonitor {
 			}
 			
 			// run the check in a thread from the thread pool
-			Runnable timeoutCaller = new Runnable() {
+			class CheckStateCallerWithTimeout implements Runnable {
+				private volatile boolean timeout = false;
 				public void run() {
 					String badState = resourceChecker.checkState();
-					if (badState != null) {
+					if (badState != null && !timeout) { // we don't want to report a bad state after a timeout, since the timeout has already been reported
 						try {
 							err.badState(resourceChecker.getResource(), badState);                            
 						} catch (Exception e) {
@@ -318,8 +319,13 @@ public class SubsysResourceMonitor {
 						}
 					}
 				}
-			};
-			Future future = threadPool.submit(timeoutCaller);
+				void cancel() {
+					// it's cleaner to let this thread die and simply ignore its results after a timeout
+					timeout = true;
+				}
+			}
+			CheckStateCallerWithTimeout checkStateCallerWithTimeout = new CheckStateCallerWithTimeout();
+			Future future = threadPool.submit(checkStateCallerWithTimeout);
 			long timeBeforeCall = System.currentTimeMillis();
 			Throwable callError = null;
 			boolean wasTimedOut = false;
@@ -343,6 +349,11 @@ public class SubsysResourceMonitor {
 //			}
 			} catch (Throwable thr) { // ExecutionException or unexpected
 				callError = thr;
+			}
+			finally {
+				if (wasTimedOut) {
+					checkStateCallerWithTimeout.cancel();
+				}
 			}
 			
 			// perhaps isSuspended was set while calling, so we check again
