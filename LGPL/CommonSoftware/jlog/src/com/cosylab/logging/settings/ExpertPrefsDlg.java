@@ -94,6 +94,7 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		GridBagConstraints c = new GridBagConstraints();
 		optionsPanel.setLayout(prefsLayout);
 		JLabel timeLbl = new JLabel("Time frame:");
+		timeLbl.setEnabled(false);
 		JLabel numLbl =  new JLabel("Max num. of logs:");
 		c.gridx=0; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
 		optionsPanel.add(timeLbl,c);
@@ -102,6 +103,7 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		// The panel with the controls
 		timeCB = new JComboBox(UserPreferences.timeOptions);
 		timeCB.setEditable(false);
+		timeCB.setEnabled(false);
 		maxLogNumCB  = new JComboBox(UserPreferences.maxLogNumOptions);
 		maxLogNumCB.setEditable(false);
 		c.gridx=1; c.gridy=0; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
