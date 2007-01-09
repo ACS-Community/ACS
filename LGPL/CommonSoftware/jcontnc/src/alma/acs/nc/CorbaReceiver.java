@@ -34,6 +34,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import org.omg.CORBA.Any;
+import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.*;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 
@@ -109,10 +110,10 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 	 */
 	public void connect() { 
 		try {
-			String [] types = getEventType();
+			String[] types = getEventType();
 			for (int i = 0; i < types.length; ++i) {
                 try {
-    				addSubscription(Class.forName(types[i]));
+    				addSubscription(Class.forName(types[i]).asSubclass(IDLEntity.class));
                 } catch (java.lang.ClassNotFoundException e) {
                     throw new IllegalArgumentException(e.toString());
                 }
@@ -270,7 +271,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 			if (isBegin) {
                 try {
                     /**TODO change here as above*/
-				    addSubscription(Class.forName(eventTypeName));
+				    addSubscription(Class.forName(eventTypeName).asSubclass(IDLEntity.class));
                 } catch (java.lang.ClassNotFoundException e) {
                     throw new IllegalArgumentException(e.toString());
                 } catch(AcsJException acse) {
