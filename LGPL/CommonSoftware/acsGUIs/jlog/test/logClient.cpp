@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: logClient.cpp,v 1.3 2006/11/29 12:03:58 acaproni Exp $"
+* "@(#) $Id: logClient.cpp,v 1.4 2007/01/09 13:57:49 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,14 +81,23 @@ int main(int argc, char *argv[])
 		for (int t=0; t<atol(argv[2]); t++) 
 		{
 			ACS_SHORT_LOG ((LM_TRACE, "Test message"));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_DEBUG, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_INFO, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_NOTICE, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_WARNING, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_ERROR, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_CRITICAL, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_ALERT, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_EMERGENCY, "Test message %d",t));
+			usleep(250);
 		}
 		if (atol(argv[3])!=0) 
 			{
