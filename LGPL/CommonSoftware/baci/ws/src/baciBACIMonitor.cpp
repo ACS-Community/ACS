@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.cpp,v 1.5 2006/09/25 15:06:30 gchiozzi Exp $"
+* "@(#) $Id: baciBACIMonitor.cpp,v 1.6 2007/01/09 14:54:07 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baci.h"
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.5 2006/09/25 15:06:30 gchiozzi Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.6 2007/01/09 14:54:07 bjeram Exp $");
 
 
 namespace baci {
@@ -120,10 +120,7 @@ BACIMonitor::~BACIMonitor() {
   // Call done() and remove CB
   if (archivingMonitor_m==false)
     {
-      Completion completion;
-      completion.type = ACSErr::ACSErrTypeOK;
-      completion.code = ACSErrTypeOK::ACSErrOK;
-      completion.timeStamp = getTimeStamp();
+      Completion completion = ACSErrTypeOK::ACSErrOKCompletion();
 
       CBDescOut descOut;
       if (property_mp->getComponent()->finishCallback(callbackID_m, 
