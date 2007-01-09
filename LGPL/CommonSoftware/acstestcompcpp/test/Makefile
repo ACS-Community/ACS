@@ -1,11 +1,14 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.3 2006/10/11 15:03:22 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/01/09 08:38:37 cparedes Exp $"
 #
 # Makefile of acstestcomp
 #
 # $Log: Makefile,v $
+# Revision 1.4  2007/01/09 08:38:37  cparedes
+# Moving that use a xml with a special character from cdb to here.
+#
 # Revision 1.3  2006/10/11 15:03:22  gchiozzi
 # Added new test program.
 #
@@ -78,6 +81,8 @@ acstestcompTestComponentActivationErrors_OBJECTS   = acstestcompTestComponentAct
 acstestcompTestComponentActivationErrors_LDFLAGS =
 acstestcompTestComponentActivationErrors_LIBS = acstestcompStubs  maciClient maciErrType acstime
 
+acstestcompcppTestCDBCompImpl_OBJECTS       = acstestcompcppTestCDBCompImpl
+acstestcompcppTestCDBCompImpl_LIBS          = acstestcompcppTestCDBCompStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -85,13 +90,13 @@ acstestcompTestComponentActivationErrors_LIBS = acstestcompStubs  maciClient mac
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        =
+INCLUDES        = acstestcompcppTestCDBCompImpl.h
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       =
-LIBRARIES_L     =
+LIBRARIES       = 
+LIBRARIES_L     = acstestcompcppTestCDBCompImpl 
 
 #
 # <brief description of lllll library>
@@ -101,7 +106,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = TATPrologue TATEpilogue
+SCRIPTS_L       = TATPrologue TATEpilogue cdbXmlSpecialCharTest cdbInitMount
 
 #
 # TCL scripts (public and local)
@@ -155,7 +160,7 @@ xxxx_DBL_FLAGS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES = acstestcompcppTestCDBComp
 IDL_TAO_FLAGS =
 USER_IDL =
 #
@@ -241,7 +246,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) *~ CDB/*~ CDB/alma/*~ CDB/schemas/*~
+	$(RM) *~ CDB/*~ CDB/alma/*~ 
 	$(RM) CDB/MACI/*~ CDB/MACI/Components/*~
 	$(RM) tatlogs
 	$(RM) tmp

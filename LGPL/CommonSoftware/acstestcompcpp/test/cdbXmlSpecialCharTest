@@ -1,0 +1,17 @@
+#! /bin/bash
+
+cp -r case-files/alma/COMP99 CDB/alma
+cp -r case-files/MACI/Components/COMP99 CDB/MACI/Components
+
+ACS_LOG_STDOUT=4
+cdbjDALClearCache
+
+acsutilAwaitContainerStart -cpp Container 
+sleep 15
+cdbInitMount
+sleep 10
+acsStopContainer Container
+sleep 2
+grep "COMP99" tmp/acsStart.log
+rm -rf CDB/alma/COMP99 CDB/MACI/Components/COMP99
+cdbjDALClearCache
