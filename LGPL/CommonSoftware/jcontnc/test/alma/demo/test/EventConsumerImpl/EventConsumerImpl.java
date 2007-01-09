@@ -61,7 +61,7 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 			m_consumer = new Consumer("blar", m_containerServices);
 			
 			m_consumer.addSubscription(EventDescription.class, this);
-			m_consumer.addSubscription(NestedFridgeEventSeqHolder.class, this);		
+//			m_consumer.addSubscription(NestedFridgeEventSeqHolder.class, this);		
 			m_logger.info("Subscribed to 'EventDescription' and 'NestedFridgeEventSeqHolder' types of events on channel 'blar'");
 					
 			
@@ -90,14 +90,6 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 				// @TODO: throw exception. Perhaps move these checks to separate functional method to be called by test client.
 			} catch (Exception e) {
 				System.out.println("Good...cannot subscribe to events where the receive method has not been implemented");
-			}
-			//subscribe to a Java type...not allowed
-			try {
-				m_consumer.addSubscription(java.lang.Thread.class, this);
-				System.out.println("If you're reading this message, stupid API allows subscribing to Thread events!");
-				// @TODO: throw exception. Perhaps move these checks to separate functional method to be called by test client.
-			} catch (Exception e) {
-				System.out.println("Good...cannot subscribe to events where the type is a native Java class");
 			}
 			//try to add a bad filter
 			try {
