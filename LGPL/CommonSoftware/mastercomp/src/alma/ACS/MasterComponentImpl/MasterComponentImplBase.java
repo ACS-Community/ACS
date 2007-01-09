@@ -257,15 +257,18 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
             return true;
         }
         public void badState(T resource, String stateName) {
-            try {
-                m_logger.log(Level.INFO, "Found " + (isComponent ? "component" : "resource") + " '" + resourceName + 
-                		"' in bad state '" + stateName + "', will go to ERROR state.");
-                doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
-            } catch (Throwable thr) {
-                m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
-            }
+        	AcsState[] currentHierarchy = m_stateMachine.getCurrentTopLevelState().getStateHierarchy();
+        	if (currentHierarchy[currentHierarchy.length-1] != m_stateMachine.m_stateError) {
+        		try {
+        			m_logger.log(Level.SEVERE, "Found " + (isComponent ? "component" : "resource") + " '" + resourceName + 
+        					"' in bad state '" + stateName + "', will go to ERROR state.");
+        			doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);
+        		} catch (Throwable thr) {
+        			m_logger.log(Level.WARNING, "exception caught while going to ERROR state.", thr);
+        		}
+        	}
         }
-    };
+    }
 
 	/**
 	 * Subclasses can request to have the "health" of a given subsystem component monitored,
@@ -315,9 +318,6 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		}
 		
 		SubsysResourceMonitor.ResourceChecker<T> checker = new SubsysResourceMonitor.ComponentChecker<T>(component);
-		if (err == null) {
-			err = new DefaultResourceErrorHandler<T>(checker.getResourceName(), true);
-		}
 		monitorResource(checker, err, -1);
 	}
 	
@@ -354,7 +354,8 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 			throw new IllegalArgumentException("Parameter 'checker' must not be null");
 		}
         if (err == null) {
-			err = new DefaultResourceErrorHandler<T>(checker.getResourceName(), false);
+        	boolean isComponent = ( checker.getResource() instanceof ACSComponent );
+			err = new DefaultResourceErrorHandler<T>(checker.getResourceName(), isComponent);
         }
 		subsysComponentMonitor.monitorResource(checker, err);
 	}
