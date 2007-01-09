@@ -2,9 +2,8 @@
 cdbTATEpilogue > cdbTATEpilogue.log 2>&1
 
 #setup the Container to change
-cp -r case-files/MACI/Containers/OnDemandContainer $CDB_DIR/CDB/MACI/Containers
-
 CDB_DIR=`pwd`/CDB-MIX
+cp -r case-files/MACI/Containers/OnDemandContainer $CDB_DIR/CDB/MACI/Containers
 
 cdbTATPrologue $CDB_DIR
 ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
