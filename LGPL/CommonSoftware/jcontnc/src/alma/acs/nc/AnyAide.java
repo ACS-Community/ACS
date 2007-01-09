@@ -58,107 +58,110 @@ class AnyAide {
 	/** our own logger */
 	private final Logger m_logger;
 
-   /**
-    * Standard constructor.
-    * 
-    * @param cs
-    *           Container services reference of the component.
-    */
+	/**
+	 * Standard constructor.
+	 * 
+	 * @param cs
+	 *           Container services reference of the component.
+	 */
 	public AnyAide(ContainerServices cs) {
-      // save a local reference
-      m_containerServices = cs;
+		// save a local reference
+		m_containerServices = cs;
 
-      // just copy the reference
-      m_logger = cs.getLogger();
-   }
+		// just copy the reference
+		m_logger = cs.getLogger();
+	}
 
-   
-   /**
-    * Converts an array of simple type instances to a CORBA any.
-    * 
-    * @param objs
-    *           An array of CORBA simple types supported by BACI. For example,
-    *           double[], string[], etc.
-    * @return A CORBA any with the array of simple types.
-    * 
-    * @throws AcsJException
-    *            Thrown when the array type is not supported.
-    * @deprecated use one of the type-safe methods such as {@link #doubleArrayToCorbaAny(double[])}. This method will be removed.
-    * 		HSO-20061221: It actually seems that this method is never used outside of this package. 
-    *           Probably it was more useful before we got the restriction that only IDL-defined structs can be sent as event data
-    *           Thus we could also have the replacement methods like doubleArrayToCorbaAny with less than public visibility. 
-    * (an inferred rule which I have not seen stated clearly).  
-    */
-   public Any arrayToCorbaAny(Object objs) throws AcsJException {
-	   return internalArrayToCorbaAny(objs);
-   }
-   
-   /**
-    * Moved here from the now-deprecated method arrayToCorbaAny.
-    * @Todo (HSO) refactor and spread code over type-safe methods.
-    */
-   protected Any internalArrayToCorbaAny(Object objs) throws AcsJException {
-      Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
+	/**
+	 * Converts an array of simple type instances to a CORBA any.
+	 * 
+	 * @param objs
+	 *           An array of CORBA simple types supported by BACI. For example,
+	 *           double[], string[], etc.
+	 * @return A CORBA any with the array of simple types.
+	 * 
+	 * @throws AcsJException
+	 *            Thrown when the array type is not supported.
+	 * @deprecated use one of the type-safe methods such as {@link #doubleArrayToCorbaAny(double[])}. This method will be removed.
+	 * 		HSO-20061221: It actually seems that this method is never used outside of this package. 
+	 *           Probably it was more useful before we got the restriction that only IDL-defined structs can be sent as event data
+	 *           Thus we could also have the replacement methods like doubleArrayToCorbaAny with less than public visibility. 
+	 * (an inferred rule which I have not seen stated clearly).  
+	 */
+	public Any arrayToCorbaAny(Object objs) throws AcsJException {
+		return internalArrayToCorbaAny(objs);
+	}
 
-      // class object for the array
-      Class cl = objs.getClass();
-      if (!cl.isArray()) {
-    	  throw new AcsJJavaAnyEx("Object of type " + cl.getName() + " is not an array.");
-      }
-      // class object for the array elements
-      Class objClass = cl.getComponentType();
-      int length = Array.getLength(objs);
+	/**
+	 * Moved here from the now-deprecated method arrayToCorbaAny.
+	 */
+	protected Any internalArrayToCorbaAny(Object objs) throws AcsJException {
+		// class object for the array
+		Class cl = objs.getClass();
+		if (!cl.isArray()) {
+			throw new AcsJJavaAnyEx("Object of type " + cl.getName() + " is not an array.");
+		}
+		// class object for the array elements
+		Class objClass = cl.getComponentType();
+		int length = Array.getLength(objs);
 
-      // doubleSeq
-      if (objClass.equals(double.class)) {
-         double[] values = new double[length];
-         System.arraycopy(objs, 0, values, 0, length);
-         doubleSeqHelper.insert(retVal, values);
-      }
-      // longSeq
-      else if (objClass.equals(int.class)) {
-         int[] values = new int[length];
-         System.arraycopy(objs, 0, values, 0, length);
-         longSeqHelper.insert(retVal, values);
-      }
-      // stringSeq
-      else if (objClass.equals(String.class)) {
-         String[] values = new String[length];
-         System.arraycopy(objs, 0, values, 0, length);
-         stringSeqHelper.insert(retVal, values);
-      }
-      // floatSeq
-      else if (objClass.equals(float.class)) {
-         float[] values = new float[length];
-         System.arraycopy(objs, 0, values, 0, length);
-         floatSeqHelper.insert(retVal, values);
-      }
-      else {
-         // if we do not know what it is, there's not much we can
-         // do.
-         throw new AcsJJavaAnyEx(cl.getName() + " not supported!");
-      }
-      return retVal;
-   }
+		// doubleSeq
+		if (objClass.equals(double.class)) {
+			double[] values = new double[length];
+			System.arraycopy(objs, 0, values, 0, length);
+			return doubleArrayToCorbaAny(values);
+		}
+		// longSeq
+		else if (objClass.equals(int.class)) {
+			int[] values = new int[length];
+			System.arraycopy(objs, 0, values, 0, length);
+			return intArrayToCorbaAny(values);
+		}
+		// stringSeq
+		else if (objClass.equals(String.class)) {
+			String[] values = new String[length];
+			System.arraycopy(objs, 0, values, 0, length);
+			return stringArrayToCorbaAny(values);
+		}
+		// floatSeq
+		else if (objClass.equals(float.class)) {
+			float[] values = new float[length];
+			System.arraycopy(objs, 0, values, 0, length);
+			return floatArrayToCorbaAny(values);
+		} 
+		else {
+			// if we do not know what it is, there's not much we can
+			// do.
+			throw new AcsJJavaAnyEx(cl.getName() + " not supported!");
+		}
+	}
 
-   public Any doubleArrayToCorbaAny(double[] objs) throws AcsJException {
-	   return internalArrayToCorbaAny(objs); 
-   }
+	public Any doubleArrayToCorbaAny(double[] doubles) {
+		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
+		doubleSeqHelper.insert(retVal, doubles);
+		return retVal;
+	}
 
-   public Any floatArrayToCorbaAny(float[] objs) throws AcsJException {
-	   return internalArrayToCorbaAny(objs); 
-   }
+	public Any floatArrayToCorbaAny(float[] floats) {
+		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
+		floatSeqHelper.insert(retVal, floats);
+		return retVal;
+	}
 
-   public Any intArrayToCorbaAny(int[] objs) throws AcsJException {
-	   return internalArrayToCorbaAny(objs); 
-   }
+	public Any intArrayToCorbaAny(int[] ints) {
+		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
+		longSeqHelper.insert(retVal, ints);
+		return retVal;
+	}
 
-   public Any stringArrayToCorbaAny(String[] objs) throws AcsJException {
-	   return internalArrayToCorbaAny(objs); 
-   }
+	public Any stringArrayToCorbaAny(String[] strings) {
+		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
+		stringSeqHelper.insert(retVal, strings);
+		return retVal;
+	}
 
-   
-   /**
+	
+	/**
 	 * Converts a generic Java object to a CORBA Any. May fail.
 	 * 
 	 * @param obj
@@ -168,9 +171,9 @@ class AnyAide {
 	 *             Thrown if there's some problem converting the object to an
 	 *             any. TODO: make sure this works with enumerations.
 	 */
-   public Any objectToCorbaAny(Object obj) throws AcsJException {
-		
-	   if (obj != null && obj.getClass().isArray()) {
+	public Any objectToCorbaAny(Object obj) throws AcsJException {
+
+		if (obj != null && obj.getClass().isArray()) {
 			return internalArrayToCorbaAny(obj);
 		}
 
@@ -208,16 +211,15 @@ class AnyAide {
 			// as a last ditch attempt, we assume the object
 			// is some sort of complex IDL struct/union/etc
 			// and that this method will work.
-			return complexObjectToCorbaAny((IDLEntity)obj);
-		}
+			return complexObjectToCorbaAny((IDLEntity) obj);
+		} 
 		else {
 			throw new AcsJBadParameterEx("Bad arg of type " + obj.getClass().getName());
 		}
 		return retVal;
 	}
 
-	
-   /**
+	/**
 	 * Converts a complex CORBA-based object to a CORBA any.
 	 * 
 	 * @param obj
@@ -231,7 +233,7 @@ class AnyAide {
 		if (obj == null) {
 			throw new AcsJBadParameterEx("Method arg 'obj' was null");
 		}
-		
+
 		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
 
 		// ------
@@ -266,12 +268,13 @@ class AnyAide {
 		} 
 		catch (NoSuchMethodException e) {
 			// we got a Helper class, but it seems to be not the CORBA-generated kind
-			String reason = "Class '" + structHelperClass.getName() + "' associated with the given object of type '" 
-				+ obj.getClass().getName() + "' is incompatiable with CORBA: ";
+			String reason = "Class '" + structHelperClass.getName()
+					+ "' associated with the given object of type '" + obj.getClass().getName()
+					+ "' is incompatiable with CORBA: ";
 			throw new AcsJBadParameterEx(reason + e.getMessage());
 		} 
 		catch (java.lang.reflect.InvocationTargetException e) {
-			Throwable realEx = e.getCause();			
+			Throwable realEx = e.getCause();
 			String reason = "Failed to insert the given CORBA object into a CORBA Any: the helper class insert method threw an exception.";
 			m_logger.log(Level.FINE, reason, realEx);
 			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason, realEx); // todo: NC-specific exception type
@@ -283,8 +286,7 @@ class AnyAide {
 		}
 	}
 
-	
-   /**
+	/**
 	 * Method which attempts to (and under normal circumstances should succeed)
 	 * convert a CORBA any object to the corresponding Java object. For simple
 	 * CORBA types such as long, this method will extract the long and embed it
@@ -298,7 +300,7 @@ class AnyAide {
 	public Object corbaAnyToObject(Any any) {
 
 		// @TODO check any==null
-		
+
 		// initialize the return value
 		Object returnValue = null;
 
@@ -442,8 +444,7 @@ class AnyAide {
 		return returnValue;
 	}
 
-	
-   /**
+	/**
 	 * Extracts from a Corba Any the embedded user-defined event data.
 	 * The returned data can be either
 	 * <ol>
@@ -472,11 +473,11 @@ class AnyAide {
 			if (kind.equals(org.omg.CORBA.TCKind.tk_sequence)) {
 				// the event data is a sequence instead of a single value or struct. Need to get the underlying type
 				org.omg.CORBA.TypeCode sequenceType = any.type().content_type();
-				
+
 				// @TODO check if the following applies also for sequences of primitive types, 
 				//       or if there is a rule that we always must have structs as event data 
 				//       (which is implied by always calling complexAnyToObject in push_structured_event) 
-				
+
 				// Derive the Java package from the id. 
 				// Note that we can't use the TypeCode#toString() method which gives a nice qualified name for JacORB, but perhaps not for other ORB impls.
 				// First assume that the type is not defined nested inside an interface 
@@ -486,7 +487,7 @@ class AnyAide {
 				} catch (ClassNotFoundException ex) {
 					// it could be that we are dealing with a sequence of nested structs
 					qualHelperClassName = corbaStructToJavaClass(sequenceType.id(), true) + "SeqHelper";
-					localHelper = Class.forName(qualHelperClassName);						
+					localHelper = Class.forName(qualHelperClassName);
 				}
 			} 
 			else {
@@ -506,20 +507,20 @@ class AnyAide {
 		} 
 		catch (ClassNotFoundException e) {
 			// should never happen...
-			String msg = "Failed to extract the event struct data from a CORBA Any because the helper class '" + 
-							qualHelperClassName + "' does not exist.";
+			String msg = "Failed to extract the event struct data from a CORBA Any because the helper class '"
+					+ qualHelperClassName + "' does not exist.";
 			m_logger.log(Level.WARNING, msg, e);
 		} 
 		catch (NoSuchMethodException e) {
 			// should never happen...
 			String msg = "Failed to process an any because the helper class '" + qualHelperClassName + "' does not provide the 'extract' method.";
 			m_logger.log(Level.WARNING, msg, e);
-		} 
-//		catch (ClassCastException e) {
-//			// should never happen...
-//			String msg = "Failed to process an any because the contained data does not seem to come from an IDL struct.";
-//			m_logger.log(Level.WARNING, msg, e);
-//		} 
+		}
+		//		catch (ClassCastException e) {
+		//			// should never happen...
+		//			String msg = "Failed to process an any because the contained data does not seem to come from an IDL struct.";
+		//			m_logger.log(Level.WARNING, msg, e);
+		//		} 
 		catch (Throwable thr) { // IllegalAccessException, InvocationTargetException, TypeCodePackage.BadKind or any other throwable
 			// should never happen...
 			String msg = "Failed to process an any because of unexpected problem.";
@@ -534,7 +535,7 @@ class AnyAide {
 	 * @param isNestedStruct  if true, "Package" will be inserted according to 
 	 *                        <i>"IDL to Java LanguageMapping Specification" version 1.2: 1.17 Mapping for Certain Nested Types</i> apply.
 	 */
-	protected String corbaStructToJavaClass(String id, boolean isNestedStruct) 
+	protected String corbaStructToJavaClass(String id, boolean isNestedStruct)
 			throws IllegalArgumentException 
 	{
 		String prefix = "IDL:";
@@ -555,7 +556,5 @@ class AnyAide {
 		}
 		return qualName;
 	}
-	
-	
 
 }
