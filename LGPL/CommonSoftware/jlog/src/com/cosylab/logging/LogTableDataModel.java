@@ -74,7 +74,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public class LogDeleter extends Thread {
 		// The time interval between two iteration of the thread
-		private final int TIME_INTERVAL=60*1000;
+		private final int TIME_INTERVAL=15*1000;
 		
 		// The queue with the keys of the logs to delete
 		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
@@ -99,19 +99,22 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		 * The thread to delete logs
 		 */
 		public void run() {
+			ArrayList<Integer> keysToDelete = new ArrayList<Integer>();
+			int sz;
 			while (true) {
 				try {
 					Thread.sleep(TIME_INTERVAL);
-				} catch (InterruptedException e) {}
-				if (maxLog>0 && allLogs.getSize()>maxLog) {
-					System.out.println("LogDeleter.run: "+(allLogs.getSize()-maxLog)+" logs to delete");
-					ArrayList<Integer> keysToDelete = new ArrayList<Integer>();
-					int nKeys=allLogs.getFirstLogs(allLogs.getSize()-maxLog,keysToDelete);
-					for (int t=0; t<nKeys; t++) {
-						synchronized (LogTableDataModel.this) {
-							deleteLog(keysToDelete.get(t));
-						}
-					}
+				} catch (InterruptedException e) {
+					continue;
+				}
+				sz =allLogs.getSize();
+				System.out.println("Checking log numbers "+sz+" (limit "+maxLog+")");
+				if (maxLog>0 && sz>maxLog) {
+					System.out.println("LogDeleter.run: "+(sz-maxLog)+" logs to delete");
+					keysToDelete.clear();
+					int nKeys=allLogs.getFirstLogs(sz-maxLog,keysToDelete);
+					deleteLogs(keysToDelete);
+					System.out.println("Logs deleted");
 				}
 			}
 		}
@@ -121,7 +124,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		 *  
 		 * @param key The key of the log to delete
 		 */
-		private void deleteLog(Integer key) {
+		private synchronized void deleteLog(Integer key) {
 			int posInTable=visibleLogs.deleteLog(key);
 			fireTableRowsDeleted(posInTable,posInTable);
 			try {
@@ -142,8 +145,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 				throw new IllegalArgumentException("The collection can't be null");
 			}
 			visibleLogs.deleteLogs(keys);
-			allLogs.deleteLogs(keys);
 			fireTableDataChanged();
+			allLogs.deleteLogs(keys);
 		}
 		
 	}
@@ -324,7 +327,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			throw new IllegalArgumentException("Impossible to set the max log to "+max);
 		}
 		maxLog=max;
-		checkLogNumber();
 	}
 	
 	/**
@@ -734,21 +736,13 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	}
 	
 	/**
-	 * Check if the number of logs in cache exceeds the maximum limit and
-	 * if it is the case, delete the logs (FIFO policy)
-	 */
-	private void checkLogNumber() {
-		while (allLogs.getSize()>maxLog && maxLog>0) {
-			//deleteLog(allLogs.getFirstLog());
-			logDeleter.addLogToDelete(allLogs.getFirstLog());
-		}
-	}
-	
-	/**
 	 * Check if the time frame of the logs in cache exceeds the limit and
 	 * if it is the case, deletes the oldest logs
 	 */
 	private void checkTimeFrame() {
+		if (timeFrame==0) {
+			return;
+		}
 		Collection<Integer> logsToDelete = allLogs.getLogExceedingTimeFrame(timeFrame);
 		Collections.sort((List<Integer>)logsToDelete);
 		Collections.reverse((List<Integer>)logsToDelete);
