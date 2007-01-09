@@ -289,18 +289,17 @@ public class Consumer extends OSPushConsumerPOA {
 	 * Add a subscription to a given (IDL struct) Java class. Use this method
 	 * only when Consumer has been subclassed and processEvent overriden.
 	 * 
-	 * @param structClassName
-	 *           Type of event to subscribe to (i.e.,
-	 *           alma.CORR.DataStruct.class).
+	 * @param structClass
+	 *           Type of event to subscribe to (i.e., alma.CORR.DataStruct.class).
 	 * @throws AcsJException
 	 *            Thrown if there is some CORBA problem.
 	 */
-	public void addSubscription(Class structClassName) throws AcsJException {
+	public void addSubscription(Class<? extends IDLEntity> structClass) throws AcsJException {
 		String type = "*";
 		String domain = "*";
-		if (structClassName != null) {
-			type = structClassName.getName().substring(structClassName.getName().lastIndexOf('.') + 1);
-			domain = getChannelDomain();
+		if (structClass != null) {
+			type = structClass.getName().substring(structClass.getName().lastIndexOf('.') + 1);
+			domain = getChannelDomain(); // "ALMA"
 		}
 
 		try {
@@ -333,13 +332,12 @@ public class Consumer extends OSPushConsumerPOA {
 	 * @throws AcsJException
 	 *            Thrown if there is some CORBA problem.
 	 */
-	public void addSubscription(Class structClass, Object receiver) throws AcsJException {
+	public void addSubscription(Class<? extends IDLEntity> structClass, Object receiver) throws AcsJException {
 		// check to ensure receiver is capable to processing the event
 		Class receiverClass = receiver.getClass();
-		Method receiveMethod = null;
 		Class[] parm = { structClass };
 		try {
-			receiveMethod = receiverClass.getMethod(RECEIVE_METHOD_NAME, parm);
+			receiverClass.getMethod(RECEIVE_METHOD_NAME, parm);
 		} catch (NoSuchMethodException err) {
 			// Well the method doesn't exist...that sucks!
 			String reason = "The '" + m_channelName
@@ -451,7 +449,7 @@ public class Consumer extends OSPushConsumerPOA {
 	 *            Thrown if there is some CORBA problem (like the filter is not
 	 *            using the correct grammar).
 	 */
-	public int addFilter(Class structClassName, String filter) throws AcsJException {
+	public int addFilter(Class<? extends IDLEntity> structClassName, String filter) throws AcsJException {
 		String type = structClassName.getName().substring(structClassName.getName().lastIndexOf('.') + 1);
 
 		try {
@@ -598,7 +596,7 @@ public class Consumer extends OSPushConsumerPOA {
 	 */
 	protected void processEvent(IDLEntity corbaData, EventDescription eventDescrip) {
 
-		m_logger.fine("Consumer#processEvent received an event of type " + eventDescrip.name);
+		m_logger.finer("Consumer#processEvent received an event of type " + eventDescrip.name);
 		// Create the IDL class
 		// The only reason we have to do this is in case the developer has
 		// created
@@ -644,10 +642,8 @@ public class Consumer extends OSPushConsumerPOA {
 
 					// warn the end-user if the receiver is taking too long
 					if (timeToRun > maxProcessTime) {
-						m_logger.warning("Took too long to handle an '" + eventName + "' event: " + timeToRun
-								/ 1000.0 + " seconds.");
-						m_logger.info("Maximum time to process an event is: " + maxProcessTime / 1000.0
-								+ " seconds.");
+						m_logger.warning("Took too long to handle an '" + eventName + "' event: " + timeToRun / 1000.0 + " seconds.");
+						m_logger.info("Maximum time to process an event is: " + maxProcessTime / 1000.0 + " seconds.");
 					}
 
 					// everything looks OK...return control.
@@ -666,8 +662,7 @@ public class Consumer extends OSPushConsumerPOA {
 		long timeToRun = profiler.getLapTimeMillis();
 
 		if (timeToRun > maxProcessTime) {
-			m_logger.warning("Took too long to handle an '" + eventName + "' event: " + timeToRun / 1000.0
-					+ " seconds.");
+			m_logger.warning("Took too long to handle an '" + eventName + "' event: " + timeToRun / 1000.0 + " seconds.");
 			m_logger.info("Maximum time to process an event is: " + maxProcessTime / 1000.0 + " seconds.");
 		}
 	}
