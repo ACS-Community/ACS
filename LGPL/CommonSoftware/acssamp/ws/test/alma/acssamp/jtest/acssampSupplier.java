@@ -24,7 +24,6 @@
  *    Created on 19/11/2003 by oat
  */
 
-
 /**
  * This test program is used to demonstrate/test the ACS 
  * sampling system. In particular it samples
@@ -32,107 +31,100 @@
  * report rate 1 sec.
  */
 
-
 ////////////////////////////////////////////////////////////////////////////////
 package alma.acssamp.jtest;
+
 ////////////////////////////////////////////////////////////////////////////////
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServices;
-import alma.acssamp.*;
+import alma.acssamp.Samp;
+import alma.acssamp.SampHelper;
+import alma.acssamp.SampObj;
 
-
-public class acssampSupplier extends ComponentClient
-{
-
-    private Samp m_samp;
-    private Logger m_logger;
-
-
-    public acssampSupplier(String managerLoc, String clientName)
-	throws Exception
-	{
-	    super(null, managerLoc, clientName);
-
-	    // same service interface that a component would get from the container...
-	    ContainerServices csrv = getContainerServices();
-		
-	    // get a logger
-	    m_logger = csrv.getLogger();
-		
-	    String sampCurl = "SAMP1";
-		
-	    // get (CORBA) reference to Samp component
-	    org.omg.CORBA.Object sampObj = csrv.getComponent(sampCurl);
-
-	    // use CORBA helper class for the type cast
-	    m_samp = SampHelper.narrow(sampObj);
-	}
-
-
-    /**
-     * Calls methods on our samp component
-     */
-    public void doSomeStuff()
-	{
-	    m_logger.info("will now use the samp component...");
-	    try 
-		{
-		SampObj sampObj = m_samp.initSampObj("LAMP1","brightness",1000000,10000000);
-
-		sampObj.start();
-		m_logger.info(" ACS sampling started");
-
-		Thread.sleep(60000);
-		sampObj.suspend();
-		m_logger.info("ACS sampling suspended");
-
-		Thread.sleep(5000);
-		sampObj.resume();
-		m_logger.info("ACS sampling resumed");
-
-		Thread.sleep(6000);
-		sampObj.stop();
-		m_logger.info("ACS sampling stopped");
-
-		Thread.sleep(2000);
-		sampObj.destroy();
-		m_logger.info("ACS sampling destroyed");
-		    
-		}
-	    catch(Exception e)
-		{
-		// not handled for the moment
-		}
-	}
+/**
+ * A client of the Samp component, which asks the samp component to sample 
+ * the brightness property of the Lamp component.
+ * The result should be that the samp component publishes the aggregated sampling 
+ * information on the notification channel "NC_LAMP1_brightness_1000000_10000000".
+ * <p>
+ * Indirectly this class can thus be seen as an NC supplier, which I guess explains its name.
+ */
+public class acssampSupplier extends ComponentClient {
 	
+	private final Logger m_logger;
+	
+	public acssampSupplier(String managerLoc, String clientName) throws Exception {
+		super(null, managerLoc, clientName);
+		m_logger = getContainerServices().getLogger();
+	}
 
+	/**
+	 * Calls methods on our samp component to sample LAMP1.brightness,
+	 * with the full show of suspending, resuming, stopping and eventually destroying this. 
+	 */
+	public void sampleLampBrightness() throws AcsJContainerServicesEx {
 
+		// get (CORBA) reference to C++ Samp component (type IDL:alma/acssamp/Samp:1.0)
+		String sampCurl = "SAMP1";
+		Samp samp = SampHelper.narrow(getContainerServices().getComponent(sampCurl));
 
-    public static void main(String[] args)
-	{
-	    
-	    String managerLoc = System.getProperty("ACS.manager");
-	    if (managerLoc == null)
-		{
-		System.out.println("Java property 'ACS.manager' " + 
-				   " must be set to the corbaloc of the ACS manager!");
-		System.exit(-1);
+		m_logger.info("will now use the samp component...");
+		SampObj sampObj = null;
+		try {
+			// register for sampling the 'brightness' property of the Lamp component
+			// in a way that the report rate is 10 times slower than the sampling rate
+			sampObj = samp.initSampObj("LAMP1", "brightness", 1000000, 10000000);
+
+			sampObj.start();
+			m_logger.info("ACS sampling of Lamp#brightness has started. Will sample this for one minute.");
+			Thread.sleep(60000);
+			
+			sampObj.suspend();
+			m_logger.info("ACS sampling suspended. Will resume after 5 seconds.");
+			Thread.sleep(5000);
+			
+			sampObj.resume();
+			m_logger.info("ACS sampling resumed. Will sample another 6 seconds.");
+			Thread.sleep(6000);
+			
+			sampObj.stop();
+			m_logger.info("ACS sampling stopped. Will destroy the sampling object in 2 seconds.");
+			Thread.sleep(2000);
+			
+		} catch (Exception e) {
+			m_logger.log(Level.SEVERE, "Unexpected exception occured while using the samp component.", e);
+		} finally {
+			if (sampObj != null) {
+				sampObj.destroy();
+			}
+			if (samp != null) {
+				getContainerServices().releaseComponent(sampCurl);
+			}
+			m_logger.info("ACS sampling destroyed.");			
 		}
-	    
-	    String clientName = "acssampSupplier1";
-	    
-	    try
-		{
-		acssampSupplier foo = new acssampSupplier(managerLoc, clientName);
-		    
-		foo.doSomeStuff();
+	}
+
+	public static void main(String[] args) {
+
+		String managerLoc = System.getProperty("ACS.manager");
+		if (managerLoc == null) {
+			System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
+			System.exit(-1);
 		}
-	    catch (Exception e)
-		{
-		e.printStackTrace(System.err);
+
+		try {
+			acssampSupplier foo = new acssampSupplier(managerLoc, "acssampSupplier1");
+			
+			foo.sampleLampBrightness();
+			
+			Thread.sleep(1000);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
 		}
 	}
 }
-
