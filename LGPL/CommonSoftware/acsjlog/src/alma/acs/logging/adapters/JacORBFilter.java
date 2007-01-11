@@ -31,7 +31,7 @@ import java.util.logging.LogRecord;
 /**
  * Filters out JacORB log messages that we don't want to see.
  * Also corrects the log level of a few known messages when it seems inappropriate;
- * this is a bit dirty because the logging filters are not expected to modify the log records,
+ * this is a bit dirty because the JDK logging filters are not expected to modify the log records,
  * but it saves us from re-examining the same log record in a subsequent home-brew modifier stage.  
  */
 public class JacORBFilter implements Filter {
@@ -41,15 +41,34 @@ public class JacORBFilter implements Filter {
 	/**
 	 * Discards less useful or misleading Jacorb logs based on the message.
 	 * <p>
-	 * To improve performance, we could instead match file and line, but then would have to update 
+	 * TODO-: to improve performance, we could instead match file and line, but then would have to update 
 	 * that information with the next jacorb code change.
+	 * The implementation already minimizes string comparison by checking only those messages that can occur at the given log level.
 	 */
 	public boolean isLoggable(LogRecord record) {
 		String message = record.getMessage();
 		boolean isLoggable = true;
 		if (record.getLevel().intValue() == Level.FINE.intValue()) {
+			// map from FINE to FINER
+			if (message.indexOf("(C) The JacORB project") > 0 || 
+				message.equals("ORB run") ||
+				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
+				message.startsWith("prepare ORB for shutdown") ||
+				message.startsWith("Client-side TCP transport to") ||
+				message.startsWith("ORB going down...") ||
+				message.startsWith("POA ") && (
+						message.endsWith("shutdown is in progress") ||
+						message.endsWith("destruction is apparent") ||
+						message.endsWith("clear up the queue...") ||
+						message.endsWith("... done") ||
+						message.endsWith("stop the request controller") ||
+						message.endsWith("etherialize all servants ...")
+				) ||
+				message.startsWith("Opened new server-side TCP/IP" )) {
+				record.setLevel(Level.FINE);
+			}
 			// from FINE to discard
-			isLoggable = !(
+			else isLoggable = !(
 					message.endsWith("_invoke: queuing request") ||
 					message.indexOf("is queued (queue size:") > 0 ||
 					message.endsWith("trying to get a RequestProcessor") ||
@@ -60,22 +79,26 @@ public class JacORBFilter implements Filter {
 					message.startsWith("Delegate.getReference") || 
 					message.startsWith("ClientConnectionManager: releasing ClientGIOPConnection") ||
 					message.startsWith("Delegate released!") ||
-					message.endsWith(": streamClosed()")								
+					message.endsWith(": streamClosed()")		// findPOA: impl_name mismatch						
 			);
 		}
+		
 		else if (record.getLevel().intValue() == Level.INFO.intValue()) {
-			// map from INFO to FINE
+			// from INFO to FINE
 			if (message.indexOf("(C) The JacORB project") > 0 || 
-				message.equals("ORB run") ||
+				message.startsWith("ORB run") || // also "ORB run, exit"
 				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
 				message.startsWith("prepare ORB for shutdown") ||
 				message.startsWith("Client-side TCP transport to") ||
 				message.startsWith("ORB going down...") ||
-				(message.startsWith("POA ") && message.endsWith("destroyed")) ||
+				message.equals("ORB shutdown complete") || 
+				( message.startsWith("POA ") && (
+						message.endsWith("destroyed") 
+				)) ||
 				message.startsWith("Opened new server-side TCP/IP" )) {
 				record.setLevel(Level.FINE);
 			}
-			// map from INFO to FINER
+			// from INFO to FINER
 			else if (message.startsWith("Connected to ") ||
 					message.startsWith("Closed server-side transport to") ||
 					message.startsWith("ClientConnectionManager: created new ClientGIOPConnection") ||
@@ -88,6 +111,22 @@ public class JacORBFilter implements Filter {
 					message.startsWith("oid: ") ||
 					message.startsWith("InterceptorManager started with") ||
 					message.startsWith("Using server ID (")
+			);
+		}
+		
+		else if (record.getLevel().intValue() == Level.WARNING.intValue()) {
+			// from WARNING to FINE
+//			if (message.indexOf("") > 0) { 
+//				record.setLevel(Level.FINE);
+//			}
+//			// from WARNING to FINER
+//			else if (message.startsWith("")) {
+//				record.setLevel(Level.FINER);
+//			}
+			// from WARNING to discard
+//			else 
+			isLoggable = !(
+					message.startsWith("no adapter activator exists for") // client tries to find remote poa locally and then complains if not there... 
 			);
 		}
 		
@@ -113,6 +152,11 @@ public class JacORBFilter implements Filter {
 	 * The JDK does not foresee this, that's why we must discard them here based on the level. 
 	 */
 	public void setLogLevel(Level level) {
-		logLevel = level.intValue();
+		if (level != null) {
+			logLevel = level.intValue();
+		}
+//		else {
+//			System.err.println("&&&& JacORB filter got null level");
+//		}
 	}
 }
