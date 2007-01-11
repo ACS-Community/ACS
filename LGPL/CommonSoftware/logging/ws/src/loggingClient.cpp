@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.44 2006/12/04 11:02:20 acaproni Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.45 2007/01/11 11:24:10 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -28,9 +28,11 @@
 */
 
 /// TBD: proper shutdown (disconnection of the consumers) && cleanup
+#include <iostream>
 
  #include <syslog.h>
  #include <unistd.h>
+ #include <getopt.h>
 
 #include <vltPort.h>
 #include <loggingClient.h>
@@ -54,7 +56,7 @@ Subscribe::~Subscribe ()
 }
 
 void
-Subscribe::init (int argc, char *argv [])
+Subscribe::init (int argc, char *argv [], std::string channel)
 {
   init_ORB (argc, argv);
   
@@ -69,9 +71,9 @@ Subscribe::init (int argc, char *argv [])
   resolve_naming_service ();
   
 
-  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel...\n"));
+  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc,argv[argc-1]));
   
-  	resolve_notify_channel (argv[argc-1]);
+  	resolve_notify_channel (channel.c_str());
   
   
 
@@ -446,11 +448,7 @@ main (int argc, char *argv [])
       (ACE_OS::strcmp(argv[argc-1], acscommon::LOGGING_CHANNEL_NAME)!=0 &&
       ACE_OS::strcmp(argv[argc-1], acscommon::ARCHIVING_CHANNEL_NAME)!=0))
     {
-      ACE_OS::printf("\n\tusage: %s [-s] <%s | %s> <ORB options>\n", 
-		     argv[0], 
-		     acscommon::LOGGING_CHANNEL_NAME, 
-		     acscommon::ARCHIVING_CHANNEL_NAME);
-	  ACE_OS::printf("-s: write the logs into the syslog\n\n");
+      printUsage(argv[0]);
       return 1;
     }
 
@@ -462,7 +460,7 @@ main (int argc, char *argv [])
   Subscribe client;
   try
     {
-      client.init (argc, argv); // Init the Client
+      client.init (argc, argv,channelName); // Init the Client
       
 
       g_client = &client;
@@ -484,6 +482,7 @@ main (int argc, char *argv [])
   catch(CORBA::UserException &ue)
     {
     ACE_ERROR((LM_ERROR,"LoggingClient user error: "));
+    ACE_PRINT_EXCEPTION(ue, "TerminationSignalHandler");
     return 1;
     }
   catch(CORBA::SystemException &se)
@@ -524,10 +523,41 @@ void writeSyslogMsg(const char* msg) {
 void getParams(int argc, char *argv []) {
 	toSyslog=false;
 	int c;
-	while ((c = getopt (argc, argv, "s")) != -1) {
+	int orb_flag;
+	struct option long_options[] =
+             {
+               /* These options set a flag. */
+               {"ORBInitRef", required_argument, &orb_flag, 1}
+             };
+    int option_index=0;
+	while ((c = getopt_long_only (argc, argv, "sh",long_options,&option_index)) != -1) {
 		switch(c) {
 			case 's': toSyslog=true; break;
+			case 'h': printUsage(argv[0]); exit(0);
 			default: break;
 		}
 	}
+	// There is only one non-option argument: the name of the channel
+	if (argc==optind) 
+	{
+		// The name of the channel is not in the coomand line
+		printUsage(argv[0]);
+		exit(-1);
+	} 
+	else 
+	{
+		channelName=argv[argc-1];
+	}
+}
+
+/**
+ * Prints the usage message on the stdout
+ */
+void printUsage(const char* prgName) {
+	ACE_OS::printf("\n\tusage: %s [-s] <%s | %s> <ORB options>\n", 
+	     prgName, 
+	     acscommon::LOGGING_CHANNEL_NAME, 
+	     acscommon::ARCHIVING_CHANNEL_NAME);
+	  ACE_OS::printf("-s: write the logs into the syslog\n");
+	  ACE_OS::printf("-h: print this help\n\n");
 }

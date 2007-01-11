@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.38 2006/12/04 11:02:20 acaproni Exp $"
+* "@(#) $Id: loggingClient.h,v 1.39 2007/01/11 11:24:10 acaproni Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -31,6 +31,8 @@
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
+
+#include <string>
 
 #include <acsutil.h>
 
@@ -54,8 +56,14 @@ int getSyslogFacility();
 // If true the output is redirected to the syslog
 bool toSyslog;
 
+// The name of the channel to connect to
+std::string channelName;
+
 // Read the command line params into local variables
 void getParams(int argc, char *argv []);
+
+// Prints the usage message on the stdout
+void printUsage(const char* prgName);
 
 // Write a message to the kernel log
 void writeSyslogMsg(const char* msg);
@@ -74,7 +82,7 @@ class Subscribe
     Subscribe (void);
     ~Subscribe ();
     
-    void init (int argc, char *argv []);
+    void init (int argc, char *argv [], std::string channel);
     // Init the Client.
     
     void run ();
