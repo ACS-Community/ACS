@@ -11,7 +11,6 @@
   MaxCachePriority="31"
   CentralizedLogger="Log">
   <Startup>
-	<cdb:_ string="MOUNT1"/>
   </Startup>
   <Execute>
 	<cdb:_ string=""/>
