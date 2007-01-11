@@ -20,5 +20,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbSchemaBindings.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
