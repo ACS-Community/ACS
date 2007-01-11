@@ -343,10 +343,19 @@ public class ClientLogManager implements LogConfigSubscriber
                     logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000);
                 }
             }
-            catch (Throwable thr) {                
+            catch (Throwable thr) {
                 errMsg = "Failed to connect to central log service with exception " + thr.toString();
+                // as this message must go repeatedly to the command line output regardless of local log level, 
+                // we don't want to print the multi-line exception stack, but just the original location.
+            	StackTraceElement[] trace = thr.getStackTrace();
+            	if (trace != null && trace.length > 0) {
+            		StackTraceElement traceOrigin = trace[0];
+            		errMsg += " in file " + traceOrigin.getFileName() + ", line " + traceOrigin.getLineNumber();
+            	}
+                errMsg += ". ";
             }
             if (errMsg != null) {
+            	// can't use the loggers, so println is ok here
                 System.err.println(errMsg + "Will try again in 10 seconds.");
                 try {
                     Thread.sleep(10000);
